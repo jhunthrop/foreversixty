@@ -26,8 +26,8 @@ This is the Frost Mage as the site's guide describes it. Frost casts Frostbolt b
 - Ice Lance while Fingers of Frost is up and its eight second cooldown is ready.
 - Save Cold Snap for a second Ice Block or for an Ice Barrier that broke early on a fight that hits you.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
-- Blizzard from range on packs the tank holds. It channels for eight seconds and costs one thousand four hundred mana, so it is for big pulls.
-- On a pack that comes to you, Frost Nova, then Cone of Cold and Arcane Explosion while they are rooted, then Blink out.
+- Blizzard from range on packs the tank holds. It channels for eight seconds and costs about one thousand two hundred mana even with Frost Channeling, so it is for big pulls.
+- On a pack that comes to you, Frost Nova, step back out of their reach, then Cone of Cold and Arcane Explosion while they are rooted, and Blink out when the root breaks.
 - Cone of Cold on a boss.
 - Fire Blast.
 

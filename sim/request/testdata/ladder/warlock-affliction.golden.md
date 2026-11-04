@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:284287 ranged:286750 | 16.0 | 5 | other:mana_gain=32.5, spell:1454=32.5, spell:695=29.1, spell:172=14.5, spell:707=13.4 | {SpellID: 18288} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:6505 ranged:5243 | 37.6 | 7 | other:mana_gain=26.2, spell:1455=26.2, spell:1088=20.6, spell:5019=13.1, spell:6222=12.7 | {SpellID: 18288} |
-| 30 | 25522300100001000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 59.7 | 9 | other:mana_gain=28.3, spell:1456=28.3, spell:1106=20.7, spell:2941=11.3, spell:6223=10.9 | - |
-| 38 | 25522300130201300-0000000000000000000-0000000000000000 | main_hand:873 ranged:13064 | 86.6 | 9 | other:mana_gain=26.8, spell:11687=26.8, spell:7641=26.4, spell:2941=11.6, spell:7648=10.7 | - |
-| 40 | 25522300130201311-0000000000000000000-0000000000000000 | main_hand:873 ranged:5216 | 91.3 | 9 | other:mana_gain=28.2, spell:11687=28.2, spell:7641=25.2, spell:11665=11.5, spell:7648=10.8 | - |
-| 50 | 25522300130201351-2004000000000000000-0000000000000000 | main_hand:873 ranged:249232 | 131.8 | 9 | other:mana_gain=27.1, spell:11688=27.1, spell:11659=25.0, spell:11667=11.1, spell:11671=10.8 | - |
-| 60 | 25522300130201351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 266.2 | 9 | other:mana_gain=29.1, spell:11689=29.1, spell:11661=26.7, spell:11668=11.8, spell:11672=11.2 | - |
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:284287 ranged:286750 | 16.7 | 5 | other:mana_gain=32.5, spell:1454=32.5, spell:695=29.1, spell:172=14.5, spell:707=13.4 | {SpellID: 18288}, {SpellID: 603} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:6505 ranged:5243 | 38.1 | 7 | other:mana_gain=26.2, spell:1455=26.2, spell:1088=20.8, spell:5019=13.0, spell:6222=12.7 | {SpellID: 18288}, {SpellID: 603} |
+| 30 | 25522300100001000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 59.7 | 9 | other:mana_gain=28.3, spell:1456=28.3, spell:1106=20.7, spell:2941=11.4, spell:6223=10.9 | {SpellID: 603} |
+| 38 | 25522300130201300-0000000000000000000-0000000000000000 | main_hand:873 ranged:13064 | 86.4 | 9 | other:mana_gain=26.7, spell:11687=26.7, spell:7641=26.0, spell:2941=11.6, spell:7648=10.8 | {SpellID: 603} |
+| 40 | 25522300130201311-0000000000000000000-0000000000000000 | main_hand:873 ranged:5216 | 105.4 | 8 | other:mana_gain=20.6, spell:11687=20.6, spell:1316697=16.8, spell:11665=10.4, spell:7648=10.3 | {SpellID: 603} |
+| 50 | 25522300130201351-2004000000000000000-0000000000000000 | main_hand:873 ranged:249232 | 161.7 | 8 | other:mana_gain=18.9, spell:11688=18.9, spell:1316697=17.5, spell:11667=10.2, spell:11671=10.2 | {SpellID: 603} |
+| 60 | 25522300130201351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 326.5 | 9 | spell:1316697=19.2, other:mana_gain=17.7, spell:11689=17.7, spell:11672=10.9, spell:11668=10.8 | - |
 
 ## Learned but unused (informational)
 
@@ -168,10 +168,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lash of Pain (spell 7816)
 - Rain of Fire (spell 6219)
 - Searing Pain (spell 17920)
+- Shadow Bolt (spell 7641)
 - Shadow Cleave (spell 403843)
 - Shadowburn (spell 18869)
 - Unstable Affliction (spell 427717)
-- Wrack (spell 1316697)
 
 ### Level 50
 
@@ -186,11 +186,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lash of Pain (spell 11778)
 - Rain of Fire (spell 11677)
 - Searing Pain (spell 17922)
+- Shadow Bolt (spell 11659)
 - Shadow Cleave (spell 403844)
 - Shadowburn (spell 18870)
 - Soul Fire (spell 6353)
 - Unstable Affliction (spell 1242972)
-- Wrack (spell 1316697)
 
 ### Level 60
 
@@ -205,13 +205,19 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lash of Pain (spell 11780)
 - Rain of Fire (spell 11678)
 - Searing Pain (spell 17923)
+- Shadow Bolt (spell 11661)
 - Shadow Cleave (spell 403852)
 - Shadowburn (spell 18871)
 - Soul Fire (spell 17924)
 - Test Curse of Agony (spell 28608)
 - Unstable Affliction (spell 1242972)
-- Wrack (spell 1316697)
 
 ## Violations found in this run
 
 - warlock-affliction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=40 kind=zero_casts spell="Shadow Bolt" id=7641 authored=11661
+- warlock-affliction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=50 kind=zero_casts spell="Shadow Bolt" id=11659 authored=11661
+- warlock-affliction level=60 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=60 kind=zero_casts spell="Shadow Bolt" id=11661 authored=11661

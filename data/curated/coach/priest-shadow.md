@@ -29,7 +29,7 @@ This is the Shadow Priest as the site's guide describes it. Shadow keeps two DoT
 - Buff the raid, then shift into Shadowform and drink back to full. The form costs mana, so never shift on the pull.
 - Devouring Plague every time its twenty-four second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.
 - Vampiric Embrace on the boss whenever it is down.
-- Fade sheds threat for a few seconds on a thirty second cooldown; use it the moment you climb past the tank, not after the boss turns.
+- Fade sheds threat for ten seconds on a thirty second cooldown; use it the moment you climb past the tank, not after the boss turns.
 - Dark Sacrifice if you are Undead, on a long fight once your mana is well down.
 
 **The mistakes the coach looks for, by finding.**

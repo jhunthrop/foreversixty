@@ -24,8 +24,8 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 - Ambush hits harder on paper, but it lands into that armor and gets none of Lethality's bonus.
 - Cheap Shot is for trash only: bosses are immune to stuns.
 - Shank on cooldown. It cannot miss, pays back more energy than it costs and, with Venom, makes your poisons hit thirty percent harder and land more often for six seconds.
+- At four or more combo points, Slice and Dice first if it is down or about to fall off.
 - Cold Blood at four or more combo points, right before the Eviscerate.
-- Slice and Dice.
 - Eviscerate at four or more combo points.
 - Mutilate is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
 - Deadly Poison on the main hand, Instant Poison on the off hand, with a sharpening stone beside each in Forever.

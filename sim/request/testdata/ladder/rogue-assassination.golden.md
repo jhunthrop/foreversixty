@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-000000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 3 | other:attack/1=151.0, other:attack/2=132.2, spell:1757=42.3, spell:5171/4=8.6, spell:1784=1.0 | {SpellID: 1241584}, {SpellID: 1329549}, {SpellID: 14177} |
-| 20 | 32510000000000000-0000000000000000000-000000000000000000 | main_hand:2236 off_hand:1935 | 25.5 | 4 | other:attack/1=141.6, other:attack/2=111.8, spell:1758=41.1, spell:5171/4=9.0, spell:1785=1.0 | {SpellID: 1241584}, {SpellID: 1329549}, {SpellID: 14177} |
-| 30 | 32530200230001000-0000000000000000000-000000000000000000 | main_hand:23168 off_hand:19545 | 43.5 | 5 | other:attack/1=149.5, other:attack/2=123.2, spell:1760=39.2, spell:5171/4=6.5, spell:6762/4=3.6 | {SpellID: 1241584}, {SpellID: 1329549}, {SpellID: 14177} |
-| 38 | 32530200251501000-0000000000000000000-000000000000000000 | main_hand:6831 off_hand:19544 | 64.7 | 6 | other:attack/1=139.6, other:attack/2=123.2, spell:8621=39.5, spell:5171/4=6.5, spell:8623/4=3.5 | {SpellID: 1241584}, {SpellID: 1329549} |
-| 40 | 32530200251511001-0000000000000000000-000000000000000000 | main_hand:2164 off_hand:274753 | 83.6 | 8 | other:attack/1=118.3, other:attack/2=112.0, spell:399956=25.6, spell:5171/5=4.1, spell:8624/5=4.0 | {SpellID: 1329549} |
-| 50 | 32530200251551031-3000000000000000000-000000000000000000 | main_hand:2163 off_hand:6660 | 154.3 | 9 | other:attack/2=177.1, other:attack/1=164.5, spell:1241582=34.2, spell:1329549=18.5, spell:11299/5=6.9 | - |
-| 60 | 32530200251551031-3023030000000000000-011000000000000000 | main_hand:22802 off_hand:21126 | 256.4 | 9 | other:attack/1=128.5, other:attack/2=128.4, spell:1241584=33.7, spell:1329549=18.5, spell:11300/5=7.5 | - |
+| 10 | 10000000000000000-0000000000000000000-000000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 3 | other:attack/1=151.0, other:attack/2=132.2, spell:1757=42.3, spell:5171/4=8.6, spell:1784=1.0 | {SpellID: 1241584}, {SpellID: 14177} |
+| 20 | 32510000000000000-0000000000000000000-000000000000000000 | main_hand:2236 off_hand:1935 | 25.5 | 4 | other:attack/1=141.6, other:attack/2=111.8, spell:1758=41.1, spell:5171/4=9.0, spell:1785=1.0 | {SpellID: 1241584}, {SpellID: 1329256}, {SpellID: 14177} |
+| 30 | 32530200230001000-0000000000000000000-000000000000000000 | main_hand:23168 off_hand:19545 | 51.0 | 6 | other:attack/1=148.3, other:attack/2=122.2, spell:1760=42.6, spell:1329283=18.4, spell:5171/4=5.9 | {SpellID: 1241584}, {SpellID: 1329256}, {SpellID: 14177} |
+| 38 | 32530200251501000-0000000000000000000-000000000000000000 | main_hand:6831 off_hand:19544 | 75.3 | 7 | other:attack/1=138.4, other:attack/2=122.1, spell:8621=42.6, spell:1329283=18.4, spell:5171/4=5.9 | {SpellID: 1241584}, {SpellID: 1329256} |
+| 40 | 32530200251511001-0000000000000000000-000000000000000000 | main_hand:2164 off_hand:274753 | 93.0 | 9 | other:attack/1=119.5, other:attack/2=113.2, spell:399956=28.0, spell:1329283=18.4, spell:5171/5=4.6 | {SpellID: 1329256} |
+| 50 | 32530200251551031-3000000000000000000-000000000000000000 | main_hand:2163 off_hand:6660 | 149.7 | 9 | other:attack/2=177.1, other:attack/1=164.5, spell:1241582=34.2, spell:1329549=18.5, spell:11299/5=6.9 | {SpellID: 1329256} |
+| 60 | 32530200251551031-3023030000000000000-011000000000000000 | main_hand:22802 off_hand:21126 | 244.8 | 9 | other:attack/1=128.5, other:attack/2=128.4, spell:1241584=33.7, spell:1329549=18.5, spell:11300/5=7.5 | {SpellID: 1329256} |
 
 ## Learned but unused (informational)
 
@@ -182,8 +182,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- rogue-assassination level=10 kind=unresolved_id action={SpellID: 1329549}
-- rogue-assassination level=20 kind=unresolved_id action={SpellID: 1329549}
-- rogue-assassination level=30 kind=unresolved_id action={SpellID: 1329549}
-- rogue-assassination level=38 kind=unresolved_id action={SpellID: 1329549}
-- rogue-assassination level=40 kind=unresolved_id action={SpellID: 1329549}
+- rogue-assassination level=20 kind=zero_casts spell="Rupture" id=1943 authored=11275
+- rogue-assassination level=30 kind=zero_casts spell="Rupture" id=8639 authored=11275
+- rogue-assassination level=38 kind=zero_casts spell="Rupture" id=8640 authored=11275
+- rogue-assassination level=40 kind=zero_casts spell="Rupture" id=8640 authored=11275
+- rogue-assassination level=50 kind=zero_casts spell="Rupture" id=11273 authored=11275
+- rogue-assassination level=60 kind=zero_casts spell="Rupture" id=11275 authored=11275

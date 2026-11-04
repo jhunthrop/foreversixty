@@ -22,17 +22,17 @@ This is the Protection Paladin as the site's guide describes it. Protection tank
 
 - Righteous Fury is a thirty minute buff, not a stance: cast it before the raid and keep it on all night.
 - Put up Seal of Fury about three seconds before the pull.
-- Press Holy Shield about two seconds before the boss reaches you, so all four charges are there for its first swings.
 - Hammer of the Righteous and Holy Strike on their cooldowns. Hammer of the Righteous is the largest single threat gain in this list.
 - Holy Strike on cooldown: every six seconds with Shieldsworn, twenty mana, and your damage reduction from Iron Creed.
 - Pull with Judgement: under Seal of Fury it taunts, so the boss comes straight to you.
 - Consecration only with spare mana, where it pays for itself in threat.
-- Get Greater Blessing of Kings on yourself, and keep Devotion Aura on.
+- Get Greater Blessing of Kings on yourself unless a hunter's Heart of the Lion already covers you. The two are the same ten percent to every stat and do not stack, so with a hunter in the raid take Might instead.
+- Keep Devotion Aura on.
 - Then Swift Judgement, Holy Strike and Hammer of the Righteous in the first few globals.
 - Exorcism on Undead and Demons.
 - Templar's Bulwark first, at about a third of your health: a full health bar of absorb for eight seconds.
 - Divine Shield and Divine Protection come after Templar's Bulwark, once Forbearance is gone.
-- Lay on Hands is a full heal on a twenty minute cooldown: save it for the swing that would kill you.
+- Lay on Hands heals you to full on a twenty minute cooldown, but it takes every point of your mana with it.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

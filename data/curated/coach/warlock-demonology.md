@@ -14,25 +14,25 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Demonology Warlock as the site's guide describes it. Demonology sacrifices the Imp for fifteen percent Shadow damage, keeps a Succubus out for ten percent more, and casts Shadow Bolt, with free Soul Fires below thirty-five percent. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Demonology Warlock as the site's guide describes it. Demonology sacrifices the Imp for fifteen percent Shadow damage, keeps a Succubus out for ten percent more, and casts Shadow Bolt from the pull to the kill. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Put on Demon Armor, make a Healthstone and Life Tap back to full.
-- Corruption whenever it has fallen off.
 - Curse of the Elements when no warlock's is on the target.
 - Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 - Bane of Doom the moment the last one fires, with a minute or more of the fight left.
 - Bane of Agony in the last minute, once Doom has fired.
+- Corruption whenever it has fallen off.
 - Immolate with three seconds or less left on it.
 - Shadow Bolt for every other cast.
 - Soul Fire every six seconds while Decimation is up.
 - Searing Pain also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses.
 - Life Tap below ten percent mana.
 - Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
-- In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
+- In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill.
 - Health Funnel: On fights with heavy raid damage, park her behind the boss and Health Funnel her before she drops.
 - Rain of Fire for trash packs that stay put.
 

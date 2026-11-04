@@ -23,8 +23,8 @@ This is the Restoration Shaman as the site's guide describes it. Restoration is 
 - Water Shield whenever it is down: each of its three globes returns two percent of your maximum mana when you are hit or when one of your heals crits.
 - Healing Stream Totem whenever your Water slot is empty: it heals your party every two seconds for five minutes.
 - Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it twenty-five percent more.
-- Chain Heal on the tank as soon as anyone in your party is hurt, as long as your mana is ahead of the fight.
-- Healing Wave right after Nature's Swiftness: the instant save.
+- Chain Heal on the tank as soon as anyone near it is hurt, as long as your mana is ahead of the fight.
+- Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under twenty-five percent: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.
 - Lesser Healing Wave is the fast heal when it is down to thirty percent and the next hit could kill it.
 - Nature's Swiftness when the tank drops below twenty-five percent: your next Healing Wave becomes instant.
 - Poison Cleansing Totem and Disease Cleansing Totem take the Water slot and clear your party every few seconds; drop one on fights that poison or disease.

@@ -28,6 +28,7 @@ This is the Arcane Mage as the site's guide describes it. Arcane stacks Arcane B
 - Frost Nova.
 - Blink.
 - Blizzard: On spread packs or anything that hits hard, stand back and Blizzard instead.
+- Ice Block.
 - Arcane Blast until its buff carries three stacks. Past three, keep blasting while your mana is ahead of the fight.
 - Presence of Mind on cooldown, with Arcane Power.
 - Fire Blast.

@@ -14,15 +14,14 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Restoration Druid as the site's guide describes it. Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Swiftmend as a free extra heal, Bloom when the HoTs run out, and Healing Touch for the holes. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Restoration Druid as the site's guide describes it. Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Swiftmend as an extra heal, Bloom when the HoTs run out, and Healing Touch for the holes. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Rejuvenation on the tank a few seconds before he pulls.
-- Keep Mark of the Wild up on the raid.
-- Regrowth and Rejuvenation stay up on the tank for the whole fight.
+- Keep Gift of the Wild up on the raid.
+- Use the top ranks of Regrowth and Healing Touch.
 - Swiftmend on the tank whenever he is under three quarters health and your mana is keeping pace.
 - Healing Touch fills the real holes: a tank under about half, while your mana is ahead of the fight.
 - Nature's Swiftness into Healing Touch is the save for a tank who is nearly dead.

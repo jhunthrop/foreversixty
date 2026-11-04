@@ -22,12 +22,13 @@ This is the Discipline Priest as the site's guide describes it. Discipline heals
 
 - Drop Lightwell and tell the raid it is up.
 - Fear Ward the tank if the boss fears.
-- Renew on the tank all fight at rank one: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.
+- Keep Renew on the tank all fight.
 - Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him.
+- At sixty, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank five and six and Heal rank four keep only part of it.
 - Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
 - Prayer of Healing when three or more in a group are hurt.
-- Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every twelve seconds, your best heal per mana.
 - Inner Focus on a Greater Heal or a Prayer of Healing. It makes the spell free and adds twenty-five percent crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
+- Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every twelve seconds, your best heal per mana.
 - Dark Sacrifice if you are Undead, once your mana is down enough.
 
 **The mistakes the coach looks for, by finding.**

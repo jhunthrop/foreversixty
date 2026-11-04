@@ -14,26 +14,28 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Survival Hunter as the site's guide describes it. Survival is a melee spec in Forever: two weapons, Raptor Strike on every swing, Mongoose Bite whenever it lights up, and no pet. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Survival Hunter as the site's guide describes it. Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Put up Aspect of the Beast and leave it up.
-- Aspect of the Hawk.
+- At sixty, Aspect of the Falcon gives the same melee attack power as Beast, and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade.
 - Mark the boss with Hunter's Mark.
-- On the pull, press Rapid Fire, your trinkets and Berserking or Blood Fury together: Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you.
+- On the pull, press Rapid Fire, your trinkets and your racial together.
 - Raptor Strike queued on every swing it is ready.
-- Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.
 - Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.
+- Strider Kick on its own short cooldown, ahead of Immolation Trap.
+- Immolation Trap at your feet on cooldown.
+- Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.
+- Lacerate whenever its bleed has fallen off.
 - Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. Without the totem it loses damage.
-- Disengage trims some threat on a five second cooldown, and Feign Death drops all of it if it lands; check the message, because either can miss or be resisted.
+- Disengage trims some threat on a five second cooldown, but it turns off your auto attack, so start swinging again the moment it lands.
+- Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted.
 - Deterrence is your emergency button when something turns on you.
 - Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest.
 - Freezing Trap is your crowd control, laid before the pull.
-- Lacerate whenever its bleed has fallen off.
-- Strider Kick on its own short cooldown, ahead of Immolation Trap.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

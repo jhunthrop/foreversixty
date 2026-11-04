@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-010000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 11.1 | 4 | other:attack/2=107.1, other:rage_gain=38.5, spell:284/1=35.8, spell:284=35.3, other:attack/1=34.9 | {SpellID: 12328}, {SpellID: 1329555}, {SpellID: 20662} |
-| 20 | 00000000000000000-051500000000000000-000000000000000000 | main_hand:2236 off_hand:2194 | 23.8 | 5 | other:rage_gain=121.9, other:attack/1=76.9, other:attack/2=73.0, spell:285/1=44.9, spell:285=44.6 | {SpellID: 12328}, {SpellID: 1329555}, {SpellID: 20662} |
-| 30 | 00000000000000000-051531023000100000-000000000000000000 | main_hand:7687 off_hand:6692 | 43.8 | 7 | other:rage_gain=107.2, other:attack/2=76.0, other:attack/1=45.8, spell:1608=30.2, spell:1608/1=30.2 | {SpellID: 1329555} |
-| 38 | 00000000000000000-051531025120100210-000000000000000000 | main_hand:868 off_hand:6829 | 79.1 | 8 | other:rage_gain=163.1, other:attack/2=85.6, other:attack/1=64.3, spell:11564=25.4, spell:11564/1=25.4 | - |
-| 40 | 00000000000000000-051531025120100221-000000000000000000 | main_hand:2164 off_hand:9359 | 97.3 | 9 | other:rage_gain=166.9, other:attack/1=103.8, other:attack/2=84.6, spell:20660=22.1, spell:23881=19.8 | - |
-| 50 | 30321000000000000-051531025120100231-000000000000000000 | main_hand:810 off_hand:2163 | 151.2 | 10 | other:rage_gain=188.9, other:attack/2=144.3, other:attack/1=90.5, spell:20661=22.7, spell:23892=20.3 | - |
-| 60 | 30323013002000000-051531025120100231-200000000000000000 | main_hand:22736 off_hand:23054 | 299.8 | 10 | other:rage_gain=205.0, other:attack/2=75.0, other:attack/1=66.1, spell:20662=21.4, spell:23894=20.3 | - |
+| 10 | 00000000000000000-010000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 11.1 | 4 | other:attack/2=107.1, other:rage_gain=38.5, spell:284/1=35.8, spell:284=35.3, other:attack/1=34.9 | {SpellID: 12328}, {SpellID: 1329555}, {SpellID: 18499}, {SpellID: 20662} |
+| 20 | 00000000000000000-050510000000000000-000000000000000000 | main_hand:2236 off_hand:2194 | 24.2 | 5 | other:rage_gain=123.3, other:attack/1=76.4, other:attack/2=73.0, spell:285/1=45.4, spell:285=45.1 | {SpellID: 12328}, {SpellID: 1329555}, {SpellID: 18499}, {SpellID: 20662} |
+| 30 | 00000000000000000-050530025000100000-000000000000000000 | main_hand:7687 off_hand:6692 | 45.6 | 7 | other:rage_gain=107.4, other:attack/2=76.0, other:attack/1=44.0, spell:1608=32.0, spell:1608/1=32.0 | {SpellID: 1329555} |
+| 38 | 00000000000000000-050530025122100210-000000000000000000 | main_hand:868 off_hand:6829 | 79.5 | 9 | other:rage_gain=169.3, other:attack/2=85.6, other:attack/1=61.8, spell:11564=27.8, spell:11564/1=27.8 | - |
+| 40 | 00000000000000000-050530025122100221-000000000000000000 | main_hand:2164 off_hand:9359 | 98.6 | 10 | other:rage_gain=173.1, other:attack/1=101.8, other:attack/2=84.6, spell:20660=21.7, spell:23881=20.3 | - |
+| 50 | 30321000000000000-050530025122100231-000000000000000000 | main_hand:810 off_hand:2163 | 152.5 | 11 | other:rage_gain=193.7, other:attack/2=143.9, other:attack/1=88.9, spell:20661=22.4, spell:23892=20.8 | - |
+| 60 | 30323013002000000-050530025122100231-200000000000000000 | main_hand:22736 off_hand:23054 | 305.6 | 11 | other:rage_gain=212.3, other:attack/2=75.2, other:attack/1=63.8, spell:20662=21.4, spell:23894=20.9 | - |
 
 ## Learned but unused (informational)
 
@@ -191,6 +191,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
+- warrior-fury level=10 kind=unresolved_id action={SpellID: 18499}
+- warrior-fury level=20 kind=unresolved_id action={SpellID: 18499}
+- warrior-fury level=30 kind=zero_casts id=18499 authored=18499 (untracked ability; not in spellranks.json's rank chains)
 - warrior-fury level=38 kind=zero_casts spell="Overpower" id=7887 authored=11585
 - warrior-fury level=40 kind=zero_casts spell="Overpower" id=7887 authored=11585
 - warrior-fury level=50 kind=zero_casts spell="Overpower" id=11584 authored=11585

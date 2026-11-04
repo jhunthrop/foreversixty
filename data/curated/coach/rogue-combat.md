@@ -21,12 +21,12 @@ This is the Combat Rogue as the site's guide describes it. Combat is the steadie
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Garrote: Stealth before the pull, walk in behind the boss, and open with Garrote once the tank has the boss.
-- Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.
-- Ambush is the weakest one for Combat, because Puncturing Wounds and Lethality never touch it.
+- Ambush and Backstab from stealth both hit into armor that has no shred on it yet, and neither leaves a bleed behind.
 - Cheap Shot is for trash: bosses are immune to stuns.
 - Shank on cooldown, right behind your racial and trinket: an off-hand stab for five energy that cannot miss and gives forty back with Flash of Steel.
 - Slice and Dice whenever it drops, at one or two combo points.
 - Eviscerate at five combo points.
+- Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too.
 - Sinister Strike only when Backstab cannot be cast, held to sixty energy so a dagger rogue never spends Backstab's energy here.
 - Adrenaline Rush on cooldown, with your racial, a trinket and a potion.
 - Blade Flurry costs twenty-five and can go at any energy.

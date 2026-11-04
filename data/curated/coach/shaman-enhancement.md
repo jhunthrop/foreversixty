@@ -23,14 +23,14 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 - Windfury Weapon on your one weapon before the pull, and again whenever it falls off. Before level thirty, Rockbiter Weapon goes on it instead.
 - Strength of Earth Totem whenever it is down. It is Strength for every melee player near you, and in Forever the totem reaches the whole raid within thirty yards.
 - If your party has no other shaman, put Mana Spring Totem in your Water slot as well.
-- Totemic Call: If the boss moves more than thirty yards from them, stand where it is now and Totemic Call brings them to you.
+- Totemic Call: If the boss moves away from them, follow it and press Totemic Call. It relocates your active totems to your location.
 - Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown.
 - Stormstrike on cooldown. It is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
 - Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.
 - Searing Totem when it is down, unless the boss is about to die.
 - Fire Nova on a Clearcasting proc. It is free then, and in melee your Searing Totem stands within its ten yards of the boss.
 - Earth Shock last, and only while mana is above half.
-- In Forever Windfury Totem, Grace of Air and Strength of Earth reach every raid member within thirty yards, not just your party.
+- Windfury Totem, Grace of Air and Strength of Earth reach every raid member within thirty yards, not just your party.
 - Flame Shock.
 - Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it.
 - Lightning Shield only fires when something hits you, which behind a boss is never.

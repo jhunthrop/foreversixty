@@ -26,10 +26,10 @@ This is the Arms Warrior as the site's guide describes it. Arms is the two-hande
 - Press Overpower the moment it lights up, even ahead of Mortal Strike. It is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later.
 - Mortal Strike goes on cooldown otherwise.
 - With Improved Slam, Slam fills the gap between Mortal Strikes.
-- Heroic Strike only when you are about to cap at ninety or more: below that, every point is worth more in Mortal Strike, Overpower and Execute.
+- Heroic Strike only when you are about to cap at ninety or more: below that, keep the rage for Mortal Strike, Overpower and Execute, which lose damage every time they wait for it.
 - Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Without the totem it loses damage.
 - At twenty percent, Execute in Battle Stance first. It spends your whole bar, so that first Execute is your biggest hit of the fight.
-- Then swap to Berserker Stance and press Recklessness, and Execute every global until the boss dies.
+- Then swap to Berserker Stance and press Recklessness.
 - Sweeping Strikes in Battle Stance, swap to Berserker Stance, Whirlwind.
 - Whirlwind hits up to four targets and every Sweeping Strikes charge copies a hit onto a second one.
 - Use Cleave instead of Heroic Strike when two mobs are in front of you.

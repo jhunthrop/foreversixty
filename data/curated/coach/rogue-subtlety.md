@@ -20,21 +20,21 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the ble
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Premeditation: A couple of seconds before the pull, press Premeditation for two combo points. They last twenty seconds, so do not press it early.
-- Open with Garrote once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet.
-- Ambush is the opener for anything that will die fast, not for a boss.
+- Garrote right after Ghostly Strike whenever it has dropped off: Ghostly Strike lets the next Garrote go in without Stealth, and it is a bleed that Hemorrhage, Opportunity and Death Mark all feed.
+- Ambush needs a dagger in the main hand, so with a sword it is off your bar.
+- On trash that will die fast, open with Cheap Shot, which Initiative makes three combo points and which holds the mob still for four seconds, or with Garrote.
 - Shank on cooldown: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points.
+- Ghostly Strike on cooldown: it hits harder than Hemorrhage for ten more energy and gives a combo point.
 - Death Mark is your only damage cooldown and it comes back every ten seconds, so there is nothing to hold.
 - Eviscerate.
 - Slice and Dice.
 - Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
-- Preparation resets your other rogue cooldowns on a ten minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
+- Preparation finishes every other rogue cooldown, once every ten minutes.
+- Premeditation: A couple of seconds before the pull, press Premeditation for two combo points. They last twenty seconds, so do not press it early.
 - Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five.
-- Kick, Gouge and Blind handle the rest.
-- Elusiveness puts Blind on a short leash.
+- Kick, Gouge and Blind handle the rest; with Elusiveness, Blind comes back every three and a half minutes.
 - Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.
 - Feint on cooldown on bosses where you sit near the tank's threat.
-- Ghostly Strike on cooldown: it hits harder than Hemorrhage for five more energy and gives a combo point.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -26,7 +26,7 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is the 
 - Chain Lightning only against two or more targets. It hits every target for close to single-target Lightning Bolt damage.
 - Magma Totem in place of Searing Totem against two or more targets.
 - Then Lightning Mastery with your cooldowns, Flame Shock, Searing Totem, and Lightning Bolt for the rest of the fight.
-- Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
+- Earth Shock stays on your bar for interrupts.
 - Fire Nova on a Clearcasting proc only when your Fire totem is out and the boss stands close to it. Otherwise the proc goes to your next Lightning Bolt.
 - Flame Shock whenever it is not on the target: with Call of Flame it ticks for twenty-one seconds, and nothing else wants the shock cooldown.
 

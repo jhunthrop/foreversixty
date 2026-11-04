@@ -23,11 +23,12 @@ This is the Holy Paladin as the site's guide describes it. Holy heals the tank: 
 - Swear Oath of Light on the tank a second or two before the pull.
 - Concentration Aura if nobody else in your group runs it.
 - Divine Favor, then Holy Light, when the tank drops below forty percent.
-- Holy Light on the tank below seventy percent, and Holy Shock on anyone below seventy percent, but only with mana to spare.
-- Flash of Light rank one on the tank below ninety percent.
+- Holy Light on the tank below seventy percent, and Holy Shock on anyone below seventy percent, but only with mana to spare: keep your mana percent no more than five points under the percent of the fight left.
+- Flash of Light: Once you fall more than five points under, heal with Flash of Light alone until you catch up.
 - Holy Shock only while your mana is keeping pace with the fight.
 - Light's Vigil.
-- Lay on Hands is a full heal on a twenty minute cooldown.
+- Voice of Truth makes you immune to silences and interrupts for six seconds, every three minutes: save it for the caster pack or boss that would lock you out.
+- Lay on Hands heals your target for as much as your own maximum health and gives them five hundred fifty mana at its top rank, on a twenty minute cooldown.
 - Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank. They drop the boss.
 
 **The mistakes the coach looks for, by finding.**

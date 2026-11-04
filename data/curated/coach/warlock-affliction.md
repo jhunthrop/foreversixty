@@ -22,18 +22,20 @@ This is the Affliction Warlock as the site's guide describes it. Affliction keep
 
 - Before the pull, get set up: Demon Armor on, Succubus out, a Healthstone in your bag, and Life Tap to full mana while the healers top you off.
 - Lash of Pain: The Succubus costs a shard where the Imp is free, but her melee and Lash of Pain do more damage than the Imp's Firebolt, and Unholy Power makes her hit harder still.
-- Press Amplify Curse a few seconds before the pull.
+- Curse of the Elements when no warlock's is on the target.
 - Corruption whenever it has fallen off.
 - Siphon Life whenever it has fallen off.
-- If your raid leader gives you Curse of Weakness, put Agony down before it: Amplify Curse goes to whichever of the two you cast first.
-- Curse of the Elements when no warlock's is on the target.
 - Curse of Recklessness: Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid, Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard.
-- Immolate is the fifth DoT, recast when under three seconds remain.
+- Amplify Curse also strengthens Curse of Weakness and goes to whichever of the two you cast first, so if you hold Weakness, put your last Bane of Agony up before you refresh Weakness.
+- Bane of Doom is your bane on a boss.
 - Bane of Agony whenever it has fallen off.
-- Shadow Bolt with every DoT up.
+- Immolate is the fifth DoT, recast when under three seconds remain.
+- Without Soul Siphon behind it, Wrack is a six second channel that Shadow Bolt beats, so Shadow Bolt is your filler.
+- Health Funnel.
 - Life Tap keeps you casting once mana runs low.
 - Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
 - In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
+- Shadow Bolt with every DoT up.
 - Rain of Fire for trash packs that stay put.
 
 **The mistakes the coach looks for, by finding.**

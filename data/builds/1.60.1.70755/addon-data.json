@@ -5274,7 +5274,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 9839,
             "name": "Rejuvenation",
             "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
             "icon": "spell_nature_rejuvenation",
@@ -5384,35 +5384,35 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 8910,
             "name": "Rejuvenation",
             "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 8910,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 8910,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 8910,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 774,
+            "spell_id": 8910,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
@@ -5938,6 +5938,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1310687,
+            "name": "Sniper Shot",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 13552,
             "name": "Serpent Sting",
             "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
@@ -5985,6 +5992,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1310785,
+            "name": "Sniper Shot",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 13554,
             "name": "Serpent Sting",
             "condition": "Serpent Sting when it has under 1.5 seconds left and the shared cooldown is not about to come back.",
@@ -6029,6 +6043,13 @@
             "name": "Multi-Shot",
             "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310786,
+            "name": "Sniper Shot",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -6398,6 +6419,20 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2136,
+            "name": "Fire Blast",
+            "condition": "",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 143,
+            "name": "Fireball",
+            "condition": "",
+            "icon": "spell_fire_flamebolt",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 205,
             "name": "Frostbolt",
             "condition": "Frostbolt fills the rest of the 18 seconds once you stop blasting.",
@@ -6431,6 +6466,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11366,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7322,
             "name": "Frostbolt",
             "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
@@ -6445,10 +6487,31 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11366,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2137,
+            "name": "Fire Blast",
+            "condition": "",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 400574,
             "name": "Arcane Blast",
             "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 3140,
+            "name": "Fireball",
+            "condition": "",
+            "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
@@ -6485,6 +6548,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 12522,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7322,
             "name": "Frostbolt",
             "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
@@ -6499,10 +6569,38 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 12522,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8412,
+            "name": "Fire Blast",
+            "condition": "",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1326079,
+            "name": "Arcane Wrath",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1239696,
             "name": "Arcane Blast",
             "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8401,
+            "name": "Fireball",
+            "condition": "",
+            "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
@@ -6539,6 +6637,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 12523,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7322,
             "name": "Frostbolt",
             "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
@@ -6553,10 +6658,38 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 12523,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8413,
+            "name": "Fire Blast",
+            "condition": "",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1326080,
+            "name": "Arcane Wrath",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1239696,
             "name": "Arcane Blast",
             "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8402,
+            "name": "Fireball",
+            "condition": "",
+            "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
@@ -6593,6 +6726,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 12523,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8408,
             "name": "Frostbolt",
             "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
@@ -6607,10 +6747,38 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 12523,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8413,
+            "name": "Fire Blast",
+            "condition": "",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1326080,
+            "name": "Arcane Wrath",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1239697,
             "name": "Arcane Blast",
             "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8402,
+            "name": "Fireball",
+            "condition": "",
+            "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
@@ -6647,6 +6815,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 12525,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 10180,
             "name": "Frostbolt",
             "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
@@ -6661,10 +6836,38 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 12525,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10197,
+            "name": "Fire Blast",
+            "condition": "",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1326081,
+            "name": "Arcane Wrath",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1239699,
             "name": "Arcane Blast",
             "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10149,
+            "name": "Fireball",
+            "condition": "",
+            "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
@@ -6701,6 +6904,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 18809,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 10181,
             "name": "Frostbolt",
             "condition": "Frostbolt the moment Presence of Mind is up, so the 2.5 second cast goes out instant.",
@@ -6715,10 +6925,38 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 18809,
+            "name": "Pyroblast",
+            "condition": "",
+            "icon": "spell_fire_fireball02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10199,
+            "name": "Fire Blast",
+            "condition": "",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1326082,
+            "name": "Arcane Wrath",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1239700,
             "name": "Arcane Blast",
             "condition": "Arcane Blast to 3 stacks.",
             "icon": "spell_arcane_blast",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10151,
+            "name": "Fireball",
+            "condition": "",
+            "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           },
           {
@@ -6896,7 +7134,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2948,
+            "spell_id": 8444,
             "name": "Scorch",
             "condition": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 1.5 seconds or less left.",
             "icon": "spell_fire_soulburn",
@@ -6917,7 +7155,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2948,
+            "spell_id": 8444,
             "name": "Scorch",
             "condition": "Scorch is the filler, not Fireball.",
             "icon": "spell_fire_soulburn",
@@ -6950,7 +7188,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2948,
+            "spell_id": 10205,
             "name": "Scorch",
             "condition": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 1.5 seconds or less left.",
             "icon": "spell_fire_soulburn",
@@ -6971,7 +7209,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2948,
+            "spell_id": 10205,
             "name": "Scorch",
             "condition": "Scorch is the filler, not Fireball.",
             "icon": "spell_fire_soulburn",
@@ -7422,14 +7660,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 635,
+            "spell_id": 1042,
             "name": "Holy Light",
             "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 635,
+            "spell_id": 1042,
             "name": "Holy Light",
             "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
@@ -7539,14 +7777,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 635,
+            "spell_id": 3472,
             "name": "Holy Light",
             "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 635,
+            "spell_id": 3472,
             "name": "Holy Light",
             "condition": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana).",
             "icon": "spell_holy_holybolt",
@@ -7670,42 +7908,42 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20473,
             "name": "Holy Shock",
             "condition": "On anyone below 70%, with the same mana to spare.",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20473,
             "name": "Holy Shock",
             "condition": "Yourself included: raid damage hits you like the rest of your party.",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20473,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20473,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20473,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20473,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
@@ -7787,42 +8025,42 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20929,
             "name": "Holy Shock",
             "condition": "On anyone below 70%, with the same mana to spare.",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20929,
             "name": "Holy Shock",
             "condition": "Yourself included: raid damage hits you like the rest of your party.",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20929,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20929,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20929,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20929,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
@@ -7904,49 +8142,49 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20930,
             "name": "Holy Shock",
             "condition": "On anyone below 70%, with the same mana to spare.",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20930,
             "name": "Holy Shock",
             "condition": "Yourself included: raid damage hits you like the rest of your party.",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20930,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20930,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20930,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311606,
+            "spell_id": 20930,
             "name": "Holy Shock",
             "condition": "",
             "icon": "spell_holy_searinglight",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 19750,
+            "spell_id": 19942,
             "name": "Flash of Light",
             "condition": "On the tank below 90%: your staple.",
             "icon": "spell_holy_flashheal",
@@ -8869,7 +9107,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -8986,7 +9224,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9087,7 +9325,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3747,
+            "spell_id": 6065,
             "name": "Power Word: Shield",
             "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
@@ -9145,7 +9383,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9246,7 +9484,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3747,
+            "spell_id": 6066,
             "name": "Power Word: Shield",
             "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
@@ -9304,7 +9542,7 @@
           {
             "spell_id": 2053,
             "name": "Lesser Heal",
-            "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
@@ -9412,7 +9650,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 139,
+            "spell_id": 6078,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -9468,10 +9706,24 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
+            "spell_id": 2060,
+            "name": "Greater Heal",
             "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
             "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
@@ -9482,10 +9734,24 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
@@ -9503,10 +9769,10 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
+            "spell_id": 2060,
+            "name": "Greater Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
@@ -9517,10 +9783,38 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
@@ -9578,14 +9872,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3747,
+            "spell_id": 10899,
             "name": "Power Word: Shield",
             "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 139,
+            "spell_id": 10927,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -9627,7 +9921,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 596,
+            "spell_id": 10960,
             "name": "Prayer of Healing",
             "condition": "Prayer of Healing once three of your four party members are under 85%: it heals the target and the target's whole party.",
             "icon": "spell_holy_prayerofhealing02",
@@ -9641,10 +9935,24 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
+            "spell_id": 2060,
+            "name": "Greater Heal",
             "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
             "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
@@ -9655,10 +9963,24 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
@@ -9676,10 +9998,10 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
-            "name": "Lesser Heal",
+            "spell_id": 2060,
+            "name": "Greater Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
@@ -9690,10 +10012,38 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
@@ -9751,14 +10101,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3747,
+            "spell_id": 10901,
             "name": "Power Word: Shield",
             "condition": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 139,
+            "spell_id": 10927,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -9814,28 +10164,56 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2050,
-            "name": "Lesser Heal",
+            "spell_id": 2060,
+            "name": "Greater Heal",
             "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2050,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2050,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2050,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
@@ -9849,28 +10227,56 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2050,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2050,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2050,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2050,
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
             "name": "Lesser Heal",
             "condition": "",
             "icon": "spell_holy_lesserheal",
@@ -9947,7 +10353,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -10078,7 +10484,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10209,7 +10615,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10296,7 +10702,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 139,
+            "spell_id": 6078,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -10345,9 +10751,79 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2060,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10434,7 +10910,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 139,
+            "spell_id": 10927,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -10483,9 +10959,79 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10963,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10572,7 +11118,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 139,
+            "spell_id": 10927,
             "name": "Renew",
             "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
@@ -10621,73 +11167,143 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
-            "name": "Heal",
+            "spell_id": 10965,
+            "name": "Greater Heal",
             "condition": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4.",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 10965,
+            "name": "Greater Heal",
+            "condition": "",
+            "icon": "spell_holy_greaterheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6064,
+            "name": "Heal",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "icon": "spell_holy_heal02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           }
         ]
@@ -11035,28 +11651,14 @@
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8102,
-              "gnome": 8102,
-              "human": 8103,
-              "night-elf": 8102,
-              "troll": 8102,
-              "undead": 8103
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 10945,
             "name": "Mind Blast",
             "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
-            "race_spell_ids": {
-              "dwarf": 8102,
-              "gnome": 8102,
-              "human": 8103,
-              "night-elf": 8102,
-              "troll": 8102,
-              "undead": 8103
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1309635,
@@ -11187,6 +11789,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1943,
+            "name": "Rupture",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "icon": "ability_rogue_rupture",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6761,
             "name": "Eviscerate",
             "condition": "Eviscerate at four or more combo points.",
@@ -11213,17 +11822,24 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14177,
-            "name": "Cold Blood",
-            "condition": "Cold Blood at four or more combo points when the finisher is Eviscerate, never ahead of a Slice and Dice.",
-            "icon": "spell_ice_lament",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 5171,
             "name": "Slice and Dice",
             "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left.",
             "icon": "ability_rogue_slicedice",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8639,
+            "name": "Rupture",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "icon": "ability_rogue_rupture",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14177,
+            "name": "Cold Blood",
+            "condition": "Cold Blood at four or more combo points, right before the Eviscerate.",
+            "icon": "spell_ice_lament",
             "race_spell_ids": {}
           },
           {
@@ -11253,17 +11869,24 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14177,
-            "name": "Cold Blood",
-            "condition": "Cold Blood at four or more combo points when the finisher is Eviscerate, never ahead of a Slice and Dice.",
-            "icon": "spell_ice_lament",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 5171,
             "name": "Slice and Dice",
             "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left.",
             "icon": "ability_rogue_slicedice",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8640,
+            "name": "Rupture",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "icon": "ability_rogue_rupture",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14177,
+            "name": "Cold Blood",
+            "condition": "Cold Blood at four or more combo points, right before the Eviscerate.",
+            "icon": "spell_ice_lament",
             "race_spell_ids": {}
           },
           {
@@ -11293,17 +11916,24 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14177,
-            "name": "Cold Blood",
-            "condition": "Cold Blood at four or more combo points when the finisher is Eviscerate, never ahead of a Slice and Dice.",
-            "icon": "spell_ice_lament",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 5171,
             "name": "Slice and Dice",
             "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left.",
             "icon": "ability_rogue_slicedice",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8640,
+            "name": "Rupture",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "icon": "ability_rogue_rupture",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14177,
+            "name": "Cold Blood",
+            "condition": "Cold Blood at four or more combo points, right before the Eviscerate.",
+            "icon": "spell_ice_lament",
             "race_spell_ids": {}
           },
           {
@@ -11340,17 +11970,24 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14177,
-            "name": "Cold Blood",
-            "condition": "Cold Blood at four or more combo points when the finisher is Eviscerate, never ahead of a Slice and Dice.",
-            "icon": "spell_ice_lament",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 6774,
             "name": "Slice and Dice",
             "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left.",
             "icon": "ability_rogue_slicedice",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11273,
+            "name": "Rupture",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "icon": "ability_rogue_rupture",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14177,
+            "name": "Cold Blood",
+            "condition": "Cold Blood at four or more combo points, right before the Eviscerate.",
+            "icon": "spell_ice_lament",
             "race_spell_ids": {}
           },
           {
@@ -11387,17 +12024,24 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14177,
-            "name": "Cold Blood",
-            "condition": "Cold Blood at four or more combo points when the finisher is Eviscerate, never ahead of a Slice and Dice.",
-            "icon": "spell_ice_lament",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 6774,
             "name": "Slice and Dice",
             "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left.",
             "icon": "ability_rogue_slicedice",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11275,
+            "name": "Rupture",
+            "condition": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, once Blood Splatter makes it last 6 seconds longer: bleeds always crit in Forever.",
+            "icon": "ability_rogue_rupture",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14177,
+            "name": "Cold Blood",
+            "condition": "Cold Blood at four or more combo points, right before the Eviscerate.",
+            "icon": "spell_ice_lament",
             "race_spell_ids": {}
           },
           {
@@ -11758,6 +12402,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 703,
+            "name": "Garrote",
+            "condition": "Garrote right after Ghostly Strike whenever it has dropped off: Ghostly Strike lets the next Garrote go in without Stealth, and it is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "icon": "ability_rogue_garrote",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1943,
             "name": "Rupture",
             "condition": "Rupture at four or more combo points whenever it is not ticking.",
@@ -11802,6 +12453,13 @@
             "name": "Ghostly Strike",
             "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8632,
+            "name": "Garrote",
+            "condition": "Garrote right after Ghostly Strike whenever it has dropped off: Ghostly Strike lets the next Garrote go in without Stealth, and it is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
@@ -11859,6 +12517,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 8633,
+            "name": "Garrote",
+            "condition": "Garrote right after Ghostly Strike whenever it has dropped off: Ghostly Strike lets the next Garrote go in without Stealth, and it is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "icon": "ability_rogue_garrote",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8640,
             "name": "Rupture",
             "condition": "Rupture at four or more combo points whenever it is not ticking.",
@@ -11910,6 +12575,13 @@
             "name": "Ghostly Strike",
             "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8633,
+            "name": "Garrote",
+            "condition": "Garrote right after Ghostly Strike whenever it has dropped off: Ghostly Strike lets the next Garrote go in without Stealth, and it is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
@@ -11974,6 +12646,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11289,
+            "name": "Garrote",
+            "condition": "Garrote right after Ghostly Strike whenever it has dropped off: Ghostly Strike lets the next Garrote go in without Stealth, and it is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "icon": "ability_rogue_garrote",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11273,
             "name": "Rupture",
             "condition": "Rupture at four or more combo points whenever it is not ticking.",
@@ -12032,6 +12711,13 @@
             "name": "Ghostly Strike",
             "condition": "Ghostly Strike on cooldown: it hits harder than Hemorrhage for 10 more energy (Hemorrhage costs 30 with Efficient Strikes) and gives a combo point.",
             "icon": "spell_shadow_curse",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11290,
+            "name": "Garrote",
+            "condition": "Garrote right after Ghostly Strike whenever it has dropped off: Ghostly Strike lets the next Garrote go in without Stealth, and it is a bleed that Hemorrhage, Opportunity and Death Mark all feed.",
+            "icon": "ability_rogue_garrote",
             "race_spell_ids": {}
           },
           {
@@ -12164,7 +12850,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8050,
+            "spell_id": 8053,
             "name": "Flame Shock",
             "condition": "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown.",
             "icon": "spell_fire_flameshock",
@@ -12199,7 +12885,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 915,
+            "spell_id": 548,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
             "icon": "spell_nature_lightning",
@@ -12218,7 +12904,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8050,
+            "spell_id": 8053,
             "name": "Flame Shock",
             "condition": "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown.",
             "icon": "spell_fire_flameshock",
@@ -12260,7 +12946,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 915,
+            "spell_id": 548,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
             "icon": "spell_nature_lightning",
@@ -12279,7 +12965,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8050,
+            "spell_id": 8053,
             "name": "Flame Shock",
             "condition": "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown.",
             "icon": "spell_fire_flameshock",
@@ -12340,7 +13026,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8052,
+            "spell_id": 10447,
             "name": "Flame Shock",
             "condition": "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown.",
             "icon": "spell_fire_flameshock",
@@ -12375,14 +13061,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10391,
+            "spell_id": 15207,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 915,
+            "spell_id": 6041,
             "name": "Lightning Bolt",
             "condition": "Lightning Bolt rank 9 for everything else: the cheaper rank, so a full raid fight never runs you dry.",
             "icon": "spell_nature_lightning",
@@ -12828,7 +13514,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 913,
+            "spell_id": 547,
             "name": "Healing Wave",
             "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
@@ -12870,7 +13556,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 913,
+            "spell_id": 547,
             "name": "Healing Wave",
             "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
@@ -12910,7 +13596,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 939,
+            "spell_id": 547,
             "name": "Healing Wave",
             "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
@@ -12952,7 +13638,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 939,
+            "spell_id": 547,
             "name": "Healing Wave",
             "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
@@ -12992,7 +13678,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 959,
+            "spell_id": 547,
             "name": "Healing Wave",
             "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
@@ -13034,7 +13720,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 959,
+            "spell_id": 547,
             "name": "Healing Wave",
             "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
@@ -13074,10 +13760,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 332,
+            "spell_id": 939,
             "name": "Healing Wave",
             "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 408521,
+            "name": "Riptide",
+            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
           {
@@ -13118,13 +13811,6 @@
           {
             "spell_id": 408521,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408521,
-            "name": "Riptide",
             "condition": "",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
@@ -13158,7 +13844,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 332,
+            "spell_id": 939,
             "name": "Healing Wave",
             "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
@@ -13198,10 +13884,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 332,
+            "spell_id": 10395,
             "name": "Healing Wave",
             "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1239242,
+            "name": "Riptide",
+            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
           {
@@ -13242,13 +13935,6 @@
           {
             "spell_id": 1239242,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1239242,
-            "name": "Riptide",
             "condition": "",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
@@ -13282,7 +13968,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 332,
+            "spell_id": 10395,
             "name": "Healing Wave",
             "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
@@ -13322,10 +14008,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 332,
+            "spell_id": 10396,
             "name": "Healing Wave",
             "condition": "Your highest rank of Healing Wave right after Nature's Swiftness, on the tank under 25%: Nature's Swiftness makes any rank instant, so spend it on the biggest heal you have.",
             "icon": "spell_nature_magicimmunity",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1239243,
+            "name": "Riptide",
+            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
           {
@@ -13366,13 +14059,6 @@
           {
             "spell_id": 1239243,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
-            "icon": "spell_nature_riptide",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1239243,
-            "name": "Riptide",
             "condition": "",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
@@ -13406,7 +14092,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 332,
+            "spell_id": 10396,
             "name": "Healing Wave",
             "condition": "Healing Wave when the tank drops below 60%.",
             "icon": "spell_nature_magicimmunity",
@@ -13467,6 +14153,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 440892,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6222,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -13474,10 +14167,10 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 440892,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
+            "spell_id": 18288,
+            "name": "Amplify Curse",
+            "condition": "",
+            "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
@@ -13514,6 +14207,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1311676,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6223,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -13521,10 +14221,10 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311676,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
+            "spell_id": 18288,
+            "name": "Amplify Curse",
+            "condition": "",
+            "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
@@ -13568,6 +14268,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1311676,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7648,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -13575,10 +14282,10 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311676,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
+            "spell_id": 18288,
+            "name": "Amplify Curse",
+            "condition": "",
+            "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
@@ -13622,6 +14329,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1311677,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7648,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -13629,10 +14343,10 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311677,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
+            "spell_id": 18288,
+            "name": "Amplify Curse",
+            "condition": "",
+            "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
@@ -13657,6 +14371,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1316697,
+            "name": "Wrack",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7641,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt with every DoT up.",
@@ -13676,6 +14397,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1311680,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11671,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -13683,10 +14411,10 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311680,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
+            "spell_id": 18288,
+            "name": "Amplify Curse",
+            "condition": "",
+            "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
@@ -13711,6 +14439,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1316697,
+            "name": "Wrack",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11659,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt with every DoT up.",
@@ -13730,6 +14465,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1311680,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11672,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -13737,10 +14479,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1311680,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
+            "spell_id": 603,
+            "name": "Bane of Doom",
+            "condition": "",
+            "icon": "spell_shadow_auraofdarkness",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18288,
+            "name": "Amplify Curse",
+            "condition": "",
+            "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
           {
@@ -13762,6 +14511,13 @@
             "name": "Immolate",
             "condition": "Immolate with 3 seconds or less left on it.",
             "icon": "spell_fire_immolation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1316697,
+            "name": "Wrack",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -13826,17 +14582,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6222,
-            "name": "Corruption",
-            "condition": "Corruption whenever it has fallen off.",
-            "icon": "spell_shadow_abominationexplosion",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 440892,
             "name": "Curse of the Elements",
             "condition": "Curse of the Elements when no warlock's is on the target.",
             "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6222,
+            "name": "Corruption",
+            "condition": "Corruption whenever it has fallen off.",
+            "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
@@ -13854,7 +14610,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1088,
+            "spell_id": 705,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt for every other cast.",
             "icon": "spell_shadow_shadowbolt",
@@ -13873,17 +14629,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6223,
-            "name": "Corruption",
-            "condition": "Corruption whenever it has fallen off.",
-            "icon": "spell_shadow_abominationexplosion",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 1311676,
             "name": "Curse of the Elements",
             "condition": "Curse of the Elements when no warlock's is on the target.",
             "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6223,
+            "name": "Corruption",
+            "condition": "Corruption whenever it has fallen off.",
+            "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
@@ -13920,17 +14676,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 7648,
-            "name": "Corruption",
-            "condition": "Corruption whenever it has fallen off.",
-            "icon": "spell_shadow_abominationexplosion",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 1311676,
             "name": "Curse of the Elements",
             "condition": "Curse of the Elements when no warlock's is on the target.",
             "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7648,
+            "name": "Corruption",
+            "condition": "Corruption whenever it has fallen off.",
+            "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
@@ -13967,17 +14723,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 7648,
-            "name": "Corruption",
-            "condition": "Corruption whenever it has fallen off.",
-            "icon": "spell_shadow_abominationexplosion",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 1311677,
             "name": "Curse of the Elements",
             "condition": "Curse of the Elements when no warlock's is on the target.",
             "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7648,
+            "name": "Corruption",
+            "condition": "Corruption whenever it has fallen off.",
+            "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
@@ -14021,17 +14777,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 11671,
-            "name": "Corruption",
-            "condition": "Corruption whenever it has fallen off.",
-            "icon": "spell_shadow_abominationexplosion",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 1311680,
             "name": "Curse of the Elements",
             "condition": "Curse of the Elements when no warlock's is on the target.",
             "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11671,
+            "name": "Corruption",
+            "condition": "Corruption whenever it has fallen off.",
+            "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
@@ -14075,17 +14831,17 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 11672,
-            "name": "Corruption",
-            "condition": "Corruption whenever it has fallen off.",
-            "icon": "spell_shadow_abominationexplosion",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 1311680,
             "name": "Curse of the Elements",
             "condition": "Curse of the Elements when no warlock's is on the target.",
             "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11672,
+            "name": "Corruption",
+            "condition": "Corruption whenever it has fallen off.",
+            "icon": "spell_shadow_abominationexplosion",
             "race_spell_ids": {}
           },
           {
@@ -14164,6 +14920,13 @@
         "level": 20,
         "lines": [
           {
+            "spell_id": 440892,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6222,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -14175,13 +14938,6 @@
             "name": "Life Tap",
             "condition": "Life Tap below 10% mana.",
             "icon": "spell_shadow_burningspirit",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 440892,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
           {
@@ -14206,7 +14962,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1088,
+            "spell_id": 705,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt before you learn Incinerate at 40.",
             "icon": "spell_shadow_shadowbolt",
@@ -14217,6 +14973,13 @@
       {
         "level": 30,
         "lines": [
+          {
+            "spell_id": 1311676,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
           {
             "spell_id": 6223,
             "name": "Corruption",
@@ -14229,13 +14992,6 @@
             "name": "Life Tap",
             "condition": "Life Tap below 10% mana.",
             "icon": "spell_shadow_burningspirit",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1311676,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
           {
@@ -14279,6 +15035,13 @@
         "level": 38,
         "lines": [
           {
+            "spell_id": 1311676,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7648,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -14290,13 +15053,6 @@
             "name": "Life Tap",
             "condition": "Life Tap below 10% mana.",
             "icon": "spell_shadow_burningspirit",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1311676,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
           {
@@ -14340,6 +15096,13 @@
         "level": 40,
         "lines": [
           {
+            "spell_id": 1311677,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7648,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -14351,13 +15114,6 @@
             "name": "Life Tap",
             "condition": "Life Tap below 10% mana.",
             "icon": "spell_shadow_burningspirit",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1311677,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
           {
@@ -14408,6 +15164,13 @@
         "level": 50,
         "lines": [
           {
+            "spell_id": 1311680,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11671,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -14419,13 +15182,6 @@
             "name": "Life Tap",
             "condition": "Life Tap below 10% mana.",
             "icon": "spell_shadow_burningspirit",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1311680,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
           {
@@ -14476,6 +15232,13 @@
         "level": 60,
         "lines": [
           {
+            "spell_id": 1311680,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11672,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
@@ -14487,13 +15250,6 @@
             "name": "Life Tap",
             "condition": "Life Tap below 10% mana.",
             "icon": "spell_shadow_burningspirit",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1311680,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
             "race_spell_ids": {}
           },
           {
@@ -14574,6 +15330,20 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1329555,
+            "name": "Reckless Swings",
+            "condition": "",
+            "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310222,
+            "name": "Spearing Strike",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1715,
             "name": "Hamstring",
             "condition": "Only with a Windfury Totem on you, on a free global, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's extra attack.",
@@ -14621,10 +15391,24 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1329555,
+            "name": "Reckless Swings",
+            "condition": "",
+            "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1240193,
             "name": "Slam",
             "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310222,
+            "name": "Spearing Strike",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -14682,6 +15466,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1329555,
+            "name": "Reckless Swings",
+            "condition": "",
+            "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5308,
             "name": "Execute",
             "condition": "Below 20%.",
@@ -14693,6 +15484,13 @@
             "name": "Slam",
             "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310222,
+            "name": "Spearing Strike",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -14750,6 +15548,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1329555,
+            "name": "Reckless Swings",
+            "condition": "",
+            "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 20658,
             "name": "Execute",
             "condition": "Below 20%.",
@@ -14761,6 +15566,13 @@
             "name": "Slam",
             "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310222,
+            "name": "Spearing Strike",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -14825,6 +15637,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1329555,
+            "name": "Reckless Swings",
+            "condition": "",
+            "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 20660,
             "name": "Execute",
             "condition": "Below 20%.",
@@ -14836,6 +15655,13 @@
             "name": "Slam",
             "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310222,
+            "name": "Spearing Strike",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -14900,6 +15726,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1329555,
+            "name": "Reckless Swings",
+            "condition": "",
+            "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 20661,
             "name": "Execute",
             "condition": "Below 20%.",
@@ -14911,6 +15744,13 @@
             "name": "Slam",
             "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310222,
+            "name": "Spearing Strike",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -14975,6 +15815,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1329555,
+            "name": "Reckless Swings",
+            "condition": "",
+            "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 20662,
             "name": "Execute",
             "condition": "Below 20%.",
@@ -14986,6 +15833,13 @@
             "name": "Slam",
             "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310222,
+            "name": "Spearing Strike",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -15132,6 +15986,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 18499,
+            "name": "Berserker Rage",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7887,
             "name": "Overpower",
             "condition": "Only before level 36, while you still fight in Battle Stance.",
@@ -15190,6 +16051,13 @@
             "name": "Reckless Swings",
             "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18499,
+            "name": "Berserker Rage",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -15258,6 +16126,13 @@
             "name": "Reckless Swings",
             "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18499,
+            "name": "Berserker Rage",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -15336,6 +16211,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 18499,
+            "name": "Berserker Rage",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11584,
             "name": "Overpower",
             "condition": "Only before level 36, while you still fight in Battle Stance.",
@@ -15408,6 +16290,13 @@
             "name": "Reckless Swings",
             "condition": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
             "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18499,
+            "name": "Berserker Rage",
+            "condition": "",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -99176,29 +100065,54 @@
             3
           ],
           [
-            3,
             1,
-            2
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            4
           ],
           [
             3,
             1,
-            2
+            3
           ],
           [
             3,
             1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
+            3
           ],
           [
             3,
@@ -99244,31 +100158,6 @@
             3,
             2,
             3
-          ],
-          [
-            3,
-            2,
-            3
-          ],
-          [
-            3,
-            2,
-            3
-          ],
-          [
-            3,
-            3,
-            2
-          ],
-          [
-            3,
-            3,
-            2
-          ],
-          [
-            3,
-            3,
-            2
           ]
         ]
       },
@@ -99387,6 +100276,11 @@
           ],
           [
             2,
+            4,
+            4
+          ],
+          [
+            2,
             5,
             2
           ],
@@ -99422,15 +100316,15 @@
           ],
           [
             2,
-            6,
-            1
-          ],
-          [
-            2,
             7,
             3
           ],
           [
+            2,
+            6,
+            1
+          ],
+          [
             1,
             1,
             3
@@ -99464,6 +100358,16 @@
             1,
             2,
             3
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            4
           ],
           [
             3,
@@ -99514,21 +100418,6 @@
             3,
             2,
             1
-          ],
-          [
-            3,
-            2,
-            3
-          ],
-          [
-            3,
-            2,
-            3
-          ],
-          [
-            3,
-            2,
-            3
           ]
         ]
       }
@@ -99569,23 +100458,23 @@
           ],
           [
             2,
-            1,
-            3
+            2,
+            1
           ],
           [
             2,
-            1,
-            3
+            2,
+            1
           ],
           [
             2,
-            1,
-            3
+            2,
+            2
           ],
           [
             2,
-            1,
-            3
+            2,
+            2
           ],
           [
             2,
@@ -99600,17 +100489,17 @@
           [
             2,
             2,
-            1
-          ],
-          [
-            2,
-            2,
-            1
-          ],
-          [
-            2,
-            2,
             2
+          ],
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            2,
+            2,
+            4
           ],
           [
             2,
@@ -99620,22 +100509,22 @@
           [
             2,
             2,
-            2
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
             4
           ],
           [
             2,
+            3,
+            1
+          ],
+          [
             2,
-            4
+            3,
+            1
+          ],
+          [
+            2,
+            3,
+            1
           ],
           [
             2,
@@ -99644,26 +100533,6 @@
           ],
           [
             2,
-            2,
-            4
-          ],
-          [
-            2,
-            3,
-            1
-          ],
-          [
-            2,
-            3,
-            1
-          ],
-          [
-            2,
-            3,
-            1
-          ],
-          [
-            2,
             3,
             4
           ],
@@ -99686,6 +100555,26 @@
             2,
             4,
             1
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            2,
+            5,
+            4
           ],
           [
             2,
@@ -99694,26 +100583,6 @@
           ],
           [
             2,
-            4,
-            4
-          ],
-          [
-            2,
-            4,
-            4
-          ],
-          [
-            2,
-            5,
-            4
-          ],
-          [
-            2,
-            5,
-            4
-          ],
-          [
-            2,
             6,
             1
           ],
@@ -99786,6 +100655,26 @@
             3,
             1,
             3
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
           ],
           [
             3,
@@ -99829,23 +100718,23 @@
           ],
           [
             2,
-            1,
-            3
+            2,
+            1
           ],
           [
             2,
-            1,
-            3
+            2,
+            1
           ],
           [
             2,
-            1,
-            3
+            2,
+            2
           ],
           [
             2,
-            1,
-            3
+            2,
+            2
           ],
           [
             2,
@@ -99860,17 +100749,17 @@
           [
             2,
             2,
-            1
-          ],
-          [
-            2,
-            2,
-            1
-          ],
-          [
-            2,
-            2,
             2
+          ],
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            2,
+            2,
+            4
           ],
           [
             2,
@@ -99880,22 +100769,22 @@
           [
             2,
             2,
-            2
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
             4
           ],
           [
             2,
+            3,
+            1
+          ],
+          [
             2,
-            4
+            3,
+            1
+          ],
+          [
+            2,
+            3,
+            1
           ],
           [
             2,
@@ -99904,26 +100793,6 @@
           ],
           [
             2,
-            2,
-            4
-          ],
-          [
-            2,
-            3,
-            1
-          ],
-          [
-            2,
-            3,
-            1
-          ],
-          [
-            2,
-            3,
-            1
-          ],
-          [
-            2,
             3,
             4
           ],
@@ -99946,6 +100815,26 @@
             2,
             4,
             1
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            2,
+            5,
+            4
           ],
           [
             2,
@@ -99954,26 +100843,6 @@
           ],
           [
             2,
-            4,
-            4
-          ],
-          [
-            2,
-            4,
-            4
-          ],
-          [
-            2,
-            5,
-            4
-          ],
-          [
-            2,
-            5,
-            4
-          ],
-          [
-            2,
             6,
             1
           ],
@@ -100046,6 +100915,26 @@
             3,
             1,
             3
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
           ],
           [
             3,
@@ -100255,6 +101144,11 @@
             4
           ],
           [
+            3,
+            6,
+            3
+          ],
+          [
             1,
             1,
             3
@@ -100293,11 +101187,6 @@
             1,
             2,
             1
-          ],
-          [
-            1,
-            2,
-            2
           ],
           [
             1,
@@ -100515,6 +101404,11 @@
             4
           ],
           [
+            3,
+            6,
+            3
+          ],
+          [
             1,
             1,
             3
@@ -100553,11 +101447,6 @@
             1,
             2,
             1
-          ],
-          [
-            1,
-            2,
-            2
           ],
           [
             1,
@@ -101131,57 +102020,62 @@
           [
             2,
             2,
+            2
+          ],
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            3,
             1
           ],
           [
             2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
+            3,
+            1
           ],
           [
             2,
@@ -101216,12 +102110,12 @@
           [
             2,
             5,
-            3
+            1
           ],
           [
             2,
             5,
-            3
+            1
           ],
           [
             2,
@@ -101326,11 +102220,6 @@
           [
             1,
             3,
-            3
-          ],
-          [
-            1,
-            4,
             3
           ],
           [
@@ -101387,11 +102276,6 @@
             2,
             1,
             3
-          ],
-          [
-            2,
-            2,
-            1
           ],
           [
             2,
@@ -101495,11 +102379,6 @@
           ],
           [
             2,
-            6,
-            3
-          ],
-          [
-            2,
             5,
             3
           ],
@@ -101517,6 +102396,16 @@
             2,
             6,
             3
+          ],
+          [
+            2,
+            6,
+            3
+          ],
+          [
+            2,
+            7,
+            2
           ],
           [
             2,
@@ -102174,11 +103063,6 @@
           ],
           [
             1,
-            1,
-            3
-          ],
-          [
-            1,
             2,
             3
           ],
@@ -102200,6 +103084,16 @@
           [
             1,
             2,
+            3
+          ],
+          [
+            1,
+            3,
+            4
+          ],
+          [
+            1,
+            1,
             3
           ],
           [
@@ -102231,11 +103125,6 @@
             1,
             3,
             2
-          ],
-          [
-            1,
-            3,
-            4
           ],
           [
             1,
@@ -102435,37 +103324,42 @@
           [
             1,
             2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            3,
+            4
+          ],
+          [
+            1,
+            2,
             1
           ],
           [
             1,
             2,
             1
-          ],
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            1,
-            2,
-            3
           ],
           [
             1,
@@ -102499,23 +103393,18 @@
           ],
           [
             1,
-            3,
+            4,
+            3
+          ],
+          [
+            1,
+            4,
+            3
+          ],
+          [
+            1,
+            4,
             4
-          ],
-          [
-            1,
-            4,
-            3
-          ],
-          [
-            1,
-            4,
-            3
-          ],
-          [
-            1,
-            4,
-            3
           ],
           [
             1,
@@ -102545,6 +103434,11 @@
           [
             1,
             5,
+            3
+          ],
+          [
+            1,
+            6,
             3
           ],
           [
@@ -102563,53 +103457,83 @@
             2
           ],
           [
+            2,
             1,
-            6,
+            2
+          ],
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
             3
           ],
           [
             2,
             1,
-            2
+            3
           ],
           [
             2,
-            1,
-            2
+            2,
+            1
           ],
           [
             2,
-            1,
-            2
+            2,
+            1
           ],
           [
-            3,
-            1,
-            2
+            2,
+            2,
+            1
           ],
           [
-            3,
-            1,
-            2
+            2,
+            2,
+            1
           ],
           [
-            3,
-            1,
-            2
+            2,
+            2,
+            1
           ],
           [
+            2,
             3,
-            1,
-            2
+            3
           ],
           [
+            2,
             3,
-            1,
-            2
+            4
           ],
           [
+            2,
             3,
-            1,
+            4
+          ],
+          [
+            2,
+            4,
             3
           ],
           [
@@ -102624,43 +103548,8 @@
           ],
           [
             3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            3,
-            1
-          ],
-          [
-            3,
-            3,
-            1
-          ],
-          [
-            3,
-            3,
-            1
+            1,
+            3
           ]
         ]
       }
@@ -102741,8 +103630,8 @@
           ],
           [
             2,
-            2,
-            3
+            3,
+            1
           ],
           [
             2,
@@ -103194,37 +104083,37 @@
           [
             3,
             1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
             1
           ],
           [
             3,
             1,
             1
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
           ],
           [
             3,
@@ -103407,8 +104296,18 @@
             4
           ],
           [
-            2,
             1,
+            3,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            1,
+            3,
             2
           ],
           [
@@ -103434,16 +104333,6 @@
           [
             2,
             1,
-            3
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
             2
           ]
         ]
@@ -103454,37 +104343,37 @@
           [
             3,
             1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
             1
           ],
           [
             3,
             1,
             1
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
           ],
           [
             3,
@@ -103667,8 +104556,18 @@
             4
           ],
           [
-            2,
             1,
+            3,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            1,
+            3,
             2
           ],
           [
@@ -103694,16 +104593,6 @@
           [
             2,
             1,
-            3
-          ],
-          [
-            2,
-            2,
-            2
-          ],
-          [
-            2,
-            2,
             2
           ]
         ]
@@ -103765,18 +104654,18 @@
           ],
           [
             1,
-            2,
-            4
-          ],
-          [
-            1,
-            2,
-            4
+            3,
+            2
           ],
           [
             1,
             3,
             1
+          ],
+          [
+            1,
+            3,
+            2
           ],
           [
             1,
@@ -103800,28 +104689,28 @@
           ],
           [
             1,
-            3,
+            4,
             2
           ],
           [
             1,
-            3,
+            4,
             2
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            4
           ],
           [
             1,
             4,
             1
-          ],
-          [
-            1,
-            4,
-            2
-          ],
-          [
-            1,
-            4,
-            2
           ],
           [
             1,
@@ -104025,18 +104914,18 @@
           ],
           [
             1,
-            2,
-            4
-          ],
-          [
-            1,
-            2,
-            4
+            3,
+            2
           ],
           [
             1,
             3,
             1
+          ],
+          [
+            1,
+            3,
+            2
           ],
           [
             1,
@@ -104060,28 +104949,28 @@
           ],
           [
             1,
-            3,
+            4,
             2
           ],
           [
             1,
-            3,
+            4,
             2
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            4
           ],
           [
             1,
             4,
             1
-          ],
-          [
-            1,
-            4,
-            2
-          ],
-          [
-            1,
-            4,
-            2
           ],
           [
             1,
@@ -106324,47 +107213,12 @@
         "name": "Shadow leveling",
         "order": [
           [
-            3,
             1,
-            1
-          ],
-          [
-            3,
-            1,
-            1
-          ],
-          [
-            3,
-            1,
-            1
-          ],
-          [
-            3,
-            1,
-            1
-          ],
-          [
-            3,
-            1,
-            1
-          ],
-          [
-            3,
             1,
             2
           ],
           [
-            3,
             1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
             1,
             2
           ],
@@ -106382,6 +107236,41 @@
             3,
             1,
             3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            1
           ],
           [
             3,
@@ -106427,6 +107316,16 @@
             3,
             3,
             4
+          ],
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            3,
+            1,
+            2
           ],
           [
             3,
@@ -106476,16 +107375,6 @@
           [
             3,
             7,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
             2
           ],
           [
@@ -106610,36 +107499,6 @@
           ],
           [
             3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
             2,
             1
           ],
@@ -106667,11 +107526,6 @@
             3,
             2,
             3
-          ],
-          [
-            3,
-            2,
-            4
           ],
           [
             3,
@@ -106687,6 +107541,26 @@
             3,
             3,
             4
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            4
+          ],
+          [
+            3,
+            2,
+            4
+          ],
+          [
+            3,
+            4,
+            1
           ],
           [
             3,
@@ -106706,6 +107580,21 @@
           [
             3,
             4,
+            3
+          ],
+          [
+            3,
+            5,
+            1
+          ],
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            5,
             3
           ],
           [
@@ -106717,6 +107606,16 @@
             3,
             6,
             1
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
           ],
           [
             3,
@@ -106737,16 +107636,6 @@
             3,
             7,
             2
-          ],
-          [
-            3,
-            6,
-            3
-          ],
-          [
-            3,
-            6,
-            3
           ],
           [
             1,
@@ -107645,16 +108534,6 @@
           [
             2,
             1,
-            2
-          ],
-          [
-            2,
-            1,
-            2
-          ],
-          [
-            2,
-            1,
             3
           ],
           [
@@ -107701,6 +108580,16 @@
             2,
             2,
             3
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
           ],
           [
             2,
@@ -109010,6 +109899,11 @@
           ],
           [
             2,
+            4,
+            3
+          ],
+          [
+            2,
             3,
             1
           ],
@@ -109042,11 +109936,6 @@
             2,
             4,
             2
-          ],
-          [
-            2,
-            4,
-            3
           ],
           [
             2,
@@ -109126,17 +110015,17 @@
           [
             1,
             2,
-            3
+            1
           ],
           [
             1,
             2,
-            3
+            1
           ],
           [
             1,
             2,
-            3
+            1
           ],
           [
             1,
@@ -109271,32 +110160,32 @@
           [
             2,
             4,
-            2
-          ],
-          [
-            2,
-            4,
-            2
-          ],
-          [
-            2,
-            4,
-            2
-          ],
-          [
-            2,
-            4,
-            2
-          ],
-          [
-            2,
-            4,
-            2
-          ],
-          [
-            2,
-            4,
             3
+          ],
+          [
+            2,
+            4,
+            2
+          ],
+          [
+            2,
+            4,
+            2
+          ],
+          [
+            2,
+            4,
+            2
+          ],
+          [
+            2,
+            4,
+            2
+          ],
+          [
+            2,
+            4,
+            2
           ],
           [
             2,
@@ -110315,6 +111204,11 @@
           [
             1,
             3,
+            1
+          ],
+          [
+            1,
+            3,
             3
           ],
           [
@@ -110331,11 +111225,6 @@
             1,
             3,
             4
-          ],
-          [
-            1,
-            4,
-            1
           ],
           [
             1,
@@ -110364,8 +111253,33 @@
           ],
           [
             1,
+            4,
+            1
+          ],
+          [
+            1,
+            5,
+            3
+          ],
+          [
+            1,
+            5,
+            3
+          ],
+          [
+            1,
+            5,
+            3
+          ],
+          [
+            1,
             6,
             3
+          ],
+          [
+            1,
+            7,
+            2
           ],
           [
             1,
@@ -110425,31 +111339,6 @@
           [
             3,
             1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
-            2
-          ],
-          [
-            3,
-            1,
             3
           ],
           [
@@ -110474,23 +111363,23 @@
           ],
           [
             3,
-            3,
-            2
+            2,
+            3
           ],
           [
             3,
-            3,
-            2
+            2,
+            3
           ],
           [
             3,
-            3,
-            2
+            2,
+            3
           ],
           [
             3,
-            3,
-            2
+            2,
+            3
           ]
         ]
       }
@@ -111821,26 +112710,6 @@
           [
             1,
             1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
             3
           ],
           [
@@ -111852,16 +112721,6 @@
             1,
             1,
             3
-          ],
-          [
-            1,
-            2,
-            1
-          ],
-          [
-            1,
-            2,
-            1
           ],
           [
             1,
@@ -111911,6 +112770,11 @@
           [
             1,
             4,
+            1
+          ],
+          [
+            1,
+            4,
             2
           ],
           [
@@ -111952,6 +112816,31 @@
             1,
             5,
             3
+          ],
+          [
+            1,
+            5,
+            3
+          ],
+          [
+            1,
+            5,
+            3
+          ],
+          [
+            1,
+            5,
+            3
+          ],
+          [
+            1,
+            5,
+            3
+          ],
+          [
+            1,
+            6,
+            1
           ],
           [
             1,
@@ -111960,31 +112849,6 @@
           ],
           [
             1,
-            5,
-            3
-          ],
-          [
-            1,
-            5,
-            3
-          ],
-          [
-            1,
-            5,
-            3
-          ],
-          [
-            1,
-            5,
-            3
-          ],
-          [
-            1,
-            6,
-            1
-          ],
-          [
-            1,
             6,
             1
           ],
@@ -112041,17 +112905,42 @@
           [
             2,
             3,
-            3
+            4
           ],
           [
             2,
             3,
-            3
+            4
           ],
           [
+            2,
             3,
-            1,
-            1
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            4,
+            2
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            4,
+            4
           ],
           [
             3,
@@ -112093,11 +112982,6 @@
           [
             2,
             2,
-            2
-          ],
-          [
-            2,
-            2,
             3
           ],
           [
@@ -112134,11 +113018,6 @@
             2,
             3,
             1
-          ],
-          [
-            2,
-            3,
-            2
           ],
           [
             2,
@@ -112149,6 +113028,16 @@
             2,
             3,
             4
+          ],
+          [
+            2,
+            4,
+            1
+          ],
+          [
+            2,
+            4,
+            1
           ],
           [
             2,
@@ -112173,16 +113062,6 @@
           [
             2,
             4,
-            1
-          ],
-          [
-            2,
-            4,
-            1
-          ],
-          [
-            2,
-            4,
             2
           ],
           [
@@ -112194,6 +113073,16 @@
             2,
             4,
             4
+          ],
+          [
+            2,
+            5,
+            1
+          ],
+          [
+            2,
+            5,
+            1
           ],
           [
             2,
@@ -112353,11 +113242,6 @@
           [
             2,
             2,
-            2
-          ],
-          [
-            2,
-            2,
             3
           ],
           [
@@ -112394,11 +113278,6 @@
             2,
             3,
             1
-          ],
-          [
-            2,
-            3,
-            2
           ],
           [
             2,
@@ -112409,6 +113288,16 @@
             2,
             3,
             4
+          ],
+          [
+            2,
+            4,
+            1
+          ],
+          [
+            2,
+            4,
+            1
           ],
           [
             2,
@@ -112433,16 +113322,6 @@
           [
             2,
             4,
-            1
-          ],
-          [
-            2,
-            4,
-            1
-          ],
-          [
-            2,
-            4,
             2
           ],
           [
@@ -112454,6 +113333,16 @@
             2,
             4,
             4
+          ],
+          [
+            2,
+            5,
+            1
+          ],
+          [
+            2,
+            5,
+            1
           ],
           [
             2,
@@ -113120,7 +114009,7 @@
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.3912,
+          "dps": 0.394,
           "weapon_dps": 0.0
         },
         "40": {
@@ -113142,66 +114031,66 @@
     },
     "druid-feral": {
       "reference": "attack_power",
-      "dps": 0.2048,
+      "dps": 0.2348,
       "healing": false,
-      "weapon_dps": 2.4135,
+      "weapon_dps": 2.8087,
       "bands": {
         "20": {
           "reference": "attack_power",
-          "dps": 0.0665,
-          "weapon_dps": 0.7803
+          "dps": 0.0722,
+          "weapon_dps": 0.8605
         },
         "30": {
           "reference": "attack_power",
-          "dps": 0.081,
-          "weapon_dps": 0.9468
+          "dps": 0.0873,
+          "weapon_dps": 1.0351
         },
         "40": {
           "reference": "attack_power",
-          "dps": 0.0869,
-          "weapon_dps": 0.9818
+          "dps": 0.0969,
+          "weapon_dps": 1.1031
         },
         "50": {
           "reference": "attack_power",
-          "dps": 0.0956,
-          "weapon_dps": 1.0792
+          "dps": 0.105,
+          "weapon_dps": 1.1948
         },
         "60": {
           "reference": "attack_power",
-          "dps": 0.108,
-          "weapon_dps": 1.1736
+          "dps": 0.1266,
+          "weapon_dps": 1.3926
         }
       }
     },
     "druid-restoration": {
       "reference": "healing_power",
-      "dps": 0.3908,
+      "dps": 0.4106,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.0798,
+          "dps": 0.0806,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.1541,
+          "dps": 0.1368,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.1257,
+          "dps": 0.1108,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.2049,
+          "dps": 0.1287,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.5094,
+          "dps": 0.1465,
           "weapon_dps": 0.0
         }
       }
@@ -113241,9 +114130,9 @@
     },
     "hunter-marksmanship": {
       "reference": "ranged_attack_power",
-      "dps": 0.2116,
+      "dps": 0.2144,
       "healing": false,
-      "weapon_dps": 2.8777,
+      "weapon_dps": 2.8938,
       "bands": {
         "20": {
           "reference": "ranged_attack_power",
@@ -113252,23 +114141,23 @@
         },
         "30": {
           "reference": "ranged_attack_power",
-          "dps": 0.0709,
-          "weapon_dps": 0.9262
+          "dps": 0.0692,
+          "weapon_dps": 0.9016
         },
         "40": {
           "reference": "ranged_attack_power",
-          "dps": 0.0833,
-          "weapon_dps": 1.0899
+          "dps": 0.083,
+          "weapon_dps": 1.0853
         },
         "50": {
           "reference": "ranged_attack_power",
-          "dps": 0.0945,
-          "weapon_dps": 1.1235
+          "dps": 0.0942,
+          "weapon_dps": 1.1241
         },
         "60": {
           "reference": "ranged_attack_power",
-          "dps": 0.1044,
-          "weapon_dps": 1.3364
+          "dps": 0.103,
+          "weapon_dps": 1.3216
         }
       }
     },
@@ -113307,33 +114196,33 @@
     },
     "mage-arcane": {
       "reference": "spell_power",
-      "dps": 0.5303,
+      "dps": 0.5327,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "spell_power",
-          "dps": 0.2622,
+          "dps": 0.2387,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.3026,
+          "dps": 0.3028,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.3252,
+          "dps": 0.3247,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.3668,
+          "dps": 0.3659,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.397,
+          "dps": 0.3961,
           "weapon_dps": 0.0
         }
       }
@@ -113356,12 +114245,12 @@
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.4,
+          "dps": 0.3777,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.3859,
+          "dps": 0.2779,
           "weapon_dps": 0.0
         },
         "60": {
@@ -113373,7 +114262,7 @@
     },
     "mage-frost": {
       "reference": "spell_power",
-      "dps": 0.6139,
+      "dps": 0.6164,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
@@ -113394,45 +114283,45 @@
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.4772,
+          "dps": 0.4758,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.4924,
+          "dps": 0.4946,
           "weapon_dps": 0.0
         }
       }
     },
     "paladin-holy": {
       "reference": "healing_power",
-      "dps": 0.3741,
+      "dps": 0.294,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.1194,
+          "dps": 0.147,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.238,
+          "dps": 0.2549,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.2138,
+          "dps": 0.1267,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.3367,
+          "dps": 0.0522,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.3568,
+          "dps": 0.2184,
           "weapon_dps": 0.0
         }
       }
@@ -113445,34 +114334,34 @@
       "bands": {
         "20": {
           "reference": "attack_power",
-          "dps": 0.0422,
-          "weapon_dps": 0.5886
+          "dps": 0.042,
+          "weapon_dps": 0.5848
         },
         "30": {
           "reference": "attack_power",
-          "dps": 0.0564,
-          "weapon_dps": 0.7318
+          "dps": 0.0563,
+          "weapon_dps": 0.7297
         },
         "40": {
           "reference": "attack_power",
-          "dps": 0.0533,
-          "weapon_dps": 0.7615
+          "dps": 0.053,
+          "weapon_dps": 0.7569
         },
         "50": {
           "reference": "attack_power",
-          "dps": 0.0547,
-          "weapon_dps": 0.7831
+          "dps": 0.0544,
+          "weapon_dps": 0.7787
         },
         "60": {
           "reference": "attack_power",
-          "dps": 0.0615,
-          "weapon_dps": 0.8612
+          "dps": 0.0611,
+          "weapon_dps": 0.8557
         }
       }
     },
     "priest-discipline": {
       "reference": "healing_power",
-      "dps": 0.3997,
+      "dps": 0.2489,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
@@ -113483,29 +114372,29 @@
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.1589,
+          "dps": 0.1275,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.1928,
+          "dps": 0.1012,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.2581,
+          "dps": 0.0599,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.3453,
+          "dps": 0.078,
           "weapon_dps": 0.0
         }
       }
     },
     "priest-holy": {
       "reference": "healing_power",
-      "dps": 0.513,
+      "dps": 0.3066,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
@@ -113516,55 +114405,55 @@
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.1384,
+          "dps": 0.1048,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.2583,
+          "dps": 0.161,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.2769,
+          "dps": 0.1948,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.3496,
+          "dps": 0.2396,
           "weapon_dps": 0.0
         }
       }
     },
     "priest-shadow": {
       "reference": "spell_power",
-      "dps": 0.4822,
+      "dps": 0.4861,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "spell_power",
-          "dps": 0.0895,
+          "dps": 0.0937,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.1397,
+          "dps": 0.1343,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.2608,
+          "dps": 0.2483,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.3282,
+          "dps": 0.2376,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.3389,
+          "dps": 0.3351,
           "weapon_dps": 0.0
         }
       }
@@ -113769,13 +114658,13 @@
     },
     "warlock-affliction": {
       "reference": "spell_power",
-      "dps": 0.5797,
+      "dps": 0.6737,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "spell_power",
-          "dps": 0.3021,
+          "dps": 0.3057,
           "weapon_dps": 0.0
         },
         "30": {
@@ -113785,83 +114674,83 @@
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.3522,
+          "dps": 0.4471,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.3635,
+          "dps": 0.4614,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.401,
+          "dps": 0.5062,
           "weapon_dps": 0.0
         }
       }
     },
     "warlock-demonology": {
       "reference": "spell_power",
-      "dps": 0.6143,
+      "dps": 0.629,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "spell_power",
-          "dps": 0.2722,
+          "dps": 0.287,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.2929,
+          "dps": 0.2919,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.3398,
+          "dps": 0.3392,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.3683,
+          "dps": 0.368,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.4251,
+          "dps": 0.4234,
           "weapon_dps": 0.0
         }
       }
     },
     "warlock-destruction": {
       "reference": "spell_power",
-      "dps": 0.6871,
+      "dps": 0.7012,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "spell_power",
-          "dps": 0.3007,
+          "dps": 0.3199,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.2974,
+          "dps": 0.2973,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.4269,
+          "dps": 0.4277,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.4978,
+          "dps": 0.4974,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.5336,
+          "dps": 0.5325,
           "weapon_dps": 0.0
         }
       }
@@ -114255,6 +115144,8 @@
     "421": 32,
     "498": 1,
     "529": 1,
+    "547": 1,
+    "548": 1,
     "594": 4,
     "596": 30,
     "600": 6,
@@ -114265,6 +115156,8 @@
     "679": 6,
     "680": 6,
     "695": 1,
+    "703": 14,
+    "705": 1,
     "707": 1,
     "740": 30,
     "769": 16,
@@ -114275,16 +115168,15 @@
     "780": 16,
     "871": 28,
     "879": 20,
-    "913": 1,
     "915": 1,
     "930": 32,
     "939": 1,
     "943": 1,
-    "959": 1,
     "970": 4,
     "980": 8,
     "1014": 8,
     "1020": 34,
+    "1042": 1,
     "1058": 4,
     "1064": 40,
     "1079": 20,
@@ -114310,7 +115202,6 @@
     "1760": 1,
     "1866": 6,
     "1943": 20,
-    "2050": 1,
     "2053": 1,
     "2054": 16,
     "2060": 40,
@@ -114337,8 +115228,8 @@
     "3044": 6,
     "3045": 26,
     "3140": 1,
+    "3472": 1,
     "3599": 10,
-    "3747": 6,
     "5143": 8,
     "5144": 8,
     "5145": 8,
@@ -114361,9 +115252,12 @@
     "5614": 20,
     "5615": 20,
     "5675": 26,
+    "6041": 1,
     "6063": 16,
     "6064": 16,
+    "6065": 6,
     "6066": 6,
+    "6078": 8,
     "6190": 14,
     "6192": 1,
     "6217": 8,
@@ -114410,6 +115304,7 @@
     "8046": 4,
     "8050": 10,
     "8052": 10,
+    "8053": 10,
     "8075": 10,
     "8092": 10,
     "8102": 10,
@@ -114428,12 +115323,16 @@
     "8406": 4,
     "8408": 4,
     "8412": 6,
+    "8413": 6,
     "8416": 8,
     "8417": 8,
+    "8444": 22,
     "8492": 26,
     "8621": 1,
     "8623": 1,
     "8624": 1,
+    "8632": 14,
+    "8633": 14,
     "8639": 20,
     "8640": 20,
     "8721": 4,
@@ -114441,6 +115340,7 @@
     "8835": 42,
     "8903": 1,
     "8905": 1,
+    "8910": 4,
     "8918": 30,
     "8924": 4,
     "8925": 4,
@@ -114467,6 +115367,7 @@
     "9830": 20,
     "9833": 4,
     "9835": 4,
+    "9839": 4,
     "9841": 4,
     "9849": 20,
     "9850": 20,
@@ -114495,6 +115396,7 @@
     "10181": 4,
     "10197": 6,
     "10199": 6,
+    "10205": 22,
     "10207": 22,
     "10211": 8,
     "10212": 8,
@@ -114504,12 +115406,15 @@
     "10329": 1,
     "10333": 6,
     "10391": 1,
+    "10395": 1,
+    "10396": 1,
     "10412": 4,
     "10413": 4,
     "10414": 4,
     "10437": 10,
     "10438": 10,
     "10442": 10,
+    "10447": 10,
     "10462": 20,
     "10463": 20,
     "10466": 20,
@@ -114526,10 +115431,14 @@
     "10627": 42,
     "10893": 4,
     "10894": 4,
+    "10899": 6,
+    "10901": 6,
     "10916": 20,
     "10917": 20,
+    "10927": 8,
     "10945": 10,
     "10947": 10,
+    "10960": 30,
     "10961": 30,
     "10963": 40,
     "10965": 40,
@@ -114538,6 +115447,8 @@
     "11275": 20,
     "11279": 4,
     "11281": 4,
+    "11289": 14,
+    "11290": 14,
     "11293": 1,
     "11294": 1,
     "11299": 1,
@@ -114644,6 +115555,8 @@
     "17924": 48,
     "17962": 25,
     "18265": 30,
+    "18288": 20,
+    "18499": 30,
     "18562": 1,
     "18807": 20,
     "18809": 20,
@@ -114664,6 +115577,7 @@
     "19750": 20,
     "19940": 20,
     "19941": 20,
+    "19942": 20,
     "20116": 20,
     "20163": 10,
     "20216": 20,
@@ -114678,6 +115592,7 @@
     "20419": 10,
     "20422": 10,
     "20423": 10,
+    "20473": 30,
     "20658": 24,
     "20660": 24,
     "20661": 24,
@@ -114696,6 +115611,8 @@
     "20925": 30,
     "20927": 30,
     "20928": 30,
+    "20929": 30,
+    "20930": 30,
     "21551": 40,
     "21553": 40,
     "22568": 24,
@@ -114773,6 +115690,10 @@
     "1309633": 32,
     "1309635": 32,
     "1309636": 32,
+    "1310222": 1,
+    "1310687": 40,
+    "1310785": 40,
+    "1310786": 40,
     "1310994": 1,
     "1311015": 20,
     "1311606": 30,
@@ -114782,6 +115703,7 @@
     "1311677": 20,
     "1311680": 20,
     "1312002": 20,
+    "1316697": 40,
     "1316709": 40,
     "1316995": 30,
     "1317257": 30,
@@ -114789,6 +115711,10 @@
     "1325256": 1,
     "1325756": 40,
     "1325758": 40,
+    "1326079": 25,
+    "1326080": 25,
+    "1326081": 25,
+    "1326082": 25,
     "1328548": 25,
     "1328616": 25,
     "1328617": 25,

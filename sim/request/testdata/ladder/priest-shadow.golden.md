@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-10000000000000000 | main_hand:284287 ranged:286750 | 11.6 | 3 | spell:5019=84.6, spell:8092=13.8, spell:594=10.8 | {SpellID: 14751}, {SpellID: 15286}, {SpellID: 15473} |
-| 20 | 000000000000000000-00000000000000000-54200000000000000 | main_hand:6505 ranged:5243 | 26.8 | 5 | spell:5019=84.9, spell:8102=14.2, spell:970=6.2, other:mana_gain=5.0, spell:2944=2.9 | {SpellID: 14751}, {SpellID: 15286}, {SpellID: 15407}, {SpellID: 15473} |
-| 30 | 000000000000000000-00000000000000000-54342001200000000 | main_hand:249392 ranged:5213 | 39.9 | 6 | spell:5019=73.2, spell:17311=24.2, other:mana_gain=5.0, spell:8104=5.0, spell:970=4.0 | {SpellID: 14751}, {SpellID: 15286}, {SpellID: 15473} |
-| 38 | 000000000000000000-00000000000000000-54342001201300040 | main_hand:873 ranged:13064 | 60.5 | 8 | spell:5019=65.3, spell:17312=15.1, spell:970=7.1, spell:15286=5.8, other:mana_gain=5.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 40 | 000000000000000000-00000000000000000-54342001201300051 | main_hand:873 ranged:5216 | 96.5 | 9 | spell:5019=42.1, spell:17312=23.5, spell:8104=14.4, spell:15286=5.8, other:mana_gain=5.0 | {SpellID: 14751} |
-| 50 | 025102000000000000-00000000000000000-54342001201300051 | main_hand:873 ranged:249232 | 135.6 | 9 | spell:5019=26.9, spell:17313=23.1, spell:8103=19.4, spell:15286=6.0, spell:10893=5.2 | {SpellID: 14751} |
-| 60 | 025105031030000000-00000000000000000-54342001201300051 | main_hand:22799 ranged:22821 | 293.6 | 10 | spell:5019=33.3, spell:18807=31.4, spell:10947=9.7, spell:15286=6.1, other:mana_gain=5.0 | - |
+| 10 | 010000000000000000-00000000000000000-00000000000000000 | main_hand:284287 ranged:286750 | 12.6 | 3 | spell:5019=85.1, spell:8092=14.1, spell:594=10.9 | {SpellID: 14751}, {SpellID: 15286}, {SpellID: 15473} |
+| 20 | 020000000000000000-00000000000000000-40500000000000000 | main_hand:6505 ranged:5243 | 31.0 | 5 | spell:5019=85.5, spell:8102=14.4, spell:970=6.3, other:mana_gain=5.0, spell:2944=2.9 | {SpellID: 14751}, {SpellID: 15286}, {SpellID: 15407}, {SpellID: 15473} |
+| 30 | 020000000000000000-00000000000000000-50542001200000000 | main_hand:249392 ranged:5213 | 43.4 | 6 | spell:5019=75.7, spell:17311=23.2, spell:8104=5.5, other:mana_gain=5.0, spell:970=4.4 | {SpellID: 14751}, {SpellID: 15286}, {SpellID: 15473} |
+| 38 | 020000000000000000-00000000000000000-52542001201300020 | main_hand:873 ranged:13064 | 63.8 | 8 | spell:5019=66.7, spell:17312=14.4, spell:970=7.0, spell:15286=5.8, spell:8105=5.6 | {SpellID: 14751}, {SpellID: 15473} |
+| 40 | 020000000000000000-00000000000000000-52542001201300040 | main_hand:873 ranged:5216 | 68.0 | 8 | spell:5019=65.7, spell:17312=19.7, spell:15286=5.9, spell:8104=5.9, other:mana_gain=5.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 50 | 025102000000000000-00000000000000000-52542001201300051 | main_hand:873 ranged:249232 | 140.2 | 9 | spell:5019=37.1, spell:17313=20.3, spell:10945=9.9, spell:1309633=7.0, spell:15286=6.0 | {SpellID: 14751} |
+| 60 | 025105031030000000-00000000000000000-52542001201300051 | main_hand:22799 ranged:22821 | 294.4 | 10 | spell:5019=33.4, spell:18807=31.6, spell:10947=10.7, spell:15286=6.1, other:mana_gain=5.0 | - |
 
 ## Learned but unused (informational)
 
@@ -156,7 +156,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chastise (spell 1277334)
 - Holy Fire (spell 15266)
 - Holy Nova (spell 27799)
-- Mind Blast (spell 10945)
 - Shadow Word: Death (spell 1309635)
 - Smite (spell 10933)
 - Starshards (spell 19304)

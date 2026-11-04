@@ -22,6 +22,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction ke
 
 - Before the pull: Demon Armor on, Succubus out, at least one shard spare for Shadowburn, a Healthstone, and Life Tap to full while the healers top you off.
 - Lash of Pain: You have no Demonology talents, but the Succubus still earns her shard: her melee and Lash of Pain out-damage the Imp's Firebolt.
+- Curse of the Elements when no warlock's is on the target.
 - Corruption whenever it has fallen off.
 - Bane of Doom the moment the last one fires, with a minute or more of the fight left.
 - Bane of Agony in the last minute, once Doom has fired.
@@ -29,12 +30,11 @@ This is the Destruction Warlock as the site's guide describes it. Destruction ke
 - Conflagrate on cooldown while Immolate is up.
 - Shadowburn on cooldown, at any boss health.
 - Incinerate for every other cast.
-- Curse of the Elements when no warlock's is on the target.
 - Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 - Searing Pain is a threat spell, not a damage spell, and Incinerate does more.
 - Life Tap below ten percent mana.
-- Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
-- In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
+- Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Firestone costs one, and Portal of Summoning costs five on a one hour cooldown.
+- In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill.
 - Rain of Fire for trash packs that stay put.
 - Hellfire burns you as well.
 

@@ -23,8 +23,8 @@ This is the Feral Druid as the site's guide describes it. The cat opens with Rav
 - Shifting Power every time it comes off cooldown, but only at sixty energy or lower. Then the whole forty energy fits under the cap.
 - At five combo points when Rip has under six seconds left.
 - Shred fills every other global, building combo points.
-- Prowl, walk behind the boss and Ravage as the tank pulls.
-- Pounce is the opener only when you cannot get behind.
+- Prowl, walk behind the boss and Ravage once the tank has two or three globals on it.
+- Pounce needs Prowl and your position behind the target, exactly like Ravage, so it is never the fallback for a boss you cannot get behind.
 - Ferocious Bite is only for five points you would otherwise sit on while Rip still has time.
 - When the target has no Faerie Fire on it.
 - Claw: When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can.

@@ -27,17 +27,17 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Serpent Sting when it is about to drop.
 - When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed Shot and Multi-Shot going.
-- Aspect of the Falcon gives the same ranged attack power plus melee attack power, but Deadly Aspects only procs under Hawk, and Hawk wins by a wide margin.
+- Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect.
 - Hunter's Mark whenever the target is not marked.
 - A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage.
 - Growl.
 - Mend Pet.
-- Watch your threat and Feign Death before you reach the tank, not after the boss turns.
+- Feign Death: Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
 - Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel.
 - Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it.
 - Explosive Trap under a pack the tank is holding is good damage for its mana.
 - Tranquilizing Shot removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage.
-- Distracting Shot pulls an add onto you so the pet can pick it up.
+- Distracting Shot puts a big lump of threat on a loose add, enough to pull it off a healer and onto you.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

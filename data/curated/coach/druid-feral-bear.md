@@ -30,7 +30,7 @@ This is the Feral Bear Druid as the site's guide describes it. The bear tanks on
 - Demoralizing Roar whenever the boss does not have it, and again in its last three seconds, unless a warrior's Demoralizing Shout is already on it.
 - Challenging Roar is your panic button when the pack runs to the healers.
 - Barkskin takes twenty percent off physical damage for fifteen seconds every minute, and Forever lets you cast it in Bear Form.
-- Frenzied Regeneration turns rage into health and in Forever can heal you for your whole health bar given the rage; use it under half health with rage to spare, not at the pull.
+- Frenzied Regeneration turns up to ten rage a second into health for ten seconds, and in Forever a full one hundred rage of it heals your whole health bar.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
