@@ -111,7 +111,7 @@ Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take
 
 Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes: press it with Recklessness at 20%. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds. Skyborne edges both by a hair on either faction, since Wind Blessed is 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it.
 
-If you want a different look, the gap is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds, and runs a close second, then Orc, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes to press with Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails the races that are always on.
+If you want a different look, the gap is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes to press with Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails the races that are always on.
 
 ## Professions
 
