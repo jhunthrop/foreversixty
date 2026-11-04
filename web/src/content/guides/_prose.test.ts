@@ -3,8 +3,9 @@
 // it reads the files straight off disk for the reason _sections.test.ts gives.
 //
 // The guide prose check: a guide reads like the best player of the class wrote it, so the
-// text a guide page renders carries no dashes, no talk about the site or its method and no
-// AI tells. It scans, per class:
+// text a guide page renders carries no dashes, no talk about the site, the sim or its method
+// and no AI tells. Source labels may cite Forever Sixty data (SOURCE_LABEL_ALLOWED); no guide
+// page is about the sim tool itself, so there is no other exception. It scans, per class:
 //   - every guide markdown file in web/src/content/guides/<class>/ (the class index and each
 //     spec guide): the body, minus HTML comments and link targets, and the frontmatter text
 //     the page shows (title, description, source labels);
@@ -47,10 +48,6 @@ export const BANNED_PROSE = {
     'our simulator',
     'the simulator',
     'the sim found',
-    'the sim',
-    // "sim" or "sims" as a word ("the sim keeps it up", "Sims show"); a link path
-    // ("/sim/weights") and the engine's name ("wowsims") pass.
-    /(?<![\w/-])[Ss]ims?(?![\w/-])/,
     'search run',
     'the search',
     'our search',
@@ -61,6 +58,31 @@ export const BANNED_PROSE = {
     'presets',
     // "band" as a level word ("the 40 band", "band 30"); item names ("Band of Accuria") pass.
     /\b[Bb]ands?\b(?! of\b)/,
+  ],
+  // A guide speaks as a player, never about the tool behind it: no "the sim keeps...",
+  // "the ladder", "the raid numbers assume" or "Forever Sixty recommends". The one exception
+  // is a source label (SOURCE_LABEL_ALLOWED), which cites the data a page draws on.
+  simTalk: [
+    /\b[Ss]im(?:s|med|ming|ulators?|ulations?|ulated)?\b/,
+    /\bSIM\b/,
+    'Forever Sixty',
+    'the site',
+    'our site',
+    'the ladder',
+    'the ranker',
+    'tier list',
+    'published numbers',
+    'published number',
+    'raid numbers',
+    'we measured',
+    'custom rotation',
+    'damage figure',
+    'rank-choice',
+    'the guide',
+    'this guide',
+    // A rotation note talks about the spell, never about the priority list it sits in.
+    'this line',
+    'the line',
   ],
   aiTells: [
     "it's worth noting",
@@ -110,7 +132,23 @@ export function violationsIn(text: string, file: string, line: number): ProseVio
   );
 }
 
-const FRONTMATTER_TEXT = /^\s*(?:-\s+)?(?:title|description|label):\s*(.*)$/;
+/**
+ * The explicit exceptions to the rules above, by frontmatter key: a source label names the
+ * site's own data files and pages as citations ("Forever Sixty build data, races.json"),
+ * which is provenance, not meta-talk in the prose.
+ */
+export const SOURCE_LABEL_ALLOWED: readonly string[] = ['Forever Sixty'];
+
+const FRONTMATTER_TEXT = /^\s*(?:-\s+)?(title|description|label):\s*(.*)$/;
+
+/** The violations of one frontmatter value, minus the label exceptions. */
+function frontmatterViolations(key: string, text: string, file: string, line: number): ProseViolation[] {
+  const found = violationsIn(text, file, line);
+  if (key !== 'label') return found;
+  return found.filter(
+    (v) => !SOURCE_LABEL_ALLOWED.some((allowed) => allowed.toLowerCase() === v.phrase.toLowerCase()),
+  );
+}
 
 /** The text a reader sees on a body line: link targets and inline HTML comments dropped. */
 function visibleText(line: string): string {
@@ -130,8 +168,11 @@ export function markdownViolations(raw: string, file: string): ProseViolation[] 
     }
     const lineNo = index + 1;
     if (fences === 1) {
-      const text = FRONTMATTER_TEXT.exec(source)?.[1];
-      if (text !== undefined) found.push(...violationsIn(text, file, lineNo));
+      const match = FRONTMATTER_TEXT.exec(source);
+      if (match !== null) {
+        const [, key = '', text = ''] = match;
+        found.push(...frontmatterViolations(key, text, file, lineNo));
+      }
       return;
     }
     let line = source;
@@ -233,6 +274,7 @@ describe('guide prose rules', () => {
       ['dashes', '—'],
       ['dashes', '—'],
       ['siteMeta', 'This site'],
+      ['simTalk', 'simulator'],
       ['aiTells', "it's worth noting"],
       ['aiTells', 'crucial'],
     ]);
@@ -253,6 +295,51 @@ describe('guide prose rules', () => {
     expect(
       violationsIn('Ranks 1-4 and Fire-Resist pass; a -- dash does not.', 'x.md', 1).map((v) => v.phrase),
     ).toEqual(['--']);
+  });
+
+  it('flags sim and site meta-talk, but not words that only start the same way', () => {
+    const found = violationsIn(
+      'The sim keeps it up; the simulator, simulations and SIM runs agree with the ladder. ' +
+        'Forever Sixty recommends it, the raid numbers assume it, add it to a custom rotation.',
+      'x.md',
+      1,
+    );
+    expect(found.filter((v) => v.rule === 'simTalk').map((v) => v.phrase)).toEqual([
+      'sim',
+      'simulator',
+      'simulations',
+      'SIM',
+      'Forever Sixty',
+      'the ladder',
+      'raid numbers',
+      'custom rotation',
+    ]);
+    expect(violationsIn('Similar simple Simmering SimC weights.', 'x.md', 1)).toEqual([]);
+    expect(
+      violationsIn(
+        'The guide keeps it up, which the damage figure skips, so this line idles.',
+        'x.md',
+        1,
+      ).map((v) => v.phrase),
+    ).toEqual(['damage figure', 'The guide', 'this line']);
+    expect(violationsIn('Line it up with Mind Blast; guided by the tank.', 'x.md', 1)).toEqual([]);
+  });
+
+  it('lets a source label cite Forever Sixty data, and nothing else', () => {
+    const raw = [
+      '---',
+      'title: Forever Sixty Arms',
+      'sources:',
+      "  - label: 'Forever Sixty build data, races.json'",
+      "  - label: 'Forever Sixty sim output'",
+      '---',
+      'Forever Sixty measured this.',
+    ].join('\n');
+    expect(markdownViolations(raw, 'g.md').map(describeViolation)).toEqual([
+      'g.md:2: "Forever Sixty" (simTalk)',
+      'g.md:5: "sim" (simTalk)',
+      'g.md:7: "Forever Sixty" (simTalk)',
+    ]);
   });
 
   it('scans frontmatter text, the body, and skips comments, link targets and other keys', () => {

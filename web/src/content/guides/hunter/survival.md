@@ -77,7 +77,7 @@ The Marksmanship shot talents do nothing for you. Mortal Shots is ranged only, H
 
 ## Rotation and priority
 
-Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. It is the melee aspect: Aspect of the Falcon gives 10 more melee attack power at 60, but Deadly Aspects does nothing under Falcon, and under Beast its attack speed proc is a 10% chance on every white swing against Falcon's own 5%. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
+Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. It is the melee aspect. Aspect of the Falcon matches your best rank of Aspect of the Hawk, so at 60 it gives the same melee attack power as Beast (10 more once you have Hawk's Ahn'Qiraj rank). Leave Aspect of the Falcon off anyway: Deadly Aspects does nothing under it, and under Beast its attack speed proc is a 10% chance on every white swing against Falcon's own 5%. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
 
 Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and Berserking or Blood Fury together: Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
 

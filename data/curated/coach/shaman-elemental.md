@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/shaman/elemental.md
   - data/curated/apl/shaman-elemental.json
-  - data/builds/1.60.1.70753/spellconst/shaman.json
+  - data/builds/1.60.1.70755/spellconst/shaman.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -20,15 +20,15 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is the 
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Mana Spring Totem goes down first, before the pull and again if it dies, one global before the cooldowns. Two Mana Springs do not stack, so skip yours if a Restoration shaman already has one down for your group.
-- Lightning Mastery goes with everything else: trinkets, racials and your potion on the pull and every three minutes after. For its fifteen seconds Lightning Bolt is half a second faster and Chain Lightning has no cooldown.
-- Flame Shock whenever it is not on the target: with Call of Flame one global keeps it burning for twenty-one seconds, and nothing else wants the shock cooldown.
-- Searing Totem against a single target, dropped within twenty yards of the boss.
+- Mana Spring Totem goes down first, one global before the cooldowns. The loop runs short of mana long before the fight ends.
+- Searing Totem against a single target, for the higher fire damage.
+- Lightning Bolt on every free global.
+- Chain Lightning only against two or more targets. It hits every target for close to single-target Lightning Bolt damage.
 - Magma Totem in place of Searing Totem against two or more targets.
-- Chain Lightning only against two or more targets. It hits each of them for more than a Lightning Bolt does.
-- Fire Nova on two or more targets, with Magma Totem in the pack. On a single boss your Searing Totem stands too far out, and Lightning Bolt is the better cast.
-- Lightning Bolt on every free global: the top rank while your mana is ahead of the fight, one rank down the moment it is not.
+- Then Lightning Mastery with your cooldowns, Flame Shock, Searing Totem, and Lightning Bolt for the rest of the fight.
 - Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
+- Fire Nova on a Clearcasting proc only when your Fire totem is out and the boss stands close to it. Otherwise the proc goes to your next Lightning Bolt.
+- Flame Shock whenever it is not on the target: with Call of Flame it ticks for twenty-one seconds, and nothing else wants the shock cooldown.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

@@ -89,7 +89,7 @@ Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf'
 
 ## Best in slot
 
-Your raid set leans on Leatherworking and Tailoring crafts that bind when equipped, so you can buy them. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
+Your raid set leans on Leatherworking and Tailoring crafts. Most bind when equipped and can be bought, but check each one: a piece that binds on pickup needs the profession yourself. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
 
 ## Enchants and consumables
 
@@ -103,7 +103,7 @@ On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% 
 
 ## Professions
 
-Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Your Leatherworking pieces bind when equipped and can be bought, so your second profession is free: Alchemy for your own flasks and mana potions, or a gathering profession to pay for them.
+Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Most Leatherworking pieces bind when equipped and can be bought, so unless your list carries one that binds on pickup, your second profession is free: Alchemy for your own flasks and mana potions, or a gathering profession to pay for them.
 
 ## Leveling
 

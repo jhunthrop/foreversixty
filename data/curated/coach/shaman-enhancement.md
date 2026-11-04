@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/shaman/enhancement.md
   - data/curated/apl/shaman-enhancement.json
-  - data/builds/1.60.1.70753/spellconst/shaman.json
+  - data/builds/1.60.1.70755/spellconst/shaman.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,9 +21,9 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Windfury Weapon on your one weapon before the pull, and again whenever it falls off. Before level thirty, Rockbiter Weapon goes on it instead.
-- Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within thirty yards.
+- Strength of Earth Totem whenever it is down. It is Strength for every melee player near you, and in Forever the totem reaches the whole raid within thirty yards.
 - If your party has no other shaman, put Mana Spring Totem in your Water slot as well.
-- Totemic Call: if the boss moves more than thirty yards from your totems, stand where it is now and Totemic Call brings them to you.
+- Totemic Call: If the boss moves more than thirty yards from them, stand where it is now and Totemic Call brings them to you.
 - Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown.
 - Stormstrike on cooldown. It is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
 - Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.

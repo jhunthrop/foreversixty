@@ -3,7 +3,7 @@ title: Demonology Warlock in Forever
 classSlug: warlock
 spec: demonology
 role: dps
-build: 'FS1:1.60.1.70755:warlock:gnome:25522/233211310122000135/005:'
+build: 'FS1:1.60.1.70755:warlock:gnome:25522/203511310122000135/005:'
 raidBuild: 'FS1:1.60.1.70755:warlock:gnome:05/2035113011220001351/0550005:'
 recommendedRaces: [gnome, troll]
 statPriority:
@@ -50,7 +50,7 @@ Demonology sacrifices the Imp for 15% Shadow damage, keeps a Succubus out for 10
 
 ## Talents and builds
 
-The leveling build stops at 30 Demonology points, before Demonic Pact, and keeps Improved Corruption and Improved Imp. The raid build goes to Pact and spends its Destruction points on Shadow Bolt.
+The leveling build stops at 30 Demonology points, before Demonic Pact, keeps Improved Corruption, and puts all 5 points in Unholy Power rather than Improved Imp, since you level with the Voidwalker or the Succubus. The raid build goes to Pact and spends its Destruction points on Shadow Bolt.
 
 - **Demonic Sacrifice** (1 point): in Forever the Imp's sacrifice gives 15% more Shadow damage, and the Succubus' gives 15% more Fire. Without Demonic Pact any summon cancels it, so the leveling build takes it as the path to Soul Link.
 - **Master Demonologist** (5 points): a buff on you and your demon while it is out. The Succubus or Incubus gives 10% more Shadow damage, which is why the raid build keeps one out.
@@ -64,7 +64,7 @@ The raid build adds what the leveling build cannot use. Demonic Pact, the 31st p
 
 Improved Health Funnel, Demonic Aegis and Improved Voidwalker add no damage. They are path points that keep you and your demon alive. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
 
-Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets 8/17 of your hit. Demons almost never crit in melee against a boss. Lash of Pain crits at about a normal caster's rate, more with Malevolence.
+Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets 8/17 of your hit. Demons almost never crit in melee against a boss. Lash of Pain crits at about a normal caster's rate.
 
 ## Rotation and priority
 
@@ -78,7 +78,7 @@ The setup, in order, starting about a minute before the pull:
 
 Each summon is a 6 second cast with Master Summoner, and the Succubus costs a Soul Shard. Send the Succubus to the boss's back once the tank has it.
 
-On the pull: Curse of the Elements first if you hold it, then Corruption and Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
+On the pull: Corruption, then Curse of the Elements if you hold it, then Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 
 Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute left never lands, so in the last minute put Bane of Agony up instead. Doom's damage scales hard with your spell damage, which is why it beats Agony here.
 
@@ -98,7 +98,7 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Spell power first. Hit is close behind: Suppression gives you 5%, and the table above shows how much more you need. Shadow power is nearly as good as spell power, but Immolate and Soul Fire are Fire. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
+Spell power first, and Shadow power is nearly as good, though Immolate and Soul Fire are Fire. Hit comes next until the cap: Suppression gives you 5%, and the table above shows how much more you need. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
 
 ## Best in slot
 
@@ -106,7 +106,7 @@ The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows 
 
 ## Enchants and consumables
 
-The table above is what the raid numbers assume. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate and Soul Fire. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+The table above is the standard raid kit. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate and Soul Fire. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
 
 ## Races
 

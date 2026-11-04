@@ -336,10 +336,11 @@ func rotationIDs(t *testing.T, spec, class string, level int, choices rankChoice
 
 // Owner ruling 3 (round 9): a deliberate band-60 downrank is respected below
 // 60, never lifted to the top learned rank. Holy and Discipline cast Renew
-// rank 3 (6075, learned at 20) and Discipline casts Power Word: Shield rank 4
-// (3747, learned at 24); the rewrite used to lift them to Renew rank 8
-// (10928) and Shield rank 8 (10899) at band 50. Below the level the authored
-// rank is learned at, the highest rank under it stands in.
+// rank 1 (139, learned at 8; rank 3 until round 14) and Discipline casts
+// Power Word: Shield rank 4 (3747, learned at 24); the rewrite used to lift
+// them to Renew rank 8 (10928) and Shield rank 8 (10899) at band 50. Below
+// the level the authored rank is learned at, the highest rank under it
+// stands in.
 func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
 	cases := []struct {
 		spec, class string
@@ -347,10 +348,10 @@ func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
 		want        []int32
 		lifted      []int32
 	}{
-		{"priest-holy", "priest", 50, []int32{6075}, []int32{10928}},
-		{"priest-holy", "priest", 30, []int32{6075}, []int32{6076}},
-		{"priest-holy", "priest", 16, []int32{6074}, []int32{6075}},
-		{"priest-discipline", "priest", 50, []int32{6075, 3747}, []int32{10928, 10899}},
+		{"priest-holy", "priest", 50, []int32{139}, []int32{10928}},
+		{"priest-holy", "priest", 30, []int32{139}, []int32{6076}},
+		{"priest-holy", "priest", 16, []int32{139}, []int32{6074}},
+		{"priest-discipline", "priest", 50, []int32{139, 3747}, []int32{10928, 10899}},
 		{"priest-discipline", "priest", 40, []int32{3747}, []int32{6066}},
 		{"priest-discipline", "priest", 20, []int32{600}, []int32{3747}},
 		// The party's Flash of Light rank 4 and the tank's rank 1 both survive.

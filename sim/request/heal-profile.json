@@ -2,35 +2,35 @@
   "id": "phase1-scaled",
   "label": "Phase 1 tank hits and raid pulses, scaled so gear separates",
   "summary": "One healer's share of a Phase 1 raid fight, scaled up until the strongest raid-ready healer covers about 80 percent of what comes in and the weakest about 60: a tank taking big melee hits, raid-wide damage in regular pulses, and four more raid members to look after, with the healer taking its share of the raid-wide damage.",
-  "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption, and this profile is a stand-in for Phase 1 that is NOT a named boss. It was first sized to an Onyxia-class boss, but at that size the raid-ready healers covered 80 to 97 percent of what came in, healing met the damage, and more healing power changed nothing, so gear tied. The retune rule (design/reviews/2026-10-08-heal-profile-retune.md) is: scale the tank hit size and the raid-wide pulse damage together, keeping their ratio and cadence, by the smallest multiplier at which the strongest raid-ready healer covers about 80 percent of the incoming damage, the weakest about 60, every bare set (no raid consumables) covers less than half, and mana is a live constraint (a bare set's mana runs out before the fight ends for every healer, and a raid set's for at least one). The multiplier chosen was 1.5 on 2026-10-08 and is 1.65 since 2026-11-01: client 1.60.1.70707 gave the Restoration druid Bloom and let heals over time crit (the client flags every trained heal over time PERIODIC_CAN_CRIT, and Blizzard's beta notes of 24 September say so for Rejuvenation), which took the druid to 91 percent at 1.5, and 1.65 is the smallest multiplier that brings every raid set back between about 60 and 85 percent (design/reviews/2026-11-01-sim-audit-round4/hybrids.md). It is 1.85 since 2026-11-02: round 7's engine fixes (Mana Spring stacking with Blessing of Wisdom, Healing Stream counted in the shaman's healing, Oath of Light, Water Shield on raid damage, casts pushed back by the pulses) took the Restoration shaman to 97 percent at 1.65, and 1.85 is the smallest multiplier that brings every raid set back between about 60 and 85 percent on the published gear (design/reviews/2026-11-02-sim-audit-round7/healers.md). The next retune (Phase 2 gear) follows the same rule. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights. Every figure above is the level-60 band's. Below 60 each leveling band fights the same fight at its own level, with the damage its own content deals (bands, below): until 2026-11-03 every band fought the level-60 figures, so a level-20 healer covered a few percent of a raid fight and every rank choice below 60 was a healing-per-mana figure.",
+  "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption, and this profile is a stand-in for Phase 1 that is NOT a named boss. It was first sized to an Onyxia-class boss, but at that size the raid-ready healers covered 80 to 97 percent of what came in, healing met the damage, and more healing power changed nothing, so gear tied. The retune rule (design/reviews/2026-10-08-heal-profile-retune.md) is: scale the tank hit size and the raid-wide pulse damage together, keeping their ratio and cadence, by the smallest multiplier at which the strongest raid-ready healer covers about 80 percent of the incoming damage, the weakest about 60, every bare set (no raid consumables) covers less than half, and mana is a live constraint (a bare set's mana runs out before the fight ends for every healer, and a raid set's for at least one). The multiplier chosen was 1.5 on 2026-10-08 and is 1.65 since 2026-11-01: client 1.60.1.70707 gave the Restoration druid Bloom and let heals over time crit (the client flags every trained heal over time PERIODIC_CAN_CRIT, and Blizzard's beta notes of 24 September say so for Rejuvenation), which took the druid to 91 percent at 1.5, and 1.65 is the smallest multiplier that brings every raid set back between about 60 and 85 percent (design/reviews/2026-11-01-sim-audit-round4/hybrids.md). It is 1.85 since 2026-11-02: round 7's engine fixes (Mana Spring stacking with Blessing of Wisdom, Healing Stream counted in the shaman's healing, Oath of Light, Water Shield on raid damage, casts pushed back by the pulses) took the Restoration shaman to 97 percent at 1.65, and 1.85 is the smallest multiplier that brings every raid set back between about 60 and 85 percent on the published gear (design/reviews/2026-11-02-sim-audit-round7/healers.md). It is 2.3 since 2026-11-04: round 13 made rank 1 Rejuvenation the Restoration druid's party heal, cast whenever someone is hurt, which took the druid's raid set to 95 percent and its bare set to 60 percent at 1.85; 2.3 is the smallest multiplier (in steps of 0.05) at which the strongest raid set covers about 80 percent (83) and every bare set less than half, on both factions' published gear. At 2.3 the weakest raid sets cover about 54 percent, under the rule's about 60: the druid's lead over the other healers is wider than the rule's 80-to-60 spread, so no multiplier meets every clause, and the strict clause (bare sets under half) decides (design/reviews/2026-11-04-sim-audit-round14/healers.md). The next retune (Phase 2 gear) follows the same rule. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights. Every figure above is the level-60 band's. Below 60 each leveling band fights the same fight at its own level, with the damage its own content deals (bands, below): until 2026-11-03 every band fought the level-60 figures, so a level-20 healer covered a few percent of a raid fight and every rank choice below 60 was a healing-per-mana figure.",
   "duration_sec": 300,
   "damage_spread": 0.25,
   "tuning": {
-    "scale": 1.85,
+    "scale": 2.3,
     "bounds": [
-      1.65,
-      1.85
+      1.85,
+      2.3
     ],
     "base_tank_hit_damage": 1150,
     "base_pulse_damage": 300,
-    "reason": "The tank hit and the raid pulse are the Onyxia-class figures first assumed (1,150 and 300) times one multiplier, set by the retune rule: 1.5 on 2026-10-08, 1.65 on 2026-11-01 once the client let heals over time crit, 1.85 on 2026-11-02 once the engine fixes of round 7 (Mana Spring stacking with Blessing of Wisdom, Healing Stream counted, Oath of Light, Water Shield on raid damage) took the strongest raid set to 97 percent. The multiplier is a tuning, not a measured boss, so the two answers are its bounds: /tiers/healer orders two healers only when the order holds, and the gap is beyond the error, at both."
+    "reason": "The tank hit and the raid pulse are the Onyxia-class figures first assumed (1,150 and 300) times one multiplier, set by the retune rule: 1.5 on 2026-10-08, 1.65 on 2026-11-01 once the client let heals over time crit, 1.85 on 2026-11-02 once the engine fixes of round 7 (Mana Spring stacking with Blessing of Wisdom, Healing Stream counted, Oath of Light, Water Shield on raid damage) took the strongest raid set to 97 percent, and 2.3 on 2026-11-04 once round 13's rank 1 Rejuvenation took the Restoration druid's raid set to 95 percent and its bare set to 60. The multiplier is a tuning, not a measured boss, so the two answers are its bounds: /tiers/healer orders two healers only when the order holds, and the gap is beyond the error, at both."
   },
   "tank": {
     "health": 9500,
-    "hit_damage": 2128,
+    "hit_damage": 2645,
     "swing_seconds": 3.3,
-    "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. The hit is a stand-in sized by the retune rule, not a boss's: 1.85 times the 1,150 an Onyxia-class boss was first assumed to land on a mitigated tank, which is the smallest scale at which the five healers' raid-ready sets cover between about 60 and 85 percent of the incoming damage and bare sets less than half. With misses, dodges and parries averaged in one hit lands about every 3.3 seconds, about 645 damage a second; each hit rolls 25 percent either side."
+    "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. The hit is a stand-in sized by the retune rule, not a boss's: 2.3 times the 1,150 an Onyxia-class boss was first assumed to land on a mitigated tank, which is the smallest scale at which the strongest raid-ready set covers about 80 percent of the incoming damage and every bare set less than half. With misses, dodges and parries averaged in one hit lands about every 3.3 seconds, about 800 damage a second; each hit rolls 25 percent either side."
   },
   "members": {
     "health": 5000,
     "reason": "A raid member that is not the tank has about 5,000 health: a plate or mail wearer sits above it and a cloth wearer below."
   },
   "pulse": {
-    "damage": 555,
+    "damage": 690,
     "interval_seconds": 5.0,
     "members": 3,
     "reaches_healer": true,
-    "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the five members of the healer's group, the healer among them, take 555, about 333 damage a second spread over the group the healer stands in. The healer is one of the five because raid-wide damage does not skip the player casting the heals; until round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md) it landed only on the four others, so every group heal put a fifth of its healing on a healer who was never hurt. The total is unchanged: three members a pulse, now chosen from five. Scaled by the same 1.85 as the tank hit, so the tank-to-raid ratio and the cadence are what they were."
+    "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the five members of the healer's group, the healer among them, take 690, about 414 damage a second spread over the group the healer stands in. The healer is one of the five because raid-wide damage does not skip the player casting the heals; until round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md) it landed only on the four others, so every group heal put a fifth of its healing on a healer who was never hurt. The total is unchanged: three members a pulse, now chosen from five. Scaled by the same 2.3 as the tank hit, so the tank-to-raid ratio and the cadence are what they were."
   },
   "bands": {
     "rule": "Below 60 each band fights the same fight at its own level (owner ruling, sim-accuracy round 10): the same length, cadence, spread and members, with the damage its own content deals and the health a character of the band has. A band's content is the open dungeons whose last boss stands from the band's level to five levels above it, the dungeons a group of that level goes to; at 60 it is the open raid, because the level-60 profile is a raid fight. A last boss's damage a second is its melee plus its spells. Its melee is its creature_template hit, melee attack power over 14 plus the mean of its minimum and maximum melee damage times its damage multiplier, over its attack time (cmangos Creature::UpdateDamagePhysical), less the share of the fight it spends casting or channelling. Its spells are every damaging spell its AI casts while it is tanked (the spell list its template names, else its EventAI rows, else its script, at the melee-range timers; at 60, Onyxia's ground phase), each counted once a cast on one target: the cast's mean damage at the boss's level (cmangos spell_template, the 1.12 values: base points, dice and points per level; ticks of a periodic aura over its duration; a weapon-damage effect as one melee hit plus its bonus; triggered spells as they trigger) over the mean of its repeat timer. Heals, buffs, summons, crowd control without damage and one-off health-threshold casts are left out. A band's damage is the median of its last bosses' damage a second times the content's client damage modifier, and the band's incoming damage a second scales by that against the reference band's; how it splits between the tank hit and the raid pulse is the split rule's. The tank's and the members' health scale by the client's expected player health at the band's level against level 60's. The tuning scale multiplies every band alike, so a band keeps its place inside the tuning bounds. A level between two bands fights the band at or below it, the way rank choices run from one band to the next, and a level below 20 fights band 20. Each row states its derived figures, and loading refuses a row whose figures are not the rule's. Pulls (owner ruling, sim-accuracy round 11): a dungeon is mostly trash, and a hard trash pull often hits harder than the last boss. A band's trash is every creature its dungeons spawn that is hostile to players (client FactionTemplate) and can be fought, less its bosses (instance_encounters), vendors, critters and hidden triggers; a spawn with a random entry stands for its first listed one (creature_spawn_entry, else spawn_group_entry). It is cut into pulls the way the server pulls: a pulled creature calls every creature of its own faction within its assistance radius, and each of those calls the next (mangos-classic Creature::MarkCallAssistanceOnPull), and spawn groups that aggro together and aggro-linked creatures (creature_linking, creature_linking_template) come with them. The radius is the creature's own CallForHelp where creature_template states one, else bands.pull_rule's (10 yards, TrinityCore's CreatureFamilyAssistanceRadius: cmangos ships 5, which pulls most of the Deadmines one mob at a time). Line of sight is not checked. A pull's damage a second is the sum of its mobs', each counted the way a last boss is (melee less its casting share, plus its repeating in-combat spells from creature_spell_list or EventAI, once a cast on one target). Pulls are weighted by the mobs in them, because a run spends its time killing mobs, and the band fights the pull at bands.pull_rule's percentile (the 75th: a quarter of a run's mobs come in pulls at least this hard). The pull multiplier is that pull's damage a second over the median last boss's, never below 1, so a band fights the harder of the two; the band's damage is its median last boss's times the pull multiplier times the content's damage modifier. Split (owner ruling, sim-accuracy round 12): the tank's share of a band's incoming damage is taken from logs, not from spawns, because spawns assume every mob stays on the tank for the whole pull (the pulls' own figures put 96 to 99 percent of trash damage on the tank) and real groups do not play that way. It is the median, over the band's dungeons' logged trash fights on foreverlogs.gg (the beta), of the share of the damage the group's players take from creatures that lands on the group's tank; a band fights a trash pull, so trash fights are the ones counted. The group is the three to six players seen in the fight; the tank is the warrior, paladin or druid who takes the most creature melee over all of that group's fights in the report, so a fight where a loose mob, a pet or a caster took the hits still counts against the tank's share. Pets and player-on-player damage are left out, because the profile heals players. A band whose dungeons hold fewer than bands.split_rule's minimum of logged trash fights takes the median over every logged beta dungeon's trash fights (the beta stops at about level 30, so bands 40 and 50 do). The tank hit carries that share of the band's incoming damage a second at the profile's swing, and the pulse the rest at its cadence. Level 60 keeps the profile's own split (1,150 a 3.3-second hit against 300 to three members every 5 seconds, 0.659 on the tank) until public level-60 raid logs can be read. Each band row states the logged fights its share rests on, and loading refuses a share that is not their median. Each band row states its dungeons' pull counts, the pull it fights spawn by spawn, and that pull's mobs, and loading refuses a pull whose mobs do not sum to it or a multiplier that is not the rule's.",
@@ -182,8 +182,8 @@
           "q75": 0.892,
           "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
         },
-        "tank_hit_damage": 147,
-        "pulse_damage": 35
+        "tank_hit_damage": 183,
+        "pulse_damage": 44
       },
       {
         "level": 30,
@@ -367,8 +367,8 @@
           "q75": 0.8863,
           "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
         },
-        "tank_hit_damage": 274,
-        "pulse_damage": 63
+        "tank_hit_damage": 341,
+        "pulse_damage": 78
       },
       {
         "level": 40,
@@ -602,8 +602,8 @@
           "q75": 0.8751,
           "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
         },
-        "tank_hit_damage": 482,
-        "pulse_damage": 116
+        "tank_hit_damage": 600,
+        "pulse_damage": 144
       },
       {
         "level": 50,
@@ -802,8 +802,8 @@
           "q75": 0.8751,
           "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
         },
-        "tank_hit_damage": 1037,
-        "pulse_damage": 250
+        "tank_hit_damage": 1289,
+        "pulse_damage": 311
       },
       {
         "level": 60,
@@ -873,8 +873,8 @@
         "tank_health": 9500,
         "member_health": 5000,
         "tank_share": 0.659,
-        "tank_hit_damage": 2128,
-        "pulse_damage": 555
+        "tank_hit_damage": 2645,
+        "pulse_damage": 690
       }
     ],
     "sources": [

@@ -675,7 +675,7 @@
       }
     },
     {
-      "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it, so Bloom heals him when it does. A raid fight's mana pays for the rank that heals the tank most; below 60 and without raid buffs it stays rank 4, the rank-choice rows.",
+      "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it, so Bloom heals him when it does. A raid fight's mana pays for the rank that heals the tank most; below 60 and without raid buffs, rank 4 keeps your mana going.",
       "action": {
         "castSpell": {
           "spellId": {

@@ -64,7 +64,7 @@ The build is 31 Holy, 12 Protection and 8 Retribution.
 - **Boundless Light** (2 points): 30% more crit on Holy Shock on anyone without your Oath.
 - **Holy Power** (5 points): your critical heals land for 175% instead of 150%. It no longer adds crit chance.
 - **Light's Vigil** (1 point): the capstone. The next Holy Shock on its target has no cooldown and heals that target's whole party.
-- **Benediction** (5 points) and **Conviction** (3 points): Holy Shock and every instant 10% cheaper, and 6% crit on your heals while you hold a melee weapon.
+- **Benediction** (5 points) and **Conviction** (3 points): Holy Shock and every instant 10% cheaper, and 6% crit on your heals and everything else you do.
 - **Divine Intellect** (5 points): 10% Intellect, in Protection's first row now.
 
 The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protection and adds 6 seconds to Blessing of Freedom, **Sacred Duty** brings Divine Shield back a minute sooner, **Purifying Power** makes Cleanse cheaper, and **Precision** and one point of **Divine Precision** are filler on the way. Open the planner at [/planner?class=paladin](/planner?class=paladin) to change it.
@@ -87,7 +87,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 **Light's Vigil.** It costs 1,340 mana at 60. Keep it for a fight where your whole party takes big damage at once. On an ordinary boss it is mana you need for the tank.
 
-**Movement.** Holy Shock is your only instant heal, and Flash of Light is a 1.5 second cast. Stand where you reach the tank and your party, so you never have to move to heal.
+**Movement.** Holy Shock is your only instant heal outside Lay on Hands, and Flash of Light is a 1.5 second cast. Stand where you reach the tank and your party, so you never have to move to heal.
 
 **Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
 

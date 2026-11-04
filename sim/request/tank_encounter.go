@@ -17,10 +17,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"strconv"
 	"sync"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/specs"
+	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
@@ -49,9 +51,12 @@ type tankEncounterFile struct {
 	Boss struct {
 		SwingSpeedSec sourced[float64] `json:"swing_speed_sec"`
 		MinBaseDamage sourced[float64] `json:"min_base_damage"`
-		DamageSpread  sourced[float64] `json:"damage_spread"`
-		ParryHaste    sourced[bool]    `json:"parry_haste"`
-		DualWield     sourced[bool]    `json:"dual_wield"`
+		// AttackPowerByLevel is the boss's attack power at its own level,
+		// keyed by the level as a string (JSON objects have string keys).
+		AttackPowerByLevel sourced[map[string]float64] `json:"attack_power_by_level"`
+		DamageSpread       sourced[float64]            `json:"damage_spread"`
+		ParryHaste         sourced[bool]               `json:"parry_haste"`
+		DualWield          sourced[bool]               `json:"dual_wield"`
 	} `json:"boss"`
 	Healers struct {
 		HPS                 sourced[float64] `json:"hps"`
@@ -72,7 +77,8 @@ type TankBoss struct {
 
 // RawDPS is the damage per second the boss would deal with every swing
 // landing as a plain hit and no mitigation of any kind: the mean of a
-// swing's roll over its speed. Effective health is measured against it.
+// swing's roll, at the boss's full attack power, over its speed. Effective
+// health is measured against it.
 func (b TankBoss) RawDPS() float64 {
 	return b.MinBaseDamage * (1 + b.DamageSpread/2) / b.SwingSpeedSec
 }
@@ -126,7 +132,35 @@ func (f tankEncounterFile) validate() error {
 	if f.Boss.DamageSpread.Value < 0 {
 		return fmt.Errorf("request: tank-encounter.json: boss.damage_spread must not be negative")
 	}
+	for key, ap := range f.Boss.AttackPowerByLevel.Value {
+		if level, err := strconv.Atoi(key); err != nil || level < 1 || ap < 0 {
+			return fmt.Errorf("request: tank-encounter.json: boss.attack_power_by_level has %q: %v; want a level and a non-negative attack power", key, ap)
+		}
+	}
 	return nil
+}
+
+// tankBossAttackPower is the boss's attack power at targetLevel
+// (boss.attack_power_by_level). A level the file does not state is an
+// error, never a silent zero: a zero would make every demoralize worthless.
+func tankBossAttackPower(targetLevel int32) (float64, error) {
+	f, err := loadTankEncounter()
+	if err != nil {
+		return 0, err
+	}
+	ap, ok := f.Boss.AttackPowerByLevel.Value[strconv.Itoa(int(targetLevel))]
+	if !ok {
+		return 0, fmt.Errorf("request: tank-encounter.json states no boss attack power for level %d", targetLevel)
+	}
+	return ap, nil
+}
+
+// weaponMinDamage is the engine's weapon roll under the curated swing: the
+// curated minimum includes the boss's full attack power, which the engine
+// multiplies in (core.EnemyAutoAttackAPCoefficient), so the mean swing is
+// the curated one until something lowers the boss's attack power.
+func (b TankBoss) weaponMinDamage(attackPower float64) float64 {
+	return b.MinBaseDamage / (1 + attackPower*core.EnemyAutoAttackAPCoefficient)
 }
 
 // TankProfileForLevel is the tank fight for a character of characterLevel:
@@ -194,9 +228,14 @@ func applyTankFight(player *proto.Player, raid *proto.Raid, enc *proto.Encounter
 	}
 	raid.Tanks = []*proto.UnitReference{{Type: proto.UnitReference_Player, Index: tankIndex}}
 	for _, target := range enc.Targets {
+		attackPower, err := tankBossAttackPower(target.Level)
+		if err != nil {
+			return err
+		}
+		target.Stats[proto.Stat_StatAttackPower] = attackPower
 		target.TankIndex = tankIndex
 		target.SwingSpeed = profile.Boss.SwingSpeedSec
-		target.MinBaseDamage = profile.Boss.MinBaseDamage
+		target.MinBaseDamage = profile.Boss.weaponMinDamage(attackPower)
 		target.DamageSpread = profile.Boss.DamageSpread
 		target.ParryHaste = profile.Boss.ParryHaste
 		target.DualWield = profile.Boss.DualWield

@@ -184,6 +184,15 @@ assert "no runs at all is a timeout, not a landing" equal $? 1
 assert "the timeout is reported" contains "$(cat "$c/out")" 'timed out'
 assert "main did not move with no checks" lacks "$(origin_ref "$c" refs/heads/main)" "$(git -C "$c" rev-parse HEAD)"
 
+# --- a run whose jobs cannot be read is not green: the landing stops rather than guessing ---
+c=$(setup unreadable)
+fixture "$c" 1 "$(run_json 51 web completed failure build:completed:failure)"
+rm "$c/gh/run.51.json"
+land "$c" land/1
+assert "a run whose jobs cannot be read fails the landing" equal $? 1
+assert "it names the run it could not read" contains "$(cat "$c/out")" 'could not read run 51'
+assert "main did not move on an unreadable run" lacks "$(origin_ref "$c" refs/heads/main)" "$(git -C "$c" rev-parse HEAD)"
+
 # --- a branch origin does not have ---
 c=$(setup missing)
 land "$c" land/404

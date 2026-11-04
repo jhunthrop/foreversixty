@@ -5,7 +5,7 @@ spec: destruction
 role: dps
 build: 'FS1:1.60.1.70755:warlock:gnome:25522/0/2053235103101351:'
 raidBuild: 'FS1:1.60.1.70755:warlock:gnome:2550000002/0/2053345103101351:'
-recommendedRaces: [gnome, troll]
+recommendedRaces: [gnome, orc]
 statPriority:
   [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, Shadow power, Fire power]
 description: 'How to play Destruction in Forever: Immolate, Conflagrate, Shadowburn and Incinerate under Shadow and Flame, the opener, banes, shards, races and leveling.'
@@ -105,11 +105,11 @@ The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows 
 
 ## Enchants and consumables
 
-The table above is what the raid numbers assume. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+The table above is the standard raid kit. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
 
 ## Races
 
-Gnome and Troll are the picks. Gnome's Eureka! gives 8 seconds of 10% more damage and 10% lower cost every two minutes, but only on direct damage: Immolate's first hit, Conflagrate, Shadowburn, Soul Fire and Shadow Bolt among them. It does not touch Incinerate, so press it when Immolate, Conflagrate and Shadowburn are all coming up together. Expansive Mind's 5% more mana means fewer Life Taps. Troll's Berserking is 10% cast speed on a three minute cooldown: press it at the pull with your trinkets. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes. Human's Ruthless is 1% crit. Undead's Touch of the Grave drains health from your target now and then.
+Gnome and Orc are the picks. Gnome's Eureka! gives 8 seconds of 10% more damage and 10% lower cost every two minutes, but only on direct damage: Immolate's first hit, Conflagrate, Shadowburn, Soul Fire and Shadow Bolt among them. It does not touch Incinerate, so press it when Immolate, Conflagrate and Shadowburn are all coming up together. Expansive Mind's 5% more mana means fewer Life Taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder: press Blood Fury at the pull with your trinkets. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Human's Ruthless is 1% crit. Undead's Touch of the Grave drains health from your target now and then.
 
 ## Professions
 

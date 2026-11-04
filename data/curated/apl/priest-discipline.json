@@ -323,8 +323,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 6075,
-              "rank": 3
+              "spellId": 139,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -340,15 +340,15 @@
                     "index": 5
                   },
                   "spellId": {
-                    "spellId": 6075,
-                    "rank": 3
+                    "spellId": 139,
+                    "rank": 1
                   }
                 }
               }
             }
           }
         },
-        "notes": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana."
+        "notes": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana."
       },
       {
         "action": {
@@ -972,8 +972,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2053,
-              "rank": 3
+              "spellId": 2050,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -1032,8 +1032,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2053,
-              "rank": 3
+              "spellId": 2050,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -1091,8 +1091,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2053,
-              "rank": 3
+              "spellId": 2050,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -1150,8 +1150,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2053,
-              "rank": 3
+              "spellId": 2050,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -1242,8 +1242,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2053,
-              "rank": 3
+              "spellId": 2050,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -1274,8 +1274,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2053,
-              "rank": 3
+              "spellId": 2050,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -1306,8 +1306,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2053,
-              "rank": 3
+              "spellId": 2050,
+              "rank": 1
             },
             "target": {
               "type": "Player",
@@ -1338,8 +1338,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 2053,
-              "rank": 3
+              "spellId": 2050,
+              "rank": 1
             },
             "target": {
               "type": "Player",
