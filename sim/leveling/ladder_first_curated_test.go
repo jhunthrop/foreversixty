@@ -12,22 +12,23 @@ var ladderFirstSpecs = map[string]struct {
 	class, slug string
 	tree        int
 }{
-	"druid-feral-bear":    {"druid", "feral-bear", 1},
-	"druid-restoration":   {"druid", "restoration", 2},
-	"hunter-survival":     {"hunter", "survival", 2},
-	"mage-fire":           {"mage", "fire", 1},
-	"paladin-holy":        {"paladin", "holy", 0},
-	"paladin-protection":  {"paladin", "protection", 1},
-	"priest-discipline":   {"priest", "discipline", 0},
-	"priest-holy":         {"priest", "holy", 1},
-	"priest-shadow":       {"priest", "shadow", 2},
-	"rogue-assassination": {"rogue", "assassination", 0},
-	"rogue-subtlety":      {"rogue", "subtlety", 2},
-	"shaman-restoration":  {"shaman", "restoration", 2},
-	"warlock-affliction":  {"warlock", "affliction", 0},
-	"warlock-demonology":  {"warlock", "demonology", 1},
-	"warrior-arms":        {"warrior", "arms", 0},
-	"warrior-fury":        {"warrior", "fury", 1},
+	"druid-feral-bear":     {"druid", "feral-bear", 1},
+	"druid-restoration":    {"druid", "restoration", 2},
+	"hunter-beast-mastery": {"hunter", "beast-mastery", 0},
+	"hunter-survival":      {"hunter", "survival", 2},
+	"mage-fire":            {"mage", "fire", 1},
+	"paladin-holy":         {"paladin", "holy", 0},
+	"paladin-protection":   {"paladin", "protection", 1},
+	"priest-discipline":    {"priest", "discipline", 0},
+	"priest-holy":          {"priest", "holy", 1},
+	"priest-shadow":        {"priest", "shadow", 2},
+	"rogue-assassination":  {"rogue", "assassination", 0},
+	"rogue-subtlety":       {"rogue", "subtlety", 2},
+	"shaman-restoration":   {"shaman", "restoration", 2},
+	"warlock-affliction":   {"warlock", "affliction", 0},
+	"warlock-demonology":   {"warlock", "demonology", 1},
+	"warrior-arms":         {"warrior", "arms", 0},
+	"warrior-fury":         {"warrior", "fury", 1},
 }
 
 // spineCapstoneNotDefining names a spec whose guide build's deepest talent is a filler point
@@ -146,6 +147,40 @@ func TestRestorationShamanHoldsWaterShieldAtTwenty(t *testing.T) {
 	} {
 		if got := LadderTalentString(trees, targets, 2, level, ForSpec("shaman-restoration")); got != want {
 			t.Errorf("level %d: %s, want %s", level, got, want)
+		}
+	}
+}
+
+// Sim-accuracy round 15 (hunter, owner 2026-11-04): Beast Mastery levels with Focused Fire
+// (2% more damage for the hunter and the pet) as soon as its row opens at 15, ahead of the
+// last Endurance Training points (pet health and armor). The ladder bands hold the same
+// points either way, so this is an order-only row: real leveling play decides a tie.
+func TestBeastMasteryTakesFocusedFireBeforeEnduranceTraining(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	active, err := ReadActiveBuild(repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trees, err := LoadTalentTrees(repoRoot, active, "hunter")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, digits, err := GuideBuildTalents(repoRoot, "hunter", "beast-mastery")
+	if err != nil {
+		t.Fatal(err)
+	}
+	targets := GuideTalentTargets(trees, digits)
+	byName := map[string]int{}
+	for _, node := range trees[0].Talents {
+		byName[node.Name] = node.ID
+	}
+	for level, want := range map[int][2]int{15: {1, 0}, 16: {2, 0}, 17: {2, 1}, 20: {2, 4}} {
+		ranks, err := TalentRanksFromString(trees, LadderTalentString(trees, targets, 0, level, ForSpec("hunter-beast-mastery")))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := [2]int{ranks[byName["Focused Fire"]], ranks[byName["Endurance Training"]]}; got != want {
+			t.Errorf("level %d: Focused Fire, Endurance Training = %v, want %v", level, got, want)
 		}
 	}
 }
