@@ -144,3 +144,49 @@ What each row means:
 - The smoke test's talent excuse now names 20930.
 - Tests that pass: the rank-choice test, `TestHolyPaladinHolyShockAtBareSixty`, `TestHealerListsCastTheTopTrainerRankUnlessChosen`, the paladin rotation smoke tests, and `make apl-check`.
 - Not mine: `TestEveryWrittenRotationRunsInTheEngine/hunter-marksmanship` fails on int/r15 with an unresolved 1310786.
+
+## Wave 6: guide-accuracy round 3 seeds
+
+Both branches merged int/r15 first (site ef3195852, fork 6a4695cc0). The client rows were re-fetched from wago.tools for 1.60.1.70755 on 2026-11-04 (the live push included) and compared with the Wowhead Forever tooltips.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W6-1 | **Stoneform was off the global cooldown.** 20594, fetched fresh: aura 87 at -10 Physical (school mask 1), 8 s (DurationIndex 31), a 3 min cooldown, and the global cooldown (SpellCooldowns StartRecoveryTime 1500, StartRecoveryCategory 133). It also removes Bleed, Poison and Disease (effects 38/108/41/77), which has nothing to act on in this fight. The Wowhead Forever 20594 text agrees. The engine had the 10%, 8 s and 3 min right, but cast it with no global cooldown. **Shared code (sim/core/racials.go): every Dwarf whose list casts it.** No list cast it before this round. | `TestStoneformMatchesTheClientRow` failed first (GCD 0s), then passed | CONFIRMED-BUG | old | E 30c210890 |
+| W6-2 | **Dwarf Protection paladin now casts Stoneform below 70% health.** Alliance Dwarf, 10,000 iterations, seeds 1 / 50001. Threat is level: raid 60 -0.04 / -0.01%, bare 60 +0.1 / +0.4%, 50 -0.04 / -0.07%, 40 +0.2 / 0%, 30 -0.3 / -0.3%, 20 0 / 0%. Chance of death falls: bare 60 30.4 to 27.8% / 31.3 to 28.5%, 50 60.4 to 57.0 / 59.7 to 55.7, 40 64.8 to 60.4 / 63.6 to 60.9, 30 96.6 to 96.1 / 96.8 to 96.5, 20 73.5 to 70.6 / 72.9 to 70.6. Damage taken falls 0.3 to 0.8%. The raid's chance of death is 0% either way. Other variants: on cooldown loses up to 3.6% threat at bare 20; below 50% health saves less. For a non-Dwarf (the horde Undead) the line is unresolved, as the smoke test's excuse records; data/pipeline/apl.py lists 20594 as a racial with no class family. | variant rotations; curated, sim/request and fork copies; `make apl-check`, test_apl.py, smoke tests pass | adopted (threat-neutral, survival up) | - | S 9bd2b3112, E 03f0b4b6d |
+| W6-3 | **Protection warrior: no Stoneform line.** Dwarf alliance, 3,000 iterations: chance of death is 0% at every band with or without it. Threat loses 0.0 to 0.4% (on cooldown up to 0.4%; below 70% 0.2 to 0.4% at bare 50/60). Tanks are judged on threat, so the list is unchanged. | variant rotations | Aligned (not adopted) | - | - |
+| W6-4 | **Judgement of the Crusader never reached Consecration's ticks.** Consecration added its 0.042 spell-power share by hand. The engine adds bonus Holy damage taken through a dot's BonusCoefficient, which Consecration left at 0, so the raid preset's Judgement of the Crusader (+161) skipped every tick. The share is now the ground effect's BonusCoefficient. That also gives it the level-gap rule through core, replacing wave 3's hand-applied penalty: the same values, now tested on the registered spell. Regenerated fork golden: sim/paladin/protection/TestProtection.results (DPS +1.1%, TPS +1.1%). | `TestCrusaderReachesConsecrationTicks` failed first (2205.0 both ways), then passed; `TestConsecrationCoefficientFollowsTheLevelGap` (rewritten against the registered dot) passes | CONFIRMED-BUG | old | E c0e541b7a |
+| W6-5 | **A paladin's own Judgement of the Crusader was rank 1's 23 at every rank.** sotc.go registered the one target aura ("Judgement of the Crusader") rank by rank through GetOrRegisterAura, so the first rank's bonus won. A level-30 or level-50 paladin judging Crusader added 23 Holy damage taken, not 58 or 127 (20300 and 20302; spellconst/paladin.json). The aura is now registered once with the top learned rank's bonus. The raid preset's debuff, which uses its own rank table, was not affected. | `TestOwnCrusaderJudgementUsesTheTopRankBonus` failed first (23 at 50 and 30), then passed | CONFIRMED-BUG | old | E a855c59ee |
+| W6-6 | **Retribution's Crusader opener (PALADIN-R3-6) gains.** When the target has no Judgement of the Crusader (bare bands, solo), the list seals Crusader rank 6 at -1.5 s, judges it on the first swing, then puts up its primary Seal. When the raid's debuff is already up, the old seal prepull runs. Forever's Judgement keeps the Seal (spelltips 20271) and the debuff lasts 40 s, refreshed by the paladin's own melee (core/debuffs.go:304-331), so one Seal and one Judgement cover the fight. Before W6-5 the opener measured as a loss (-0.5% at bare 60, -4.2% on a 30 s pull) because the debuff was worth 23. After it (alliance and horde, seeds 1 / 50001, all four within 0.3 points): bare 60 +9.0 to +9.2%, 50 +4.1 to +4.3% (this includes wave 3's Consecration level-gap cost; the opener alone is +9.1%), 40 +11.1 to +11.2%, 30 +11.4 to +11.8%, 20 +9.3 to +9.5%. A 30 s pull at 60: 289.9 to 305.8 (+5.5%). Raid 60 is unchanged by this line. Forever source for the play: Mobalytics' Forever Retribution guide ("Put on Seal of the Crusader as you run up to an enemy and use Judgement on them as you do your first Auto Attack", via guide round 3). | variant rotation, then curated list; three copies; tests pass | adopted | guides-handoff | S ba590bcc7, E 2082a45ed |
+
+**Wave 6 before/after** (10,000 iterations; before = $R/sb-before; seed 1, the seed-50001 % in brackets):
+
+| spec | band | alliance | horde |
+|---|---|---|---|
+| Retribution | raid 60 | 761.98 to 769.59, +1.00% (+1.00) | 757.35 to 764.92, +1.00% (+1.00) |
+| Retribution | bare 60 | 264.22 to 288.45, +9.17% (+9.06) | 266.66 to 290.54, +8.96% (+8.98) |
+| Retribution | bare 50 | 174.12 to 181.60, +4.30% (+4.14) | 173.75 to 181.20, +4.29% (+4.30) |
+| Retribution | bare 40 | 113.67 to 126.37, +11.17% (+11.05) | 112.27 to 124.88, +11.23% (+11.07) |
+| Retribution | bare 30 | 72.54 to 81.06, +11.75% (+11.64) | 73.47 to 81.85, +11.41% (+11.42) |
+| Retribution | bare 20 | 40.41 to 44.18, +9.33% (+9.40) | 37.08 to 40.61, +9.52% (+9.51) |
+| Protection (threat) | raid 60 | 1113.8 to 1128.6, +1.33% (+1.37) | 1125.5 to 1140.7, +1.35% (+1.35) |
+
+Where the raid gains come from: Retribution +1.0% and Protection +1.35% are W6-4 alone, since the raid preset carries Judgement of the Crusader. Protection's bare bands are W6-2 only (threat level, chance of death down). Holy is untouched by wave 6.
+
+**Wave 6 files to regenerate:**
+- TestRotationLadder goldens for paladin-retribution (every band, the opener) and paladin-protection (raid 60 from W6-4; Dwarf bands from W6-2).
+- Retribution and Protection BiS, weights and dps-per-point at the refresh.
+- Coach starters that carry the Retribution list.
+- The fork golden TestProtection.results was regenerated here (E c0e541b7a).
+
+**Wave 6, for the guide lane** (I wrote no notes: the new APL lines have no `notes`, and their cards need one):
+- retribution.md:93 and :119 take round 3's text. :93's last sentence: "On your own, open with Seal of the Crusader, Judge it on your first swing, then put up Seal of Righteousness: your swings keep the debuff up, so one Judgement adds Holy damage to every Seal proc, Judgement, Holy Strike and Consecration tick for the rest of the fight." :119: "Pull with Seal of the Crusader and a Judgement on your first swing, then Seal of Righteousness and Holy Strike on cooldown."
+- Card notes needed in paladin-retribution.json:
+  - The Crusader prepull: "On your own, Seal of the Crusader before the pull: its Judgement on your first swing makes the target take more Holy damage for the whole fight, because your swings keep it up. Skip it when another paladin's Crusader is already on the target."
+  - The primary-Seal line: "Right after that Judgement, swap to your damage Seal."
+- Protection Stoneform card note: "Dwarf: Stoneform when you drop under 70% health. Ten percent less physical damage for 8 seconds, on the global cooldown, every 3 minutes."
+
+**For other lanes:** W6-1 is shared (racials.go) and changes no published number. A Dwarf DPS list that casts Stoneform loses a GCD per cast; none does.
+
+## Calls
+
+- **Exorcism never crits: decided yes, the engine rule stays.** Reason: no Forever source speaks to it, and the client carries no can't-crit flag. The only direct evidence is the beta logs, 0 crits in 641 Exorcism hits from 39 paladins at levels 20 to 30 against about 35 expected (18 of 367 Judgement of Righteousness crits by the same players). Chance alone cannot explain that, so it is the server's rule. Uncertainty: the logs predate 70755, cover levels 20 to 30 only, and a server rule can change without a client row. Re-check on the first level-60 log after launch. Sources: foreverlogs.gg beta logs fetched 2026-11-02 (exorcism.go:86-92); wago SpellMisc and SpellCategories 1.60.1.70755 and 1.15.9.70576 (no can't-crit bit, DefenseType 1 in both); Wowhead Forever tooltip 879 (read 2026-11-03); a web search found no Forever statement (2026-11-03).

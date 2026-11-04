@@ -155,6 +155,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 17116}": "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",
 		"{SpellID: 18562}": "Swiftmend is a talent (sim/druid/swiftmend.go); this build takes none.",
 	},
+	"paladin-protection": {
+		"{SpellID: 20594}": "Stoneform is the Dwarf racial (sim/core/racials.go); this build is not a Dwarf.",
+	},
 	"paladin-holy": {
 		"{SpellID: 20216}":   "Divine Favor is a talent (sim/paladin/divine_favor.go); this build takes none.",
 		"{SpellID: 20930}":   "Holy Shock (rank 4, the rank the rotation names) is a talent (sim/paladin/holy_shock.go); this build takes none.",
