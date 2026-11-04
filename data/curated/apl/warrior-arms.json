@@ -226,6 +226,7 @@
         }
       },
       {
+        "notes": "On cooldown, right after Mortal Strike: your next four swings each bring 5 more rage, for a quarter of your base health the healers cover.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -280,6 +281,7 @@
         }
       },
       {
+        "notes": "Battle Stance only, when Mortal Strike, Overpower and Slam are all waiting: a second weapon strike that hits twice as hard on dragons and giants.",
         "action": {
           "castSpell": {
             "spellId": {
