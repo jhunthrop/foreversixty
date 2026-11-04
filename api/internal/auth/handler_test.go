@@ -39,7 +39,7 @@ func newHarness(t *testing.T) *harness {
 	quiet := slog.New(slog.NewTextHandler(io.Discard, nil))
 	a := &Authenticator{Store: store, Log: quiet}
 	svc := &Service{
-		Store: store, Auth: a, Mailer: mailer, Log: quiet,
+		Store: store, Auth: a, Mailer: mailer, Log: quiet, EmailSignIn: true,
 		Entitlements:  &entitlements.Store{Pool: store.Pool},
 		PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg",
 	}

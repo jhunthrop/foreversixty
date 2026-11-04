@@ -102,7 +102,7 @@ func TestEveryPhase3RouteIsMounted(t *testing.T) {
 	h := logsRouter(t)
 	for _, tc := range []struct{ method, path string }{
 		{http.MethodGet, "/v1/auth/battlenet/start"},
-		{http.MethodPost, "/v1/auth/email"},
+		{http.MethodGet, "/v1/auth/email/callback?token=x"},
 		{http.MethodGet, "/v1/me"},
 		{http.MethodDelete, "/v1/sessions"},
 		{http.MethodPost, "/v1/devices/pair"},
@@ -133,6 +133,18 @@ func TestEveryPhase3RouteIsMounted(t *testing.T) {
 		if strings.Contains(w.Body.String(), "no such route") {
 			t.Errorf("%s %s is not mounted: %d %s", tc.method, tc.path, w.Code, w.Body.String())
 		}
+	}
+}
+
+// The emailed sign-in link is dark by default (EMAIL_SIGN_IN): POST /v1/auth/email is the
+// router's own 404, while the link's landing stays mounted so a link already sent redeems.
+func TestEmailSignInIsNotMountedByDefault(t *testing.T) {
+	h := logsRouter(t)
+	r := httptest.NewRequest(http.MethodPost, "/v1/auth/email", strings.NewReader("{}"))
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, r)
+	if w.Code != http.StatusNotFound || !strings.Contains(w.Body.String(), "no such route") {
+		t.Fatalf("POST /v1/auth/email = %d %s, want the router's 404", w.Code, w.Body.String())
 	}
 }
 
@@ -188,7 +200,7 @@ func TestRouterDegradesHonestlyWithoutR2OrBattleNet(t *testing.T) {
 	// this deployment is missing two credentials, not broken.
 	for _, tc := range []struct{ method, path string }{
 		{http.MethodGet, "/health"},
-		{http.MethodPost, "/v1/auth/email"},
+		{http.MethodPost, "/v1/devices/claim"},
 		{http.MethodGet, "/v1/rankings?encounter=1"},
 		{http.MethodGet, "/reports/" + rep.ID + "/card.png"},
 	} {

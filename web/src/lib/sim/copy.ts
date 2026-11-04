@@ -257,11 +257,15 @@ export const simCopy = {
   yourCharacters: 'Your characters',
   simIt: 'Sim',
   otherCharacter: 'Sim something else',
-  noCharactersYet: 'No characters yet. Sign in with Battle.net, or paste an export below.',
-  // The /logs link's own visible text, fix round 1 LOW-1: was a literal "Logs" and a
-  // trailing "." in SimView.svelte's template, outside this file's "every user-visible
-  // string" rule.
-  noCharactersYetLink: 'Logs.',
+  /** Signed in with no characters: never a sign-in prompt. The link is /account, where the
+   *  list can be refreshed from Battle.net. */
+  noCharactersYet:
+    'No characters yet: they are on their way from Battle.net. Paste an export above meanwhile, or check',
+  noCharactersYetLink: 'your account.',
+  noCharactersYetHref: '/account',
+  /** The switcher's "Your characters" card for the same visitor. */
+  charactersOnTheirWay: 'On their way from Battle.net.',
+  yourAccount: 'Your account',
 
   // --- Task 12: the settings bar. Fight length, targets, execute phase and a named buff
   // preset; the rotation is stated by name rather than offered as a control, since the APL

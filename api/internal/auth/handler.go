@@ -138,6 +138,9 @@ type Service struct {
 	// AppSignIn mounts the native app sign-in (app_auth.go). Only config.AppSignIn sets it,
 	// and it needs BNet as well.
 	AppSignIn bool
+	// EmailSignIn mounts POST /v1/auth/email. Only config.EmailSignIn sets it; off, the route
+	// answers 404. The callback is mounted regardless, so a link already sent still redeems.
+	EmailSignIn bool
 }
 
 // Mount registers the sign-in, device, and account routes. The Battle.net
@@ -152,8 +155,10 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 			mountApp(mux, s, trustedProxyHops)
 		}
 	}
-	emailLimit := httpx.RateLimitPer(emailsPerHour, time.Hour, trustedProxyHops)
-	mux.Handle("POST /v1/auth/email", emailLimit(http.HandlerFunc(s.emailStart)))
+	if s.EmailSignIn {
+		emailLimit := httpx.RateLimitPer(emailsPerHour, time.Hour, trustedProxyHops)
+		mux.Handle("POST /v1/auth/email", emailLimit(http.HandlerFunc(s.emailStart)))
+	}
 	mux.HandleFunc("GET /v1/auth/email/callback", s.emailCallback)
 	mux.HandleFunc("POST /v1/auth/logout", s.logout)
 	// The site's own sign-out. It is the same act as the contract's

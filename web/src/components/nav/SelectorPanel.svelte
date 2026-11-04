@@ -208,9 +208,6 @@
 {#snippet signInButtons()}
   <div class="csel-signin" data-testid="selector-sign-in">
     <a class="csel-cta" href={signInHref} data-testid="selector-sign-in-bnet">{selectorCopy.signInBnet}</a>
-    <a class="csel-cta is-secondary" href={selectorCopy.signInHref} data-testid="selector-sign-in-email"
-      >{selectorCopy.signInEmail}</a
-    >
   </div>
 {/snippet}
 
