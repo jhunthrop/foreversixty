@@ -42,7 +42,7 @@ Arcane stacks Arcane Blast for spell damage, fills with Frostbolt, fires free Mi
 ### Weaknesses
 
 - The most mana-hungry spec: a stacked Arcane Blast costs five times a fresh one
-- No Ice Block, since it sits 15 points into Frost
+- No Ice Block: the build already puts 16 points in Frost and has no point to spare for it
 - Arcane Power's burst pulls threat on a tank who is still building
 
 ### In a raid
@@ -80,7 +80,7 @@ Skip Flame Throwing and Impact: Fire Blast on the move is the only Fire spell yo
 
 **AoE.** Arcane Explosion is instant and hits everything within 10 yards, so you stand in the pack with the tank and spam it. It costs 390 mana a cast, which drains a full bar in under a minute: let the tank get two or three seconds of threat, Frost Nova when the pack turns on you and Blink out. On spread packs or anything that hits hard, stand back and Blizzard instead.
 
-**Threat.** You out-burst the tank in the first ten seconds. Frost Channeling cuts 30% of the threat from your Frostbolts, and the raid build's Arcane Subtlety does the same for your Arcane spells, but there is no Invisibility and no Ice Block for Arcane: if the boss turns, stop casting, let the tank taunt and wait. On a fresh pull, give the tank a Sunder or two before Arcane Power.
+**Threat.** You out-burst the tank in the first ten seconds. Frost Channeling cuts 30% of the threat from your Frostbolts, and the raid build's Arcane Subtlety does the same for your Arcane spells, but there is no Invisibility, and the build has no spare point for Ice Block: if the boss turns, stop casting, let the tank taunt and wait. On a fresh pull, give the tank a Sunder or two before Arcane Power.
 
 **Movement.** Arcane Blast, Frostbolt and Missiles all need you standing still. If you know a move is coming, hold Presence of Mind for an instant Frostbolt on the run, Blink through anything you need to cross, and use Fire Blast, or Arcane Explosion when the boss walks into you.
 

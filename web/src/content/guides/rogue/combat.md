@@ -109,7 +109,7 @@ Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **
 
 ## Races
 
-Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** gives you 5% more energy, which is exactly what an energy-starved Backstab rotation wants: press Eureka! inside Adrenaline Rush. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc and Night Elf are next; Troll trails. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
+Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** gives you 5% more energy. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc and Night Elf are next; Troll trails. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
 
 ## Professions
 

@@ -92,7 +92,7 @@ Right after Shadowform the leveling build puts two points into Wand Specializati
 
 **Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice.
 
-**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up, Gnome Eureka! on a Mind Blast, a Shadow Word: Death and the Mind Flay after them (it skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh).
+**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up, Gnome Eureka! on a Mind Blast and a Shadow Word: Death (it skips every periodic tick, Mind Flay's included, so never spend it on a refresh).
 
 ## Stat priority
 

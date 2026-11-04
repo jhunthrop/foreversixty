@@ -69,7 +69,7 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 
 **Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** and one point of **Repentance** are filler on the way to Champion of the Light, since nothing else in the tree adds damage there. Repentance still earns its point in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
 
-In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your Spirit regeneration running after you cast, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. With raid buffs at 60, hit is your best stat per point until you reach the cap.
+In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your mana regeneration running while you cast, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. With raid buffs at 60, hit is your best stat per point until you reach the cap.
 
 Leveling order: Benediction and Improved Judgement first, then Conviction and Sanctified Judgement, then down the tree to Champion of the Light by level 40.
 
