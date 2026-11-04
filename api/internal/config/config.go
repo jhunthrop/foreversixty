@@ -130,6 +130,13 @@ type Config struct {
 	// POST /v1/auth/app/exchange and POST /v1/auth/app/logout. Off by default; the routes
 	// answer 404 until the apps ship. It needs Battle.net configured to do anything.
 	AppSignIn bool
+	// EmailSignIn (EMAIL_SIGN_IN=true) mounts POST /v1/auth/email, the emailed sign-in link.
+	// Off by default since launch (Battle.net is the only sign-in); with it off the route
+	// answers 404. It is the Battle.net-outage fallback: the web build has no email entry
+	// point, so turning it on alone brings back no button (api/README.md says what else).
+	// The link's landing, GET /v1/auth/email/callback, stays mounted either way so a link
+	// already sent still redeems.
+	EmailSignIn bool
 	// AppWidgets (APP_WIDGETS=true) mounts the mobile live surfaces (Wave 3 lane F14):
 	// GET /v1/me/widget and POST, DELETE /v1/me/live-activities. Off by default; the routes
 	// answer 404 until the apps' widgets ship.
@@ -286,6 +293,7 @@ func Load(getenv func(string) string) (Config, error) {
 	}
 	c.BnetImportCharacters = getenv("BNET_IMPORT_CHARACTERS") != "false"
 	c.AppSignIn = getenv("APP_SIGN_IN") == "true"
+	c.EmailSignIn = getenv("EMAIL_SIGN_IN") == "true"
 	c.AppWidgets = getenv("APP_WIDGETS") == "true"
 	if err := loadAppTokenLifetimes(&c, getenv); err != nil {
 		return Config{}, err

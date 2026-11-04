@@ -39,7 +39,7 @@ test('a content page carries the same character selector as every other page', a
   await page.goto('/guides');
   await expect(page.locator('astro-island[component-url*="CharacterSelector"]')).toHaveCount(1);
   await page.getByRole('banner').getByRole('button', { name: 'Sign in or choose a character' }).click();
-  await expect(page.getByTestId('selector-sign-in-email')).toHaveAttribute('href', /\/login/);
+  await expect(page.getByTestId('selector-sign-in-bnet')).toHaveAttribute('href', /battlenet/);
 });
 
 // Owner rule (wide-screen): one centred site column for the whole site. Base.astro wraps every

@@ -851,6 +851,20 @@ html[data-session='1']:not([data-home-signed-out]) .home-signed-out-block {
   }
 }
 
+/* Signed in with no account character (HOME_NO_HERO_ATTR, lib/home-panel-copy.ts): the hero
+   keeps the signed-out shape but swaps its sentence and sign-in row for the no-character ones,
+   and shows from first paint when the cached /v1/me already said so (index.astro), so the
+   data-session-hide visibility hold does not apply. */
+html:not([data-home-no-hero]) .home-no-hero-only,
+html[data-home-no-hero] .home-out-only {
+  display: none;
+}
+html[data-home-no-hero] .home-signed-out-block,
+html[data-home-no-hero] [data-testid='home-launch-panel-wrap'],
+html[data-home-no-hero] #home-get-set-up-signed-out {
+  visibility: visible;
+}
+
 /* Home "Get set up" row, signed in (owner 2026-10-29, fix round 1): the signed-out three-step card
    is gone from first paint (display:none off the same hint as the hero, not the visibility hide
    that kept its ~100 px as an empty band above "Latest" until the island ran), and the one line
@@ -859,7 +873,7 @@ html[data-session='1']:not([data-home-signed-out]) .home-signed-out-block {
 html[data-session='1']:not([data-home-signed-out]) #home-get-set-up-signed-out {
   display: none;
 }
-html[data-session='1'] .home-get-set-up-root {
+html[data-session='1']:not([data-home-no-hero]) .home-get-set-up-root {
   min-height: 2.75rem;
 }
 html[data-session='1']:not([data-home-signed-out]) [data-testid='home-companion-row'] {
@@ -877,10 +891,13 @@ html[data-session='1']:not([data-home-signed-out]) [data-testid='home-companion-
    lands before layout settles, so this never causes a visible shift either direction, and
    (unlike `data-session-hide`'s visibility toggle for the hero's own same-shaped overlay)
    `display:none` costs no reserved height for the common case that never shows it. */
-html[data-session='1'] [data-signed-out-only] {
+html[data-session='1']:not([data-home-signed-out]) [data-signed-out-only] {
   display: none;
 }
-html:not([data-session='1']) [data-signed-in-only] {
+/* The home page with a session but no account character (data-home-signed-out, set only on
+   the home page) renders the rows below the hero as a signed-out visitor sees them. */
+html:not([data-session='1']) [data-signed-in-only],
+html[data-home-signed-out] [data-signed-in-only] {
   display: none;
 }
 

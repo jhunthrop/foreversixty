@@ -41,17 +41,7 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
   expect(href).toContain('/v1/auth/battlenet/start?next=');
   expect(decodeURIComponent(href!.split('next=')[1])).toBe('/connect?code=KQ4-7TM');
 
-  // The email form carries the same next.
-  let emailBody: unknown = null;
-  await page.route('**/v1/auth/email', (route) => {
-    emailBody = route.request().postDataJSON();
-    return route.fulfill(fulfil(ok({ sent: true }), 202));
-  });
-  await page.getByTestId('connect-email-toggle').click();
-  await page.getByLabel('Email address').fill('thrall@example.com');
-  await page.getByRole('button', { name: 'Send link' }).click();
-  await expect(page.getByTestId('connect-email-note')).toBeVisible();
-  expect(emailBody).toEqual({ email: 'thrall@example.com', next: '/connect?code=KQ4-7TM' });
+  await expect(page.getByTestId('connect-email-toggle')).toHaveCount(0);
 
   // Back from sign-in: pending, with the device panel reserved at 88px.
   await page.unroute('**/v1/me');

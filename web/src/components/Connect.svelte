@@ -6,14 +6,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import {
-    EMAIL_SENT,
     battlenetStartUrl,
     connectDeviceApprove,
     connectDeviceDeny,
     connectDeviceLookup,
     fetchMeOnce,
     forgetSignedInState,
-    requestEmailLink,
     signOut,
     type ConnectDevice,
     type Me,
@@ -28,9 +26,6 @@
   let me = $state<Me | null>(null);
   let device = $state<ConnectDevice | null>(null);
   let busy = $state(false);
-  let showEmail = $state(false);
-  let email = $state('');
-  let emailNote = $state('');
   // What "Try again" repeats: the load, or the approve that could not reach the site.
   let retry: () => void = () => {};
 
@@ -96,19 +91,6 @@
     state = 'signedOut';
   }
 
-  async function onEmail(event: SubmitEvent): Promise<void> {
-    event.preventDefault();
-    busy = true;
-    try {
-      await requestEmailLink(email.trim(), undefined, nextPath);
-      emailNote = EMAIL_SENT;
-    } catch (error) {
-      emailNote = error instanceof Error ? error.message : '';
-    } finally {
-      busy = false;
-    }
-  }
-
   const onClose = (): void => {
     // A tab the companion opened can close itself; any other falls through to the link's href.
     window.close();
@@ -151,40 +133,6 @@
       >
         {connectCopy.battlenet}
       </a>
-      {#if !showEmail}
-        <button
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong justify-center px-4"
-          onclick={() => (showEmail = true)}
-          data-testid="connect-email-toggle"
-        >
-          {connectCopy.emailToggle}
-        </button>
-      {:else}
-        <form class="flex flex-col gap-3" onsubmit={onEmail} data-testid="connect-email-form">
-          <label class="sr-only" for="connect-email">{connectCopy.emailLabel}</label>
-          <div class="flex gap-3">
-            <input
-              id="connect-email"
-              class="border-line-warm bg-raised rounded-control text-text h-11 min-w-0 flex-1 px-3 text-[15px]"
-              type="email"
-              autocomplete="email"
-              placeholder="you@example.com"
-              required
-              bind:value={email}
-            />
-            <button
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
-              type="submit"
-              disabled={busy}
-            >
-              {connectCopy.emailSend}
-            </button>
-          </div>
-          {#if emailNote !== ''}
-            <p class="text-[13px]" role="status" data-testid="connect-email-note">{emailNote}</p>
-          {/if}
-        </form>
-      {/if}
     </div>
   {:else if state === 'pending' && device !== null}
     <h1 class="heading-page">{connectCopy.pendingTitle(device.name, who)}</h1>

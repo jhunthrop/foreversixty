@@ -26,6 +26,19 @@ func TestAppSignInIsOffUnlessExactlyTrue(t *testing.T) {
 	}
 }
 
+// The emailed sign-in link is dark: off unless EMAIL_SIGN_IN is exactly true.
+func TestEmailSignInIsOffUnlessExactlyTrue(t *testing.T) {
+	for v, want := range map[string]bool{"": false, "1": false, "TRUE": false, "true": true} {
+		c, err := Load(appEnv(map[string]string{"EMAIL_SIGN_IN": v}))
+		if err != nil {
+			t.Fatalf("EMAIL_SIGN_IN=%q: %v", v, err)
+		}
+		if c.EmailSignIn != want {
+			t.Errorf("EMAIL_SIGN_IN=%q: EmailSignIn = %v, want %v", v, c.EmailSignIn, want)
+		}
+	}
+}
+
 func appEnv(extra map[string]string) func(string) string {
 	m := map[string]string{
 		"DATABASE_URL": "postgres://x", "RESEND_API_KEY": "k",

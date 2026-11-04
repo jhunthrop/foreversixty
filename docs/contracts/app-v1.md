@@ -142,8 +142,9 @@ A new account with no characters answers `characters: []`, `guilds: []` (fixture
 
 Characters arrive from Battle.net first: every Battle.net sign-in (web or app) imports the
 account's Forever characters from `profile-forever-{us,eu,tw}` before it answers, so the first
-`/v1/me` after sign-in already lists them; gear, talents and guild follow within a couple of
-minutes. The addon export stays the source for bags and bank, and the only source in KR or while
+`/v1/me` after sign-in already lists them. Gear, talents and guild follow once Blizzard publishes
+the character's public profile (on launch night every new character's profile answered 404); the
+sign-in and the nightly refresh both try, so `build` appears without another sign-in. The addon export stays the source for bags and bank, and the only source in KR or while
 Blizzard's API is down. `name` is the full display name, first name and surname ("Elyra
 Duskvale"): show it whole wherever a character is named. A Forever character carries no `realm`.
 

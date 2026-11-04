@@ -87,7 +87,7 @@ test('the home page offers Battle.net sign-in when signed out', async ({ page })
   await expect(page.getByTestId('home-another-class')).toBeHidden();
 });
 
-test('a signed-in visitor with zero characters still sees the Battle.net sign-in CTA, not a blank hero', async ({
+test('a signed-in visitor with zero characters sees no sign-in: the arrival line, Check again, the addon, and the signed-out rows', async ({
   page,
 }) => {
   await page.route('**/v1/me', (route) =>
@@ -109,7 +109,13 @@ test('a signed-in visitor with zero characters still sees the Battle.net sign-in
   const signedOut = page.getByTestId('home-signed-out');
   await expect(signedOut).toBeVisible();
   await expect(signedOut).not.toHaveAttribute('inert');
-  await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeHidden();
+  await expect(page.getByTestId('home-no-character')).toBeVisible();
+  await expect(page.getByTestId('home-check-again')).toBeVisible();
+  await expect(page.getByTestId('home-no-character-paste')).toHaveAttribute('href', '/setup#paste');
+  await expect(page.getByTestId('home-no-character-addon')).toHaveAttribute('href', '/setup');
+  await expect(page.getByTestId('home-class-picker-large')).toBeVisible();
+  await expect(page.getByTestId('home-upgrades')).toBeHidden();
 });
 
 test('a signed-in panel shows the shared header, the two next-action cards, and hides the signed-out door', async ({

@@ -2,7 +2,6 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { currentCharacterCopy } from '../../lib/current-character-copy';
-import { emailLinkCopy } from '../../lib/account/signin-copy';
 import { landingCopy } from '../../lib/sim/landing-copy';
 import { simCopy } from '../../lib/sim/copy';
 import SourceSwitcher from './SourceSwitcher.svelte';
@@ -61,8 +60,7 @@ describe('SourceSwitcher', () => {
       expect(paste[0]).not.toContain('linear-gradient');
       expect(body).toContain(landingCopy.signInWithBattlenet);
       expect(body).toContain(landingCopy.pasteAnExport);
-      expect(body).toContain(emailLinkCopy.link);
-      expect(body).toContain('href="/login"');
+      expect(body).not.toContain('data-testid="sim-email-link"');
     });
 
     it('puts the hero card ahead of the three paste cards', () => {

@@ -3,17 +3,19 @@ package bnetapi
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"os"
 	"testing"
 )
 
-// Fixtures under testdata/forever/ are live responses probed 2026-11-03
-// (realm index trimmed to three realms, nothing personal in any of them),
-// except account-profile-modeled.json: no user token was available to the
-// probe, so that one is modeled on the owner's notes (a surname field, no
-// realm, a protected-character link carrying {realmId}-{characterId}) over
-// the classic account-profile shape, with fictional characters.
+// Fixtures under testdata/forever/ are live responses: the realm index (trimmed
+// to three realms), realm details and the static class index, probed
+// 2026-11-03, and account-character-live.json, one entry from a real sign-in
+// on 2026-11-04 with its identity scrubbed. That entry has a surname, no realm,
+// and the realm id only in the protected-character link; its public profile
+// answered 404. account-profile-modeled.json was written before any user
+// token was available and matches that live shape, with fictional characters.
 
 func fixtureBytes(t *testing.T, name string) []byte {
 	t.Helper()
@@ -53,6 +55,33 @@ func TestAccountCharactersReadsForeverSurnamesAndRealmIDs(t *testing.T) {
 	}
 	if chars[1].RealmID != 6928 || chars[1].Faction != "horde" || chars[1].ClassSlug != "warrior" {
 		t.Fatalf("second = %+v", chars[1])
+	}
+}
+
+// TestAccountCharactersReadsTheLiveForeverEntry parses the live entry shape
+// (testdata/forever/account-character-live.json, a real sign-in, scrubbed):
+// a Skyborne race, level 1, the realm only in the protected-character link.
+func TestAccountCharactersReadsTheLiveForeverEntry(t *testing.T) {
+	var live struct {
+		Entry json.RawMessage `json:"entry"`
+	}
+	if err := json.Unmarshal(fixtureBytes(t, "account-character-live.json"), &live); err != nil {
+		t.Fatal(err)
+	}
+	fs := newFixtureServer(t)
+	fs.raw(http.MethodGet, "/profile/user/wow?namespace=profile-forever-us",
+		[]byte(`{"wow_accounts":[{"id":1,"characters":[`+string(live.Entry)+`]}]}`))
+	chars, err := foreverClient(fs).AccountCharacters(context.Background(), "us", "user-tok")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(chars) != 1 {
+		t.Fatalf("chars = %d", len(chars))
+	}
+	c := chars[0]
+	if c.Name != "Elyra Duskvale" || c.ID != 7001 || c.RealmID != 6800 || c.RealmSlug != "" ||
+		c.RaceName != "High Order Skyborne" || c.ClassSlug != "hunter" || c.Level != 1 || c.Faction != "alliance" {
+		t.Fatalf("char = %+v", c)
 	}
 }
 

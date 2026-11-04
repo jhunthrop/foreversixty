@@ -11,9 +11,11 @@ export const handoffCopy = {
    *  (character-list-copy.ts) -- this per-row line only points at the one action. */
   needsExportLead: 'No export yet ·',
   needsExportPasteLink: 'paste it here',
-  /** A Battle.net-imported character whose gear and talents have not arrived yet: they are on
-   *  their way from Blizzard, and the export is only the shortcut. */
-  battlenetPendingLead: 'Gear and talents on their way from Battle.net ·',
+  /** A Battle.net-imported character with no gear or talents yet. Blizzard publishes a character's
+   *  profile on its own schedule (launch night, 2026-11-04: every new character's profile answered
+   *  404), so this says when they come, never that they are coming soon; the nightly refresh
+   *  picks them up the day Blizzard publishes. */
+  battlenetPendingLead: 'Gear and talents appear once Battle.net publishes this character ·',
   battlenetPendingPasteLink: 'or paste an export',
   pasteHref: '/setup#paste',
 } as const;
