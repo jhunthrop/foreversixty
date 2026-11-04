@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:warrior:human:13323213032215201/0505/205:'
 raidBuild: 'FS1:1.60.1.70755:warrior:human:34323213032215201/0505002/2:'
 recommendedRaces: [human, orc]
-statPriority: [Strength, Attack power, Critical strike, Hit, Melee haste, Agility]
+statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'
 updated: 2026-11-02
 confidence: inferred
@@ -46,7 +46,7 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 - Mortal Strike is a big hit every 6 seconds that halves the healing on the target
 - Bloodthrill turns plain swings into extra Overpowers on a bleeding target
 - Rage held going into the execute phase becomes one huge Execute
-- Sweeping Strikes and Whirlwind hit up to four targets on trash
+- Sweeping Strikes copies five hits onto a second target and Whirlwind hits up to four, so trash packs go down fast
 
 ### Weaknesses
 
@@ -86,7 +86,7 @@ The raid build drops Iron Will for two more points of **Improved Heroic Strike**
 
 **Rage.** Bloodrage on cooldown whenever you are under 80 rage. Heroic Strike only when you are about to cap at 90 or more: below that, every point is worth more in Mortal Strike, Overpower and Execute. If a shaman drops Windfury Totem in your group, Hamstring on any free global: it is a cheap main-hand hit that can trigger the totem's extra attack. Without Windfury, never Hamstring for damage.
 
-**Execute.** From 25% stop Hamstring and let the rage build. At 20%, Execute in Battle Stance first: it spends your whole bar, so that first Execute is your biggest hit of the fight. Then swap to Berserker Stance (Improved Tactical Mastery keeps 25 rage) and press Recklessness, and Execute every global until the boss dies. Mortal Strike still works in Berserker Stance and goes before Execute with raid buffs; in a dungeon without them, Execute beats it. Overpower and Rend do not work there, so stay put.
+**Execute.** From 25% stop Hamstring and let the rage build. At 20%, Execute in Battle Stance first: it spends your whole bar, so that first Execute is your biggest hit of the fight. Then swap to Berserker Stance (Improved Tactical Mastery keeps 25 rage) and press Recklessness. From there, Mortal Strike on cooldown and Execute on every other global until the boss dies; in a dungeon without raid buffs, Execute goes first. Overpower and Rend do not work in Berserker Stance, so stay put.
 
 **Two or more targets.** Sweeping Strikes in Battle Stance, swap to Berserker Stance, Whirlwind. Whirlwind hits up to four targets and every Sweeping Strikes charge copies a hit onto a second one. Swap back for Overpower and Rend once Whirlwind is on cooldown. Use Cleave instead of Heroic Strike when two mobs are in front of you.
 
@@ -94,7 +94,7 @@ The raid build drops Iron Will for two more points of **Improved Heroic Strike**
 
 ## Stat priority
 
-Hit is worth the most until the cap above: a missed Mortal Strike or Overpower is a lost global and lost rage. Crit feeds Deep Wounds, Impale and Overpower. Every point of Strength is two attack power for a warrior, so Strength beats attack power point for point. Haste adds swings, and swings are rage.
+Hit is worth the most until the cap above: a missed Mortal Strike or Overpower is a lost global and lost rage. Crit feeds Deep Wounds, Impale and Overpower. Every point of Strength is two attack power for a warrior, so Strength beats attack power point for point. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
 
 ## Best in slot
 
@@ -108,7 +108,7 @@ Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes: press it wi
 
 ## Professions
 
-Blacksmithing and Mining. Blacksmithing makes Arcanite Champion, and Mining feeds it. Engineering is the PvP choice for its grenades.
+Blacksmithing and Mining. Blacksmithing makes Arcanite Champion, and Mining feeds it. Engineering is the other pick: Goblin Sapper Charges and Dense Dynamite on every trash pack, and grenades in PvP.
 
 ## Leveling
 

@@ -7,19 +7,18 @@ build: 'FS1:1.60.1.70755:warrior:dwarf:35300003/0/250533120330001351:'
 recommendedRaces: [dwarf, tauren]
 statPriority:
   [
-    Stamina,
-    Armor,
     Defense,
     Dodge,
+    Agility,
     Parry,
-    Block,
+    Stamina,
     Block value,
     Strength,
-    Agility,
-    Attack power,
-    Hit,
     Critical strike,
-    Expertise,
+    Attack power,
+    Armor,
+    Hit,
+    Block,
   ]
 description: 'Shield tank in Defensive Stance: Shield Slam and Revenge for threat, Shield Block and Thunder Clap for the hits, Sunder Armor in between.'
 updated: 2026-11-02
@@ -104,7 +103,7 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 ## Stat priority
 
-Stamina is health, and health is the one thing a healer cannot give you back mid-pull. Armor cuts every physical hit, though each point is worth a little less the more you stack. Defense, dodge and parry take hits out entirely, and Defense also lowers the chance to be crit and crushed. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Expertise stops the boss dodging and parrying you, which is threat and rage, not survival.
+Stamina is health, and health is the one thing a healer cannot give you back mid-pull. Armor cuts every physical hit, though each point is worth a little less the more you stack. Defense, dodge and parry take hits out entirely, and Defense also lowers the chance to be crit. Crushing blows come from the boss's level, not your defense; Shield Block on top of your dodge, parry and block is what pushes them off the table. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Weapon skill from gear like Edgemaster's Handguards cuts how often the boss dodges and parries you, which is threat and rage, not survival.
 
 ## Best in slot
 
@@ -114,12 +113,12 @@ Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for Stamina an
 
 ## Races
 
-Dwarf and Tauren are the tank picks; Tauren's Endurance is 5% more health. Night Elf's Quickness adds dodge.
+Dwarf and Tauren are the tank picks. Dwarf's Stoneform takes 10% off physical damage for 8 seconds every 3 minutes and clears bleeds and poisons, a small Shield Wall you can press on demand. Tauren's Endurance is 5% more health. Night Elf's Quickness adds 1% dodge.
 
 ## Professions
 
-Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feeds it. Engineering adds grenades for add pickups.
+Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feeds it. Engineering adds Goblin Sapper Charges, Dense Dynamite and grenades for trash and add pickups.
 
 ## Leveling
 
-Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, the Protection tables above show the build for each level range.
+Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, take Shield Specialization and Anticipation first; Shield Slam sits 30 points deep in Protection, so it is the last thing you reach.
