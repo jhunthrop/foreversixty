@@ -140,3 +140,12 @@ Raid 60 and bare 60 do not move (no row reaches them).
 **Files to regenerate (wave 2):** ladder goldens druid-balance and druid-restoration (bands 20, 30, 50); addon-data.json / Data.lua (the rank rows reach the addon's rotation export); band BiS/weights for druid-balance 20/30 and druid-restoration 20/30/50 at the refresh.
 
 **For other lanes:** `data/tests/test_addonrotation.py::test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts` fails on int/r16 without any druid change (paladin lane).
+
+## Wave 3: Feral Instinct in the cat raid build (guide round 12)
+
+Merged int/r16 0c649f929. The raid build `050022/50230032023012125001/055` takes Feral Instinct 3/3 (Swipe +30%, Prowl detection as if 3 levels higher). The cat never Swipes on a boss. Its tier-1 points are the 10-point gate to tier 2: Ferocity 5 + Feral Swiftness 2 + Feral Instinct 3.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W3-1 | **Alternatives legally stand in.** Furor (tier 0) and Thick Hide (tier 1) have no prerequisite. Every variant keeps 10 points in tiers 0-1 for the tier-2 gate: Furor 2 + Feral Instinct 1, Thick Hide 2 + Feral Instinct 1, Furor 3, and Thick Hide 3. All are 51 points.<br>**Raid 60, 10,000 iterations, both factions, seeds 1 and 50001:** every variant gives exactly the same DPS as the guide build: 886.1 / 885.6 (alliance) and 870.6 / 870.5 (horde). None of the three talents touches a cat's damage on the boss. Feral Instinct only matters to Swipe and to Prowl; Furor only on a shift into Cat Form, which the raid fight never makes; Thick Hide is armor. | `w2/fi.out` (lane dir) | Kept (no alternative gains; the sim cannot model any of the three) | - | - |
+| W3-2 | **Web check on the tie** (owner rule): the Forever sources give no raid consensus between the three. wow.gg's Forever feral guide suggests Feral Instinct for steadier stealth on the Prowl approach, which is the cat's Ravage opener. The Warcraft Tavern and Mobalytics Forever feral guides were listed but are beta-era. The point that does something for this build is the stealth for the opener, so the build stays. If the owner prefers survival, Thick Hide 3 in place of Feral Instinct 3 is a legal swap with the same DPS. That is a taste call. | wow.gg/guides/wow-forever-feral-druid-beta; warcrafttavern.com/forever/guides/feral-druid/; mobalytics.gg/wow-forever/classes/feral-druid-guide (searched 2026-11-04) | Kept (taste call, owner) | - | - |
