@@ -51,6 +51,14 @@ const WITH_ADDON_BUILD: MeCharacter = {
   build: { source: 'addon', captured_at: '2026-09-20T00:00:00Z' },
 };
 
+/** The rendered text, tags stripped and spaces collapsed: a descriptor's phrases are spans. */
+function text(html: string): string {
+  return html
+    .replace(/<!--.*?-->/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ');
+}
+
 describe('CharacterList', () => {
   it('marks the chosen main with a pill and offers Set as main on every alt', () => {
     const { body } = render(CharacterList, {
@@ -68,7 +76,7 @@ describe('CharacterList', () => {
     expect(body).toContain('/icons/hd/crests/warrior.webp');
     expect(body).not.toContain('/fixtures/avatar-placeholder.jpg');
     expect(body).not.toContain('data-testid="character-avatar-fallback"');
-    expect(body).toContain('Night Elf Priest · Level 60 · Whitemane (Hardcore US)');
+    expect(text(body)).toContain('Night Elf Priest · Level 60 · Whitemane (Hardcore US)');
   });
 
   it('shows a guilded, verified character with the guild line and a verified pill', () => {
@@ -82,7 +90,7 @@ describe('CharacterList', () => {
     const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
     expect(body).toContain('Thoradin');
     expect(body).not.toContain('data-testid="character-guild-line"');
-    expect(body).toContain('Warrior · PvP US');
+    expect(text(body)).toContain('Warrior · PvP US');
   });
 
   it('shows the export explanation once, as the panel footer line', () => {
@@ -108,10 +116,39 @@ describe('CharacterList', () => {
     expect(body).toContain('data-testid="character-open-sim"');
   });
 
-  it('shows "No export yet" and no simulator link for a character with no build', () => {
+  it('shows the short "No gear yet" and a Paste an export link, no sentence and no simulator link, for a character with no build', () => {
     const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
-    expect(body).toContain('data-testid="character-needs-addon"');
+    expect(body).toContain('data-testid="character-build-pill">No gear yet');
+    expect(body).toContain('data-testid="character-paste-export"');
+    expect(body).not.toContain('Battle.net publishes');
     expect(body).not.toContain('data-testid="character-open-sim"');
+  });
+
+  it('keeps each descriptor phrase on one line, wrapping only between phrases', () => {
+    const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
+    expect(body).toContain('<span class="whitespace-nowrap">Night Elf Priest ·</span>');
+    expect(body).toContain('<span class="whitespace-nowrap">Level 60 ·</span>');
+  });
+
+  it('puts the last-raid line under the rows, not above them', () => {
+    const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
+    expect(body.indexOf('data-testid="coach-last-raid"')).toBeGreaterThan(body.indexOf('</ul>'));
+  });
+
+  it('says what a Battle.net refresh did, and offers Try again when it did not answer', () => {
+    const changed = render(CharacterList, {
+      props: { characters: [GUILDED], refreshResult: { kind: 'changed', count: 5, added: 0 } },
+    });
+    expect(changed.body).toContain('Updated just now · 5 characters');
+    const unchanged = render(CharacterList, {
+      props: { characters: [GUILDED], refreshResult: { kind: 'unchanged', count: 1 } },
+    });
+    expect(unchanged.body).toContain('No changes · 1 character');
+    const failed = render(CharacterList, {
+      props: { characters: [GUILDED], refreshResult: { kind: 'error' } },
+    });
+    expect(failed.body).toContain(characterListCopy.refreshError);
+    expect(failed.body).toContain(characterListCopy.tryAgain);
   });
 
   it('shows EmptyState with one action (Refresh from Battle.net) when there are no characters', () => {

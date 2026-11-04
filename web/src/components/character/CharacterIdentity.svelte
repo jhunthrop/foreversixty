@@ -9,7 +9,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { MeCharacter } from '../../lib/account/api';
-  import { characterDescriptor } from '../../lib/account/character-descriptor';
+  import { characterDescriptorSegments } from '../../lib/account/character-descriptor';
   import { rulesetLabel } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
   import SupporterChip from '../SupporterChip.svelte';
@@ -69,12 +69,18 @@
     supporter?: boolean;
   } = $props();
 
-  const line = $derived(
+  /** After every phrase but the last, on the phrase's own line: a wrapped line ends with
+   *  "Level 1 ·" and the next starts clean. The space after it is where a line may break. */
+  const SEPARATOR = ' ·';
+  const SPACE = ' ';
+  // Each phrase stays on one line ("High Order Skyborne Warrior"); the line wraps only between
+  // them, never one word per line (2026-11-04, /account at 2000 px).
+  const segments = $derived(
     descriptor === 'full'
-      ? characterDescriptor(character)
+      ? characterDescriptorSegments(character)
       : descriptor === 'realm'
-        ? `${rulesetLabel(character.ruleset)} · ${character.region.toUpperCase()}`
-        : '',
+        ? [rulesetLabel(character.ruleset), character.region.toUpperCase()]
+        : [],
   );
   // The heading face only at lg and xl (spec 2026-09-23 §2.2; the face is polish spec
   // 2026-10-28 §4.4's): the account hero band is the one place CharacterIdentity's own name
@@ -82,7 +88,7 @@
   const nameClass = $derived(
     size === 'lg' || size === 'xxl' || size === 'xl'
       ? `w-fit max-w-full [overflow-wrap:anywhere] ${NAME_SIZE[size]} heading-name${size === 'xl' ? ` ${XL_NAME_CAP}` : ''}`
-      : `w-fit ${NAME_SIZE[size]} font-semibold`,
+      : `inline-block max-w-full truncate align-top ${NAME_SIZE[size]} font-semibold`,
   );
   const headingClass = $derived(`m-0 p-0 font-normal${size === 'xl' ? ` ${XL_NAME_BOX}` : ''}`);
 </script>
@@ -110,6 +116,7 @@
     <a
       class={nameClass}
       style:color={classColorVar(character.class)}
+      title={character.name}
       {href}
       onclick={onNameClick}
       data-testid={nameTestid}
@@ -134,8 +141,12 @@
     {:else}
       {@render nameElement()}
     {/if}
-    {#if line !== ''}
-      <span class="text-muted text-[13px]" data-testid={descriptorTestid}>{line}</span>
+    {#if segments.length > 0}
+      <span class="text-muted text-[13px]" data-testid={descriptorTestid}
+        >{#each segments as segment, index (index)}{#if index > 0}{SPACE}{/if}<span class="whitespace-nowrap"
+            >{segment}{index < segments.length - 1 ? SEPARATOR : ''}</span
+          >{/each}</span
+      >
     {/if}
     {#if below !== undefined}
       {@render below()}

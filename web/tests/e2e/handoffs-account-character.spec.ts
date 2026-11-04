@@ -6,7 +6,6 @@
 // (via the fetch-free armory-ref href) exactly when the character carries a `build`, and
 // "No export yet" otherwise; there is no per-row "Open in planner" link.
 import { expect, test } from './support/test';
-import { NEEDS_EXPORT_TEXT } from '../../src/lib/handoff-copy';
 
 function envelope(data: unknown, status = 200) {
   return {
@@ -45,6 +44,6 @@ test('a signed-in member sees hand-off links only for a character with a build',
   );
 
   const rolandRow = page.getByRole('listitem').filter({ hasText: 'Roland' });
-  await expect(rolandRow.getByTestId('character-needs-addon')).toHaveText(NEEDS_EXPORT_TEXT);
+  await expect(rolandRow.getByTestId('character-paste-export')).toHaveAttribute('href', '/setup#paste');
   await expect(rolandRow.getByTestId('character-open-sim')).toHaveCount(0);
 });

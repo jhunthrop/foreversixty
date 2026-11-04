@@ -1,7 +1,7 @@
 // web/src/lib/account/build-pill.ts
 // The build-source pill shown on the account page's Characters rows and the simulator
 // landing's "Your characters" rows (spec 2026-09-22 §3.1): "Battle.net · 2 days ago",
-// "Addon · today", or the muted "No build yet" for a character the site holds no export
+// "Addon · today", or the muted "No gear yet" for a character the site holds no export
 // for. One function so the two lists can never say this two different ways.
 import { relativeTime } from '../sim/sources';
 import { characterListCopy } from './character-list-copy';

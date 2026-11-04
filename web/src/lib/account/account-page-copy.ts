@@ -11,9 +11,11 @@ export const accountPageCopy = {
   signOut: 'Sign out',
   devicesLabel: 'Devices',
   reportsLabel: 'Your reports',
-  /** The current-character card's prompt when it has no export (polish spec 4.3). */
-  noExportPrompt:
-    'No gear or talents yet. They appear once Battle.net publishes this character; paste an export from the addon to see them now.',
+  /** The current-character card when it has no export: the one place the account says why
+   *  (design/specs/2026-11-04-account-characters.md section 4). */
+  noExportTitle: 'No gear or talents yet.',
+  noExportBody:
+    'Battle.net sends them after you next log out of the game. To see them now, paste an export from the addon.',
   youLabel: 'You',
   guildLabel: 'Guild',
   planLabel: 'Plan',
@@ -41,9 +43,6 @@ export const accountPageCopy = {
     viaBattlenet
       ? `Signed in as ${who}. Battle.net lists no Forever character on this account yet; make one in game, then refresh from Battle.net.`
       : `Signed in as ${who}. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.`,
-  /** Shown in the hero band instead of the handoff links when no character on the account
-   *  has a build at all (spec 2026-09-22 §3.1). */
-  noBattlenetDataForRealm: 'Battle.net sends gear and talents after you next log out of the game.',
   /** "Your ratings" panel heading (spec §3.1). */
   yourRatingsLabel: 'Your ratings',
 } as const;
