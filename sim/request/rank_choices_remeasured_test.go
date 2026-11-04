@@ -73,9 +73,9 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 }
 
 // A request's rank choices follow its character's race: the same Shadow priest at 40 casts
-// Mind Blast rank 4 as an Undead and rank 3 as a Dwarf.
+// Mind Blast rank 4 as an Undead and the top rank (6) as a Gnome (round 18).
 func TestBuildCastsTheRacesRankChoice(t *testing.T) {
-	for race, want := range map[string]string{"undead": `"spellId":8104`, "dwarf": `"spellId":8103`} {
+	for race, want := range map[string]string{"undead": `"spellId":8104`, "gnome": `"spellId":8106`} {
 		req := api.SimRequest{
 			EngineVersion: enginever.Version, Spec: "priest-shadow",
 			Source:    api.CharacterSource{Kind: api.SourceManual},
@@ -106,27 +106,32 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		level                           int
 		want, not                       int32
 	}{
-		// Mind Blast at 40: rank 4 (8104), but rank 3 (8103) for a Dwarf or a Night Elf.
-		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8104, 8103},
-		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8103, 8104},
-		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8103, 8104},
+		// Mind Blast at 40: rank 4 (8104) for a Dwarf or a Night Elf too, whom rank 3 (8103)
+		// never beats; a Gnome casts the top rank, 6 (8106). Re-judged level by level at
+		// sim-accuracy round 18.
+		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8106, 8104},
+		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8104, 8103},
+		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8104, 8103},
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned for every race.
 		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 10945, 8102},
 		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 10945, 8103},
-		// Devouring Plague at 50: rank 1 (2944), rank 2 (19276) for a Night Elf.
-		{"Undead Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 2944, 19276},
+		// Devouring Plague at 50: rank 2 (19276) for every race since sim-accuracy round 18
+		// (rank 1 for most races until then).
+		{"Undead Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "undead", 50, 19276, 2944},
 		{"Night Elf Devouring Plague at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 19276, 2944},
 		// Devouring Plague at bare 60: rank 2 for every race but the Undead.
 		{"Troll Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},
 		{"Night Elf Devouring Plague at bare 60", "priest-shadow", "priest", BarePreset, "night-elf", 60, 19276, 19280},
-		// Shadow Word: Death at 50: rank 2 for every race but the Human, who casts rank 3.
-		{"Human Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "human", 50, 1309635, 1309633},
+		// Shadow Word: Death at 50: rank 2 for every race, the Human too since sim-accuracy
+		// round 18 (+2.2% at 50, +1.5% at 56 over the top rank learned).
+		{"Human Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "human", 50, 1309633, 1309635},
 		{"Troll Shadow Word: Death at 50", "priest-shadow", "priest", BarePreset, "troll", 50, 1309633, 1309635},
 		// Rows no race loses with lose their race key: Fire Blast rank 3 (2138) at 30 and Prayer
 		// of Healing rank 1 at bare 60. (Corruption rank 3 at 40 was one; round 14 found it ties
 		// for every race, and the row is gone: see below.)
 		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2138, 8412},
-		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 596, 10961},
+		// Sim-accuracy round 18: rank 2 (996, whole at 60) beats rank 1 (596, 55% of its bonus) at bare 60.
+		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 996, 596},
 		// Protection's Holy Strike rank 1 (679) at 40: the mana it saves buys more Judgements
 		// and Hammers of the Righteous (+0.6% to +0.9% threat for every paladin race).
 		{"Dwarf Holy Strike at 40", "paladin-protection", "paladin", BarePreset, "dwarf", 40, 679, 2495},
