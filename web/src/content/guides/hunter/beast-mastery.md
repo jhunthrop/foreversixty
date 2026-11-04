@@ -154,4 +154,6 @@ Beast Mastery is the best way to level a hunter. Keep the pet within a few level
 
 Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
+Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. From 28, when the next rank arrives, keep rank 1 on your bar and cast that one all the way to 60. Out in the world your mana runs out long before the mobs do, and most of Aimed Shot's hit is your weapon: rank 1 costs a fraction of the top rank's mana for a little less damage, so you keep shooting longer. In a raid at 60, with Judgement of Wisdom on the boss and a mana potion, cast the top rank.
+
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get, and Bestial Wrath comes the same level.

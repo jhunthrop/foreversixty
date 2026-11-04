@@ -160,4 +160,6 @@ Marksmanship levels well, a little slower than Beast Mastery because more of the
 
 Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
+Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. From 28 to 49, keep rank 1 on your bar and cast that one: out in the world your mana runs out long before the mobs do, and most of Aimed Shot's hit is your weapon, so rank 1 keeps you shooting for a fraction of the mana. From 50 the top rank does as well, so cast the newest one. At 60, go back to rank 1 out in the world and cast the top rank in a raid, with Judgement of Wisdom on the boss and a mana potion.
+
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get.
