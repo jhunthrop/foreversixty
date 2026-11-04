@@ -65,7 +65,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Penance on cooldown.** On the tank whenever he is missing health, on a party member who drops low when the tank is fine. It is the heal you never let sit.
 
-**The shield is a switch.** Shield the tank at the top rank whenever Weakened Soul is off him. In Forever a shield no longer cuts a warrior's rage gain, so there is no reason to hold it back. The Weakened Soul it leaves is what Renewed Hope needs: your next heals on him gain 8% crit chance, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner.
+**The shield is a switch.** Shield the tank at the top rank whenever Weakened Soul is off him and your mana is keeping pace with the fight. In Forever a shield no longer cuts a warrior's rage gain, so there is no reason to hold it back. The Weakened Soul it leaves is what Renewed Hope needs: your next heals on him gain 8% crit chance, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner.
 
 **Renew** stays on the tank at rank 7 or higher.
 
