@@ -4,7 +4,7 @@ classSlug: hunter
 spec: marksmanship
 role: dps
 build: 'FS1:1.60.1.70755:hunter:dwarf:5320000501/005155000150305/5:'
-raidBuild: 'FS1:1.60.1.70755:hunter:dwarf:5/005355001150305/50005003:'
+raidBuild: 'FS1:1.60.1.70755:hunter:dwarf:5/0052550011503051/50005003:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Marksmanship Hunter in Forever: talents for leveling and raids, the shot priority, auto shot discipline, stats, consumables and race picks.'
