@@ -5,7 +5,7 @@ spec: affliction
 role: dps
 build: 'FS1:1.60.1.70755:warlock:gnome:25522300130201351/200522/005:'
 raidBuild: 'FS1:1.60.1.70755:warlock:gnome:2552001013500105/00052/0550004:'
-recommendedRaces: [gnome, troll]
+recommendedRaces: [gnome, orc]
 statPriority: [Spell power, Shadow power, Intellect, Hit, Critical strike, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
 updated: 2026-11-02
@@ -59,13 +59,13 @@ The leveling build is a real Affliction tree: Nightfall, Soul Siphon and Wrack m
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
 - **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your Corruption and Bane of Agony. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. Cheap and strong solo, weaker than Shadow Bolt in a raid.
 
-The raid build trades Nightfall, Soul Siphon, Wrack and Soul Harvest for three talents. It also moves the point from Improved Drains to Improved Bane of Agony for 5% more Bane of Agony damage, since a raid rotation casts no drain. Malevolence gives your Shadow spells 5% crit, DoT ticks included. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit; in Forever that debuff is yours alone, not the raid's. Four points of Ruin raise the crit bonus of your Shadow Bolt and Immolate by 80%. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
+The raid build trades Nightfall, Soul Siphon, Wrack and Soul Harvest for three talents. It also drops the three points of Improved Drains, since a raid rotation casts no drain, along with Improved Health Funnel and Improved Voidwalker, and takes one point of Improved Bane of Agony for 5% more Bane of Agony damage. Malevolence gives your Shadow spells 5% crit, DoT ticks included. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit; in Forever that debuff is yours alone, not the raid's. Four points of Ruin raise the crit bonus of your Shadow Bolt and Immolate by 80%. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
 
 ## Rotation and priority
 
 Before the pull, get set up: Demon Armor on, Succubus out, a Healthstone in your bag, and Life Tap to full mana while the healers top you off. The Succubus costs a shard where the Imp is free, but her melee and Lash of Pain do more damage than the Imp's Firebolt, and Unholy Power makes her hit harder still. Press Amplify Curse a few seconds before the pull. If the pull slips past 30 seconds, it is gone for three minutes, so press it on the countdown, not before.
 
-Once the tank has the boss, put up Corruption, then Bane of Agony while Amplify Curse is still on you, then Siphon Life and Immolate, and Shadow Bolt from then on. If your raid leader gives you Curse of Weakness, put Agony down before it: Amplify Curse goes to whichever of the two you cast first. If you hold the raid's Curse of the Elements, it goes on first and lasts five minutes. Curses and banes have their own slots in Forever, so Curse of the Elements and Bane of Agony sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two of them on one boss do not stack. Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid (505 armor), Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard.
+Once the tank has the boss, put up Corruption, then Bane of Agony while Amplify Curse is still on you, then Siphon Life and Immolate, and Shadow Bolt from then on. If your raid leader gives you Curse of Weakness, put Agony down before it: Amplify Curse goes to whichever of the two you cast first. If you hold the raid's Curse of the Elements, it goes on right after Corruption and lasts five minutes. Curses and banes have their own slots in Forever, so Curse of the Elements and Bane of Agony sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two of them on one boss do not stack. Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid (505 armor), Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard.
 
 Never clip a DoT. A recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end. Recast Corruption, Agony and Siphon Life when they fall off. Immolate is the one exception: start its cast with about 3 seconds left. It lands as the old one runs out, and the fresh direct hit is worth the last tick.
 
@@ -93,11 +93,11 @@ The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows 
 
 ## Enchants and consumables
 
-The table above is what the raid numbers assume. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for your Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+The table above is the standard raid kit. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for your Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
 
 ## Races
 
-Gnome and Troll are the picks. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Your DoTs get nothing from it, so press it as you start a run of Shadow Bolts. Expansive Mind's 5% more mana is real for a spec that taps. Berserking is 10% cast speed on a three minute cooldown: press it with your trinkets once the DoTs are up. Orc Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder. Undead's Touch of the Grave drains health from your target now and then, which helps a spec that pays for mana in health. Human's Ruthless is 1% crit and The Human Spirit raises Spirit, which feeds Life Tap.
+Gnome and Orc are the picks. Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Your DoTs get nothing from it, so press it as you start a run of Shadow Bolts. Expansive Mind's 5% more mana is real for a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder for the whole fight: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead's Touch of the Grave drains health from your target now and then, which helps a spec that pays for mana in health. Human's Ruthless is 1% crit and The Human Spirit raises Spirit, which feeds Life Tap.
 
 ## Professions
 

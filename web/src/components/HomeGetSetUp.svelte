@@ -36,11 +36,14 @@
   const session = createCharacterCardState();
   const me = $derived(session.me);
   const ready = $derived(session.status === 'ready' || session.status === 'failed');
+  // With no character yet the account has nothing set up to report: the card stays, in its
+  // signed-in wording (index.astro), exactly where a signed-out visitor sees it.
+  const hasCharacters = $derived(me !== null && me.characters.length > 0);
 
   $effect(() => {
     const el = document.getElementById(HOME_GET_SET_UP_SIGNED_OUT_ID);
     if (el === null) return;
-    if (ready && me !== null) {
+    if (ready && hasCharacters) {
       el.style.display = 'none';
     } else {
       el.style.display = '';
@@ -54,7 +57,7 @@
 </script>
 
 <div class="home-get-set-up-root min-h-px">
-  {#if ready && me !== null}
+  {#if ready && hasCharacters}
     <a
       class="text-nav inline-flex min-h-11 items-center text-[13px] font-semibold"
       href="/setup"

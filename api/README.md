@@ -38,11 +38,12 @@ make run
 | `R2_BUCKET` | no | `foreversixty-logs` | The bucket every report file lives in. |
 | `R2_ENDPOINT` | no | derived | S3 endpoint override; the tests point it at an in-process fake. |
 | `SESSION_COOKIE_DOMAIN` | no | `.foreversixty.gg` | `Domain` on `fs_session` and `fs_csrf`. Set it to `none` for a local `http://localhost` run, which makes the cookies host-only. |
-| `BNET_CLIENT_ID` | no | — | Battle.net OAuth client. Without the id, the secret, and the redirect URL, only the email magic link is offered. |
+| `BNET_CLIENT_ID` | no | — | Battle.net OAuth client, the only sign-in the site offers. Without the id, the secret, and the redirect URL, the Battle.net routes answer 404. |
 | `BNET_CLIENT_SECRET` | no | — | |
 | `BNET_REDIRECT_URL` | no | — | Registered for production and for `http://localhost:8080/v1/auth/battlenet/callback`. |
 | `BNET_PROFILE_GAME` | no | `forever` | The profile-game segment of a Blizzard namespace (`profile-<game>-<region>`, `dynamic-<game>-<region>`). Blizzard serves Forever as `profile-forever-<region>` since 2026-11-03. |
 | `BNET_IMPORT_CHARACTERS` | no | on | The account character import on sign-in, the primary way characters reach the site. `false` is the incident switch: sign-in still works and characters come from the addon alone. |
+| `EMAIL_SIGN_IN` | no | off | `true` mounts `POST /v1/auth/email`, the emailed sign-in link. Off (the default since launch), the route answers 404; the link landing `GET /v1/auth/email/callback` stays mounted so a link already sent still redeems. The Battle.net-outage fallback: on its own it brings back no button. See "Email sign-in: the Battle.net-outage fallback" below. |
 | `BNET_REGIONS` | no | `us,eu,tw` | Comma-separated; which regional Blizzard hosts to try for an account during import and refresh. |
 | `BNET_PROBE_GAMES` | no | `forever,classic1x` | Comma-separated; every game namespace segment the nightly refresh's namespace probe checks, logging one line per game (any game other than `BNET_PROFILE_GAME` that answers 200 is logged at WARN as `namespace_appeared`). |
 | `PARSE_JOB_NAME` | no | `parse-report` | The Cloud Run job that parses a whole-file upload. |
@@ -61,8 +62,8 @@ make run
 
 Every Phase 3 variable is optional and degrades honestly: with no R2 credentials the service
 serves everything that does not touch object storage and logs that the ingest, upload, and
-report-file routes are not mounted; with no Battle.net client it offers the email magic link
-alone; with no Cloud Run credentials it serves the live ingest but not whole-file uploads.
+report-file routes are not mounted; with no Battle.net client nobody can sign in (the email link
+is behind `EMAIL_SIGN_IN`, below); with no Cloud Run credentials it serves the live ingest but not whole-file uploads.
 
 ### Migrations and connection poolers
 
@@ -281,10 +282,31 @@ companion, the whole-file job, and the ingest's verification all parse the same 
 | `GET /v1/characters/{region}/{ruleset}/{name}/history` | The owner's score and parse history, every rated fight in every report they can see. Owner with the history entitlement only: 401 anonymous, 402 `premium_required`, 404 for anyone else and for an anonymised character. `private, no-store`. |
 | `GET /reports/{id}/card.png` | The unfurl card, cached five minutes — `private` and `Vary: Cookie` when the report is not public or unlisted, so a shared cache never serves one reader's card to another. |
 
-Sign-in is Battle.net first and an email magic link as the fallback; the companion pairs with a
-code from `POST /v1/devices/pair` and uploads with `Authorization: Bearer fsd_…`. Browser
+Sign-in is Battle.net only (the email magic link is dark behind `EMAIL_SIGN_IN`, below); the
+companion pairs with a code from `POST /v1/devices/pair` and uploads with `Authorization: Bearer fsd_…`. Browser
 sessions are opaque cookies with double-submit CSRF (`fs_csrf` plus `X-CSRF-Token`); device
 tokens are exempt, because a companion is not a browser.
+
+### Email sign-in: the Battle.net-outage fallback
+
+Battle.net has been the only sign-in since launch (4 Nov 2026). The emailed magic link's code is
+kept, dark: `POST /v1/auth/email` is mounted only when `EMAIL_SIGN_IN=true`, and answers the
+router's 404 otherwise. Its landing, `GET /v1/auth/email/callback`, is always mounted, so turning
+the switch off never breaks a link already in someone's inbox (links last twenty minutes).
+
+Turning the switch on alone brings nothing back for players: the web build has no email entry
+point any more, by design, so re-enabling is a deliberate change. During a Battle.net outage:
+
+1. Restore a web entry point. The "Email me a sign-in link" form on `/login` (and, if wanted, the
+   header selector's and `/connect`'s) was removed in the commit `feat: Battle.net is the only
+   sign-in`; reverting its `web/` part restores `requestEmailLink` in `web/src/lib/account/api.ts`,
+   the forms in `Account.svelte` and `Connect.svelte`, and their copy. Push it so the site deploys.
+2. Turn the route on: `gcloud run services update api --region us-east1 --update-env-vars
+   EMAIL_SIGN_IN=true`. The deploy workflow passes no env vars, so the setting survives later
+   deploys until it is removed with `--remove-env-vars EMAIL_SIGN_IN`.
+3. Check `RESEND_API_KEY` and `MAIL_FROM` still send (the subscribe confirmation uses the same
+   mailer), and restore the privacy policy's line that an email address is collected for sign-in
+   (`web/src/content/pages/privacy.md`).
 
 ### What the `anonymize` flag covers
 

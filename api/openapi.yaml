@@ -4176,6 +4176,7 @@ paths:
   /v1/auth/email:
     post:
       summary: Send a magic link
+      description: "Mounted only when EMAIL_SIGN_IN=true (the Battle.net-outage fallback); off by default, it answers 404."
       requestBody:
         required: true
         content:
@@ -4187,6 +4188,7 @@ paths:
       responses:
         '202': { description: "Link sent", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '400': { description: "Not an address; error.fields.email is set", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "EMAIL_SIGN_IN is off (the default)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '429': { description: "Five links per address per hour, twenty per IP per hour", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/auth/email/callback:
     get:

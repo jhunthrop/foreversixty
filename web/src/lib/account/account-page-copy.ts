@@ -13,7 +13,7 @@ export const accountPageCopy = {
   reportsLabel: 'Your reports',
   /** The current-character card's prompt when it has no export (polish spec 4.3). */
   noExportPrompt:
-    'No gear or talents yet. They come from Battle.net shortly after you sign in; paste an export from the addon to see them now.',
+    'No gear or talents yet. They appear once Battle.net publishes this character; paste an export from the addon to see them now.',
   youLabel: 'You',
   guildLabel: 'Guild',
   planLabel: 'Plan',

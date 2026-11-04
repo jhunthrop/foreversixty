@@ -177,16 +177,16 @@ describe('landingAction', () => {
     });
   });
 
-  it('a character with no spec yet opens the class’s first spec, labelled by its class', () => {
+  it('a character with no spec yet opens the class’s leveling spec', () => {
     expect(landingAction(character({ spec: undefined }), CONFIG)).toEqual({
-      label: 'Warrior gear for 40 to 49 →',
+      label: 'Arms gear for 40 to 49 →',
       href: '/bis/warrior/arms?faction=alliance#band-alliance-40',
     });
   });
 
   it('points a class the site does not know at the grid', () => {
     expect(landingAction(character({ class: 'Monk' }), CONFIG)).toEqual({
-      label: 'Pick a spec →',
+      label: 'Every class and spec →',
       href: '#bis-classes',
     });
   });

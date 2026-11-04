@@ -460,6 +460,21 @@ describe("the band's DPS figures", function()
 		assert.are.equal(0.42, Gear.dpsFigure(WEIGHTS_DATA, "warrior-arms", nil).dps)
 	end)
 
+	-- Forever's druid deep dive (Blizzard, 2026-09-30): a form swings at the equipped
+	-- weapon's DPS, and Shred, Claw and Ravage use that swing, so a cat prices a
+	-- weapon's DPS by its band's measured term like any melee.
+	it("prices a feral druid's weapon DPS on the main hand", function()
+		local CAT = {
+			weights = { ["druid-feral"] = { attack_power = 1, agility = 2 } },
+			dpsPerPoint = { ["druid-feral"] = { reference = "attack_power", dps = 0.2, healing = false,
+				weaponDps = 2.3, [20] = { reference = "attack_power", dps = 0.07, weaponDps = 0.8 } } },
+		}
+		local current = Gear.currentWeights(CAT, "druid-feral", nil, KEY, 25)
+		assert.are.equal("main_hand", current.weapon.slot)
+		assert.is_true(math.abs(Progress.itemScore({ weapon_dps = 10 }, current.weights, "main_hand",
+			current.weapon) * current.dpsPerPoint - 10 * 0.8) < 1e-9)
+	end)
+
 	it("hands the tooltip the band's DPS per point and its measured weapon term", function()
 		local current = Gear.currentWeights(BANDED, "warrior-arms", nil, KEY, 25)
 		assert.are.equal(0.04, current.dpsPerPoint)
@@ -515,15 +530,6 @@ describe("the band's DPS figures", function()
 			assert.is_true(math.abs(Progress.itemScore(bow, current.weights, "ranged", current.weapon)
 				* current.dpsPerPoint - 10 * band.weaponDps) < 1e-9)
 			assert.are.equal(0, Progress.itemScore(bow, current.weights, "main_hand", current.weapon))
-		end)
-
-		it("ignores a feral druid's weapon DPS at every band", function()
-			for level = 10, 60, 5 do
-				local current = Gear.currentWeights(Data, "druid-feral", nil, KEY, level)
-				assert.is_nil(current.weapon, level)
-				assert.are.equal(0, Progress.itemScore({ weapon_dps = 50 }, current.weights, "main_hand",
-					current.weapon))
-			end
 		end)
 
 		it("ignores a caster's and a healer's weapon DPS", function()

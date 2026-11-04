@@ -242,19 +242,17 @@ test.describe('the account panel, signed out', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
 
-  test('Sign in with Battle.net is the one filled button, over an email link, paste and the addon', async ({
-    page,
-  }) => {
+  test('Sign in with Battle.net is the one sign-in button, over paste and the addon', async ({ page }) => {
     await signedOut(page);
     await page.goto('/guides');
     await control(page).click();
     await expect(panel(page).getByTestId('selector-sign-in-bnet')).toBeVisible();
-    await expect(panel(page).getByTestId('selector-sign-in-email')).toBeVisible();
+    await expect(panel(page).getByTestId('selector-sign-in-email')).toHaveCount(0);
     await expect(panel(page).getByTestId('selector-paste')).toBeVisible();
     await expect(panel(page).getByTestId('selector-addon')).toBeVisible();
-    for (const id of ['selector-sign-in-bnet', 'selector-sign-in-email']) {
-      expect((await panel(page).getByTestId(id).boundingBox())!.height).toBeGreaterThanOrEqual(MIN_TARGET);
-    }
+    expect(
+      (await panel(page).getByTestId('selector-sign-in-bnet').boundingBox())!.height,
+    ).toBeGreaterThanOrEqual(MIN_TARGET);
   });
 });
 

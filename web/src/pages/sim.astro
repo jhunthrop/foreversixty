@@ -30,8 +30,8 @@ const COLD_PASTE_SECTION =
          signed-out visitor and what this shell reproduces ahead of hydration. The hero card's own heading and two lines mirror
          `SourceSwitcher.svelte`'s hero branch exactly (same classes, same copy) for the
          same reason the original trick nested its paragraph in the real card's own markup:
-         an identical wrap width keeps the box pixel-stable across hydration. The button and
-         email-link line are not reproduced here -- they add height but not width, so they
+         an identical wrap width keeps the box pixel-stable across hydration. The buttons
+         are not reproduced here -- they add height but not width, so they
          do not change which text box is largest/earliest; the min-h reservation below still
          covers their full height as part of the real measurement.
 
@@ -42,7 +42,7 @@ const COLD_PASTE_SECTION =
          `COLD_PASTE_SECTION`'s one constant, shared rather than hand-copied twice, so the
          two cannot quietly drift the way two separately typed class strings could. The
          textarea, the Run button and the in-game hint's link are not reproduced, same
-         reasoning as the hero card's own button/email-link omission above.
+         reasoning as the hero card's own button omission above.
 
          sim-island.ts's replaceChildren() swaps this whole div's content for the real,
          interactive switcher, so the min-h reservation below (measured against the real
@@ -79,7 +79,11 @@ const COLD_PASTE_SECTION =
 
          2026-10-31 re-measure (the "Jump to" spine bar removed, and this shell's reserved band
          for it): 1220px at 390x844 and 834.5px at 1440x900 by the same method; the same 24px
-         over each: 1244/859. -->
+         over each: 1244/859.
+
+         2026-11-03: the hero card's email-link line is gone (Battle.net is the only sign-in), so
+         the real height is a line shorter than measured above; the reservation is left as it was,
+         which only over-reserves and never moves the footer, until the next re-measure. -->
     <div id="sim" data-sim-mount class="min-h-[1244px] md:min-h-[859px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <!-- Hidden unless html[data-session='1'][data-server-sims='1'] (global.css): a payer's

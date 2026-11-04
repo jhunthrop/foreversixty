@@ -4484,6 +4484,13 @@
         "level": 10,
         "lines": [
           {
+            "spell_id": 99,
+            "name": "Demoralizing Roar",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_druid_demoralizingroar",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6807,
             "name": "Maul",
             "condition": "Queued on your next swing whenever you have 15 rage.",
@@ -4500,6 +4507,13 @@
             "name": "Faerie Fire",
             "condition": "When the target has no Faerie Fire on it.",
             "icon": "spell_nature_faeriefire",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1735,
+            "name": "Demoralizing Roar",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_druid_demoralizingroar",
             "race_spell_ids": {}
           },
           {
@@ -4533,6 +4547,13 @@
             "name": "Faerie Fire",
             "condition": "When the target has no Faerie Fire on it.",
             "icon": "spell_nature_faeriefire",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1735,
+            "name": "Demoralizing Roar",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_druid_demoralizingroar",
             "race_spell_ids": {}
           },
           {
@@ -4573,6 +4594,13 @@
             "name": "Faerie Fire",
             "condition": "When the target has no Faerie Fire on it.",
             "icon": "spell_nature_faeriefire",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 9490,
+            "name": "Demoralizing Roar",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_druid_demoralizingroar",
             "race_spell_ids": {}
           },
           {
@@ -4623,6 +4651,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 9490,
+            "name": "Demoralizing Roar",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_druid_demoralizingroar",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8972,
             "name": "Maul",
             "condition": "Queued on your next swing whenever you have 15 rage.",
@@ -4644,7 +4679,7 @@
           {
             "spell_id": 22812,
             "name": "Barkskin",
-            "condition": "On cooldown: 20% less damage taken for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
+            "condition": "On cooldown: 20% less physical damage for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
             "icon": "spell_nature_stoneclawtotem",
             "race_spell_ids": {}
           },
@@ -4677,6 +4712,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 9747,
+            "name": "Demoralizing Roar",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_druid_demoralizingroar",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 9880,
             "name": "Maul",
             "condition": "Queued on your next swing whenever you have 15 rage.",
@@ -4698,7 +4740,7 @@
           {
             "spell_id": 22812,
             "name": "Barkskin",
-            "condition": "On cooldown: 20% less damage taken for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
+            "condition": "On cooldown: 20% less physical damage for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
             "icon": "spell_nature_stoneclawtotem",
             "race_spell_ids": {}
           },
@@ -4728,6 +4770,13 @@
             "name": "Faerie Fire",
             "condition": "When the target has no Faerie Fire on it.",
             "icon": "spell_nature_faeriefire",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 9898,
+            "name": "Demoralizing Roar",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_druid_demoralizingroar",
             "race_spell_ids": {}
           },
           {
@@ -5579,7 +5628,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14282,
+            "spell_id": 14284,
             "name": "Arcane Shot",
             "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
             "icon": "ability_impalingbolt",
@@ -5633,7 +5682,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 3044,
+            "spell_id": 14285,
             "name": "Arcane Shot",
             "condition": "Arcane Shot to fill a gap when Multi-Shot is more than a global away and you are above 25% mana.",
             "icon": "ability_impalingbolt",
@@ -8813,7 +8862,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -8895,7 +8944,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9047,7 +9096,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9206,7 +9255,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9365,7 +9414,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9538,7 +9587,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9709,9 +9758,9 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6075,
+            "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9765,31 +9814,31 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
+            "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana.",
-            "icon": "spell_holy_lesserheal",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
+            "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
+            "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
+            "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
@@ -9800,31 +9849,31 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
+            "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
+            "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
+            "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2053,
+            "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "spell_holy_lesserheal",
+            "icon": "inv_misc_questionmark",
             "race_spell_ids": {}
           }
         ]
@@ -9837,7 +9886,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           }
@@ -9856,14 +9905,14 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -9898,7 +9947,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
@@ -9980,14 +10029,14 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -10029,7 +10078,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10111,14 +10160,14 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 9472,
+            "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -10160,7 +10209,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10249,14 +10298,14 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -10298,7 +10347,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana.",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
             "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
@@ -10387,14 +10436,14 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -10434,73 +10483,73 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
-            "condition": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana.",
-            "icon": "spell_holy_heal",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
-            "name": "Heal",
-            "condition": "",
-            "icon": "spell_holy_heal",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2054,
+            "spell_id": 6064,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal",
+            "icon": "spell_holy_heal02",
             "race_spell_ids": {}
           }
         ]
@@ -10523,16 +10572,16 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6075,
+            "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew on the tank all fight, at a low rank: every rank carries the same healing power bonus, so the cheap one heals the most per mana.",
+            "condition": "Renew on the tank all fight at rank 1: Forever keeps a low rank's whole healing bonus, so it heals the most per mana.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 9472,
+            "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at a low rank on a tank who is really low: it lands in 1.5 seconds for a fraction of the top rank's mana.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -10572,73 +10621,73 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
-            "condition": "The filler, the classic downrank: rank 4 has Greater Heal's spell power coefficient for far less mana.",
-            "icon": "spell_holy_heal02",
+            "condition": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have; without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4.",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
-            "name": "Heal",
-            "condition": "",
-            "icon": "spell_holy_heal02",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%.",
-            "icon": "spell_holy_heal02",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6064,
+            "spell_id": 2054,
             "name": "Heal",
             "condition": "",
-            "icon": "spell_holy_heal02",
+            "icon": "spell_holy_heal",
             "race_spell_ids": {}
           }
         ]
@@ -10745,7 +10794,7 @@
           {
             "spell_id": 15286,
             "name": "Vampiric Embrace",
-            "condition": "Vampiric Embrace on the boss whenever it is down: the guide keeps it up in a raid.",
+            "condition": "Vampiric Embrace on the boss whenever it is down.",
             "icon": "spell_shadow_unsummonbuilding",
             "race_spell_ids": {}
           },
@@ -10806,7 +10855,7 @@
           {
             "spell_id": 15286,
             "name": "Vampiric Embrace",
-            "condition": "Vampiric Embrace on the boss whenever it is down: the guide keeps it up in a raid.",
+            "condition": "Vampiric Embrace on the boss whenever it is down.",
             "icon": "spell_shadow_unsummonbuilding",
             "race_spell_ids": {}
           },
@@ -10874,7 +10923,7 @@
           {
             "spell_id": 15286,
             "name": "Vampiric Embrace",
-            "condition": "Vampiric Embrace on the boss whenever it is down: the guide keeps it up in a raid.",
+            "condition": "Vampiric Embrace on the boss whenever it is down.",
             "icon": "spell_shadow_unsummonbuilding",
             "race_spell_ids": {}
           },
@@ -10956,7 +11005,7 @@
           {
             "spell_id": 15286,
             "name": "Vampiric Embrace",
-            "condition": "Vampiric Embrace on the boss whenever it is down: the guide keeps it up in a raid.",
+            "condition": "Vampiric Embrace on the boss whenever it is down.",
             "icon": "spell_shadow_unsummonbuilding",
             "race_spell_ids": {}
           },
@@ -11051,7 +11100,7 @@
           {
             "spell_id": 15286,
             "name": "Vampiric Embrace",
-            "condition": "Vampiric Embrace on the boss whenever it is down: the guide keeps it up in a raid.",
+            "condition": "Vampiric Embrace on the boss whenever it is down.",
             "icon": "spell_shadow_unsummonbuilding",
             "race_spell_ids": {}
           },
@@ -12410,7 +12459,7 @@
           {
             "spell_id": 8075,
             "name": "Strength of Earth Totem",
-            "condition": "Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within 30 yards.",
+            "condition": "Strength of Earth Totem whenever it is down: it is Strength for every melee player near you, and in Forever the totem reaches the whole raid within 30 yards.",
             "icon": "spell_nature_earthbindtotem",
             "race_spell_ids": {}
           },
@@ -12443,7 +12492,7 @@
           {
             "spell_id": 8075,
             "name": "Strength of Earth Totem",
-            "condition": "Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within 30 yards.",
+            "condition": "Strength of Earth Totem whenever it is down: it is Strength for every melee player near you, and in Forever the totem reaches the whole raid within 30 yards.",
             "icon": "spell_nature_earthbindtotem",
             "race_spell_ids": {}
           },
@@ -12483,7 +12532,7 @@
           {
             "spell_id": 8160,
             "name": "Strength of Earth Totem",
-            "condition": "Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within 30 yards.",
+            "condition": "Strength of Earth Totem whenever it is down: it is Strength for every melee player near you, and in Forever the totem reaches the whole raid within 30 yards.",
             "icon": "spell_nature_earthbindtotem",
             "race_spell_ids": {}
           },
@@ -12523,7 +12572,7 @@
           {
             "spell_id": 8161,
             "name": "Strength of Earth Totem",
-            "condition": "Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within 30 yards.",
+            "condition": "Strength of Earth Totem whenever it is down: it is Strength for every melee player near you, and in Forever the totem reaches the whole raid within 30 yards.",
             "icon": "spell_nature_earthbindtotem",
             "race_spell_ids": {}
           },
@@ -12563,7 +12612,7 @@
           {
             "spell_id": 8161,
             "name": "Strength of Earth Totem",
-            "condition": "Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within 30 yards.",
+            "condition": "Strength of Earth Totem whenever it is down: it is Strength for every melee player near you, and in Forever the totem reaches the whole raid within 30 yards.",
             "icon": "spell_nature_earthbindtotem",
             "race_spell_ids": {}
           },
@@ -12610,7 +12659,7 @@
           {
             "spell_id": 8161,
             "name": "Strength of Earth Totem",
-            "condition": "Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within 30 yards.",
+            "condition": "Strength of Earth Totem whenever it is down: it is Strength for every melee player near you, and in Forever the totem reaches the whole raid within 30 yards.",
             "icon": "spell_nature_earthbindtotem",
             "race_spell_ids": {}
           },
@@ -12664,7 +12713,7 @@
           {
             "spell_id": 10442,
             "name": "Strength of Earth Totem",
-            "condition": "Strength of Earth Totem whenever it is down: Strength is your best stat, and in Forever the totem reaches the whole raid within 30 yards.",
+            "condition": "Strength of Earth Totem whenever it is down: it is Strength for every melee player near you, and in Forever the totem reaches the whole raid within 30 yards.",
             "icon": "spell_nature_earthbindtotem",
             "race_spell_ids": {}
           },
@@ -12734,14 +12783,14 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant, full-size save.",
+            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%: your biggest efficient heal.",
+            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12781,7 +12830,7 @@
           {
             "spell_id": 913,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant, full-size save.",
+            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -12823,7 +12872,7 @@
           {
             "spell_id": 913,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%: your biggest efficient heal.",
+            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12863,7 +12912,7 @@
           {
             "spell_id": 939,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant, full-size save.",
+            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -12905,7 +12954,7 @@
           {
             "spell_id": 939,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%: your biggest efficient heal.",
+            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -12945,7 +12994,7 @@
           {
             "spell_id": 959,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant, full-size save.",
+            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -12987,7 +13036,7 @@
           {
             "spell_id": 959,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%: your biggest efficient heal.",
+            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13027,7 +13076,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant, full-size save.",
+            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13111,7 +13160,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%: your biggest efficient heal.",
+            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13151,7 +13200,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant, full-size save.",
+            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13235,7 +13284,7 @@
           {
             "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%: your biggest efficient heal.",
+            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -13273,9 +13322,9 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10396,
+            "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave right after Nature's Swiftness: the instant, full-size save.",
+            "condition": "Healing Wave right after Nature's Swiftness: the instant save.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           },
@@ -13357,9 +13406,9 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 10396,
+            "spell_id": 332,
             "name": "Healing Wave",
-            "condition": "Healing Wave when the tank drops below 60%: your biggest efficient heal.",
+            "condition": "Healing Wave when the tank drops below 60%, at rank 2 in a raid: Forever keeps a low rank's whole healing bonus, so it heals for most of a top rank's amount at a fraction of the mana.",
             "icon": "spell_nature_magicimmunity",
             "race_spell_ids": {}
           }
@@ -14291,7 +14340,7 @@
         "level": 40,
         "lines": [
           {
-            "spell_id": 6223,
+            "spell_id": 7648,
             "name": "Corruption",
             "condition": "Corruption whenever it has fallen off.",
             "icon": "spell_shadow_abominationexplosion",
@@ -15479,6 +15528,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1160,
+            "name": "Demoralizing Shout",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_warrior_warcry",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 5242,
             "name": "Battle Shout",
             "condition": "Whenever it drops.",
@@ -15554,6 +15610,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 6190,
+            "name": "Demoralizing Shout",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_warrior_warcry",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 6192,
             "name": "Battle Shout",
             "condition": "Whenever it drops.",
@@ -15626,6 +15689,13 @@
             "name": "Thunder Clap",
             "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
             "icon": "spell_nature_thunderclap",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11554,
+            "name": "Demoralizing Shout",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
           {
@@ -15711,6 +15781,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11554,
+            "name": "Demoralizing Shout",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_warrior_warcry",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11549,
             "name": "Battle Shout",
             "condition": "Whenever it drops.",
@@ -15793,6 +15870,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 11555,
+            "name": "Demoralizing Shout",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_warrior_warcry",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 11550,
             "name": "Battle Shout",
             "condition": "Whenever it drops.",
@@ -15872,6 +15956,13 @@
             "name": "Thunder Clap",
             "condition": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block.",
             "icon": "spell_nature_thunderclap",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 11556,
+            "name": "Demoralizing Shout",
+            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
           {
@@ -101831,13 +101922,13 @@
           ],
           [
             2,
-            2,
-            4
+            3,
+            1
           ],
           [
             2,
-            3,
-            1
+            2,
+            4
           ],
           [
             2,
@@ -102091,13 +102182,13 @@
           ],
           [
             2,
-            2,
-            4
+            3,
+            1
           ],
           [
             2,
-            3,
-            1
+            2,
+            4
           ],
           [
             2,
@@ -108056,21 +108147,6 @@
           [
             2,
             1,
-            2
-          ],
-          [
-            2,
-            1,
-            2
-          ],
-          [
-            2,
-            1,
-            2
-          ],
-          [
-            2,
-            1,
             3
           ],
           [
@@ -108082,6 +108158,21 @@
             2,
             1,
             3
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
           ],
           [
             2,
@@ -110688,64 +110779,64 @@
       "reference": "attack_power",
       "dps": 0.1975,
       "healing": false,
-      "weapon_dps": 0.0,
+      "weapon_dps": 2.3315,
       "bands": {
         "20": {
           "reference": "attack_power",
           "dps": 0.0668,
-          "weapon_dps": 0.0
+          "weapon_dps": 0.784
         },
         "30": {
           "reference": "attack_power",
           "dps": 0.0795,
-          "weapon_dps": 0.0
+          "weapon_dps": 0.9308
         },
         "40": {
           "reference": "attack_power",
           "dps": 0.0897,
-          "weapon_dps": 0.0
+          "weapon_dps": 1.028
         },
         "50": {
           "reference": "attack_power",
           "dps": 0.1003,
-          "weapon_dps": 0.0
+          "weapon_dps": 1.1477
         },
         "60": {
           "reference": "attack_power",
           "dps": 0.1024,
-          "weapon_dps": 0.0
+          "weapon_dps": 1.117
         }
       }
     },
     "druid-restoration": {
       "reference": "healing_power",
-      "dps": 0.1812,
+      "dps": 0.5196,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.0286,
+          "dps": 0.0865,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.0347,
+          "dps": 0.1492,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.0153,
+          "dps": 0.1499,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.2823,
+          "dps": 0.293,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.4458,
+          "dps": 0.5416,
           "weapon_dps": 0.0
         }
       }
@@ -110768,18 +110859,18 @@
         },
         "40": {
           "reference": "ranged_attack_power",
-          "dps": 0.0844,
-          "weapon_dps": 1.0511
+          "dps": 0.0838,
+          "weapon_dps": 1.0423
         },
         "50": {
           "reference": "ranged_attack_power",
-          "dps": 0.091,
-          "weapon_dps": 1.0504
+          "dps": 0.0901,
+          "weapon_dps": 1.0438
         },
         "60": {
           "reference": "ranged_attack_power",
-          "dps": 0.09,
-          "weapon_dps": 1.1037
+          "dps": 0.0886,
+          "weapon_dps": 1.0872
         }
       }
     },
@@ -110950,33 +111041,33 @@
     },
     "paladin-holy": {
       "reference": "healing_power",
-      "dps": 0.2706,
+      "dps": 0.3912,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.1348,
+          "dps": 0.1272,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.0575,
+          "dps": 0.2356,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.2264,
+          "dps": 0.2166,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.3557,
+          "dps": 0.3352,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.3523,
+          "dps": 0.3603,
           "weapon_dps": 0.0
         }
       }
@@ -111016,66 +111107,66 @@
     },
     "priest-discipline": {
       "reference": "healing_power",
-      "dps": 0.3547,
+      "dps": 0.4013,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.1142,
+          "dps": 0.1164,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.1466,
+          "dps": 0.1601,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.1757,
+          "dps": 0.1977,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.2658,
+          "dps": 0.281,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.3524,
+          "dps": 0.3537,
           "weapon_dps": 0.0
         }
       }
     },
     "priest-holy": {
       "reference": "healing_power",
-      "dps": 0.7915,
+      "dps": 0.4545,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.1071,
+          "dps": 0.1192,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.1645,
+          "dps": 0.1425,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.1988,
+          "dps": 0.2543,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.3134,
+          "dps": 0.2169,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.3329,
+          "dps": 0.3295,
           "weapon_dps": 0.0
         }
       }
@@ -111787,6 +111878,7 @@
     "17": 6,
     "53": 4,
     "71": 10,
+    "99": 10,
     "120": 26,
     "139": 8,
     "143": 1,
@@ -111836,6 +111928,7 @@
     "1094": 1,
     "1106": 1,
     "1130": 6,
+    "1160": 14,
     "1430": 4,
     "1454": 6,
     "1455": 6,
@@ -111846,11 +111939,13 @@
     "1680": 36,
     "1715": 8,
     "1719": 50,
+    "1735": 10,
     "1757": 1,
     "1758": 1,
     "1760": 1,
     "1866": 6,
     "1943": 20,
+    "2050": 1,
     "2053": 1,
     "2054": 16,
     "2060": 40,
@@ -111904,7 +111999,7 @@
     "6063": 16,
     "6064": 16,
     "6066": 6,
-    "6075": 8,
+    "6190": 14,
     "6192": 1,
     "6217": 8,
     "6222": 4,
@@ -111996,8 +112091,10 @@
     "8992": 20,
     "9472": 20,
     "9474": 20,
+    "9490": 10,
     "9492": 20,
     "9493": 20,
+    "9747": 10,
     "9749": 18,
     "9752": 20,
     "9754": 16,
@@ -112021,6 +112118,7 @@
     "9888": 1,
     "9889": 1,
     "9896": 20,
+    "9898": 10,
     "9907": 18,
     "9908": 16,
     "9912": 1,
@@ -112041,7 +112139,6 @@
     "10329": 1,
     "10333": 6,
     "10391": 1,
-    "10396": 1,
     "10412": 4,
     "10413": 4,
     "10414": 4,
@@ -112085,6 +112182,9 @@
     "11549": 1,
     "11550": 1,
     "11551": 1,
+    "11554": 14,
+    "11555": 14,
+    "11556": 14,
     "11564": 1,
     "11565": 1,
     "11566": 1,

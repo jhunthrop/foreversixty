@@ -29,7 +29,6 @@ import { clearMeGuildCount, clearPremiumHint, rememberMeHints, writePremiumHint 
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
-export const EMAIL_SENT = 'Check your email for a sign-in link. It works once, for twenty minutes.';
 
 export class AccountError extends Error {
   constructor(
@@ -224,7 +223,7 @@ export async function requestEnvelope<T>(
 
   if (!response.ok) {
     // The API's own message is shown verbatim when it has one, since it can say things
-    // like "too many sign-in links" that no generic fallback can.
+    // like "too many requests" that no generic fallback can.
     throw new AccountError(
       envelope?.error?.message ?? init.failureMessage ?? ACCOUNT_FAILED,
       response.status,
@@ -315,13 +314,19 @@ export function fetchMeFresh(
   });
 }
 
-/** `/v1/me` asked again right now (window focus on the Settings page). */
-export function refetchMe(onData: (me: Me | null) => void, apiBase: string = API_BASE_URL): void {
+/** `/v1/me` asked again right now (window focus on the Settings page, the home hero's
+ *  "Check again"). */
+export function refetchMe(
+  onData: (me: Me | null) => void,
+  apiBase: string = API_BASE_URL,
+  onError?: () => void,
+): void {
   refetch(
     meKey(apiBase),
     () => fetchMe(apiBase),
     { scope: 'private', ttlMs: 60 * 1000, version: ME_QUERY_VERSION },
     onData,
+    onError,
   );
 }
 
@@ -333,18 +338,6 @@ export function forgetSession(): void {
 
 export function battlenetStartUrl(next: string, apiBase: string = API_BASE_URL): string {
   return `${apiBase}/v1/auth/battlenet/start?next=${encodeURIComponent(next)}`;
-}
-
-/** `next` rides in the body so the emailed link can land back on the page that asked (/connect). */
-export async function requestEmailLink(
-  email: string,
-  apiBase: string = API_BASE_URL,
-  next?: string,
-): Promise<void> {
-  await call('/v1/auth/email', apiBase, {
-    method: 'POST',
-    body: next === undefined ? { email } : { email, next },
-  });
 }
 
 const DEVICES_TTL_MS = 10 * 60 * 1000;

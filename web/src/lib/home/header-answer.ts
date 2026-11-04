@@ -3,11 +3,11 @@
 // CharacterHeader.svelte, spec 2026-10-11 section 4): the answer "Upgrades in your band" as two
 // figures at the same size, the count and the gain, from the same comparison "Your upgrades"
 // shows below it (`cachedUpgradesFor`), and the one action, which jumps to that table. Below
-// level 20 the action opens the first band's list instead.
+// level 20 the answer is the next talent point and the action opens the leveling guide
+// (design/specs/2026-11-04-low-level-home.md).
 import type { MeCharacter } from '../account/api';
 import { bisCopy } from '../bis/copy';
-import { bisPageHref } from '../bis/hover';
-import { DEFAULT_LANDING_BAND, FIRST_BAND_LEVEL } from '../bis/landing-bands';
+import { FIRST_BAND_LEVEL } from '../bis/landing-bands';
 import { landingCopy } from '../bis/landing-copy';
 import { scoreUnitWord } from '../bis/tank-view';
 import type {
@@ -17,9 +17,21 @@ import type {
   HeaderAction,
   HeaderAnswer,
 } from '../character-header/types';
-import { homeHeroCardsCopy, homePanelCopy } from '../home-panel-copy';
-import { SPEC_BY_KEY } from '../sim/specs';
-import { cachedUpgradesFor, specKeyForCharacter, type CachedUpgrades } from './upgrades-loader';
+import { homeHeroCardsCopy, homePanelCopy, levelingHomeCopy } from '../home-panel-copy';
+import {
+  levelingGuideHref,
+  loadLevelingPlans,
+  specNameOf,
+  talentStepFor,
+  type LevelingPlan,
+} from '../leveling/leveling-plan';
+import { FIRST_POINT_LEVEL } from '../planner/types';
+import {
+  cachedUpgradesFor,
+  homeSpecKeyFor,
+  readsAsLevelingSpec,
+  type CachedUpgrades,
+} from './upgrades-loader';
 
 export function upgradesNote(band: number, notSimCheckedCount: number): string {
   const base = homePanelCopy.headerNote(bisCopy.bandRangeLabel(band));
@@ -46,19 +58,47 @@ export function upgradesAnswer(cached: CachedUpgrades): HeaderAnswer {
 }
 
 async function loadUpgradesAnswer(character: MeCharacter): Promise<HeaderAnswer> {
-  if (specKeyForCharacter(character) === undefined) {
-    return { kind: 'sentence', text: homeHeroCardsCopy.pickASpecLine };
-  }
+  const specKey = homeSpecKeyFor(character);
+  if (specKey === undefined) return { kind: 'sentence', text: homeHeroCardsCopy.bestInSlotNoListYet };
   const cached = await cachedUpgradesFor(character);
   if (cached === null) return { kind: 'sentence', text: homeHeroCardsCopy.bestInSlotNoListYet };
-  return upgradesAnswer(cached);
+  const answer = upgradesAnswer(cached);
+  const specName = specNameOf(specKey);
+  if (!readsAsLevelingSpec(character) || specName === undefined || answer.kind !== 'figures') return answer;
+  const note = answer.note?.text ?? '';
+  return { ...answer, note: { text: `${note} · ${levelingHomeCopy.comparedAs(specName)}` } };
+}
+
+/** The plan a level 1 to 19 character follows: its own spec's when it has one, else its class's leveling spec. */
+export async function levelingPlanFor(character: MeCharacter): Promise<LevelingPlan | undefined> {
+  const specKey = homeSpecKeyFor(character);
+  if (specKey === undefined) return undefined;
+  return (await loadLevelingPlans())[specKey];
+}
+
+/** Below 20: when the first point comes, or which talent this level's point goes into. */
+export async function loadLevelingAnswer(character: MeCharacter): Promise<HeaderAnswer> {
+  const level = character.level ?? 1;
+  if (level < FIRST_POINT_LEVEL)
+    return { kind: 'sentence', text: levelingHomeCopy.headerFirstPoint(FIRST_POINT_LEVEL) };
+  const plan = await levelingPlanFor(character);
+  if (plan === undefined) return { kind: 'sentence', text: levelingHomeCopy.headerNoPlan };
+  const step = talentStepFor(plan, level, character.build?.talents);
+  const next = plan.points[step.nextIndex];
+  if (next === undefined) return { kind: 'sentence', text: levelingHomeCopy.orderDone };
+  if (step.toSpend === 0)
+    return { kind: 'sentence', text: levelingHomeCopy.headerNextPoint(step.nextPointLevel) };
+  if (character.build?.talents === undefined) {
+    return { kind: 'sentence', text: levelingHomeCopy.headerPointsToSpend(step.toSpend, next.name) };
+  }
+  return { kind: 'sentence', text: levelingHomeCopy.headerLevelTalent(next.level, next.name) };
 }
 
 export const homeAnswerSpec: AnswerSpec = {
   levelFloor: FIRST_BAND_LEVEL,
   needsGear: true,
   strings: {
-    belowLevelFloor: landingCopy.under20,
+    belowLevelFloor: levelingHomeCopy.headerNoPlan,
     noGear: {
       sentence: homePanelCopy.headerNoGear,
       link: { label: landingCopy.noSyncLink, href: landingCopy.noSyncHref },
@@ -66,18 +106,17 @@ export const homeAnswerSpec: AnswerSpec = {
     failed: homePanelCopy.headerFailed,
   },
   load: loadUpgradesAnswer,
+  loadBelowFloor: loadLevelingAnswer,
 };
 
-/** Jumps to "Your upgrades"; under level 20 there is no table, so it opens the first band's list. */
+/** Jumps to "Your upgrades"; under level 20 it opens the leveling spec's guide at its Leveling section. */
 export function homeAction({ character, belowLevelFloor }: ActionContext): HeaderAction {
   if (!belowLevelFloor) return { label: homePanelCopy.headerAction, href: '#upgrades' };
-  const specKey = specKeyForCharacter(character);
-  const row = specKey === undefined ? undefined : SPEC_BY_KEY[specKey];
-  if (specKey === undefined || row === undefined) {
-    return { label: landingCopy.fallbackAction, href: '/bis' };
+  const specKey = homeSpecKeyFor(character);
+  const specName = specKey === undefined ? undefined : specNameOf(specKey);
+  const href = specKey === undefined ? undefined : levelingGuideHref(specKey);
+  if (specName === undefined || href === undefined) {
+    return { label: levelingHomeCopy.openLevelingGuide, href: '/guides' };
   }
-  return {
-    label: landingCopy.leadButton(row.name, DEFAULT_LANDING_BAND),
-    href: bisPageHref(specKey, character.faction ?? 'alliance', DEFAULT_LANDING_BAND),
-  };
+  return { label: levelingHomeCopy.levelAs(specName), href };
 }

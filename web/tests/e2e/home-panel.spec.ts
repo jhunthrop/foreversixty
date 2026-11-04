@@ -87,7 +87,7 @@ test('the home page offers Battle.net sign-in when signed out', async ({ page })
   await expect(page.getByTestId('home-another-class')).toBeHidden();
 });
 
-test('a signed-in visitor with zero characters still sees the Battle.net sign-in CTA, not a blank hero', async ({
+test('a signed-in visitor with zero characters sees no sign-in: the arrival line, Check again, the addon, and the signed-out rows', async ({
   page,
 }) => {
   await page.route('**/v1/me', (route) =>
@@ -109,7 +109,13 @@ test('a signed-in visitor with zero characters still sees the Battle.net sign-in
   const signedOut = page.getByTestId('home-signed-out');
   await expect(signedOut).toBeVisible();
   await expect(signedOut).not.toHaveAttribute('inert');
-  await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeHidden();
+  await expect(page.getByTestId('home-no-character')).toBeVisible();
+  await expect(page.getByTestId('home-check-again')).toBeVisible();
+  await expect(page.getByTestId('home-no-character-paste')).toHaveAttribute('href', '/setup#paste');
+  await expect(page.getByTestId('home-no-character-addon')).toHaveAttribute('href', '/setup');
+  await expect(page.getByTestId('home-class-picker-large')).toBeVisible();
+  await expect(page.getByTestId('home-upgrades')).toBeHidden();
 });
 
 test('a signed-in panel shows the shared header, the two next-action cards, and hides the signed-out door', async ({
@@ -184,10 +190,10 @@ test('a signed-in panel shows the shared header, the two next-action cards, and 
     '/setup',
   );
   await expect(panel.getByTestId('character-header-action')).toHaveText('See your upgrades →');
-  // Talents: this fixture's Zulmara carries no `spec` yet, so the card shows the honest "Pick
-  // a spec" state -- never a fabricated figure (§3.B.2). Best in slot is the header's answer.
+  // Talents: no character is ever asked to pick a spec (spec 2026-11-04-low-level-home.md).
+  // Best in slot is the header's answer.
   await expect(panel.getByTestId('home-hero-card-bis')).toHaveCount(0);
-  await expect(panel.getByTestId('home-hero-card-talents')).toContainText('Pick a spec');
+  await expect(panel.getByTestId('home-hero-card-talents')).not.toContainText('Pick a spec');
   // Simulator: the one card with a real, live figure -- no saved sim for this fixture, so
   // the existing empty-state copy/action shows.
   await expect(panel.getByTestId('home-hero-card-sim')).toContainText('No sim yet.');

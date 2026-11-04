@@ -103,4 +103,7 @@ export interface AnswerSpec {
   placeholderBar?: boolean;
   /** Fetches the answer for a character that passed the floor and gear checks. A rejection is the failed state. */
   load(character: MeCharacter): Promise<HeaderAnswer>;
+  /** Fetches the answer for a character below `levelFloor`, in place of `strings.belowLevelFloor`
+   *  (home: the next talent point for a level 1 to 19). Gear is not checked below the floor. */
+  loadBelowFloor?(character: MeCharacter): Promise<HeaderAnswer>;
 }

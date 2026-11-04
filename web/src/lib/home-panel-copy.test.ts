@@ -14,12 +14,6 @@ describe('homeHeroCardsCopy', () => {
       'Not available yet: no gear export for this character. Open the addon once to send it.',
     );
   });
-
-  it('carries the exact "Talents" not-available sentence', () => {
-    expect(homeHeroCardsCopy.talentsNotAvailable).toBe(
-      'Not available yet: no talent export for this character. Open the addon once to send it.',
-    );
-  });
 });
 
 describe('the Simulator card copy', () => {

@@ -150,11 +150,15 @@
     const current = character;
     const spec = answer;
     void attempt;
-    if (current === null || spec === undefined || planAnswer(current, spec) !== 'load') return;
+    if (current === null || spec === undefined) return;
+    const plan = planAnswer(current, spec);
+    if (plan !== 'load' && plan !== 'load-below-floor') return;
     phase = { phase: 'loading' };
     let cancelled = false;
-    spec
-      .load(current)
+    (plan === 'load-below-floor' && spec.loadBelowFloor !== undefined
+      ? spec.loadBelowFloor(current)
+      : spec.load(current)
+    )
       .then((loaded) => {
         if (!cancelled) phase = { phase: 'ready', answer: loaded };
       })
@@ -174,7 +178,9 @@
 
   const answerView = $derived(character === null ? null : answerViewFor(character, answer, phase, stale));
   const belowLevelFloor = $derived(
-    character !== null && answer !== undefined && planAnswer(character, answer) === 'below-floor',
+    character !== null &&
+      answer !== undefined &&
+      ['below-floor', 'load-below-floor'].includes(planAnswer(character, answer)),
   );
   const resolvedAction = $derived.by((): HeaderAction | null => {
     if (character === null) return null;

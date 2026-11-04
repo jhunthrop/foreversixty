@@ -279,23 +279,24 @@ func TestAPartialRunMergesBandByBandAndNoBandsKeepsThemAll(t *testing.T) {
 	}
 }
 
-// Cat Form's attacks never use the weapon's damage, so the cat gets no
-// weapon term at any band or at 60, whatever the engine's sweep reads (it
-// measured 1.1 DPS per weapon DPS once the requests named their preset).
-func TestTheCatHasNoWeaponTerm(t *testing.T) {
+// Forever's druid deep dive (Blizzard, 2026-09-30): a form's auto attack
+// "is now the same as the DPS of the Druid's equipped weapon", and "abilities
+// that deal weapon damage likewise use these damage values" (Shred, Claw,
+// Ravage). The cat keeps the weapon term the engine measures, like any melee.
+func TestTheCatKeepsItsMeasuredWeaponTerm(t *testing.T) {
 	m := fakeMeasurer{"druid-feral": {0.1, 0.001, 1.1, 0.001}}
 	picked := []specs.Spec{specs.ByKey["druid-feral"]}
 	got, _ := measureAll(picked, fakeCharacter, nil, m, 100, 7)
-	if got["druid-feral"].WeaponDPS != 0 {
-		t.Fatalf("raid entry = %+v, want no weapon term", got["druid-feral"])
+	if got["druid-feral"].WeaponDPS != 1.1 {
+		t.Fatalf("raid entry = %+v, want the measured 1.1 per weapon DPS", got["druid-feral"])
 	}
 	characterFor := func(spec specs.Spec, band int) (api.CharacterSpec, error) {
 		return api.CharacterSpec{Name: "x", Race: "night-elf", Class: spec.ClassSlug, Level: bandLevel(band)}, nil
 	}
 	bands, _ := measureBands(picked, []int{20, 60}, characterFor, m, 100, 7)
 	for band, figures := range bands["druid-feral"] {
-		if figures.WeaponDPS != 0 {
-			t.Fatalf("band %s = %+v, want no weapon term", band, figures)
+		if figures.WeaponDPS != 1.1 {
+			t.Fatalf("band %s = %+v, want the measured 1.1 per weapon DPS", band, figures)
 		}
 	}
 }

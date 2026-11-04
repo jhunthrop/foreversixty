@@ -44,7 +44,7 @@
   ],
   "auras": [
     {
-      "spell_id": 25295,
+      "spell_id": 13555,
       "spell_ids": [
         1978,
         425728,
@@ -60,33 +60,33 @@
         425734,
         13554,
         425735,
-        13555,
         425736,
+        25295,
         425737,
         1232979,
         1232980,
         1232981,
         1232982,
-        25295
+        13555
       ],
       "name": "Serpent Sting",
       "kind": "dot",
-      "verified": "1.60.1.70755/spellconst/hunter.json#25295"
+      "verified": "1.60.1.70755/spellconst/hunter.json#13555"
     },
     {
-      "spell_id": 25296,
+      "spell_id": 14322,
       "spell_ids": [
         13165,
         14318,
         14319,
         14320,
         14321,
-        14322,
-        25296
+        25296,
+        14322
       ],
       "name": "Aspect of the Hawk",
       "kind": "self_buff",
-      "verified": "1.60.1.70755/spellconst/hunter.json#25296"
+      "verified": "1.60.1.70755/spellconst/hunter.json#14322"
     }
   ],
   "downranks": [],

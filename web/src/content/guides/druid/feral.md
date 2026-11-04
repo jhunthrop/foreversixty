@@ -67,7 +67,7 @@ The leveling build takes the points a questing cat wants first: Feral Charge to 
 - **Leader of the Pack** (1 point): the raid's crit aura. Take it in every build.
 - **Heart of the Wild** and **Naturalist**: 10% more Strength in Cat Form and 10% more damage of every kind. These are why a cat goes into Restoration at all.
 
-The raid build skips Furor. In Forever it no longer hands you energy on a shift; it only keeps your bar when you leave Cat Form. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. The raid build's Balance points are Genesis, 10% more periodic damage (a bigger Rip), and Nature's Majesty, 4% crit. Natural Shapeshifter (3 points in both builds) makes Shifting Power cheaper, which is mana you spend every 8 seconds. Primal Bite and Lacerate are bear buttons, and Brutal Impact and Feral Charge are for questing.
+The raid build skips Furor. In Forever it no longer hands you a fresh bar on a shift; it gives back the energy you left Cat Form with, plus 10 for each second you spent out of it. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. The raid build's Balance points are Genesis, 10% more periodic damage (a bigger Rip), and Nature's Majesty, 4% crit. Natural Shapeshifter (3 points in both builds) makes Shifting Power cheaper, which is mana you spend every 8 seconds. Primal Bite and Lacerate are bear buttons, and Brutal Impact and Feral Charge are for questing.
 
 ## Rotation and priority
 
@@ -93,7 +93,7 @@ Weapon damage per second matters in Forever. Your Cat Form auto attack has your 
 
 ## Best in slot
 
-Wolfshead Helm is druid-only in Forever and now gives 5 more energy on every Shifting Power (and 5 more rage on Enrage). Leatherworkers make it. It is a level 40 blue with little on it besides the bonus, so it is a small upgrade while leveling; at 60 the BiS list weighs it against helms with real stats.
+Wolfshead Helm is druid-only in Forever and now gives 5 more energy on every Shifting Power (and 5 more rage on Enrage). Leatherworkers make it. It is a level 40 blue with little on it besides the bonus, so it is a small upgrade while leveling; at 60 most helms with real stats beat it.
 
 ## Enchants and consumables
 

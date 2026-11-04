@@ -24,7 +24,6 @@ import {
   postMyExports,
   queueBuildToAddon,
   REPORTS_PER_PAGE,
-  requestEmailLink,
   requestEnvelope,
   revokeDevice,
   setAnonymize,
@@ -101,40 +100,6 @@ describe('the account API', () => {
 
   it('builds the Battle.net start url with the page to come back to', () => {
     expect(battlenetStartUrl('/logs', API)).toBe(`${API}/v1/auth/battlenet/start?next=%2Flogs`);
-  });
-
-  it('posts an email link request with the CSRF header', async () => {
-    document.cookie = 'fs_csrf=abc; path=/';
-    const upstream = vi.fn<GlobalFetch>(async () => envelope({ sent: true }));
-    vi.stubGlobal('fetch', upstream);
-
-    await expect(requestEmailLink('raider@example.com', API)).resolves.toBeUndefined();
-
-    const request = upstream.mock.calls[0][0] as Request;
-    expect(request.method).toBe('POST');
-    expect(request.headers.get('x-csrf-token')).toBe('abc');
-    expect(await request.json()).toEqual({ email: 'raider@example.com' });
-  });
-
-  it('surfaces the rate limit the contract sets on email links', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn<GlobalFetch>(
-        async () =>
-          new Response(
-            JSON.stringify({
-              ok: false,
-              data: null,
-              error: { message: 'Too many sign-in links; try again in an hour.' },
-              request_id: 'r',
-            }),
-            { status: 429, headers: { 'content-type': 'application/json' } },
-          ),
-      ),
-    );
-    await expect(requestEmailLink('raider@example.com', API)).rejects.toThrow(
-      'Too many sign-in links; try again in an hour.',
-    );
   });
 
   it('lists, pairs and revokes devices', async () => {
@@ -552,16 +517,6 @@ describe('companion connect calls', () => {
       vi.fn<GlobalFetch>(async () => Promise.reject(new TypeError('offline'))),
     );
     await expect(connectDeviceApprove('KQ4-7TM', API)).rejects.toMatchObject({ status: 0 });
-  });
-
-  it('sends next with the email link request when asked', async () => {
-    const fetchMock = vi.fn<GlobalFetch>(async () => envelope({ sent: true }, 202));
-    vi.stubGlobal('fetch', fetchMock);
-    await requestEmailLink('a@b.co', API, '/connect?code=KQ4-7TM');
-    expect(await (fetchMock.mock.calls[0][0] as Request).clone().json()).toEqual({
-      email: 'a@b.co',
-      next: '/connect?code=KQ4-7TM',
-    });
   });
 });
 

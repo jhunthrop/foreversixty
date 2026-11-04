@@ -591,6 +591,8 @@ func serve(log *slog.Logger) error {
 		GuildCapabilities: guildStore, GuildAttendance: guildStore, Standing: guildStore, Sims: simsAccountView{store: simStore},
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 	}
+	// The emailed sign-in link is dark unless EMAIL_SIGN_IN=true (the Battle.net-outage fallback).
+	accounts.EmailSignIn = cfg.EmailSignIn
 	if cfg.DevLogin {
 		accounts.DevLogin = true
 		log.Warn("auth", "state", "FS_DEV_LOGIN is on",

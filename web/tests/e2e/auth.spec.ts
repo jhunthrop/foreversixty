@@ -1,6 +1,5 @@
 // web/tests/e2e/auth.spec.ts
 import { expect, test } from './support/test';
-import { gotoHydrated } from './support/hydrated';
 import { meBnetFixture } from '../../src/fixtures/me-bnet';
 
 const ME = {
@@ -28,7 +27,7 @@ const fulfil = (body: unknown, status = 200) => ({
   body: JSON.stringify(body),
 });
 
-test('a signed-out visitor is offered both sign-in routes', async ({ page }) => {
+test('a signed-out visitor is offered Battle.net as the one sign-in route', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
   );
@@ -39,27 +38,7 @@ test('a signed-out visitor is offered both sign-in routes', async ({ page }) => 
     'href',
     /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Fsigned_in%3D1$/,
   );
-  await expect(page.getByTestId('email-form')).toBeVisible();
-});
-
-test('asking for an email link shows what happens next', async ({ page }) => {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
-  );
-  let body: unknown;
-  await page.route('**/v1/auth/email', (route) => {
-    body = route.request().postDataJSON();
-    return route.fulfill(fulfil({ ok: true, data: { sent: true }, error: null, request_id: 'r' }));
-  });
-
-  // Wait for the island: a click before hydration submits the static form and no notice
-  // ever appears (the same intermittent failure the upload and rankings specs had).
-  await gotoHydrated(page, '/login', 'login');
-  await page.getByLabel('Or a sign-in link by email').fill('raider@example.com');
-  await page.getByRole('button', { name: 'Send link' }).click();
-
-  await expect(page.getByTestId('account-notice')).toContainText('works once, for twenty minutes');
-  expect(body).toEqual({ email: 'raider@example.com' });
+  await expect(page.getByTestId('email-form')).toHaveCount(0);
 });
 
 test('the account page lists devices, pairs one, and shows the character', async ({ page }) => {

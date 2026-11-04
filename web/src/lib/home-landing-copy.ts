@@ -30,6 +30,21 @@ export const homeHeroCopy = {
   addonAltHref: '/setup#paste',
 } as const;
 
+/** The hero for a signed-in visitor with no account character yet: no sign-in, the characters'
+ *  arrival from Battle.net with a way to check again, and the addon way in. */
+export const homeNoCharacterCopy = {
+  sentence: 'Pick your class for its best-in-slot list, talents and rotation.',
+  status: 'You are signed in. Your characters are on their way from Battle.net.',
+  checkAgain: 'Check again',
+  checking: 'Checking...',
+  stillNone:
+    'None yet. Battle.net sends a character once it has been made in game; the addon brings it in sooner.',
+  pasteLabel: 'Paste an addon export',
+  pasteHref: '/setup#paste',
+  addonLabel: 'Get the addon',
+  addonHref: '/setup',
+} as const;
+
 /** Home rebuild spec §3.A.4/§3.B.5: the two nine-class rows below the hero -- "Best in slot
  *  by class" signed out, "Another class" signed in, same aside link either way. */
 export const homeClassPickerCopy = {
@@ -76,6 +91,8 @@ export const homeAroundTheSiteCopy = {
 export interface HomeCompanionRowCard {
   title: string;
   description: string;
+  /** The same card for a signed-in visitor with no character yet: the steps left, no sign-in. */
+  descriptionSignedIn: string;
   /** The card's button: says what it does, never repeats the title. */
   buttonLabel: string;
   href: string;
@@ -87,6 +104,7 @@ export const homeCompanionRow: readonly HomeCompanionRowCard[] = [
   {
     title: 'Get set up',
     description: 'Sign in, install the addon, and run the companion — one page.',
+    descriptionSignedIn: 'Install the addon and run the companion. One page.',
     buttonLabel: 'Open setup',
     href: '/setup',
   },

@@ -18,7 +18,15 @@
   import CharacterHeader from './character/CharacterHeader.svelte';
   import { createCharacterCardState } from '../lib/bis/character-card-state.svelte';
   import { homeAnswerSpec, homeAction } from '../lib/home/header-answer';
-  import { HOME_SIGNED_OUT_ATTR, HOME_SIGNED_OUT_ID } from '../lib/home-panel-copy';
+  import { refetchMe } from '../lib/account/api';
+  import { homeNoCharacterCopy } from '../lib/home-landing-copy';
+  import {
+    HOME_CHECK_AGAIN_ID,
+    HOME_CHECK_AGAIN_NOTE_ID,
+    HOME_NO_HERO_ATTR,
+    HOME_SIGNED_OUT_ATTR,
+    HOME_SIGNED_OUT_ID,
+  } from '../lib/home-panel-copy';
 
   // One session read, shared with the header: the island that decides which character the page
   // speaks to is the same one the header draws.
@@ -27,6 +35,9 @@
   const ready = $derived(session.status === 'ready' || session.status === 'failed');
   const hero = $derived(session.character);
   const signedIn = $derived(ready && me !== null && hero !== null);
+  // Signed in, but no account character for the page to speak to: the hero drops its sign-in.
+  const noHero = $derived(ready && me !== null && hero === null);
+  const noCharacters = $derived(noHero && me !== null && me.characters.length === 0);
 
   /**
    * The grid-overlay CLS trick (this component's root and index.astro's signed-out block
@@ -49,6 +60,46 @@
       if (ready) signedOut.removeAttribute('data-session-hide');
     }
     document.documentElement.toggleAttribute(HOME_SIGNED_OUT_ATTR, ready && !signedIn);
+    document.documentElement.toggleAttribute(HOME_NO_HERO_ATTR, noHero);
+  });
+
+  /** The lookup sits in the hero for the signed-out shape and under "Your upgrades" signed in;
+   *  index.astro places it before paint from the hints, and this follows the live answer. */
+  $effect(() => {
+    if (!ready) return;
+    const cell = document.getElementById('home-lookup-cell');
+    const slot = document.getElementById('home-lookup-slot');
+    const accountCell = document.querySelector('.home-account-cell');
+    if (cell === null || slot === null || accountCell === null) return;
+    const inSlot = cell.parentElement === slot;
+    if (signedIn && !inSlot) slot.append(cell);
+    if (!signedIn && inSlot) accountCell.after(cell);
+  });
+
+  /** "Check again" (index.astro's no-character hero): asks /v1/me afresh. Characters that have
+   *  arrived swap the hero for the signed-in panel through the shared cache; none yet says so. */
+  $effect(() => {
+    const status = document.querySelector<HTMLElement>('[data-testid="home-no-character-status"]');
+    if (status !== null) status.hidden = noHero && !noCharacters;
+  });
+  $effect(() => {
+    const button = document.getElementById(HOME_CHECK_AGAIN_ID);
+    const note = document.getElementById(HOME_CHECK_AGAIN_NOTE_ID);
+    if (!(button instanceof HTMLButtonElement) || note === null) return;
+    const settle = (answer: { characters: unknown[] } | null): void => {
+      button.disabled = false;
+      button.textContent = homeNoCharacterCopy.checkAgain;
+      note.textContent =
+        answer !== null && answer.characters.length === 0 ? homeNoCharacterCopy.stillNone : '';
+    };
+    const onClick = (): void => {
+      button.disabled = true;
+      button.textContent = homeNoCharacterCopy.checking;
+      note.textContent = '';
+      refetchMe(settle, undefined, () => settle(null));
+    };
+    button.addEventListener('click', onClick);
+    return () => button.removeEventListener('click', onClick);
   });
 
   /**

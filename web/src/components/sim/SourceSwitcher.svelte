@@ -29,7 +29,6 @@
   import Card from '../ui/Card.svelte';
   import { currentCharacterCopy } from '../../lib/current-character-copy';
   import { landingCopy } from '../../lib/sim/landing-copy';
-  import EmailLinkAlternative from '../EmailLinkAlternative.svelte';
   import { rowLink } from '../../lib/report/format';
   import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
@@ -196,8 +195,7 @@
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-sources">
   {#if showHero}
-    <!-- Finding 2: the hero. Full width, first, with the email-link alternative as text --
-         the three paste cards below are secondary. Finding 3: the DPS-only restriction
+    <!-- Finding 2: the hero. Full width, first -- the three paste cards below are secondary. Finding 3: the DPS-only restriction
          lives here too, as the caption under this heading, its only copy on the page for a
          signed-out visitor. Persona review 2026-10-06 bis: this sign-in button is no
          longer PRIMARY_BUTTON -- ColdPasteHero.svelte's Run is the one gold primary on this
@@ -214,7 +212,6 @@
           {landingCopy.pasteAnExport}
         </button>
       </div>
-      <EmailLinkAlternative testid="sim-email-link" action />
     </Card>
 
     <div class={`grid grid-cols-1 gap-3 ${showAddonCard ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
@@ -242,6 +239,18 @@
           <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
             {landingCopy.signInWithBattlenet}
           </button>
+        {:else}
+          <!-- Signed in, none yet: never a sign-in. /account refreshes the list from Battle.net. -->
+          <p class="text-muted text-[13px]" data-testid="sim-characters-on-their-way">
+            {simCopy.charactersOnTheirWay}
+          </p>
+          <a
+            class={`${action} inline-flex items-center`}
+            href={simCopy.noCharactersYetHref}
+            data-testid="sim-your-account"
+          >
+            {simCopy.yourAccount}
+          </a>
         {/if}
       </Card>
     </div>

@@ -130,9 +130,6 @@
         >
           {guildJoinCopy.signInButton}
         </a>
-        <a class="text-nav w-fit text-[13px]" href="/login" data-testid="guild-join-signin-email">
-          Use an email link instead.
-        </a>
       {:else if alreadyIn}
         <p class="text-[14px]" data-testid="guild-join-already">{guildJoinCopy.alreadyIn(guild.name)}</p>
         <a

@@ -52,15 +52,15 @@ export const landingCopy = {
   notSimulatedYet: 'Not simulated yet',
   runBlockNoBuild: (name: string): string => `${name} has no build yet.`,
 
-  /** Finding 2: the intro line every signed-out visitor reads before either load method. */
-  introLine:
-    'Paste a gear export, a build link or a logged fight -- or sign in with Battle.net -- and see the DPS, free and in your browser.',
+  /** Finding 2: the page head's line, read by every visitor, signed in or not, so it offers no
+   *  sign-in (the signed-out hero card below carries that). */
+  introLine: 'Paste a gear export, a build link or a logged fight and see the DPS, free and in your browser.',
 
   /** Finding 4: the compact "spec, best DPS, when" summary above a signed-in character's
    *  sim history, shown once they have sims in two or more specs. */
   bestPerSpecTitle: 'Best per spec',
 
-  /** Finding 2: the hero sign-in card's own button; its email-link alternative is EmailLinkAlternative.svelte's -- the same
+  /** Finding 2: the hero sign-in card's own button -- the same
    *  wording SignInPrompt.svelte and Account.svelte already use elsewhere on the site,
    *  repeated here since this card is its own copy, not a render of that component. */
   signInWithBattlenet: 'Sign in with Battle.net',

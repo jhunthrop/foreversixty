@@ -15,9 +15,6 @@ export const connectCopy = {
   consent:
     'Forever Sixty will see your BattleTag and character list. It cannot see your password or play for you.',
   battlenet: 'Continue with Battle.net',
-  emailToggle: 'Email me a sign-in link instead',
-  emailLabel: 'Email address',
-  emailSend: 'Send link',
   checking: 'Checking the link.',
   pendingTitle: (device: string, who: string): string => `Connect ${device} to ${who}?`,
   pendingBody:

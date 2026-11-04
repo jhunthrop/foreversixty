@@ -68,12 +68,16 @@
       {characterListCopy.importedFrom(relativeTime(new Date(bnetImportedAt)))}
       <a href={REFRESH_HREF}>{characterListCopy.refreshFromBattlenet}</a>
     </span>
+  {:else if viaBattlenet && characters.length === 0}
+    <!-- The empty state says "refresh from Battle.net": the link it names, before any import. -->
+    <a href={REFRESH_HREF} data-testid="bnet-refresh">{characterListCopy.refreshFromBattlenet}</a>
   {/if}
 {/snippet}
 
 <section class="card-surface overflow-hidden" data-testid="account-characters">
   <CardHead glyph="user" title={characterListCopy.heading} aside={importedAside} />
-  <CoachLastRaidLine premium={logCoach} />
+  <!-- The last-raid line speaks about characters; with none it would read as a stray line. -->
+  {#if characters.length > 0}<CoachLastRaidLine premium={logCoach} />{/if}
   {#if characters.length === 0}
     <div class="border-line-soft border-t px-5 py-4">
       <EmptyState

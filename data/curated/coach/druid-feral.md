@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/druid/feral.md
   - data/curated/apl/druid-feral.json
-  - data/builds/1.60.1.70753/spellconst/druid.json
+  - data/builds/1.60.1.70755/spellconst/druid.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

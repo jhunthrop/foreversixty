@@ -2,14 +2,13 @@
 <!-- One component, four modes, because they are four views of one thing and splitting them
      would mean four copies of the same "who is signed in" fetch:
        nav      the header's sign-in state, on every logs-product page
-       login    /login: the Battle.net button and the email form
+       login    /login: the Battle.net button
        account  /account: devices, pairing, characters, anonymize, sign out
        pairing  the pairing code on its own, embedded in /logs
      Each mode renders one branch; the shared parts are the `me` load and the error line. -->
 <script lang="ts">
   import {
     ACCOUNT_FAILED,
-    EMAIL_SENT,
     battlenetStartUrl,
     companionsOf,
     fetchMeOnce,
@@ -17,7 +16,6 @@
     pairDevice,
     refreshDevices,
     revokeDevice,
-    requestEmailLink,
     setAnonymize,
     setMainCharacter,
     signOut,
@@ -55,7 +53,7 @@
   import { pairingCopy } from '../lib/reports/copy';
   import { createPairingPoll, type PairingPoll } from '../lib/reports/pairing-poll';
   import { API_BASE_URL } from '../lib/planner/config';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { button } from '../lib/ui/button';
   import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../lib/ui/link';
   import { ROW } from '../lib/ui/row';
@@ -107,8 +105,6 @@
   // old `load()` awaited both the `/v1/me` and the devices read before flipping to 'ready'.
   let devicesStatus = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   let error = $state('');
-  let notice = $state('');
-  let email = $state('');
   let devices = $state<Device[]>([]);
   let pairing = $state<PairingCode | null>(null);
   let busy = $state(false);
@@ -344,7 +340,6 @@
   async function run(action: () => Promise<void>): Promise<void> {
     busy = true;
     error = '';
-    notice = '';
     try {
       await action();
     } catch (thrown) {
@@ -353,14 +348,6 @@
       busy = false;
     }
   }
-
-  const onEmail = (event: SubmitEvent): void => {
-    event.preventDefault();
-    void run(async () => {
-      await requestEmailLink(email.trim());
-      notice = EMAIL_SENT;
-    });
-  };
 
   const onPair = (): void =>
     void run(async () => {
@@ -511,29 +498,7 @@
           Battle.net tells the site your BattleTag and your characters. It never sees a password here.
         </p>
       </div>
-      <form class="flex flex-col gap-3" onsubmit={onEmail} data-testid="email-form">
-        <label class="quiet-label" for="account-email">Or a sign-in link by email</label>
-        <div class="flex flex-col gap-3 sm:flex-row">
-          <input
-            id="account-email"
-            class="border-line-warm bg-raised rounded-control text-text h-11 flex-1 px-3 text-[15px]"
-            type="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            required
-            bind:value={email}
-          />
-          <button
-            class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
-            type="submit"
-            disabled={busy}
-          >
-            Send link
-          </button>
-        </div>
-      </form>
     {/if}
-    {#if notice !== ''}<p class="text-[14px]" data-testid="account-notice">{notice}</p>{/if}
     <!-- 21px is the measured line height of the text-[14px] error line: reserved so the
          session load landing (or a `run()` action failing) never shoves the page down after
          first paint, the same reason `mode === 'nav'` renders `&nbsp;` while
