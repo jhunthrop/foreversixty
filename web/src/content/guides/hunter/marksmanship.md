@@ -102,7 +102,7 @@ Auto Shot does more damage than any button you press, so protect it:
 - Stay outside 8 yards. Inside it you cannot shoot at all.
 - On a movement phase, fire Arcane Shot and Multi-Shot on the run and plant your feet the moment you can.
 
-When mana gets low, stop Arcane Shot first, then Serpent Sting, and keep Aimed Shot, Multi-Shot and Sniper Shot going. Drink a Major Mana Potion before you need it.
+When mana gets low, stop Arcane Shot first. On one target Serpent Sting does more damage for its mana than Multi-Shot, so let Multi-Shot go before the sting, and keep Aimed Shot and Sniper Shot going. Drink a Major Mana Potion before you need it.
 
 **The pet.** Level with a cat and train it the top ranks of Claw, Bite and Growl as you go. In a raid with the raid build, leave it dismissed. If you raid with the leveling build instead, turn off Growl (right-click it on the pet bar) and send the cat to the boss's back.
 
@@ -120,7 +120,7 @@ The table above gives the order for your gear; here is why each stat counts. Hit
 
 ## Best in slot
 
-Hunters wear leather until 40 and mail from 40. Your ranged weapon is your real weapon, the melee weapon is there for its stats. The full lists by level are on the [Marksmanship best in slot page](/bis/hunter/marksmanship).
+Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Your ranged weapon is your real weapon, the melee weapon is there for its stats. The full lists by level are on the [Marksmanship best in slot page](/bis/hunter/marksmanship).
 
 ## Enchants and consumables
 
@@ -152,7 +152,7 @@ At 10 your trainer starts the taming quests, which end by teaching Tame Beast. T
 
 Your first five points go into Lethal Attacks, 1% crit on every attack per point. Efficiency from 15 cuts the mana cost of your shots and stings by 3% a point, which is fewer drinking breaks.
 
-Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until mail at 40.
+Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.
 
 ### Levels 20 to 60
 

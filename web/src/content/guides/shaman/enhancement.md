@@ -90,7 +90,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Strength is attack power twice over. Intellect does more for you than for any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Plain attack power adds to every swing, and plain spell power to your shocks. Hit covers your swings, your Stormstrike and your shocks at once. Your swings stop missing a raid boss at 9% hit and your spells at 16%, so past 9% hit only helps your shocks, totems and free bolts, a small share of your damage. The table above gives the order for your level and gear.
+Strength is attack power twice over. Intellect does more for you than for any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Plain attack power adds to every swing, and plain spell power to your shocks. Hit covers your swings, your Stormstrike and your shocks at once. Your swings stop missing a raid boss at 9% hit and your spells at 16%, so past 9% hit only helps your shocks, Fire Nova, totems and free bolts, a small share of your damage. The table above gives the order for your level and gear.
 
 ## Best in slot
 

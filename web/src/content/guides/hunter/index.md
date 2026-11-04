@@ -34,7 +34,7 @@ Hunter is a pure damage class in Forever. All three specs deal damage, and they 
 - **Heart of the Lion** is a hunter spell from level 1: 10% more stats and extra attack power (280 melee and ranged at 60) for everyone near you, and another 10% stats for you.
 - **Aspect of the Beast** gives melee attack power, which makes it the Survival aspect. Aspect of the Hawk stays the ranged one.
 - **Trueshot Aura** is ranged attack power only, 100 at 60 for your party and raid.
-- **Mail from 40.** Hunters wear leather until 40.
+- **Mail from 40.** Hunters wear leather until 40, and good leather stays in the mix after it.
 
 ## Races
 

@@ -94,7 +94,7 @@ Potions and runes work in any form in Forever, though you heal in caster form an
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths and Healing Touches alike. Tauren is the free Horde pick: Endurance is 5% more health, which keeps you alive through raid damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, which is faster casts, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are. Press it every time it is ready on a long fight.
+Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths and Healing Touches alike. Tauren is the free Horde pick: Endurance is 5% more health, which keeps you alive through raid damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, which is faster casts, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour, which doubles it wherever you are except in a raid: entering a raid removes Attuned. Press it every time it is ready on a long fight.
 
 ## Professions
 

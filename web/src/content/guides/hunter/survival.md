@@ -103,7 +103,7 @@ The table above gives the order for your gear; here is why each stat counts. Hit
 
 ## Best in slot
 
-Hunters wear leather until 40 and mail from 40. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick. The full lists by level are on the [Survival best in slot page](/bis/hunter/survival).
+Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick. The full lists by level are on the [Survival best in slot page](/bis/hunter/survival).
 
 ## Enchants and consumables
 
@@ -133,7 +133,7 @@ At 10 your trainer starts the taming quests, which end by teaching Tame Beast. T
 
 Your first five points go into Improved Tracking, 1% damage per point against whatever you are tracking: Track Beasts from level 1, Track Humanoids at 10, Track Undead at 18. Keep the right one on. Savage Strikes at 15 and 16 adds 2% crit to your melee abilities per point, then Survivalist from 17 adds 2% health per point.
 
-Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since Raptor Strike adds its damage on top of the weapon hit. Wear leather until mail at 40.
+Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since Raptor Strike adds its damage on top of the weapon hit. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.
 
 ### Levels 20 to 60
 
