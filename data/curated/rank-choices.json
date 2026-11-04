@@ -211,6 +211,20 @@
         ]
       }
     ],
+    "hunter-survival": [
+      {
+        "spell": "Raptor Strike",
+        "authored": 14266,
+        "bands": [
+          {
+            "from_level": 46,
+            "to_level": 47,
+            "rank": 5,
+            "note": "Rank 5 (learned at 32) at 46-47: Immolation Trap rank 4 arrives at 46 and runs the mana dry, and rank 5's lower cost buys back traps. From 48 rank 7 wins (round 19 hunter, per-level sweep)."
+          }
+        ]
+      }
+    ],
     "mage-arcane": [
       {
         "spell": "Frostbolt",
