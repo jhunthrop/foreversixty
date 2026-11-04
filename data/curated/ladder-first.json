@@ -137,6 +137,15 @@
         }
       ]
     },
+    "priest-shadow": {
+      "reason": "Every Forever leveling guide takes Spirit Tap 5/5 first, from level 10: it is how a priest drinks less between pulls (Icy Veins Forever Shadow leveling, Mobalytics Forever Shadow guide, Kargoz's Forever leveling guide; sim-accuracy round 15, priest). The band fight has no kills, so Spirit Tap changes no number there and the band builds the sim measures are the plain walk's (Shadow Focus 5 at band 20, the same modeled talents at 30 and 40). Mind Flay is not reserved: on the band-20 fight a rank-1 Mind Flay without Improved Mind Flay loses about 2.7% to wanding because the fight runs out of mana, so it stays at 28.",
+      "first": [
+        {
+          "talent": "Spirit Tap",
+          "rank": 5
+        }
+      ]
+    },
     "rogue-assassination": {
       "reason": "The rotation casts Mutilate (the 30-point row since client 1.60.1.70755, behind Venom, learned at 40). The plain walk never reaches Venom on the way down, so Venom and then Mutilate are taken as soon as each fits: Venom at 29, where it also makes every Shank raise your poisons, and Mutilate at 40. Before 70755 Mutilate sat on the 20-point row and was taken at 30 for about 8% at band 30 (sim-accuracy round 13, walk lane).",
       "first": [
