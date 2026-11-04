@@ -144,7 +144,8 @@
           {
             "from_level": 40,
             "to_level": 49,
-            "rank": 1
+            "rank": 2,
+            "note": "Rank 2 (learned at 28) keeps all its spell power to 45 under Forever's level-gap rule; rank 1 (22) loses 5% a level from 40. Rank 2 ties or gains at bare 40 (round 15 mage wave 3)."
           }
         ]
       }
