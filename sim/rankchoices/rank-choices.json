@@ -539,6 +539,12 @@
             "to_level": 60,
             "rank": 4,
             "preset": "bare"
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 10,
+            "preset": "raid"
           }
         ]
       },
@@ -547,19 +553,9 @@
         "authored": 29228,
         "bands": [
           {
-            "from_level": 30,
-            "to_level": 39,
-            "rank": 1
-          },
-          {
             "from_level": 40,
             "to_level": 49,
-            "rank": 1
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 2
+            "rank": 3
           }
         ]
       },
@@ -571,12 +567,6 @@
             "from_level": 50,
             "to_level": 59,
             "rank": 7
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 7,
-            "preset": "bare"
           }
         ]
       }
@@ -605,18 +595,6 @@
             "from_level": 32,
             "to_level": 39,
             "rank": 6
-          }
-        ]
-      },
-      {
-        "spell": "Riptide",
-        "authored": 1239243,
-        "bands": [
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 2,
-            "preset": "bare"
           }
         ]
       }

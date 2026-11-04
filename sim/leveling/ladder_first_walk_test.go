@@ -26,6 +26,9 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 		{"rogue-assassination", "rogue", "assassination", 0, 40, "Mutilate", "32530200251511001-0000000000000000000-000000000000000000"},
 		{"rogue-subtlety", "rogue", "subtlety", 2, 30, "Ghostly Strike and Hemorrhage", "00000000000000000-0000000000000000000-035131011311000100"},
 		{"shaman-restoration", "shaman", "restoration", 2, 30, "Mana Tide Totem", "0000000000000000-000000000000000000-5530003310010000"},
+		// Sim-accuracy round 15 (shaman): Stormstrike sits in the 15-point row and beta
+		// logs show Enhancement shamans of level 25 to 35 casting it; band 30 left it out.
+		{"shaman-enhancement", "shaman", "enhancement", 1, 30, "Stormstrike", "0000000000000000-055030310031000000-0000000000000000"},
 		{"warlock-affliction", "warlock", "affliction", 0, 30, "Siphon Life", "25522300100001000-0000000000000000000-0000000000000000"},
 		{"warlock-demonology", "warlock", "demonology", 1, 30, "Soul Link", "00000000000000000-2035113101210001000-0000000000000000"},
 		{"warrior-arms", "warrior", "arms", 0, 40, "Mortal Strike", "13323213032214001-000000000000000000-000000000000000000"},

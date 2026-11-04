@@ -193,6 +193,19 @@
         }
       ]
     },
+    "shaman-enhancement": {
+      "reason": "The rotation casts Stormstrike, which sits in the 15-point row. Its spell is a level 40 spell, but the talent teaches it whenever the row is open: beta logs (foreverlogs.gg reports 2712, 2717, 2753, 2805) show Enhancement shamans of level 25 to 35 casting it. The plain walk spent a level 30 shaman's 21 points on Flurry's fourth rank instead; holding Stormstrike as soon as it fits takes that point and gains about 25% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 15, shaman lane). Rage of the Farseer (the 30-point row, used on cooldown) is held next so band 40 keeps the plain walk's point in it; bands 40 to 60 already carry both and do not change.",
+      "first": [
+        {
+          "talent": "Stormstrike",
+          "rank": 1
+        },
+        {
+          "talent": "Rage of the Farseer",
+          "rank": 1
+        }
+      ]
+    },
     "shaman-restoration": {
       "reason": "On band 20's own fight, Mindfulness's second rank ahead of Tidal Focus's last rank beats the plain walk beyond error, both factions (round 11); Water Shield, which the rotation casts, taken as soon as it can be held (ahead of Tidal Focus's fourth rank) beats that beyond error at band 20 too, both factions (round 12); no other band changes. Mana Tide Totem (the 15-point row), which the rotation casts, is held next: at band 30 it takes Tidal Mastery's point and gains about 1.9% effective healing, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); Nature's Swiftness and Riptide at 30 and 40 measured lower or under 1% and are not reserved.",
       "first": [

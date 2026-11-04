@@ -195,28 +195,91 @@ func assertOnlyRank(t *testing.T, rotation json.RawMessage, spec, class, preset,
 // still runs dry (162 to 146 s). Below 40 the line keeps the highest rank
 // learned.
 func TestRestorationShamanHealingWaveRanksByBand(t *testing.T) {
-	raw, err := os.ReadFile("../../data/curated/apl/shaman-restoration.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if strings.Contains(string(raw), `"spellId": 10396`) {
-		t.Fatal("the Restoration shaman list still authors Healing Wave rank 9 (10396)")
-	}
-	var rotation struct {
-		Rotation json.RawMessage `json:"rotation"`
-	}
-	if err := json.Unmarshal(raw, &rotation); err != nil {
-		t.Fatal(err)
-	}
-	wave := map[int]int{1: 331, 2: 332, 3: 547, 4: 913, 5: 939, 6: 959, 7: 8005, 8: 10395, 9: 10396}
+	filler, _ := restorationHealingWaveLines(t)
 	for _, c := range []struct {
 		level  int
 		preset string
 		rank   int
 	}{{1, BarePreset, 1}, {6, BarePreset, 2}, {12, BarePreset, 3}, {18, BarePreset, 4}, {20, BarePreset, 4}, {24, BarePreset, 5}, {30, BarePreset, 5},
 		{32, BarePreset, 6}, {39, BarePreset, 6}, {40, BarePreset, 2}, {50, BarePreset, 2}, {60, BarePreset, 2}, {60, RaidPreset, 2}} {
-		assertOnlyRank(t, rotation.Rotation, "shaman-restoration", "shaman", c.preset, "tauren", c.level, wave, c.rank)
+		assertOnlyRank(t, filler, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)
 	}
+}
+
+// Sim-accuracy round 15: the Healing Wave cast after Nature's Swiftness is
+// the save, and Nature's Swiftness only takes the cast time away, so it is
+// the highest trainer rank learned at every band (rank 9, 10396, at 60;
+// rank 10 is a book rank). Round 14's rank-2 sweep (cf5fe63bb) moved this
+// line to rank 2 with the tank filler: +1.0% effective HPS at raid 60 back,
+// both factions, seeds 1 and 50001.
+func TestRestorationShamanSwiftnessHealingWaveIsTheTopRank(t *testing.T) {
+	_, swiftness := restorationHealingWaveLines(t)
+	for _, c := range []struct {
+		level  int
+		preset string
+		rank   int
+	}{{20, BarePreset, 4}, {30, BarePreset, 5}, {40, BarePreset, 7}, {50, BarePreset, 8}, {56, BarePreset, 9}, {60, BarePreset, 9}, {60, RaidPreset, 9}} {
+		assertOnlyRank(t, swiftness, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)
+	}
+}
+
+var healingWaveRanks = map[int]int{1: 331, 2: 332, 3: 547, 4: 913, 5: 939, 6: 959, 7: 8005, 8: 10395, 9: 10396, 10: 25357}
+
+// restorationHealingWaveLines splits the Restoration list's Healing Wave
+// lines into two one-line rotations: the tank filler and the cast that
+// spends Nature's Swiftness (16188).
+func restorationHealingWaveLines(t *testing.T) (filler, swiftness json.RawMessage) {
+	t.Helper()
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/shaman-restoration.json", &list)
+	wrap := func(line json.RawMessage) json.RawMessage {
+		out, err := json.Marshal(map[string]any{"type": "TypeAPL", "priorityList": []json.RawMessage{line}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return out
+	}
+	for _, line := range list.Rotation.PriorityList {
+		var entry struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int `json:"spellId"`
+					} `json:"spellId"`
+				} `json:"castSpell"`
+				Condition json.RawMessage `json:"condition"`
+			} `json:"action"`
+		}
+		if err := json.Unmarshal(line, &entry); err != nil {
+			t.Fatal(err)
+		}
+		cast := entry.Action.CastSpell
+		if cast == nil || !isHealingWave(cast.SpellID.SpellID) {
+			continue
+		}
+		if strings.Contains(string(entry.Action.Condition), `"auraIsActive"`) && strings.Contains(string(entry.Action.Condition), "16188") {
+			swiftness = wrap(line)
+		} else {
+			filler = wrap(line)
+		}
+	}
+	if filler == nil || swiftness == nil {
+		t.Fatal("the Restoration list lacks the tank Healing Wave or the Nature's Swiftness Healing Wave")
+	}
+	return filler, swiftness
+}
+
+func isHealingWave(id int) bool {
+	for _, wave := range healingWaveRanks {
+		if wave == id {
+			return true
+		}
+	}
+	return false
 }
 
 // Round 14, at the 2.3 heal scale: Holy Shock is rank 4 (20930) at bare 60,
@@ -536,6 +599,75 @@ func TestHolyHealRanksByBand(t *testing.T) {
 			if has != (rank == c.rank) {
 				t.Errorf("level %d %s: Heal rank %d (%d) cast %v, want only rank %d", c.level, c.preset, rank, id, has, c.rank)
 			}
+		}
+	}
+}
+
+// Sim-accuracy round 15: 70755 made Riptide a heal over time only (no
+// direct heal, 12 s cooldown, 150/180/230 mana), and the bare-60 row that
+// held it at rank 2 now loses to rank 3 by 1.5% effective HPS, both
+// factions, seeds 1 and 50001. Every band casts the highest rank learned.
+func TestRestorationShamanRiptideIsTheTopRank(t *testing.T) {
+	var list struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/shaman-restoration.json", &list)
+	riptide := map[int]int{1: 408521, 2: 1239242, 3: 1239243}
+	for _, c := range []struct {
+		level  int
+		preset string
+		rank   int
+	}{{40, BarePreset, 1}, {50, BarePreset, 2}, {60, BarePreset, 3}, {60, RaidPreset, 3}} {
+		assertOnlyRank(t, list.Rotation, "shaman-restoration", "shaman", c.preset, "tauren", c.level, riptide, c.rank)
+	}
+}
+
+// Sim-accuracy round 15: once 70755 made Riptide a 230-mana heal over time
+// (about 4.6 healed per mana against Lesser Healing Wave's 3.6), keeping it
+// on the tank comes before the tank's Lesser Healing Wave and Healing Wave
+// lines, right after the Nature's Swiftness save: +0.8% effective HPS at
+// raid 60 (mana lasts 139 to 160 s), bare 50 +1.4%, bare 60 +0.8%, both
+// factions, seeds 1 and 50001.
+func TestRestorationShamanRiptidesTheTankBeforeItsWaves(t *testing.T) {
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/shaman-restoration.json", &list)
+	first := map[string]int{}
+	for i, line := range list.Rotation.PriorityList {
+		var entry struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int `json:"spellId"`
+					} `json:"spellId"`
+					Target struct {
+						Index int `json:"index"`
+					} `json:"target"`
+				} `json:"castSpell"`
+			} `json:"action"`
+		}
+		if err := json.Unmarshal(line, &entry); err != nil {
+			t.Fatal(err)
+		}
+		cast := entry.Action.CastSpell
+		if cast == nil || cast.Target.Index != 5 {
+			continue
+		}
+		key := strconv.Itoa(cast.SpellID.SpellID)
+		if _, seen := first[key]; !seen {
+			first[key] = i
+		}
+	}
+	riptide, ok := first["1239243"]
+	if !ok {
+		t.Fatal("no tank Riptide line")
+	}
+	for _, wave := range []string{"10468", "332"} {
+		if at, ok := first[wave]; ok && at < riptide {
+			t.Errorf("the tank's %s line (priority %d) comes before its Riptide (priority %d)", wave, at, riptide)
 		}
 	}
 }
