@@ -73,6 +73,22 @@ describe('guideHitCapLine', () => {
     );
   });
 
+  // Round 19 (round 18 shaman X1): Enhancement past the 9% weapon cap still misses with its
+  // shocks and Maelstrom bolts up to 16%, so "reached" alone said hit was done.
+  it('names the spell cap beside the weapon cap for a melee spec that casts spells', () => {
+    const past = guideHitCapLine({ baseline: 10, specials: 0, spell: 6 });
+    expect(past?.text).toBe(
+      'Hit cap: reached (weapon attacks), 16% (spells) · 10% hit from BiS gear and buffs, 6% still to find for spells',
+    );
+    expect(past?.title).toContain('16%');
+    expect(guideHitCapLine({ baseline: 6, specials: 3, spell: 10 })?.text).toBe(
+      'Hit cap: 9% (weapon attacks), 16% (spells) · 6% hit from BiS gear and buffs, 3% still to find',
+    );
+    expect(guideHitCapLine({ baseline: 17, specials: 0, spell: 0 })?.text).toBe(
+      'Hit cap: reached (weapon attacks), reached (spells) · 17% hit from BiS gear and buffs',
+    );
+  });
+
   it('reads every source as one figure when the talents add up to more than the baseline', () => {
     expect(guideHitCapLine({ baseline: 2, specials: 7 }, [SUPPRESSION])?.text).toBe(
       'Hit cap: 9% · 2% hit from BiS gear, buffs and talents, 7% still to find',

@@ -66,10 +66,16 @@ function collapseRun(run: readonly StepLine[]): CollapsedLine {
   };
 }
 
-/** One row per run of consecutive steps that cast the same spell at the same rank. */
-export function collapseRuns(lines: readonly StepLine[]): CollapsedLine[] {
+/** One row per run of consecutive steps that cast the same spell at the same rank. With
+ *  `keep` (a card for one build: `buildRunsGates`), the steps that build does not make go
+ *  first, so a run of one spell split by build (Arcane's raid and leveling Frostbolt) reads
+ *  only the build's own step. */
+export function collapseRuns(
+  lines: readonly StepLine[],
+  keep: (gates: readonly AplGate[]) => boolean = () => true,
+): CollapsedLine[] {
   const runs: StepLine[][] = [];
-  for (const line of lines) {
+  for (const line of lines.filter((step) => keep(step.gates))) {
     const current = runs[runs.length - 1];
     if (current !== undefined && sameSpell(current[0], line)) current.push(line);
     else runs.push([line]);

@@ -155,7 +155,7 @@ const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
                 <span
                   class="gear-row-flag-tag"
                   data-testid="bis-row-low-value"
-                  title={bisCopy.lowValueTitle(unit)}
+                  title={row.lowValueTitle ?? bisCopy.lowValueTitle(unit)}
                 >
                   {bisCopy.lowValueTag}
                 </span>

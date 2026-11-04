@@ -27,6 +27,9 @@ export interface RotationItem {
   /** The spell is a talent only the guide's raid build takes (`markRaidBuildRows`): the
    *  lists follow the level 60 raid priority, shown beside the level 60 build too. */
   raidBuildOnly?: boolean;
+  /** The spells the row's APL step needs known (its positive `known` gates, named): a row that
+   *  needs a raid-only talent is a raid build row too (`markRaidBuildRows`). */
+  needs?: readonly string[];
 }
 
 export interface RotationLists {
@@ -200,22 +203,38 @@ function whenText(secondsBefore: number): string {
 }
 
 /** ", with Unsealed Wrath, once Judgement of the Crusader is on the target" for a gated step;
- *  empty when ungated. A gate whose spell the data cannot name is left out. */
-function gateText(gates: readonly AplGate[], spellFacts: SpellLookup): string {
+ *  empty when ungated. A gate whose spell the data cannot name, or one the described build
+ *  settles, is left out. */
+function gateText(gates: readonly AplGate[], spellFacts: SpellLookup, settled: GateSettled): string {
   return gates
     .flatMap((gate) => {
-      const name = spellFacts(gate.spellId)?.name;
+      const name = settled(gate) ? undefined : spellFacts(gate.spellId)?.name;
       return name === undefined ? [] : [`, ${gateWords(gate, name)}`];
     })
     .join('');
 }
 
+/** The named spells `gates` need known; undefined when none. */
+function neededSpells(gates: readonly AplGate[], spellFacts: SpellLookup): string[] | undefined {
+  const names = gates.flatMap((gate) => {
+    const name = gate.kind === 'known' && gate.positive ? spellFacts(gate.spellId)?.name : undefined;
+    return name === undefined ? [] : [name];
+  });
+  return names.length === 0 ? undefined : names;
+}
+
 /** A priority row's clause with the talents it is gated on that its note does not already
  *  name ("With Heating Up" on an Arcane Fireball line with no note). Only talent gates: an
- *  aura or resource condition is what the note explains. */
-function withTalentGates(clause: string, gates: readonly AplGate[], spellFacts: SpellLookup): string {
+ *  aura or resource condition is what the note explains. A gate the described build settles
+ *  is not named: the card lists only that build's rows. */
+function withTalentGates(
+  clause: string,
+  gates: readonly AplGate[],
+  spellFacts: SpellLookup,
+  settled: GateSettled,
+): string {
   const words = gates.flatMap((gate) => {
-    const name = gate.kind === 'known' ? spellFacts(gate.spellId)?.name : undefined;
+    const name = gate.kind === 'known' && !settled(gate) ? spellFacts(gate.spellId)?.name : undefined;
     return name === undefined || clause.toLowerCase().includes(name.toLowerCase())
       ? []
       : [gateWords(gate, name)];
@@ -242,12 +261,21 @@ export function rotationListsFrom(
   /** Whether the described build makes a cast with these gates (`buildRunsGates`); a cast it
    *  does not make is left off its card. */
   buildRuns: (gates: readonly AplGate[]) => boolean = () => true,
+  /** Whether the described build settles a gate (`buildSettlesGate`: a talent it takes or
+   *  leaves). Its rows are already that build's own, so the gate is not worded. */
+  settled: GateSettled = () => false,
 ): RotationLists {
   const priority = lines
     .filter((line) => buildRuns(line.gates ?? []))
     .map((line) => {
       const item = lineItem(line);
-      return { ...item, clause: withTalentGates(item.clause, line.gates ?? [], spellFacts) };
+      const gates = line.gates ?? [];
+      const needs = neededSpells(gates, spellFacts);
+      return {
+        ...item,
+        clause: withTalentGates(item.clause, gates, spellFacts, settled),
+        ...(needs === undefined ? {} : { needs }),
+      };
     });
 
   // The opener is the APL's pre-pull casts and nothing else: with none, there is no opener to
@@ -261,12 +289,14 @@ export function rotationListsFrom(
   for (const [index, cast] of casts.entries()) {
     const facts = spellFacts(cast.spellId);
     if (facts === undefined || !canGoOutBeforePull(cast, casts.slice(0, index))) continue;
+    const needs = neededSpells(cast.gates, spellFacts);
     opener.push({
       spellId: cast.spellId,
       name: facts.name,
       rank: facts.rank,
       icon: facts.icon ?? lineIcons.get(facts.name),
-      clause: `${whenText(prepullSeconds(cast, facts, castTimeCuts))}${gateText(cast.gates, spellFacts)}`,
+      clause: `${whenText(prepullSeconds(cast, facts, castTimeCuts))}${gateText(cast.gates, spellFacts, settled)}`,
+      ...(needs === undefined ? {} : { needs }),
     });
   }
 
@@ -296,6 +326,9 @@ export function rotationListsFrom(
 }
 
 export type GuideRole = 'dps' | 'healer' | 'tank';
+
+/** Whether a card's build settles a gate, so the card need not word it. */
+export type GateSettled = (gate: AplGate) => boolean;
 
 const COOLDOWN_PASS_NAME = 'Trinkets, racials and potions';
 const COOLDOWN_PASS_CLAUSE = 'On cooldown, with your biggest damage';
@@ -466,10 +499,12 @@ export function raidBuildOnlyTalents(
   return new Set([...raidLit.keys()].filter((name) => talentNames.has(name) && !levelLit.has(name)));
 }
 
-/** New lists whose rows for `raidOnly` talents carry `raidBuildOnly`. */
+/** New lists whose rows for `raidOnly` talents, or that need one, carry `raidBuildOnly`. */
 export function markRaidBuildRows(lists: RotationLists, raidOnly: ReadonlySet<string>): RotationLists {
+  const raidRow = (item: RotationItem): boolean =>
+    raidOnly.has(item.name) || (item.needs ?? []).some((name) => raidOnly.has(name));
   const mark = (items: readonly RotationItem[]): RotationItem[] =>
-    items.map((item) => (raidOnly.has(item.name) ? { ...item, raidBuildOnly: true } : item));
+    items.map((item) => (raidRow(item) ? { ...item, raidBuildOnly: true } : item));
   return { opener: mark(lists.opener), priority: mark(lists.priority), cooldowns: mark(lists.cooldowns) };
 }
 

@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { canApplyBetween, knownAtFor } from './apl-level-gate';
 import { loadAplSteps, spellFamilyOf, type AplStep } from './apl-steps';
 import { collapseRuns, type CollapsedLine, type StepLine } from './rotation-collapse';
-import { aplGates } from './apl-gates';
+import { aplGates, type AplGate } from './apl-gates';
 import { buildIconExists, spellIcons } from '../data/build-files';
 import { isRealIcon } from '../icons/placeholder';
 
@@ -195,6 +195,8 @@ export function rotationLinesFor(
   classSlug: string,
   spec: string,
   shownThrough: number,
+  /** The steps to keep (`collapseRuns`): a guide card's build's own; every step by default. */
+  keep?: (gates: readonly AplGate[]) => boolean,
 ): RotationLineView[] {
   const spellRanks = loadSpellRanks(build);
   const steps = stepsAlignedWith(entry, spec, spellRanks, classSlug);
@@ -220,5 +222,5 @@ export function rotationLinesFor(
       gates: step === undefined || step === null ? [] : aplGates(step.condition),
     });
   });
-  return collapseRuns(stepLines);
+  return collapseRuns(stepLines, keep);
 }

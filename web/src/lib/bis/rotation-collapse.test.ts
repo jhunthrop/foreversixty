@@ -33,6 +33,23 @@ describe('collapseRuns', () => {
     expect(rows.map((row) => `${row.name}${row.rank}`)).toEqual(['Heal1', 'Renew3', 'Heal1', 'Heal2']);
   });
 
+  // Round 19: Arcane's Frostbolt filler is a raid step (Heating Up known) and a leveling step
+  // (not known). A card for one build keeps that build's step alone, before the run merges, so
+  // the level 60 card does not read the raid step's note.
+  it('drops the steps a build does not make before merging the run', () => {
+    const heating = { kind: 'known' as const, spellId: 9, positive: true };
+    const raid = { ...step('Frostbolt', 10, 'Frostbolt in a raid.'), gates: [heating] };
+    const leveling = {
+      ...step('Frostbolt', 10, 'Frostbolt as the filler.'),
+      gates: [{ ...heating, positive: false }],
+    };
+    const withoutHeatingUp = (gates: readonly { positive: boolean }[]) =>
+      gates.every((gate) => !gate.positive);
+    const rows = collapseRuns([raid, leveling], withoutHeatingUp);
+    expect(rows.map((row) => row.condition)).toEqual(['Frostbolt as the filler.']);
+    expect(collapseRuns([raid, leveling]).map((row) => row.steps)).toEqual([2]);
+  });
+
   it('leaves a single step as it was, without generated words', () => {
     const [row] = collapseRuns([step('Renew', 3, 'Stays on the tank.', 'the tank')]);
     expect(row.condition).toBe('Stays on the tank.');
