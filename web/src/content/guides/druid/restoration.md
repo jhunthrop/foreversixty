@@ -114,4 +114,4 @@ Druids cannot use wands, so swap the starter weapon for the first quest staff wi
 
 ### Levels 20 to 60
 
-Restoration is the slowest druid to quest with, because it is built to keep others alive, not to kill. Level as Feral and switch at 60, or heal dungeons on the way up: Rejuvenation and Regrowth carry a group from the low levels, and Healing Touch covers the big pulls. Your Rejuvenation rank on the tank changes as you level: **Ranks** under Rotation and priority gives it for each stretch of levels, and rank 1 stays on the party the whole way.
+Restoration is the slowest druid to quest with, because it is built to keep others alive, not to kill. Level as Feral and switch at 60, or heal dungeons on the way up: Rejuvenation and Regrowth carry a group from the low levels, and Healing Touch covers the big pulls. Which Rejuvenation rank to keep on the tank changes as you level, from rank 2 at 20 to rank 4 at 38 and on up: the Ranks paragraph under [Rotation and priority](#rotation-and-priority) lists it by level range. Rank 1 stays on the party throughout.
