@@ -5185,6 +5185,17 @@
         }
       }
     },
+    "items.slot.relic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relic"
+          }
+        }
+      }
+    },
     "items.slot.shoulder": {
       "extractionState": "manual",
       "localizations": {

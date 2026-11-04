@@ -17,9 +17,11 @@ struct PaperdollSlot: Equatable, Identifiable, Sendable {
     let state: State
     /// The gold dot: the character's BiS list has a better item for this slot.
     let better: Bool
+    /// The character's class: a paladin, shaman or druid's ranged socket reads Relic.
+    var classSlug: String?
 
     var id: String { slot }
-    var label: String { ItemVocabulary.slotLabel(slot) }
+    var label: String { ItemVocabulary.slotLabel(slot, classSlug: classSlug) }
 
     /// The worn item's look, for the tooltip.
     var look: HomeItemLook? {
@@ -63,18 +65,18 @@ enum PaperdollModel {
     }
 
     /// The character page's sockets from `CharacterProfile.gear`, looked up in the class's items file.
-    static func character(gear: [CharacterGearSlot], items: [Int: Item]) -> [PaperdollSlot] {
+    static func character(gear: [CharacterGearSlot], items: [Int: Item], classSlug: String? = nil) -> [PaperdollSlot] {
         let bySlot = Dictionary(gear.map { ($0.slot, $0) }, uniquingKeysWith: { first, _ in first })
         let wornBySlot = bySlot.compactMapValues { $0.worn?.id }
         let twoHanded = wornBySlot[mainHand].flatMap { items[$0] }?.twoHand == true
         return ItemVocabulary.frameSlots.map { slot in
             guard let entry = bySlot[slot], let worn = entry.worn else {
                 if slot == offHand, twoHanded {
-                    return PaperdollSlot(slot: slot, state: .twoHandOff, better: false)
+                    return PaperdollSlot(slot: slot, state: .twoHandOff, better: false, classSlug: classSlug)
                 }
-                return PaperdollSlot(slot: slot, state: .empty, better: bySlot[slot].map { gains($0) } ?? false)
+                return PaperdollSlot(slot: slot, state: .empty, better: bySlot[slot].map { gains($0) } ?? false, classSlug: classSlug)
             }
-            return PaperdollSlot(slot: slot, state: state(worn, items: items), better: isBetter(entry, wornBySlot: wornBySlot))
+            return PaperdollSlot(slot: slot, state: state(worn, items: items), better: isBetter(entry, wornBySlot: wornBySlot), classSlug: classSlug)
         }
     }
 

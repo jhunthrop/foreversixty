@@ -4,7 +4,7 @@
 // the line under it that sets that total beside the score card's. Pure:
 // CharacterGearPanel.svelte draws what this returns.
 import { wearsListedBest } from '../bis/best-in-slot';
-import { SLOT_LABELS } from '../planner/types';
+import { slotLabelForClass } from '../bis/slot-display-labels';
 import { gearCopy } from './copy';
 import type { CharacterGearSlot, GearSlotName } from './types';
 
@@ -32,7 +32,7 @@ export interface GearItemView {
 
 export interface GearRow {
   slot: GearSlotName;
-  /** "Head", "Finger 1", "Trinket 2", "Main hand" (SLOT_LABELS). */
+  /** "Head", "Finger 1", "Trinket 2", "Main hand", "Relic" (`slotLabelForClass`). */
   label: string;
   state: GearRowState;
   /** Null when the slot is empty. */
@@ -89,13 +89,15 @@ function strongSlots(gear: readonly CharacterGearSlot[]): Set<GearSlotName> {
 export function gearRows(
   gear: readonly CharacterGearSlot[],
   twoHand: ((id: number) => boolean) | null = () => false,
+  /** The character's class: a paladin, shaman or druid's ranged row reads "Relic". */
+  classSlug?: string,
 ): GearRow[] {
   const strong = strongSlots(gear);
   const wornBySlot: Record<string, number | undefined> = {};
   for (const slot of gear) wornBySlot[slot.slot] = slot.worn?.id;
   const mainHand = gear.find((slot) => slot.slot === 'main_hand')?.worn ?? null;
   return gear.map((slot): GearRow => {
-    const label = SLOT_LABELS[slot.slot];
+    const label = slotLabelForClass(slot.slot, classSlug);
     const worn = wornView(slot.worn);
     const bare = {
       slot: slot.slot,

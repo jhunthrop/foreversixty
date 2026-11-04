@@ -379,7 +379,7 @@ private fun GearSection(profile: CharacterProfile, state: CharacterScreenState, 
             )
             return@Column
         }
-        val slots = Paperdoll.fromProfile(profile.gear, state.items, LocalResources.current)
+        val slots = Paperdoll.fromProfile(profile.gear, state.items, LocalResources.current, profile.character.className?.lowercase())
         Column(Modifier.fillMaxWidth().quietCard().padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             PaperdollFrame(slots, state.build, actions.openSocket)
             if (slots.any { it.better }) Text(stringResource(R.string.char_goldDot), style = FsType.meta, color = FsColor.muted)

@@ -5,8 +5,7 @@
 // wording is wrong for this spec's own real data in two places the spec calls out by name:
 // the "comes at 30" trinket claim and the exact instance/rep list -- see panel-view.ts's
 // `noSourcedItemCopyFor` for the first; this module is the second).
-import { SLOTS, type Slot } from '../planner/types';
-import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
+import { SLOTS } from '../planner/types';
 import { bisCopy, joinWithAnd } from './copy';
 import type { BandInfo, RowView } from './panel-view';
 import type { SourceCell } from './source-cell';
@@ -122,8 +121,8 @@ function firstSlotThatHelpsNextBand(current: BandInfo, next: BandInfo): string |
   const nextBySlot = new Map(next.rows.map((row) => [row.slot, row]));
   for (const slot of SLOTS) {
     const wasEmpty = currentBySlot.get(slot)?.empty ?? false;
-    const nowFilled = nextBySlot.get(slot)?.empty === false;
-    if (wasEmpty && nowFilled) return (SLOT_DISPLAY_LABELS[slot as Slot] ?? slot).toLowerCase();
+    const filled = nextBySlot.get(slot);
+    if (wasEmpty && filled?.empty === false) return filled.slotLabel.toLowerCase();
   }
   return undefined;
 }

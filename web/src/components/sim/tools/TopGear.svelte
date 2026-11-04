@@ -58,6 +58,7 @@
       loot={store.loot}
       ctx={{ level: MAX_LEVEL, sourcesByItem: store.sourceIndex, known: store.knownItems }}
       treeVersion={store.character?.tree_version ?? ''}
+      classSlug={store.character?.class_slug ?? ''}
       onadd={(itemId) => store.addSearchItem(itemId)}
     />
     <ConsumableCandidates
