@@ -246,7 +246,8 @@
         title="Flasks, food and potions in bags. Only members who share their bags are checked."
         >Consumables</span
       >
-      <span class="quiet-label" style="cursor:default" title="Spent points vs 51 at level 60">Talent points</span
+      <span class="quiet-label" style="cursor:default" title="Spent points vs 51 at level 60"
+        >Talent points</span
       >
       <span class="quiet-label" style="cursor:default" title="This character vs the roster's own median"
         >Item level</span
