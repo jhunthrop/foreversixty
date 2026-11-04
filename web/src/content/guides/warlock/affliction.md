@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:warlock:gnome:25522300130201351/200522/005:'
 raidBuild: 'FS1:1.60.1.70755:warlock:gnome:2552001013500105/00052/0550004:'
 recommendedRaces: [gnome, orc]
-statPriority: [Spell power, Shadow power, Intellect, Hit, Critical strike, Spell haste, Spell penetration]
+statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
 updated: 2026-11-02
 confidence: inferred
@@ -69,7 +69,7 @@ Once the tank has the boss, put up Corruption, then Bane of Agony while Amplify 
 
 Never clip a DoT. A recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end. Recast Corruption, Agony and Siphon Life when they fall off. Immolate is the one exception: start its cast with about 3 seconds left. It lands as the old one runs out, and the fresh direct hit is worth the last tick.
 
-Bane of Agony beats Bane of Doom for Affliction. Both crit, and Pandemic doubles both, but Amplify Curse adds 50% to Agony and nothing to Doom, and Agony starts paying at once instead of a minute later. Demonology and Destruction have no Amplify Curse, which is why they run Doom.
+Bane of Agony is your bane as Affliction: its ticks start at once instead of a minute later, Improved Bane of Agony and Amplify Curse both raise it, and Pandemic doubles its crits.
 
 Wrack stays off your raid bars. It is a 6 second channel and Shadow Bolt does more in those 6 seconds. Keep Shadow Bolt as your filler.
 
@@ -89,7 +89,7 @@ Spell power and Shadow spell power are your stats, with Shadow power almost as g
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops; the full list and its alternatives are one click away.
+The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops.
 
 ## Enchants and consumables
 
@@ -101,7 +101,7 @@ Gnome and Orc are the picks. Eureka! gives 8 seconds of 10% more damage and 10% 
 
 ## Professions
 
-Tailoring and Enchanting. Much of your pre-raid gear is tailored cloth, Enchanting makes some of the best pre-raid caster pieces, and you enchant your own gear. Alchemy is the swap when your guild expects a flask every raid night.
+Tailoring and Enchanting: tailored cloth and a couple of enchanted caster pieces make up much of your pre-raid set, and you enchant your own gear. Alchemy is the swap when your guild expects a flask every raid night.
 
 ## Leveling
 

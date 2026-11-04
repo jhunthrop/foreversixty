@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70755:warlock:gnome:25522/203511310122000135/005:'
 raidBuild: 'FS1:1.60.1.70755:warlock:gnome:05/2035113011220001351/0550005:'
 recommendedRaces: [gnome, troll]
 statPriority:
-  [Spell power, Hit, Intellect, Critical strike, Shadow power, Spell haste, Spell penetration, Fire power]
+  [Spell power, Shadow power, Hit, Critical strike, Intellect, Fire power, Spell haste, Spell penetration]
 description: 'How to play Demonology in Forever: the Imp sacrifice and Demonic Pact setup, Soul Link, Decimation, the Shadow Bolt rotation, shards, races and leveling.'
 updated: 2026-11-02
 confidence: inferred
@@ -62,9 +62,9 @@ The leveling build stops at 30 Demonology points, before Demonic Pact, keeps Imp
 
 The raid build adds what the leveling build cannot use. Demonic Pact, the 31st point, keeps your sacrifice when you summon a different demon; only a new Imp ends it. So you sacrifice the Imp and still play with a Succubus out. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit, and in Forever that debuff is yours alone. Ruin doubles the crit bonus on Shadow Bolt and Soul Fire, and all 5 points of Unholy Power go into the Succubus.
 
-Improved Health Funnel, Demonic Aegis and Improved Voidwalker add no damage. They are path points that keep you and your demon alive. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
+Improved Health Funnel, Demonic Embrace, Demonic Aegis and Improved Voidwalker add no damage. They are path points that keep you and your demon alive. The point in Improved Sayaad is 10% more Lash of Pain. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
 
-Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets 8/17 of your hit. Demons almost never crit in melee against a boss. Lash of Pain crits at about a normal caster's rate.
+Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets a bit under half your hit. Its melee almost never crits on a boss; Lash of Pain crits at about a normal caster's rate.
 
 ## Rotation and priority
 
@@ -84,13 +84,13 @@ Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it 
 
 Recast Corruption when it falls off and never clip it. Start Immolate's cast with about 3 seconds left on the old one. Everything else is Shadow Bolt.
 
-Below 35% the fight changes. Every Shadow Bolt now gives you 10 seconds of Decimation. Decimation also cuts Soul Fire's cooldown to 6 seconds all the time, so the burn is Shadow Bolt, Soul Fire, Shadow Bolt, Soul Fire: each Soul Fire is a 2.4 second cast that costs no shard and beats Shadow Bolt, and each Shadow Bolt between them keeps the buff up. Outside Decimation, Soul Fire is a 4 second cast that costs a shard. Never cast it above 35%.
+Below 35% the fight changes. Every Shadow Bolt now gives you 10 seconds of Decimation. Decimation also cuts Soul Fire's cooldown to 6 seconds all the time, so the burn is Soul Fire every time it comes off cooldown and two Shadow Bolts in between: each Soul Fire is a 2.4 second cast that costs no shard and beats Shadow Bolt, and each Shadow Bolt keeps Decimation up. Outside Decimation, Soul Fire is a 4 second cast that costs a shard. Never cast it above 35%.
 
 Searing Pain also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses. Keep it off your bars in raids.
 
 Life Tap below about 10% mana and whenever you have to move. Each tap converts its base amount plus your Spirit. Major Mana Potion and Demonic Rune have separate cooldowns: use both once you are low enough that none of it is wasted.
 
-Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag. Demonology spends more of them than the other specs: every wipe or dead Succubus is another summon.
+Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill. Demonology spends more of them than the other specs: every wipe or dead Succubus is another summon, so carry twice what you think you need.
 
 If the Succubus dies: resummon her (6 seconds, a shard, a big chunk of mana), then cast Soul Link again before you go back to Shadow Bolt. The Imp sacrifice survives the resummon. On fights with heavy raid damage, park her behind the boss and Health Funnel her before she drops.
 
@@ -102,7 +102,7 @@ Spell power first, and Shadow power is nearly as good, though Immolate and Soul 
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops; the full list and its alternatives are one click away.
+The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops.
 
 ## Enchants and consumables
 
@@ -114,7 +114,7 @@ Gnome and Troll are the picks. Eureka! gives 8 seconds of 10% more damage and 10
 
 ## Professions
 
-Tailoring and Enchanting. Much of your pre-raid gear is tailored cloth, Enchanting makes some of the best pre-raid caster pieces, and you enchant your own gear. Alchemy is the swap when your guild expects a flask every raid night.
+Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted caster pieces fill your pre-raid set. Alchemy is the swap if your guild wants a flask from you every raid night.
 
 ## Leveling
 
