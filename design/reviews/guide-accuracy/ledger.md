@@ -447,4 +447,4 @@ Sim round 19 (not landed, int/r19): its guide text carries five errors of its ow
 Sims routed to the sim lane: Retribution fresh-boss opener (Righteousness first against Command first on the raid build); Devouring Plague rank 1 against 2 at 28 and 29; Frost races on the shipped build with Ice Lance at 0.107; Enhancement's 25% gate against no gate at raid 60; Gnome against Human for Discipline at the re-ranked BiS.
 
 Verdict: NOT zero, so round 18 is needed. Three classes audit at zero this round.
-Rendered review: wow-player SHIP for all six changed classes (rogue, shaman, warrior, warlock, priest, paladin pending its read), every tile of every page read.
+Rendered review: wow-player SHIP for all six changed classes (rogue, shaman, warrior, warlock, priest, paladin), every tile of every page read.
