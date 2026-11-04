@@ -82,16 +82,37 @@ Sixty is fenced into its own space:
 
 - Database `foreversixty`, owned by the login role `foreversixty_app`. That role isn't a member of
   `cloudsqlsuperuser`, has `CONNECTION LIMIT 30`, and holds no grants in the `commish` database.
-  `PUBLIC` connect on `foreversixty` is revoked, so Commish's roles can't open it.
+  `PUBLIC` connect on `foreversixty` is revoked, so Commish's roles can't open it. Inside
+  `foreversixty`, `PUBLIC` has no `CONNECT`, `TEMP` or schema `public` rights, and there are no
+  default privileges.
+- The fence runs both ways (since 2026-11-04). `PUBLIC` `CONNECT` is revoked on `commish`,
+  `postgres` and `template1`, so `foreversixty_app` gets `permission denied for database`. The
+  Commish roles (`commish_app`, `commish_research`), `postgres`, `cloudsqlsuperuser` and the Cloud
+  SQL service roles (`cloudsqlagent`, `cloudsqlimportexport`, `cloudsqllogical`,
+  `cloudsqlobservability`, `cloudsqlreplica`, `cloudsqlconnpooladmin`, `cloudsqliam*`) hold
+  explicit `CONNECT` on those three. `PUBLIC` keeps `TEMP`. A database created later with
+  `gcloud sql databases create` starts with `PUBLIC` connect again, so revoke it there too. To
+  undo the fence, `grant connect on database commish, postgres, template1 to public`.
+- The fence has a known limit. `commish_app` and `commish_research` belong to
+  `cloudsqlsuperuser` and have `CREATEROLE`, so they can still alter `foreversixty_app`, including
+  its password. Removing that needs changes on the Commish side, so it's left to the owner.
+- Instance state on 2026-11-04: public IP is on with no authorized networks, so connections come
+  only through the connector or proxy. SSL isn't required (`ALLOW_UNENCRYPTED_AND_ENCRYPTED`),
+  and both apps use the connector's socket with `sslmode=disable`. Daily backups (7 kept) and
+  point-in-time recovery (7 days of logs) are on.
 - The service and every job mount the instance through the Cloud Run Cloud SQL connector
   (`--add-cloudsql-instances` / `--set-cloudsql-instances trycommish:us-east1:commish-pg`). The
   runtime account `api-runtime@foreversixty` holds `roles/cloudsql.client` on `trycommish`.
 - `DATABASE_URL` is `postgres://foreversixty_app:…@/foreversixty?host=/cloudsql/trycommish:us-east1:commish-pg&sslmode=disable&pool_max_conns=6&pool_max_conn_idle_time=10m`.
   `MIGRATE_DATABASE_URL` is the same without the `pool_*` parameters. Both live only in Secret
-  Manager (version 2). Version 1 of each is the old Neon URL, kept for rollback.
+  Manager (version 2; version 1, the old Neon URL, is destroyed).
 - Connection budget: 6 per process × 3 service instances (`maxScale` 3) = 18. That leaves 12 of
   the role's 30 for jobs and deploy overlap. Raising `maxScale` or the pool means raising the
-  role limit with it: `alter role foreversixty_app connection limit N`, run as the role's admin.
+  role limit with it: `alter role foreversixty_app connection limit N`. `foreversixty_app` can't
+  change its own limit, so run that as a temporary built-in admin. Create one with `gcloud sql
+  users create <name> --instance commish-pg --project trycommish --password=<generated>` (it
+  joins `cloudsqlsuperuser`), connect through the proxy to the `postgres` database, and delete it
+  afterwards with `gcloud sql users delete`. Never change the passwords of the existing roles.
   Never resize or restart `commish-pg` without the owner; it interrupts Commish.
 
 A tool that reads the production `DATABASE_URL` from Secret Manager can't use the
@@ -99,21 +120,31 @@ A tool that reads the production `DATABASE_URL` from Secret Manager can't use th
 trycommish:us-east1:commish-pg` and swap the host for `127.0.0.1:6543`. The rule that only the
 deployed API migrates still holds.
 
-**Rollback to Neon** (kept running until at least 2026-11-11):
+**Recovery** (Neon is deleted; Cloud SQL backups are the only copy). `commish-pg` keeps 7 daily
+automated backups (08:00 UTC) and 7 days of transaction logs for point-in-time recovery. Both are
+instance-wide. Never restore a backup or PITR onto `commish-pg` itself: it would roll Commish back
+too and restart the instance. The first daily backup holding `foreversixty` is 2026-11-04 08:00
+UTC; before that only point-in-time recovery covers it. Recover into a throwaway instance and
+copy only `foreversixty`:
 
 ```bash
-P="--project foreversixty --region us-east1"
-gcloud run services update-traffic api $P --to-revisions api-00381-wg5=100   # pinned to the Neon versions
-gcloud run services update api $P --update-secrets DATABASE_URL=DATABASE_URL:1,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:1
-gcloud run services update-traffic api $P --to-latest
-for j in $(gcloud run jobs list $P --format='value(name)'); do
-  gcloud run jobs update "$j" $P --update-secrets DATABASE_URL=DATABASE_URL:1,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:1
-done
+T=--project=trycommish
+gcloud sql backups list --instance commish-pg $T                     # pick a backup, or use a time
+gcloud sql instances clone commish-pg fs-recovery $T --point-in-time '2026-11-05T12:00:00Z'
+# Or restore a daily backup into a new instance instead:
+#   gcloud sql instances create fs-recovery $T --database-version POSTGRES_18 --tier db-g1-small --region us-east1
+#   gcloud sql backups restore <BACKUP_ID> --restore-instance fs-recovery --backup-instance commish-pg $T
+cloud-sql-proxy --gcloud-auth --port 6545 trycommish:us-east1:fs-recovery &
+pg_dump -Fc -d 'host=127.0.0.1 port=6545 user=foreversixty_app dbname=foreversixty' -f fs.dump
 ```
 
-Writes made on Cloud SQL after the cutover aren't on Neon. A rollback loses them unless they're
-copied back by hand. Neon also lacks any migration newer than 66 (`go_links`), so roll back before
-a newer migration lands, or apply it to Neon from the deployed API.
+Stop writes before loading: close the API (`gcloud run services update api --project
+foreversixty --region us-east1 --ingress internal`) and pause the Forever schedulers. Then restore
+`fs.dump` into `commish-pg`'s `foreversixty` as `foreversixty_app` through the usual proxy with
+`pg_restore --clean --if-exists --no-owner`. Reopen with `--ingress all`, resume the schedulers,
+and delete the clone with
+`gcloud sql instances delete fs-recovery --project trycommish`. The clone carries Commish's data
+too, so don't keep it.
 
 Tests need a Postgres instance:
 
