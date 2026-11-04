@@ -119,3 +119,28 @@ Round 4 totals: 25 audit CONFIRMED and 13 rendered-review MUSTs, all fixed. Verd
 Source-link rule now in force: no guide links /sources; stat weights link /sim/weights on damage specs only; boss-drop entries read "which boss drops are upgrades" (/sim/drops) on damage specs, and healer and tank pages link their own best in slot page; no "how <spec> plays" entries (the specs page is the simulator's coverage page); talent-tree sources open the planner; Talents Forever is labelled as beta client data; wago.tools links carry the build. Race picks re-measured this round (round4/race-sims.md) all held.
 
 For the sim round, new: haste shortens the global cooldown in the engine (Classic does not), Summon Hawk unmodeled, no Sniper Shot line, Feral Charge (Cat) unmodeled, non-stat pet buffs blocked.
+
+## Round 5 (client 1.60.1.70755, 2026-11-04)
+
+On top of round 4 (main 42f10dda9). Every class got a wow-player SHIP on rendered pages. A second fix pass was needed after the review: the nightly best-in-slot re-rank (de044125c) moved the stat tables and BiS rows after the audit, so prose that named a stat order or gear pieces contradicted the table on the same page. That prose now gives the table's current order with stable reasons, and it names gear only for reasons that do not move nightly (bind on pickup, quests, rules like "a staff usually wins").
+
+Layout: the Leveling section now reads Levels 1 to 19, then Levels 20 to 60 with the talent strip under it, so the character home's #leveling link opens on the 1 to 19 text. Below lg, headings jumped to clear the sticky jump bar (scroll-margin 60 px). ux-designer and wow-player SHIP at 1440 and 390.
+
+| Class | Audit CONFIRMED | Rendered-review MUSTs |
+|---|---|---|
+| warrior | 3 | 0 |
+| shaman | 1 | 3 (BiS and stat prose against re-ranked tables) |
+| rogue | 1 | 3 (Subtlety weapons, hit) |
+| priest | 0 | 3 page-text (stat prose, Mind Blast note), 2 data (icon, BiS race caption) |
+| mage | 3 | 0 |
+| warlock | 1 | 4 (stat prose, raid-build lines) |
+| hunter | 0 | 2 (hit prose, Improved Stings row) |
+| druid | 2 | 2 (Furor wording, Defense line) |
+| paladin | 1 | 3 (stat prose; a Dwarf MUST was withdrawn on sims) |
+
+Round 5 totals: 12 audit CONFIRMED and 20 page-text review MUSTs, all fixed. Most of the MUSTs come from the nightly re-rank, not from guide errors. Verdict: NOT zero, so round 6 is needed. Trend: 72, 39, 33, 25, 12.
+
+Race decisions (round5/race-sims.md): Restoration shaman goes to [dwarf, orc]. Blood Fury's spell power effect (aura 317, misc 0) covers heals, and Orc leads Horde healing on both seeds. Retribution Human holds on the re-ranked gear (Dwarf even in a raid, Human ahead solo).
+
+For the data lane: Alliance BiS rows show the Horde source Frostwolf Clan for items whose Alliance source is Stormpike Guard; the "N% built in" hit baseline includes BiS gear hit; the BiS race captions for Shadow and Discipline disagree with recommendedRaces; Lesser Heal rank 1 (2050) has no icon; and the spelltips from the hotfix layer (f83b247a1) dropped icons, so the guide-tips vitest fails on main.
+For the sim round: Subtlety Hemorrhage dagger check is main-hand only in the engine (SIM-R5-1), Stormstrike trainer level 40 against the talent at 32, healer haste weights now large and positive, Demonology Soul Fire card against the prose.

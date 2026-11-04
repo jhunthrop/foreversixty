@@ -32,7 +32,7 @@ Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from be
 ### Strengths
 
 - The most forgiving raid rotation of the three trees: one builder, two finishers
-- Adrenaline Rush doubles your energy for 15 seconds, and Blade Flurry cleaves every swing onto a second target
+- Adrenaline Rush doubles your energy regeneration for 15 seconds, and Blade Flurry cleaves every swing onto a second target
 - Weapon Expertise and Precision cover dodge and hit inside the tree
 - Plays the same on every boss: stay behind, keep Slice and Dice up, spend at five
 
@@ -113,7 +113,7 @@ Gnome on Alliance and Undead on Horde. **Eureka!** makes your abilities cost 10%
 
 ## Professions
 
-**Enchanting** is the one that changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make, and both are pre-raid picks. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker comes from a blacksmith; buy it, do not train for it.
+**Enchanting** is the one that changes your gear: Molten Heart of the Mountain and Frozen Heart of the Mountain are bind-on-pickup trinkets only an enchanter can make, and both are pre-raid picks. **Engineering** brings grenades and dynamite for trash. **Skinning** and **Leatherworking** pay for themselves, since Devilsaur and the Stormshroud pieces are leatherworking crafts. Heartseeker is a blacksmith's dagger that binds when equipped: when it is on your list, buy one, do not train the profession for it.
 
 ## Leveling
 

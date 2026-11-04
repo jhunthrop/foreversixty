@@ -53,7 +53,7 @@ The build is 31 Holy, 12 Protection and 8 Retribution.
 - **Spiritual Focus** (5 points): Flash of Light, Holy Light and Light's Vigil keep 70% of their casts from being pushed back.
 - **Healing Light** (3 points): 12% more healing on Holy Light, Flash of Light and Holy Shock.
 - **Reverence** (2 points): 30% of your regeneration keeps running while you cast.
-- **Illumination** (5 points): every critical heal gives back half the spell's base cost. It is the reason crit is a mana stat for you.
+- **Illumination** (5 points): every critical heal gives back half the spell's base cost. It also keeps half your Spirit regeneration running while you cast for 15 seconds. It is the reason crit is a mana stat for you.
 - **Divine Favor** (1 point): your next Flash of Light, Holy Light or Holy Shock is a sure crit, on a 2 minute cooldown.
 - **Infusion of Light** (2 points): a Flash of Light or Holy Shock crit makes your next Holy Light within 15 seconds a second faster.
 - **Oath of Light** (1 point): sworn on one ally for 5 minutes, it adds a flat amount to every Holy Light, Flash of Light and Holy Shock you put on them. It took Blessing of Light's place, and it is the biggest point in the tree.
@@ -86,11 +86,13 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 **Movement.** Holy Shock is your only instant heal outside Lay on Hands, and Flash of Light is a 1.5 second cast. Stand where you reach the tank and your party, so you never have to move to heal.
 
+**Silences.** Voice of Truth makes you immune to silences and interrupts for 6 seconds, every 3 minutes: save it for the caster pack or boss that would lock you out.
+
 **Emergencies.** Divine Favor into Holy Light first. Lay on Hands heals your target for as much as your own maximum health and gives them 550 mana at its top rank, on a 20 minute cooldown. It drains all of your own mana, and your regeneration keeps running. Use it on someone about to die whom Divine Favor and Holy Light could not have saved, ideally late in the fight. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
 
 ## Stat priority
 
-Mana per 5 seconds and Intellect come first because you run out of mana long before you run out of heals. Intellect is also your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 your cheap heals are Flash of Light rank 4 and Holy Shock rank 3, not rank 1. Spirit only works outside the five second rule, apart from Reverence's 30%. Spell damage does nothing for a heal.
+Mana per 5 seconds comes first because you run out of mana long before you run out of heals. Healing power, Intellect and crit come next, close together: Intellect is your mana bar and your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 your cheap heals are Flash of Light rank 4 and Holy Shock rank 3, not rank 1. Spirit only works outside the five second rule, apart from Reverence's 30% and the 50% Illumination gives you for 15 seconds after every critical heal, which is one more reason crit is a mana stat for you. Spell damage does nothing for a heal.
 
 ## Best in slot
 
@@ -118,7 +120,7 @@ You still kill things with your weapon and your Seal, so take quest rewards over
 
 ### Levels 20 to 60
 
-Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. If you do level as Holy, take Oath of Light at 25, the first point you can spend in its row, ahead of Divine Precision and Infusion of Light: it is the biggest heal in that row from the day you get it, and Divine Precision only helps your Holy spells hit enemies. Questing as Holy is slow either way.
+Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. If you do level as Holy, take Oath of Light at 25, the first point you can spend in its row, ahead of Divine Precision and Infusion of Light: it is the biggest heal in that row from the day you get it, and Divine Precision only adds Holy spell hit and a little silence reduction, nothing for your heals. Questing as Holy is slow either way.
 
 Common mistakes:
 

@@ -279,6 +279,15 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(html).toContain('Outlined: points added in this level range.');
   });
 
+  it('opens #leveling on the Levels 1 to 19 text and plants the strip under Levels 20 to 60', async () => {
+    const html = await frostHtml();
+    const at = (needle: string): number => html.indexOf(needle);
+    expect(at('id="leveling"')).toBeGreaterThan(-1);
+    expect(at('id="levels-1-to-19"')).toBeGreaterThan(at('id="leveling"'));
+    expect(at('id="levels-20-to-60"')).toBeGreaterThan(at('id="levels-1-to-19"'));
+    expect(at('data-testid="guide-leveling-strip"')).toBeGreaterThan(at('id="levels-20-to-60"'));
+  });
+
   it('renders no per-section hedge', async () => {
     const html = await frostHtml();
     for (const hedge of ['is a projection', 'not tested', 'cannot be named', 'inferred from 1.12']) {

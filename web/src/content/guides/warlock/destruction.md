@@ -95,15 +95,15 @@ Adds and AoE: on two targets, spend your casts on the one that must die and put 
 
 ## Stat priority
 
-Spell power first. Hit matters up to the cap, and Suppression gives you 5% of it. Fire power is the better school stat, since Incinerate, Immolate and Conflagrate are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap.
+Hit comes first until the cap: Suppression already gives you 5% of it, and a resisted Incinerate is a whole cast lost. Once your gear reaches the cap, more hit adds nothing and spell power leads. Spell power is next. Fire power is the better school stat, since Incinerate, Immolate and Conflagrate are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap.
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts, with an Engineering head.
+The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Firestone costs a shard and is the fallback, since its crit and Fire damage feed your main spells and a Spellstone's only feed your Shadow ones.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Firestone costs a shard and is the fallback. Its 2% crit lands for double through Ruin and its Fire damage feeds Incinerate, Immolate and Conflagrate, while a Spellstone's 2% haste is worth less to you and its bonus damage only reaches your Shadow spells.
 
 ## Races
 
@@ -125,4 +125,4 @@ Wand the mob down once Immolate and Corruption are ticking; a Lesser Magic Wand 
 
 ### Levels 20 to 60
 
-Destruction kills single mobs fast but has little sustain: no Siphon Life and no talented drains, so Drain Life and Death Coil are your only heals. Pull one at a time. Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and finish with Shadowburn. A mob that dies within 8 seconds of Shadowburn gives the shard back, so as a finisher it is free. Until Shadow and Flame reaches 5 points, Conflagrate can eat your Immolate, so cast it once the DoT has done most of its work. Drain Soul the last few percent of a mob when you need shards for stones and summons. Put every point into Destruction until Shadow and Flame is full at 44, with Incinerate at 40 on the way, and only then go back for Improved Life Tap, Suppression and Improved Corruption. From 40, Incinerate replaces Shadow Bolt. Keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking.
+Destruction kills single mobs fast but has little sustain: no Siphon Life and no talented drains, so Drain Life and Death Coil are your only heals. Pull one at a time. Before 40, Shadow Bolt is your filler: Immolate, Corruption and Bane of Agony on the mob, Shadow Bolt it down, and from 30, once you take the talent, finish with Shadowburn. A mob that dies within 8 seconds of Shadowburn gives the shard back, so as a finisher it is free. Until Shadow and Flame reaches 5 points, Conflagrate can eat your Immolate, so cast it once the DoT has done most of its work. Drain Soul the last few percent of a mob when you need shards for stones and summons. Put every point into Destruction until Shadow and Flame is full at 44, with Incinerate at 40 on the way, and only then go back for Improved Life Tap, Suppression and Improved Corruption. From 40, Incinerate replaces Shadow Bolt. Keep the Voidwalker out when pulls get messy, and Life Tap between pulls instead of drinking.

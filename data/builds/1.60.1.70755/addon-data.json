@@ -10707,7 +10707,7 @@
           {
             "spell_id": 8092,
             "name": "Mind Blast",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -10747,14 +10747,14 @@
           {
             "spell_id": 14751,
             "name": "Inner Focus",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_frost_windwalkon",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8102,
             "name": "Mind Blast",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -10808,14 +10808,14 @@
           {
             "spell_id": 14751,
             "name": "Inner Focus",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_frost_windwalkon",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8104,
             "name": "Mind Blast",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -10869,14 +10869,14 @@
           {
             "spell_id": 14751,
             "name": "Inner Focus",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_frost_windwalkon",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8105,
             "name": "Mind Blast",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -10937,14 +10937,14 @@
           {
             "spell_id": 14751,
             "name": "Inner Focus",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_frost_windwalkon",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8106,
             "name": "Mind Blast",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "dwarf": 8103,
@@ -11026,14 +11026,14 @@
           {
             "spell_id": 14751,
             "name": "Inner Focus",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_frost_windwalkon",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "dwarf": 8102,
@@ -11114,14 +11114,14 @@
           {
             "spell_id": 14751,
             "name": "Inner Focus",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_frost_windwalkon",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10947,
             "name": "Mind Blast",
-            "condition": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+            "condition": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -14820,7 +14820,7 @@
           {
             "spell_id": 12294,
             "name": "Mortal Strike",
-            "condition": "On cooldown: your hardest hit per rage, and it cuts the healing the target takes in half.",
+            "condition": "On cooldown: your biggest hit outside Execute, and it cuts the healing the target takes in half.",
             "icon": "ability_warrior_savageblow",
             "race_spell_ids": {}
           },
@@ -14895,7 +14895,7 @@
           {
             "spell_id": 21551,
             "name": "Mortal Strike",
-            "condition": "On cooldown: your hardest hit per rage, and it cuts the healing the target takes in half.",
+            "condition": "On cooldown: your biggest hit outside Execute, and it cuts the healing the target takes in half.",
             "icon": "ability_warrior_savageblow",
             "race_spell_ids": {}
           },
@@ -14970,7 +14970,7 @@
           {
             "spell_id": 21553,
             "name": "Mortal Strike",
-            "condition": "On cooldown: your hardest hit per rage, and it cuts the healing the target takes in half.",
+            "condition": "On cooldown: your biggest hit outside Execute, and it cuts the healing the target takes in half.",
             "icon": "ability_warrior_savageblow",
             "race_spell_ids": {}
           },
@@ -15242,7 +15242,7 @@
           {
             "spell_id": 23881,
             "name": "Bloodthirst",
-            "condition": "On cooldown: your best hit per rage.",
+            "condition": "On cooldown: the button you lose the most by delaying.",
             "icon": "spell_nature_bloodlust",
             "race_spell_ids": {}
           },
@@ -15317,7 +15317,7 @@
           {
             "spell_id": 23892,
             "name": "Bloodthirst",
-            "condition": "On cooldown: your best hit per rage.",
+            "condition": "On cooldown: the button you lose the most by delaying.",
             "icon": "spell_nature_bloodlust",
             "race_spell_ids": {}
           },
@@ -15392,7 +15392,7 @@
           {
             "spell_id": 23894,
             "name": "Bloodthirst",
-            "condition": "On cooldown: your best hit per rage.",
+            "condition": "On cooldown: the button you lose the most by delaying.",
             "icon": "spell_nature_bloodlust",
             "race_spell_ids": {}
           },

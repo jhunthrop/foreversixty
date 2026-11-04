@@ -110,7 +110,7 @@ Skinning and Leatherworking is the classic cat pair: leather is your armor, and 
 
 Until 20 you are a caster: Moonfire from 4, then Wrath. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, with Maul and Demoralizing Roar; shift when a pull gets heavy. Bash trains at 14, Swipe at 16.
 
-Ferocity takes your points from 10 to 14: Maul and Swipe cost 5 less Rage now, Claw and Rake less Energy later. Feral Swiftness at 15 and 16 adds 4% dodge and Cat Form run speed, Feral Instinct at 17 adds 10% to Swipe, and Brutal Impact at 18 and 19 makes Bash stun longer and come back 30 seconds sooner.
+Ferocity takes your points from 10 to 14: Maul and Swipe cost 5 less Rage now, Claw and Rake less Energy later. Feral Swiftness at 15 and 16 adds 4% dodge now, and Cat Form run speed once you learn Cat Form at 20, Feral Instinct at 17 adds 10% to Swipe, and Brutal Impact at 18 and 19 makes Bash stun longer and come back 30 seconds sooner.
 
 Your bear hits with your weapon's DPS, so swap the starter weapon for the highest-DPS quest staff or two-handed mace. Leather quest rewards beat vendor gear, and the Aquatic Form quest at 16 pays the Idol of Shifting Tides. Druids cannot use wands.
 

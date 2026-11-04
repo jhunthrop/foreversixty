@@ -208,7 +208,7 @@
         }
       },
       {
-        "notes": "Inner Focus into Mind Blast whenever Inner Focus is up: a free Mind Blast with 25% more crit chance.",
+        "notes": "Mind Blast on cooldown, with Inner Focus first whenever it is up: Inner Focus makes that Mind Blast free, with 25% more crit chance.",
         "action": {
           "strictSequence": {
             "actions": [

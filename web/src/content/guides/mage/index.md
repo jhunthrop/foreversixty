@@ -26,9 +26,9 @@ Mage is pure ranged damage with the best toolkit in the game around it: Polymorp
 Forever keeps that whole kit and rebuilds the three trees underneath, so a 1.12 mage will recognise the spells and still have to relearn the rotation.
 
 - **Personal debuffs.** Improved Scorch and Winter's Chill now only boost your own spells. Every Fire mage keeps their own Scorch stacks, and nobody else's Scorches help you.
-- **Ice Block is a talent.** It sits in the Frost tree at 15 points. Fire mages never get there, and the Arcane builds have no spare point for it, so only Frost mages carry Ice Block.
-- **No Molten Armor and no Invisibility.** Mage Armor is the raid armor (half your mana regeneration keeps running while you cast) and Ice Armor is for when things hit you. Threat is handled with Arcane Subtlety, Burning Soul and Frost Channeling, and by not out-casting your tank.
-- **One hit stat.** Hit is a single stat for every school, and Precision in the Frost tree adds 6% hit to every spell, which is why every build dips three points there.
+- **Ice Block comes earlier.** It is still a Frost talent, but it sits at 15 points instead of 20, with Cold Snap below it now. Fire mages never get there, and the Arcane builds have no spare point for it, so only Frost mages carry Ice Block.
+- **Armor and threat.** Mage Armor is the raid armor and now keeps half your mana regeneration running while you cast; Ice Armor is for when things hit you. There is no Molten Armor or Invisibility, so threat is handled with Arcane Subtlety, Burning Soul and Frost Channeling, and by not out-casting your tank.
+- **One hit stat.** Hit now counts for spells and attacks alike, and Precision in the Frost tree adds 6% hit to every school where 1.12's Elemental Precision covered only Fire and Frost, which is why every build, Arcane included, dips three points there.
 - **New spells.** Arcane Blast, Arcane Wrath, Ice Lance on an 8 second cooldown, Heating Up, Fingers of Frost and Missile Barrage are new talents, Frostfire Bolt is trained at 40, 50 and 60, and Teleport: Dalaran at 50.
 
 ## Races

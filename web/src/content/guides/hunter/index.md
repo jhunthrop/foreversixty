@@ -25,7 +25,7 @@ sources:
     kind: datamined
 ---
 
-Hunter is Forever's physical damage class. All three specs deal damage, and in Forever they no longer play the same way: Beast Mastery shoots with a pet at its side, Marksmanship raids with no pet through Lone Wolf, and Survival fights in melee with no pet.
+Hunter is a pure damage class in Forever. All three specs deal damage, and they no longer play the same way: Beast Mastery shoots with a pet at its side, Marksmanship raids with no pet through Lone Wolf, and Survival fights in melee with no pet.
 
 ## What changed from 1.12
 

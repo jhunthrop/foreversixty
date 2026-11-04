@@ -214,7 +214,7 @@
         }
       },
       {
-        "notes": "On cooldown: your best hit per rage.",
+        "notes": "On cooldown: the button you lose the most by delaying.",
         "action": {
           "castSpell": {
             "spellId": {

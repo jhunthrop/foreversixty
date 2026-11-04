@@ -215,7 +215,7 @@
         }
       },
       {
-        "notes": "On cooldown: your hardest hit per rage, and it cuts the healing the target takes in half.",
+        "notes": "On cooldown: your biggest hit outside Execute, and it cuts the healing the target takes in half.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -304,7 +304,7 @@
         "notes": "Only with a Windfury Totem on you, on a free global, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's extra attack. Without the totem it is rage Mortal Strike and Overpower need."
       },
       {
-        "notes": "Only above 90 rage, so a full bar does not waste what your swings make. Below that, every point is worth more in Mortal Strike, Overpower and Execute.",
+        "notes": "Only above 90 rage, so a full bar does not waste what your swings make. Below that, keep the rage for Mortal Strike, Overpower and Execute, which lose damage when they wait.",
         "action": {
           "castSpell": {
             "spellId": {

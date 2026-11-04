@@ -23,6 +23,9 @@ sources:
   - label: 'Warcraft Tavern, Forever Hunter Guide'
     url: https://warcrafttavern.com/forever/guides/hunter/
     kind: community
+  - label: 'Warcraft Tavern, Forever Hunter Leveling Guide'
+    url: https://www.warcrafttavern.com/forever/guides/hunter-leveling/
+    kind: community
   - label: 'Forever Sixty, talent trees'
     url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
@@ -73,9 +76,9 @@ There are two builds. You level with the pet: thirty points in Marksmanship take
 - **Efficiency** (5 points): 15% off every shot, so you reach the end of a long fight still shooting
 - **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
 - **Improved Tracking** (5 points): 5% more damage against the creature type you are tracking
-- **Lone Wolf** (1 point, raid build): 20% more damage with every attack while no pet is out
-- **Improved Stings** (3 points in the raid build): 20% more Serpent Sting damage
-- **Surefooted** (3 points, raid build): 3% hit
+- **Lone Wolf** (1 point, raid build): 20% more damage with every attack while no pet is out, in the raid build
+- **Improved Stings** (3 points in the raid build): 6% more Serpent Sting damage with the 1 point you level with, 20% with all 3 in the raid build
+- **Surefooted** (3 points, raid build): 3% hit in the raid build
 
 Improved Tracking only works while you track the target's type, and Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead. Most raid bosses are one of those; the boss's tooltip names its type, and on a boss of any other type the talent does nothing. Set it before the pull, and swap on trash with mixed types.
 
@@ -85,7 +88,7 @@ In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of 
 
 Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Track the boss's type for Improved Tracking if Track covers it. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
 
-On the pull, press Rapid Fire with your trinkets and Berserking or Blood Fury, just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
+On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Elune's Light raises your critical strike chance with all spells and attacks by 10% for 15 sec. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
 Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: it outhits Multi-Shot whenever the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
 
@@ -110,7 +113,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-Hit first until you reach 9% hit, the cap against a raid boss: a missed auto shot is the most expensive thing that can happen to you. Then Agility, with Intellect close behind through Careful Aim. Crit is strong with Mortal Shots. In the raid build Surefooted gives you 3% of that cap, so you need 6% from gear, or 5% as a Dwarf. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
+Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit comes first until it is not. Once you are capped, Agility leads: it is attack power and crit together. Crit is next, strong with Mortal Shots, then Intellect, which is attack power through Careful Aim and mana on top. Plain attack power is the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -140,7 +143,7 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 
 ### Levels 1 to 19
 
-Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good. Multi-Shot comes at 18.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12. Multi-Shot comes at 18.
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 
@@ -152,6 +155,6 @@ Take quest rewards over vendor gear, Agility first. Replace your starting bow or
 
 Marksmanship levels well, a little slower than Beast Mastery because more of the work is yours. Keep a pet out all the way: it holds what you pull while you shoot. Switch to the raid build and dismiss the pet when you start raiding at 60.
 
-Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out of the 8 yard dead zone. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get.

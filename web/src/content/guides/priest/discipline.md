@@ -55,7 +55,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Inner Focus** (1 point): a free spell with 25% more crit every 3 minutes.
 - **Meditation** (3 points) and **Mental Strength** (5 points): regeneration while casting, and a deeper bar.
 - **Holy Specialization** (5 points), **Divine Fury** (5 points) and **Improved Healing** (3 points): more crits for Divine Aegis, faster Heal and Greater Heal, and 15% off Lesser Heal, Heal, Greater Heal and Penance.
-- **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and casts that raid damage rarely pushes back.
+- **Improved Renew** (3 points) and **Twilight Focus** (3 points): a better Renew on the tank, and most raid hits no longer push back your casts.
 
 **Power Infusion** is not in the build. It works on yourself, 15 seconds of 20% more healing every 3 minutes, but on a mage or warlock's burst it is worth far more to the raid. When you have a caster worth buffing, take it: move two points out of Improved Renew, one into Renewed Hope's fifth rank and one into Power Infusion, and give it to them on their burst. [Open the planner](/planner?class=priest) to change the build.
 
@@ -85,7 +85,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 ## Stat priority
 
-Mana first on a long fight: mp5 and Spirit, then Intellect and healing power close together. Critical strike is worth more to you than to Holy because every crit makes a Divine Aegis, but it is still last per point. Spell power with no healing on it does nothing for a heal.
+Mana first on a long fight: mp5, then healing power. Intellect and critical strike sit close together after it, and Spirit is last. Critical strike is worth more to you than to Holy because every crit makes a Divine Aegis. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 

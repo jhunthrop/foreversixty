@@ -107,7 +107,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 ## Stat priority
 
-Defense comes first: it takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage and Shield Specialization's mana. Agility is dodge and armor at once, and block value makes every block take more off the hit. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
+Defense comes first: it takes hits away and lowers the boss's chance to crit you. Stamina is next, because health multiplies everything else on this list. Dodge, Agility, block value and Parry follow: Dodge and Parry take hits away, Agility is dodge and armor at once, and block value makes every block take more off the hit. More block chance is no gain at 60, but keep the shield: your blocks still power Holy Shield's damage and Shield Specialization's mana. Armor takes a slice off every physical hit, so it never goes to zero. Hit sits low once Precision's 3% is in.
 
 ## Best in slot
 

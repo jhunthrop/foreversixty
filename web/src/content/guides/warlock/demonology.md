@@ -95,11 +95,11 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Spell power first, and Shadow power is nearly as good, though Immolate is Fire. Hit comes next until the cap, and Suppression already gives you 5% of it. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
+Hit comes first until the cap: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Once your gear reaches the cap, more hit adds nothing and spell power leads. Spell power is next, and Shadow power is nearly as good, though Immolate is Fire. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts, with an Engineering head.
+The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 

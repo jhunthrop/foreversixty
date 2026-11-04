@@ -85,7 +85,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 ## Stat priority
 
-On a long fight mp5 wins: a point of it buys more healing over five minutes than a point of healing power. Healing power comes next, then Spirit, which Spiritual Guidance and Meditation turn into both healing and mana. Intellect deepens the bar. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
+On a long fight mp5 wins: a point of it buys more healing over five minutes than a point of healing power. Spirit and healing power come next, close together, and gear decides which leads: Spiritual Guidance and Meditation turn Spirit into both healing and mana. Intellect deepens the bar. Critical strike is last for Holy, since Inspiration only adds armor. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 

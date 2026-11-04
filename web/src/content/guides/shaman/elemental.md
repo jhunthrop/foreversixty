@@ -71,7 +71,7 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 **Flame Shock stays up.** Forever's Flame Shock hits hard up front and ticks hard after, and with Call of Flame one global keeps it burning for 21 seconds. Reapply it the moment it falls off, ahead of everything but your cooldowns. Earth Shock stays on your bar for interrupts: it shares the shock cooldown, and that cooldown belongs to Flame Shock.
 
-**Lightning Mastery goes with everything else.** Press it on the pull with your trinkets and Blood Fury, and again every 3 minutes. For its 15 seconds every Lightning Bolt is a 1.5 second cast, so you fit more bolts into the same window your trinkets are up. A Troll saves Berserking for after it ends.
+**Lightning Mastery goes with everything else.** Press it on the pull with your trinkets and Blood Fury, and again every 3 minutes; Blood Fury comes back sooner, so use it whenever it is ready. For its 15 seconds every Lightning Bolt is a 1.5 second cast, so you fit more bolts into the same window your trinkets are up. A Troll saves Berserking for after it ends.
 
 **Totems.** Searing Totem is your single-target Fire totem. Its bolts reach 20 yards, so drop it within 20 yards of the boss and stand there; refresh it when it expires, every 55 seconds. Mana Spring Totem returns 10 mana every 2 seconds to your party for 5 minutes and pays for itself many times over, but two Mana Springs do not stack: if a Restoration shaman already has one down for your group, skip yours. Strength of Earth, Grace of Air and Windfury reach the whole raid within 30 yards in Forever, so leave the Earth and Air slots to whichever shaman your raid leader assigns them to.
 
@@ -85,11 +85,11 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 ## Stat priority
 
-Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, which leaves the 10% your gear has to find. Nature power adds to Lightning Bolt, Chain Lightning and Earth Shock, which is nearly everything you cast, but Flame Shock and Searing Totem are fire, so a point of it is worth less than a point of plain spell power. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Crit feeds Elemental Fury's doubled bonus, on top of the 5% Call of Thunder already gives your bolts. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
+Hit comes first while you are under the cap: a bolt that misses does nothing. Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, and your gear has to find the rest; once it reaches the cap, more hit adds nothing. Spell power comes next, since it adds to every damage spell you cast. Nature power adds to Lightning Bolt, Chain Lightning and Earth Shock, which is nearly everything you cast, but Flame Shock and Searing Totem are fire, so a point of it is worth less than a point of plain spell power. Crit feeds Elemental Fury's doubled bonus, on top of the 5% Call of Thunder already gives your bolts. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
 
 ## Best in slot
 
-Your raid set leans on Leatherworking and Tailoring crafts. Most bind when equipped and can be bought, except the Skycaller's belt, which binds on pickup, so you make it yourself. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
+Your raid set leans on crafts. The Leatherworking and Tailoring pieces bind when equipped, so you can buy them. Frozen Heart of the Mountain and Totem of Thunder are Enchanting crafts that bind on pickup, so you make those yourself. The rest comes from reputation, quests, dungeons and world drops. The full list, with alternatives for every slot, is on the [Elemental BiS page](/bis/shaman/elemental).
 
 ## Enchants and consumables
 
@@ -97,13 +97,13 @@ Your weapon imbues only proc on melee swings, so an Elemental's weapon carries B
 
 ## Races
 
-The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit is the racial that matters for Elemental, since hit is your second stat. Stoneform's physical damage cut is a nice extra on trash and in PvP.
+The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit is the racial that matters for Elemental, since hit is your first stat until your gear reaches the cap. Stoneform's physical damage cut is a nice extra on trash and in PvP.
 
-On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes, and you press it with Lightning Mastery. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes outside Lightning Mastery: inside it your bolts are already a 1.5 second cast, and casting speed never shortens the 1.5 second global cooldown. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
+On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes. Press it with Lightning Mastery on the pull and on its own cooldown after that. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes outside Lightning Mastery: inside it your bolts are already a 1.5 second cast, and casting speed never shortens the 1.5 second global cooldown. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 
-Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Your Leatherworking helm, gloves and legs bind when equipped and can be bought, but the Skycaller's belt binds on pickup: take Leatherworking for it, or wear Satyrmane Sash from Lord Vyletongue in Maraudon and keep your second profession for Alchemy or gathering.
+Enchanting is the profession for an Elemental. Frozen Heart of the Mountain and Totem of Thunder are both Enchanting crafts and both bind on pickup, so nobody can make them for you. Every other craft in your set binds when equipped and can be bought, so keep your second profession for Alchemy or gathering.
 
 ## Leveling
 

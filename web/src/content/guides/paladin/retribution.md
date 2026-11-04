@@ -69,7 +69,7 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 
 **Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** and one point of **Repentance** are filler on the way to Champion of the Light, since nothing else in the tree adds damage there. Repentance still earns its point in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
 
-In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your mana regeneration running while you cast, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. With raid buffs at 60, hit is your best stat per point until you reach the cap.
+In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your mana regeneration running while you cast, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. At 60, hit is worth taking up to the cap and adds nothing past it.
 
 Leveling order: Benediction and Improved Judgement first, then Conviction and Sanctified Judgement, then down the tree to Champion of the Light by level 40.
 
@@ -100,7 +100,7 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 ## Stat priority
 
-Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, and Precision and Artisan's Precision both help. Intellect is next: Champion of the Light turns 60% of it into spell damage for your Seals, Judgements and Consecration, and it is your mana bar. Then Strength, which Divine Strength raises by 10%, and crit, which feeds Vengeance as well as itself.
+Strength comes first: it is attack power on every swing and Seal proc, and Divine Strength raises it by 10%. Crit is next, because it feeds Vengeance as well as itself. Spell power and Intellect come after, close together: Champion of the Light turns 60% of your Intellect into spell damage for your Seals, Judgements and Consecration, and Intellect is also your mana bar. Agility follows. Hit matters only up to the cap, and the raid gear above already reaches it, so more hit past that adds nothing. Below the cap, in leveling or fresh 60 gear, every miss is a lost swing and a lost Seal proc, so take hit until you get there; Precision and Artisan's Precision both count toward it.
 
 ## Best in slot
 
@@ -122,7 +122,7 @@ Seal of Righteousness and Holy Light come at 1, Judgement and Blessing of Might 
 
 At 12, the class quest from your trainer teaches Redemption. Do it before your first dungeon.
 
-Your first five points, 10 to 14, go into Benediction: 10% less mana on every instant, which is your whole bar. Improved Judgement takes 15 and 16 for a Judgement every 8 seconds, then Conviction from 17 to 19 for 6% crit.
+Your first five points, 10 to 14, go into Benediction: 10% less mana on every instant, which is every button you fight with. Improved Judgement takes 15 and 16 for a Judgement every 8 seconds, then Conviction from 17 to 19 for 6% crit.
 
 Take quest rewards over vendor gear, and replace your Battleworn Hammer with the first harder-hitting slow two-hander you find: Seal of Righteousness hits harder per swing the slower the weapon. Paladins cannot use wands. You wear mail until plate at 40.
 
@@ -138,4 +138,4 @@ Common mistakes:
 - Letting the Seal drop. Recast it in its last second or two, not after it is gone.
 - Spending the bar on Consecration on a single target and having nothing left for Hammer of Wrath.
 - Swinging a one-hander. Two-Handed Weapon Specialization only works with a two-hander, and every Seal proc scales with the weapon.
-- Ignoring hit at 60. Below the cap, a point of hit is worth more than a point of Strength once you are there; while leveling Strength still comes first.
+- Getting hit wrong at 60. Below the cap every miss costs a swing and a Seal proc, so gear for it; once you reach the cap, stop taking more, because past it hit adds nothing.

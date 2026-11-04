@@ -23,6 +23,9 @@ sources:
   - label: 'Warcraft Tavern, Forever Hunter Guide'
     url: https://warcrafttavern.com/forever/guides/hunter/
     kind: community
+  - label: 'Warcraft Tavern, Forever Hunter Leveling Guide'
+    url: https://www.warcrafttavern.com/forever/guides/hunter-leveling/
+    kind: community
   - label: 'Forever Sixty, talent trees'
     url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
@@ -83,7 +86,7 @@ The raid build moves one point out of Efficiency and the point in Rapid Killing 
 
 Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
 
-As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and Berserking or Blood Fury together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
+As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. Elune's Light raises your critical strike chance with all spells and attacks by 10% for 15 sec. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
 From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which outhits Multi-Shot. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
 
@@ -137,7 +140,7 @@ Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash,
 
 ### Levels 1 to 19
 
-Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8 and Aspect of the Hawk at 10, which replaces Monkey for good.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12. Multi-Shot comes at 18.
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 
@@ -149,6 +152,6 @@ Take quest rewards over vendor gear, Agility first. Replace your starting bow or
 
 Beast Mastery is the best way to level a hunter. Keep the pet within a few levels of you. The pet takes the hits, you shoot, and you rarely stop to eat.
 
-Open every pull with Hunter's Mark and Serpent Sting, send the pet, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+Mark the target and send the pet in first; once it has hit and Growled, open with Serpent Sting, then Arcane Shot and auto shot. If something reaches you, Wing Clip and step back out to range; the 8 yard dead zone is where a hunter dies. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get, and Bestial Wrath comes the same level.

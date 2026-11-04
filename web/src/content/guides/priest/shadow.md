@@ -92,11 +92,11 @@ Right after Shadowform the leveling build puts two points into Wand Specializati
 
 **Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice.
 
-**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up, Gnome Eureka! on a Mind Blast and a Shadow Word: Death (it skips every periodic tick, Mind Flay's included, so never spend it on a refresh).
+**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up, Gnome Eureka! on a Mind Blast and a Shadow Word: Death, and fill the rest of it with Mind Flay. It skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh.
 
 ## Stat priority
 
-Spell power and Shadow power are the same stat to you. Hit is next until you reach the 16% spell hit cap against a raid boss: Shadow Focus gives 5%, the other 11% comes from gear, and every miss is a lost Mind Blast. Critical strike is worth more than it looks: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles every crit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
+Spell power and Shadow power are the same stat to you. Hit is next until you reach the 16% spell hit cap against a raid boss: Shadow Focus gives 5%, your gear finds the rest, and every miss is a lost Mind Blast. Critical strike is worth more than it looks: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles every crit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
 
 ## Best in slot
 

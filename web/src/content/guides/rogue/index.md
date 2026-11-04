@@ -1,7 +1,7 @@
 ---
 title: Rogue in Forever
 classSlug: rogue
-description: 'Rogue in Forever: which tree to play, the daggers all three want at 60, poisons and stones together, and the new baseline tools, Shank among them.'
+description: 'Rogue in Forever: which tree to play, why Combat and Assassination want daggers at 60, poisons and stones together, and new tools like Shank.'
 updated: 2026-11-02
 confidence: inferred
 sources:
@@ -19,11 +19,11 @@ sources:
     kind: site
 ---
 
-Rogue is still energy, combo points and stealth, but Forever moves all three trees onto daggers at 60 and gives each one a clear job. If you want one character for launch, level Combat and pick your raid tree at 60.
+Rogue is still energy, combo points and stealth, but Forever puts Combat and Assassination on daggers at 60 and gives each tree a clear job. If you want one character for launch, level Combat and pick your raid tree at 60.
 
 ## What changed from 1.12
 
-- **Daggers win.** Backstab, Ambush, Mutilate and both Subtlety builders want a dagger in the main hand, and Hack and Slash gives daggers crit. Swords, axes, maces and fists are leveling weapons; one-handed axes are new for rogues.
+- **Daggers for Combat and Assassination.** Backstab and Ambush need a dagger in the main hand, Mutilate needs one in each hand, and Hack and Slash gives daggers crit. Hemorrhage and Ghostly Strike hit harder with a dagger too, but Subtlety's damage leans on bleeds, Shank and Death Mark, so it takes the best weapons it can find, dagger or not. One-handed axes are new for rogues.
 - **Poisons and stones stack.** A sharpening stone sits on a weapon beside a poison. Deadly Poison on the main hand and Instant Poison on the off hand is right for all three trees.
 - **Redirect** is trained at level 1: it takes your combo points off one target and gives them to the next enemy you hit within 15 seconds.
 - **Poised** comes at 18: at full energy out of combat, your next ability costs less. Open from full energy.

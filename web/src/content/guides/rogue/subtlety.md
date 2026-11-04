@@ -59,7 +59,7 @@ One build does everything: 12 in Assassination for Malice, Ruthlessness, Improve
 - **Premeditation** (1 point): two combo points on a 2 minute cooldown. In Forever it needs no Stealth, so it opens the fight and comes back in it.
 - **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
 
-Opportunity (5 points) adds 20% to Garrote and Ambush. Blood Splatter keeps Rupture up 6 seconds longer and the opening Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. One point of Dirty Deeds takes 10 energy off Garrote and Cheap Shot. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. The point in Improved Ambush only opens the next row; Ambush is not a boss opener for you.
+Opportunity (5 points) adds 20% to Garrote and Ambush. Blood Splatter keeps Rupture up 6 seconds longer and the opening Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. One point of Dirty Deeds takes 10 energy off Garrote and Cheap Shot. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. The point in Improved Ambush is there for the points total that opens Boot Knife and Death Mark; Ambush is not a boss opener for you.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -87,18 +87,18 @@ Death Mark is your only damage cooldown and it comes back every 10 seconds, so t
 
 ### Trash, threat and survival
 
-- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five. Use it on casters. Kick, Gouge and Blind handle the rest; Elusiveness puts Blind on a short leash.
+- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five. Use it on casters. Kick, Gouge and Blind handle the rest; with Elusiveness, Blind comes back every three and a half minutes.
 - **Redirect** (trained at level 1) lifts your combo points off a dying mob and hands them to the next enemy you hit within 15 seconds.
 - **Feint** on cooldown on bosses where you sit near the tank's threat. **Vanish** drops you from the threat table, but a bleed or DoT on you puts you back in combat.
 - **Evasion** and Ghostly Strike's dodge are for melee trash that turns on you. Neither helps against spells.
 
 ## Stat priority
 
-Hit first, so Hemorrhage, Ghostly Strike and the finishers land. Agility next, for attack power and crit together. Crit is better than it looks: your Rupture and Garrote ticks crit, and Death Mark's cap rises with your crit chance.
+Hit first. Your level 60 gear already puts Hemorrhage, Ghostly Strike and the finishers at the hit cap, so for them more hit adds nothing; it stays on top because your white swings with two weapons miss far more often and keep wanting it. Agility next, for attack power and crit together. Crit is better than it looks: your Rupture and Garrote ticks crit, and Death Mark's cap rises with your crit chance. Strength and attack power come after, and haste last.
 
 ## Best in slot
 
-Daggers in both hands. Hemorrhage and Ghostly Strike both hit harder with a dagger in the main hand, and the main hand is the one that matters. A fast off-hand dagger carries your Instant Poison.
+Subtlety does not need daggers at 60. Hemorrhage and Ghostly Strike hit harder with a dagger, but most of your damage comes from Rupture, Garrote, Death Mark, Shank and your white swings, and none of them care what kind of weapon you hold. Take the weapons in the table above, dagger or not. The off hand carries your Instant Poison and every Shank, so it wants to hit hard too.
 
 ## Enchants and consumables
 

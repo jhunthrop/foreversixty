@@ -86,7 +86,7 @@ Frostfire Bolt is not a Frost filler: it hits for less than Frostbolt, costs mor
 
 ## Stat priority
 
-Hit and spell power are your two best stats until the hit cap: a missed Frostbolt is a missed Fingers of Frost and Missile Barrage chance. Frost spell power is full value for nearly everything you cast on a boss: only Missiles and the odd Fire Blast on the move miss out. Frost needs less Intellect than Arcane or Fire, since it is the spec that does not run out.
+Hit and spell power are your two best stats until the hit cap: a missed Frostbolt is a missed Fingers of Frost chance and no chill on the boss. Frost spell power is full value for nearly everything you cast on a boss: only Missiles and the odd Fire Blast on the move miss out. Frost needs less Intellect than Arcane or Fire, since it is the spec that does not run out.
 
 ## Best in slot
 

@@ -59,7 +59,7 @@ Arcane stacks Arcane Blast for spell damage, fills with Frostbolt, fires free Mi
 - **Improved Frostbolt** and **Ice Shards** (10 points): Frostbolt is half your casts. A 2.5 second Frostbolt with full crit damage is the filler that pays for the Blast stacks.
 - **Precision** (3 points): 6% hit on every school. Take it in every build.
 
-Both builds spend 31 or more points in Arcane for Arcane Power, then go to Frost for the filler. The 60 build takes **Frost Channeling** (3 points: 15% cheaper Frostbolts and 30% less threat from them), all five ranks of Ice Shards and four ranks of **Incineration** in Fire for Arcane Blast crit. Improved Channeling stays at four ranks so mobs hitting you do not push back every Blast, and Arcane Geometry gives you the extra range for pulling.
+Both builds spend 31 or more points in Arcane for Arcane Power, then go to Frost for the filler. The 60 build takes **Frost Channeling** (3 points: 15% cheaper Frostbolts and 30% less threat from them), all five ranks of Ice Shards and four ranks of **Incineration** in Fire for Arcane Blast crit. Improved Channeling stays at four ranks so mobs hitting you do not push back every Blast, and one point of Arcane Geometry adds 3 yards to Arcane Blast and Missiles, so you can blast from a little further out.
 
 The raid build trades a rank of Improved Channeling and the fourth Incineration for both ranks of **Arcane Subtlety**. Its 15 points of resistance reduction is worth less than the crit, but its 30% less threat on Arcane spells is what lets you press Arcane Power in the first ten seconds of a pull. Bosses do not push back your casts the way packs of mobs do, so the lost rank of Improved Channeling costs nothing.
 

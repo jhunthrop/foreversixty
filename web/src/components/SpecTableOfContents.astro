@@ -68,6 +68,13 @@ const { placement = 'inline' } = Astro.props;
 )}
 
 <style is:global>
+  /* Below lg the jump bar rides at the top of the screen (48px), so a jump to a section
+     or subsection stops under it instead of behind it. */
+  @media (max-width: 1023px) {
+    :is(h2, h3)[id] {
+      scroll-margin-top: 60px;
+    }
+  }
   .toc-rail-link {
     border-left: 2px solid transparent;
     padding-left: 10px;

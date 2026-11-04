@@ -51,12 +51,12 @@ The leveling build is a real Affliction tree: Nightfall, Soul Siphon and Wrack m
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
 - **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on the Bane of Agony you put up in a boss's last minute.
 - **Pandemic** (3 points): Corruption, both banes, Siphon Life, the drains and Wrack crit for double the usual bonus.
-- **Nightfall** (2 points): each Corruption, Drain Life, Drain Soul or Wrack tick has a 4% chance to make your next Shadow Bolt instant. The leveling build takes it for free bolts between pulls. The raid build spends those two points on Grim Reach for range.
+- **Nightfall** (2 points): each Corruption, Drain Life, Drain Soul or Wrack tick has a 4% chance to make your next Shadow Bolt instant. The leveling build takes it for free instant Shadow Bolts while you quest. The raid build drops it, and its points go toward Malevolence.
 - **Shadow Mastery** (5 points): 10% more Shadow damage on everything you cast.
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
 - **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your other Shadow DoTs. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. Cheap and strong solo. In a raid it trails Shadow Bolt without Soul Siphon and is close to it with Soul Siphon.
 
-The raid build trades Nightfall, Soul Siphon, Wrack and Soul Harvest for three talents. It also drops the three points of Improved Drains, since a raid rotation casts no drain, along with Improved Health Funnel and Improved Voidwalker, and takes one point of Improved Bane of Agony for 5% more Bane of Agony damage. Malevolence gives your Shadow spells 5% crit, DoT ticks included. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit; in Forever that debuff is yours alone, not the raid's. Four points of Ruin raise the crit bonus of your Shadow Bolt and Immolate by 80%. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
+The raid build trades Nightfall, Soul Siphon, Wrack, Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), along with Improved Health Funnel and Improved Voidwalker, for Malevolence, Improved Shadow Bolt and Ruin. It also takes one point of Improved Bane of Agony for 5% more Bane of Agony damage, and keeps Grim Reach for range. Malevolence gives your Shadow spells 5% crit, DoT ticks included. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit; in Forever that debuff is yours alone, not the raid's. Four points of Ruin raise the crit bonus of your Shadow Bolt and Immolate by 80%. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
 
 ## Rotation and priority
 
@@ -68,7 +68,7 @@ Bane of Doom is your bane on a boss. It hits once, for a big chunk, when its min
 
 Never clip a DoT. A recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end. Recast Corruption and Siphon Life when they fall off. Immolate is the one exception: start its cast with about 3 seconds left. It lands a moment before the old one ends, and the fresh direct hit is worth the tick you give up.
 
-This build does not take Wrack. Without Soul Siphon behind it, Wrack is a 6 second channel that Shadow Bolt beats, so Shadow Bolt is your filler. The other raid build, deeper in Affliction with Nightfall, Soul Siphon and Wrack as its filler, is close to this one; pick it if you would rather channel than hard cast.
+This build does not take Wrack. Without Soul Siphon behind it, Wrack is a 6 second channel that Shadow Bolt beats, so Shadow Bolt is your filler. The Level 60 build above is the one that channels Wrack, with Nightfall and Soul Siphon behind it. It is built for questing, with Soul Harvest, Improved Drains and Improved Health Funnel where this one takes Malevolence, Improved Shadow Bolt and Ruin, so in a raid take this build and hard cast Shadow Bolt.
 
 Life Tap when you drop below about 10% mana, and Life Tap whenever you have to move with nothing to refresh. Each tap converts its base amount plus your Spirit, and Improved Life Tap adds 20% on top. Drink your Major Mana Potion and Demonic Rune on cooldown once you are low enough that none of it is wasted. The health comes from your healers and your Healthstone.
 
@@ -82,7 +82,7 @@ Adds and AoE: Corruption and Agony on two or three adds that live 15 seconds or 
 
 ## Stat priority
 
-Spell power and Shadow spell power are your stats, with Shadow power almost as good because nearly everything you cast is Shadow. Hit stays valuable right up to the cap, and Suppression already gives you 5% of it. A missed bane or Corruption is a whole DoT lost. Crit is good for Affliction because DoT ticks crit too. Intellect is a small mana gain. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces.
+Hit comes first until the cap: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Once your gear reaches the cap, more hit adds nothing and spell power leads. Spell power is next, with Shadow power close behind because nearly everything you cast is Shadow. Crit is good for Affliction because DoT ticks crit too. Intellect is a small mana gain. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces.
 
 ## Best in slot
 

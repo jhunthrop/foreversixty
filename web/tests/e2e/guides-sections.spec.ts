@@ -257,6 +257,16 @@ for (const [label, viewport] of [
       await imagesLoaded(page, '[data-testid="guide-leveling-strip"] img');
       await noSidewaysScroll(page);
     });
+
+    test('#leveling opens on the Levels 1 to 19 text, with the strip under Levels 20 to 60', async ({
+      page,
+    }) => {
+      await page.goto(`${PAGE}#leveling`);
+      await expect(page.locator('#levels-1-to-19')).toBeInViewport();
+      const top = async (selector: string): Promise<number> =>
+        (await page.locator(selector).boundingBox())?.y ?? Number.NaN;
+      expect(await top('#levels-20-to-60')).toBeLessThan(await top('[data-testid="guide-leveling-strip"]'));
+    });
   });
 }
 

@@ -19,6 +19,9 @@ sources:
   - label: 'Talents Forever, talent data from the beta client'
     url: https://talentsforever.com/data.json
     kind: community
+  - label: 'Forever Sixty, Feral bear best in slot'
+    url: https://foreversixty.gg/bis/druid/feral-bear
+    kind: site
 ---
 
 ## Overview
@@ -29,7 +32,7 @@ The bear tanks on health and armor, with Dodge as its only avoidance and Lacerat
 
 - Dire Bear Form adds a flat block of health and multiplies the armor on your gear, and Heart of the Wild adds 20% Stamina on top
 - Primal Bite and Lacerate both carry high threat, so a bear holds a boss on very little rage
-- Defense on gear now works for a bear as it does for other tanks, and Thick Hide adds armor for every point
+- Defense on gear now works for a bear as it does for other tanks, and Thick Hide adds armor for every point of Defense over five times your level
 - Potions, weapon stones and racials all work in Bear Form now, so you never shift to drink
 
 ### Weaknesses
@@ -84,7 +87,7 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 ## Stat priority
 
-Stamina is health, and Heart of the Wild adds 20% to it in form. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Dodge is the only avoidance you have. Defense lowers your chance to be crit and feeds Thick Hide, so it counts twice. Agility is Dodge, armor and crit at once. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Hit keeps your Lacerate and Maul landing, which is threat, not survival.
+Stamina comes first: it is health, and Heart of the Wild adds 20% to it in form. Agility is next because it is Dodge, armor and crit at once. Dodge is the only avoidance you have. Hit keeps your Lacerate and Maul landing, which is threat, not survival, and once your gear reaches the hit cap it adds nothing. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Defense and crit come last. Defense lowers your chance to be crit and gives Thick Hide a little armor, but at 60 neither moves your survival much, so take it when it comes on a piece you want anyway.
 
 ## Best in slot
 
@@ -108,7 +111,7 @@ Skinning and Leatherworking, as for the cat: leather is your armor, and Leatherw
 
 Before 10 you are a caster: Moonfire from 4, then Wrath. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, and Maul, Growl and Demoralizing Roar train the same level. Enrage follows at 12, Bash at 14, Swipe at 16 and a second Maul rank at 18.
 
-Your points from 10 to 14 go into Ferocity, so Maul and Swipe cost 5 less Rage. Furor from 15 to 19 climbs to 10 Rage on every shift into Bear Form by 19, which means a pull opens with Maul ready.
+Your points from 10 to 14 go into Ferocity, so Maul and Swipe cost 5 less Rage. Furor from 15 to 19 adds 20% to the chance that a shift into Bear Form grants 10 Rage, so by 19 every shift does, and a pull opens with Maul ready.
 
 Your paw hits with your weapon's DPS, so replace the starter weapon with the highest-DPS staff or two-handed mace a quest gives you. Wear leather quest rewards over vendor gear, Stamina and Agility first, and take the Idol of Shifting Tides from the Aquatic Form quest at 16.
 

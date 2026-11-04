@@ -99,6 +99,20 @@ function proseOnly(section: SpecSection): string {
   return rest.join('\n').replace(/^\n+/, '');
 }
 
+/** The heading the leveling strip is planted under; the prose before it stays above the strip. */
+const LEVELING_STRIP_HEADING = /^### Levels 20 to 60\s*$/m;
+
+/**
+ * Splits the Leveling prose around the strip: [prose above it, its heading, prose below it].
+ * Without the heading the strip opens the section, as it did before the subsections.
+ */
+function splitAtLevelingStrip(markdown: string): [string, string, string] {
+  const match = LEVELING_STRIP_HEADING.exec(markdown);
+  if (match === null) return ['', '', markdown];
+  const after = match.index + match[0].length;
+  return [markdown.slice(0, match.index), match[0], markdown.slice(after)];
+}
+
 const buildCode = entry.data.build;
 const build = activeBuild.build;
 const classSlug = entry.data.classSlug;
@@ -246,7 +260,14 @@ const levelingRows: LevelingBandRow[] =
         talents: b.talents,
       }));
 const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
-const levelingProseHtml = await prose(proseOnly('Leveling'));
+// The strip covers levels 20 to 60, so it sits under that subsection's heading: #leveling,
+// the character home's link, then opens on the Levels 1 to 19 text a new character needs.
+const [levelingEarlyProse, levelingStripHeading, levelingLateProse] = splitAtLevelingStrip(
+  proseOnly('Leveling'),
+);
+const levelingEarlyHtml = await prose(levelingEarlyProse);
+const levelingStripHeadingHtml = await renderGuideMarkdown(levelingStripHeading);
+const levelingLateHtml = await prose(levelingLateProse);
 
 const updatedStamp = dayMonth(pageUpdatedAt(entry.data.updated, ranked?.generated_at));
 const metaLine = guidesCopy.headerMeta(role, updatedStamp);
@@ -345,8 +366,10 @@ const metaLine = guidesCopy.headerMeta(role, updatedStamp);
   <Fragment set:html={racesProseHtml} />
   <Fragment set:html={professionsHtml} />
   <Fragment set:html={levelingHeadingHtml} />
+  <Fragment set:html={levelingEarlyHtml} />
+  <Fragment set:html={levelingStripHeadingHtml} />
   {levelingRows.length > 0 && <LevelingBandStrip build={build} classSlug={classSlug} rows={levelingRows} />}
-  <Fragment set:html={levelingProseHtml} />
+  <Fragment set:html={levelingLateHtml} />
   <script is:inline set:html={pageScript}></script>
   <GuideTooltips client:idle-after-load build={build} bundleUrl={guideTipsUrl(build, classSlug, specSlug)} />
 </Content>
