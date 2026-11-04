@@ -101,7 +101,7 @@ Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric
 
 **Undead** is the Horde pick, and the best Holy priest of all, for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
 
-**Gnome** is close behind Human. Eureka! makes your heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Night Elf** has Elune's Light, 10% crit for 15 seconds, **Troll** Berserking, 10% cast speed, and **Dwarf** Stoneform and Desperate Prayer, a free self heal. Those three heal clearly less.
+**Gnome** is close behind Human. Eureka! makes your direct heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes (never Renew), and Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Night Elf** has Elune's Light, 10% crit for 15 seconds, **Troll** Berserking, 10% cast speed, and **Dwarf** Stoneform and Desperate Prayer, a free self heal. Those three heal clearly less.
 
 ## Professions
 

@@ -92,11 +92,11 @@ Right after Shadowform the leveling build puts two points into Wand Specializati
 
 **Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice.
 
-**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up, Gnome Eureka! on a Mind Blast and a Shadow Word: Death, and fill the rest of it with Mind Flay. It skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh.
+**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up, Gnome Eureka! on a Mind Blast and a Shadow Word: Death. It skips Mind Flay, Shadow Word: Pain and Devouring Plague, so never spend it on a refresh.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to the 16% spell hit cap against a raid boss and adds nothing past it: Shadow Focus gives 5%, your gear finds the rest, and every miss is a lost Mind Blast. Spell power and Shadow power are the same stat to you, and every spell you cast grows with them. Critical strike counts for more than it looks: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles every crit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to the 16% spell hit cap against a raid boss and adds nothing past it: Shadow Focus gives 5%, your gear finds the rest, and every miss is a lost Mind Blast. Spell power and Shadow power are the same stat to you, and every spell you cast grows with them. Critical strike reaches more than your direct hits: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles the crit bonus, so a Shadow crit hits for twice a normal hit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
 
 ## Best in slot
 
@@ -112,7 +112,7 @@ Flask of Supreme Power, Elixir of Shadow Power and Greater Arcane Elixir all sta
 
 **Undead** is the Horde pick, and the strongest Shadow priest of all. Touch of the Grave gives your spells a chance to drain health from the target, up to 5% of your maximum health, at most once every 15 seconds, which takes the edge off Shadow Word: Death's backlash. Dark Sacrifice trades your health for mana once a fight, and Will of the Forsaken breaks fears and charms.
 
-**Night Elf** is as good as Human: Elune's Light is 10% crit for 15 seconds every 3 minutes. **Dwarf** is close behind with Artisan's Precision, 1% hit, plus Stoneform and Desperate Prayer. **Gnome** trails them a little: Eureka! makes Mind Blast, Shadow Word: Death and Mind Flay 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. **Troll** has Berserking, 10% cast speed for 15 seconds every 3 minutes, and falls clearly behind Undead.
+**Night Elf** is as good as Human: Elune's Light is 10% crit for 15 seconds every 3 minutes. **Dwarf** is close behind with Artisan's Precision, 1% hit, plus Stoneform and Desperate Prayer. **Gnome** trails them a little: Eureka! makes Mind Blast and Shadow Word: Death 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. **Troll** has Berserking, 10% cast speed for 15 seconds every 3 minutes, and falls clearly behind Undead.
 
 ## Professions
 
