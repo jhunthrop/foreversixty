@@ -138,7 +138,7 @@ struct CharacterView: View {
             VStack(alignment: .leading, spacing: 8) {
                 VStack(alignment: .leading, spacing: 10) {
                     PaperdollView(
-                        frame: PaperdollModel.frame(PaperdollModel.character(gear: profile.gear, items: items)),
+                        frame: PaperdollModel.frame(PaperdollModel.character(gear: profile.gear, items: items, classSlug: profile.character.className?.lowercased())),
                         build: build, open: actions.openSocket
                     )
                     Text(Copy.charGoldDot).font(ScaledType.meta).foregroundStyle(FSColor.muted)

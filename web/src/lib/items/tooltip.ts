@@ -18,6 +18,7 @@
 import { itemSourceRows, sourceRowLine } from './item-sources';
 import type { Item, ItemSet } from '../planner/types';
 import { SLOT_LABELS, STAT_KEYS, STAT_LABELS, type StatKey } from '../planner/types';
+import { RELIC_SLOT_LABEL } from '../bis/slot-display-labels';
 import type { LootFile } from '../sim/loot';
 import { humanise } from '../sim/humanise';
 import { displayDescription } from '../tooltips/game-tip';
@@ -84,7 +85,18 @@ function slotLabelFor(slot: string): string {
 
 const WEAPON_SLOTS: ReadonlySet<string> = new Set(['main_hand', 'off_hand', 'ranged']);
 
+/** The client's inventory type for a relic (libram, totem, idol): its tooltip reads "Relic". */
+const RELIC_INVENTORY_TYPE = 28;
+
+/** A relic's kind, on the slot line's right, by its armor subclass. */
+const RELIC_KIND_LABELS: Readonly<Record<number, string>> = { 7: 'Libram', 8: 'Idol', 9: 'Totem' };
+
+function isRelicItem(item: Item): boolean {
+  return item.inventory_type === RELIC_INVENTORY_TYPE;
+}
+
 function typeLabelFor(item: Item): string | undefined {
+  if (isRelicItem(item)) return RELIC_KIND_LABELS[item.subclass_id ?? -1];
   const isWeapon = WEAPON_SLOTS.has(item.slot) && (item.damage_max ?? 0) > 0;
   if (isWeapon) {
     if (item.two_hand === true) return 'Two-Handed Weapon';
@@ -253,7 +265,7 @@ export function itemTooltipModel(row: Item, sources: ItemTooltipSources): ItemTo
     name: row.name,
     quality: row.quality,
     icon: row.icon,
-    slotLabel: slotLabelFor(row.slot),
+    slotLabel: isRelicItem(row) ? RELIC_SLOT_LABEL : slotLabelFor(row.slot),
     typeLabel: typeLabelFor(row),
     bindLabel: bindLabelFor(row),
     itemLevel: row.item_level,

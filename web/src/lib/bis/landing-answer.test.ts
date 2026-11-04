@@ -120,6 +120,13 @@ describe('excluded slot names and the note', () => {
     expect(excludedSlotNames(['finger1', 'finger2'])).toEqual(['Rings']);
   });
 
+  // Round 19: an Enhancement shaman's empty relic slot is its Relic, not a Ranged slot.
+  it('names a relic class’s ranged slot Relic', () => {
+    expect(excludedSlotNames(['ranged'], 'shaman')).toEqual(['Relic']);
+    expect(excludedSlotNames(['ranged'], 'hunter')).toEqual(['Ranged']);
+    expect(slotCount(bandWithout('ranged'), wearing('head'), 'druid').excluded).toEqual(['Relic']);
+  });
+
   it('names a lone half of a pair by its own label', () => {
     expect(excludedSlotNames(['trinket2'])).toEqual(['Trinket']);
   });

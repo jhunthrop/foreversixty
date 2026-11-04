@@ -5,7 +5,8 @@
 // each map their own data to `PaperdollSlot`s and nothing else.
 import { wearsListedBest } from '../bis/best-in-slot';
 import { itemIdLabel, itemNotInDataPhrase } from '../items/unknown-item-copy';
-import { SLOT_LABELS, type Slot } from '../planner/types';
+import type { Slot } from '../planner/types';
+import { slotLabelForClass } from '../bis/slot-display-labels';
 import { gearCopy } from './copy';
 import type { CharacterGearSlot } from './types';
 
@@ -105,8 +106,6 @@ const RIGHT: readonly PaperdollSlotKey[] = [
 const OPTIONAL: ReadonlySet<PaperdollSlotKey> = new Set(['shirt', 'tabard']);
 const WEAPON_ROW = 9;
 const RANGED_ROW = 10;
-/** The client's own classes with a relic slot in place of ranged. */
-const RELIC_CLASSES: ReadonlySet<string> = new Set(['paladin', 'shaman', 'druid']);
 
 /** The phone frame draws an upgrade row for a gain or "Not scored"; never for "Best in slot". */
 export function phoneUpgradeShown(upgrade: PaperdollUpgrade | undefined): boolean {
@@ -221,12 +220,11 @@ export function upgradeFor(
   return gap > 0 ? { kind: 'gain', points: gap, pick: ref(pick.id, pick.name) } : undefined;
 }
 
-/** The slot's word: `SLOT_LABELS`, plus shirt, tabard and the relic classes' "Relic". */
+/** The slot's word: `slotLabelForClass` ("Relic" for the relic classes), plus shirt and tabard. */
 export function slotLabel(slot: PaperdollSlotKey, classSlug = ''): string {
   if (slot === 'shirt') return gearCopy.paperdoll.shirt;
   if (slot === 'tabard') return gearCopy.paperdoll.tabard;
-  if (slot === 'ranged' && RELIC_CLASSES.has(classSlug)) return gearCopy.paperdoll.relic;
-  return SLOT_LABELS[slot];
+  return slotLabelForClass(slot, classSlug);
 }
 
 /** "Waist · Item 288887": an unknown item always carries its slot word (§3.3). */

@@ -43,6 +43,29 @@ describe('itemTooltipModel', () => {
     expect(itemTooltipModel(item({ client_unconfirmed: true }), NO_SOURCES).clientUnconfirmed).toBe(true);
   });
 
+  // Round 19: a libram, totem or idol is a Relic in the game's own tooltip, whoever reads it,
+  // with its kind on the right; a bow or wand stays Ranged.
+  it('labels a relic item Relic with its kind, and a ranged weapon Ranged', () => {
+    const relic = (subclass: number) =>
+      itemTooltipModel(
+        item({ slot: 'ranged', armor: 0, class_id: 4, subclass_id: subclass, inventory_type: 28 }),
+        NO_SOURCES,
+      );
+    expect(relic(7).slotLabel).toBe('Relic');
+    expect(relic(7).typeLabel).toBe('Libram');
+    expect(relic(8).typeLabel).toBe('Idol');
+    expect(relic(9).typeLabel).toBe('Totem');
+    const bow = item({
+      slot: 'ranged',
+      armor: 0,
+      damage_min: 1,
+      damage_max: 2,
+      speed: 1,
+      inventory_type: 15,
+    });
+    expect(itemTooltipModel(bow, NO_SOURCES).slotLabel).toBe('Ranged');
+  });
+
   it('labels a known slot and falls back to the alias table for finger/trinket', () => {
     expect(itemTooltipModel(item({ slot: 'chest' }), NO_SOURCES).slotLabel).toBe('Chest');
     expect(itemTooltipModel(item({ slot: 'finger' }), NO_SOURCES).slotLabel).toBe('Finger');

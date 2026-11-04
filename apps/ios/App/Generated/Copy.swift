@@ -450,6 +450,9 @@ enum Copy {
     /// Ranged
     static var itemsSlotRanged: String { text("items.slot.ranged") }
 
+    /// Relic
+    static var itemsSlotRelic: String { text("items.slot.relic") }
+
     /// Finger
     static var itemsSlotFinger: String { text("items.slot.finger") }
 

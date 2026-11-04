@@ -831,6 +831,26 @@ describe('bandInfosFor: effect_unmodelled and low_value flags', () => {
   });
 });
 
+describe('bandInfosFor: slot labels', () => {
+  // Round 19: a relic class's ranged row is its Relic slot; everyone else keeps Ranged.
+  it('labels the ranged row Relic for a relic class and Ranged otherwise', () => {
+    const label = (spec: string) =>
+      bandInfosFor(
+        { ...fileWith([band({ slots: [slot({ slot: 'ranged' })] })]), spec },
+        [20],
+        'alliance',
+        depsWith(),
+      )
+        .at(0)
+        ?.rows.find((r) => r.slot === 'ranged')?.slotLabel;
+    expect(label('shaman-enhancement')).toBe('Relic');
+    expect(label('paladin-retribution')).toBe('Relic');
+    expect(label('druid-balance')).toBe('Relic');
+    expect(label('hunter-marksmanship')).toBe('Ranged');
+    expect(label('mage-frost')).toBe('Ranged');
+  });
+});
+
 describe('bandInfosFor: sim_status and set_dps_partial (spec addendum 3)', () => {
   it('sets notSimChecked on a pick carrying sim_status "not_in_sim"', () => {
     const file = fileWith([band({ slots: [slot({ sim_status: 'not_in_sim' })] })]);

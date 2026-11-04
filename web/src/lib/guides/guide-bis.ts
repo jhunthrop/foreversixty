@@ -4,14 +4,12 @@
 // builder /bis uses (`bandInfosFor`) so a guide and its BiS page can never name different
 // items. The table is server-rendered from this; nothing here is typed per guide.
 import { bisCopy } from '../bis/copy';
-import { SLOT_DISPLAY_LABELS } from '../bis/slot-display-labels';
 import { bandInfosFor, type BandInfo, type RowView } from '../bis/panel-view';
 import { bandLevels, itemDetails, loadLootFile } from '../bis/load';
 import { raceNameFor } from './race-table';
 import { factionForFirstRace, rankedBisFile } from './class-dps';
 import { readItemTooltipModel } from '../items/lookup-node';
 import type { ItemTooltipModel } from '../items/tooltip';
-import type { Slot } from '../planner/types';
 import type { BisFile, Faction } from '../bis/types';
 import { isRealIcon } from '../icons/placeholder';
 
@@ -65,7 +63,7 @@ export interface GuideBis {
 }
 
 function rowFor(row: RowView): GuideBisRow {
-  const slotLabel = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
+  const { slotLabel } = row;
   if (row.empty || row.itemId === undefined) {
     return { slot: row.slot, slotLabel, empty: true, emptyCopy: row.emptyCopy, notSimChecked: false };
   }

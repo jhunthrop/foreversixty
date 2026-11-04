@@ -115,6 +115,14 @@ struct CharacterLogicTests {
         #expect(behind.filter(\.better).map(\.slot) == ["head", "shoulder", "chest", "waist", "legs", "trinket2"])
     }
 
+    @Test func paperdoll_relicClass_namesTheRangedSocketRelic() throws {
+        let gear = try RankingsTestData.voltaris().gear
+        let shaman = PaperdollModel.character(gear: gear, items: [:], classSlug: "shaman")
+        #expect(shaman.first { $0.slot == "ranged" }?.label == "Relic")
+        let warrior = PaperdollModel.character(gear: gear, items: [:], classSlug: "warrior")
+        #expect(warrior.first { $0.slot == "ranged" }?.label == "Ranged")
+    }
+
     @Test func paperdoll_neverADot_whenThePickIsWorn() throws {
         var gear = try RankingsTestData.lightningbolltz().gear
         // Trinket 2's pick (11302) worn in trinket 1: the pick is already worn, either way round.
