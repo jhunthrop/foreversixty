@@ -16,7 +16,7 @@ type Realm struct {
 	ID       int64
 	Slug     string
 	Name     string
-	Type     string // Blizzard's own realm type: NORMAL, PVP, RP, RP_PVP
+	Type     string // Blizzard's own realm type: NORMAL, PVP, RP, RP_PVP (PVP_RP on Forever)
 	Category string
 }
 
@@ -36,7 +36,7 @@ type realmDetailResponse struct {
 }
 
 // knownRealmTypes is every realm type value RulesetOf maps explicitly.
-var knownRealmTypes = map[string]bool{"NORMAL": true, "PVP": true, "RP": true, "RP_PVP": true}
+var knownRealmTypes = map[string]bool{"NORMAL": true, "PVP": true, "RP": true, "RP_PVP": true, "PVP_RP": true}
 
 // realmWorkerCount bounds how many realm-detail requests Realms has in
 // flight at once. Fetched serially a full Era region (66 realms) took
@@ -166,7 +166,7 @@ func RulesetOf(realm Realm) string {
 	switch strings.ToUpper(realm.Type) {
 	case "PVP":
 		return character.RulesetPvP
-	case "RP", "RP_PVP":
+	case "RP", "RP_PVP", "PVP_RP": // Forever names its RP PvP realms PVP_RP (2026-11-04)
 		return character.RulesetRP
 	default:
 		return character.RulesetNormal
