@@ -28,6 +28,7 @@ const ALL_ENCHANT_STAT_KEYS: Record<EnchantStatKey, true> = {
   armor: true,
   crit: true,
   hit: true,
+  expertise: true,
   spell_power: true,
   healing: true,
   attack_power: true,

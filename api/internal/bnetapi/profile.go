@@ -207,16 +207,7 @@ func (c *Client) Character(ctx context.Context, region, realmSlug, name string) 
 // parsed here — the planner's Blizzard-to-FS1 gear mapping is a later
 // lane (spec §B) — so the caller stores the raw body directly.
 func (c *Client) Equipment(ctx context.Context, region, realmSlug, name string) (json.RawMessage, error) {
-	token, err := c.AppToken(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("bnetapi: equipment: %w", err)
-	}
-	u := c.characterURL(region, realmSlug, name, "/equipment")
-	body, err := c.getBytes(ctx, "equipment", u, token)
-	if err != nil {
-		return nil, err
-	}
-	return json.RawMessage(body), nil
+	return c.characterResource(ctx, "equipment", region, realmSlug, name)
 }
 
 // Specializations reads a character's talent groups verbatim. Not parsed here — the
@@ -224,12 +215,24 @@ func (c *Client) Equipment(ctx context.Context, region, realmSlug, name string) 
 // docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.2) — so the caller stores
 // the raw body directly, the same shape Equipment already returns.
 func (c *Client) Specializations(ctx context.Context, region, realmSlug, name string) (json.RawMessage, error) {
+	return c.characterResource(ctx, "specializations", region, realmSlug, name)
+}
+
+// Statistics reads a character's statistics verbatim: each primary stat's base and
+// effective value, health, power, and the rest. The only place a Forever race's base stats
+// (Skyborne) can be read from the game.
+func (c *Client) Statistics(ctx context.Context, region, realmSlug, name string) (json.RawMessage, error) {
+	return c.characterResource(ctx, "statistics", region, realmSlug, name)
+}
+
+// characterResource reads one character sub-resource ("equipment", ...) verbatim.
+func (c *Client) characterResource(ctx context.Context, resource, region, realmSlug, name string) (json.RawMessage, error) {
 	token, err := c.AppToken(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("bnetapi: specializations: %w", err)
+		return nil, fmt.Errorf("bnetapi: %s: %w", resource, err)
 	}
-	u := c.characterURL(region, realmSlug, name, "/specializations")
-	body, err := c.getBytes(ctx, "specializations", u, token)
+	u := c.characterURL(region, realmSlug, name, "/"+resource)
+	body, err := c.getBytes(ctx, resource, u, token)
 	if err != nil {
 		return nil, err
 	}
