@@ -69,6 +69,24 @@ Bare bands, alliance, seeds 1 / 50001 (before → after): Protection threat 20: 
 
 No commit touches anything outside `sim/warrior`. **No spec outside the class moves.**
 
+## Where the raid-60 gain comes from (coordinator ask)
+
+Measured cumulatively on temporary worktrees at each fork commit (10,000 iterations, frozen BiS, guide raid builds via `rt`). "Alone" is each fix applied to the base by itself. Each cell is seed 1 / seed 50001.
+
+| Spec, faction | base 1789ffd5e | + Heroic Strike procs (af3bc587b) | + threat (fae61cd3d) | + Deep Wounds (c647736e6) = all | Deep Wounds alone |
+|---|---|---|---|---|---|
+| Arms alliance | 820.4 / 820.4 | 818.4 / 818.0 (-0.24 / -0.29%) | same (0.00%) | 853.0 / 852.0 (+3.97 / +3.85%) | 854.2 / 853.8 (+4.12 / +4.07%) |
+| Arms horde | 826.4 / 826.5 | 824.2 / 824.4 (-0.27 / -0.25%) | same | 855.5 / 854.4 (+3.52 / +3.38%) | 855.6 / 854.8 (+3.53 / +3.42%) |
+| Fury alliance | 879.4 / 878.9 | 879.8 / 879.9 (+0.05 / +0.11%) | same | 917.6 / 918.3 (+4.34 / +4.48%) | 916.5 / 916.1 (+4.22 / +4.23%) |
+| Fury horde | 873.3 / 873.2 | 875.5 / 875.5 (+0.25 / +0.26%) | same | 909.8 / 910.5 (+4.18 / +4.27%) | 908.1 / 908.9 (+3.98 / +4.09%) |
+
+The threat change does not move DPS, so the Heroic Strike change alone equals the "+ Heroic Strike procs" column. The two fixes are close to multiplicative: base × (Heroic Strike alone) × (Deep Wounds alone) lands within 0.1% of "all" in every cell (for example Fury horde seed 1: 1.0025 × 1.0398 = 1.0424, against 1.0418 measured). So the order effect is at noise level, and its sign is mixed.
+
+Why each fix moves DPS (horde, seed 1, from `-json`):
+- **Heroic Strike change, Fury +0.25%:** Heroic Strike no longer spends Flurry charges, so white swings keep them. Flurry uptime goes from 83.9% to 86.8%, and white swings from 60.7 to 61.4 (main hand) and 81.8 to 82.4 (off hand) a fight. That outweighs losing Unbridled Wrath on Heroic Strike: 97.6 rage down to 79.1, so 34.2 Heroic Strikes become 33.9.
+- **Heroic Strike change, Arms -0.25%:** Arms has no Flurry, so the change only costs rage. Unbridled Wrath falls from 41.7 to 37.7, and Reckless Swings rage from 166 to 152, because with a slow two-hander some of the four charges now run out unused instead of going to a Heroic Strike. Heroic Strikes fall from 7.9 to 7.4.
+- **Deep Wounds, +3.4 to +4.5%:** a crit used to replace the running bleed, so a warrior who crits about once a second threw most of each bleed away. Now every crit's 60% of weapon damage is kept. Fury's Deep Wounds goes from 24.3 ticks at 11.1 DPS to 58.8 ticks at 46.1 DPS, and Arms' from 34.3 ticks at 29.3 DPS to 58.2 ticks at 59.0 DPS. Losing attack power from the formula cuts each crit's bleed by more than half, but the rollover more than makes up for it.
+
 ## Race order on the final engine (guide lane's carried ask; frozen BiS, 10,000 iterations, seeds 1 / 50001)
 
 - Arms Alliance: Skyborne 856.4/855.7, Night Elf 856.0/855.4, Dwarf 855.8/855.6, Human 853.0/852.0, Gnome 852.3/851.1. Horde: Skyborne 858.3/858.4, Orc 855.5/854.4, Undead 855.3/855.4, Troll 852.7/852.1, Tauren 847.1/846.3.
@@ -81,6 +99,7 @@ No commit touches anything outside `sim/warrior`. **No spec outside the class mo
 - Site `sim/request` TestRotationLadder goldens: warrior-protection (confirmed differs); warrior-arms and warrior-fury probably as well.
 - `data/builds/1.60.1.70755/dps-per-point.json` and the stat weights that feed addon-data (Deep Wounds no longer reads attack power; weapon damage and crit gain). Fork golden TestP1DPSWarrior shows hit 19.4 → 15.6 and crit 6.1 → 7.4 from S1 alone.
 - BiS (warrior specs) at the CI re-rank.
+- addon-data.json and Data.lua (Arms Reckless Swings card note).
 - Fork goldens regenerated in this lane: `sim/warrior/dps_warrior/TestP1DPSWarrior.results` (E af3bc587b, E c647736e6) and `sim/warrior/tank_warrior/TestP1TankWarrior.results` (E c647736e6).
 
 ## Measure at refresh
@@ -95,14 +114,15 @@ No commit touches anything outside `sim/warrior`. **No spec outside the class mo
 
 ## For the guide lane
 
-- arms.md:75, fury.md:67 and fury.md:128: Unbridled Wrath "a 60% chance at an extra rage point on every weapon hit" / "gives your hits". It procs off white swings only, never off Heroic Strike, Cleave or an ability (the client mask plus the logs above). Suggested: "a 60% chance at an extra rage point on every white swing that lands".
-- arms.md:111: "Dwarf comes out level with Night Elf, a hair ahead". After the Deep Wounds fix they are level, with Dwarf no longer ahead (855.8 against 856.0).
-- fury.md:112: "On the Horde, Undead stays ahead of it" (of Skyborne). Skyborne is now level with Undead or a hair ahead (914.2 against 913.7).
+- The Unbridled Wrath and race lines are done in this lane (see "Guide text").
 - Optional, arms.md:67 and fury.md:74: Deep Wounds could add that a crit on a running bleed adds to it rather than replacing it. The current text is not wrong.
+- Fury Death Wish timing inconsistency (above).
 
-## Guide text not done
+## Guide text
 
-- None required. No build, APL or card rank changed in this lane. The items above are accuracy follow-ups.
+- Done in this lane, in their own commits: arms.md and fury.md now say Unbridled Wrath procs on white swings; Arms Dwarf and Night Elf level; Arms Skyborne level with Night Elf on the Alliance and a hair ahead of Undead on the Horde; Fury Skyborne and Undead level on the Horde, with Tauren last; Reckless Swings "white swings" on the Arms page and the Arms card note (curated plus the sim/request copy). wow-player: SHIP on the rendered Arms, Fury and Protection pages after one round (the MUST was the Arms Skyborne line). Captures: `$R/warrior/shots2/`.
+- Left for the guide lane: Fury's Death Wish timing ("last 30 seconds" in Cooldowns against "only if a second one fits" on the card), which predates this pass.
+- The Arms card note change needs the addon-data and Data.lua regen to reach the addon.
 
 ## Still open
 
