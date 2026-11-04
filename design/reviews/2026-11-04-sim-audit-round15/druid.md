@@ -151,3 +151,54 @@ On land/guides-r1:
 Bear raid 60 on the lane (10,000 iterations): threat 1000.6 / 1001.6 (alliance, seeds 1 / 50001) and 992.0 / 992.6 (horde); chance of death 10.9 / 9.9% and 10.1 / 9.8%; damage taken 465.8 / 465.3 and 473.5 / 472.9. Round 14 recorded 10.1% for horde at seed 1, so Rend and Tear (S1) moves threat, not survival. The bear's "under half health with 20 rage" line was already measured on the 1% conversion in round 14 (B1, O4).
 
 For the guide lane: the original "can heal you for your whole health bar given the rage" stands; see the feral-bear.md:88 wording above.
+
+## Wave 3
+
+The shared low-rank penalty arrived with int/r15 (fork 9c511a2cd, site 1e96d8df2; priest lane E 8d9ca6aae, 974614b8b). Under it a rank keeps its full bonus until the caster is 17 levels past the rank's learn level, then loses 5% a level. I merged both lane branches onto those heads; both merges were fast-forwards, and my wave-1/2 commits are inside them. The sweep ran one spec-breakdown binary per variant, built from an edited copy of the embedded rank-choices.json and restored afterwards. 10,000 iterations, both factions, seeds 1 and 50001. Lane dir: `w3/w3.tsv`.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W3-1 | **Balance's three 30-39 rows all still win** at bare 30 (each rank is under 17 levels past its learn level there: Moonfire 3 learned at 16, Wrath 4 at 22, Insect Swarm 1 at 20). Dropping all three costs 16.7 to 17.6%; Moonfire alone 5.6 to 5.8%, Wrath alone 6.5 to 6.7%, Insect Swarm alone 2.4 to 2.7%, at both seeds and factions. Kept. The APL's fixed ranks are all the maxima (Wrath 8, Starfire 6, Moonfire 10, Insect Swarm 5), so raid 60 does not move. | table below | Aligned (rows kept) | - | - |
+| W3-2 | **Restoration's rows (the priest lane's re-pick) do not lose.** Party Rejuvenation rank 1 (row 8910, 10-59 and bare 60) beats the authored rank 7 by 13 to 18% at bare 20-50 and 9.2 to 9.3% at bare 60. Tank Rejuvenation rank 4 (row 9841, 28-49) beats max rank by 4.4 to 4.8% at bare 30 and 40. Kept. | table below | Aligned (rows kept) | - | - |
+| W3-3 | **Cat and bear: no rank-sensitive cast.** Their abilities carry no spell-power or healing coefficient. Every APL rank is the maximum (Shred 5, Claw 5, Rip 6, Bite 5, Ravage 4, Faerie Fire 4, Prowl 3; Maul 7, Swipe 5, Lacerate 5, Primal Bite 3, Demoralizing Roar 5). The cat's Moonfire and Wrath lines run only below 20, where no band is published. | APLs | Aligned | - | - |
+
+What the engine change cost (round start to now, rows kept) and what the rows hold back. "Row dropped" is the loss against keeping the row:
+
+| Spec | Preset/band | Faction | Seed | Before (round start) | Now (rows kept) | Engine cost | Row dropped |
+|---|---|---|---|---|---|---|---|
+| druid-balance | bare 30 | alliance | 1 | 73.9 | 75.0 | +1.49% | none -16.7%; noMF -5.6%; noW -6.7%; noIS -2.7% |
+| druid-balance | bare 30 | alliance | 50001 | 73.9 | 74.9 | +1.35% | none -16.7%; noMF -5.7%; noW -6.5%; noIS -2.7% |
+| druid-balance | bare 30 | horde | 1 | 73.3 | 74.3 | +1.36% | none -17.5%; noMF -5.7%; noW -6.6%; noIS -2.4% |
+| druid-balance | bare 30 | horde | 50001 | 73.2 | 74.3 | +1.50% | none -17.6%; noMF -5.8%; noW -6.6%; noIS -2.6% |
+| druid-balance | raid 60 | alliance | 1 | 569.5 | 569.5 | +0.00% | - |
+| druid-balance | raid 60 | alliance | 50001 | 570.3 | 570.3 | +0.00% | - |
+| druid-balance | raid 60 | horde | 1 | 574.9 | 574.9 | +0.00% | - |
+| druid-balance | raid 60 | horde | 50001 | 575.1 | 575.1 | +0.00% | - |
+| druid-restoration | bare 20 | alliance | 1 | 44.1 | 44.1 | +0.00% | no8910 -13.6% |
+| druid-restoration | bare 20 | alliance | 50001 | 44.1 | 44.1 | +0.00% | no8910 -13.6% |
+| druid-restoration | bare 20 | horde | 1 | 40.6 | 40.6 | +0.00% | no8910 -13.1% |
+| druid-restoration | bare 20 | horde | 50001 | 40.6 | 40.6 | +0.00% | no8910 -13.3% |
+| druid-restoration | bare 30 | alliance | 1 | 118.1 | 113.2 | -4.15% | no8910 -17.3%; no9841 -4.5% |
+| druid-restoration | bare 30 | alliance | 50001 | 118.2 | 113.3 | -4.15% | no8910 -17.2%; no9841 -4.6% |
+| druid-restoration | bare 30 | horde | 1 | 116.0 | 111.4 | -3.97% | no8910 -17.5%; no9841 -4.5% |
+| druid-restoration | bare 30 | horde | 50001 | 116.1 | 111.5 | -3.96% | no8910 -17.5%; no9841 -4.6% |
+| druid-restoration | bare 40 | alliance | 1 | 228.0 | 213.7 | -6.27% | no8910 -14.0%; no9841 -4.5% |
+| druid-restoration | bare 40 | alliance | 50001 | 228.1 | 213.8 | -6.27% | no8910 -14.1%; no9841 -4.4% |
+| druid-restoration | bare 40 | horde | 1 | 228.0 | 214.4 | -5.96% | no8910 -13.6%; no9841 -4.8% |
+| druid-restoration | bare 40 | horde | 50001 | 228.0 | 214.3 | -6.01% | no8910 -13.7%; no9841 -4.6% |
+| druid-restoration | bare 50 | alliance | 1 | 392.5 | 325.9 | -16.97% | no8910 -15.8% |
+| druid-restoration | bare 50 | alliance | 50001 | 392.7 | 326.0 | -16.98% | no8910 -15.9% |
+| druid-restoration | bare 50 | horde | 1 | 389.3 | 323.4 | -16.93% | no8910 -16.0% |
+| druid-restoration | bare 50 | horde | 50001 | 389.6 | 323.5 | -16.97% | no8910 -16.0% |
+| druid-restoration | bare 60 | alliance | 1 | 597.9 | 463.0 | -22.56% | no8910 -9.2% |
+| druid-restoration | bare 60 | alliance | 50001 | 598.3 | 463.0 | -22.61% | no8910 -9.3% |
+| druid-restoration | bare 60 | horde | 1 | 594.2 | 459.1 | -22.74% | no8910 -9.3% |
+| druid-restoration | bare 60 | horde | 50001 | 594.4 | 458.9 | -22.80% | no8910 -9.2% |
+| druid-restoration | raid 60 | alliance | 1 | 1006.4 | 925.8 | -8.01% | - |
+| druid-restoration | raid 60 | alliance | 50001 | 1006.7 | 925.8 | -8.04% | - |
+| druid-restoration | raid 60 | horde | 1 | 1005.3 | 923.3 | -8.16% | - |
+| druid-restoration | raid 60 | horde | 50001 | 1005.2 | 923.8 | -8.10% | - |
+
+Wave 1 left Balance and Restoration at these bands as they were at the round start (the Restoration build change reaches bands 50 and 60, and only on the guide build). So the "Before" column is also the wave-1 figure. Restoration's loss (bare 30 to 60: -4 to -23%; raid 60: -8.0 to -8.2%) is the shared penalty itself, not a druid row. Balance bare 30 rises 1.3 to 1.5% on the merged tree.
+
+No row changed, so there is nothing to sync (sim/rankchoices copy, sim/request APLs). Files to regenerate: the healer ladder goldens are the priest lane's list; druid-balance needs nothing new.
