@@ -20073,7 +20073,7 @@
           {
             "spell_id": 17,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20148,7 +20148,7 @@
           {
             "spell_id": 592,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20223,7 +20223,7 @@
           {
             "spell_id": 592,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20312,7 +20312,7 @@
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20408,7 +20408,7 @@
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20539,7 +20539,7 @@
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20670,7 +20670,7 @@
           {
             "spell_id": 3747,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20801,7 +20801,7 @@
           {
             "spell_id": 3747,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20932,7 +20932,7 @@
           {
             "spell_id": 3747,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21098,7 +21098,7 @@
           {
             "spell_id": 6065,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21271,7 +21271,7 @@
           {
             "spell_id": 6065,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21444,7 +21444,7 @@
           {
             "spell_id": 6065,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21617,7 +21617,7 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21790,7 +21790,7 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21963,7 +21963,7 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22150,7 +22150,7 @@
           {
             "spell_id": 10898,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22337,7 +22337,7 @@
           {
             "spell_id": 10898,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22530,7 +22530,7 @@
           {
             "spell_id": 10898,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22723,7 +22723,7 @@
           {
             "spell_id": 10899,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22910,7 +22910,7 @@
           {
             "spell_id": 10899,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23097,7 +23097,7 @@
           {
             "spell_id": 10900,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23284,7 +23284,7 @@
           {
             "spell_id": 10900,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23476,7 +23476,7 @@
           {
             "spell_id": 10900,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23668,7 +23668,7 @@
           {
             "spell_id": 10900,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23861,7 +23861,7 @@
           {
             "spell_id": 10901,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields.",
+            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -25372,7 +25372,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25650,7 +25650,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25928,7 +25928,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26206,7 +26206,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26491,7 +26491,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26776,7 +26776,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27054,7 +27054,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27332,7 +27332,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27610,7 +27610,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27888,7 +27888,7 @@
           {
             "spell_id": 10964,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28166,7 +28166,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then your top trainer rank.",
+            "condition": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28503,7 +28503,7 @@
           {
             "spell_id": 15407,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -28557,7 +28557,7 @@
           {
             "spell_id": 15407,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -28611,7 +28611,7 @@
           {
             "spell_id": 15407,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -28665,7 +28665,7 @@
           {
             "spell_id": 17311,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -28726,7 +28726,7 @@
           {
             "spell_id": 17311,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -28794,7 +28794,7 @@
           {
             "spell_id": 17311,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -28862,7 +28862,7 @@
           {
             "spell_id": 17311,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -28930,7 +28930,7 @@
           {
             "spell_id": 17312,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -28998,7 +28998,7 @@
           {
             "spell_id": 17312,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29078,7 +29078,7 @@
           {
             "spell_id": 17312,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29158,7 +29158,7 @@
           {
             "spell_id": 17312,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29226,7 +29226,7 @@
           {
             "spell_id": 17313,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29294,7 +29294,7 @@
           {
             "spell_id": 17313,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29362,7 +29362,7 @@
           {
             "spell_id": 17313,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29441,7 +29441,7 @@
           {
             "spell_id": 17313,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29522,7 +29522,7 @@
           {
             "spell_id": 17313,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29590,7 +29590,7 @@
           {
             "spell_id": 17314,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29658,7 +29658,7 @@
           {
             "spell_id": 17314,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }
@@ -29726,7 +29726,7 @@
           {
             "spell_id": 18807,
             "name": "Mind Flay",
-            "condition": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+            "condition": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
             "icon": "spell_shadow_siphonmana",
             "race_spell_ids": {}
           }

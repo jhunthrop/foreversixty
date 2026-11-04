@@ -240,7 +240,7 @@
       }
     },
     {
-      "notes": "Mind Flay with every free global: let all three ticks land, since Improved Mind Flay makes the last tick the biggest.",
+      "notes": "Mind Flay with every free global: let all three ticks land, since a clipped channel loses the rest, and once you have Improved Mind Flay the last tick is the biggest.",
       "action": {
         "castSpell": {
           "spellId": {
