@@ -136,3 +136,11 @@ What each row means:
 **Wave 3 files to regenerate:** TestRotationLadder goldens for paladin-retribution (bands 40, 50) and paladin-holy (raid 60), and the Holy and Retribution BiS bands at the refresh.
 
 **For other lanes:** any class code that adds a spell-power share by hand, outside BonusCoefficient or a Dot or Hot BonusCoefficient, misses the rule the same way. Paladin's only such site was Consecration (grep for `GetBonusDamage(` and `GetBonusHealing(` inside OnTick or ApplyEffects).
+
+**Wave 3 follow-up (S 416b2280f, E 932a0357b).** `TestCuratedRankChoicesAreCastableDownranks` refuses a row at 60 for both presets, so W3-2 moved into the rotation:
+- Holy's six Holy Shock lines (curated, sim/request and fork copies) now name rank 4 (20930), and the Holy Shock row is gone. The APL notes are untouched.
+- Below 60 the top rank learned ties rank 1 (3,000 iterations: band 30 98.7 / 98.7, 40 145.4 / 145.5, 50 158.3 / 158.5), so no row keeps rank 1.
+- Raid 60 659.6 and bare 60 246.4 are unchanged from the row.
+- The smoke test's talent excuse now names 20930.
+- Tests that pass: the rank-choice test, `TestHolyPaladinHolyShockAtBareSixty`, `TestHealerListsCastTheTopTrainerRankUnlessChosen`, the paladin rotation smoke tests, and `make apl-check`.
+- Not mine: `TestEveryWrittenRotationRunsInTheEngine/hunter-marksmanship` fails on int/r15 with an unresolved 1310786.
