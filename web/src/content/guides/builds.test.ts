@@ -313,3 +313,50 @@ describe('Survival has one build at 60', () => {
     expect(survival?.frontmatter.raidBuild).toBeUndefined();
   });
 });
+
+// Sim-accuracy round 15 (mage, from guide-accuracy round 1 SIM-5): Frost casts no Fire
+// spell and no Fireball, Frostfire Bolt or Arcane Wrath, so Accelerant (cast time on those
+// three) and Flame Throwing (Fire range) do nothing for it; the points go to Arcane Impact,
+// which crits the Missile Barrage Arcane Missiles Frost does cast.
+describe('Frost spends no point on a talent for spells it never casts', () => {
+  const DEAD_FOR_FROST = ['Accelerant', 'Flame Throwing', 'Impact', 'Burning Soul'];
+  it.each(guides.filter((g) => g.id.startsWith('mage/frost')).map((g) => [g.id, g] as const))(
+    '%s',
+    (id, guide) => {
+      for (const field of ['build', 'raidBuild'] as const) {
+        const code = guide.frontmatter[field];
+        if (typeof code !== 'string') continue;
+        const decoded = decodeFS1(code);
+        if (!decoded.ok) continue; // reported by the decode test above
+        const file = talentsFor(decoded.build.classSlug);
+        const trees = [...file.trees].sort((a, b) => a.position - b.position);
+        const taken: string[] = [];
+        decoded.build.treeRanks.forEach((ranks, treeIndex) => {
+          trees[treeIndex]?.talents.forEach((talent, digitIndex) => {
+            if ((ranks[digitIndex] ?? 0) > 0 && DEAD_FOR_FROST.includes(talent.name)) taken.push(talent.name);
+          });
+        });
+        expect(taken, `${id} ${field}: ${taken.join(', ')}`).toEqual([]);
+      }
+    },
+  );
+});
+
+// Sim-accuracy round 15 (mage, from guide-accuracy round 1 SIM-6): the engine models neither
+// Impact's stun nor Burning Soul's pushback, so the Fire leveling toll point follows the
+// Forever guides, which call Burning Soul vital for solo and dungeon play.
+describe('Fire levels with Burning Soul, not Impact', () => {
+  it('mage/fire build: takes Burning Soul and no Impact', () => {
+    const guide = guides.find((g) => g.id === 'mage/fire');
+    expect(guide, 'mage/fire: no such guide').toBeDefined();
+    const decoded = decodeFS1(guide?.frontmatter.build as string);
+    if (!decoded.ok) return; // reported by the decode test above
+    const trees = [...talentsFor('mage').trees].sort((a, b) => a.position - b.position);
+    const rankOf = new Map<string, number>();
+    decoded.build.treeRanks.forEach((ranks, treeIndex) => {
+      trees[treeIndex]?.talents.forEach((talent, digitIndex) => rankOf.set(talent.name, ranks[digitIndex] ?? 0));
+    });
+    expect(rankOf.get('Impact') ?? 0).toBe(0);
+    expect(rankOf.get('Burning Soul') ?? 0).toBeGreaterThan(0);
+  });
+});
