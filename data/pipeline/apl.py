@@ -157,6 +157,13 @@ UNGROUPED_CLIENT_SPELL_IDS: dict[int, str] = {
         "sim/core/wand.go's RegisterShootSpell registers it directly by "
         "this id for whichever caster has a wand equipped."
     ),
+    20594: (
+        "Stoneform: the Dwarf racial (raw/Spell.csv; Wowhead Forever "
+        "20594), learned by race rather than class, so it carries no class "
+        "family_mask and spellconst's per-class split never carries it. "
+        "sim/core/racials.go registers it by this id for every Dwarf; the "
+        "Protection paladin list casts it below 70% health."
+    ),
 }
 
 
