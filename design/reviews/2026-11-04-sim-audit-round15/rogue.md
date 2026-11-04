@@ -109,3 +109,28 @@ Line numbers are from origin/land/guides-r1.
 - Mutilate off-hand 0.5 penalty: pending owner (X3).
 - Warcraft Logs is blocked (gcloud login expired). Not worked around.
 - Web research (owner rule, round 15). Death Mark vs Eviscerate is not a tie (+4.5%), so it is decided on the sim. For the Shank ≤3 vs ≤4 tie I found no Forever source. Searched 2026-11-03: Warcraft Tavern Forever Subtlety guide (https://www.warcrafttavern.com/forever/guides/subtlety-rogue/, undated, pre-70755, no Death Mark or Shank); Icy Veins Forever Subtlety (https://www.icy-veins.com/wow-forever/subtlety-rogue-melee-dps-pve-guide, 403); Blizzard Forever class deep dive (https://us.forums.blizzard.com/en/wow/t/2375390) for Death Mark's origin. The tie followed the guide lane's existing prose (≤3).
+
+## Wave 2: Mutilate's off-hand penalty
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W1 | Mutilate's off-hand strike read the off-hand dagger at full weight. It should take the 50% off-hand penalty on its weapon damage; the flat per-hand bonus stays whole, and Dual Wield Specialization raises the off-hand weapon damage | Client: SpellMisc (wago 1.60.1.70755). The off-hand hand spells 399961, 1241588 and 1241590 have Attributes_3 16777728, which includes REQUIRES_OFF_HAND_WEAPON (0x1000000). The main-hand 399960, 1241585 and 1241586 have 1536, without it. That flag makes the strike an off-hand attack, the same flag Shank carries, so it uses the off-hand weapon damage the server halves for every off-hand swing. Second source: guide-accuracy round 1 owner item 1 (origin/land/guides-r1 `design/reviews/guide-accuracy/round1/rogue.md:119-122`). wowsims SoD and Wrath `mutilate.go` use `OHNormalizedWeaponDamage` (0.5 times the roll) plus the full flat. Forever notes are silent, so the Classic rule holds. Test: TestMutilateOffHandTakesTheOffHandPenalty (179.7 vs 89.9 before the fix). The brief listed this as pending owner; the coordinator reopened it for wave 2 on this evidence | CONFIRMED-BUG | old (fork 56f97823e's "does not apply to a special ability that explicitly swings the off-hand" comment); guides-handoff | E db91a347d |
+
+Measured on Assassination, wave-1 engine to wave-2 engine, 10000 iterations:
+
+| case | seed 1 | seed 50001 |
+|---|---|---|
+| raid 60 alliance | 752.9 to 707.8 (-5.99%) | 752.6 to 707.6 (-5.98%) |
+| raid 60 horde | 745.9 to 701.2 (-5.99%) | 745.8 to 701.1 (-5.99%) |
+| bare 40 horde | 97.8 to 97.8 (the truncated level 40 build has no Mutilate yet) | 97.8 to 97.8 |
+| bare 50 horde | 193.3 to 185.4 (-4.09%) | 193.4 to 185.5 (-4.08%) |
+| bare 60 horde | 302.3 to 290.6 (-3.87%) | 302.2 to 290.6 (-3.84%) |
+
+Net against the round baseline ($R/before.tsv), raid 60: alliance 745.7 to 707.8 (-5.1%), horde 738.7 to 701.2 (-5.1%). No other spec casts Mutilate.
+
+The Rupture line (A1) still gains after the fix: 695.2/694.7 without it, 701.2/701.1 with it (+0.86%/+0.92%, seeds 1/50001, horde). Guide-accuracy owner item 4 cites Forever guides that skip Rupture, but the sim decides beyond error with Blood Splatter and the always-crit bleed rule, which those guides do not price in. So A1 stays.
+
+Wave 2 additions:
+- Files to regenerate: the Assassination ladder golden, Assassination dps-per-point and Data.lua (already listed).
+- Measure at refresh: Assassination BiS and weights. The main-hand dagger's weight rises against the off hand.
+- For the guide lane: `assassination.md:103` on land/guides-r1 already says the off-hand Mutilate strike gets half its dagger's weapon damage with the flat bonus whole. It now matches the engine; no change.
