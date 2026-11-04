@@ -26,7 +26,7 @@ Warlock is a ranged caster that pays for mana with health through Life Tap, keep
 - **New talents.** Malevolence (Shadow crit), Pandemic, Wrack (a 6 second channel), Decimation (Soul Fire below 35%), Demonic Pact (keep the Imp's sacrifice with another demon out), Shadow and Flame, Incinerate and Bane of Havoc. Smaller new picks fill the trees: Demonic Knowledge (spell damage equal to your level with a demon out), Soul Harvest, Improved Drains, Demonic Aegis, Demonic Energies, Molten Skin and Fire and Brimstone.
 - **The sacrifices swapped schools.** The Imp's sacrifice now raises Shadow damage and the Succubus' raises Fire.
 - **Improved Shadow Bolt is your own.** Its 20% applies to your Shadow damage only, not the raid's.
-- **Your demon scales from you** and does not take raid buffs. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
+- **Your demon scales from you** and takes no raid buffs except a hunter's Heart of the Lion. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
 - **Portal of Summoning** is new at 60: you and two others open it, and then two people at the portal can summon any party or raid member. It costs five Soul Shards and has a one hour cooldown.
 - **No Unstable Affliction and no Haunt.** No trainer or talent teaches either one, so your DoTs are Corruption, Immolate, your bane and, for Affliction, Siphon Life.
 

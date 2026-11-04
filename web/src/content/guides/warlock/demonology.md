@@ -61,7 +61,7 @@ The raid build adds what the leveling build cannot use. Demonic Pact, the 31st p
 
 Improved Health Funnel, Demonic Embrace and Demonic Aegis are the toll to reach Pact, and each buys survival: a stronger, cheaper Health Funnel, 9% more Stamina and a 15% stronger Demon Armor. The two points in Improved Sayaad make Lash of Pain 20% stronger. Improved Voidwalker and Improved Imp stay empty, since the Voidwalker never comes out in a raid and the Imp is sacrificed before the pull. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
 
-Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets a bit under half your hit. Its melee almost never crits on a boss; Lash of Pain crits at about a normal caster's rate.
+Your demon scales from you in Forever, and raid buffs do not land on it, with one exception: a hunter's Heart of the Lion reaches every ally near the hunter, demons included, for 10% more stats and extra attack power. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets a bit under half your hit. Its melee almost never crits on a boss; Lash of Pain crits at about a normal caster's rate.
 
 ## Rotation and priority
 
