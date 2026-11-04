@@ -201,7 +201,7 @@
       }
     },
     {
-      "notes": "On cooldown after Mortal Strike, raid build only: your swings for the next 8 seconds each bring 5 more rage. Costs a quarter of your base health.",
+      "notes": "On cooldown after Mortal Strike, raid build only: your white swings for the next 8 seconds each bring 5 more rage. Costs a quarter of your base health.",
       "action": {
         "castSpell": {
           "spellId": {
