@@ -352,8 +352,9 @@ func TestRewriteKeepsTheAuthoredDownranksBelowSixty(t *testing.T) {
 		{"priest-holy", "priest", 50, []int32{10927}, []int32{10928}},
 		{"priest-holy", "priest", 30, []int32{6076}, []int32{6077}},
 		{"priest-holy", "priest", 16, []int32{6074}, []int32{6075}},
-		{"priest-discipline", "priest", 50, []int32{10927, 3747}, []int32{10928, 10899}},
-		{"priest-discipline", "priest", 40, []int32{3747}, []int32{6066}},
+		// Power Word: Shield is the top rank since round 15 wave 6, so its rank is learned-capped.
+		{"priest-discipline", "priest", 50, []int32{10927, 10899}, []int32{10928, 10900}},
+		{"priest-discipline", "priest", 40, []int32{6066}, []int32{10898}},
 		{"priest-discipline", "priest", 20, []int32{600}, []int32{3747}},
 		// The party's Flash of Light rank 4 and the filler's rank 5 (round 15 wave 2) both survive.
 		{"paladin-holy", "paladin", 50, []int32{19941, 19942}, []int32{19943}},

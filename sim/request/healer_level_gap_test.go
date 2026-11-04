@@ -183,3 +183,20 @@ func TestShadowMindBlastAtFiftyIsTheHighestRankLearned(t *testing.T) {
 		})
 	}
 }
+
+var powerWordShieldRanks = map[int]int{1: 17, 2: 592, 3: 600, 4: 3747, 5: 6065, 6: 6066, 7: 10898, 8: 10899, 9: 10900, 10: 10901}
+
+// Discipline shields at the top rank learned. Round 14 held rank 4 (3747)
+// because a full shield was thought to cost a warrior tank his rage; Forever
+// removed that (Blizzard's 30 September priest and warrior deep dive: "Rage
+// gain also ignores all damage absorption effects, so Power Word: Shield will
+// no longer decrease Rage gained"), and under the level-gap rule rank 4 keeps
+// 5% of its bonus at 60: rank 10 is +1.0 to +1.4% at raid 60, both seeds, and
+// no bare band loses.
+func TestDisciplineShieldsAtTheTopRank(t *testing.T) {
+	shield := linesCasting(t, "priest-discipline", 3747, 10901)
+	assertRanks(t, shield, "priest-discipline", "priest", "human", powerWordShieldRanks, []rankCase{
+		{20, BarePreset, 3}, {30, BarePreset, 5}, {40, BarePreset, 6}, {45, BarePreset, 7}, {50, BarePreset, 8},
+		{60, BarePreset, 10}, {60, RaidPreset, 10},
+	})
+}

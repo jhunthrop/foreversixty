@@ -46,7 +46,7 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 	}{
 		{"priest-discipline", "Power Word: Shield", 25, nil},
 		{"priest-discipline", "Power Word: Shield", 35, nil},
-		{"priest-discipline", "Power Word: Shield", 45, []int{6}},
+		{"priest-discipline", "Power Word: Shield", 45, nil},
 		{"priest-discipline", "Penance", 45, nil},
 		// Renew is authored at rank 7 since round 15 wave 2; a row keeps rank 1 to 39.
 		{"priest-discipline", "Renew", 25, []int{1}},
