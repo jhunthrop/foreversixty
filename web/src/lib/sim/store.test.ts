@@ -121,6 +121,15 @@ describe('createSimStore', () => {
     expect(sim.message).toBe(simCopy.noCharacter);
   });
 
+  it('never runs a character that still owes its race: a bare "Skyborne" export waits for the pick', async () => {
+    const sim = store();
+    await sim.loadAddon(FURY.replace(':orc:', ':skyborne:'));
+    expect(sim.needsRace).toBe(true);
+    await sim.run();
+    expect(sim.phase).toBe('idle');
+    expect(sim.result).toBeNull();
+  });
+
   it('carries the precision toggle into the request', async () => {
     const sim = store();
     await sim.loadAddon(FURY);

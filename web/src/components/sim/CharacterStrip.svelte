@@ -147,6 +147,15 @@
   // the descriptor asks instead of asserting. Rendering an empty string there would be the
   // page quietly claiming a raceless character, which is the thing Task 7 refuses to do.
   const pending = $derived(needsRace(character));
+  /** A fight lacks a race outright; an addon export that does is a bare "Skyborne"
+   *  (`characterFromFs1`), so the question is which of the two Skyborne rows. */
+  const skyborneOnly = $derived(pending && character.source.kind === 'addon');
+  const raceOptions = $derived(
+    (skyborneOnly ? races.filter((race) => race.slug.endsWith('-skyborne')) : races).map((race) => ({
+      value: race.slug,
+      label: race.name,
+    })),
+  );
   // A build with fewer points than character.level - BASE_LEVEL implies is a part-levelled
   // character: `character.level` is what actually gets simulated (there is no level
   // control on this page), so the line says how many points it actually spends rather than
@@ -244,17 +253,17 @@
       <!-- One question, asked once. The run control stays disabled until it is answered,
            because sim/request.ParseRace refuses an empty race at the boundary and a failed
            run is a worse answer than a question. -->
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <label class="text-strong text-[13px]" for="sim-race-field" data-testid="sim-race-prompt"
-          >{simCopy.pickRace}</label
+          >{skyborneOnly ? simCopy.pickSkyborne : simCopy.pickRace}</label
         >
         <Select
           id="sim-race-field"
-          class="w-[180px]"
+          class="w-[200px]"
           size="compact"
           value=""
-          placeholder={simCopy.pickRacePlaceholder}
-          options={races.map((race) => ({ value: race.slug, label: race.name }))}
+          placeholder={skyborneOnly ? simCopy.pickSkybornePlaceholder : simCopy.pickRacePlaceholder}
+          options={raceOptions}
           testid="sim-race-picker"
           onchange={(event) => onrace((event.currentTarget as HTMLSelectElement).value)}
         />

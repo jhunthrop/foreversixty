@@ -195,6 +195,9 @@ export const simCopy = {
     'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.',
   // A combat log records no race and this lane never guesses one; the strip asks instead.
   pickRace: 'Pick your race; the combat log did not record it.',
+  /** An export from an addon older than the Skyborne faction split says only "Skyborne". */
+  pickSkyborne: 'Pick your Skyborne; the export does not say which.',
+  pickSkybornePlaceholder: 'Choose a Skyborne',
   pickRacePlaceholder: 'Choose a race',
   // The landing state's companion line when fromStoredCharacter refuses for want of a race
   // -- and only then (2026-09-24 landing pass, Finding 2): the sim-input 404 (no build
