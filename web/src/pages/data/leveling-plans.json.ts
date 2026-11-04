@@ -5,8 +5,8 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import activeBuild from '../../data/active-build.json';
-import { bandSpendOrder, loadTalentFile } from '../../lib/guides/build-tree';
-import { guideLevelingBuilds } from '../../lib/guides/leveling-builds';
+import { loadTalentFile } from '../../lib/guides/build-tree';
+import { guideLadderOrder, guideLevelingBuilds } from '../../lib/guides/leveling-builds';
 import { guideTipsUrl } from '../../lib/guides/guide-tips';
 import { FIRST_BAND_LEVEL } from '../../lib/bis/landing-bands';
 import { jsonResponse } from '../../lib/app-data/endpoint';
@@ -62,7 +62,11 @@ function planFor(specKey: string, buildCode: string): LevelingPlan | undefined {
   );
   const file = loadTalentFile(build, spec.class_slug);
   if (first === undefined || file === undefined) return undefined;
-  const order = bandSpendOrder(build, spec.class_slug, first.talents) ?? [];
+  // The ladder's own order (the guide strip's and the addon's), cut at the first range.
+  const order = guideLadderOrder(build, spec.class_slug, specKey, spec.tree_index, buildCode).slice(
+    0,
+    first.points,
+  );
   return {
     specKey,
     classSlug: spec.class_slug,

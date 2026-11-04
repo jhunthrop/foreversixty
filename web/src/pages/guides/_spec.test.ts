@@ -273,3 +273,18 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     }
   });
 });
+
+describe('/guides/priest/shadow Leveling strip', () => {
+  // Sim-accuracy round 16: the strip lists the first range in the ladder's order (Wand
+  // Specialization at 10 and 11, Spirit Tap from 12), which the addon spends too.
+  it('opens the 20 to 29 row on Wand Specialization, then Spirit Tap', async () => {
+    const html = await container.renderToString(SpecPage, {
+      props: { entry: loadGuideEntry('priest/shadow') },
+    });
+    const row =
+      html.split('data-testid="guide-leveling-row-20"')[1]?.split('data-testid="guide-leveling-row-30"')[0] ??
+      '';
+    const names = [...row.matchAll(/class="leveling-chip-name"[^>]*>([^<]+)</g)].map((m) => m[1]);
+    expect(names.slice(0, 2)).toEqual(['Wand Specialization', 'Spirit Tap']);
+  });
+});
