@@ -223,7 +223,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 10 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 15 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "2641": {
@@ -321,7 +321,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 20 Arcane damage.",
+      "description": "An instant shot that causes 25 Arcane damage.",
       "icon": "ability_impalingbolt"
     },
     "3045": {
@@ -517,7 +517,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 15.  Only one Aspect can be active at a time.",
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 20.  Only one Aspect can be active at a time.",
       "icon": "spell_nature_ravenform"
     },
     "13542": {
@@ -573,7 +573,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 30 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 35 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "13550": {
@@ -587,7 +587,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 60 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 70 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "13551": {
@@ -601,7 +601,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 110 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 130 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "13552": {
@@ -615,7 +615,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 170 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 200 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "13553": {
@@ -629,7 +629,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 240 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 290 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "13554": {
@@ -643,7 +643,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 320 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 375 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "13555": {
@@ -657,7 +657,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 415 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 500 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "13795": {
@@ -951,7 +951,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 26 Arcane damage.",
+      "description": "An instant shot that causes 35 Arcane damage.",
       "icon": "ability_impalingbolt"
     },
     "14282": {
@@ -965,7 +965,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 39 Arcane damage.",
+      "description": "An instant shot that causes 50 Arcane damage.",
       "icon": "ability_impalingbolt"
     },
     "14283": {
@@ -979,7 +979,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 65 Arcane damage.",
+      "description": "An instant shot that causes 85 Arcane damage.",
       "icon": "ability_impalingbolt"
     },
     "14284": {
@@ -993,7 +993,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 94 Arcane damage.",
+      "description": "An instant shot that causes 120 Arcane damage.",
       "icon": "ability_impalingbolt"
     },
     "14285": {
@@ -1007,7 +1007,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 134 Arcane damage.",
+      "description": "An instant shot that causes 175 Arcane damage.",
       "icon": "ability_impalingbolt"
     },
     "14286": {
@@ -1021,7 +1021,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 170 Arcane damage.",
+      "description": "An instant shot that causes 220 Arcane damage.",
       "icon": "ability_impalingbolt"
     },
     "14287": {
@@ -1035,7 +1035,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An instant shot that causes 217 Arcane damage.",
+      "description": "An instant shot that causes 280 Arcane damage.",
       "icon": "ability_impalingbolt"
     },
     "14294": {
@@ -1203,7 +1203,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 22.  Only one Aspect can be active at a time.",
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 35.  Only one Aspect can be active at a time.",
       "icon": "spell_nature_ravenform"
     },
     "14319": {
@@ -1217,7 +1217,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 30.  Only one Aspect can be active at a time.",
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 50.  Only one Aspect can be active at a time.",
       "icon": "spell_nature_ravenform"
     },
     "14320": {
@@ -1231,7 +1231,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 38.  Only one Aspect can be active at a time.",
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 70.  Only one Aspect can be active at a time.",
       "icon": "spell_nature_ravenform"
     },
     "14321": {
@@ -1245,7 +1245,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 47.  Only one Aspect can be active at a time.",
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 90.  Only one Aspect can be active at a time.",
       "icon": "spell_nature_ravenform"
     },
     "14322": {
@@ -1259,7 +1259,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 55.  Only one Aspect can be active at a time.",
+      "description": "The hunter takes on the aspects of a hawk, increasing Ranged Attack Power by 110.  Only one Aspect can be active at a time.",
       "icon": "spell_nature_ravenform"
     },
     "14323": {
@@ -1427,7 +1427,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 20. Aimed Shot shares its cooldown with Multi-Shot.",
+      "description": "An aimed shot that increases ranged damage by 40. Aimed Shot shares its cooldown with Multi-Shot.",
       "icon": "inv_spear_07"
     },
     "19503": {
@@ -1455,7 +1455,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 30. Lasts 30 min.",
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 50. Lasts 30 min.",
       "icon": "ability_trueshot"
     },
     "19574": {
@@ -1651,7 +1651,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 34. Aimed Shot shares its cooldown with Multi-Shot.",
+      "description": "An aimed shot that increases ranged damage by 70. Aimed Shot shares its cooldown with Multi-Shot.",
       "icon": "inv_spear_07"
     },
     "20901": {
@@ -1665,7 +1665,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 55. Aimed Shot shares its cooldown with Multi-Shot.",
+      "description": "An aimed shot that increases ranged damage by 115. Aimed Shot shares its cooldown with Multi-Shot.",
       "icon": "inv_spear_07"
     },
     "20902": {
@@ -1679,7 +1679,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 89. Aimed Shot shares its cooldown with Multi-Shot.",
+      "description": "An aimed shot that increases ranged damage by 185. Aimed Shot shares its cooldown with Multi-Shot.",
       "icon": "inv_spear_07"
     },
     "20903": {
@@ -1693,7 +1693,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 125. Aimed Shot shares its cooldown with Multi-Shot.",
+      "description": "An aimed shot that increases ranged damage by 260. Aimed Shot shares its cooldown with Multi-Shot.",
       "icon": "inv_spear_07"
     },
     "20904": {
@@ -1707,7 +1707,7 @@
       "passive": false,
       "cooldown_ms": 6000,
       "range_yd": 35.0,
-      "description": "An aimed shot that increases ranged damage by 166. Aimed Shot shares its cooldown with Multi-Shot.",
+      "description": "An aimed shot that increases ranged damage by 350. Aimed Shot shares its cooldown with Multi-Shot.",
       "icon": "inv_spear_07"
     },
     "20905": {
@@ -1721,7 +1721,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 40. Lasts 30 min.",
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 75. Lasts 30 min.",
       "icon": "ability_trueshot"
     },
     "20906": {
@@ -1735,7 +1735,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 50. Lasts 30 min.",
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yards by 100. Lasts 30 min.",
       "icon": "ability_trueshot"
     },
     "20909": {
@@ -1833,7 +1833,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 35.0,
-      "description": "Stings the target, causing 555 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
+      "description": "Stings the target, causing 675 Nature damage over 15 sec.  Only one Sting per Hunter can be active on any one target.",
       "icon": "ability_hunter_quickshot"
     },
     "25296": {
@@ -2071,7 +2071,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 15.",
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 20.",
       "icon": "ability_trueshot"
     },
     "1299348": {
@@ -2085,7 +2085,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 22.",
+      "description": "Increases the Ranged Attack Power of party or raid members within 45 yds by 35.",
       "icon": "ability_trueshot"
     },
     "1299445": {
@@ -2141,7 +2141,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 45.0,
-      "description": "A long-range shot that deals ranged damage plus 160 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
+      "description": "A long-range shot that deals ranged damage plus 320 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
       "icon": "hunter_pvp_snipershot"
     },
     "1310785": {
@@ -2155,7 +2155,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 45.0,
-      "description": "A long-range shot that deals ranged damage plus 225 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
+      "description": "A long-range shot that deals ranged damage plus 450 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
       "icon": "hunter_pvp_snipershot"
     },
     "1310786": {
@@ -2169,7 +2169,7 @@
       "passive": false,
       "cooldown_ms": 15000,
       "range_yd": 45.0,
-      "description": "A long-range shot that deals ranged damage plus 295 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
+      "description": "A long-range shot that deals ranged damage plus 590 and increases the range of your next 3 Shots by 10 yards for 10 sec.",
       "icon": "hunter_pvp_snipershot"
     },
     "1317257": {

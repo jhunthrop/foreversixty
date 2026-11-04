@@ -207,7 +207,7 @@
       "cast_time_ms": 1500,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 18000,
+      "cooldown_ms": 15000,
       "range_yd": 5.0,
       "description": "Slams the opponent, causing weapon damage plus 32.",
       "icon": "ability_warrior_decisivestrike"
@@ -795,7 +795,7 @@
       "cast_time_ms": 1500,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 18000,
+      "cooldown_ms": 15000,
       "range_yd": 5.0,
       "description": "Slams the opponent, causing weapon damage plus 43.",
       "icon": "ability_warrior_decisivestrike"
@@ -1117,7 +1117,7 @@
       "cast_time_ms": 1500,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 18000,
+      "cooldown_ms": 15000,
       "range_yd": 5.0,
       "description": "Slams the opponent, causing weapon damage plus 68.",
       "icon": "ability_warrior_decisivestrike"
@@ -1131,7 +1131,7 @@
       "cast_time_ms": 1500,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 18000,
+      "cooldown_ms": 15000,
       "range_yd": 5.0,
       "description": "Slams the opponent, causing weapon damage plus 87.",
       "icon": "ability_warrior_decisivestrike"
@@ -1427,7 +1427,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Increases the area of effect of your Shouts by 50% and reduces their Rage cost by 25%.",
+      "description": "Increases the area of effect of your Shouts by 50% and reduces the Rage cost by of your Shouts and Howls by 25%.",
       "icon": "spell_nature_purge"
     },
     "12323": {
@@ -1651,7 +1651,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the global cooldown and cast time of your Slam ability by 0.5 sec. In addition, Slam no longer interrupts or delays your melee swing and Slam's cooldown is reduced by 3 sec.",
+      "description": "Reduces the cooldown of your Slam ability by 5 sec, the cast time and global cooldown by 0.5 sec, and Slam no longer interrupts or delays your melee swing.",
       "icon": "ability_warrior_decisivestrike"
     },
     "12876": {
@@ -2223,7 +2223,7 @@
       "cast_time_ms": 1500,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 18000,
+      "cooldown_ms": 15000,
       "range_yd": 5.0,
       "description": "Slams the opponent, causing weapon damage plus 16.",
       "icon": "ability_warrior_decisivestrike"
@@ -2253,8 +2253,22 @@
       "passive": false,
       "cooldown_ms": 20000,
       "range_yd": 5.0,
-      "description": "A brutal attack that deals 40% weapon damage. Deals an additional 80% weapon damage against Giants, Dragonkin, and mounted targets. Mounted targets are dismounted.",
+      "description": "A brutal attack that deals 75% weapon damage. Deals an additional 75% weapon damage against Giants, Dragonkin, and mounted targets. Mounted targets are dismounted.",
       "icon": "inv_spear_01"
+    },
+    "1329555": {
+      "name": "Reckless Swings",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": -2,
+      "cost_pct": 25.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 15000,
+      "range_yd": 0.0,
+      "description": "Your next 4 melee attacks generate 5 additional Rage. Lasts 8 sec.",
+      "icon": "ability_warrior_bloodfrenzy"
     }
   }
 }

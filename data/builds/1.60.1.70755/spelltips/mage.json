@@ -2001,7 +2001,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Reduces the casting time of your Frostbolt and Frost Blast spells by 0.1 sec.",
+      "description": "Reduces the casting time of your Frostbolt spell by 0.1 sec.",
       "icon": "spell_frost_frostbolt02"
     },
     "11071": {
@@ -2253,7 +2253,7 @@
       "passive": true,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Gives your Frostbolt, Frost Blast, and Fingers of Frost empowered Ice Lance spells a 0% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
+      "description": "Gives your Frostbolt and Fingers of Frost empowered Ice Lance spells a 0% chance to apply Winter's Chill, increasing the target's damage taken from your next Cone of Cold by 20% and it gains an additional 7% of your spell damage, stacking up to 5 times.",
       "icon": "spell_frost_chillingblast"
     },
     "11185": {

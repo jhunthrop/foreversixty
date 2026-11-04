@@ -30,6 +30,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from pipeline.csvio import read_csv
+from pipeline.hotfix_push import require_layered
 from pipeline.icons import icon_names, resolve_icon
 from pipeline.normalize import write_model
 from pipeline.racialicons import RACIAL_LINE_WORD, RACIAL_SKILL_CATEGORY
@@ -85,6 +86,28 @@ class ConsumableTip(BaseModel):
     use: str
 
 
+#: Every raw table a tooltip reads: each must be the hotfix-layered copy.
+INPUT_TABLES: tuple[str, ...] = (
+    "ItemEffect",
+    "ItemXItemEffect",
+    "ManifestInterfaceData",
+    "SkillLine",
+    "SkillLineAbility",
+    "Spell",
+    "SpellAuraOptions",
+    "SpellCastTimes",
+    "SpellCooldowns",
+    "SpellDuration",
+    "SpellEffect",
+    "SpellMisc",
+    "SpellName",
+    "SpellPower",
+    "SpellRadius",
+    "SpellRange",
+    "SpellTargetRestrictions",
+)
+
+
 class SharedSpellTips(BaseModel):
     build: str
     #: Racial name, as the client spells it -> its spell.
@@ -93,6 +116,9 @@ class SharedSpellTips(BaseModel):
     enchants: dict[str, SpellTip]
     #: `simbuffs.json` id -> the consumable's item and its on-use line.
     consumables: dict[str, ConsumableTip]
+    #: Each pushed input table -> the sha256 of its hotfix-layered copy these tips read
+    #: (`pipeline.hotfix_push.require_layered`); tools/activate-build.sh refuses without it.
+    hotfix_layer: dict[str, str]
 
 
 class _Tables:
@@ -235,6 +261,7 @@ def write_spell_tips(build: str, root: Path = Path("builds")) -> Path:
     trainables_dir = build_dir / "trainables"
     if not trainables_dir.is_dir():
         raise SystemExit(f"no {trainables_dir}; run `python -m pipeline trainables` first")
+    hotfix_layer = require_layered(raw, INPUT_TABLES)
     tables = _Tables(raw)
     out = build_dir / SPELLTIPS
     shutil.rmtree(out, ignore_errors=True)
@@ -248,6 +275,7 @@ def write_spell_tips(build: str, root: Path = Path("builds")) -> Path:
         racials=racial_tips(raw, tables),
         enchants=enchant_tips(_read(build_dir / "enchants.json"), tables),  # type: ignore[arg-type]
         consumables=consumable_tips(raw, simbuffs, _read(build_dir / "items.json"), tables),  # type: ignore[arg-type]
+        hotfix_layer=hotfix_layer,
     )
     write_model(shared, out / f"{SHARED}.json")
     logger.info("wrote %s", out)
