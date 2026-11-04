@@ -20,9 +20,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   build itself spends fewer than level-9 points, the remainder is left
   unspent.
 - Gear: main_hand always, off_hand for the classes that dual-wield in
-  this build (rogue, warrior-fury, shaman-enhancement, hunter),
-  ranged for hunter only. Each slot picks the highest item_level
-  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
   0, so an unfinished/placeholder weapon row this build's item table
   still carries - equipping one hangs the engine mid-sim rather than
   simulating a zero-damage weapon, see the report - is never picked)
@@ -30,9 +31,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/items/<class>.json filtered to
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
-  warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every caster spec
-  (priest-shadow, mage's three specs, warlock's three specs) fills
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
   ranged with a wand instead: the same item table's ranged rows whose
   icon names them a real wand (every wand row's own damage_max is 0 in
   this build, unlike a bow or gun, so the melee pick's damage_max > 0

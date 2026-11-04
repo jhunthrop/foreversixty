@@ -20,9 +20,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   build itself spends fewer than level-9 points, the remainder is left
   unspent.
 - Gear: main_hand always, off_hand for the classes that dual-wield in
-  this build (rogue, warrior-fury, shaman-enhancement, hunter),
-  ranged for hunter only. Each slot picks the highest item_level
-  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
   0, so an unfinished/placeholder weapon row this build's item table
   still carries - equipping one hangs the engine mid-sim rather than
   simulating a zero-damage weapon, see the report - is never picked)
@@ -30,9 +31,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/items/<class>.json filtered to
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
-  warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every caster spec
-  (priest-shadow, mage's three specs, warlock's three specs) fills
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
   ranged with a wand instead: the same item table's ranged rows whose
   icon names them a real wand (every wand row's own damage_max is 0 in
   this build, unlike a bow or gun, so the melee pick's damage_max > 0
@@ -104,7 +105,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 020000000000000000-00000000000000000-50542001200000000 | main_hand:249392 ranged:5213 | 43.4 | 6 | spell:5019=75.7, spell:17311=23.2, spell:8104=5.5, other:mana_gain=5.0, spell:970=4.4 | {SpellID: 14751}, {SpellID: 15286}, {SpellID: 15473} |
 | 38 | 020000000000000000-00000000000000000-52542001201300020 | main_hand:873 ranged:13064 | 63.8 | 8 | spell:5019=66.7, spell:17312=14.4, spell:970=7.0, spell:15286=5.8, spell:8105=5.6 | {SpellID: 14751}, {SpellID: 15473} |
 | 40 | 020000000000000000-00000000000000000-52542001201300040 | main_hand:873 ranged:5216 | 68.0 | 8 | spell:5019=65.7, spell:17312=19.7, spell:15286=5.9, spell:8104=5.9, other:mana_gain=5.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 50 | 025102000000000000-00000000000000000-52542001201300051 | main_hand:873 ranged:249232 | 142.4 | 9 | spell:5019=36.0, spell:17313=23.1, spell:10945=9.6, spell:1309633=6.5, spell:15286=5.9 | {SpellID: 14751} |
+| 50 | 025102000000000000-00000000000000000-52542001201300051 | main_hand:873 ranged:249232 | 139.8 | 9 | spell:5019=35.7, spell:17313=22.6, spell:8106=10.9, spell:15286=5.9, spell:1309633=5.8 | {SpellID: 14751} |
 | 60 | 025105031030000000-00000000000000000-52542001201300051 | main_hand:22799 ranged:22821 | 294.4 | 10 | spell:5019=33.4, spell:18807=31.6, spell:10947=10.7, spell:15286=6.1, other:mana_gain=5.0 | - |
 
 ## Learned but unused (informational)
@@ -156,6 +157,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chastise (spell 1277334)
 - Holy Fire (spell 15266)
 - Holy Nova (spell 27799)
+- Mind Blast (spell 10945)
 - Shadow Word: Death (spell 1309635)
 - Smite (spell 10933)
 - Starshards (spell 19304)

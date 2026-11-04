@@ -40,11 +40,10 @@ export const gearCopy = {
   /** The list's accessible name (fix round 2 ruling 9). */
   listLabel: 'Gear by slot',
   /** The paperdoll's words (design/specs/2026-10-31-paperdoll.md §6). Slot words are
-   *  SLOT_LABELS (lib/planner/types.ts), the one label source, plus these three. */
+   *  `slotLabelForClass` (lib/bis/slot-display-labels.ts: SLOT_LABELS plus "Relic"), plus these two. */
   paperdoll: {
     shirt: 'Shirt',
     tabard: 'Tabard',
-    relic: 'Relic',
     empty: 'empty',
     twoHand: 'Two-hand in main hand',
     best: 'Best in slot',

@@ -2,9 +2,11 @@
 import { describe, expect, it } from 'vitest';
 import { newAtBandLinesFor, sourceGroupsFor } from './footer-view';
 import type { BandInfo, RowView } from './panel-view';
+import { slotDisplayLabel } from './slot-display-labels';
 
 function row(overrides: Partial<RowView>): RowView {
-  return { slot: 'head', empty: false, ...overrides };
+  const slot = overrides.slot ?? 'head';
+  return { slot, slotLabel: slotDisplayLabel(slot), empty: false, ...overrides };
 }
 
 function bandInfo(overrides: Partial<BandInfo>): BandInfo {

@@ -20,9 +20,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   build itself spends fewer than level-9 points, the remainder is left
   unspent.
 - Gear: main_hand always, off_hand for the classes that dual-wield in
-  this build (rogue, warrior-fury, shaman-enhancement, hunter),
-  ranged for hunter only. Each slot picks the highest item_level
-  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
   0, so an unfinished/placeholder weapon row this build's item table
   still carries - equipping one hangs the engine mid-sim rather than
   simulating a zero-damage weapon, see the report - is never picked)
@@ -30,9 +31,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/items/<class>.json filtered to
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
-  warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every caster spec
-  (priest-shadow, mage's three specs, warlock's three specs) fills
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
   ranged with a wand instead: the same item table's ranged rows whose
   icon names them a real wand (every wand row's own damage_max is 0 in
   this build, unlike a bow or gun, so the melee pick's damage_max > 0
@@ -102,10 +103,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 000000000000000000-00000000000000000-010000000000000000 | main_hand:284287 ranged:286750 | 10.8 | 3 | spell:5019=56.7, spell:205=45.9, spell:12051=1.0 | {SpellID: 400589} |
 | 20 | 000000000000000000-00000000000000000-253100000000000000 | main_hand:6505 ranged:5243 | 27.9 | 3 | spell:5019=52.4, spell:7322=40.8, spell:12051=1.0 | {SpellID: 1312002}, {SpellID: 400589}, {SpellID: 400669} |
 | 30 | 000000000000000000-00000000000000000-253510130100000000 | main_hand:249392 ranged:5213 | 41.6 | 3 | spell:8406=49.0, spell:5019=40.6, item:5514=1.0, other:mana_gain=1.0, spell:12051=1.0 | {SpellID: 12579}, {SpellID: 400589}, {SpellID: 400669} |
-| 38 | 000000000000000000-00000000000000000-253510130101301210 | main_hand:873 ranged:13064 | 86.0 | 6 | spell:8408=50.2, spell:5019=25.2, spell:1240044=5.9, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 400589} |
-| 40 | 000000000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:5216 | 95.1 | 7 | spell:8408=44.2, spell:5019=34.4, spell:1240044=5.8, spell:11426=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
-| 50 | 230005000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:249232 | 146.7 | 7 | spell:10180=42.2, spell:5019=28.6, spell:1240046=5.5, spell:13031=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
-| 60 | 230005203000000000-50000000000000000-253510130101301221 | main_hand:22589 ranged:22821 | 300.0 | 8 | spell:10181=46.1, spell:5019=15.2, spell:10212=9.5, spell:1240047=5.7, spell:13033=3.0 | - |
+| 38 | 000000000000000000-00000000000000000-253510130101301210 | main_hand:873 ranged:13064 | 82.6 | 6 | spell:8408=50.2, spell:5019=25.2, spell:1240044=5.9, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 400589} |
+| 40 | 000000000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:5216 | 91.2 | 7 | spell:8408=44.2, spell:5019=34.4, spell:1240044=5.8, spell:11426=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
+| 50 | 230005000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:249232 | 142.6 | 7 | spell:10180=42.2, spell:5019=28.6, spell:1240046=5.5, spell:13031=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
+| 60 | 230005203000000000-50000000000000000-253510130101301221 | main_hand:22589 ranged:22821 | 288.1 | 8 | spell:10181=46.1, spell:5019=15.2, spell:10212=9.5, spell:1240047=5.7, spell:13033=3.0 | - |
 
 ## Learned but unused (informational)
 

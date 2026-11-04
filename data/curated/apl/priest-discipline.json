@@ -28,7 +28,7 @@
         },
         "doAtValue": {
           "const": {
-            "val": "-2.5s"
+            "val": "-3s"
           }
         }
       },
@@ -47,7 +47,7 @@
         },
         "doAtValue": {
           "const": {
-            "val": "-1s"
+            "val": "-1.5s"
           }
         }
       }
@@ -367,7 +367,7 @@
             }
           }
         },
-        "notes": "Keep Renew on the tank all fight."
+        "notes": "Keep Renew on the tank all fight; at 60 that means rank 7 or higher."
       },
       {
         "action": {
@@ -985,7 +985,85 @@
             }
           }
         },
-        "notes": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him."
+        "notes": "Greater Heal at the top rank as the tank's filler at 60: he takes the big hits, so the big heal goes on him."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentManaPercent": {}
+                          },
+                          "rhs": {
+                            "math": {
+                              "op": "OpMul",
+                              "lhs": {
+                                "remainingTimePercent": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "0.9"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 5
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.8"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "spellIsKnown": {
+                        "spellId": {
+                          "spellId": 2060,
+                          "rank": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Heal on the tank until you learn Greater Heal at 40: it is your biggest heal until then."
       },
       {
         "action": {
@@ -1063,40 +1141,82 @@
             "and": {
               "vals": [
                 {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentManaPercent": {}
-                    },
-                    "rhs": {
-                      "math": {
-                        "op": "OpMul",
-                        "lhs": {
-                          "remainingTimePercent": {}
-                        },
-                        "rhs": {
-                          "const": {
-                            "val": "0.9"
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentManaPercent": {}
+                          },
+                          "rhs": {
+                            "math": {
+                              "op": "OpMul",
+                              "lhs": {
+                                "remainingTimePercent": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "0.9"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.65"
+                            }
                           }
                         }
                       }
-                    }
+                    ]
                   }
                 },
                 {
-                  "cmp": {
-                    "op": "OpLt",
-                    "lhs": {
-                      "currentHealthPercent": {
-                        "sourceUnit": {
-                          "type": "Player",
-                          "index": 1
-                        }
-                      }
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "0.65"
+                  "not": {
+                    "val": {
+                      "and": {
+                        "vals": [
+                          {
+                            "cmp": {
+                              "op": "OpGe",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "40"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "cmp": {
+                              "op": "OpLt",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "60"
+                                }
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   }
@@ -1105,7 +1225,7 @@
             }
           }
         },
-        "notes": "Lesser Heal when Greater Heal rank 1 would overheal: a small top-up for little mana."
+        "notes": "Lesser Heal when Greater Heal rank 1 is out of reach: a small top-up for little mana. Skip it from 40 to 59, where it has lost your healing bonus and costs regeneration you need."
       },
       {
         "action": {
@@ -1182,40 +1302,82 @@
             "and": {
               "vals": [
                 {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentManaPercent": {}
-                    },
-                    "rhs": {
-                      "math": {
-                        "op": "OpMul",
-                        "lhs": {
-                          "remainingTimePercent": {}
-                        },
-                        "rhs": {
-                          "const": {
-                            "val": "0.9"
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentManaPercent": {}
+                          },
+                          "rhs": {
+                            "math": {
+                              "op": "OpMul",
+                              "lhs": {
+                                "remainingTimePercent": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "0.9"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 2
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.65"
+                            }
                           }
                         }
                       }
-                    }
+                    ]
                   }
                 },
                 {
-                  "cmp": {
-                    "op": "OpLt",
-                    "lhs": {
-                      "currentHealthPercent": {
-                        "sourceUnit": {
-                          "type": "Player",
-                          "index": 2
-                        }
-                      }
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "0.65"
+                  "not": {
+                    "val": {
+                      "and": {
+                        "vals": [
+                          {
+                            "cmp": {
+                              "op": "OpGe",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "40"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "cmp": {
+                              "op": "OpLt",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "60"
+                                }
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   }
@@ -1300,40 +1462,82 @@
             "and": {
               "vals": [
                 {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentManaPercent": {}
-                    },
-                    "rhs": {
-                      "math": {
-                        "op": "OpMul",
-                        "lhs": {
-                          "remainingTimePercent": {}
-                        },
-                        "rhs": {
-                          "const": {
-                            "val": "0.9"
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentManaPercent": {}
+                          },
+                          "rhs": {
+                            "math": {
+                              "op": "OpMul",
+                              "lhs": {
+                                "remainingTimePercent": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "0.9"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 3
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.65"
+                            }
                           }
                         }
                       }
-                    }
+                    ]
                   }
                 },
                 {
-                  "cmp": {
-                    "op": "OpLt",
-                    "lhs": {
-                      "currentHealthPercent": {
-                        "sourceUnit": {
-                          "type": "Player",
-                          "index": 3
-                        }
-                      }
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "0.65"
+                  "not": {
+                    "val": {
+                      "and": {
+                        "vals": [
+                          {
+                            "cmp": {
+                              "op": "OpGe",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "40"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "cmp": {
+                              "op": "OpLt",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "60"
+                                }
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   }
@@ -1418,40 +1622,82 @@
             "and": {
               "vals": [
                 {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentManaPercent": {}
-                    },
-                    "rhs": {
-                      "math": {
-                        "op": "OpMul",
-                        "lhs": {
-                          "remainingTimePercent": {}
-                        },
-                        "rhs": {
-                          "const": {
-                            "val": "0.9"
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentManaPercent": {}
+                          },
+                          "rhs": {
+                            "math": {
+                              "op": "OpMul",
+                              "lhs": {
+                                "remainingTimePercent": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "0.9"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 4
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.65"
+                            }
                           }
                         }
                       }
-                    }
+                    ]
                   }
                 },
                 {
-                  "cmp": {
-                    "op": "OpLt",
-                    "lhs": {
-                      "currentHealthPercent": {
-                        "sourceUnit": {
-                          "type": "Player",
-                          "index": 4
-                        }
-                      }
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "0.65"
+                  "not": {
+                    "val": {
+                      "and": {
+                        "vals": [
+                          {
+                            "cmp": {
+                              "op": "OpGe",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "40"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "cmp": {
+                              "op": "OpLt",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "60"
+                                }
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   }
@@ -1492,7 +1738,57 @@
             }
           }
         },
-        "notes": "Greater Heal as the tank's filler: he takes the big hits, so the big heal goes on him."
+        "notes": "Greater Heal at the top rank as the tank's filler at 60: he takes the big hits, so the big heal goes on him."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064,
+              "rank": 4
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "spellIsKnown": {
+                        "spellId": {
+                          "spellId": 2060,
+                          "rank": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
       },
       {
         "action": {
@@ -1539,21 +1835,63 @@
             }
           },
           "condition": {
-            "cmp": {
-              "op": "OpLt",
-              "lhs": {
-                "currentHealthPercent": {
-                  "sourceUnit": {
-                    "type": "Player",
-                    "index": 1
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 1
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.35"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "and": {
+                        "vals": [
+                          {
+                            "cmp": {
+                              "op": "OpGe",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "40"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "cmp": {
+                              "op": "OpLt",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "60"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
                   }
                 }
-              },
-              "rhs": {
-                "const": {
-                  "val": "0.35"
-                }
-              }
+              ]
             }
           }
         }
@@ -1603,21 +1941,63 @@
             }
           },
           "condition": {
-            "cmp": {
-              "op": "OpLt",
-              "lhs": {
-                "currentHealthPercent": {
-                  "sourceUnit": {
-                    "type": "Player",
-                    "index": 2
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 2
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.35"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "and": {
+                        "vals": [
+                          {
+                            "cmp": {
+                              "op": "OpGe",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "40"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "cmp": {
+                              "op": "OpLt",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "60"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
                   }
                 }
-              },
-              "rhs": {
-                "const": {
-                  "val": "0.35"
-                }
-              }
+              ]
             }
           }
         }
@@ -1667,21 +2047,63 @@
             }
           },
           "condition": {
-            "cmp": {
-              "op": "OpLt",
-              "lhs": {
-                "currentHealthPercent": {
-                  "sourceUnit": {
-                    "type": "Player",
-                    "index": 3
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 3
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.35"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "and": {
+                        "vals": [
+                          {
+                            "cmp": {
+                              "op": "OpGe",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "40"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "cmp": {
+                              "op": "OpLt",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "60"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
                   }
                 }
-              },
-              "rhs": {
-                "const": {
-                  "val": "0.35"
-                }
-              }
+              ]
             }
           }
         }
@@ -1731,21 +2153,63 @@
             }
           },
           "condition": {
-            "cmp": {
-              "op": "OpLt",
-              "lhs": {
-                "currentHealthPercent": {
-                  "sourceUnit": {
-                    "type": "Player",
-                    "index": 4
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 4
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.35"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "and": {
+                        "vals": [
+                          {
+                            "cmp": {
+                              "op": "OpGe",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "40"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "cmp": {
+                              "op": "OpLt",
+                              "lhs": {
+                                "currentLevel": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "60"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
                   }
                 }
-              },
-              "rhs": {
-                "const": {
-                  "val": "0.35"
-                }
-              }
+              ]
             }
           }
         }

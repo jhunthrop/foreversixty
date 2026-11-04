@@ -1,6 +1,7 @@
 package request
 
 import (
+	"bytes"
 	"encoding/json"
 	"slices"
 	"strings"
@@ -81,6 +82,7 @@ var (
 	rejuvenationRank = map[int]int{1: 774, 2: 1058, 3: 1430, 4: 2090, 5: 2091, 6: 3627, 7: 8910, 8: 9839, 9: 9840, 10: 9841}
 	flashOfLightRank = map[int]int{1: 19750, 2: 19939, 3: 19940, 4: 19941, 5: 19942, 6: 19943}
 	holyLightRanks   = map[int]int{1: 635, 2: 639, 3: 647, 4: 1026, 5: 1042, 6: 3472, 7: 10328, 8: 10329}
+	holyShockRanks   = map[int]int{1: 1311606, 2: 20473, 3: 20929, 4: 20930}
 	mindBlastRanks   = map[int]int{1: 8092, 2: 8102, 3: 8103, 4: 8104, 5: 8105, 6: 8106, 7: 10945, 8: 10946, 9: 10947}
 )
 
@@ -141,9 +143,9 @@ func TestDisciplineFillsThePartyWithGreaterHealRankOne(t *testing.T) {
 // The druid's party Rejuvenation is rank 7 (8910) in a raid; on every bare
 // fight, bare 60 included, rank 1 still wins (the fight runs dry), so rows
 // keep it. The tank's rank-10 line follows round 16's level-by-level sweep
-// (design/reviews/2026-11-04-sim-audit-round16/druid.md, wave 2): rank 2 at
-// 20 to 37, rank 4 at 38 to 49, rank 6 at 50 to 52, the top rank at 53 to 57,
-// rank 8 at 58 and 59, and the top rank at 60.
+// (design/reviews/2026-11-04-sim-audit-round16/druid.md, wave 2) and round
+// 19's (round19/druid.md): rank 2 at 20 to 37, rank 4 at 38 to 43, rank 5 at
+// 44 to 48, rank 6 at 49 to 56, rank 8 at 57 to 59, and the top rank at 60.
 func TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid(t *testing.T) {
 	party := linesCasting(t, "druid-restoration", 774, 8910)
 	assertRanks(t, party, "druid-restoration", "druid", "tauren", rejuvenationRank, []rankCase{
@@ -151,8 +153,9 @@ func TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid(t *testing.T) {
 	})
 	tank := linesCasting(t, "druid-restoration", 9841)
 	assertRanks(t, tank, "druid-restoration", "druid", "tauren", rejuvenationRank, []rankCase{
-		{20, BarePreset, 2}, {30, BarePreset, 2}, {37, BarePreset, 2}, {38, BarePreset, 4}, {49, BarePreset, 4},
-		{50, BarePreset, 6}, {52, BarePreset, 6}, {53, BarePreset, 9}, {58, BarePreset, 8}, {59, BarePreset, 8},
+		{20, BarePreset, 2}, {30, BarePreset, 2}, {37, BarePreset, 2}, {38, BarePreset, 4}, {43, BarePreset, 4},
+		{44, BarePreset, 5}, {48, BarePreset, 5}, {49, BarePreset, 6}, {56, BarePreset, 6}, {57, BarePreset, 8},
+		{59, BarePreset, 8},
 		{60, BarePreset, 10}, {60, RaidPreset, 10},
 	})
 }
@@ -169,31 +172,62 @@ func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 }
 
 // Holy paladin: the filler Flash of Light is rank 5 (19942) in a raid. Round
-// 16 wave 2 swept the rows level by level on the MaxLevel + 12 rule: the
-// tank's Flash of Light keeps rank 1 to 43, rank 2 at 44 to 49, rank 4 at 50
-// to 53 and rank 5, as authored, from 54; Holy Light casts rank 1 to 24, rank 2 at 25
-// to 29, its top rank at 30 to 46, rank 1 at 47 to 49 and rank 2 at 50 to 59.
+// 16 wave 2 swept the rows level by level on the MaxLevel + 12 rule; round 19
+// re-judged 40 to 49 at every level (10,000 iterations, seeds 1 and 50001,
+// both factions). The tank's Flash of Light keeps rank 1 to 43, rank 2 at 44
+// to 48, rank 3 at 49 (rank 2 keeps 70% of the bonus there, rank 3 all of
+// it), rank 4 at 50 to 53 and rank 5, as authored, from 54. Holy Light casts
+// rank 1 to 24, rank 2 at 25 to 29, its top rank at 30 to 39, rank 4 at 40 to
+// 42, its top rank at 43 to 46, rank 1 at 47 to 49 and rank 2 at 50 to 59.
 func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) {
 	filler := linesCasting(t, "paladin-holy", 19750, 19942)
 	assertRanks(t, filler, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
-		{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 1}, {43, BarePreset, 1}, {44, BarePreset, 2}, {49, BarePreset, 2},
+		{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 1}, {43, BarePreset, 1}, {44, BarePreset, 2}, {48, BarePreset, 2}, {49, BarePreset, 3},
 		{50, BarePreset, 4}, {53, BarePreset, 4}, {54, BarePreset, 5}, {59, BarePreset, 5},
 		{60, BarePreset, 5}, {60, RaidPreset, 5},
 	})
 	light := linesCasting(t, "paladin-holy", 10329)
 	assertRanks(t, light, "paladin-holy", "paladin", "human", holyLightRanks, []rankCase{
 		{20, BarePreset, 1}, {24, BarePreset, 1}, {25, BarePreset, 2}, {29, BarePreset, 2}, {30, BarePreset, 5},
-		{40, BarePreset, 6}, {46, BarePreset, 7}, {47, BarePreset, 1}, {49, BarePreset, 1}, {50, BarePreset, 2}, {59, BarePreset, 2}, {60, BarePreset, 8}, {60, RaidPreset, 8},
+		{39, BarePreset, 6}, {40, BarePreset, 4}, {42, BarePreset, 4}, {43, BarePreset, 6}, {46, BarePreset, 7}, {47, BarePreset, 1}, {49, BarePreset, 1}, {50, BarePreset, 2}, {59, BarePreset, 2}, {60, BarePreset, 8}, {60, RaidPreset, 8},
+	})
+}
+
+// Holy paladin, round 19: the group's Flash of Light (authored rank 4, 19941)
+// is rank 2 at 44 to 46, where rank 1 (MaxLevel 25) has lost most of its
+// bonus and rank 2 (MaxLevel 31) still keeps 85 to 95% of it: +0.4 to +1.0%
+// effective healing. Holy Shock casts rank 1 at 40 to 46: it keeps its whole
+// bonus there for 160 mana against rank 2's 225 (+0.2 to +0.7% with the other
+// rows). From 47 both follow their earlier rules.
+func TestHolyPaladinGroupFlashOfLightAndHolyShockBelowFifty(t *testing.T) {
+	group := linesCasting(t, "paladin-holy", 19941)
+	assertRanks(t, group, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
+		{40, BarePreset, 1}, {43, BarePreset, 1}, {44, BarePreset, 2}, {46, BarePreset, 2}, {47, BarePreset, 1}, {49, BarePreset, 1},
+		{50, BarePreset, 4}, {60, RaidPreset, 4},
+	})
+	shock := linesCasting(t, "paladin-holy", 20930)
+	assertRanks(t, shock, "paladin-holy", "paladin", "human", holyShockRanks, []rankCase{
+		{30, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 1}, {46, BarePreset, 1}, {47, BarePreset, 2},
+		{48, BarePreset, 3}, {56, BarePreset, 4}, {60, RaidPreset, 4},
 	})
 }
 
 // Shadow's Mind Blast at 50 to 59 casts the highest rank learned: ranks 2 and
 // 3 keep 15% and 45% of spell power at 50, and the rows lost 3.3% there.
+// Round 19: rank 6 (whole bonus to 57) wins for an Undead at 50 and 51 and
+// a Dwarf at 51; from 52 every race casts the highest rank learned.
 func TestShadowMindBlastAtFiftyIsTheHighestRankLearned(t *testing.T) {
 	blast := linesCasting(t, "priest-shadow", 10947)
 	for _, race := range []string{"gnome", "undead", "human", "dwarf"} {
+		atFifty, atFiftyOne := 7, 7
+		switch race {
+		case "undead":
+			atFifty, atFiftyOne = 6, 6
+		case "dwarf":
+			atFiftyOne = 6
+		}
 		assertRanks(t, blast, "priest-shadow", "priest", race, mindBlastRanks, []rankCase{
-			{50, BarePreset, 7}, {52, BarePreset, 8}, {58, BarePreset, 9},
+			{50, BarePreset, atFifty}, {51, BarePreset, atFiftyOne}, {52, BarePreset, 8}, {58, BarePreset, 9},
 		})
 	}
 }
@@ -277,5 +311,149 @@ func TestHolySteppingDownCastsGreaterHealRankOneBeforeHeal(t *testing.T) {
 		t.Fatal(err)
 	} else if strings.Contains(string(out), "2060") {
 		t.Error("a level 30 priest casts Greater Heal rank 1")
+	}
+}
+
+// Sim-accuracy round 19: Discipline's tank filler is Greater Heal (10965),
+// learned at 40, so below 40 the tank had no filler at all (Penance, Renew
+// and the shield only, with Lesser Heal and Flash Heal on the party). A Heal
+// line behind each tank Greater Heal line, with its target and condition,
+// is +7.4% / +9.1% effective healing at bare 20 and +2.7% / +2.1% at bare 30
+// (Alliance / Horde, seeds 1 and 50001); from 40 the Greater Heal line ahead
+// of it takes the cast and nothing moves.
+func TestDisciplineHealsTheTankWithHealBeforeGreaterHeal(t *testing.T) {
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/priest-discipline.json", &list)
+	type cast struct {
+		Action struct {
+			CastSpell *struct {
+				SpellID struct {
+					SpellID int `json:"spellId"`
+				} `json:"spellId"`
+				Target json.RawMessage `json:"target"`
+			} `json:"castSpell"`
+			Condition json.RawMessage `json:"condition"`
+		} `json:"action"`
+	}
+	parse := func(line json.RawMessage) (int, string) {
+		var c cast
+		if err := json.Unmarshal(line, &c); err != nil {
+			t.Fatal(err)
+		}
+		if c.Action.CastSpell == nil {
+			return 0, ""
+		}
+		condition := c.Action.Condition
+		if c.Action.CastSpell.SpellID.SpellID == 6064 {
+			// The Heal line's condition is the Greater Heal line's, and
+			// Greater Heal rank 1 not yet learned: at 60 a Heal rank 4
+			// fallback on the tank costs 0.8% to 1.1% at raid 60.
+			var gated struct {
+				And struct {
+					Vals []json.RawMessage `json:"vals"`
+				} `json:"and"`
+			}
+			if err := json.Unmarshal(c.Action.Condition, &gated); err != nil || len(gated.And.Vals) != 2 {
+				return c.Action.CastSpell.SpellID.SpellID, "ungated"
+			}
+			if compactJSON(t, gated.And.Vals[1]) != `{"not":{"val":{"spellIsKnown":{"spellId":{"spellId":2060,"rank":1}}}}}` {
+				return c.Action.CastSpell.SpellID.SpellID, "ungated"
+			}
+			condition = gated.And.Vals[0]
+		}
+		return c.Action.CastSpell.SpellID.SpellID, compactJSON(t, c.Action.CastSpell.Target) + compactJSON(t, condition)
+	}
+	lines := list.Rotation.PriorityList
+	tankFillers := 0
+	for index, line := range lines {
+		id, key := parse(line)
+		if id != 10965 {
+			continue
+		}
+		tankFillers++
+		if index+1 >= len(lines) {
+			t.Fatalf("tank Greater Heal line %d is the last line, with no Heal behind it", index)
+		}
+		if nid, nkey := parse(lines[index+1]); nid != 6064 || nkey != key {
+			t.Errorf("tank Greater Heal line %d is not followed by a Heal rank 4 line with its target and condition, gated on Greater Heal being unlearned", index)
+		}
+	}
+	if tankFillers == 0 {
+		t.Fatal("Discipline has no tank Greater Heal line")
+	}
+	heal := linesCasting(t, "priest-discipline", 6064)
+	assertRanks(t, heal, "priest-discipline", "priest", "human", healRanks, []rankCase{
+		{20, BarePreset, 1}, {30, BarePreset, 3}, {60, RaidPreset, 4},
+	})
+}
+
+// compactJSON is raw with its insignificant whitespace removed.
+func compactJSON(t *testing.T, raw json.RawMessage) string {
+	t.Helper()
+	var out bytes.Buffer
+	if len(raw) == 0 {
+		return ""
+	}
+	if err := json.Compact(&out, raw); err != nil {
+		t.Fatal(err)
+	}
+	return out.String()
+}
+
+// Sim-accuracy round 19: from 40 to 59 Discipline casts no Lesser Heal rank
+// 3 (2053, learned at 10). Its line fires when Greater Heal rank 1 is out of
+// mana reach, and by 47 the level-gap rule has taken its whole bonus: each
+// cast heals for little and breaks the five-second rule. Without it the bar
+// regenerates for the next Greater Heal: +7.7% / +6.4% at bare 40, +13% /
+// +11% at 43, +21% / +17% at 49 and +45% / +38% at 53 (Alliance / Horde,
+// seeds 1 and 50001). A Heal rank 4 line in its place is cast 0.1 times a
+// fight (it needs the mana Greater Heal rank 1 lacked) and adds nothing.
+// Before 40 Lesser Heal stays; at 60 dropping it rests on the owner's pending
+// low-rank heal ruling, so it stays there too.
+func TestDisciplineSkipsLesserHealFromFortyToFiftyNine(t *testing.T) {
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/priest-discipline.json", &list)
+	const outside = `{"not":{"val":{"and":{"vals":[` +
+		`{"cmp":{"op":"OpGe","lhs":{"currentLevel":{}},"rhs":{"const":{"val":"40"}}}},` +
+		`{"cmp":{"op":"OpLt","lhs":{"currentLevel":{}},"rhs":{"const":{"val":"60"}}}}]}}}}`
+	lessers := 0
+	for index, raw := range list.Rotation.PriorityList {
+		var l struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int `json:"spellId"`
+					} `json:"spellId"`
+				} `json:"castSpell"`
+				Condition json.RawMessage `json:"condition"`
+			} `json:"action"`
+		}
+		if err := json.Unmarshal(raw, &l); err != nil {
+			t.Fatal(err)
+		}
+		if l.Action.CastSpell == nil || l.Action.CastSpell.SpellID.SpellID != 2053 {
+			continue
+		}
+		lessers++
+		var and struct {
+			And struct {
+				Vals []json.RawMessage `json:"vals"`
+			} `json:"and"`
+		}
+		if err := json.Unmarshal(l.Action.Condition, &and); err != nil || len(and.And.Vals) != 2 ||
+			compactJSON(t, and.And.Vals[1]) != outside {
+			t.Errorf("Lesser Heal line %d is not scoped outside levels 40 to 59", index)
+		}
+	}
+	if lessers == 0 {
+		t.Fatal("Discipline casts no Lesser Heal rank 3")
 	}
 }

@@ -31,6 +31,7 @@ function extractSpan(html: string, startNeedle: string): string {
 function repRow(overrides: Partial<RowView> = {}): RowView {
   return {
     slot: 'neck',
+    slotLabel: 'Neck',
     empty: false,
     itemId: 1,
     itemName: 'Test Amulet',

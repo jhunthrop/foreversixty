@@ -184,6 +184,14 @@ class CharacterLogicTest {
         assertEquals("Head, Coif of Elements, Rare, item level 62. A better item is on your best in slot list.", Paperdoll.label(yours.first(), res))
     }
 
+    @Test fun `a relic class names the ranged socket Relic`() {
+        val gear = RankingsTestData.voltaris().gear
+        val shaman = Paperdoll.fromProfile(gear, emptyMap(), res, "shaman").first { it.slot == "ranged" }
+        assertTrue(Paperdoll.label(shaman, res).startsWith("Relic"))
+        val warrior = Paperdoll.fromProfile(gear, emptyMap(), res, "warrior").first { it.slot == "ranged" }
+        assertTrue(Paperdoll.label(warrior, res).startsWith("Ranged"))
+    }
+
     @Test fun `the frame lays sockets out as the character frame`() {
         val slots = Paperdoll.fromProfile(RankingsTestData.voltaris().gear, emptyMap(), res)
         val columns = Paperdoll.columns(slots)

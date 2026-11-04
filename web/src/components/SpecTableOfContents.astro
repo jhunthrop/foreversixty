@@ -67,6 +67,24 @@ const { placement = 'inline' } = Astro.props;
   </nav>
 )}
 
+<script>
+  // A jump closes the list before the browser scrolls, so the open list's nine rows never
+  // cover the section the reader jumped to, and the scroll is measured against the closed
+  // 48px bar (round 19). A click handler runs before the link's own navigation. Focus then
+  // moves to the section's heading, since the link it was on is hidden in the closed list.
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('.toc-inline-link')) {
+    link.addEventListener('click', () => {
+      link.closest('details')?.removeAttribute('open');
+      const heading = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      if (heading === null) return;
+      requestAnimationFrame(() => {
+        if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
+        heading.focus({ preventScroll: true });
+      });
+    });
+  }
+</script>
+
 <style is:global>
   /* Below lg the jump bar rides at the top of the screen (48px), so a jump to a section
      or subsection stops under it instead of behind it. */

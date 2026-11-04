@@ -280,7 +280,7 @@
     <span class="whitespace-nowrap"
       ><span
         class={`${fact.key === 'seen' ? 'text-muted' : ''} ${fact.key === 'gap' ? 'tabular' : ''}`}
-        style={fact.hover === undefined ? '' : 'cursor:help'}
+        style={fact.hover === undefined ? '' : 'cursor:default'}
         title={fact.hover}
         data-testid={fact.key === 'gap' ? 'guild-roster-ingame-gap' : undefined}>{fact.text}</span
       >{#if i < facts.length - 1}{' '}<span class="text-muted" aria-hidden="true"
@@ -304,7 +304,7 @@
     {#if facts.length === 0}
       <span
         class="text-muted"
-        style="cursor:help"
+        style="cursor:default"
         title={guildRosterAddonCopy.notSeenHover}
         data-testid="guild-roster-ingame-none">{guildRosterAddonCopy.notSeen}</span
       >

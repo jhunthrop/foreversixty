@@ -42,6 +42,11 @@ const role = band60?.role ?? 'dps';
 const unitRow = rows.find(
   (row) => row.reading === 'value' && row.perPercent === undefined && row.perPoint !== undefined,
 );
+// Every rating stat the table prices (hit, crit), so its "per point" reads as a rating point.
+const rated = rows.filter((row) => row.reading === 'value' && row.ratingFactor !== undefined);
+const ratingConversions = rated
+  .map((row) => guidesCopy.ratingConversion(row.label.toLowerCase(), row.ratingFactor!))
+  .join(' and ');
 const insignificant = rows.filter((row) => row.reading === 'not-significant').map((row) => row.label);
 const noGain = rows.filter((row) => row.reading === 'no-gain').map((row) => row.label);
 const notOnItems = rows.filter((row) => row.reading === 'not-on-items');
@@ -104,7 +109,21 @@ function perPointText(value: number | undefined): string {
     </GuideTableBox>
     {unitRow !== undefined && (
       <p class="stat-note" data-testid="guide-stat-table-unit">
-        {guidesCopy.unitLine(unitRow.label.toLowerCase(), perPointText(unitRow.perPoint), role)}
+        {guidesCopy.unitLine(
+          unitRow.label.toLowerCase(),
+          perPointText(unitRow.perPoint),
+          role,
+          unitRow.ratingFactor !== undefined,
+        )}
+      </p>
+    )}
+    {rated.length > 0 && (
+      <p class="stat-note" data-testid="guide-stat-table-ratings">
+        {guidesCopy.ratingNote(
+          rated.map((row) => row.label).join(' and '),
+          rated.length > 1,
+          ratingConversions,
+        )}
       </p>
     )}
     {insignificant.length > 0 && (

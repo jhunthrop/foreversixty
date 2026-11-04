@@ -39,6 +39,12 @@
             "from_level": 30,
             "to_level": 39,
             "rank": 4
+          },
+          {
+            "from_level": 46,
+            "to_level": 48,
+            "rank": 6,
+            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 6 beats rank 7 by 0.6 to 0.7% at 46, 0.3 to 0.4% at 47 and 0.1 to 0.2% at 48; they tie at 49."
           }
         ]
       },
@@ -51,6 +57,12 @@
             "to_level": 38,
             "rank": 1,
             "note": "Sim-accuracy round 16 wave 2: judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001). At 39 rank 2 beats rank 1 by 1.8%, so the row stops at 38; below it the two are within 1%."
+          },
+          {
+            "from_level": 54,
+            "to_level": 58,
+            "rank": 3,
+            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 3 beats rank 4 by 0.2 to 0.6% at 54 to 58 (night elf) and 0.1 to 0.2% at 54 to 56 (tauren, a tie at 57 and 58); they tie at 53 and 59."
           }
         ]
       }
@@ -68,20 +80,27 @@
           },
           {
             "from_level": 38,
-            "to_level": 49,
-            "rank": 4
+            "to_level": 43,
+            "rank": 4,
+            "note": "Sim-accuracy round 19: the tank Rejuvenation judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren). Rank 4 wins at 40 to 43 (rank 5 trails by 0.3 to 0.9%)."
           },
           {
-            "from_level": 50,
-            "to_level": 52,
+            "from_level": 44,
+            "to_level": 48,
+            "rank": 5,
+            "note": "Sim-accuracy round 19: the tank Rejuvenation judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren). Rank 5 beats rank 4 by 0.3 to 1.0% at 44 to 48."
+          },
+          {
+            "from_level": 49,
+            "to_level": 56,
             "rank": 6,
-            "note": "Sim-accuracy round 16 wave 2: judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001). Rank 6 beats the top rank by 2.3 to 2.7% at 50 to 52; the top rank is within 1% at 53 to 57."
+            "note": "Sim-accuracy round 19: the tank Rejuvenation judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren). Rank 6 beats rank 4 by 1.2 to 1.4% at 49 and the top rank by 1.0 to 2.7% at 50 to 56 (round 16 had kept the top rank at 53 to 56)."
           },
           {
-            "from_level": 58,
+            "from_level": 57,
             "to_level": 59,
             "rank": 8,
-            "note": "Sim-accuracy round 16 wave 2: judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001). Rank 8 beats rank 10 by 2.0 to 2.2% at 58 and 59; at bare 60 they tie."
+            "note": "Sim-accuracy round 19: the tank Rejuvenation judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren). Rank 8 beats rank 9 by 0.8 to 1.0% at 57; round 16 wave 2: rank 8 beats rank 10 by 2.0 to 2.2% at 58 and 59, and at bare 60 they tie."
           }
         ]
       },
@@ -97,12 +116,12 @@
           },
           {
             "from_level": 40,
-            "to_level": 41,
+            "to_level": 42,
             "rank": 2,
-            "note": "Sim-accuracy round 18: rank 2 beats rank 1 by 1.4 to 2.1% at 40 and 41 (night elf; tauren +0.8% at 40, +1.4% at 41), 10,000 iterations, seeds 1 and 50001. Rank 1 again at 39 (-0.9%) and 42 (+0.8% for rank 2, under the bar)."
+            "note": "Sim-accuracy round 18: rank 2 beats rank 1 by 1.4 to 2.1% at 40 and 41 (night elf; tauren +0.8% at 40, +1.4% at 41), 10,000 iterations, seeds 1 and 50001. Round 19: rank 2 also wins at 42 (night elf +0.8%, tauren +0.3%, beyond error at both seeds); rank 1 again at 39 and 43."
           },
           {
-            "from_level": 42,
+            "from_level": 43,
             "to_level": 59,
             "rank": 1
           },
@@ -129,10 +148,22 @@
             "note": "Sim-accuracy round 18: the tank filler judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions). Rank 3 beats the top rank by 1.2 to 1.5% at 30 to 33; within 1% at 34 to 39. The Nature's Swiftness line keeps the top rank."
           },
           {
+            "from_level": 34,
+            "to_level": 39,
+            "rank": 4,
+            "note": "Sim-accuracy round 19: judged again level by level (10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 4 beats the top rank by 0.4 to 0.9% at 34 to 39 (rank 3 ties it at 34)."
+          },
+          {
             "from_level": 40,
-            "to_level": 44,
+            "to_level": 45,
             "rank": 5,
-            "note": "Sim-accuracy round 18: rank 5 beats the top rank by 1.1 to 1.3% at 40 to 44; within 1% from 45 (rank 6 +0.7 to 0.8% at 46 to 49) and the top rank from 50."
+            "note": "Sim-accuracy round 18: rank 5 beats the top rank by 1.1 to 1.3% at 40 to 44. Sim-accuracy round 19: judged again level by level (10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 5 also wins at 45 (+1.0 to 1.1%)."
+          },
+          {
+            "from_level": 46,
+            "to_level": 49,
+            "rank": 6,
+            "note": "Sim-accuracy round 19: judged again level by level (10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 6 beats the top rank by 0.7 to 0.9% at 46 to 49 (rank 5 ties it at 46); the top rank wins from 50."
           }
         ]
       }
@@ -176,6 +207,20 @@
             "to_level": 60,
             "rank": 1,
             "preset": "bare"
+          }
+        ]
+      }
+    ],
+    "hunter-survival": [
+      {
+        "spell": "Raptor Strike",
+        "authored": 14266,
+        "bands": [
+          {
+            "from_level": 46,
+            "to_level": 47,
+            "rank": 5,
+            "note": "Rank 5 (learned at 32) at 46-47: Immolation Trap rank 4 arrives at 46 and runs the mana dry, and rank 5's lower cost buys back traps. From 48 rank 7 wins (round 19 hunter, per-level sweep)."
           }
         ]
       }
@@ -273,6 +318,12 @@
             "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
           },
           {
+            "from_level": 40,
+            "to_level": 42,
+            "rank": 4,
+            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
+          },
+          {
             "from_level": 47,
             "to_level": 49,
             "rank": 1,
@@ -298,6 +349,17 @@
           },
           {
             "from_level": 40,
+            "to_level": 43,
+            "rank": 1
+          },
+          {
+            "from_level": 44,
+            "to_level": 46,
+            "rank": 2,
+            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
+          },
+          {
+            "from_level": 47,
             "to_level": 49,
             "rank": 1
           }
@@ -321,15 +383,33 @@
           },
           {
             "from_level": 44,
-            "to_level": 49,
+            "to_level": 48,
             "rank": 2,
             "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
+          },
+          {
+            "from_level": 49,
+            "to_level": 49,
+            "rank": 3,
+            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
           },
           {
             "from_level": 50,
             "to_level": 53,
             "rank": 4,
             "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2)."
+          }
+        ]
+      },
+      {
+        "spell": "Holy Shock",
+        "authored": 20930,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 46,
+            "rank": 1,
+            "note": "Sim-accuracy round 19: re-judged level by level at 40 to 49 (10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
           }
         ]
       }
@@ -393,8 +473,9 @@
           },
           {
             "from_level": 50,
-            "to_level": 59,
-            "rank": 1
+            "to_level": 53,
+            "rank": 1,
+            "note": "Sim-accuracy round 19: re-judged level by level at 50 to 59 (10,000 iterations, seeds 1 and 50001, both factions): rank 1 holds to 53; from 54 the top rank learned (4) gains +0.6 to +2.2% for Undead and +0.25 to +1.1% for Human from 56, level at 54 and 55 (design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
           },
           {
             "from_level": 60,
@@ -441,15 +522,66 @@
           },
           {
             "from_level": 40,
-            "to_level": 44,
+            "to_level": 43,
             "rank": 4,
             "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): the tank Renew at rank 4 beats the highest rank learned: +2.0% (Horde) / +1.9% (Alliance) at 40, +1.7% / +1.9% at 43, +1.9% / +1.8% at 44 over rank 7."
           },
           {
+            "from_level": 44,
+            "to_level": 44,
+            "rank": 4,
+            "races": [
+              "gnome",
+              "dwarf",
+              "night-elf",
+              "undead",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 19, on the list without Lesser Heal at 40-59 (10,000 iterations, seeds 1 and 50001): a Human with the top rank learned (rank 7 from 44) heals +0.6% at 44, +0.4% at 45, +0.3% at 46 and +0.5% at 47 more than with the row's rank; from 48 the row holds again (tie). A Gnome and an Undead keep the row (top rank -0.8% to -0.1% at 43 to 49)."
+          },
+          {
             "from_level": 45,
+            "to_level": 47,
+            "rank": 5,
+            "races": [
+              "gnome",
+              "dwarf",
+              "night-elf",
+              "undead",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 19, on the list without Lesser Heal at 40-59 (10,000 iterations, seeds 1 and 50001): a Human with the top rank learned (rank 7 from 44) heals +0.6% at 44, +0.4% at 45, +0.3% at 46 and +0.5% at 47 more than with the row's rank; from 48 the row holds again (tie). A Gnome and an Undead keep the row (top rank -0.8% to -0.1% at 43 to 49)."
+          },
+          {
+            "from_level": 48,
             "to_level": 49,
             "rank": 5,
             "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): rank 5 from 45 (+1.4% / +1.3% over rank 7 at 45, +2.2% / +1.7% at 49). From 50 ranks 6 to 8 tie and the list's rank 7 stands; rank 9 at 56-59 is within 0.5% (Alliance 0.0% at 59)."
+          },
+          {
+            "from_level": 56,
+            "to_level": 58,
+            "rank": 9,
+            "races": [
+              "human",
+              "gnome",
+              "dwarf",
+              "night-elf"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error), on the list without Lesser Heal at 40-59. Renew rank 9 (learned at 56) against the list's rank 7 on the tank. Human +1.7% to +1.8%, Gnome +0.7% to +0.9%, Dwarf +0.2% to +1.2%, Night Elf +0.3% to +1.5% at 56-58. An Undead is within error at 56 and 58 and loses 0.2% at 57; a Troll loses 0.1% to 0.3%."
+          },
+          {
+            "from_level": 59,
+            "to_level": 59,
+            "rank": 9,
+            "races": [
+              "human",
+              "gnome",
+              "dwarf",
+              "night-elf",
+              "undead"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error), on the list without Lesser Heal at 40-59. Renew rank 9 (learned at 56) against the list's rank 7 on the tank. At 59: Human +1.5%, Gnome +0.8%, Dwarf +1.8%, Night Elf +1.8%, Undead +0.3%; a Troll loses 0.1%."
           }
         ]
       },
@@ -514,12 +646,56 @@
           },
           {
             "from_level": 45,
-            "to_level": 51,
+            "to_level": 50,
             "rank": 5,
             "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): rank 5 from 45: +5.8% / +5.6% over rank 7 at 45, +4.7% / +5.2% at 49, +6.0% / +5.9% at 50; at 51 rank 5 and rank 6 split by faction (Horde -0.4%, Alliance +0.7%)."
           },
           {
+            "from_level": 51,
+            "to_level": 51,
+            "rank": 5,
+            "races": [
+              "human",
+              "gnome",
+              "dwarf",
+              "night-elf",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). Rank 5 holds at 51 (Human +0.8%, Gnome +2.2%, Dwarf +1.7%, Troll +2.0% over rank 6)."
+          },
+          {
+            "from_level": 51,
+            "to_level": 51,
+            "rank": 6,
+            "races": [
+              "undead"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). An Undead gains +0.5% / +0.4% with rank 6 at 51 (Dark Sacrifice pays for the dearer rank); at 50 rank 5 still wins (+1.3%)."
+          },
+          {
             "from_level": 52,
+            "to_level": 52,
+            "rank": 5,
+            "races": [
+              "gnome",
+              "dwarf",
+              "night-elf"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). At 52 a Gnome (+0.3% / +0.5%), Dwarf (+1.0%) and Night Elf (+0.3% / +0.5%) keep rank 5; from 53 rank 6 wins for them too (+1.2% to +1.9%)."
+          },
+          {
+            "from_level": 52,
+            "to_level": 52,
+            "rank": 6,
+            "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): rank 6 from 52 (+1.7% / +0.9% over rank 5 at 52): +6.6% / +6.0% over rank 7 at 53, +4.8% / +2.3% at 56, +2.2% / +2.6% at 59. At 60 the list's rank 7 wins.",
+            "races": [
+              "human",
+              "undead",
+              "troll"
+            ]
+          },
+          {
+            "from_level": 53,
             "to_level": 59,
             "rank": 6,
             "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): rank 6 from 52 (+1.7% / +0.9% over rank 5 at 52): +6.6% / +6.0% over rank 7 at 53, +4.8% / +2.3% at 56, +2.2% / +2.6% at 59. At 60 the list's rank 7 wins."
@@ -535,6 +711,12 @@
             "to_level": 57,
             "rank": 1,
             "note": "Sim-accuracy round 18, level by level (10,000 iterations, seeds 1 and 50001, both factions): the filler Greater Heal at rank 1 beats the highest rank learned from 46 to 57: Horde +1.2% at 46, +0.9% at 49, +0.3% at 52 and 55; Alliance +0.3% to +0.4%. At 58-59 rank 1, 3 and 4 are within 0.2%."
+          },
+          {
+            "from_level": 59,
+            "to_level": 59,
+            "rank": 3,
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). Greater Heal rank 3 (learned at 52) beats the top rank (rank 4, learned at 58) at 59: Human +0.2%, Undead +0.2%, Troll +0.2%, Gnome +0.3%, Dwarf +0.2%, Night Elf +0.1%. At 58 the gain is within error for Human and Troll."
           }
         ]
       }
@@ -567,6 +749,24 @@
               "troll"
             ],
             "note": "Sim-accuracy round 18, level by level (MaxLevel + 12 rule; spec-breakdown -level, 10,000 iterations, seeds 1 and 50001): rank 4 beats the top rank at 40 and 43 (Human +0.3% / +2.0%, Dwarf +0.9% / +0.5%, Night Elf +0.9% / +0.3%, Undead +0.8% / +1.3%, Troll +2.1% / +1.9%), and rank 3 never beats it (a Dwarf or a Night Elf loses 1.0% to 1.9% with rank 3). From 44 the top rank wins with Devouring Plague rank 2 (Human -1.0% with rank 4 at 44 and -4% at 49; an Undead +0.5% to +2.1% with the top rank and Devouring Plague rank 2 over rank 4 and rank 1). A Gnome casts the top rank: rank 4 is +0.1% at 40 and -0.4% at 43."
+          },
+          {
+            "from_level": 50,
+            "to_level": 51,
+            "rank": 6,
+            "races": [
+              "undead"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). An Undead with Mind Blast rank 6 (learned at 40, whole bonus to 57) and Devouring Plague rank 2 gains +0.6% at 50 and +0.4% at 51 over the top rank; every other race loses or ties at 50 (Troll -1.0%, Gnome -0.1%, Dwarf -0.3%, Night Elf -0.3%). From 52 the top rank wins (Undead -0.7% at 53)."
+          },
+          {
+            "from_level": 51,
+            "to_level": 51,
+            "rank": 6,
+            "races": [
+              "dwarf"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). A Dwarf gains +0.4% with rank 6 at 51 (both seeds) and loses 0.3% at 50; one level only."
           }
         ]
       },
@@ -595,7 +795,23 @@
             "from_level": 50,
             "to_level": 51,
             "rank": 2,
-            "note": "Sim-accuracy round 18 (10,000 iterations, seeds 1 and 50001, every race): rank 2 for everyone. At 50 it beats rank 1 for every race (Gnome +1.2%, Troll +1.7%, Human +0.6%, Undead a tie); at 51 a Human (-0.3%) and a Night Elf (-0.2%) lose a hair against rank 1, too little for a one-level race key. The round-13 race split no longer holds."
+            "races": [
+              "gnome",
+              "dwarf",
+              "night-elf",
+              "undead",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). Judged jointly with Mind Blast (top rank or rank 6) and Shadow Word: Death rank 2. Rank 2 holds for a Gnome (+1.2% / +1.0% over rank 1 at 50 / 51), Troll (+1.7% / +1.4%), Dwarf (+0.6% / +0.2%) and Night Elf (+0.5% at 50; -0.2% at 51, within error); an Undead ties."
+          },
+          {
+            "from_level": 50,
+            "to_level": 51,
+            "rank": 1,
+            "races": [
+              "human"
+            ],
+            "note": "Sim-accuracy round 19, level by level (spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001; a row is taken on any gain beyond error at both seeds, a race key only where the keyed rows differ beyond error). A Human with rank 1 and the top Mind Blast beats rank 2 by +0.9% at 50 and +0.8% at 51, both seeds, and every other pairing (rank 6 Mind Blast with rank 1 +0.5% / +0.7%). Rank 2 wins again from 52 (+2.5%)."
           },
           {
             "from_level": 52,
@@ -647,6 +863,12 @@
           1
         ],
         "bands": [
+          {
+            "from_level": 26,
+            "to_level": 27,
+            "rank": 3,
+            "note": "Sim-accuracy round 19 (guide round 15 Sims requested 1): judged level by level 20 to 29 (10,000 iterations, seeds 1 and 50001, both factions). At 26 and 27 rank 3 beats the just-learned rank 5 by 3.7% to 4.9% (rank 4 ties or trails rank 3); at 20 to 25 rank 3 ties the top rank, and from 28 the top rank wins."
+          },
           {
             "from_level": 30,
             "to_level": 33,
@@ -716,18 +938,41 @@
           },
           {
             "from_level": 47,
-            "to_level": 56,
+            "to_level": 55,
             "rank": 6
           },
           {
-            "from_level": 57,
+            "from_level": 56,
             "to_level": 58,
-            "rank": 7
+            "rank": 7,
+            "note": "Sim-accuracy round 19: with Chain Heal rank 1 through 59, rank 7 also beats rank 6 at 56 (+0.4% to +0.7%, 10,000 iterations, seeds 1 and 50001, both factions); rank 6 still wins at 54 and 55."
           },
           {
             "from_level": 59,
             "to_level": 59,
             "rank": 8
+          }
+        ]
+      },
+      {
+        "spell": "Chain Heal",
+        "authored": 10623,
+        "lines": [
+          16
+        ],
+        "bands": [
+          {
+            "from_level": 46,
+            "to_level": 59,
+            "rank": 1,
+            "note": "Sim-accuracy round 19: judged level by level (spec-breakdown -level 46, 49, 50, 53, 54, 56, 59, 10,000 iterations, seeds 1 and 50001, both factions). Rank 1 (260 mana) beats rank 2 (315) and rank 3 (405) by 0.3% at 46 to 1.2% at 59: a leveling healer runs out of mana, so the cheaper Chain Heal heals more over the fight."
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 2,
+            "preset": "bare",
+            "note": "Sim-accuracy round 19: without raid buffs rank 2 beats rank 3 by about 1% and rank 1 by 0.2% (10,000 iterations, seeds 1 and 50001, both factions). In a raid rank 3 wins by 3.5% and the default stands."
           }
         ]
       }
@@ -759,6 +1004,30 @@
             "from_level": 20,
             "to_level": 23,
             "rank": 3
+          }
+        ]
+      },
+      {
+        "spell": "Immolate",
+        "authored": 11668,
+        "bands": [
+          {
+            "from_level": 40,
+            "to_level": 40,
+            "rank": 4,
+            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, human and orc). At 40 rank 5 and Conflagrate rank 3 arrive on band-40 gear and the fight is short of mana: rank 4 beats rank 5 by 0.1 to 0.3% (orc) and 0.3% (human). Rank 5 wins from 41 on orc, and with Corruption rank 3 at 41 on human."
+          }
+        ]
+      },
+      {
+        "spell": "Corruption",
+        "authored": 11672,
+        "bands": [
+          {
+            "from_level": 41,
+            "to_level": 41,
+            "rank": 3,
+            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, human and orc). Rank 3 beats rank 4 by 0.1 to 0.2% (orc) and 0.4% (human) at 41, where the fight is still short of mana; rank 4 wins from 42. Rank 3 with Immolate rank 4 together is no better than either alone."
           }
         ]
       }

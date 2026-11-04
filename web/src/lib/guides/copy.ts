@@ -74,11 +74,11 @@ export const guidesCopy = {
   opener: 'Opener',
   priority: 'Priority',
   cooldowns: 'Cooldowns',
-  /** A rotation row for a talent only the raid build takes. */
+  /** A rotation row for a talent only the raid build takes, or a row that needs one. */
   raidBuildTag: 'Raid build only',
   /** Said once above the lists when a row carries that tag. */
   raidBuildLegend:
-    'Raid build only: a talent the level 60 build does not take. On the level 60 build, skip that row.',
+    'Raid build only: needs a talent the level 60 build does not take. On the level 60 build, skip that row.',
   bestInSlot: 'Best in slot',
   levelRange: 'Level range',
   bisCaption: (race: string, faction: string): string => `Picks for a ${race} (${faction}).`,
@@ -109,8 +109,16 @@ export const guidesCopy = {
    *  arrive formatted with their own "%" (or as `capReached`); `split` arrives joined. */
   hitToCap: (cap: string, split?: string): string =>
     `Hit cap: ${cap}${split === undefined ? '' : ` · ${split}`}`,
-  hitToCapWhite: (cap: string, white: string, split?: string): string =>
-    `Hit cap: ${cap} (special attacks), ${white} (white swings)${split === undefined ? '' : ` · ${split}`}`,
+  /** Several caps, each with what it is for (`capLabelled`, joined): "Hit cap: 9% (special
+   *  attacks), 28% (white swings)", "Hit cap: reached (weapon attacks), 16% (spells)". */
+  hitToCapEach: (caps: string, split?: string): string =>
+    `Hit cap: ${caps}${split === undefined ? '' : ` · ${split}`}`,
+  /** One of those caps: "16% (spells)". */
+  capLabelled: (cap: string, label: string): string => `${cap} (${label})`,
+  capLabelSpecials: 'special attacks',
+  capLabelWhite: 'white swings',
+  capLabelWeapon: 'weapon attacks',
+  capLabelSpells: 'spells',
   /** The Stat priority note under the table: "Expertise cap: 6.5% (dodge)", parry added for a
    *  tank, "reached" for a cap the character is already past. */
   expertiseCap: (dodge: string, parry: string | undefined, split?: string): string =>
@@ -124,6 +132,8 @@ export const guidesCopy = {
     `${percent}% ${stat} from BiS ${sources}`,
   /** The hit that set is still short of the cap. */
   capStillToFind: (percent: string): string => `${percent}% still to find`,
+  /** Past the weapon cap, what a melee spec's spells are still short of. */
+  capStillToFindForSpells: (percent: string): string => `${percent}% still to find for spells`,
   capFrom: (percent: string, source: string): string => `${percent}% from ${source}`,
   /** A school talent's share, which only that school's spells get: "5% from Shadow Focus on
    *  Shadow spells". */
@@ -141,8 +151,16 @@ export const guidesCopy = {
     healer: 'HPS per point',
     tank: 'Tank score per point',
   } as const satisfies Record<GuideRole, string>,
-  unitLine: (stat: string, figure: string, role: GuideRole): string =>
-    `1 point of ${stat} = ${figure} ${ROLE_RATE_UNIT[role]} at level 60`,
+  /** "1 point of spell power = ...", or "1 hit rating = ..." for a rating stat. */
+  unitLine: (stat: string, figure: string, role: GuideRole, rated = false): string =>
+    rated
+      ? `1 ${stat} rating = ${figure} ${ROLE_RATE_UNIT[role]} at level 60.`
+      : `1 point of ${stat} = ${figure} ${ROLE_RATE_UNIT[role]} at level 60`,
+  /** Under a table with rating stats (hit, crit): "Hit and Critical strike are per rating point: ...". */
+  ratingNote: (labels: string, plural: boolean, conversions: string): string =>
+    `${labels} ${plural ? 'are' : 'is'} per rating point: ${conversions}.`,
+  /** One rating stat's conversion: "10 hit rating is 1% hit". */
+  ratingConversion: (stat: string, factor: number): string => `${factor} ${stat} rating is 1% ${stat}`,
   /** A haste or expertise weight, which is per 1% rather than per point: "2.5 per 1% haste". */
   perPercentValue: (figure: string, stat: 'haste' | 'expertise'): string => `${figure} per 1% ${stat}`,
   notSignificant: 'Not significant',

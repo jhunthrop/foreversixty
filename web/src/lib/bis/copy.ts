@@ -229,8 +229,8 @@ export const bisCopy = {
     'Simulated against a level-63 target of no creature type over 180 seconds; slaying bonuses such as attack power against Undead count for nothing here.',
   /** The hit-to-cap line under the weights (`hit-cap.ts`'s `hitCapLine`); `white` is
    *  `undefined` for a spec that does not dual wield. Percent strings arrive formatted. */
-  hitToCapLine: (specials: string, white: string | undefined): string =>
-    `Hit to cap: ${specials}% for specials${white === undefined ? '' : `, ${white}% for white swings`}`,
+  hitToCapLine: (specials: string, white: string | undefined, spell?: string): string =>
+    `Hit to cap: ${specials}% for specials${white === undefined ? '' : `, ${white}% for white swings`}${spell === undefined ? '' : `, ${spell}% for spells`}`,
   /** The expertise-to-cap line under the weights (`expertise-cap.ts`'s `expertiseCapLine`);
    *  `parry` is `undefined` for a damage dealer, who stands behind the boss and is never
    *  parried. Percent strings arrive formatted. */
@@ -251,6 +251,9 @@ export const bisCopy = {
    *  and the rail's weights are per rating point. */
   hitToCapTitle:
     'Hit is worth its full weight until the cap and nothing past it. The weights above are per rating point: 10 hit rating and 14 crit rating are 1%.',
+  /** The hover for a melee spec that also casts damaging spells (the band publishes `spell`). */
+  hitToCapWithSpellsTitle:
+    'Hit is worth its full weight until the cap and nothing past it for your weapon attacks. Your damage spells miss until 16% against a boss three levels up, so past the weapon cap the same hit still lands more of them. The weights above are per rating point: 10 hit rating and 14 crit rating are 1%.',
   /** The addon cross-sell under the rail (owner correction, 2026-09-30: "no Pawn anywhere...
    *  under the rail, replace the string box with one secondary button"). The addon feature
    *  itself is a separate lane; `weightsAddonButton`'s own link is `/addon` until it lands. */
@@ -296,6 +299,13 @@ export const bisCopy = {
   setBonusTitle: (setName: string, pieces: number, bonus: string): string =>
     `${setName} (${pieces}): ${bonus}`,
   lowValueTag: 'best available',
+  /** A relic near tie's line under the pick: its gain over an empty relic slot and the bar it
+   *  sits inside. */
+  nearTieEvidence: (gain: number, error: number, unit: RateUnit = 'DPS'): string =>
+    `${signedFigure(gain, unit)} over an empty relic slot, within the ±${error.toFixed(1)} ${unit} margin of error`,
+  /** The same tag's hover on a relic near tie (`BisSlot.near_tie`). */
+  nearTieTitle: (unit: RateUnit = 'DPS'): string =>
+    `Every relic here is within its measured error of an empty slot; this one measured best and its effect reaches a spell you cast, so it is worth wearing for the little ${unit} it adds`,
   lowValueTitle: (unit: RateUnit = 'DPS'): string =>
     `No sourced weapon at this level adds ${unit}; this is the best by item level`,
   /** An item sourced from classic-db's 1.12 tables rather than the client's own shipped

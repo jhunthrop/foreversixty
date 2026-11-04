@@ -15,7 +15,9 @@ func TestChosenRanksReadsTheCuratedRowsAtALevel(t *testing.T) {
 		want        []int
 	}{
 		{"paladin-retribution", "Consecration", 35, []int{1}},
-		{"paladin-retribution", "Consecration", 59, []int{1}},
+		{"paladin-retribution", "Consecration", 53, []int{1}},
+		// Round 19: from 54 Retribution casts the top rank learned (no row).
+		{"paladin-retribution", "Consecration", 59, nil},
 		{"paladin-retribution", "Consecration", 25, nil},
 		{"druid-balance", "Moonfire", 30, []int{3}},
 		// A row naming a preset still counts for a log, which does not say which preset.
@@ -52,8 +54,9 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 		// Renew is authored at rank 7 since round 15 wave 2; a row keeps rank 1 to 39.
 		{"priest-discipline", "Renew", 25, []int{1}},
 		{"paladin-holy", "Flash of Light", 35, []int{1}},
-		// Round 16 wave 2: the tank's Flash of Light is rank 2 at 44 to 49.
-		{"paladin-holy", "Flash of Light", 45, []int{1, 2}},
+		// Round 16 wave 2: the tank's Flash of Light is rank 2 at 44 to 48;
+		// round 19: the group's is rank 2 at 44 to 46 as well.
+		{"paladin-holy", "Flash of Light", 45, []int{2}},
 	} {
 		got, err := ChosenRanks(c.spec, c.spell, c.level)
 		if err != nil {
@@ -106,8 +109,10 @@ func TestPriestRenewRowsBelowSixty(t *testing.T) {
 		{"priest-holy", 40, []int{4}},
 		{"priest-holy", 44, []int{4}},
 		{"priest-holy", 45, []int{5}},
-		{"priest-holy", 51, []int{5}},
-		{"priest-holy", 52, []int{6}},
+		{"priest-holy", 50, []int{5}},
+		{"priest-holy", 51, []int{5, 6}}, // round 19: rank 6 for an Undead
+		{"priest-holy", 52, []int{5, 6}}, // round 19: rank 5 for a Gnome, Dwarf or Night Elf
+		{"priest-holy", 53, []int{6}},
 		{"priest-holy", 59, []int{6}},
 		{"priest-discipline", 40, []int{4}},
 		{"priest-discipline", 44, []int{4}},
@@ -127,9 +132,9 @@ func TestPriestRenewRowsBelowSixty(t *testing.T) {
 
 // Devouring Plague rank 1 (learned at 20) loses its bonus from 38; rank 2
 // wins from 52 on both factions (round 16 wave 2), and at 50 and 51 for every
-// race since round 18.
+// race but a Human, who keeps rank 1 there (round 19).
 func TestShadowDevouringPlagueMovesToRankTwoAtFiftyTwo(t *testing.T) {
-	for level, want := range map[int][]int{51: {2}, 52: {2}, 59: {2}} {
+	for level, want := range map[int][]int{51: {1, 2}, 52: {2}, 59: {2}} {
 		got, err := ChosenRanks("priest-shadow", "Devouring Plague", level)
 		if err != nil {
 			t.Fatal(err)
@@ -208,6 +213,53 @@ func TestPriestGreaterHealRankOneBelowFiftyEight(t *testing.T) {
 			if !slices.Equal(got, want) {
 				t.Errorf("%s Greater Heal at %d: %v, want %v", spec, level, got, want)
 			}
+		}
+	}
+}
+
+// Sim-accuracy round 19: Restoration shaman's Chain Heal line casts rank 1
+// from 46 to 59. It costs 260 mana to rank 2's 315 and rank 3's 405, and a
+// leveling healer is mana-bound, so the cheaper heal heals more over the
+// fight (+0.3% at 46 to +1.2% at 59, 10,000 iterations, seeds 1 and 50001,
+// both factions). Below 46 rank 1 is the only rank; at 60 the default
+// stands for a raid (the bare-60 row is preset-scoped).
+func TestRestorationShamanChainHealRankOneWhileLeveling(t *testing.T) {
+	for level, want := range map[int][]int{45: nil, 46: {1}, 53: {1}, 59: {1}} {
+		got, err := ChosenRanks("shaman-restoration", "Chain Heal", level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(got, want) {
+			t.Errorf("Chain Heal at %d: %v, want %v", level, got, want)
+		}
+	}
+}
+
+// Sim-accuracy round 19: with Chain Heal rank 1 through 59, Restoration's
+// tank Healing Wave steps up to rank 7 at 56 (+0.4% to +0.7% over rank 6,
+// both factions, seeds 1 and 50001), and Elemental's filler Lightning Bolt
+// casts rank 3 at 26 and 27, where rank 5, just learned, costs more than
+// the fight can pay (+3.7% to +4.9%); from 28 the top rank wins again.
+func TestRoundNineteenShamanRowsByLevel(t *testing.T) {
+	for _, tc := range []struct {
+		spec, spell string
+		level       int
+		want        []int
+	}{
+		{"shaman-restoration", "Healing Wave", 55, []int{6}},
+		{"shaman-restoration", "Healing Wave", 56, []int{7}},
+		{"shaman-restoration", "Healing Wave", 58, []int{7}},
+		{"shaman-elemental", "Lightning Bolt", 25, nil},
+		{"shaman-elemental", "Lightning Bolt", 26, []int{3}},
+		{"shaman-elemental", "Lightning Bolt", 27, []int{3}},
+		{"shaman-elemental", "Lightning Bolt", 28, nil},
+	} {
+		got, err := ChosenRanks(tc.spec, tc.spell, tc.level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(got, tc.want) {
+			t.Errorf("%s %s at %d: %v, want %v", tc.spec, tc.spell, tc.level, got, tc.want)
 		}
 	}
 }

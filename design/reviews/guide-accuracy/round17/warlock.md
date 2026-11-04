@@ -103,3 +103,4 @@ CONFIRMED 2 (R17-1 on main; R17-2 in the "Covered by sim round 19" table, on int
 
 - WARLOCK-R17-1: fixed, `affliction.md:97`: "Undead is close behind Orc for Affliction", the same wording as the Demonology and Destruction pages, on sim round 18 A4's measured 0.5% gap at both seeds.
 - WARLOCK-R17-2 (destruction.md:128 on int/r19 only: Corruption rank 4 at 40, back to rank 3 at 41, Immolate rank 5 from 41) is not on main; routed to the sim round 19 lane before it lands.
+- Merge with sim round 19 (now on main): the round 19 lines this report listed under "Covered by sim round 19" that were wrong are fixed in this landing with the report's wording.

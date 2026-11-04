@@ -61,7 +61,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 ## Rotation and priority
 
-**Before the pull.** Drop Lightwell and tell the raid it is up. Fear Ward the tank if the boss fears. Renew the tank a second before he engages, so it is already ticking when the first hits land.
+**Before the pull.** Drop Lightwell and tell the raid it is up. Fear Ward the tank if the boss fears. Renew the tank just before he engages, so it is already ticking when the first hits land.
 
 **Penance on cooldown.** On the tank whenever he is missing health, on a party member who drops low when the tank is fine. It is the heal you never let sit.
 
@@ -121,4 +121,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, rank 7 or 8 does the job just as well as the top rank. Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: it keeps your whole healing bonus until then, and the bigger ranks spend mana on healing a dungeon tank rarely needs.
+From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, keep rank 7: rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56, take rank 9. Heal is the tank's filler until you learn Greater Heal at 40. From then, Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: it keeps your whole healing bonus until then, and the bigger ranks spend mana on healing a dungeon tank rarely needs. Through your forties and fifties, leave Lesser Heal off your bars: by your late forties it has lost your healing bonus, and every cast costs mana regeneration you need for the next Greater Heal.

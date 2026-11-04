@@ -20,9 +20,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   build itself spends fewer than level-9 points, the remainder is left
   unspent.
 - Gear: main_hand always, off_hand for the classes that dual-wield in
-  this build (rogue, warrior-fury, shaman-enhancement, hunter),
-  ranged for hunter only. Each slot picks the highest item_level
-  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
   0, so an unfinished/placeholder weapon row this build's item table
   still carries - equipping one hangs the engine mid-sim rather than
   simulating a zero-damage weapon, see the report - is never picked)
@@ -30,9 +31,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/items/<class>.json filtered to
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
-  warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every caster spec
-  (priest-shadow, mage's three specs, warlock's three specs) fills
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
   ranged with a wand instead: the same item table's ranged rows whose
   icon names them a real wand (every wand row's own damage_max is 0 in
   this build, unlike a bow or gun, so the melee pick's damage_max > 0
@@ -105,7 +106,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 00000000000000000-000000000000000000-250533120330001100 | main_hand:10570 | 43.9 | 9 | spell:8380=98.2, spell:11564/1=51.5, spell:11564=50.6, other:rage_gain=37.4, spell:8205=11.0 | - |
 | 40 | 00000000000000000-000000000000000000-250533120330001201 | main_hand:10570 | 49.1 | 9 | spell:8380=98.1, spell:11565/1=56.2, spell:11565=55.2, other:rage_gain=35.0, spell:8205=11.1 | - |
 | 50 | 31000000000000000-000000000000000000-250533120330001351 | main_hand:10570 | 62.2 | 9 | spell:11596=98.7, spell:11566/1=58.5, spell:11566=57.5, other:rage_gain=22.4, spell:11580=9.2 | - |
-| 60 | 35300003000000000-000000000000000000-250533120330001351 | main_hand:22736 | 132.8 | 9 | spell:11597=96.6, spell:11567/1=67.5, spell:11567=66.5, other:rage_gain=24.7, spell:11601=11.3 | - |
+| 60 | 35300003000000000-000000000000000000-250533120330001351 | main_hand:22736 | 132.7 | 9 | spell:11597=96.6, spell:11567/1=67.5, spell:11567=66.5, other:rage_gain=24.7, spell:11601=11.3 | - |
 
 ## Learned but unused (informational)
 

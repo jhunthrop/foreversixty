@@ -13,8 +13,7 @@
   import { slotSourceLine } from '../../lib/home/source-line';
   import { dataUrl } from '../../lib/planner/load';
   import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
-  import { SLOT_DISPLAY_LABELS } from '../../lib/bis/slot-display-labels';
-  import type { Slot } from '../../lib/planner/types';
+  import { slotDisplayLabel } from '../../lib/bis/slot-display-labels';
   import type { Item } from '../../lib/planner/types';
   import ItemHover from '../ItemHover.svelte';
   import { scoreUnitWord, type SlotScoreUnit } from '../../lib/bis/tank-view';
@@ -41,7 +40,7 @@
     scoreUnit?: SlotScoreUnit;
   } = $props();
 
-  const slotLabel = $derived(SLOT_DISPLAY_LABELS[upgrade.slot as Slot] ?? upgrade.slot);
+  const slotLabel = $derived(slotDisplayLabel(upgrade.slot, classSlug));
   const pickSourceLine = $derived(slotSourceLine(upgrade.pick));
   const gainLabel = $derived(
     upgrade.gainDps === null ? '' : `+${upgrade.gainDps.toFixed(1)} ${scoreUnitWord(scoreUnit)}`,

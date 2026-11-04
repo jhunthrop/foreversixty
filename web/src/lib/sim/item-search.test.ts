@@ -9,6 +9,7 @@ import {
   noResultsReason,
   searchItems,
   SEARCH_LIMIT,
+  slotOptions,
   type SearchContext,
 } from './item-search';
 import { sourcesByItem, type LootFile } from './loot';
@@ -189,5 +190,14 @@ describe('defaultItemQuery', () => {
       sourceId: '',
       usableOnly: true,
     });
+  });
+});
+
+// Round 19: the slot filter names a paladin, shaman or druid's ranged slot Relic.
+describe('slotOptions for a relic class', () => {
+  it('labels the ranged option Relic for a relic class and Ranged otherwise', () => {
+    expect(slotOptions('druid').find((option) => option.slot === 'ranged')?.label).toBe('Relic');
+    expect(slotOptions('rogue').find((option) => option.slot === 'ranged')?.label).toBe('Ranged');
+    expect(slotOptions().find((option) => option.slot === 'ranged')?.label).toBe('Ranged');
   });
 });

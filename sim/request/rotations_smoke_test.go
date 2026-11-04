@@ -202,9 +202,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 1329326}": "Ghostly Strike's opener buff exists only with the Ghostly Strike talent (sim/rogue/ghostly_strike.go); this build takes none, so Hemorrhage's hold for the Garrote never fires.",
 	},
 	"shaman-enhancement": {
-		"{SpellID: 17364}":  "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
-		"{SpellID: 408498}": "Maelstrom Weapon is a talent (sim/shaman/talents.go); this build takes none, and the Lightning Bolt line's auraIsKnown gate skips it.",
-		"{SpellID: 16246}":  "Clearcasting comes from Elemental Focus, a talent (sim/shaman/talents.go); this build takes none, and the Fire Nova line's auraIsKnown gate skips it.",
+		"{SpellID: 17364}":          "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
+		"{SpellID: 408498}":         "Maelstrom Weapon is a talent (sim/shaman/talents.go); this build takes none, and the Lightning Bolt line's auraIsKnown gate skips it.",
+		"{SpellID: 408498, Tag: 5}": "Maelstrom Weapon's rank-5 aura, which the Earth Shock mana gate reads, only exists with all five points of its talent; this build takes none.",
+		"{SpellID: 16246}":          "Clearcasting comes from Elemental Focus, a talent (sim/shaman/talents.go); this build takes none, and the Fire Nova line's auraIsKnown gate skips it.",
 	},
 	"warlock-affliction": {
 		"{SpellID: 18288}":   "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",

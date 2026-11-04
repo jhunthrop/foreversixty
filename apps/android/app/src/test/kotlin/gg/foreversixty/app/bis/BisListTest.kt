@@ -14,6 +14,7 @@ import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemTooltipModel
 import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.items.ItemTooltipSources
+import gg.foreversixty.app.items.ItemVocabulary
 import kotlinx.serialization.builtins.ListSerializer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -218,6 +219,22 @@ class BisListTest {
         assertEquals(BisUnit.Score, list.unit)
         assertTrue(list.setDpsLine.orEmpty().startsWith("Tank lists rank by score"))
         assertTrue(list.rows.mapNotNull { it.pick }.any { it.next.endsWith(" score") })
+    }
+
+    @Test
+    fun `a paladin, shaman or druid list names the ranged row Relic, everyone else keeps Ranged`() {
+        fun label(spec: String): String? {
+            val file = real(spec)
+            val band = requireNotNull(file.band(BisRange(60, "raid"), "horde"))
+            val list = BisListBuilder(res, emptyList(), emptySet(), ZoneOffset.UTC).list(file, band, spec, "60")
+            return list.rows.firstOrNull { it.slot == "ranged" }?.slotLabel
+        }
+        assertEquals("Relic", label("shaman-enhancement"))
+        assertEquals("Relic", label("paladin-retribution"))
+        assertEquals("Relic", label("druid-balance"))
+        assertEquals("Ranged", label("hunter-marksmanship"))
+        assertEquals("Ranged", ItemVocabulary.slotLabel(res, "ranged", "mage"))
+        assertEquals("Relic", ItemVocabulary.slotLabel(res, "ranged", "druid"))
     }
 
     @Test

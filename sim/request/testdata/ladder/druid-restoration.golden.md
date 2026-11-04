@@ -20,9 +20,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   build itself spends fewer than level-9 points, the remainder is left
   unspent.
 - Gear: main_hand always, off_hand for the classes that dual-wield in
-  this build (rogue, warrior-fury, shaman-enhancement, hunter),
-  ranged for hunter only. Each slot picks the highest item_level
-  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
   0, so an unfinished/placeholder weapon row this build's item table
   still carries - equipping one hangs the engine mid-sim rather than
   simulating a zero-damage weapon, see the report - is never picked)
@@ -30,9 +31,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/items/<class>.json filtered to
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
-  warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every caster spec
-  (priest-shadow, mage's three specs, warlock's three specs) fills
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
   ranged with a wand instead: the same item table's ranged rows whose
   icon names them a real wand (every wand row's own damage_max is 0 in
   this build, unlike a bow or gun, so the melee pick's damage_max > 0
@@ -102,7 +103,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 0000000000000000-00000000000000000000-0100000000000000 | main_hand:263937 | 8.9 | 4 | spell:774=32.8, spell:1058=17.8, spell:1259799=2.0, spell:5186=1.2 | {SpellID: 1259705}, {SpellID: 17116}, {SpellID: 18562} |
 | 20 | 0000000000000000-00000000000000000000-2503000100000000 | main_hand:890 | 30.0 | 5 | spell:774=70.4, spell:1058=10.6, spell:8938=5.2, spell:1259799=2.0, spell:5188=1.2 | {SpellID: 1259705}, {SpellID: 17116}, {SpellID: 18562} |
 | 30 | 0000000000000000-00000000000000000000-5553001100010000 | main_hand:9604 | 47.4 | 8 | spell:774=66.8, spell:1058=9.8, spell:8940=5.1, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 1259705}, {SpellID: 18562} |
-| 38 | 0000000000000000-00000000000000000000-5553005140010000 | main_hand:873 | 68.7 | 7 | spell:774=69.6, spell:2090=9.9, spell:8941=4.6, spell:8903=2.4, spell:1259799=2.0 | {SpellID: 1259705}, {SpellID: 18562} |
+| 38 | 0000000000000000-00000000000000000000-5553005140010000 | main_hand:873 | 69.4 | 8 | spell:774=69.3, spell:2090=10.3, spell:8941=5.1, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 1259705}, {SpellID: 18562} |
 | 40 | 0000000000000000-00000000000000000000-5553005151010000 | main_hand:873 | 88.0 | 9 | spell:1058=66.0, spell:2090=10.3, spell:8941=5.8, spell:5189=3.1, spell:1259799=2.0 | {SpellID: 1259705}, {SpellID: 18562} |
 | 50 | 0100000000000000-00000000000000000000-5553005153113210 | main_hand:812 | 141.6 | 9 | spell:774=103.4, spell:3627=10.1, spell:9856=5.1, spell:9888=2.4, spell:18562=2.1 | {SpellID: 1259705} |
 | 60 | 0530200100000000-00000000000000000000-5553005153113210 | main_hand:19355 | 164.3 | 9 | spell:8910=35.4, spell:9841=4.1, spell:9858=2.5, spell:1259799=2.0, spell:17116=2.0 | {SpellID: 1259705} |

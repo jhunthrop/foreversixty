@@ -20,9 +20,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   build itself spends fewer than level-9 points, the remainder is left
   unspent.
 - Gear: main_hand always, off_hand for the classes that dual-wield in
-  this build (rogue, warrior-fury, shaman-enhancement, hunter),
-  ranged for hunter only. Each slot picks the highest item_level
-  weapon (speed > 0, so a shield never fills an off hand; damage_max >
+  this build (rogue, warrior-fury, hunter), a shield in the off_hand
+  for shaman-elemental and shaman-enhancement (shamans never dual
+  wield in Forever), ranged for hunter only. Each slot picks the
+  highest item_level weapon (speed > 0, so a shield never fills a weapon slot; damage_max >
   0, so an unfinished/placeholder weapon row this build's item table
   still carries - equipping one hangs the engine mid-sim rather than
   simulating a zero-damage weapon, see the report - is never picked)
@@ -30,9 +31,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/items/<class>.json filtered to
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
-  warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every caster spec
-  (priest-shadow, mage's three specs, warlock's three specs) fills
+  warrior-fury and rogue one-hand only for both hands; the two shaman
+  shield specs one-hand only). druid-feral picks no weapon at all.
+  Every caster spec (priest-shadow, mage's three specs, warlock's three specs) fills
   ranged with a wand instead: the same item table's ranged rows whose
   icon names them a real wand (every wand row's own damage_max is 0 in
   this build, unlike a bow or gun, so the melee pick's damage_max > 0
@@ -100,12 +101,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-010000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 11.1 | 4 | other:attack/2=107.1, other:rage_gain=38.5, spell:284/1=35.8, spell:284=35.3, other:attack/1=34.9 | {SpellID: 12328}, {SpellID: 1329555}, {SpellID: 18499}, {SpellID: 20662} |
-| 20 | 00000000000000000-050510000000000000-000000000000000000 | main_hand:2236 off_hand:2194 | 24.2 | 5 | other:rage_gain=123.3, other:attack/1=76.4, other:attack/2=73.0, spell:285/1=45.4, spell:285=45.1 | {SpellID: 12328}, {SpellID: 1329555}, {SpellID: 18499}, {SpellID: 20662} |
-| 30 | 00000000000000000-050530025000100000-000000000000000000 | main_hand:7687 off_hand:6692 | 45.6 | 7 | other:rage_gain=107.4, other:attack/2=76.0, other:attack/1=44.0, spell:1608=32.0, spell:1608/1=32.0 | {SpellID: 1329555} |
-| 38 | 00000000000000000-050530025122100210-000000000000000000 | main_hand:868 off_hand:6829 | 79.5 | 9 | other:rage_gain=169.3, other:attack/2=85.6, other:attack/1=61.8, spell:11564=27.8, spell:11564/1=27.8 | - |
-| 40 | 00000000000000000-050530025122100221-000000000000000000 | main_hand:2164 off_hand:9359 | 98.6 | 10 | other:rage_gain=173.1, other:attack/1=101.8, other:attack/2=84.6, spell:20660=21.7, spell:23881=20.3 | - |
-| 50 | 30321000000000000-050530025122100231-000000000000000000 | main_hand:810 off_hand:2163 | 152.5 | 11 | other:rage_gain=193.7, other:attack/2=143.9, other:attack/1=88.9, spell:20661=22.4, spell:23892=20.8 | - |
-| 60 | 30323013002000000-050530025122100231-200000000000000000 | main_hand:22736 off_hand:23054 | 305.6 | 11 | other:rage_gain=212.3, other:attack/2=75.2, other:attack/1=63.8, spell:20662=21.4, spell:23894=20.9 | - |
+| 20 | 00000000000000000-050510000000000000-000000000000000000 | main_hand:2236 off_hand:2194 | 23.9 | 5 | other:rage_gain=100.0, other:attack/1=77.9, other:attack/2=73.0, spell:285/1=43.9, spell:285=43.6 | {SpellID: 12328}, {SpellID: 1329555}, {SpellID: 18499}, {SpellID: 20662} |
+| 30 | 00000000000000000-050530025000100000-000000000000000000 | main_hand:7687 off_hand:6692 | 45.4 | 7 | other:rage_gain=90.8, other:attack/2=76.0, other:attack/1=44.8, spell:1608=31.2, spell:1608/1=31.2 | {SpellID: 1329555} |
+| 38 | 00000000000000000-050530025122100210-000000000000000000 | main_hand:868 off_hand:6829 | 79.0 | 9 | other:rage_gain=153.5, other:attack/2=85.8, other:attack/1=63.2, spell:11564=26.7, spell:11564/1=26.7 | - |
+| 40 | 00000000000000000-050530025122100221-000000000000000000 | main_hand:2164 off_hand:9359 | 99.1 | 10 | other:rage_gain=169.8, other:attack/1=102.2, other:attack/2=84.8, spell:20660=21.8, spell:23881=20.4 | - |
+| 50 | 30321000000000000-050530025122100231-000000000000000000 | main_hand:810 off_hand:2163 | 151.7 | 11 | other:rage_gain=191.1, other:attack/2=144.1, other:attack/1=89.0, spell:20661=22.1, spell:23892=20.8 | - |
+| 60 | 30323013002000000-050530025122100231-200000000000000000 | main_hand:22736 off_hand:23054 | 318.2 | 11 | other:rage_gain=206.5, other:attack/2=75.3, other:attack/1=64.3, spell:20662=21.4, spell:23894=20.8 | - |
 
 ## Learned but unused (informational)
 

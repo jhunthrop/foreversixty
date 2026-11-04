@@ -140,3 +140,4 @@ None. The carried Bite energy pooling request was closed by sim round 18 C1.
 ## Fix log (round 17)
 
 - No finding on main. DRUID-R17-1 (restoration.md Ranks on int/r19: Nature's Swiftness makes the cast instant, not free; rank 10 Healing Touch still costs 755 mana under it) is routed to the sim round 19 lane with the report's wording, along with the "through 38" Insect Swarm SHOULD.
+- Merge with sim round 19 (now on main): the round 19 lines this report listed under "Covered by sim round 19" that were wrong are fixed in this landing with the report's wording.

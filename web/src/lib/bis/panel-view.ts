@@ -34,10 +34,9 @@ import type {
   RateUnit,
 } from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
-import type { Slot } from '../planner/types';
 import { expertiseCapLine, weightsForGainedStats, type ExpertiseCapLine } from './expertise-cap';
 import { hitCapLine, type HitCapLine } from './hit-cap';
-import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
+import { slotDisplayLabel } from './slot-display-labels';
 import {
   rateUnitFor,
   slotScoreUnitFor,
@@ -209,7 +208,7 @@ function noSourcedItemCopyFor(
   const nextRealBand = firstRealPickBandAfter(file, bands, faction, slot, band);
   return isFirstOccurrence
     ? bisCopy.noSourcedItemFirst(
-        (SLOT_DISPLAY_LABELS[slot as Slot] ?? slot).toLowerCase(),
+        slotDisplayLabel(slot, classOfFile(file)).toLowerCase(),
         bisCopy.bandRangeLabel(band),
         nextRealBand,
         unit,
@@ -279,6 +278,9 @@ export interface AlternativeView {
  *  the template. */
 export interface RowView {
   slot: string;
+  /** The slot column's word (`slotDisplayLabel`): "Ring", "Relic" for a paladin, shaman or
+   *  druid's ranged row. */
+  slotLabel: string;
   empty: boolean;
   /** Set only when `empty` -- the exact copy the row shows (the ordinary "no known source"
    *  line, or the two-hander-equipped line for an off-hand slot ruling 4 carves out). */
@@ -323,6 +325,9 @@ export interface RowView {
    *  zero and the ranker published the best-by-item-level fallback instead of an empty
    *  slot. */
   lowValue?: boolean;
+  /** The tag's hover when it is not the weapon fallback's (`BisSlot.near_tie`: a relic near
+   *  tie); undefined for the weapon fallback, whose hover is `bisCopy.lowValueTitle`. */
+  lowValueTitle?: string;
   /** `BisSlot.set_bonus` -- the set bonus this piece is worn for, already worded for the
    *  row. Undefined on every row the ranker chose on the piece's own merit. */
   setBonus?: SetBonusView;
@@ -371,6 +376,11 @@ function buildAlternativeView(
   };
 }
 
+/** The class a best-in-slot file is for: its spec key's first word ("shaman-enhancement"). */
+function classOfFile(file: BisFile): string {
+  return file.spec.split('-')[0] ?? '';
+}
+
 function buildRowView(
   row: SlotRow,
   faction: Faction,
@@ -404,13 +414,19 @@ function buildRowView(
             isFirstInGroupThisBand,
             rateUnitFor(unit),
           );
-    return { slot: row.slot, empty: true, emptyCopy };
+    return {
+      slot: row.slot,
+      slotLabel: slotDisplayLabel(row.slot, classOfFile(file)),
+      empty: true,
+      emptyCopy,
+    };
   }
   const badgeLabel = sourceBadgeLabel(row, faction);
   const cell = resolveSourceCell(row, faction, lootFile, badgeLabel);
   const model = tooltipFor(row.item_id);
   return {
     slot: row.slot,
+    slotLabel: slotDisplayLabel(row.slot, classOfFile(file)),
     empty: false,
     itemId: row.item_id,
     itemName: row.item_name,
@@ -425,11 +441,15 @@ function buildRowView(
       buildAlternativeView(alt, faction, lootFile, tooltipFor, band, unit),
     ),
     replacedName: replacedBySlot.get(row.slot),
-    evidenceLine: evidenceLineFor(row.swap_note, row.dps_delta, unit),
+    evidenceLine:
+      row.near_tie === undefined
+        ? evidenceLineFor(row.swap_note, row.dps_delta, unit)
+        : bisCopy.nearTieEvidence(row.near_tie.gain, row.near_tie.error, rateUnitFor(unit)),
     verifiedGlyphTitle: verifiedGlyphTitleFor(row, unit),
     effectUnmodelled: row.effect_unmodelled,
     notSimChecked: row.sim_status === 'not_in_sim',
-    lowValue: row.low_value,
+    lowValue: row.low_value === true || row.near_tie !== undefined ? true : undefined,
+    lowValueTitle: row.near_tie !== undefined ? bisCopy.nearTieTitle(rateUnitFor(unit)) : undefined,
     setBonus: row.set_bonus && {
       line: bisCopy.setBonusLine(row.set_bonus.set, row.set_bonus.pieces),
       title: bisCopy.setBonusTitle(row.set_bonus.set, row.set_bonus.pieces, row.set_bonus.bonus),
@@ -539,7 +559,7 @@ export function bandInfosFor(
     const groupFirstSlot = new Map<string, string>();
     for (const row of slotRows) {
       if (isMissingSlot(row) || hasKnownSource(row) || row.empty_reason !== 'no_sourced_item') continue;
-      const label = SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot;
+      const label = slotDisplayLabel(row.slot, classOfFile(file));
       if (!groupFirstSlot.has(label)) groupFirstSlot.set(label, row.slot);
     }
     const rows = slotRows.map((row) =>
@@ -555,7 +575,7 @@ export function bandInfosFor(
         file,
         bands,
         mainHandItemName,
-        groupFirstSlot.get(SLOT_DISPLAY_LABELS[row.slot as Slot] ?? row.slot) === row.slot,
+        groupFirstSlot.get(slotDisplayLabel(row.slot, classOfFile(file))) === row.slot,
         scoreUnit,
       ),
     );
