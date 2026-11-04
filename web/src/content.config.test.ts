@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { factSchema } from './content.config';
+import { META_DESCRIPTION_MAX, factSchema, guideSchema } from './content.config';
 
 const valid = {
   title: 'Hall of Thanes',
@@ -23,5 +23,18 @@ describe('factSchema', () => {
     expect(
       factSchema.safeParse({ ...valid, sources: [{ ...valid.sources[0], kind: 'rumor' }] }).success,
     ).toBe(false);
+  });
+});
+
+describe('guideSchema', () => {
+  const guide = { ...valid, classSlug: 'mage' };
+  const withDescription = (length: number): boolean =>
+    guideSchema.safeParse({ ...guide, description: 'x'.repeat(length) }).success;
+
+  it('takes a description that fits a search snippet', () => {
+    expect(withDescription(META_DESCRIPTION_MAX)).toBe(true);
+  });
+  it('rejects a description a search result would cut off', () => {
+    expect(withDescription(META_DESCRIPTION_MAX + 1)).toBe(false);
   });
 });

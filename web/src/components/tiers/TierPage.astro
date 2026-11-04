@@ -52,7 +52,7 @@ const stampTitle =
     : `Ranked on build ${data.build}, engine ${data.engineVersion ?? ''}`.trim();
 ---
 
-<Base title={tiersCopy.title} description={tiersCopy.description} path={ROLE_PATHS[role]}>
+<Base title={tiersCopy.pageTitle(role)} description={tiersCopy.metaDescription(role)} path={ROLE_PATHS[role]}>
   <script is:inline define:vars={{ param: FACTION_PARAM, attribute: FACTION_ATTRIBUTE }}>
     if (new URLSearchParams(location.search).get(param) === 'horde') {
       document.documentElement.setAttribute(attribute, 'horde');

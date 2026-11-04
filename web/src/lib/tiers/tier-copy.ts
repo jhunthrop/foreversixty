@@ -25,6 +25,13 @@ export const ROLE_LABELS: Readonly<Record<BisRole, string>> = {
   healer: 'Healer',
 };
 
+/** The role as a word in a sentence, for the meta descriptions. */
+const ROLE_NOUNS: Readonly<Record<BisRole, string>> = {
+  dps: 'damage',
+  tank: 'tank',
+  healer: 'healer',
+};
+
 /** The role's path: DPS is the root, the other two are sub-paths. */
 export const ROLE_PATHS: Readonly<Record<BisRole, string>> = {
   dps: '/tiers',
@@ -181,8 +188,11 @@ function tierBand(group: Pick<TierGroup, 'from' | 'to'>): string {
 
 export const tiersCopy = {
   title: 'Tier list',
-  description:
-    'Where every spec stands at level 60, from the Forever Sixty sim: damage, tank and healer lists with the gap to the top.',
+  /** Each role's <title>: three pages, three titles, so none of them reads as a duplicate. */
+  pageTitle: (role: BisRole): string => `${ROLE_LABELS[role]} tier list`,
+  /** Each role's meta description, unique per page for the same reason. */
+  metaDescription: (role: BisRole): string =>
+    `Where every ${ROLE_NOUNS[role]} spec stands at level 60 in WoW Forever, ranked by the Forever Sixty sim with the gap to the top.`,
   eyebrow: (presetLabel: string): string => `Level 60 · ${presetLabel}`,
   jobLine:
     'Where every spec stands at level 60, from our own sim. Open yours for its best gear, guide and talents.',

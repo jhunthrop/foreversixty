@@ -4,8 +4,10 @@ The one source for everything a player reads about the addon on a store. The das
 hold a copy of this file: when it changes, paste it again (neither site lets the release
 workflow set a description). `md2html.mjs` renders the Description section to HTML for
 CurseForge's editor; Wago and GitHub take the Markdown as it is. `gen_gallery.mjs` renders
-the gallery plates from the client captures the /setup page already uses; the description's
-inline pictures are those same captures, served from foreversixty.gg/addon/.
+the gallery plates (3200x1800 PNG) with the captions below. Each plate uses a lossless
+capture from `captures/` when one exists, and otherwise the JPEG the /setup page uses;
+`RECAPTURE.md` says how the owner takes the lossless ones. The description's inline pictures
+are the /setup captures, served from foreversixty.gg/addon/.
 
 | Field | Value |
 |---|---|
@@ -35,6 +37,28 @@ inline pictures are those same captures, served from foreversixty.gg/addon/.
 10. **Paste a build.** The one dialog of its own: paste a build from foreversixty.gg and follow it.
 11. **Copy your character.** Ctrl+C sends your talents, gear and bags to the site's planner and simulator.
 12. **Settings.** Nine switches on the game's own Settings page, each with one line saying what it does.
+
+## Uploading the gallery
+
+The owner uploads by hand; nothing here logs in to either dashboard.
+
+1. Run `node design/listing/gen_gallery.mjs` (Playwright comes from `web/node_modules`). Each
+   line it prints must end in `ok`. A `RECAPTURE` line means that plate still uses a JPEG
+   or a small crop, so see `RECAPTURE.md`. The plates are 3200x1800 PNG at 16:9, about 1 MB
+   each. Neither store publishes a gallery size limit (checked 2026-11-03), and the
+   generator fails any plate over 5 MB.
+2. Delete the old plates on both dashboards first, so the old blurry copies do not stay
+   beside the new ones.
+3. **CurseForge** (project 1706689 > Gallery): upload `gallery/01-…png` to `12-…png` in
+   order. For each image, set the title to the bold words of its caption and the description
+   to the rest, then star plate 1 as featured. For **Forever Sixty Data** (1706707), upload
+   plates 06, 07 and 08 with the same captions.
+4. **Wago** (XKqEdoKy > Gallery): the gallery lists the newest upload first and shows 10 per
+   page, so upload in reverse order, `12-…png` first and `01-…png` last. For ANz7R564, upload
+   08, then 07, then 06.
+5. Open each public page in a private window and check one plate at full size: text and
+   frame edges should be sharp. If a store has shrunk the image, its lightbox will show it
+   smaller than 3200 wide, but it should still not look blurry.
 
 ## Description
 
