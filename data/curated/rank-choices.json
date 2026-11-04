@@ -45,17 +45,25 @@
             "from_level": 28,
             "to_level": 49,
             "rank": 4
-          },
+          }
+        ]
+      },
+      {
+        "spell": "Rejuvenation",
+        "authored": 8910,
+        "bands": [
           {
-            "from_level": 50,
+            "from_level": 10,
             "to_level": 59,
-            "rank": 1
+            "rank": 1,
+            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): on every bare fight rank 1 still wins: the fight runs out of mana, so the cheapest Rejuvenation heals most even with little or no bonus (bare 60 +6%)."
           },
           {
             "from_level": 60,
             "to_level": 60,
-            "rank": 4,
-            "preset": "bare"
+            "rank": 1,
+            "preset": "bare",
+            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 at bare 60 against rank 7: +6.2% (the fight runs dry)."
           }
         ]
       }
@@ -137,11 +145,6 @@
             "from_level": 40,
             "to_level": 49,
             "rank": 1
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 1
           }
         ]
       }
@@ -157,20 +160,9 @@
             "rank": 1
           },
           {
-            "from_level": 30,
-            "to_level": 39,
-            "rank": 1
-          },
-          {
             "from_level": 40,
             "to_level": 49,
             "rank": 1
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 4,
-            "preset": "bare"
           }
         ]
       },
@@ -191,17 +183,6 @@
         ]
       },
       {
-        "spell": "Flash of Light",
-        "authored": 19750,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 3
-          }
-        ]
-      },
-      {
         "spell": "Holy Shock",
         "authored": 1311606,
         "bands": [
@@ -210,6 +191,30 @@
             "to_level": 60,
             "rank": 4,
             "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Flash of Light",
+        "authored": 19942,
+        "bands": [
+          {
+            "from_level": 26,
+            "to_level": 39,
+            "rank": 1,
+            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 wins at band 30 (89.5 against 73.5 with rank 5)."
+          },
+          {
+            "from_level": 42,
+            "to_level": 49,
+            "rank": 3,
+            "note": "Kept from the old rank-1 line's row (round 9)."
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 1,
+            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 wins at band 50 (156.9 against 148.4)."
           }
         ]
       }
@@ -299,27 +304,18 @@
             "from_level": 40,
             "to_level": 49,
             "rank": 1
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 1
           }
         ]
       },
       {
-        "spell": "Lesser Heal",
-        "authored": 2050,
+        "spell": "Renew",
+        "authored": 10927,
         "bands": [
           {
-            "from_level": 4,
-            "to_level": 9,
-            "rank": 2
-          },
-          {
-            "from_level": 10,
-            "to_level": 59,
-            "rank": 3
+            "from_level": 14,
+            "to_level": 39,
+            "rank": 1,
+            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 wins at bands 20 and 30; from 40 rank 7 heals more (+1.6% at 40, +6% at 50)."
           }
         ]
       }
@@ -349,29 +345,14 @@
         ]
       },
       {
-        "spell": "Heal",
-        "authored": 2054,
+        "spell": "Renew",
+        "authored": 10927,
         "bands": [
           {
-            "from_level": 22,
-            "to_level": 27,
-            "rank": 2
-          },
-          {
-            "from_level": 28,
-            "to_level": 33,
-            "rank": 3
-          },
-          {
-            "from_level": 34,
-            "to_level": 59,
-            "rank": 4
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 4,
-            "preset": "bare"
+            "from_level": 14,
+            "to_level": 39,
+            "rank": 1,
+            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 still keeps its whole bonus to 25 and wins at bands 20 and 30 (+3.5% at 30); from 40 the list's rank 7 heals more (+6% at 40, +11% at 50)."
           }
         ]
       }
@@ -413,28 +394,6 @@
               "troll"
             ],
             "note": "Rank 4 for Human +1.8%, Undead +1.4%, Gnome +1.4%, Troll +1.0% over the default; a Dwarf and a Night Elf gain more with rank 3 (+1.0% and +1.4% against +0.4% and +0.8% at rank 4), so they have their own row (round-13 ranks.md)."
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 2,
-            "races": [
-              "dwarf",
-              "night-elf",
-              "gnome",
-              "troll"
-            ],
-            "note": "Rank 2: Dwarf +2.5%, Night Elf +2.6%, Gnome +2.4%, Troll +2.3% over the default, each beyond rank 3 (round-13 ranks.md)."
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 3,
-            "races": [
-              "human",
-              "undead"
-            ],
-            "note": "Rank 3: Human +2.0% (rank 2 +1.3%), Undead +0.4% (rank 2 ties: Dark Sacrifice leaves the Undead the mana for the bigger rank) (round-13 ranks.md)."
           }
         ]
       },
@@ -530,17 +489,6 @@
             "rank": 4
           },
           {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 4
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 4,
-            "preset": "bare"
-          },
-          {
             "from_level": 60,
             "to_level": 60,
             "rank": 10,
@@ -571,34 +519,7 @@
         ]
       }
     ],
-    "shaman-restoration": [
-      {
-        "spell": "Healing Wave",
-        "authored": 332,
-        "bands": [
-          {
-            "from_level": 12,
-            "to_level": 17,
-            "rank": 3
-          },
-          {
-            "from_level": 18,
-            "to_level": 23,
-            "rank": 4
-          },
-          {
-            "from_level": 24,
-            "to_level": 31,
-            "rank": 5
-          },
-          {
-            "from_level": 32,
-            "to_level": 39,
-            "rank": 6
-          }
-        ]
-      }
-    ],
+    "shaman-restoration": [],
     "warlock-destruction": [
       {
         "spell": "Shadow Bolt",

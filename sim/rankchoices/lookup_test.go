@@ -17,11 +17,11 @@ func TestChosenRanksReadsTheCuratedRowsAtALevel(t *testing.T) {
 		{"paladin-retribution", "Consecration", 59, []int{1}},
 		{"paladin-retribution", "Consecration", 25, nil},
 		{"druid-balance", "Moonfire", 30, []int{3}},
-		// Level 60's rows name a preset; a log does not say which, so either counts.
-		{"shaman-elemental", "Lightning Bolt", 60, []int{4, 10}},
+		// A row naming a preset still counts for a log, which does not say which preset.
+		{"shaman-elemental", "Lightning Bolt", 60, []int{10}},
 		// A race's row counts for any race (round 13): a log's rank is no mistake
 		// where the site casts it for one race.
-		{"priest-shadow", "Mind Blast", 55, []int{2, 3}},
+		{"priest-shadow", "Mind Blast", 45, []int{3, 4}},
 		{"warrior-fury", "Bloodthirst", 60, nil},
 		{"paladin-retribution", "Seal of Righteousness", 40, nil},
 	} {
@@ -48,8 +48,8 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 		{"priest-discipline", "Power Word: Shield", 35, nil},
 		{"priest-discipline", "Power Word: Shield", 45, []int{6}},
 		{"priest-discipline", "Penance", 45, nil},
-		// Renew rank 1 is the list's own rank since round 14, so no row names it.
-		{"priest-discipline", "Renew", 25, nil},
+		// Renew is authored at rank 7 since round 15 wave 2; a row keeps rank 1 to 39.
+		{"priest-discipline", "Renew", 25, []int{1}},
 		{"paladin-holy", "Flash of Light", 35, []int{1}},
 		{"paladin-holy", "Flash of Light", 45, []int{1, 3}},
 	} {
