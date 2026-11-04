@@ -19,6 +19,7 @@ from pathlib import Path
 import httpx
 import pytest
 
+from pipeline import hotfix_push
 from pipeline.csvio import read_csv
 from pipeline.hotfix_push import (
     LAYER_RECORD,
@@ -433,3 +434,50 @@ def test_check_push_compares_the_committed_record_with_wago(build_root):
     assert check_push(BUILD, root=build_root, totals=fixture_totals) is False
     assert check_push(BUILD, root=build_root, totals=live) is True
     assert set(asked[-1]) == set(read_push_record(build_root / BUILD)["tables"])
+
+
+def _page(entries: list[dict], total: int) -> str:
+    payload = json.dumps({"props": {"hotfixes": {"data": entries, "total": total}}})
+    return f'<div data-page="{html.escape(payload)}"></div>'
+
+
+def _client(responses: list) -> tuple[httpx.Client, list[str]]:
+    """A client answering each request with the next item: an exception to raise or
+    a (status, body) pair."""
+    seen: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request.url.params["search"])
+        item = responses.pop(0)
+        if isinstance(item, Exception):
+            raise item
+        status, body = item
+        return httpx.Response(status, text=body, request=request)
+
+    return httpx.Client(base_url="https://wago.test", transport=httpx.MockTransport(handler)), seen
+
+
+def test_a_dropped_connection_is_retried_until_the_search_answers():
+    client, seen = _client(
+        [httpx.RemoteProtocolError("Server disconnected"), (503, ""), (200, _page([{"id": 1}], 1))]
+    )
+    waits: list[float] = []
+    answer = hotfix_push._ask(client, "70755 spell", sleep=waits.append)
+    assert answer == hotfix_push._Answer(({"id": 1},), 1)
+    assert seen == ["70755 spell"] * 3
+    assert waits == [2.0, 4.0]
+
+
+def test_a_search_that_never_answers_still_fails_the_fetch():
+    drops = [httpx.RemoteProtocolError("Server disconnected") for _ in range(hotfix_push._ATTEMPTS)]
+    client, seen = _client(drops)
+    with pytest.raises(httpx.RemoteProtocolError):
+        hotfix_push._ask(client, "70755 spell", sleep=lambda _: None)
+    assert len(seen) == hotfix_push._ATTEMPTS
+
+
+def test_a_client_error_is_not_retried():
+    client, seen = _client([(404, "")])
+    with pytest.raises(httpx.HTTPStatusError):
+        hotfix_push._ask(client, "70755 spell", sleep=lambda _: None)
+    assert len(seen) == 1

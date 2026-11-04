@@ -3,7 +3,7 @@
 // section at desktop (1280) and phone (390) widths: the single status note, the Overview
 // blocks, the builds and the key talents, the rotation lists, the stat block, the
 // best-in-slot table and its level-range switcher, the enchant and consumable tables, the
-// race table and the leveling strip, and checks the page never scrolls sideways.
+// race table and the leveling tree, and checks the page never scrolls sideways.
 //
 // The content comes from data/builds and the BiS ranker, not the planner fixture, so it is the
 // same under either FOREVER_DATA; only the check that icon files actually load needs the real
@@ -231,41 +231,33 @@ for (const [label, viewport] of [
       await expect(page.getByTestId('guide-race-row-human')).not.toContainText('Recommended');
     });
 
-    test('lists each leveling band’s talents with icons, names and ranks, and a planner link', async ({
+    // The fixture ships warrior and hunter talents only, so the Frost tree itself stays a
+    // skeleton here; its keyboard walk is guides-redesign.spec.ts's, on Fury. What the server
+    // renders (the level 60 caption and link) is checked on Frost.
+    test('renders the leveling tree at level 60 with its planner link, before the trees load', async ({
       page,
     }) => {
       await page.goto(PAGE);
-      const strip = page.getByTestId('guide-leveling-strip');
-      const rows = strip.locator('[data-testid^="guide-leveling-row-"]:not([data-testid$="-talents"])');
-      await expect(rows).toHaveCount(5);
-      for (const row of await rows.all()) {
-        await expect(row.getByTestId('guide-leveling-row-talents')).toBeVisible();
-        await expect(row.getByText('Load in planner')).toHaveAttribute(
-          'href',
-          /^\/planner\?spec=mage-frost&talents=/,
-        );
-        const chips = row.getByTestId('guide-leveling-row-talents').locator('li');
-        expect(await chips.count()).toBeGreaterThan(3);
-        await expect(chips.first().locator('img')).toHaveCount(1);
-        await expect(chips.first()).toContainText(/\d\/\d/);
-      }
-      await expect(page.getByTestId('guide-leveling-legend')).toHaveText(
-        'Outlined: points added in this level range.',
+      const tree = page.getByTestId('guide-leveling-tree');
+      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('51 points spent, all placed');
+      await expect(tree.getByTestId('guide-leveling-caption')).toContainText(/Level 60: .+, rank \d/);
+      await expect(tree.getByTestId('guide-leveling-load')).toHaveAttribute(
+        'href',
+        /^\/planner\?spec=mage-frost&talents=[\d-]+$/,
       );
-      await expect(strip.getByTestId('guide-leveling-row-20')).toContainText('Level 20 to 29');
-      await expect(strip.getByTestId('guide-leveling-row-20')).toContainText('11 to 20 points');
-      await imagesLoaded(page, '[data-testid="guide-leveling-strip"] img');
+      await expect(tree.getByTestId('guide-leveling-slider')).toHaveAttribute('aria-valuetext', 'Level 60');
       await noSidewaysScroll(page);
     });
 
-    test('#leveling opens on the Levels 1 to 19 text, with the strip under Levels 20 to 60', async ({
+    test('#leveling opens on the Levels 1 to 19 text, with the tree before Levels 20 to 60', async ({
       page,
     }) => {
       await page.goto(`${PAGE}#leveling`);
       await expect(page.locator('#levels-1-to-19')).toBeInViewport();
       const top = async (selector: string): Promise<number> =>
         (await page.locator(selector).boundingBox())?.y ?? Number.NaN;
-      expect(await top('#levels-20-to-60')).toBeLessThan(await top('[data-testid="guide-leveling-strip"]'));
+      expect(await top('#levels-1-to-19')).toBeLessThan(await top('[data-testid="guide-leveling-tree"]'));
+      expect(await top('[data-testid="guide-leveling-tree"]')).toBeLessThan(await top('#levels-20-to-60'));
     });
   });
 }

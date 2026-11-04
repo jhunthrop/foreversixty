@@ -101,36 +101,3 @@ export function primaryTree(trees: readonly DecodedTreeView[]): DecodedTreeView 
 export function litTalents(trees: readonly DecodedTreeView[]): DecodedTalentView[] {
   return trees.flatMap((tree) => tree.talents.filter((talent) => talent.rank > 0));
 }
-
-/**
- * A leveling-BiS band's own `talents` string (`BisBand.talents`, e.g.
- * `"35311103002000000-353211005050010051-000000000000000000"`) -- a different, simpler
- * grammar than an FS1 code's own tree field: three dash-separated, fixed-width digit
- * strings, one digit per talent, zero-padded rather than trailing-zero-trimmed (confirmed
- * against the real build's own BiS files). `undefined` when this build carries no talent
- * file for `classSlug`, or `talents` does not split into exactly three segments.
- */
-export function decodeBandTalents(
-  build: string,
-  classSlug: string,
-  talents: string,
-): DecodedTreeView[] | undefined {
-  const segments = talents.split('-');
-  if (segments.length !== 3) return undefined;
-  const talentFile = loadTalentFile(build, classSlug);
-  if (talentFile === undefined) return undefined;
-  return talentFile.trees.map((tree, index): DecodedTreeView => {
-    const sorted = [...tree.talents].sort((a, b) => a.tier - b.tier || a.column - b.column);
-    const digits = segments[index] ?? '';
-    const ranked = sorted.map((talent, talentIndex) => ({
-      ...talent,
-      rank: digits[talentIndex] === undefined ? 0 : Number.parseInt(digits[talentIndex]!, 10) || 0,
-    }));
-    return {
-      name: tree.name,
-      position: tree.position,
-      talents: ranked,
-      points: ranked.reduce((sum, talent) => sum + talent.rank, 0),
-    };
-  });
-}
