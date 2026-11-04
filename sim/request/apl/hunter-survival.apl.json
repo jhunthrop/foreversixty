@@ -1,5 +1,22 @@
 {
   "type": "TypeAPL",
+  "prepullActions": [
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 1299447,
+            "rank": 4
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-10s"
+        }
+      }
+    }
+  ],
   "priorityList": [
     {
       "action": {
@@ -95,7 +112,7 @@
       }
     },
     {
-      "notes": "Immolation Trap at your feet on cooldown. You stand on the boss, so it walks straight into the trap, and Clever Traps and Survivalist's Discipline make it a real damage button.",
+      "notes": "Immolation Trap at your feet on cooldown. You stand on the boss, so it walks straight into the trap, and Clever Traps and Survivalist's Discipline make it a real damage button. Its burn carries a share of your attack power in Forever, so it keeps up with your gear.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -122,23 +139,6 @@
         }
       },
       "notes": "Wing Clip on any free global under a Windfury Totem, as a cheap melee special that can proc Windfury. It is a main hand hit that also rolls your weapon procs. Without the totem it is 50 damage for a global, so leave it alone."
-    }
-  ],
-  "prepullActions": [
-    {
-      "action": {
-        "castSpell": {
-          "spellId": {
-            "spellId": 1299447,
-            "rank": 4
-          }
-        }
-      },
-      "doAtValue": {
-        "const": {
-          "val": "-10s"
-        }
-      }
     }
   ]
 }

@@ -93,16 +93,16 @@ Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet ou
 
 On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
-Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: it outhits Multi-Shot whenever the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. With the raid build, Sniper Shot comes next: when it is ready and the shared cooldown is not, cast it right after an auto shot fires, never partway to the next one. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
+Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: it outhits Multi-Shot whenever the cast fits. If you are partway to your next auto shot and your mana is above a quarter, take Multi-Shot instead, so the cast never holds your auto. With the raid build, Sniper Shot comes next: when it is ready and the shared cooldown is not, cast it right after an auto shot fires, never partway to the next one. Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
 
 Auto Shot does more damage than any button you press, so protect it:
 
 - Stand still. Moving while an auto shot winds up cancels it.
 - Fire your instants right after an auto shot leaves, so they never push the next one back.
 - Stay outside 8 yards. Inside it you cannot shoot at all.
-- On a movement phase, fire Arcane Shot and Multi-Shot on the run and plant your feet the moment you can.
+- On a movement phase, fire Arcane Shot and Multi-Shot on the run while the mana holds, and plant your feet the moment you can.
 
-When mana gets low, stop Arcane Shot first. On one target Serpent Sting does more damage for its mana than Multi-Shot, so let Multi-Shot go before the sting, and keep Aimed Shot and Sniper Shot going. Drink a Major Mana Potion before you need it.
+When mana gets low, hold Multi-Shot first: it is the worst damage for its mana you fire, so under a quarter of your mana let the shared cooldown wait for an Aimed Shot that fits right after an auto shot. Keep Sniper Shot and Arcane Shot going, and keep Serpent Sting rolling to the end: with the attack power they carry, the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it.
 
 **The pet.** Level with a cat and train it the top ranks of Claw, Bite and Growl as you go. In a raid with the raid build, leave it dismissed. If you raid with the leveling build instead, turn off Growl (right-click it on the pet bar) and send the cat to the boss's back.
 
@@ -116,7 +116,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Agility is attack power and crit together. Crit is strong with Mortal Shots, which makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Agility is attack power and crit together. Crit is strong with Mortal Shots, which makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 

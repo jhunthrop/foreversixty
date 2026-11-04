@@ -18,8 +18,14 @@ import (
 //   - an Elemental shaman never swings a weapon, so Elemental Devastation ("your chance to
 //     get a Critical Strike with melee attacks") does nothing for it; Trial by Fire (Fire
 //     Nova and Magma Totem, which the rotation casts on two or more targets) is the toll
-//     point that does something (sim-accuracy round 20).
+//     point that does something (sim-accuracy round 20);
+//   - a Beast Mastery or Marksmanship hunter shoots and never melees, so the Survival
+//     tree's melee-only talents do nothing for it; a Survival hunter fights in melee
+//     (owner ruling) and casts no shot or sting, so the Marksmanship tree's ranged-only
+//     talents do nothing for it. The three hunter builds spend nothing there (sim-accuracy
+//     round 20, every point re-read against the 70755 talent text).
 func TestGuideBuildsSpendNothingOnDeadTalents(t *testing.T) {
+	rangedHunterDead := []string{"Savage Strikes", "Predator's Edge", "Expose Prey", "Counterattack", "Strider Kick", "Lacerating Strikes"}
 	cases := []struct {
 		class string
 		spec  string
@@ -28,6 +34,9 @@ func TestGuideBuildsSpendNothingOnDeadTalents(t *testing.T) {
 		{"druid", "feral", []string{"Nature's Focus", "Subtlety"}},
 		{"druid", "restoration", []string{"Improved Moonfire"}},
 		{"shaman", "elemental", []string{"Elemental Devastation"}},
+		{"hunter", "beast-mastery", rangedHunterDead},
+		{"hunter", "marksmanship", rangedHunterDead},
+		{"hunter", "survival", []string{"Ranged Weapon Specialization", "Mortal Shots", "Barrage", "Improved Stings", "Sniper Shot"}},
 	}
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)
