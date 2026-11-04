@@ -126,3 +126,35 @@ Noted, not changed: Hawk's own proc types are 320 (0x40 ranged auto + 0x100 rang
 - B2: Summon Hawk's 18 s assault (needs the hawk's attack data).
 - B4: cat vs raptor (owner question 4; the request has no pet-family field).
 - Carried from round 14: Ranged Weapon Specialization on Serpent Sting (H4), Lacerating Strikes on refresh (H7), the queued Raptor Strike lifting the off-hand miss penalty (H10).
+
+## Wave 3: rank rows on the shared low-rank penalty
+
+Merged int/r15 into both branches; both fast-forwarded (site 1e96d8df2, fork 9c511a2cd, which already contain this lane's waves 1 and 2).
+
+**Does the penalty touch hunter shots? No, in either direction.** It scales only a spell's spell-power coefficients (core/spell.go:355-359), and it skips Physical-school spells (levelPenalty, spell.go:813).
+- Aimed Shot, Multi-Shot, Sniper Shot and the melee kit are Physical, so they are skipped.
+- Arcane Shot (arcane_shot.go:60), Serpent Sting (serpent_sting.go:59), Volley (volley.go:82) and Immolation Trap's DoT carry spell-power coefficient 0 (client EffectBonusCoefficient 0; E 05b72a3b5, MR14), so the penalty multiplies nothing.
+- The cat's abilities are Physical.
+
+The runs confirm it: every number below is identical to the decimal between the round's start engine and the merged one.
+
+Rows and fixed-rank casts (10000 iterations, horde; before = $R/sb-before, after = merged lane head, no-row = merged head with the hunter rank rows removed):
+
+| band | seed 1 before / after / no-row | seed 50001 before / after / no-row | verdict |
+|---|---|---|---|
+| BM bare 40 (Aimed Shot rank 1, 40-49) | 167.9 / 167.9 / 162.9 | 168.1 / 168.1 / 163.0 | keep (+3.1%) |
+| BM bare 50 (no row) | 229.9 / 229.9 / 229.9 | 229.9 / 229.9 / 229.9 | unchanged |
+| BM bare 60 (Aimed Shot rank 1) | 329.5 / 329.5 / 315.6 | 329.5 / 329.5 / 315.5 | keep (+4.4%) |
+| MM bare 60 (Aimed Shot rank 1, wave-1 leveling build) | 333.5 / 333.5 / 319.8 | 333.7 / 333.7 / 320.2 | keep (+4.3%) |
+| BM raid 60 | 673.7 / 673.7 / 673.7 | 673.3 / 673.3 / 673.3 | no row |
+| MM raid 60 (wave-1 raid build and Sniper Shot line) | 764.3 / 764.3 / 764.3 | 764.7 / 764.7 / 764.7 | no row |
+
+Against wave 1: the MM numbers equal wave 1's after-figures (bare 60 333.5 / 333.7, raid 764.3 / 764.7). The engine change cost the hunters nothing, so there is nothing to recover.
+
+Fixed-rank casts in the APLs:
+- Beast Mastery and Marksmanship: Hunter's Mark 4, Aimed Shot 6, Serpent Sting 8, Arcane Shot 8, Aspect of the Hawk 6, Sniper Shot 3.
+- Survival: Raptor Strike 8, Counterattack 4, Mongoose Bite 4, Lacerate 4, Strider Kick 1, Immolation Trap 5, Wing Clip 3, Aspect of the Beast 4.
+
+All are authored at max rank and rewritten to the learned rank per band. None takes spell power that the penalty could cut, so no row is added, dropped or re-picked. Survival has no rank rows.
+
+Rows changed: none. Commits: this report section only.
