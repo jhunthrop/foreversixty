@@ -54,9 +54,10 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 		{"Gnome Devouring Plague at raid 60", "priest-shadow", "priest", RaidPreset, "gnome", 60, 19280, 19276},
 		// Elemental's Flame Shock rank 1 (8050) at 30.
 		{"Flame Shock at 30", "shaman-elemental", "shaman", BarePreset, "orc", 30, 8050, 8053},
-		// The top-rank Lightning Bolt line (15208, cast while mana is ahead) casts rank 7 (10391) at 50 and bare 60.
+		// The top-rank Lightning Bolt line (15208, cast while mana is ahead) casts rank 7 (10391) at 50.
+		// At bare 60 it casts rank 10 since client 1.60.1.70755's bolt retune (round 15, shaman).
 		{"Lightning Bolt pacing line at 50", "shaman-elemental", "shaman", BarePreset, "orc", 50, 10391, 15207},
-		{"Lightning Bolt pacing line at bare 60", "shaman-elemental", "shaman", BarePreset, "dwarf", 60, 10391, 15208},
+		{"Lightning Bolt pacing line at bare 60", "shaman-elemental", "shaman", BarePreset, "dwarf", 60, 15208, 10391},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
 		if !ids[c.want] || ids[c.not] {
