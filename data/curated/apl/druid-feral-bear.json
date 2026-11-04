@@ -1,7 +1,7 @@
 {
   "spec": "druid-feral-bear",
   "state": "written",
-  "notes": "Bear Form tank at 60. Primal Bite on its 6 s cooldown, Lacerate kept ticking (Rend and Tear reads it), Maul queued on the next swing, Swipe as the rage dump, Barkskin on cooldown and Frenzied Regeneration as the heal under half health. Measured in the sim's tank fight (level 63 boss, 2.0 s swing, 2400 to 3192, 180 s, healer 600 HPS) in the engine's own level 60 bear set: this order gave about 1005 threat per second against 806 for Primal Bite and Maul alone (Berserk, then in the rotation, added 4 percent; client 1.60.1.70707 removed it from the tree), Barkskin cost 1.6 percent threat for 5 percent less damage taken. Left out on purpose: Demoralizing Roar, because the fight's boss has no attack power for it to reduce (measured 1.8 percent less threat for no change in damage taken, and the raid debuff already supplies it when it is on), and Enrage, which bought 2.7 percent threat for 1.8 percent more damage taken (measured when the engine took 27 percent of base armor for 10 s; the client's text is 27 percent in Bear Form and 16 percent in Dire Bear Form, which the engine now uses), a trade a tank rotation should not make by default. Client 1.60.1.70707 made Lacerate a Feral talent (the guide build takes it) and Primal Bite the Feral capstone. The Lacerate bleed stacking, its direct hit (10% weapon damage per stack already up, live tooltip), Frenzied Regeneration's conversion and Enrage's armor penalty are not in the client tables and are the engine's stated assumptions (sim/druid/lacerate.go, enrage.go, frenzied_regeneration.go). Primal Bite's level 60 rank is rank 3 (1238070): the client teaches no rank 4 (its learn row was removed by the 70707 push), and both deal the same 77. Guide rewrite (2026-11-02): the bear Enrages 1 s before the pull, as real bears open: 10 rage up front and 2 a second for 10 seconds, with the armor it costs gone 9 s into the fight. Raid 60, 10,000 iterations, seeds 1 and 50001: threat 1001.0 to 1009.2 a second (+0.8%), damage taken 581.4 to 584.0 (+0.45%), TMI 48.7 to 48.8.",
+  "notes": "Bear Form tank at 60. Primal Bite on its 6 s cooldown, Lacerate kept ticking (Rend and Tear reads it), Maul queued on the next swing, Swipe as the rage dump, Barkskin on cooldown and Frenzied Regeneration as the heal under half health. Measured in the sim's tank fight (level 63 boss, 2.0 s swing, 2400 to 3192, 180 s, healer 600 HPS) in the engine's own level 60 bear set: this order gave about 1005 threat per second against 806 for Primal Bite and Maul alone (Berserk, then in the rotation, added 4 percent; client 1.60.1.70707 removed it from the tree), Barkskin cost 1.6 percent threat for 5 percent less damage taken. Demoralizing Roar is kept up after Faerie Fire (round 14, owner ruling: the tank boss carries a Classic creature's attack power, 268 at level 63, and a creature's swing scales with it as a share, so the roar's 204 takes about 23 percent off every swing): raid 60, 10,000 iterations, damage taken about 20 percent lower for about 5 percent less threat. Left out on purpose: Enrage, which bought 2.7 percent threat for 1.8 percent more damage taken (measured when the engine took 27 percent of base armor for 10 s; the client's text is 27 percent in Bear Form and 16 percent in Dire Bear Form, which the engine now uses), a trade a tank rotation should not make by default. Client 1.60.1.70707 made Lacerate a Feral talent (the guide build takes it) and Primal Bite the Feral capstone. The Lacerate bleed stacking, its direct hit (10% weapon damage per stack already up, live tooltip), Frenzied Regeneration's conversion and Enrage's armor penalty are not in the client tables and are the engine's stated assumptions (sim/druid/lacerate.go, enrage.go, frenzied_regeneration.go). Primal Bite's level 60 rank is rank 3 (1238070): the client teaches no rank 4 (its learn row was removed by the 70707 push), and both deal the same 77. Guide rewrite (2026-11-02): the bear Enrages 1 s before the pull, as real bears open: 10 rage up front and 2 a second for 10 seconds, with the armor it costs gone 9 s into the fight. Raid 60, 10,000 iterations, seeds 1 and 50001: threat 1001.0 to 1009.2 a second (+0.8%), damage taken 581.4 to 584.0 (+0.45%), TMI 48.7 to 48.8.",
   "sources": [
     {
       "label": "Forever Sixty bear harness measurements (sim/druid/tank, tank fight)",
@@ -40,7 +40,7 @@
         }
       },
       {
-        "notes": "On cooldown: 20% less damage taken for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
+        "notes": "On cooldown: 20% less physical damage for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -193,6 +193,59 @@
               "spellId": 9907,
               "rank": 4,
               "tag": 1
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing. One is enough, since it does not stack with a warrior's Demoralizing Shout. Refresh it in its last 3 seconds.",
+        "action": {
+          "condition": {
+            "or": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "auraIsActive": {
+                        "auraId": {
+                          "spellId": 9898,
+                          "rank": 5
+                        },
+                        "sourceUnit": {
+                          "type": "CurrentTarget"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "auraRemainingTime": {
+                        "sourceUnit": {
+                          "type": "CurrentTarget"
+                        },
+                        "auraId": {
+                          "spellId": 9898,
+                          "rank": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "3s"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9898,
+              "rank": 5
             }
           }
         }

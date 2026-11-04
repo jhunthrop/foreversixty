@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Subtlety Rogue as the site's guide describes it. Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and Boot Knife Shanks to build, Rupture as the main finisher, Ghostly Strike every twenty seconds and Death Mark to cash the bleeds in. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Subtlety Rogue as the site's guide describes it. Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and Boot Knife Shanks to build, Rupture as the main finisher and Death Mark to cash the bleeds in. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -23,19 +23,18 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the ble
 - Premeditation: A couple of seconds before the pull, press Premeditation for two combo points. They last twenty seconds, so do not press it early.
 - Open with Garrote once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet.
 - Ambush is the opener for anything that will die fast, not for a boss.
-- Shank on cooldown, right behind your racial and trinket: with Boot Knife every Shank is two combo points for five energy, and it gives twenty-five energy back.
-- Rupture at four or more combo points whenever it is not ticking.
-- Ghostly Strike on cooldown: it hits harder than Hemorrhage for five more energy and gives a combo point.
-- Death Mark at five combo points while Rupture is ticking: for six seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once.
-- Eviscerate at three or more combo points while Rupture is ticking, so points never sit idle.
+- Shank on cooldown: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points.
+- Death Mark is your only damage cooldown and it comes back every ten seconds, so there is nothing to hold.
+- Eviscerate.
 - Slice and Dice.
-- Hemorrhage is the builder: one combo point, and its debuff makes your Rupture and Garrote hit fifteen percent harder.
+- Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
 - Preparation resets your other rogue cooldowns on a ten minute timer, which on a raid boss mostly means a second Vanish or a second Evasion.
 - Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five.
 - Kick, Gouge and Blind handle the rest.
 - Elusiveness puts Blind on a short leash.
 - Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.
 - Feint on cooldown on bosses where you sit near the tank's threat.
+- Ghostly Strike on cooldown: it hits harder than Hemorrhage for five more energy and gives a combo point.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

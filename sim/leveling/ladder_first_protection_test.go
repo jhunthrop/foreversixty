@@ -9,7 +9,9 @@ import (
 // from rank 1 (20925, level 30). A level 30 paladin has 21 points, enough for the 20 points
 // above it plus Holy Shield, but the plain top-row-down walk spends the 21st on Improved
 // Righteous Fury. The curated reservation takes Holy Shield (and Shieldsworn, so band 40
-// keeps the capstone the spine gave it) as soon as each fits; no other band changes.
+// keeps the capstone the spine gave it) as soon as each fits. Band 20's Templar's Bulwark
+// (owner ruling, round 14) is TestProtectionTakesTemplarsBulwarkAtTwenty's; the bands above
+// keep the plain walk.
 func TestProtectionTakesHolyShieldAtThirty(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)
@@ -46,7 +48,7 @@ func TestProtectionTakesHolyShieldAtThirty(t *testing.T) {
 		t.Errorf("level 30 Protection build %q has no Holy Shield", at30)
 	}
 
-	for _, level := range []int{20, 40, 50, 60} {
+	for _, level := range []int{40, 50, 60} {
 		got := LadderTalentString(trees, targets, protectionTree, level, ForSpec("paladin-protection"))
 		want := LadderTalentString(trees, targets, protectionTree, level)
 		if got != want {

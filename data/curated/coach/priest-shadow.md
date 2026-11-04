@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/priest/shadow.md
   - data/curated/apl/priest-shadow.json
-  - data/builds/1.60.1.70753/spellconst/priest.json
+  - data/builds/1.60.1.70755/spellconst/priest.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,14 +21,14 @@ This is the Shadow Priest as the site's guide describes it. Shadow keeps two DoT
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Shadow Word: Pain kept up, unless the fight is close to ending.
-- Inner Focus into Devouring Plague outside the execute window: a free, empowered cast at its full top rank.
-- Mind Flay on every free global.
-- Mind Blast only when Mind Flay cannot be cast.
-- Shadow Word: Death first below twenty percent target health. While it is on its fifteen-second cooldown, Mind Blast, then Mind Flay.
+- Inner Focus on Mind Blast every time it is up: the Mind Blast is free and more likely to crit.
+- Mind Blast on cooldown, ahead of Mind Flay.
+- Shadow Word: Death on cooldown, ahead of Mind Flay. Keep Vampiric Embrace up so your own damage heals back its backlash.
+- Mind Flay with everything else, and never clip it: the third tick is the biggest.
 - Shoot with your wand on any global where nothing else is ready.
 - Buff the raid, then shift into Shadowform and drink back to full. The form costs mana, so never shift on the pull.
 - Devouring Plague every time its twenty-four second cooldown is up: every priest has it in Forever, its ticks crit, and it heals you.
-- Vampiric Embrace on the boss whenever it is down: the guide keeps it up in a raid.
+- Vampiric Embrace on the boss whenever it is down.
 - Fade sheds threat for a few seconds on a thirty second cooldown; use it the moment you climb past the tank, not after the boss turns.
 - Dark Sacrifice if you are Undead, on a long fight once your mana is well down.
 

@@ -158,8 +158,8 @@ or below its level has no DPS figure and reads in score, never the level-60 raid
 sim's own `dps_per_point` from the companion's weights message for the spec wins over the band's,
 the weapon term staying the band's measured one) and, on the slot the band's weapon term was measured on (the main hand, or the
 ranged slot for a ranged-attack-power spec), the weapon's own DPS at the band's measured
-`weaponDps`, never through attack power; the off hand, a hunter's melee weapon and a feral
-druid's, a caster's or a healer's weapon DPS count nothing. The worn item's enchant is read from its own tooltip (the
+`weaponDps`, never through attack power; the off hand, a hunter's melee weapon and a caster's
+or a healer's weapon DPS count nothing (a feral druid's counts: in Forever a form swings at the weapon's DPS). The worn item's enchant is read from its own tooltip (the
 client's "Enchanted: ..." line, each "+N <stat>" in the client's own stat words, "Weapon Damage
 +N" as N divided by the weapon's speed of DPS) and added to the worn item before every comparison
 it takes part in (the Next gain, the bag verdicts against it, the chip's upgrades); only when that

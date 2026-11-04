@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/warlock/affliction.md
   - data/curated/apl/warlock-affliction.json
-  - data/builds/1.60.1.70753/spellconst/warlock.json
+  - data/builds/1.60.1.70755/spellconst/warlock.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

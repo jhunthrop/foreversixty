@@ -82,14 +82,21 @@ failed_lines() {
 # wait_for_checks <branch> <sha>: polls until every run is completed and green (0) or any
 # job failed (1, the failed jobs listed) or the timeout passed (1).
 wait_for_checks() {
-	local branch=$1 sha=$2 start now runs id failed pending count stable_since=-1 last_count=-1
+	local branch=$1 sha=$2 start now runs id jobs lines failed pending count stable_since=-1 last_count=-1
 	start=$SECONDS
 	while :; do
 		runs=$(retry runs_json "$branch" "$sha")
 		count=$(jq length <<<"$runs")
-		failed=$(for id in $(jq -r '.[].databaseId' <<<"$runs"); do
-			retry run_jobs_json "$id" | failed_lines
-		done)
+		failed=''
+		for id in $(jq -r '.[].databaseId' <<<"$runs"); do
+			# A run whose jobs cannot be read is never counted green.
+			jobs=$(retry run_jobs_json "$id") || {
+				log "could not read run $id; land again once gh answers"
+				return 1
+			}
+			lines=$(failed_lines <<<"$jobs")
+			[[ -z $lines ]] || failed+="${failed:+$'\n'}$lines"
+		done
 		if [[ -n $failed ]]; then
 			log "checks failed on $sha:"
 			printf '  %s\n' "${failed//$'\n'/$'\n'  }" >&2

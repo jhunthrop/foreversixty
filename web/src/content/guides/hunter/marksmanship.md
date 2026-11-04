@@ -84,7 +84,7 @@ Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet ou
 
 On the pull, press Rapid Fire with your trinkets and Berserking or Blood Fury, just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
-Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: since the hotfix it hits about twice as hard as before, and it is a small gain over Multi-Shot when the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
+Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: the November hotfix doubled its bonus damage, so it now outhits Multi-Shot when the cast fits. If you are partway to your next auto shot, take Multi-Shot instead, so the cast never holds your auto. Keep Serpent Sting rolling and refresh it only as it runs out. Fill the gaps with Arcane Shot while you are above a quarter of your mana.
 
 Auto Shot does more damage than any button you press, so protect it:
 

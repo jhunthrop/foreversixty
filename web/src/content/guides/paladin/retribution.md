@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:paladin:human:050250002/502/0523330100130135:'
 raidBuild: 'FS1:1.60.1.70755:paladin:human:050050002/503/05233301001301351:'
 recommendedRaces: [human, undead]
-statPriority: [Strength, Attack power, Critical strike, Hit, Agility, Melee haste]
+statPriority: [Hit, Intellect, Strength, Critical strike, Agility, Spell power, Attack power, Melee haste]
 description: 'Leveling and raiding with Seals, Judgement and an instant Hammer of Wrath, including the raid Unsealed Wrath swap.'
 updated: 2026-11-02
 confidence: inferred
@@ -59,7 +59,7 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 
 - **Benediction** (5 points): every instant costs 10% less, and nearly everything you press is instant.
 - **Improved Judgement** (2 points): Judgement every 8 seconds instead of 10.
-- **Conviction** (3 points): 6% crit while you hold a melee weapon, on your swings, Holy Strike, Seal procs and Judgements (they all roll like melee attacks). It does not reach Consecration or Exorcism.
+- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs and Judgements, and your spells too, Consecration and Exorcism included.
 - **Sanctified Judgement** (3 points): every Judgement hands back 60% of the judged Seal's cost. This is what pays for your Seals, and for the twist at 60.
 - **Sacred Arbiter** (1 point): Holy Strike hits 20% harder and refreshes every Judgement on the target.
 - **Two-Handed Weapon Specialization** (3 points): 6% more Physical and Holy damage with a two-hander, and 20% less threat. That reaches your Holy Seal procs and Judgements as well as your swings.
@@ -100,7 +100,7 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 ## Stat priority
 
-Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, and Precision and Artisan's Precision both help. Strength is your main stat after that, since Divine Strength adds 10% to all of it. Crit feeds Vengeance as well as itself. Intellect also counts: Champion of the Light turns 60% of it into spell damage for your Seals, Judgements and Consecration, and it is your mana bar. The weights above are per point at level 60.
+Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, and Precision and Artisan's Precision both help. Intellect is next: Champion of the Light turns 60% of it into spell damage for your Seals, Judgements and Consecration, and it is your mana bar. Then Strength, which Divine Strength raises by 10%, and crit, which feeds Vengeance as well as itself.
 
 ## Best in slot
 

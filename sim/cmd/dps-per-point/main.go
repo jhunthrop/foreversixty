@@ -159,19 +159,11 @@ func weaponPseudoStat(spec specs.Spec) proto.PseudoStat {
 	return proto.PseudoStat_PseudoStatMainHandDps
 }
 
-// formIgnoresWeapon names the specs whose attacks never use the weapon's
-// damage: Cat Form's claws hit for the form's own damage, so a weapon's
-// DPS is worth nothing to a cat (only its stats are). The engine's sweep
-// reads a term for it under a named preset, which the addon would price.
-var formIgnoresWeapon = map[string]bool{"druid-feral": true}
-
 // trustedWeapon is the weapon term when it is positive beyond its own
-// error, else 0: a term inside its error is noise, not a number, and a
-// spec whose form ignores the weapon has none.
-func trustedWeapon(spec specs.Spec, m measurement) float64 {
-	if formIgnoresWeapon[spec.Spec] {
-		return 0
-	}
+// error, else 0: a term inside its error is noise, not a number. A feral
+// druid keeps its term: in Forever a form swings at the equipped weapon's
+// DPS (Blizzard's druid deep dive, 2026-09-30).
+func trustedWeapon(m measurement) float64 {
 	if m.Weapon > m.WeaponErr {
 		return m.Weapon
 	}
@@ -302,7 +294,7 @@ func measureAll(picked []specs.Spec, characterFor characterFunc, presetFor prese
 			continue
 		}
 		log.Printf("dps-per-point: %s: %.4f ± %.4f per %s, %.4f ± %.4f per weapon DPS, in %s", spec.Spec, got.PerPoint, got.StdErr, spec.ReferenceStat, got.Weapon, got.WeaponErr, time.Since(start).Round(time.Second))
-		out[spec.Spec] = entry{Reference: spec.ReferenceStat, DPS: got.PerPoint, Healing: healing(spec), WeaponDPS: trustedWeapon(spec, got)}
+		out[spec.Spec] = entry{Reference: spec.ReferenceStat, DPS: got.PerPoint, Healing: healing(spec), WeaponDPS: trustedWeapon(got)}
 	}
 	return out, skipped
 }
@@ -346,7 +338,7 @@ func measureBands(picked []specs.Spec, bands []int, characterFor bandCharacterFu
 				Level:       ch.Level,
 				DPS:         got.PerPoint,
 				DPSError:    got.StdErr,
-				WeaponDPS:   trustedWeapon(spec, got),
+				WeaponDPS:   trustedWeapon(got),
 				WeaponError: got.WeaponErr,
 			}
 		}
