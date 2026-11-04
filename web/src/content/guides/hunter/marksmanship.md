@@ -68,7 +68,7 @@ Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shar
 
 There are two builds. You level with the pet: thirty points in Marksmanship take the talents that raise your big shots and your auto shot, sixteen in Beast Mastery take the pet talents and Deadly Aspects, and five in Survival take Improved Tracking. At 60, for raids, the pet goes: thirty-three points in Marksmanship add Lone Wolf and the rest of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.
 
-- **Mortal Shots** (5 points): 30% more crit damage on your shots
+- **Mortal Shots** (5 points): your shot crits hit for 230% of a normal hit instead of double
 - **Barrage** (3 points): 15% more damage on Multi-Shot, Aimed Shot and Volley
 - **Ranged Weapon Specialization** (5 points): 5% more damage on everything your bow or gun does, auto shot included
 - **Careful Aim** (5 points): attack power equal to your Intellect

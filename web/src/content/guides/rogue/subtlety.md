@@ -126,4 +126,4 @@ Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for t
 
 ### Levels 20 to 60
 
-Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Cheap Shot or Garrote, keep Slice and Dice up on anything that lives, and Eviscerate at five.
+Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five.

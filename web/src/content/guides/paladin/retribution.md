@@ -57,7 +57,7 @@ Retribution is a two-handed Seal fighter: keep a Seal up, Judge every 8 seconds,
 
 The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build moves Reverence's two points into the third rank of Precision and Unsealed Wrath.
 
-- **Benediction** (5 points): every instant costs 10% less, and nearly everything you press is instant.
+- **Benediction** (5 points): your Seals, Judgement, Holy Strike, Consecration and Exorcism cost 10% less. Hammer of Wrath is the exception: Champion of the Light makes it instant, but it still costs full price.
 - **Improved Judgement** (2 points): Judgement every 8 seconds instead of 10.
 - **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs, Judgements and Consecration's ticks. Exorcism is the exception: it never crits in Forever.
 - **Sanctified Judgement** (3 points): every Judgement hands back 60% of the judged Seal's cost. This is what pays for your Seals, and for the twist at 60.
@@ -67,7 +67,7 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 - **Champion of the Light** (5 points): 60% of your Intellect as spell damage, and Hammer of Wrath becomes instant.
 - **Unsealed Wrath** (1 point): the raid capstone. Each swing stores a copy of your Seal, up to three, and a swing under a different Seal releases them.
 
-**Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** is filler on the way to Champion of the Light, since nothing else in that row adds damage. **Repentance** is the point Unsealed Wrath requires, and it still earns its place in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
+**Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** is filler on the way to Champion of the Light: once Seal of Command has its point, the rest of that row is Unyielding Faith and Pursuit of Justice, and neither adds damage. **Repentance** is the point Unsealed Wrath requires, and it still earns its place in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
 
 In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your mana regeneration running while you cast, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. At 60, hit is worth taking up to the cap and adds nothing past it.
 

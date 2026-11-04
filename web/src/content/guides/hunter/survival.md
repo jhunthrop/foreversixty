@@ -71,7 +71,7 @@ Thirty-five points in Survival take every melee damage talent, eleven in Marksma
 - **Lone Wolf** (1 point): 20% more damage with every attack while no pet is out. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so for a melee hunter the talent beats the pet
 - **Expose Prey** (2 points): your hits on a target with Hunter's Mark have a 10% chance to open Mongoose Bite for 10 seconds, the only way it opens on a boss that is not attacking you
 - **Lacerating Strikes** (1 point): Mongoose Bite also bleeds the target for 40% of its damage over 21 seconds
-- **Predator's Edge** (5 points): 30% more crit damage on your melee specials and 50% more off-hand damage
+- **Predator's Edge** (5 points): your melee special crits hit for 230% of a normal hit instead of double, and your off hand does 50% more damage
 - **Savage Strikes** (2 points): 4% crit on your melee specials
 - **Lightning Reflexes** (5 points): 15% Agility
 - **Deadly Aspects** (5 points): under Aspect of the Beast, every white swing has a 10% chance to speed your melee attacks by 30% for 12 seconds
@@ -99,7 +99,7 @@ You fire no shots in this spec. Your bow or gun is there for its stats.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: Predator's Edge makes their crits hit 30% harder, and every special crit keeps half your mana regeneration running through Resourcefulness. Savage Strikes adds 4% crit chance to those specials on top of what your gear gives. Agility is attack power and crit together, and Lightning Reflexes raises it by 15%. Intellect is attack power through Careful Aim, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: Predator's Edge makes their crits hit for 230% of a normal hit instead of double, and every special crit keeps half your mana regeneration running through Resourcefulness. Savage Strikes adds 4% crit chance to those specials on top of what your gear gives. Agility is attack power and crit together, and Lightning Reflexes raises it by 15%. Intellect is attack power through Careful Aim, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 

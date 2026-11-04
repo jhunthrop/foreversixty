@@ -112,7 +112,7 @@ Flask of Supreme Power, Elixir of Shadow Power and Greater Arcane Elixir all sta
 
 **Undead** is the Horde pick, and the strongest Shadow priest of all. Touch of the Grave gives your spells a chance to drain health from the target, up to 5% of your maximum health, at most once every 15 seconds, which takes the edge off Shadow Word: Death's backlash. Dark Sacrifice trades your health for mana once a fight, and Will of the Forsaken breaks fears and charms.
 
-**Night Elf** is as good as Human: Elune's Light is 10% crit for 15 seconds every 3 minutes. **Dwarf** is close behind with Artisan's Precision, 1% hit, plus Stoneform and Desperate Prayer. **Gnome** trails them a little: Eureka! makes your spells 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. **Troll** has Berserking, 10% cast speed for 15 seconds every 3 minutes, and falls clearly behind Undead.
+**Night Elf** is as good as Human: Elune's Light is 10% crit for 15 seconds every 3 minutes. **Dwarf** is close behind with Artisan's Precision, 1% hit, plus Stoneform and Desperate Prayer. **Gnome** trails them a little: Eureka! makes Mind Blast, Shadow Word: Death and Mind Flay 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. **Troll** has Berserking, 10% cast speed for 15 seconds every 3 minutes, and falls clearly behind Undead.
 
 ## Professions
 

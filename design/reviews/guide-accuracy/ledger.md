@@ -198,3 +198,22 @@ Open sims, none of them claimed in prose:
 - Elemental Earth Shock filler.
 - Warrior Dwarf against Human breakdown.
 - Race re-runs after the final best-in-slot re-rank.
+
+## Round 8 (client 1.60.1.70755, 2026-11-04)
+
+Built on round 7 (main 09b98d9e4). Audit CONFIRMED by class: hunter 3, warrior 2, warlock 1, druid 1, and 0 for mage, paladin, priest, rogue and shaman. Total 7. Trend 72, 39, 33, 25, 12, 21, 14, 7. Five classes reached zero confirmed this round.
+
+The hunter errors repeat the mistake fixed for Impale in round 7: Mortal Shots and Predator's Edge raise the crit bonus, so a crit does 230% of a normal hit, and 212% or 224% on the Beast Mastery build. The other fixes:
+- Eureka! covers non-periodic damaging abilities only (warrior, warlock).
+- Hurricane is a Nature spell.
+- Thunder Clap's slow is not the biggest cut to damage taken; Demoralizing Shout cuts more.
+- Battle Shout reaches party and raid members within 20 yards for 3 minutes.
+- Cheap Shot trains at 26.
+- Frostfire Bolt slows from 40.
+- Benediction does not discount Hammer of Wrath.
+- The Vindication row reason was wrong.
+
+New sim finding: the engine's Eureka! client lists cover Rain of Fire and Hellfire, and give Drain Life and Drain Soul the boost, while the tooltip says "non-periodic". The guide follows the tooltip.
+
+Verdict: NOT zero, so round 9 is needed.
+Rendered review: wow-player SHIP for all eight changed classes, with no MUSTs. Fixes are on land/guides-r8.

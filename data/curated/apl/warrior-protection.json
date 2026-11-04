@@ -222,7 +222,7 @@
         }
       },
       {
-        "notes": "Keep it on the boss: its attack speed slow is your biggest cut to damage taken after Shield Block. Refresh it in its last 3 seconds.",
+        "notes": "Keep it on the boss: its attack speed slow is a straight cut to the damage you take. Refresh it in its last 3 seconds.",
         "action": {
           "condition": {
             "or": {
