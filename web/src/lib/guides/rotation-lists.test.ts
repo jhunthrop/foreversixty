@@ -386,7 +386,9 @@ describe('the Frost Mage lists, from the real data', () => {
     expect(lists.priority.every((item) => item.icon !== undefined && item.clause !== '')).toBe(true);
     // The opener comes straight off the APL's pre-pull casts.
     expect(lists.opener.map((item) => item.name)).toEqual(['Ice Barrier', 'Frostbolt']);
-    expect(lists.opener.map((item) => item.clause)).toEqual(['4 s before the pull', '2.5 s before the pull']);
+    // With no build's talents passed, Frostbolt starts its full base cast before the pull; the
+    // guide's own build (Improved Frostbolt) is guide-rotation.test.ts's.
+    expect(lists.opener.map((item) => item.clause)).toEqual(['4 s before the pull', '3 s before the pull']);
   });
 
   it('names the pre-pull casts of a spec that has them, with their icons', () => {
