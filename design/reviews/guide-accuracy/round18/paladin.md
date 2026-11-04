@@ -97,3 +97,4 @@ Round 17 fixes (opener :78, card line 2, :95 cost claim): 0 errors. Sim round 19
 ## Fix log (round 18)
 
 - PALADIN-R18-1: fixed, `retribution.md:95` and `:133` keep the measured rank levels and drop the per-cast cost reason ("the newer ranks cost far more than they add", "costs too much for what it adds"), which the client rows contradict. Sims requested 1 (Consecration ranks 1 to 4 at 50 to 53 with the pacing line removed) goes to the sim lane; if a higher rank wins there, both lines move with the row.
+- Rendered review (wow-player SHIP, two SHOULDs taken): `:95` "Rank 1 is cheap enough to put down every time it is ready" and `:78` "rank 7 even after rank 8 arrives at 58".
