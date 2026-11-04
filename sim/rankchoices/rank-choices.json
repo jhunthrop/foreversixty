@@ -39,6 +39,12 @@
             "from_level": 30,
             "to_level": 39,
             "rank": 4
+          },
+          {
+            "from_level": 46,
+            "to_level": 48,
+            "rank": 6,
+            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 6 beats rank 7 by 0.6 to 0.7% at 46, 0.3 to 0.4% at 47 and 0.1 to 0.2% at 48; they tie at 49."
           }
         ]
       },
@@ -51,6 +57,12 @@
             "to_level": 38,
             "rank": 1,
             "note": "Sim-accuracy round 16 wave 2: judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001). At 39 rank 2 beats rank 1 by 1.8%, so the row stops at 38; below it the two are within 1%."
+          },
+          {
+            "from_level": 54,
+            "to_level": 58,
+            "rank": 3,
+            "note": "Sim-accuracy round 19: judged level by level at 40-59 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 3 beats rank 4 by 0.2 to 0.6% at 54 to 58 (night elf) and 0.1 to 0.2% at 54 to 56 (tauren, a tie at 57 and 58); they tie at 53 and 59."
           }
         ]
       }

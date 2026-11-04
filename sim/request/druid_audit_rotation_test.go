@@ -184,3 +184,35 @@ func TestRestorationTankRejuvenationRanksByLevel(t *testing.T) {
 		}
 	}
 }
+
+// Round 19: Balance at 40-59 judged level by level (10,000 iterations, seeds
+// 1 and 50001, night elf and tauren). Wrath rank 6 beats rank 7 by 0.1 to
+// 0.7% at 46 to 48 (tie at 49); Insect Swarm rank 3 beats rank 4 by 0.1 to
+// 0.6% at 54 to 58 (tie at 53 and 59). Moonfire and Starfire keep the top
+// rank at every level checked.
+func TestBalanceRankRowsFortyToFiftyNine(t *testing.T) {
+	const (
+		wrath6, wrath7             = 6780, 8905
+		insectSwarm3, insectSwarm4 = 24975, 24976
+	)
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Wrath at 45 is rank 6", 45, wrath6, wrath7},
+		{"Wrath at 46 is rank 6", 46, wrath6, wrath7},
+		{"Wrath at 48 is rank 6", 48, wrath6, wrath7},
+		{"Wrath at 49 is rank 7", 49, wrath7, wrath6},
+		{"Insect Swarm at 53 is rank 4", 53, insectSwarm4, insectSwarm3},
+		{"Insect Swarm at 54 is rank 3", 54, insectSwarm3, insectSwarm4},
+		{"Insect Swarm at 58 is rank 3", 58, insectSwarm3, insectSwarm4},
+	} {
+		for _, race := range []string{"night-elf", "tauren"} {
+			ids := rotationIDs(t, "druid-balance", "druid", c.level, specRankChoices("druid-balance", BarePreset, race))
+			if !ids[c.want] || ids[c.not] {
+				t.Errorf("%s (%s): want %d cast and %d not", c.name, race, c.want, c.not)
+			}
+		}
+	}
+}
