@@ -635,16 +635,16 @@
           },
           {
             "from_level": 37,
-            "to_level": 37,
+            "to_level": 41,
             "rank": 4
           },
           {
-            "from_level": 38,
-            "to_level": 43,
+            "from_level": 42,
+            "to_level": 46,
             "rank": 5
           },
           {
-            "from_level": 44,
+            "from_level": 47,
             "to_level": 56,
             "rank": 6
           },
