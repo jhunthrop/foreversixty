@@ -1,10 +1,19 @@
 // design/listing/gen_gallery.mjs
-// Renders the store gallery plates for the Forever Sixty listing: each client capture the
-// /setup page uses (web/public/addon/*.jpg) on a 1600x900 plate in the site's own dark and
-// gold, with the surface's name and one line under it. Run from anywhere:
+// Renders the store gallery plates for the Forever Sixty listing: each client capture on a
+// 16:9 plate in the site's own dark and gold, with the surface's name and one line under it.
+// Run from anywhere:
 //   node design/listing/gen_gallery.mjs
-// Output: design/listing/gallery/NN-<name>.png. Playwright comes from web/node_modules.
-import { mkdir, readFile } from 'node:fs/promises';
+// Output: design/listing/gallery/NN-<name>.png at 3200x1800 (a 1600x900 layout at device scale 2,
+// so the caption text is rasterised at full resolution). Playwright comes from web/node_modules.
+//
+// Crispness rules (design/listing/RECAPTURE.md says how the owner takes the captures):
+// - a capture is drawn at most 1:1, one capture pixel to one plate pixel, never enlarged;
+// - a lossless PNG in design/listing/captures/ wins over the site's JPEG in web/public/addon/;
+// - the capture sits on whole device pixels, so a 1:1 capture is copied, not resampled.
+// Each plate prints its source, native size and how much of the stage it fills; a JPEG source
+// or a capture too small to fill the stage is flagged RECAPTURE.
+import { mkdir, readFile, stat } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,43 +23,77 @@ const repo = path.resolve(here, '..', '..');
 const require = createRequire(path.join(repo, 'web', 'package.json'));
 const { chromium } = require('@playwright/test');
 
-const CAPTURES = path.join(repo, 'web', 'public', 'addon');
+/** Lossless captures first, then the site's JPEGs. */
+const CAPTURE_SOURCES = [
+  { dir: path.join(here, 'captures'), ext: 'png', type: 'image/png', lossless: true },
+  { dir: path.join(repo, 'web', 'public', 'addon'), ext: 'jpg', type: 'image/jpeg', lossless: false },
+];
 const FONTS = path.join(repo, 'web', 'src', 'assets', 'fonts');
 const OUT = path.join(here, 'gallery');
+const CAPTIONS_FILE = path.join(here, 'curseforge-description.md');
+
+/** Layout in CSS pixels; the PNG is DEVICE_SCALE times larger. */
 const WIDTH = 1600;
 const HEIGHT = 900;
-/** The capture's box above the caption; a capture scales to fit it, up to 1.5x its pixels. */
-const STAGE_HEIGHT = 600;
+const DEVICE_SCALE = 2;
+/** The capture's box above the caption. */
 const STAGE_WIDTH = 1440;
-const MAX_SCALE = 1.5;
+const STAGE_HEIGHT = 600;
+/** A capture filling less than this share of the stage's width or height reads as small. */
+const MIN_FILL = 0.6;
+/**
+ * Neither store publishes a gallery limit (checked 2026-11-03); this is our own ceiling so an
+ * upload never fails on size. A plate over it fails the run.
+ */
+const MAX_PLATE_BYTES = 5 * 1024 * 1024;
 
-/** Order and captions: design/listing/curseforge-description.md, "Gallery captions". */
+/** Capture file names in gallery order; titles and captions come from CAPTIONS_FILE. */
 const PLATES = [
-  ['chip-tooltip-legend', 'The chip', 'One line beside the minimap: the talent to take, the bag item to equip, loot here for you, or what the ready check found missing.'],
-  ['talent-marks-trees', 'Talent marks', "Your build's talents numbered in order, the next one ringed, a strip counting the points your level allows."],
-  ['item-tooltip-ranged', 'Item tooltips', 'Whether an item beats what you wear and by how much, the next upgrade for the slot, where it drops, and two alternatives.'],
-  ['bag-arrow', 'Paper doll and bags', 'A green arrow on the slot and the bag item that beats it; a gold corner on a slot worth chasing.'],
-  ['character-panel-tab', 'The character-panel tab', "Your next five gear targets with their sources, your rotation at your level, and your build's progress."],
-  ['player-tooltip-score', 'The player tooltip', "Every player's Forever Score, with the five parts behind it on Shift."],
-  ['chat-badge-guild', 'Chat badges', "A sender's score in front of their line in guild, trade and whispers."],
-  ['guild-tab', 'The guild tab', "Your roster's level, spec, gear, score, attendance and gear gap, sortable, live for members who run the addon."],
-  ['group-panel-solo', 'The group panel', "Each member's spec, gear gap and score before the first pull; a ready check names who lacks flask, food, imbue or a class buff."],
-  ['build-dialog-paste', 'Paste a build', 'The one dialog of its own: paste a build from foreversixty.gg and follow it.'],
-  ['build-dialog-copy', 'Copy your character', "Ctrl+C sends your talents, gear and bags to the site's planner and simulator."],
-  ['settings-switches', 'Settings', "Eight switches on the game's own Settings page, each with one line saying what it does."],
+  'chip-tooltip-legend',
+  'talent-marks-trees',
+  'item-tooltip-ranged',
+  'bag-arrow',
+  'character-panel-tab',
+  'player-tooltip-score',
+  'chat-badge-guild',
+  'guild-tab',
+  'group-panel-solo',
+  'build-dialog-paste',
+  'build-dialog-copy',
+  'settings-switches',
 ];
+
+/** Reads "N. **Title.** Caption." lines under "## Gallery captions". */
+async function readCaptions() {
+  const markdown = await readFile(CAPTIONS_FILE, 'utf8');
+  const section = markdown.split(/^## Gallery captions$/m)[1]?.split(/^## /m)[0];
+  if (!section) throw new Error(`no "## Gallery captions" section in ${CAPTIONS_FILE}`);
+  const captions = [...section.matchAll(/^\d+\. \*\*(.+?)\.\*\* (.+)$/gm)].map(([, title, text]) => ({ title, text }));
+  if (captions.length !== PLATES.length) {
+    throw new Error(`${CAPTIONS_FILE} has ${captions.length} gallery captions; the generator has ${PLATES.length} plates`);
+  }
+  return captions;
+}
+
+function findCapture(name) {
+  for (const source of CAPTURE_SOURCES) {
+    const file = path.join(source.dir, `${name}.${source.ext}`);
+    if (existsSync(file)) return { ...source, file };
+  }
+  throw new Error(`no capture for ${name} in ${CAPTURE_SOURCES.map((s) => s.dir).join(' or ')}`);
+}
 
 // A page set from a string has no file access, so fonts and captures travel inline.
 const dataUrl = async (file, type) => `data:${type};base64,${(await readFile(file)).toString('base64')}`;
 const font = (file) => dataUrl(path.join(FONTS, file), 'font/woff2');
-const capture = (name) => dataUrl(path.join(CAPTURES, `${name}.jpg`), 'image/jpeg');
+const escapeHtml = (text) => text.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-async function plateHtml(name, title, caption) {
+async function plateHtml(capture, { title, text }) {
   const [cinzel, barlow400, barlow600, shot] = await Promise.all([
     font('cinzel-700-subset.woff2'),
     font('barlow-400-subset.woff2'),
     font('barlow-600-subset.woff2'),
-    capture(name),
+    dataUrl(capture.file, capture.type),
   ]);
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -60,43 +103,92 @@ async function plateHtml(name, title, caption) {
 @font-face{font-family:Barlow;src:url(${barlow600}) format('woff2');font-weight:600}
 html,body{margin:0;width:${WIDTH}px;height:${HEIGHT}px;overflow:hidden}
 body{background:#07090d;color:#e9e4d8;font-family:Barlow,sans-serif;display:grid;grid-template-rows:1fr auto;box-sizing:border-box;padding:64px 80px 56px;
+  -webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;
   background-image:radial-gradient(ellipse 70% 60% at 50% 42%,rgba(229,185,85,.07),transparent 70%)}
-.stage{display:grid;place-items:center;height:${STAGE_HEIGHT}px}
-.shot{display:block;border:1px solid #262e40;border-radius:6px;box-shadow:0 24px 60px rgba(0,0,0,.65)}
+.stage{position:relative;height:${STAGE_HEIGHT}px}
+.frame{position:absolute;background:#07090d;border:1px solid #262e40;border-radius:6px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.65)}
+.shot{display:block}
 .foot{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;margin-top:40px;padding-top:28px;border-top:1px solid #262e40}
 .mark{display:flex;align-items:center;gap:12px;font-family:Cinzel,serif;font-weight:700;font-size:22px;letter-spacing:.1em;text-transform:uppercase;color:#f2eee4;white-space:nowrap}
 .text{min-width:0}
 h1{margin:0 0 6px;font-family:Barlow,sans-serif;font-weight:600;font-size:30px;line-height:1.1;color:#e5b955}
 p{margin:0;font-size:20px;line-height:1.35;color:#b9b3a4;max-width:1100px}
 </style></head><body>
-<div class="stage"><img class="shot" src="${shot}" alt=""></div>
+<div class="stage"><div class="frame"><img class="shot" src="${shot}" alt=""></div></div>
 <div class="foot">
   <div class="mark"><svg width="34" height="34" viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe7a1"/><stop offset=".45" stop-color="#e5b955"/><stop offset="1" stop-color="#a8762a"/></linearGradient></defs><circle cx="128" cy="128" r="112.64" fill="#0d111a"/><circle cx="128" cy="128" r="112.64" fill="none" stroke="url(#g)" stroke-width="12.8"/><text x="128" y="152" text-anchor="middle" font-family="Cinzel,serif" font-weight="700" font-size="72" fill="url(#g)">LX</text></svg>Forever Sixty</div>
-  <div class="text"><h1>${title}</h1><p>${caption}</p></div>
+  <div class="text"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(text)}</p></div>
 </div>
 </body></html>`;
 }
 
+/**
+ * Draws the capture at most one capture pixel per device pixel, centred in the stage on whole
+ * CSS pixels. Runs in the page. The capture goes through a canvas sized to whole CSS pixels:
+ * an <img> of odd device size gets a half CSS pixel and Chromium resamples it, where a canvas
+ * at its own device size is copied as is. At 1:1 drawImage is an exact copy; a capture larger
+ * than the stage shrinks with the high-quality filter.
+ */
+function placeCapture({ stageWidth, stageHeight, deviceScale }) {
+  const shot = document.querySelector('.shot');
+  const frame = document.querySelector('.frame');
+  if (!(shot instanceof HTMLImageElement) || !(frame instanceof HTMLElement) || shot.naturalWidth === 0) {
+    throw new Error('capture did not load');
+  }
+  const border = 1;
+  const fit = Math.min(1, ((stageWidth - 2 * border) * deviceScale) / shot.naturalWidth, ((stageHeight - 2 * border) * deviceScale) / shot.naturalHeight);
+  const deviceWidth = Math.floor(shot.naturalWidth * fit);
+  const deviceHeight = Math.floor(shot.naturalHeight * fit);
+  const cssWidth = Math.ceil(deviceWidth / deviceScale);
+  const cssHeight = Math.ceil(deviceHeight / deviceScale);
+  const canvas = document.createElement('canvas');
+  canvas.width = cssWidth * deviceScale;
+  canvas.height = cssHeight * deviceScale;
+  canvas.style.cssText = `display:block;width:${cssWidth}px;height:${cssHeight}px`;
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('no 2d canvas');
+  context.imageSmoothingEnabled = fit < 1;
+  context.imageSmoothingQuality = 'high';
+  context.drawImage(shot, 0, 0, deviceWidth, deviceHeight);
+  shot.replaceWith(canvas);
+  frame.style.left = `${Math.round((stageWidth - cssWidth) / 2 - border)}px`;
+  frame.style.top = `${Math.round((stageHeight - cssHeight) / 2 - border)}px`;
+  return document.fonts.ready.then(() => ({
+    natural: [shot.naturalWidth, shot.naturalHeight],
+    drawn: [deviceWidth, deviceHeight],
+    fill: Math.max(deviceWidth / (stageWidth * deviceScale), deviceHeight / (stageHeight * deviceScale)),
+  }));
+}
+
+function report(file, capture, placed, bytes) {
+  const reasons = [];
+  if (!capture.lossless) reasons.push('JPEG source');
+  if (placed.fill < MIN_FILL) reasons.push(`fills ${Math.round(placed.fill * 100)}% of the stage`);
+  const drawnScale = placed.drawn[0] / placed.natural[0];
+  const line = [
+    path.relative(repo, file),
+    `source ${path.relative(repo, capture.file)} ${placed.natural.join('x')}`,
+    `drawn ${placed.drawn.join('x')} (${drawnScale === 1 ? '1:1' : `${drawnScale.toFixed(2)}x down`})`,
+    `${(bytes / 1024 / 1024).toFixed(2)} MB`,
+    reasons.length ? `RECAPTURE: ${reasons.join(', ')}` : 'ok',
+  ];
+  process.stdout.write(`${line.join(' | ')}\n`);
+}
+
 async function main() {
+  const captions = await readCaptions();
   await mkdir(OUT, { recursive: true });
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 1 });
-  for (const [index, [name, title, caption]] of PLATES.entries()) {
-    await page.setContent(await plateHtml(name, title, caption), { waitUntil: 'load' });
-    await page.evaluate(
-      ({ stageWidth, stageHeight, maxScale }) => {
-        const shot = document.querySelector('.shot');
-        if (!(shot instanceof HTMLImageElement) || shot.naturalWidth === 0) throw new Error('capture did not load');
-        const scale = Math.min(maxScale, stageWidth / shot.naturalWidth, stageHeight / shot.naturalHeight);
-        shot.style.width = `${Math.round(shot.naturalWidth * scale)}px`;
-        shot.style.height = 'auto';
-        return document.fonts.ready;
-      },
-      { stageWidth: STAGE_WIDTH, stageHeight: STAGE_HEIGHT, maxScale: MAX_SCALE },
-    );
+  const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: DEVICE_SCALE });
+  for (const [index, name] of PLATES.entries()) {
+    const capture = findCapture(name);
+    await page.setContent(await plateHtml(capture, captions[index]), { waitUntil: 'load' });
+    const placed = await page.evaluate(placeCapture, { stageWidth: STAGE_WIDTH, stageHeight: STAGE_HEIGHT, deviceScale: DEVICE_SCALE });
     const file = path.join(OUT, `${String(index + 1).padStart(2, '0')}-${name}.png`);
-    await page.screenshot({ path: file, type: 'png' });
-    process.stdout.write(`${path.relative(repo, file)}\n`);
+    await page.screenshot({ path: file, type: 'png', scale: 'device' });
+    const { size } = await stat(file);
+    if (size > MAX_PLATE_BYTES) throw new Error(`${file} is ${size} bytes, over the ${MAX_PLATE_BYTES}-byte ceiling`);
+    report(file, capture, placed, size);
   }
   await browser.close();
 }
