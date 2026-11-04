@@ -12,6 +12,7 @@ import {
   loadFromBandAtLevel,
 } from './band-compare';
 import { bandCompareCopy } from './copy';
+import { ladderPrefixFor } from './ladder-load';
 import { indexTalents } from './rules';
 import type { TalentFile } from './types';
 
@@ -146,16 +147,17 @@ describe('loadFromBand', () => {
   });
 });
 
-describe('loadFromBand with the spec’s ladder order', () => {
+describe('the spec’s ladder order (ladderPrefixFor)', () => {
   it('spends the band in the ladder’s order when its first points reach exactly the band', () => {
     // The reconstruction would spend 1001 first; the ladder takes 1002 first.
     const ladder = [1002, 1002, 1001, 1001, 1001, 1002];
-    expect(loadFromBand(index, '32-0-0', ladder).order).toEqual([1002, 1002, 1001, 1001, 1001]);
+    const ordered = ladderPrefixFor(index, bandTreeRanksFrom('32-0-0'), ladder);
+    expect(ordered).toEqual([1002, 1002, 1001, 1001, 1001]);
+    expect(loadFromBand(index, '32-0-0', ordered).order).toEqual([1002, 1002, 1001, 1001, 1001]);
   });
 
-  it('falls back to the reconstruction when the band is not a point of the ladder', () => {
-    const ladder = [1002, 1002, 1002, 1001];
-    expect(loadFromBand(index, '3-0-0', ladder)).toEqual(loadFromBand(index, '3-0-0'));
+  it('gives no order when the band is not a point of the ladder, so the reconstruction runs', () => {
+    expect(ladderPrefixFor(index, bandTreeRanksFrom('3-0-0'), [1002, 1002, 1002, 1001])).toBeUndefined();
   });
 });
 
