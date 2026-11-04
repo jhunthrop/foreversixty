@@ -74,11 +74,11 @@ export const guidesCopy = {
   opener: 'Opener',
   priority: 'Priority',
   cooldowns: 'Cooldowns',
-  /** A rotation row for a talent only the raid build takes. */
+  /** A rotation row for a talent only the raid build takes, or a row that needs one. */
   raidBuildTag: 'Raid build only',
   /** Said once above the lists when a row carries that tag. */
   raidBuildLegend:
-    'Raid build only: a talent the level 60 build does not take. On the level 60 build, skip that row.',
+    'Raid build only: needs a talent the level 60 build does not take. On the level 60 build, skip that row.',
   bestInSlot: 'Best in slot',
   levelRange: 'Level range',
   bisCaption: (race: string, faction: string): string => `Picks for a ${race} (${faction}).`,
@@ -109,8 +109,16 @@ export const guidesCopy = {
    *  arrive formatted with their own "%" (or as `capReached`); `split` arrives joined. */
   hitToCap: (cap: string, split?: string): string =>
     `Hit cap: ${cap}${split === undefined ? '' : ` · ${split}`}`,
-  hitToCapWhite: (cap: string, white: string, split?: string): string =>
-    `Hit cap: ${cap} (special attacks), ${white} (white swings)${split === undefined ? '' : ` · ${split}`}`,
+  /** Several caps, each with what it is for (`capLabelled`, joined): "Hit cap: 9% (special
+   *  attacks), 28% (white swings)", "Hit cap: reached (weapon attacks), 16% (spells)". */
+  hitToCapEach: (caps: string, split?: string): string =>
+    `Hit cap: ${caps}${split === undefined ? '' : ` · ${split}`}`,
+  /** One of those caps: "16% (spells)". */
+  capLabelled: (cap: string, label: string): string => `${cap} (${label})`,
+  capLabelSpecials: 'special attacks',
+  capLabelWhite: 'white swings',
+  capLabelWeapon: 'weapon attacks',
+  capLabelSpells: 'spells',
   /** The Stat priority note under the table: "Expertise cap: 6.5% (dodge)", parry added for a
    *  tank, "reached" for a cap the character is already past. */
   expertiseCap: (dodge: string, parry: string | undefined, split?: string): string =>
@@ -124,6 +132,8 @@ export const guidesCopy = {
     `${percent}% ${stat} from BiS ${sources}`,
   /** The hit that set is still short of the cap. */
   capStillToFind: (percent: string): string => `${percent}% still to find`,
+  /** Past the weapon cap, what a melee spec's spells are still short of. */
+  capStillToFindForSpells: (percent: string): string => `${percent}% still to find for spells`,
   capFrom: (percent: string, source: string): string => `${percent}% from ${source}`,
   /** A school talent's share, which only that school's spells get: "5% from Shadow Focus on
    *  Shadow spells". */

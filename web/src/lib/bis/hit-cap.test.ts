@@ -24,6 +24,15 @@ describe('hitCapLine', () => {
     expect(title).toContain('10 hit rating and 14 crit rating are 1%');
   });
 
+  // Round 19 (round 18 shaman X1): a melee spec that also casts damaging spells (Enhancement's
+  // shocks and Maelstrom bolts) keeps gaining from hit past the weapon cap, up to 16%.
+  it('names the spell distance for a melee spec that casts spells', () => {
+    const line = hitCapLine({ baseline: 10, specials: 0, spell: 6 });
+    expect(line?.text).toBe('Hit to cap: 0% for specials, 6% for spells');
+    expect(line?.title).toContain('16%');
+    expect(line?.title).toContain('full weight until the cap and nothing past it for your weapon attacks');
+  });
+
   it('is undefined when the band publishes nothing', () => {
     expect(hitCapLine(undefined)).toBeUndefined();
     expect(hitCapLine(null)).toBeUndefined();

@@ -13,6 +13,8 @@ import { bandTopLevel, loadRotations, rotationEntryFor, rotationLinesFor } from 
 import {
   litTalentsOf,
   loadApl,
+  markRaidBuildRows,
+  raidBuildOnlyTalents,
   prepullCasts,
   spellLookupFor,
   talentCastTimeCuts,
@@ -121,6 +123,21 @@ describe('every guide card', () => {
     expect(opener(leveling)).toEqual(['Frostbolt: 2.5 s before the pull']);
   });
 
+  it('tags Arcane’s raid rows that need Heating Up as raid build only', () => {
+    const { leveling, raid } = guideTrees('mage/arcane.md');
+    const lists = guideRotation(BUILD, 'mage', 'mage-arcane', 'dps', raid!)!;
+    const only = raidBuildOnlyTalents(
+      talentNamesOf(BUILD, 'mage'),
+      litTalentsOf(leveling),
+      litTalentsOf(raid!),
+    );
+    const tagged = markRaidBuildRows(lists, only)
+      .priority.filter((item) => item.raidBuildOnly === true)
+      .map((item) => item.name);
+    expect(tagged).toEqual(expect.arrayContaining(['Fire Blast', 'Fireball']));
+    expect(tagged).not.toContain('Arcane Blast');
+  });
+
   // Round 19: the card's rows are already the described build's own, so a talent it takes or
   // leaves is not worded as a condition ("Fireball: ..., with Heating Up" read as if Fireball
   // waited on the stacks it builds).
@@ -146,7 +163,9 @@ describe('every guide card', () => {
         })),
         ...lists.priority.map((item) => ({
           item,
-          words: lines.filter((line) => line.spellId === item.spellId).flatMap((line) => worded(line.gates ?? [])),
+          words: lines
+            .filter((line) => line.spellId === item.spellId)
+            .flatMap((line) => worded(line.gates ?? [])),
         })),
       ];
       for (const { item, words } of rows) {

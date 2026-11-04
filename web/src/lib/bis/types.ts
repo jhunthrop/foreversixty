@@ -197,6 +197,10 @@ export interface BisMeleeHitToCap {
   specials: number;
   /** Percent to the white-swing cap; present only for a dual-wield spec. */
   white?: number;
+  /** Percent to the 16% spell cap; present only for a character that also casts damaging
+   *  spells (an Enhancement shaman's shocks and bolts), whose one hit stat keeps landing more
+   *  of them past the weapon cap. Absent in files ranked before 2026-11-04 round 19. */
+  spell?: number;
 }
 
 /** `BisBand.hit_to_cap` for a caster (`spellHitToCap` in `hitcap.go`): the distance to the

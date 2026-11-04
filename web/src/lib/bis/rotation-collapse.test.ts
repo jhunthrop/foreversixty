@@ -43,7 +43,8 @@ describe('collapseRuns', () => {
       ...step('Frostbolt', 10, 'Frostbolt as the filler.'),
       gates: [{ ...heating, positive: false }],
     };
-    const withoutHeatingUp = (gates: readonly { positive: boolean }[]) => gates.every((gate) => !gate.positive);
+    const withoutHeatingUp = (gates: readonly { positive: boolean }[]) =>
+      gates.every((gate) => !gate.positive);
     const rows = collapseRuns([raid, leveling], withoutHeatingUp);
     expect(rows.map((row) => row.condition)).toEqual(['Frostbolt as the filler.']);
     expect(collapseRuns([raid, leveling]).map((row) => row.steps)).toEqual([2]);

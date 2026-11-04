@@ -814,6 +814,38 @@ describe('raid build rows', () => {
     expect(lists.priority[1]).not.toHaveProperty('raidBuildOnly');
   });
 
+  // Round 19: with the "with Heating Up" words gone from the raid card, a row that needs a
+  // raid-only talent (Arcane's Fire Blast, Fireball and raid Frostbolt need Heating Up) says
+  // so with the tag, as a raid-only talent's own row does.
+  it('marks a row that needs one of them, and carries what each row needs', () => {
+    const heating: AplGate = { kind: 'known', spellId: 9, positive: true };
+    const pom: AplGate = { kind: 'known', spellId: 8, positive: true };
+    const names: Record<number, SpellFacts> = {
+      8: { name: 'Presence of Mind', cooldownMs: 0 },
+      9: { name: 'Heating Up', cooldownMs: 0 },
+    };
+    const line = (name: string, gates: AplGate[]): CollapsedLine => ({
+      spellId: name.length,
+      name,
+      condition: '',
+      truncatedAtSource: false,
+      steps: 1,
+      gates,
+    });
+    const lists = rotationListsFrom(
+      [line('Fireball', [heating]), line('Frostbolt', [pom]), line('Arcane Blast', [])],
+      undefined,
+      (id) => names[id],
+    );
+    expect(lists.priority.map((item) => item.needs ?? [])).toEqual([
+      ['Heating Up'],
+      ['Presence of Mind'],
+      [],
+    ]);
+    const marked = markRaidBuildRows(lists, new Set(['Heating Up']));
+    expect(marked.priority.map((item) => item.raidBuildOnly === true)).toEqual([true, false, false]);
+  });
+
   it('marks Arms’ Reckless Swings and Spearing Strike, which only the raid build takes', () => {
     const arms = readFileSync(path.join(GUIDES_DIR, 'warrior/arms.md'), 'utf8');
     const code = (key: string): string => new RegExp(`^${key}: '([^']+)'`, 'm').exec(arms)![1]!;

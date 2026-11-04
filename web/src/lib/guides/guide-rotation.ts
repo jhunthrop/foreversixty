@@ -77,10 +77,7 @@ export function buildRunsGates(
 
 /** Whether a gate is on knowing one of the class's talents: the described build takes it or
  *  leaves it, which `buildRunsGates` has already applied, so a card need not word it. */
-export function buildSettlesGate(
-  facts: SpellLookup,
-  talentNames: ReadonlySet<string>,
-): GateSettled {
+export function buildSettlesGate(facts: SpellLookup, talentNames: ReadonlySet<string>): GateSettled {
   return (gate) => {
     const name = gate.kind === 'known' ? facts(gate.spellId)?.name : undefined;
     return name !== undefined && talentNames.has(name);
