@@ -195,8 +195,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 16246}":  "Clearcasting comes from Elemental Focus, a talent (sim/shaman/talents.go); this build takes none, and the Fire Nova line's auraIsKnown gate skips it.",
 	},
 	"warlock-affliction": {
-		"{SpellID: 18288}": "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
-		"{SpellID: 18881}": "Siphon Life is a talent (sim/warlock/siphon_life.go); this build takes none.",
+		"{SpellID: 18288}":   "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
+		"{SpellID: 18881}":   "Siphon Life is a talent (sim/warlock/siphon_life.go); this build takes none.",
+		"{SpellID: 1316697}": "Wrack is a talent (sim/warlock/wrack.go); this build takes none.",
 	},
 	"warlock-demonology": {
 		"{SpellID: 19028}":  "Soul Link is a talent (sim/warlock/talents.go's applySoulLink); this build takes none.",
