@@ -137,6 +137,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 400589}":  "Missile Barrage's buff only exists with its talent (sim/mage/missile_barrage.go); this build takes none.",
 		"{SpellID: 12042}":   "Arcane Power is a talent (sim/mage/talents.go); this build takes none.",
 		"{SpellID: 12043}":   "Presence of Mind is a talent (sim/mage/talents.go); this build takes none.",
+		"{SpellID: 1326082}": "Arcane Wrath is a talent (sim/mage/arcane_wrath.go); this build takes none. The raid build's Fire-second line casts it.",
+		"{SpellID: 18809}":   "Pyroblast is a talent (sim/mage/pyroblast.go); this build takes none. The raid build's Fire-second lines cast it.",
+		"{SpellID: 400625}":  "Heating Up's buff, which gates the raid build's Fire-second lines, only exists with its talent (sim/mage/heating_up.go); this build takes none.",
 	},
 	"mage-fire": {
 		"{SpellID: 11129}": "Combustion is a talent (sim/mage/talents.go); this build takes none.",
