@@ -243,8 +243,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 1311606,
-              "rank": 1
+              "spellId": 20930,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -303,8 +303,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 1311606,
-              "rank": 1
+              "spellId": 20930,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -363,8 +363,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 1311606,
-              "rank": 1
+              "spellId": 20930,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -422,8 +422,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 1311606,
-              "rank": 1
+              "spellId": 20930,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -481,8 +481,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 1311606,
-              "rank": 1
+              "spellId": 20930,
+              "rank": 4
             },
             "target": {
               "type": "Player",
@@ -540,8 +540,8 @@
           },
           "castSpell": {
             "spellId": {
-              "spellId": 1311606,
-              "rank": 1
+              "spellId": 20930,
+              "rank": 4
             },
             "target": {
               "type": "Player",

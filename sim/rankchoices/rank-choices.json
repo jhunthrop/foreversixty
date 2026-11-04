@@ -184,18 +184,6 @@
         ]
       },
       {
-        "spell": "Holy Shock",
-        "authored": 1311606,
-        "bands": [
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 4,
-            "note": "Round 14: rank 4 at bare 60 (+0.3%). Round 15 wave 3 (level-gap rule): rank 1, learned at 30, keeps 35% of its healing bonus at 60, and rank 4 wins the raid as well, +0.4 to +0.6% both factions, seeds 1 and 50001, mana still spent before the end."
-          }
-        ]
-      },
-      {
         "spell": "Flash of Light",
         "authored": 19942,
         "bands": [
