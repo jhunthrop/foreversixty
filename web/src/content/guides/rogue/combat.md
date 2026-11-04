@@ -74,7 +74,7 @@ Every rogue picks up **Poised** at 18: at full energy out of combat, your next a
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Backstab needs a dagger in the main hand; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
+**Shank** on cooldown, right behind your racial and trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
 
 ### Energy
 
