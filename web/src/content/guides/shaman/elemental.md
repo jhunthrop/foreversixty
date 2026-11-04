@@ -63,7 +63,9 @@ Lightning Mastery is the 31st point, and Call of Thunder above it is the point t
 - **Elemental Fury** (5 points): doubles the crit bonus of your spells and your Searing and Magma Totems.
 - **Lightning Mastery** (1 point): 15 seconds of faster Lightning Bolts and Chain Lightning with no cooldown, every 3 minutes.
 
-Four more Elemental points are the toll to reach Elemental Fury, and two of them do real work: Trial by Fire (2 points) makes Fire Nova hit 20% harder on a 6 second cooldown and keeps Magma Totem burning for 40 seconds, which is your damage on dungeon packs. Elemental Warding (2 points) cuts the Fire, Frost and Nature damage you take by 7%. Elemental Devastation is melee crit, and you never swing a weapon, so it gets nothing. Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) adds 4% maximum health, cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
+Four more Elemental points are the toll to reach Elemental Fury, and both builds spend them the same way: two in Trial by Fire and two in Elemental Warding. Trial by Fire makes Fire Nova hit 20% harder on a 6 second cooldown and keeps Magma Totem burning for 40 seconds, so Fire Nova and Magma Totem are your damage on dungeon packs. Elemental Warding cuts the Fire, Frost and Nature damage you take by 7%. Elemental Devastation is melee crit, and you never swing a weapon, so skip it.
+
+Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) adds 4% maximum health, cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
 
 ## Rotation and priority
 
