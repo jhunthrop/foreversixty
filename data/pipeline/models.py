@@ -958,7 +958,8 @@ class AddonData(BaseModel):
     build: str
     classes: dict[str, AddonClass]
     weights: dict[str, dict[str, float]]
-    #: Keyed by spec ("warrior-fury"), one band per pipeline.addonrotation.LEVEL_BANDS entry.
+    #: Keyed by spec ("warrior-fury"): a band at each pipeline.addonrotation.LEVEL_BANDS rung
+    #: and at every level between where a line changes.
     rotations: dict[str, list[AddonRotationBand]] = {}
     #: Keyed by spec, one band per pipeline.addonbis.BIS_LEVEL_BANDS entry
     #: actually present in data/builds/<build>/bis/<spec>.json. Empty for
