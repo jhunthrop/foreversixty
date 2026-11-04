@@ -34714,7 +34714,7 @@
           {
             "spell_id": 529,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -34728,7 +34728,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34747,7 +34747,7 @@
           {
             "spell_id": 529,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -34768,7 +34768,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34787,7 +34787,7 @@
           {
             "spell_id": 548,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -34808,7 +34808,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34827,7 +34827,7 @@
           {
             "spell_id": 915,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -34848,7 +34848,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34867,7 +34867,7 @@
           {
             "spell_id": 915,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -34888,7 +34888,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34907,7 +34907,7 @@
           {
             "spell_id": 915,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -34928,7 +34928,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34947,7 +34947,7 @@
           {
             "spell_id": 943,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -34968,7 +34968,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34987,7 +34987,7 @@
           {
             "spell_id": 943,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35008,7 +35008,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35027,7 +35027,7 @@
           {
             "spell_id": 6041,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35048,7 +35048,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35067,7 +35067,7 @@
           {
             "spell_id": 6041,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35088,7 +35088,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35107,7 +35107,7 @@
           {
             "spell_id": 10391,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35128,7 +35128,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35154,7 +35154,7 @@
           {
             "spell_id": 10391,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35175,7 +35175,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35208,7 +35208,7 @@
           {
             "spell_id": 10391,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35229,7 +35229,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35262,7 +35262,7 @@
           {
             "spell_id": 10392,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35283,7 +35283,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35316,7 +35316,7 @@
           {
             "spell_id": 10392,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35337,7 +35337,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35370,7 +35370,7 @@
           {
             "spell_id": 15207,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35391,7 +35391,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35424,7 +35424,7 @@
           {
             "spell_id": 15207,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35445,7 +35445,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35478,7 +35478,7 @@
           {
             "spell_id": 15208,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35499,7 +35499,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35532,7 +35532,7 @@
           {
             "spell_id": 15208,
             "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.",
+            "condition": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -35553,7 +35553,7 @@
           {
             "spell_id": 10414,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }

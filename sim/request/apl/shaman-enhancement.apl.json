@@ -101,7 +101,7 @@
       }
     },
     {
-      "notes": "Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then. Cast it right after Stormstrike when you can, so the bolt takes Stormstrike's 20%.",
+      "notes": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free. Cast it right after Stormstrike when you can, so the bolt takes Stormstrike's 20%.",
       "action": {
         "condition": {
           "and": {
@@ -215,7 +215,7 @@
       }
     },
     {
-      "notes": "Earth Shock on cooldown while you have more than a quarter of your mana: it takes Stormstrike's 20% when no bolt is ready. Keep that last quarter for Stormstrike and your totems. Until Maelstrom Weapon has all five points your five-stack bolts still cost mana, so keep half your mana instead.",
+      "notes": "Earth Shock on cooldown while your mana is above its reserve, a quarter, or half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready. Keep that reserve for Stormstrike and your totems. Below five points your five-stack bolts still cost mana, which is what the bigger reserve pays for; without the talent, and at all five points, a quarter is enough.",
       "action": {
         "castSpell": {
           "spellId": {
