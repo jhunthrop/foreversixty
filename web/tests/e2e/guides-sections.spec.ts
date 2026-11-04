@@ -319,4 +319,22 @@ test.describe('table of contents', () => {
     await expect(page).toHaveURL(/#races$/);
     await expect(page.locator('#races')).toBeInViewport();
   });
+
+  // Round 19 (integrator, wow-player): the jump list stayed open after a tap, so its nine
+  // rows covered the section the player jumped to. A jump closes it, and the heading lands
+  // below the sticky bar.
+  test('phone: a jump closes the contents and the heading lands below the bar', async ({ page }) => {
+    await page.setViewportSize(PHONE);
+    await page.goto(PAGE);
+    const inline = page.getByTestId('guide-toc-inline');
+    await inline.locator('summary').click();
+    await inline.getByRole('link', { name: 'Rotation and priority' }).click();
+    await expect(page).toHaveURL(/#rotation-and-priority$/);
+    await expect(inline.locator('details')).not.toHaveAttribute('open');
+    // Focus follows the jump, not the link the closed list now hides.
+    await expect(page.locator('#rotation-and-priority')).toBeFocused();
+    const barBottom = (await inline.boundingBox())!.y + (await inline.boundingBox())!.height;
+    const headingTop = (await page.locator('#rotation-and-priority').boundingBox())!.y;
+    expect(headingTop).toBeGreaterThanOrEqual(barBottom);
+  });
 });
