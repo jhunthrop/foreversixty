@@ -100,3 +100,17 @@ export function pvpSourceLabel(rank: number | undefined, faction: 'alliance' | '
     ? `PvP rank ${inGameRank} · ${factionLabel}`
     : `PvP rank ${inGameRank} · ${title} · ${factionLabel}`;
 }
+
+/** "World drop (BoE) · levels 48-55", or "· level 62" when the mobs that drop it share one
+ *  level (Teebu's Blazing Longsword, the Silithus colossi), never "levels 62-62". */
+export function worldDropLevelsLabel(levelMin?: number, levelMax?: number): string {
+  if (levelMin === undefined || levelMax === undefined) return 'World drop (BoE)';
+  const levels = levelMin === levelMax ? `level ${levelMin}` : `levels ${levelMin}-${levelMax}`;
+  return `World drop (BoE) · ${levels}`;
+}
+
+/** A quest's own minimum level is a gate worth naming only above 1: classic-db records 1 for
+ *  a quest with no real floor (Arena Grandmaster, whose reward needs level 50 to wear). */
+export function questMinLevelShown(minLevel: number | undefined): minLevel is number {
+  return minLevel !== undefined && minLevel > 1;
+}

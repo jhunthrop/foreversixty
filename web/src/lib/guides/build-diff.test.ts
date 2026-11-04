@@ -65,13 +65,24 @@ describe('buildDiffLine', () => {
     expect(line).toBe('The raid build moves 5 points from A (2) and B (3) to C (5).');
   });
 
+  it('names a fifth talent rather than folding it into "1 more talent"', () => {
+    const line = buildDiffLine({
+      from: [{ name: 'A', points: 5 }],
+      to: ['C', 'D', 'E', 'F', 'G'].map((name) => ({ name, points: 1 })),
+      moved: 5,
+    });
+    expect(line).toBe('The raid build moves 5 points from A (5) to C (1), D (1), E (1), F (1) and G (1).');
+  });
+
   it('says "1 point" in the singular and caps a long list', () => {
     const line = buildDiffLine({
       from: [{ name: 'A', points: 1 }],
       to: ['C', 'D', 'E', 'F', 'G', 'H'].map((name) => ({ name, points: 1 })),
       moved: 1,
     });
-    expect(line).toBe('The raid build moves 1 point from A (1) to C (1), D (1), E (1), F (1) and 2 more.');
+    expect(line).toBe(
+      'The raid build moves 1 point from A (1) to C (1), D (1), E (1), F (1) and 2 more talents (2 points).',
+    );
   });
 
   it('handles a build that only adds or only removes points', () => {

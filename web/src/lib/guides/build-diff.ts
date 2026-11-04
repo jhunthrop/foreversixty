@@ -54,9 +54,16 @@ export function diffBuilds(
 const LIST_CAP = 4;
 
 function listOf(entries: readonly { name: string; points: number }[]): string {
-  const shown = entries.slice(0, LIST_CAP).map((entry) => `${entry.name} (${entry.points})`);
-  const rest = entries.length - shown.length;
-  if (rest > 0) shown.push(`${rest} more`);
+  // One talent past the cap is named, not folded into "1 more talent".
+  const cap = entries.length === LIST_CAP + 1 ? entries.length : LIST_CAP;
+  const shown = entries.slice(0, cap).map((entry) => `${entry.name} (${entry.points})`);
+  // The rest is talents, each with its own points, so it says both: "3 more talents (5 points)",
+  // never a bare "3 more" that reads as points beside the "(2)"s before it.
+  const rest = entries.slice(cap);
+  if (rest.length > 0) {
+    const restPoints = rest.reduce((sum, entry) => sum + entry.points, 0);
+    shown.push(`${rest.length} more talent${rest.length === 1 ? '' : 's'} (${pointsText(restPoints)})`);
+  }
   if (shown.length <= 1) return shown.join('');
   return `${shown.slice(0, -1).join(', ')} and ${shown[shown.length - 1]}`;
 }

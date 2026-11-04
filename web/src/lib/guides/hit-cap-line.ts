@@ -5,6 +5,7 @@
 // source the published figure counts is named: the BiS gear and buffs, and each talent of the
 // weights character's own build that adds to it (`talent-hit.ts`), never typed per guide.
 import { bisCopy } from '../bis/copy';
+import { expertiseIsGained } from '../bis/expertise-cap';
 import { formatCapPercent } from '../bis/hit-cap';
 import type { BisExpertiseToCap, BisHitToCap, BisSpellHitToCap } from '../bis/types';
 import { guidesCopy } from './copy';
@@ -145,6 +146,7 @@ export function guideExpertiseCapLine(
   talents: readonly TalentHit[] = [],
 ): GuideHitCapLine | undefined {
   if (expertiseToCap === null || expertiseToCap === undefined) return undefined;
+  if (!expertiseIsGained(expertiseToCap)) return undefined;
   const { baseline, dodge, parry } = expertiseToCap;
   return {
     text: guidesCopy.expertiseCap(

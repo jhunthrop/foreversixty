@@ -6,6 +6,7 @@
 // finding 1's own defect, closed by reading real reference data instead).
 import { existsSync } from 'node:fs';
 import { bandEntry, loadBisFile, realBisPath } from '../bis/load';
+import { weightsForGainedStats } from '../bis/expertise-cap';
 import { presetLabelFor } from '../bis/presets';
 import { classRows, racesForClass } from '../planner/reference';
 import type { BisFile, BisExpertiseToCap, BisHitToCap, BisRole, BisStatWeight, Faction } from '../bis/types';
@@ -93,7 +94,9 @@ export function band60Weights(
   const band = bandEntry(file, 60, faction);
   if (band === undefined) return undefined;
   return {
-    weights: band.weights,
+    // No Expertise weight for a character that gains none: the pills, the table and the cap
+    // line read the same band, so all three leave it out together.
+    weights: weightsForGainedStats(band.weights, band.expertise_to_cap),
     role: roleOf(band),
     haste: { scaleFactor: band.haste_scale_factor ?? null, onItems: band.haste_on_items ?? true },
     talents: band.talents,

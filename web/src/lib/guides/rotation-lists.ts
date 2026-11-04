@@ -44,6 +44,10 @@ export type SpellLookup = (spellId: number) => SpellFacts | undefined;
 
 const COOLDOWN_FLOOR_MS = 30_000;
 const MAX_CLAUSE = 90;
+/** A clause up to this long is one sentence a player reads whole: it wraps, never cut
+ *  ("...and Multi-Shot is about to come…" on Beast Mastery's Rapid Fire, 2026-11-04). Only a
+ *  run-on past it falls back to the cut at MAX_CLAUSE. */
+const MAX_WHOLE_CLAUSE = 160;
 
 type Node = Record<string, unknown>;
 
@@ -79,7 +83,7 @@ export function clauseOf(note: string, name: string): string {
     .replace(/^\([^)]*\)\s*/, '')
     .replace(/^is\s+/i, '')
     .trim();
-  if (text.length > MAX_CLAUSE) {
+  if (text.length > MAX_WHOLE_CLAUSE) {
     const cut = text.slice(0, MAX_CLAUSE);
     const comma = text.slice(0, MAX_CLAUSE + 1).lastIndexOf(', ');
     if (comma > 40) {
@@ -369,8 +373,18 @@ export interface CooldownCut {
   percent: number;
 }
 
-const COOLDOWN_CUT =
-  /Reduces the cooldown of your ([A-Z][A-Za-z' ]+?)(?: spell| ability)? by (\d+(?:\.\d+)?) ?(sec|min|%)/g;
+/** The client's wordings of a talent's cooldown cut, each naming the spells (group 1) and the
+ *  amount (2, 3): "Reduces the cooldown of your Blessing of Protection by 2 min", "...on your
+ *  Rapid Fire ability by 1 min" (Rapid Killing), "...of your Trap and Deterrence abilities by
+ *  20%" (Survivalist's Discipline), "...of your Divine Shield, Divine Protection, and Templar's
+ *  Bulwark spells by 30 sec" (Sacred Duty), and "Reduces threat caused by Tranquility by 50% and
+ *  its cooldown by 30%" (Improved Tranquility). */
+const COOLDOWN_CUTS: readonly RegExp[] = [
+  /Reduces the cooldown (?:of|on) your ([A-Z][A-Za-z' ,]+?)(?: spells?| abilit(?:y|ies))? by (\d+(?:\.\d+)?) ?(sec|min|%)/g,
+  /Reduces [a-z ]+ (?:caused by|of) ([A-Z][A-Za-z' ]+?) by \d+(?:\.\d+)?% and its cooldown by (\d+(?:\.\d+)?) ?(sec|min|%)/g,
+];
+/** "Divine Shield, Divine Protection, and Templar's Bulwark" -> its three names. */
+const NAME_LIST = /,\s*(?:and\s+)?|\s+and\s+/;
 
 /** The talents any of `trees` spends points in, at the highest rank any of them takes. */
 export function litTalentsOf(
@@ -408,13 +422,13 @@ export function talentCooldownCuts(
       const rank = lit.get(talent.name) ?? 0;
       const text = rank > 0 ? talent.ranks?.[rank - 1]?.description : undefined;
       if (text === undefined) continue;
-      for (const match of text.matchAll(COOLDOWN_CUT)) {
+      for (const match of COOLDOWN_CUTS.flatMap((pattern) => [...text.matchAll(pattern)])) {
         const amount = Number(match[2]);
         const add: CooldownCut =
           match[3] === '%'
             ? { ms: 0, percent: amount }
             : { ms: amount * (match[3] === 'min' ? 60_000 : 1000), percent: 0 };
-        for (const name of match[1]!.split(/,\s*|\s+and\s+/)) {
+        for (const name of match[1]!.split(NAME_LIST)) {
           const held = cuts.get(name.trim()) ?? { ms: 0, percent: 0 };
           cuts.set(name.trim(), { ms: held.ms + add.ms, percent: held.percent + add.percent });
         }
