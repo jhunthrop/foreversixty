@@ -10,6 +10,7 @@ runtime. We resolve only the tokens whose value is in the tables we fetch:
   $m<n> / $M<n>        the minimum of effect <n>'s displayed value
   $a<n>                effect <n>'s radius, in yards
   $x<n>                how many targets effect <n> chains to
+  $q<n>                effect <n>'s misc value (Rebirth's mana: EffectMiscValue_0)
   $r                   the spell's maximum range, in yards
   $h                   the chance to proc, as a percentage
   $n / $u              the proc's charges / how high the aura stacks
@@ -63,7 +64,7 @@ TOKEN = re.compile(
     r"\$"
     r"(?:/(?P<divisor>\d+);)?"
     r"(?P<ref>\d+)?"
-    r"(?P<kind>proccooldown|[sSoOtTdDmMaAxXrRhHnNuUiI])"
+    r"(?P<kind>proccooldown|[sSoOtTdDmMaAxXqQrRhHnNuUiI])"
     r"(?P<index>[1-9])?"
     # "$rap" is ranged attack power and "$hp" is health: a longer word is never a short
     # token with letters after it.
@@ -115,6 +116,8 @@ class Effect:
     radius: float | None = None
     #: EffectChainTargets. Zero: the effect does not chain.
     chain_targets: int = 0
+    #: EffectMiscValue_0, the `$q` token: a resurrect's mana (Rebirth), and so on.
+    misc_value: int = 0
 
 
 @dataclass(frozen=True)
@@ -223,6 +226,7 @@ _SPELL_FACTS: dict[str, Callable[[SpellRow], float | None]] = {
 }
 _EFFECT_FACTS: dict[str, Callable[[Effect], float | None]] = {
     "x": lambda effect: effect.chain_targets,
+    "q": lambda effect: effect.misc_value,
 }
 
 
@@ -506,6 +510,7 @@ def load_spell_text(
             radius=radii.get(int(row.get("EffectRadiusIndex_0") or 0))
             or radii.get(int(row.get("EffectRadiusIndex_1") or 0)),
             chain_targets=int(row.get("EffectChainTargets") or 0),
+            misc_value=int(row.get("EffectMiscValue_0") or 0),
         )
     misc: dict[int, tuple[int | None, int, float | None]] = {}
     for row in misc_rows:
