@@ -27,7 +27,7 @@ Rogue is still energy, combo points and stealth, but Forever moves all three tre
 - **Poisons and stones stack.** A sharpening stone sits on a weapon beside a poison. Deadly Poison on the main hand and Instant Poison on the off hand is right for all three trees.
 - **Redirect** is trained at level 1: it takes your combo points off one target and gives them to the next enemy you hit within 15 seconds.
 - **Poised** comes at 18: at full energy out of combat, your next ability costs less. Open from full energy.
-- **Shank** comes at 24 (rank 2 at 44): an off-hand stab for 5 energy that cannot miss, gives 25 energy back at rank 2 and sits on a 10 second cooldown. Every tree presses it on cooldown, and each has a talent that builds on it: Venom for Assassination, Flash of Steel for Combat, Boot Knife for Subtlety.
+- **Shank** comes at 24 (rank 2 at 44): an off-hand stab for 5 energy that cannot miss, gives 25 energy back at rank 2 and sits on a 10 second cooldown. Every tree presses it on cooldown (a Subtlety rogue finishes first when Boot Knife would overflow the bar), and each has a talent that builds on it: Venom for Assassination, Flash of Steel for Combat, Boot Knife for Subtlety.
 - **No weapon-skill racials.** Night Elf's Elune's Light and Troll's Berserking are the burst racials; Human gets 1% crit instead of sword skill.
 
 ## Races

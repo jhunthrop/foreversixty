@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70755:rogue:night-elf:32530200251551031/302303/011:'
 raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:00530311251551031/302302/005:'
 recommendedRaces: [night-elf, troll]
-statPriority: [Agility, Attack power, Strength, Critical strike, Hit, Melee haste]
+statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, Shank and Venom behind your poisons, Relentless Strikes for energy.'
 updated: 2026-11-02
 confidence: inferred
@@ -49,9 +49,9 @@ Assassination is the Forever rogue built on Mutilate: two daggers, two combo poi
 
 ## Talents and builds
 
-The raid build goes 36/10/5: down Assassination to Mutilate, with Seal Fate, Venom and all five points of Relentless Strikes on the way, into Combat for Coup de Grace, Puncturing Wounds and Precision, and five points of Opportunity. The level 60 build is the one you level with. It trades Vigor, Blood Splatter, a point of Improved Slice and Dice and four points of Opportunity for Improved Gouge, Remorseless Attacks and a third point of Precision, which shine on trash and while leveling. Respec to the raid build for the raid.
+The raid build goes 36/10/5: down Assassination to Mutilate, with Seal Fate, Venom and all five points of Relentless Strikes on the way, into Combat for Coup de Grace, Puncturing Wounds and Precision, and five points of Opportunity. The level 60 build is the one you level with. It trades Vigor, Blood Splatter, a point of Improved Slice and Dice and four points of Opportunity for Improved Gouge, Remorseless Attacks, a third point of Precision and a point of Master of Deception, which shine on trash and while leveling. Respec to the raid build for the raid.
 
-- **Mutilate** (1 point): strikes with both daggers for 90% weapon damage plus 88 each at the top rank, 20% more against a poisoned target, for two combo points. It sits below Venom in the tree.
+- **Mutilate** (1 point): strikes with both daggers for 90% weapon damage plus 79 each at the top rank, 20% more against a poisoned target, for two combo points. It sits below Venom in the tree.
 - **Seal Fate** (3 points): every crit from a builder adds a combo point. Mutilate can only trigger it once a cast, even when both hands crit.
 - **Venom** (1 point): every Shank makes your poisons hit 30% harder and apply 20% more often for 6 seconds. It is a passive on Shank, with no finisher or global of its own, and Mutilate needs it.
 - **Relentless Strikes** (5 points): every finisher has a 20% chance per combo point to give 25 energy back, so a four-point Eviscerate refunds it four times in five. This is what lets a 60 energy builder keep up.
@@ -100,7 +100,7 @@ Hit first: a missed Mutilate is a wasted global and two combo points you did not
 
 ## Best in slot
 
-Two daggers, always. The main-hand dagger matters most: it carries Deadly Poison and the bigger half of every Mutilate. Mutilate swings both, though, so the off-hand dagger is a real upgrade too.
+Two daggers, always. The main-hand dagger matters most: it carries Deadly Poison and your full-weight white hits. Mutilate swings both, though, so the off-hand dagger is a real upgrade too.
 
 ## Enchants and consumables
 
