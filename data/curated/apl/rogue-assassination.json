@@ -204,7 +204,7 @@
             }
           }
         },
-        "notes": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and bleeds always crit in Forever."
+        "notes": "Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter (the raid build): it lasts 6 seconds longer, and its ticks can crit in Forever."
       },
       {
         "action": {

@@ -102,7 +102,7 @@ Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, 
 
 ## Professions
 
-Skinning and Leatherworking is the classic cat pair: leather is your armor, and Leatherworking turns it into gear. Engineering works for a cat in Forever: the EZ-Thro and SAF-T bombs and grenades throw from Cat Form, though the old bombs still do not.
+Enchanting is the one profession your raid set asks for: Molten Heart of the Mountain, and on the Alliance Frozen Heart of the Mountain beside it, are bind-on-pickup trinkets only an enchanter can make. The Leatherworking pieces in your set bind when equipped, so buy them; Skinning and Leatherworking still pay for themselves. Engineering works for a cat in Forever: the EZ-Thro and SAF-T bombs and grenades throw from Cat Form, though the old bombs still do not.
 
 ## Leveling
 

@@ -112,7 +112,7 @@ Strength is attack power on every swing, every Holy Strike and every Seal of Com
 
 ## Professions
 
-Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and Elixirs of Holy Power, Forever's 40 Holy damage elixir, which reaches every Seal proc, Judgement and Consecration tick. Pick two that pay for your consumables.
+Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and Elixirs of Holy Power, Forever's 40 Holy damage elixir, which reaches every Seal proc, Judgement and Consecration tick. Enchanting is the one your best gear asks for: Frozen Heart of the Mountain binds when picked up, so only an enchanter can wear one. Otherwise pick two that pay for your consumables.
 
 ## Leveling
 
@@ -130,7 +130,7 @@ Take quest rewards over vendor gear, and replace your Battleworn Hammer with the
 
 Retribution is the paladin leveling spec, even if you want to heal or tank at 60. Pull with Seal of the Crusader and a Judgement on your first swing, then Seal of Righteousness and Holy Strike on cooldown. Sanctified Judgement refunds most of each Seal, so on one or two mobs at a time you rarely drink.
 
-From level 20 Consecration is your AoE: two or three mobs on you is the time for it. Rank 1 at 135 mana carries as much spell damage as any rank for a fraction of the cost, so until your mid 40s it gives you the most damage for your mana. From 40, when a pack is on you and you have the mana, cast the newest rank instead: it hits every mob about twice as hard for the same global. From your mid to late 40s the newest rank wins on mana too, because rank 1 has lost about half of its spell damage bonus by then. On a long fight against one target your mana runs out first: keep rank 1 there into your early 40s, take rank 2 from about 44, and drop back to rank 1 through your 50s. Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
+From level 20 Consecration is your AoE: two or three mobs on you is the time for it. Rank 1 at 135 mana carries as much spell damage as any rank for a fraction of the cost, so until your mid 40s it gives you the most damage for your mana. From 40, when a pack is on you and you have the mana, cast the newest rank instead: it hits every mob about twice as hard for the same global. From your mid to late 40s the newest rank wins on mana too, because rank 1 has lost about half of its spell damage bonus by then. Against one target Consecration is filler, and a cheap rank you can put down every time it is ready beats a big one you have to hold back: keep rank 1 into your early 40s, take rank 2 from about 44, and go back to rank 1 through your 50s. Exorcism (level 20) and Holy Wrath (level 50) are easy kills on Undead and Demons, so quest zones full of them, like the Plaguelands, are paladin country. Repentance takes one Humanoid out of a bad pull, and Hammer of Justice stops a runner or a caster.
 
 Common mistakes:
 

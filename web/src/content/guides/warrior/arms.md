@@ -108,11 +108,11 @@ Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take
 
 Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes: press it on the pull and every time it comes back, but never inside Recklessness, which already makes every hit crit. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds. Skyborne edges both by a hair on either faction, since Wind Blessed is 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it.
 
-If you want a different look, the gap is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage and 10% less rage on your non-periodic damaging abilities for 8 seconds every 2 minutes, sit just behind Night Elf, and Dwarf's Artisan's Precision, 1% hit, trails them. On the Horde, Orc is next: Blood Fury is 10% attack power for 15 seconds every 2 minutes, so press it on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc; Tauren brings nothing for damage and comes last.
+If you want a different look, the gap is small. On the Alliance, Dwarf comes out level with Night Elf, a hair ahead, since a Dwarf starts with more Strength, and Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage and 10% less rage on your non-periodic damaging abilities for 8 seconds every 2 minutes, sit just behind them. On the Horde, Orc and Undead are close: Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes, so press it on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc; Tauren brings nothing for damage and comes last.
 
 ## Professions
 
-Blacksmithing and Mining. Blacksmithing makes Arcanite Champion, and Mining feeds it. Engineering is the other pick: Goblin Sapper Charges and Dense Dynamite on every trash pack, and grenades in PvP.
+Enchanting is the one that changes your gear: Frozen Heart of the Mountain is a bind-on-pickup trinket only an enchanter can make. Blacksmithing and Mining are the other pair, but Arcanite Champion binds when equipped, so buy one rather than train it for the sword. Engineering brings Goblin Sapper Charges and Dense Dynamite for every trash pack, and grenades in PvP.
 
 ## Leveling
 

@@ -104,7 +104,7 @@ The table above gives the order for your gear; here is why each stat counts. Hit
 
 ## Best in slot
 
-Forever puts a third of a healing item's bonus on it as spell damage, so a healer's cloth piece often has some damage on it. It still loses to a real caster piece: take healing gear only when nothing with spell power drops.
+Forever puts a third of a healing item's bonus on it as spell damage, so a healer's cloth piece still does some damage. Judge it by that damage number and its Intellect, never by the healing: a healing piece with good Intellect can beat a thin caster piece.
 
 ## Enchants and consumables
 

@@ -25,7 +25,7 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 - Cheap Shot is for trash only: bosses are immune to stuns.
 - Shank on cooldown. It cannot miss, pays back more energy than it costs and, with Venom, adds thirty percent to your poison damage on top of Vile Poisons and makes them land more often for six seconds.
 - At four or more combo points, Slice and Dice first if it is down or about to fall off.
-- Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter. It lasts six seconds longer, and bleeds always crit in Forever.
+- Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter. It lasts six seconds longer, and its ticks can crit in Forever.
 - Cold Blood at four or more combo points, right before the Eviscerate.
 - Eviscerate at four or more combo points.
 - Mutilate is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.

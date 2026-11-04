@@ -94,7 +94,7 @@ Strength is attack power twice over. Intellect does more for you than for any ot
 
 ## Best in slot
 
-Your raid set leans on crafts. The Heart of the Mountain trinkets are Enchanting crafts that bind on pickup, so you make those yourself; every other craft in it binds when equipped, so you can buy it. Shamans wear leather until 40 and mail from 40. Carry a two-hander, or a one-hander with a shield or a held item; never a second weapon. The full list, with alternatives for every slot, is on the [Enhancement BiS page](/bis/shaman/enhancement).
+Your raid set leans on crafts. Frozen Heart of the Mountain is an Enchanting craft that binds on pickup, and an Alliance set adds Molten Heart of the Mountain, which does too, so you make those yourself; every other craft in it binds when equipped, so you can buy it. Shamans learn mail at 40, but a leather piece with better stats still wins its slot. Carry a two-hander, or a one-hander with a shield or a held item; never a second weapon. The full list, with alternatives for every slot, is on the [Enhancement BiS page](/bis/shaman/enhancement).
 
 ## Enchants and consumables
 
@@ -108,7 +108,7 @@ On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds eve
 
 ## Professions
 
-Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain are Enchanting trinkets that bind on pickup, so nobody can make them for you. Every other craft in your set binds when equipped, so buy them or ask a guildmate; your second profession can be a gathering one that pays for them.
+Take Enchanting. Frozen Heart of the Mountain is an Enchanting trinket that binds on pickup, and so is Molten Heart of the Mountain, which an Alliance raid set wears beside it, so nobody can make them for you. Every other craft in your set binds when equipped, so buy them or ask a guildmate; your second profession can be a gathering one that pays for them.
 
 ## Leveling
 

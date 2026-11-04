@@ -100,7 +100,7 @@ Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell po
 
 ## Professions
 
-Tailoring and Enchanting are the standard pair: Tailoring makes the early cloth sets and Enchanting puts the spell power enchants on your own gear. Frost drinks fewer potions than the other specs, so it can skip Alchemy. Gnomes who want the explosives take Engineering.
+Tailoring and Enchanting are the standard pair, and your raid set needs both: Robe of the Archmage is a Tailoring craft and Frozen Heart of the Mountain an Enchanting one, and both bind on pickup, so nobody can make them for you. Enchanting also puts the spell power enchants on your own gear. The goggles in the head slot need 270 Engineering to wear: without it, take the best head you can wear and keep your two professions. Frost drinks fewer potions than the other specs, so it can skip Alchemy.
 
 ## Leveling
 

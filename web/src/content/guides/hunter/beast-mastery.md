@@ -134,7 +134,7 @@ Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: 
 
 ## Professions
 
-Engineering is the raid hunter's profession: scopes, Thorium Grenades for trash, and the target dummies and explosives that save wipes. Skinning and Leatherworking pay for your leveling, since you kill beasts all day, and Leatherworking makes strong leather and mail pieces before raid gear.
+Enchanting is the profession your best in slot list asks for. Frozen Heart of the Mountain is an Enchanting trinket that binds on pickup, so nobody can make it for you. Legionite Glaive is a Blacksmithing polearm that also binds on pickup. If you are not a blacksmith, take the next two-hander on your best in slot page. Every other craft in your set binds when equipped, the Engineering rifle and the Leatherworking mail included, so buy them. Engineering is the trash and utility pick: Thorium Grenades, and the target dummies and explosives that save wipes. Skinning pays for your leveling, since you kill beasts all day.
 
 ## Leveling
 

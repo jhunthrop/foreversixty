@@ -98,7 +98,7 @@ Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your R
 
 ## Professions
 
-Herbalism and Alchemy is the healer pair: your own mana potions and elixirs.
+Your raid set asks for two crafts that bind on pickup, so only the crafter wears them: Dormant Heart of the Mountain from Enchanting and Mender's Leather Gauntlets from Leatherworking. Every other craft in your set binds when equipped and can be bought. Herbalism or Alchemy keeps you in mana potions and elixirs, which is most of what a healer spends gold on.
 
 ## Leveling
 
