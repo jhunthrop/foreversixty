@@ -67,9 +67,11 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put Fear Ward on the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-**On the tank.** Prayer of Mending every time it is ready. Renew always up, at a low rank: it heals the most per mana you spend as long as it keeps your healing bonus. In 1.12 a rank learned below level 20 lost part of it, so read Renew rank 1's tooltip on your geared priest before you settle on it. Go up in rank only on a tank who is dropping through it.
+**On the tank.** Prayer of Mending every time it is ready. Renew rank 1 always up, for very little mana. Go up in rank only on a tank who is dropping through it.
 
-**The filler is Heal.** Rank 4 is the classic downrank, with Greater Heal's spell power coefficient for far less mana. Rank 1 is cheaper still, but it is learned at 16, and in 1.12 a rank learned below level 20 lost part of its healing bonus: read its tooltip on your geared priest before you make it your raid filler. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
+**The filler is Heal rank 1** in a raid, the cheapest heal you have. In a dungeon group or on bare gear, where you are the only healer and each cast has to count, use rank 4. With Divine Fury every rank is a 2.5 second cast. Greater Heal comes out only when the tank needs one big number.
+
+**Check your low ranks once.** Renew rank 1 and Heal rank 1 are learned below level 20, and in 1.12 such ranks lost part of your healing bonus. On your geared 60, read each tooltip with your healing gear on and then off. If the number barely moves, the penalty is still there: cast Renew rank 3 and Heal rank 4 instead.
 
 **Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 

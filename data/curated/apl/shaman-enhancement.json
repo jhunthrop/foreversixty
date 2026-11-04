@@ -84,7 +84,7 @@
         }
       },
       {
-        "notes": "Grace of Air Totem whenever it is down: Agility for the whole raid in range. Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so your Air slot goes to Grace of Air. If no other shaman in the raid has Windfury Totem down, drop Windfury Totem for the warriors and rogues instead: it is worth far more to them than Grace of Air is to you. Learned at 42, rank 2 at 56.",
+        "notes": "Grace of Air Totem whenever your Air slot is empty: Agility for every raid member within 30 yards, you included. Take it when another shaman already has Windfury Totem down near the melee; if none does, Windfury Totem is the stronger drop for the warriors and rogues. Learned at 42, rank 2 at 56.",
         "action": {
           "condition": {
             "cmp": {

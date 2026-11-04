@@ -61,7 +61,7 @@ The raid build goes 36/10/5: down Assassination to Mutilate, with Seal Fate, Ven
 - **Improved Poisons** (5 points): poisons apply more often and often keep their charge.
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-Opportunity in the raid build adds 20% to Mutilate and Garrote. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Lightning Reflexes in the raid build is there to reach Puncturing Wounds and Precision, not for what it does.
+Opportunity in the raid build adds 20% to Mutilate and Garrote. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Two points of Lightning Reflexes with Coup de Grace are the toll to reach Puncturing Wounds and Precision.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -81,7 +81,7 @@ Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a 
 
 ### Energy
 
-Mutilate costs 60, so you will often sit on four points waiting for energy. That is fine: finish first, then build, and Relentless Strikes will hand most of the finisher's cost back. Never let Shank sit ready; it is the cheapest energy you have. Do not cap. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when you are empty, ideally right before Cold Blood comes up. Line up Cold Blood with your racial, trinket and potion.
+Mutilate costs 60, so you will often sit on four points waiting for energy. That is fine: finish first, then build, and Relentless Strikes will hand most of the finisher's cost back. Never let Shank sit ready; it is the cheapest energy you have. Do not cap. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when you are empty. Line up Cold Blood with your racial, trinket and potion.
 
 ### Poisons
 

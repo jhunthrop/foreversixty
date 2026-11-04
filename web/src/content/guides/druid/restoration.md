@@ -62,7 +62,7 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and a much shorter cooldown.
 - **Heart of the Wild** (5 points): 10% more Intellect.
-- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow does nothing for a healer; it is the filler that gets you to Nature's Splendor's row, and the Improved Moonfire point is a spare.
+- **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) and Improved Moonfire (1 point) are the price of Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
 
 **Wild Growth.** The capstone heals a whole party over 7 seconds, but even with Naturalist it is a 2.5 second cast on a 6 second cooldown with a high mana cost, and on a tank fight Rejuvenation and Bloom do more for the mana. On a fight with heavy group damage in bursts it is worth trying: drop Improved Tranquility and put one of its points in Wild Growth.
 

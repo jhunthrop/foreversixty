@@ -62,7 +62,7 @@ The leveling and raid builds are the same Destruction tree. The raid build moves
 - **Incinerate** (1 point): your filler from level 40. It deals 25% more while your Immolate is on the target.
 - **Suppression** and **Improved Corruption** (10 points): 5% hit on every spell, 20% less threat, and an instant Corruption.
 
-Bane of Havoc is the path to Incinerate, and it only earns a cast on fights with two targets. Molten Skin and Destructive Reach are survival and range picks, not damage: Molten Skin takes 6% off every hit you take, and Destructive Reach adds 20% range to your Destruction spells.
+Bane of Havoc is the path to Incinerate, and it only earns a cast on fights with two targets. Molten Skin and Destructive Reach buy safety and reach: Molten Skin takes 6% off every hit you take, and Destructive Reach adds 20% range to your Destruction spells, so you can stand clear of cleaves and fire on the floor.
 
 ## Rotation and priority
 
@@ -97,15 +97,15 @@ Adds and AoE: on two targets, put Bane of Havoc on the one that must die and spe
 
 ## Stat priority
 
-Spell power first. Hit matters up to the cap shown above, and Suppression gives you 5% of it. Fire power is the better school stat, since Incinerate, Immolate and Conflagrate are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap.
+Spell power first. Hit matters up to the cap, and Suppression gives you 5% of it. Fire power is the better school stat, since Incinerate, Immolate and Conflagrate are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need. Spirit only matters through Life Tap.
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops.
+The pre-raid set leans on Tailoring and Enchanting crafts, with an Engineering head.
 
 ## Enchants and consumables
 
-The table above is the standard raid kit. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
 
 ## Races
 
@@ -113,7 +113,7 @@ Gnome and Orc are the picks. Gnome's Eureka! gives 8 seconds of 10% more damage 
 
 ## Professions
 
-Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting adds a few strong caster pieces, and you enchant your own gear. Alchemy is the swap when your guild expects a flask every raid night, and it keeps your Fire Power elixirs cheap.
+Tailoring and Enchanting. Tailored cloth carries your pre-raid set, Enchanting adds a few strong caster pieces, and you enchant your own gear. Your best head, Spellpower Goggles Xtreme Plus, is an engineer's craft; if you cannot get a pair, the tailored Dreamweave Circlet is the next best. Alchemy is the swap when your guild expects a flask every raid night, and it keeps your Fire Power elixirs cheap.
 
 ## Leveling
 

@@ -63,7 +63,7 @@ Lightning Mastery is the 31st point, and Call of Thunder above it is the point t
 - **Elemental Fury** (5 points): doubles the crit bonus of your spells and your Searing and Magma Totems.
 - **Lightning Mastery** (1 point): 15 seconds of faster Lightning Bolts and Chain Lightning with no cooldown, every 3 minutes.
 
-Elemental Warding and the single point of Elemental Devastation are there to open the next row. Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
+Elemental Warding (3 points) cuts the Fire, Frost and Nature damage you take by 10%. It and the single point of Elemental Devastation are the toll to reach Elemental Fury. Mindfulness keeps half your regeneration running while you cast. Improved Reincarnation (2 points) cuts Reincarnation to a 40 minute cooldown and brings you back with more health and mana.
 
 ## Rotation and priority
 

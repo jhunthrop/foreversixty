@@ -93,7 +93,7 @@
         }
       },
       {
-        "notes": "Always up, but skip the refresh in the last 10 seconds of a fight.",
+        "notes": "Always up; stop refreshing it in the closing seconds of a fight.",
         "action": {
           "condition": {
             "and": {

@@ -26,7 +26,7 @@ Two healing specs and one shadow caster, as always. Shadow is also how a priest 
 - **Every priest now has** Fear Ward, Devouring Plague, Shadow Word: Death, Divine Spirit and Lightwell from the trainer.
 - **Mind Flay** is a Shadow talent instead of a trainer spell, Penance and Prayer of Mending are the deep Discipline and Holy talents, and the trainer teaches their higher ranks once you have them.
 - **Shadowfiend** is not learnable at launch.
-- **Heals learned below level 20** lost part of their healing bonus in 1.12. If Forever drops that rule, low ranks of Renew, Heal and Lesser Heal become real mana savers at 60, so read their tooltips on a geared priest before you lean on one.
+- **Low-rank heals.** In 1.12 a heal rank learned below level 20 lost part of your healing bonus. Before you raid with Renew, Heal or Lesser Heal at such a rank, read its tooltip on your geared 60.
 
 ## Races
 
@@ -40,9 +40,9 @@ Two healing specs and one shadow caster, as always. Shadow is also how a priest 
 **Each race has its own two priest spells.**
 
 - Human: Divine Grace (a free instant heal that clears Weakened Soul) and Feedback.
-- Dwarf: Desperate Prayer and Chastise; Fear Ward is no longer theirs alone.
+- Dwarf: Desperate Prayer and Chastise.
 - Night Elf: Elune's Grace and Starshards.
 - Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.
 - Troll: Hex of Weakness and Shadowguard.
 
-Skyborne cannot be priests.
+Skyborne, Forever's new neutral race, cannot be priests: they play warrior, hunter, rogue, shaman, mage or druid.

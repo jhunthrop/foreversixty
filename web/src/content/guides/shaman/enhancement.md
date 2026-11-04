@@ -76,7 +76,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 5. Fire Nova when Clearcasting makes it free.
 6. Earth Shock on cooldown while you are above half mana. It takes Stormstrike's 20% when no bolt is ready.
 
-**Which Air totem.** Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so you never drop Windfury for yourself. In Forever Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and it is worth far more to them than Grace of Air is to you. If another shaman already has it down, take Grace of Air. There is nothing to twist: Windfury Totem in Forever is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
+**Which Air totem.** Windfury Weapon on your own weapon turns off any Windfury Totem's bonus for you, so you never drop Windfury for yourself. Windfury Totem, Grace of Air and Strength of Earth reach every raid member within 30 yards, not just your party. One Windfury Totem near the boss covers every warrior and rogue within 30 yards of it, and it is worth far more to them than Grace of Air is to you. If another shaman already has it down, take Grace of Air. There is nothing to twist: Windfury Totem is an aura around the totem, not a buff that lingers on the weapon, so it ends the moment you replace the totem.
 
 **Fire Nova on Clearcasting.** In the raid build, Elemental Focus sometimes makes your next damage spell free. Spend it on Fire Nova: in melee your Searing Totem stands within its 10 yards of the boss. Outside a proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
 
@@ -88,7 +88,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Hit covers your swings, your Stormstrike and your shocks at once in Forever, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Strength is attack power twice over.
+Hit covers your swings, your Stormstrike and your shocks at once, so it is never wasted on half your kit. Intellect is worth far more to you than to any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Strength is attack power twice over.
 
 ## Best in slot
 
@@ -110,4 +110,4 @@ Take Enchanting. Frozen Heart of the Mountain and Molten Heart of the Mountain a
 
 ## Leveling
 
-Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Stormstrike opens in the fourth row of the tree, but the spell itself is a level 40 spell; if it will not cast for you yet, take it at 40. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.
+Enhancement is the shaman's best leveling spec. You hit hard in melee, take hits well, and spend little time drinking. Keep Lightning Shield up while you quest: mobs hit you, so it does damage. Rockbiter Weapon is your only imbue until Flametongue at 10; Windfury Weapon at 30 replaces both and stays on for good. Stormstrike sits in the fourth row of the tree but is a level 40 spell, so take it at 40 and spend the points before then on Flurry, Improved Ghost Wolf and Mental Quickness. Strength of Earth Totem from 10 and Searing Totem from 10 go down on every pull worth fighting; skip them on a single mob that dies in seconds. Ghost Wolf at 20 is how you travel, instant once you have Improved Ghost Wolf, and leather turns to mail at 40.

@@ -412,7 +412,7 @@
         }
       },
       {
-        "notes": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana is at least 80% of the share of the fight left. Spam it and your Seal lapses before the execute; hold it too long and you end the fight with mana unspent.",
+        "notes": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more). Spam it and your Seal lapses before the execute; hold it too long and you end the fight with mana unspent.",
         "action": {
           "castSpell": {
             "spellId": {

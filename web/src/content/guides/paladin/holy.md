@@ -77,7 +77,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 1. **Oath of Light** kept on the tank. It lasts 5 minutes: renew it in a long fight, and move it when the tank changes.
 2. **Divine Favor**, then **Holy Light** (rank 8), when the tank drops below 40%. It is the only heal that outheals a tank by itself, and the crit is guaranteed.
-3. **Holy Light** on the tank below 70%, and **Holy Shock** on anyone below 70%, but only with mana to spare: your mana bar no more than five points behind the share of the fight left.
+3. **Holy Light** on the tank below 70%, and **Holy Shock** on anyone below 70%, but only with mana to spare: keep your mana percent no more than 5 points under the percent of the fight left (halfway through, above 45% mana). Once you fall more than 5 points under, heal with Flash of Light alone until you catch up.
 4. **Flash of Light rank 1** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank, so the 35 mana rank 1 heals the tank for well over half of what the top rank does at a quarter of the cost.
 5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus, rank 4 is the best balance of heal size and mana.
 
@@ -109,7 +109,7 @@ Herbalism and Alchemy keep you in mana potions, Flasks of Distilled Wisdom and e
 
 ## Leveling
 
-Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. Holy Shock comes at 30 and Oath of Light at 25 if you level as Holy, but questing as Holy is slow.
+Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. If you do level as Holy, this build picks up Oath of Light in your 30s and Holy Shock in your 40s, but questing as Holy is slow.
 
 Common mistakes:
 

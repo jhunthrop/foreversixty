@@ -69,13 +69,13 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 - **Improved Execute** (2 points): Execute costs 10 rage instead of 15, so the rage you hold goes into damage.
 - **Improved Whirlwind** (2 points): Whirlwind comes back every 8 seconds instead of 10 and hits the closest enemy 30% harder. You press Whirlwind every time it comes off cooldown, and on a single boss the closest enemy is the boss.
 - **Reckless Swings** (1 point): a button on a 15 second cooldown and a 1 second global that makes your next four white swings within 8 seconds bring 5 more rage each. It costs a quarter of your base health, which the healers cover without noticing, and 20 rage every 15 seconds is a Heroic Strike you would not otherwise have.
-- **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Two points fill out the row.
+- **Enrage** (2 points): a 30% chance at 4% more physical damage for 12 seconds after you get hit. Any damaging attack rolls it, so cleaves, raid-wide damage and every dungeon pull keep it coming up.
 - **Improved Heroic Strike** (3 points): Heroic Strike costs 3 less. It is your rage dump, and you press it a lot.
-- **Improved Rend**, **Deep Wounds** and **Impale** (8 points in Arms): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.
+- **Deep Wounds** and **Impale** (8 points in Arms, with **Improved Rend** as the toll to reach Deep Wounds; Fury never casts Rend): every crit leaves a bleed for 60% of your weapon's average damage and your ability crits hit 20% harder. Fury crits a lot, so this is the best use of the Arms points.
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
 - **Anger Management** (1 point, behind 3 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Tactical Mastery itself does little for a warrior who never leaves Berserker Stance; it is the way in.
 
-The build also spends a point each in **Piercing Howl** and **Lingering Rage** on the way down the tree, and two in **Improved Charge**, which is what gets you down to Impale; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
+The build also spends a point in **Piercing Howl**, which dazes everything within 10 yards for 6 seconds to stop runners and kite on trash, a point in **Lingering Rage**, which holds your rage 10 seconds longer after a fight so it carries into the next pull, and two in **Improved Charge**, which is what gets you down to Impale; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 
@@ -95,7 +95,7 @@ The build also spends a point each in **Piercing Howl** and **Lingering Rage** o
 
 ## Stat priority
 
-Hit is worth the most until the cap above, and dual wielding has two caps: your specials reach it long before your white swings do, so past the special cap hit only trims your white misses. Crit feeds Flurry, Deep Wounds and Impale. Every point of Strength is two attack power for a warrior. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
+Hit is worth the most until you reach the hit cap, and dual wielding has two caps: your specials reach it long before your white swings do, so past the special cap hit only trims your white misses. Crit feeds Flurry, Deep Wounds and Impale. Every point of Strength is two attack power for a warrior. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
 
 ## Best in slot
 

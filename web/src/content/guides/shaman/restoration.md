@@ -33,7 +33,7 @@ Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal throug
 - Chain Heal cast on a target with your Riptide heals it 25% more
 - Chain Heal heals three people for one cast
 - Water Shield turns every hit you take and every heal that crits into mana
-- Nature's Swiftness is an instant full Healing Wave when the tank drops
+- Nature's Swiftness makes your biggest Healing Wave instant when the tank is about to die
 
 ### Weaknesses
 
@@ -73,12 +73,14 @@ Ancestral Healing takes the last three points: 25% more armor on your target for
 
 1. Riptide on the tank whenever it is ready and the tank is hurt. It is your cheapest heal per mana, and it sets up the Chain Heal. It heals over its 15 seconds with nothing up front, so it never answers a big hit on its own.
 2. Chain Heal on the tank as soon as anyone in your party is hurt, as long as your mana is ahead of the fight. Riptide's 25% applies to the target you cast it on, and the two jumps go to the most injured people near it, each for half the heal before.
-3. Healing Wave when the tank is down to 60%. Drop a rank when your mana is behind the fight, and check what the low ranks actually heal for before you lean on them. Lesser Healing Wave is the fast heal when it is down to 30% and the next hit could kill it.
-4. Nature's Swiftness into Healing Wave when the tank is under 25%. Keep it for exactly that.
+3. Healing Wave when the tank is down to 60%. Drop a rank when your mana is behind the fight. Lesser Healing Wave is the fast heal when it is down to 30% and the next hit could kill it.
+4. Nature's Swiftness into your highest rank of Healing Wave when the tank is under 25%. Keep it for exactly that, and never spend it on a low rank.
+
+**Low ranks.** Before you lean on any low rank, open its tooltip at 60 with your healing gear on and see how much of your healing bonus it shows. A rank that shows little of it saves no mana at all.
 
 **Party members.** Heal them directly only while your mana is above half: Riptide when one is under 50%, Lesser Healing Wave under 25%. Otherwise Chain Heal is how they get healed.
 
-**Chain Heal ranks.** Rank 3 costs 405 mana for a 490 base heal; rank 1 costs 260 for 251. Rank 1 is cheaper for what it heals, but in a raid with Water Shield, Mana Tide and your consumables, rank 3 heals more over the whole fight. Pace your Chain Heals to your mana rather than downranking them; save ranks 1 and 2 for fights where you will run dry.
+**Chain Heal ranks.** Rank 3 costs 405 mana for a 490 base heal; rank 1 costs 260 for 251. On the base heal alone rank 3 is the better buy per mana as well as the bigger heal. Every rank takes the same share of your healing bonus, though, so with a raid's healing gear rank 1 pulls slightly ahead per mana while rank 3 still heals far more per cast. Cast rank 3 while your mana is ahead of the fight, and drop to rank 1 or 2 only on fights where you would run dry.
 
 **Your party matters.** Healing Stream, Mana Spring and Mana Tide only reach your party. Ask to be grouped with whoever takes the damage, usually the tank and the melee.
 
@@ -86,7 +88,7 @@ Ancestral Healing takes the last three points: 25% more armor on your target for
 
 **Cleansing.** Poison Cleansing Totem and Disease Cleansing Totem take the Water slot and clear your party every few seconds; drop one on fights that poison or disease. Cure Poison and Cure Disease reach anyone the totems do not. Ancestral Spirit brings a dead player back after the fight.
 
-**Earth and Air.** Strength of Earth, Grace of Air and Windfury reach the whole raid within 30 yards in Forever, so one shaman covers the melee. If you are the only shaman near them, those totems are yours to drop.
+**Earth and Air.** Strength of Earth, Grace of Air and Windfury reach the whole raid within 30 yards, so one shaman covers the melee. If you are the only shaman near them, those totems are yours to drop.
 
 ## Stat priority
 
@@ -108,8 +110,8 @@ On the Horde, Tauren's Endurance is 5% more health, the safest pick. Troll's Ber
 
 ## Professions
 
-Herbalism and Alchemy keep you in Major Mana Potions and flasks, which is most of what a healer spends gold on. Tailoring makes Mooncloth Boots, and Leatherworking your Living Crown, but both bind when equipped and can be bought. Enchanting makes Totem of Urgency, a relic with 4% more crit on Lesser Healing Wave that also binds when equipped.
+Herbalism and Alchemy keep you in Major Mana Potions and flasks, which is most of what a healer spends gold on. Tailoring makes Mooncloth Boots, and Leatherworking your Living Crown, but both bind when equipped and can be bought.
 
 ## Leveling
 
-Level as Enhancement. Restoration has no damage to clear quests with, and the Enhancement tree carries Thundering Strikes and Ancestral Knowledge, the same ten points this build keeps. Healing dungeons as Enhancement works into your 30s with Healing Wave, Lesser Healing Wave from 20 and Healing Stream Totem from 20. Respec to Restoration at your trainer when you start healing for real: Chain Heal comes at 40, and Riptide is the 31st point in the tree.
+Put your points into Restoration from the first one. Improved Healing Wave and Tidal Focus make every heal faster and cheaper, Mindfulness and Water Shield are in by 20, and Mana Tide Totem comes at 30. You quest with Lightning Bolt, your shocks and your weapon, and you can heal any dungeon the day you walk in. Lesser Healing Wave and Healing Stream Totem come at 20 and Chain Heal at 40. Riptide, the bottom of the tree, is in by 50, and your last ten points, from 51, go to Thundering Strikes and Ancestral Knowledge.

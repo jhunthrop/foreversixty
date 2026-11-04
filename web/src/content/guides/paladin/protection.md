@@ -56,7 +56,7 @@ Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield o
 
 - Mana, not cooldowns, limits what you press: run dry and your threat stops
 - Templar's Bulwark, Divine Shield and Divine Protection share Forbearance, so you get one at a time
-- No Blessing of Salvation in Forever, so you hold threat against damage dealers at full threat
+- Forever has no Blessing of Salvation, so your damage dealers keep all their threat and you have to out-threat them without that help
 
 ### In a raid
 
@@ -118,7 +118,7 @@ Defense comes first: it takes hits away and lowers the boss's chance to crit you
 
 ## Races
 
-**Dwarf** is the Alliance tank. Stoneform takes physical damage off for a few seconds, a free defensive on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Ruthless, 1% crit, and The Human Spirit. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
+**Dwarf** is the Alliance tank. Stoneform takes physical damage off for a few seconds, a free defensive on a hard pull, and Artisan's Precision is 1% hit. **Human** brings Will to Survive, which breaks a stun so you get back to holding the boss, and Ruthless, 1% crit for a little more threat; The Human Spirit's Spirit does little for a tank. **Undead** is new to paladins in Forever and the only Horde option. Will of the Forsaken breaks a fear, so a feared tank gets back to the boss before it turns on the raid, but it no longer makes you immune, so press it after the fear lands. Touch of the Grave adds a small heal off your attacks, once every 15 seconds at most.
 
 ## Professions
 

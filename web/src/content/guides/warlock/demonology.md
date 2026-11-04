@@ -60,9 +60,9 @@ The leveling build stops at 30 Demonology points, before Demonic Pact, keeps Imp
 - **Master Summoner** (2 points): 4 seconds off every summon and 40% off its mana. A summon becomes a 6 second cast, which is what makes a mid-fight resummon possible.
 - **Fel Vitality** (3 points): 15% more mana for you and your demons.
 
-The raid build adds what the leveling build cannot use. Demonic Pact, the 31st point, keeps your sacrifice when you summon a different demon; only a new Imp ends it. So you sacrifice the Imp and still play with a Succubus out. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit, and in Forever that debuff is yours alone. Ruin doubles the crit bonus on Shadow Bolt and Soul Fire, and all 5 points of Unholy Power go into the Succubus.
+The raid build adds what the leveling build cannot use. Demonic Pact, the 31st point, keeps your sacrifice when you summon a different demon; only a new Imp ends it. So you sacrifice the Imp and still play with a Succubus out. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit, and in Forever that debuff is yours alone. Ruin doubles the crit bonus on Shadow Bolt and Soul Fire, and all 5 points of Unholy Power go into the Succubus. To pay for it, the raid build gives up Improved Corruption, Improved Life Tap, Grim Reach, Soul Harvest and Demonic Energies.
 
-Improved Health Funnel, Demonic Embrace, Demonic Aegis and Improved Voidwalker add no damage. They are path points that keep you and your demon alive. The point in Improved Sayaad is 10% more Lash of Pain. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
+Improved Health Funnel, Demonic Embrace, Demonic Aegis and Improved Voidwalker are the toll to reach Pact, and each buys survival: a stronger, cheaper Health Funnel, 9% more Stamina, a 15% stronger Demon Armor and a tougher Voidwalker. The point in Improved Sayaad is 10% more Lash of Pain. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
 
 Your demon scales from you in Forever, and raid buffs do not land on it. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets a bit under half your hit. Its melee almost never crits on a boss; Lash of Pain crits at about a normal caster's rate.
 
@@ -98,15 +98,15 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Spell power first, and Shadow power is nearly as good, though Immolate and Soul Fire are Fire. Hit comes next until the cap: Suppression gives you 5%, and the table above shows how much more you need. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
+Spell power first, and Shadow power is nearly as good, though Immolate and Soul Fire are Fire. Hit comes next until the cap, and Suppression already gives you 5% of it. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana. Spirit only matters through Life Tap.
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops.
+The pre-raid set leans on Tailoring and Enchanting crafts, with an Engineering head.
 
 ## Enchants and consumables
 
-The table above is the standard raid kit. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate and Soul Fire. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Immolate and Soul Fire. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
 
 ## Races
 
@@ -114,8 +114,8 @@ Gnome and Troll are the picks. Eureka! gives 8 seconds of 10% more damage and 10
 
 ## Professions
 
-Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted caster pieces fill your pre-raid set. Alchemy is the swap if your guild wants a flask from you every raid night.
+Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted caster pieces fill your pre-raid set. Your best head, Spellpower Goggles Xtreme Plus, is an engineer's craft; if you cannot get a pair, the tailored Felcloth Hood is nearly as good, since its 30 Shadow power suits your Shadow Bolts. Alchemy is the swap if your guild wants a flask from you every raid night.
 
 ## Leveling
 
-Demonology levels well with a demon that tanks. Until Demonic Pact at 60, any summon cancels your sacrifice, so solo you keep a demon out for Soul Link, Master Demonologist and Demonic Knowledge. Use the Voidwalker when pulls hurt, since Master Demonologist then cuts the physical damage you take by 10%. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.
+Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice, and solo you keep a demon out for Soul Link, Master Demonologist and Demonic Knowledge. Use the Voidwalker when pulls hurt, since Master Demonologist then cuts the physical damage you take by 10%. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. From 48, when you learn Soul Fire, Decimation's free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.

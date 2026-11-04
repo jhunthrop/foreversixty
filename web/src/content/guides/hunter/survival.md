@@ -71,17 +71,17 @@ Thirty-five points in Survival take every melee damage talent, eleven in Marksma
 - **Deadly Aspects** (5 points): under Aspect of the Beast, every white swing has a 10% chance to speed your melee attacks by 30% for 12 seconds
 - **Resourcefulness** (2 points): 60% off melee and trap costs, and your special crits keep half your mana regeneration running
 
-Careful Aim (5 points) turns Intellect into attack power and is the way to Lone Wolf. Lethal Attacks (5 points) is 5% crit on everything. Surefooted is 3% hit, Strider Kick is a third melee special, and Clever Traps and Survivalist's Discipline turn Immolation Trap into a damage button. Counterattack comes with Deterrence on the way down. Improved Tracking (5 points) is 5% damage against the creature type you track, so track the boss's type before every pull.
+Careful Aim (5 points) turns Intellect into attack power and is the way to Lone Wolf. Lethal Attacks (5 points) is 5% crit on everything. Surefooted is 3% hit, Strider Kick is a third melee special, and Clever Traps and Survivalist's Discipline turn Immolation Trap into a damage button. Counterattack comes with Deterrence on the way down. Improved Tracking (5 points) is 5% damage against the creature type you track. Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead, which takes in most raid bosses, so set it to the boss's type before the pull whenever Track covers it.
 
-The Marksmanship shot talents do nothing for you. Mortal Shots is ranged only, Hawk Eye is range on a bow you never fire, and Efficiency is wasted next to Resourcefulness. The same build is the raid build: with Judgement of Wisdom on the boss you could take Rapid Killing for a shorter Rapid Fire, but it does not beat the points it would cost.
+The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk Eye is range on a bow you never fire, and Efficiency's 15% comes on top of Resourcefulness's 60%, so it saves little. The same build is the raid build. Leave Rapid Killing out there too: a shorter Rapid Fire does not pay for the points it costs.
 
 ## Rotation and priority
 
-Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (it copies your best Aspect of the Hawk, 10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is no upgrade for you. Before 60 Beast is the only melee aspect you have. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
+Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is no upgrade for you. Before 60 Beast is the only melee aspect you have. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
 
 Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and Berserking or Blood Fury together: Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
 
-Then play the priority above. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Mongoose Bite and Counterattack are the buttons you watch for: Expose Prey opens Mongoose Bite off your own hits, while Counterattack needs a parry, and from behind a boss you will not parry, so it is mostly an add and trash button. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
+Then work through your melee priority: Raptor Strike, Counterattack, Mongoose Bite, Lacerate, Strider Kick, Immolation Trap. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Mongoose Bite and Counterattack are the buttons you watch for: Expose Prey opens Mongoose Bite off your own hits, while Counterattack needs a parry, and from behind a boss you will not parry, so it is mostly an add and trash button. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
 
 You fire no shots in this spec. Your bow or gun is there for its stats.
 
@@ -93,7 +93,7 @@ You fire no shots in this spec. Your bow or gun is there for its stats.
 
 ## Stat priority
 
-Hit first until the special attack cap shown above. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 15%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
+Hit first until you reach 9% hit, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Then crit, which Predator's Edge and Savage Strikes make strong, and Agility, which Lightning Reflexes raises by 15%. Intellect is attack power through Careful Aim. Strength and plain attack power are the weakest per point. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -101,9 +101,9 @@ Hunters wear leather until 40 and mail from 40. Survival dual-wields, and Predat
 
 ## Enchants and consumables
 
-Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers. Intellect shows up on a weapon in the table too: through Careful Aim it is attack power for you.
+Agility on gloves, boots and cloak, the best stats enchant on the chest, and Intellect on bracers. Intellect is a fair weapon enchant too: through Careful Aim it is attack power for you.
 
-Forever's damage potions share the two-minute potion cooldown with mana potions. Survival's mana holds with Resourcefulness, so it drinks a Major Frenzy Potion on the pull instead. Keep Elixir of the Mongoose up, with the food above.
+Forever's damage potions share the two-minute potion cooldown with mana potions. Survival's mana holds with Resourcefulness, so it drinks a Major Frenzy Potion on the pull instead. Keep Elixir of the Mongoose up, with Poached Sunscale Salmon.
 
 ## Races
 

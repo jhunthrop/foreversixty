@@ -30,7 +30,7 @@ Discipline heals the tank with Penance on cooldown, a cheap shield to open Renew
 
 ### Strengths
 
-- Penance is three heals for one cast every 12 seconds
+- Penance is a short channel of three heals every 12 seconds
 - A shield that soaks the next hit before it lands
 - Renewed Hope and Divine Aegis turn Weakened Soul into crits, and crits into more shields
 
@@ -49,8 +49,8 @@ Discipline heals the tank with Penance on cooldown, a cheap shield to open Renew
 
 Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheaper heals.
 
-- **Penance** (1 point): your best heal. Three pulses one second apart, on a 12 second cooldown.
-- **Renewed Hope** (4 points): your heals crit far more on a target under Weakened Soul, and each one takes time off the Weakened Soul so the next shield comes sooner.
+- **Penance** (1 point): your best heal. A two second channel that heals three times, one second apart, on a 12 second cooldown.
+- **Renewed Hope** (4 points): Flash Heal, Lesser Heal, Heal, Greater Heal and Penance gain 8% crit chance on a target under Weakened Soul, and each one takes 4 seconds off his Weakened Soul so the next shield comes sooner.
 - **Divine Aegis** (3 points): every direct heal that crits leaves a shield for 15% of it.
 - **Soul Warding** (1 point): no cooldown on Power Word: Shield and 15% off its cost.
 - **Improved Power Word: Shield** (3 points): 20% more on every shield.
@@ -68,11 +68,13 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Penance on cooldown.** On the tank whenever he is missing health, on a party member who drops low when the tank is fine. It is the heal you never let sit.
 
-**The shield is a switch.** Shield the tank at a low rank whenever Weakened Soul is off him. A small shield costs little and soaks one hit, and the Weakened Soul it leaves is what Renewed Hope needs: your next heals on him crit far more often, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner. A full-rank shield on a warrior tank eats the rage he needs at the start of a pull; save the big one for a hit he cannot take.
+**The shield is a switch.** Shield the tank at a low rank whenever Weakened Soul is off him. A small shield costs little and soaks one hit, and the Weakened Soul it leaves is what Renewed Hope needs: your next heals on him gain 8% crit chance, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner. A full-rank shield on a warrior tank eats the rage he needs at the start of a pull; save the big one for a hit he cannot take.
 
-**Renew** stays on the tank. A low rank heals the most per mana only if it keeps your healing bonus: In 1.12 a rank learned below level 20 lost part of its healing bonus; read that rank's tooltip on your geared priest before you lean on it.
+**Renew** at rank 1 stays on the tank, for very little mana.
 
-**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. A cheap low-rank heal on everyone else, which heals for very little mana. In 1.12 a rank learned below level 20 lost part of its healing bonus; read that rank's tooltip on your geared priest before you lean on it.
+**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Lesser Heal rank 1 on everyone else, which heals for very little mana.
+
+**Check your low ranks once.** Renew rank 1 and Lesser Heal rank 1 are learned below level 20, and in 1.12 such ranks lost part of your healing bonus. On your geared 60, read each tooltip with your healing gear on and then off. If the number barely moves, the penalty is still there: cast Renew rank 3 and Heal rank 4 instead.
 
 **Emergencies.** Flash Heal at the top rank on anyone about to die. It is your fastest heal and your dearest, so it never becomes the filler.
 

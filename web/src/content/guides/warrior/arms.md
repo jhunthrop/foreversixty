@@ -74,7 +74,7 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
 - **Cruelty** and **Unbridled Wrath** (10 points in Fury): 5% crit and a 60% chance at an extra rage point on every weapon hit.
 
-The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will** (shorter stuns and fears), which matter while you level and in PvP.
+The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will**, which takes 15% off every stun and fear on you.
 
 The raid build drops Iron Will for two more points of **Improved Heroic Strike**, so your rage dump costs 3 less, a fourth point of **Deflection** for the times a boss turns on you, and two points of **Blood Craze**, which give back a little health after big hits. Open the [planner](/planner?class=warrior) to see both builds point by point.
 
@@ -94,13 +94,13 @@ The raid build drops Iron Will for two more points of **Improved Heroic Strike**
 
 ## Stat priority
 
-Hit is worth the most until the cap above: a missed Mortal Strike or Overpower is a lost global and lost rage. Crit feeds Deep Wounds, Impale and Overpower. Every point of Strength is two attack power for a warrior, so Strength beats attack power point for point. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
+Hit is worth the most until you reach the hit cap: a missed Mortal Strike or Overpower is a lost global and lost rage. Crit feeds Deep Wounds, Impale and Overpower. Every point of Strength is two attack power for a warrior, so Strength beats attack power point for point. Haste adds swings, and swings are rage. Weapon skill from gear, Edgemaster's Handguards and the like, is worth chasing now that no race brings it: it takes the sting out of glancing blows and trims your misses.
 
 ## Best in slot
 
 ## Enchants and consumables
 
-Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, eat and drink everything on the list: a two-hand warrior's damage is mostly Strength and attack power, and both stack with the raid's buffs.
+Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take Elixir of the Mongoose, R.O.I.D.S., Winterfall Firewater and Smoked Desert Dumplings: crit, Strength and attack power all stack with the raid's buffs.
 
 ## Races
 

@@ -99,11 +99,11 @@ Take **Vanguard** (Charge in Defensive Stance) for trash and dungeons where you 
 
 **Emergencies.** Last Stand below 35% health. Shield Wall below 40% for 60% less damage taken over 12 seconds, on a 15 minute cooldown. On a fight you know, press Shield Wall before the big hit lands rather than after.
 
-**Adds.** Thunder Clap hits up to four targets and slows all of them. Sunder and Revenge the add the healers can least afford, and Taunt anything that peels off.
+**Adds.** Thunder Clap hits up to four targets and slows all of them. Sunder and Revenge the add the healers can least afford, and Taunt anything that peels off. When a whole pack breaks loose onto the healers, Challenging Shout makes everything around you attack you for 6 seconds on a 10 minute cooldown: Thunder Clap and Sunder them before it runs out.
 
 ## Stat priority
 
-Stamina is health, and health is the one thing a healer cannot give you back mid-pull. Armor cuts every physical hit, though each point is worth a little less the more you stack. Defense, dodge and parry take hits out entirely, and Defense also lowers the chance to be crit. Crushing blows come from the boss's level, not your defense; Shield Block on top of your dodge, parry and block is what pushes them off the table. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Weapon skill from gear like Edgemaster's Handguards cuts how often the boss dodges and parries you, which is threat and rage, not survival.
+Defense, dodge and parry come first: they take hits out entirely, and Defense also lowers the chance to be crit. Agility brings dodge and armor with it. Stamina is your buffer: a bigger health bar gives the healers more time to react to a spike. Armor cuts every physical hit, though each point is worth a little less the more you stack. Crushing blows come from the boss's level, not your defense; Shield Block on top of your dodge, parry and block is what pushes them off the table. Block takes a flat amount off the hits it catches, so it grows with your block value. Strength and attack power are threat, and Strength also adds block value. Weapon skill from gear like Edgemaster's Handguards cuts how often the boss dodges and parries you, which is threat and rage, not survival.
 
 ## Best in slot
 
@@ -121,4 +121,4 @@ Blacksmithing and Mining. Blacksmithing makes plate and shields, and Mining feed
 
 ## Leveling
 
-Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, take Shield Specialization and Anticipation first; Shield Slam sits 30 points deep in Protection, so it is the last thing you reach.
+Level as Arms or Fury and keep a shield in your bags: Protection is slow solo. Defensive Stance trains at 10 and Shield Block at 16, and with a shield on you can tank every dungeon on the way up, even in damage talents. If you level as the group's tank, take Shield Specialization and Anticipation first. Shield Slam is the 31st point, so it arrives at 40; Bastion, then Improved Heroic Strike and Deflection in Arms, fill the levels after it.

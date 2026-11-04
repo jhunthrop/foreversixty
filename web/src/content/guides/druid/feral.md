@@ -55,7 +55,7 @@ The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns m
 
 ## Talents and builds
 
-The leveling build takes Brutal Impact for a longer Pounce stun, and Feral Charge, which only works in Bear Form, so it earns its point when you tank a dungeon on the way up. From 50 it puts one point in Balance for Genesis and goes into Restoration for Naturalist, three points of Heart of the Wild and Natural Shapeshifter. Its other eight Restoration points sit in Nature's Focus and Subtlety, which only touch your Nature and Arcane spells and do nothing for a cat. At 60, respec into the raid build: it finishes Rend and Tear and Heart of the Wild, moves Brutal Impact and Feral Charge into Feral Instinct, and takes Genesis and Nature's Majesty from Balance.
+The leveling build takes Brutal Impact for a longer Pounce stun, and Feral Charge, which only works in Bear Form, so it earns its point when you tank a dungeon on the way up. Your 31 Feral points are done at 40, so from 41 the rest goes out of the tree: one point in Balance for Genesis, then Restoration for Naturalist, three points of Heart of the Wild and Natural Shapeshifter. The last eight go in Nature's Focus, so a mob hitting you does not push back the Healing Touch or Regrowth you cast between forms, and Subtlety. Move them at the 60 respec. At 60, respec into the raid build: it finishes Rend and Tear and Heart of the Wild, moves Brutal Impact and Feral Charge into Feral Instinct, and takes Genesis and Nature's Majesty from Balance.
 
 - **Shredding Attacks** (3 points): Shred drops to 42 energy, and Shred is most of your globals.
 - **Savage Fury** (2 points): 10% more damage on Shred, Claw and Rake.

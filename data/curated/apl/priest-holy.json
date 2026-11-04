@@ -126,7 +126,7 @@
             }
           }
         },
-        "notes": "Renew on the tank all fight at rank 1: a low rank heals the most per mana as long as it keeps your healing bonus; in 1.12 a rank learned below level 20 lost part of it, so check the tooltip on a geared priest."
+        "notes": "Renew rank 1 on the tank all fight, for very little mana."
       },
       {
         "action": {
@@ -636,7 +636,7 @@
             }
           }
         },
-        "notes": "Heal is the filler: rank 1 in a raid, the cheapest healing per mana you have if it keeps your healing bonus (in 1.12 a rank learned below level 20 lost part of it); without a raid's mana (bare gear, a dungeon group) and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
+        "notes": "Heal is the filler: rank 1 in a raid, the cheapest heal you have; on bare gear, in a dungeon group and while leveling, rank 4. Cast it at the normal thresholds while your mana is keeping pace with the fight."
       },
       {
         "action": {

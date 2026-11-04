@@ -19,7 +19,7 @@ sources:
     kind: community
 ---
 
-Warrior is the pure melee class: plate, a weapon and a rage bar that fills from the hits you land and the hits you take. Nothing in the kit is free at the pull, so every warrior plays around rage: Bloodrage at the pull, and nothing spent that a bigger button needs.
+Warrior is the pure melee class: plate, a weapon and a rage bar that fills from the hits you land and the hits you take. Nothing in the kit is free at the pull, so every warrior plays around rage: Charge or Bloodrage to start the fight with some, and nothing spent that a bigger button needs.
 
 ## What changed from 1.12
 

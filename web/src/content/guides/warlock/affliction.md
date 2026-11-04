@@ -85,15 +85,15 @@ Adds and AoE: Corruption and Agony on two or three adds that live 15 seconds or 
 
 ## Stat priority
 
-Spell power and Shadow spell power are your stats, with Shadow power almost as good because nearly everything you cast is Shadow. Hit stays valuable right up to the cap shown above, and Suppression already gives you 5% of it. A missed bane or Corruption is a whole DoT lost. Crit is good for Affliction because DoT ticks crit too. Intellect is a small mana gain. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces.
+Spell power and Shadow spell power are your stats, with Shadow power almost as good because nearly everything you cast is Shadow. Hit stays valuable right up to the cap, and Suppression already gives you 5% of it. A missed bane or Corruption is a whole DoT lost. Crit is good for Affliction because DoT ticks crit too. Intellect is a small mana gain. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces.
 
 ## Best in slot
 
-The pre-raid set leans on Tailoring and Enchanting crafts. The list below shows each piece and where it drops.
+The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-The table above is the standard raid kit. Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for your Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for your Immolate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Brilliant Wizard Oil is the weapon pick; a Spellstone costs a shard and is the fallback.
 
 ## Races
 
