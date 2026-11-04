@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import type { AplGate } from '../bis/apl-gates';
 import { loadRotations, rotationEntryFor, rotationLinesFor } from '../bis/rotation-view';
 import { decodeBuildTrees } from './build-tree';
 import type { CollapsedLine } from '../bis/rotation-collapse';
@@ -123,8 +124,8 @@ describe('the APL readers', () => {
 
   it('lists the pre-pull casts, earliest first, and skips what is not a cast', () => {
     expect(prepullCasts(apl)).toEqual([
-      { spellId: 1, secondsBefore: 3.5 },
-      { spellId: 2, secondsBefore: 1 },
+      { spellId: 1, secondsBefore: 3.5, gates: [] },
+      { spellId: 2, secondsBefore: 1, gates: [] },
     ]);
   });
 
@@ -145,8 +146,8 @@ describe('the APL readers', () => {
       },
     };
     expect(prepullCasts(gated)).toEqual([
-      { spellId: 3, secondsBefore: 1.5, gate: { auraId: 9, known: true } },
-      { spellId: 4, secondsBefore: 1.5, gate: { auraId: 9, known: false } },
+      { spellId: 3, secondsBefore: 1.5, gates: [{ kind: 'known', spellId: 9, positive: true }] },
+      { spellId: 4, secondsBefore: 1.5, gates: [{ kind: 'known', spellId: 9, positive: false }] },
     ]);
     const names: Record<number, SpellFacts> = {
       3: { name: 'Seal of Command', cooldownMs: 0 },
@@ -157,6 +158,89 @@ describe('the APL readers', () => {
     expect(opener.map((item) => item.clause)).toEqual([
       '1.5 s before the pull, with Unsealed Wrath',
       '1.5 s before the pull, without Unsealed Wrath',
+    ]);
+  });
+
+  it('reads gates combined under `and`, and lists only the Seals that go out before the pull', () => {
+    const known = { auraIsKnown: { auraId: { spellId: 9 } } };
+    const judged = {
+      auraIsActive: { auraId: { spellId: 7, rank: 6 }, sourceUnit: { type: 'CurrentTarget' } },
+    };
+    const at = { const: { val: '-1.5s' } };
+    const seals = {
+      rotation: {
+        prepullActions: [
+          {
+            action: { condition: { not: { val: judged } }, castSpell: { spellId: { spellId: 2 } } },
+            doAtValue: at,
+          },
+          {
+            action: { condition: { and: { vals: [known, judged] } }, castSpell: { spellId: { spellId: 3 } } },
+            doAtValue: at,
+          },
+          {
+            action: {
+              condition: { and: { vals: [{ not: { val: known } }, judged] } },
+              castSpell: { spellId: { spellId: 4 } },
+            },
+            doAtValue: at,
+          },
+        ],
+      },
+    };
+    const names: Record<number, SpellFacts> = {
+      2: { name: 'Seal of the Crusader', cooldownMs: 0 },
+      3: { name: 'Seal of Command', cooldownMs: 0 },
+      4: { name: 'Seal of Righteousness', cooldownMs: 0 },
+      7: { name: 'Judgement of the Crusader', cooldownMs: 0 },
+      9: { name: 'Unsealed Wrath', cooldownMs: 0 },
+    };
+    // Command and Righteousness wait for Judgement of the Crusader, which no pre-pull cast puts
+    // on the target: only Crusader goes out before the pull.
+    expect(
+      rotationListsFrom([], seals, (id) => names[id]).opener.map((item) => [item.name, item.clause]),
+    ).toEqual([
+      ['Seal of the Crusader', '1.5 s before the pull, while Judgement of the Crusader is not on the target'],
+    ]);
+    // An aura an earlier pre-pull cast applies is there to gate on.
+    const marked = {
+      rotation: {
+        prepullActions: [
+          { action: { castSpell: { spellId: { spellId: 7 } } }, doAtValue: { const: { val: '-3s' } } },
+          { action: { condition: judged, castSpell: { spellId: { spellId: 2 } } }, doAtValue: at },
+        ],
+      },
+    };
+    expect(rotationListsFrom([], marked, (id) => names[id]).opener.map((item) => item.name)).toEqual([
+      'Judgement of the Crusader',
+      'Seal of the Crusader',
+    ]);
+  });
+
+  it('names a talent gate on a priority row its note does not already name', () => {
+    const line = (name: string, condition: string, gates: AplGate[]): CollapsedLine => ({
+      spellId: name.length,
+      name,
+      condition,
+      truncatedAtSource: false,
+      steps: 1,
+      gates,
+    });
+    const heating: AplGate = { kind: 'known', spellId: 9, positive: true };
+    const names: Record<number, SpellFacts> = { 9: { name: 'Heating Up', cooldownMs: 0 } };
+    const { priority } = rotationListsFrom(
+      [
+        line('Fireball', '', [heating]),
+        line('Pyroblast', 'On 3 stacks of Heating Up', [heating]),
+        line('Frostbolt', 'Filler', []),
+      ],
+      undefined,
+      (id) => names[id],
+    );
+    expect(priority.map((item) => item.clause)).toEqual([
+      'With Heating Up',
+      'On 3 stacks of Heating Up',
+      'Filler',
     ]);
   });
 

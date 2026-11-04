@@ -9,8 +9,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { canApplyBetween, knownAtFor } from './apl-level-gate';
-import { loadAplSteps, type AplStep } from './apl-steps';
+import { loadAplSteps, spellFamilyOf, type AplStep } from './apl-steps';
 import { collapseRuns, type CollapsedLine, type StepLine } from './rotation-collapse';
+import { aplGates } from './apl-gates';
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -140,7 +141,7 @@ export function alignNoteRank(note: string, name: string, bandRank: number | und
  *  The published lines are nightly-owned and trail a curated change by up to a day. A spell
  *  that only one side casts at all (an ability the curated list just dropped or added) is
  *  set aside: it cannot shift another spell's words, so the rest must still match one to
- *  one, in order. A set-aside line keeps its note and gets no words. */
+ *  one, in order, ability by ability. A set-aside line keeps its note and gets no words. */
 function stepsAlignedWith(
   entry: RotationEntry,
   spec: string,
@@ -151,19 +152,23 @@ function stepsAlignedWith(
   if (families === undefined) return undefined;
   const steps = loadAplSteps(spec, families, entry.level);
   if (steps === undefined) return undefined;
-  const stepSpells = new Set(steps.map((step) => step.resolvedSpellId));
-  const lineSpells = new Set(entry.lines.map((line) => line.spell_id));
-  const sharedSteps = steps.filter((step) => lineSpells.has(step.resolvedSpellId));
-  const sharedLineCount = entry.lines.filter((line) => stepSpells.has(line.spell_id)).length;
+  // Matched by ability, not by id: the published line can name another rank of the same spell
+  // than the one the curated step resolves to (a book rank the nightly has not yet published).
+  const stepKey = (step: AplStep): string => step.family ?? `id:${step.resolvedSpellId}`;
+  const lineKey = (spellId: number): string => spellFamilyOf(families, spellId) ?? `id:${spellId}`;
+  const stepSpells = new Set(steps.map(stepKey));
+  const lineSpells = new Set(entry.lines.map((line) => lineKey(line.spell_id)));
+  const sharedSteps = steps.filter((step) => lineSpells.has(stepKey(step)));
+  const sharedLineCount = entry.lines.filter((line) => stepSpells.has(lineKey(line.spell_id))).length;
   if (sharedSteps.length !== sharedLineCount) return undefined;
   const aligned: (AplStep | null)[] = [];
   for (const line of entry.lines) {
-    if (!stepSpells.has(line.spell_id)) {
+    if (!stepSpells.has(lineKey(line.spell_id))) {
       aligned.push(null);
       continue;
     }
     const step = sharedSteps[aligned.filter((slot) => slot !== null).length];
-    if (step.resolvedSpellId !== line.spell_id) return undefined;
+    if (stepKey(step) !== lineKey(line.spell_id)) return undefined;
     aligned.push(step);
   }
   return aligned;
@@ -205,6 +210,7 @@ export function rotationLinesFor(
       icon: line.icon !== undefined && iconFileExists(build, line.icon) ? line.icon : undefined,
       truncatedAtSource: line.condition.endsWith('…'),
       words: step?.words ?? null,
+      gates: step === undefined || step === null ? [] : aplGates(step.condition),
     });
   });
   return collapseRuns(stepLines);

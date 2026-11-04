@@ -13,6 +13,7 @@ const step = (
   condition,
   truncatedAtSource: false,
   words: { subject, qualifiers: [] },
+  gates: [],
 });
 
 describe('collapseRuns', () => {
