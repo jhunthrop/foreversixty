@@ -33,6 +33,7 @@
   role="tooltip"
   data-testid="item-tooltip"
   class="border-line bg-raised rounded-panel absolute z-30 flex w-[clamp(280px,calc(100vw_-_32px),360px)] flex-col gap-2 border p-3 text-[13px] shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+  style:position="var(--item-tooltip-position, absolute)"
   style:left="var(--item-tooltip-shift, 0px)"
   style:top="var(--item-tooltip-top, 100%)"
   style:bottom="var(--item-tooltip-bottom, auto)"

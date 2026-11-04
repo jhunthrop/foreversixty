@@ -302,29 +302,6 @@
         ]
       },
       {
-        "spell": "Binding Heal",
-        "authored": 1240774,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 1
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 1
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 1,
-            "preset": "bare",
-            "note": "Rank 1 at bare 60: Human +0.5% effective HPS; every other race within the 0.2% healer bar either way (Undead -0.1%), so no race loses and the row needs no race key (round-13 ranks.md; healers lane to recheck on the new level-60 split)."
-          }
-        ]
-      },
-      {
         "spell": "Prayer of Healing",
         "authored": 10961,
         "bands": [
@@ -637,28 +614,6 @@
             "from_level": 50,
             "to_level": 59,
             "rank": 2
-          }
-        ]
-      },
-      {
-        "spell": "Lava Burst",
-        "authored": 1326047,
-        "bands": [
-          {
-            "from_level": 40,
-            "to_level": 49,
-            "rank": 1
-          },
-          {
-            "from_level": 50,
-            "to_level": 59,
-            "rank": 2
-          },
-          {
-            "from_level": 60,
-            "to_level": 60,
-            "rank": 2,
-            "preset": "bare"
           }
         ]
       },

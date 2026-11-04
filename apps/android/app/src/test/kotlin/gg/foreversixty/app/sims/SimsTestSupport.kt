@@ -42,7 +42,7 @@ object SimsTestData {
     )
     const val HOWLERS_FURS = 272414
 
-    fun specs(): SpecCatalog = SpecCatalog.decode(File(repo, "data/curated/specs.json").readText())
+    fun specs(): SpecCatalog = SpecCatalog.decode(File(repo, "web/src/data/specs.json").readText())
 
     fun list(): SimList = RaidFixture.load(SimList.serializer(), "sims.list")
 

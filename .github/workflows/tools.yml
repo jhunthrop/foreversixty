@@ -9,6 +9,7 @@
 # tools/tests/test_remeasure.sh (bis.yml's dps-per-point re-measure and its manifest),
 # tools/tests/test_wasm_compress.sh (the deployed sim.wasm.gz and .br and their budget gates),
 # tools/tests/test_land.sh (the integrator's land/** landing command),
+# tools/tests/test_prod_smoke.sh (smoke.yml's launch-mode production smoke),
 # tools/tests/test_go_test_shard.sh (api.yml's go test shards),
 # tools/tests/test_apl_check.py (apl-check and apl-sync ignore the curated-only notes) and
 # tools/tests/play-upload.test.ts
@@ -53,27 +54,41 @@ jobs:
             !/docs/superpowers/reviews/
             !/apps/ios/
             !/apps/android/
+      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): shellcheck and actionlint
+      # alone; the script tests are skipped.
       - run: git config --global user.name tools-ci && git config --global user.email ci@foreversixty.gg
       - name: the activation scripts
+        if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_activation.sh
       - name: the engine follow scripts
+        if: vars.LAUNCH_MODE != 'true'
         run: bash tools/engine/tests/test_scripts.sh
       - name: the apps release command
+        if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_release_apps.sh
       - name: the dps-per-point re-measure
+        if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_remeasure.sh
       - name: the sim.wasm.gz and sim.wasm.br compression and budgets
+        if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_wasm_compress.sh
       - name: the landing command
+        if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_land.sh
+      - name: the launch-mode production smoke
+        if: vars.LAUNCH_MODE != 'true'
+        run: bash tools/tests/test_prod_smoke.sh
       - name: the api test shards
+        if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_go_test_shard.sh
       - name: apl-check and apl-sync, notes curated-only
+        if: vars.LAUNCH_MODE != 'true'
         run: python3 -m unittest discover -s tools/tests -p 'test_apl*.py'
       # 24 runs the TypeScript directly, with no packages.
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
       - name: the Play upload
+        if: vars.LAUNCH_MODE != 'true'
         run: node --test tools/tests/*.test.ts
       - name: shellcheck
         run: shellcheck tools/*.sh tools/engine/*.sh tools/tests/*.sh tools/engine/tests/*.sh

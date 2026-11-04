@@ -3,7 +3,7 @@ title: Holy Priest in Forever
 classSlug: priest
 spec: holy
 role: healer
-build: 'FS1:1.60.1.70753:priest:human:00500503103/33505003030121431/0:'
+build: 'FS1:1.60.1.70755:priest:human:00500503103/33505003030121431/0:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.'

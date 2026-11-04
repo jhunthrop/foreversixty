@@ -33,6 +33,11 @@
 # only) -- same config, same assertions, just less often. Nothing here drops a test, skips
 # an assertion, or relaxes a budget: see web/lighthouserc.push.cjs and web/README.md's
 # FOREVER_DATA section for the detail.
+#
+# LAUNCH MODE (vars.LAUNCH_MODE == 'true', docs/runbooks/landing.md "Launch mode"): `build`
+# runs check, lint, format, the guide prose test and the fixture build; e2e, real-engine
+# (real-engine-scope answers run=false), lhci and lhci-alert skip; deploy is unchanged, and
+# smoke.yml checks production after it.
 name: web
 on:
   push:
@@ -106,7 +111,12 @@ jobs:
       - run: npm run format:check
       # `pretest` sets FOREVER_DATA=fixture, so the unit tests see the checked-in fixture
       # rather than whatever the data pipeline last emitted.
-      - run: npm test
+      - if: vars.LAUNCH_MODE != 'true'
+        run: npm test
+      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): the guide prose test alone.
+      - name: the guide prose test (launch mode)
+        if: vars.LAUNCH_MODE == 'true'
+        run: npm test -- src/content/guides/_prose.test.ts
       # The fixture build: this is the dist/ that both `e2e` and `lhci` need. Previously
       # Playwright's own webServer (`playwright.config.ts`) rebuilt this implicitly, on the
       # fixture, right before the e2e suite ran, and lhci then audited whatever that left
@@ -121,7 +131,9 @@ jobs:
         env:
           FOREVER_DATA: fixture
           PUBLIC_API_BASE_URL: http://127.0.0.1:9
-      - uses: actions/upload-artifact@v4
+      # Nothing downloads it in launch mode: e2e and lhci are skipped.
+      - if: vars.LAUNCH_MODE != 'true'
+        uses: actions/upload-artifact@v4
         with:
           name: web-dist
           path: web/dist
@@ -165,6 +177,7 @@ jobs:
       - run: npm run build
   e2e:
     needs: build
+    if: vars.LAUNCH_MODE != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     defaults: { run: { working-directory: web } }
@@ -268,7 +281,14 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           BASE: ${{ github.event.pull_request.base.sha }}
+          LAUNCH_MODE: ${{ vars.LAUNCH_MODE }}
         run: |
+          # LAUNCH MODE skips real-engine the one way deploy's gate already lets through.
+          if [ "$LAUNCH_MODE" = true ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "launch mode: real-engine is skipped (docs/runbooks/landing.md)" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           if [ "$EVENT" != pull_request ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           git fetch -q --depth=1 origin "$BASE"
           changed=$(git diff --name-only "$BASE" HEAD)
@@ -401,7 +421,7 @@ jobs:
           retention-days: 7
   lhci:
     needs: build
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'schedule' && vars.LAUNCH_MODE != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     defaults: { run: { working-directory: web } }

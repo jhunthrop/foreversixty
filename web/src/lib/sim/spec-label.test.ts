@@ -13,12 +13,12 @@ import {
   specRow,
 } from './spec-label';
 
-const CURATED = path.resolve(import.meta.dirname, '../../../../data/curated/specs.json');
+const GENERATED_JSON = path.resolve(import.meta.dirname, '../../data/specs.json');
 
 describe('the generated spec list', () => {
-  it('is exactly what data/curated/specs.json holds, so the data lane is the only author', async () => {
-    const curated = JSON.parse(await readFile(CURATED, 'utf8')) as unknown;
-    expect(JSON.parse(JSON.stringify(SPECS))).toEqual(curated);
+  it('is exactly the catalogue the data lane generated beside it (web/src/data/specs.json)', async () => {
+    const generated = JSON.parse(await readFile(GENERATED_JSON, 'utf8')) as unknown;
+    expect(JSON.parse(JSON.stringify(SPECS))).toEqual(generated);
   });
 
   it('names every spec as <class-slug>-<spec-slug>', () => {

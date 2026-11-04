@@ -20,6 +20,7 @@ import type { Item, ItemSet } from '../planner/types';
 import { SLOT_LABELS, STAT_KEYS, STAT_LABELS, type StatKey } from '../planner/types';
 import type { LootFile } from '../sim/loot';
 import { humanise } from '../sim/humanise';
+import { displayDescription } from '../tooltips/game-tip';
 
 export interface WeaponLine {
   damageRange: string;
@@ -220,8 +221,11 @@ function statLines(item: Item): string[] {
   return [...flat, ...percent, ...equip, ...feralLineFor(item)];
 }
 
+/** The item's equip or use line as the client prints it, with no raw token left in it. */
 function effectTextFor(item: Item): string | null {
-  const text = (item.effect_text ?? '').replace(/\s+/g, ' ').trim();
+  const text = displayDescription(item.effect_text ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return text === '' ? null : text;
 }
 

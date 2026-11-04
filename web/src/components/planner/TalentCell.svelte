@@ -199,18 +199,75 @@
   {/if}
 {/snippet}
 
+{#snippet tooltip()}
+  <div
+    id={tooltipId}
+    role="tooltip"
+    bind:this={tip}
+    style:left={`${placement.left}px`}
+    style:max-height={placement.maxHeightPx === null ? undefined : `${placement.maxHeightPx}px`}
+    class="border-line bg-raised rounded-panel absolute z-30 flex {placement.below
+      ? 'top-full mt-2'
+      : 'bottom-full mb-2'} {placement.maxHeightPx === null
+      ? ''
+      : 'overflow-y-auto'} w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+  >
+    <span class="text-strong heading-name text-[14px]">{talent.name}</span>
+    <span class="text-muted numeric text-[12px]">
+      Rank {rank} of {talent.max_rank}
+    </span>
+    {#if rank > 0}
+      <p class="text-text text-[13px] leading-snug">{talent.ranks[rank - 1].description}</p>
+    {/if}
+    {#if rank < talent.max_rank}
+      <p class="text-muted text-[13px] leading-snug">
+        <span class="label text-muted">Next rank</span>
+        {talent.ranks[rank].description}
+      </p>
+    {/if}
+    {#if bandRankLine !== null}
+      <!-- Rebuild spec §4.E.4: one more line in the cell's own existing tooltip, never
+         a second tooltip mechanism (tenet 10). -->
+      <span class="text-gold text-[12px] font-semibold" data-testid={`talent-band-line-${talent.id}`}>
+        {bandRankLine}
+      </span>
+    {/if}
+  </div>
+{/snippet}
+
 <div class="relative">
   {#if readOnly}
+    <!-- A read-only tree (a guide's build) has no points to spend, but every talent still
+         opens its tooltip: hover, keyboard focus (the grid's roving tabindex, arrows between
+         cells) or a tap, which toggles it on touch. Escape closes it. -->
     <div
       role="group"
+      tabindex={focused ? 0 : -1}
       aria-label={`${talent.name}, rank ${rank} of ${talent.max_rank}`}
+      aria-describedby={open ? tooltipId : undefined}
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
       data-state={state}
       class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
+      onfocus={() => {
+        open = true;
+        onfocuscell();
+      }}
+      onblur={() => (open = false)}
+      onmouseenter={() => (open = true)}
+      onmouseleave={() => (open = false)}
+      onclick={() => (open = !open)}
+      onkeydown={(event) => {
+        if (event.key !== 'Escape' || !open) return;
+        event.stopPropagation();
+        open = false;
+      }}
     >
       {@render face()}
     </div>
+    {#if open}
+      {@render tooltip()}
+    {/if}
   {:else}
     <button
       type="button"
@@ -250,39 +307,7 @@
     </button>
 
     {#if open}
-      <div
-        id={tooltipId}
-        role="tooltip"
-        bind:this={tip}
-        style:left={`${placement.left}px`}
-        style:max-height={placement.maxHeightPx === null ? undefined : `${placement.maxHeightPx}px`}
-        class="border-line bg-raised rounded-panel absolute z-30 flex {placement.below
-          ? 'top-full mt-2'
-          : 'bottom-full mb-2'} {placement.maxHeightPx === null
-          ? ''
-          : 'overflow-y-auto'} w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
-      >
-        <span class="text-strong heading-name text-[14px]">{talent.name}</span>
-        <span class="text-muted numeric text-[12px]">
-          Rank {rank} of {talent.max_rank}
-        </span>
-        {#if rank > 0}
-          <p class="text-text text-[13px] leading-snug">{talent.ranks[rank - 1].description}</p>
-        {/if}
-        {#if rank < talent.max_rank}
-          <p class="text-muted text-[13px] leading-snug">
-            <span class="label text-muted">Next rank</span>
-            {talent.ranks[rank].description}
-          </p>
-        {/if}
-        {#if bandRankLine !== null}
-          <!-- Rebuild spec §4.E.4: one more line in the cell's own existing tooltip, never
-             a second tooltip mechanism (tenet 10). -->
-          <span class="text-gold text-[12px] font-semibold" data-testid={`talent-band-line-${talent.id}`}>
-            {bandRankLine}
-          </span>
-        {/if}
-      </div>
+      {@render tooltip()}
     {/if}
   {/if}
 </div>

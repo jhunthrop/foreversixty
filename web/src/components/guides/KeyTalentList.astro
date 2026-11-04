@@ -2,10 +2,12 @@
 // web/src/components/guides/KeyTalentList.astro
 // "Key talents": the talents a guide calls out, each as its icon and name (with the build's
 // rank) and the one line on why it matters. Icons and ranks come from the build's talent data
-// (lib/guides/key-talents.ts), the lines from the guide's own bullets.
+// (lib/guides/key-talents.ts), the lines from the guide's own bullets. Each name opens the
+// talent's game tooltip at the build's rank (GuideTooltips.svelte).
 import { dataUrl } from '../../lib/planner/load';
 import { guidesCopy } from '../../lib/guides/copy';
 import type { KeyTalentEntry } from '../../lib/guides/key-talents';
+import { talentTipKey } from '../../lib/tooltips/game-tip';
 
 interface Props {
   build: string;
@@ -22,7 +24,13 @@ const { build, entries } = Astro.props;
         <li class="key-talent" data-testid={`guide-key-talent-${index}`}>
           <span class="key-talent-names">
             {entry.talents.map((talent) => (
-              <span class="key-talent-ref">
+              <span
+                class:list={['key-talent-ref', talent.id !== undefined && 'gtip']}
+                tabindex={talent.id !== undefined ? 0 : undefined}
+                data-game-tip={
+                  talent.id !== undefined ? talentTipKey(talent.id, talent.rank ?? 0) : undefined
+                }
+              >
                 {talent.icon !== undefined ? (
                   <img
                     src={dataUrl(build, `icons/${talent.icon}.webp`)}

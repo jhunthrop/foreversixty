@@ -258,7 +258,7 @@ NEW_IFACE=$((10#$MAJOR * 10000 + 10#$MINOR * 100 + 10#$PATCH))
 OLD_IFACE="$(sed -n 's/^## Interface: *\([0-9]*\).*/\1/p' addon/ForeverSixty/ForeverSixty.toc)"
 
 echo "activating $NEW (was $ACTIVE); Interface $OLD_IFACE -> $NEW_IFACE"
-MOVED_PATHS=("$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides apps/shared/fixtures/planner-rules.json api/internal/bnetbuild/testdata/era-kiloz.fs1)
+MOVED_PATHS=("$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides apps/shared/fixtures/planner-rules.json api/internal/bnetbuild/testdata/era-kiloz.fs1 sim/specs/specs.go web/src/lib/sim/specs.ts)
 UNDO="git restore --staged --worktree -- ${MOVED_PATHS[*]} && git clean -fd -- $NEW_DIR"
 FIX_THEN_REDO="fix what the reason names on main, then $REDO"
 
@@ -314,6 +314,10 @@ step "the log coach's rule files (pipeline coach-rules)" \
   "replace the spells the reason names in data/curated/coach for $NEW's tables, land that on main, then $REDO"
 run in_dir data uv run python -m pipeline coach-rules --build "$NEW"
 
+# 4a. The spec list's icons are the new client's own TalentTab and form-spell icons.
+step "the spec icon map (pipeline specs)" "$FIX_THEN_REDO"
+run in_dir data uv run python -m pipeline specs --build "$NEW"
+
 # 4b. The API's Battle.net import fixture is stamped with the active build.
 step "the API's import fixture stamp" "$FIX_THEN_REDO"
 sed -i.bak "s/^FS1:$ACTIVE:/FS1:$NEW:/" api/internal/bnetbuild/testdata/era-kiloz.fs1 && rm -f api/internal/bnetbuild/testdata/era-kiloz.fs1.bak
@@ -347,6 +351,7 @@ step "data.yml's --check gates for $NEW" "$FIX_THEN_REDO"
 run in_dir data uv run python -m pipeline weights --build "$NEW" --check
 run in_dir data uv run python -m pipeline addon-data --build "$NEW" --check
 run in_dir data uv run python -m pipeline coach-rules --build "$NEW" --check
+run in_dir data uv run python -m pipeline specs --build "$NEW" --check
 
 # 7. The test gate, before anything is committed, pushed or tagged.
 if [ "$GATE" = on ]; then

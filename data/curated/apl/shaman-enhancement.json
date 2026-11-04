@@ -110,7 +110,7 @@
         }
       },
       {
-        "notes": "Stormstrike on cooldown: it is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder. 8 second cooldown.",
+        "notes": "Stormstrike on cooldown: it is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder. 6 second cooldown.",
         "action": {
           "castSpell": {
             "spellId": {

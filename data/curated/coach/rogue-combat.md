@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/combat.md
   - data/curated/apl/rogue-combat.json
-  - data/builds/1.60.1.70753/spellconst/rogue.json
+  - data/builds/1.60.1.70755/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,9 +21,10 @@ This is the Combat Rogue as the site's guide describes it. Combat is the steadie
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Garrote: Stealth before the pull, walk in behind the boss, and open with Garrote once the tank has the boss.
-- Backstab with a dagger in the main hand: Puncturing Wounds, Aggression and Lethality all land on it, and Puncturing Wounds can give it a second combo point.
+- Backstab with a dagger in the main hand: Puncturing Wounds, Opportunity and Lethality all land on it, and Puncturing Wounds can give it a second combo point.
 - Ambush is the weakest one for Combat, because none of Puncturing Wounds, Lethality or Aggression touch it.
 - Cheap Shot is for trash: bosses are immune to stuns.
+- Shank on cooldown, right behind your racial and trinket: an off-hand stab for five energy that cannot miss and gives forty back with Flash of Steel.
 - Slice and Dice whenever it drops, at one or two combo points.
 - Eviscerate at five combo points.
 - Sinister Strike only when Backstab cannot be cast, held to sixty energy so a dagger rogue never spends Backstab's energy here.

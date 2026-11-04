@@ -30,7 +30,7 @@ Warrior is the pure melee class: plate, a weapon and a rage bar that fills from 
 - **Sweeping Strikes** lasts 20 seconds.
 - **Shield Wall** is 60% for 12 seconds on a 15 minute cooldown.
 - **Death Wish** costs 5% more damage taken instead of armor.
-- **New talents** include Bloodthrill and Weaponmaster in Arms, Raging Blows and Furious Precision in Fury, and Vanguard and Master of Defense in Protection.
+- **New talents** include Bloodthrill and Weaponmaster in Arms, Reckless Swings and Furious Precision in Fury, and Vanguard and Master of Defense in Protection.
 
 ## Races
 

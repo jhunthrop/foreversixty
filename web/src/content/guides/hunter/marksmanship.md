@@ -3,8 +3,8 @@ title: Marksmanship Hunter in Forever
 classSlug: hunter
 spec: marksmanship
 role: dps
-build: 'FS1:1.60.1.70753:hunter:dwarf:5320000501/005155000150305/5:'
-raidBuild: 'FS1:1.60.1.70753:hunter:dwarf:5/005355001150305/50005003:'
+build: 'FS1:1.60.1.70755:hunter:dwarf:5320000501/005155000150305/5:'
+raidBuild: 'FS1:1.60.1.70755:hunter:dwarf:5/005355001150305/50005003:'
 recommendedRaces: [dwarf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Marksmanship Hunter in Forever: talents for leveling and raids, the shot priority, auto shot discipline, stats, consumables and race picks.'
@@ -21,13 +21,13 @@ sources:
     url: https://warcrafttavern.com/forever/guides/hunter/
     kind: community
   - label: 'Forever Sixty build data, talents/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/talents/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70755/talents/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, spellconst/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/spellconst/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, races.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/races.json
+    url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
@@ -63,7 +63,7 @@ Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shar
 There are two builds. You level with the pet: thirty points in Marksmanship take every talent that raises your shots, sixteen in Beast Mastery take the pet talents and Deadly Aspects, and five in Survival take Improved Tracking. At 60, for raids, the pet goes: thirty-three points in Marksmanship add Lone Wolf and the rest of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.
 
 - **Mortal Shots** (5 points): 30% more crit damage on your shots
-- **Barrage** (3 points): 10% more damage on Multi-Shot, Aimed Shot and Volley
+- **Barrage** (3 points): 15% more damage on Multi-Shot, Aimed Shot and Volley
 - **Ranged Weapon Specialization** (5 points): 5% more damage on everything your bow or gun does, auto shot included
 - **Careful Aim** (5 points): attack power equal to your Intellect
 - **Lethal Attacks** (5 points): 5% crit on every attack

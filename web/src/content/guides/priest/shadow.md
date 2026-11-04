@@ -3,8 +3,8 @@ title: Shadow Priest in Forever
 classSlug: priest
 spec: shadow
 role: dps
-build: 'FS1:1.60.1.70753:priest:gnome:02510503103/0/54342001201300051:'
-raidBuild: 'FS1:1.60.1.70753:priest:gnome:00510503103/0/52352101201300251:'
+build: 'FS1:1.60.1.70755:priest:gnome:02510503103/0/54342001201300051:'
+raidBuild: 'FS1:1.60.1.70755:priest:gnome:00510503103/0/52352101201300251:'
 recommendedRaces: [gnome, undead]
 statPriority: [Intellect, Hit, Spell power, Shadow power, Critical strike, Spell haste, Spell penetration]
 description: 'How to play Shadow Priest in Forever: talents for leveling and raids, the opener and priority, Vampiric Embrace, threat, mana, races and consumables.'
@@ -78,7 +78,7 @@ The leveling build carries two points of Wand Specialization, because you wand a
 
 **Shadow Word: Death backlash.** Every cast that does not kill the target hits you for 30% of your maximum health. Cast it on cooldown anyway, and keep Vampiric Embrace up so your own damage heals it back.
 
-**Vampiric Embrace.** On the boss, keep it up: it costs a global every 30 seconds, a few percent of your own damage, and in return your whole group heals for 20% of every Shadow spell you land. On a fight with group damage that is a lot of healing, and it pays for Shadow Word: Death. On a fight where your group takes nothing, skip it and push damage. The sim keeps Vampiric Embrace up and counts only your damage, not the group healing.
+**Vampiric Embrace.** On the boss, keep it up: it costs a global every 30 seconds, a few percent of your own damage, and in return your whole group heals for 20% of every Shadow spell you land. On a fight with group damage that is a lot of healing, and it pays for Shadow Word: Death. On a fight where your group takes nothing, skip it and push damage. Your meter shows the few percent it costs and never the healing, so judge it by how your healers' mana holds up.
 
 **Execute.** Nothing changes below 20%, except that Early Demise makes Shadow Word: Death crit far more often. Drop Shadow Word: Pain in the last 10 seconds of a fight; it will not tick out.
 

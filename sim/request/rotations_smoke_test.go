@@ -183,12 +183,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 13750}": "Adrenaline Rush is a talent (sim/rogue/talents.go); this build takes none.",
 	},
 	"rogue-subtlety": {
-		"{SpellID: 14278}": "Ghostly Strike is a talent (sim/rogue/ghostly_strike.go); this build takes none.",
-		"{SpellID: 14183}": "Premeditation is a talent (sim/rogue/premeditation.go); this build takes none.",
-		"{SpellID: 16511}": "Hemorrhage is a talent (sim/rogue/talents.go); this build takes none.",
-	},
-	"shaman-elemental": {
-		"{SpellID: 1326047}": "Lava Burst is a capstone talent (sim/shaman/lava_burst.go, Forever's tree); this build takes none.",
+		"{SpellID: 14278}":   "Ghostly Strike is a talent (sim/rogue/ghostly_strike.go); this build takes none.",
+		"{SpellID: 14183}":   "Premeditation is a talent (sim/rogue/premeditation.go); this build takes none.",
+		"{SpellID: 16511}":   "Hemorrhage is a talent (sim/rogue/talents.go); this build takes none.",
+		"{SpellID: 1325758}": "Death Mark is the Subtlety capstone talent (sim/rogue/death_mark.go); this build takes none.",
 	},
 	"shaman-enhancement": {
 		"{SpellID: 17364}":  "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
@@ -217,6 +215,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"warrior-arms": {
 		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",
+	},
+	"warrior-fury": {
+		"{SpellID: 1329555}": "Reckless Swings is a Fury talent ability (sim/warrior/reckless_swings.go); the engine's ForeverFuryTalents reference build takes none.",
 	},
 	"druid-balance": {
 		"{SpellID: 24977}":  "Insect Swarm is a single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930), not a baseline spell every druid learns by level; sim/druid/insect_swarm.go's registerInsectSwarmSpell now gates on Talents.InsectSwarm (rotation-accuracy program, 2026-09-28 -- it previously did not check the talent at all, so a zero-talent character could cast it same as this smoke build does). This build takes none.",

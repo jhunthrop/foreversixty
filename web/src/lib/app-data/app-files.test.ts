@@ -104,7 +104,7 @@ describe.skipIf(!hasBuild)('W3-C1 generator', () => {
 
   it('names the raid-build talents the rotation casts among the key talents', () => {
     const elemental = guides.find((guide) => guide.spec === 'shaman-elemental')!;
-    expect(elemental.talents.key.map((talent) => talent.name)).toContain('Elemental Mastery');
+    expect(elemental.talents.key.map((talent) => talent.name)).toContain('Lightning Mastery');
   });
 
   it('never hands the apps the client placeholder icon', () => {

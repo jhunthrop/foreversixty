@@ -53,12 +53,17 @@
         ]
       },
       {
-        "text": "New talents include Spearing Strike and Bloodthrill in Arms, Raging Blows in Fury and Vanguard in Protection; Death Wish's penalty is now 5% more damage taken instead of reduced armour.",
+        "text": "New talents include Spearing Strike and Bloodthrill in Arms, Improved Whirlwind and Reckless Swings in Fury and Vanguard in Protection; Death Wish's penalty is now 5% more damage taken instead of reduced armour.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
             "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
             "kind": "community"
+          },
+          {
+            "label": "The Forever client's hotfix push for build 1.60.1.70755 (talent trees and spell tables), read through wago.tools",
+            "url": "https://wago.tools/hotfixes?search=70755",
+            "kind": "datamined"
           }
         ]
       }
@@ -278,12 +283,17 @@
         ]
       },
       {
-        "text": "New talents include Mutilate and Venom in Assassination and Cutthroat in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
+        "text": "New talents include Mutilate, Venom and Blood Splatter in Assassination, Coup de Grace and Flash of Steel in Combat, and Boot Knife and Death Mark in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
             "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
             "kind": "community"
+          },
+          {
+            "label": "The Forever client's hotfix push for build 1.60.1.70755 (talent trees and spell tables), read through wago.tools",
+            "url": "https://wago.tools/hotfixes?search=70755",
+            "kind": "datamined"
           }
         ]
       }
@@ -418,22 +428,32 @@
         ]
       },
       {
-        "text": "Fire Nova is a spell rather than a totem, detonating within 10 yards of your active Fire totem on a 10 second cooldown; Totemic Projection moves your totems to a spot up to 30 yards away, and Call of the Elements drops up to four totems in one 3 second cast.",
+        "text": "Fire Nova is a spell rather than a totem, detonating within 10 yards of your active Fire totem on a 10 second cooldown; Totemic Call brings your active totems to where you stand every 30 seconds, and Call of the Elements drops up to four totems in one 3 second cast.",
         "sources": [
           {
             "label": "Talents Forever (demo transcription)",
             "url": "https://talentsforever.com/data.json",
             "kind": "community"
+          },
+          {
+            "label": "The Forever client's hotfix push for build 1.60.1.70755 (talent trees and spell tables), read through wago.tools",
+            "url": "https://wago.tools/hotfixes?search=70755",
+            "kind": "datamined"
           }
         ]
       },
       {
-        "text": "New talents include Lava Burst in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now makes your own next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder, rather than the next two Nature hits from anyone.",
+        "text": "New talents include Call of Thunder and Lightning Mastery in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now makes your own next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder, rather than the next two Nature hits from anyone.",
         "sources": [
           {
             "label": "Power Up Gaming, Forever talent changes vs Classic",
             "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
             "kind": "community"
+          },
+          {
+            "label": "The Forever client's hotfix push for build 1.60.1.70755 (talent trees and spell tables), read through wago.tools",
+            "url": "https://wago.tools/hotfixes?search=70755",
+            "kind": "datamined"
           }
         ]
       }

@@ -15,7 +15,7 @@ sources:
     url: https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823
     kind: community
   - label: 'Forever Sixty build data, combos.json'
-    url: https://foreversixty.gg/data/1.60.1.70753/combos.json
+    url: https://foreversixty.gg/data/1.60.1.70755/combos.json
     kind: datamined
   - label: 'Power Up Gaming, Forever talent changes vs Classic'
     url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/

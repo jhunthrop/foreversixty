@@ -20,6 +20,9 @@ export interface RotationItem {
   icon?: string;
   /** One clause, sentence case, no final stop. */
   clause: string;
+  /** The key of the spell's game tooltip (lib/tooltips/game-tip.ts), set once the guide's
+   *  tooltip data is known to carry it. */
+  tipKey?: string;
 }
 
 export interface RotationLists {

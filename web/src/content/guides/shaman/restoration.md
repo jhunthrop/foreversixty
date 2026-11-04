@@ -3,7 +3,7 @@ title: Restoration Shaman in Forever
 classSlug: shaman
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.70753:shaman:dwarf:0/055/5530003315513151:'
+build: 'FS1:1.60.1.70755:shaman:dwarf:0/055/5530003315513151:'
 recommendedRaces: [dwarf, tauren]
 statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
 description: 'Restoration Shaman in Forever: Riptide into Chain Heal, Water Shield and Mana Tide for mana, which totems to drop, Chain Heal ranks, stats, races and leveling.'
@@ -61,7 +61,7 @@ Forty-one points in Restoration and ten in Enhancement. Thundering Strikes is 5%
 - **Healing Way** (3 points): Healing Wave heals 25% more, always on.
 - **Nature's Swiftness** (1 point): one instant Healing Wave every 3 minutes.
 - **Purification** (5 points): 10% more healing on everything.
-- **Riptide** (1 point): an instant heal plus a 15 second heal over time on a 6 second cooldown.
+- **Riptide** (1 point): an instant 15 second heal over time on a 12 second cooldown, and Chain Heal heals its target 25% more.
 
 Ancestral Healing takes the last three points: 25% more armor on your target for 15 seconds after a crit heal, which is a real help to the tank.
 
@@ -71,7 +71,7 @@ Ancestral Healing takes the last three points: 25% more armor on your target for
 
 **Tank first.**
 
-1. Riptide on the tank whenever it is ready and the tank is hurt. It is your cheapest heal per mana, and it sets up the Chain Heal.
+1. Riptide on the tank whenever it is ready and the tank is hurt. It is your cheapest heal per mana, and it sets up the Chain Heal. It heals over its 15 seconds with nothing up front, so it never answers a big hit on its own.
 2. Chain Heal on the tank as soon as anyone in your party is hurt, as long as your mana is ahead of the fight. Riptide's 25% applies to the target you cast it on, and the two jumps go to the most injured people near it, each for half the heal before.
 3. Healing Wave when the tank is down to 60%. Lesser Healing Wave when it is down to 30% and the next hit could kill it.
 4. Nature's Swiftness into Healing Wave when the tank is under 25%. Keep it for exactly that.

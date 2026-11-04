@@ -99,13 +99,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-00000000000000000-0000000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 3 | other:attack/1=151.0, other:attack/2=132.2, spell:1757=42.3, spell:5171/4=8.6, spell:1784=1.0 | {SpellID: 1241584}, {SpellID: 14177} |
-| 20 | 32501000000000000-00000000000000000-0000000000000000000 | main_hand:2236 off_hand:1935 | 26.0 | 4 | other:attack/1=141.0, other:attack/2=111.4, spell:1758=41.3, spell:5171/4=8.6, spell:1785=1.0 | {SpellID: 1241584}, {SpellID: 14177} |
-| 30 | 32502110510001000-00000000000000000-0000000000000000000 | main_hand:23168 off_hand:19545 | 50.0 | 6 | other:attack/1=150.4, other:attack/2=123.9, spell:1310707=28.6, spell:6762/4=7.4, spell:5171/4=6.2 | {SpellID: 14177} |
-| 38 | 32502110551301000-00000000000000000-0000000000000000000 | main_hand:6831 off_hand:19544 | 72.4 | 7 | other:attack/1=140.4, other:attack/2=123.9, spell:1310707=28.6, spell:8623/4=7.5, spell:5171/4=6.2 | - |
-| 40 | 32502110551501000-00000000000000000-0000000000000000000 | main_hand:2164 off_hand:274753 | 83.2 | 7 | other:attack/1=117.1, other:attack/2=110.9, spell:399956=28.5, spell:8624/4=7.4, spell:5171/4=6.2 | - |
-| 50 | 32502110551501010-30230100000000000-0000000000000000000 | main_hand:2163 off_hand:6660 | 121.8 | 8 | other:attack/2=173.6, other:attack/1=161.3, spell:1241582=28.7, spell:11299/4=6.1, spell:6774/4=5.6 | - |
-| 60 | 32502110551501010-30230300000000000-5120000000000000000 | main_hand:22802 off_hand:21126 | 196.0 | 8 | other:attack/1=125.6, other:attack/2=125.6, spell:1241584=28.6, spell:11300/4=5.9, spell:6774/4=5.4 | - |
+| 10 | 10000000000000000-0000000000000000000-000000000000000000 | main_hand:1287 off_hand:2088 | 11.0 | 3 | other:attack/1=151.0, other:attack/2=132.2, spell:1757=42.3, spell:5171/4=8.6, spell:1784=1.0 | {SpellID: 1241584}, {SpellID: 1329549}, {SpellID: 14177} |
+| 20 | 32510000000000000-0000000000000000000-000000000000000000 | main_hand:2236 off_hand:1935 | 25.5 | 4 | other:attack/1=141.6, other:attack/2=111.8, spell:1758=41.1, spell:5171/4=9.0, spell:1785=1.0 | {SpellID: 1241584}, {SpellID: 1329549}, {SpellID: 14177} |
+| 30 | 32530200230001000-0000000000000000000-000000000000000000 | main_hand:23168 off_hand:19545 | 43.5 | 5 | other:attack/1=149.5, other:attack/2=123.2, spell:1760=39.2, spell:5171/4=6.5, spell:6762/4=3.6 | {SpellID: 1241584}, {SpellID: 1329549}, {SpellID: 14177} |
+| 38 | 32530200251501000-0000000000000000000-000000000000000000 | main_hand:6831 off_hand:19544 | 64.7 | 6 | other:attack/1=139.6, other:attack/2=123.2, spell:8621=39.5, spell:5171/4=6.5, spell:8623/4=3.5 | {SpellID: 1241584}, {SpellID: 1329549} |
+| 40 | 32530200251511001-0000000000000000000-000000000000000000 | main_hand:2164 off_hand:274753 | 83.6 | 8 | other:attack/1=118.3, other:attack/2=112.0, spell:399956=25.6, spell:5171/5=4.1, spell:8624/5=4.0 | {SpellID: 1329549} |
+| 50 | 32530200251551031-3000000000000000000-000000000000000000 | main_hand:2163 off_hand:6660 | 154.3 | 9 | other:attack/2=177.1, other:attack/1=164.5, spell:1241582=34.2, spell:1329549=18.5, spell:11299/5=6.9 | - |
+| 60 | 32530200251551031-3023030000000000000-011000000000000000 | main_hand:22802 off_hand:21126 | 256.4 | 9 | other:attack/1=128.5, other:attack/2=128.4, spell:1241584=33.7, spell:1329549=18.5, spell:11300/5=7.5 | - |
 
 ## Learned but unused (informational)
 
@@ -135,7 +135,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1767)
 - Rupture (spell 8639)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 1760)
 
 ### Level 38
 
@@ -145,7 +144,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1767)
 - Rupture (spell 8640)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 8621)
 
 ### Level 40
 
@@ -184,4 +182,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-assassination level=10 kind=unresolved_id action={SpellID: 1329549}
+- rogue-assassination level=20 kind=unresolved_id action={SpellID: 1329549}
+- rogue-assassination level=30 kind=unresolved_id action={SpellID: 1329549}
+- rogue-assassination level=38 kind=unresolved_id action={SpellID: 1329549}
+- rogue-assassination level=40 kind=unresolved_id action={SpellID: 1329549}
