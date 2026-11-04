@@ -142,7 +142,7 @@ export const DEFAULT_ENCOUNTER: EncounterSpec = {
   // does not make the request drawer's style diff noisy the way a style-owned field would.
   // No creature type: the target every published number fights (sim/leveling
   // RankerEncounter). An empty type would fight a Humanoid (sim/request request.go keeps
-  // that for requests stored before the field), where Murder and slaying gear count and
+  // that for requests stored before the field), where slaying gear counts and
   // the page would read above the tier list for no reason the player can see.
   target_type: 'unknown',
   dummy: false,

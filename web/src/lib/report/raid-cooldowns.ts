@@ -33,6 +33,7 @@ export const RAID_COOLDOWNS: readonly string[] = [
   'Bestial Wrath',
   "Nature's Swiftness",
   'Elemental Mastery',
+  'Lightning Mastery',
   'Barkskin',
   'Frenzied Regeneration',
   'Berserk',

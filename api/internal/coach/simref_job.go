@@ -73,7 +73,7 @@ func simRefRequest(k SimRefKey, char simapi.CharacterSpec, at time.Time) simapi.
 	enc := simapi.DefaultEncounter()
 	enc.DurationSec = k.DurationBucket
 	// The published numbers' target (sim/leveling RankerEncounter): no creature type. The
-	// empty type is the engine's Humanoid, which credits Murder and slaying gear.
+	// empty type is the engine's Humanoid, which credits slaying gear.
 	enc.TargetType = simapi.TargetTypeUnknown
 	return simapi.SimRequest{
 		EngineVersion: k.EngineVersion, Spec: k.Spec, Iterations: SimRefIterations,

@@ -205,7 +205,7 @@ function keyTalents(prose: string, trees: readonly DecodedTreeView[]): AppGuideK
 }
 
 /** Spec F9.2: the key talents also name every talent of the raid build that the rotation casts
- *  (Elemental adds Elemental Mastery), after the guide's own. */
+ *  (Elemental adds Lightning Mastery), after the guide's own. */
 function withCastTalents(
   key: readonly AppGuideKeyTalent[],
   raidTrees: readonly DecodedTreeView[],

@@ -97,7 +97,7 @@ describe('defaultSettings', () => {
       target_level: 63,
       // Absent, not 0: the default fight carries no armor override at all (Defect 3).
       // The published numbers' target (sim/leveling RankerEncounter): no creature type, so
-      // a rogue's Murder or a slaying enchant reads the same here as on the tier list.
+      // a slaying enchant reads the same here as on the tier list.
       target_type: 'unknown',
       dummy: false,
     });
