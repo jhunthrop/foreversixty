@@ -317,7 +317,7 @@
             }
           }
         },
-        "notes": "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields."
+        "notes": "At the top rank on the tank whenever Weakened Soul is off him and your mana is keeping pace with the fight: in Forever a shield no longer cuts a warrior's rage gain, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields."
       },
       {
         "action": {
@@ -1026,7 +1026,7 @@
             }
           }
         },
-        "notes": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana."
+        "notes": "Greater Heal rank 1 on a party member who is missing a third of their health: it keeps enough of your healing bonus for far less mana than the top rank."
       },
       {
         "action": {
@@ -1086,7 +1086,7 @@
             }
           }
         },
-        "notes": "A cheap low-rank heal on a party member who is missing a third of their health: in Forever a heal learned below level 20 keeps its full healing power bonus, so it heals far more than its tooltip for very little mana."
+        "notes": "Lesser Heal rank 3 is for before you learn Greater Heal at 40. At 60 it heals for little more than its base, so it is only the last cheap heal when your mana cannot cover a Greater Heal rank 1."
       },
       {
         "action": {
