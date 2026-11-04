@@ -103,7 +103,7 @@
         }
       },
       {
-        "notes": "Presence of Mind on cooldown, with Arcane Power. Your next spell is instant: spend it on Pyroblast, your longest cast, or on Frostbolt before you have the Fire points. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
+        "notes": "Presence of Mind on cooldown, with Arcane Power. Your next spell is instant: spend it on Pyroblast, your longest cast, or on Frostbolt with the leveling build. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
         "action": {
           "condition": {
             "cmp": {
@@ -164,7 +164,7 @@
         }
       },
       {
-        "notes": "Frostbolt the moment Presence of Mind is up, before you have the Fire points, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
+        "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
         "action": {
           "condition": {
             "and": {
@@ -198,9 +198,44 @@
         "notes": "Arcane Missiles the moment Missile Barrage lights up. The proc makes it free, halves the channel and fires a missile every half second. Arcane Blast procs it 40% of the time, and Arcane Wrath, Fireball and Frostbolt 20%, so this is a big share of your damage. Rank 7 is the top trainer rank; rank 8 is a book from Ahn'Qiraj.",
         "action": {
           "condition": {
-            "auraIsActive": {
-              "auraId": {
-                "spellId": 400589
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 400589
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 400589
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10212,
+              "rank": 7
+            }
+          }
+        }
+      },
+      {
+        "notes": "Arcane Missiles before you have Missile Barrage, at 20 and 21: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt. From 22 Missiles waits for the free proc and Blast takes over.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsKnown": {
+                  "auraId": {
+                    "spellId": 400589
+                  }
+                }
               }
             }
           },
