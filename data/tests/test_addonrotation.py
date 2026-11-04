@@ -845,20 +845,21 @@ def test_the_lua_names_each_races_id_only_where_they_differ():
 
 
 def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts():
-    """Sim-accuracy round 12 (healprofile): at band 40 the curated rows cast
-    Flash of Light rank 3 on the tank and rank 1 on the group. The addon's
-    list names those ranks' own ids, both learned by 40: rank 3 is 19940
-    (level 34), rank 1 is 19750 (level 20); Holy Light rank 1 is 635."""
+    """Sim-accuracy round 16 wave 2 (per-level rows on the MaxLevel + 12
+    penalty): at level 40 the curated rows cast Flash of Light rank 1 on the
+    tank (rank 2 from 44) and on the group, and Holy Light at its top learned
+    rank (rank 1 only from 47). The addon's list names those ranks' own ids:
+    Flash of Light rank 1 is 19750 (level 20), Holy Light rank 6 is 3472
+    (level 38)."""
     spellranks = json.loads(Path("builds/1.60.1.70753/spellranks.json").read_text(encoding="utf-8"))
     learned = {r["id"]: r["level"] for r in spellranks["classes"]["paladin"]["Flash of Light"]}
-    assert learned[19940] <= 40 and learned[19750] <= 40
+    assert learned[19750] <= 40
     band = next(
         b for b in build_rotation("paladin-holy", Path("curated"), spellranks) if b.level == 40
     )
     flash = [line.spell_id for line in band.lines if line.name == "Flash of Light"]
-    assert flash[0] == 19940  # the tank's line comes first in the list
-    assert set(flash[1:]) == {19750}
-    assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {635}
+    assert set(flash) == {19750}
+    assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {3472}
 
 
 def test_rank_siblings_adds_every_rank_of_a_named_family() -> None:

@@ -51,7 +51,8 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 		// Renew is authored at rank 7 since round 15 wave 2; a row keeps rank 1 to 39.
 		{"priest-discipline", "Renew", 25, []int{1}},
 		{"paladin-holy", "Flash of Light", 35, []int{1}},
-		{"paladin-holy", "Flash of Light", 45, []int{1, 3}},
+		// Round 16 wave 2: the tank's Flash of Light is rank 2 at 44 to 49.
+		{"paladin-holy", "Flash of Light", 45, []int{1, 2}},
 	} {
 		got, err := ChosenRanks(c.spec, c.spell, c.level)
 		if err != nil {

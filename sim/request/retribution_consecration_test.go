@@ -111,7 +111,9 @@ func containsKey(node any, key string) bool {
 }
 
 // Re-measured on the paced line (round 10): rank 1 still wins from 30 to 59,
-// with the gate taken away as well, where Retribution then runs dry; at 60
+// with the gate taken away as well, where Retribution then runs dry, except
+// at 44 to 49, where round 16 wave 2's per-level sweep found rank 2 ahead on
+// the MaxLevel + 12 rule (+0.3 to +1.4%, seeds 1 and 50001); at 60
 // the bare fight runs dry and casts rank 4, the raid fight keeps rank 5.
 func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	for _, c := range []struct {
@@ -120,7 +122,9 @@ func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 		want   int32
 	}{
 		{BarePreset, 30, 26573},
-		{BarePreset, 45, 26573},
+		{BarePreset, 43, 26573},
+		{BarePreset, 45, 20116},
+		{BarePreset, 50, 26573},
 		{BarePreset, 59, 26573},
 		{BarePreset, 60, 20923},
 		{RaidPreset, 60, retributionConsecrationID},
