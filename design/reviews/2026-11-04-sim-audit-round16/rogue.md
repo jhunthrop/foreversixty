@@ -4,6 +4,8 @@ Lane `rogue`. Site wt/r16-rogue (from int/r16 c62d77ab8), fork lane/r16-rogue (f
 
 Method: spec-breakdown, raid 60, guide raid builds (`$R/rt`), frozen BiS (`$R/bis-frozen`), 10000 iterations at seeds 1 and 50001 for every reported number; 3000 iterations to explore. The lane's starting point reproduces `$R/before.tsv` exactly for all twelve rogue rows.
 
+Fork commits: bf99ed477, 1470d4ba9, d69ca607a (APL copy syncs). Site commits: f89d5bc98 (rotation and tests), 8160ad885 (guide text and this report), and a sha fill-in.
+
 Totals: 3 CONFIRMED-BUGs fixed (2 rotation, 1 guide text), all Subtlety or text. Origins: 1 `R15 493a3d038`, 1 `70755 d009d90a3`, 1 `R15` text hand-off (round 15's guide items never landed). No engine code changed; the fork commits are APL copy syncs.
 
 ## Seed items
@@ -35,7 +37,7 @@ Totals: 3 CONFIRMED-BUGs fixed (2 rotation, 1 guide text), all Subtlety or text.
 |---|---|---|---|---|---|
 | A1 | Rotation re-checked (K6, K8) and the raid build point by point: Malice (+5% crit, every table, poisons included), Ruthlessness, Improved Slice and Dice 3, Vigor 1, Blood Splatter, Lethality, Vile Poisons, Cold Blood, Improved Poisons (the charge half is not modelled; charges are not), Relentless Strikes, Venom, Seal Fate, Mutilate, Coup de Grace (Eviscerate), Lightning Reflexes 2 (gate), Puncturing Wounds (Mutilate +15% crit), Precision, Opportunity. Every point does something or is a gate | talents/rogue.json 70755 rank texts; engine | Aligned | - | - |
 | A2 | Gnome Assassination's Eureka! (SIM-R3-1) | The rogue row 1259812 covers Mutilate's cast (1241584, cost -10%), Eviscerate, Backstab, Sinister Strike, Ghostly Strike and Hemorrhage, not Mutilate's hand strikes 1241586/1241590 (their class flags are outside the masks). Expansive Mind re-enables the energy bar after Vigor, so it multiplies 105 to 110.25. A Gnome below the other races is the race's base stats, not a lost racial | Aligned | - | - |
-| A3 | Prose: "Rupture and Expose Armor do not make the list" contradicted the rotation since round 15 | See X1 | CONFIRMED (text) | R15 | S (guide commit) |
+| A3 | Prose: "Rupture and Expose Armor do not make the list" contradicted the rotation since round 15 | See X1 | CONFIRMED (text) | R15 | S 8160ad885 |
 
 ## Combat
 
@@ -47,13 +49,13 @@ Totals: 3 CONFIRMED-BUGs fixed (2 rotation, 1 guide text), all Subtlety or text.
 | C4 | Adrenaline Rush moved above Backstab | -0.8%: kept where it is | Aligned | - | - |
 | C5 | Thistle Tea inside Adrenaline Rush (SIM-R3-2) | The engine drinks at 10 energy or less, inside Adrenaline Rush or not. combat.md:83 says only "drink it when you are near empty", which makes no claim about Adrenaline Rush | Aligned (no claim to test) | - | - |
 | C6 | Combat build points, Blade Flurry (13877, 25 energy, 2 min, +20% speed, mask cleave only with a second target), Adrenaline Rush (5 min, 15 s, +100% regen), Composure, Flawless Execution, Weapon Expertise, Aggression (Eviscerate), Dual Wield Specialization | client rows; engine `talents.go`, `poised.go` | Aligned | - | - |
-| C7 | Prose: combat.md:52 and :63 still described Efficient Strikes 2/2 in the raid build (round 15 C1 moved those points to Composure) | See X1 | CONFIRMED (text) | R15 6e178531b | S (guide commit) |
+| C7 | Prose: combat.md:52 and :63 still described Efficient Strikes 2/2 in the raid build (round 15 C1 moved those points to Composure) | See X1 | CONFIRMED (text) | R15 6e178531b | S 8160ad885 |
 
 ## Cross-cutting
 
 | # | finding | evidence and source | confirmed? | origin | fix sha |
 |---|---|---|---|---|---|
-| X1 | **Round 15's rogue guide text never landed.** Its "For the guide lane" items 1 to 7 were still open on int/r16: combat.md (Efficient Strikes in the raid build), assassination.md (no Rupture), subtlety.md (Eviscerate while Death Mark is on cooldown, nothing on Garrote after Ghostly Strike), and the Subtlety Shank, Ghostly Strike and Eviscerate notes without their gates. Written in this lane with S1/S2's prose, in guide voice; "bleeds always crit" became "bleeds can crit in Forever" in the prose and the Assassination Rupture note (the owner's rule means they are able to crit, not that every tick crits) | round 15 rogue report, "For the guide lane"; integration round 15 "Subtlety Shank note" | CONFIRMED (text) | R15 (hand-off not landed); guides-handoff | S f89d5bc98 (notes), S (guide commit) |
+| X1 | **Round 15's rogue guide text never landed.** Its "For the guide lane" items 1 to 7 were still open on int/r16: combat.md (Efficient Strikes in the raid build), assassination.md (no Rupture), subtlety.md (Eviscerate while Death Mark is on cooldown, nothing on Garrote after Ghostly Strike), and the Subtlety Shank, Ghostly Strike and Eviscerate notes without their gates. Written in this lane with S1/S2's prose, in guide voice; "bleeds always crit" became "bleeds can crit in Forever" in the prose and the Assassination Rupture note (the owner's rule means they are able to crit, not that every tick crits) | round 15 rogue report, "For the guide lane"; integration round 15 "Subtlety Shank note" | CONFIRMED (text) | R15 (hand-off not landed); guides-handoff | S f89d5bc98 (notes), S 8160ad885 |
 | X2 | Hit is one stat for melee and poisons (Precision and gear hit lower a poison's 17% miss) | Shared core decision (`client_sets_test.go` "hit is one stat"), not rogue-owned | For other lanes (recorded only) | - | - |
 
 ## Before/after
