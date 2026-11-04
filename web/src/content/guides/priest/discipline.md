@@ -99,7 +99,7 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 **Gnome** is the Alliance pick. Eureka! makes your direct heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Penance's heals 10% stronger (never Renew): put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
 
-**Human** is level with Gnome, a hair ahead on a long tank fight. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
+**Human** is level with Gnome, a hair ahead on a long tank fight, so take whichever you would rather play. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
 
 **Undead** is the Horde pick for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
 
@@ -107,7 +107,7 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Professions
 
-Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes healing cloth for the first raids, Truefaith Vestments among it, which binds when you make it. Enchanting saves you the enchanting bill, and on Horde it makes the Dormant Heart of the Mountain, a bind on pickup trinket in your raid set.
+Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes healing cloth for the first raids, Truefaith Vestments among it, which binds when you make it. Enchanting saves you the enchanting bill, and it makes the Dormant Heart of the Mountain, the bind on pickup trinket a Horde Discipline priest wears in the raid set.
 
 ## Leveling
 
