@@ -126,3 +126,34 @@ func TestArcaneOpensWithPyroblastOnTheRaidBuildAndFrostboltLeveling(t *testing.T
 		}
 	}
 }
+
+// Round 16 wave 2 (shaman lane's phantom lines): a line that reads Presence of Mind's aura must
+// also check the talent is known. The engine drops an auraIsActive on an aura it never
+// registered, so without the talent the rest of the line's condition stands alone: the Pyroblast
+// line would fire on every global for any build with Heating Up and no Presence of Mind.
+func TestArcanePresenceOfMindLinesCheckTheTalent(t *testing.T) {
+	const presenceOfMind = 12043
+	curated, err := loadLadderCurated(repoRoot, "mage-arcane")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	for i, item := range rot.PriorityList {
+		vals := item.GetAction().GetCondition().GetAnd().GetVals()
+		readsAura, checksTalent := false, false
+		for _, v := range vals {
+			if v.GetAuraIsActive().GetAuraId().GetSpellId() == presenceOfMind {
+				readsAura = true
+			}
+			if v.GetSpellIsKnown().GetSpellId().GetSpellId() == presenceOfMind || v.GetAuraIsKnown().GetAuraId().GetSpellId() == presenceOfMind {
+				checksTalent = true
+			}
+		}
+		if readsAura && !checksTalent {
+			t.Errorf("line %d reads Presence of Mind's aura without spellIsKnown(%d)", i, presenceOfMind)
+		}
+	}
+}
