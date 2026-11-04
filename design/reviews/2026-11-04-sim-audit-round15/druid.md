@@ -230,3 +230,88 @@ I fetched wago.tools' live 70755 tables (`https://wago.tools/db2/<Table>/csv?bui
 - **Rend and Tear:** the live server text is still 3 / 6 / 9 / 12 / 15%. The client curve 85357 is still 2..10 live, so the engine's 3% (E e45a540db) stands.
 - **Nature's Reach:** the live text is "improves your chance to hit by 2%" at rank 1 and 4% at rank 2, matching `applyNaturesReach` (2% a rank).
 - Nothing to record for the BiS lane's re-layer.
+
+## Hotfix diff (stopped)
+
+The all-class diff was stopped for wave 8; the re-layer (site 43dc0f074) supersedes it. Two notes from the attempt:
+- `druid/hfx/diff.json` is not a live diff. wago's db2 CSV is the shipped client without hotfixes: every one of its 1,371 differing rows is "live == shipped". It is not to be used (the hunter lane saw false "reversions" in it).
+- My wave-4 "live check" used that same CSV, so it only showed that our own push layer left those druid spells alone. Wave 8 below re-checks the druid spells per record on the live push. That check found the late push did change seven of them (113403).
+
+## Wave 8: the engine follows the late 70755 push
+
+Site merged int/r15 (68ddc6dc1, which carries the re-layer 43dc0f074). Fork merged int/r15 (fbc5dbddf). `sim/druid/constants_auto_gen.go` was regenerated from the site's `spellconst/druid.json` (`go run ./sim/core/spellconst/gen`, the `make spellconst` step for druid). The conformance copy `sim/core/testdata/conformance/client/druid.json` was byte-identical to the pre-re-layer site file and now matches the new one. Every value was then confirmed by a per-record query on wago.tools, newest push per record (all ranks: push 113403, one entry each; `druid/hfx/perrecord.json`).
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W8-1 | **The late push retuned the cat and Starfire; the hand-coded values had not followed.** Old to new, every rank:<br>- Claw weapon damage 110% to 140%.<br>- Shred 155% to 200%.<br>- Ravage 350% to 435%.<br>- Rake initial 23/31/45/61 to 27/39/56/76 (generated); tick 16/21/26/34 to 20/26/32/42.<br>- Rip tick base 3/4/6/8/11/15 to 4/5/8/10/14/19 (generated). Per combo point 4.4/7.2/8.5/12.7/18.2/25.5 to 5.5/9/10.5/15.8/22.5/31.9 (EffectPointsPerResource, not in spellconst).<br>- Ferocious Bite base 14/22/32/50/70/82 to 17/27/40/62/87/102, ±35.7% (generated). Per combo point 24/36/59/92/128/147 to 30/45/74/115/160/181. Per excess energy 0.6/1.0/1.5/2.0/2.5/2.7 to 0.7/1.2/1.8/2.5/3.1/3.3.<br>- Starfire, ranks 1-7: base 81/110/144/198/266/337/381 to 113/154/201/277/372/471/533; per level 1.3/1.5/1.6/1.8/2.2/2.3/2.4 to 1.8/2.1/2.2/2.5/3.0/3.2/3.4. Rank 6 at 471 is round 9's finding.<br>No other druid spell changed in the re-layer's spellconst diff. | Red first, on the refreshed conformance copy, every rank: `TestStarfireDamageMatchesClient`, `TestRakeDamageMatchesClient`, `TestRipDamageMatchesClient`, `TestFerociousBiteDamagePerEnergyMatchesClient`, `TestCatWeaponSpecialsMatchTheClient`. Red by hand from the push: `TestRipComboPointStepsMatchClient`, `TestFerociousBiteDamagePerComboPointIsThePushs`. All pass. | CONFIRMED-BUG | new-data (70755 server push 113403) | E 230a079c5 |
+| W8-2 | Fork goldens: none moves. TestP1Feral and TestP1Balance skip (`SkipAwaitingForeverTalentRewrite`), and the bear's spells (Maul, Swipe, Lacerate, Primal Bite) are not in the push; TestFeralTank passes unchanged. | druid package tests | - | - | - |
+
+Before/after (published BiS talents; 10,000 iterations). "Round start" is `$R/sb-before`; "Before follow" is engine int/r15 47e9c9e62 on site 68ddc6dc1; "After" is E 230a079c5 on the same site. The bear is in threat per second, with chance of death in the last column.
+
+| Spec | Preset band | Faction | Seed | Round start | Before follow | After | vs round start | vs before follow | CoD start / before / after |
+|---|---|---|---|---|---|---|---|---|---|
+| druid-balance | raid 60 | alliance | 1 | 569.5 | 609.2 | 652.8 | +14.63% | +7.16% | - |
+| druid-balance | raid 60 | alliance | 50001 | 570.3 | 609.8 | 653.5 | +14.59% | +7.17% | - |
+| druid-balance | raid 60 | horde | 1 | 574.9 | 603.8 | 646.9 | +12.52% | +7.14% | - |
+| druid-balance | raid 60 | horde | 50001 | 575.1 | 604.2 | 647.2 | +12.54% | +7.12% | - |
+| druid-balance | bare 40 | alliance | 1 | 152.8 | 163.1 | 169.6 | +10.99% | +3.99% | - |
+| druid-balance | bare 40 | alliance | 50001 | 152.8 | 163.1 | 169.6 | +10.99% | +3.99% | - |
+| druid-balance | bare 40 | horde | 1 | 151.9 | 160.8 | 167.1 | +10.01% | +3.92% | - |
+| druid-balance | bare 40 | horde | 50001 | 151.9 | 160.8 | 167.1 | +10.01% | +3.92% | - |
+| druid-balance | bare 50 | alliance | 1 | 197.4 | 210.5 | 221.0 | +11.96% | +4.99% | - |
+| druid-balance | bare 50 | alliance | 50001 | 197.4 | 210.3 | 220.8 | +11.85% | +4.99% | - |
+| druid-balance | bare 50 | horde | 1 | 192.6 | 206.6 | 217.2 | +12.77% | +5.13% | - |
+| druid-balance | bare 50 | horde | 50001 | 192.8 | 206.4 | 217.0 | +12.55% | +5.14% | - |
+| druid-balance | bare 60 | alliance | 1 | 286.2 | 334.1 | 352.3 | +23.10% | +5.45% | - |
+| druid-balance | bare 60 | alliance | 50001 | 286.2 | 334.2 | 352.5 | +23.17% | +5.48% | - |
+| druid-balance | bare 60 | horde | 1 | 282.0 | 330.4 | 348.1 | +23.44% | +5.36% | - |
+| druid-balance | bare 60 | horde | 50001 | 282.2 | 330.6 | 348.4 | +23.46% | +5.38% | - |
+| druid-feral | raid 60 | alliance | 1 | 664.9 | 735.7 | 846.4 | +27.30% | +15.05% | - |
+| druid-feral | raid 60 | alliance | 50001 | 664.8 | 735.8 | 846.4 | +27.32% | +15.03% | - |
+| druid-feral | raid 60 | horde | 1 | 660.4 | 726.5 | 834.8 | +26.41% | +14.91% | - |
+| druid-feral | raid 60 | horde | 50001 | 660.2 | 726.5 | 834.8 | +26.45% | +14.91% | - |
+| druid-feral | bare 40 | alliance | 1 | 118.6 | 125.9 | 144.9 | +22.18% | +15.09% | - |
+| druid-feral | bare 40 | alliance | 50001 | 118.4 | 126.0 | 144.9 | +22.38% | +15.00% | - |
+| druid-feral | bare 40 | horde | 1 | 115.5 | 123.1 | 141.7 | +22.68% | +15.11% | - |
+| druid-feral | bare 40 | horde | 50001 | 115.4 | 123.2 | 141.8 | +22.88% | +15.10% | - |
+| druid-feral | bare 50 | alliance | 1 | 157.6 | 178.6 | 205.9 | +30.65% | +15.29% | - |
+| druid-feral | bare 50 | alliance | 50001 | 157.5 | 178.6 | 205.9 | +30.73% | +15.29% | - |
+| druid-feral | bare 50 | horde | 1 | 153.6 | 174.5 | 201.1 | +30.92% | +15.24% | - |
+| druid-feral | bare 50 | horde | 50001 | 153.6 | 174.4 | 201.0 | +30.86% | +15.25% | - |
+| druid-feral | bare 60 | alliance | 1 | 269.9 | 297.8 | 348.3 | +29.05% | +16.96% | - |
+| druid-feral | bare 60 | alliance | 50001 | 270.2 | 297.9 | 348.4 | +28.94% | +16.95% | - |
+| druid-feral | bare 60 | horde | 1 | 266.8 | 291.4 | 340.5 | +27.62% | +16.85% | - |
+| druid-feral | bare 60 | horde | 50001 | 267.0 | 291.7 | 340.9 | +27.68% | +16.87% | - |
+| druid-feral-bear | raid 60 | alliance | 1 | 964.2 | 1114.1 | 1114.1 | +15.55% | +0.00% | 10.9 / 0.1 / 0.1 |
+| druid-feral-bear | raid 60 | alliance | 50001 | 965.2 | 1112.8 | 1112.8 | +15.29% | +0.00% | 9.9 / 0.1 / 0.1 |
+| druid-feral-bear | raid 60 | horde | 1 | 955.7 | 1108.4 | 1108.4 | +15.98% | +0.00% | 10.1 / 0.1 / 0.1 |
+| druid-feral-bear | raid 60 | horde | 50001 | 956.3 | 1109.1 | 1109.1 | +15.98% | +0.00% | 9.8 / 0.2 / 0.2 |
+| druid-feral-bear | bare 40 | alliance | 1 | 172.5 | 202.0 | 202.0 | +17.10% | +0.00% | 87.2 / 80.2 / 80.2 |
+| druid-feral-bear | bare 40 | alliance | 50001 | 172.4 | 202.0 | 202.0 | +17.17% | +0.00% | 87.9 / 80.1 / 80.1 |
+| druid-feral-bear | bare 40 | horde | 1 | 170.1 | 200.2 | 200.2 | +17.70% | +0.00% | 89.3 / 82.1 / 82.1 |
+| druid-feral-bear | bare 40 | horde | 50001 | 170.0 | 199.9 | 199.9 | +17.59% | +0.00% | 88.9 / 82.8 / 82.8 |
+| druid-feral-bear | bare 50 | alliance | 1 | 306.4 | 336.1 | 336.1 | +9.69% | +0.00% | 56.1 / 29.2 / 29.2 |
+| druid-feral-bear | bare 50 | alliance | 50001 | 306.3 | 335.8 | 335.8 | +9.63% | +0.00% | 56.3 / 30.1 / 30.1 |
+| druid-feral-bear | bare 50 | horde | 1 | 302.1 | 312.1 | 312.1 | +3.31% | +0.00% | 56.7 / 31.8 / 31.8 |
+| druid-feral-bear | bare 50 | horde | 50001 | 301.9 | 311.4 | 311.4 | +3.15% | +0.00% | 56.4 / 32.2 / 32.2 |
+| druid-feral-bear | bare 60 | alliance | 1 | 417.2 | 477.3 | 477.3 | +14.41% | +0.00% | 77.7 / 8.4 / 8.4 |
+| druid-feral-bear | bare 60 | alliance | 50001 | 416.6 | 477.0 | 477.0 | +14.50% | +0.00% | 77.6 / 8.6 / 8.6 |
+| druid-feral-bear | bare 60 | horde | 1 | 416.7 | 473.6 | 473.6 | +13.65% | +0.00% | 87.0 / 15.0 / 15.0 |
+| druid-feral-bear | bare 60 | horde | 50001 | 416.0 | 473.1 | 473.1 | +13.73% | +0.00% | 86.7 / 15.2 / 15.2 |
+
+The round-start-to-before-follow move is the rest of int/r15: the re-layer's items and sets, other lanes' core fixes, and my wave-1 Rend and Tear. The follow's own effect is the "vs before follow" column: cat +14.9 to +17.0%, Balance +3.9 to +7.2%, bear 0.
+
+**Files to regenerate (wave 8):** ladder goldens for druid-feral and druid-balance; BiS, weights and dps-per-point for druid-feral and druid-balance (Shred, Ravage and Starfire move a long way); Data.lua.
+
+## Calls
+
+| # | call | decision and why | sources | fix sha |
+|---|---|---|---|---|
+| K1 | Bear Furor vs Naturalist | **Furor 5 to 1, Naturalist 1 to 5** (`0/5123033202310212551/055`). A tank never shifts into Bear Form mid-fight, so Furor's rage never lands. Naturalist is threat. Raid and bare 60: threat +7.6 to +7.7%, chance of death and damage taken identical (both factions, seeds 1 and 50001). Bands 30-50: threat +1.9 to +5.9%, chance of death equal or lower (band 50 56% to 38%). Band 20: threat -0.5%, but chance of death 68-76% to 41-49%, because the freed points reach Feral Swiftness's dodge early. Survival over threat at a low band follows the Protection paladin band 20 precedent. Test: `TestBearBuildFinishesNaturalistOverFuror`, red then green. | `bear-calls.tsv`, `bear-bands.tsv` (lane dir); Warcraft Tavern Forever feral guide ("usually not needed in endgame group content", read 2026-11-03); round 6 G0 (the tank never shifts) | S 6de6cbf98 |
+| K2 | Bear Nature's Reach | **Rejected.** It costs Genesis 5 plus Nature's Reach 2, paid by Heart of the Wild 5, Naturalist 1 and Feral Swiftness 1. Threat +1.4 to +2.0%, but chance of death about doubles at raid 60 (9.8-10.9% to 19.8-21.6%) and rises at bare 60 (87% to 95% horde). K1 gains four times the threat at no survival cost. | `bear-calls.tsv` | - |
+| K3 | Pounce behind the target (guide round 3, S9) | **Aligned:** `pounce.go:75` already requires Prowl and not in front. **But Ravage was missing the same check:** its 70755 text (Spell 6785-9867) is "Must be prowling and behind the target", and `ravage.go` checked Prowl only. Fixed test-first (`TestRavageNeedsToBeBehindTheTarget`). No published fight stands in front, so no number moves. Origin old (758141eb6, 2026-09-29). | client Spell.csv descriptions; Wowhead Forever 9827 | E 725a50f11 |
+| K4 | Feral Charge (Cat) leap (guide round 4) | **Aligned.** 414924 is "Leap behind an enemy.": no damage, no immobilize, no Prowl or opener clause. The cat leveling build takes Feral Charge from band 30 (it is also the bear Charge); no raid build takes it. The sim's cat always stands behind the target, so a leap behind adds nothing to model. The point is a real repositioning tool, not a provably dead one. | nether.wowhead.com/forever/tooltip/spell/414924 | - |
+
+**For the guide lane:** feral-bear.md's talent prose for Furor and Naturalist needs to say the bear build keeps one Furor point and finishes Naturalist (10% more damage, so threat). The exact sentence is the guide lane's to place; I have not edited prose.
+
+**Files to regenerate (calls):** druid-feral-bear ladder golden (every band), `bis/druid-feral-bear.json` band talents, addon-builds.
