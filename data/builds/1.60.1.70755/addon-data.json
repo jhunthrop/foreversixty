@@ -11497,7 +11497,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds.",
+            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11537,7 +11537,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds.",
+            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11577,7 +11577,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds.",
+            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11624,7 +11624,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds.",
+            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -11671,7 +11671,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds.",
+            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },

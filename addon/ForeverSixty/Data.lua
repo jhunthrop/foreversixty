@@ -1889,21 +1889,21 @@ ns.Data = {
 				{ spellId = 1758, name = "Sinister Strike", condition = "Sinister Strike only when Backstab cannot be cast (no dagger in the main hand), held to 60 energy so a dagger rogue never spends Backstab's energy here." },
 			} },
 			{ level = 30, lines = {
-				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds." },
+				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel." },
 				{ spellId = 6762, name = "Eviscerate", condition = "Eviscerate at five combo points." },
 				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice whenever it drops, at one or two combo points." },
 				{ spellId = 2591, name = "Backstab", condition = "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too." },
 				{ spellId = 1760, name = "Sinister Strike", condition = "Sinister Strike only when Backstab cannot be cast (no dagger in the main hand), held to 60 energy so a dagger rogue never spends Backstab's energy here." },
 			} },
 			{ level = 38, lines = {
-				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds." },
+				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel." },
 				{ spellId = 8623, name = "Eviscerate", condition = "Eviscerate at five combo points." },
 				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice whenever it drops, at one or two combo points." },
 				{ spellId = 8721, name = "Backstab", condition = "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too." },
 				{ spellId = 8621, name = "Sinister Strike", condition = "Sinister Strike only when Backstab cannot be cast (no dagger in the main hand), held to 60 energy so a dagger rogue never spends Backstab's energy here." },
 			} },
 			{ level = 40, lines = {
-				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds." },
+				{ spellId = 1329283, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel." },
 				{ spellId = 8624, name = "Eviscerate", condition = "Eviscerate at five combo points." },
 				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice whenever it drops, at one or two combo points." },
 				{ spellId = 8721, name = "Backstab", condition = "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too." },
@@ -1911,7 +1911,7 @@ ns.Data = {
 				{ spellId = 8621, name = "Sinister Strike", condition = "Sinister Strike only when Backstab cannot be cast (no dagger in the main hand), held to 60 energy so a dagger rogue never spends Backstab's energy here." },
 			} },
 			{ level = 50, lines = {
-				{ spellId = 1329549, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds." },
+				{ spellId = 1329549, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel." },
 				{ spellId = 11299, name = "Eviscerate", condition = "Eviscerate at five combo points." },
 				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice whenever it drops, at one or two combo points." },
 				{ spellId = 11279, name = "Backstab", condition = "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too." },
@@ -1919,7 +1919,7 @@ ns.Data = {
 				{ spellId = 11293, name = "Sinister Strike", condition = "Sinister Strike only when Backstab cannot be cast (no dagger in the main hand), held to 60 energy so a dagger rogue never spends Backstab's energy here." },
 			} },
 			{ level = 60, lines = {
-				{ spellId = 1329549, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds." },
+				{ spellId = 1329549, name = "Shank", condition = "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel." },
 				{ spellId = 11300, name = "Eviscerate", condition = "Eviscerate at five combo points." },
 				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice whenever it drops, at one or two combo points." },
 				{ spellId = 11281, name = "Backstab", condition = "Backstab with a dagger in the main hand: Puncturing Wounds raises its crit chance and can give it a second combo point, and in the raid build Opportunity and Lethality land on it too." },

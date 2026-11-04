@@ -71,7 +71,7 @@ Spirit of Redemption is only the path to Prayer of Mending. Open the [planner](/
 
 **The filler is a downranked Greater Heal** in a raid: rank 1 or 2, whichever fills the hole without overhealing. In a dungeon group or on bare gear, where your bonus is small, Heal rank 4 is the cheaper cast. With Divine Fury both are 2.5 second casts. The top rank of Greater Heal comes out only when the tank needs one big number.
 
-**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal, every rank of Heal and Renew below rank 7 were learned too early to scale with raid gear, so a cheap rank of them heals for little more than its base. Downrank within the ranks you learned from your forties on.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
 
 **Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Greater Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
 

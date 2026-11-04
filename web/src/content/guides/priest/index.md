@@ -26,7 +26,7 @@ Two healing specs and one shadow caster, as always. Shadow is also how a priest 
 - **Every priest now has** Fear Ward, Devouring Plague, Shadow Word: Death, Divine Spirit and Lightwell from the trainer.
 - **Mind Flay** is a Shadow talent instead of a trainer spell, Penance and Prayer of Mending are the deep Discipline and Holy talents, and the trainer teaches their higher ranks once you have them.
 - **Shadowfiend** is not learnable at launch.
-- **Low-rank heals.** In Forever a rank learned far below your level gets less of your healing bonus, and the Spell Healing tooltip on your character sheet says so. At 60, Lesser Heal and the low ranks of Renew and Heal get next to nothing from your gear: downrank only within the ranks you learned in your forties and fifties.
+- **Low-rank heals.** In Forever a rank learned far below your level gets less of your healing bonus, and the Spell Healing tooltip on your character sheet says so. At 60, Lesser Heal and the first ranks of Renew and Heal get next to nothing from your gear: downrank only within the ranks you learned in your forties and fifties.
 
 ## Races
 

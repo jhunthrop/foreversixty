@@ -75,7 +75,7 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 - **Improved Bloodrage** (2 points in Protection): half again as much rage from every Bloodrage.
 - **Anger Management** (1 point, behind 3 in **Improved Tactical Mastery**): a point of rage every 3 seconds in combat, 10 rage every half minute. Tactical Mastery itself does little for a warrior who never leaves Berserker Stance; it is the way in.
 
-The build also spends a point in **Piercing Howl**, which dazes everything within 10 yards for 6 seconds to stop runners and kite on trash, a point in **Lingering Rage**, which holds your rage 10 seconds longer after a fight so it carries into the next pull, and two in **Improved Charge**, which is what gets you down to Impale; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
+The build also spends a point in **Piercing Howl**, which dazes everything within 10 yards for 6 seconds to stop runners and kite on trash, a point in **Lingering Rage**, which holds your rage 2 seconds longer before it starts to decay, a small bridge between quick pulls, and two in **Improved Charge**, which is what gets you down to Impale; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free. It skips Deflection and Improved Intercept: you walk into a raid boss instead of Intercepting it, and a boss you stand behind never gives you a parry. Open the [planner](/planner?class=warrior) to see the build point by point.
 
 ## Rotation and priority
 

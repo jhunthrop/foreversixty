@@ -74,7 +74,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 or 2 on everyone else.
 
-**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal, every rank of Heal and Renew below rank 7 were learned too early to scale with your gear, so a cheap rank of them heals for little more than its base. Downrank within the ranks you learned from your forties on.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on.
 
 **Emergencies.** Flash Heal at the top rank on anyone about to die. It is your fastest heal and your dearest, so it never becomes the filler.
 

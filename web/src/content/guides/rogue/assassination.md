@@ -51,7 +51,7 @@ Assassination is the Forever rogue built on Mutilate: two daggers, two combo poi
 
 The raid build goes 36/10/5: down Assassination to Mutilate, with Seal Fate, Venom and all five points of Relentless Strikes on the way, into Combat for Coup de Grace, Puncturing Wounds and Precision, and five points of Opportunity. The level 60 build is the one you level with. It trades Vigor, Blood Splatter, a point of Improved Slice and Dice and four points of Opportunity for Improved Gouge, Remorseless Attacks, a third point of Precision and a point of Master of Deception, which shine on trash and while leveling. Respec to the raid build for the raid.
 
-- **Mutilate** (1 point): strikes with both daggers for 90% weapon damage plus 79 each at the top rank, 20% more against a poisoned target, for two combo points. It sits below Venom in the tree.
+- **Mutilate** (1 point): strikes with both daggers for 90% weapon damage plus 79 each at the top rank (the off-hand strike takes the usual half weapon damage, the flat 79 does not), 20% more against a poisoned target, for two combo points. It sits below Venom in the tree.
 - **Seal Fate** (3 points): every crit from a builder adds a combo point. Mutilate can only trigger it once a cast, even when both hands crit.
 - **Venom** (1 point): every Shank makes your poisons hit 30% harder and apply 20% more often for 6 seconds. It is a passive on Shank, with no finisher or global of its own, and Mutilate needs it.
 - **Relentless Strikes** (5 points): every finisher has a 20% chance per combo point to give 25 energy back, so a four-point Eviscerate refunds it four times in five. This is what lets a 60 energy builder keep up.
