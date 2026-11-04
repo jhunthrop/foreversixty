@@ -226,7 +226,7 @@
         }
       },
       {
-        "notes": "On cooldown, right after Mortal Strike: for 8 seconds your swings each bring 5 more rage, two or three with a two-hander, for a quarter of your base health.",
+        "notes": "Raid build, on cooldown right after Mortal Strike: for 8 seconds your swings each bring 5 more rage, two or three with a two-hander, for a quarter of your base health.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -281,7 +281,7 @@
         }
       },
       {
-        "notes": "On a free global in Battle Stance, while Mortal Strike, Overpower and Slam are on cooldown: a second weapon strike that hits twice as hard on Dragonkin and Giants.",
+        "notes": "Raid build, on a free global in Battle Stance while Mortal Strike, Overpower and Slam are on cooldown: a second weapon strike that hits twice as hard on Dragonkin and Giants.",
         "action": {
           "castSpell": {
             "spellId": {
