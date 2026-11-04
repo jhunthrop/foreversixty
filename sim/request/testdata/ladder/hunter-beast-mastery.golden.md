@@ -103,8 +103,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 5420000000000000-0000000000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 49.5 | 6 | other:shoot=81.5, spell:2643=10.0, spell:19434=9.3, spell:14282=3.5, spell:13550=3.1 | {SpellID: 19574} |
 | 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 78.1 | 7 | other:shoot=82.9, spell:2643=10.5, spell:20900=5.7, spell:14283=3.3, spell:13551=2.9 | {SpellID: 19574} |
 | 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 106.1 | 7 | other:shoot=86.6, spell:2643=10.9, spell:20901=5.8, spell:14284=3.8, spell:13552=3.3 | {SpellID: 19574} |
-| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 126.5 | 8 | other:shoot=87.5, spell:19434=17.6, spell:13552=5.2, spell:14282=5.0, spell:2643=4.6 | - |
-| 50 | 5420001505001251-0052300000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 158.2 | 8 | other:shoot=156.1, spell:2643=15.4, spell:3044=4.7, spell:13554=3.2, spell:14324=2.4 | - |
+| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 126.5 | 8 | other:shoot=87.2, spell:19434=18.1, spell:13552=4.6, spell:14284=4.3, spell:2643=3.6 | - |
+| 50 | 5420001505001251-0052300000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 159.4 | 8 | other:shoot=156.7, spell:2643=14.2, spell:14285=3.7, spell:13554=2.8, spell:14324=2.4 | - |
 | 60 | 5420001505001251-0052451001200000-000000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 276.2 | 8 | other:shoot=82.8, spell:2643=10.2, spell:20904=3.6, spell:14287=3.1, spell:13555=3.0 | - |
 
 ## Learned but unused (informational)
@@ -192,7 +192,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 40
 
 - Aimed Shot (spell 20901)
-- Arcane Shot (spell 14284)
 - Bite (spell 17259)
 - Claw (spell 16832)
 - Counterattack (spell 1242634)
@@ -219,7 +218,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Arcane Shot (spell 14285)
 - Bite (spell 17260)
 - Claw (spell 3010)
 - Counterattack (spell 20909)

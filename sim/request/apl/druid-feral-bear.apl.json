@@ -24,7 +24,7 @@
       }
     },
     {
-      "notes": "On cooldown: 20% less damage taken for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
+      "notes": "On cooldown: 20% less physical damage for 15 seconds of every minute, and Forever lets you cast it in Bear Form.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -177,6 +177,59 @@
             "spellId": 9907,
             "rank": 4,
             "tag": 1
+          }
+        }
+      }
+    },
+    {
+      "notes": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing. One is enough, since it does not stack with a warrior's Demoralizing Shout. Refresh it in its last 3 seconds.",
+      "action": {
+        "condition": {
+          "or": {
+            "vals": [
+              {
+                "not": {
+                  "val": {
+                    "auraIsActive": {
+                      "auraId": {
+                        "spellId": 9898,
+                        "rank": 5
+                      },
+                      "sourceUnit": {
+                        "type": "CurrentTarget"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpLt",
+                  "lhs": {
+                    "auraRemainingTime": {
+                      "sourceUnit": {
+                        "type": "CurrentTarget"
+                      },
+                      "auraId": {
+                        "spellId": 9898,
+                        "rank": 5
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "3s"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 9898,
+            "rank": 5
           }
         }
       }

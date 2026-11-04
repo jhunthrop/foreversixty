@@ -31,6 +31,7 @@ func TestEveryTankEncounterValueStatesItsReason(t *testing.T) {
 		"level_scaling.exponent":        f.LevelScaling.Exponent.Reason,
 		"boss.swing_speed_sec":          f.Boss.SwingSpeedSec.Reason,
 		"boss.min_base_damage":          f.Boss.MinBaseDamage.Reason,
+		"boss.attack_power_by_level":    f.Boss.AttackPowerByLevel.Reason,
 		"boss.damage_spread":            f.Boss.DamageSpread.Reason,
 		"boss.parry_haste":              f.Boss.ParryHaste.Reason,
 		"boss.dual_wield":               f.Boss.DualWield.Reason,
@@ -122,7 +123,7 @@ func TestBuildPutsATankInFrontOfAHealedBossThatHitsIt(t *testing.T) {
 		t.Errorf("raid tanks = %v, want the character", raid.Tanks)
 	}
 	boss := enc.Targets[0]
-	if boss.TankIndex != tankIndex || boss.SwingSpeed != profile.Boss.SwingSpeedSec || boss.MinBaseDamage != profile.Boss.MinBaseDamage {
+	if boss.TankIndex != tankIndex || boss.SwingSpeed != profile.Boss.SwingSpeedSec || boss.MinBaseDamage != profile.Boss.weaponMinDamage(boss.Stats[proto.Stat_StatAttackPower]) {
 		t.Errorf("boss = %+v, want it swinging at the tank with the curated melee", boss)
 	}
 }

@@ -2,7 +2,7 @@
 // under docs/contracts/fixtures/app. The Go contract test holds the fixtures to api/openapi.yaml;
 // this holds the generator to the fixtures. Floors only: no count or id is pinned. The suites
 // that read build data skip on a checkout without it.
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -17,7 +17,7 @@ import {
   encodeAppFile,
 } from './app-files';
 import { markdownBlocks } from './changelog-file';
-import { bulletLines } from './guide-file';
+import { bulletLines, type AppGuideFile } from './guide-file';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../../..');
@@ -149,6 +149,27 @@ describe.skipIf(!hasBuild)('W3-C1 generator', () => {
         new RegExp(`^${row.name} is \\d+(st|nd|rd|th) of ${dps.length} DPS specs\\.$`),
       );
     expect(tiers.factions.horde.tank.rows.every((row) => row.tier === null)).toBe(true);
+  });
+
+  // The planner's golden vectors (apps/shared/fixtures/planner-rules.json) replay these codes, so a
+  // fixture left on an old guide build tests the apps against a build no guide recommends. The
+  // build id is dropped: a client move that keeps the trees leaves the vectors valid.
+  it("carries each guide's current build codes in its fixture", () => {
+    const talentsOf = (code: string | undefined): string | null =>
+      code === undefined ? null : code.replace(/^FS1:[^:]+:/, '');
+    const named = readdirSync(FIXTURES)
+      .map((file) => /^cdn\.guides\.(?!index\.)(.+)\.json$/.exec(file)?.[1])
+      .filter((spec): spec is string => spec !== undefined);
+    expect(named.length).toBeGreaterThan(0);
+    for (const spec of named) {
+      const guide = guides.find((candidate) => candidate.spec === spec);
+      expect(guide, spec).toBeDefined();
+      const want = fixture(`cdn.guides.${spec}`) as { talents: AppGuideFile['talents'] };
+      for (const key of ['leveling_build', 'raid_build'] as const)
+        expect(talentsOf(want.talents[key]?.code), `${spec} ${key}`).toBe(
+          talentsOf(guide!.talents[key]?.code),
+        );
+    }
   });
 
   it('carries every field the fixtures name', () => {

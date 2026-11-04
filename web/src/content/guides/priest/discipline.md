@@ -70,7 +70,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **The shield is a switch.** Shield the tank at a low rank whenever Weakened Soul is off him. A small shield costs little and soaks one hit, and the Weakened Soul it leaves is what Renewed Hope needs: your next heals on him crit far more often, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner. A full-rank shield on a warrior tank eats the rage he needs at the start of a pull; save the big one for a hit he cannot take.
 
-**Renew** stays on the tank at a low rank. Every rank carries the same healing power bonus, so the cheap rank is the efficient one.
+**Renew** stays on the tank at rank 1. Forever keeps a low rank's whole healing bonus, so rank 1 heals the most per mana.
 
 **Fillers.** Greater Heal at the top rank on the tank, where the big hits land. A cheap low-rank heal on everyone else: in Forever a heal learned below level 20 keeps all of its spell power bonus, so those ranks heal far more than their tooltip suggests for very little mana.
 

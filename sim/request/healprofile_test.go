@@ -130,14 +130,15 @@ func TestCuratedHealProfileStatesItsTuning(t *testing.T) {
 		t.Fatal(err)
 	}
 	tuning := profile.Tuning
-	// Round 7 (design/reviews/2026-11-02-sim-audit-round7/healers.md): the
-	// retune rule moved the scale from 1.65 to 1.85 once the engine fixes
-	// took the strongest raid set to 97% coverage.
-	if tuning.Scale != 1.85 || len(tuning.Bounds) != 2 || tuning.Bounds[0] != 1.65 || tuning.Bounds[1] != 1.85 {
-		t.Errorf("tuning = %+v, want scale 1.85 between 1.65 and 1.85", tuning)
+	// Round 14 (design/reviews/2026-11-04-sim-audit-round14/healers.md): the
+	// retune rule moved the scale from 1.85 to 2.3 once round 13's rank-1
+	// Rejuvenation took the strongest raid set to 95% coverage and a bare
+	// set to 60%.
+	if tuning.Scale != 2.3 || len(tuning.Bounds) != 2 || tuning.Bounds[0] != 1.85 || tuning.Bounds[1] != 2.3 {
+		t.Errorf("tuning = %+v, want scale 2.3 between 1.85 and 2.3", tuning)
 	}
-	if profile.Tank.HitDamage != 2128 || profile.Pulse.Damage != 555 {
-		t.Errorf("tuned figures = %v / %v, want 2128 / 555", profile.Tank.HitDamage, profile.Pulse.Damage)
+	if profile.Tank.HitDamage != 2645 || profile.Pulse.Damage != 690 {
+		t.Errorf("tuned figures = %v / %v, want 2645 / 690", profile.Tank.HitDamage, profile.Pulse.Damage)
 	}
 }
 
@@ -150,7 +151,7 @@ func TestHealProfileAtScaleRescalesTheHitAndThePulse(t *testing.T) {
 	if low.Tank.HitDamage != 1725 || low.Pulse.Damage != 450 || low.Tuning.Scale != 1.5 {
 		t.Errorf("at 1.5: hit %v pulse %v scale %v, want 1725 / 450 / 1.5", low.Tank.HitDamage, low.Pulse.Damage, low.Tuning.Scale)
 	}
-	if profile.Tank.HitDamage != 2128 {
+	if profile.Tank.HitDamage != 2645 {
 		t.Error("AtScale changed the profile it was called on")
 	}
 	same := profile.AtScale(profile.Tuning.Scale)
@@ -165,10 +166,10 @@ func TestHealProfileRefusesATuningThatDisagreesWithItsFigures(t *testing.T) {
 		t.Fatal(err)
 	}
 	for name, bad := range map[string]*regexp.Regexp{
-		"scale outside bounds": regexp.MustCompile(`"scale": 1\.85`),
-		"hit not base x scale": regexp.MustCompile(`"hit_damage": 2128`),
+		"scale outside bounds": regexp.MustCompile(`"scale": 2\.3`),
+		"hit not base x scale": regexp.MustCompile(`"hit_damage": 2645`),
 	} {
-		replacement := map[string]string{"scale outside bounds": `"scale": 1.9`, "hit not base x scale": `"hit_damage": 2130`}[name]
+		replacement := map[string]string{"scale outside bounds": `"scale": 2.4`, "hit not base x scale": `"hit_damage": 2650`}[name]
 		if _, err := parseHealProfile(bad.ReplaceAll(raw, []byte(replacement)), name); !errors.Is(err, ErrBadHealProfile) {
 			t.Errorf("%s: err = %v, want ErrBadHealProfile", name, err)
 		}

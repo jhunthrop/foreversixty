@@ -35,7 +35,7 @@ Forever keeps that whole kit and rebuilds the three trees underneath, so a 1.12 
 
 - **Orc Mage** is new for Forever and gives the Horde a third mage race, with Blood Fury's spell power on a 2 minute cooldown.
 - **Skyborne** can be mages too, but only the Alliance High Order Skyborne; the Horde Windshapers cannot.
-- **Gnome** is still the strongest Alliance pick: Eureka! makes your next spells 10% stronger and 10% cheaper for 8 seconds, and lines up with Arcane Power or Combustion every 2 minutes.
+- **Gnome** is still the strongest Alliance pick: Eureka! makes your next spells 10% stronger and 10% cheaper for 8 seconds, every 2 minutes. Arcane Power and Combustion come back every 3, so pair Eureka! with them whenever both are ready.
 
 ## Raids and leveling
 
