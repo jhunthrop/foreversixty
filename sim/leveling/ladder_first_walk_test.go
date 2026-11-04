@@ -32,7 +32,10 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 		{"warlock-affliction", "warlock", "affliction", 0, 30, "Siphon Life", "25522300100001000-0000000000000000000-0000000000000000"},
 		{"warlock-demonology", "warlock", "demonology", 1, 30, "Soul Link", "00000000000000000-2035113101210001000-0000000000000000"},
 		{"warrior-arms", "warrior", "arms", 0, 40, "Mortal Strike", "13323213032214001-000000000000000000-000000000000000000"},
-		{"warrior-fury", "warrior", "fury", 1, 30, "Death Wish", "00000000000000000-051531023000100000-000000000000000000"},
+		// Sim-accuracy round 15 (warrior): the guide build dropped Lingering Rage and Piercing
+		// Howl for Improved Berserker Rage, so band 30 spends those two points in Dual Wield
+		// Specialization (5, not 3) and still takes Death Wish (+3.5% at seeds 1 and 50001).
+		{"warrior-fury", "warrior", "fury", 1, 30, "Death Wish", "00000000000000000-050530025000100000-000000000000000000"},
 	}
 	for _, c := range cases {
 		trees, err := LoadTalentTrees(repoRoot, active, c.class)
