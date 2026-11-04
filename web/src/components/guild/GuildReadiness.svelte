@@ -231,24 +231,24 @@
       <span class="quiet-label">Raider</span>
       <span
         class="quiet-label"
-        style="cursor:help"
+        style="cursor:default"
         title="Slots with a better item in the best-in-slot list, and the DPS a simulation says they are worth"
         >Gear gap</span
       >
       <span
         class="quiet-label"
-        style="cursor:help"
+        style="cursor:default"
         title="Weapon, chest, cloak and boots checked for an enchant">Enchants</span
       >
       <span
         class="quiet-label"
-        style="cursor:help"
+        style="cursor:default"
         title="Flasks, food and potions in bags. Only members who share their bags are checked."
         >Consumables</span
       >
-      <span class="quiet-label" style="cursor:help" title="Spent points vs 51 at level 60">Talent points</span
+      <span class="quiet-label" style="cursor:default" title="Spent points vs 51 at level 60">Talent points</span
       >
-      <span class="quiet-label" style="cursor:help" title="This character vs the roster's own median"
+      <span class="quiet-label" style="cursor:default" title="This character vs the roster's own median"
         >Item level</span
       >
       <span class="quiet-label">Last synced</span>
