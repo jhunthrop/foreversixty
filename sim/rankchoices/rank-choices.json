@@ -91,9 +91,20 @@
         "bands": [
           {
             "from_level": 10,
-            "to_level": 59,
+            "to_level": 39,
             "rank": 1,
             "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): on every bare fight rank 1 still wins: the fight runs out of mana, so the cheapest Rejuvenation heals most even with little or no bonus (bare 60 +6%)."
+          },
+          {
+            "from_level": 40,
+            "to_level": 41,
+            "rank": 2,
+            "note": "Sim-accuracy round 18: rank 2 beats rank 1 by 1.4 to 2.1% at 40 and 41 (night elf; tauren +0.8% at 40, +1.4% at 41), 10,000 iterations, seeds 1 and 50001. Rank 1 again at 39 (-0.9%) and 42 (+0.8% for rank 2, under the bar)."
+          },
+          {
+            "from_level": 42,
+            "to_level": 59,
+            "rank": 1
           },
           {
             "from_level": 60,
@@ -101,6 +112,27 @@
             "rank": 1,
             "preset": "bare",
             "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): rank 1 at bare 60 against rank 7: +6.2% (the fight runs dry)."
+          }
+        ]
+      },
+      {
+        "spell": "Healing Touch",
+        "authored": 9889,
+        "lines": [
+          9
+        ],
+        "bands": [
+          {
+            "from_level": 30,
+            "to_level": 33,
+            "rank": 3,
+            "note": "Sim-accuracy round 18: the tank filler judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions). Rank 3 beats the top rank by 1.2 to 1.5% at 30 to 33; within 1% at 34 to 39. The Nature's Swiftness line keeps the top rank."
+          },
+          {
+            "from_level": 40,
+            "to_level": 44,
+            "rank": 5,
+            "note": "Sim-accuracy round 18: rank 5 beats the top rank by 1.1 to 1.3% at 40 to 44; within 1% from 45 (rank 6 +0.7 to 0.8% at 46 to 49) and the top rank from 50."
           }
         ]
       }
