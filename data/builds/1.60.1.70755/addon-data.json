@@ -9817,28 +9817,28 @@
             "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana.",
-            "icon": "inv_misc_questionmark",
+            "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "inv_misc_questionmark",
+            "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "inv_misc_questionmark",
+            "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "inv_misc_questionmark",
+            "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
@@ -9852,28 +9852,28 @@
             "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "inv_misc_questionmark",
+            "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "inv_misc_questionmark",
+            "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "inv_misc_questionmark",
+            "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2050,
             "name": "Lesser Heal",
             "condition": "",
-            "icon": "inv_misc_questionmark",
+            "icon": "spell_holy_lesserheal",
             "race_spell_ids": {}
           }
         ]

@@ -975,7 +975,474 @@
     "classes": {
       "added": [],
       "removed": [],
-      "changed": []
+      "changed": [
+        {
+          "id": 1,
+          "before": {
+            "id": 1,
+            "name": "Warrior",
+            "slug": "warrior",
+            "color": "#c69b6d",
+            "forever_changes": [
+              {
+                "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+                "sources": [
+                  {
+                    "label": "Blizzard, What's Next panel recap",
+                    "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Warrior is one of the four default classes of the new Skyborne race.",
+                "sources": [
+                  {
+                    "label": "Wowhead, Skyborne First Look",
+                    "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Talent trees keep their rows, with one-point milestones at 11, 21, and 31 points plus a new 16-point milestone; key buff talents are baseline.",
+                "sources": [
+                  {
+                    "label": "Blizzard, Deep Dive panel recap",
+                    "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Victory Rush is baseline in Arms: instant, 30 second cooldown, heals 10% of maximum health within 20 seconds of a non-trivial kill. Tactical Mastery is a passive rather than a talent.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Shield Wall is a 15 minute cooldown reducing damage 60% for 12 seconds, where Classic was 30 minutes, 75% and 10 seconds; Shield Block has 2 charges and lasts 7 seconds; Thunder Clap works in Battle or Defensive Stance and rank 4 slows attacks 20% for 22 seconds against up to 4 targets.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "New talents include Spearing Strike and Bloodthrill in Arms, Raging Blows in Fury and Vanguard in Protection; Death Wish's penalty is now 5% more damage taken instead of reduced armour.",
+                "sources": [
+                  {
+                    "label": "Power Up Gaming, Forever talent changes vs Classic",
+                    "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+                    "kind": "community"
+                  }
+                ]
+              }
+            ]
+          },
+          "after": {
+            "id": 1,
+            "name": "Warrior",
+            "slug": "warrior",
+            "color": "#c69b6d",
+            "forever_changes": [
+              {
+                "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+                "sources": [
+                  {
+                    "label": "Blizzard, What's Next panel recap",
+                    "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Warrior is one of the four default classes of the new Skyborne race.",
+                "sources": [
+                  {
+                    "label": "Wowhead, Skyborne First Look",
+                    "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Talent trees keep their rows, with one-point milestones at 11, 21, and 31 points plus a new 16-point milestone; key buff talents are baseline.",
+                "sources": [
+                  {
+                    "label": "Blizzard, Deep Dive panel recap",
+                    "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Victory Rush is baseline in Arms: instant, 30 second cooldown, heals 10% of maximum health within 20 seconds of a non-trivial kill. Tactical Mastery is a passive rather than a talent.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Shield Wall is a 15 minute cooldown reducing damage 60% for 12 seconds, where Classic was 30 minutes, 75% and 10 seconds; Shield Block has 2 charges and lasts 7 seconds; Thunder Clap works in Battle or Defensive Stance and rank 4 slows attacks 20% for 22 seconds against up to 4 targets.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "New talents include Spearing Strike and Bloodthrill in Arms, Improved Whirlwind and Reckless Swings in Fury and Vanguard in Protection; Death Wish's penalty is now 5% more damage taken instead of reduced armour.",
+                "sources": [
+                  {
+                    "label": "Power Up Gaming, Forever talent changes vs Classic",
+                    "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+                    "kind": "community"
+                  },
+                  {
+                    "label": "The Forever client's hotfix push for build 1.60.1.70755 (talent trees and spell tables), read through wago.tools",
+                    "url": "https://wago.tools/hotfixes?search=70755",
+                    "kind": "datamined"
+                  }
+                ]
+              }
+            ]
+          },
+          "fields": [
+            "forever_changes"
+          ]
+        },
+        {
+          "id": 4,
+          "before": {
+            "id": 4,
+            "name": "Rogue",
+            "slug": "rogue",
+            "color": "#fff468",
+            "forever_changes": [
+              {
+                "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+                "sources": [
+                  {
+                    "label": "Blizzard, What's Next panel recap",
+                    "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Rogue is one of the four default classes of the new Skyborne race.",
+                "sources": [
+                  {
+                    "label": "Wowhead, Skyborne First Look",
+                    "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Talent trees keep their rows, with one-point milestones at 11, 21, and 31 points plus a new 16-point milestone; key buff talents are baseline.",
+                "sources": [
+                  {
+                    "label": "Blizzard, Deep Dive panel recap",
+                    "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Rogues can use one-handed axes; the Hack and Slash talent treats Axe and Sword as one weapon group.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "New talents include Mutilate and Venom in Assassination and Cutthroat in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
+                "sources": [
+                  {
+                    "label": "Power Up Gaming, Forever talent changes vs Classic",
+                    "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+                    "kind": "community"
+                  }
+                ]
+              }
+            ]
+          },
+          "after": {
+            "id": 4,
+            "name": "Rogue",
+            "slug": "rogue",
+            "color": "#fff468",
+            "forever_changes": [
+              {
+                "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+                "sources": [
+                  {
+                    "label": "Blizzard, What's Next panel recap",
+                    "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Rogue is one of the four default classes of the new Skyborne race.",
+                "sources": [
+                  {
+                    "label": "Wowhead, Skyborne First Look",
+                    "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Talent trees keep their rows, with one-point milestones at 11, 21, and 31 points plus a new 16-point milestone; key buff talents are baseline.",
+                "sources": [
+                  {
+                    "label": "Blizzard, Deep Dive panel recap",
+                    "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Rogues can use one-handed axes; the Hack and Slash talent treats Axe and Sword as one weapon group.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "New talents include Mutilate, Venom and Blood Splatter in Assassination, Coup de Grace and Flash of Steel in Combat, and Boot Knife and Death Mark in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
+                "sources": [
+                  {
+                    "label": "Power Up Gaming, Forever talent changes vs Classic",
+                    "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+                    "kind": "community"
+                  },
+                  {
+                    "label": "The Forever client's hotfix push for build 1.60.1.70755 (talent trees and spell tables), read through wago.tools",
+                    "url": "https://wago.tools/hotfixes?search=70755",
+                    "kind": "datamined"
+                  }
+                ]
+              }
+            ]
+          },
+          "fields": [
+            "forever_changes"
+          ]
+        },
+        {
+          "id": 7,
+          "before": {
+            "id": 7,
+            "name": "Shaman",
+            "slug": "shaman",
+            "color": "#0070dd",
+            "forever_changes": [
+              {
+                "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+                "sources": [
+                  {
+                    "label": "Blizzard, What's Next panel recap",
+                    "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Dwarf Shaman was shown in a hands-on demo at BlizzCon 2026, per one outlet.",
+                "sources": [
+                  {
+                    "label": "Warcraft Tavern, other race/class combos",
+                    "url": "https://www.warcrafttavern.com/forever/news/undead-paladins-other-race-class-combos-in-world-of-warcraft-forever/",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Skyborne can be Shaman only when they choose the Horde at character creation.",
+                "sources": [
+                  {
+                    "label": "Wowhead, Skyborne First Look",
+                    "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Talent trees keep their rows, with one-point milestones at 11, 21, and 31 points plus a new 16-point milestone; key buff talents are baseline.",
+                "sources": [
+                  {
+                    "label": "Blizzard, Deep Dive panel recap",
+                    "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Dwarves can now be Shamans.",
+                "sources": [
+                  {
+                    "label": "Blizzard, Deep Dive panel recap",
+                    "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Lightning Bolt and Chain Lightning cast half a second faster than Classic before any talent, and Ghost Wolf's base cast is 3 seconds with Improved Ghost Wolf making it instant and usable indoors at 2 of 2.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Fire Nova is a spell rather than a totem, detonating within 10 yards of your active Fire totem on a 10 second cooldown; Totemic Projection moves your totems to a spot up to 30 yards away, and Call of the Elements drops up to four totems in one 3 second cast.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "New talents include Lava Burst in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now makes your own next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder, rather than the next two Nature hits from anyone.",
+                "sources": [
+                  {
+                    "label": "Power Up Gaming, Forever talent changes vs Classic",
+                    "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+                    "kind": "community"
+                  }
+                ]
+              }
+            ]
+          },
+          "after": {
+            "id": 7,
+            "name": "Shaman",
+            "slug": "shaman",
+            "color": "#0070dd",
+            "forever_changes": [
+              {
+                "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+                "sources": [
+                  {
+                    "label": "Blizzard, What's Next panel recap",
+                    "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Dwarf Shaman was shown in a hands-on demo at BlizzCon 2026, per one outlet.",
+                "sources": [
+                  {
+                    "label": "Warcraft Tavern, other race/class combos",
+                    "url": "https://www.warcrafttavern.com/forever/news/undead-paladins-other-race-class-combos-in-world-of-warcraft-forever/",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Skyborne can be Shaman only when they choose the Horde at character creation.",
+                "sources": [
+                  {
+                    "label": "Wowhead, Skyborne First Look",
+                    "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Talent trees keep their rows, with one-point milestones at 11, 21, and 31 points plus a new 16-point milestone; key buff talents are baseline.",
+                "sources": [
+                  {
+                    "label": "Blizzard, Deep Dive panel recap",
+                    "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Dwarves can now be Shamans.",
+                "sources": [
+                  {
+                    "label": "Blizzard, Deep Dive panel recap",
+                    "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+                    "kind": "blizzard"
+                  }
+                ]
+              },
+              {
+                "text": "Lightning Bolt and Chain Lightning cast half a second faster than Classic before any talent, and Ghost Wolf's base cast is 3 seconds with Improved Ghost Wolf making it instant and usable indoors at 2 of 2.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  }
+                ]
+              },
+              {
+                "text": "Fire Nova is a spell rather than a totem, detonating within 10 yards of your active Fire totem on a 10 second cooldown; Totemic Call brings your active totems to where you stand every 30 seconds, and Call of the Elements drops up to four totems in one 3 second cast.",
+                "sources": [
+                  {
+                    "label": "Talents Forever (demo transcription)",
+                    "url": "https://talentsforever.com/data.json",
+                    "kind": "community"
+                  },
+                  {
+                    "label": "The Forever client's hotfix push for build 1.60.1.70755 (talent trees and spell tables), read through wago.tools",
+                    "url": "https://wago.tools/hotfixes?search=70755",
+                    "kind": "datamined"
+                  }
+                ]
+              },
+              {
+                "text": "New talents include Call of Thunder and Lightning Mastery in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now makes your own next Lightning Bolt, Chain Lightning or Earth Shock on the target hit 20% harder, rather than the next two Nature hits from anyone.",
+                "sources": [
+                  {
+                    "label": "Power Up Gaming, Forever talent changes vs Classic",
+                    "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+                    "kind": "community"
+                  },
+                  {
+                    "label": "The Forever client's hotfix push for build 1.60.1.70755 (talent trees and spell tables), read through wago.tools",
+                    "url": "https://wago.tools/hotfixes?search=70755",
+                    "kind": "datamined"
+                  }
+                ]
+              }
+            ]
+          },
+          "fields": [
+            "forever_changes"
+          ]
+        }
+      ]
     },
     "races": {
       "added": [],
@@ -2297,7 +2764,676 @@
     "sets": {
       "added": [],
       "removed": [],
-      "changed": []
+      "changed": [
+        {
+          "id": 213,
+          "before": {
+            "id": 213,
+            "name": "Bloodfang Armor",
+            "item_ids": [
+              16832,
+              16905,
+              16906,
+              16907,
+              16908,
+              16909,
+              16910,
+              16911
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the chance to apply poisons to your target by 5%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves the threat reduction of Feint by 25%."
+              },
+              {
+                "pieces": 8,
+                "description": "Gives the Rogue a chance to inflict 300 damage on the target and heal the Rogue for 50 health every 1 sec. for 6 sec. on a melee hit.\r\n"
+              }
+            ]
+          },
+          "after": {
+            "id": 213,
+            "name": "Bloodfang Armor",
+            "item_ids": [
+              16832,
+              16905,
+              16906,
+              16907,
+              16908,
+              16909,
+              16910,
+              16911
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases the chance to apply poisons to your target by 5%."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves the threat reduction of Feint by 25%."
+              },
+              {
+                "pieces": 8,
+                "description": "Gives the Rogue a chance to inflict 300 damage on the target and heal the Rogue for 50 health every 1 sec. for 6 sec. on a melee hit."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 513,
+          "before": {
+            "id": 513,
+            "name": "Feralheart Raiment",
+            "item_ids": [
+              22106,
+              22107,
+              22108,
+              22109,
+              22110,
+              22111,
+              22112,
+              22113
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 4,
+                "description": "When struck in combat has a chance of returning 300 mana, 10 rage, or 40 energy to the wearer. "
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 15."
+              },
+              {
+                "pieces": 6,
+                "description": "+26 Attack Power."
+              },
+              {
+                "pieces": 8,
+                "description": "+200 Armor."
+              }
+            ]
+          },
+          "after": {
+            "id": 513,
+            "name": "Feralheart Raiment",
+            "item_ids": [
+              22106,
+              22107,
+              22108,
+              22109,
+              22110,
+              22111,
+              22112,
+              22113
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "+8 All Resistances."
+              },
+              {
+                "pieces": 4,
+                "description": "When struck in combat has a chance of returning 300 mana, 10 rage, or 40 energy to the wearer."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases damage and healing done by magical spells and effects by up to 15."
+              },
+              {
+                "pieces": 6,
+                "description": "+26 Attack Power."
+              },
+              {
+                "pieces": 8,
+                "description": "+200 Armor."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1571,
+          "before": {
+            "id": 1571,
+            "name": "Judgement Redoubt",
+            "item_ids": [
+              211263
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Your Devotion Aura also reduces all spell damage taken by 5%. "
+              },
+              {
+                "pieces": 5,
+                "description": "Judgement generates an additional 50% threat against its target. "
+              },
+              {
+                "pieces": 8,
+                "description": "Increases damage and healing done by magical spells and effects by up to 47."
+              }
+            ]
+          },
+          "after": {
+            "id": 1571,
+            "name": "Judgement Redoubt",
+            "item_ids": [
+              211263
+            ],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Your Devotion Aura also reduces all spell damage taken by 5%."
+              },
+              {
+                "pieces": 5,
+                "description": "Judgement generates an additional 50% threat against its target."
+              },
+              {
+                "pieces": 8,
+                "description": "Increases damage and healing done by magical spells and effects by up to 47."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1576,
+          "before": {
+            "id": 1576,
+            "name": "Battleplate of Might",
+            "item_ids": [],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases your Strength by 12. "
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to hit by 1%."
+              },
+              {
+                "pieces": 8,
+                "description": "While Recklessness is active, your Execute deals damage as if you had 5 additional rage. "
+              }
+            ]
+          },
+          "after": {
+            "id": 1576,
+            "name": "Battleplate of Might",
+            "item_ids": [],
+            "bonuses": [
+              {
+                "pieces": 3,
+                "description": "Increases your Strength by 12."
+              },
+              {
+                "pieces": 5,
+                "description": "Improves your chance to hit by 1%."
+              },
+              {
+                "pieces": 8,
+                "description": "While Recklessness is active, your Execute deals damage as if you had 5 additional rage."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1714,
+          "before": {
+            "id": 1714,
+            "name": "Earthfury Eruption",
+            "item_ids": [
+              226619,
+              226620,
+              226621,
+              226622,
+              226623,
+              226624,
+              226625,
+              226626
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "The radius of your totems that affect friendly targets is increased to 40 yd."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Lightning Bolt critical strikes have a 35% chance to reset the cooldown on Lava Burst and Chain Lightning and make the next Lava Burst or Chain Lightning within 10 sec instant.\r\n"
+              },
+              {
+                "pieces": 6,
+                "description": "Lava Burst now also refreshes the duration of Flame Shock on your target back to 12 sec.\r\n"
+              }
+            ]
+          },
+          "after": {
+            "id": 1714,
+            "name": "Earthfury Eruption",
+            "item_ids": [
+              226619,
+              226620,
+              226621,
+              226622,
+              226623,
+              226624,
+              226625,
+              226626
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "The radius of your totems that affect friendly targets is increased to 40 yd."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Lightning Bolt critical strikes have a 35% chance to reset the cooldown on Lava Burst and Chain Lightning and make the next Lava Burst or Chain Lightning within 10 sec instant."
+              },
+              {
+                "pieces": 6,
+                "description": "Lava Burst now also refreshes the duration of Flame Shock on your target back to 12 sec."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1802,
+          "before": {
+            "id": 1802,
+            "name": "Bounty of Stormrage",
+            "item_ids": [
+              231230,
+              231231,
+              231232,
+              231233,
+              231234,
+              231235,
+              231236,
+              231237
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your healing spell critical strikes trigger the Dreamstate effect, granting you 50% of your mana regeneration while casting for 8 sec. "
+              },
+              {
+                "pieces": 4,
+                "description": "Your non-periodic spell critical strikes reduce the casting time of your next Healing Touch, Regrowth, or Nourish spell by 0.5 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases healing from Wild Growth by 10%. In addition, Wild Growth can now be used in Moonkin Form, and its healing is increased by an additional 50% in that form."
+              }
+            ]
+          },
+          "after": {
+            "id": 1802,
+            "name": "Bounty of Stormrage",
+            "item_ids": [
+              231230,
+              231231,
+              231232,
+              231233,
+              231234,
+              231235,
+              231236,
+              231237
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your healing spell critical strikes trigger the Dreamstate effect, granting you 50% of your mana regeneration while casting for 8 sec."
+              },
+              {
+                "pieces": 4,
+                "description": "Your non-periodic spell critical strikes reduce the casting time of your next Healing Touch, Regrowth, or Nourish spell by 0.5 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Increases healing from Wild Growth by 10%. In addition, Wild Growth can now be used in Moonkin Form, and its healing is increased by an additional 50% in that form."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1898,
+          "before": {
+            "id": 1898,
+            "name": "Frostfire Regalia",
+            "item_ids": [
+              236077,
+              236078,
+              236079,
+              236080,
+              236081,
+              236082,
+              236083,
+              236084,
+              236085
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Reduces the cooldown on your Evocation ability by 80%."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Evocation grants you $?a1218232|a1218271|a1218275|a1218276|a1218283|a1224428[5%][1%] increased damage done every sec you channel it, stacking up to 8 times and lasting 45 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Your Ignite damage does not decay on Undead targets below 20% health, and Undead targets below 20% health take damage as if they were Frozen."
+              }
+            ]
+          },
+          "after": {
+            "id": 1898,
+            "name": "Frostfire Regalia",
+            "item_ids": [
+              236077,
+              236078,
+              236079,
+              236080,
+              236081,
+              236082,
+              236083,
+              236084,
+              236085
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Reduces the cooldown on your Evocation ability by 80%."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Evocation grants you 1% increased damage done every sec you channel it, stacking up to 8 times and lasting 45 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Your Ignite damage does not decay on Undead targets below 20% health, and Undead targets below 20% health take damage as if they were Frozen."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1933,
+          "before": {
+            "id": 1933,
+            "name": "Lightbreaker's Battlegear",
+            "item_ids": [
+              239520,
+              239521,
+              239522,
+              239523,
+              239524,
+              239525,
+              239526,
+              239527
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Shockwave deals 35% increased damage and its cooldown is reduced by 2 sec each time you hit a target with Heroic Strike or Cleave."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Recklessness, Retaliation, and Shield Wall abilities no longer share a cooldown. Additionally, your Recklessness ability lasts 15 sec longer, and while it is active you gain 50% of your Defense Skill over 300 as Strength. "
+              },
+              {
+                "pieces": 6,
+                "description": "Your abilities no longer have stance requirements. In addition, hits from Revenge, Devastate, or Shield Slam increase the damage done by your next Whirlwind or Execute by $1234067s3%, stacking up to 5 times."
+              }
+            ]
+          },
+          "after": {
+            "id": 1933,
+            "name": "Lightbreaker's Battlegear",
+            "item_ids": [
+              239520,
+              239521,
+              239522,
+              239523,
+              239524,
+              239525,
+              239526,
+              239527
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Shockwave deals 35% increased damage and its cooldown is reduced by 2 sec each time you hit a target with Heroic Strike or Cleave."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Recklessness, Retaliation, and Shield Wall abilities no longer share a cooldown. Additionally, your Recklessness ability lasts 15 sec longer, and while it is active you gain 50% of your Defense Skill over 300 as Strength."
+              },
+              {
+                "pieces": 6,
+                "description": "Your abilities no longer have stance requirements. In addition, hits from Revenge, Devastate, or Shield Slam increase the damage done by your next Whirlwind or Execute by $1234067s3%, stacking up to 5 times."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1935,
+          "before": {
+            "id": 1935,
+            "name": "Duskwraith Leathers",
+            "item_ids": [
+              239547,
+              239548,
+              239549,
+              239550,
+              239551,
+              239552,
+              239553,
+              239554
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your stacks of Rolling with the Punches also increase all damage you deal by 1%."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Blade Flurry now also strikes a third target and increases your attack speed by an additional 10%. In addition, each combo point you spend reduces the remaining cooldown on your Blade Flurry by 0.5 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Your Rolling with the Punches now grants 2% more health and 1% more damage per stack. At 5 stacks, each time you Dodge or Parry you will gain $1226957s3 Energy. "
+              }
+            ]
+          },
+          "after": {
+            "id": 1935,
+            "name": "Duskwraith Leathers",
+            "item_ids": [
+              239547,
+              239548,
+              239549,
+              239550,
+              239551,
+              239552,
+              239553,
+              239554
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your stacks of Rolling with the Punches also increase all damage you deal by 1%."
+              },
+              {
+                "pieces": 4,
+                "description": "Your Blade Flurry now also strikes a third target and increases your attack speed by an additional 10%. In addition, each combo point you spend reduces the remaining cooldown on your Blade Flurry by 0.5 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Your Rolling with the Punches now grants 2% more health and 1% more damage per stack. At 5 stacks, each time you Dodge or Parry you will gain $1226957s3 Energy."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1944,
+          "before": {
+            "id": 1944,
+            "name": "Fireleaf Vestments",
+            "item_ids": [
+              240044,
+              240045,
+              240046,
+              240047,
+              240048,
+              240049,
+              240050,
+              240051
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Arcane Blast has a 10% chance to cause Arcane Tunneling. Arcane Tunneling prevents your Arcane Blast effect from being consumed by the next other Arcane damage spell you cast. In addition, activating Arcane Power resets the cooldown on your Mass Regeneration. "
+              },
+              {
+                "pieces": 4,
+                "description": "Rewind Time also reduces all damage taken by your target by 20% for 8 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Reduces the cooldown of your Arcane Power by 0.02 sec and increases its duration by 10 sec. While Arcane Power is active, your chance to gain Arcane Tunneling is increased by 10% and each cast of Arcane Blast reduces the remaining cooldown on Mass Regeneration by 1 sec."
+              }
+            ]
+          },
+          "after": {
+            "id": 1944,
+            "name": "Fireleaf Vestments",
+            "item_ids": [
+              240044,
+              240045,
+              240046,
+              240047,
+              240048,
+              240049,
+              240050,
+              240051
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Your Arcane Blast has a 10% chance to cause Arcane Tunneling. Arcane Tunneling prevents your Arcane Blast effect from being consumed by the next other Arcane damage spell you cast. In addition, activating Arcane Power resets the cooldown on your Mass Regeneration."
+              },
+              {
+                "pieces": 4,
+                "description": "Rewind Time also reduces all damage taken by your target by 20% for 8 sec."
+              },
+              {
+                "pieces": 6,
+                "description": "Reduces the cooldown of your Arcane Power by 0.02 sec and increases its duration by 10 sec. While Arcane Power is active, your chance to gain Arcane Tunneling is increased by 10% and each cast of Arcane Blast reduces the remaining cooldown on Mass Regeneration by 1 sec."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        },
+        {
+          "id": 1947,
+          "before": {
+            "id": 1947,
+            "name": "Waywatcher Raiment",
+            "item_ids": [
+              240084,
+              240085,
+              240086,
+              240087,
+              240088,
+              240089,
+              240090,
+              240091
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Each time your Lifebloom heals a target, it has a 5% chance to make your next Healing Touch, Nourish, or Regrowth within 15 sec instant cast."
+              },
+              {
+                "pieces": 4,
+                "description": "Targets with your active Rejuvenation Rank 10 or Rank 11 receive 20% increased healing from your spells."
+              },
+              {
+                "pieces": 6,
+                "description": "Your non-periodic heals from Regrowth Rank 8 or Rank 9 have a 100% chance to spread your Rejuvenation on that target to all members of the target's party within $1226046a1 yards not already affected by your Rejuvenation."
+              }
+            ]
+          },
+          "after": {
+            "id": 1947,
+            "name": "Waywatcher Raiment",
+            "item_ids": [
+              240084,
+              240085,
+              240086,
+              240087,
+              240088,
+              240089,
+              240090,
+              240091
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "Each time your Lifebloom heals a target, it has a 5% chance to make your next Healing Touch, Nourish, or Regrowth within 15 sec instant cast."
+              },
+              {
+                "pieces": 4,
+                "description": "Targets with your active Rejuvenation Rank 10 or Rank 11 receive 20% increased healing from your spells."
+              },
+              {
+                "pieces": 6,
+                "description": "Your non-periodic heals from Regrowth Rank 8 or Rank 9 have a 100% chance to spread your Rejuvenation on that target to all members of the target's party within 43.5 yards not already affected by your Rejuvenation."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        }
+      ]
     }
   }
 }
