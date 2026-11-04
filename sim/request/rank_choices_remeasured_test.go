@@ -30,6 +30,10 @@ func TestReMeasuredRankChoicesCastTheWinningRank(t *testing.T) {
 		// Round 15 wave 2 (level-gap rule): Healing Wave rank 2 (332, learned at 6) keeps none of
 		// the bonus at 60; the tank's wave is the top rank (10396), +11% at bare 60.
 		{"Healing Wave at bare 60", "shaman-restoration", "shaman", BarePreset, 60, 10396, 332},
+		// Round 15 wave 3 (level-gap rule): Scorch rank 1 (2948, learned at 22) loses 5% of its
+		// spell power at 40 and 50% by 49; rank 2 (8444, learned at 28) keeps all of it to 45 and
+		// ties or gains at bare 40 (+0.7% alliance, +0.0/+0.2% horde).
+		{"Scorch at 40", "mage-fire", "mage", BarePreset, 40, 8444, 2948},
 	} {
 		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, "undead"))
 		if !ids[c.want] || ids[c.not] {
