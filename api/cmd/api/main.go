@@ -25,7 +25,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/dataaddon"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
-	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/golinks"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
@@ -581,7 +580,8 @@ func serve(log *slog.Logger) error {
 	// attribution (loot) resolve a user id to a battletag through this, the same
 	// Accounts dependency guilds.Service already takes below.
 	guildStore.Accounts = authStore
-	entStore := &entitlements.Store{Pool: pool}
+	roleSyncer := linkedRoleSyncer(cfg, pool, log)
+	entStore := entitlementsStore(pool, roleSyncer)
 	authenticator := &auth.Authenticator{
 		Store: authStore, CookieDomain: cfg.SessionCookieDomain,
 		Secure: strings.HasPrefix(cfg.PublicBaseURL, "https://"), Log: log,
@@ -688,6 +688,7 @@ func serve(log *slog.Logger) error {
 	deps.LiveSurface = newLiveSurface(ctx, liveSurfaceWiring{cfg: cfg, pool: pool, auth: authStore,
 		guilds: guildService, sims: simStore, entitle: entStore, homes: deps.App, log: log})
 	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
+	wireLinkedRole(ctx, cfg, roleSyncer, &deps, log)
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})

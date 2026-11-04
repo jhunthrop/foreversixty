@@ -1,7 +1,8 @@
 // api/cmd/api/billing_daily.go
 //
 // billing-daily is the daily Cloud Scheduler job: it releases seats that no
-// longer count, then sends the renewal and size notices. It logs counts only.
+// longer count, sends the renewal and size notices, then re-pushes the Discord
+// Premium role of every linked account. It logs counts only.
 package main
 
 import (
@@ -16,7 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
-	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
+	"github.com/jhunthrop/foreversixty/api/internal/linkedrole"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/seats"
 )
@@ -35,11 +36,16 @@ func runBillingDaily(ctx context.Context, log *slog.Logger) error {
 type billingDailyServices struct {
 	Seats   *seats.Service
 	Billing *billing.Service
+	// Roles reconciles the Discord linked role; nil (the job lacks the Discord
+	// application or the sealing key) skips it.
+	Roles *linkedrole.Syncer
 }
 
 func newBillingDailyServices(cfg config.Config, pool *pgxpool.Pool, mailer mail.Mailer, log *slog.Logger) billingDailyServices {
-	entStore := &entitlements.Store{Pool: pool}
+	roles := linkedRoleSyncer(cfg, pool, log)
+	entStore := entitlementsStore(pool, roles)
 	return billingDailyServices{
+		Roles: roles,
 		// The Canceller lets the sweep resume a holder's own Premium when it
 		// releases a seat that never started.
 		Seats: &seats.Service{
@@ -59,8 +65,13 @@ func newBillingDailyServices(cfg config.Config, pool *pgxpool.Pool, mailer mail.
 func billingDaily(ctx context.Context, log *slog.Logger, svc billingDailyServices, now time.Time) error {
 	swept, sweepErr := svc.Seats.Sweep(ctx, now)
 	sent, noticeErr := svc.Billing.SendNotices(ctx, now)
-	log.Info("billing-daily", "seats_released", swept.Released, "guilds_failed", swept.Failed, "notices_sent", sent)
+	roles, rolesErr := reconcileRoles(ctx, svc.Roles)
+	log.Info("billing-daily", "seats_released", swept.Released, "guilds_failed", swept.Failed, "notices_sent", sent,
+		"roles_synced", roles.Synced, "roles_failed", roles.Failed)
 	var errs []error
+	if rolesErr != nil {
+		errs = append(errs, fmt.Errorf("linked roles: %w", rolesErr))
+	}
 	if sweepErr != nil && swept.TotalFailure() {
 		errs = append(errs, fmt.Errorf("sweep: %w", sweepErr))
 	}
@@ -71,4 +82,12 @@ func billingDaily(ctx context.Context, log *slog.Logger, svc billingDailyService
 		return fmt.Errorf("billing-daily: %w", err)
 	}
 	return nil
+}
+
+// reconcileRoles runs the linked-role reconcile when the job has it.
+func reconcileRoles(ctx context.Context, roles *linkedrole.Syncer) (linkedrole.ReconcileResult, error) {
+	if roles == nil {
+		return linkedrole.ReconcileResult{}, nil
+	}
+	return roles.Reconcile(ctx)
 }

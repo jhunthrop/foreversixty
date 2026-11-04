@@ -28,6 +28,7 @@
   import { openPortal } from '../lib/billing/api';
   import { premiumRowLinked, premiumRowValue, premiumRowVisible } from '../lib/account/notifications';
   import AccountDiscordLink from './account/AccountDiscordLink.svelte';
+  import AccountDiscordRole from './account/AccountDiscordRole.svelte';
   import AccountDiscordBlock from './account/AccountDiscordBlock.svelte';
   import AccountPremiumBlock from './account/AccountPremiumBlock.svelte';
   import AccountSeatOffer from './account/AccountSeatOffer.svelte';
@@ -815,6 +816,7 @@
                 {/snippet}
               </SettingsRow>
               <div class="px-5 [&:not(:empty)]:pt-4 [&:not(:empty)]:pb-5"><AccountDiscordLink {me} /></div>
+              <AccountDiscordRole me={me!} />
             </section>
 
             <div id="plan" class="flex flex-col gap-4">

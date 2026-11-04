@@ -22,7 +22,20 @@ var ErrNotFound = errors.New("entitlements: not found")
 var ErrWouldDowngrade = errors.New("entitlements: a scoped grant would downgrade a live plan")
 
 // Store is every entitlements table read and write.
-type Store struct{ Pool *pgxpool.Pool }
+type Store struct {
+	Pool *pgxpool.Pool
+	// OnChange, when set, runs after a committed write that can move a subject's plan
+	// (UpsertStripe's written outcome, SetCanceled, Grant, Revoke): the Discord linked role
+	// follows Premium through it. It must not fail the write, so it returns nothing.
+	OnChange func(ctx context.Context, subj Subject)
+}
+
+// changed runs OnChange for subj after a write that succeeded.
+func (s *Store) changed(ctx context.Context, subj Subject, err error) {
+	if err == nil && s.OnChange != nil {
+		s.OnChange(ctx, subj)
+	}
+}
 
 // FeatureScopeOfficerViews is the only value entitlements.features may hold:
 // a guild grant covering officer tools alone (design 2026-10-25 §4.1).
@@ -644,6 +657,9 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 		}
 		return recordAudit(ctx, tx, id, p.UserID, p.GuildID, p.Plan, oldPtr, p.Status, p.Actor)
 	})
+	if result.Outcome == OutcomeWritten {
+		s.changed(ctx, subj, err)
+	}
 	return result, err
 }
 
@@ -653,7 +669,8 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 // not an error — it was never created through this integration, or was
 // already handled by an earlier retry — the call still succeeds.
 func (s *Store) SetCanceled(ctx context.Context, stripeSubscriptionID string, graceUntil *time.Time, actor string) error {
-	return s.withTx(ctx, func(tx pgx.Tx) error {
+	var subj Subject
+	err := s.withTx(ctx, func(tx pgx.Tx) error {
 		var id int64
 		var userID, guildID *int64
 		var plan, oldStatus string
@@ -671,8 +688,13 @@ func (s *Store) SetCanceled(ctx context.Context, stripeSubscriptionID string, gr
 			id, graceUntil); err != nil {
 			return fmt.Errorf("entitlements: set canceled: write: %w", err)
 		}
+		subj = Subject{UserID: userID, GuildID: guildID}
 		return recordAudit(ctx, tx, id, userID, guildID, plan, &oldStatus, "canceled", actor)
 	})
+	if subj.UserID != nil || subj.GuildID != nil {
+		s.changed(ctx, subj, err)
+	}
+	return err
 }
 
 // Subject names exactly one of a user's personal entitlement or a
@@ -692,7 +714,7 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 	if err != nil {
 		return err
 	}
-	return s.withTx(ctx, func(tx pgx.Tx) error {
+	err = s.withTx(ctx, func(tx pgx.Tx) error {
 		existing, isNew, err := existingEntitlement(ctx, tx, subj, plan)
 		if err != nil {
 			return err
@@ -722,6 +744,8 @@ func (s *Store) Grant(ctx context.Context, subj Subject, plan string, until *tim
 		}
 		return recordAudit(ctx, tx, id, subj.UserID, subj.GuildID, plan, oldPtr, "active", actor)
 	})
+	s.changed(ctx, subj, err)
+	return err
 }
 
 // grantTier is the tier a grant writes: every guild grant, whole-plan or
@@ -800,7 +824,7 @@ func (s *Store) claimedGuilds(ctx context.Context, negation string) ([]GuildRef,
 // Revoke sets an existing entitlement's status to canceled. ErrNotFound
 // when subj has no row for plan at all.
 func (s *Store) Revoke(ctx context.Context, subj Subject, plan, actor string) error {
-	return s.withTx(ctx, func(tx pgx.Tx) error {
+	err := s.withTx(ctx, func(tx pgx.Tx) error {
 		oldStatus, isNew, err := existingStatus(ctx, tx, subj, plan)
 		if err != nil {
 			return err
@@ -828,4 +852,6 @@ func (s *Store) Revoke(ctx context.Context, subj Subject, plan, actor string) er
 		}
 		return recordAudit(ctx, tx, id, subj.UserID, subj.GuildID, plan, &oldStatus, "canceled", actor)
 	})
+	s.changed(ctx, subj, err)
+	return err
 }

@@ -10,7 +10,6 @@ import (
 	"log/slog"
 
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
-	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
 func runStripeReconcile(ctx context.Context, log *slog.Logger) error {
@@ -24,7 +23,7 @@ func runStripeReconcile(ctx context.Context, log *slog.Logger) error {
 		return nil
 	}
 	svc := &billing.Service{
-		Store: &billing.Store{Pool: pool}, Entitlements: &entitlements.Store{Pool: pool},
+		Store: &billing.Store{Pool: pool}, Entitlements: entitlementsStore(pool, linkedRoleSyncer(cfg, pool, log)),
 		Gateway: billing.NewStripeGateway(cfg.StripeSecretKey), Log: log,
 	}
 	n, err := svc.Reconcile(ctx)
