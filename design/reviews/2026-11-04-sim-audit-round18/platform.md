@@ -8,7 +8,7 @@ Site branch `wt/r18-platform` (from int/r18 4600b7d82). No engine changes and no
 |---|---|---|---|---|---|
 | P1 | Each guide's Leveling strip listed every range at its FIRST level. "Level 30 to 39" showed the level 30 build, so a level 36 reader never saw the points taken at 31 to 36. | `web/src/lib/guides/leveling-builds.ts` `guideLevelingBuilds` cut the ladder at `band`, and `LevelingBandStrip.astro` decoded that string. | CONFIRMED-BUG | web | S d36888614, reverted (superseded by land/leveling-tree) |
 | P2 | The iOS and Android item tooltips dropped expertise rating. Round 17 added the line on the web only (f81ca7bdc). | Both `ItemVocabulary.statOrder` tables had no `expertise` key, so `statLines` never printed it. | CONFIRMED-BUG | apps | S 09ada75b0 |
-| P3 | The Arcane opener card said "Frostbolt 3 s before the pull, without Heating Up". The prose and the APL both say 2.5 s. | See below. | CONFIRMED-BUG (card) | web | S 3df28dc3e |
+| P3 | The Arcane opener card said "Frostbolt 3 s before the pull, without Heating Up". The prose and the APL both say 2.5 s. | See below. | CONFIRMED-BUG (card) | web | S b41373591 (3df28dc3e reverted) |
 | P4 | The Rebirth and Revive tooltips still show raw `$q` because spelltips were not regenerated after the `$q` fill. | See below. | OPEN (data job) | data | - |
 
 ### P1: per-band talent lists
@@ -44,6 +44,14 @@ Site branch `wt/r18-platform` (from int/r18 4600b7d82). No engine changes and no
 - **When it shows.** As on the web, the line appears only once the items JSON carries `expertise`. No committed items file has it yet (1.60.1.70707 and 70755: zero matches).
 
 ### P3: Arcane opener card
+
+**Superseded (coordinator, option 3).** 3df28dc3e was reverted (76aa64f04). b41373591 instead drops from every card each cast whose talent gate rules out the build the card describes. The Arcane raid opener now shows Pyroblast at 6 s alone, and the level 60 card keeps Frostbolt at 2.5 s.
+
+- **Other cards that change.** Assassination raid, Subtlety level 60, Demonology raid and Destruction raid each lose rows their build never casts. The level 60 cards of Arcane, Assassination, Demonology, Destruction and Retribution change too, but those cards are not rendered.
+- **Arcane review: NO-SHIP.** Two raid priority rows are still the leveling build's Frostbolt: the Presence of Mind Frostbolt and the Frostbolt filler. Neither has a talent gate. The mage lane adds `not auraIsKnown(400625)` to both; re-review on int/r18 after that lands.
+- **Subtlety review: NO-SHIP.** Its points (the Death Mark finisher, card wording, the Vanish icon) predate this change and were routed to the rogue lane.
+
+The notes below describe the reverted approach.
 
 - **APL.** `data/curated/apl/mage-arcane.json` prepull has a Frostbolt (10181 rank 10) at -2.5 s, gated `not auraIsKnown(400625 Heating Up)`.
 - **Who casts it.** The raid build takes Heating Up, so only the level 60 build (`build:` in `mage/arcane.md`) casts this Frostbolt. That build takes Improved Frostbolt 5/5 (frost digits `05350003`).
