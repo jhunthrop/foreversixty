@@ -5,4 +5,4 @@ package enginever
 // Version is the short commit sha of wowsims-forever that sim.wasm, sim.js
 // and the forever-sim binary were built from. It names the immutable wasm
 // directory, the premium lane image tag, and every stored sim row.
-const Version = "d1d9f2775"
+const Version = "9f7f1f6e4"
