@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { describe, expect, it } from 'vitest';
 import { readSpecCatalog } from '../bis/load';
+import { indexTalents, validateOrder } from '../planner/rules';
 import {
   buildCodeDigits,
   guideLevelingBuilds,
@@ -14,6 +15,7 @@ import {
   ladderTalentString,
   loadLadderTrees,
   type LadderTalentTree,
+  guideLadderOrder,
 } from './leveling-builds';
 
 const BUILD = activeBuild.build;
@@ -144,4 +146,53 @@ describe('the guide leveling builds match the sim’s ladder', () => {
       [...talents.replace(/-/g, '')].reduce((sum, d) => sum + Number(d), 0);
     expect(builds.every((b) => total(b.talents) <= b.points)).toBe(true);
   });
+});
+
+describe('the ladder order every leveling surface reads', () => {
+  it.each(guideBuilds().map((row) => [row.spec, row] as const))(
+    '%s: its first N points are the ladder’s build at level 9 + N, every level 10 to 60',
+    (spec, row) => {
+      const trees = loadLadderTrees(BUILD, row.classSlug)!;
+      const digits = buildCodeDigits(row.build)!;
+      const targets = guideTargets(trees, digits);
+      const first = ladderFirstFor(spec);
+      const order = guideLadderOrder(BUILD, row.classSlug, spec, row.treeIndex, row.build);
+      const cellOf = new Map(
+        trees.flatMap((tree, ti) => tree.talents.map((talent, cell) => [talent.id, [ti, cell]] as const)),
+      );
+      const ladderAt = (level: number) => ladderTalentString(trees, targets, row.treeIndex, level, first);
+      // The levels at which the ladder moves a point from one talent to another: before one, the
+      // order already shows the talent the ladder settles on (one point differs, never more).
+      const moves = Array.from({ length: 51 }, (_, i) => i + 10).filter((level) =>
+        [...ladderAt(level).replace(/-/g, '')].some(
+          (digit, i) => Number(digit) < Number(ladderAt(level - 1).replace(/-/g, '')[i]),
+        ),
+      );
+      const ranks = trees.map((tree) => new Array<number>(tree.talents.length).fill(0));
+      for (let level = 10; level <= 60; level += 1) {
+        const id = order[level - 10];
+        if (id !== undefined) {
+          const [ti, cell] = cellOf.get(id)!;
+          ranks[ti]![cell]! += 1;
+        }
+        const got = ranks.map((r) => r.join('')).join('-');
+        const want = ladderAt(level);
+        if (moves.some((move) => move > level)) {
+          const flat = want.replace(/-/g, '');
+          const off = [...got.replace(/-/g, '')].reduce(
+            (sum, digit, i) => sum + Math.abs(Number(digit) - Number(flat[i] ?? 0)),
+            0,
+          );
+          expect(off, `level ${level}: ${got} vs ${want}`).toBeLessThanOrEqual(2);
+        } else {
+          expect(got, `level ${level}`).toBe(want);
+        }
+      }
+      // And the order is one the planner accepts point by point.
+      const talentFile = JSON.parse(
+        readFileSync(path.join(REPO, 'data/builds', BUILD, 'talents', `${row.classSlug}.json`), 'utf8'),
+      );
+      expect(validateOrder(indexTalents(talentFile), order)).toEqual([]);
+    },
+  );
 });

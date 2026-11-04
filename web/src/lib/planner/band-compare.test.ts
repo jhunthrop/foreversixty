@@ -146,6 +146,19 @@ describe('loadFromBand', () => {
   });
 });
 
+describe('loadFromBand with the spec’s ladder order', () => {
+  it('spends the band in the ladder’s order when its first points reach exactly the band', () => {
+    // The reconstruction would spend 1001 first; the ladder takes 1002 first.
+    const ladder = [1002, 1002, 1001, 1001, 1001, 1002];
+    expect(loadFromBand(index, '32-0-0', ladder).order).toEqual([1002, 1002, 1001, 1001, 1001]);
+  });
+
+  it('falls back to the reconstruction when the band is not a point of the ladder', () => {
+    const ladder = [1002, 1002, 1002, 1001];
+    expect(loadFromBand(index, '3-0-0', ladder)).toEqual(loadFromBand(index, '3-0-0'));
+  });
+});
+
 describe('loadFromBandAtLevel', () => {
   // The band's whole build is three points (level 12), so each case sits at a known cut.
   it('loads the band’s whole build with no character selected', () => {

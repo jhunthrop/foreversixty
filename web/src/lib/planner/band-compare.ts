@@ -11,7 +11,7 @@
 //    marker `TalentCell.svelte` needs (spec §4.E.4).
 //  - `loadFromBand` reconstructs a legal point order for a band's own ranks with
 //    `orderFromRanks` (fs1.ts), the exact same reconstruction an addon import already runs.
-import type { TalentIndex } from './rules';
+import { validateOrder, type TalentIndex } from './rules';
 import { specKeyFor } from '../addon/score';
 import { specDisplayName, specRow } from '../sim/spec-label';
 import { bandBuildTitle } from './band-title';
@@ -106,11 +106,41 @@ export interface BandLoad {
   dropped: number[];
 }
 
-/** The band's own build, as a loadable point order -- `orderFromRanks`, unchanged, fed from
- *  a band's digit string instead of a decoded FS1 code (spec §4.D's "load mechanism"). */
-export function loadFromBand(index: TalentIndex, bandTalents: string): BandLoad {
-  const { order, dropped } = orderFromRanks(index, bandTreeRanksFrom(bandTalents));
+/**
+ * The band's own build, as a loadable point order. When the spec's ladder order (`ladder`, from
+ * /data/leveling-plans.json: the order the sim, the addon and the guide's Leveling strip use)
+ * reaches exactly the band's ranks in its first points, that prefix is the order; otherwise
+ * `orderFromRanks` reconstructs one from the band's digit string (spec §4.D's "load mechanism").
+ */
+export function loadFromBand(index: TalentIndex, bandTalents: string, ladder?: readonly number[]): BandLoad {
+  const treeRanks = bandTreeRanksFrom(bandTalents);
+  const fromLadder = ladder === undefined ? undefined : ladderPrefixFor(index, treeRanks, ladder);
+  if (fromLadder !== undefined) return { order: fromLadder, dropped: [] };
+  const { order, dropped } = orderFromRanks(index, treeRanks);
   return { order, dropped };
+}
+
+/** The first points of `ladder` that spend exactly `treeRanks`, when that prefix is a legal
+ *  order (`validateOrder`); undefined when the band is not a point of this ladder. */
+export function ladderPrefixFor(
+  index: TalentIndex,
+  treeRanks: readonly (readonly number[])[],
+  ladder: readonly number[],
+): number[] | undefined {
+  const wanted = new Map<number, number>();
+  index.trees.forEach((tree, ti) =>
+    tree.talents.forEach((talent, cell) => {
+      const rank = treeRanks[ti]?.[cell] ?? 0;
+      if (rank > 0) wanted.set(talent.id, rank);
+    }),
+  );
+  const points = [...wanted.values()].reduce((sum, rank) => sum + rank, 0);
+  if (points === 0 || points > ladder.length) return undefined;
+  const prefix = ladder.slice(0, points);
+  const got = new Map<number, number>();
+  for (const id of prefix) got.set(id, (got.get(id) ?? 0) + 1);
+  const same = got.size === wanted.size && [...wanted].every(([id, rank]) => got.get(id) === rank);
+  return same && validateOrder(index, prefix).length === 0 ? prefix : undefined;
 }
 
 export interface BandLoadAtLevel extends BandLoad {
@@ -128,8 +158,9 @@ export function loadFromBandAtLevel(
   index: TalentIndex,
   bandTalents: string,
   characterLevel: number | null,
+  ladder?: readonly number[],
 ): BandLoadAtLevel {
-  const full = loadFromBand(index, bandTalents);
+  const full = loadFromBand(index, bandTalents, ladder);
   const fullPoints = full.order.length;
   const allowed = (characterLevel ?? 9) - 9;
   const order = allowed > 0 ? full.order.slice(0, allowed) : full.order;

@@ -293,6 +293,55 @@ function reserveOffTree(
   return { reserved, budget: left };
 }
 
+/** The ladder's first and last levels: one point a level from 10 (FIRST_POINT_LEVEL) to 60. */
+const LADDER_FIRST_LEVEL = 10;
+const LADDER_LAST_LEVEL = 60;
+
+/**
+ * The guide build's points in the order the ladder spends them, one talent id per point: the
+ * talent whose digit rises from each level's `ladderTalentString` to the next, level 10 to 60.
+ * This is the order the sim's ladder, the addon's leveling builds and `ladder-order.json` give
+ * (sim/leveling ForSpec), and the one order the guide's Leveling strip, the planner's band
+ * loads and the low-level home read. A level whose walk moves a point from one talent to
+ * another (Protection warrior at 41) cannot be spent that way, so the moved point takes the
+ * old one's place in the order: every level from the move on matches the ladder, and the
+ * levels just before it show the talent the ladder settles on.
+ */
+export function ladderSpendOrder(
+  trees: readonly LadderTalentTree[],
+  targets: Targets,
+  ownTreeIndex: number,
+  first: readonly LadderFirstRank[] = [],
+): number[] {
+  const ids = trees.map((tree) => tree.talents.map((talent) => talent.id));
+  const digitsAt = (level: number): number[][] =>
+    ladderTalentString(trees, targets, ownTreeIndex, level, first)
+      .split('-')
+      .map((row) => [...row].map(Number));
+  const order: number[] = [];
+  let before = digitsAt(LADDER_FIRST_LEVEL - 1);
+  for (let level = LADDER_FIRST_LEVEL; level <= LADDER_LAST_LEVEL; level += 1) {
+    const now = digitsAt(level);
+    const dropped: number[] = [];
+    const risen: number[] = [];
+    now.forEach((row, ti) =>
+      row.forEach((rank, cell) => {
+        const was = before[ti]?.[cell] ?? 0;
+        for (let r = rank; r < was; r += 1) dropped.push(ids[ti]![cell]!);
+        for (let r = was; r < rank; r += 1) risen.push(ids[ti]![cell]!);
+      }),
+    );
+    for (const id of dropped) {
+      const at = order.lastIndexOf(id);
+      const into = risen.shift();
+      if (at >= 0 && into !== undefined) order[at] = into;
+    }
+    order.push(...risen);
+    before = now;
+  }
+  return order;
+}
+
 interface LadderFirstFile {
   specs: Record<string, { first: LadderFirstRank[] }>;
 }
@@ -334,4 +383,18 @@ export function guideLevelingBuilds(
     points: Math.max(band - 9, 0),
     talents: ladderTalentString(trees, targets, ownTreeIndex, band, first),
   }));
+}
+
+/** The guide's own build code in ladder order (`ladderSpendOrder`), or [] for a code that is not one. */
+export function guideLadderOrder(
+  build: string,
+  classSlug: string,
+  spec: string,
+  ownTreeIndex: number,
+  code: string,
+): number[] {
+  const trees = loadLadderTrees(build, classSlug);
+  const digits = buildCodeDigits(code);
+  if (trees === undefined || digits === undefined) return [];
+  return ladderSpendOrder(trees, guideTargets(trees, digits), ownTreeIndex, ladderFirstFor(spec));
 }
