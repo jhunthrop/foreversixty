@@ -1,0 +1,36 @@
+package request
+
+import (
+	"encoding/json"
+	"strconv"
+	"strings"
+	"testing"
+)
+
+// Sim-accuracy round 15: client 1.60.1.70755 raised Lightning Bolt rank 10
+// to 353 base against rank 9's 295 (+20% for 16% more mana; +10% on
+// 70753), so the raid's mana pacing onto rank 9 costs damage: Elemental at
+// raid 60 casting rank 10 alone is +1.0 to +1.2%, seeds 1 and 50001, both
+// factions, out of mana 0.7 to 0.9 s of 180. The bare bands keep their
+// rows (rank 4 and rank 7).
+func TestElementalRaidCastsLightningBoltRankTen(t *testing.T) {
+	var list struct {
+		Rotation json.RawMessage `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/shaman-elemental.json", &list)
+	bolt := map[int]int{4: 915, 7: 10391, 9: 15207, 10: 15208}
+	for _, c := range []struct {
+		preset string
+		want   map[int]bool
+	}{{RaidPreset, map[int]bool{10: true}}, {BarePreset, map[int]bool{4: true, 7: true}}} {
+		out, err := RewriteRotationRanks(list.Rotation, "shaman-elemental", "shaman", c.preset, "troll", 60)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for rank, id := range bolt {
+			if has := strings.Contains(string(out), `"spellId":`+strconv.Itoa(id)); has != c.want[rank] {
+				t.Errorf("%s 60: Lightning Bolt rank %d (%d) cast %v, want %v", c.preset, rank, id, has, c.want[rank])
+			}
+		}
+	}
+}

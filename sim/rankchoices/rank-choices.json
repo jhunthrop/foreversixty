@@ -539,6 +539,12 @@
             "to_level": 60,
             "rank": 4,
             "preset": "bare"
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 10,
+            "preset": "raid"
           }
         ]
       },
