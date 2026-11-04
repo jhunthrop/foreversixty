@@ -158,7 +158,7 @@
       }
     },
     {
-      "notes": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired. Never clip it, since its biggest ticks come last, and from 29 Amplify Curse makes it 50% stronger.",
+      "notes": "Bane of Agony whenever no Bane of Doom is on the target: all fight before 60, and the last minute at 60, once Doom has fired. Never clip it, since its biggest ticks come last, and once you have Amplify Curse it makes the Agony 50% stronger.",
       "action": {
         "condition": {
           "and": {

@@ -111,3 +111,4 @@ By file: `warlock-destruction.json` 3 (R18-1, R18-2, R18-4); `warlock-demonology
 ## Fix log (round 18)
 
 - WARLOCK-R18-1 to R18-4 (CONFIRMED) and R18-5, R18-6 (LIKELY, raised under the ROGUE-R16-2 precedent): fixed with the report's wording in `warlock-destruction.json` (Conflagrate, Shadowburn, Corruption), `warlock-demonology.json` (Soul Fire, Shadow Bolt) and `warlock-affliction.json` (Bane of Agony), so every note tail holds on every level it renders on. `sim/request/apl/warlock-*.apl.json`, `addon-data.json` and Data.lua regenerated (notes only; no engine pin).
+- Rendered review (wow-player SHIP, one SHOULD taken): the Bane of Agony note says "once you have Amplify Curse" since the raid order takes it at 26 and the leveling order at 29.
