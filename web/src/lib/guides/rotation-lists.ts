@@ -39,6 +39,8 @@ export interface SpellFacts {
   icon?: string;
   /** The longest of its own and its category cooldown, in milliseconds; 0 for none. */
   cooldownMs: number;
+  /** Its base cast time in milliseconds (`spelltips/<class>.json`); absent or 0 for instant. */
+  castMs?: number;
 }
 
 export type SpellLookup = (spellId: number) => SpellFacts | undefined;
@@ -160,6 +162,21 @@ function canGoOutBeforePull(cast: PrepullCast, earlier: readonly PrepullCast[]):
   );
 }
 
+/** When a pre-pull cast starts. One the APL times to land on the pull (no earlier than its
+ *  base cast takes) starts its cast time before the pull, at the cast time the build's own
+ *  talents give it (Arcane's Frostbolt: 3 s with no Improved Frostbolt, where the APL's 2.5 s is
+ *  Frost's). Any other cast keeps the APL's own time (a summon a minute out, a Lightwell placed
+ *  early). */
+function prepullSeconds(
+  cast: PrepullCast,
+  facts: SpellFacts,
+  castTimeCuts: ReadonlyMap<string, number>,
+): number {
+  const castMs = facts.castMs ?? 0;
+  if (castMs <= 0 || cast.secondsBefore * 1000 > castMs) return cast.secondsBefore;
+  return Math.max(0, castMs - (castTimeCuts.get(facts.name) ?? 0)) / 1000;
+}
+
 /** Whether the APL hands the on-use cooldowns (trinkets, racials, potions) to the engine's
  *  cooldown pass. */
 export function usesCooldownPass(apl: unknown): boolean {
@@ -217,6 +234,8 @@ export function rotationListsFrom(
   racialCooldowns: readonly RacialCooldown[] = [],
   /** The guide's role; a healer's trinket line is worded by healing. */
   role: GuideRole = 'dps',
+  /** What the build's talents take off a spell's cast time, by spell name (`talentCastTimeCuts`). */
+  castTimeCuts: ReadonlyMap<string, number> = new Map(),
 ): RotationLists {
   const priority = lines.map((line) => {
     const item = lineItem(line);
@@ -239,7 +258,7 @@ export function rotationListsFrom(
       name: facts.name,
       rank: facts.rank,
       icon: facts.icon ?? lineIcons.get(facts.name),
-      clause: `${whenText(cast.secondsBefore)}${gateText(cast.gates, spellFacts)}`,
+      clause: `${whenText(prepullSeconds(cast, facts, castTimeCuts))}${gateText(cast.gates, spellFacts)}`,
     });
   }
 
@@ -326,6 +345,7 @@ export function spellLookupFor(build: string, classSlug: string): SpellLookup {
     const icon = icons[id];
     if (icon !== undefined && !iconByName.has(row.name)) iconByName.set(row.name, icon);
   }
+  const castTimes = classSpellCastTimes(build, classSlug);
   return (spellId) => {
     const row = constants?.spells[String(spellId)];
     if (row === undefined) {
@@ -345,8 +365,19 @@ export function spellLookupFor(build: string, classSlug: string): SpellLookup {
       rank: row.rank > 0 ? row.rank : undefined,
       icon: iconExists ? icon : undefined,
       cooldownMs: Math.max(row.cooldown_ms, row.category_cooldown_ms),
+      castMs: castTimes.get(spellId) ?? 0,
     };
   };
+}
+
+/** The class's spells' base cast times, by spell id, from the build's spell tooltips. */
+function classSpellCastTimes(build: string, classSlug: string): Map<number, number> {
+  const file = path.join(repoRoot(), 'data/builds', build, 'spelltips', `${classSlug}.json`);
+  if (!existsSync(file)) return new Map();
+  const spells = (
+    JSON.parse(readFileSync(file, 'utf8')) as { spells: Record<string, { cast_time_ms?: number }> }
+  ).spells;
+  return new Map(Object.entries(spells).map(([id, tip]) => [Number(id), tip.cast_time_ms ?? 0]));
 }
 
 /** The spec's curated APL, or `undefined` when none is on disk. */
@@ -430,28 +461,55 @@ export function talentCooldownCuts(
   classSlug: string,
   lit: LitTalents,
 ): Map<string, CooldownCut> {
-  const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
   const cuts = new Map<string, CooldownCut>();
-  if (!existsSync(file)) return cuts;
-  for (const tree of (JSON.parse(readFileSync(file, 'utf8')) as TalentNameFile).trees) {
-    for (const talent of tree.talents) {
-      const rank = lit.get(talent.name) ?? 0;
-      const text = rank > 0 ? talent.ranks?.[rank - 1]?.description : undefined;
-      if (text === undefined) continue;
-      for (const match of COOLDOWN_CUTS.flatMap((pattern) => [...text.matchAll(pattern)])) {
-        const amount = Number(match[2]);
-        const add: CooldownCut =
-          match[3] === '%'
-            ? { ms: 0, percent: amount }
-            : { ms: amount * (match[3] === 'min' ? 60_000 : 1000), percent: 0 };
-        for (const name of match[1]!.split(NAME_LIST)) {
-          const held = cuts.get(name.trim()) ?? { ms: 0, percent: 0 };
-          cuts.set(name.trim(), { ms: held.ms + add.ms, percent: held.percent + add.percent });
-        }
+  for (const text of talentRankTexts(build, classSlug, lit)) {
+    for (const match of COOLDOWN_CUTS.flatMap((pattern) => [...text.matchAll(pattern)])) {
+      const amount = Number(match[2]);
+      const add: CooldownCut =
+        match[3] === '%'
+          ? { ms: 0, percent: amount }
+          : { ms: amount * (match[3] === 'min' ? 60_000 : 1000), percent: 0 };
+      for (const name of match[1]!.split(NAME_LIST)) {
+        const held = cuts.get(name.trim()) ?? { ms: 0, percent: 0 };
+        cuts.set(name.trim(), { ms: held.ms + add.ms, percent: held.percent + add.percent });
       }
     }
   }
   return cuts;
+}
+
+/** The client's wording of a talent's lasting cast-time cut: "Reduces the casting time of your
+ *  Frostbolt spell by 0.5 sec" (Improved Frostbolt), "...of your Shadow Bolt, Immolate, and
+ *  Incinerate spells by 0.5 sec" (Bane), "Reduces the cast time of Starfire by 0.5 sec". A
+ *  cut that a proc or an active grants ("reduce the cast time of your next ...", "Gain
+ *  mastery ..., reducing the cast time") is worded otherwise and not read. */
+const CAST_TIME_CUT =
+  /[Rr]educes the cast(?:ing)? time of (?:your )?([A-Z][A-Za-z' ,]+?)(?: spells?| abilit(?:y|ies))? by (\d+(?:\.\d+)?) sec/g;
+
+/** What the lit talents take off each spell's cast time, in milliseconds, by spell name. */
+export function talentCastTimeCuts(build: string, classSlug: string, lit: LitTalents): Map<string, number> {
+  const cuts = new Map<string, number>();
+  for (const text of talentRankTexts(build, classSlug, lit)) {
+    for (const match of text.matchAll(CAST_TIME_CUT)) {
+      for (const name of match[1]!.split(NAME_LIST)) {
+        cuts.set(name.trim(), (cuts.get(name.trim()) ?? 0) + Number(match[2]) * 1000);
+      }
+    }
+  }
+  return cuts;
+}
+
+/** Each lit talent's own description at the rank the build takes. */
+function talentRankTexts(build: string, classSlug: string, lit: LitTalents): string[] {
+  const file = path.join(repoRoot(), 'data/builds', build, 'talents', `${classSlug}.json`);
+  if (!existsSync(file)) return [];
+  return (JSON.parse(readFileSync(file, 'utf8')) as TalentNameFile).trees.flatMap((tree) =>
+    tree.talents.flatMap((talent) => {
+      const rank = lit.get(talent.name) ?? 0;
+      const text = rank > 0 ? talent.ranks?.[rank - 1]?.description : undefined;
+      return text === undefined ? [] : [text];
+    }),
+  );
 }
 
 interface GuideCooldownsFile {

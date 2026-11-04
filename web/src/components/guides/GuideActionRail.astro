@@ -15,23 +15,24 @@ import { guidesCopy } from '../../lib/guides/copy';
 import { dataUrl } from '../../lib/planner/load';
 import type { DecodedTreeView } from '../../lib/guides/build-tree';
 import { railStatValueText, type RailStatRow } from '../../lib/guides/rail-stats';
-import type { RotationLineView } from '../../lib/bis/rotation-view';
-import { lineTipKey } from '../../lib/guides/guide-tips';
-import type { GuideTipBundle } from '../../lib/tooltips/game-tip';
+import type { RotationItem } from '../../lib/guides/rotation-lists';
 
 interface Props {
   build: string;
   buildCode: string;
-  trees: DecodedTreeView[];
+  trees: readonly DecodedTreeView[];
+  /** True when the rail shows the guide's own raid build (it differs from the level 60 build):
+   *  the card says so, since the rotation and stat cards beside it describe that build. */
+  isRaidBuild: boolean;
   rotationBandLabel: string;
-  rotationLines: RotationLineView[];
+  /** The priority card's first lines, tooltip keys attached: the same rows, words and gates. */
+  rotationLines: RotationItem[];
   statRows: RailStatRow[];
-  /** The guide's tooltip data: each rotation line opens its spell's game tooltip. */
-  tips: GuideTipBundle;
 }
 
-const { build, buildCode, trees, rotationBandLabel, rotationLines, statRows, tips } = Astro.props;
-const tipKey = (line: RotationLineView): string | undefined => lineTipKey(tips, line.spellId, line.name);
+const { build, buildCode, trees, isRaidBuild, rotationBandLabel, rotationLines, statRows } = Astro.props;
+// The stat card numbers only the stats the weights rank, as the pills do.
+const rankedCount = statRows.filter((row) => row.reading === 'value').length;
 
 // Ruling (round-1 fix, owner): a spec with no ranked BiS file (Protection) has no real
 // per-point numbers to show, so the Stat priority card is omitted rather than rendered with
@@ -44,7 +45,12 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
 ---
 
 <div class="guide-rail" data-testid="guide-action-rail" style={`--guide-rail-cols: ${cardCount}`}>
-  <Card glyph="tree" title={guidesCopy.buildRailLabel} compact testid="guide-rail-build">
+  <Card
+    glyph="tree"
+    title={isRaidBuild ? guidesCopy.raidBuild : guidesCopy.buildRailLabel}
+    compact
+    testid="guide-rail-build"
+  >
     {trees.length > 0 && (
       <div class="guide-rail-trees" aria-hidden="true" data-testid="guide-rail-tree-thumbnail">
         {trees.map((tree) => (
@@ -81,8 +87,8 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
       code={buildCode}
       loadTestId="guide-rail-load-build"
       simTestId="guide-rail-sim-build"
-      loadAriaLabel={guidesCopy.loadBuildRailAriaLabel}
-      simAriaLabel={guidesCopy.simBuildRailAriaLabel}
+      loadAriaLabel={isRaidBuild ? guidesCopy.loadRaidBuildRailAriaLabel : guidesCopy.loadBuildRailAriaLabel}
+      simAriaLabel={isRaidBuild ? guidesCopy.simRaidBuildRailAriaLabel : guidesCopy.simBuildRailAriaLabel}
     />
   </Card>
 
@@ -98,10 +104,10 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
         <ul class="guide-rail-rotation-lines">
           {rotationLines.map((line) => (
             <li
-              class:list={['guide-rail-rotation-line', tipKey(line) !== undefined && 'gtip']}
+              class:list={['guide-rail-rotation-line', line.tipKey !== undefined && 'gtip']}
               data-testid={`guide-rail-rotation-line-${line.spellId}`}
-              tabindex={tipKey(line) !== undefined ? 0 : undefined}
-              data-game-tip={tipKey(line)}
+              tabindex={line.tipKey !== undefined ? 0 : undefined}
+              data-game-tip={line.tipKey}
             >
               {line.icon !== undefined ? (
                 <img
@@ -126,7 +132,7 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
                     <span class="text-muted guide-rail-rotation-rank">Rank {line.rank}</span>
                   )}
                 </span>
-                <span class="guide-rail-rotation-condition">{line.condition}</span>
+                <span class="guide-rail-rotation-condition">{line.clause}</span>
               </span>
             </li>
           ))}
@@ -143,7 +149,7 @@ const cardCount = 1 + (hasRotation ? 1 : 0) + (hasStatPriority ? 1 : 0);
           {statRows.map((row, index) => (
             <div class="guide-rail-stat-row">
               <span class="guide-rail-stat-label">
-                <span class="numeric guide-rail-stat-index">{index + 1}</span>
+                <span class="numeric guide-rail-stat-index">{index < rankedCount ? index + 1 : ''}</span>
                 {row.label}
               </span>
               {row.value === undefined ? (

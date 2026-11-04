@@ -12,6 +12,7 @@ import { canApplyBetween, knownAtFor } from './apl-level-gate';
 import { loadAplSteps, spellFamilyOf, type AplStep } from './apl-steps';
 import { collapseRuns, type CollapsedLine, type StepLine } from './rotation-collapse';
 import { aplGates } from './apl-gates';
+import { buildIconExists, spellIcons } from '../data/build-files';
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -83,8 +84,22 @@ function loadTalentNames(build: string, classSlug: string): Set<string> {
  *  way the rest of this module checks for an optional build file (`existsSync`), since a
  *  line's own `icon` field naming a stem is not itself a guarantee the pipeline rendered
  *  that icon into this build's tree. */
-function iconFileExists(build: string, icon: string): boolean {
-  return existsSync(path.join(repoRoot(), 'data/builds', build, 'icons', `${icon}.webp`));
+/** The client's "no icon" art: a line drawn with it shows a red "?" (2026-11-04: Sniper Shot,
+ *  Spearing Strike and Berserker Rage, whose published lines trailed the icon table). */
+const PLACEHOLDER_ICON = 'inv_misc_questionmark';
+
+/** A rotation line's icon: the build's own spell icon table (`spellicons.json`, every rank
+ *  of each family) first, then the published line's, never the placeholder, and only a stem
+ *  whose file the build ships. */
+export function rotationIconFor(
+  build: string,
+  spellId: number,
+  published: string | undefined,
+): string | undefined {
+  const candidates = [spellIcons(build)[String(spellId)], published];
+  return candidates.find(
+    (stem): stem is string => stem !== undefined && stem !== PLACEHOLDER_ICON && buildIconExists(build, stem),
+  );
 }
 
 /** The band's own top level (spec §4.C.3): `band + 9` for every band but the last, which is
@@ -207,7 +222,7 @@ export function rotationLinesFor(
       name: line.name,
       rank,
       condition: alignNoteRank(line.condition, line.name, rank),
-      icon: line.icon !== undefined && iconFileExists(build, line.icon) ? line.icon : undefined,
+      icon: rotationIconFor(build, line.spell_id, line.icon),
       truncatedAtSource: line.condition.endsWith('…'),
       words: step?.words ?? null,
       gates: step === undefined || step === null ? [] : aplGates(step.condition),

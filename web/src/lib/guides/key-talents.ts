@@ -2,8 +2,10 @@
 // The "Key talents" list under a guide's builds: each entry is the talents' icons and names
 // with a one-line why. The why is the guide's own bullet (`- **Name** (n points) — why`) in
 // its Talents section (`- **Name** (n points): why` is the form a guide writes now; the older
-// em dash separator still parses); the icons, the ranks and the legal names come from the leveling
-// build's talent data. A spec whose Talents section has no such bullets gets its build's
+// em dash separator still parses); the icons, the ranks and the legal names come from the
+// builds' talent data. The bullets speak to both builds, so a talent the level 60 and raid
+// builds take at different ranks carries both, each named (`buildRanks`); otherwise its rank
+// is the raid build's, or the level 60 build's for a guide with no raid build of its own. A spec whose Talents section has no such bullets gets its build's
 // own strongest talents with each talent's description as the why, so the list is never empty
 // for a spec with a build.
 import type { DecodedTalentView, DecodedTreeView } from './build-tree';
@@ -14,9 +16,13 @@ export interface KeyTalentRef {
   name: string;
   /** The icon file stem; absent when the build has no talent of that name. */
   icon?: string;
-  /** Points the leveling build spends in it, absent when the name is not in the build. */
+  /** Points the build spends in it: the raid build's when it takes the talent, else the level
+   *  60 build's; absent when neither build has the name. */
   rank?: number;
   maxRank?: number;
+  /** Set only when the guide has a raid build and the two builds take the talent at different
+   *  ranks: each build's own, so a chip never shows one build's rank beside the other's text. */
+  buildRanks?: { leveling: number; raid: number };
 }
 
 export interface KeyTalentEntry {
@@ -73,12 +79,32 @@ function allTalents(trees: readonly DecodedTreeView[]): DecodedTalentView[] {
   return trees.flatMap((tree) => tree.talents);
 }
 
-function refFor(name: string, talents: readonly DecodedTalentView[]): KeyTalentRef {
+function findTalent(name: string, talents: readonly DecodedTalentView[]): DecodedTalentView | undefined {
   const wanted = normalise(name);
-  const hit = talents.find((talent) => normalise(talent.name) === wanted);
-  return hit === undefined
-    ? { name }
-    : { id: hit.id, name: hit.name, icon: hit.icon, rank: hit.rank, maxRank: hit.max_rank };
+  return talents.find((talent) => normalise(talent.name) === wanted);
+}
+
+function refFor(
+  name: string,
+  talents: readonly DecodedTalentView[],
+  raidTalents?: readonly DecodedTalentView[],
+): KeyTalentRef {
+  const leveling = findTalent(name, talents);
+  const raid = raidTalents === undefined ? undefined : findTalent(name, raidTalents);
+  const hit = raid !== undefined && raid.rank > 0 ? raid : (leveling ?? raid);
+  if (hit === undefined) return { name };
+  const ref: KeyTalentRef = {
+    id: hit.id,
+    name: hit.name,
+    icon: hit.icon,
+    rank: hit.rank,
+    maxRank: hit.max_rank,
+  };
+  const levelingRank = leveling?.rank ?? 0;
+  const raidRank = raid?.rank ?? 0;
+  return raidTalents !== undefined && levelingRank !== raidRank
+    ? { ...ref, buildRanks: { leveling: levelingRank, raid: raidRank } }
+    : ref;
 }
 
 const FALLBACK_COUNT = 6;
@@ -108,17 +134,21 @@ function fallbackEntries(trees: readonly DecodedTreeView[]): KeyTalentEntry[] {
     }));
 }
 
+/** `raidTrees`: the guide's own raid build, when it differs from the level 60 build. */
 export function keyTalentsFor(
   talentsMarkdown: string,
   levelingTrees: readonly DecodedTreeView[] | undefined,
+  raidTrees?: readonly DecodedTreeView[],
 ): KeyTalentEntry[] {
   const talents = levelingTrees === undefined ? [] : allTalents(levelingTrees);
+  const raidTalents = raidTrees === undefined ? undefined : allTalents(raidTrees);
   const bullets = parseTalentBullets(talentsMarkdown);
   if (bullets.length > 0) {
     return bullets.map((bullet) => ({
-      talents: bullet.names.map((name) => refFor(name, talents)),
+      talents: bullet.names.map((name) => refFor(name, talents, raidTalents)),
       why: bullet.why,
     }));
   }
-  return levelingTrees === undefined ? [] : fallbackEntries(levelingTrees);
+  const described = raidTrees ?? levelingTrees;
+  return described === undefined ? [] : fallbackEntries(described);
 }
