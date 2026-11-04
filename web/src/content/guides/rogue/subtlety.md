@@ -30,7 +30,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and B
 
 ### Strengths
 
-- No facing requirement anywhere in the rotation: Hemorrhage, Ghostly Strike and Rupture all work from the front
+- No facing requirement anywhere in the level 60 rotation: Hemorrhage, Ghostly Strike and Rupture all work from the front
 - A four-point opener from stealth with Premeditation and Initiative
 - Bleeds ignore armor, so Rupture is full value from the first second of the pull
 - The best rogue for PvP and world play: Preparation, a short Vanish and Blind with Elusiveness
@@ -59,7 +59,7 @@ One build does everything: 12 in Assassination for Malice, Ruthlessness, Improve
 - **Premeditation** (1 point): two combo points on a 2 minute cooldown. In Forever it needs no Stealth, so it opens the fight and comes back in it.
 - **Initiative** (3 points): Garrote, Ambush and Cheap Shot add a combo point.
 
-Opportunity (5 points) adds 20% to Garrote, and to Ambush and Backstab when you hold a dagger. Blood Splatter keeps Rupture up 6 seconds longer and every Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. Both points of Dirty Deeds take 20 energy off Garrote and Cheap Shot and let Garrote go in from the front, which pays on every Garrote you put up after a Ghostly Strike. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. Improved Ambush gets no point: Ambush needs a dagger in the main hand, and even with one it is not a boss opener for you.
+Opportunity (5 points) adds 20% to Garrote, and to Ambush and Backstab when you hold a dagger. Blood Splatter keeps Rupture up 6 seconds longer and every Garrote 9, which is more bleed for every mark to store. Efficient Strikes takes 5 energy off Hemorrhage. Both points of Dirty Deeds take 20 energy off Garrote and Cheap Shot, on the opener and on every Garrote after a Ghostly Strike, and let Garrote go in from the front. Elusiveness, Camouflage and Master of Deception are for the world and PvP, and they are what gets you down the tree. Improved Ambush is skipped: Ambush is not your boss opener.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -130,4 +130,4 @@ Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for t
 
 ### Levels 20 to 60
 
-Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Until Hemorrhage, Backstab is your builder whenever you are behind the target, and Sinister Strike only when you are not. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five on mobs. On anything bigger, Rupture at four and Eviscerate at three while it ticks, until Death Mark comes at 40. From 26, follow every Ghostly Strike with a Garrote on anything that will live through it: the strike lets it in without Stealth. From 40, keep Rupture ticking on anything that will live, and put four or more points into Death Mark while it ticks; Eviscerate a mob that will die before the mark goes off.
+Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage, from 24, keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Until Hemorrhage, Backstab with a dagger is your builder whenever you are behind the target, and Sinister Strike when you are not. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five on mobs. On anything bigger, Rupture at four and Eviscerate at three while it ticks, until Death Mark comes at 40. From 26, follow every Ghostly Strike with a Garrote on anything that will live through it: the strike lets it in without Stealth. From 40, keep Rupture ticking on anything that will live, and put four or more points into Death Mark while it ticks; Eviscerate a mob that will die before the mark goes off.
