@@ -621,3 +621,53 @@ func TestRestorationShamanRiptideIsTheTopRank(t *testing.T) {
 		assertOnlyRank(t, list.Rotation, "shaman-restoration", "shaman", c.preset, "tauren", c.level, riptide, c.rank)
 	}
 }
+
+// Sim-accuracy round 15: once 70755 made Riptide a 230-mana heal over time
+// (about 4.6 healed per mana against Lesser Healing Wave's 3.6), keeping it
+// on the tank comes before the tank's Lesser Healing Wave and Healing Wave
+// lines, right after the Nature's Swiftness save: +0.8% effective HPS at
+// raid 60 (mana lasts 139 to 160 s), bare 50 +1.4%, bare 60 +0.8%, both
+// factions, seeds 1 and 50001.
+func TestRestorationShamanRiptidesTheTankBeforeItsWaves(t *testing.T) {
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/shaman-restoration.json", &list)
+	first := map[string]int{}
+	for i, line := range list.Rotation.PriorityList {
+		var entry struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int `json:"spellId"`
+					} `json:"spellId"`
+					Target struct {
+						Index int `json:"index"`
+					} `json:"target"`
+				} `json:"castSpell"`
+			} `json:"action"`
+		}
+		if err := json.Unmarshal(line, &entry); err != nil {
+			t.Fatal(err)
+		}
+		cast := entry.Action.CastSpell
+		if cast == nil || cast.Target.Index != 5 {
+			continue
+		}
+		key := strconv.Itoa(cast.SpellID.SpellID)
+		if _, seen := first[key]; !seen {
+			first[key] = i
+		}
+	}
+	riptide, ok := first["1239243"]
+	if !ok {
+		t.Fatal("no tank Riptide line")
+	}
+	for _, wave := range []string{"10468", "332"} {
+		if at, ok := first[wave]; ok && at < riptide {
+			t.Errorf("the tank's %s line (priority %d) comes before its Riptide (priority %d)", wave, at, riptide)
+		}
+	}
+}

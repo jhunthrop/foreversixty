@@ -207,6 +207,61 @@
         "action": {
           "castSpell": {
             "spellId": {
+              "spellId": 1239243,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 1239243,
+                          "rank": 3
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
               "spellId": 10468,
               "rank": 6
             },
@@ -439,61 +494,6 @@
             }
           }
         }
-      },
-      {
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 1239243,
-              "rank": 3
-            },
-            "target": {
-              "type": "Player",
-              "index": 5
-            }
-          },
-          "condition": {
-            "and": {
-              "vals": [
-                {
-                  "not": {
-                    "val": {
-                      "dotIsActive": {
-                        "spellId": {
-                          "spellId": 1239243,
-                          "rank": 3
-                        },
-                        "targetUnit": {
-                          "type": "Player",
-                          "index": 5
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "cmp": {
-                    "op": "OpLt",
-                    "lhs": {
-                      "currentHealthPercent": {
-                        "sourceUnit": {
-                          "type": "Player",
-                          "index": 5
-                        }
-                      }
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "0.9"
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        },
-        "notes": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
       },
       {
         "action": {
