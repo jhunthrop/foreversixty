@@ -44,7 +44,7 @@ sources:
 
 ## Overview
 
-Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet.
+Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet in a raid.
 
 ### Strengths
 
@@ -60,7 +60,7 @@ Survival is a melee spec in Forever: two weapons, Raptor Strike queued every tim
 
 ### In a raid
 
-- **Role:** Melee DPS without a pet
+- **Role:** Melee DPS, with your pet dismissed
 - **Brings:** Heart of the Lion (more stats and a flat attack power bonus for everyone near you) and Hunter's Mark on the boss
 - **What the raid adds:** Forever's Strength of Earth Totem gives less Strength than Era's and Curse of Recklessness strips less armor, so a full raid lifts a Survival hunter less than it did in Era.
 
@@ -68,7 +68,7 @@ Survival is a melee spec in Forever: two weapons, Raptor Strike queued every tim
 
 Thirty-five points in Survival take every melee damage talent, eleven in Marksmanship take Careful Aim and Lone Wolf, and five in Beast Mastery take Deadly Aspects.
 
-- **Lone Wolf** (1 point): 20% more damage with every attack while no pet is out. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so for a melee hunter the talent beats the pet
+- **Lone Wolf** (1 point): 20% more damage with every attack while no pet is out. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so in a raid the talent beats the pet for a melee hunter. Out in the world the pet is worth a little more than the talent and takes the hits, so keep it out there; the point waits for your next raid pull
 - **Expose Prey** (2 points): your hits on a target with Hunter's Mark have a 10% chance to open Mongoose Bite for 10 seconds, the only way it opens on a boss that is not attacking you
 - **Lacerating Strikes** (1 point): Mongoose Bite also bleeds the target for 40% of its damage over 21 seconds
 - **Predator's Edge** (5 points): your melee special crits hit for 230% of a normal hit instead of double, and your off hand does 50% more damage
@@ -83,7 +83,7 @@ The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk
 
 ## Rotation and priority
 
-Dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
+In a raid, dismiss your pet before the pull; Lone Wolf only works with no pet out. Put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. Mark the boss with Hunter's Mark. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do.
 
 Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
 
@@ -137,7 +137,7 @@ Take quest rewards over vendor gear, Agility first. Your melee weapon is your da
 
 ### Levels 20 to 60
 
-Survival levels in melee. Keep a pet out while you level: Lone Wolf is one of the last points this build takes, and until then the pet holds aggro and adds damage. Dismiss it the moment you take Lone Wolf.
+Survival levels in melee. Keep a pet out while you level: Lone Wolf is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. Lone Wolf pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than Lone Wolf does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.
 
 Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up and keep Lacerate on anything that will live long enough to bleed. Wing Clip a runner. Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
