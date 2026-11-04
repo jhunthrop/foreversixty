@@ -161,11 +161,12 @@ func TestRankSlotWithEffectsLeavesARelicSlotWithNoModelledRelicAlone(t *testing.
 	}
 }
 
-// A relic is gated on its simulated gain exactly as a trinket is: one whose
-// gain over an empty slot is noise is no pick.
+// A relic that measures exactly the empty slot's DPS on the same seed
+// touches nothing the rotation casts (Enhancement's Totem of Urgency, a
+// Lesser Healing Wave relic): it is no pick.
 func TestBuildReportEmptiesAModelledRelicWhoseGainIsNoise(t *testing.T) {
 	picks := map[string]slotPick{
-		"ranged": {Item: &scored{candidate: relicItem(libramOfLaw, "Libram of Law", "Increases the damage of your Judgement ability by 4%.").candidate, MeasuredDPS: 250, MeasuredGainDPS: 0.1, MeasuredGainStdErr: 0.4, GainMeasured: true}},
+		"ranged": {Item: &scored{candidate: relicItem(libramOfLaw, "Libram of Law", "Increases the damage of your Judgement ability by 4%.").candidate, MeasuredDPS: 250, MeasuredGainDPS: 0, MeasuredGainStdErr: 0.4, GainMeasured: true}},
 	}
 	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 250, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
 	var row slotRow
@@ -192,5 +193,72 @@ func TestBuildReportPublishesAModelledRelicWithARealGain(t *testing.T) {
 	}
 	if row.ItemID != libramOfLaw || row.EmptyReason != "" || row.EffectUnmodelled {
 		t.Fatalf("ranged row = %+v, want Libram of Law published, modelled", row)
+	}
+}
+
+// relicRow is buildReport's ranged row for a lone relic pick.
+func relicRow(t *testing.T, gain, stdErr float64) slotRow {
+	t.Helper()
+	picks := map[string]slotPick{
+		"ranged": {Item: &scored{candidate: relicItem(libramOfLaw, "Libram of Law", "Increases the damage of your Judgement ability by 4%.").candidate, MeasuredDPS: 250, MeasuredGainDPS: gain, MeasuredGainStdErr: stdErr, GainMeasured: true}},
+	}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 250, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	for _, s := range r.Slots {
+		if s.Slot == "ranged" {
+			return s
+		}
+	}
+	t.Fatal("no ranged row")
+	return slotRow{}
+}
+
+// Round 19 (round 18 shaman S3): Enhancement's totems gain under a DPS
+// (Totem of the Storm about +0.8, Totem of Thunder +0.24), which the 2x
+// unpaired error of two 100-iteration runs (about 1.4 DPS) can never
+// resolve, so the slot published empty although every Enhancement shaman
+// wears a totem and a relic has no stats to lose. A relic whose measured
+// gain moved off the empty slot's exact DPS (same seed: its effect reached a
+// spell the rotation casts) and is not significantly negative now publishes
+// as a near tie instead.
+func TestBuildReportPublishesATouchingRelicInsideItsErrorAsANearTie(t *testing.T) {
+	row := relicRow(t, 0.8, 0.7)
+	if row.ItemID != libramOfLaw || row.EmptyReason != "" || !row.NearTie {
+		t.Fatalf("ranged row = %+v, want Libram of Law published as a near tie", row)
+	}
+	if row.LowValue {
+		t.Errorf("a relic near tie is not the weapon fallback: low_value set")
+	}
+	if worse := relicRow(t, -1.6, 0.7); worse.ItemID != 0 || worse.EmptyReason != noDPSValueReason {
+		t.Errorf("a relic measurably worse than an empty slot = %+v, want empty", worse)
+	}
+	if real := relicRow(t, 1.5, 0.2); real.NearTie {
+		t.Errorf("a relic with a real gain is no near tie: %+v", real)
+	}
+}
+
+// A relic that touches nothing can top a noisy ordering by measuring exactly
+// the empty slot while the one that touches a cast spell lands a hair below
+// it (Totem of the Storm read -0.04 at one seed). The slot goes to the one
+// that touches the rotation, as a near tie, not to the inert one that would
+// then publish empty.
+func TestRankRelicSlotPrefersATouchingRelicOverAnInertOneOnANearTie(t *testing.T) {
+	inert := relicItem(libramOfInvocation, "Libram of Invocation", "Reduces the mana cost of your Seal spells by 5%.")
+	touching := relicItem(libramOfLaw, "Libram of Law", "Increases the damage of your Judgement ability by 4%.")
+	picks := map[string]slotPick{"ranged": {Item: &inert}}
+	bySlot := map[string][]scored{"ranged": {inert, touching}}
+	fake := &fakeEngine{
+		DefaultDPS:    100,
+		DefaultStdErr: 0.5,
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "ranged", ItemID: libramOfLaw}}): 99.96,
+		},
+	}
+	out, _ := rankRelicSlot(fake, specInfo{}, "human", "paladin", 60, "", picks, bySlot, "ranged")
+	got := out["ranged"].Item
+	if got == nil || got.ID != libramOfLaw || !relicNearTie(got) {
+		t.Fatalf("ranged pick = %+v, want Libram of Law as a near tie", got)
+	}
+	if out["ranged"].RunnerUp == nil || out["ranged"].RunnerUp.ID != libramOfInvocation {
+		t.Errorf("runner-up = %+v, want the inert relic", out["ranged"].RunnerUp)
 	}
 }

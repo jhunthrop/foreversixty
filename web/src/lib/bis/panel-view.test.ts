@@ -813,6 +813,18 @@ describe('bandInfosFor: effect_unmodelled and low_value flags', () => {
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     expect(infos[0].rows.find((r) => r.slot === 'ranged')?.lowValue).toBe(true);
   });
+
+  // Round 19 (round 18 shaman S3): a relic inside its error of an empty slot publishes as a
+  // near tie, flagged with the same quiet tag and its own hover.
+  it('flags a relic near tie with the tag and the relic hover', () => {
+    const file = fileWith([band({ slots: [slot({ slot: 'ranged', near_tie: true })] })]);
+    const row = bandInfosFor(file, [20], 'alliance', depsWith())
+      .at(0)
+      ?.rows.find((r) => r.slot === 'ranged');
+    expect(row?.lowValue).toBe(true);
+    expect(row?.lowValueTitle).toBe(bisCopy.nearTieTitle('DPS'));
+    expect(row?.lowValueTitle).toContain('empty');
+  });
 });
 
 describe('bandInfosFor: sim_status and set_dps_partial (spec addendum 3)', () => {

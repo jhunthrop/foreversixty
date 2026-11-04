@@ -220,6 +220,12 @@ type slotRow struct {
 	// contenders. Never set for a non-weapon slot, which still empties
 	// exactly as before (EmptyReason == noDPSValueReason).
 	LowValue bool `json:"low_value,omitempty"`
+	// NearTie is true for a relic (libram/idol/totem) published although
+	// its measured gain over an empty relic slot is inside its own error
+	// (relicNearTie): its effect reached a spell the rotation casts, and
+	// a relic has no stats to lose, so an empty slot would be the wrong
+	// answer for a class that always wears one (round 18 shaman S3).
+	NearTie bool `json:"near_tie,omitempty"`
 	// FactionNote explains the one legitimate reason a faction-neutral
 	// trinket's own published pick differs between Alliance and Horde
 	// (reconcileFactionTrinkets, faction_trinkets.go, this lane's brief
@@ -1889,7 +1895,8 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// value (Score > 0) has a known positive worth, so a noisy gain
 			// never empties it (Retribution's raid band 60 Horde lost Rune of
 			// the Guard Captain's +42 attack power this way).
-			trinketLowGain := isGainRankedSlot && !trinketEffectExempt && pk.Item.Score <= 0 && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
+			nearTie := relicNearTie(pk.Item)
+			trinketLowGain := isGainRankedSlot && !trinketEffectExempt && !nearTie && pk.Item.Score <= 0 && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
 			// A relic (libram/idol/totem) whose one real selling point -
 			// its engraved effect - the engine cannot simulate at all
 			// never got a fair shot at EITHER exemption below: score()
@@ -1911,6 +1918,8 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			switch {
 			case relicEffectUnmodelled:
 				row = slotRow{Slot: slot, EmptyReason: effectNotModelledReason, EffectUnmodelled: true, FactionNote: publishableFactionNote(pk)}
+			case nearTie:
+				row.NearTie = true
 			case trinketLowGain:
 				// This lane's brief (bis-ranker-integrity-12), item 1:
 				// the OLD version of this case replaced row wholesale

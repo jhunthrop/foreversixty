@@ -299,6 +299,9 @@ export const bisCopy = {
   setBonusTitle: (setName: string, pieces: number, bonus: string): string =>
     `${setName} (${pieces}): ${bonus}`,
   lowValueTag: 'best available',
+  /** The same tag's hover on a relic near tie (`BisSlot.near_tie`). */
+  nearTieTitle: (unit: RateUnit = 'DPS'): string =>
+    `Every relic here is within its measured error of an empty slot; this one measured best and its effect reaches a spell you cast, so it is worth wearing for the little ${unit} it adds`,
   lowValueTitle: (unit: RateUnit = 'DPS'): string =>
     `No sourced weapon at this level adds ${unit}; this is the best by item level`,
   /** An item sourced from classic-db's 1.12 tables rather than the client's own shipped

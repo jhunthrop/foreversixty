@@ -35,5 +35,46 @@ func rankRelicSlot(runner engineRunner, spec specInfo, race, classSlug string, l
 	if len(candidates) == 0 {
 		return picks, nil
 	}
-	return rankByMeasuredGain(runner, spec, race, classSlug, level, talents, picks, slot, candidates)
+	out, notes := rankByMeasuredGain(runner, spec, race, classSlug, level, talents, picks, slot, candidates)
+	return preferTouchingRelic(out, slot), notes
+}
+
+// preferTouchingRelic swaps a relic slot's winner for its runner-up when the
+// winner measured exactly the empty slot (it touches nothing the rotation
+// casts) and the runner-up is a near tie (relicNearTie): on a sub-DPS race
+// the noisy ordering can crown the inert relic, which would then publish
+// empty while a relic that does something sits right behind it.
+func preferTouchingRelic(picks map[string]slotPick, slot string) map[string]slotPick {
+	sp := picks[slot]
+	if sp.Item == nil || sp.RunnerUp == nil || !sp.Item.GainMeasured || sp.Item.MeasuredGainDPS != 0 || !relicNearTie(sp.RunnerUp) {
+		return picks
+	}
+	out := make(map[string]slotPick, len(picks))
+	for k, v := range picks {
+		out[k] = v
+	}
+	winner, inert := *sp.RunnerUp, *sp.Item
+	sp.Item, sp.RunnerUp = &winner, &inert
+	out[slot] = sp
+	return out
+}
+
+// relicNearTie reports whether a modelled relic whose measured gain over an
+// empty relic slot is inside its own error still publishes, as a near tie
+// (report.go's NearTie). A relic has no stats to lose and every class that
+// wears one wears one, so an empty slot is the wrong answer when the relic
+// did something: its gain is not exactly zero (the candidate and the empty
+// slot run on the same seed, so a relic whose effect reaches no spell the
+// rotation casts reproduces the empty slot's DPS to the last digit:
+// Enhancement's Totem of Urgency and Burning Totem, round 18 shaman S3) and
+// not significantly below zero. trinketGainSignificant's 2x bar on two
+// unpaired 100-iteration runs is about 1.4 DPS on a raid set, which no
+// Enhancement totem (Totem of the Storm about +0.8, Totem of Thunder +0.24)
+// can clear.
+func relicNearTie(item *scored) bool {
+	if item == nil || !isRelicCandidate(item.candidate) || !item.GainMeasured {
+		return false
+	}
+	gain, bar := item.MeasuredGainDPS, trinketGainSignificanceMultiplier*item.MeasuredGainStdErr
+	return gain != 0 && gain > -bar && !trinketGainSignificant(gain, item.MeasuredGainStdErr)
 }

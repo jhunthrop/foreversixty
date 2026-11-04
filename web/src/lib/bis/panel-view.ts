@@ -323,6 +323,9 @@ export interface RowView {
    *  zero and the ranker published the best-by-item-level fallback instead of an empty
    *  slot. */
   lowValue?: boolean;
+  /** The tag's hover when it is not the weapon fallback's (`BisSlot.near_tie`: a relic near
+   *  tie); undefined for the weapon fallback, whose hover is `bisCopy.lowValueTitle`. */
+  lowValueTitle?: string;
   /** `BisSlot.set_bonus` -- the set bonus this piece is worn for, already worded for the
    *  row. Undefined on every row the ranker chose on the piece's own merit. */
   setBonus?: SetBonusView;
@@ -429,7 +432,8 @@ function buildRowView(
     verifiedGlyphTitle: verifiedGlyphTitleFor(row, unit),
     effectUnmodelled: row.effect_unmodelled,
     notSimChecked: row.sim_status === 'not_in_sim',
-    lowValue: row.low_value,
+    lowValue: row.low_value === true || row.near_tie === true ? true : undefined,
+    lowValueTitle: row.near_tie === true ? bisCopy.nearTieTitle(rateUnitFor(unit)) : undefined,
     setBonus: row.set_bonus && {
       line: bisCopy.setBonusLine(row.set_bonus.set, row.set_bonus.pieces),
       title: bisCopy.setBonusTitle(row.set_bonus.set, row.set_bonus.pieces, row.set_bonus.bonus),
