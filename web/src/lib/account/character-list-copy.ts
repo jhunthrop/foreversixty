@@ -2,6 +2,10 @@
 // Every visible string CharacterList.svelte and Account.svelte's ?refreshed=1 toast use.
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the thing and stop.
 
+function characterCount(count: number): string {
+  return `${count} ${count === 1 ? 'character' : 'characters'}`;
+}
+
 export const characterListCopy = {
   heading: 'Characters',
   /** Battle.net is the primary path (2026-11-03): a Battle.net sign-in imports every Forever
@@ -24,8 +28,15 @@ export const characterListCopy = {
   setAsMain: 'Set as main',
   setAsMainFailed: 'Could not set your main just now.',
   levelPrefix: (level: number): string => `Level ${level}`,
-  /** spec 2026-09-22 §7.3, shown on /account after a Battle.net refresh redirect. */
-  refreshedToast: 'Characters refreshed from Battle.net.',
+  // --- Battle.net refresh (design/specs/2026-11-04-account-characters.md section 6) ---------
+  refreshing: 'Refreshing…',
+  refreshingAnnounce: 'Refreshing from Battle.net.',
+  refreshError: 'Battle.net did not answer. Nothing changed.',
+  tryAgain: 'Try again',
+  updatedJustNow: (count: number, added: number): string =>
+    `Updated just now · ${characterCount(count)}${added > 0 ? ` · ${added} new` : ''}`,
+  noChanges: (count: number): string => `No changes · ${characterCount(count)}`,
+  importedJustNow: 'Imported from Battle.net just now.',
   /** spec 2026-09-22 §3.3: the export "how" explained once, here, for every row. */
   introBattlenetLine: 'Your characters come from Battle.net each time you sign in.',
   introInstallAddonLink: 'Install the addon',
@@ -35,5 +46,5 @@ export const characterListCopy = {
   /** The account rows' and the sim landing rows' build-source pill (spec 2026-09-22 §3.1). */
   battlenetSource: 'Battle.net',
   addonSource: 'Addon',
-  noBuildYet: 'No build yet',
+  noBuildYet: 'No gear yet',
 } as const;

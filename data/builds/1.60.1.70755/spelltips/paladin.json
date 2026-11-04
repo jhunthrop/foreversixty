@@ -531,7 +531,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 65 health and $q1 mana.  Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 65 health and 120 mana.  Cannot be cast when in combat.",
       "icon": "spell_holy_resurrection"
     },
     "10278": {
@@ -755,7 +755,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 150 health and $q1 mana.  Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 150 health and 260 mana.  Cannot be cast when in combat.",
       "icon": "spell_holy_resurrection"
     },
     "10324": {
@@ -769,7 +769,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 250 health and $q1 mana.  Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 250 health and 420 mana.  Cannot be cast when in combat.",
       "icon": "spell_holy_resurrection"
     },
     "10326": {
@@ -1735,7 +1735,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 400 health and $q1 mana.  Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 400 health and 600 mana.  Cannot be cast when in combat.",
       "icon": "spell_holy_resurrection"
     },
     "20773": {
@@ -1749,7 +1749,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 600 health and $q1 mana.  Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 600 health and 800 mana.  Cannot be cast when in combat.",
       "icon": "spell_holy_resurrection"
     },
     "20915": {

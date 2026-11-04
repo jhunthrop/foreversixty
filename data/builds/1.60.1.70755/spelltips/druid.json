@@ -2435,7 +2435,7 @@
       "passive": false,
       "cooldown_ms": 1800000,
       "range_yd": 30.0,
-      "description": "Returns the spirit to the body, restoring a dead target to life with 400 health and $q mana.",
+      "description": "Returns the spirit to the body, restoring a dead target to life with 400 health and 700 mana.",
       "icon": "spell_nature_reincarnation"
     },
     "20719": {
@@ -2463,7 +2463,7 @@
       "passive": false,
       "cooldown_ms": 1800000,
       "range_yd": 30.0,
-      "description": "Returns the spirit to the body, restoring a dead target to life with 750 health and $q mana.",
+      "description": "Returns the spirit to the body, restoring a dead target to life with 750 health and 1200 mana.",
       "icon": "spell_nature_reincarnation"
     },
     "20742": {
@@ -2477,7 +2477,7 @@
       "passive": false,
       "cooldown_ms": 1800000,
       "range_yd": 30.0,
-      "description": "Returns the spirit to the body, restoring a dead target to life with 1100 health and $q mana.",
+      "description": "Returns the spirit to the body, restoring a dead target to life with 1100 health and 1700 mana.",
       "icon": "spell_nature_reincarnation"
     },
     "20747": {
@@ -2491,7 +2491,7 @@
       "passive": false,
       "cooldown_ms": 1800000,
       "range_yd": 30.0,
-      "description": "Returns the spirit to the body, restoring a dead target to life with 1600 health and $q mana.",
+      "description": "Returns the spirit to the body, restoring a dead target to life with 1600 health and 2200 mana.",
       "icon": "spell_nature_reincarnation"
     },
     "20748": {
@@ -2505,7 +2505,7 @@
       "passive": false,
       "cooldown_ms": 1800000,
       "range_yd": 30.0,
-      "description": "Returns the spirit to the body, restoring a dead target to life with 2200 health and $q mana.",
+      "description": "Returns the spirit to the body, restoring a dead target to life with 2200 health and 2800 mana.",
       "icon": "spell_nature_reincarnation"
     },
     "21178": {
@@ -2827,7 +2827,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 70 health and $q1 mana. Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 70 health and 135 mana. Cannot be cast when in combat.",
       "icon": "ability_druid_lunarguidance"
     },
     "1235826": {
@@ -2869,7 +2869,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 160 health and $q1 mana. Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 160 health and 300 mana. Cannot be cast when in combat.",
       "icon": "ability_druid_lunarguidance"
     },
     "1237949": {
@@ -2883,7 +2883,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 300 health and $q1 mana. Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 300 health and 520 mana. Cannot be cast when in combat.",
       "icon": "ability_druid_lunarguidance"
     },
     "1237950": {
@@ -2897,7 +2897,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 500 health and $q1 mana. Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 500 health and 750 mana. Cannot be cast when in combat.",
       "icon": "ability_druid_lunarguidance"
     },
     "1237951": {
@@ -2911,7 +2911,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Brings a dead player back to life with 750 health and $q1 mana. Cannot be cast when in combat.",
+      "description": "Brings a dead player back to life with 750 health and 1000 mana. Cannot be cast when in combat.",
       "icon": "ability_druid_lunarguidance"
     },
     "1238069": {

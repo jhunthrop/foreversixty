@@ -14,6 +14,7 @@
     fetchMeOnce,
     listDevices,
     pairDevice,
+    refetchMe,
     refreshDevices,
     revokeDevice,
     setAnonymize,
@@ -36,6 +37,7 @@
   import { accountPlanLine, onPremium } from '../lib/account/plan-line';
   import AccountLoading from './account/AccountLoading.svelte';
   import { createQueryState } from '../lib/data/query.svelte';
+  import { compareSnapshot, takeSnapshot, type RefreshResult } from '../lib/account/refresh-snapshot';
   import { characterListCopy } from '../lib/account/character-list-copy';
   import { accountPageCopy } from '../lib/account/account-page-copy';
   import { accountNameOf } from '../lib/character-selector/rows';
@@ -190,7 +192,6 @@
   // when no character has a build" -- account-wide, not just the hero, since it is telling
   // the player why the handoff links below are stuck on the paste fallback for every
   // character, not only this one.
-  const noBattlenetData = $derived(me !== null && me.characters.every((c) => c.build === undefined));
 
   /** Devices panel's Updated stamp: the most recently seen device, or '' when none has
    *  ever reported in (brief 2026-09-22 §B2: "an Updated stamp ... where a timestamp
@@ -289,18 +290,26 @@
     resolvedNext = safeNextPath(params.get('next'), next);
   });
 
-  // Spec 2026-09-22 §7.3: a second Battle.net login (the refresh link) redirects back to
-  // ?refreshed=1. Shown once, then the query string is dropped with replaceState so a
-  // reload or a shared link never re-shows a stale toast. Same "$effect, no typeof window
-  // guard" reasoning as the `next`-param effect above.
-  let toast = $state('');
+  // A Battle.net refresh (the Characters card's link) redirects back to ?refreshed=1. The
+  // account is read afresh and compared with what it held before the redirect
+  // (lib/account/refresh-snapshot.ts), and the card says what changed
+  // (design/specs/2026-11-04-account-characters.md section 6). The query string is dropped with
+  // replaceState so a reload or a shared link never says it again.
+  let refreshResult = $state<RefreshResult | null>(null);
 
   $effect(() => {
     if (mode !== 'account') return;
     const params = new URLSearchParams(window.location.search);
     if (params.get('refreshed') !== '1') return;
-    toast = characterListCopy.refreshedToast;
     window.history.replaceState({}, '', window.location.pathname);
+    const before = takeSnapshot(sessionStorage);
+    refetchMe(
+      (fresh) => {
+        if (fresh !== null) refreshResult = compareSnapshot(before, fresh);
+      },
+      undefined,
+      () => (refreshResult = { kind: 'error' }),
+    );
   });
 
   // Hub arrival (spec 2026-09-22 §3.1): a fresh sign-in lands on ?signed_in=1, picks the
@@ -585,20 +594,6 @@
           </div>
         {/if}
 
-        {#if toast !== ''}
-          <div
-            class="bg-raised border-gold flex flex-col gap-1 border-l-2 px-4 py-3"
-            data-testid="account-toast"
-          >
-            <p class="text-[14px]">{toast}</p>
-            {#if me!.bnet_imported_at !== undefined}
-              <p class="text-muted text-[13px]">
-                {characterListCopy.importedFrom(relativeTime(new Date(me!.bnet_imported_at)))}
-              </p>
-            {/if}
-          </div>
-        {/if}
-
         <div class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-8">
           <div class="flex flex-col gap-8" data-testid="account-left-col">
             {#if hero !== null}
@@ -627,9 +622,12 @@
                       class="border-line-card flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-control)] border border-dashed px-4 py-3"
                       data-testid="account-hero-no-export"
                     >
-                      <p class="text-text min-w-0 flex-1 text-[14px]">{accountPageCopy.noExportPrompt}</p>
+                      <div class="flex min-w-0 flex-1 basis-[260px] flex-col gap-1">
+                        <p class="text-strong text-[14px] font-semibold">{accountPageCopy.noExportTitle}</p>
+                        <p class="text-muted text-[13px]">{accountPageCopy.noExportBody}</p>
+                      </div>
                       <a
-                        class={button('primary')}
+                        class={`${button('primary')} w-full justify-center sm:w-auto`}
                         href={characterListCopy.pasteHref}
                         data-testid="account-hero-paste"
                       >
@@ -646,11 +644,6 @@
                         {accountPageCopy.heroLogs}
                       </a>
                     </div>
-                  {/if}
-                  {#if noBattlenetData}
-                    <p class="text-muted text-[13px]" data-testid="account-hero-no-bnet-data">
-                      {accountPageCopy.noBattlenetDataForRealm}
-                    </p>
                   {/if}
                 </div>
                 {#if hero.render_url !== undefined}
@@ -674,6 +667,7 @@
                 onSetMain={setMain}
                 logCoach={me?.entitlements?.log_coach === true}
                 {viaBattlenet}
+                {refreshResult}
               />
             </div>
 

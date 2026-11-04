@@ -3,9 +3,12 @@
 // the level 60 build when the guide has no separate raid build. The cooldowns, the talent cuts
 // to them and to cast times, and the pre-pull timings all read that build's talents and no
 // other (2026-11-04: Marksmanship's Rapid Fire read 3 minutes from the leveling build's Rapid
-// Killing beside raid text that says 5; Arcane's opener read Frost's 2.5 s Frostbolt). The web
-// page and the app's guide file both build it here.
+// Killing beside raid text that says 5; Arcane's opener read Frost's 2.5 s Frostbolt), and a
+// cast whose talent gate rules that build out is not on its cards (round 18: Arcane's raid
+// card listed the level 60 build's Frostbolt, cast only without Heating Up). The web page and
+// the app's guide file both build it here.
 import { bandTopLevel, loadRotations, rotationEntryFor, rotationLinesFor } from '../bis/rotation-view';
+import type { AplGate } from '../bis/apl-gates';
 import type { DecodedTreeView } from './build-tree';
 import { racialCooldownsFor } from './race-table';
 import {
@@ -16,8 +19,11 @@ import {
   spellLookupFor,
   talentCastTimeCuts,
   talentCooldownCuts,
+  talentNamesOf,
   type GuideRole,
+  type LitTalents,
   type RotationLists,
+  type SpellLookup,
 } from './rotation-lists';
 
 export const GUIDE_ROTATION_LEVEL = 60;
@@ -46,7 +52,23 @@ export function guideRotation(
     racialCooldownsFor(build, classSlug),
     role,
     talentCastTimeCuts(build, classSlug, lit),
+    buildRunsGates(facts, talentNamesOf(build, classSlug), lit),
   );
+}
+
+/** Whether a build with `lit` talents makes a cast with these gates: every gate on knowing a
+ *  talent (`auraIsKnown`, `spellIsKnown`, or either under `not`) holds for it. A gate on a
+ *  trainer spell, or one the data cannot name, says nothing about the build. */
+export function buildRunsGates(
+  facts: SpellLookup,
+  talentNames: ReadonlySet<string>,
+  lit: LitTalents,
+): (gates: readonly AplGate[]) => boolean {
+  return (gates) =>
+    gates.every((gate) => {
+      const name = gate.kind === 'known' ? facts(gate.spellId)?.name : undefined;
+      return name === undefined || !talentNames.has(name) || lit.has(name) === gate.positive;
+    });
 }
 
 /** The build a guide's level 60 sections describe: the raid build when the guide has one that

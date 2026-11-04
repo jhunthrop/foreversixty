@@ -94,3 +94,62 @@ func TestBalanceRankRowsByLevel(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 18 (design/reviews/2026-11-04-sim-audit-round18/druid.md
+// R1): Restoration's Healing Touch filler (line 9, the tank under 55%) was
+// never judged by level. Rank 3 beats the top rank by 1.2 to 1.5% at 30 to
+// 33 and rank 5 by 1.1 to 1.3% at 40 to 44 (10,000 iterations, seeds 1 and
+// 50001, both factions); the levels between and after are within 1%. The
+// Nature's Swiftness line (4) keeps the top rank.
+func TestRestorationHealingTouchFillerRanksByLevel(t *testing.T) {
+	const (
+		healingTouch3, healingTouch5, healingTouch6 = 5187, 5189, 6778
+		healingTouch7, healingTouch8                = 8903, 9758
+	)
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not []int32
+	}{
+		{"30: rank 3 filler beside the top-rank save", 30, []int32{healingTouch3, healingTouch5}, nil},
+		{"33: rank 3 filler beside the top-rank save", 33, []int32{healingTouch3, healingTouch6}, nil},
+		{"34: top rank only", 34, []int32{healingTouch6}, []int32{healingTouch3}},
+		{"39: top rank only", 39, []int32{healingTouch7}, []int32{healingTouch5}},
+		{"40: rank 5 filler beside the top-rank save", 40, []int32{healingTouch5, healingTouch7}, nil},
+		{"44: rank 5 filler beside the top-rank save", 44, []int32{healingTouch5, healingTouch8}, nil},
+		{"45: top rank only", 45, []int32{healingTouch8}, []int32{healingTouch5}},
+	} {
+		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
+		for _, id := range c.want {
+			if !ids[id] {
+				t.Errorf("%s: want Healing Touch %d cast", c.name, id)
+			}
+		}
+		for _, id := range c.not {
+			if ids[id] {
+				t.Errorf("%s: want no Healing Touch %d", c.name, id)
+			}
+		}
+	}
+}
+
+// Round 18 R2: the party Rejuvenation (authored 8910) is rank 2 at 40 and 41,
+// where it beats rank 1 by 1.4 to 2.1% (night elf) and 0.8 to 1.4% (tauren);
+// rank 1 again at 39 (-0.9%) and 42 (+0.8%, under the bar).
+func TestRestorationPartyRejuvenationAtFortyAndFortyOne(t *testing.T) {
+	const rejuvenation1, rejuvenation2 = 774, 1058
+	for _, c := range []struct {
+		level     int
+		want, not int32
+	}{
+		{39, rejuvenation1, 0},
+		{40, rejuvenation2, rejuvenation1},
+		{41, rejuvenation2, rejuvenation1},
+		{42, rejuvenation1, rejuvenation2},
+	} {
+		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
+		if !ids[c.want] || (c.not != 0 && ids[c.not]) {
+			t.Errorf("level %d: want Rejuvenation %d cast and %d not", c.level, c.want, c.not)
+		}
+	}
+}

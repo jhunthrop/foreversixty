@@ -16,19 +16,27 @@ const CHAR: MeCharacter = {
   level: 60,
 };
 
+/** The rendered text, tags stripped and spaces collapsed: a descriptor's phrases are spans. */
+function text(html: string): string {
+  return html
+    .replace(/<!--.*?-->/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ');
+}
+
 describe('CharacterIdentity', () => {
   it('renders the full descriptor', () => {
     const { body } = render(CharacterIdentity, {
       props: { character: CHAR, size: 'md', descriptor: 'full' },
     });
-    expect(body).toContain('Night Elf Priest · Level 60 · Whitemane (Hardcore US)');
+    expect(text(body)).toContain('Night Elf Priest · Level 60 · Whitemane (Hardcore US)');
   });
 
   it('renders the realm descriptor from ruleset and region alone', () => {
     const { body } = render(CharacterIdentity, {
       props: { character: CHAR, size: 'md', descriptor: 'realm' },
     });
-    expect(body).toContain('Hardcore · US');
+    expect(text(body)).toContain('Hardcore · US');
     expect(body).not.toContain('Night Elf');
   });
 

@@ -202,10 +202,14 @@ test('a signed-in panel shows the shared header, the two next-action cards, and 
   await expect(page.locator('#home-signed-out')).toHaveAttribute('inert', '');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('aria-hidden', 'true');
   // §3.A.4/§3.B.3/§3.B.5: the signed-out class-picker row is gone, replaced by the
-  // signed-in-only "Your upgrades" (no spec yet) and "Another class" regions.
+  // signed-in-only "Your upgrades" and "Another class" regions.
   await expect(page.getByTestId('home-class-picker-large')).toBeHidden();
   await expect(page.getByTestId('home-upgrades')).toBeVisible();
-  await expect(page.getByTestId('home-upgrades-no-spec')).toBeVisible();
+  // A level 24 character with no spec compares as its class's leveling spec
+  // (design/specs/2026-11-04-low-level-home.md, 4bd4ab5cd): nobody is asked to pick a spec. With
+  // no gear export on file the panel says why there is no list yet and how to send one.
+  await expect(page.getByTestId('home-upgrades-no-spec')).toHaveCount(0);
+  await expect(page.getByTestId('home-upgrades-not-yet-available')).toContainText('no gear export');
   // A first visit holds the smallest real state, so the short card leaves no void under it.
   const heights = await page.evaluate(() => ({
     slot: document.querySelector('[data-testid="home-upgrades-slot"]')?.getBoundingClientRect().height,

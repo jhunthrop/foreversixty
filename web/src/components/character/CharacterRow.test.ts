@@ -23,11 +23,19 @@ const PLAIN: MeCharacter = {
   build: { source: 'addon', captured_at: '2026-09-20T00:00:00Z' },
 };
 
+/** The rendered text, tags stripped and spaces collapsed: a descriptor's phrases are spans. */
+function text(html: string): string {
+  return html
+    .replace(/<!--.*?-->/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ');
+}
+
 describe('CharacterRow', () => {
   it('renders one <li> with the realm descriptor by default', () => {
     const { body } = render(CharacterRow, { props: { character: PLAIN } });
     expect(body).toContain('<li');
-    expect(body).toContain('PvP · US');
+    expect(text(body)).toContain('PvP · US');
   });
 
   it('renders the full descriptor when asked', () => {
@@ -41,7 +49,7 @@ describe('CharacterRow', () => {
     expect(withBuild.body).toMatch(/data-testid="p">\s*Addon/);
 
     const withoutBuild = render(CharacterRow, { props: { character: GUILDED, pillTestid: 'p' } });
-    expect(withoutBuild.body).toMatch(/data-testid="p">\s*No build yet/);
+    expect(withoutBuild.body).toMatch(/data-testid="p">\s*No gear yet/);
   });
 
   it('renders the guild line and verified pill only when guildLine is true', () => {
@@ -74,7 +82,7 @@ describe('CharacterRow', () => {
 
   // Finding 1, 2026-09-24 landing pass: the landing rows hide the pill entirely for a
   // character with no build -- the row's action already says so. Opt-in, so every other
-  // caller (the account page) keeps today's muted "No build yet" text.
+  // caller (the account page) keeps today's muted "No gear yet" text.
   it('hides the pill for a character with no build only when hidePillWhenNoBuild is set', () => {
     const withoutFlag = render(CharacterRow, { props: { character: GUILDED, pillTestid: 'p' } });
     expect(withoutFlag.body).toContain('data-testid="p"');

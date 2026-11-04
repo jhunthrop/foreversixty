@@ -46,6 +46,7 @@ object ItemVocabulary {
         "strength" to R.string.items_stat_strength, "agility" to R.string.items_stat_agility,
         "stamina" to R.string.items_stat_stamina, "intellect" to R.string.items_stat_intellect,
         "spirit" to R.string.items_stat_spirit, "crit" to R.string.items_stat_crit, "hit" to R.string.items_stat_hit,
+        "expertise" to R.string.items_stat_expertise,
         "spell_power" to R.string.items_stat_spellPower, "healing" to R.string.items_stat_healing,
         "attack_power" to R.string.items_stat_attackPower,
         "ranged_attack_power" to R.string.items_stat_rangedAttackPower,

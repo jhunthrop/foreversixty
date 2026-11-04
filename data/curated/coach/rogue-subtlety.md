@@ -20,11 +20,11 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the ble
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Garrote after every Ghostly Strike, at four combo points or fewer, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Hemorrhage, Opportunity and Death Mark all feed.
+- Open with Garrote once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet.
 - Ambush needs a dagger in the main hand, so with a sword it is off your bar.
+- Ghostly Strike on cooldown at four combo points or fewer. It hits harder than Hemorrhage for ten more energy and gives a combo point.
 - On trash that will die fast, open with Cheap Shot, which Initiative makes three combo points and which holds the mob still for four seconds, then Eviscerate.
 - Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.
-- Ghostly Strike on cooldown at four combo points or fewer. It hits harder than Hemorrhage for ten more energy and gives a combo point.
 - Death Mark is your only damage cooldown and it comes back every ten seconds, so there is nothing to hold.
 - Slice and Dice.
 - Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
