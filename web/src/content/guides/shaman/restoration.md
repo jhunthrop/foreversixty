@@ -63,7 +63,7 @@ Forty-one points in Restoration and ten in Enhancement. Thundering Strikes is 5%
 - **Purification** (5 points): 10% more healing on everything.
 - **Riptide** (1 point): an instant 15 second heal over time on a 12 second cooldown, and Chain Heal heals its target 25% more.
 
-Ancestral Healing takes the last three points: 25% more armor on your target for 15 seconds after a crit heal, which is a real help to the tank.
+Ancestral Healing is three points for 25% more armor on your target for 15 seconds after a crit heal, which is a real help to the tank.
 
 ## Rotation and priority
 

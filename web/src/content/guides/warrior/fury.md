@@ -3,8 +3,8 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
-build: 'FS1:1.60.1.70755:warrior:high-order-skyborne:30323013002/051531025120100231/2:'
-recommendedRaces: [high-order-skyborne, undead]
+build: 'FS1:1.60.1.70755:warrior:night-elf:30323013002/051531025120100231/2:'
+recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Dual wield in Berserker Stance: Bloodthirst and Whirlwind on cooldown, Heroic Strike with spare rage, Death Wish and Recklessness for the Executes.'
 updated: 2026-11-02
@@ -112,9 +112,9 @@ Mighty Rage Potion goes on the pull and again when it comes back. Enchant and sh
 
 ## Races
 
-High Order Skyborne is the Alliance pick and Undead the Horde pick. Skyborne's Wind Blessed is 2% haste that never turns off and stacks with Flurry, so both weapons swing faster and bring more rage all fight. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds; with two weapons hitting, it comes back almost as soon as it can.
+Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes, which Flurry turns into extra swings: press it with Death Wish and Recklessness. Skyborne's Wind Blessed, 2% haste that never turns off, edges both by a hair, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds; with two weapons hitting, it comes back almost as soon as it can.
 
-The gap between races is small. On the Alliance, Night Elf runs close behind Skyborne: Elune's Light is 10% crit for 15 seconds every 3 minutes, which Flurry turns into extra swings, so press it with Death Wish and Recklessness. Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, are next, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Windshaper Skyborne is a close second for the same always-on haste, then Orc, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails the races that are always on. Whatever you pick, press its active racial with Death Wish and Recklessness.
+The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, are next, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails the races that are always on. Whatever you pick, press its active racial with Death Wish and Recklessness.
 
 ## Professions
 

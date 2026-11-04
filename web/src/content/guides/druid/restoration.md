@@ -60,7 +60,7 @@ The build is 39 points of Restoration and 12 of Balance. It is built for a tank-
 - **Nature's Swiftness** (1 point): your next Healing Touch is instant, the save for a dying tank.
 - **Naturalist** (5 points): Healing Touch and Wild Growth half a second faster.
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
-- **Improved Tranquility** (2 points): Tranquility with no threat and a much shorter cooldown.
+- **Improved Tranquility** (2 points): Tranquility with no threat and its cooldown cut from 5 minutes to 2.
 - **Heart of the Wild** (5 points): 10% more Intellect.
 - **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) and Improved Moonfire (1 point) are the price of Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
 

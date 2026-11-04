@@ -65,7 +65,7 @@ The leveling build takes Brutal Impact for a longer Pounce stun and Feral Charge
 - **Predatory Discipline** (1 point): Ferocious Bite keeps the bonus damage from your extra energy but no longer spends it. It also opens Shifting Power.
 - **Shifting Power** (1 point): the capstone, 40 energy for mana on an 8 second cooldown. It replaces Tiger's Fury, and without it the cat runs out of things to press.
 - **Leader of the Pack** (1 point): the raid's crit aura. Take it in every build.
-- **Heart of the Wild** and **Naturalist**: 10% more Strength in Cat Form and 10% more damage of every kind. These are why a cat goes into Restoration at all.
+- **Heart of the Wild** and **Naturalist**: Heart of the Wild is 6% more Strength in Cat Form at three points and 10% at the raid build's five; Naturalist is 10% more damage of every kind. These are why a cat goes into Restoration at all.
 
 The raid build skips Furor. In Forever it no longer hands you 40 energy on a shift; it gives back the energy you left Cat Form with, plus 10 for each second out of form that you did not spend as a bear. If you shift out a lot (Innervate a healer, battle rez, decurse), Furor saves the energy you would lose. The raid build's Balance points are Genesis, 10% more periodic damage (a bigger Rip), and Nature's Majesty, 4% crit. Natural Shapeshifter (3 points in both builds) makes Shifting Power cheaper, which is mana you spend every 8 seconds. Primal Bite and Lacerate are bear buttons, Brutal Impact is for questing, and Feral Charge is a leap you can buy back for a boss you keep losing your back to.
 
@@ -89,7 +89,7 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 ## Stat priority
 
-Weapon damage per second matters in Forever. Your Cat Form auto attack has your weapon's DPS at one swing a second, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Agility is crit and attack power at once, which is why it leads. Strength is attack power, and Heart of the Wild adds 10% to it. A missed or dodged Shred costs you 42 energy and a combo point, which is why hit matters to a cat.
+Weapon damage per second matters in Forever. Your Cat Form auto attack has your weapon's DPS at one swing a second, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Agility is crit and attack power at once, which is why it leads. Strength is attack power, and Heart of the Wild adds 6% to it (10% with the raid build's five points). A missed or dodged Shred costs you 42 energy and a combo point, which is why hit matters to a cat.
 
 ## Best in slot
 

@@ -54,7 +54,7 @@ The leveling build is a real Affliction tree: Nightfall, Soul Siphon and Wrack m
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
 - **Amplify Curse** (1 point): no global cooldown, a 3 minute cooldown and 30 seconds to use it. Your next Bane of Agony or Curse of Weakness is 50% stronger, or your next Curse of Exhaustion 20%. In a raid it goes on the Bane of Agony you put up in a boss's last minute.
 - **Pandemic** (3 points): Corruption, both banes, Siphon Life, the drains and Wrack crit for double the usual bonus.
-- **Nightfall** (2 points): each Corruption, Drain Life, Drain Soul or Wrack tick has a 4% chance to make your next Shadow Bolt instant. The leveling build takes it for free bolts between pulls. In a raid it is slightly stronger than the two points of Grim Reach the raid build spends on range, so swap them if you like the procs.
+- **Nightfall** (2 points): each Corruption, Drain Life, Drain Soul or Wrack tick has a 4% chance to make your next Shadow Bolt instant. The leveling build takes it for free bolts between pulls. The raid build spends those two points on Grim Reach for range.
 - **Shadow Mastery** (5 points): 10% more Shadow damage on everything you cast.
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
 - **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your other Shadow DoTs. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. Cheap and strong solo. In a raid it trails Shadow Bolt without Soul Siphon and is close to it with Soul Siphon.

@@ -1473,7 +1473,7 @@ ns.Data = {
 		["priest-discipline"] = {
 			{ level = 10, lines = {
 				{ spellId = 17, name = "Power Word: Shield", condition = "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 2053, name = "Lesser Heal", condition = "Lesser Heal rank 1 on a party member who is missing a third of their health, for very little mana." },
 				{ spellId = 2053, name = "Lesser Heal", condition = "" },
 				{ spellId = 2053, name = "Lesser Heal", condition = "" },
@@ -1486,7 +1486,7 @@ ns.Data = {
 			{ level = 20, lines = {
 				{ spellId = 1277324, name = "Dark Sacrifice", condition = "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight." },
 				{ spellId = 600, name = "Power Word: Shield", condition = "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 2061, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one." },
 				{ spellId = 2061, name = "Flash Heal", condition = "Flash Heal on a party member about to die, as long as your mana is not far behind the fight." },
 				{ spellId = 2061, name = "Flash Heal", condition = "" },
@@ -1509,7 +1509,7 @@ ns.Data = {
 				{ spellId = 402174, name = "Penance", condition = "" },
 				{ spellId = 402174, name = "Penance", condition = "" },
 				{ spellId = 3747, name = "Power Word: Shield", condition = "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 9472, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one." },
 				{ spellId = 9472, name = "Flash Heal", condition = "Flash Heal on a party member about to die, as long as your mana is not far behind the fight." },
 				{ spellId = 9472, name = "Flash Heal", condition = "" },
@@ -1533,7 +1533,7 @@ ns.Data = {
 				{ spellId = 402174, name = "Penance", condition = "" },
 				{ spellId = 402174, name = "Penance", condition = "" },
 				{ spellId = 3747, name = "Power Word: Shield", condition = "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 9474, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one." },
 				{ spellId = 9474, name = "Flash Heal", condition = "Flash Heal on a party member about to die, as long as your mana is not far behind the fight." },
 				{ spellId = 9474, name = "Flash Heal", condition = "" },
@@ -1557,7 +1557,7 @@ ns.Data = {
 				{ spellId = 1240720, name = "Penance", condition = "" },
 				{ spellId = 1240720, name = "Penance", condition = "" },
 				{ spellId = 6066, name = "Power Word: Shield", condition = "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 9474, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one." },
 				{ spellId = 9474, name = "Flash Heal", condition = "Flash Heal on a party member about to die, as long as your mana is not far behind the fight." },
 				{ spellId = 9474, name = "Flash Heal", condition = "" },
@@ -1583,7 +1583,7 @@ ns.Data = {
 				{ spellId = 1240721, name = "Penance", condition = "" },
 				{ spellId = 1240721, name = "Penance", condition = "" },
 				{ spellId = 3747, name = "Power Word: Shield", condition = "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 10916, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one." },
 				{ spellId = 10916, name = "Flash Heal", condition = "Flash Heal on a party member about to die, as long as your mana is not far behind the fight." },
 				{ spellId = 10916, name = "Flash Heal", condition = "" },
@@ -1609,7 +1609,7 @@ ns.Data = {
 				{ spellId = 1316995, name = "Penance", condition = "" },
 				{ spellId = 1316995, name = "Penance", condition = "" },
 				{ spellId = 3747, name = "Power Word: Shield", condition = "At a low rank on the tank whenever Weakened Soul is off him: it soaks a hit for little mana, and the Weakened Soul it leaves turns on Renewed Hope, so the heals that follow crit more and leave Divine Aegis shields." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 10917, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one." },
 				{ spellId = 10917, name = "Flash Heal", condition = "Flash Heal on a party member about to die, as long as your mana is not far behind the fight." },
 				{ spellId = 10917, name = "Flash Heal", condition = "" },
@@ -1630,11 +1630,11 @@ ns.Data = {
 		},
 		["priest-holy"] = {
 			{ level = 10, lines = {
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 1277324, name = "Dark Sacrifice", condition = "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 2061, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters." },
 				{ spellId = 2061, name = "Flash Heal", condition = "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana." },
 				{ spellId = 2061, name = "Flash Heal", condition = "" },
@@ -1653,7 +1653,7 @@ ns.Data = {
 			} },
 			{ level = 30, lines = {
 				{ spellId = 1277325, name = "Dark Sacrifice", condition = "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 9472, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters." },
 				{ spellId = 9472, name = "Flash Heal", condition = "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana." },
 				{ spellId = 9472, name = "Flash Heal", condition = "" },
@@ -1673,7 +1673,7 @@ ns.Data = {
 			} },
 			{ level = 38, lines = {
 				{ spellId = 1277325, name = "Dark Sacrifice", condition = "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 9474, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters." },
 				{ spellId = 9474, name = "Flash Heal", condition = "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana." },
 				{ spellId = 9474, name = "Flash Heal", condition = "" },
@@ -1694,7 +1694,7 @@ ns.Data = {
 			{ level = 40, lines = {
 				{ spellId = 1277326, name = "Dark Sacrifice", condition = "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight." },
 				{ spellId = 401859, name = "Prayer of Mending", condition = "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you have." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 9474, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters." },
 				{ spellId = 9474, name = "Flash Heal", condition = "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana." },
 				{ spellId = 9474, name = "Flash Heal", condition = "" },
@@ -1715,7 +1715,7 @@ ns.Data = {
 			{ level = 50, lines = {
 				{ spellId = 1277327, name = "Dark Sacrifice", condition = "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight." },
 				{ spellId = 1240826, name = "Prayer of Mending", condition = "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you have." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 10916, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters." },
 				{ spellId = 10916, name = "Flash Heal", condition = "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana." },
 				{ spellId = 10916, name = "Flash Heal", condition = "" },
@@ -1736,7 +1736,7 @@ ns.Data = {
 			{ level = 60, lines = {
 				{ spellId = 1277328, name = "Dark Sacrifice", condition = "Dark Sacrifice, Undead only, once you are under 70% mana and still healthy: it turns your own health into mana over 15 seconds, plus your Spirit, and its 10 minute cooldown makes it once a fight." },
 				{ spellId = 1240827, name = "Prayer of Mending", condition = "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you have." },
-				{ spellId = 139, name = "Renew", condition = "Renew rank 1 on the tank all fight, for very little mana." },
+				{ spellId = 139, name = "Renew", condition = "Keep Renew on the tank all fight." },
 				{ spellId = 10917, name = "Flash Heal", condition = "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters." },
 				{ spellId = 10917, name = "Flash Heal", condition = "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana." },
 				{ spellId = 10917, name = "Flash Heal", condition = "" },

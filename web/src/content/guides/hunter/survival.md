@@ -109,7 +109,7 @@ Forever's damage potions share the two-minute potion cooldown with mana potions.
 
 Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predator's Edge makes every crit count, so press it with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf's 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.
 
-Orc for the Horde: Blood Fury is 10% attack power for 15 seconds every two minutes, on the pull with Rapid Fire and again at two and four minutes. Troll is right behind: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on your swings.
+Orc and Troll are level for the Horde. Blood Fury is 10% attack power for 15 seconds every two minutes, so it goes on the pull with Rapid Fire and again at two and four minutes. Berserking is 10% attack speed for 15 seconds every three minutes and stacks with Rapid Fire on your swings.
 
 Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds both of your weapons.
 

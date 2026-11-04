@@ -3,9 +3,9 @@ title: Arms Warrior in Forever
 classSlug: warrior
 spec: arms
 role: dps
-build: 'FS1:1.60.1.70755:warrior:high-order-skyborne:13323213032215201/0505/205:'
-raidBuild: 'FS1:1.60.1.70755:warrior:high-order-skyborne:34323213032215201/0505002/2:'
-recommendedRaces: [high-order-skyborne, windshaper-skyborne]
+build: 'FS1:1.60.1.70755:warrior:night-elf:13323213032215201/0505/205:'
+raidBuild: 'FS1:1.60.1.70755:warrior:night-elf:34323213032215201/0505002/2:'
+recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'
 updated: 2026-11-02
@@ -109,9 +109,9 @@ Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take
 
 ## Races
 
-Skyborne is the Arms pick on both factions: High Order for the Alliance, Windshaper for the Horde. Wind Blessed is 2% haste that never turns off, so every fight gets more swings and more rage from the first second, with no cooldown to line up. Elemental Insight adds 5% damage against Elementals on top.
+Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes: press it with Recklessness at 20%. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds. Skyborne edges both by a hair on either faction, since Wind Blessed is 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it.
 
-If you want a different look, the gap is small. On the Alliance, Night Elf comes next: Elune's Light is 10% crit for 15 seconds every 3 minutes, so press it with Recklessness at 20%. Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds, and runs a close second, then Orc, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes to press with Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails the races that are always on.
+If you want a different look, the gap is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage from your abilities for 8 seconds every 2 minutes, sit just behind it, and Dwarf trails because its 1% hit matters least once your gear has you near the cap. On the Horde, Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds, and runs a close second, then Orc, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes to press with Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails the races that are always on.
 
 ## Professions
 

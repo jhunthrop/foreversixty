@@ -8862,7 +8862,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -8944,7 +8944,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9096,7 +9096,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9255,7 +9255,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9414,7 +9414,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9587,7 +9587,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9760,7 +9760,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -9886,7 +9886,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           }
@@ -9905,7 +9905,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10029,7 +10029,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10160,7 +10160,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10298,7 +10298,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10436,7 +10436,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
@@ -10574,7 +10574,7 @@
           {
             "spell_id": 139,
             "name": "Renew",
-            "condition": "Renew rank 1 on the tank all fight, for very little mana.",
+            "condition": "Keep Renew on the tank all fight.",
             "icon": "spell_holy_renew",
             "race_spell_ids": {}
           },
