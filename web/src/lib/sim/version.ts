@@ -8,7 +8,7 @@
 // has no Go toolchain; `make engine-pin` writes both, version.test.ts asserts they agree,
 // and web.yml runs that test.
 
-export const ENGINE_VERSION = 'f637ec32c';
+export const ENGINE_VERSION = 'b2c4a2d05';
 
 /**
  * The directory the browser artifacts were published under for THIS page build: the engine
