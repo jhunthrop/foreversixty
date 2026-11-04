@@ -63,3 +63,43 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 16 wave 2: under the MaxLevel + 12 rule, Renew rank 1
+// (MaxLevel 13) loses its bonus from 26, so the priests' tank Renew switches
+// rank inside band 30 (level by level, 10000 iterations, seeds 1 and 50001).
+func TestPriestRenewRowsSwitchInsideBandThirty(t *testing.T) {
+	for _, c := range []struct {
+		spec  string
+		level int
+		want  []int
+	}{
+		{"priest-holy", 31, []int{1}},
+		{"priest-holy", 33, []int{3}},
+		{"priest-holy", 39, []int{3}},
+		{"priest-discipline", 29, []int{1}},
+		{"priest-discipline", 30, []int{2}},
+		{"priest-discipline", 34, []int{3}},
+	} {
+		got, err := ChosenRanks(c.spec, "Renew", c.level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(got, c.want) {
+			t.Errorf("%s Renew at %d: %v, want %v", c.spec, c.level, got, c.want)
+		}
+	}
+}
+
+// Devouring Plague rank 1 (learned at 20) loses its bonus from 38; rank 2
+// wins from 52 on both factions (round 16 wave 2).
+func TestShadowDevouringPlagueMovesToRankTwoAtFiftyTwo(t *testing.T) {
+	for level, want := range map[int][]int{51: {1, 2}, 52: {2}, 59: {2}} {
+		got, err := ChosenRanks("priest-shadow", "Devouring Plague", level)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(got, want) {
+			t.Errorf("Devouring Plague at %d: %v, want %v", level, got, want)
+		}
+	}
+}

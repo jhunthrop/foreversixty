@@ -211,3 +211,26 @@ Left as SHOULDs:
 - The generated key-talent table lacks Dark Inspiration and shows Silent Resolve 1/3 (platform).
 - The Discipline Priority list's 24 alternating Greater Heal 1 / Lesser Heal 3 rows are measured lines. Collapsing them is a later list change.
 - After the addon-data regeneration, the integrator should check that the Holy rows no longer say "Heal is the filler".
+
+## Wave 2: rank rows level by level, phantom talent lines
+
+I merged int/r16 first: site c5915e4bb (fast-forward) and fork 65c8e36cf.
+
+**Method.** I swept every priest rank row with `spec-breakdown -level` at the band floor, +3, +6 and +9 (3,000 iterations, horde, seed 1). Each candidate rank is cast through its own spell id, so no row overrides it. Every switch point was then confirmed at 10,000 iterations, seeds 1 and 50001. Where a row is race-keyed, both factions were confirmed. The sweep files are in the lane scratch (`w2/`).
+
+| # | row | finding | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| W2-1 | Holy Renew rank 1, 14-39 | Rank 1 (MaxLevel 13) loses its bonus from 26.<br>- **Rank 1 still wins to 31:** 68.8 against rank 3's 67.2 at 31.<br>- **From 33, rank 3 wins:** 69.5 against rank 1's 67.8 at 33, where rank 2 ties at 69.5.<br>- **At 34:** rank 3 69.2 against rank 2's 68.3. At 36: 70.8 against 68.6.<br>- Seeds 1 and 50001 are identical.<br>- **New rows:** rank 1 at 14-32, rank 3 at 33-39. | CONFIRMED | R15 4faba89a9 (floor-only measurement) | S 297b20ef7 |
+| W2-2 | Discipline Renew rank 1, 14-39 | Rank 1 wins through band 20.<br>- **From 30, rank 2 wins:** 90.0 against 88.4 at 30, and 90.1 against 87.7 at 33.<br>- **Rank 3 takes over from 34:** it ties rank 2 at 34, then wins 90.4 against 88.9 at 36.<br>- **New rows:** rank 1 at 14-29, rank 2 at 30-33, rank 3 at 34-39.<br>- **Band 30 floor:** 87.8 to 89.4 alliance and 88.4 to 90.0 horde, both seeds (+1.8%). | CONFIRMED | R15 4faba89a9 | S 297b20ef7 |
+| W2-3 | Shadow Devouring Plague rank 1 at 50-59 (five races) | Rank 1 (learned at 20) loses its bonus from 38.<br>- **From 52, rank 2 wins on both factions:** horde 251.5 against 247.2 at 52 and 256.2 against 252.0 at 56; alliance 223.4 against 217.5 at 52 and 228.0 against 223.8 at 56. Seeds 1 and 50001 agree.<br>- At 50, rank 1 and rank 2 tie. At 59, rank 3 ties rank 2.<br>- **New rows:** the race rows end at 51 (rank 1 for five races, rank 2 for Night Elf); rank 2 for every race at 52-59.<br>- The band floor (50) does not move. | CONFIRMED | R15 4faba89a9 (row kept at the floor) | S 297b20ef7 |
+| W2-4 | The other priest rows: Shadow Word: Pain rank 3 at 30-39; Mind Blast rank 3/4 at 40-49; Devouring Plague rank 1 at 30-49; Shadow Word: Death rank 2 at 50-59; Prayer of Healing rank 1 at 40-59 and bare 60 (Holy), and at 40-49 (Discipline) | Each row's rank wins or ties at every level swept.<br>- Mind Blast ranks 4, 5 and 7 are within 0.4% from 40 to 49.<br>- Holy bare 60 Prayer of Healing: rank 2 404.7 against rank 1 403.1, inside error.<br>Kept. | Aligned | - | - |
+| W2-5 | **Phantom lines** | None in priest.<br>- **priest-shadow line 3** (Vampiric Embrace), which the shaman lane flagged, already gates on `spellIsKnown` 15286, and it casts the talent spell itself.<br>- **Every other priest line** that needs a talent casts the talent's own spell: Inner Focus, Penance, Prayer of Mending, Mind Flay. An unlearned spell simply does not fire. Shadow line 5's Inner Focus sequence is followed by a plain Mind Blast line, so it adds no phantom cast.<br>- **Discipline line 7** reads Weakened Soul, a debuff, not a talent aura. | Aligned (flag withdrawn) | - | - |
+
+- **Tests:** `TestPriestRenewRowsSwitchInsideBandThirty` and `TestShadowDevouringPlagueMovesToRankTwoAtFiftyTwo` (sim/rankchoices) failed on the old rows and now pass.
+- **Guide text:** no guide prose or rendered card note names these ranks. The rows' `note` field is internal, so no page changed and no wow-player pass was needed.
+- **Addon:** the addon resolves ranks only at its rungs (shaman lane, platform item). Discipline's 30-33 row reaches it at rung 30. The rows at 33/34 and 52 reach it only at the next rung.
+- **Pre-existing failure, not mine:** `data/tests/test_addonrotation.py::test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts` fails on int/r16 without these changes.
+- **Files to regenerate:**
+  - addon-data and then Data.lua (rank rows);
+  - TestRotationLadder goldens: priest-discipline band 30;
+  - dps-per-point for priest-discipline.
