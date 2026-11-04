@@ -84,7 +84,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 **Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and keep spending five Maelstrom stacks on Lightning Bolt.
 
-**Mana.** In a raid, Judgement of Wisdom and Mana Spring keep you topped up, so Earth Shock never needs to wait. Without them, stop shocking at a quarter of your mana: that last quarter pays for Stormstrike and your totems, which hit harder than the shock you skip. Your swings and free bolts carry you until it comes back.
+**Mana.** In a raid, Judgement of Wisdom and Mana Spring keep you topped up, so Earth Shock never needs to wait. Without them, stop shocking at a quarter of your mana: that last quarter pays for Stormstrike, which hits harder than the shock you skip, and for dropping your totems again. Your swings and free bolts carry you until your mana comes back.
 
 **Lightning Shield** only fires when something hits you, which behind a boss is never. Keep it for leveling and for adds that turn on you.
 
