@@ -1,0 +1,2303 @@
+{
+  "from": "1.60.1.70753",
+  "to": "1.60.1.70755",
+  "entities": {
+    "zones": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [
+        {
+          "id": 287961,
+          "name": "Portable Repair Bot",
+          "quality": 3,
+          "item_level": 60,
+          "required_level": 1,
+          "class_id": 0,
+          "subclass_id": 14,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        }
+      ],
+      "removed": [],
+      "changed": [
+        {
+          "id": 2291,
+          "before": {
+            "id": 2291,
+            "name": "Kang the Decapitator",
+            "quality": 4,
+            "item_level": 49,
+            "required_level": 44,
+            "class_id": 2,
+            "subclass_id": 1,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 2291,
+            "name": "Kang the Decapitator",
+            "quality": 4,
+            "item_level": 49,
+            "required_level": 44,
+            "class_id": 2,
+            "subclass_id": 1,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 2459,
+          "before": {
+            "id": 2459,
+            "name": "Swiftness Potion",
+            "quality": 1,
+            "item_level": 15,
+            "required_level": 5,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": 288898
+          },
+          "after": {
+            "id": 2459,
+            "name": "Swiftness Potion",
+            "quality": 1,
+            "item_level": 15,
+            "required_level": 5,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": 287975
+          },
+          "fields": [
+            "superseded_by"
+          ]
+        },
+        {
+          "id": 281350,
+          "before": {
+            "id": 281350,
+            "name": "Keystone Fragment",
+            "quality": 2,
+            "item_level": 1,
+            "required_level": 0,
+            "class_id": 15,
+            "subclass_id": 0,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 281350,
+            "name": "Keystone Fragment",
+            "quality": 2,
+            "item_level": 1,
+            "required_level": 0,
+            "class_id": 13,
+            "subclass_id": 0,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "class_id"
+          ]
+        },
+        {
+          "id": 281352,
+          "before": {
+            "id": 281352,
+            "name": "Ancient Runestone",
+            "quality": 1,
+            "item_level": 1,
+            "required_level": 0,
+            "class_id": 15,
+            "subclass_id": 0,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 281352,
+            "name": "Ancient Runestone",
+            "quality": 1,
+            "item_level": 1,
+            "required_level": 0,
+            "class_id": 13,
+            "subclass_id": 0,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "class_id"
+          ]
+        },
+        {
+          "id": 281359,
+          "before": {
+            "id": 281359,
+            "name": "Dormant Runestone",
+            "quality": 1,
+            "item_level": 1,
+            "required_level": 0,
+            "class_id": 15,
+            "subclass_id": 0,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 281359,
+            "name": "Dormant Runestone",
+            "quality": 1,
+            "item_level": 1,
+            "required_level": 0,
+            "class_id": 13,
+            "subclass_id": 0,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "class_id"
+          ]
+        },
+        {
+          "id": 288896,
+          "before": {
+            "id": 288896,
+            "name": "Superior Healing Potion",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288896,
+            "name": "Superior Healing Potion",
+            "quality": 1,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288897,
+          "before": {
+            "id": 288897,
+            "name": "Superior Mana Potion",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288897,
+            "name": "Superior Mana Potion",
+            "quality": 1,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288898,
+          "before": {
+            "id": 288898,
+            "name": "Swiftness Potion",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288898,
+            "name": "Swiftness Potion",
+            "quality": 1,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 0,
+            "subclass_id": 1,
+            "inventory_type": 0,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288900,
+          "before": {
+            "id": 288900,
+            "name": "Earthshaker",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 5,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288900,
+            "name": "Earthshaker",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 5,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288926,
+          "before": {
+            "id": 288926,
+            "name": "Choker of the Fire Lord",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288926,
+            "name": "Choker of the Fire Lord",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288927,
+          "before": {
+            "id": 288927,
+            "name": "Quick Strike Ring",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288927,
+            "name": "Quick Strike Ring",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288928,
+          "before": {
+            "id": 288928,
+            "name": "Heavy Dark Iron Ring",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288928,
+            "name": "Heavy Dark Iron Ring",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288929,
+          "before": {
+            "id": 288929,
+            "name": "Band of Sulfuras",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288929,
+            "name": "Band of Sulfuras",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288930,
+          "before": {
+            "id": 288930,
+            "name": "Cauterizing Band",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288930,
+            "name": "Cauterizing Band",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 288931,
+          "before": {
+            "id": 288931,
+            "name": "Ring of Spell Power",
+            "quality": 4,
+            "item_level": 10,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 288931,
+            "name": "Ring of Spell Power",
+            "quality": 4,
+            "item_level": 30,
+            "required_level": 1,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        }
+      ]
+    },
+    "spells": {
+      "added": [
+        {
+          "id": 48953,
+          "name": "Infect!"
+        },
+        {
+          "id": 50146,
+          "name": "Righteous Purge"
+        },
+        {
+          "id": 55724,
+          "name": "You're a...! (NPC)"
+        },
+        {
+          "id": 55725,
+          "name": "You're a...! (NPC)"
+        },
+        {
+          "id": 55726,
+          "name": "You're a...! (NPC)"
+        },
+        {
+          "id": 55727,
+          "name": "You're a...! (NPC)"
+        },
+        {
+          "id": 1327657,
+          "name": "Frost Breath"
+        },
+        {
+          "id": 1327713,
+          "name": "Terrifying Roar"
+        },
+        {
+          "id": 1327716,
+          "name": "Cleave"
+        },
+        {
+          "id": 1327726,
+          "name": "Rushing Charge"
+        },
+        {
+          "id": 1327736,
+          "name": "Elixir of Endless Intellect"
+        },
+        {
+          "id": 1327737,
+          "name": "Elixir of Endless Power"
+        },
+        {
+          "id": 1327738,
+          "name": "Elixir of Endless Healing"
+        },
+        {
+          "id": 1327751,
+          "name": "Elixir of Endless Rapidity"
+        },
+        {
+          "id": 1327753,
+          "name": "Elixir of Endless Opportunity"
+        },
+        {
+          "id": 1327754,
+          "name": "Scroll of Endless Fortitude"
+        },
+        {
+          "id": 1327926,
+          "name": "Ultra Hogger"
+        },
+        {
+          "id": 1327961,
+          "name": "Giga Hogger"
+        },
+        {
+          "id": 1327963,
+          "name": "Cosmic Hogger"
+        },
+        {
+          "id": 1327978,
+          "name": "Frenzy"
+        },
+        {
+          "id": 1327984,
+          "name": "Manastorm"
+        },
+        {
+          "id": 1327987,
+          "name": "Manastorm"
+        },
+        {
+          "id": 1327989,
+          "name": "Chill"
+        },
+        {
+          "id": 1327990,
+          "name": "Chill"
+        },
+        {
+          "id": 1327991,
+          "name": "Call Anathema"
+        },
+        {
+          "id": 1327993,
+          "name": "Call Benediction"
+        },
+        {
+          "id": 1328013,
+          "name": "Cleave"
+        },
+        {
+          "id": 1328019,
+          "name": "Mortal Strike"
+        },
+        {
+          "id": 1328022,
+          "name": "Ding!"
+        },
+        {
+          "id": 1328028,
+          "name": "Charge"
+        },
+        {
+          "id": 1328032,
+          "name": "Elixir of Endless Mana"
+        },
+        {
+          "id": 1328034,
+          "name": "Chain Lightning"
+        },
+        {
+          "id": 1328040,
+          "name": "Hurricane"
+        },
+        {
+          "id": 1328041,
+          "name": "Hurricane"
+        },
+        {
+          "id": 1328067,
+          "name": "Summon Infernal"
+        },
+        {
+          "id": 1328068,
+          "name": "Summon Infernal"
+        },
+        {
+          "id": 1328069,
+          "name": "Summon Infernal"
+        },
+        {
+          "id": 1328117,
+          "name": "Summon Infernal"
+        },
+        {
+          "id": 1328118,
+          "name": "Elixir of Endless Growth"
+        },
+        {
+          "id": 1328119,
+          "name": "Scroll of Endless Speed"
+        },
+        {
+          "id": 1328127,
+          "name": "Elixir of Endless Experience"
+        },
+        {
+          "id": 1328664,
+          "name": "(DNT) Hide Mist"
+        },
+        {
+          "id": 1328666,
+          "name": "(DNT) Hide Mist"
+        },
+        {
+          "id": 1328668,
+          "name": "(DNT) Hide Mist"
+        },
+        {
+          "id": 1328669,
+          "name": "(DNT) Hide Mist"
+        },
+        {
+          "id": 1328670,
+          "name": "(DNT) Hide Mist"
+        },
+        {
+          "id": 1328671,
+          "name": "(DNT) Hide Mist"
+        },
+        {
+          "id": 1329256,
+          "name": "Blood Splatter"
+        },
+        {
+          "id": 1329265,
+          "name": "Composure"
+        },
+        {
+          "id": 1329282,
+          "name": "Quick Getaway"
+        },
+        {
+          "id": 1329283,
+          "name": "Shank"
+        },
+        {
+          "id": 1329284,
+          "name": "Flash of Steel"
+        },
+        {
+          "id": 1329285,
+          "name": "Boot Knife"
+        },
+        {
+          "id": 1329286,
+          "name": "Boot Knife"
+        },
+        {
+          "id": 1329326,
+          "name": "Ghostly Strike"
+        },
+        {
+          "id": 1329328,
+          "name": "Venom"
+        },
+        {
+          "id": 1329549,
+          "name": "Shank"
+        },
+        {
+          "id": 1329552,
+          "name": "Counterspell - Silenced"
+        },
+        {
+          "id": 1329553,
+          "name": "Counterspell - Silenced"
+        },
+        {
+          "id": 1329554,
+          "name": "Reckless Swings"
+        },
+        {
+          "id": 1329555,
+          "name": "Reckless Swings"
+        }
+      ],
+      "removed": [
+        {
+          "id": 1310705,
+          "name": "Mutilate"
+        },
+        {
+          "id": 1310706,
+          "name": "Mutilate"
+        },
+        {
+          "id": 1310707,
+          "name": "Mutilate"
+        },
+        {
+          "id": 1310709,
+          "name": "Coup de Grace"
+        }
+      ],
+      "changed": [
+        {
+          "id": 13732,
+          "before": {
+            "id": 13732,
+            "name": "Improved Sinister Strike"
+          },
+          "after": {
+            "id": 13732,
+            "name": "Efficient Strikes"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 14162,
+          "before": {
+            "id": 14162,
+            "name": "Improved Eviscerate"
+          },
+          "after": {
+            "id": 14162,
+            "name": "Coup de Grace"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 16166,
+          "before": {
+            "id": 16166,
+            "name": "Elemental Mastery"
+          },
+          "after": {
+            "id": 16166,
+            "name": "Lightning Mastery"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 437009,
+          "before": {
+            "id": 437009,
+            "name": "Totemic Projection"
+          },
+          "after": {
+            "id": 437009,
+            "name": "Totemic Call"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 1310315,
+          "before": {
+            "id": 1310315,
+            "name": "Raging Blows"
+          },
+          "after": {
+            "id": 1310315,
+            "name": "Improved Whirlwind"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 1310728,
+          "before": {
+            "id": 1310728,
+            "name": "Quietus"
+          },
+          "after": {
+            "id": 1310728,
+            "name": "Quick Getaway"
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 1327245,
+          "before": {
+            "id": 1327245,
+            "name": "Thunderclap"
+          },
+          "after": {
+            "id": 1327245,
+            "name": "Warstomp"
+          },
+          "fields": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [
+        {
+          "id": 113633,
+          "tab_id": 182,
+          "tab_name": "Assassination",
+          "class_id": 4,
+          "tier": 4,
+          "column": 0,
+          "spell_ids": [
+            14179,
+            14179,
+            14179,
+            14179,
+            14179
+          ],
+          "prereq_talent_id": null
+        },
+        {
+          "id": 113635,
+          "tab_id": 181,
+          "tab_name": "Combat",
+          "class_id": 4,
+          "tier": 4,
+          "column": 0,
+          "spell_ids": [
+            13715,
+            13715
+          ],
+          "prereq_talent_id": null
+        },
+        {
+          "id": 113636,
+          "tab_id": 164,
+          "tab_name": "Fury",
+          "class_id": 1,
+          "tier": 3,
+          "column": 1,
+          "spell_ids": [
+            1329555
+          ],
+          "prereq_talent_id": null
+        }
+      ],
+      "removed": [
+        {
+          "id": 110868,
+          "tab_id": 183,
+          "tab_name": "Subtlety",
+          "class_id": 4,
+          "tier": 2,
+          "column": 2,
+          "spell_ids": [
+            14084,
+            14084
+          ],
+          "prereq_talent_id": null
+        }
+      ],
+      "changed": [
+        {
+          "id": 104751,
+          "before": {
+            "id": 104751,
+            "tab_id": 263,
+            "tab_name": "Enhancement",
+            "class_id": 7,
+            "tier": 1,
+            "column": 3,
+            "spell_ids": [
+              16261,
+              16261,
+              16261
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 104751,
+            "tab_id": 263,
+            "tab_name": "Enhancement",
+            "class_id": 7,
+            "tier": 1,
+            "column": 2,
+            "spell_ids": [
+              16261,
+              16261,
+              16261
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column"
+          ]
+        },
+        {
+          "id": 104752,
+          "before": {
+            "id": 104752,
+            "tab_id": 263,
+            "tab_name": "Enhancement",
+            "class_id": 7,
+            "tier": 1,
+            "column": 2,
+            "spell_ids": [
+              16262,
+              16262
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 104752,
+            "tab_id": 263,
+            "tab_name": "Enhancement",
+            "class_id": 7,
+            "tier": 3,
+            "column": 3,
+            "spell_ids": [
+              16262,
+              16262
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "tier"
+          ]
+        },
+        {
+          "id": 104760,
+          "before": {
+            "id": 104760,
+            "tab_id": 261,
+            "tab_name": "Elemental",
+            "class_id": 7,
+            "tier": 4,
+            "column": 1,
+            "spell_ids": [
+              408490
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 104760,
+            "tab_id": 261,
+            "tab_name": "Elemental",
+            "class_id": 7,
+            "tier": 4,
+            "column": 1,
+            "spell_ids": [
+              16120
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 105709,
+          "before": {
+            "id": 105709,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 4,
+            "column": 1,
+            "spell_ids": [
+              1310707
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105709,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 6,
+            "column": 1,
+            "spell_ids": [
+              399956
+            ],
+            "prereq_talent_id": 105712
+          },
+          "fields": [
+            "prereq_talent_id",
+            "spell_ids",
+            "tier"
+          ]
+        },
+        {
+          "id": 105710,
+          "before": {
+            "id": 105710,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 5,
+            "column": 2,
+            "spell_ids": [
+              14186,
+              14186,
+              14186,
+              14186,
+              14186
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105710,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 5,
+            "column": 2,
+            "spell_ids": [
+              14186,
+              14186,
+              14186
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 105712,
+          "before": {
+            "id": 105712,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 6,
+            "column": 1,
+            "spell_ids": [
+              1310703
+            ],
+            "prereq_talent_id": 105709
+          },
+          "after": {
+            "id": 105712,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 4,
+            "column": 1,
+            "spell_ids": [
+              1329328
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "prereq_talent_id",
+            "spell_ids",
+            "tier"
+          ]
+        },
+        {
+          "id": 105716,
+          "before": {
+            "id": 105716,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 2,
+            "column": 2,
+            "spell_ids": [
+              14128,
+              14128,
+              14128,
+              14128,
+              14128
+            ],
+            "prereq_talent_id": 105722
+          },
+          "after": {
+            "id": 105716,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 2,
+            "column": 2,
+            "spell_ids": [
+              14128,
+              14128
+            ],
+            "prereq_talent_id": 105722
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 105717,
+          "before": {
+            "id": 105717,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 2,
+            "column": 1,
+            "spell_ids": [
+              14168,
+              14168
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105717,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 1,
+            "column": 1,
+            "spell_ids": [
+              14168,
+              14168
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "tier"
+          ]
+        },
+        {
+          "id": 105718,
+          "before": {
+            "id": 105718,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 4,
+            "column": 0,
+            "spell_ids": [
+              14983,
+              14983
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105718,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 2,
+            "column": 1,
+            "spell_ids": [
+              1329256
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "spell_ids",
+            "tier"
+          ]
+        },
+        {
+          "id": 105720,
+          "before": {
+            "id": 105720,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 1,
+            "column": 1,
+            "spell_ids": [
+              14158,
+              14158
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105720,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 2,
+            "column": 0,
+            "spell_ids": [
+              14983,
+              14983
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "spell_ids",
+            "tier"
+          ]
+        },
+        {
+          "id": 105724,
+          "before": {
+            "id": 105724,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 6,
+            "column": 1,
+            "spell_ids": [
+              13750
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105724,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 6,
+            "column": 1,
+            "spell_ids": [
+              13750
+            ],
+            "prereq_talent_id": 105728
+          },
+          "fields": [
+            "prereq_talent_id"
+          ]
+        },
+        {
+          "id": 105726,
+          "before": {
+            "id": 105726,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 5,
+            "column": 1,
+            "spell_ids": [
+              30919,
+              30919
+            ],
+            "prereq_talent_id": 105728
+          },
+          "after": {
+            "id": 105726,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 3,
+            "column": 2,
+            "spell_ids": [
+              30919,
+              30919
+            ],
+            "prereq_talent_id": 105737
+          },
+          "fields": [
+            "column",
+            "prereq_talent_id",
+            "tier"
+          ]
+        },
+        {
+          "id": 105730,
+          "before": {
+            "id": 105730,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 5,
+            "column": 2,
+            "spell_ids": [
+              18427,
+              18427,
+              18427
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105730,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 3,
+            "column": 3,
+            "spell_ids": [
+              18427,
+              18427,
+              18427
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "tier"
+          ]
+        },
+        {
+          "id": 105732,
+          "before": {
+            "id": 105732,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 2,
+            "column": 3,
+            "spell_ids": [
+              13743,
+              13743
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105732,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 1,
+            "column": 3,
+            "spell_ids": [
+              13743,
+              13743
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "tier"
+          ]
+        },
+        {
+          "id": 105740,
+          "before": {
+            "id": 105740,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 3,
+            "column": 2,
+            "spell_ids": [
+              13715,
+              13715,
+              13715,
+              13715,
+              13715
+            ],
+            "prereq_talent_id": 105737
+          },
+          "after": {
+            "id": 105740,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 5,
+            "column": 2,
+            "spell_ids": [
+              1329284,
+              1329284,
+              1329284,
+              1329284,
+              1329284
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "prereq_talent_id",
+            "spell_ids",
+            "tier"
+          ]
+        },
+        {
+          "id": 105743,
+          "before": {
+            "id": 105743,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 3,
+            "column": 1,
+            "spell_ids": [
+              14183
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105743,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 2,
+            "column": 1,
+            "spell_ids": [
+              14183
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "tier"
+          ]
+        },
+        {
+          "id": 105745,
+          "before": {
+            "id": 105745,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 4,
+            "column": 0,
+            "spell_ids": [
+              14082,
+              14082
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105745,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 1,
+            "column": 0,
+            "spell_ids": [
+              14082,
+              14082
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "tier"
+          ]
+        },
+        {
+          "id": 105747,
+          "before": {
+            "id": 105747,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 3,
+            "column": 0,
+            "spell_ids": [
+              30894,
+              30894
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105747,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 4,
+            "column": 0,
+            "spell_ids": [
+              30894,
+              30894
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "tier"
+          ]
+        },
+        {
+          "id": 105749,
+          "before": {
+            "id": 105749,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 1,
+            "column": 3,
+            "spell_ids": [
+              14079,
+              14079,
+              14079
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105749,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 1,
+            "column": 2,
+            "spell_ids": [
+              14079,
+              14079,
+              14079
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column"
+          ]
+        },
+        {
+          "id": 105750,
+          "before": {
+            "id": 105750,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 5,
+            "column": 2,
+            "spell_ids": [
+              462708,
+              462708,
+              462708,
+              462708,
+              462708
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105750,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 5,
+            "column": 2,
+            "spell_ids": [
+              1329286,
+              1329286,
+              1329286,
+              1329286,
+              1329286
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 105751,
+          "before": {
+            "id": 105751,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 1,
+            "column": 0,
+            "spell_ids": [
+              13983,
+              13983,
+              13983
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105751,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 0,
+            "column": 0,
+            "spell_ids": [
+              13983,
+              13983,
+              13983
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "tier"
+          ]
+        },
+        {
+          "id": 105752,
+          "before": {
+            "id": 105752,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 3,
+            "column": 2,
+            "spell_ids": [
+              14171,
+              14171,
+              14171
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105752,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 2,
+            "column": 2,
+            "spell_ids": [
+              14171,
+              14171,
+              14171
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "tier"
+          ]
+        },
+        {
+          "id": 105753,
+          "before": {
+            "id": 105753,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 1,
+            "column": 1,
+            "spell_ids": [
+              13981,
+              13981
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105753,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 3,
+            "column": 0,
+            "spell_ids": [
+              13981,
+              13981
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "tier"
+          ]
+        },
+        {
+          "id": 105754,
+          "before": {
+            "id": 105754,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 2,
+            "column": 1,
+            "spell_ids": [
+              14278
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105754,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 3,
+            "column": 1,
+            "spell_ids": [
+              14278
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "tier"
+          ]
+        },
+        {
+          "id": 105756,
+          "before": {
+            "id": 105756,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 0,
+            "column": 0,
+            "spell_ids": [
+              13975,
+              13975,
+              13975,
+              13975,
+              13975
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105756,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 1,
+            "column": 1,
+            "spell_ids": [
+              13975,
+              13975,
+              13975
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "spell_ids",
+            "tier"
+          ]
+        },
+        {
+          "id": 105757,
+          "before": {
+            "id": 105757,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 1,
+            "column": 2,
+            "spell_ids": [
+              1224782,
+              1224782
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105757,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 1,
+            "column": 3,
+            "spell_ids": [
+              1224782,
+              1224782
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column"
+          ]
+        },
+        {
+          "id": 105759,
+          "before": {
+            "id": 105759,
+            "tab_id": 182,
+            "tab_name": "Assassination",
+            "class_id": 4,
+            "tier": 2,
+            "column": 0,
+            "spell_ids": [
+              14179
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105759,
+            "tab_id": 181,
+            "tab_name": "Combat",
+            "class_id": 4,
+            "tier": 2,
+            "column": 3,
+            "spell_ids": [
+              1329265,
+              1329265
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "spell_ids",
+            "tab_id",
+            "tab_name"
+          ]
+        },
+        {
+          "id": 105760,
+          "before": {
+            "id": 105760,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 0,
+            "column": 2,
+            "spell_ids": [
+              14057,
+              14057
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105760,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 0,
+            "column": 2,
+            "spell_ids": [
+              14057,
+              14057,
+              14057,
+              14057,
+              14057
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 105928,
+          "before": {
+            "id": 105928,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 5,
+            "column": 1,
+            "spell_ids": [
+              12319,
+              12319,
+              12319,
+              12319,
+              12319
+            ],
+            "prereq_talent_id": 105927
+          },
+          "after": {
+            "id": 105928,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 5,
+            "column": 2,
+            "spell_ids": [
+              12319,
+              12319,
+              12319
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "prereq_talent_id",
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 105930,
+          "before": {
+            "id": 105930,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 6,
+            "column": 1,
+            "spell_ids": [
+              23881
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105930,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 6,
+            "column": 1,
+            "spell_ids": [
+              23881
+            ],
+            "prereq_talent_id": 105927
+          },
+          "fields": [
+            "prereq_talent_id"
+          ]
+        },
+        {
+          "id": 105931,
+          "before": {
+            "id": 105931,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 3,
+            "column": 2,
+            "spell_ids": [
+              12317,
+              12317,
+              12317,
+              12317,
+              12317
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105931,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 2,
+            "column": 3,
+            "spell_ids": [
+              12317,
+              12317,
+              12317,
+              12317,
+              12317
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "tier"
+          ]
+        },
+        {
+          "id": 105954,
+          "before": {
+            "id": 105954,
+            "tab_id": 161,
+            "tab_name": "Arms",
+            "class_id": 1,
+            "tier": 1,
+            "column": 1,
+            "spell_ids": [
+              12295,
+              12295,
+              12295,
+              12295,
+              12295
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105954,
+            "tab_id": 161,
+            "tab_name": "Arms",
+            "class_id": 1,
+            "tier": 1,
+            "column": 1,
+            "spell_ids": [
+              12295,
+              12295,
+              12295
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 105977,
+          "before": {
+            "id": 105977,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 3,
+            "column": 1,
+            "spell_ids": [
+              1310315
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 105977,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 5,
+            "column": 0,
+            "spell_ids": [
+              1310315,
+              1310315
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "column",
+            "spell_ids",
+            "tier"
+          ]
+        },
+        {
+          "id": 110524,
+          "before": {
+            "id": 110524,
+            "tab_id": 161,
+            "tab_name": "Arms",
+            "class_id": 1,
+            "tier": 4,
+            "column": 0,
+            "spell_ids": [
+              1289682,
+              1289682,
+              1289682,
+              1289682,
+              1289682
+            ],
+            "prereq_talent_id": null
+          },
+          "after": {
+            "id": 110524,
+            "tab_id": 161,
+            "tab_name": "Arms",
+            "class_id": 1,
+            "tier": 4,
+            "column": 0,
+            "spell_ids": [
+              1289682,
+              1289682
+            ],
+            "prereq_talent_id": null
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 110866,
+          "before": {
+            "id": 110866,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 6,
+            "column": 1,
+            "spell_ids": [
+              1310721
+            ],
+            "prereq_talent_id": 105746
+          },
+          "after": {
+            "id": 110866,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 6,
+            "column": 1,
+            "spell_ids": [
+              1316709
+            ],
+            "prereq_talent_id": 105746
+          },
+          "fields": [
+            "spell_ids"
+          ]
+        },
+        {
+          "id": 110867,
+          "before": {
+            "id": 110867,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 5,
+            "column": 0,
+            "spell_ids": [
+              1310728,
+              1310728,
+              1310728,
+              1310728,
+              1310728
+            ],
+            "prereq_talent_id": 105745
+          },
+          "after": {
+            "id": 110867,
+            "tab_id": 183,
+            "tab_name": "Subtlety",
+            "class_id": 4,
+            "tier": 3,
+            "column": 3,
+            "spell_ids": [
+              1310728,
+              1310728
+            ],
+            "prereq_talent_id": 105757
+          },
+          "fields": [
+            "column",
+            "prereq_talent_id",
+            "spell_ids",
+            "tier"
+          ]
+        },
+        {
+          "id": 113569,
+          "before": {
+            "id": 113569,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 5,
+            "column": 2,
+            "spell_ids": [
+              1323967,
+              1323967
+            ],
+            "prereq_talent_id": 105931
+          },
+          "after": {
+            "id": 113569,
+            "tab_id": 164,
+            "tab_name": "Fury",
+            "class_id": 1,
+            "tier": 4,
+            "column": 2,
+            "spell_ids": [
+              1323967,
+              1323967
+            ],
+            "prereq_talent_id": 105934
+          },
+          "fields": [
+            "prereq_talent_id",
+            "tier"
+          ]
+        }
+      ]
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    }
+  }
+}
