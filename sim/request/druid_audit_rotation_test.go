@@ -64,3 +64,33 @@ func TestCatLetsRipRunToItsLastTick(t *testing.T) {
 		t.Errorf("druid-feral Bites with Rip at %v or more, below Rip's own %v refresh", bite, rip)
 	}
 }
+
+// Wave 2: Balance's rank rows judged level by level (10,000 iterations,
+// seeds 1 and 50001). Moonfire rank 2 through the 20s and rank 4 from 36;
+// Wrath rank 3 at 22 to 26; Insect Swarm rank 2 at 39.
+func TestBalanceRankRowsByLevel(t *testing.T) {
+	const (
+		moonfire2, moonfire3, moonfire4, moonfire5 = 8924, 8925, 8926, 8927
+		wrath3, wrath4                             = 5178, 5179
+		insectSwarm1, insectSwarm2                 = 5570, 24974
+	)
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Moonfire at 23 is rank 2", 23, moonfire2, moonfire4},
+		{"Moonfire at 29 is rank 2", 29, moonfire2, moonfire5},
+		{"Moonfire at 35 is rank 3", 35, moonfire3, moonfire4},
+		{"Moonfire at 36 is rank 4", 36, moonfire4, moonfire3},
+		{"Wrath at 22 is rank 3", 22, wrath3, wrath4},
+		{"Wrath at 27 is rank 4", 27, wrath4, wrath3},
+		{"Insect Swarm at 38 is rank 1", 38, insectSwarm1, insectSwarm2},
+		{"Insect Swarm at 39 is rank 2", 39, insectSwarm2, insectSwarm1},
+	} {
+		ids := rotationIDs(t, "druid-balance", "druid", c.level, specRankChoices("druid-balance", BarePreset, "night-elf"))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}

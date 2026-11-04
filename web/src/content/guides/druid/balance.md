@@ -132,4 +132,4 @@ Druids cannot use wands, so swap the starter weapon for the first quest staff wi
 
 ### Levels 20 to 60
 
-Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, Moonfire every pull and Wrath until the mob dies. Starfire is for the opener on a mob that is not yet on you.
+Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, Moonfire every pull and Wrath until the mob dies. Mana runs out before mobs do in your 20s and 30s, so the newest rank is not always the best: Moonfire rank 2 does more for its mana through your 20s, rank 3 through 35 and rank 4 through 39; Wrath rank 3 holds from 22 to 26 and rank 4 through your 30s; Insect Swarm stays at rank 1 through 38. Everywhere else, and from 40 on, cast the newest rank. Starfire is for the opener on a mob that is not yet on you.
