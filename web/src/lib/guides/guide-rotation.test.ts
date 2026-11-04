@@ -2,13 +2,23 @@
 // The rotation cards read the build they describe (the raid build, else the level 60 build)
 // and no other: its cooldown cuts, its cast times, its pre-pull timings.
 import activeBuild from '../../data/active-build.json';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { decodeBuildTrees, type DecodedTreeView } from './build-tree';
 import { describedBuildTrees, guideRotation } from './guide-rotation';
-import { litTalentsOf, talentCastTimeCuts } from './rotation-lists';
+import type { AplGate } from '../bis/apl-gates';
+import { bandTopLevel, loadRotations, rotationEntryFor, rotationLinesFor } from '../bis/rotation-view';
+import {
+  litTalentsOf,
+  loadApl,
+  prepullCasts,
+  spellLookupFor,
+  talentCastTimeCuts,
+  talentNamesOf,
+  type GuideRole,
+} from './rotation-lists';
 
 const BUILD = activeBuild.build;
 const GUIDES_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../content/guides');
@@ -28,30 +38,6 @@ function rankOf(trees: readonly DecodedTreeView[], name: string): number {
 }
 
 describe('guideRotation', () => {
-  // Sim-accuracy round 18: the pre-pull Frostbolt runs only without Heating Up, so the raid
-  // build (which takes it) never casts it; the level 60 build does, with Improved Frostbolt
-  // 5/5, a 2.5 s cast (3 s base, client 10181, less 0.5 s), which the APL starts at -2.5 s and
-  // the prose names. The card read the raid build's 3 s.
-  it('times Arcane’s pre-pull Frostbolt by the build that casts it', () => {
-    const { leveling, raid } = guideTrees('mage/arcane.md');
-    expect(rankOf(raid!, 'Heating Up')).toBeGreaterThan(0);
-    expect(rankOf(leveling, 'Heating Up')).toBe(0);
-    expect(rankOf(leveling, 'Improved Frostbolt')).toBe(5);
-    const trees = describedBuildTrees(leveling, raid);
-    const frostbolt = guideRotation(BUILD, 'mage', 'mage-arcane', 'dps', trees, leveling)?.opener.find(
-      (item) => item.name === 'Frostbolt',
-    );
-    expect(frostbolt?.clause).toBe('2.5 s before the pull, without Heating Up');
-  });
-
-  it('times a pre-pull cast both builds run by the described build', () => {
-    const { leveling, raid } = guideTrees('mage/arcane.md');
-    const pyroblast = guideRotation(BUILD, 'mage', 'mage-arcane', 'dps', raid!, leveling)?.opener.find(
-      (item) => item.name === 'Pyroblast',
-    );
-    expect(pyroblast?.clause).toBe('6 s before the pull, with Heating Up');
-  });
-
   it('gives Marksmanship’s Rapid Fire the raid build’s cooldown, not the level 60 build’s Rapid Killing', () => {
     const { leveling, raid } = guideTrees('hunter/marksmanship.md');
     const trees = describedBuildTrees(leveling, raid);
@@ -60,6 +46,80 @@ describe('guideRotation', () => {
     );
     const cut = rankOf(trees, 'Rapid Killing');
     expect(rapidFire?.clause.startsWith(`${5 - cut} min cooldown`)).toBe(true);
+  });
+});
+
+interface GuideCard {
+  label: string;
+  classSlug: string;
+  spec: string;
+  role: GuideRole;
+  trees: DecodedTreeView[];
+}
+
+/** Every guide's leveling build and, when it has its own, its raid build. */
+function everyGuideBuild(): GuideCard[] {
+  return readdirSync(GUIDES_DIR, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .flatMap((dir) =>
+      readdirSync(path.join(GUIDES_DIR, dir.name))
+        .filter((file) => file.endsWith('.md') && !file.startsWith('_') && file !== 'index.md')
+        .flatMap((file): GuideCard[] => {
+          const raw = readFileSync(path.join(GUIDES_DIR, dir.name, file), 'utf8');
+          const role = (/^role: (\w+)/m.exec(raw)?.[1] ?? 'dps') as GuideRole;
+          const spec = `${dir.name}-${file.slice(0, -'.md'.length)}`;
+          const { leveling, raid } = guideTrees(`${dir.name}/${file}`);
+          const base = { classSlug: dir.name, spec, role };
+          return [
+            { ...base, label: `${spec} level 60`, trees: leveling },
+            ...(raid === undefined ? [] : [{ ...base, label: `${spec} raid`, trees: raid }]),
+          ];
+        }),
+    );
+}
+
+describe('every guide card', () => {
+  // Sim-accuracy round 18: a card describes one build, so a cast whose talent gate rules that
+  // build out is not on it (Arcane's raid card listed the level 60 build's pre-pull Frostbolt,
+  // gated on not knowing Heating Up, at the raid build's 3 s).
+  it('lists no cast whose talent gate rules out the build it describes', () => {
+    const cards = everyGuideBuild();
+    expect(cards.length).toBeGreaterThan(30);
+    for (const card of cards) {
+      const lists = guideRotation(BUILD, card.classSlug, card.spec, card.role, card.trees);
+      if (lists === undefined) continue;
+      const facts = spellLookupFor(BUILD, card.classSlug);
+      const talents = talentNamesOf(BUILD, card.classSlug);
+      const lit = litTalentsOf(card.trees);
+      const runs = (gates: readonly AplGate[]): boolean =>
+        gates.every((gate) => {
+          const name = gate.kind === 'known' ? facts(gate.spellId)?.name : undefined;
+          return name === undefined || !talents.has(name) || lit.has(name) === gate.positive;
+        });
+      const casts = prepullCasts(loadApl(card.spec));
+      for (const item of lists.opener) {
+        const mine = casts.filter((cast) => cast.spellId === item.spellId);
+        expect(
+          mine.some((cast) => runs(cast.gates)),
+          `${card.label} opener ${item.name}`,
+        ).toBe(true);
+      }
+      const top = bandTopLevel(60);
+      const entry = rotationEntryFor(loadRotations(BUILD, card.spec) ?? [], top)!;
+      const lines = rotationLinesFor(entry, BUILD, card.classSlug, card.spec, top);
+      const kept = lines.filter((line) => runs(line.gates ?? []));
+      expect(lists.priority.length, `${card.label} priority`).toBe(kept.length);
+    }
+  });
+
+  it('gives Arcane’s raid card Pyroblast alone, and its level 60 card the 2.5 s Frostbolt', () => {
+    const { leveling, raid } = guideTrees('mage/arcane.md');
+    const opener = (trees: DecodedTreeView[]) =>
+      guideRotation(BUILD, 'mage', 'mage-arcane', 'dps', trees)?.opener.map(
+        (item) => `${item.name}: ${item.clause}`,
+      );
+    expect(opener(raid!)).toEqual(['Pyroblast: 6 s before the pull, with Heating Up']);
+    expect(opener(leveling)).toEqual(['Frostbolt: 2.5 s before the pull, without Heating Up']);
   });
 });
 
