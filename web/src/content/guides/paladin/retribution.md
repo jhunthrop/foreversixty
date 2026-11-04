@@ -14,7 +14,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/talents/paladin.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/talents/paladin.json'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty stat weights, data/curated/specs.json'
@@ -26,7 +26,7 @@ sources:
   - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/races.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/races.json'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
@@ -59,7 +59,7 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 
 - **Benediction** (5 points): every instant costs 10% less, and nearly everything you press is instant.
 - **Improved Judgement** (2 points): Judgement every 8 seconds instead of 10.
-- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs and Judgements, and your spells too, Consecration and Exorcism included.
+- **Conviction** (3 points): 6% crit on everything you do: your swings, Holy Strike, Seal procs, Judgements and Consecration's ticks.
 - **Sanctified Judgement** (3 points): every Judgement hands back 60% of the judged Seal's cost. This is what pays for your Seals, and for the twist at 60.
 - **Sacred Arbiter** (1 point): Holy Strike hits 20% harder and refreshes every Judgement on the target.
 - **Two-Handed Weapon Specialization** (3 points): 6% more Physical and Holy damage with a two-hander, and 20% less threat. That reaches your Holy Seal procs and Judgements as well as your swings.
@@ -69,9 +69,9 @@ The leveling build is 14 Holy, 7 Protection and 30 Retribution. The raid build m
 
 **Seal of Command** is a required point on the way to Vengeance. Below 60 you never cast it: Seal of Righteousness does more with leveling gear. **Vindication** and one point of **Repentance** are filler on the way to Champion of the Light, since nothing else in the tree adds damage there. Repentance still earns its point in a dungeon: a 6 second incapacitate on a Humanoid, on a one minute cooldown.
 
-In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your regeneration running in combat, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**: hit is worth more to you than any other stat per point until you reach the cap.
+In Holy, **Divine Strength** is 10% Strength, **Improved Seals** is 15% on every Seal and Judgement, and **Holy Conduit** takes 40% off Consecration, Exorcism and Hammer of Wrath. **Reverence** keeps 30% of your regeneration running in combat, which matters more while leveling than in a raid with Blessing of Wisdom on you. **Divine Intellect** opens Protection and leads to **Precision**. With raid buffs at 60, hit is your best stat per point until you reach the cap.
 
-Leveling order: Benediction and Improved Judgement first, then Conviction and Sanctified Judgement, then down the tree to Champion of the Light by level 40. Open the planner at [/planner?class=paladin](/planner?class=paladin) to change anything.
+Leveling order: Benediction and Improved Judgement first, then Conviction and Sanctified Judgement, then down the tree to Champion of the Light by level 40.
 
 ## Rotation and priority
 
@@ -112,7 +112,7 @@ Hit comes first until the cap: every miss is a lost swing and a lost Seal proc, 
 
 ## Professions
 
-Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and elixirs. Pick two that pay for your consumables.
+Mining and Blacksmithing make your two-handers and plate. Engineering adds explosives for trash packs, and it is the profession that adds damage when your gear is done. Herbalism and Alchemy keep you in mana potions and Elixirs of Holy Power, Forever's 40 Holy damage elixir, which reaches every Seal proc, Judgement and Consecration tick. Pick two that pay for your consumables.
 
 ## Leveling
 

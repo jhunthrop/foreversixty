@@ -5,7 +5,7 @@ spec: holy
 role: healer
 build: 'FS1:1.60.1.70755:paladin:human:50320215012101251/50322/0503:'
 recommendedRaces: [human, undead]
-statPriority: [Healing power, Intellect, Spirit, MP5, Critical strike]
+statPriority: [MP5, Intellect, Healing power, Critical strike, Spirit]
 description: 'Tank healing with Oath of Light, rank 1 Flash of Light and Divine Favor, and how to make your mana last.'
 updated: 2026-11-02
 confidence: inferred
@@ -13,7 +13,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/talents/paladin.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/talents/paladin.json'
     url: https://foreversixty.gg/data/1.60.1.70755/talents/paladin.json
     kind: datamined
   - label: 'Forever Sixty stat weights, data/curated/specs.json'
@@ -22,7 +22,7 @@ sources:
   - label: 'Forever Sixty raid phase data, data/curated/loot/forever-raid-phases.json'
     url: https://foreversixty.gg/data/curated/loot/forever-raid-phases.json
     kind: site
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70753/races.json'
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70755/races.json'
     url: https://foreversixty.gg/data/1.60.1.70755/races.json
     kind: datamined
 ---
@@ -40,7 +40,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 
 ### Weaknesses
 
-- No heal over time and only one party heal, Light's Vigil, which costs as much as ten Flash of Lights
+- No heal over time and only one party heal, Light's Vigil, which costs as much as ten top-rank Flash of Lights
 - Long fights test your mana: you heal off pace, not off the health bars
 - Oath of Light is one target, so most of your strength goes to one player
 
@@ -67,7 +67,7 @@ The build is 31 Holy, 12 Protection and 8 Retribution.
 - **Benediction** (5 points) and **Conviction** (3 points): Holy Shock and every instant 10% cheaper, and 6% crit on your heals and everything else you do.
 - **Divine Intellect** (5 points): 10% Intellect, in Protection's first row now.
 
-The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protection and adds 6 seconds to Blessing of Freedom, **Sacred Duty** brings Divine Shield back a minute sooner, **Purifying Power** makes Cleanse cheaper, and **Precision** and one point of **Divine Precision** are filler on the way. Open the planner at [/planner?class=paladin](/planner?class=paladin) to change it.
+The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protection and adds 6 seconds to Blessing of Freedom, **Sacred Duty** brings Divine Shield back a minute sooner, **Purifying Power** makes Cleanse cheaper, and **Precision** and one point of **Divine Precision** are filler on the way.
 
 ## Rotation and priority
 
@@ -89,7 +89,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 **Movement.** Holy Shock is your only instant heal outside Lay on Hands, and Flash of Light is a 1.5 second cast. Stand where you reach the tank and your party, so you never have to move to heal.
 
-**Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
+**Emergencies.** Divine Favor into Holy Light first. Lay on Hands is a full heal on a 20 minute cooldown, and it empties your mana bar. Use it on someone who is about to die when Divine Favor and Holy Light could not have saved them, ideally late in the fight. Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank: they drop the boss.
 
 ## Stat priority
 
@@ -101,7 +101,7 @@ Mana per 5 seconds and Intellect come first because you run out of mana long bef
 
 ## Races
 
-**Human** brings The Human Spirit, 10% Spirit, and Perception. **Dwarf** has Stoneform for a hit you cannot heal through. **Undead** is new to paladins in Forever and the Horde's only paladin healer: Will of the Forsaken breaks a fear and gets you casting again (it no longer makes you immune, so press it after the fear), and Cannibalize restores mana as well as health between pulls.
+**Human** brings Ruthless, 1% crit on every heal and so more Illumination refunds, and The Human Spirit, 10% Spirit. **Dwarf** has Stoneform for a hit you cannot heal through. **Undead** is new to paladins in Forever and the Horde's only paladin healer: Will of the Forsaken breaks a fear and gets you casting again (it no longer makes you immune, so press it after the fear), and Cannibalize restores mana as well as health between pulls.
 
 ## Professions
 
