@@ -72,7 +72,7 @@ Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stan
 - **Sweeping Strikes** and **Mortal Strike** (1 point each): Sweeping Strikes is the stepping stone to Mortal Strike and your two-target button. Mortal Strike is the spec.
 - **Improved Slam** (2 points): Slam's cast and global drop to one second, your swing timer keeps running through it, and its cooldown falls from 15 seconds to 10. That puts a Slam between your Mortal Strikes without costing you a swing.
 - **Improved Bloodrage** (Protection): two points in the level 60 build for half again as much rage from every Bloodrage, one point in the raid build for a quarter more.
-- **Cruelty** and **Unbridled Wrath** (10 points in Fury): 5% crit and a 60% chance at an extra rage point on every weapon hit.
+- **Cruelty** and **Unbridled Wrath** (10 points in Fury): 5% crit and a 60% chance at an extra rage point on every white swing that lands. Heroic Strike and Cleave take the place of a swing and never proc it.
 
 The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will**, which takes 15% off every stun and fear on you.
 
@@ -108,7 +108,7 @@ Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take
 
 Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes: press it on the pull and every time it comes back, but never inside Recklessness, which already makes every hit crit. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds. Skyborne edges both by a hair on either faction, since Wind Blessed is 2% haste that never turns off, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it.
 
-If you want a different look, the gap is small. On the Alliance, Dwarf comes out level with Night Elf, a hair ahead, since a Dwarf starts with more Strength, and Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage and 10% less rage on your non-periodic damaging abilities for 8 seconds every 2 minutes, sit just behind them. On the Horde, Orc and Undead are close: Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes, so press it on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc; Tauren brings nothing for damage and comes last.
+If you want a different look, the gap is small. On the Alliance, Dwarf comes out level with Night Elf, since a Dwarf starts with more Strength, and Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage and 10% less rage on your non-periodic damaging abilities for 8 seconds every 2 minutes, sit just behind them. On the Horde, Orc and Undead are close: Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes, so press it on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc; Tauren brings nothing for damage and comes last.
 
 ## Professions
 

@@ -64,7 +64,7 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 - **Bloodthirst** (1 point): an instant hit that scales with 45% of your attack power, every 6 seconds. Outside the execute phase, it is the button you never delay.
 - **Death Wish** (1 point): 20% more physical damage and Fear immunity for 30 seconds, at the cost of 5% more damage taken.
 - **Dual Wield Specialization** (5 points): 25% more off-hand damage and 50% more rage from off-hand swings. The core talent of a two-weapon build.
-- **Cruelty** and **Unbridled Wrath** (10 points): 5% crit, and a 60% chance at an extra rage point on every weapon hit. These are your first points: Cruelty from 10 to 14, then Unbridled Wrath from 15 to 19.
+- **Cruelty** and **Unbridled Wrath** (10 points): 5% crit, and a 60% chance at an extra rage point on every white swing that lands, from either hand. A Heroic Strike takes the place of a main-hand swing and never procs it. These are your first points: Cruelty from 10 to 14, then Unbridled Wrath from 15 to 19.
 - **Furious Precision** (3 points): 10% more hit with the off hand, which cuts the off-hand misses that cost you rage.
 - **Improved Execute** (2 points): Execute costs 10 rage instead of 15, so the rage you hold goes into damage.
 - **Improved Whirlwind** (2 points): Whirlwind comes back every 8 seconds instead of 10 and hits the closest enemy 30% harder. You press Whirlwind every time it comes off cooldown, and on a single boss the closest enemy is the boss.
@@ -109,7 +109,7 @@ Mighty Rage Potion goes on the pull and again when it comes back. Enchant and sh
 
 ## Races
 
-Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes, which Flurry turns into extra swings: press it on the pull and every time it comes back, with Death Wish when they line up, and never inside Recklessness, which already makes every hit crit. On the Alliance, Skyborne's Wind Blessed, 2% haste that never turns off, edges Night Elf by a hair, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it. On the Horde, Undead stays ahead of it. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds; with two weapons hitting, it comes back almost as soon as it can.
+Night Elf is the Alliance pick and Undead the Horde pick among the races every account has. Elune's Light is 10% crit for 15 seconds every 3 minutes, which Flurry turns into extra swings: press it on the pull and every time it comes back, with Death Wish when they line up, and never inside Recklessness, which already makes every hit crit. On the Alliance, Skyborne's Wind Blessed, 2% haste that never turns off, edges Night Elf by a hair, but it needs the paid Skyborne Heroic Pack, so take it only if you already own it. On the Horde, Skyborne and Undead are level. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds; with two weapons hitting, it comes back almost as soon as it can.
 
 The gap between races is small. On the Alliance, Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage and 10% less rage on your non-periodic damaging abilities for 8 seconds every 2 minutes, are next, and Dwarf's Artisan's Precision, 1% hit, comes in behind them. On the Horde, Orc is next, whose Blood Fury is 10% attack power for 15 seconds every 2 minutes. Troll's Berserking is 10% attack speed for only 15 seconds in every 3 minutes, so it trails Undead and Orc. Whatever you pick, press its active racial on cooldown and line it up with Death Wish when the timers allow. Blood Fury and Berserking also stack with Recklessness; a crit racial does not.
 
@@ -125,7 +125,7 @@ Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 1
 
 At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander worth keeping for when you dual wield.
 
-Your first five points, 10 to 14, go into Cruelty for 5% melee crit, then Unbridled Wrath from 15 to 19 gives your hits a 60% chance at an extra Rage. Furious Precision starts at 20, the level you can first dual wield, for off-hand hit.
+Your first five points, 10 to 14, go into Cruelty for 5% melee crit, then Unbridled Wrath from 15 to 19 gives your white swings a 60% chance at an extra Rage. Furious Precision starts at 20, the level you can first dual wield, for off-hand hit.
 
 Dual Wield trains at 20. Until then, swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 
