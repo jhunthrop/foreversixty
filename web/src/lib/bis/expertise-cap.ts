@@ -3,7 +3,7 @@
 // One formatter shared by the BiS page's weight rail (`panel-view.ts`) and the guides' stat
 // table, so the two never word it twice.
 import { bisCopy } from './copy';
-import type { BisExpertiseToCap } from './types';
+import type { BisExpertiseToCap, BisStatWeight } from './types';
 import { formatCapPercent } from './hit-cap';
 
 export interface ExpertiseCapLine {
@@ -33,4 +33,14 @@ export function expertiseCapLine(
     text: bisCopy.expertiseToCapLine(formatCapPercent(expertiseToCap.dodge), parry),
     title: bisCopy.expertiseToCapTitle,
   };
+}
+
+/** A band's weights without Expertise when its character gains none (`expertiseIsGained`):
+ *  the pills, the stat table and the weights panel then agree with the cap line, which is
+ *  left out on the same rule. */
+export function weightsForGainedStats(
+  weights: readonly BisStatWeight[],
+  expertiseToCap: BisExpertiseToCap | null | undefined,
+): BisStatWeight[] {
+  return expertiseIsGained(expertiseToCap) ? [...weights] : weights.filter((w) => w.stat !== 'expertise');
 }

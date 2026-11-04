@@ -123,10 +123,15 @@ export function railStatRows(
   haste: HasteFacts = UNKNOWN_HASTE,
 ): RailStatRow[] {
   const byLabel = new Map(weights.map((w) => [statLabelForSpec(w.stat, spec), w]));
-  const unordered: MatchedRow[] = statPriority.map((label) => ({
-    label,
-    weight: byLabel.get(GUIDE_LABEL_ALIASES[label] ?? label),
-  }));
+  // Expertise with no weight is a stat the band's character cannot gain (`weightsForGainedStats`
+  // dropped it): no row, so the pills and the table never name it.
+  const expertiseLabel = statLabelForSpec('expertise', spec);
+  const unordered: MatchedRow[] = statPriority
+    .map((label) => ({ label, weight: byLabel.get(GUIDE_LABEL_ALIASES[label] ?? label) }))
+    .filter(
+      (row) =>
+        !(row.weight === undefined && (GUIDE_LABEL_ALIASES[row.label] ?? row.label) === expertiseLabel),
+    );
   const perPointScales = unordered
     .filter((row) => sortTier(row.weight, haste.onItems) === 0)
     .map((row) => scaleOf(row.weight!));
