@@ -59,14 +59,74 @@ func racesInclude(races []string, race string) bool {
 	return len(races) == 0 || slices.Contains(races, race)
 }
 
-// rankAt is the rank the row holding level chooses for id, if any.
+// castLine is where a cast sits in a rotation: the index of its pre-pull
+// action or of its priority-list entry. A spell's rows scoped to lines or
+// pre-pull actions (rankchoices.Spell) apply only where they name.
+type castLine struct {
+	prepull bool
+	index   int
+}
+
+// noLine is no line at all: only a spell's unscoped rows apply to it.
+var noLine = castLine{index: -1}
+
+// scoped reports whether row applies only to the lines it names.
+func scoped(row RankChoiceRow) bool { return len(row.Lines) > 0 || len(row.Prepull) > 0 }
+
+// names reports whether a scoped row names line.
+func names(row RankChoiceRow, line castLine) bool {
+	if line.prepull {
+		return slices.Contains(row.Prepull, line.index)
+	}
+	return slices.Contains(row.Lines, line.index)
+}
+
+// rankAt is the rank the row holding level chooses for id outside any
+// scoped line, if any.
 func (c rankChoices) rankAt(id int32, level int) (int, bool) {
+	return c.rankAtLine(id, level, noLine)
+}
+
+// rankAtLine is the rank the row holding level chooses for id cast at line,
+// if any: a scoped row applies only to the lines it names.
+func (c rankChoices) rankAtLine(id int32, level int, line castLine) (int, bool) {
 	for _, row := range c[id] {
-		if row.FromLevel <= level && level <= row.ToLevel {
+		if row.FromLevel <= level && level <= row.ToLevel && (!scoped(row) || names(row, line)) {
 			return row.Rank, true
 		}
 	}
 	return 0, false
+}
+
+// scopedLines is every line a row for id is scoped to.
+func (c rankChoices) scopedLines(id int32) []castLine {
+	var out []castLine
+	for _, row := range c[id] {
+		for _, index := range row.Prepull {
+			out = append(out, castLine{prepull: true, index: index})
+		}
+		for _, index := range row.Lines {
+			out = append(out, castLine{index: index})
+		}
+	}
+	return out
+}
+
+// checkLines refuses a spell's lines or prepull scope (key) unless it is
+// absent or names distinct non-negative entries.
+func checkLines(key string, lines []int) error {
+	if lines != nil && len(lines) == 0 {
+		return fmt.Errorf("%s name nothing; leave the key out", key)
+	}
+	for i, line := range lines {
+		if line < 0 {
+			return fmt.Errorf("%s %d is not an entry", key, line)
+		}
+		if slices.Contains(lines[:i], line) {
+			return fmt.Errorf("%s %d is named twice", key, line)
+		}
+	}
+	return nil
 }
 
 // parseRankChoices decodes the curated table, sorting each spell's rows and
@@ -88,7 +148,13 @@ func parseRankChoices(b []byte) (map[string]rankChoices, error) {
 			if _, dup := bySpell[sp.Authored]; dup {
 				return nil, fmt.Errorf("rank choices: %s names %d twice", spec, sp.Authored)
 			}
+			if err := errors.Join(checkLines("lines", sp.Lines), checkLines("prepull", sp.Prepull)); err != nil {
+				return nil, fmt.Errorf("rank choices: %s %d: %w", spec, sp.Authored, err)
+			}
 			rows := slices.Clone(sp.Bands)
+			for i := range rows {
+				rows[i].Lines, rows[i].Prepull = sp.Lines, sp.Prepull
+			}
 			slices.SortFunc(rows, func(a, b RankChoiceRow) int { return a.FromLevel - b.FromLevel })
 			for i, row := range rows {
 				if row.Preset != "" && row.Preset != BarePreset && row.Preset != RaidPreset {

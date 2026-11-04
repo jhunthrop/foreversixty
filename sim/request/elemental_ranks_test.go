@@ -44,35 +44,49 @@ func TestElementalRaidCastsLightningBoltRankTen(t *testing.T) {
 
 // Sim-accuracy round 15: 70755 raised every Flame Shock rank, so the
 // rank 1 and 2 rows judged on 70753 lose. The top rank learned wins at 30
-// (+3.5 to +4.2%) and 50 (+1.4 to +1.7%); rank 3 wins at 40 (+0.8 to
-// +0.9% over rank 1, ahead of rank 4), both factions, seeds 1 and 50001.
+// (+3.5 to +4.2%) and 50 (+1.4 to +1.7%). Round 16: with the filler
+// casting Lightning Bolt rank 5 from 39, rank 3 at 40 to 49 loses to rank 4
+// at every level measured (40 +0.5 to +0.6%, 45 +1.0%), so the top rank
+// learned casts there too.
 func TestElementalFlameShockRanksByBand(t *testing.T) {
 	var list struct {
 		Rotation json.RawMessage `json:"rotation"`
 	}
 	readJSON(t, "../../data/curated/apl/shaman-elemental.json", &list)
 	shock := map[int]int{1: 8050, 2: 8052, 3: 8053, 4: 10447, 5: 10448}
-	for level, want := range map[int]int{30: 3, 39: 3, 40: 3, 49: 3, 50: 4, 55: 5} {
+	for level, want := range map[int]int{30: 3, 39: 3, 40: 4, 49: 4, 50: 4, 55: 5} {
 		assertOnlyRank(t, list.Rotation, "shaman-elemental", "shaman", BarePreset, "troll", level, shock, want)
 	}
 }
 
 // Sim-accuracy round 15 wave 3: on Forever's level-gap rule (a rank keeps
 // its whole spell power until it is 17 levels behind) the filler line's
-// best rank moves to rank 3 at 30 (+4.1 to +4.3% over rank 4; rank 3 lost
-// its Era sub-20 cut) and rank 6 at 50 (+7.5 to +8.5% over rank 9); rank 4
-// holds at 40. The top-rank line casts the highest rank learned at each
-// band (its rank-7 row at 50 tied). Both factions, seeds 1 and 50001.
+// best rank moves to rank 3 at 30 and rank 6 at 50. Round 16 measured the
+// rows at every level of their bands, not only the floor: a rank chosen at
+// 30 is 8 levels deeper in the gap by 39, and the best rank climbs with the
+// level. The filler (line 8, authored at rank 10 so a raid casts it as
+// written) casts rank 3 to 33, 4 to 38, 5 to 44, 6 to 50, 7 to 56 and 8 from
+// 57 (bare 60 too): at 39 rank 5 is +11.8% over rank 3, at 49 rank 6 +29.7%
+// over rank 4, at 59 rank 8 +19.6% over rank 6, and at 40 rank 5 +0.5% over
+// rank 4 (seeds 1 and 50001). The top-rank line casts the highest rank
+// learned at each level.
 func TestElementalLightningBoltRanksByBand(t *testing.T) {
 	var list struct {
 		Rotation json.RawMessage `json:"rotation"`
 	}
 	readJSON(t, "../../data/curated/apl/shaman-elemental.json", &list)
-	bolt := map[int]int{3: 548, 4: 915, 5: 943, 6: 6041, 7: 10391, 8: 10392, 9: 15207}
+	bolt := map[int]int{3: 548, 4: 915, 5: 943, 6: 6041, 7: 10391, 8: 10392, 9: 15207, 10: 15208}
 	for _, c := range []struct {
 		level int
 		want  map[int]bool
-	}{{30, map[int]bool{3: true, 5: true}}, {40, map[int]bool{4: true, 7: true}}, {50, map[int]bool{6: true, 9: true}}} {
+	}{
+		{30, map[int]bool{3: true, 5: true}}, {33, map[int]bool{3: true, 6: true}},
+		{34, map[int]bool{4: true, 6: true}}, {38, map[int]bool{4: true, 7: true}},
+		{39, map[int]bool{5: true, 7: true}}, {40, map[int]bool{5: true, 7: true}}, {44, map[int]bool{5: true, 8: true}},
+		{45, map[int]bool{6: true, 8: true}}, {50, map[int]bool{6: true, 9: true}},
+		{51, map[int]bool{7: true, 9: true}}, {56, map[int]bool{7: true, 10: true}},
+		{57, map[int]bool{8: true, 10: true}}, {59, map[int]bool{8: true, 10: true}},
+	} {
 		out, err := RewriteRotationRanks(list.Rotation, "shaman-elemental", "shaman", BarePreset, "troll", c.level)
 		if err != nil {
 			t.Fatal(err)

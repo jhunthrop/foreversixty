@@ -93,6 +93,33 @@ func TestGearOverrideReachesTheRequestAndABadPairFailsTheRun(t *testing.T) {
 	}
 }
 
+// A rank row covers a ten-level band; -level runs the band's entry at a level
+// inside it, so a row can be judged at the band's top as well as its floor.
+func TestLevelRunsTheBandEntryAtThatLevel(t *testing.T) {
+	o := realOptions(testSpec)
+	req, err := buildRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if req.Character.Level != 60 {
+		t.Fatalf("level = %d, want the band 60 without -level", req.Character.Level)
+	}
+	o.band, o.preset, o.level = 30, "bare", 39
+	req, err = buildRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if req.Character.Level != 39 {
+		t.Fatalf("level = %d, want -level 39", req.Character.Level)
+	}
+	for _, bad := range []int{29, 40, 61} {
+		o.level = bad
+		if _, err := buildRequest(o); err == nil {
+			t.Errorf("-level %d ran on band 30", bad)
+		}
+	}
+}
+
 func TestRunRejectsAMissingRotationFile(t *testing.T) {
 	o := realOptions(testSpec)
 	o.rotation = t.TempDir() + "/missing.json"
