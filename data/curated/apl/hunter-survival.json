@@ -138,7 +138,7 @@
         }
       },
       {
-        "notes": "Immolation Trap at your feet on cooldown. You stand on the boss, so it walks straight into the trap, and Clever Traps and Survivalist's Discipline make it a real damage button.",
+        "notes": "Immolation Trap at your feet on cooldown. You stand on the boss, so it walks straight into the trap, and Clever Traps and Survivalist's Discipline make it a real damage button. Its burn carries a share of your attack power in Forever, so it keeps up with your gear.",
         "action": {
           "castSpell": {
             "spellId": {
