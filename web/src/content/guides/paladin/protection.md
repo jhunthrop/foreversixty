@@ -48,7 +48,7 @@ Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield o
 ### Strengths
 
 - Righteous Fury turns your Holy damage into huge threat, and Holy Shield adds more on every block
-- Holy Shield, Redoubt and Shieldsworn keep your block chance high, and Shieldsworn lets you block spells
+- Holy Shield and Redoubt keep your block chance high, and Shieldsworn fires Holy Shield's damage on every Holy Strike while it is up and lets you block spells
 - Judgement of Fury taunts, and Swift Judgement gives you a second one
 - Three defensives (Templar's Bulwark, Divine Shield, Divine Protection) plus Lay on Hands
 
@@ -110,7 +110,7 @@ Left out: Reckoning (extra attacks after a block or a crit, worth less than Conv
 
 ## Stat priority
 
-Defense comes first: it takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage, Redoubt and Shield Specialization's mana. Agility is dodge and armor at once, and block value makes every block take more off the hit. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
+Defense comes first: it takes hits away and lowers the boss's chance to crit you. Block, Dodge and Parry come next because they take hits away or blunt them, and Block also feeds Holy Shield's damage and Shield Specialization's mana. Agility is dodge and armor at once, and block value makes every block take more off the hit. Stamina is still health, and armor still takes a slice off every physical hit, so neither ever goes to zero. Hit sits low once Precision's 3% is in.
 
 ## Best in slot
 

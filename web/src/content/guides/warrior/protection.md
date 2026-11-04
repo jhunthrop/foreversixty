@@ -3,8 +3,8 @@ title: Protection Warrior in Forever
 classSlug: warrior
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70755:warrior:dwarf:35300003/0/250533120330001351:'
-recommendedRaces: [dwarf, tauren]
+build: 'FS1:1.60.1.70755:warrior:night-elf:35300003/0/250533120330001351:'
+recommendedRaces: [night-elf, tauren]
 statPriority:
   [
     Defense,
@@ -115,7 +115,9 @@ Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for Stamina an
 
 ## Races
 
-Dwarf and Tauren are the tank picks. Dwarf's Stoneform takes 10% off physical damage for 8 seconds every 3 minutes and clears bleeds and poisons, a small Shield Wall you can press on demand. Tauren's Endurance is 5% more health. Night Elf's Quickness adds 1% dodge.
+Night Elf is the Alliance pick and Tauren the Horde pick. Night Elf's Quickness is 1% more dodge and 2% more movement speed, and that dodge is every hit it turns away: a Night Elf takes less damage than any other Alliance race, and its health swings less than a Dwarf's. Tauren's Endurance is 5% more total health, and no race's health swings less when the big hits stack.
+
+Dwarf is the button race. Stoneform removes every bleed, poison and disease, makes you immune to them, and takes 10% off physical damage for 8 seconds every 3 minutes. It only helps when you press it, so save it for the hit you know is coming, or for the bleed or poison stack that would otherwise get a healer to panic.
 
 ## Professions
 

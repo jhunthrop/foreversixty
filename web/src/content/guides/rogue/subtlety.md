@@ -4,7 +4,7 @@ classSlug: rogue
 spec: subtlety
 role: dps
 build: 'FS1:1.60.1.70755:rogue:night-elf:005302011/320003/035131031321001151:'
-recommendedRaces: [night-elf, troll]
+recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike and Shank on cooldown, Boot Knife, Death Mark and its raid spot.'
 updated: 2026-11-02
@@ -39,7 +39,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and B
 
 - The lowest raid damage of the three trees
 - More moving parts than Combat: a debuff, a bleed, a mark and three short cooldowns to track
-- Its strongest tools (Vanish, Preparation, Blind) do little on a raid boss
+- Its strongest tools (Vanish and Blind) do little on a raid boss, and Preparation is worth only one extra five-point finisher there
 
 ### In a raid
 
@@ -106,7 +106,7 @@ Deadly Poison and a stone on the main hand, Instant Poison and a stone on the of
 
 ## Races
 
-Night Elf on Alliance and Troll on Horde: Elune's Light is 10% crit for 15 seconds and Berserking 10% attack speed for 15 seconds, both on 3 minute cooldowns, so press them at the pull. Orc's Blood Fury and Human's passive 1% crit are fine alternatives.
+Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, which is free damage all fight. **Elune's Light** is 10% crit for 15 seconds on a 3 minute cooldown, so press it at the pull with the first mark. Orc's Blood Fury and Human's passive 1% crit are the next best.
 
 ## Professions
 

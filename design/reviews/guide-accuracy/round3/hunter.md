@@ -1,0 +1,67 @@
+# Guide accuracy round 3: Hunter
+
+Auditor: hunter (class index, Beast Mastery, Marksmanship, Survival). Tree: land/guides-r2 7a2165cb0, client 1.60.1.70755, engine pin d1d9f2775 (sim/enginever/version.go).
+Files: `web/src/content/guides/hunter/{index,beast-mastery,marksmanship,survival}.md`, card notes in `data/curated/apl/hunter-*.json`.
+
+## Builds and leveling order (re-decoded this round)
+
+Decoded against `data/builds/1.60.1.70755/talents/hunter.json` (array order, as fs1.ts reads it). All five strings are unchanged since round 1 except the race field (now `night-elf`), all legal: 51 points, tier gates and prerequisites met.
+
+- **BM build**: Deadly Aspects 5, Endurance Training 4, Focused Fire 2, Bestial Swiftness 1, Unleashed Fury 5, Ferocity 5, Intimidation 1, Bestial Discipline 2, Frenzy 5, Bestial Wrath 1 (31); Lethal Attacks 5, Improved Stings 2, Efficiency 4, Careful Aim 5, Rapid Killing 1, Trueshot Aura 1, Mortal Shots 2 (20).
+- **BM raidBuild**: same BM 31; Lethal Attacks 5, Improved Stings 2, Efficiency 3, Careful Aim 5, Trueshot Aura 1, Mortal Shots 4 (20).
+- **MM build**: Deadly Aspects 5, Endurance Training 3, Focused Fire 2, Unleashed Fury 5, Ferocity 1 (16); Lethal Attacks 5, Improved Stings 1, Efficiency 5, Careful Aim 5, Trueshot Aura 1, Mortal Shots 5, Barrage 3, Ranged Weapon Specialization 5 (30); Improved Tracking 5 (5).
+- **MM raidBuild**: Deadly Aspects 5; Lethal Attacks 5, Improved Stings 3, Efficiency 5, Careful Aim 5, Lone Wolf 1, Trueshot Aura 1, Mortal Shots 5, Barrage 3, Ranged Weapon Specialization 5 (33); Improved Tracking 5, Survivalist 5, Surefooted 3 (13).
+- **Survival build** (also raid): Deadly Aspects 5; Lethal Attacks 5, Careful Aim 5, Lone Wolf 1; Improved Tracking 5, Savage Strikes 2, Survivalist 3, Clever Traps 2, Surefooted 3, Deterrence 1, Predator's Edge 5, Counterattack 1, Resourcefulness 2, Expose Prey 2, Survivalist's Discipline 2, Strider Kick 1, Lightning Reflexes 5, Lacerating Strikes 1 (35).
+
+Leveling order (`addon-builds.json`, index 0 = level 10) is identical to round 2's list: BM Deadly Aspects 10-14, Focused Fire 15-16, Endurance Training 17-20 ... Bestial Wrath 40; MM Lethal Attacks 10-14 ... Improved Tracking 56-60; Survival Improved Tracking 10-14 ... Lacerating Strikes 40 ... Lone Wolf 60. Every leveling sentence (BM "first five points into Deadly Aspects", "Focused Fire at 15 and 16", "Bestial Wrath comes the same level" as mail at 40; Survival "Lone Wolf is one of the last points") matches.
+
+## What was checked and holds
+
+- Every talent number and effect in the prose against the 70755 rank text: Unleashed Fury 15%, Ferocity 10%, Frenzy 100%/30%/8 s, Focused Fire 2%, Bestial Wrath 50%/18 s/no fear (spellconst 19574, 120 s), Deadly Aspects (Hawk: Auto Shot; Beast: all melee autos; 10%/30%/12 s), Careful Aim, Mortal Shots 6%/rank (12% at 2, 24% at 4, 30% at 5), Rapid Killing rank 1 (1 min), Endurance Training 3%/rank, Bestial Discipline (50% regen while casting), Bestial Swiftness, Intimidation, Improved Stings 20% at 3, Efficiency (shots, stings, melee), Lethal Attacks 5%, Barrage 15%, RWS 5%, Lone Wolf 20%, Sniper Shot (tier 6, 4 s cast, 15 s cooldown, prereq Trueshot Aura), Improved Tracking (seven types), Savage Strikes 4%, Surefooted 3%, Predator's Edge 30%/50%, Resourcefulness 60% plus the crit regen, Expose Prey 10%/10 s, Survivalist's Discipline 40%, Lightning Reflexes 15%, Lacerating Strikes 40%/21 s. Point totals in the prose (thirty-one, twenty, thirty, sixteen, five, thirty-three, thirteen, thirty-five, eleven) all match.
+- Round 2 edits re-checked: Distracting Shot (15632, effect 63 threat 600, no duration; description "Distract the target, causing threat") holds; the 6%/5% as a Dwarf hit line holds (races.json: Artisan's Precision 1% hit with spells and attacks, every weapon); the off hand at three quarters with Predator's Edge holds; the Rapid Killing line holds (tier 2 beside Lone Wolf, Lethal Attacks 5 + Careful Aim 5 open it; measured -1.9%).
+- Race prose against the guide-build reruns in `round2/race-sims.md`: BM Night Elf 674.8 > Human 671.4 > Dwarf 669.3, Orc 678.9 > Troll 673.5; MM Night Elf 745.9 > Human 742.5 > Dwarf 740.0, Troll 745.6 > Orc 743.5; Survival Night Elf 819.9 > Human 816.4 > Dwarf 812.5, Orc 818.5 ~ Troll 818.8 ("level"). Racial texts match races.json (Elune's Light 10% crit 15 s, 3 min; Berserking 10% casting and attack speed 15 s, 3 min; Blood Fury 10% AP 15 s, 2 min; Command 5% pet damage; Ruthless 1% crit; Big Game Hunter 5% vs beasts).
+- Spells and levels against trainables and client descriptions: Aimed Shot 20 (2 s, 6 s shared category), Multi-Shot 18, Rapid Fire 26 ("ranged and melee attack speed by 40% for 15 sec", 5 min), Feign Death 30, Aspect of the Cheetah 20, Wing Clip 12 (rank 3: 50 damage, 80 mana, matching the card note), Tame Beast 10, Aspect of the Beast 30/40/50/60 (110 at 60), Falcon 60 ("by the same amount as their highest rank of Aspect of the Hawk"; Hawk rank 6 14322 is 110, rank 7 25296 is a book rank in spellranks.json), Trueshot Aura rank 5 aura 124 only (ranged AP, 100), Heart of the Lion level 1, Raptor Strike no GCD and next-swing (spellconst gcd_ms 0; engine queue), Mongoose Bite "Can only be performed after you dodge", Counterattack after a parry, Strider Kick 100% weapon damage, 8 s, Lacerate 30-60, Disengage 5 s threat reduction, Tranquilizing Shot trainer row at 60, Volley channel.
+- Consumables: Major Frenzy Potion is on the shared potion timer (engine burst_potions_test.go:63), Major Mana Potion 49, Elixir of the Mongoose 46, Poached Sunscale Salmon 35, Ground Scorpok Assay, Jagged Arrow 40, Ice Threaded 51, Thorium Headed 52, Thorium Shells 52, Quickdraw Quiver 40, Harpy Hide Quiver 55, Sniper Scope 40, Biznicks 50 (items.json).
+- statPriority frontmatter still agrees with the band 60 raid weights in `bis/hunter-*.json` (Survival: Hit 1.47 > Crit 1.14 > Agi 1.00 > Int 0.87 > Str 0.54 > AP 0.45). Card notes for all three specs re-read; the rotation prose matches each list in order.
+- Cat as a fast attacker: Warcraft Tavern's Forever pet guide calls cats "excellent leveling companions thanks to their fast attack speeds" and says family damage is normalized per hit in PvE. Holds.
+- No em or en dashes, no site/sim words, no quoted nightly numbers, no removed spells or SoD runes.
+
+## Findings
+
+| id | status | kind | file:line | wrong claim | evidence | fix |
+|---|---|---|---|---|---|---|
+| HUNTER-R3-1 | CONFIRMED | race (owner rule) | index.md:38, beast-mastery.md:127, marksmanship.md:130, survival.md:114 | "Skyborne can be Hunters on either faction, and Wind Blessed's 2% haste speeds every auto shot you fire." (index: "Skyborne can be Hunters on either faction.") | races.json 95/96: "Skyborne is unlocked by the Skyborne Heroic Pack, reported at $29.99, rather than by a base subscription." Owner rule (round 3 brief): a paid race is named only as the paid option. The hunter pages present Skyborne as a plain race choice; the warrior pages already say "a paid unlock". | index.md:38: "**Human Hunter** is one of the six new race and class pairs, so the Alliance has a Human Hunter for the first time. Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction." BM:127 and MM:130: "Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire, and it lands in the middle of the pack, so it is the paid option, never the pick." SV:114: same with "speeds both of your weapons". |
+| HUNTER-R3-2 | LIKELY | rotation | survival.md:88 | "Disengage trims some threat on a 5 second cooldown" | Client description of Disengage (spelltips 781): "Attempts to disengage from the target by reducing threat. Disables auto-attack." For a melee spec whose damage is white swings and next-swing Raptor Strikes, pressing it without restarting your attack costs swings; the line leaves that out. | "Disengage trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted." |
+| HUNTER-R3-3 | LIKELY | card note | data/curated/apl/hunter-survival.json priorityList[3].notes | "Expose Prey opens it for 10 seconds off your hits on a target with your Hunter's Mark" | Expose Prey's rank text (talents/hunter.json 104985): "against enemies afflicted by Hunter's Mark", no owner condition. Marks do not stack (the BM/MM mark card says leave another hunter's mark up), and survival.md:80 says "if no other hunter has marked it, you do", so the card note's "your" contradicts the page. | "...and Expose Prey opens it for 10 seconds off your hits on a target with Hunter's Mark, any hunter's, which is how it lights up on a boss that never swings at you. One press spends the window." |
+| HUNTER-R3-4 | LIKELY | leveling | survival.md:80, 122-124 | "Before 60 Beast is the only melee aspect you have." (Leveling names no aspect at all.) | Aspect of the Beast is first trained at 30 (trainables 13161); from 10 to 29 a Survival hunter has no melee attack power aspect, and the leveling section does not say what to wear. Aspect of the Monkey (level 4) is dodge, and every dodge opens Mongoose Bite (1495 description). | survival.md:80: "From 30 to 59 Beast is the only melee aspect you have." Leveling, after "Wing Clip a runner.": "Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up." |
+
+## Decisions
+
+- **D1. Skyborne wording.** Decided by the owner rule, no sim needed: the race sims place Skyborne mid-pack in every hunter spec (BM 661.0 and 663.7, MM 706.6 and 709.0, Survival 749.9 and 750.6 on the published entries), so it is never the recommendation even on numbers; the fix names it as the paid option only.
+- **D2. Falcon for Survival.** Kept as written ("not a clear upgrade"). Falcon 469145 carries its own aura 42 with trigger 469144 (Quick Strikes) and amount 0, the same shape as Hawk's aura 42 to Quick Shots 6150, whose chance comes from Deadly Aspects. Nothing in the 70755 data gives Falcon an independent melee proc chance, and the line makes no ranking claim.
+- **D3. Summon Hawk and Sniper Shot lines.** The BM prose never claims Summon Hawk loses, and the MM Sniper Shot line gives reasons without a measure; both stand as defaults, with the sims below requested so the next round can either keep or adopt.
+
+## Sims requested
+
+1. **Sniper Shot (carried from round 1 S3, never run).** MM raidBuild at band 60 raid preset, Night Elf, seeds 1|50001: published `5/005355001150305/50005003` against Sniper Shot 1 for Surefooted 1 (`5/0053550011503051/50005002`), with the rotation casting Sniper Shot when the shared cooldown is not ready and the next auto shot is at least 4 s away (or on cooldown, as a second variant). Adopt only beyond error under the talent rule; otherwise marksmanship.md:79 stands.
+2. **Summon Hawk (carried from round 1 S7, never run).** BM raidBuild at band 60 raid preset, Night Elf: Summon Hawk 1 for the fourth Endurance Training point (`5320001505101251/00523500014/0`), rotation casting Summon Hawk on its cooldown in Arcane Shot's place. Adopt only beyond error; if it wins, beast-mastery.md:75 needs a Summon Hawk sentence.
+
+## Sim findings
+
+None new. Carried items stay where round 2 put them (stale spelltips hover text with the data lane; bis files pre-push for the refresh; APL top-level notes still calling Falcon 55/55, notes only).
+
+## Sources
+
+- Forever Sixty client data, 1.60.1.70755: talents/hunter.json, trainables/hunter.json, spellconst/hunter.json, spelltips/hunter.json (781 Disengage, 1495 Mongoose Bite, 469145 Aspect of the Falcon, 14268 Wing Clip), spellranks.json (25296 book rank), races.json (Skyborne Heroic Pack), addon-builds.json
+- Engine d1d9f2775: sim/hunter/pet.go (10% AP, all crit inherited), sim/hunter/raptor_strike.go (next-swing queue), sim/hunter/aspect_of_the_falcon.go, sim/core/burst_potions_test.go (Frenzy potions on the shared potion timer)
+- Race sims: design/reviews/guide-accuracy/round2/race-sims.md (guide-build reruns)
+- Warcraft Tavern, Forever Best Hunter Pets, https://www.warcrafttavern.com/forever/guides/best-hunter-pets/ (cats "fast attack speeds"; pet family damage normalized in PvE)
+
+## Fix log (round 3)
+
+- HUNTER-R3-1 fixed (owner rule, D1): index.md:38, beast-mastery.md:127, marksmanship.md:130, survival.md:114 name Skyborne as the Heroic Pack paid unlock, "the paid option, never the pick". recommendedRaces and build strings untouched (no race or build changes this lane).
+- HUNTER-R3-2 fixed: survival.md:88 says Disengage turns off auto attack (spelltips 781 "Disables auto-attack."), restart swinging.
+- HUNTER-R3-3 fixed: hunter-survival.json priorityList[3].notes now "a target with Hunter's Mark, any hunter's" (talents/hunter.json 104985: "enemies afflicted by Hunter's Mark", no owner). Action untouched; JSON parses.
+- HUNTER-R3-4 fixed: survival.md:80 "From 30 to 59 Beast is the only melee aspect you have." (trainables: Beast rank 1 at 30); survival.md:124 adds Monkey until 30 (13163 level 4, "chance to dodge by 8%"; 1495 "Can only be performed after you dodge"), then Beast at 30.
+- D2 Falcon line kept as written. D3 Summon Hawk and Sniper Shot lines kept; both sims (Sims requested 1 and 2) stay with the sim round.
+- New SIM findings: none.

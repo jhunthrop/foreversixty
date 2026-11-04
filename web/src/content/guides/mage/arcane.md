@@ -5,7 +5,7 @@ spec: arcane
 role: dps
 build: 'FS1:1.60.1.70755:mage:gnome:141005213100301531/4/05350003:'
 raidBuild: 'FS1:1.60.1.70755:mage:gnome:131205213100301531/3/05350003:'
-recommendedRaces: [gnome, orc]
+recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Intellect, Arcane power, Critical strike, Spell haste, Spell penetration]
 description: 'Arcane Mage in Forever: the Arcane Blast loop, the opener, Arcane Power windows, mana over a boss fight, talents, stats and leveling.'
 updated: 2026-11-02
@@ -86,7 +86,7 @@ Skip Flame Throwing and Impact: Fire Blast on the move is the only Fire spell yo
 
 ## Stat priority
 
-Arcane Blast gives spell damage from Intellect, so Intellect is close to a damage stat for this spec: a bit better than for Fire, which wants it for mana, and far better than for Frost. Hit and spell power are your two best stats until you reach the hit cap: a missed Blast costs the full stacked price and does nothing.
+Arcane Blast gives spell damage from Intellect, so Intellect is close to a damage stat for this spec: a bit better than for Fire, which wants it for mana, and far better than for Frost. Hit and spell power are your two best stats until you reach the hit cap: a missed Blast deals nothing but still costs the full stacked price and still raises the next one's.
 
 ## Best in slot
 
@@ -96,7 +96,7 @@ Arcane casts Arcane and Frost spells, so any spell power enchant or elixir that 
 
 ## Races
 
-**Gnome** is the best Alliance Arcane mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Arcane Power on the pull and again the moment it is back. **Human** brings 1% crit and 10% Spirit, which runs all the time thanks to Arcane Meditation and Mage Armor. **Skyborne** mages are Alliance and bring Read Leyline, 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown, plus 2% haste from Wind Blessed; press Read Leyline when your mana starts to slide. On the Horde, **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes: press it with Arcane Power on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Arcane Power. **Undead** gets a small Shadow drain from Touch of the Grave plus Will of the Forsaken for fear fights.
+**Gnome** is the best Alliance Arcane mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Arcane Power on the pull and again the moment it is back. **Human** is close behind with 1% crit and 10% Spirit, which runs all the time thanks to Arcane Meditation and Mage Armor. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Orc** is next: Blood Fury adds 10% spell power for 15 seconds every 2 minutes, so press it with Arcane Power on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Arcane Power. **Skyborne** is a paid unlock and only Alliance for mages; Read Leyline (50% more health and mana regeneration for 15 seconds, 2 minute cooldown) and Wind Blessed's 2% haste still do less damage than a Gnome or a Human.
 
 ## Professions
 

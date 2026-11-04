@@ -3,9 +3,9 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70755:mage:gnome:2520150000002/51521001230133031/003:'
-raidBuild: 'FS1:1.60.1.70755:mage:gnome:2530050000002/50520201230133031/003:'
-recommendedRaces: [gnome, orc]
+build: 'FS1:1.60.1.70755:mage:human:2520150000002/51521001230133031/003:'
+raidBuild: 'FS1:1.60.1.70755:mage:human:2530050000002/50520201230133031/003:'
+recommendedRaces: [human, undead]
 statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Fire Mage in Forever: the pre-pull Pyroblast, Scorch spam, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
 updated: 2026-11-02
@@ -35,7 +35,7 @@ Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fas
 ### Strengths
 
 - The cheapest filler a mage has: Scorch is 150 mana for a 1.5 second cast
-- Every crit pays twice, once through Ignite and once through Heating Up
+- Every Scorch and Fire Blast crit pays twice, once through Ignite and once through Heating Up
 - Fire Power rewards you for every burn you keep on the boss
 - Fire Blast is instant and a 3-stack Pyroblast is short enough to cast between steps, so you keep doing damage through movement
 
@@ -74,13 +74,13 @@ The 60 build pays that toll with a point in **Impact**, a 3% chance to stun a mo
 
 **The loop.** Keep 5 Improved Scorch stacks rolling: every filler Scorch refreshes them, so you only think about the refresh after a movement break or a target swap. Fire Blast every time it is off cooldown. Pyroblast only on 3 stacks of Heating Up. Everything else is Scorch. A Pyroblast at the full 6 seconds, or on 1 or 2 stacks, loses to Scorch, and Fireball as a filler loses to Scorch even while your mana is full.
 
-**Combustion.** Press it once the boss carries 5 stacks, together with your on-use trinkets and your racial: Eureka! on a Gnome, Blood Fury on an Orc, Berserking on a Troll. A fresh tank needs a few seconds before you do. Combustion lasts until three crits land, and every crit in it is an Ignite and a Heating Up stack, so the window usually ends in a 1.5 second Pyroblast.
+**Combustion.** Press it once the boss carries 5 stacks, together with your on-use trinkets and your racial: Eureka! on a Gnome, Blood Fury on an Orc, Berserking on a Troll. A fresh tank needs a few seconds before you do. Combustion lasts until three crits land, and every Scorch or Fire Blast crit in it is an Ignite and a Heating Up stack, so the window usually ends in a 1.5 second Pyroblast.
 
 **Ignite and threat.** Ignite's damage is your damage and your threat. Fire mages pull more than anyone else in the first twenty seconds, mostly off a Combustion window that crits three times in a row. You have no Ice Block and no Invisibility, so the only fix is not to pull: watch your threat, hold Combustion on a fresh tank, and stop casting for a global if you are close. Burning Soul takes some off the top.
 
 **Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down and a Major Mana Potion, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: every cast is a Heating Up stack, and the mana you would save is worth less than the Pyroblasts you would lose. Never downrank Scorch; the top rank is already the cheapest damage you have.
 
-**AoE.** Flamestrike is a 3 second cast that burns the ground for 8 seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range. Flamestrike costs 990 mana, so a big pull eats a third of your bar before the Arcane Explosions start. Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
+**AoE.** Flamestrike is a 3 second cast that burns the ground for 8 seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range. Flamestrike costs 990 mana, so two of them on a big pull eat a third of your bar before the Arcane Explosions start. Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
 
 **Execute and movement.** Fire has no execute. On the move, keep Fire Blast on cooldown and save a Pyroblast on 3 Heating Up stacks for the next stop. Scorch's stacks last 30 seconds, so a short movement phase does not drop them.
 
@@ -98,7 +98,7 @@ Fire casts nothing but Fire, so any Fire-only spell power on gear is full value 
 
 ## Races
 
-**Gnome** is the best Alliance Fire mage: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Combustion on the pull and again the moment it is back. **Human** brings 1% crit, which Fire turns into Ignite. **Skyborne** mages are Alliance and bring Read Leyline, 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown, plus 2% haste from Wind Blessed; press Read Leyline when your mana starts to slide. On the Horde, **Orc** Blood Fury adds 10% spell power for 15 seconds every 2 minutes: press it with Combustion on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Combustion. **Undead** gets a small Shadow drain from Touch of the Grave and Will of the Forsaken for fear fights.
+**Human** is the Alliance pick for Fire, a hair ahead of Gnome: Ruthless adds 1% crit with all spells, which Fire turns into Ignite and Heating Up, and The Human Spirit adds 10% Spirit. **Gnome** is just behind: Eureka! is 10% more damage and 10% cheaper spells for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana, so press Eureka! with Combustion on the pull and again the moment it is back. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Orc** is next: Blood Fury adds 10% spell power for 15 seconds every 2 minutes, so press it with Combustion on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Combustion, but falls behind both. **Skyborne** is a paid unlock and only Alliance for mages, and it does the least Fire damage of the lot.
 
 ## Professions
 

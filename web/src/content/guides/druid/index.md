@@ -33,4 +33,4 @@ The druid is the class that fills any role from one character: a caster in Moonk
 
 ## Races
 
-Druids are Night Elf or Tauren as before, and Skyborne can be druids on both factions, with their own sky-blue forms. None of Forever's six new race and class pairs is a druid.
+Druids are Night Elf or Tauren as before, and Skyborne, a paid unlock with the Skyborne Heroic Pack, can be druids on either faction, with their own sky-blue forms. None of Forever's six new race and class pairs is a druid.

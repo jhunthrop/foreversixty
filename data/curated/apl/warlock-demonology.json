@@ -257,7 +257,7 @@
         }
       },
       {
-        "notes": "Immolate with 3 seconds or less left on it. The cast lands as the old one runs out, and the fresh hit is worth the last tick.",
+        "notes": "Immolate with 3 seconds or less left on it. It lands a moment before the old one ends, and the fresh hit is worth the last tick.",
         "action": {
           "condition": {
             "cmp": {

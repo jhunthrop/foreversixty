@@ -5,7 +5,7 @@ spec: assassination
 role: dps
 build: 'FS1:1.60.1.70755:rogue:night-elf:32530200251551031/302303/011:'
 raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:00530311251551031/302302/005:'
-recommendedRaces: [night-elf, troll]
+recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, Shank and Venom behind your poisons, Relentless Strikes for energy.'
 updated: 2026-11-02
@@ -56,7 +56,7 @@ The raid build goes 36/10/5: down Assassination to Mutilate, with Seal Fate, Ven
 - **Venom** (1 point): every Shank makes your poisons hit 30% harder and apply 20% more often for 6 seconds. It is a passive on Shank, with no finisher or global of its own, and Mutilate needs it.
 - **Relentless Strikes** (5 points): every finisher has a 20% chance per combo point to give 25 energy back, so a four-point Eviscerate refunds it four times in five. This is what lets a 60 energy builder keep up.
 - **Cold Blood** (1 point): your next Mutilate or Eviscerate is a guaranteed crit, on a 3 minute cooldown. Save it for an Eviscerate at four or more points.
-- **Lethality** (2 points): Mutilate crits hit 20% harder, and with Malice and Puncturing Wounds you crit a lot.
+- **Lethality** (2 points): Mutilate crits deal 220% instead of 200%, and with Malice and Puncturing Wounds you crit a lot.
 - **Vile Poisons** (5 points): 20% more poison damage.
 - **Improved Poisons** (5 points): poisons apply more often and often keep their charge.
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
@@ -108,7 +108,7 @@ Poisons and stones go on together in Forever: Deadly Poison and a stone on the m
 
 ## Races
 
-Night Elf on Alliance and Troll on Horde. **Elune's Light** gives 10% crit for 15 seconds, which pairs with Seal Fate and Cold Blood; **Berserking** gives 10% attack speed and more poison procs. Orc's Blood Fury is close behind for Horde. Human's passive 1% crit is the Alliance fallback; Elune's Light beats it for raiding. Forever has no weapon-skill racials.
+Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds: free damage all fight, and nothing else a Horde rogue gets matches it. Orc's **Blood Fury** is next and Troll's **Berserking** last. On Alliance, Night Elf's **Elune's Light** (10% crit for 15 seconds every 3 minutes, which pairs with Seal Fate: more Mutilate crits, more third points), Dwarf's passive 1% hit and Human's passive 1% crit all land in the same place, so Night Elf wins only by a hair: play the one you like. Forever has no weapon-skill racials.
 
 ## Professions
 
@@ -116,4 +116,4 @@ Night Elf on Alliance and Troll on Horde. **Elune's Light** gives 10% crit for 1
 
 ## Leveling
 
-Level Combat or Assassination with Sinister Strike until 40. Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Relentless Strikes arrives at the end of the climb, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.
+Level Combat or Assassination with Sinister Strike until 40. Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Relentless Strikes comes late, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.

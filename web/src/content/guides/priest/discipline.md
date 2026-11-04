@@ -3,8 +3,8 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70755:priest:human:00500503133001143/3350500303/0:'
-recommendedRaces: [human, undead]
+build: 'FS1:1.60.1.70755:priest:gnome:00500503133001143/3350500303/0:'
+recommendedRaces: [gnome, undead]
 statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
 description: 'How to heal as a Discipline Priest in Forever: Penance, shield ranks and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
 updated: 2026-11-02
@@ -80,7 +80,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Prayer of Healing** when three or more in a group are hurt. It heals the target's party, so target a member of the group that took the damage.
 
-**Overheal.** Shields and Penance land before the damage, so most of your waste is a Greater Heal that arrives after a shield ate the hit. Start it early and cancel it if the tank does not need it.
+**Overheal.** Shields and Divine Aegis land before the damage and Penance goes on health already missing, so most of your waste is a Greater Heal that arrives after a shield ate the hit. Start it early and cancel it if the tank does not need it.
 
 **Inner Focus** on a Greater Heal or a Prayer of Healing: it makes the spell free and adds 25% crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
 
@@ -100,11 +100,13 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Races
 
-**Human** is the Alliance pick. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
+**Gnome** is the Alliance pick. Eureka! makes your heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes: put it on a Penance and the Greater Heals around it. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
+
+**Human** is a hair behind. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
 
 **Undead** is the Horde pick for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
 
-**Gnome** has Contingency Plan, a ward on an ally that shields and heals them if they fall under 35%, plus Eureka! and 5% mana. **Troll** has Berserking, **Night Elf** Elune's Light for 10% crit (more Divine Aegis), and **Dwarf** Stoneform and Desperate Prayer.
+**Night Elf** has Elune's Light for 10% crit (more Divine Aegis), **Troll** Berserking, and **Dwarf** Stoneform and Desperate Prayer. All three heal clearly less than a Gnome or a Human.
 
 ## Professions
 
