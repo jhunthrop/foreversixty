@@ -60,7 +60,7 @@ Fury is the dual-wield warrior: Berserker Stance all fight, Bloodthirst and Whir
 
 ## Talents and builds
 
-- **Flurry** (3 points): 30% more attack speed for your next three swings after any melee crit. With two weapons and Cruelty it is up most of the fight, and every extra swing is extra rage.
+- **Flurry** (3 points): 30% more attack speed for your next three white swings after any melee crit. A Heroic Strike takes the place of a main-hand swing and comes out at the faster speed without using one up. With two weapons and Cruelty it is up most of the fight, and every extra swing is extra rage.
 - **Bloodthirst** (1 point): an instant hit that scales with 45% of your attack power, every 6 seconds. Outside the execute phase, it is the button you never delay.
 - **Death Wish** (1 point): 20% more physical damage and Fear immunity for 30 seconds, at the cost of 5% more damage taken.
 - **Dual Wield Specialization** (5 points): 25% more off-hand damage and 50% more rage from off-hand swings. The core talent of a two-weapon build.

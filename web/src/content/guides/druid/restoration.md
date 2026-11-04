@@ -82,7 +82,7 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 
 **Ranks while leveling.** Rank 1 is your party Rejuvenation, except at 40 to 42, where rank 2 is worth its extra mana. Your healing power is still low and your mana runs out first, so the tank's Rejuvenation sits below the top rank all the way to 59: rank 2 from 20 through 37 (rank 3 is not worth it), rank 4 from 38 to 43, rank 5 from 44 to 48, rank 6 from 49 to 56 and rank 8 from 57 to 59. Use the top rank of Regrowth.
 
-When you cast Healing Touch to fill a hole between 30 and 49, a lower rank heals more for your mana than the newest one: rank 3 at 30 to 33, rank 4 at 34 to 39, rank 5 at 40 to 45 and rank 6 at 46 to 49. Below 30 and from 50, cast the top rank. Nature's Swiftness makes the cast free, so the Healing Touch you cast with it is always the top rank.
+When you cast Healing Touch to fill a hole between 30 and 49, a lower rank heals more for your mana than the newest one: rank 3 at 30 to 33, rank 4 at 34 to 39, rank 5 at 40 to 45 and rank 6 at 46 to 49. Below 30 and from 50, cast the top rank. Nature's Swiftness makes the cast instant, and a save is no place to save mana, so the Healing Touch you cast with it is always the top rank.
 
 **Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest. An Alliance Skyborne also presses Read Leyline every time it is ready: 50% more mana regeneration for 15 seconds. Innervate is the bigger effect and replaces it, and Read Leyline will not cast while Innervate is up, so press it between Innervates.
 
