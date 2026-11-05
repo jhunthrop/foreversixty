@@ -5,7 +5,9 @@
 // class, at the drop's required level, and able to equip it (equip_rules.go). Then two tiers: tier
 // 0, the character's BiS band names the item; tier 1, the spec wants the item's stats and it is an
 // item-level upgrade over what they wear, or the slot is empty. A slotless drop never has
-// candidates: there is no slot to compare against (loot_quests.go lists those).
+// candidates: there is no slot to compare against (loot_quests.go lists those). A character whose
+// gear is unknown (no gear list on file: the roster reads the export only at gear consent, so
+// this is gearOnFile) is no candidate at all: its slots are unknown, not empty.
 package guilds
 
 import (
@@ -69,8 +71,8 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem) []LootCandidat
 	forTanks := hasAny(stats, tankStats)
 	for _, row := range roster {
 		level, ok := rosterLevel(row)
-		if !row.Verified || row.className == "" || !ok || level < item.RequiredLevel ||
-			!canEquip(row.className, level, item) {
+		if !row.Verified || row.className == "" || len(row.gear) == 0 || !ok ||
+			level < item.RequiredLevel || !canEquip(row.className, level, item) {
 			continue
 		}
 		slots := characterSlots(row, item, level)

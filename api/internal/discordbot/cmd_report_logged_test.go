@@ -2,6 +2,7 @@ package discordbot
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -64,6 +65,33 @@ func TestReportFallsBackToTheLatestLoggedNight(t *testing.T) {
 	}
 	if hasShare(rep) || !rep.Message.Ephemeral {
 		t.Fatal("the fallback offers Share, or is public")
+	}
+}
+
+// A planned Onyxia raid still waiting for a log that night: the note says to match the log on
+// the raid page, linking it, instead of "no planned raid" (guild round 3).
+func TestReportNamesTheUnmatchedRaidPlannedThatNight(t *testing.T) {
+	w := newOfficerWorld(t)
+	w.addChar(t, w.gid, w.uid, "us/normal/zulmara", "Zulmara", true)
+	at := time.Date(2026, 12, 10, 20, 0, 0, 0, time.UTC)
+	w.addRaid(t, w.gid, at.Add(-15*time.Minute))
+	seedLoggedNight(t, w, at)
+
+	head := w.run(t, pressDiscord, "report").Message.Embeds[0]
+	_, note, _ := strings.Cut(head.Description, "\n")
+	const lead = "Onyxia's Lair was planned that night: match the log on [the raid page]("
+	if !strings.HasPrefix(note, lead) || !strings.HasSuffix(note, ").") {
+		t.Fatalf("note = %q, want %q…", note, lead)
+	}
+	if got := plannedNote("Onyxia's Lair", ""); got != "Onyxia's Lair was planned that night: match the log on the raid page." {
+		t.Fatalf("unlinked note = %q", got)
+	}
+}
+
+// A matched night with no awards says so in the site's words.
+func TestLootLineWithNoAwards(t *testing.T) {
+	if got := lootLine(0); got != "No loot awarded." {
+		t.Fatalf("lootLine(0) = %q", got)
 	}
 }
 

@@ -45,7 +45,8 @@ func TestOfficerCopyMatchesTheSpec(t *testing.T) {
 		got, want []string
 	}{
 		{"report", cell("`/report`"), []string{c.ReportPrefix + "{Title} · {Weekday} {d} {Month}", c.KillOrder, c.MostDeaths,
-			c.Consumables, c.Loot, c.LootAll, c.LootCount, c.LootFirst, c.LootTo, c.OpenReport, c.ReportNone, c.ReportUnlinked, c.LoggedPresent, c.LoggedNote}},
+			c.Consumables, c.Loot, c.LootAll, c.LootCount, c.LootFirst, c.LootTo, c.OpenReport, c.ReportNone, c.ReportUnlinked, c.LoggedPresent, c.LoggedNote,
+			c.LoggedPlanned, c.LoggedPlannedPage, c.LootNone}},
 		{"attendance", cell("`/attendance`"), []string{c.AttendanceTitle, c.LastRaids, c.Roster, c.OfficersOnly, c.NoMember,
 			c.NoRaids, c.AttendanceUnlinked, c.AttendanceMembers}},
 		{"readiness", cell("`/readiness`"), []string{c.ReadinessTitle + "{Title} · {Weekday} {d} {Month}", c.ReadinessLead,

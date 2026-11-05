@@ -21,6 +21,11 @@ func TestHomeSummaryCountsRaidersAndPending(t *testing.T) {
 	officer := seedUser(t, h.pool, "summary-officer@example.com")
 	seedCharacter(t, h.pool, gid, officer, "us/hardcore/summaryofficer", "officer", true)
 	seedExport(t, h.pool, officer, "us/hardcore/summaryofficer", "us", "hardcore", "summaryofficer")
+	// Raiders count gear on the site: the officer's export carries a gear list.
+	if _, err := h.pool.Exec(context.Background(), `update addon_exports set export = 'FS1:1.60.1.70009:warrior:human:0/0/0:head=12640'
+		where character_key = 'us/hardcore/summaryofficer'`); err != nil {
+		t.Fatal(err)
+	}
 	recomputeMembership(t, h.pool, gid, officer)
 
 	pendingUser := seedUser(t, h.pool, "summary-pending@example.com")
@@ -270,6 +275,50 @@ func TestHomeStandingRanksAmongVerifiedSameSpecGearConsentPeers(t *testing.T) {
 	}
 	if nr := view.Standing.NeedsRaid; nr == nil || nr.Title != "Onyxia's Lair" || !nr.StartsAt.Equal(ony) {
 		t.Errorf("needs_raid = %+v, want Onyxia's Lair at %s", nr, ony)
+	}
+	if nr := view.Standing.NeedsRaid; nr != nil && nr.CharacterKey != nil {
+		t.Errorf("needs_raid.character_key = %q, want null with no sign-up", *nr.CharacterKey)
+	}
+
+	// The account signs an alt up for the raid: the needs line and the standing are the alt's.
+	alt := "us/hardcore/standingalt"
+	seedCharacter(t, h.pool, gid, self, alt, "member", true)
+	seedExport(t, h.pool, self, alt, "us", "hardcore", alt)
+	recomputeMembership(t, h.pool, gid, self)
+	seedRankedReport(t, h.pool, gid, "standing-"+alt)
+	if _, err := h.pool.Exec(ctx, `insert into fight_metrics (report_id, fight_index, player_key, class, spec, ilvl, fought_at)
+		values ($1, 0, $2, 'Hunter', 'Marksmanship', 64, now())`, "standing-"+alt, alt); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx, `
+		insert into guild_raid_signups (raid_id, character_key, name, class, spec, role, state, note, signed_by, acted_by)
+		select id, $2, 'Standingalt', 'hunter', 'marksmanship', 'dps', 'bench', '', $3, $3 from guild_raids
+		where guild_id = $1 and zone = 'raid:onyxias-lair'`, gid, alt, self); err != nil {
+		t.Fatal(err)
+	}
+	view = HomeView{}
+	h.data(h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), ""), &view)
+	if nr := view.Standing.NeedsRaid; nr == nil || nr.CharacterKey == nil || *nr.CharacterKey != alt {
+		t.Fatalf("needs_raid = %+v, want the signed-up alt", nr)
+	}
+	if view.Standing.ItemLevel != 64 {
+		t.Errorf("standing item_level = %d, want the signed-up alt's 64", view.Standing.ItemLevel)
+	}
+}
+
+// signedUpCharacter is the account's best place: In over Late over Bench; Out names none.
+func TestSignedUpCharacterIsTheAccountsBestPlace(t *testing.T) {
+	signups := []Signup{
+		{CharacterKey: "other-in", State: SignupIn, SignedBy: 2},
+		{CharacterKey: "bench", State: SignupBench, SignedBy: 1},
+		{CharacterKey: "late", State: SignupLate, SignedBy: 1},
+		{CharacterKey: "out", State: SignupOut, SignedBy: 1},
+	}
+	if got := signedUpCharacter(signups, 1); got == nil || *got != "late" {
+		t.Fatalf("best place = %v, want late", got)
+	}
+	if got := signedUpCharacter(signups[3:], 1); got != nil {
+		t.Fatalf("an Out answer = %q, want none", *got)
 	}
 }
 

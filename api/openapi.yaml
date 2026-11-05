@@ -2086,10 +2086,18 @@ components:
                 The raid needs_before_next_raid is before: the next planned raid of kind raid,
                 the one Readiness and /raid name first (never a dungeon run or guild event the
                 band may show); null when none is planned.
-              required: [title, starts_at]
+              required: [title, starts_at, character_key]
               properties:
                 title: { type: string }
                 starts_at: { type: string, format: date-time, description: "RFC 3339, UTC" }
+                character_key:
+                  type: [string, "null"]
+                  description: >-
+                    The character the viewer's account signed up for this raid, its best place
+                    (In, then Late, then Bench; Out names none): the needs line is that
+                    character's. Null when the account has no such sign-up, and the line keeps
+                    the viewer's current character. The standing above is anchored to it too
+                    when it can be.
         reports:
           type: array
           description: The last 7 days.

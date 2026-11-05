@@ -1223,6 +1223,8 @@ data class GuildStandingNeedsRaid(
     @SerialName("title") val title: String,
     /** RFC 3339, UTC */
     @SerialName("starts_at") val startsAt: String,
+    /** The character the viewer's account signed up for this raid, its best place (In, then Late, then Bench; Out names none): the needs line is that character's. Null when the account has no such sign-up, and the line keeps the viewer's current character. The standing above is anchored to it too when it can be. */
+    @SerialName("character_key") val characterKey: String? = null,
 )
 
 @Serializable

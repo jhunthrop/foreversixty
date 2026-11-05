@@ -259,7 +259,8 @@
       ],
       "needs_raid": {
         "title": "Onyxia's Lair",
-        "starts_at": "2026-12-20T01:00:00Z"
+        "starts_at": "2026-12-20T01:00:00Z",
+        "character_key": null
       }
     }
   },

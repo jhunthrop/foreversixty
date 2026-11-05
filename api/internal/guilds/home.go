@@ -278,19 +278,58 @@ type StandingView struct {
 	NeedsRaid *NeedsRaidView `json:"needs_raid"`
 }
 
-// NeedsRaidView names the raid the standing line's needs are before.
+// NeedsRaidView names the raid the standing line's needs are before. CharacterKey is the
+// character the viewer's account signed up for it, its best place (In, then Late, then Bench;
+// an Out answer names none): the needs line is that character's, null when the account has no
+// such sign-up and the line keeps the header character (guild round 3: the line named the
+// header character, not the one the account signed up).
 type NeedsRaidView struct {
-	Title    string    `json:"title"`
-	StartsAt time.Time `json:"starts_at"`
+	Title        string    `json:"title"`
+	StartsAt     time.Time `json:"starts_at"`
+	CharacterKey *string   `json:"character_key"`
 }
 
-// needsRaid is the standing line's raid at now (NeedsRaidView), nil when none is planned.
-func (s *Store) needsRaid(ctx context.Context, guildID int64, now time.Time) (*NeedsRaidView, error) {
+// needsRaid is the standing line's raid at now for viewerUserID (NeedsRaidView), nil when none
+// is planned.
+func (s *Store) needsRaid(ctx context.Context, guildID, viewerUserID int64, now time.Time) (*NeedsRaidView, error) {
 	raid, ok, err := s.NextRaid(ctx, guildID, now)
 	if err != nil || !ok {
 		return nil, err
 	}
-	return &NeedsRaidView{Title: raid.Title, StartsAt: raid.StartsAt.UTC()}, nil
+	signups, err := s.RaidSignups(ctx, raid.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &NeedsRaidView{Title: raid.Title, StartsAt: raid.StartsAt.UTC(),
+		CharacterKey: signedUpCharacter(signups, viewerUserID)}, nil
+}
+
+// signedUpCharacter is the key of the account's best-placed sign-up among signups (In, Late,
+// Bench; the first of a tie), nil when the account has none of those.
+func signedUpCharacter(signups []Signup, accountID int64) *string {
+	var best *Signup
+	for i := range signups {
+		sg := &signups[i]
+		if sg.SignedBy != accountID || sg.State == SignupOut {
+			continue
+		}
+		if best == nil || placeRank[sg.State] < placeRank[best.State] {
+			best = sg
+		}
+	}
+	if best == nil {
+		return nil
+	}
+	key := best.CharacterKey
+	return &key
+}
+
+// signedKeyOf is needs' signed-up character key, "" when there is none.
+func signedKeyOf(needs *NeedsRaidView) string {
+	if needs == nil || needs.CharacterKey == nil {
+		return ""
+	}
+	return *needs.CharacterKey
 }
 
 type HomeView struct {
@@ -715,6 +754,10 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		return HomeView{}, err
 	}
 
+	needs, err := s.needsRaid(ctx, guildID, userID, time.Now())
+	if err != nil {
+		return HomeView{}, err
+	}
 	view := HomeView{
 		Guild: GuildIdentity{
 			ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Faction: g.Faction,
@@ -723,15 +766,13 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		Viewer:   ViewerView{Role: role, CharacterKey: viewerKey, Verified: verified, Verify: verifyViews[guildID]},
 		Claim:    claim,
 		Summary:  summary,
-		Standing: standingFor(s, roster, userID),
+		Standing: standingFor(s, roster, userID, signedKeyOf(needs)),
 		Reports:  reports, Roster: roster, Pending: pending,
 		AddonSnapshot: addonSnapshot, Members: members, Counts: counts,
 		AttendanceSource: source,
 	}
 	if view.Standing != nil {
-		if view.Standing.NeedsRaid, err = s.needsRaid(ctx, guildID, time.Now()); err != nil {
-			return HomeView{}, err
-		}
+		view.Standing.NeedsRaid = needs
 	}
 	if len(reports) == HomeReportsPerPage {
 		last := reports[len(reports)-1]

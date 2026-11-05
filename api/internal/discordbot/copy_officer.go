@@ -18,8 +18,11 @@ var officerCopy = struct {
 	// ReportNone and ReportUnlinked answer no report and an unlinked viewer.
 	ReportNone, ReportUnlinked string
 	// LoggedPresent opens a logged night's line and LoggedNote follows it: a night no planned
-	// raid holds, the /report fallback.
-	LoggedPresent, LoggedNote string
+	// raid holds, the /report fallback. LoggedPlanned replaces the note when a planned raid of
+	// the log's zone waits for a log that night; LoggedPlannedPage is its {page}, the raid page's link.
+	LoggedPresent, LoggedNote, LoggedPlanned, LoggedPlannedPage string
+	// LootNone is the Loot field of a night with no awards, the site's words.
+	LootNone string
 	// AttendanceTitle heads a record; LastRaids its field; Roster its link button.
 	AttendanceTitle, LastRaids, Roster string
 	// OfficersOnly, NoMember, NoRaids and AttendanceUnlinked are /attendance's answers;
@@ -55,13 +58,16 @@ var officerCopy = struct {
 	ReportNone:            "No raid logged yet.",
 	LoggedPresent:         "{n} present",
 	LoggedNote:            "Logged with no planned raid, so no sign-ups or loot to show.",
+	LoggedPlanned:         "{Raid} was planned that night: match the log on {page}.",
+	LoggedPlannedPage:     "the raid page",
+	LootNone:              "No loot awarded.",
 	ReportUnlinked:        "Link your Discord account to see your guild's raids.",
 	AttendanceTitle:       "{Name} · attendance",
 	LastRaids:             "Last 5 raids",
 	Roster:                "Roster",
 	OfficersOnly:          "Only officers can look up another member's attendance.",
 	NoMember:              "No member of {Guild} by that name.",
-	NoRaids:               "No raids yet.",
+	NoRaids:               "No raid nights yet.",
 	AttendanceUnlinked:    "Link your Discord account to see your attendance.",
 	AttendanceMembers:     "Attendance is for members of {Guild}.",
 	ReadinessTitle:        "Readiness · ",

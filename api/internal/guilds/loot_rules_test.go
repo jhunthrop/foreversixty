@@ -23,15 +23,20 @@ func onyxiaRow(t *testing.T, itemID int) lootItem {
 	return item
 }
 
-// candidate is a verified roster row at level, of a class and spec, wearing nothing; no faction, so
-// no BiS band applies and the row is ranked on the item-level tier.
+// candidate is a verified roster row at level, of a class and spec, wearing only a shirt (gear on
+// file, every drop's slot empty); no faction, so no BiS band applies and the row is ranked on the
+// item-level tier.
 func candidate(name, class, spec string, level int) RosterRow {
 	return RosterRow{
 		CharacterKey: "us/hardcore/" + name, Name: name, Verified: true,
 		Class: &class, className: class, Spec: &spec, specStr: spec,
-		Level: i(level), gear: map[string]int{},
+		Level: i(level), gear: shirtOnly(),
 	}
 }
+
+// shirtOnly is gear on file with every slot a drop can go in empty: an export whose gear list
+// carries only a shirt. A row with no gear list at all is gear unknown and never a candidate.
+func shirtOnly() map[string]int { return map[string]int{"shirt": 45} }
 
 // everySpec is one level-60 character of every class and spec.
 func everySpec() []RosterRow {
@@ -179,6 +184,17 @@ func TestALevel58IsOnNoOnyxiaItem(t *testing.T) {
 		if cands := s.lootCandidates(roster, item); len(cands) != 0 {
 			t.Errorf("%s lists a level 58: %+v", item.Name, cands)
 		}
+	}
+}
+
+// A character whose export carries no gear list is gear unknown, not bare: never listed as filling
+// an empty slot, never listed at all (guild round 3).
+func TestGearUnknownIsNoCandidate(t *testing.T) {
+	s := realTreesStore(t)
+	row := candidate("Warrior", "warrior", "Fury", 60)
+	row.gear = nil
+	if cands := s.lootCandidates([]RosterRow{row}, onyxiaRow(t, 16963)); len(cands) != 0 {
+		t.Fatalf("a gearless export is listed: %+v", cands)
 	}
 }
 
