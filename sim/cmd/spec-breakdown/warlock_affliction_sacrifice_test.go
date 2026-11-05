@@ -38,3 +38,31 @@ func TestWarlockAfflictionRaidSacrificesTheImpAndSpendsShadowTrance(t *testing.T
 		t.Errorf("no-Nightfall build: Shadow Bolt cast %.2f times, want 0 (Wrack is the filler)", got)
 	}
 }
+
+// Sim-accuracy round 22 (warlock lane, guide-accuracy round 23 WARLOCK-R23-4):
+// the Demonology raid build skips Soul Fire inside Decimation at raid spell
+// power, where its Shadow bonuses make Shadow Bolt stronger, but from Soul
+// Fire rank 2 at 56 to 59, on band gear, the Soul Fires win (+0.2 to +0.5%).
+func TestWarlockDemonologyRaidSoulFireInsideDecimationAt56To59(t *testing.T) {
+	at := func(level int, talents string) options {
+		return options{
+			repoRoot: "../../..", spec: "warlock-demonology", preset: "bare",
+			band: 50, level: level, faction: "horde", talents: talents,
+			iterations: 200, seed: 1,
+		}
+	}
+	if got := castsOf(t, at(57, "05-2035103021220001351-0550002"), "Soul Fire"); got < 1 {
+		t.Errorf("raid order at 57: Soul Fire cast %.2f times, want it inside Decimation", got)
+	}
+	if got := castsOf(t, at(55, "05-2035103021220001351-055"), "Soul Fire"); got > 0 {
+		t.Errorf("raid order at 55: Soul Fire cast %.2f times, want 0 (rank 1 loses)", got)
+	}
+	raid := options{
+		repoRoot: "../../..", spec: "warlock-demonology", preset: "raid",
+		band: 60, faction: "horde", talents: "05-2035103021220001351-0550005",
+		iterations: 200, seed: 1,
+	}
+	if got := castsOf(t, raid, "Soul Fire"); got > 0 {
+		t.Errorf("raid 60: Soul Fire cast %.2f times, want 0", got)
+	}
+}
