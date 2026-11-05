@@ -1550,7 +1550,7 @@
             }
           }
         },
-        "notes": "Heal is your filler before you learn Greater Heal at 40. A new rank costs more than it heals for at first, so keep rank 3 from 34 to 37 rather than the new rank 4, and rank 2 at 28. From 40, cast rank 4 when even Greater Heal rank 1 is out of reach: cheaper, though it keeps only about half your bonus at 60."
+        "notes": "Heal is your filler before you learn Greater Heal at 40. A new rank costs more mana than its extra healing is worth at first, so keep rank 2 at 28 and rank 3 from 34 to 37. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
       },
       {
         "action": {
@@ -2026,7 +2026,7 @@
             }
           }
         },
-        "notes": "Lesser Heal is your filler until you learn Heal at 16: rank 3, on the tank first and on the party once they are low, with the same mana pace as Heal after it."
+        "notes": "Lesser Heal is your filler until you learn Heal at 16: rank 3, on the tank first and on the party once they are low. Pace your mana the way you will with Heal."
       },
       {
         "action": {
