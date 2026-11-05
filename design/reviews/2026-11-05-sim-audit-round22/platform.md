@@ -96,6 +96,62 @@ Both branches merged int/r22 again (site 48c46c8ee, fork 95223c008).
 
 **Files to regenerate (second follow-up), in order, by the integrator (the data job's steps):** `python -m pipeline trainables --build 1.60.1.70790`, then `spellranks`, then the addon data step (`addon-data.json` rotations and `ability_levels`, and the addon's `Data.lua`), then `make simdb` (embeds spellranks). After the regen, run the touched sim/request tests, which read spellranks: rank registration, required-level floors and the ladder. Their goldens follow (TestRotationLadder for the specs listed above). `test_the_committed_rotations_never_show_an_ability_before_its_trainer_level` passes only once trainables and addon-data are regenerated together.
 
+## Third follow-up (talent rows at the build's point; unknown auras in APL conditions)
+
+Both branches merged int/r22 again: site 366e2a61b, fork f0cdaffee. Every sim and sim-running test here went through `$R/sim.sh`.
+
+**Confirmed and fixed: 2.** U1 is `R22` (it corrects my own T1). U2 is `old`. **U2 is cross-class code, but no published number moves.**
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| U1 | **Card rows for a talent's spell started at the tier's first level, not where the published build takes the talent.** T1 floored them at 10 + 5 x tier. A card describes a published build, though, and Survival's order (`addon-builds.json`, leveling and raid) spends Counterattack at 32, so the row from 25 showed the button seven levels early (hunter F3). `build_rotation` now floors each talent family at the level the spec's leveling order spends the talent's first point. The raid order's level applies where the leveling order never takes the talent. A family is never earlier than its spellranks level. An order point is [tree, tier, column], 1-based, and the i-th point is spent at 10 + i. The tier level stays the floor for spellranks, trainables and the addon's `abilityLevels` (the addon's own "learned at" table). That table is keyed by spell across specs, and Arms and Fury take the same talents at different levels. | `data/pipeline/talent_levels.py` (`build_point_levels`, `load_spec_point_levels`, `floor_pairs`), `addonrotation.py`; test `test_a_talent_row_starts_where_the_published_build_takes_the_talent`, parametrized: Survival Counterattack 32 (red: 30), Enhancement Stormstrike 25 (red: 40), Fury Death Wish 30. It runs on spellranks as T1 writes them, built in the test because the committed file waits for the regen. 175 data tests pass. | CONFIRMED-BUG (card data) | R22 (S b4a82d5ad) | S 6c639ea7f |
+| U2 | **An APL condition on an unknown aura or dot ran with no condition.** `newValueAuraIsActive`, `...WithReactionTime`, `...NumStacks`, `...RemainingTime`, `newValueDotIsActive` and `...DotRemainingTime` returned nil for an aura or dot the character never registered. `newValueAnd` and `newValueOr` filter nil operands, `newValueNot` and `newValueCompare` return nil, and `APLAction.IsReady` reads a nil condition as always true. So a gate on an untaken talent's aura vanished, and the line ran unconditionally. The zero-talent Fire smoke build's Scorch recast every global this way (`sim/request/rotations_smoke_test.go`). Now an unknown aura reads inactive, 0 stacks and 0 remaining, and an unknown dot inactive and 0 remaining. `GetAPLAura` still warns. `auraIsKnown` and `spellIsKnown` already read false. The ICD and should-refresh values keep nil, because no curated condition uses them. **Survey and measurement.** Rather than guess which ids each build registers, I ran every curated APL before and after, on frozen BiS and guide builds: raid 60 for 28 specs (horde, seed 1, 3,000 iterations), every bare band floor 20/30/40/50 for 28 specs (2,000 iterations), and the whole ladder (TestRotationLadder written with each engine, diffed, then reverted). **Every number is identical.** No published build or band reads an unknown aura in a gate that decides a cast. The fix guards custom builds and future lines. The fork's TestP1Mage fails the same 31 subtests before and after; that is already stale on int/r22, not this change. | fork `sim/core/apl_values_aura.go`, `apl_values_core.go`; test `TestAnUnknownAuraReadsInactiveInsteadOfDroppingTheGate` (red: auraIsActive(unknown) = nil); `go test -tags with_db ./sim/core` passes; `sim/request` smoke tests pass; screens in `$R/platform/aura-screen.tsv` and `aura-bands.tsv` | CONFIRMED-BUG (engine; cross-class code, no published mover) | old (upstream wowsims behaviour) | E 30bf8bdb0, S c2fe5d894 (smoke note) |
+
+**Card rows after the regen, simulated without writing anything: T1 alone compared with T1 plus U1.** "Committed" is today's first level.
+
+| spec | row | committed | T1 | now |
+|---|---|---|---|---|
+| druid-balance | Insect Swarm | 20 | 25 | 27 |
+| druid-feral | Shifting Power | 10 | 40 | 40 |
+| druid-restoration | Nature's Swiftness | 10 | 30 | 30 |
+| druid-restoration | Swiftmend | 10 | 25 | 43 |
+| hunter-survival | Counterattack | 30 | 25 | 32 |
+| mage-arcane | Arcane Power | 10 | 40 | 40 |
+| mage-arcane | Arcane Wrath | 25 | 25 | 31 |
+| mage-arcane | Presence of Mind | 10 | 30 | 31 |
+| mage-arcane | Pyroblast | 20 | 20 | 54 (only the raid order takes it) |
+| mage-frost | Ice Lance | 20 | 20 | 30 |
+| paladin-holy | Divine Favor | 20 | 20 | 21 |
+| paladin-holy | Holy Shock | 30 | 30 | 32 |
+| paladin-protection | Swift Judgement | 10 | 25 | 29 |
+| paladin-retribution | Seal of Command | 20 | 20 | 26 |
+| priest-shadow | Inner Focus | 20 | 20 | 57 |
+| priest-shadow | Mind Flay | 20 | 20 | 28 |
+| priest-shadow | Vampiric Embrace | 30 | 25 | 33 |
+| rogue-assassination | Cold Blood | 25 | 25 | 33 |
+| rogue-subtlety | Ghostly Strike | 10 | 25 | 26 |
+| shaman-enhancement | Stormstrike | 40 | 25 | 25 |
+| shaman-restoration | Mana Tide Totem | 10 | 25 | 25 |
+| shaman-restoration | Nature's Swiftness | 10 | 30 | 44 |
+| shaman-restoration | Riptide | 40 | 40 | 50 |
+| warlock-affliction | Amplify Curse | 20 | 20 | 29 |
+| warlock-destruction | Conflagrate | 25 | 25 | 34 |
+| warlock-destruction | Shadowburn | 20 | 20 | 30 |
+| warrior-arms | Reckless Swings | 10 | 25 | 57 |
+| warrior-arms | Spearing Strike | 10 | 25 | 25 |
+| warrior-fury | Death Wish | 10 | 30 | 30 |
+| warrior-fury | Reckless Swings | 10 | 25 | 31 |
+| warrior-protection | Last Stand | 10 | 20 | 28 |
+
+**Regen order (the integrator; the data job's steps, nothing nightly-owned committed here):**
+1. `python -m pipeline trainables --build 1.60.1.70790`
+2. `python -m pipeline spellranks --build 1.60.1.70790`
+3. The addon data step: `addon-data.json` rotations and `ability_levels`, which now read addon-builds.json too. Then the addon's `Data.lua`.
+4. `make simdb`.
+5. Run the sim/request tests that read spellranks: rank registration, required-level floors and `TestRotationLadder`. Refresh their goldens with the pinned engine.
+
+Since `addon-builds.json` now feeds step 3, regenerate it first (`sim/cmd/addon-builds`) if any lane changed a guide build. The pin needs fork 30bf8bdb0 or later. Still owed from the first pass: ladder goldens for druid-feral, druid-feral-bear and mage-fire.
+
 ## Before/after
 
 Raid 60, frozen BiS, guide raid builds, 10,000 iterations. Before is `$R/sb-before` from site-before; after is this branch.
