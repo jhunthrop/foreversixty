@@ -65,7 +65,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 **Before the pull.** Imbue your weapon: Rockbiter Weapon in a raid where a Windfury Totem reaches you, Windfury Weapon everywhere else. Drop Strength of Earth Totem and your Air totem where the tank will hold the boss, a few seconds before the pull, so they are up when you get there. If your party has no other shaman, put Mana Spring Totem in your Water slot as well. If the boss moves away from them, follow it and press Totemic Call: it relocates your active totems to your location.
 
-**On the pull.** Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown. Then Stormstrike.
+**On the pull.** Rage of the Farseer, trinkets, any damage racial (Blood Fury or Berserking) and your potion go together on the pull and again on cooldown. Then Stormstrike.
 
 **The loop.**
 

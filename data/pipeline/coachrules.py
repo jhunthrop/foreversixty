@@ -32,14 +32,16 @@ SPECS = {
         downranks=[],
         defensives=["Barkskin"],
     ),
+    # Aimed Shot takes the cooldown it shares with Multi-Shot every time it comes up; Multi-Shot is
+    # for packs and moving (round 25), so a ready Multi-Shot is never a lost cast.
     "hunter-beast-mastery": dict(
-        core=["Bestial Wrath", "Rapid Fire", "Aimed Shot", "Multi-Shot"],
+        core=["Bestial Wrath", "Rapid Fire", "Aimed Shot"],
         auras=[("Serpent Sting", DOT), ("Aspect of the Hawk", SELF)],
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
     ),
     "hunter-marksmanship": dict(
-        core=["Rapid Fire", "Aimed Shot", "Multi-Shot"],
+        core=["Rapid Fire", "Aimed Shot"],
         auras=[("Aspect of the Hawk", SELF)],
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
@@ -50,22 +52,26 @@ SPECS = {
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
     ),
+    # Only Frost carries Ice Block and Ice Barrier (mage index.md); neither Arcane nor Fire build
+    # takes them, so their defensives are an honest empty list.
     "mage-arcane": dict(
         core=["Arcane Power", "Presence of Mind"],
         auras=[],
         downranks=[],
-        defensives=["Ice Block", "Ice Barrier"],
+        defensives=[],
     ),
     "mage-fire": dict(
         core=["Combustion", "Fire Blast"],
         auras=None,
         downranks=[],
-        defensives=["Ice Block", "Ice Barrier"],
+        defensives=[],
     ),
     "mage-frost": dict(core=[], auras=[], downranks=[], defensives=["Ice Block", "Ice Barrier"]),
+    # With Unsealed Wrath the raid build twists Seal of Command and Righteousness, so no one Seal's
+    # uptime is the spec's rule (round 25); a dropped Seal is left to rotation adherence.
     "paladin-retribution": dict(
         core=["Judgement", "Holy Strike"],
-        auras=[("Seal of Righteousness", SELF)],
+        auras=[],
         downranks=[],
         defensives=["Divine Shield", "Divine Protection", "Lay on Hands"],
     ),
@@ -97,8 +103,8 @@ SPECS = {
     # judged as a core ability; Flame Shock's uptime is.
     "shaman-elemental": dict(core=[], auras=[("Flame Shock", DOT)], downranks=[], defensives=[]),
     "shaman-enhancement": dict(core=["Stormstrike"], auras=[], downranks=[], defensives=[]),
-    # The rotation keeps Bane of Agony (DoTs crit in Forever) and Siphon Life up and never
-    # channels Wrack; it has no cooldown of its own to judge (Amplify Curse is prepull).
+    # The rotation keeps its DoTs and bane up (DoTs crit in Forever) and fills with Wrack; Amplify
+    # Curse is saved for the Agony after the last Doom at sixty, so it is not judged as a cooldown.
     "warlock-affliction": dict(
         core=[],
         auras=[
@@ -110,8 +116,9 @@ SPECS = {
         downranks=[],
         defensives=["Death Coil"],
     ),
+    # Soul Fire is skipped in the raid build ("never cast it in a raid", round 25).
     "warlock-demonology": dict(
-        core=["Soul Fire", "Bane of Doom"],
+        core=["Bane of Doom"],
         auras=[("Corruption", DOT), ("Bane of Doom", DOT), ("Immolate", DOT)],
         downranks=[],
         defensives=["Death Coil"],
@@ -126,7 +133,8 @@ SPECS = {
         core=["Bloodrage", "Mortal Strike"],
         auras=[("Battle Shout", SELF), ("Rend", DOT)],
         downranks=[],
-        defensives=["Last Stand"],
+        # Last Stand is a protection talent neither Arms build takes.
+        defensives=[],
     ),
     # Fury's defensives are an honest empty list: Last Stand is a protection talent.
     "warrior-fury": dict(
@@ -148,21 +156,24 @@ SPECS = {
             "Holy Strike",
             "Hammer of the Righteous",
             "Judgement",
-            "Swift Judgement",
         ],
+        # Swift Judgement is held for a tank swap (protection.md), so a ready one is not a lost cast.
         auras=[("Holy Shield", DEF)],
         downranks=[],
         defensives=["Templar's Bulwark", "Divine Shield", "Divine Protection", "Lay on Hands"],
     ),
     "warrior-protection": dict(
         core=["Bloodrage", "Shield Slam"],
-        auras=[("Shield Block", DEF), ("Demoralizing Shout", DEF), ("Thunder Clap", DEF)],
+        # Demoralizing Shout is left to a druid's Roar or another warrior's Shout when one holds it
+        # (protection.md); a Roar reads as a gap, so its uptime is not judged (round 25).
+        auras=[("Shield Block", DEF), ("Thunder Clap", DEF)],
         downranks=[],
         defensives=["Shield Wall", "Last Stand"],
     ),
     # ---- healers (5)
     "druid-restoration": dict(
-        core=[], efficiency=["Nature's Swiftness"], auras=[], downranks=[], defensives=["Barkskin"]
+        # Nature's Swiftness is saved for a tank about to die, never rolled on cooldown (round 25).
+        core=[], efficiency=[], auras=[], downranks=[], defensives=["Barkskin"]
     ),
     "paladin-holy": dict(
         core=[],
@@ -187,7 +198,8 @@ SPECS = {
     ),
     "shaman-restoration": dict(
         core=[],
-        efficiency=["Mana Tide Totem", "Nature's Swiftness"],
+        # Nature's Swiftness is kept for the tank under a quarter (restoration.md), not rolled.
+        efficiency=["Mana Tide Totem"],
         auras=[("Water Shield", SELF)],
         downranks=[],
         defensives=[],

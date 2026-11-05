@@ -36,6 +36,10 @@ SEMICOLON = "; "
 # Pronouns that, early in a sentence, refer to the sentence before it.
 BACK_POINTERS = frozenset({"it", "its", "they", "them", "this", "that", "these"})
 LEAD_WORDS = 2
+# Words that, anywhere before the sentence names its button, point back at the sentence before:
+# "Started any earlier, it is the first threat" (the opener), "Your curse slot is then free",
+# "No single-target heal gives more for its mana" (round 25).
+POINTERS_BEFORE_NAME = frozenset({"it", "its", "then", "they", "them"})
 
 # Claims the rotation data makes that the guides do not, so a starter does not repeat them.
 CLAIMS_THE_GUIDE_DOES_NOT_MAKE = re.compile(
@@ -91,9 +95,14 @@ def is_orphan(name: str, sentence: str) -> bool:
     return sentence.split()[0] in ARTICLES and sentence.rstrip(".").endswith(name)
 
 
-def leans_on_the_last(sentence: str) -> bool:
-    """A pronoun in the first two words ("It is your cheapest heal", "Cast it on cooldown") points back."""
-    return any(word.strip(",:").lower() in BACK_POINTERS for word in sentence.split()[:LEAD_WORDS])
+def leans_on_the_last(sentence: str, pattern: re.Pattern[str] | None = None) -> bool:
+    """A pronoun in the first two words ("It is your cheapest heal", "Cast it on cooldown"), or a
+    pointer anywhere before the first button the sentence names, points back."""
+    if any(word.strip(",:").lower() in BACK_POINTERS for word in sentence.split()[:LEAD_WORDS]):
+        return True
+    first = pattern.search(sentence) if pattern else None
+    before = sentence[: first.start()] if first else ""
+    return any(word.strip(",:;").lower() in POINTERS_BEFORE_NAME for word in before.split())
 
 
 def sentence_parts(sentence: str, pattern: re.Pattern[str]) -> list[list[str]]:
@@ -109,7 +118,7 @@ def guide_candidates(prose: str, names: set[str], negated: frozenset[str]) -> li
     pattern = name_pattern(names)
     found: list[tuple[str, str]] = []
     for sentence in guide_sentences(prose, names):
-        if leans_on_the_last(sentence):
+        if leans_on_the_last(sentence, pattern):
             continue
         for texts in sentence_parts(sentence, pattern):
             usable = (p for p in map(plain_sentence, texts) if p and not cites_negated(p, negated))

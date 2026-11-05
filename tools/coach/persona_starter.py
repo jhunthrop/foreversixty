@@ -1,7 +1,7 @@
 """Generate the starter coach personas (design spec section 8.2).
 
-A starter says what the spec's guide and rotation data say and nothing more:
-the best-player habits are left for a later full write. Output is deterministic.
+A starter says what the spec's guide and rotation data say and nothing more, spoken as the best
+player of the spec, never about the site or the file. Output is deterministic.
 
     python tools/coach/persona_starter.py --spec mage-frost --out data/curated/coach/mage-frost.md
     python tools/coach/persona_starter.py --all
@@ -17,7 +17,7 @@ from typing import Any
 
 from starter_guide import excluded_abilities
 from starter_kit import ALL_CODES, ROLE_CODES, consumable_paragraph, drills, mistakes
-from starter_overrides import GUIDE_LINES, GUIDE_ORDER, corrected
+from starter_overrides import EXCLUDED, GUIDE_LINES, GUIDE_ORDER, SHORT_NAMES, corrected
 from starter_priority import (
     candidate_names,
     cast_spell_id,
@@ -25,7 +25,7 @@ from starter_priority import (
     is_bare,
     priority_entries,
 )
-from starter_text import DIGIT, number_words, spell_out_numbers, usable_sentence
+from starter_text import DIGIT, number_words, sentences, spell_out_numbers, usable_sentence
 
 __all__ = [
     "ALL_CODES",
@@ -42,6 +42,7 @@ REPO = TOOLS_DIR.parent.parent
 COACH_DIR = REPO / "data" / "curated" / "coach"
 SPECS_PATH = "data/curated/specs.json"
 CATALOGUE_PATH = "logs/engine/mechanics/consumables/catalogue.json"
+RAID_CONSUMES_PATH = "sim/request/raid-consumes.json"
 ACTIVE_BUILD_PATH = "web/src/data/active-build.json"
 FULL_SPECS = frozenset({"warrior-fury", "priest-holy", "warrior-protection"})
 STARTER_VERSION = "starter edition"
@@ -50,6 +51,7 @@ STARTER_VERSION = "starter edition"
 REVIEWED = "wow-player, 2026-10-28"
 
 ROTATION_HEADING = "## Rotation and priority"
+MARKDOWN_LINK = "]("
 # Spells the class spellconst files do not carry.
 EXTRA_SPELL_NAMES = {5019: "Shoot"}
 
@@ -81,9 +83,13 @@ def apl_path(slug: str) -> str:
     return f"data/curated/apl/{slug}.json"
 
 
-def spellconst_path(row: dict[str, Any]) -> str:
+def build_table_path(row: dict[str, Any], table: str) -> str:
     build = load_json(ACTIVE_BUILD_PATH)["build"]
-    return f"data/builds/{build}/spellconst/{row['class_slug']}.json"
+    return f"data/builds/{build}/{table}/{row['class_slug']}.json"
+
+
+def spellconst_path(row: dict[str, Any]) -> str:
+    return build_table_path(row, "spellconst")
 
 
 def section_after(text: str, heading: str) -> str:
@@ -97,7 +103,9 @@ def overview(row: dict[str, Any]) -> str:
     match = re.search(r"^## Overview\n\n(.+?)\n\n", read_text(guide_path(row)), re.MULTILINE | re.DOTALL)
     if not match:
         raise SystemExit(f"{guide_path(row)}: no Overview paragraph")
-    paragraph = spell_out_numbers(" ".join(match[1].split()))
+    # A sentence that links to another page is about the site, not the spec.
+    kept = [s for s in sentences(" ".join(match[1].split())) if MARKDOWN_LINK not in s]
+    paragraph = spell_out_numbers(" ".join(kept))
     if DIGIT.search(paragraph):
         raise SystemExit(f"{guide_path(row)}: Overview paragraph carries a number")
     return paragraph
@@ -108,15 +116,37 @@ def spell_names(row: dict[str, Any]) -> dict[int, str]:
     return {**{int(spell_id): spell["name"] for spell_id, spell in spells.items()}, **EXTRA_SPELL_NAMES}
 
 
+def own_names(row: dict[str, Any]) -> set[str]:
+    """The player's own spells: what a trainer or a talent teaches. A pet's spell (Lash of Pain,
+    Growl) and the client's test and rune spells are not the player's buttons."""
+    trainables = load_json(build_table_path(row, "trainables"))["trainables"]
+    trees = load_json(build_table_path(row, "talents"))["trees"]
+    return {t["name"] for t in trainables} | {t["name"] for tree in trees for t in tree["talents"]}
+
+
 def castable_names(row: dict[str, Any]) -> set[str]:
-    """Names of spells a player presses: those with a cost, a global cooldown, a cooldown or a cast time."""
+    """Names of the player's spells they press: a cost, a global cooldown, a cooldown or a cast time."""
     spells = load_json(spellconst_path(row))["spells"].values()
     pressed = ("cost", "gcd_ms", "cooldown_ms", "cast_time_ms")
-    return {spell["name"] for spell in spells if any(spell[key] for key in pressed)}
+    own = own_names(row)
+    return {spell["name"] for spell in spells if spell["name"] in own and any(spell[key] for key in pressed)}
+
+
+def with_full_names(text: str, names: set[str]) -> str:
+    """The guide's short names for a button ("Missiles") written out in full, outside the full name."""
+    for full, short in SHORT_NAMES.items():
+        if full not in names:
+            continue
+        parts = re.split(f"({re.escape(full)})", text)
+        text = "".join(
+            part if index % 2 else re.sub(rf"\b{re.escape(short)}\b", full, part) for index, part in enumerate(parts)
+        )
+    return text
 
 
 def rotation_prose(row: dict[str, Any]) -> str:
-    return section_after(read_text(guide_path(row)), ROTATION_HEADING)
+    prose = section_after(read_text(guide_path(row)), ROTATION_HEADING)
+    return with_full_names(prose, set(spell_names(row).values()))
 
 
 def rotation_items(row: dict[str, Any]) -> list[dict[str, Any]]:
@@ -132,7 +162,7 @@ def priority_entries_of(row: dict[str, Any]) -> list[tuple[str, str]]:
 def ruled_out_of(row: dict[str, Any]) -> set[str]:
     """The buttons the guide's rotation section rules out or makes conditional, read the generator's way."""
     names = candidate_names(rotation_items(row), spell_names(row), castable_names(row))
-    return excluded_abilities(rotation_prose(row), names)
+    return excluded_abilities(rotation_prose(row), names) | EXCLUDED.get(row["spec"], frozenset())
 
 
 def rotation_cast_names(row: dict[str, Any]) -> set[str]:
@@ -151,22 +181,17 @@ def bare_lines(row: dict[str, Any]) -> list[str]:
 
 
 def who_section(row: dict[str, Any]) -> str:
-    return (
-        f"This is the {row['name']} {row['class_slug'].capitalize()} as the site's guide describes it. "
-        f"{overview(row)} "
-        "The best players' habits for this spec are not written down here yet. "
-        "This file says what the guide says and leaves the rest for a later full write."
-    )
+    return f"This is the best {row['name']} {row['class_slug'].capitalize()} on Forever. {overview(row)}"
 
 
 def know_section(row: dict[str, Any], catalogue: dict[str, Any]) -> str:
     slug, role = row["spec"], row["role"]
     priority = "\n".join(f"- {line}" for line in priority_lines(row))
     return "\n\n".join([
-        "**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. "
-        "Where the guide or the rotation data gives a reason, it follows the name.",
+        "**The priority, in words.** Your buttons, in the order you press them. "
+        "Where a button has a reason or a condition, it follows the name.",
         priority,
-        "**The mistakes the coach looks for, by finding.**\n" + "\n".join(mistakes(slug, role, catalogue)),
+        "**The mistakes to look for, by finding.**\n" + "\n".join(mistakes(slug, role, catalogue)),
         "**Consumables and world buffs.** " + consumable_paragraph(slug, role, catalogue),
     ])
 
@@ -176,7 +201,7 @@ def drills_section(row: dict[str, Any], catalogue: dict[str, Any]) -> str:
 
 
 def front_matter(row: dict[str, Any]) -> str:
-    sources = [guide_path(row), apl_path(row["spec"]), spellconst_path(row), CATALOGUE_PATH, SPECS_PATH]
+    sources = [guide_path(row), apl_path(row["spec"]), spellconst_path(row), RAID_CONSUMES_PATH, CATALOGUE_PATH, SPECS_PATH]
     listed = "\n".join(f"  - {s}" for s in sources)
     return (
         f"---\nspec: {row['spec']}\nrole: {row['role']}\nstatus: starter\n"

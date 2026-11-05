@@ -105,6 +105,9 @@ func assessAbility(in Input, c Counted, e RuleEntry) (coreAbility, bool) {
 	if e.Talent && len(seq) == 0 {
 		return coreAbility{}, false
 	}
+	if len(seq) == 0 && notYetLearned(in, e) {
+		return coreAbility{}, false
+	}
 	id, sc, ok := pickSpell(e.SpellIDs, in.Tables.Spells, counts)
 	if !ok || sc.CooldownMS < CoreCooldownMinMS || sc.CooldownMS > CoreCooldownMaxMS {
 		return coreAbility{}, false
@@ -117,6 +120,17 @@ func assessAbility(in Input, c Counted, e RuleEntry) (coreAbility, bool) {
 	}
 	a.compare(in, c, countedCasts(seq, c))
 	return a, true
+}
+
+// notYetLearned is true when a trainer spell the player never cast is above their level: the
+// log carries a level, the build's trainer data lists the family, and no rank of the entry is
+// learned at or below it. An unknown level or an unlisted family is judged as before.
+func notYetLearned(in Input, e RuleEntry) bool {
+	if in.Row.Level <= 0 || len(in.Tables.Trainable[e.Family]) == 0 {
+		return false
+	}
+	_, learned := trainableAtLevel(in, e)
+	return !learned
 }
 
 // castsOf is the sorted successful cast instants of the spell ids by guid and by anything

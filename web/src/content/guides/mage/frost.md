@@ -92,7 +92,7 @@ The table above gives the order for your gear; this is why each stat counts. Hit
 
 ## Enchants and consumables
 
-Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell power on gear and an Elixir of Frost Power are close to full value. A Major Mana Potion is enough for most bosses.
+Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell power on gear and an Elixir of Frost Power are close to full value. Frost rarely needs a mana potion, so the potion timer goes to a Major Spellblasting Potion on the pull.
 
 ## Races
 

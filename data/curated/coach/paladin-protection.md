@@ -7,6 +7,7 @@ sources:
   - web/src/content/guides/paladin/protection.md
   - data/curated/apl/paladin-protection.json
   - data/builds/1.60.1.70790/spellconst/paladin.json
+  - sim/request/raid-consumes.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,48 +15,49 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Protection Paladin as the site's guide describes it. Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield on cooldown, Holy Strike every six seconds, and Judgement of Fury as your taunt. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the best Protection Paladin on Forever. Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield on cooldown, Holy Strike every six seconds, and Judgement of Fury as your taunt.
 
 ## What they know
 
-**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
 - Righteous Fury is a thirty minute buff, not a stance: cast it before the raid and keep it on all night.
 - Put up Seal of Fury about three seconds before the pull.
-- Hammer of the Righteous and Holy Strike on their cooldowns. Hammer of the Righteous is the largest single threat gain in this list.
-- Holy Strike on cooldown: every six seconds with Shieldsworn, twenty mana, and your damage reduction from Iron Creed.
+- Holy Shield on cooldown from thirty, about two seconds before the boss reaches you and every time after. It is the first claim on your mana.
+- Holy Strike on cooldown, twenty mana at sixty. From forty Shieldsworn brings it back every six seconds, and each one keeps up your Iron Creed damage reduction.
+- Hammer of the Righteous on cooldown from forty, once Holy Shield's mana is safe. It hits your target and up to three enemies next to it.
+- Swift Judgement from twenty-nine whenever it is ready, unless a tank swap is coming: then hold it for the swap.
 - Pull with Judgement: under Seal of Fury it taunts, so the boss comes straight to you.
-- Consecration only with spare mana, where it pays for itself in threat.
-- Get Greater Blessing of Kings on yourself unless a hunter's Heart of the Lion already covers you. The two are the same ten percent to every stat and do not stack, so with a hunter in the raid take Might instead.
-- Keep Devotion Aura on.
-- Then Swift Judgement, Holy Strike and Hammer of the Righteous in the first few globals.
 - Exorcism on Undead and Demons.
+- Consecration only above half mana, to spend mana you will not need.
+- Greater Blessing of Kings on yourself at sixty, Blessing of Kings before then. With a hunter's Heart of the Lion in the raid, take Might instead.
+- Keep Devotion Aura on.
 - Templar's Bulwark first, at about a third of your health: a full health bar of absorb for eight seconds.
 - Divine Shield and Divine Protection come after Templar's Bulwark, once Forbearance is gone.
 - Lay on Hands heals you to full on a twenty minute cooldown, but it takes every point of your mana with it.
 
-**The mistakes the coach looks for, by finding.**
+**The mistakes to look for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
-- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off the target.
+- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off when its line says to keep it up.
 - Dead time: time with no button pressed while the boss was alive and in reach.
 - Resource waste: the main resource bar left to cap or to run dry.
-- Ranks: a spell left at an old rank because the trainer visit was skipped.
+- Ranks: a spell at an older rank than your level calls for, because the trainer visit was skipped.
 - Pull preparation: a missing flask, food and combat potion.
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Baked Salmon); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** Before a boss you want a flask (Flask of the Titans); food (Baked Salmon); a combat potion (Major Spellblasting Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
 - drill.core_casts: On a dummy with a friend hitting you, press the first button of the priority list the moment it is ready. Fillers wait their turn.
-- drill.uptime: Watch the buff on you and the debuffs on the boss, not the cooldowns. The moment one drops, press it again.
+- drill.uptime: Watch the debuffs on the boss and the buff on you. Refresh each where its line says, before it drops: a stacking debuff that falls off takes its stacks with it.
 - drill.idle: When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
-- drill.ranks: Visit your trainer every time you level and read your spellbook after: every button on the priority list should show its top rank.
+- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
 - drill.preparation: Before every boss, check a flask, food, a combat potion and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
-- drill.death: Put your emergency cooldown on a key you can hit without looking, and press it on a dummy pull the moment your health falls past half.
-- drill.adherence: On a dummy, play only the buttons on the priority list for 3 minutes. Anything else on your bars waits.
+- drill.death: Put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade.
+- drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
 ## Voice
 

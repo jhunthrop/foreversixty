@@ -38944,7 +38944,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39005,7 +39005,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39073,7 +39073,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39141,7 +39141,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39209,7 +39209,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39277,7 +39277,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39352,7 +39352,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39427,7 +39427,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39502,7 +39502,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39577,7 +39577,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39652,7 +39652,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39727,7 +39727,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39802,7 +39802,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39877,7 +39877,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39959,7 +39959,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -138498,31 +138498,6 @@
           [
             1,
             1,
-            1
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
             3
           ],
           [
@@ -138572,6 +138547,21 @@
           ],
           [
             1,
+            2,
+            4
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            1,
             3,
             3
           ],
@@ -138597,53 +138587,63 @@
           ],
           [
             1,
+            4,
+            1
+          ],
+          [
+            1,
+            4,
+            1
+          ],
+          [
+            1,
             5,
             2
           ],
           [
             1,
             4,
-            1
-          ],
-          [
-            1,
-            4,
-            1
-          ],
-          [
-            1,
-            4,
             2
-          ],
-          [
-            1,
-            4,
-            3
-          ],
-          [
-            1,
-            4,
-            3
-          ],
-          [
-            1,
-            4,
-            3
-          ],
-          [
-            1,
-            4,
-            3
-          ],
-          [
-            1,
-            4,
-            3
           ],
           [
             1,
             5,
             1
+          ],
+          [
+            1,
+            5,
+            1
+          ],
+          [
+            1,
+            5,
+            1
+          ],
+          [
+            1,
+            5,
+            1
+          ],
+          [
+            1,
+            5,
+            1
+          ],
+          [
+            1,
+            6,
+            3
+          ],
+          [
+            1,
+            6,
+            3
+          ],
+          [
+            1,
+            6,
+            3
           ],
           [
             1,
@@ -138651,41 +138651,6 @@
             2
           ],
           [
-            1,
-            5,
-            1
-          ],
-          [
-            1,
-            5,
-            1
-          ],
-          [
-            1,
-            5,
-            1
-          ],
-          [
-            1,
-            5,
-            1
-          ],
-          [
-            1,
-            6,
-            3
-          ],
-          [
-            1,
-            6,
-            3
-          ],
-          [
-            1,
-            6,
-            3
-          ],
-          [
             2,
             1,
             1
@@ -138741,14 +138706,49 @@
             3
           ],
           [
+            2,
             3,
-            1,
+            1
+          ],
+          [
+            2,
+            3,
+            1
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            4,
             2
           ],
           [
-            3,
-            1,
+            2,
+            4,
             3
+          ],
+          [
+            2,
+            4,
+            3
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            4,
+            4
           ]
         ]
       }
@@ -144961,9 +144961,9 @@
     },
     "rogue-assassination": {
       "reference": "attack_power",
-      "dps": 0.2394,
+      "dps": 0.2578,
       "healing": false,
-      "weapon_dps": 1.8394,
+      "weapon_dps": 1.9162,
       "bands": {
         "20": {
           "reference": "attack_power",
