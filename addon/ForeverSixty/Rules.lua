@@ -36,7 +36,9 @@ Rules.ARMOR_AT = {
 --- Melee weapons, shields and held-in-off-hand items per class, and whether
 --- the class may carry a second weapon. SHAMAN and ROGUE are Forever's own
 --- rows (shamans train axes, maces, fists, staves and daggers but cannot dual
---- wield; rogues train maces beside daggers, swords and fists). The other
+--- wield; rogues train one-handed axes and maces beside daggers, swords and
+--- fists: One-Handed Axes, spell 196, carries the rogue bit in Forever's
+--- client and not in Era's). The other
 --- classes are Classic's training, which Forever has not been seen to change.
 --- A held-in-off-hand item is allowed unless a row says `offhand = false`.
 Rules.WEAPONS = {
@@ -44,7 +46,7 @@ Rules.WEAPONS = {
 		axe1 = true, axe2 = true, mace1 = true, mace2 = true, fist = true, staff = true,
 		dagger = true, shield = true, offhand = true, dualWield = false,
 	},
-	ROGUE = { dagger = true, sword1 = true, mace1 = true, fist = true, dualWield = true },
+	ROGUE = { dagger = true, sword1 = true, axe1 = true, mace1 = true, fist = true, dualWield = true },
 	WARRIOR = {
 		axe1 = true, axe2 = true, mace1 = true, mace2 = true, sword1 = true, sword2 = true,
 		dagger = true, fist = true, polearm = true, staff = true, shield = true, dualWield = true,

@@ -291,7 +291,7 @@ func TestRestrictToProficientWeaponsDropsIllegalSubclassOnly(t *testing.T) {
 // lane's brief, item 3: paladins train one- and two-hand axes (round 8:
 // SkillLineAbility spells 196 and 197 carry the paladin bit, and Classic's
 // Ironforge weapon master Buliwyf Stonehand teaches both to paladins), druid
-// has no polearm, rogue no axe, and shaman/
+// has no polearm, rogue has one-hand axes (round 22), and shaman/
 // rogue carry Forever's two documented deviations
 // (.claude/agents/wow-player.md: "shamans train one- and two-handed
 // axes and maces, rogues train maces") on top of the Classic 1.x
@@ -307,8 +307,11 @@ func TestClassWeaponSubclassesMatchesForeverDocumentedFacts(t *testing.T) {
 	if !classWeaponSubclasses["paladin"][axe1H] || !classWeaponSubclasses["paladin"][axe2H] {
 		t.Error(`classWeaponSubclasses["paladin"] is missing an axe subclass, want one- and two-hand axes (SkillLineAbility 196/197)`)
 	}
-	if classWeaponSubclasses["rogue"][axe1H] {
-		t.Error(`classWeaponSubclasses["rogue"] carries one-hand axe, want none (no trainer teaches a rogue axes)`)
+	// Sim-accuracy round 22: Forever added the rogue bit to One-Handed
+	// Axes (spell 196 ClassMask 79 against Era's 71), and Hack and Slash
+	// (13960) names "Axe/Sword" as one group. Two-Handed Axes stay out.
+	if !classWeaponSubclasses["rogue"][axe1H] || classWeaponSubclasses["rogue"][axe2H] {
+		t.Error(`classWeaponSubclasses["rogue"] want one-hand axe and no two-hand axe (SkillLineAbility 196 mask 79, 197 mask 71)`)
 	}
 	if classWeaponSubclasses["druid"][polearm] {
 		t.Error(`classWeaponSubclasses["druid"] carries polearm, want none (Classic 1.x: daggers/fist/maces/staves only)`)

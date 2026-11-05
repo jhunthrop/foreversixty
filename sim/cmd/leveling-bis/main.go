@@ -426,7 +426,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// per spec, the same way requiresDagger/castsShoot are (the class's
 	// weapon proficiency does not change per band/faction) - the
 	// Go-side safety net so a data regression that puts an illegal
-	// weapon subclass in <class>.json (a druid polearm, a rogue axe)
+	// weapon subclass in <class>.json (a druid polearm, a rogue two-hand axe)
 	// never reaches a published pick, whatever score() thinks of its
 	// stats. weaponSubclassesSource is logged once so the nightly log
 	// says whether this run read a published table or fell back to
