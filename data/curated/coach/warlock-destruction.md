@@ -15,7 +15,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the best Destruction Warlock on Forever. Destruction keeps Immolate on the boss, fires Conflagrate and Shadowburn on cooldown, since with Shadow and Flame full Conflagrate keeps your Immolate and Shadowburn hands its shard back, and casts Incinerate in between.
+This is the best Destruction Warlock on Forever. Destruction keeps Immolate up and fires Conflagrate and Shadowburn on cooldown, since full Shadow and Flame keeps the Immolate and returns the shard, with Incinerate in between.
 
 ## What they know
 
