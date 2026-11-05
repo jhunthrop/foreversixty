@@ -23,12 +23,12 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Aspect of the Hawk goes up before the pull.
 - Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.
 - Bestial Wrath on the pull with Rapid Fire and your trinkets, then again every two minutes.
-- Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.
+- Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Serpent Sting when it is about to drop.
-- Arcane Shot to fill a gap, and from eighteen only when Multi-Shot is more than a global away.
-- Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect.
+- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away.
 - Hunter's Mark whenever the target is not marked.
+- Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect.
 - A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage.
 - Growl.
 - Mend Pet.

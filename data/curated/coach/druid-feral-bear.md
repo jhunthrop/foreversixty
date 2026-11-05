@@ -26,7 +26,6 @@ This is the Feral Bear Druid as the site's guide describes it. The bear tanks on
 - Lacerate until it has five stacks, then again when it has under three seconds left.
 - Faerie Fire whenever the boss does not have it.
 - Maul queued on your next swing whenever you have fifteen rage spare.
-- Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last.
 - Demoralizing Roar whenever the boss does not have it, and again in its last three seconds, unless a warrior's Demoralizing Shout is already on it.
 - Challenging Roar is your panic button when the pack runs to the healers.
 - Barkskin takes twenty percent off physical damage for fifteen seconds every minute, and Forever lets you cast it in Bear Form.

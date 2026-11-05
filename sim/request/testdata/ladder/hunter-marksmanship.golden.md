@@ -100,25 +100,27 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 36.9 | 4 | other:shoot=80.2, spell:3044=22.1, spell:13549=10.9, spell:1130=2.4, other:move=1.0 | {SpellID: 2643} |
-| 20 | 0000000000000000-0050510000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 60.4 | 6 | other:shoot=73.1, spell:19434=18.0, spell:14282=5.8, spell:13550=5.7, spell:1130=2.4 | - |
-| 30 | 0000000000000000-0050552001300000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 93.1 | 7 | other:shoot=72.1, spell:19434=19.2, spell:14283=6.9, spell:13551=4.3, spell:14323=2.4 | - |
-| 38 | 0000000000000000-0050552001521030-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 125.9 | 7 | other:shoot=72.5, spell:19434=20.6, spell:14284=9.9, spell:13552=5.4, spell:14323=2.4 | - |
-| 40 | 0000000000000000-0050552001521050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 139.7 | 7 | other:shoot=77.5, spell:19434=17.3, spell:14284=8.0, spell:13552=4.6, spell:2643=2.8 | {SpellID: 1310687} |
-| 50 | 5320000000000000-0050552001521050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 185.3 | 7 | other:shoot=158.2, spell:14285=8.7, spell:2643=8.4, spell:13554=6.9, spell:14324=2.4 | {SpellID: 1310785} |
-| 60 | 5320000500000000-0050552001521050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 311.8 | 7 | other:shoot=83.4, spell:20904=10.1, spell:14287=4.8, spell:13555=3.0, spell:14325=2.4 | {SpellID: 1310786} |
+| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 27.4 | 2 | other:shoot=80.2, spell:1130=2.5, other:move=1.0, spell:13165=1.0 | {SpellID: 13813}, {SpellID: 2643} |
+| 20 | 0000000000000000-0050510000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 63.0 | 5 | other:shoot=74.3, spell:14282=13.6, spell:13550=10.6, spell:19434=8.4, spell:1130=2.5 | {SpellID: 13813} |
+| 30 | 0000000000000000-0050552001300000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 93.8 | 6 | other:shoot=74.4, spell:19434=18.1, spell:14283=7.0, spell:13551=4.7, spell:14323=2.4 | {SpellID: 13813} |
+| 38 | 0000000000000000-0050552001521030-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 128.7 | 6 | other:shoot=78.2, spell:19434=19.9, spell:14284=9.3, spell:13552=5.3, spell:14323=2.4 | - |
+| 40 | 0000000000000000-0050552001521050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 145.9 | 6 | other:shoot=78.9, spell:19434=20.2, spell:14284=9.8, spell:13552=5.7, spell:14324=2.4 | {SpellID: 1310687} |
+| 50 | 5320000000000000-0050552001521050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 181.4 | 6 | other:shoot=157.8, spell:20902=13.4, spell:14285=5.7, spell:13554=3.3, spell:14324=2.5 | {SpellID: 1310785} |
+| 60 | 5320000500000000-0050552001521050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 312.0 | 6 | other:shoot=83.2, spell:20904=11.2, spell:14287=4.9, spell:13555=3.1, spell:14325=2.5 | {SpellID: 1310786} |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
+- Arcane Shot (spell 3044)
 - Bite (spell 17255)
 - Claw (spell 16828)
 - Lightning Breath (spell 24844)
 - Mine! (spell 1265054)
 - Raptor Strike (spell 14260)
 - Scorpid Poison (spell 24640)
+- Serpent Sting (spell 13549)
 - Widow Bite (spell 26226)
 - Wyvern Strike (spell 458482)
 
@@ -276,4 +278,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- hunter-marksmanship level=10 kind=zero_casts spell="Arcane Shot" id=3044 authored=14287
+- hunter-marksmanship level=10 kind=zero_casts spell="Serpent Sting" id=13549 authored=13555
+- hunter-marksmanship level=20 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
+- hunter-marksmanship level=30 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
+- hunter-marksmanship level=38 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
+- hunter-marksmanship level=40 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
+- hunter-marksmanship level=50 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
+- hunter-marksmanship level=60 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)

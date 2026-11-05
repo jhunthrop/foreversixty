@@ -21,14 +21,15 @@ This is the Retribution Paladin as the site's guide describes it. Retribution is
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Put a Blessing of Might on yourself if nobody has given you one.
-- Judgement never consumes your Seal in Forever, so there is nothing to put back up after it.
+- If no other paladin has Judgement of the Crusader on the target, put up Seal of the Crusader about a second and a half before the pull, Judge it on your first swing, then put up your damage Seal: Seal of Righteousness at the top rank you have trained while leveling.
+- Seal of Righteousness about a second and a half before the pull. Reapply it just before it expires so it never lapses.
 - Holy Strike on its own ten-second cooldown, whenever it is up. It spends the globals Judgement and seal upkeep leave idle.
 - Exorcism on cooldown, against Undead and Demons only.
 - Hammer of Wrath below twenty percent target health, at its highest rank.
 - Consecration last, while the mana left after it still pays for your seal, Judgement and Holy Strike. Do not let your mana fall far behind the fight.
+- Seal of Command: Once you have Unsealed Wrath, go straight to Seal of Command, in a dungeon or a raid, so three swings store three Commands and the twist is under way.
 - Seal of the Crusader is attack power and faster, lighter swings, and its Judgement makes the target take more Holy damage for forty seconds, with your melee keeping it up.
 - Against a pack of Undead or Demons, Holy Wrath hits all of them; on anything else it does nothing, so leave it off your bars outside Scholomance, Stratholme and the like.
-- Seal of Righteousness about a second and a half before the pull. Reapply it just before it expires so it never lapses.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

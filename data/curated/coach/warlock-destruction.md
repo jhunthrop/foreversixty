@@ -27,7 +27,7 @@ This is the Destruction Warlock as the site's guide describes it. Destruction ke
 - Bane of Doom the moment the last one fires, with a minute or more of the fight left.
 - Bane of Agony whenever Bane of Doom is not on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Immolate with three seconds or less left on it.
-- Conflagrate on cooldown while Immolate is up.
+- Conflagrate on cooldown while Immolate is up, once you have Shadow and Flame.
 - Shadowburn on cooldown, at any boss health.
 - Incinerate for every other cast.
 - Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.

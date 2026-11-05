@@ -20,9 +20,9 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Put up Aspect of the Beast and leave it up.
+- Hunter's Mark whenever the target is not marked.
+- Aspect of the Beast.
 - At sixty, Aspect of the Falcon gives the same melee attack power as Beast, and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade.
-- Mark the boss with Hunter's Mark.
 - On the pull, press Rapid Fire, your trinkets and your racial together.
 - Raptor Strike queued on every swing it is ready.
 - Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.
