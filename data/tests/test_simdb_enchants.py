@@ -238,3 +238,9 @@ def test_a_melee_weapon_stones_hit_is_left_to_the_engine_and_its_crit_stays():
     }
     assert not any(built[7098].stats)
     assert built[2506].stats[pb.Stat.StatMeleeCrit] == 2
+
+
+def test_enchant_display_names_read_the_clients_own_text():
+    from pipeline.loot.gear import enchant_display_names
+
+    assert enchant_display_names([{"ID": "247", "Name_lang": "+7 Strength"}]) == {247: "+7 Strength"}

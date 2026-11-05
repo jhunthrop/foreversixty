@@ -188,13 +188,13 @@ func queueRow(ctx context.Context, db execer, id string, userID int64, req simap
 }
 
 // Get reads one stored result, plus the title the member gave it, when
-// they gave one.
+// they gave one, and when the row was made.
 //
-// The title travels as a second return value, not a field on
+// The title and the time travel beside the result, not as fields on
 // simapi.SimResult, for the same reason Save's own title parameter is a
 // sibling of the SimResult it saves (that function's own comment): the
-// contract's `sims.title` column names the row, not a fact the engine
-// produced, and adding it to the shared envelope type would be
+// contract's `sims.title` and `sims.created_at` columns describe the row, not
+// facts the engine produced, and adding them to the shared envelope type would be
 // something every OTHER reader of a SimResult -- the wasm build, the
 // premium job, forever-sim -- would then carry and have to ignore.
 //
@@ -204,24 +204,37 @@ func queueRow(ctx context.Context, db execer, id string, userID int64, req simap
 // `coalesce(title, ”)` for the history list; a single saved sim's own
 // GET never did the same.
 func (s *Store) Get(ctx context.Context, id string) (simapi.SimResult, string, error) {
+	row, err := s.GetRow(ctx, id)
+	return row.Result, row.Title, err
+}
+
+// GetRow is Get with the row's time, for the page that prints it.
+func (s *Store) GetRow(ctx context.Context, id string) (StoredSim, error) {
 	var (
-		body  []byte
-		title string
+		body []byte
+		out  StoredSim
 	)
 	err := s.Pool.QueryRow(ctx,
-		`select result, coalesce(title, '') from sims where id = $1`, id).Scan(&body, &title)
+		`select result, coalesce(title, ''), created_at from sims where id = $1`, id).Scan(&body, &out.Title, &out.CreatedAt)
 	if isNoRows(err) {
-		return simapi.SimResult{}, "", ErrNotFound
+		return StoredSim{}, ErrNotFound
 	}
 	if err != nil {
-		return simapi.SimResult{}, "", fmt.Errorf("sims: read %s: %w", id, err)
+		return StoredSim{}, fmt.Errorf("sims: read %s: %w", id, err)
 	}
-	var out simapi.SimResult
-	if err := json.Unmarshal(body, &out); err != nil {
-		return simapi.SimResult{}, "", fmt.Errorf("sims: decode %s: %w", id, err)
+	if err := json.Unmarshal(body, &out.Result); err != nil {
+		return StoredSim{}, fmt.Errorf("sims: decode %s: %w", id, err)
 	}
-	out.SimID = id
-	return out, title, nil
+	out.Result.SimID = id
+	return out, nil
+}
+
+// StoredSim is one row of the sims table as GET /v1/sims/{id} reads it: the
+// result, and the two facts about the row that live beside it.
+type StoredSim struct {
+	Result    simapi.SimResult
+	Title     string
+	CreatedAt time.Time
 }
 
 // ForBuild answers the newest done sim run against a build: the row

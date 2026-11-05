@@ -1019,3 +1019,13 @@ def test_fury_berserker_rage_starts_at_36_and_overpower_ends_there():
     for level in (36, 40, 60):
         assert "Berserker Rage" in fury[level], level
         assert "Overpower" not in fury[level], level
+
+
+def test_compute_spell_icons_lets_an_engine_id_take_another_rows_icon(tmp_path):
+    (tmp_path / "extra-spell-icons.json").write_text(
+        json.dumps({"spell_ids": [], "icon_rows": {"12867": 12162}}), encoding="utf-8"
+    )
+    build_dir = tmp_path / BUILD
+    build_dir.mkdir(exist_ok=True)
+    (build_dir / "spellranks.json").write_text(json.dumps({"classes": {}}), encoding="utf-8")
+    assert 12867 in compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
