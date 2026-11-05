@@ -8,6 +8,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -122,8 +123,8 @@ func healMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 			fmt.Fprintf(&b, "| %s | %.2f |\n", s.name, final.GetStats()[s.stat])
 		}
 	}
-	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| effective HPS | %.1f |\n| raw HPS | %.1f |\n| mana lasts (s) | %.1f |\n",
-		p.GetEffectiveHps().GetAvg(), p.GetHps().GetAvg(), p.GetTto().GetAvg())
+	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| effective HPS | %.1f +/- %.2f |\n| raw HPS | %.1f |\n| mana lasts (s) | %.1f |\n",
+		p.GetEffectiveHps().GetAvg(), meanError(p.GetEffectiveHps(), iters), p.GetHps().GetAvg(), p.GetTto().GetAvg())
 
 	income, spend := splitManaFlows(p, names, iters)
 	writeManaTable(&b, "Mana income", "per fight", "per second", income, secs, false)
@@ -245,4 +246,13 @@ func percentOf(part, whole float64) string {
 		return "-"
 	}
 	return fmt.Sprintf("%.1f", 100*part/whole)
+}
+
+// meanError is the standard error of a per-iteration metric's mean: its stdev over the
+// square root of the iterations, the same error the DPS line reports.
+func meanError(d *proto.DistributionMetrics, iterations float64) float64 {
+	if iterations <= 0 {
+		return 0
+	}
+	return d.GetStdev() / math.Sqrt(iterations)
 }

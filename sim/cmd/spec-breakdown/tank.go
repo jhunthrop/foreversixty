@@ -160,8 +160,8 @@ func tankMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 		fmt.Fprintf(&b, "| block value multiplier | %.2f |\n| block value per strength | %.3f |\n",
 			pseudo(proto.PseudoStat_PseudoStatBlockValueMultiplier), pseudo(proto.PseudoStat_PseudoStatBlockValuePerStrength))
 	}
-	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| damage taken /s | %.1f |\n| TMI | %.1f |\n| chance of death | %.1f%% |\n| threat /s | %.1f |\n| own damage /s | %.1f |\n",
-		p.GetDtps().GetAvg(), p.GetTmi().GetAvg(), 100*p.GetChanceOfDeath(), p.GetThreat().GetAvg(), p.GetDps().GetAvg())
+	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| damage taken /s | %.1f |\n| TMI | %.1f |\n| chance of death | %.1f%% |\n| threat /s | %.1f +/- %.2f |\n| own damage /s | %.1f |\n",
+		p.GetDtps().GetAvg(), p.GetTmi().GetAvg(), 100*p.GetChanceOfDeath(), p.GetThreat().GetAvg(), meanError(p.GetThreat(), iters), p.GetDps().GetAvg())
 
 	swing := bossSwings(res, iters)
 	fmt.Fprintf(&b, "\n| Boss swings per fight | miss | dodge | parry | block | crit | crush | hit | damage per landed-or-not swing | share of damage taken on blocked swings |\n|---|---|---|---|---|---|---|---|---|---|\n| %.1f | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.1f%% | %.0f | %.1f%% |\n",
