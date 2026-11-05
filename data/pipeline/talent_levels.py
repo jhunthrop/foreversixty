@@ -85,12 +85,32 @@ def build_point_levels(order: list[list[int]], trees: list[dict]) -> dict[int, i
     return levels
 
 
-def load_spec_point_levels(build_dir: Path, spec: str, class_slug: str) -> dict[int, int]:
+#: Auras a talent gives that rotation conditions name (Clearcasting from Elemental Focus):
+#: per class, aura spell id -> the talent's spell id.
+TALENT_OWNED_AURAS_FILE = "talent-owned-auras.json"
+
+
+def load_talent_owned_auras(curated_dir: Path, class_slug: str) -> dict[int, int]:
+    """Aura spell id -> the spell id of the talent that gives it, for `class_slug`."""
+    path = curated_dir / TALENT_OWNED_AURAS_FILE
+    if not path.exists():
+        return {}
+    rows = json.loads(path.read_text(encoding="utf-8"))["classes"].get(class_slug, [])
+    return {row["aura"]: row["talent_spell"] for row in rows}
+
+
+def load_spec_point_levels(
+    build_dir: Path,
+    spec: str,
+    class_slug: str,
+    owned_auras: Mapping[int, int] | None = None,
+) -> dict[int, int]:
     """Spell id -> the level the spec's published leveling build spends its talent's first
     point, or the raid build's for a talent the leveling build never takes. A card row for a
     talent's spell starts there, not at its tier's first level (round 22: Survival spends
-    Counterattack at 32, seven levels after its tier opens at 25). Empty with
-    no published build."""
+    Counterattack at 32, seven levels after its tier opens at 25). An aura the talent gives
+    (`owned_auras`, aura -> talent spell) starts with it (round 24: Fire Nova on Clearcasting
+    waits for Elemental Focus). Empty with no published build."""
     builds_path = build_dir / ADDON_BUILDS_FILE
     talents_path = build_dir / "talents" / f"{class_slug}.json"
     if not builds_path.exists() or not talents_path.exists():
@@ -102,4 +122,7 @@ def load_spec_point_levels(build_dir: Path, spec: str, class_slug: str) -> dict[
         if kind in builds:
             for spell_id, level in build_point_levels(builds[kind]["order"], trees).items():
                 levels.setdefault(spell_id, level)
+    for aura, talent_spell in (owned_auras or {}).items():
+        if talent_spell in levels:
+            levels.setdefault(aura, levels[talent_spell])
     return levels

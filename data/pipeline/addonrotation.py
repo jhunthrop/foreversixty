@@ -41,7 +41,12 @@ from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
 from pipeline.models import AddonRotationBand, AddonRotationLine
 from pipeline.spelltext import SpellText, load_spell_text
-from pipeline.talent_levels import floor_pairs, load_spec_point_levels, tier_level
+from pipeline.talent_levels import (
+    floor_pairs,
+    load_spec_point_levels,
+    load_talent_owned_auras,
+    tier_level,
+)
 
 #: sim/request/ladder.go's own `ladderLevels`. See the module docstring.
 LEVEL_BANDS = [10, 20, 30, 38, 40, 50, 60]
@@ -874,7 +879,12 @@ def build_rotations(
             icon_of,
             load_trainable_ids(root / build, _class_slug(spec)),
             load_talent_spells(root / build, _class_slug(spec)),
-            load_spec_point_levels(root / build, spec, _class_slug(spec)),
+            load_spec_point_levels(
+                root / build,
+                spec,
+                _class_slug(spec),
+                load_talent_owned_auras(curated_dir, _class_slug(spec)),
+            ),
         )
         for spec in specs
     }
