@@ -263,6 +263,11 @@ test('a loaded character reaches the run button and the DPS figure in one scroll
 test('after a run, the report clears the width and every target clears 44px', async ({ page }) => {
   await runFury(page);
   await expect(page.getByTestId('sim-damage-card')).toBeVisible();
+  // The press that ran it can leave the pointer over a row the report drew under it, and that
+  // row's item tooltip is a floating layer, not a card in the column.
+  await page.mouse.move(0, 0);
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('item-tooltip')).toHaveCount(0);
 
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);

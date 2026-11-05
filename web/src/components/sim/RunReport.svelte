@@ -287,7 +287,7 @@
         ready={timelineLazy.current !== null}
         reserve={reserves.timeline}
       >
-        {#if timelineLazy.current}<timelineLazy.current {result} {names} />{/if}
+        {#if timelineLazy.current}<timelineLazy.current {result} {names} {live} />{/if}
       </LazySection>
       <LazySection
         id="gear"
