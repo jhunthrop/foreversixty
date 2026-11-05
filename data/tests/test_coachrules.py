@@ -114,3 +114,17 @@ def test_every_judged_cooldown_and_dot_is_one_the_rotation_casts():
         for aura in doc.get("auras") or []:
             if aura["kind"] == "dot":
                 assert set(aura["spell_ids"]) & cast, (spec, "dot", aura["name"])
+
+
+def test_demoralizing_shout_is_covered_by_a_druids_roar():
+    # protection.md leaves the slot to a druid's Roar when one holds it: its time is the slot
+    # filled, never a gap in the warrior's uptime (round 26).
+    doc = json.loads(render_spec("warrior-protection", ACTIVE, DATA))
+    shout = next(a for a in doc["auras"] if a["name"] == "Demoralizing Shout")
+    druid = DATA / "builds" / ACTIVE / "spellconst" / "druid.json"
+    roar = json.loads(druid.read_text(encoding="utf-8"))["spells"]
+    assert shout["covered_by"]
+    assert all(roar[str(i)]["name"] == "Demoralizing Roar" for i in shout["covered_by"])
+    for spec in ("warrior-fury", "warrior-arms"):
+        auras = json.loads(render_spec(spec, ACTIVE, DATA))["auras"]
+        assert all("covered_by" not in a for a in auras), spec

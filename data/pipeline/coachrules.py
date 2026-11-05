@@ -157,23 +157,31 @@ SPECS = {
             "Hammer of the Righteous",
             "Judgement",
         ],
-        # Swift Judgement is held for a tank swap (protection.md), so a ready one is not a lost cast.
+        # Swift Judgement is held for a tank swap (protection.md): a ready one is no lost cast.
         auras=[("Holy Shield", DEF)],
         downranks=[],
         defensives=["Templar's Bulwark", "Divine Shield", "Divine Protection", "Lay on Hands"],
     ),
     "warrior-protection": dict(
         core=["Bloodrage", "Shield Slam"],
-        # Demoralizing Shout is left to a druid's Roar or another warrior's Shout when one holds it
-        # (protection.md); a Roar reads as a gap, so its uptime is not judged (round 25).
-        auras=[("Shield Block", DEF), ("Thunder Clap", DEF)],
+        # Demoralizing Shout is left to a druid's Roar when one holds the slot (protection.md): the
+        # Roar's time counts as the slot filled (covered_by), so it is judged again (round 26).
+        auras=[
+            ("Shield Block", DEF),
+            ("Demoralizing Shout", DEF, ("druid", "Demoralizing Roar")),
+            ("Thunder Clap", DEF),
+        ],
         downranks=[],
         defensives=["Shield Wall", "Last Stand"],
     ),
     # ---- healers (5)
     "druid-restoration": dict(
         # Nature's Swiftness is saved for a tank about to die, never rolled on cooldown (round 25).
-        core=[], efficiency=[], auras=[], downranks=[], defensives=["Barkskin"]
+        core=[],
+        efficiency=[],
+        auras=[],
+        downranks=[],
+        defensives=["Barkskin"],
     ),
     "paladin-holy": dict(
         core=[],
@@ -286,11 +294,25 @@ def _entries(names, ctx):
     return out
 
 
-def _auras(pairs, ctx):
-    if pairs is None:
+def _cover_ids(cover, ctx):
+    """Every ranked id of another class's aura that holds the same slot (cover is
+    (class, name)), so F2 counts its time as the slot filled."""
+    cls, name = cover
+    spells = json.loads(
+        (ctx.builds / ctx.build / "spellconst" / f"{cls}.json").read_text(encoding="utf-8")
+    )["spells"]
+    ids = sorted(int(k) for k, v in spells.items() if v["name"] == name and v["rank"] >= 1)
+    if not ids:
+        raise SystemExit(f"coach-rules: no ranked {name} in {cls} spellconst")
+    return ids
+
+
+def _auras(entries, ctx):
+    if entries is None:
         return None
     out = []
-    for name, kind in pairs:
+    for entry in entries:
+        name, kind = entry[0], entry[1]
         ids = _family_ids(name, ctx.sc, ctx.tr, ctx.apl_ids)
         top = _top_id(ids, ctx.sc, ctx.apl_ids, ctx.books)
         aura = {
@@ -301,6 +323,8 @@ def _auras(pairs, ctx):
         }
         if name in ctx.talents:
             aura["talent"] = True
+        if len(entry) > 2:
+            aura["covered_by"] = _cover_ids(entry[2], ctx)
         aura["verified"] = ctx.stamp(top)
         out.append(aura)
     return out
@@ -309,10 +333,11 @@ def _auras(pairs, ctx):
 class _Context:
     """One spec's resolved tables: what every list is built against."""
 
-    def __init__(self, build, cls, sc, tr, talents, apl_ids, books=frozenset()):
+    def __init__(self, build, cls, sc, tr, talents, apl_ids, books=frozenset(), builds=Path()):
         self.build, self.cls = build, cls
         self.sc, self.tr, self.talents, self.apl_ids = sc, tr, talents, apl_ids
         self.books = books
+        self.builds = builds
 
     def stamp(self, spell_id: int) -> str:
         return f"{self.build}/spellconst/{self.cls}.json#{spell_id}"
@@ -326,7 +351,16 @@ def render_spec(spec: str, build: str, data_root: Path = Path()) -> str:
     apl_ids: set[int] = set()
     apl = json.loads((data_root / "curated" / "apl" / f"{spec}.json").read_text(encoding="utf-8"))
     _walk_apl(apl["rotation"], apl_ids)
-    ctx = _Context(build, cls, sc, tr, talents, apl_ids, load_book_ids(data_root / "curated"))
+    ctx = _Context(
+        build,
+        cls,
+        sc,
+        tr,
+        talents,
+        apl_ids,
+        load_book_ids(data_root / "curated"),
+        data_root / "builds",
+    )
     doc: dict = {"spec": spec, "build": build}
     for key, value in (
         ("core", _entries(lists.get("core"), ctx)),
