@@ -40,11 +40,11 @@ Retribution is a two-handed Seal fighter: keep a Seal up, Judge every 8 seconds,
 - The fastest way to level a paladin, with Sanctified Judgement paying for most of your Seals
 - Almost every button is instant, so you keep swinging through movement
 - Hammer of Wrath is an instant execute on a 6 second cooldown with Champion of the Light
-- Unsealed Wrath turns Seal swapping into real damage once you have raid buffs
+- Unsealed Wrath turns Seal swapping into real damage, as long as your mana keeps pace with the fight
 
 ### Weaknesses
 
-- Mana decides how much Consecration you get in a long fight
+- Mana decides how much Consecration and Seal twisting you get in a long fight
 - Exorcism and Holy Wrath only work on Undead and Demons
 - No baseline damage cooldown: your burst is the execute
 
@@ -75,7 +75,7 @@ Leveling order: Benediction and Improved Judgement first, then Conviction and Sa
 
 ## Rotation and priority
 
-**The opener.** Put a Blessing of Might on yourself if nobody has given you one. If no other paladin has Judgement of the Crusader on the target, put up Seal of the Crusader about a second and a half before the pull, Judge it on your first swing, then put up your damage Seal: Seal of Righteousness at the top rank you have trained while leveling, Seal of Command once you have Unsealed Wrath. With Unsealed Wrath, open with Seal of Command even without raid buffs, since only the full twist needs them: when Command is about to fall off, cast Seal of Righteousness, and that first swing releases the three stored Commands, each with its normal chance to fire.
+**The opener.** Put a Blessing of Might on yourself if nobody has given you one. If no other paladin has Judgement of the Crusader on the target, put up Seal of the Crusader about a second and a half before the pull, Judge it on your first swing, then put up your damage Seal: Seal of Righteousness at the top rank you have trained while leveling. Once you have Unsealed Wrath, go straight to Seal of Command, in a dungeon or a raid, so three swings store three Commands and the twist is under way.
 
 Your swings and Holy Strike keep the Crusader debuff up, so that one Judgement adds Holy damage to every Seal proc, Judgement, Holy Strike and Consecration tick for the rest of the fight. If the raid already has Crusader on the boss, open straight with your damage Seal and Judge on your first swing. Judgement never consumes your Seal in Forever, so there is nothing to put back up after it.
 
@@ -84,13 +84,13 @@ Your swings and Holy Strike keep the Crusader debuff up, so that one Judgement a
 1. **Judgement** on cooldown. It is off the global cooldown, so press it the moment it is ready.
 2. **Exorcism** on cooldown, against Undead and Demons only.
 3. **Hammer of Wrath** when the target is below 20%, on its 6 second cooldown.
-4. Your **Seal** if it is about to run out.
+4. Your **Seal** if it is about to run out, and with Unsealed Wrath the Seal twist (below) while your mana keeps pace.
 5. **Holy Strike** on cooldown.
 6. **Consecration** with whatever mana is spare.
 
 **Seals while leveling.** After the opening Crusader Judgement, stay in Seal of Righteousness at the top rank you have trained. It fires on every swing, it scales with your weapon speed and your spell damage, and its Judgement hits hard. Train rank 8 at 58: every rank takes the same share of your spell damage, so the newest rank always hits hardest. Do not twist the way 1.12 guides tell you: in Forever a new Seal simply replaces the old one, no swing gets both, and every swap costs a global and a Seal's worth of mana. Spend those globals on Holy Strike instead.
 
-**The raid twist (Unsealed Wrath).** With raid buffs on you, Seal of Command becomes your main Seal. Let three swings land under Seal of Command, so Unsealed Wrath shows three stacks. Switch to Seal of Righteousness for exactly one swing: that swing releases all three stored Commands, each with its normal chance to fire. As soon as it lands (Unsealed Wrath's timer jumps back to 15 seconds), switch back to Seal of Command, and the next swing releases the stored Righteousness hit. Repeat. Two rules keep it from costing you: only twist above 30% mana, and only with raid buffs, because with little attack power Seal of Command does less than Seal of Righteousness and the swaps just burn mana. A swing timer and a stack counter on Unsealed Wrath make this easy.
+**The Seal twist.** With Unsealed Wrath, Seal of Command is your main Seal while you can afford the twist. Let three swings land under Seal of Command, so Unsealed Wrath shows three stacks. Switch to Seal of Righteousness for exactly one swing: that swing releases all three stored Commands, each with its normal chance to fire. As soon as it lands (Unsealed Wrath's timer jumps back to 15 seconds), switch back to Seal of Command, and the next swing releases the stored Righteousness hit. Repeat. One rule keeps it from costing you: twist only while your mana keeps pace with the fight: at least four fifths of the fight still to come, so 80% at the pull, 40% halfway and 20% with a quarter left, the same pace as Consecration. Fall behind and stay in Seal of Righteousness until you catch up, because every swap costs a global and a Seal's worth of mana. A swing timer and a stack counter on Unsealed Wrath make this easy.
 
 **Judgements in a raid.** Your own Judgement is for damage. The debuff Judgements are assigned: one paladin keeps Judgement of the Crusader on the boss and another keeps Judgement of Wisdom. If that is you, open with that Seal, Judge it, then go to your damage Seal. The debuff lasts 40 seconds and Holy Strike with Sacred Arbiter refreshes every Judgement you have on the target, so after the first one it costs you nothing. On your own, know what each Seal gives you. Seal of the Crusader is attack power and faster, lighter swings, and its Judgement makes the target take more Holy damage for 40 seconds, with your melee keeping it up. Seal of Righteousness adds Holy damage to every swing, and its Judgement is a Holy hit. Judgement no longer consumes your Seal, so judging Crusader once and then putting up Righteousness costs you one extra Seal and one Judgement, not a Seal every time. On your own, always open with Crusader as above: one Seal and one Judgement cover the whole fight.
 
@@ -137,6 +137,7 @@ From level 20 Consecration is your AoE: two or three mobs on you is the time for
 Common mistakes:
 
 - Twisting Seals without Unsealed Wrath. It costs mana and globals for nothing.
+- Twisting while you are behind on mana. Every swap costs a global and a Seal, so stay in Seal of Righteousness until you catch up.
 - Letting the Seal drop. Recast it in its last second or two, not after it is gone.
 - Spending the bar on Consecration on a single target and having nothing left for Hammer of Wrath.
 - Swinging a one-hander. Two-Handed Weapon Specialization only works with a two-hander, and every Seal proc scales with the weapon.
