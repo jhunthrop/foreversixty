@@ -61,6 +61,14 @@ Method: spec-breakdown through `$R/sim.sh`; guide builds (`$R/rt`) and `-bis-dir
 | R4 | Raptor Strike rank rows (S 7b3cec608) | S2 | Aligned |
 | R5 | A2 ungated Aimed Shot | made the Marksmanship 50-51 tie stale | M1 (CONFIRMED, R21) |
 
+## Follow-up (integrator, after the platform and shaman merges)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| F1 | **Auto Shot through Sniper Shot's cast (guides round 24).** The client treats the two shots alike: SpellMisc (1.60.1.70790, wago) gives Sniper Shot ranks 1310687, 1310785 and 1310786 the same 17 attribute words as Aimed Shot 19434 and 20904 (Attributes_0 4259858, _2 131072, _4 402653184, _14 64, _15 8192, _16 128, the rest 0) and SpellInterrupts the same InterruptFlags 7 with no channel or aura interrupt flags; only CastingTimeIndex differs (15, 4 s, against 5, 2 s). Neither is a channel. Blizzard's 16 October note names it: "Your character will still fire Auto Shot while casting spells like Aimed Shot or Sniper Shot." Engine: `sniper_shot.go` and `aimed_shot.go` are the same hardcast shape (ProcMaskRangedSpecial, no swing cancel since round 21 A1), and `core.WeaponAttack.shootDuringCast` serves both. No log: the October beta corpus stops below 40 and there are no live logs (07:58 UTC). | `$R/hunter/wago/SpellMisc.csv`, `SpellInterrupts.csv`; us.forums.blizzard.com/en/wow/t/2360696 post 6 | Aligned (two sources: client flags, Blizzard note) | - | - |
+| F2 | **The reason for Raptor Strike's older ranks on the Survival card** (platform: the card now shows the published race's row, rank 5 at band 40 for a Horde race). The note's first sentence, which the card prints, now says an older rank sits on the bar at 26 to 29 and at 46 and 47; the rest gives the why (most of the hit is the weapon, the mana goes into traps, Immolation Trap rank 4 at 46 costs 190 against 135), the ranks (3 at 26-29, 2 for most Horde hunters at 26 and 27, 5 at 46-47) and the player-checkable rule at 48 from survival.md:148 (rank 7 unless the mana still runs out over a chain of pulls, then rank 5 to 50). The Horde/Alliance split at 48-49 follows the faction's band gear (round 21), not a racial, so the note does not name races there. wow-player on the note text (it renders after the regen): SHIP WITH FIXES twice (rank at 26-29 unnamed; an unverifiable Horde-gear reason), then **SHIP**. `_prose.test.ts` passes; apl-check passes. | `data/curated/apl/hunter-survival.json` entry 2; survival.md:148 | Note text | - | S (this lane, see heads) |
+| F3 | **Counterattack's card row after the talent-level fix (S b4a82d5ad).** No Survival note or guide line names Counterattack's level (the note says "the moment it lights up after you parry"; survival.md:80 and :90 name no level), so no text assumes 30. **For platform:** the Survival order (`addon-builds.json`, hunter-survival leveling and raid) spends the Counterattack point at 32 (`[3,4,3]`, tier 3 column 2), so a card row from 25 shows the button seven levels before this build has it; the row should follow the build's point (32), not the tier's first level. | addon-builds.json, talents/hunter.json | For platform | - | - |
+
 ## Before/after
 
 Raid 60, guide builds, frozen BiS, 10000 it, seeds 1 / 50001, both factions, against this branch's int/r22 baseline (after the druid lane's crit change): every hunter spec identical to the digit (Beast Mastery 868.3/868.2 Alliance, 865.5/865.3 Horde; Marksmanship 959.3/960.6, 960.0/959.2; Survival 851.1/850.4, 850.7/851.2). The rows are bare-only at 60 and no preset carries a scope.
@@ -77,7 +85,7 @@ Full tables: `$R/hunter/ba-mm-h.tsv`, `ba-bm-h.tsv`, `mm5051-after2.tsv`.
 
 ## Files to regenerate
 
-- addon-data / Data.lua: the BM and MM rank lines (Arcane Shot, Serpent Sting, Aimed Shot 50-51) on every leveling band; coach starters for both.
+- addon-data / Data.lua: the Survival Raptor Strike note (follow-up F2) and the BM and MM rank lines (Arcane Shot, Serpent Sting, Aimed Shot 50-51) on every leveling band; coach starters for both.
 - Ladder goldens (`sim/request TestRotationLadder`) for Beast Mastery and Marksmanship bare bands 20-60.
 - dps-per-point and planner vectors for BM and MM leveling bands (more mana in the fight: Intellect and mp5 worth less).
 - `sim/rankchoices/rank-choices.json` synced here with `make rank-choices-sync`. No APL changed. Fork: no golden.
