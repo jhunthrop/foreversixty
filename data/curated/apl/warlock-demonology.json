@@ -133,7 +133,7 @@
             }
           }
         },
-        "notes": "Soul Fire every 6 seconds while Decimation is up. Below 35% each Shadow Bolt gives you 10 seconds of 2.4 second Soul Fires that cost no shard. In the raid build, skip it: Soul Fire is Fire, and your Shadow bonuses make Shadow Bolt stronger. Outside Decimation it is never worth its shard."
+        "notes": "Soul Fire every 6 seconds while Decimation is up. Below 35% each Shadow Bolt gives you 10 seconds of Soul Fires with 40% less cast time that cost no shard, 2.4 seconds once Bane is full. In the raid build, skip it: Soul Fire is Fire, and your Shadow bonuses make Shadow Bolt stronger. Outside Decimation it is never worth its shard."
       },
       {
         "notes": "Life Tap below 10% mana. Each tap turns health, plus a point for every point of Spirit, into mana; a Healthstone or a healer covers the health.",
@@ -303,7 +303,7 @@
         }
       },
       {
-        "notes": "Shadow Bolt for every other cast. The Imp's sacrifice and Master Demonologist both raise Shadow damage, so it beats Searing Pain, which also carries far too much threat.",
+        "notes": "Shadow Bolt for every other cast. It beats Searing Pain, which also carries far too much threat, and once you have the Imp's sacrifice and Master Demonologist it pulls further ahead.",
         "action": {
           "castSpell": {
             "spellId": {

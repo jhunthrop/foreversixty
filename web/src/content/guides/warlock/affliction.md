@@ -3,8 +3,8 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.70755:warlock:human:25522300132001351/200522/005:'
-raidBuild: 'FS1:1.60.1.70755:warlock:human:25520020135001351/00052/005004:'
+build: 'FS1:1.60.1.70790:warlock:human:25522300132001351/200522/005:'
+raidBuild: 'FS1:1.60.1.70790:warlock:human:25520020135001351/00052/005004:'
 recommendedRaces: [human, orc]
 statPriority: [Spell power, Shadow power, Hit, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'How to play Affliction in Forever: the leveling and raid builds, the DoT rotation, curses and banes, Life Tap, shards, races and leveling.'
@@ -94,7 +94,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, DoT ticks included, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost every two minutes on your direct damage spells, and, whatever the racial's tooltip says about non-periodic abilities, the damage half also reaches Wrack and your drains; Corruption, the banes and Immolate's burn get nothing, so press it as you start a Wrack; Expansive Mind's 5% more mana helps a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder for the whole fight: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is as good as Orc for Affliction: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, which helps a spec that pays for mana in health.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, DoT ticks included, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost every two minutes on your direct damage spells, and, whatever the racial's tooltip says about non-periodic abilities, the damage half also reaches Wrack and your drains; Corruption, the banes and Immolate's burn get nothing, so press it as you start a Wrack; Expansive Mind's 5% more mana helps a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command makes your demon hit 5% harder for the whole fight: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is close behind Orc for Affliction: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, which helps a spec that pays for mana in health.
 
 ## Professions
 

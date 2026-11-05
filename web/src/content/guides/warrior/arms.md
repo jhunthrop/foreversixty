@@ -3,8 +3,8 @@ title: Arms Warrior in Forever
 classSlug: warrior
 spec: arms
 role: dps
-build: 'FS1:1.60.1.70755:warrior:night-elf:13323213032215201/0505/205:'
-raidBuild: 'FS1:1.60.1.70755:warrior:night-elf:30303213132215201/05050005012/1:'
+build: 'FS1:1.60.1.70790:warrior:night-elf:13323213032215201/0505/205:'
+raidBuild: 'FS1:1.60.1.70790:warrior:night-elf:30303213132215201/05050005012/1:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'

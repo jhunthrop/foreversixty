@@ -49,7 +49,7 @@
           }
         }
       },
-      "notes": "Keep it sworn on the tank. It adds a flat amount to every Holy Light, Flash of Light and Holy Shock the tank gets from you, and it lasts 5 minutes, so renew it only in a long fight."
+      "notes": "Keep it sworn on the tank. It adds a flat amount to every Holy Light, Flash of Light and Holy Shock the tank gets from you, as long as the rank is close to your level, and it lasts 5 minutes, so renew it only in a long fight."
     },
     {
       "action": {
@@ -559,7 +559,7 @@
           }
         }
       },
-      "notes": "On the tank below 90%: your staple. Oath of Light adds the same flat amount to every rank you cast on the tank."
+      "notes": "On the tank below 90%: your staple. Oath of Light adds the same flat amount to every rank close to your level that you cast on the tank. Without raid buffs, rank 4 does the same job for less mana."
     },
     {
       "action": {

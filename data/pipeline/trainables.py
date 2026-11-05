@@ -51,6 +51,18 @@ every ability a player can press is in the file exactly once. A spell whose
 talent node a hotfix repointed (Voice of Truth, Binding Heal in 1.60.1.70707)
 keeps its learn row and is a trainer spell: Wowhead's live spellbook lists it
 at that level.
+
+**Removed learn rows.** A hotfix push that removes a spell's learn rows (status
+2) leaves them in `raw/shipped/`, so the no-learn-row fallback never lists that
+spell for the build the push targets. The next client bakes the removal into
+its shipped files and the trace is gone: 1.60.1.70790 shipped without the Lava
+Burst and Binding Heal rows 70755's push had removed, and both came back as
+`class_spell`. The previous committed build is the memory the shipped tables
+lost: a class-family spell with no learn row is listed only when that build
+already listed it without a learn row (Unstable Affliction, Hydra Shot, and
+Turn Evil, a class spell the live tree tags a talent), or did not know the
+spell at all (a new ability). A spell the previous build knew and did not list
+that way had learn rows that are now gone, and stays gone.
 """
 
 from __future__ import annotations
@@ -61,6 +73,7 @@ import re
 import shutil
 from collections import defaultdict
 from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -488,12 +501,75 @@ def _class_trainables(
     return sorted((_classified(t, live) for t in listed), key=lambda t: (t.name, t.ranks[0].id))
 
 
+#: A client build directory name, and the number that orders them.
+_BUILD_DIR = re.compile(r"^\d+\.\d+\.\d+\.(\d+)$")
+#: The committed spell list every build carries (`normalize`): one {id, name} per spell.
+SPELLS_FILE = "spells.json"
+
+
+@dataclass(frozen=True)
+class PreviousBuild:
+    """What the previous committed build knew (the module's "Removed learn rows" note):
+    every spell id its `spells.json` lists, and the ids it listed as trainable without a
+    learn row (the empty family skill line: `source: "class_spell"`, or a talent the live
+    tree re-tagged from one)."""
+
+    build: str
+    known: frozenset[int]
+    no_learn_row: frozenset[int]
+
+    def keeps_without_learn_row(self, spell_id: int) -> bool:
+        """Whether a no-learn-row class spell of this build may be listed: it was already
+        one in the previous build, or that build never knew the spell."""
+        return spell_id in self.no_learn_row or spell_id not in self.known
+
+
+def _build_number(name: str) -> int | None:
+    match = _BUILD_DIR.match(name)
+    return int(match.group(1)) if match else None
+
+
+def load_previous_build(root: Path, build: str) -> PreviousBuild | None:
+    """The newest build under `root` older than `build` whose spell list and trainables are
+    committed, or None when there is none (the first build, or a bare checkout)."""
+    number = _build_number(build)
+    if number is None:
+        return None
+    candidates = [
+        (n, path)
+        for path in root.iterdir()
+        if (n := _build_number(path.name)) is not None
+        and n < number
+        and (path / SPELLS_FILE).is_file()
+        and (path / TRAINABLES).is_dir()
+    ]
+    if not candidates:
+        return None
+    _, path = max(candidates)
+    known = {int(s["id"]) for s in json.loads((path / SPELLS_FILE).read_text(encoding="utf-8"))}
+    # A class spell keeps the family's empty skill line when the live tree re-tags it a
+    # talent (Turn Evil), so the empty line, not the source, says "no learn row".
+    no_learn_row = {
+        rank["id"]
+        for record_path in sorted((path / TRAINABLES).glob("*.json"))
+        for trainable in json.loads(record_path.read_text(encoding="utf-8"))["trainables"]
+        if trainable["skill_line"] == FAMILY_SKILL_LINE
+        for rank in trainable["ranks"]
+    }
+    return PreviousBuild(path.name, frozenset(known), frozenset(no_learn_row))
+
+
 def build_trainables(
-    build: str, raw: Path, talents_dir: Path | None = None
+    build: str,
+    raw: Path,
+    talents_dir: Path | None = None,
+    previous: PreviousBuild | None = None,
 ) -> list[ClassTrainables]:
     """Every class's trainables. With `talents_dir` (the build's committed, hotfix-aware
     `talents/`), each ability a live talent teaches is tagged `source: "talent"` and the
-    live talents no learn row lists are added (see the module notes)."""
+    live talents no learn row lists are added. With `previous` (`load_previous_build`), a
+    no-learn-row class spell the previous build knew and did not list that way is a removed
+    learn row and is dropped (see the module notes)."""
     tables = _SpellTables(raw)
     family_by_spell = _family_by_spell(raw)
     abilities = [
@@ -516,6 +592,8 @@ def build_trainables(
         # A no-learn-row copy of a learn-row ability (Aimed Shot 27632, Primal Bite 1238073)
         # is not one of its ranks: the learn rows are.
         and (c.class_slug, tables.names.get(c.spell_id, "")) not in learned_names
+        # A learn row the previous build still had, or a push had removed, is gone for good.
+        and (previous is None or previous.keeps_without_learn_row(c.spell_id))
     ]
     by_class: dict[str, list[_Candidate]] = defaultdict(list)
     for c in _unique_by_spell([*abilities, *extras]):
@@ -544,10 +622,15 @@ def write_trainables(build: str, root: Path = Path("builds")) -> Path:
         raise SystemExit(f"no {raw / 'SkillLineAbility.csv'}; run `python -m pipeline fetch` first")
     if not (build_dir / "talents").is_dir():
         raise SystemExit(f"no {build_dir / 'talents'}; run `python -m pipeline normalize` first")
+    previous = load_previous_build(root, build)
+    if previous is None:
+        logger.info("no previous build under %s: every no-learn-row class spell is listed", root)
+    else:
+        logger.info("removed learn rows carried from build %s", previous.build)
     out = build_dir / TRAINABLES
     shutil.rmtree(out, ignore_errors=True)
     total = 0
-    for record in build_trainables(build, raw, build_dir / "talents"):
+    for record in build_trainables(build, raw, build_dir / "talents", previous):
         write_model(record, out / f"{record.class_slug}.json")
         total += len(record.trainables)
     logger.info("wrote %s: %d trainable abilities", out, total)

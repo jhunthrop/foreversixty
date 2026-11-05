@@ -3,8 +3,8 @@ title: Frost Mage in Forever
 classSlug: mage
 spec: frost
 role: dps
-build: 'FS1:1.60.1.70755:mage:gnome:230005203/5/253510130101301221:'
-raidBuild: 'FS1:1.60.1.70755:mage:gnome:230005203/5/253510130101301221:'
+build: 'FS1:1.60.1.70790:mage:gnome:230005203/5/253510130101301221:'
+raidBuild: 'FS1:1.60.1.70790:mage:gnome:230005203/5/253510130101301221:'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Frost power, Critical strike, Intellect, Spell haste, Spell penetration]
 description: 'Frost Mage in Forever: Ice Barrier as a damage buff, the pre-pull Frostbolt, Fingers of Frost into Ice Lance, threat and mana on a boss, talents and leveling.'

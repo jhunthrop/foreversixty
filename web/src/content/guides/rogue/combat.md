@@ -3,8 +3,8 @@ title: Combat Rogue in Forever
 classSlug: rogue
 spec: combat
 role: dps
-build: 'FS1:1.60.1.70755:rogue:gnome:325301/3153030000012321541/03:'
-raidBuild: 'FS1:1.60.1.70755:rogue:gnome:005203002/3043030002012321451/005:'
+build: 'FS1:1.60.1.70790:rogue:gnome:325301/3153030000012321541/03:'
+raidBuild: 'FS1:1.60.1.70790:rogue:gnome:005203002/3043030002012321451/005:'
 recommendedRaces: [gnome, undead]
 statPriority: [Hit, Agility, Strength, Attack power, Critical strike, Melee haste]
 description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'

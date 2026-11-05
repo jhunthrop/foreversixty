@@ -3,8 +3,8 @@ title: Assassination Rogue in Forever
 classSlug: rogue
 spec: assassination
 role: dps
-build: 'FS1:1.60.1.70755:rogue:night-elf:32530200251551031/302303/011:'
-raidBuild: 'FS1:1.60.1.70755:rogue:night-elf:00530311251551031/302302/005:'
+build: 'FS1:1.60.1.70790:rogue:night-elf:32530200251551031/302303/011:'
+raidBuild: 'FS1:1.60.1.70790:rogue:night-elf:00530311251551031/302302/005:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Assassination Rogue for Forever: Mutilate on two daggers, Seal Fate, Cold Blood Eviscerates, Shank and Venom behind your poisons, Relentless Strikes for energy.'

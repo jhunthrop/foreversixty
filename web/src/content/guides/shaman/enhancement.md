@@ -3,8 +3,8 @@ title: Enhancement Shaman in Forever
 classSlug: shaman
 spec: enhancement
 role: dps
-build: 'FS1:1.60.1.70755:shaman:dwarf:323003/055030310051202051/052:'
-raidBuild: 'FS1:1.60.1.70755:shaman:dwarf:0533001/053030310051202051/053:'
+build: 'FS1:1.60.1.70790:shaman:dwarf:323003/055030310051202051/052:'
+raidBuild: 'FS1:1.60.1.70790:shaman:dwarf:0533001/053030310051202051/053:'
 recommendedRaces: [dwarf, orc]
 statPriority: [Hit, Intellect, Critical strike, Agility, Strength, Attack power, Spell power, Melee haste]
 description: 'Enhancement Shaman in Forever: one weapon and your imbue, Stormstrike and Maelstrom Weapon, which totem goes in which slot, stats, races and leveling.'
@@ -71,10 +71,10 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 1. Keep Strength of Earth Totem and your Air totem down.
 2. Stormstrike on cooldown.
-3. Lightning Bolt the moment Maelstrom Weapon shows five stacks. It is instant and free, so it costs you nothing. If Stormstrike is a second or two from ready, use it first and let the bolt take the 20%.
+3. Lightning Bolt the moment Maelstrom Weapon shows five stacks. With all five points it is instant and free, so it costs you nothing. If Stormstrike is a second or two from ready, use it first and let the bolt take the 20%.
 4. Searing Totem when it is down, unless the boss is about to die.
 5. Fire Nova when Clearcasting makes it free.
-6. Earth Shock on cooldown while you have more than a quarter of your mana, or half until Maelstrom Weapon has all five points. It takes Stormstrike's 20% when no bolt is ready.
+6. Earth Shock on cooldown while you have more than a quarter of your mana, or more than half from your first point of Maelstrom Weapon until the fifth. It takes Stormstrike's 20% when no bolt is ready.
 
 **Which imbue.** Windfury Weapon on your main hand turns off any Windfury Totem's bonus for you. So in a raid where a Windfury Totem reaches you, yours or another shaman's, put Rockbiter Weapon on instead: Forever's Rockbiter is a large flat attack power bonus, it keeps the totem's extra swings working for you, and Elemental Weapons makes it bigger. It also adds threat to your swings, so watch your meter early in a fight. Solo and anywhere without that totem, use Windfury Weapon.
 
@@ -84,7 +84,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 **Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and keep spending five Maelstrom stacks on Lightning Bolt.
 
-**Mana.** Stop shocking at a quarter of your mana: that last quarter pays for Stormstrike, which hits harder than the shock you skip, and for dropping your totems again. Your swings and free bolts carry you until your mana comes back. In a raid, Judgement of Wisdom and Mana Spring bring in enough mana that you never run dry, so Earth Shock never needs to wait and you shock freely down to that quarter. Until Maelstrom Weapon has all five points, a five-stack Lightning Bolt still costs mana, so stop shocking at half your mana instead and keep that mana for the bolts.
+**Mana.** Stop shocking at a quarter of your mana: that last quarter pays for Stormstrike, which hits harder than the shock you skip, and for dropping your totems again. Your swings and free bolts carry you until your mana comes back. In a raid, Judgement of Wisdom and Mana Spring bring in enough mana that you never run dry, so Earth Shock never needs to wait and you shock freely down to that quarter. From your first point of Maelstrom Weapon until the fifth, a five-stack Lightning Bolt still costs mana, so stop shocking at half your mana instead and keep that mana for the bolts; before the talent, and once it is full, a quarter is enough.
 
 **Lightning Shield** only fires when something hits you, which behind a boss is never. Keep it for leveling and for adds that turn on you.
 

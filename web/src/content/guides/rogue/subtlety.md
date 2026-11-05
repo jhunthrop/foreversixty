@@ -3,7 +3,7 @@ title: Subtlety Rogue in Forever
 classSlug: rogue
 spec: subtlety
 role: dps
-build: 'FS1:1.60.1.70755:rogue:night-elf:005302011/320003/035230031321001151:'
+build: 'FS1:1.60.1.70790:rogue:night-elf:005302011/320003/035230031321001151:'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Agility, Critical strike, Strength, Attack power, Melee haste]
 description: 'Subtlety Rogue for Forever: the Premeditation opener, Hemorrhage into Rupture, Ghostly Strike and Shank on cooldown, Boot Knife, Death Mark and its raid spot.'
@@ -37,7 +37,7 @@ Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and B
 
 ### Weaknesses
 
-- The lowest raid damage of the three trees
+- Bleeds carry its damage, so a boss that cannot bleed takes Garrote and Rupture off your bar and leaves every mark with less to store
 - More moving parts than Combat: a debuff, two bleeds, a mark and three short cooldowns to track
 - Its strongest tools (Vanish and Blind) do little on a raid boss, and Preparation is worth only one extra round of combo points there
 

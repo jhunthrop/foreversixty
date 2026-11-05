@@ -51,7 +51,7 @@
       }
     },
     {
-      "notes": "Below 20%, once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness. Improved Tactical Mastery keeps 25 rage through the swap. Mortal Strike and Execute still work there, Overpower and Rend do not.",
+      "notes": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness. Improved Tactical Mastery keeps 25 rage through the swap. Mortal Strike and Execute still work there, Overpower and Rend do not.",
       "action": {
         "condition": {
           "and": {
@@ -156,7 +156,7 @@
       }
     },
     {
-      "notes": "Keep it ticking: Bloodthrill only lights Overpower on a target that is bleeding from your Rend.",
+      "notes": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
       "action": {
         "condition": {
           "not": {
@@ -179,7 +179,7 @@
       }
     },
     {
-      "notes": "The moment it lights up, even ahead of Mortal Strike: a dodge or a Bloodthrill proc opens it for a few seconds, and with Improved Overpower it crits most of the time.",
+      "notes": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
       "action": {
         "castSpell": {
           "spellId": {

@@ -20,7 +20,7 @@
   >{#each items as fact, i (i)}<span class="whitespace-nowrap"
       ><span
         class={fact.class ?? ''}
-        style={fact.title === undefined ? '' : 'cursor:help'}
+        style={fact.title === undefined ? '' : 'cursor:default'}
         title={fact.title}
         data-testid={fact.testid}>{fact.text}</span
       >{#if i < items.length - 1}<span class="text-muted" aria-hidden="true">{FACT_TAIL}</span>{/if}</span

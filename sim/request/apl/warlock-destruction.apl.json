@@ -30,7 +30,7 @@
       }
     },
     {
-      "notes": "Corruption whenever it has fallen off. Instant with Improved Corruption, and 18 seconds of damage from one global.",
+      "notes": "Corruption whenever it has fallen off. A 2 second cast until Improved Corruption makes it instant, and the whole run of damage comes from that one cast, so never clip it.",
       "action": {
         "condition": {
           "not": {
@@ -191,7 +191,7 @@
       }
     },
     {
-      "notes": "Conflagrate on cooldown while Immolate is up. Each hit gives you 20 seconds of 20% more Shadow damage, and with 5 points in Shadow and Flame it never eats your Immolate.",
+      "notes": "Conflagrate on cooldown while Immolate is up. With Shadow and Flame each hit gives you 20 seconds of more Shadow damage, 20% at five points, and at five points it never eats your Immolate.",
       "action": {
         "condition": {
           "dotIsActive": {
@@ -210,7 +210,7 @@
       }
     },
     {
-      "notes": "Shadowburn on cooldown, at any boss health. Each hit gives you 20 seconds of 20% more Fire damage, and with 5 points in Shadow and Flame the Soul Shard comes straight back.",
+      "notes": "Shadowburn on cooldown, at any boss health. With Shadow and Flame each hit gives you 20 seconds of more Fire damage, 20% at five points, and at five points the Soul Shard comes straight back.",
       "action": {
         "castSpell": {
           "spellId": {

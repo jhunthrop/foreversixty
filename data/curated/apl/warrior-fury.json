@@ -198,7 +198,7 @@
         }
       },
       {
-        "notes": "First, below 20%: it beats Bloodthirst there and takes every point of rage you hold.",
+        "notes": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
         "action": {
           "condition": {
             "isExecutePhase": {
@@ -225,7 +225,7 @@
         }
       },
       {
-        "notes": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons.",
+        "notes": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -235,7 +235,7 @@
         }
       },
       {
-        "notes": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+        "notes": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -279,7 +279,7 @@
         }
       },
       {
-        "notes": "Only above 60 rage, and never from 25% down: hold that rage for Execute. It is queued on your next swing and costs no global cooldown.",
+        "notes": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it. It is queued on your next swing and costs no global cooldown.",
         "action": {
           "condition": {
             "and": {

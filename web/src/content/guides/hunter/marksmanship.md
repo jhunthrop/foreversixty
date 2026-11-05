@@ -3,8 +3,8 @@ title: Marksmanship Hunter in Forever
 classSlug: hunter
 spec: marksmanship
 role: dps
-build: 'FS1:1.60.1.70755:hunter:night-elf:532000050/005055200152105/5:'
-raidBuild: 'FS1:1.60.1.70755:hunter:night-elf:5/0052550011503051/50005003:'
+build: 'FS1:1.60.1.70790:hunter:night-elf:53200005/005055200152105/5:'
+raidBuild: 'FS1:1.60.1.70790:hunter:night-elf:5/0052550011503051/50005003:'
 recommendedRaces: [night-elf, troll]
 statPriority: [Hit, Agility, Intellect, Critical strike, Ranged attack power, Attack speed]
 description: 'How to play a Marksmanship Hunter in Forever: talents for leveling and raids, the shot priority, auto shot discipline, stats, consumables and race picks.'
@@ -30,10 +30,10 @@ sources:
     url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
   - label: 'Forever Sixty, spell values'
-    url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70790/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty, racial abilities'
-    url: https://foreversixty.gg/data/1.60.1.70755/races.json
+    url: https://foreversixty.gg/data/1.60.1.70790/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights

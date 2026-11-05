@@ -3,7 +3,7 @@ title: Survival Hunter in Forever
 classSlug: hunter
 spec: survival
 role: dps
-build: 'FS1:1.60.1.70755:hunter:night-elf:5/005005001/500230231051222151:'
+build: 'FS1:1.60.1.70790:hunter:night-elf:5/005005001/500230231051222151:'
 recommendedRaces: [night-elf, orc]
 statPriority: [Hit, Critical strike, Agility, Intellect, Strength, Attack power, Attack speed]
 description: 'How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.'
@@ -29,10 +29,10 @@ sources:
     url: https://foreversixty.gg/planner?class=hunter
     kind: datamined
   - label: 'Forever Sixty, spell values'
-    url: https://foreversixty.gg/data/1.60.1.70755/spellconst/hunter.json
+    url: https://foreversixty.gg/data/1.60.1.70790/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty, racial abilities'
-    url: https://foreversixty.gg/data/1.60.1.70755/races.json
+    url: https://foreversixty.gg/data/1.60.1.70790/races.json
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
