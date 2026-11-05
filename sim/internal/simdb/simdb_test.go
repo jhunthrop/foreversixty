@@ -295,3 +295,22 @@ func TestAShieldCarriesBlockValueAndNoBlockChance(t *testing.T) {
 	}
 	t.Fatalf("item %d is not in the embedded table", immovableObject)
 }
+
+// The engine swings the speed the embedded Forever table states, never the
+// vanilla one the fork's --tags=with_db table carries. These three differ
+// between the two (vanilla: Arcanite Champion 3.0, Fiery War Axe 2.9, The
+// Unstoppable Force 3.8); the first and third are client ItemSparse rows
+// (ItemDelay 3400 and 3600 on 1.60.1.70790), the second a wowhead Forever
+// supplement row. A failure here means the sim stopped reading simdb.bin
+// for weapons, or a client build changed the speed: check ItemSparse first.
+func TestWeaponsSwingAtTheirForeverSpeed(t *testing.T) {
+	for id, want := range map[int32]float64{12790: 3.4, 870: 3.6, 19323: 3.6} {
+		w, ok := Weapon(id)
+		if !ok {
+			t.Fatalf("item %d has no weapon row in the embedded table", id)
+		}
+		if w.Speed != want {
+			t.Errorf("item %d swings at %.2f s, Forever states %.2f s", id, w.Speed, want)
+		}
+	}
+}

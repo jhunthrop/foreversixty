@@ -5,7 +5,15 @@ from pathlib import Path
 import pytest
 
 from pipeline.hotfix_push import LAYER_RECORD, PUSH_DIR
-from pipeline.spelltips import _Tables, consumable_tips, racial_tips, write_spell_tips
+from pipeline.spelltips import (
+    TipOverride,
+    _Tables,
+    apply_tip_overrides,
+    consumable_tips,
+    load_tip_overrides,
+    racial_tips,
+    write_spell_tips,
+)
 
 
 def _csv(path: Path, header: str, rows: list[str]) -> None:
@@ -192,7 +200,7 @@ def _build(tmp_path: Path) -> Path:
 
 def test_write_spell_tips_writes_one_file_per_class_and_the_shared_file(tmp_path):
     _layer(_build(tmp_path) / "raw")
-    out = write_spell_tips("1.0.0.1", root=tmp_path)
+    out = write_spell_tips("1.0.0.1", root=tmp_path, curated=_no_overrides(tmp_path))
     warrior = json.loads((out / "warrior.json").read_text(encoding="utf-8"))
     assert list(warrior["spells"]) == ["21553"]
     shared = json.loads((out / "shared.json").read_text(encoding="utf-8"))
@@ -206,7 +214,7 @@ def test_spell_tips_refuse_tables_the_hotfix_push_was_never_layered_into(tmp_pat
     """2026-11-03: 70755's tips were written mid-fetch, before the push was layered."""
     _build(tmp_path)
     with pytest.raises(SystemExit, match="has not had its hotfix push layered"):
-        write_spell_tips("1.0.0.1", root=tmp_path)
+        write_spell_tips("1.0.0.1", root=tmp_path, curated=_no_overrides(tmp_path))
 
 
 def test_spell_tips_refuse_a_table_changed_since_the_layer(tmp_path):
@@ -215,4 +223,86 @@ def test_spell_tips_refuse_a_table_changed_since_the_layer(tmp_path):
     with (raw / "Spell.csv").open("a", encoding="utf-8") as f:
         f.write("\n")
     with pytest.raises(SystemExit, match="Spell.csv is not the table the hotfix layer wrote"):
-        write_spell_tips("1.0.0.1", root=tmp_path)
+        write_spell_tips("1.0.0.1", root=tmp_path, curated=_no_overrides(tmp_path))
+
+
+def _no_overrides(tmp_path: Path) -> Path:
+    curated = tmp_path / "curated"
+    curated.mkdir(exist_ok=True)
+    (curated / "spelltip-overrides.json").write_text('{"overrides": []}', encoding="utf-8")
+    return curated
+
+
+_BLIZZARD = {
+    "label": "WoW Forever beta development notes, 3 November",
+    "url": "https://us.forums.blizzard.com/en/wow/t/2360696",
+    "kind": "blizzard",
+}
+
+
+def _override(**fields) -> dict:
+    return {
+        "spell_id": 21553,
+        "find": "plus 160",
+        "replace": "plus 200",
+        "sources": [_BLIZZARD],
+        **fields,
+    }
+
+
+def _write_overrides(tmp_path: Path, overrides: list[dict]) -> Path:
+    curated = tmp_path / "curated"
+    curated.mkdir(exist_ok=True)
+    (curated / "spelltip-overrides.json").write_text(
+        json.dumps({"overrides": overrides}), encoding="utf-8"
+    )
+    return curated
+
+
+def test_a_server_side_change_overrides_the_cached_client_text(tmp_path):
+    """Round 21: Defensive Stance went from 30% to 80% threat on 3 November, server side;
+    the cached 70790 rows still read 30%, so the hover sat beside a guide saying 80%."""
+    _layer(_build(tmp_path) / "raw")
+    curated = _write_overrides(tmp_path, [_override()])
+    out = write_spell_tips("1.0.0.1", root=tmp_path, curated=curated)
+    tip = json.loads((out / "warrior.json").read_text(encoding="utf-8"))["spells"]["21553"]
+    assert "deals weapon damage plus 200 and" in tip["description"]
+    assert "160" not in tip["description"]
+
+
+def test_an_override_whose_text_drifted_stops_the_pipeline(tmp_path):
+    raw = tmp_path / "raw"
+    _raw(raw)
+    tips = {"21553": _Tables(raw).tip(21553)}
+    override = TipOverride(**_override(find="plus 999", replace="plus 1000"))
+    with pytest.raises(SystemExit, match="21553"):
+        apply_tip_overrides(tips, [override])
+
+
+def test_an_override_the_client_already_carries_changes_nothing(tmp_path):
+    raw = tmp_path / "raw"
+    _raw(raw)
+    tips = {"21553": _Tables(raw).tip(21553)}
+    override = TipOverride(**_override(find="plus 120", replace="plus 160"))
+    assert apply_tip_overrides(tips, [override]) == tips
+
+
+def test_an_override_needs_a_source(tmp_path):
+    curated = _write_overrides(tmp_path, [_override(sources=[])])
+    with pytest.raises(SystemExit, match="needs at least one source"):
+        load_tip_overrides(curated)
+
+
+def test_an_override_for_a_spell_no_tooltip_carries_stops_the_pipeline(tmp_path):
+    _layer(_build(tmp_path) / "raw")
+    curated = _write_overrides(tmp_path, [_override(spell_id=424242)])
+    with pytest.raises(SystemExit, match="424242"):
+        write_spell_tips("1.0.0.1", root=tmp_path, curated=curated)
+
+
+def test_the_curated_overrides_match_the_live_threat_bonuses():
+    """The shipped file: Defensive Stance 71 and its passive 7376 read 80%."""
+    overrides = {o.spell_id: o for o in load_tip_overrides(Path("curated"))}
+    for spell_id in (71, 7376):
+        assert overrides[spell_id].find.endswith("by 30%.")
+        assert overrides[spell_id].replace.endswith("by 80%.")

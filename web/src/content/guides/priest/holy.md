@@ -27,7 +27,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 
 ### Strengths
 
-- Prayer of Mending is the cheapest healing in the game: five heals for one cast
+- Prayer of Mending is the cheapest healing you can cast all fight: five heals for one cast
 - Prayer of Healing heals any five-player group at once, not only your own
 - Spiritual Guidance and Meditation turn Spirit into both healing and mana
 - Lightwell heals the melee while you heal the tank, and Holy Binding heals you every time you Flash Heal someone else
@@ -111,7 +111,7 @@ Tailoring makes healing cloth you will wear into the first raids. Enchanting sav
 
 ### Levels 1 to 19
 
-Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12.
+Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12. Healing a group before you learn Heal at 16, keep Renew on the tank and use Lesser Heal rank 3 as your filler.
 
 Three points of Twilight Focus from 10 to 12 mean most hits no longer push back your casts. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
 
@@ -119,4 +119,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early: through 32 the tank's Renew is rank 1, a fraction of the top rank's cost that still keeps most of your healing bonus, and rank 3 from 33, so you finish the dungeon with mana to spare. From there Renew keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep Renew up all dungeon; rank 7 or higher takes over at 60. Greater Heal is the same story: keep rank 1 as the filler until you learn rank 4 at 58. It keeps your whole healing bonus until then, and a dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. From 58, rank 3 and rank 4 heal about the same for their mana.
+From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early. A new Heal rank costs more mana than its extra healing is worth in its first levels: keep rank 2 at 28 and move to rank 3 at 29, then keep rank 3 from 34 to 37 before you move to rank 4. Renew steps down the same way: through 32 the tank's Renew is rank 1, a fraction of the top rank's cost that still keeps most of your healing bonus, and rank 3 from 33, so you finish the dungeon with mana to spare. From there Renew keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep Renew up all dungeon; rank 7 or higher takes over at 60. Greater Heal is the same story: keep rank 1 as the filler until you learn rank 4 at 58. It keeps your whole healing bonus until then, and a dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. From 58, rank 3 and rank 4 heal about the same for their mana.

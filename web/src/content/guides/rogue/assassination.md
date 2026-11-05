@@ -85,7 +85,7 @@ Mutilate costs 60, so you will often sit on four points waiting for energy. That
 
 ### Poisons
 
-**Instant Poison** on the main hand and **Deadly Poison** on the off hand at 60, with a sharpening stone beside each. Both poisons scale with your attack power in Forever: every Instant Poison hit and every Deadly Poison tick grows as your attack power does. Your off hand lands more than enough hits to hold Deadly Poison at five stacks, and every extra proc on the main hand is worth more as an Instant hit. Mutilate's bonus needs a poison sitting on the target, and Deadly Poison is the one that stays there, so never run two Instants. Below 60, keep Deadly on the main hand and Instant on the off hand: at 30 to 39 Backstab stacks Deadly faster, and from 40 to 59, with Mutilate, the two ways round come out even. Swap them at 60. Check both coats before every boss pull and re-apply any that is close to running out; a Mutilate into an unpoisoned boss is a weak one.
+**Instant Poison** on the main hand and **Deadly Poison** on the off hand at 60, with a sharpening stone beside each. Both poisons scale with your attack power in Forever: every Instant Poison hit and every Deadly Poison tick grows as your attack power does. Your off hand lands more than enough hits to hold Deadly Poison at five stacks, and every extra proc on the main hand is worth more as an Instant hit. Mutilate's bonus needs a poison sitting on the target, and Deadly Poison is the one that stays there, so never run two Instants. From 30 to 59, keep Deadly on the main hand and Instant on the off hand: at 30 to 39 Backstab stacks Deadly faster, and from 40, with Mutilate, the gap closes until the two ways round come out even in the 50s. Swap them at 60. Check both coats before every boss pull and re-apply any that is close to running out; a Mutilate into an unpoisoned boss is a weak one.
 
 ### Trash, threat and survival
 
@@ -118,7 +118,7 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ### Levels 1 to 19
 
-You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it is the hardest hit you have this early.
+You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it hits far harder than Sinister Strike.
 
 Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
 
@@ -130,4 +130,4 @@ Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the m
 
 From 20 to 40, Sinister Strike is your everyday builder on mobs that face you, with Gouge into Backstab whenever you can get behind. In a group, where the tank holds the mob and you stand at its back with a dagger in hand, Backstab is your builder until Mutilate.
 
-Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Put Deadly on the main hand and Instant on the off hand until 60, where they swap. Relentless Strikes comes late, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.
+Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Put Deadly on the main hand and Instant on the off hand until 60, where they swap. Relentless Strikes comes late, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and, from 22, Vanish get you out of the bad ones.

@@ -243,7 +243,7 @@
           }
         }
       },
-      "notes": "Riptide on the tank whenever it is ready and the tank is hurt: your cheapest heal per mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
+      "notes": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
     },
     {
       "action": {
@@ -886,7 +886,7 @@
           }
         }
       },
-      "notes": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last. Cast on someone in your own party it only jumps inside your party; cast on anyone else it can jump to any raid member near them. While leveling, cast rank 1 until 59: it costs 260 mana to rank 2's 315 and rank 3's 405, so it heals more before your mana runs out. At 60 without raid buffs, cast rank 2."
+      "notes": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last. Cast on someone in your own party it only jumps inside your party; cast on anyone else it can jump to any raid member near them. While leveling, cast rank 1 until 59, even after ranks 2 (46) and 3 (54) arrive: with Tidal Focus it costs 247 mana to about 300 for rank 2 and 385 for rank 3, so it heals more before your mana runs out. At 60 without raid buffs, cast rank 2."
     },
     {
       "action": {

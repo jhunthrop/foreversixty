@@ -74,7 +74,7 @@ func main() {
 	flag.StringVar(&o.spec, "spec", "", "spec slug, e.g. rogue-combat")
 	flag.StringVar(&o.preset, "preset", "raid", "bare or raid")
 	flag.IntVar(&o.band, "band", 60, "BiS band")
-	flag.IntVar(&o.level, "level", 0, "character level inside the band (band to band+9; default the band), to judge a rank row at the band's top as well as its floor")
+	flag.IntVar(&o.level, "level", 0, "character level inside the band (band to band+9; default the band), to judge a rank row at the band's top as well as its floor; on band 20 it reaches down to 10, wearing only the entry's items that level allows")
 	flag.StringVar(&o.faction, "faction", "alliance", "faction of the published entry")
 	flag.StringVar(&o.race, "race", "", "race slug replacing the published entry's (its gear and talents kept); the race's rank choices follow it")
 	flag.IntVar(&o.iterations, "iterations", 20000, "iterations")
@@ -293,17 +293,70 @@ func loadEntry(o options) (bisEntry, error) {
 	return bisEntry{}, fmt.Errorf("no %s band %d %s %s entry", o.spec, o.band, o.preset, o.faction)
 }
 
+// lowestBand is the lowest band the ranker publishes; levelFloor is the lowest
+// level a talent build exists at. -level on the lowest band reaches down to
+// levelFloor on that band's entry, since no lower entry exists.
+const (
+	lowestBand = 20
+	levelFloor = 10
+)
+
 // characterLevel is the level the band's entry is simmed at: the band itself,
-// or -level when it falls inside the band's ten levels (a rank row spans them).
+// or -level when it falls inside the band's ten levels (a rank row spans them),
+// or, on the lowest band, below it down to levelFloor.
 func (o options) characterLevel() (int, error) {
 	if o.level == 0 {
 		return o.band, nil
 	}
 	top := min(o.band+9, 60)
-	if o.level < o.band || o.level > top {
-		return 0, fmt.Errorf("-level %d is outside band %d (%d to %d)", o.level, o.band, o.band, top)
+	floor := o.band
+	if o.band == lowestBand {
+		floor = levelFloor
+	}
+	if o.level < floor || o.level > top {
+		return 0, fmt.Errorf("-level %d is outside band %d (%d to %d)", o.level, o.band, floor, top)
 	}
 	return o.level, nil
+}
+
+// itemRequiredLevels maps every item of the active build to its required level.
+func itemRequiredLevels(repoRoot string) (map[int]int, error) {
+	dir, err := buildDirectory(repoRoot)
+	if err != nil {
+		return nil, err
+	}
+	raw, err := os.ReadFile(filepath.Join(dir, "items.json"))
+	if err != nil {
+		return nil, fmt.Errorf("item levels: %w", err)
+	}
+	var rows []struct {
+		ID            int `json:"id"`
+		RequiredLevel int `json:"required_level"`
+	}
+	if err := json.Unmarshal(raw, &rows); err != nil {
+		return nil, fmt.Errorf("item levels: %w", err)
+	}
+	out := make(map[int]int, len(rows))
+	for _, r := range rows {
+		out[r.ID] = r.RequiredLevel
+	}
+	return out, nil
+}
+
+// wearableGear is gear without the slots whose item requires more than level:
+// a band entry run below its band leaves those slots empty.
+func wearableGear(repoRoot string, gear []api.GearSlot, level int) ([]api.GearSlot, error) {
+	required, err := itemRequiredLevels(repoRoot)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]api.GearSlot, 0, len(gear))
+	for _, g := range gear {
+		if required[g.ItemID] <= level {
+			out = append(out, g)
+		}
+	}
+	return out, nil
 }
 
 func buildRequest(o options) (api.SimRequest, error) {
@@ -327,12 +380,17 @@ func buildRequest(o options) (api.SimRequest, error) {
 	if err != nil {
 		return api.SimRequest{}, err
 	}
+	if level < o.band {
+		if gear, err = wearableGear(o.repoRoot, gear, level); err != nil {
+			return api.SimRequest{}, err
+		}
+	}
 	talents := entry.Talents
 	if o.talents != "" {
 		talents = o.talents
 	}
-	kitBuffs := leveling.KitBuffs(o.spec, o.band)
-	kitConsumes := leveling.KitConsumes(o.spec, o.band)
+	kitBuffs := leveling.KitBuffs(o.spec, min(level, o.band))
+	kitConsumes := leveling.KitConsumes(o.spec, min(level, o.band))
 	if o.preset == request.RaidPreset {
 		presets, err := request.LoadPresets(filepath.Join(o.repoRoot, "data", "curated", "presets.json"))
 		if err != nil {

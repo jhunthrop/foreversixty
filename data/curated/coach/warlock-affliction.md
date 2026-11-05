@@ -26,7 +26,7 @@ This is the Affliction Warlock as the site's guide describes it. Affliction keep
 - Corruption whenever it has fallen off.
 - Siphon Life whenever it has fallen off.
 - Curse of Recklessness: Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid, Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard.
-- Amplify Curse just before the Bane of Agony that covers the last minute.
+- Amplify Curse before each Bane of Agony, whenever it is off cooldown.
 - Bane of Doom while a minute or more of the fight is left.
 - Bane of Agony whenever no Bane of Doom is on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Immolate is the fifth DoT, recast when under three seconds remain.

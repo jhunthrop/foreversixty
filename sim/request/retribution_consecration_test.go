@@ -139,3 +139,29 @@ func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 21 (guide-accuracy round 18, sims requested 1): ranks 1
+// to 4 at 50 to 53, on the paced line and with both of its conditions taken
+// away. Rank 1 wins at 50 to 52 for every race and wins by more without the
+// pacing (rank 4 then spends 80 to 87 s of the fight out of mana). At 53 the
+// races split: Human keeps rank 1 (+0.2% over ranks 3 and 4), while Dwarf
+// (+0.8%) and Undead (+0.2 to +0.4%) gain with the top rank learned.
+func TestRetributionConsecrationRankAtFiftyThreeFollowsTheRace(t *testing.T) {
+	for _, c := range []struct {
+		race  string
+		level int
+		want  int32
+	}{
+		{"human", 52, 26573},
+		{"dwarf", 52, 26573},
+		{"undead", 52, 26573},
+		{"human", 53, 26573},
+		{"dwarf", 53, 20923},
+		{"undead", 53, 20923},
+	} {
+		ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", BarePreset, c.race))
+		if !ids[c.want] {
+			t.Errorf("%s %d: Consecration does not cast %d", c.race, c.level, c.want)
+		}
+	}
+}

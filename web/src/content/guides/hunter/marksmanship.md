@@ -57,7 +57,7 @@ Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shar
 ### Weaknesses
 
 - One big cooldown, Rapid Fire, and it comes once in a normal boss fight
-- Your output is mostly auto shot, so movement hurts you more than anyone
+- Auto shot is the biggest share of your damage and stops whenever you move, so a fight full of movement costs you more than it costs a Beast Mastery hunter, whose pet keeps fighting
 
 ### In a raid
 
@@ -85,15 +85,15 @@ There are two builds. You level with the pet: thirty-one points in Marksmanship 
 
 Improved Tracking only works while you track the target's type, and Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead. Most raid bosses are one of those; the boss's tooltip names its type, and on a boss of any other type the talent does nothing. Set it before the pull, and swap on trash with mixed types.
 
-In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Sniper Shot, the last ranks of Barrage, Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. Sniper Shot, the capstone, is your biggest shot: weapon damage plus 590 at rank 3, on its own 15 second cooldown. Its 4 second cast holds your auto shot twice as long as Aimed Shot, so it goes out right after an auto shot leaves, the same as Aimed Shot. While leveling, keep the pet: it holds what you pull, the leveling build keeps its talents, and the leveling build puts its Marksmanship points into Rapid Killing and Rapid Recuperation where the raid build has Sniper Shot.
+In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so the 20% on everything you do is worth more than the cat with Unleashed Fury behind it. So the raid build drops the pet talents, takes Lone Wolf, and spends the points on Sniper Shot, the last ranks of Barrage, Improved Stings and Surefooted's hit; Survivalist is the way to Surefooted. Sniper Shot, the capstone, is your biggest shot: weapon damage plus 590 at rank 3, on its own 15 second cooldown. Your auto shots keep firing through its 4 second cast, so start it the moment it comes up. While leveling, keep the pet: it holds what you pull, the leveling build keeps its talents, and the leveling build puts its Marksmanship points into Rapid Killing and Rapid Recuperation where the raid build has Sniper Shot.
 
 ## Rotation and priority
 
-Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Track the boss's type for Improved Tracking if Track covers it. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
+Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Mark the boss with Hunter's Mark first, so the mana is back by the pull (one hunter's mark per target is enough, they do not stack), then put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Track the boss's type for Improved Tracking if Track covers it. Time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
 
-On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
+On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and the shared cooldown is about to come back, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
-Then work the shared six second cooldown. When it comes up right after an auto shot fires, cast Aimed Shot: it outhits Multi-Shot whenever the cast fits. If you are partway to your next auto shot and your mana is above a quarter, take Multi-Shot instead, so the cast never holds your auto. With the raid build, Sniper Shot comes next: when it is ready and the shared cooldown is not, cast it right after an auto shot fires, never partway to the next one. Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
+Then work the shared six second cooldown: cast Aimed Shot every time it comes up. In Forever your auto shots keep firing while you cast it, so neither Aimed Shot nor Sniper Shot costs you an auto shot, and with Barrage Aimed Shot outhits Multi-Shot by a wide margin. With the raid build, Sniper Shot comes next: start it the moment it is ready and the shared cooldown is not. Multi-Shot is for packs and for when you have to move. Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
 
 Auto Shot does more damage than any button you press, so protect it:
 
@@ -102,7 +102,7 @@ Auto Shot does more damage than any button you press, so protect it:
 - Stay outside 8 yards. Inside it you cannot shoot at all.
 - On a movement phase, fire Arcane Shot and Multi-Shot on the run while the mana holds, and plant your feet the moment you can.
 
-When mana gets low, hold Multi-Shot first: it is the worst damage for its mana you fire, so under a quarter of your mana let the shared cooldown wait for an Aimed Shot that fits right after an auto shot. Keep Sniper Shot and Arcane Shot going, and keep Serpent Sting rolling to the end: with the attack power they carry, the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it.
+When mana gets low, hold Multi-Shot first: it is the worst damage for its mana you fire, so under a quarter of your mana let Aimed Shot have the shared cooldown. Keep Sniper Shot and Arcane Shot going, and keep Serpent Sting rolling to the end: with the attack power they carry, the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it.
 
 **The pet.** Level with a cat and train it the top ranks of Claw, Bite and Growl as you go. In a raid with the raid build, leave it dismissed. If you raid with the leveling build instead, turn off Growl (right-click it on the pet bar) and send the cat to the boss's back.
 
@@ -116,7 +116,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Agility is attack power and crit together. Crit is strong with Mortal Shots, which makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because every miss throws away a whole shot, auto shots included, and auto shot is more of your damage than any button you press. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Agility is attack power and crit together. Crit is strong with Mortal Shots, which makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -146,7 +146,9 @@ Enchanting is the profession your best in slot list asks for. The Heart of the M
 
 ### Levels 1 to 19
 
-Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12. Multi-Shot comes at 18.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12.
+
+Multi-Shot comes at 18. It is the worst damage for its mana you fire, so once you are under a quarter of your mana, hold it, and from 20 Aimed Shot takes the shared cooldown when you can afford it. Keep Serpent Sting rolling and Arcane Shot firing on cooldown even then, without waiting on the shared cooldown.
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 

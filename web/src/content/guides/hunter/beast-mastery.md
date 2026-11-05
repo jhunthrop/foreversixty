@@ -84,11 +84,11 @@ The raid build moves one point out of Efficiency and the point in Rapid Killing 
 
 ## Rotation and priority
 
-Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
+Before the pull, mark the boss with Hunter's Mark first, so the mana is back by the pull (one hunter's mark per target is enough, they do not stack), then put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
 
 As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
-From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine while your mana is healthy. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which outhits Multi-Shot. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
+From there, cast Aimed Shot every time the shared six second cooldown comes up. In Forever your auto shots keep firing while you cast it, so the cast costs you no auto shot, and it outhits Multi-Shot. Multi-Shot is for packs and for when you have to move. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
 
 Auto Shot does more damage than any button you press, so protect it:
 
@@ -96,7 +96,7 @@ Auto Shot does more damage than any button you press, so protect it:
 - Fire your instants right after an auto shot leaves, so they never push the next one back.
 - Stay outside 8 yards. Inside it you cannot shoot at all.
 
-When mana gets low, hold Multi-Shot first: it is the worst damage for its mana you fire, so under a quarter of your mana let the shared cooldown wait for an Aimed Shot that fits right after an auto shot. Keep Arcane Shot going, and keep Serpent Sting rolling to the end: with the attack power they carry, the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it, not at 5%.
+When mana gets low, hold Multi-Shot first: it is the worst damage for its mana you fire, so under a quarter of your mana let Aimed Shot have the shared cooldown. Keep Arcane Shot going, and keep Serpent Sting rolling to the end: with the attack power they carry, the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it, not at 5%.
 
 **The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Other players' stat buffs do not reach your pet in Forever, so your own gear is what makes it stronger. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
 
@@ -110,7 +110,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you, and past the cap it adds nothing. Agility is attack power and crit together. Crit is better than it looks because the pet copies all of your crit chance. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because every miss throws away a whole shot, auto shots included, and auto shot is more of your damage than any button you press; past the cap it adds nothing. Agility is attack power and crit together. Crit is better than it looks because the pet copies all of your crit chance. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -140,7 +140,9 @@ Enchanting is the profession your best in slot list asks for. Frozen Heart of th
 
 ### Levels 1 to 19
 
-Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12. Multi-Shot comes at 18.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12.
+
+Multi-Shot comes at 18. It is the worst damage for its mana you fire, so once you are under a quarter of your mana, hold it, and from 20 Aimed Shot takes the shared cooldown when you can afford it. Keep Serpent Sting rolling and Arcane Shot firing on cooldown even then, without waiting on the shared cooldown.
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 
