@@ -68,7 +68,7 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         ),
         "Swipe": (
             "Swipe only with two or more targets in front of you, above forty rage. "
-            "On a single boss, put the rage into Maul, Lacerate and Primal Bite."
+            "On a single boss, put the rage into Maul, and into Lacerate from twenty-five and Primal Bite from forty."
         ),
     },
     "hunter-beast-mastery": {

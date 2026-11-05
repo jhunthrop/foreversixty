@@ -26,8 +26,10 @@ SPECS = {
     "druid-balance": dict(
         core=[], auras=[("Insect Swarm", DOT)], downranks=[], defensives=["Barkskin"]
     ),
+    # Shifting Power is mana-limited (55% of base mana) and held above 60 energy; F1 cannot read
+    # either, so a ready one is not judged as a lost cast (round 26).
     "druid-feral": dict(
-        core=["Shifting Power"],
+        core=[],
         auras=[("Rip", DOT)],
         downranks=[],
         defensives=["Barkskin"],
@@ -146,7 +148,8 @@ SPECS = {
     # ---- tanks (3)
     "druid-feral-bear": dict(
         core=["Primal Bite"],
-        auras=[("Demoralizing Roar", DEF)],
+        # A warrior's Demoralizing Shout holds the same slot (feral-bear.md), so its time counts.
+        auras=[("Demoralizing Roar", DEF, ("warrior", "Demoralizing Shout"))],
         downranks=[],
         defensives=["Barkskin", "Frenzied Regeneration"],
     ),

@@ -28,7 +28,7 @@ This is the best Feral Bear Druid on Forever. The bear tanks on health and armor
 - Faerie Fire whenever the boss does not have it.
 - Demoralizing Roar whenever the boss does not have it, and again in its last three seconds, unless a warrior's Demoralizing Shout is already on it.
 - Maul queued on your next swing whenever you have fifteen rage spare. From forty to fifty-three, wait for thirty rage, so Primal Bite seldom waits on rage.
-- Swipe only with two or more targets in front of you, above forty rage. On a single boss, put the rage into Maul, Lacerate and Primal Bite.
+- Swipe only with two or more targets in front of you, above forty rage. On a single boss, put the rage into Maul, and into Lacerate from twenty-five and Primal Bite from forty.
 - Challenging Roar is your panic button when the pack runs to the healers.
 - Barkskin takes twenty percent off physical damage for fifteen seconds every minute, and Forever lets you cast it in Bear Form.
 - Frenzied Regeneration turns up to ten rage a second into health for ten seconds, and in Forever a full one hundred rage of it heals your whole health bar.
