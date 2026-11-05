@@ -197,7 +197,7 @@ const lootNightUnknown = "No raid night recorded (date is the award date)"
 func (s *Store) streamLoot(ctx context.Context, guildID int64, emit func([]string) error) error {
 	rows, err := s.Pool.Query(ctx, `
 		select coalesce(r.starts_at, rr.starts_at, `+logAnchorSQL("rp")+`, la.awarded_at) as night,
-		       coalesce(r.title, rr.title, nullif(rp.zone, ''), nullif(rp.title, ''), '`+lootNightUnknown+`'),
+		       coalesce(r.title, rr.title, nullif(rp.zone, ''), nullif(rp.log_zone, ''), nullif(rp.title, ''), '`+lootNightUnknown+`'),
 		       la.encounter_id, la.item_id,
 		       coalesce(nullif(ae.name, ''), inv.name,
 		                case when u.id is not null then '`+invitedStandIn+` ' || u.id end, la.character_key)

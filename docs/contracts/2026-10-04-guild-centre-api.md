@@ -221,15 +221,23 @@ Table `loot_awards (id bigserial, guild_id, encounter_id, item_id, character_key
 `raid_id` that is not one answers 400 `invalid` ("raid N is not a done Onyxia raid of this
 guild"). Without it the award goes to the raid being played now: the guild's Onyxia raid (any
 status but cancelled) whose match window, an hour before its start to six hours after its end,
-holds the award's time. Otherwise it has no raid until a match attaches it; a previous done raid
-never takes it. One award per drop per raid: re-awarding the same drop in the same raid
-replaces it, and a later raid's award of the same item is a new row.
+holds the award's time. Outside every window (the morning after) it goes to the guild's latest
+matched night whose log killed the item's boss within the last 7 days (`awardNightLookback`):
+the planned Onyxia raid holding that log (`raid_id`), else, for a logged night no planned raid
+holds, that report (`report_id`, `raid_id` null). With no such night it has no raid until a
+match attaches it (amended 2026-11-05, guild round 3: the old rule left a morning-after award on
+no night, so the CSV said "No raid night recorded", the raid page "No loot awarded" and
+/report "0 items"; all three read this one attachment). One award per drop per raid:
+re-awarding the same drop in the same raid replaces it, and a later raid's award of the same
+item is a new row. The Loot tab marks a drop awarded when its award is filed under that same
+night (or, filed under none, was made in the last 12 hours).
 
 Attach on match (Lane G2): an award made with no `raid_id` goes to the guild's raid (not
 cancelled) whose match window holds the award's time, whatever that raid's status; outside every
 window it has no raid. When a raid's log matches (auto or by hand), the guild's raid-less awards
 whose `awarded_at` falls between an hour before the raid's start and six hours after the earlier
-of the log's anchor and the raid's end join that raid, in the match's own transaction. If the raid already holds an award of the same
+of the log's anchor and the raid's end join that raid, in the match's own transaction, and so do
+the raid-less awards filed under that log as a logged night. If the raid already holds an award of the same
 drop, the newer of the two stays on the raid and the older is left with no raid. Clearing the
 match takes back only the awards the match attached (`attached_by_match`); an award filed under
 the raid with `raid_id` is never detached.
