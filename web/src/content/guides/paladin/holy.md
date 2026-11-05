@@ -76,7 +76,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 2. **Divine Favor**, then **Holy Light** (rank 8), when the tank drops below 40%. It is the only heal that outheals a tank by itself, and the crit is guaranteed.
 3. **Holy Light** on the tank below 70%, and **Holy Shock** on anyone below 70%, but only with mana to spare: keep your mana percent no more than 5 points under the percent of the fight left (halfway through, above 45% mana). Once you fall more than 5 points under, heal with Flash of Light alone until you catch up.
 4. **Flash of Light rank 5** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank close to your level, and rank 5 carries all of your healing power at 60 for less mana than rank 6. Without raid buffs, when mana is the limit, rank 4 does the same job for less again. Rank 1 is a trap at 60: Forever takes the healing power off ranks learned far below your level, and the Oath's bonus goes with it, so rank 1 heals for little more than its base.
-5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus it is still the best balance of heal size and mana.
+5. **Flash of Light rank 5** on everyone else below 80%, yourself included. In a raid your buffs and mana regeneration pay for the bigger heal. Without them, rank 4 is the best balance of heal size and mana, as it is from 50 while you level.
 
 **Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches, and the rank 9 book has no known source in Forever yet, so rank 8 is your top rank. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
 
