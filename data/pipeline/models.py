@@ -377,6 +377,9 @@ class EnchantRecord(BaseModel):
     #: `spell_id` and `item_id` are here too.
     id: int
     name: str
+    #: The client's own text for the enchant (`SpellItemEnchantment.Name_lang`,
+    #: "+7 Strength"); `name` is the recipe's. Empty when the client has no row.
+    display: str = ""
     icon: str
     #: The planner slot names this enchant can be applied in.
     slots: list[str]
@@ -749,6 +752,10 @@ class SpecRecord(BaseModel):
     #: its tree's `TalentTab` icon. The icon itself is never curated:
     #: `pipeline.specs.spec_icons` reads it off the active build.
     form_spell: int | None = None
+    #: The tree's 31-point ability as a level 60 rotation casts it, the id the
+    #: engine reports. None where the tree's last tier has no pressed ability
+    #: this spec's rotation casts.
+    capstone_spell: int | None = None
 
 
 class StatWeights(BaseModel):
@@ -1156,9 +1163,40 @@ class ConsumableRecord(BaseModel):
     spell_ids: list[int]
 
 
+class SimBuffExclusive(BaseModel):
+    """The group of debuffs that do not stack: the lowest `rank` holds."""
+
+    group: str
+    rank: int
+
+    model_config = {"extra": "forbid"}
+
+
+class SimBuffEffect(BaseModel):
+    """What a buff does, for the saved result page's "No effect on your damage" rule.
+    Curated in `curated/simbuffs.json`'s `effects`."""
+
+    #: The stat block the engine measures on a level 60 sheet, in the stat
+    #: weights' vocabulary, plus `target_armor` and `spell_crit`.
+    stats: dict[str, float] = {}
+    #: Schools whose damage it raises, whoever it lands on.
+    school_damage: list[str] = []
+    #: It works through a weapon swing (Flametongue Totem's proc).
+    melee_effect: bool = False
+    exclusive_with: SimBuffExclusive | None = None
+
+    model_config = {"extra": "forbid"}
+
+
 class SimBuffEntry(BaseModel):
     name: str
     icon: str
+    #: It lands on the target, not on the player. Read off IDS.md's Debuffs rows.
+    target: bool = False
+    stats: dict[str, float] = {}
+    school_damage: list[str] = []
+    melee_effect: bool = False
+    exclusive_with: SimBuffExclusive | None = None
 
 
 class SimBuffsFile(BaseModel):

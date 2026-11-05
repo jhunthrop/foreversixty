@@ -352,7 +352,8 @@ func Execute(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
 	base.DurationMS = time.Since(start).Milliseconds()
 	base.Summary = sum
 	base.Sample = adapter.Sample(engineRes)
-	return base, nil
+	base.RotationSHA = request.RotationSHA(req.Spec)
+	return adapter.WithDetail(base, engineRes)
 }
 
 // runs counts the sims this process has started, so each gets a signal
