@@ -10,6 +10,7 @@ import {
   bandHeading,
   buffsFact,
   savedDate,
+  SPACED_SPLIT,
   talentSplit,
 } from './result-band';
 import type { SimResult } from './types';
@@ -33,6 +34,9 @@ describe('the band', () => {
 
   it('reads the one talent split', () => {
     expect(talentSplit('30323013002000000-051531025120100231-200000000000000000')).toBe('17/32/2');
+    expect(talentSplit('30323013002000000-051531025120100231-200000000000000000', SPACED_SPLIT)).toBe(
+      '17 / 32 / 2',
+    );
     expect(bandDescriptor(result)).toEqual(['Troll Fury Warrior', 'Level 60', '17/32/2 talents']);
   });
 

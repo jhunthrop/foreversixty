@@ -14,7 +14,7 @@
   import type { ActionNames } from '../../lib/sim/action-names';
   import { plannerHrefForSpec, ranksFromTalentsString } from '../../lib/sim/character';
   import { talentsCardCopy as copy } from '../../lib/sim/input-cards-copy';
-  import { talentSplit } from '../../lib/sim/result-band';
+  import { SPACED_SPLIT, talentSplit } from '../../lib/sim/result-band';
   import { setResultTalentTips } from '../../lib/sim/result-tips';
   import { fullestTree, talentsFit } from '../../lib/sim/talents-fit';
   import type { SimResult } from '../../lib/sim/types';
@@ -94,7 +94,7 @@
     void load();
   });
 
-  const split = $derived(talentSplit(character.talents));
+  const split = $derived(talentSplit(character.talents, SPACED_SPLIT));
   const plannerHref = $derived(plannerHrefForSpec(character, activeBuild.build));
 </script>
 
