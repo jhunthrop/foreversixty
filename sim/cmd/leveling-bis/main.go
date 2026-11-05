@@ -758,6 +758,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		}
 	}
 
+	if err := requireBandsMatchGuide(repoRoot, buildDir, activeBuild, spec, reports); err != nil {
+		return err
+	}
 	jsonPath := filepath.Join(outDir, spec+".json")
 	presets := map[string]request.ResolvedPreset{presetRaid: raidPreset}
 	if err := writeSpecReport(jsonPath, spec, activeBuild, reports, presets, withHealProfile(healProfile)); err != nil {
