@@ -13,7 +13,7 @@
         "wipe_count": 3,
         "raiders": 37,
         "deaths": 57,
-        "top_parse": {
+        "top_dps": {
           "name": "Pyrelle",
           "class": "mage",
           "metric": "dps",
@@ -257,7 +257,7 @@
         "wipe_count": 2,
         "raiders": 10,
         "deaths": 21,
-        "top_parse": {
+        "top_dps": {
           "name": "Morvane",
           "class": "warlock",
           "metric": "dps",
@@ -393,7 +393,7 @@
         "wipe_count": 1,
         "raiders": 5,
         "deaths": 7,
-        "top_parse": {
+        "top_dps": {
           "name": "Skarn",
           "class": "rogue",
           "metric": "dps",

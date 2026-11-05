@@ -1781,6 +1781,16 @@ data class RaceInfo(
 )
 
 @Serializable
+data class RaidAlsoSignup(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("spec_key") val specKey: String? = null,
+    @SerialName("state") val state: String,
+)
+
+@Serializable
 data class RaidAttendanceRow(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
@@ -1984,7 +1994,8 @@ data class RaidNightRow(
     @SerialName("fights") val fights: List<RaidNightFight> = emptyList(),
     @SerialName("present") val present: List<RaidCharacter> = emptyList(),
     @SerialName("raid_id") val raidId: Long? = null,
-    @SerialName("top_parse") val topParse: RaidTopParse? = null,
+    @SerialName("top_hps") val topHps: RaidTopParse? = null,
+    @SerialName("top_dps") val topDps: RaidTopParse? = null,
 )
 
 /** GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when there are none; coach_notes is null without log_coach. */
@@ -2066,6 +2077,8 @@ data class RaidSignup(
     @SerialName("group") val group: String,
     /** The specs.json key of the spec, e.g. "hunter-beast-mastery"; null when it does not resolve. */
     @SerialName("spec_key") val specKey: String? = null,
+    /** The account's other answered characters, best place first. The row is the account's best place (In, Late, Bench, Out); these show under it as an Also line and count nowhere. */
+    @SerialName("also") val also: List<RaidAlsoSignup> = emptyList(),
     /** The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending. */
     @SerialName("spec_name") val specName: String? = null,
     /** The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending. */
@@ -2082,6 +2095,7 @@ data class RaidSpecOption(
     @SerialName("icon") val icon: String,
 )
 
+/** A night's Top HPS (healers, top_hps) or Top DPS (the DPS role, top_dps): the best figure on a boss kill, by the rule Progression's bests read. Left out when the night has none. */
 @Serializable
 data class RaidTopParse(
     @SerialName("name") val name: String,

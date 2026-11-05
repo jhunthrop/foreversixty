@@ -117,7 +117,7 @@ func TestProgressionBestByRoleIgnoresAFlaggedReport(t *testing.T) {
 	}
 }
 
-// The Raids tab's top parse (fillTopParse) is never a flagged report's: the flagged night is
+// The Raids tab's Top HPS and Top DPS (fillTopParses) are never a flagged report's: the flagged night is
 // still listed to the verified member who owns it (visibilityClause), with no top parse, as
 // it lists nobody present.
 func TestRaidsTopParseIgnoresAFlaggedReport(t *testing.T) {
@@ -135,12 +135,12 @@ func TestRaidsTopParseIgnoresAFlaggedReport(t *testing.T) {
 		seen[row.ID] = true
 		switch row.ID {
 		case g.flaggedID:
-			if row.TopParse != nil {
-				t.Errorf("the flagged night's top_parse = %+v, want none", *row.TopParse)
+			if row.TopHPS != nil || row.TopDPS != nil {
+				t.Errorf("the flagged night's tops = %+v %+v, want none", row.TopHPS, row.TopDPS)
 			}
 		case g.cleanReport:
-			if row.TopParse == nil || row.TopParse.Value != 100 {
-				t.Errorf("the clean night's top_parse = %+v, want its 100 dps", row.TopParse)
+			if row.TopDPS == nil || row.TopDPS.Value != 100 {
+				t.Errorf("the clean night's top_dps = %+v, want its 100 dps", row.TopDPS)
 			}
 		}
 	}

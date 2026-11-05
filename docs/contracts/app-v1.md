@@ -312,7 +312,7 @@ Auth none required (the actor is read if present). Caching private. Query `limit
 max 50), `cursor` (the `next_cursor` of a previous page). Answer `{ rows[], next_cursor (omitted at
 the end) }`: `rows[]` are logged raid nights (`{ id (a report id), title, zone, created_at,
 duration_ms, fight_count, kill_count, wipe_count, raiders, deaths, fights[], present[], raid_id
-(nullable) }` plus omitted `top_parse`). **A verified member also gets `planned[]` (the open raids,
+(nullable) }` plus `top_hps` and `top_dps` when the night has them). **A verified member also gets `planned[]` (the open raids,
 raid views), `zones[]`, `guild_timezone` and `discord`; anyone else gets none of those four keys**
 (fixtures `guild.raids`, `guild.raids.public`, `guild.raids.empty`). An officer whose guild `can`
 lists `approve` also gets `waiting_for_approval`, the count of characters waiting (lane F4,

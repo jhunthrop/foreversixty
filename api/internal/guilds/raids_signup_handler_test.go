@@ -67,6 +67,10 @@ func TestRaidViewIsOnePlayerPerAccount(t *testing.T) {
 	if v.Counts.In != 1 || v.Counts.Bench != 0 || len(v.Signups) != 1 {
 		t.Fatalf("counts = %+v signups = %+v", v.Counts, v.Signups)
 	}
+	// The benched main is not hidden: it rides the row's Also line, counted nowhere (§3.7).
+	if also := v.Signups[0].Also; len(also) != 1 || also[0].CharacterKey != memberKeyA || also[0].State != SignupBench {
+		t.Fatalf("also = %+v, want %s on Bench", also, memberKeyA)
+	}
 	w.as(w.member2)
 	v = w.signup(t, raid.ID, member2Key, `{"state":"out"}`).Raid
 	for _, c := range v.NotSigned {

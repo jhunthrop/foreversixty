@@ -179,7 +179,8 @@
         "spec_name": "Protection",
         "spec_icon": "inv_shield_06",
         "group": "tank",
-        "spec_key": "warrior-protection"
+        "spec_key": "warrior-protection",
+        "also": []
       },
       {
         "character_key": "us/pvp/ironhide",
@@ -193,7 +194,8 @@
         "spec_name": "Protection",
         "spec_icon": "inv_shield_06",
         "group": "tank",
-        "spec_key": "warrior-protection"
+        "spec_key": "warrior-protection",
+        "also": []
       },
       {
         "character_key": "us/pvp/bramblehoof",
@@ -207,7 +209,8 @@
         "spec_name": "Feral Bear",
         "spec_icon": "ability_racial_bearform",
         "group": "tank",
-        "spec_key": "druid-feral-bear"
+        "spec_key": "druid-feral-bear",
+        "also": []
       },
       {
         "character_key": "us/pvp/mendara",
@@ -221,7 +224,8 @@
         "spec_name": "Holy",
         "spec_icon": "spell_holy_guardianspirit",
         "group": "healer",
-        "spec_key": "priest-holy"
+        "spec_key": "priest-holy",
+        "also": []
       },
       {
         "character_key": "us/pvp/gravemend",
@@ -235,7 +239,8 @@
         "spec_name": "Holy",
         "spec_icon": "spell_holy_guardianspirit",
         "group": "healer",
-        "spec_key": "priest-holy"
+        "spec_key": "priest-holy",
+        "also": []
       },
       {
         "character_key": "us/pvp/rainspeaker",
@@ -249,7 +254,8 @@
         "spec_name": "Restoration",
         "spec_icon": "spell_nature_magicimmunity",
         "group": "healer",
-        "spec_key": "shaman-restoration"
+        "spec_key": "shaman-restoration",
+        "also": []
       },
       {
         "character_key": "us/pvp/tidecaller",
@@ -263,7 +269,8 @@
         "spec_name": "Restoration",
         "spec_icon": "spell_nature_magicimmunity",
         "group": "healer",
-        "spec_key": "shaman-restoration"
+        "spec_key": "shaman-restoration",
+        "also": []
       },
       {
         "character_key": "us/pvp/oakenmother",
@@ -277,7 +284,8 @@
         "spec_name": "Restoration",
         "spec_icon": "spell_nature_healingtouch",
         "group": "healer",
-        "spec_key": "druid-restoration"
+        "spec_key": "druid-restoration",
+        "also": []
       },
       {
         "character_key": "us/pvp/soothfang",
@@ -291,7 +299,8 @@
         "spec_name": "Discipline",
         "spec_icon": "spell_holy_wordfortitude",
         "group": "healer",
-        "spec_key": "priest-discipline"
+        "spec_key": "priest-discipline",
+        "also": []
       },
       {
         "character_key": "us/pvp/obnoxious-yell",
@@ -305,7 +314,8 @@
         "spec_name": "Fury",
         "spec_icon": "ability_warrior_innerrage",
         "group": "melee",
-        "spec_key": "warrior-fury"
+        "spec_key": "warrior-fury",
+        "also": []
       },
       {
         "character_key": "us/pvp/draknar",
@@ -319,7 +329,8 @@
         "spec_name": "Fury",
         "spec_icon": "ability_warrior_innerrage",
         "group": "melee",
-        "spec_key": "warrior-fury"
+        "spec_key": "warrior-fury",
+        "also": []
       },
       {
         "character_key": "us/pvp/ruzga",
@@ -333,7 +344,8 @@
         "spec_name": "Fury",
         "spec_icon": "ability_warrior_innerrage",
         "group": "melee",
-        "spec_key": "warrior-fury"
+        "spec_key": "warrior-fury",
+        "also": []
       },
       {
         "character_key": "us/pvp/ashfang",
@@ -347,7 +359,8 @@
         "spec_name": "Marksmanship",
         "spec_icon": "ability_marksmanship",
         "group": "ranged",
-        "spec_key": "hunter-marksmanship"
+        "spec_key": "hunter-marksmanship",
+        "also": []
       },
       {
         "character_key": "us/pvp/talonmaw",
@@ -361,7 +374,8 @@
         "spec_name": "Survival",
         "spec_icon": "ability_hunter_swiftstrike",
         "group": "melee",
-        "spec_key": "hunter-survival"
+        "spec_key": "hunter-survival",
+        "also": []
       },
       {
         "character_key": "us/pvp/skarn",
@@ -375,7 +389,8 @@
         "spec_name": "Combat",
         "spec_icon": "ability_backstab",
         "group": "melee",
-        "spec_key": "rogue-combat"
+        "spec_key": "rogue-combat",
+        "also": []
       },
       {
         "character_key": "us/pvp/zekra",
@@ -389,7 +404,8 @@
         "spec_name": "Combat",
         "spec_icon": "ability_backstab",
         "group": "melee",
-        "spec_key": "rogue-combat"
+        "spec_key": "rogue-combat",
+        "also": []
       },
       {
         "character_key": "us/pvp/grimshade",
@@ -403,7 +419,8 @@
         "spec_name": "Shadow",
         "spec_icon": "spell_shadow_shadowwordpain",
         "group": "ranged",
-        "spec_key": "priest-shadow"
+        "spec_key": "priest-shadow",
+        "also": []
       },
       {
         "character_key": "us/pvp/lightningbolltz",
@@ -417,7 +434,8 @@
         "spec_name": "Elemental",
         "spec_icon": "spell_nature_lightning",
         "group": "ranged",
-        "spec_key": "shaman-elemental"
+        "spec_key": "shaman-elemental",
+        "also": []
       },
       {
         "character_key": "us/pvp/emberfang",
@@ -431,7 +449,8 @@
         "spec_name": "Fire",
         "spec_icon": "spell_fire_firebolt02",
         "group": "ranged",
-        "spec_key": "mage-fire"
+        "spec_key": "mage-fire",
+        "also": []
       },
       {
         "character_key": "us/pvp/frostjaw",
@@ -445,7 +464,8 @@
         "spec_name": "Frost",
         "spec_icon": "spell_frost_frostbolt02",
         "group": "ranged",
-        "spec_key": "mage-frost"
+        "spec_key": "mage-frost",
+        "also": []
       },
       {
         "character_key": "us/pvp/vexmora",
@@ -459,7 +479,8 @@
         "spec_name": "Destruction",
         "spec_icon": "spell_shadow_rainoffire",
         "group": "ranged",
-        "spec_key": "warlock-destruction"
+        "spec_key": "warlock-destruction",
+        "also": []
       },
       {
         "character_key": "us/pvp/hexbane",
@@ -473,7 +494,8 @@
         "spec_name": "Affliction",
         "spec_icon": "spell_shadow_deathcoil",
         "group": "ranged",
-        "spec_key": "warlock-affliction"
+        "spec_key": "warlock-affliction",
+        "also": []
       },
       {
         "character_key": "us/pvp/moonclaw",
@@ -487,7 +509,8 @@
         "spec_name": "Balance",
         "spec_icon": "spell_nature_starfall",
         "group": "ranged",
-        "spec_key": "druid-balance"
+        "spec_key": "druid-balance",
+        "also": []
       },
       {
         "character_key": "us/pvp/gorehowl",
@@ -501,7 +524,8 @@
         "spec_name": "Enhancement",
         "spec_icon": "spell_nature_lightningshield",
         "group": "melee",
-        "spec_key": "shaman-enhancement"
+        "spec_key": "shaman-enhancement",
+        "also": []
       },
       {
         "character_key": "us/pvp/varkas",
@@ -515,7 +539,8 @@
         "spec_name": "Demonology",
         "spec_icon": "spell_shadow_metamorphosis",
         "group": "ranged",
-        "spec_key": "warlock-demonology"
+        "spec_key": "warlock-demonology",
+        "also": []
       },
       {
         "character_key": "us/pvp/snaggle",
@@ -529,7 +554,8 @@
         "spec_name": "Assassination",
         "spec_icon": "ability_rogue_eviscerate",
         "group": "melee",
-        "spec_key": "rogue-assassination"
+        "spec_key": "rogue-assassination",
+        "also": []
       },
       {
         "character_key": "us/pvp/wyrmtalon",
@@ -543,7 +569,8 @@
         "spec_name": "Beast Mastery",
         "spec_icon": "ability_hunter_beasttaming",
         "group": "ranged",
-        "spec_key": "hunter-beast-mastery"
+        "spec_key": "hunter-beast-mastery",
+        "also": []
       },
       {
         "character_key": "us/pvp/felgrin",
@@ -557,7 +584,8 @@
         "spec_name": "Arcane",
         "spec_icon": "spell_holy_magicalsentry",
         "group": "ranged",
-        "spec_key": "mage-arcane"
+        "spec_key": "mage-arcane",
+        "also": []
       }
     ],
     "not_signed": [

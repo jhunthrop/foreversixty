@@ -4770,6 +4770,40 @@ public struct RaceInfo: Codable, Sendable, Equatable {
     }
 }
 
+public struct RaidAlsoSignup: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    public let spec: String
+    public let specKey: String?
+    public let state: String
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        spec: String,
+        specKey: String? = nil,
+        state: String
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.spec = spec
+        self.specKey = specKey
+        self.state = state
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case spec
+        case specKey
+        case state
+    }
+}
+
 public struct RaidAttendanceRow: Codable, Sendable, Equatable {
     public let characterKey: String
     public let name: String
@@ -5291,7 +5325,8 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
     public let fights: [RaidNightFight]
     public let present: [RaidCharacter]
     public let raidId: Int64?
-    public let topParse: RaidTopParse?
+    public let topHps: RaidTopParse?
+    public let topDps: RaidTopParse?
 
     public init(
         id: String,
@@ -5307,7 +5342,8 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
         fights: [RaidNightFight] = [],
         present: [RaidCharacter] = [],
         raidId: Int64? = nil,
-        topParse: RaidTopParse? = nil
+        topHps: RaidTopParse? = nil,
+        topDps: RaidTopParse? = nil
     ) {
         self.id = id
         self.title = title
@@ -5322,7 +5358,8 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
         self.fights = fights
         self.present = present
         self.raidId = raidId
-        self.topParse = topParse
+        self.topHps = topHps
+        self.topDps = topDps
     }
 
     public init(from decoder: any Decoder) throws {
@@ -5340,7 +5377,8 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
         fights = try c.decodeIfPresent([RaidNightFight].self, forKey: .fights) ?? []
         present = try c.decodeIfPresent([RaidCharacter].self, forKey: .present) ?? []
         raidId = try c.decodeIfPresent(Int64.self, forKey: .raidId)
-        topParse = try c.decodeIfPresent(RaidTopParse.self, forKey: .topParse)
+        topHps = try c.decodeIfPresent(RaidTopParse.self, forKey: .topHps)
+        topDps = try c.decodeIfPresent(RaidTopParse.self, forKey: .topDps)
     }
 }
 
@@ -5540,6 +5578,8 @@ public struct RaidSignup: Codable, Sendable, Equatable {
     public let group: String
     /// The specs.json key of the spec, e.g. "hunter-beast-mastery"; null when it does not resolve.
     public let specKey: String?
+    /// The account's other answered characters, best place first. The row is the account's best place (In, Late, Bench, Out); these show under it as an Also line and count nowhere.
+    public let also: [RaidAlsoSignup]
     /// The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending.
     public let specName: String?
     /// The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending.
@@ -5556,6 +5596,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         own: Bool,
         group: String,
         specKey: String? = nil,
+        also: [RaidAlsoSignup] = [],
         specName: String? = nil,
         specIcon: String? = nil
     ) {
@@ -5569,6 +5610,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         self.own = own
         self.group = group
         self.specKey = specKey
+        self.also = also
         self.specName = specName
         self.specIcon = specIcon
     }
@@ -5584,8 +5626,26 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         case own
         case group
         case specKey
+        case also
         case specName
         case specIcon
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        characterKey = try c.decode(String.self, forKey: .characterKey)
+        name = try c.decode(String.self, forKey: .name)
+        className = try c.decode(String.self, forKey: .className)
+        spec = try c.decode(String.self, forKey: .spec)
+        role = try c.decode(String.self, forKey: .role)
+        state = try c.decode(String.self, forKey: .state)
+        note = try c.decode(String.self, forKey: .note)
+        own = try c.decode(Bool.self, forKey: .own)
+        group = try c.decode(String.self, forKey: .group)
+        specKey = try c.decodeIfPresent(String.self, forKey: .specKey)
+        also = try c.decodeIfPresent([RaidAlsoSignup].self, forKey: .also) ?? []
+        specName = try c.decodeIfPresent(String.self, forKey: .specName)
+        specIcon = try c.decodeIfPresent(String.self, forKey: .specIcon)
     }
 }
 
@@ -5610,6 +5670,7 @@ public struct RaidSpecOption: Codable, Sendable, Equatable {
     }
 }
 
+/// A night's Top HPS (healers, top_hps) or Top DPS (the DPS role, top_dps): the best figure on a boss kill, by the rule Progression's bests read. Left out when the night has none.
 public struct RaidTopParse: Codable, Sendable, Equatable {
     public let name: String
     public let className: String

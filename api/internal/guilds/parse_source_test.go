@@ -31,8 +31,8 @@ func TestTheThreeGuildFiguresReadTheBossKillOnly(t *testing.T) {
 	}
 	var raidsTop float64 = -1
 	for _, row := range page.Rows {
-		if row.ID == g.cleanReport && row.TopParse != nil {
-			raidsTop = row.TopParse.Value
+		if row.ID == g.cleanReport && row.TopDPS != nil {
+			raidsTop = row.TopDPS.Value
 		}
 	}
 	view, err := g.store.Progression(ctx, g.guildID, true)

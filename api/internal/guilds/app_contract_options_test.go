@@ -16,7 +16,7 @@ var homeOptional = []string{
 }
 
 var raidListOptional = append([]string{
-	"data.rows[].top_parse", "data.planned[].viewer.characters[].raid_spec",
+	"data.rows[].top_hps", "data.rows[].top_dps", "data.planned[].viewer.characters[].raid_spec",
 	// Lane F4's contract (the officer's waiting count); the handler adds it after launch.
 	"data.waiting_for_approval",
 }, raidViewPending("data.planned[]")...)

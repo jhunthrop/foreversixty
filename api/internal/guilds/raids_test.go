@@ -68,7 +68,7 @@ func TestRaidsVisibilityMatchesReportRules(t *testing.T) {
 }
 
 // TestRaidsFightsAndPresentAndTopParse seeds one report with two fights (a kill and a
-// wipe) and checks the row's own fight list, present roster and top parse.
+// wipe) and checks the row's own fight list, present roster, Top HPS and Top DPS.
 func TestRaidsFightsAndPresentAndTopParse(t *testing.T) {
 	h := newHTTPHarness(t)
 	ctx := context.Background()
@@ -103,6 +103,12 @@ func TestRaidsFightsAndPresentAndTopParse(t *testing.T) {
 		 values ('raids-detail-report', 1, $1, 'Raidsdetail', 'hunter', 'dps', 300.5, true, now(), 1084)`, key); err != nil {
 		t.Fatal(err)
 	}
+	// A healer's HPS is the night's Top HPS; their lower DPS never contends for Top DPS.
+	if _, err := h.pool.Exec(ctx,
+		`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, role, metric_dps, metric_hps, kill, fought_at, encounter_id)
+		 values ('raids-detail-report', 1, 'us/hardcore/rootbound', 'Rootbound', 'druid', 'healer', 900, 449.4, true, now(), 1084)`); err != nil {
+		t.Fatal(err)
+	}
 
 	h.actor = auth.Actor{}
 	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/raids", gid), "")
@@ -124,11 +130,15 @@ func TestRaidsFightsAndPresentAndTopParse(t *testing.T) {
 	if row.Fights[1].Players != 1 {
 		t.Errorf("fights[1].players = %d, want 1", row.Fights[1].Players)
 	}
-	if len(row.Present) != 1 || row.Present[0].CharacterKey != key || row.Present[0].Name != "raidsdetail" {
-		t.Fatalf("present = %+v, want one row for %s named raidsdetail (addon_exports.name, preferred over fight_metrics.player_name)", row.Present, key)
+	// The healer row seeded for Top HPS is present too (fight_metrics names them), after the hunter.
+	if len(row.Present) != 2 || row.Present[0].CharacterKey != key || row.Present[0].Name != "raidsdetail" {
+		t.Fatalf("present = %+v, want %s named raidsdetail (addon_exports.name, preferred over fight_metrics.player_name) and the healer", row.Present, key)
 	}
-	if row.TopParse == nil || row.TopParse.Metric != "dps" || row.TopParse.Value != 300.5 || row.TopParse.Name != "Raidsdetail" {
-		t.Fatalf("topParse = %+v, want dps 300.5 for Raidsdetail", row.TopParse)
+	if row.TopDPS == nil || row.TopDPS.Metric != "dps" || row.TopDPS.Value != 300.5 || row.TopDPS.Name != "Raidsdetail" {
+		t.Fatalf("top_dps = %+v, want dps 300.5 for Raidsdetail", row.TopDPS)
+	}
+	if row.TopHPS == nil || row.TopHPS.Metric != "hps" || row.TopHPS.Value != 449.4 || row.TopHPS.Name != "Rootbound" {
+		t.Fatalf("top_hps = %+v, want hps 449.4 for Rootbound", row.TopHPS)
 	}
 }
 

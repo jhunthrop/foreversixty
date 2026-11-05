@@ -64,19 +64,22 @@ type TopParse struct {
 
 // RaidRow is one report as the Raids tab shows it.
 type RaidRow struct {
-	ID         string             `json:"id"`
-	Title      string             `json:"title"`
-	Zone       string             `json:"zone"`
-	CreatedAt  time.Time          `json:"created_at"`
-	DurationMS int64              `json:"duration_ms"`
-	FightCount int                `json:"fight_count"`
-	KillCount  int                `json:"kill_count"`
-	WipeCount  int                `json:"wipe_count"`
-	Raiders    int                `json:"raiders"`
-	Deaths     int                `json:"deaths"`
-	TopParse   *TopParse          `json:"top_parse,omitempty"`
-	Fights     []RaidFight        `json:"fights"`
-	Present    []PresentCharacter `json:"present"`
+	ID         string    `json:"id"`
+	Title      string    `json:"title"`
+	Zone       string    `json:"zone"`
+	CreatedAt  time.Time `json:"created_at"`
+	DurationMS int64     `json:"duration_ms"`
+	FightCount int       `json:"fight_count"`
+	KillCount  int       `json:"kill_count"`
+	WipeCount  int       `json:"wipe_count"`
+	Raiders    int       `json:"raiders"`
+	Deaths     int       `json:"deaths"`
+	// TopHPS and TopDPS are the night's best healer HPS and best DPS-role DPS (parse_source.go),
+	// left out when the night has none.
+	TopHPS  *TopParse          `json:"top_hps,omitempty"`
+	TopDPS  *TopParse          `json:"top_dps,omitempty"`
+	Fights  []RaidFight        `json:"fights"`
+	Present []PresentCharacter `json:"present"`
 	// RaidID is the guild raid this night is matched to (a verified member's read only).
 	RaidID *int64 `json:"raid_id"`
 
@@ -258,7 +261,7 @@ func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow, keys []string)
 	row.Present = []PresentCharacter{}
 	if len(keys) == 0 {
 		// A private, flagged or trash-only night, or one not ranked yet: nobody to list.
-		return s.fillTopParse(ctx, row)
+		return s.fillTopParses(ctx, row)
 	}
 	presentRows, err := s.Pool.Query(ctx, `
 		select distinct on (p.character_key) p.character_key, coalesce(ae.name, fm.player_name, ''), coalesce(fm.class, '')
@@ -282,43 +285,39 @@ func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow, keys []string)
 		return err
 	}
 	row.Raiders = len(row.Present)
-	return s.fillTopParse(ctx, row)
+	return s.fillTopParses(ctx, row)
 }
 
-// fillTopParse reads the report's best boss-kill figure (parse_source.go: never a trash pack's);
-// nil when it has none yet, and for a
-// report that is not evidence (presence.EvidenceReport: private or flagged), which lists
-// nobody present either.
-func (s *Store) fillTopParse(ctx context.Context, row *RaidRow) error {
-	var tp TopParse
-	var role string
-	var dps, hps *float64
+// fillTopParses reads the night's Top HPS (healers) and Top DPS (the DPS role), each from boss
+// kills only and the role's own metric, the rule Progression's bests read (parse_source.go).
+// Each is nil when the night has none yet, and both are nil for a report that is not evidence
+// (presence.EvidenceReport: private or flagged), which lists nobody present either.
+func (s *Store) fillTopParses(ctx context.Context, row *RaidRow) error {
+	var err error
+	if row.TopHPS, err = s.topByRole(ctx, row.ID, RoleHealer); err != nil {
+		return err
+	}
+	row.TopDPS, err = s.topByRole(ctx, row.ID, RoleDPS)
+	return err
+}
+
+// topByRole is a report's best boss-kill figure among role's rows, nil when it has none.
+func (s *Store) topByRole(ctx context.Context, reportID, role string) (*TopParse, error) {
+	col := roleMetricColumn(role)
+	tp := TopParse{Metric: roleMetric(role)}
 	err := s.Pool.QueryRow(ctx, `
-		select coalesce(m.player_name, ''), coalesce(m.class, ''), coalesce(m.role, ''), m.metric_dps, m.metric_hps
+		select coalesce(m.player_name, ''), coalesce(m.class, ''), coalesce(m.`+col+`, 0)
 		from fight_metrics m join reports r on r.id = m.report_id
-		where m.report_id = $1 and `+bossKillMetrics+` and `+presence.EvidenceReport("r")+`
-		order by `+roleMetricOrder+` desc
-		limit 1`, row.ID).Scan(&tp.Name, &tp.Class, &role, &dps, &hps)
+		where m.report_id = $1 and m.role = $2 and `+bossKillMetrics+` and `+presence.EvidenceReport("r")+`
+		order by coalesce(m.`+col+`, 0) desc
+		limit 1`, reportID, role).Scan(&tp.Name, &tp.Class, &tp.Value)
 	switch {
 	case errors.Is(err, pgx.ErrNoRows):
-		// no kill-fight parses for this report yet - top_parse stays nil.
+		return nil, nil
 	case err != nil:
-		return fmt.Errorf("guilds: raid top parse: %w", err)
-	default:
-		if role == "healer" {
-			tp.Metric = "hps"
-			if hps != nil {
-				tp.Value = *hps
-			}
-		} else {
-			tp.Metric = "dps"
-			if dps != nil {
-				tp.Value = *dps
-			}
-		}
-		row.TopParse = &tp
+		return nil, fmt.Errorf("guilds: raid top %s: %w", tp.Metric, err)
 	}
-	return nil
+	return &tp, nil
 }
 
 func (s *Service) raids(w http.ResponseWriter, r *http.Request) {

@@ -46,6 +46,19 @@ type SignupView struct {
 	// raidspec.Group; SpecKey is the catalogue key of its spec, null when it does not resolve.
 	Group   string  `json:"group"`
 	SpecKey *string `json:"spec_key"`
+	// Also is the account's other answered characters, best place first (raids spec §3.7): the
+	// row is the account's best place, and these show under it without counting anywhere.
+	Also []AlsoSignup `json:"also"`
+}
+
+// AlsoSignup is another answered character of a row's account, as its Also line names it.
+type AlsoSignup struct {
+	CharacterKey string  `json:"character_key"`
+	Name         string  `json:"name"`
+	Class        string  `json:"class"`
+	Spec         string  `json:"spec"`
+	SpecKey      *string `json:"spec_key"`
+	State        string  `json:"state"`
 }
 
 // RaidCharacter is a verified roster character with no sign-up yet. Group and SpecKey read as
@@ -260,13 +273,14 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 		byKey[sg.CharacterKey] = sg
 		answered[sg.SignedBy] = true
 	}
-	shown := onePerAccount(signups)
+	shown, also := onePerAccount(signups)
 	v.Counts = countSignups(shown)
 	for _, sg := range shown {
 		v.Signups = append(v.Signups, SignupView{
 			CharacterKey: sg.CharacterKey, Name: sg.Name, Class: sg.Class, Spec: sg.Spec,
 			Role: sg.Role, State: sg.State, Note: sg.Note, Own: vc.owns(sg),
 			Group: raidspec.Group(sg.Class, sg.Spec, sg.Role), SpecKey: specKey(sg.Class, sg.Spec, sg.Role),
+			Also: alsoSignups(also[sg.SignedBy]),
 		})
 	}
 	sortSignups(v.Signups)
@@ -293,8 +307,9 @@ var placeRank = map[string]int{SignupIn: 0, SignupLate: 1, SignupBench: 2, Signu
 
 // onePerAccount is each account's best sign-up, in signups' order: a player who switched from
 // their main to an alt (R3 benched the main) is one In, not an In and a Bench. Ties keep the
-// first row.
-func onePerAccount(signups []Signup) []Signup {
+// first row. The account's other rows come back by account, best place first, for the row's
+// Also line (raids spec §3.7).
+func onePerAccount(signups []Signup) ([]Signup, map[int64][]Signup) {
 	best := make(map[int64]int, len(signups))
 	for i, sg := range signups {
 		j, seen := best[sg.SignedBy]
@@ -303,9 +318,32 @@ func onePerAccount(signups []Signup) []Signup {
 		}
 	}
 	out := make([]Signup, 0, len(best))
+	also := map[int64][]Signup{}
 	for i, sg := range signups {
 		if best[sg.SignedBy] == i {
 			out = append(out, sg)
+		} else {
+			also[sg.SignedBy] = append(also[sg.SignedBy], sg)
+		}
+	}
+	for _, rows := range also {
+		sort.SliceStable(rows, func(i, j int) bool {
+			if a, b := placeRank[rows[i].State], placeRank[rows[j].State]; a != b {
+				return a < b
+			}
+			return rows[i].Name < rows[j].Name
+		})
+	}
+	return out, also
+}
+
+// alsoSignups is an account's other rows as the Also line names them; empty, never null.
+func alsoSignups(rows []Signup) []AlsoSignup {
+	out := make([]AlsoSignup, len(rows))
+	for i, sg := range rows {
+		out[i] = AlsoSignup{
+			CharacterKey: sg.CharacterKey, Name: sg.Name, Class: sg.Class, Spec: sg.Spec,
+			SpecKey: specKey(sg.Class, sg.Spec, sg.Role), State: sg.State,
 		}
 	}
 	return out

@@ -170,7 +170,8 @@
           "spec_name": "Fury",
           "spec_icon": "ability_warrior_innerrage",
           "group": "melee",
-          "spec_key": "warrior-fury"
+          "spec_key": "warrior-fury",
+          "also": []
         },
         {
           "character_key": "us/pvp/kraggor",
@@ -184,7 +185,8 @@
           "spec_name": "Protection",
           "spec_icon": "inv_shield_06",
           "group": "tank",
-          "spec_key": "warrior-protection"
+          "spec_key": "warrior-protection",
+          "also": []
         }
       ],
       "not_signed": [
