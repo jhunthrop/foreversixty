@@ -158,4 +158,6 @@ Mark the target and send the pet in first; once it has hit and Growled, open wit
 
 Aimed Shot comes at 20 and shares its cooldown with Multi-Shot. When rank 2 arrives at 28, leave it in your spellbook and keep rank 1 on your bar all the way to 60. Training a new rank upgrades the bar button on its own, so drag rank 1 back from the book. Out in the world you run dry over a chain of pulls, and rank 1 still hits for well over half of what the newest rank does, since most of the shot is your weapon, for far less mana. More damage for every point of mana keeps you shooting instead of drinking. In a raid at 60, with Judgement of Wisdom on the boss and a mana potion, cast the top rank.
 
+Arcane Shot and Serpent Sting work the same way. Both add a share of your ranged attack power on every rank, so a low rank keeps most of the damage for a fraction of the mana. From 26, put rank 1 of both on your bar. At 40 the newest Serpent Sting is worth its mana again, so train it and leave it on the bar. At 50, move Arcane Shot up to rank 3, the one you trained at 20, and keep it there out in the world at 60. In a raid, cast the top rank of both.
+
 Buy arrows in stacks before you leave town, and replace your quiver as you level. Mail at 40 is the biggest armor upgrade you will get, and Bestial Wrath comes the same level.

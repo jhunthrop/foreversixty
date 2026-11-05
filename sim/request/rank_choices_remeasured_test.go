@@ -158,9 +158,11 @@ func TestRound14RankChoicesCastTheWinningRank(t *testing.T) {
 		level                           int
 		want, not                       int32
 	}{
-		{"Arcane Shot at 40 is the default rank 5", "hunter-beast-mastery", "hunter", BarePreset, "troll", 40, 14284, 14282},
-		{"Arcane Shot at 50 is the default rank 6", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 14285, 3044},
-		{"Arcane Shot at bare 60 is the top rank", "hunter-beast-mastery", "hunter", BarePreset, "troll", 60, 14287, 3044},
+		// Round 22 brought Arcane Shot rows back (rank_choices_hunter_r22_test.go): the attack
+		// power share is the same on every rank, so the cheap ranks win while leveling.
+		{"Arcane Shot at 40 is rank 1", "hunter-beast-mastery", "hunter", BarePreset, "troll", 40, 3044, 14284},
+		{"Arcane Shot at 50 is rank 3", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 14282, 14285},
+		{"Arcane Shot at bare 60 is rank 3", "hunter-beast-mastery", "hunter", BarePreset, "troll", 60, 14282, 14287},
 		{"Human Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "human", 60, 19280, 19276},
 		{"Gnome Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "gnome", 60, 19280, 19276},
 		{"Troll Devouring Plague at bare 60 keeps rank 2", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},

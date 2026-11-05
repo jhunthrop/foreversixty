@@ -231,6 +231,43 @@
             "preset": "bare"
           }
         ]
+      },
+      {
+        "spell": "Arcane Shot",
+        "authored": 14287,
+        "bands": [
+          {
+            "from_level": 26,
+            "to_level": 49,
+            "rank": 1,
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+          },
+          {
+            "from_level": 50,
+            "to_level": 59,
+            "rank": 3,
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 3,
+            "preset": "bare",
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+          }
+        ]
+      },
+      {
+        "spell": "Serpent Sting",
+        "authored": 13555,
+        "bands": [
+          {
+            "from_level": 26,
+            "to_level": 39,
+            "rank": 1,
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): every Serpent Sting tick carries 5% of ranged attack power on every rank (Blizzard, 3 November), so rank 1 keeps most of the damage for 15 mana while the hunter is short of mana; from the level where the newest rank wins again the default rule applies."
+          }
+        ]
       }
     ],
     "hunter-marksmanship": [
@@ -249,6 +286,49 @@
             "to_level": 60,
             "rank": 1,
             "preset": "bare"
+          }
+        ]
+      },
+      {
+        "spell": "Arcane Shot",
+        "authored": 14287,
+        "bands": [
+          {
+            "from_level": 20,
+            "to_level": 29,
+            "rank": 1,
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+          },
+          {
+            "from_level": 30,
+            "to_level": 39,
+            "rank": 3,
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+          },
+          {
+            "from_level": 40,
+            "to_level": 59,
+            "rank": 1,
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 1,
+            "preset": "bare",
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+          }
+        ]
+      },
+      {
+        "spell": "Serpent Sting",
+        "authored": 13555,
+        "bands": [
+          {
+            "from_level": 20,
+            "to_level": 29,
+            "rank": 1,
+            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): every Serpent Sting tick carries 5% of ranged attack power on every rank (Blizzard, 3 November), so rank 1 keeps most of the damage for 15 mana while the hunter is short of mana; from the level where the newest rank wins again the default rule applies."
           }
         ]
       }
