@@ -159,6 +159,27 @@ func TestAssassinationSliceAndDiceAtThreeOnceDown(t *testing.T) {
 	}
 }
 
+// The 31/20/0 raid build (Coup de Grace, Aggression, Flawless Execution)
+// makes Eviscerate cheaper and harder than a Rupture is worth: the card's
+// Blood Splatter Rupture line lost 1.5% at raid 60 on both factions, where
+// it had gained 0.8% on the old raid build (round 23). The leveling build
+// never took Blood Splatter, so the line only ever fired in the raid.
+func TestAssassinationCastsNoRupture(t *testing.T) {
+	curated, err := loadLadderCurated(repoRoot, "rogue-assassination")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range rot.PriorityList {
+		if id := item.GetAction().GetCastSpell().GetSpellId().GetSpellId(); id == 11275 {
+			t.Errorf("Assassination's card still casts Rupture: %s", protojson.Format(item))
+		}
+	}
+}
+
 // Holding Shank at four or five combo points cost its energy on every
 // leveling band (bare 30 to 59: +0.1 to +1.4% with the hold lifted) and
 // only paid at 60, where Death Mark's top rank makes every five-point
