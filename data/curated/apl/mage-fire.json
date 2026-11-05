@@ -5,7 +5,8 @@
   "inert": [
     12873,
     5019,
-    400625
+    400625,
+    400589
   ],
   "expected_idle": [
     {
@@ -14,7 +15,15 @@
     },
     {
       "id": 10151,
-      "reason": "Fireball is the filler until the build takes Heating Up (level 30); from then on the Heating Up-gated Scorch line is the filler and Fireball is reached only if Scorch cannot be afforded, which it can whenever Fireball can."
+      "reason": "Fireball is the filler until the build takes Heating Up (level 30), and on the raid build, which takes Arcane Blast; the leveling build from 30 fills with the Heating Up-gated Scorch line and reaches Fireball only if Scorch cannot be afforded, which it can whenever Fireball can."
+    },
+    {
+      "id": 10212,
+      "reason": "Arcane Missiles is cast only on a Missile Barrage proc, a talent only the raid build takes; the leveling ladder never procs it."
+    },
+    {
+      "id": 1239700,
+      "reason": "Arcane Blast is a talent only the raid build takes (the Arcane tier-two pick at the end of the raid order); the leveling ladder never knows it."
     }
   ],
   "engineering_notes": {
@@ -22,7 +31,8 @@
     "2": "Fix round 4 restored the mechanic (see top-level notes) but left the refresh gated on a bare `or` of auraIsActive/auraNumStacks/auraRemainingTime against 12873 -- under this build's no-talent smoke run those three all fail to construct (GetAPLAura's aura.Get() is nil before the talent ever registers ImprovedScorchAura on the target), newValueOr filters every nil sub-value out of its list, and an `or` with zero surviving vals returns nil, which APLAction.IsReady reads as always-ready -- so Scorch, not 'inert', became 100% of every cast and Fire Blast/Fireball never fired once Scorch was learned. Fix round 5 wraps the same `or` in `and(auraIsKnown(12873), or(...))`: auraIsKnown (sim/core/apl_values_aura.go) never returns nil, only true/false, because it just reads whether the Aura object exists on the target rather than requiring an active instance -- and applyImprovedScorch (sim/mage/talents.go:341-343) registers that object via NewEnemyAuraArray the moment the talent is present, independent of stacks. Once the inner `or` goes nil under no talent, newValueAnd's own nil filter (same mechanism as `or`, sim/core/apl_values_operators.go) drops it and the `and` degrades to the single surviving auraIsKnown value, which is false without the talent, so the whole line is skipped and the priority list falls through to Fire Blast then Fireball -- proven with the scratch castSet at level 60 untalented.",
     "3": "Scorch filler round (2026-10-07): the Fireball line became a Scorch (rank 7) filler line, with Fireball (rank 11) kept after it for levels below Scorch's 22. The refresh gate (fix round 5's and(auraIsKnown, or(...)) line) is unchanged and still runs ahead of Pyroblast and Fire Blast; it now only matters for the opening stack-up and after a long Pyroblast, because every filler Scorch renews the debuff.",
     "4": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md F-S1): the Scorch filler line is gated on auraIsKnown(400625), Heating Up, which both Fire orders take at 30. Below it Fireball is the filler: on the bare band-20 ladder at levels 22, 25, 28 and 29 (10,000 iterations, seeds 1 and 50001) the Fireball filler beats the Scorch filler by 0.4 to 1.1 percent, because rank 1 and 2 Scorch do about a fifth less damage per mana than Fireball rank 4 and 5 and the band-20 mage runs out of mana. From 30 Heating Up and Improved Scorch turn it round by about 10 percent, so the 60 line is unchanged. The Improved Scorch stack line still casts Scorch at 27 to 29.",
-    "5": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md X4): Evocation (12051) trains at 20 and the engine no longer registers it below that level; the ladder level-gates the line through idLearnLevelOverrides (sim/request/ladder.go) and sim/internal/spellranks' singleTierLevelOverrides, so it is not declared inert."
+    "5": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md X4): Evocation (12051) trains at 20 and the engine no longer registers it below that level; the ladder level-gates the line through idLearnLevelOverrides (sim/request/ladder.go) and sim/internal/spellranks' singleTierLevelOverrides, so it is not declared inert.",
+    "6": "Sim-accuracy round 22 (design/reviews/2026-11-05-sim-audit-round22/mage.md F1, from the MythicSim comparison): the raid build moved to Accelerant 5/5, Missile Barrage 2/2 and Arcane Blast (Arcane 14, Fire 34, Frost 3; Wand Specialization, Arcane Resilience, Flame Throwing and Arcane Meditation, none of which acts on a boss, pay for it; Burning Soul 2/3 stays). On it Fireball is the filler: the Fireball line, the gap Scorch before Fire Blast and the Arcane Blast line are gated on spellIsKnown(Arcane Blast), which only the raid build takes, and the Scorch filler on its complement. Missiles on Missile Barrage reads the proc. The Improved Scorch refresh moved from 1.5 s to 5 s left because a 3 s Fireball skipped past the old window. Raid 60, frozen BiS, 10,000 iterations: +1.75% Alliance, +2.05% Horde at seeds 1 and 50001."
   },
   "sources": [
     {
@@ -117,7 +127,7 @@
         }
       },
       {
-        "notes": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 1.5 seconds or less left. The debuff only boosts your own Fire damage, so every Fire mage keeps their own stacks, and a Scorch that misses adds none. From 30 your filler Scorches refresh it anyway, so a refresh of its own matters only after a move or a target swap; below 30 Fireball fills, so this Scorch is what keeps the stacks up.",
+        "notes": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left. A Fireball takes 3 seconds, so a later refresh can land after the stacks are gone. The debuff only boosts your own Fire damage, so every Fire mage keeps their own stacks, and a Scorch that misses adds none. At 27, with one point, a Scorch lands a stack only one time in three, so build them only on a mob that lives a minute or more; from 28 they pay on anything that lives 20 seconds.",
         "action": {
           "condition": {
             "and": {
@@ -184,7 +194,7 @@
                           },
                           "rhs": {
                             "const": {
-                              "val": "1.5s"
+                              "val": "5s"
                             }
                           }
                         }
@@ -204,7 +214,7 @@
         }
       },
       {
-        "notes": "Pyroblast only on 3 stacks of Heating Up, when it is a 1.5 second cast. Every Fire Blast hit and every Scorch, Fireball or Fire Blast crit adds a stack, and the cast spends them all. At 6 seconds, or on 1 or 2 stacks, it loses to Scorch.",
+        "notes": "Pyroblast only on 3 stacks of Heating Up, when it is a 1.5 second cast. Every Fire Blast hit and every Scorch, Fireball or Fire Blast crit adds a stack, and the cast spends them all. At 6 seconds, or on 1 or 2 stacks, it loses to your filler.",
         "action": {
           "condition": {
             "and": {
@@ -256,13 +266,108 @@
         }
       },
       {
-        "notes": "From Heating Up at 30, Scorch is the filler, not Fireball. You land two Scorches in the time of one Fireball, so you roll twice the crits for Ignite and Heating Up, and every cast keeps your Improved Scorch stacks rolling.",
+        "notes": "Arcane Missiles the moment Missile Barrage procs, while the proc is up. It is free and takes half the time, a missile every half second. Every Fireball has a 20% chance to give it and Arcane Blast 40%.",
         "action": {
           "condition": {
-            "auraIsKnown": {
-              "auraId": {
-                "spellId": 400625
-              }
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 400589
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 400589
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10212,
+              "rank": 7
+            }
+          }
+        }
+      },
+      {
+        "notes": "Arcane Blast whenever its buff has dropped, once, then back to Fire. Each cast adds 12% of your Intellect as spell damage to every spell you cast for 18 seconds, has a 40% chance at Missile Barrage and takes Incineration's crit. A second cast while the buff is up doubles its cost for one more stack, so let it fall off first.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "spellIsKnown": {
+                    "spellId": {
+                      "spellId": 1239700,
+                      "rank": 5
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "auraIsActive": {
+                        "auraId": {
+                          "spellId": 400573
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 1239700,
+              "rank": 5
+            }
+          }
+        }
+      },
+      {
+        "notes": "Scorch when Fire Blast is back before a Scorch would finish. A 3 second Fireball would hold your next Fire Blast, and its Heating Up stack, until the cast ends.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "spellIsKnown": {
+                    "spellId": {
+                      "spellId": 1239700,
+                      "rank": 5
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLe",
+                    "lhs": {
+                      "spellTimeToReady": {
+                        "spellId": {
+                          "spellId": 10199,
+                          "rank": 7
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "spellCastTime": {
+                        "spellId": {
+                          "spellId": 10207,
+                          "rank": 7
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
             }
           },
           "castSpell": {
@@ -274,8 +379,74 @@
         }
       },
       {
+        "notes": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball. With one point of Accelerant you land two Scorches in the time of one Fireball, so you roll twice the crits for Ignite and Heating Up, and every cast keeps your Improved Scorch stacks rolling.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 400625
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "spellIsKnown": {
+                        "spellId": {
+                          "spellId": 1239700,
+                          "rank": 5
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10207,
+              "rank": 7
+            }
+          }
+        }
+      },
+      {
+        "notes": "On the raid build Fireball is the filler. Five points of Accelerant make it a 3 second cast, each one has a 20% chance to make your next Arcane Missiles free through Missile Barrage, and with Arcane Blast's spell damage up it does more over a boss than Scorch. Its crits feed Ignite and Heating Up like any other Fire crit.",
+        "action": {
+          "condition": {
+            "spellIsKnown": {
+              "spellId": {
+                "spellId": 1239700,
+                "rank": 5
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10151,
+              "rank": 11
+            }
+          }
+        }
+      },
+      {
         "notes": "Below 30, Fireball is the filler. At the ranks you have in the 20s it does more damage per point of mana than Scorch, and mana is what runs out first, so Scorch waits for Improved Scorch at 27 and then only builds and refreshes the stacks.",
         "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsKnown": {
+                  "auraId": {
+                    "spellId": 400625
+                  }
+                }
+              }
+            }
+          },
           "castSpell": {
             "spellId": {
               "spellId": 10151,

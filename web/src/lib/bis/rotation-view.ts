@@ -32,6 +32,14 @@ export interface RotationLine {
    *  already read via `dataUrl`. Optional: an older build predating this field, or a line
    *  whose icon the pipeline has not resolved, carries none. */
   icon?: string;
+  /** The rank this line casts for a race, where a rank row is keyed by race (round 21's
+   *  race-keyed rows): race slug to spell id. The addon reads it; so does the Play It panel. */
+  race_spell_ids?: Record<string, number>;
+}
+
+/** The spell `line` casts for `race`: its race-keyed rank where it has one, else its own. */
+export function lineSpellIdFor(line: RotationLine, race: string | undefined): number {
+  return (race === undefined ? undefined : line.race_spell_ids?.[race]) ?? line.spell_id;
 }
 
 export interface RotationEntry {
@@ -197,6 +205,9 @@ export function rotationLinesFor(
   shownThrough: number,
   /** The steps to keep (`collapseRuns`): a guide card's build's own; every step by default. */
   keep?: (gates: readonly AplGate[]) => boolean,
+  /** The race the view is for (a BiS band's published race): a line keyed by race shows its
+   *  rank. Undefined shows every line's base row. */
+  race?: string,
 ): RotationLineView[] {
   const spellRanks = loadSpellRanks(build);
   const steps = stepsAlignedWith(entry, spec, spellRanks, classSlug);
@@ -210,13 +221,14 @@ export function rotationLinesFor(
       !canApplyBetween(step.condition, entry.level, shownThrough, knownAt)
     )
       return;
-    const rank = rankFor(spellRanks, classSlug, line.name, line.spell_id);
+    const spellId = lineSpellIdFor(line, race);
+    const rank = rankFor(spellRanks, classSlug, line.name, spellId);
     stepLines.push({
-      spellId: line.spell_id,
+      spellId,
       name: line.name,
       rank,
       condition: alignNoteRank(line.condition, line.name, rank),
-      icon: rotationIconFor(build, line.spell_id, line.icon),
+      icon: rotationIconFor(build, spellId, line.icon),
       truncatedAtSource: line.condition.endsWith('…'),
       words: step?.words ?? null,
       gates: step === undefined || step === null ? [] : aplGates(step.condition),

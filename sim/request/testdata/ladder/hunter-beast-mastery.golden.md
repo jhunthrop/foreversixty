@@ -102,10 +102,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 27.5 | 2 | other:shoot=82.2, spell:1130=2.4, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 2643} |
 | 20 | 5420000000000000-0000000000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 62.3 | 5 | other:shoot=82.3, spell:14282=13.0, spell:13550=12.0, spell:19434=5.2, spell:1130=2.4 | {SpellID: 19574} |
-| 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 94.0 | 6 | other:shoot=82.6, spell:19434=17.5, spell:14283=5.6, spell:13551=3.4, spell:14323=2.4 | {SpellID: 19574} |
-| 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 133.1 | 6 | other:shoot=86.8, spell:19434=22.0, spell:14284=8.0, spell:13552=4.4, spell:14323=2.4 | {SpellID: 19574} |
-| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 150.1 | 7 | other:shoot=88.2, spell:19434=21.8, spell:14284=7.6, spell:13552=4.2, spell:14324=2.5 | - |
-| 50 | 5420001505001251-0052300000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 201.9 | 7 | other:shoot=156.6, spell:19434=22.6, spell:14285=9.7, spell:13554=4.3, spell:14324=2.5 | - |
+| 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 98.8 | 6 | other:shoot=83.6, spell:3044=22.4, spell:1978=12.8, spell:19434=11.5, spell:14323=2.5 | {SpellID: 19574} |
+| 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 141.4 | 6 | other:shoot=87.4, spell:19434=24.4, spell:3044=24.2, spell:1978=13.5, spell:14323=2.4 | {SpellID: 19574} |
+| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 157.4 | 7 | other:shoot=88.0, spell:3044=25.3, spell:19434=18.5, spell:13552=7.2, spell:14324=2.5 | - |
+| 50 | 5420001505001251-0052300000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 208.3 | 7 | other:shoot=156.4, spell:14282=21.1, spell:19434=18.6, spell:13554=6.9, spell:14324=2.4 | - |
 | 60 | 5420001505001251-0052451001200000-000000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 324.0 | 7 | other:shoot=83.1, spell:14287=15.7, spell:20904=4.9, spell:13555=2.6, spell:14325=2.4 | - |
 
 ## Learned but unused (informational)
@@ -147,6 +147,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 30
 
 - Aimed Shot (spell 20900)
+- Arcane Shot (spell 14283)
 - Bite (spell 17257)
 - Claw (spell 16830)
 - Counterattack (spell 1242634)
@@ -159,6 +160,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14262)
 - Savage Rend (spell 1265066)
 - Scorpid Poison (spell 24583)
+- Serpent Sting (spell 13551)
 - Sonic Blast (spell 1264479)
 - Summon Hawk (spell 1293241)
 - Swipe (spell 1264497)
@@ -172,6 +174,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 38
 
 - Aimed Shot (spell 20901)
+- Arcane Shot (spell 14284)
 - Bite (spell 17258)
 - Claw (spell 16831)
 - Counterattack (spell 1242634)
@@ -184,6 +187,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Raptor Strike (spell 14263)
 - Savage Rend (spell 1265067)
 - Scorpid Poison (spell 24583)
+- Serpent Sting (spell 13552)
 - Sonic Blast (spell 1264480)
 - Summon Hawk (spell 1293525)
 - Swipe (spell 1264498)
@@ -197,6 +201,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 40
 
 - Aimed Shot (spell 20901)
+- Arcane Shot (spell 14284)
 - Bite (spell 17259)
 - Claw (spell 16832)
 - Counterattack (spell 1242634)
@@ -224,6 +229,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 50
 
 - Aimed Shot (spell 20902)
+- Arcane Shot (spell 14285)
 - Bite (spell 17260)
 - Claw (spell 3010)
 - Counterattack (spell 20909)

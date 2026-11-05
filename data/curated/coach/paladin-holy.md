@@ -25,6 +25,7 @@ This is the Holy Paladin as the site's guide describes it. Holy heals the tank: 
 - Divine Favor, then Holy Light, when the tank drops below forty percent.
 - Holy Light on the tank below seventy percent, and Holy Shock on anyone below seventy percent, but only with mana to spare: keep your mana percent no more than five points under the percent of the fight left.
 - Flash of Light: Once you fall more than five points under, heal with Flash of Light alone until you catch up.
+- In a raid, Blessing of Wisdom, Mana Spring and the raid's Intellect buffs pay for the bigger heal.
 - Holy Shock only while your mana is keeping pace with the fight.
 - Light's Vigil.
 - Voice of Truth makes you immune to silences and interrupts for six seconds, every three minutes: save it for the caster pack or boss that would lock you out.

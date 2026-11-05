@@ -95,16 +95,27 @@ describe('rotationLinesFor on the holy priest band 20 list', () => {
   const SHADOWFIEND = 'Shadowfiend';
   const curatedRows = () => rows().filter((row) => row.name !== SHADOWFIEND);
 
-  it('has one row per run of the same spell', () => {
+  // Round 22: the paced Heal steps carry a note of their own ("Behind the mana pace, the
+  // filler waits for a lower tank..."), so they are a second Heal row, not merged away.
+  it('has one row per run of the same spell and note', () => {
     expect(entry).toBeDefined();
-    expect(curatedRows().map((row) => row.name)).toEqual(['Dark Sacrifice', 'Renew', 'Flash Heal', 'Heal']);
-    expect(curatedRows().map((row) => row.steps)).toEqual([1, 1, 5, 10]);
+    expect(curatedRows().map((row) => row.name)).toEqual([
+      'Dark Sacrifice',
+      'Renew',
+      'Flash Heal',
+      'Heal',
+      'Heal',
+    ]);
+    expect(curatedRows().map((row) => row.steps)).toEqual([1, 1, 5, 5, 5]);
   });
 
   it('says every condition of the collapsed steps in words', () => {
-    const heal = rows().find((row) => row.name === 'Heal');
-    expect(heal?.condition).toMatch(
-      /Cast on the tank below \d+%, then a party member below \d+%, when your mana is at least \d+% of the share of the fight left; or on the tank below \d+%, then a party member below \d+%\./,
+    const [paced, behind] = rows().filter((row) => row.name === 'Heal');
+    expect(paced?.condition).toMatch(
+      /Cast on the tank below \d+%, then a party member below \d+%, when your mana is at least \d+% of the share of the fight left\./,
+    );
+    expect(behind?.condition).toMatch(
+      /^Behind the mana pace.*Cast on the tank below \d+%, then a party member below \d+%\./,
     );
     const flash = rows().find((row) => row.name === 'Flash Heal');
     expect(flash?.condition).toMatch(/Cast on the tank below \d+%, then a party member below \d+%\./);
@@ -162,10 +173,39 @@ describe('every published rotation entry lines up with its curated steps', () =>
     for (const entry of loadRotations(BUILD, spec) ?? []) {
       const views = rotationLinesFor(entry, BUILD, classSlug, spec, entry.level);
       expect(views.reduce((sum, view) => sum + view.steps, 0)).toBe(entry.lines.length);
+      // Two neighbouring rows of one spell and rank are allowed only when they say different
+      // things (round 22: a second rule of the same spell keeps its own row).
       views.slice(1).forEach((view, index) => {
         const previous = views[index];
-        expect(`${view.name}|${view.rank}`).not.toBe(`${previous.name}|${previous.rank}`);
+        if (`${view.name}|${view.rank}` === `${previous.name}|${previous.rank}`) {
+          expect(view.condition).not.toBe(previous.condition);
+        }
       });
     }
+  });
+});
+
+// Sim round 22 platform (guide-accuracy round 24 HUNTER-R24-6, S4b): a published line can carry
+// a rank per race (`race_spell_ids`, round 21's race-keyed rank rows), which only the addon
+// read. The Play It panel showed the base row beside prose that gives the race's: Survival's
+// band 40 (top 49) prints Raptor Strike rank 7 where a Troll, Orc or Tauren keeps rank 5.
+describe('rotationLinesFor with a race-keyed rank row', () => {
+  const RACE_ROWS_BUILD = '1.60.1.70790';
+  const entry = rotationEntryFor(loadRotations(RACE_ROWS_BUILD, 'hunter-survival') ?? [], 49)!;
+  const raptor = (race?: string) =>
+    rotationLinesFor(entry, RACE_ROWS_BUILD, 'hunter', 'hunter-survival', 49, undefined, race).find(
+      (row) => row.name === 'Raptor Strike',
+    );
+
+  it("shows the published race's rank where the line keys one", () => {
+    const base = entry.lines.find((line) => line.name === 'Raptor Strike')!;
+    expect(base.race_spell_ids?.troll).toBeDefined();
+    expect(raptor('troll')?.spellId).toBe(base.race_spell_ids!.troll);
+    expect(raptor('troll')?.rank).toBe(5);
+  });
+
+  it('keeps the base row for a race the line does not key, or with no race', () => {
+    expect(raptor('human')?.rank).toBe(7);
+    expect(raptor()?.rank).toBe(7);
   });
 });

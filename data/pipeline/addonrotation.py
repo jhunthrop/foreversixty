@@ -41,6 +41,7 @@ from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
 from pipeline.models import AddonRotationBand, AddonRotationLine
 from pipeline.spelltext import SpellText, load_spell_text
+from pipeline.talent_levels import floor_pairs, load_spec_point_levels, tier_level
 
 #: sim/request/ladder.go's own `ladderLevels`. See the module docstring.
 LEVEL_BANDS = [10, 20, 30, 38, 40, 50, 60]
@@ -312,20 +313,30 @@ def _rank_choice_id(
     return (same_band or ids or [None])[0]
 
 
-#: The preset a band below 60 is published under (sim/request PublishedPreset).
+#: The presets a band is published under (sim/request PublishedPreset): the bare
+#: preset below RAID_PRESET_LEVEL, the raid preset from it.
 BARE_PRESET = "bare"
+RAID_PRESET = "raid"
+RAID_PRESET_LEVEL = 60
+
+
+def published_preset(level: int) -> str:
+    """The preset `level` is published under (sim/request PublishedPreset)."""
+    return RAID_PRESET if level >= RAID_PRESET_LEVEL else BARE_PRESET
 
 
 def _band_ranks(choices: dict, spell_id: int, level: int, line: int) -> dict[str | None, int]:
     """The ranks data/curated/rank-choices.json picks for the list's
     `spell_id` at `level` (one spec's rows), keyed by each race slug a row
-    names (None for a row of every race); empty outside every row. A band
-    below 60 is the bare preset's, so a row for the raid preset only never
-    applies here, and a row scoped to lines applies only on those priority-list
-    entries. sim/request refuses two rows that meet one race."""
+    names (None for a row of every race); empty outside every row. A row for
+    one preset applies only at the levels published under it (`published_preset`:
+    the raid preset at 60, round 22's Holy paladin Flash of Light rank 5), a row
+    naming no preset at every level, and a row scoped to lines only on those
+    priority-list entries. sim/request refuses two rows that meet one race."""
+    preset = published_preset(level)
     ranks: dict[str | None, int] = {}
     for row in choices.get(spell_id, []):
-        if row.get("preset", BARE_PRESET) != BARE_PRESET:
+        if row.get("preset", preset) != preset:
             continue
         if row["lines"] is not None and line not in row["lines"]:
             continue
@@ -478,18 +489,26 @@ def build_rotation(
     icon_of: Callable[[int], str] | None = None,
     trainable_ids: frozenset[int] = frozenset(),
     talent_spells: Mapping[str, list[tuple[int, int]]] = MappingProxyType({}),
+    point_levels: Mapping[int, int] = MappingProxyType({}),
 ) -> list[AddonRotationBand]:
     """One spec's rotation table: a band at every LEVEL_BANDS rung and at
     every level between where a line changes (`_band_levels`).
     `trainable_ids` is the class's trainer-learned ids (`load_trainable_ids`),
-    `talent_spells` its talents' own spells (`load_talent_spells`)."""
+    `talent_spells` its talents' own spells (`load_talent_spells`), and
+    `point_levels` the level the spec's published build takes each talent's
+    spell (`load_spec_point_levels`): a talent's row starts there."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
     if not apl_path.exists():
         raise AddonRotationError(f"missing {apl_path}")
     curated = json.loads(apl_path.read_text(encoding="utf-8"))
     casts = _cast_lines(curated.get("rotation", {}))
 
-    families = _family_ranks(spellranks, _class_slug(spec), trainable_ids, talent_spells)
+    families = {
+        name: floor_pairs(pairs, point_levels)
+        for name, pairs in _family_ranks(
+            spellranks, _class_slug(spec), trainable_ids, talent_spells
+        ).items()
+    }
     id_to_family = _id_to_family(families)
     rank_of = _rank_of(spellranks, _class_slug(spec))
     choices = load_rank_choices(curated_dir, spec)
@@ -537,13 +556,10 @@ def _line_at(context: _SpecContext, cast: dict, level: int) -> AddonRotationLine
     if resolved is None:
         return None
     name, resolved_id = resolved
-    # A per-band rank choice (sim/request rankResolver) wins below 60;
-    # a race's own row wins for that race.
-    ranks = (
-        _band_ranks(context.choices, cast["spell_id"], level, cast["line"])
-        if level < MAX_LEVEL
-        else {}
-    )
+    # A per-band rank choice (sim/request rankResolver) wins at every level,
+    # 60 included under the raid preset (`_band_ranks`); a race's own row wins
+    # for that race.
+    ranks = _band_ranks(context.choices, cast["spell_id"], level, cast["line"])
     class_slug = _class_slug(context.spec)
     pick = _RankPick(context.spellranks, class_slug, name, cast["spell_id"], level)
     resolved_id = pick.id_of(ranks.get(None), resolved_id)
@@ -763,13 +779,6 @@ def write_spell_icons(
     return path
 
 
-#: A talent tier opens five points after the one above it, and the first
-#: point is spent at level 10 (tier 0, zero-based as talents/<class>.json
-#: numbers them).
-FIRST_TALENT_LEVEL = 10
-POINTS_PER_TIER = 5
-
-
 def load_talent_spells(build_dir: Path, class_slug: str) -> dict[str, list[tuple[int, int]]]:
     """Talent name -> [(the level its tier opens, its spell id)] for every
     talent of `class_slug` on this build (`builds/<build>/talents/<class>.json`),
@@ -779,9 +788,7 @@ def load_talent_spells(build_dir: Path, class_slug: str) -> dict[str, list[tuple
         return {}
     trees = json.loads(path.read_text(encoding="utf-8"))["trees"]
     return {
-        talent["name"]: [
-            (FIRST_TALENT_LEVEL + POINTS_PER_TIER * talent["tier"], talent["spell_id"])
-        ]
+        talent["name"]: [(tier_level(talent["tier"]), talent["spell_id"])]
         for tree in trees
         for talent in tree["talents"]
         if isinstance(talent.get("spell_id"), int)
@@ -835,6 +842,7 @@ def build_rotations(
             icon_of,
             load_trainable_ids(root / build, _class_slug(spec)),
             load_talent_spells(root / build, _class_slug(spec)),
+            load_spec_point_levels(root / build, spec, _class_slug(spec)),
         )
         for spec in specs
     }

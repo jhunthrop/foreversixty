@@ -14,7 +14,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Fire Mage as the site's guide describes it. Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the Fire Mage as the site's guide describes it. Fire casts a three second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
 
 ## What they know
 
@@ -23,10 +23,12 @@ This is the Fire Mage as the site's guide describes it. Fire spams Scorch, keeps
 - Mage Armor, Arcane Brilliance and your food buff go up before the pull.
 - Pyroblast only on three stacks of Heating Up, when it is a one and a half second cast.
 - Scorch on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. Every Scorch also renews the Improved Scorch debuff.
+- Arcane Blast whenever its buff has dropped, once, then back to Fire.
 - Fire Blast every time it is off cooldown. It is instant, and from Heating Up at thirty every hit is a stack.
-- Combustion once the boss carries five Improved Scorch stacks, with your on-use trinkets and your racial.
+- Arcane Missiles the moment Missile Barrage procs, while the proc is up.
+- On the raid build Fireball is the filler.
+- Combustion once the boss carries five Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
-- Below thirty, Fireball is the filler.
 - Flamestrike is a three second cast that burns the ground for eight seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range.
 - Frost Nova: Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
 

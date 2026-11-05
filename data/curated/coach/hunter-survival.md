@@ -23,7 +23,7 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 - Mark the boss with Hunter's Mark first, so the mana is back by the pull, then put up Aspect of the Beast and leave it up.
 - At sixty, Aspect of the Falcon gives the same melee attack power as Beast, and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade.
 - On the pull, press Rapid Fire, your trinkets and your racial together.
-- Raptor Strike queued on every swing it is ready.
+- Raptor Strike on every swing it is ready, with an older rank on your bar at twenty-six to twenty-nine and at forty-six and forty-seven.
 - Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.
 - Strider Kick on its own short cooldown, ahead of Immolation Trap.
 - Immolation Trap on cooldown.

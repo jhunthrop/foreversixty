@@ -27,7 +27,7 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the ble
 - Shank on cooldown at three combo points or fewer, or under fifty energy: an off-hand stab that cannot miss and pays back more energy than it costs.
 - Death Mark is your only damage cooldown and it comes back every ten seconds, so there is nothing to hold.
 - Slice and Dice.
-- Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
+- Hemorrhage builds, but never at five combo points, where its point is wasted, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
 - Preparation finishes every other rogue cooldown, once every ten minutes.
 - Premeditation: A couple of seconds before the pull, press Premeditation for two combo points. They last twenty seconds, so do not press it early.
 - Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five.

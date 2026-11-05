@@ -24,7 +24,7 @@ This is the Arcane Mage as the site's guide describes it. Arcane stacks Arcane B
 - Frostbolt in a raid only when you are too low on mana for a Fireball.
 - Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a six second cooldown.
 - Fireball fills in a raid once you stop blasting.
-- Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.
+- Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
 - Arcane Explosion is instant and hits everything within ten yards, so you stand in the pack with the tank and spam it.
 - Frost Nova.

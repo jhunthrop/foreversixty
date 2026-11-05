@@ -34,7 +34,7 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship's
 - Feign Death: Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
 - Volley is a mana-heavy channel, worth it only on a big pack that lives through it.
 - Freezing Trap is your crowd control, laid before the pull.
-- Explosive Trap under a pack the tank is holding is good damage for its mana.
+- Explosive Trap under a pack the tank is holding hits everything within ten yards, and at sixty it costs even more than Volley, so save it for the same big packs.
 - Tranquilizing Shot removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage.
 - Distracting Shot puts a big lump of threat on a loose add, enough to pull it off a healer and onto you.
 

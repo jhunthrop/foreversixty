@@ -20,17 +20,17 @@ This is the Affliction Warlock as the site's guide describes it. Affliction keep
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Before the pull, get set up: Demon Armor on, Succubus out, a Healthstone in your bag, and Life Tap to full mana while the healers top you off.
-- Lash of Pain: The Succubus costs a shard where the Imp is free, but her melee and Lash of Pain do more damage than the Imp's Firebolt, and Unholy Power makes her hit harder still.
+- Before the pull, get set up: Demon Armor on and a Healthstone in your bag.
 - Curse of the Elements when it is not already on the target.
 - Corruption whenever it has fallen off.
 - Siphon Life whenever it has fallen off.
 - Curse of Recklessness: Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid, Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard.
-- Amplify Curse before each Bane of Agony, whenever it is off cooldown.
+- Amplify Curse before each Bane of Agony whenever it is ready below sixty, and at sixty only before the final Agony, once your last Doom has fired.
 - Bane of Doom while a minute or more of the fight is left.
 - Bane of Agony whenever no Bane of Doom is on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Immolate is the fifth DoT, recast when under three seconds remain.
 - Wrack with your DoTs up.
+- Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.
 - Life Tap keeps you casting once mana runs low.
 - Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
 - In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.

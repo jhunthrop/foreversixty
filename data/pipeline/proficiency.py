@@ -37,11 +37,16 @@ rogues train maces; `research/01-official-facts.md`) are unaffected.
 
 Cross-checking every other weapon subclass's `ClassMask` in build
 1.60.1.70009 against that same 1.x-plus-Forever's-two-changes table found
-them an exact match, with two exceptions the client's raw `ClassMask`
-carries but that were never reachable in play: Druid in Polearms (229) and
-Rogue in Axes (44). No Classic trainer teaches either. `VESTIGIAL_CLIENT_BITS` documents
-both with this same reasoning so a future build's data can be checked
-against it rather than re-derived from scratch. `SkillRaceClassInfo` (the
+them an exact match, with one exception the client's raw `ClassMask`
+carries but that was never reachable in play: Druid in Polearms (229),
+whose bit Era's own client carries too (spell 200, mask 1031 in both) and no
+Classic trainer teaches. `VESTIGIAL_CLIENT_BITS` documents it so a future
+build's data can be checked against it rather than re-derived from scratch.
+Rogue in Axes (44) was listed beside it until sim-accuracy round 22, which
+found it is a Forever addition, not a leftover: One-Handed Axes (spell 196)
+carries mask 79 in 70009, 70755 and 70790 against Era's 71 (the rogue bit is
+the only difference), and Forever's Combat talent Hack and Slash (13960)
+names "Axe/Sword" as one weapon group. Two-Handed Axes (197) stays 71. `SkillRaceClassInfo` (the
 brief's other named candidate) was tried first and rejected: its
 `Availability` column does not cleanly separate real from vestigial rows
 either way -- filtering to `Availability == 1` drops Paladin, Mage and
@@ -97,13 +102,14 @@ ARMOR_SUBCLASSES: dict[int, frozenset[int]] = {
     11: frozenset({_MISC, _CLOTH, _LEATHER, _IDOL}),  # druid
 }
 
-#: Fallback only -- see `configure()`. Druid carries no polearm (6) and rogue
-#: no axe (0); paladin keeps its axes (see module docstring, round 8).
+#: Fallback only -- see `configure()`. Druid carries no polearm (6); rogue
+#: has the one-hand axe (0) but not the two-hand one; paladin keeps its axes
+#: (see module docstring, rounds 8 and 22).
 WEAPON_SUBCLASSES: dict[int, frozenset[int]] = {
     1: frozenset({0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 13, 15, 16, 18}),  # warrior
     2: frozenset({0, 1, 4, 5, 6, 7, 8}),  # paladin
     3: frozenset({0, 1, 2, 3, 6, 7, 8, 10, 13, 15, 16, 18}),  # hunter
-    4: frozenset({2, 3, 4, 7, 13, 15, 16, 18}),  # rogue
+    4: frozenset({0, 2, 3, 4, 7, 13, 15, 16, 18}),  # rogue
     5: frozenset({4, 10, 15, 19}),  # priest
     7: frozenset({0, 1, 4, 5, 10, 13, 15}),  # shaman
     8: frozenset({7, 10, 15, 19}),  # mage
@@ -192,14 +198,13 @@ CLASS_SLUG_BY_ID: dict[int, str] = {
 }
 
 #: (ChrClasses.ID, Item.SubclassID) pairs `SkillLineAbility`'s `ClassMask`
-#: carries for build 1.60.1.70009 but that were never reachable in play --
-#: see the module docstring for the evidence trail. `configure()` drops
-#: these out of the client-derived table the same way the hand-written
-#: `WEAPON_SUBCLASSES` fallback already omits them.
+#: carries (in Era's client as well as Forever's) but that were never
+#: reachable in play -- see the module docstring for the evidence trail.
+#: `configure()` drops these out of the client-derived table the same way
+#: the hand-written `WEAPON_SUBCLASSES` fallback already omits them.
 VESTIGIAL_CLIENT_BITS: frozenset[tuple[int, int]] = frozenset(
     {
         (11, 6),  # druid, polearm
-        (4, 0),  # rogue, one-hand axe
     }
 )
 

@@ -23,11 +23,10 @@ trainer teaches it (sim audit round 8, K1, from the Classic weapon masters' trai
 data). The file lists it under `dropped` so the next build's data can be checked
 against the same evidence.
 
-Rogues keep one-hand axes here (guild round 1, item 8), unlike
-`pipeline.proficiency.VESTIGIAL_CLIENT_BITS`, which still drops them for the gear
-pickers and sims: the client's Axes mask grants rogues the skill, and Forever's own
+Rogues keep one-hand axes here (guild round 1, item 8), and since sim-accuracy round 22
+`pipeline.proficiency.VESTIGIAL_CLIENT_BITS` no longer drops them for the gear pickers
+and sims either: the client's Axes mask grants rogues the skill, and Forever's own
 rogue talent Hack and Slash (spell 13960, `talents/rogue.json`) reads "Axe/Sword".
-The two tables disagree on purpose until the BiS loop settles proficiency.py.
 """
 
 from __future__ import annotations

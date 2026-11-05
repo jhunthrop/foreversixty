@@ -905,7 +905,7 @@
             }
           }
         },
-        "notes": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%."
+        "notes": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole."
       },
       {
         "action": {
@@ -1093,7 +1093,7 @@
             }
           }
         },
-        "notes": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60."
+        "notes": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60."
       },
       {
         "action": {
@@ -1362,7 +1362,7 @@
             }
           }
         },
-        "notes": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight."
+        "notes": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole too."
       },
       {
         "action": {
@@ -1550,7 +1550,7 @@
             }
           }
         },
-        "notes": "Heal is your filler before you learn Greater Heal at 40. Rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37, to 38 as a Troll and to 39 as an Undead. A Human or Undead also keeps rank 2 at 28, and an Undead at 29. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
+        "notes": "Heal is the step down when Greater Heal rank 1 costs more than you can spend, and your filler before Greater Heal at 40. Below 34 cast rank 1, though some races cast rank 2 or 3 at a few levels, since it keeps your whole healing bonus until then and heals the most for its mana. Rank 2 or 3 takes over at 28 and 32 for most races, at 27 for a Human, Gnome or Night Elf, and at 30 and 31 for an Undead or Troll. Rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 and to 38 as an Undead; a Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
       },
       {
         "action": {
@@ -1819,7 +1819,7 @@
             }
           }
         },
-        "notes": "Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50% or a party member under 35%."
+        "notes": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole."
       },
       {
         "action": {

@@ -138,6 +138,14 @@ jobs:
           name: web-dist
           path: web/dist
           retention-days: 1
+      # The island budgets on the REAL data, the way deploy's `CF_PAGES=1 npm run build` measures
+      # them, on land/** only (so tools/land.sh sees it) and after the fixture dist is uploaded.
+      # The fixture build above passes budgets the real build fails: on 2026-11-04 two land
+      # branches green here put planner-island.js 59 bytes over on main, and deploy failed. Only
+      # the real-data sync, the four island bundles and the size check run; no Astro build, no deploy.
+      - name: the island budgets on the real data (land branches)
+        if: startsWith(github.ref, 'refs/heads/land/')
+        run: npm run sync && npm run build:island && node scripts/check-island-size.mjs
   # BUILD MODE (owner, 2026-10-04): until the page pass is done, a push to main deploys on the
   # `build` job (check, lint, format, unit tests, fixture build) and, since round 9
   # (2026-11-02), `real-engine`. build-real still runs on schedule / workflow_dispatch only,

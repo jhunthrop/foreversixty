@@ -5389,38 +5389,6 @@
         ]
       },
       {
-        "from_level": 18,
-        "buffs": [
-          "arcane_brilliance",
-          "gift_of_the_wild",
-          "power_word_fortitude",
-          "divine_spirit",
-          "blessing_of_might",
-          "blessing_of_wisdom",
-          "battle_shout",
-          "trueshot_aura",
-          "heart_of_the_lion",
-          "leader_of_the_pack",
-          "moonkin_aura",
-          "strength_of_earth_totem",
-          "windfury_totem",
-          "mana_spring_totem:improved",
-          "curse_of_elements",
-          "sunder_armor",
-          "faerie_fire",
-          "judgement_of_wisdom",
-          "judgement_of_the_crusader",
-          "judgement_of_light",
-          "hunters_mark",
-          "curse_of_recklessness"
-        ],
-        "consumes": [
-          "elixir_of_firepower",
-          "cerebral_cortex_compound",
-          "conjured_demonic_rune"
-        ]
-      },
-      {
         "from_level": 35,
         "buffs": [
           "arcane_brilliance",
@@ -5447,7 +5415,6 @@
           "curse_of_recklessness"
         ],
         "consumes": [
-          "elixir_of_firepower",
           "cerebral_cortex_compound",
           "food_nightfin_soup",
           "conjured_demonic_rune"
@@ -5481,7 +5448,6 @@
         ],
         "consumes": [
           "elixir_of_shadow_power",
-          "elixir_of_firepower",
           "cerebral_cortex_compound",
           "food_nightfin_soup",
           "conjured_demonic_rune"
@@ -5515,7 +5481,6 @@
         ],
         "consumes": [
           "elixir_of_shadow_power",
-          "elixir_of_firepower",
           "cerebral_cortex_compound",
           "food_baked_salmon",
           "main_hand_imbue:brilliant_wizard_oil",
@@ -5550,7 +5515,6 @@
         ],
         "consumes": [
           "elixir_of_shadow_power",
-          "elixir_of_firepower",
           "greater_arcane_elixir",
           "cerebral_cortex_compound",
           "food_baked_salmon",
@@ -5586,7 +5550,6 @@
         ],
         "consumes": [
           "elixir_of_shadow_power",
-          "elixir_of_firepower",
           "greater_arcane_elixir",
           "cerebral_cortex_compound",
           "food_baked_salmon",
@@ -5623,7 +5586,6 @@
         ],
         "consumes": [
           "elixir_of_shadow_power",
-          "elixir_of_firepower",
           "flask_of_supreme_power",
           "greater_arcane_elixir",
           "cerebral_cortex_compound",

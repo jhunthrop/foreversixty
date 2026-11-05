@@ -122,7 +122,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 1082)
 - Entangling Roots (spell 1062)
-- Insect Swarm (spell 5570)
 - Maul (spell 6808)
 - Moonfire (spell 8925)
 - Rip (spell 1079)

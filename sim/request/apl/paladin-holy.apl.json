@@ -110,7 +110,7 @@
           }
         }
       },
-      "notes": "On the tank below 40%, right behind Divine Favor (from 21). At 60 rank 8 is your top rank: the trainer stops there, and the rank 9 book has no known source in Forever yet. From 25, Holy Light is the only heal you can keep casting that outheals a tank by itself."
+      "notes": "On the tank below 40%, right behind Divine Favor. At 60 rank 8 is your top rank: the trainer stops there, and the rank 9 book has no known source in Forever yet. From 25, Holy Light is the only heal you can keep casting that outheals a tank by itself."
     },
     {
       "action": {
@@ -170,7 +170,7 @@
           }
         }
       },
-      "notes": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana)."
+      "notes": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana). While you level, Holy Light rank 1 from 18 to 24 and rank 2 from 25 to 29 keep all of your healing power for a fraction of the top rank's mana."
     },
     {
       "action": {
@@ -289,8 +289,7 @@
             "index": 0
           }
         }
-      },
-      "notes": "Yourself included: raid damage hits you like the rest of your party."
+      }
     },
     {
       "action": {
@@ -592,7 +591,7 @@
           }
         }
       },
-      "notes": "On everyone else below 80%, yourself included. Without the Oath bonus a small rank is the best balance of heal size and mana: rank 1 for most of your leveling, rank 4 from 50."
+      "notes": "On everyone else below 80%, yourself included. Without the Oath bonus a small rank is the best balance of heal size and mana: rank 1 for most of your leveling, rank 4 from 50, and rank 5 at 60 in a raid, where your buffs pay for the bigger heal."
     },
     {
       "action": {

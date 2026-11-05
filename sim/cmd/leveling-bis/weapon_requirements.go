@@ -299,8 +299,10 @@ func restrictRangedByProficiency(list []scored, classSlug string) []scored {
 // Forever's own two documented deviations from it (.claude/agents/
 // wow-player.md's own facts list: "shamans train one- and two-handed
 // axes and maces, rogues train maces"). The client's class masks also
-// carry a druid polearm and a rogue axe that no Classic trainer teaches;
-// both stay out. Warrior and hunter are unchanged from
+// carry a druid polearm that no Classic trainer teaches; it stays out.
+// Sim-accuracy round 22: the rogue one-hand axe is a Forever addition
+// (spell 196 ClassMask 79 against Era's 71; Hack and Slash 13960 names
+// "Axe/Sword"), so rogues carry it. Warrior and hunter are unchanged from
 // proficiency.py's own table (already correct there); priest/mage/
 // warlock are unchanged too.
 var classWeaponSubclasses = map[string]map[int]bool{
@@ -315,10 +317,11 @@ var classWeaponSubclasses = map[string]map[int]bool{
 	// Unchanged from proficiency.py: axes, bow/gun/crossbow/thrown, sword
 	// 1H/2H, polearm, staff, fist, dagger - no maces.
 	"hunter": {0: true, 1: true, 2: true, 3: true, 6: true, 7: true, 8: true, 10: true, 13: true, 15: true, 16: true, 18: true},
-	// Unchanged from proficiency.py: bow/gun/crossbow/thrown, sword 1H,
+	// Same as proficiency.py: axe 1H, bow/gun/crossbow/thrown, sword 1H,
 	// mace 1H, fist, dagger - Forever's documented "rogues train maces"
-	// change is already this table's own mace 1H (4) entry.
-	"rogue": {2: true, 3: true, 4: true, 7: true, 13: true, 15: true, 16: true, 18: true},
+	// change is this table's mace 1H (4) entry, its one-hand axe (round
+	// 22) the axe 1H (0) entry.
+	"rogue": {0: true, 2: true, 3: true, 4: true, 7: true, 13: true, 15: true, 16: true, 18: true},
 	// Unchanged from proficiency.py: mace 1H, staff, dagger, wand.
 	"priest": {4: true, 10: true, 15: true, 19: true},
 	// Forever's documented "shamans train one- and two-handed axes and
