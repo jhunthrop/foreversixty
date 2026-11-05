@@ -83,6 +83,10 @@ Affliction (S2): +0.03 to +0.09% at 26 to 59 on both orders and seeds; 60 unchan
 
 - wow-player, on the rendered Destruction and Affliction "Levels 20 to 60" paragraphs (dev build of this branch, 1440 and 390) and on the card notes as text (they render after the regen). First pass: CHANGES (Shadow and Flame's 4% a point and the 20% a point shard refund, clearer Amplify wording, "for 20 seconds"). All of it was taken. Second pass: SHIP on every note and the Affliction paragraph. The one item left open was the Destruction paragraph's readability at 390; I checked the 390 capture and it reads cleanly. `_prose.test.ts` passes.
 
+## Rendered-card follow-up (integrator)
+
+The card shows only the Conflagrate row the guide's raid build lights, so its note now carries the hold as well: "once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up". No semicolon: `clauseOf` (`rotation-lists.ts:81`) cuts a card clause at one. The page's rotation bullet says the same. The two row conditions were re-read and already express this (hold before `auraIsKnown(426316)`, on cooldown after). The engine at 1 to 4 points keeps Immolate 20% a point, so "from the first point, on cooldown" stands (S1's numbers); the Shadow and Flame talent bullet now gives the per-point values. Notes and prose only: no number moves.
+
 ## Still open
 
 - S4: the log-gated items above.
