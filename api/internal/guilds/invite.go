@@ -45,6 +45,14 @@ func (s *Store) RotateInvite(ctx context.Context, guildID int64) (string, time.T
 	return token, rotatedAt, nil
 }
 
+// InviteExports re-syncs, within tx, the guild membership of each of userID's exported
+// characters whose export names guildID, the way an addon sync does (addon.Store). A member an
+// officer removed keeps his exports, so rejoining by invite brings his synced characters back
+// without waiting for the next sync.
+type InviteExports interface {
+	ResyncGuildExports(ctx context.Context, tx pgx.Tx, userID, guildID int64) error
+}
+
 // InviteAccept is what AcceptInvite answers with.
 type InviteAccept struct {
 	GuildID               int64
@@ -59,7 +67,10 @@ type InviteAccept struct {
 // account already holds a synthetic row for a different guild, that row
 // is transferred (deleted, then recreated here) rather than left behind —
 // the unique index on character_key allows only one guild at a time,
-// synthetic rows included.
+// synthetic rows included. The account's exported characters whose export
+// names this guild are then re-attached (Exports, the addon sync's path) and
+// take the invite's verification (AdoptInviteVerification: member ranks;
+// officer and leader ranks still wait for an officer).
 func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (InviteAccept, error) {
 	hash := auth.TokenHash(token)
 	var g Guild
@@ -111,6 +122,11 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 		   verified_by = coalesce(guild_characters.verified_by, 'invite')`,
 		g.ID, key, userID); err != nil {
 		return InviteAccept{}, fmt.Errorf("guilds: accept invite: %w", err)
+	}
+	if s.Exports != nil {
+		if err := s.Exports.ResyncGuildExports(ctx, tx, userID, g.ID); err != nil {
+			return InviteAccept{}, err
+		}
 	}
 	if err := AdoptInviteVerification(ctx, tx, g.ID, userID); err != nil {
 		return InviteAccept{}, err

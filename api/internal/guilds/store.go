@@ -105,6 +105,9 @@ type Store struct {
 	// leaves GuildStanding's Subscribe out, the older shape.
 	Billing StepBillingFacts
 	Plans   GuildPlans
+	// Exports re-attaches an invited account's synced characters when it (re)joins by invite
+	// (addon.Store in production, the addon sync's own path). nil leaves only the invite row.
+	Exports InviteExports
 
 	bisBuild bisBuildCache
 }
