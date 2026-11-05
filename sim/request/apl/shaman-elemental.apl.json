@@ -34,7 +34,7 @@
   ],
   "priorityList": [
     {
-      "notes": "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies. 10 mana every 2 seconds to your party for 5 minutes pays back its 100 mana many times over. Two Mana Springs do not stack, so skip yours if a Restoration shaman already has one down for your group.",
+      "notes": "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies. At every rank it returns many times its own cost to your party over its 5 minutes. Two Mana Springs do not stack, so skip yours if a Restoration shaman already has one down for your group.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -197,7 +197,7 @@
       }
     },
     {
-      "notes": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first. It only hits within 10 yards of that totem; on a single boss your Searing Totem stands 20 yards out, and Lightning Bolt is the better cast.",
+      "notes": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on. It only hits within 10 yards of that totem; on a single boss your Searing Totem stands 20 yards out, and Lightning Bolt is the better cast.",
       "action": {
         "condition": {
           "cmp": {

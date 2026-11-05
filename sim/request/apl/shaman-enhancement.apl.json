@@ -215,7 +215,7 @@
       }
     },
     {
-      "notes": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready. Keep that reserve for Stormstrike and your totems. Below five points your five-stack bolts still cost mana, which is what the bigger reserve pays for; without the talent, and at all five points, a quarter is enough.",
+      "notes": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready. Keep that reserve for your totems, and for Stormstrike once you have it. Below five points your five-stack bolts still cost mana, which is what the bigger reserve pays for; without the talent, and at all five points, a quarter is enough.",
       "action": {
         "castSpell": {
           "spellId": {
