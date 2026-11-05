@@ -266,7 +266,7 @@
 
   if (kind === 'weights') savedWeightsLazy.load();
   else if (kind !== 'run') savedCombosLazy.load();
-  else simResultsLazy.load();
+  else if (typeof location === 'undefined' || !location.search.includes('defer')) simResultsLazy.load();
 
   // The page draws in three tasks, not one: the heading and the DPS header, then the character
   // strip (about 6 ms of the mount alone on a fast desktop: the paperdoll and its slots), then the
@@ -382,7 +382,7 @@
 {/if}
 
 {#if kind === 'run' && timelineShown && timelineLazy.current}
-  <timelineLazy.current {result} names={actionNames} />
+  <section id="timeline" class="scroll-mt-16"><timelineLazy.current {result} names={actionNames} /></section>
 {/if}
 {#if tipsLazy.current}
   <tipsLazy.current
