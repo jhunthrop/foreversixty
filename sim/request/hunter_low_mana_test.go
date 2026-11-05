@@ -13,8 +13,7 @@ import (
 // cooldown never runs, and Serpent Sting and Arcane Shot, which wait on
 // Multi-Shot's cooldown, never fire either: the card cast nothing but
 // Hunter's Mark until the mana was back (guide-accuracy round 20, sim
-// round 21 G1). Below 34 they now fire on their own while Multi-Shot is
-// held for mana.
+// round 21 G1). Under a quarter mana they now fire on their own.
 func TestLowManaHunterKeepsShootingAt18(t *testing.T) {
 	registerEngine.Do(engine.RegisterAll)
 	const level = 18

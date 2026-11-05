@@ -3,7 +3,7 @@
 Client 1.60.1.70790 (its hotfix push carries no rows). Site wt/r21-hunter from int/r21 (9b5ceb3ca, with the platform lane); fork lane/r21-hunter from int/r21 (3d1bac5f9).
 Method: spec-breakdown through `$R/sim.sh`, guide builds (`$R/rt`), `-bis-dir $R/bis-frozen`; 3000 iterations to explore, 10000 at seeds 1 and 50001 for every reported number. Rank rows judged level by level with `-level N -rank id=rank` on every hunter race.
 
-**Result: 7 CONFIRMED-BUGs, all fixed: 6 `old`, 1 `R20` (G1, from the guide lane's round 20).** The late auto-shot lead (A1, A2) is the largest: Marksmanship raid 60 +5.8%. The seed (no Hunter's Mark on the Survival card) is fixed, and fixing it exposed an engine bug: the engine held a pre-pull Hunter's Mark to the pull as if it were a damaging shot, so a Survival card that marked before the pull lost 0.4% at raid 60, and Beast Mastery and Marksmanship lost their pre-pull mark under Aimed Shot's cast and recast it in the fight. Two Survival Raptor Strike rank rows were missing (26-29 for every race, 48-49 for the Horde races). Raid 60 does not move; bare bands move up to +1.0% (Marksmanship 40).
+**Result: 8 CONFIRMED-BUGs, all fixed: 6 `old`, 1 `R20` (G1, from the guide lane's round 20), 1 `R21` (C1, this lane's own G1 scope).** The late auto-shot lead (A1, A2) is the largest: Marksmanship raid 60 +5.8%. The seed (no Hunter's Mark on the Survival card) is fixed, and fixing it exposed an engine bug: the engine held a pre-pull Hunter's Mark to the pull as if it were a damaging shot, so a Survival card that marked before the pull lost 0.4% at raid 60, and Beast Mastery and Marksmanship lost their pre-pull mark under Aimed Shot's cast and recast it in the fight. Two Survival Raptor Strike rank rows were missing (26-29 for every race, 48-49 for the Horde races). Raid 60 does not move; bare bands move up to +1.0% (Marksmanship 40).
 
 ## Seed items
 
@@ -60,6 +60,15 @@ wow-player on the rendered raid paragraphs (`$R/hunter/shots/mm-auto.png`, `bm-a
 Files to regenerate (A1/A2 add): addon-data / Data.lua for the BM and MM Aimed Shot, Sniper Shot, Multi-Shot, Rapid Fire, sting and Arcane notes; BM and MM ladder goldens (every band); dps-per-point and the planner vectors for both (haste and ranged weapon speed are worth more).
 
 **Touches shared code:** `sim/core/attack.go` gains the option (default off). No other class sets it, so no other spec moves; `go test ./sim/core -run 'Auto|Swing|Ranged|Attack'` passes.
+
+## Rendered-card review (integrator, late)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| C1 | **The low-mana text disagreed from 34, and reading the rotation showed a stall.** The raid paragraphs said keep Arcane Shot and the sting going; the leveling line said "from 34, save that mana for Aimed Shot". The rotation has no such saving: nothing gates the sting or Arcane Shot on mana. What it does have, from 34, is a stall: both wait on the shared cooldown, and when a hunter under a quarter mana cannot afford the Aimed Shot rank he carries, the cooldown sits ready and neither fires. G1's below-34 scope was measured before A2 ungated Aimed Shot and is stale. Marksmanship at 50-51 casts the top rank with no rank 1 row: Arcane Shot 10.1 casts a fight, 19.8 once the branch applies at every level. Test first: `TestMarksmanshipAt50KeepsShootingWhenAimedShotIsOutOfReach` (red 10.1, want 15 or more; green 20.1). The scope is removed: under a quarter mana the sting and Arcane Shot fire without waiting on the shared cooldown, at every level. Bare, Horde, 10000 it, seed 1 / 50001, against the scoped list: Marksmanship 50 285.3 -> 291.8 / 285.4 -> 292.0 (+2.28/+2.31%), 51 +2.31/+2.28%, 34 and 55 level, 40 -0.09/-0.09%, 60 -0.05/-0.05%; Beast Mastery 34 level, 40 -0.10/-0.05%, 50 -0.07/-0.10%, 51 -0.10/-0.06%, 55 level, 60 -0.12/-0.05%. Raid 60: Marksmanship +0.03 to +0.07%, Beast Mastery level. **The cost is real but small: up to 0.12% on those bare bands, taken for one rule on the page and +2.3% at 50-51.** No spell probe can scope 50-51 alone. Notes, leveling lines and raid paragraphs now say the same thing. | `$R/hunter/unsc.tsv`, `after5.tsv` | CONFIRMED-BUG (rotation) | R21 (this lane's G1 scope, stale after A2; the stall itself is R20 3ea76a4c0) | S (this lane, see heads) |
+| C2 | Card wording, no logic: the Aimed Shot row names "the cooldown it shares with Multi-Shot"; Survival's Hunter's Mark row says "from 35, Expose Prey needs it"; Immolation Trap's first sentence is "on cooldown", so its row stops repeating "At your feet on cooldown" (the cooldowns row prints just its 30 s; at your feet moves to the next sentence). | rendered cards `$R/intshots/hunter-*`; `rotation-lists.ts:314` | Wording | - | S (this lane, see heads) |
+
+wow-player on the rendered leveling lines (`$R/hunter/shots/*-lowmana2.png`): SHIP WITH FIXES, SHOULDs only. Applied "when you can afford it". Declined the check on Sniper Shot's name: it is the Marksmanship capstone (client 1310786), and the capture did not show that row.
 
 ## Cross-cutting
 
@@ -124,7 +133,6 @@ Second review, G1 (leveling paragraphs `$R/hunter/shots/*-lowmana.png`): **SHIP 
 
 - A2: Beast Mastery's raid build does +0.9% more with Multi-Shot above Aimed Shot (898.7 against 890.9, 3000 it), which loses 1.5-5% on the leveling bands; an APL cannot tell the raid build from the leveling one at 60 today.
 
-- G1's 50-59 half: the same low-mana branch gains 2-3.5% at 50-59 but needs a level value in the APL (no spell probe can scope it); G2 decided.
 
 - Round 20's H1 (hawk swing), H3 (Heart of the Lion on the pet), H2's Focused Fire snapshot, H4 (Ranged Weapon Specialization on the sting), H5 (Lacerating Strikes), Immolation Trap's 2% (single source): no live log at 03:34 UTC.
 - X1: whether Forever's damage multipliers reach the attack power share (a live Lone Wolf log).
