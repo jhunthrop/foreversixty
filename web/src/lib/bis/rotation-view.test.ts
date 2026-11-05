@@ -95,16 +95,27 @@ describe('rotationLinesFor on the holy priest band 20 list', () => {
   const SHADOWFIEND = 'Shadowfiend';
   const curatedRows = () => rows().filter((row) => row.name !== SHADOWFIEND);
 
-  it('has one row per run of the same spell', () => {
+  // Round 22: the paced Heal steps carry a note of their own ("Behind the mana pace, the
+  // filler waits for a lower tank..."), so they are a second Heal row, not merged away.
+  it('has one row per run of the same spell and note', () => {
     expect(entry).toBeDefined();
-    expect(curatedRows().map((row) => row.name)).toEqual(['Dark Sacrifice', 'Renew', 'Flash Heal', 'Heal']);
-    expect(curatedRows().map((row) => row.steps)).toEqual([1, 1, 5, 10]);
+    expect(curatedRows().map((row) => row.name)).toEqual([
+      'Dark Sacrifice',
+      'Renew',
+      'Flash Heal',
+      'Heal',
+      'Heal',
+    ]);
+    expect(curatedRows().map((row) => row.steps)).toEqual([1, 1, 5, 5, 5]);
   });
 
   it('says every condition of the collapsed steps in words', () => {
-    const heal = rows().find((row) => row.name === 'Heal');
-    expect(heal?.condition).toMatch(
-      /Cast on the tank below \d+%, then a party member below \d+%, when your mana is at least \d+% of the share of the fight left; or on the tank below \d+%, then a party member below \d+%\./,
+    const [paced, behind] = rows().filter((row) => row.name === 'Heal');
+    expect(paced?.condition).toMatch(
+      /Cast on the tank below \d+%, then a party member below \d+%, when your mana is at least \d+% of the share of the fight left\./,
+    );
+    expect(behind?.condition).toMatch(
+      /^Behind the mana pace.*Cast on the tank below \d+%, then a party member below \d+%\./,
     );
     const flash = rows().find((row) => row.name === 'Flash Heal');
     expect(flash?.condition).toMatch(/Cast on the tank below \d+%, then a party member below \d+%\./);
@@ -162,9 +173,13 @@ describe('every published rotation entry lines up with its curated steps', () =>
     for (const entry of loadRotations(BUILD, spec) ?? []) {
       const views = rotationLinesFor(entry, BUILD, classSlug, spec, entry.level);
       expect(views.reduce((sum, view) => sum + view.steps, 0)).toBe(entry.lines.length);
+      // Two neighbouring rows of one spell and rank are allowed only when they say different
+      // things (round 22: a second rule of the same spell keeps its own row).
       views.slice(1).forEach((view, index) => {
         const previous = views[index];
-        expect(`${view.name}|${view.rank}`).not.toBe(`${previous.name}|${previous.rank}`);
+        if (`${view.name}|${view.rank}` === `${previous.name}|${previous.rank}`) {
+          expect(view.condition).not.toBe(previous.condition);
+        }
       });
     }
   });

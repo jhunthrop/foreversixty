@@ -152,6 +152,27 @@ Both branches merged int/r22 again: site 366e2a61b, fork f0cdaffee. Every sim an
 
 Since `addon-builds.json` now feeds step 3, regenerate it first (`sim/cmd/addon-builds`) if any lane changed a guide build. The pin needs fork 30bf8bdb0 or later. Still owed from the first pass: ladder goldens for druid-feral, druid-feral-bear and mage-fire.
 
+## Fourth follow-up (round 22 rendered review: Holy paladin and Holy priest cards)
+
+Merged int/r22 up to 37d5082fd, which includes the priest Heal note. **Confirmed and fixed: 2** (V1 `old`, V2 `old`). Neither moves a sim number; both change what the card and the addon print.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| V1 | **The raid card and the addon ignored the raid preset's rank rows at 60.** `addonrotation._line_at` applied no rank-choices row at level 60, and `_band_ranks` read every band as the bare preset's. The sim publishes 60 under the raid preset (`sim/request PublishedPreset`) and casts the raid-only row there. So Holy paladin's party Flash of Light printed rank 4 while the sim and the guide say rank 5 (the paladin lane's raid-60 row, authored 19941). A band now takes the rows of the preset it is published under: bare below 60, raid at 60. A row that names no preset applies at every level. A local regen (for the capture only, not committed) changes exactly one line set: the Holy paladin party Flash of Light at 60, 19941 to 19942 (rank 5) on its five steps. | `data/pipeline/addonrotation.py` (`published_preset`, `_band_ranks`, `_line_at`); test `test_level_sixty_casts_the_raid_presets_rank_row` (red: 10929 for 6075, twice: the bare-preset filter, then the level-60 skip); 91 addon tests pass | CONFIRMED-BUG (card and addon data) | old | S b00a321d1 |
+| V2 | **The card merged consecutive steps of one spell and rank and printed only the first note.** On the Holy paladin card, "Holy Light rank 8: With mana to spare, on the tank below 70% as well" vanished, so Holy Shock's "with the same mana to spare" pointed at nothing. The Holy priest card lost its Greater Heal and Heal "deeper hole" rows; Discipline kept them only because its steps alternate. Now a step whose note says something else starts a new row. Steps with no note, or the same note, still fold in. The BiS panel also shows Arcane's raid and leveling Frostbolt steps as two rows when every step is kept. | `web/src/lib/bis/rotation-collapse.ts` (`continuesRun`); vitest `keeps consecutive steps of one spell and rank whose notes differ as separate rows` (red: one row). Two older expectations follow: the band-20 Holy priest list has two Heal rows (paced, then "behind the mana pace"), and the per-entry invariant allows a repeated spell and rank only with a different note. `src/lib/bis`, `src/lib/guides` and `src/lib/app-data`: 1,112 pass; the one failure, "carries each guide's current build codes in its fixture", also fails without this change. | CONFIRMED-BUG (web card) | old | S 03cf741de |
+
+**Captures** (`$R/platform/shots5/`, with addon-data regenerated locally and not committed):
+- `paladin-holy-card.png`: Holy Light 8 twice (below 40%, then "with mana to spare, below 70% as well"), Holy Shock 4 twice ("with the same mana to spare", "yourself included"), Flash of Light 5 twice (tank below 90%, everyone else below 80%).
+- `priest-holy-card.png`: Greater Heal 4 and Greater Heal 1 each with a "deeper hole" row, and Heal 4 with its "deeper hole" row.
+- `priest-discipline-card.png`: unchanged rows.
+- **wow-player (one pass): Holy paladin SHIP WITH FIXES, Holy priest NO-SHIP.** Both platform fixes read right: Flash of Light rank 5, the second Holy Light rule back, and Holy Shock's "same mana to spare" pointing at the row above it. The remaining MUSTs are about curated note text and order, which these fixes made visible. They belong to the paladin and priest lanes:
+  - Paladin: Holy Shock's second row reads only "Yourself included" (curated note on the self-target step). Give it a rule of its own, or no note so it folds into the row above.
+  - Priest: rows 9 and 11 print leveling notes on the 60 card (Greater Heal rank 1 "Once you have higher ranks...", Heal "Your filler before Greater Heal at 40..."). The "deeper hole" rows need their first sentence to name the condition, for example "Mana short: ...", so they read as a rule and not a repeat.
+  - **Rank MUSTs not taken.** The reviewer asked for Greater Heal 5, Holy Light 9 and Renew 10. Those are Ahn'Qiraj book ranks (`book: true` in spellranks; the sim never casts them, as the pending-owner book item says). Holy Shock rank 4 is a Forever rank (spellranks, 20930).
+  - The capture's dev toolbar covers the trinket line's end. That is a capture artifact, not page content.
+
+**Files to regenerate (fourth follow-up):** `python -m pipeline addon-data --build 1.60.1.70790`, which writes `addon-data.json` and the addon's `Data.lua`. It moves the Holy paladin party Flash of Light at 60 to rank 5, and nothing else.
+
 ## Before/after
 
 Raid 60, frozen BiS, guide raid builds, 10,000 iterations. Before is `$R/sb-before` from site-before; after is this branch.
