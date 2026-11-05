@@ -81,7 +81,7 @@ Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it 
 
 Recast Corruption when it falls off and never clip it. Start Immolate's cast with about 3 seconds left on the old one. Everything else is Shadow Bolt.
 
-Below 35% your button does not change. Every Shadow Bolt now hits 6% harder, and it also gives you 10 seconds of Decimation, which makes Soul Fire a 2.4 second cast on a 6 second cooldown that costs no shard. Skip it anyway. Soul Fire is Fire, and your Imp sacrifice, Master Demonologist and Improved Shadow Bolt all raise Shadow, so it does no more than the Shadow Bolt it replaces. Shadow Bolt to the end. Outside Decimation Soul Fire is a 4 second cast that costs a shard; never cast it in a raid.
+Below 35% your button does not change. Every Shadow Bolt now hits 6% harder, and it also gives you 10 seconds of Decimation, which makes Soul Fire a 2.4 second cast on a 6 second cooldown that costs no shard. If you play this build from 56 to 59, cast those Soul Fires once you have rank 2: on leveling gear they still edge out Shadow Bolt. At 60, skip it. Soul Fire is Fire, and your Imp sacrifice, Master Demonologist and Improved Shadow Bolt all raise Shadow, so on raid gear it does less than the Shadow Bolt it replaces. Shadow Bolt to the end. Outside Decimation Soul Fire is a 4 second cast that costs a shard; never cast it in a raid.
 
 Searing Pain also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses. Keep it off your bars in raids.
 
@@ -95,7 +95,7 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt, Corruption and Doom. Fire power reaches Immolate on a boss and Rain of Fire on trash, since this build skips Soul Fire. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana, plus a little crit, which pays the same way. Spirit only matters through Life Tap. The table above gives the order for your gear.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt, Corruption and Doom. Fire power reaches Immolate on a boss and Rain of Fire on trash, since this build skips Soul Fire at 60. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana, plus a little crit, which pays the same way. Spirit only matters through Life Tap. The table above gives the order for your gear.
 
 ## Best in slot
 

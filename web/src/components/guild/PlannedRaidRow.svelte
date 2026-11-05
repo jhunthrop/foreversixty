@@ -88,14 +88,14 @@
       <span class="sr-only">{`${view.fullDate}, `}</span><span class="text-text numeric block text-[14px]"
         >{view.time}</span
       >
-      {#if view.guildTime !== null}<span class="text-muted block text-[12px]">{view.guildTime}</span>{/if}
+      {#if view.yourTime !== null}<span class="text-muted block text-[12px]">{view.yourTime}</span>{/if}
       <span class="numeric block text-[12px] {countdownTone}">{view.countdown}</span>
     </span>
     <span class="flex min-w-0 flex-col gap-1">
       <span class="flex items-center gap-2" data-testid={`${testid}-desktop-count`}
         ><span class="numeric text-[15px] {countTone}">{view.count}</span>{@render bar('w-24 shrink-0')}</span
       >
-      <span class="text-muted truncate text-[12px]">{view.breakdown}</span>
+      <span class="text-muted text-[12px]">{view.breakdown}</span>
     </span>
     <span class="flex flex-wrap items-center justify-end gap-1.5">{@render chips('desktop')}</span>
     <span class="text-muted group-hover:text-gold text-[16px]" aria-hidden="true">›</span>
@@ -114,7 +114,7 @@
       </span>
       <span class="text-[12px]">
         <span class="sr-only">{`${view.fullDate}, `}</span><span class="text-text numeric">{view.time}</span
-        >{#if view.guildTime !== null}<span class="text-muted">{SEP}{view.guildTime}</span>{/if}<span
+        >{#if view.yourTime !== null}<span class="text-muted">{SEP}{view.yourTime}</span>{/if}<span
           class="numeric {countdownTone}">{SEP}{view.countdown}</span
         >
       </span>

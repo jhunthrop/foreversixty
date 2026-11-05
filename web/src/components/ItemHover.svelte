@@ -42,6 +42,7 @@
     align = 'start',
     label,
     testid,
+    enchant,
     children,
   }: {
     itemId: number;
@@ -58,6 +59,8 @@
     testid?: string;
     /** The accessible name when `children` hold no text (an icon drawn apart from the name). */
     label?: string;
+    /** The worn item's enchant in the client's words; the panel prints it as its green line. */
+    enchant?: string;
     children?: Snippet;
   } = $props();
 
@@ -86,7 +89,12 @@
   // containing block the mounted panel's `position: absolute` needs, regardless of the
   // element's own display type.
   let host: HTMLSpanElement | undefined = $state();
-  let PanelComponent: Component<{ model: ItemTooltipModel; build: string; id: string }> | null = null;
+  let PanelComponent: Component<{
+    model: ItemTooltipModel;
+    build: string;
+    id: string;
+    enchant?: string;
+  }> | null = null;
   let panelModuleLoad: Promise<unknown> | null = null;
   let mountedInstance: object | null = null;
 
@@ -101,7 +109,7 @@
     unmountPanel();
     mountedInstance = mount(PanelComponent, {
       target: host,
-      props: { model: resolvedModel, build, id: tooltipId },
+      props: { model: resolvedModel, build, id: tooltipId, enchant },
     });
     positionTooltipPanel(host, align);
   }

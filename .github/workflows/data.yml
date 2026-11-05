@@ -176,6 +176,8 @@ jobs:
           if [ "$ALLOW_SHRINK" = "true" ]; then echo "SHRINK=--allow-shrink" >> "$GITHUB_ENV"; else echo "SHRINK=" >> "$GITHUB_ENV"; fi
           ARGS=(--product "$PRODUCT")
           [ -n "$BUILD_IN" ] && ARGS+=(--build "$BUILD_IN")
+          # pipefail: a failed fetch must fail the step, not hand tail an empty build (2026-11-04).
+          set -o pipefail
           BUILD=$(uv run python -m pipeline fetch "${ARGS[@]}" | tail -1)
           echo "BUILD=$BUILD" >> "$GITHUB_ENV"
           echo "PRODUCT=$PRODUCT" >> "$GITHUB_ENV"

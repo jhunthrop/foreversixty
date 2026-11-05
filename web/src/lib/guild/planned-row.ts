@@ -3,8 +3,8 @@
 // and numbers it draws, so PlannedRaidRow.svelte only lays them out. Times read in the viewer's zone;
 // the guild-time label shows only when the offsets differ.
 import type { GuildRaidRole, GuildRaidStatus, GuildRaidView, GuildSignupState } from './api';
-import { countdown, countLine, countRatio, guildTimeLabel, kindOf, roleBreakdown, SEP } from './raid-copy';
-import { clockText, offsetsDiffer } from './raid-time';
+import { countdown, countLine, countRatio, yourTimeLine, zonedClock, zoneLineOf } from './raid-copy';
+import { raidBreakdownLine } from './raid-comp';
 
 const MINUTE_MS = 60_000;
 const STATE_ORDER: readonly GuildSignupState[] = ['in', 'late', 'bench', 'out'];
@@ -25,9 +25,10 @@ export interface PlannedRowView {
   title: string;
   /** The zone under the title, only when the title differs from it. */
   zoneLine: string | null;
+  /** `8:00 pm CST`: the guild's clock and zone (raid comp spec 3.4). */
   time: string;
-  /** `8:00 pm CST guild time`, only when the viewer's offset differs from the guild's. */
-  guildTime: string | null;
+  /** `9:00 pm EST your time`, only when the viewer's offset differs from the guild's. */
+  yourTime: string | null;
   countdown: string;
   /** `23/40`, or `23 signed up` while the size is unknown (R6). */
   count: string;
@@ -75,13 +76,6 @@ function datePart(d: Date, tz: string, locale: string, option: Intl.DateTimeForm
   return new Intl.DateTimeFormat(locale, { timeZone: tz, ...option }).format(d);
 }
 
-/** The title cell's second line: the zone, with the size an officer picked for a guild event. */
-function zoneLineOf(raid: GuildRaidView): string {
-  return kindOf(raid) === 'event' && raid.size !== null
-    ? `${raid.zone_name}${SEP}${raid.size}`
-    : raid.zone_name;
-}
-
 export function plannedRowView(
   raid: GuildRaidView,
   now: Date,
@@ -92,22 +86,23 @@ export function plannedRowView(
   const guildTz = raid.guild_timezone ?? viewerTz;
   const n = raid.counts.in + raid.counts.late;
   const status = chipStatus(raid, now);
+  // One clock leads everywhere: the date block and the time read in the guild's zone.
   return {
-    weekday: datePart(startsAt, viewerTz, locale, { weekday: 'short' }),
+    weekday: datePart(startsAt, guildTz, locale, { weekday: 'short' }),
     fullDate: [
-      datePart(startsAt, viewerTz, locale, { weekday: 'long' }),
-      datePart(startsAt, viewerTz, locale, { day: 'numeric' }),
-      datePart(startsAt, viewerTz, locale, { month: 'long' }),
+      datePart(startsAt, guildTz, locale, { weekday: 'long' }),
+      datePart(startsAt, guildTz, locale, { day: 'numeric' }),
+      datePart(startsAt, guildTz, locale, { month: 'long' }),
     ].join(' '),
-    day: datePart(startsAt, viewerTz, locale, { day: 'numeric' }),
-    month: datePart(startsAt, viewerTz, locale, { month: 'short' }),
+    day: datePart(startsAt, guildTz, locale, { day: 'numeric' }),
+    month: datePart(startsAt, guildTz, locale, { month: 'short' }),
     title: raid.title,
     zoneLine: raid.title === raid.zone_name ? null : zoneLineOf(raid),
-    time: clockText(startsAt, viewerTz, locale, true),
-    guildTime: offsetsDiffer(startsAt, viewerTz, guildTz) ? guildTimeLabel(startsAt, guildTz, locale) : null,
+    time: zonedClock(startsAt, guildTz, locale),
+    yourTime: yourTimeLine(startsAt, guildTz, viewerTz, locale),
     countdown: countdown(startsAt, raidEndsAt(raid), now),
     count: raid.size === null ? countLine(n, null) : countRatio(n, raid.size),
-    breakdown: roleBreakdown(raid.counts.tanks, raid.counts.healers, raid.counts.dps, raid.counts.late),
+    breakdown: raidBreakdownLine(raid),
     fill: raid.size === null || raid.size <= 0 ? null : Math.min(100, Math.round((n / raid.size) * 100)),
     status: status === 'planned' ? null : status,
     viewer: raid.status === 'cancelled' ? null : viewerAnswer(raid),

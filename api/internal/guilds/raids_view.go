@@ -10,17 +10,25 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 )
 
-// RaidCounts are a raid's sign-up totals. Tanks, Healers and DPS count `in` rows only.
+// RaidCounts are a raid's sign-up totals. Tanks, Healers, DPS, Melee and Ranged count `in` rows
+// only (Melee plus Ranged is DPS, split by raidspec.Group). Classes counts In plus Late by class,
+// one key for every class among the sign-ups and the verified roster not yet signed, zeros
+// included (spec 2026-11-05 §4.1); DPS stays for the readiness page and older clients.
 type RaidCounts struct {
-	In      int `json:"in"`
-	Late    int `json:"late"`
-	Bench   int `json:"bench"`
-	Out     int `json:"out"`
-	Tanks   int `json:"tanks"`
-	Healers int `json:"healers"`
-	DPS     int `json:"dps"`
+	In      int            `json:"in"`
+	Late    int            `json:"late"`
+	Bench   int            `json:"bench"`
+	Out     int            `json:"out"`
+	Tanks   int            `json:"tanks"`
+	Healers int            `json:"healers"`
+	DPS     int            `json:"dps"`
+	Melee   int            `json:"melee"`
+	Ranged  int            `json:"ranged"`
+	Classes map[string]int `json:"classes"`
 }
 
 // SignupView is one sign-up as the raid page lists it. Own is true when the character
@@ -34,14 +42,34 @@ type SignupView struct {
 	State        string `json:"state"`
 	Note         string `json:"note"`
 	Own          bool   `json:"own"`
+	// Group is the roster group the row fights in (tank, healer, melee or ranged), from
+	// raidspec.Group; SpecKey is the catalogue key of its spec, null when it does not resolve.
+	Group   string  `json:"group"`
+	SpecKey *string `json:"spec_key"`
+	// Also is the account's other answered characters, best place first (raids spec §3.7): the
+	// row is the account's best place, and these show under it without counting anywhere.
+	Also []AlsoSignup `json:"also"`
 }
 
-// RaidCharacter is a verified roster character with no sign-up yet.
+// AlsoSignup is another answered character of a row's account, as its Also line names it.
+type AlsoSignup struct {
+	CharacterKey string  `json:"character_key"`
+	Name         string  `json:"name"`
+	Class        string  `json:"class"`
+	Spec         string  `json:"spec"`
+	SpecKey      *string `json:"spec_key"`
+	State        string  `json:"state"`
+}
+
+// RaidCharacter is a verified roster character with no sign-up yet. Group and SpecKey read as
+// on SignupView, with the character's default role.
 type RaidCharacter struct {
-	CharacterKey string `json:"character_key"`
-	Name         string `json:"name"`
-	Class        string `json:"class"`
-	Spec         string `json:"spec"`
+	CharacterKey string  `json:"character_key"`
+	Name         string  `json:"name"`
+	Class        string  `json:"class"`
+	Spec         string  `json:"spec"`
+	Group        string  `json:"group"`
+	SpecKey      *string `json:"spec_key"`
 }
 
 // ViewerCharacter is one of the viewer's characters in the guild. State is null until it
@@ -58,6 +86,10 @@ type ViewerCharacter struct {
 	// RaidSpec is the picked raid spec (a specs.json key, "paladin-holy"); null until picked,
 	// when the raid page asks "Which spec tonight?" (spec 2026-10-28 §P.10.7).
 	RaidSpec *string `json:"raid_spec"`
+	// SpecKey is the catalogue key of the spec the row prints, null when it does not resolve;
+	// DefaultSpec is the spec the picker starts on: raid_spec, else the known spec's key, else null.
+	SpecKey     *string `json:"spec_key"`
+	DefaultSpec *string `json:"default_spec"`
 }
 
 // RaidViewer is who is asking.
@@ -153,6 +185,8 @@ type NextRaidCounts struct {
 	Tanks   int `json:"tanks"`
 	Healers int `json:"healers"`
 	DPS     int `json:"dps"`
+	Melee   int `json:"melee"`
+	Ranged  int `json:"ranged"`
 }
 
 // NextRaidOwn is the viewer's own sign-up for the next raid.
@@ -239,12 +273,14 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 		byKey[sg.CharacterKey] = sg
 		answered[sg.SignedBy] = true
 	}
-	shown := onePerAccount(signups)
+	shown, also := onePerAccount(signups)
 	v.Counts = countSignups(shown)
 	for _, sg := range shown {
 		v.Signups = append(v.Signups, SignupView{
 			CharacterKey: sg.CharacterKey, Name: sg.Name, Class: sg.Class, Spec: sg.Spec,
 			Role: sg.Role, State: sg.State, Note: sg.Note, Own: vc.owns(sg),
+			Group: raidspec.Group(sg.Class, sg.Spec, sg.Role), SpecKey: specKey(sg.Class, sg.Spec, sg.Role),
+			Also: alsoSignups(also[sg.SignedBy]),
 		})
 	}
 	sortSignups(v.Signups)
@@ -252,13 +288,14 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 		sg, signed := byKey[c.CharacterKey]
 		// An account that has answered with any character is not waiting on an answer.
 		if c.verified && !answered[c.userID] {
-			v.NotSigned = append(v.NotSigned, c.RaidCharacter)
+			v.NotSigned = append(v.NotSigned, c.notSigned())
 		}
 		if c.userID == vc.viewerID {
 			v.Viewer.Characters = append(v.Viewer.Characters, viewerCharacter(c, sg, signed))
 		}
 	}
 	sortRaidCharacters(v.NotSigned)
+	v.Counts.Classes = classCounts(v.Signups, v.NotSigned)
 	sort.SliceStable(v.Viewer.Characters, func(i, j int) bool {
 		return v.Viewer.Characters[i].Name < v.Viewer.Characters[j].Name
 	})
@@ -270,8 +307,9 @@ var placeRank = map[string]int{SignupIn: 0, SignupLate: 1, SignupBench: 2, Signu
 
 // onePerAccount is each account's best sign-up, in signups' order: a player who switched from
 // their main to an alt (R3 benched the main) is one In, not an In and a Bench. Ties keep the
-// first row.
-func onePerAccount(signups []Signup) []Signup {
+// first row. The account's other rows come back by account, best place first, for the row's
+// Also line (raids spec §3.7).
+func onePerAccount(signups []Signup) ([]Signup, map[int64][]Signup) {
 	best := make(map[int64]int, len(signups))
 	for i, sg := range signups {
 		j, seen := best[sg.SignedBy]
@@ -280,9 +318,32 @@ func onePerAccount(signups []Signup) []Signup {
 		}
 	}
 	out := make([]Signup, 0, len(best))
+	also := map[int64][]Signup{}
 	for i, sg := range signups {
 		if best[sg.SignedBy] == i {
 			out = append(out, sg)
+		} else {
+			also[sg.SignedBy] = append(also[sg.SignedBy], sg)
+		}
+	}
+	for _, rows := range also {
+		sort.SliceStable(rows, func(i, j int) bool {
+			if a, b := placeRank[rows[i].State], placeRank[rows[j].State]; a != b {
+				return a < b
+			}
+			return rows[i].Name < rows[j].Name
+		})
+	}
+	return out, also
+}
+
+// alsoSignups is an account's other rows as the Also line names them; empty, never null.
+func alsoSignups(rows []Signup) []AlsoSignup {
+	out := make([]AlsoSignup, len(rows))
+	for i, sg := range rows {
+		out[i] = AlsoSignup{
+			CharacterKey: sg.CharacterKey, Name: sg.Name, Class: sg.Class, Spec: sg.Spec,
+			SpecKey: specKey(sg.Class, sg.Spec, sg.Role), State: sg.State,
 		}
 	}
 	return out
@@ -293,15 +354,56 @@ func viewerCharacter(c raidRosterChar, sg Signup, signed bool) ViewerCharacter {
 		CharacterKey: c.CharacterKey, Name: c.Name, Class: c.Class, Spec: c.Spec,
 		Verified: c.verified, Role: c.defaultRole(),
 	}
-	if c.raidSpec != "" {
-		spec := c.raidSpec
-		vcx.RaidSpec = &spec
-	}
 	if signed {
 		state := sg.State
 		vcx.State, vcx.Role = &state, sg.Role
 	}
+	vcx.SpecKey = specKey(c.Class, c.Spec, vcx.Role)
+	vcx.DefaultSpec = vcx.SpecKey
+	if c.raidSpec != "" {
+		spec := c.raidSpec
+		vcx.RaidSpec, vcx.DefaultSpec = &spec, &spec
+	}
 	return vcx
+}
+
+// notSigned is the roster character as Not signed up lists it, its group read with its default role.
+func (c raidRosterChar) notSigned() RaidCharacter {
+	out := c.RaidCharacter
+	role := c.defaultRole()
+	out.Group, out.SpecKey = raidspec.Group(c.Class, c.Spec, role), specKey(c.Class, c.Spec, role)
+	return out
+}
+
+// specKey is the catalogue key of a class, spec name and role, nil when the catalogue has none.
+func specKey(class, spec, role string) *string {
+	sp, ok := raidspec.Resolve(class, spec, role)
+	if !ok {
+		return nil
+	}
+	return &sp.Key
+}
+
+// classCounts is In plus Late by class: one key per class among the sign-ups and the roster not
+// yet signed, so a class the guild plays reads 0 rather than going missing (spec 2026-11-05 §3.1).
+func classCounts(signups []SignupView, notSigned []RaidCharacter) map[string]int {
+	out := map[string]int{}
+	for _, c := range notSigned {
+		if c.Class != "" {
+			out[strings.ToLower(c.Class)] += 0
+		}
+	}
+	for _, sg := range signups {
+		if sg.Class == "" {
+			continue
+		}
+		class := strings.ToLower(sg.Class)
+		out[class] += 0
+		if sg.State == SignupIn || sg.State == SignupLate {
+			out[class]++
+		}
+	}
+	return out
 }
 
 // zoneOf is the curated zone, or a bare one named by its key for a zone no longer curated.
@@ -322,13 +424,17 @@ func countSignups(signups []Signup) RaidCounts {
 		switch sg.State {
 		case SignupIn:
 			c.In++
-			switch sg.Role {
-			case RoleTank:
+			switch raidspec.Group(sg.Class, sg.Spec, sg.Role) {
+			case raidspec.GroupTank:
 				c.Tanks++
-			case RoleHealer:
+			case raidspec.GroupHealer:
 				c.Healers++
+			case raidspec.GroupMelee:
+				c.DPS++
+				c.Melee++
 			default:
 				c.DPS++
+				c.Ranged++
 			}
 		case SignupLate:
 			c.Late++
@@ -341,15 +447,9 @@ func countSignups(signups []Signup) RaidCounts {
 	return c
 }
 
-// roleOrder and classOrder are the roster's sort keys: tanks, healers, DPS; classes in the
-// game's own order.
-var (
-	roleOrder  = map[string]int{RoleTank: 0, RoleHealer: 1, RoleDPS: 2}
-	classOrder = map[string]int{
-		"warrior": 0, "paladin": 1, "hunter": 2, "rogue": 3, "priest": 4,
-		"shaman": 5, "mage": 6, "warlock": 7, "druid": 8,
-	}
-)
+// roleOrder is the roster's first sort key: tanks, healers, DPS; classes then follow the game's
+// own order (raidspec.ClassOrder, the one order the site and the bot share).
+var roleOrder = map[string]int{RoleTank: 0, RoleHealer: 1, RoleDPS: 2}
 
 // rank is a sort key's position, unknown values last.
 func rank(order map[string]int, value string) int {
@@ -364,7 +464,7 @@ func sortSignups(s []SignupView) {
 		if a, b := rank(roleOrder, s[i].Role), rank(roleOrder, s[j].Role); a != b {
 			return a < b
 		}
-		if a, b := rank(classOrder, s[i].Class), rank(classOrder, s[j].Class); a != b {
+		if a, b := raidspec.ClassRank(s[i].Class), raidspec.ClassRank(s[j].Class); a != b {
 			return a < b
 		}
 		return s[i].Name < s[j].Name
@@ -373,7 +473,7 @@ func sortSignups(s []SignupView) {
 
 func sortRaidCharacters(s []RaidCharacter) {
 	sort.SliceStable(s, func(i, j int) bool {
-		if a, b := rank(classOrder, s[i].Class), rank(classOrder, s[j].Class); a != b {
+		if a, b := raidspec.ClassRank(s[i].Class), raidspec.ClassRank(s[j].Class); a != b {
 			return a < b
 		}
 		return s[i].Name < s[j].Name
@@ -423,8 +523,10 @@ func (s *Store) NextRaidFor(ctx context.Context, guildID, viewerID int64, header
 	return &NextRaidView{
 		ID: raid.ID, Zone: raid.Zone, ZoneName: zone.Name, ZoneKind: zone.Kind, Title: raid.Title,
 		StartsAt: raid.StartsAt.UTC(), Status: raid.Status, Size: zone.Size, GuildTimezone: vc.timezone,
-		Counts: NextRaidCounts{In: c.In, Late: c.Late, Tanks: c.Tanks, Healers: c.Healers, DPS: c.DPS},
-		Own:    ownSignup(signups, vc, headerKey),
+		Counts: NextRaidCounts{
+			In: c.In, Late: c.Late, Tanks: c.Tanks, Healers: c.Healers, DPS: c.DPS, Melee: c.Melee, Ranged: c.Ranged,
+		},
+		Own: ownSignup(signups, vc, headerKey),
 	}, nil
 }
 

@@ -1,7 +1,7 @@
 // web/src/components/guild/GuildReadiness.test.ts
 // The Readiness tab rendered with svelte/server: officer-read-only (officer tools off) shows the
-// plan sentence once and the Read-only label, and keeps every Nudge on screen but disabled; a
-// member sees none of it.
+// plan sentence once and keeps every Nudge on screen but disabled; a member sees the Read-only
+// label instead.
 import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
@@ -66,10 +66,10 @@ describe('GuildReadiness', () => {
     for (const tag of nudges) expect(tag).not.toMatch(/ disabled(=| |>)/);
   });
 
-  it('shows the Read-only label beside the h2 in officer-read-only only', () => {
-    expect(text(html(true, false))).toContain(`Readiness ${guildGateCopy.readOnly}`);
+  it('shows the Read-only label beside the h2 for members only, as Loot does', () => {
+    expect(text(html(false, false))).toContain(`Readiness ${guildGateCopy.readOnly}`);
+    expect(text(html(true, false))).not.toContain(guildGateCopy.readOnly);
     expect(text(html(true, true))).not.toContain(guildGateCopy.readOnly);
-    expect(text(html(false, false))).not.toContain(guildGateCopy.readOnly);
   });
 
   it('disables every Nudge, described by the sentence, and keeps the footnote', () => {

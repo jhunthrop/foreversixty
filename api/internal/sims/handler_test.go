@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
@@ -78,6 +79,19 @@ func TestASimSavedWithNoTitleReadsBackWithNoTitleKey(t *testing.T) {
 	h.data(res, &raw)
 	if _, ok := raw["title"]; ok {
 		t.Errorf("a title-less sim's response carries a \"title\" key: %v", raw)
+	}
+}
+
+// The saved page prints when the sim was saved: the row's own time, a sibling
+// of the title rather than anything in the stored result.
+func TestASimReadsBackWithTheTimeItWasSaved(t *testing.T) {
+	h := newHarness(t)
+	id := saveBrowserResult(h, "warrior-fury", 1042.5, "")
+	h.anonymous()
+	var got GetOutput
+	h.data(h.do(http.MethodGet, "/v1/sims/"+id, "", nil), &got)
+	if age := time.Since(got.CreatedAt); got.CreatedAt.IsZero() || age < -time.Minute || age > time.Minute {
+		t.Errorf("created_at = %v, want about now", got.CreatedAt)
 	}
 }
 

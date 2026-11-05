@@ -27,6 +27,15 @@ describe('Select', () => {
     expect(body).toContain('data-testid="select-chevron"');
   });
 
+  it('shows a picked option’s faceLabel on the closed field, its label in the list', () => {
+    const body = select({
+      value: 'eu',
+      options: [OPTIONS[0], { value: 'eu', label: 'Restoration · Healer', faceLabel: 'Restoration' }],
+    });
+    expect(body).toMatch(/class="sel-label"[^>]*>Restoration</);
+    expect(body).toMatch(/<option value="eu"[^>]*>Restoration · Healer<\/option>/);
+  });
+
   it('takes the three sizes', () => {
     expect(select()).toContain('data-size="default"');
     expect(select({ size: 'compact' })).toContain('data-size="compact"');

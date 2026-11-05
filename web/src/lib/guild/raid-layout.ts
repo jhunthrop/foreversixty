@@ -4,21 +4,22 @@
 // pre-review and review rounds), so the swap from reserve to content moves nothing. Tiny on purpose:
 // GuildShell's entry chunk imports it.
 
-/** The raid head, ready (no band padding since site alignment D1: 38 px less on a phone, 60 from md): back link, eyebrow, title, when, count and tabs, for a member. */
-export const RAID_BAND_MIN = 'min-h-[309px] md:min-h-[251px]';
+/** The raid head, ready (no band padding since site alignment D1: 38 px less on a phone, 60 from md): back link, eyebrow, title, when, count, class row and tabs, for a member. The class row (raid comp spec 3.1 line 6) adds 8 + 24 from md and 8 + two 24 px rows with a 6 px gap on a phone (62). */
+export const RAID_BAND_MIN = 'min-h-[371px] md:min-h-[283px]';
 
 /** The band's lines 3–5 while the raid loads (h1, the when line and the count line with the gaps
- *  between them): the back link, eyebrow and tabs around them are drawn for real. */
-export const RAID_BAND_LINES_MIN = 'min-h-[163px] md:min-h-[105px]';
+ *  between them, then the class row: 32 from md, 62 on a phone): the back link, eyebrow and tabs
+ *  around them are drawn for real. */
+export const RAID_BAND_LINES_MIN = 'min-h-[225px] md:min-h-[137px]';
 
 /** An officer's band also holds the officer row: on phone two wrapped rows of buttons under the
  *  count (12 + 96), from md the row on the eyebrow line, 22 px taller than the eyebrow alone. */
 export const RAID_BAND_OFFICER = 'pb-[108px] md:pb-[22px]';
 
-/** The sign-up strip, ready: panel padding and sub-head, then each row (183 / 101 px for the
+/** The sign-up strip, ready: panel padding and sub-head, then each row (179 / 101 px for the
  *  first, one px less for each later row, which loses its top divider). */
 export const RAID_STRIP_RESERVE =
-  'h-[calc(62px+var(--strip-rows)*182px)] md:h-[calc(70px+var(--strip-rows)*100px)]';
+  'h-[calc(62px+var(--strip-rows)*226px)] md:h-[calc(70px+var(--strip-rows)*100px)]';
 
 /** The Raids tab's planned block, ready: the tab's header row and the `PLANNED n` sub-head (62 px),
  *  then each planned row: 71 desktop (the date block sets it); on phone the mean of the fixture's
@@ -57,3 +58,7 @@ export const GUILD_BANDLESS_TOP = 'md:pt-7';
 /** A guild view is at least one screen tall from its first paint, so the footer starts below the
  *  fold and never jumps when the view under it grows (phone content starts at 72 px, desktop at 81). */
 export const GUILD_VIEW_MIN = 'min-h-[calc(100svh-72px)] md:min-h-[calc(100svh-81px)]';
+
+/** The `md` breakpoint as a media query (Svelte's MediaQuery form): from here the sign-up row's
+ *  spec select shows the role on its face (raid comp spec 3.2). */
+export const RAID_WIDE_QUERY = 'min-width: 768px';

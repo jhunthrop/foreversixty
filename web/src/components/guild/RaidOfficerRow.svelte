@@ -9,7 +9,8 @@
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
-  import { cancelActionOf, copyList, kindOf, raidCopy } from '../../lib/guild/raid-copy';
+  import { cancelActionOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
+  import { signupListText } from '../../lib/guild/raid-comp';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
   import { RAID_BUTTON as BUTTON } from '../../lib/guild/raid-buttons';
   import type { RaidStatusAction } from '../../lib/guild/raids-api';
@@ -89,7 +90,7 @@
   }
 
   async function copy(): Promise<void> {
-    const text = copyList(raid, guildTimezone);
+    const text = signupListText(raid, guildTimezone);
     try {
       await writeClipboard(text);
       copyFailed = null;

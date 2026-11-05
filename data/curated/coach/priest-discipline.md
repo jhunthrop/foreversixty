@@ -29,8 +29,8 @@ This is the best Discipline Priest on Forever. Discipline heals the tank with Pe
 - Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
 - Prayer of Healing from thirty, when three or more in a group are hurt.
 - Greater Heal at the top rank as the tank's filler at sixty: he takes the big hits, so the big heal goes on him.
-- Heal on the tank until you learn Greater Heal at forty: it is your biggest heal until then.
-- Lesser Heal is the party's small top-up for little mana before forty.
+- Heal rank one on the tank through thirty-five and rank three from thirty-six, until you learn Greater Heal at forty: rank one keeps your whole healing bonus until thirty-three and heals the most for its mana, and rank four costs more mana than its extra healing is worth.
+- Lesser Heal rank three on the tank until you learn Heal at sixteen: your shield and Renew alone will not keep him up.
 - Inner Focus on your most expensive heal, from forty a Greater Heal. Its crit leaves the biggest Divine Aegis you can make. It makes the spell free and adds twenty-five percent crit chance.
 - Dark Sacrifice if you are Undead, once your mana is down enough.
 

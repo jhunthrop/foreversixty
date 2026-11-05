@@ -88,6 +88,15 @@ export function fixtureGuildPaths(): { params: { path: string } }[] {
 // nothing failing.
 export const FIXTURE_SIM_ID = 'simfixtureab';
 
+/**
+ * The saved run in the new shape (web/src/fixtures/sim/result-full.json, spec
+ * 2026-11-04-sim-results 11.2): what the result page's captures and e2e read beside the older
+ * shape above. Same rule: it never ships in a real build.
+ */
+export const FIXTURE_FULL_SIM_ID = 'simfullfixt1';
+
 export function fixtureSimPaths(): { params: { id: string } }[] {
-  return process.env.FOREVER_DATA === 'fixture' ? [{ params: { id: FIXTURE_SIM_ID } }] : [];
+  return process.env.FOREVER_DATA === 'fixture'
+    ? [{ params: { id: FIXTURE_SIM_ID } }, { params: { id: FIXTURE_FULL_SIM_ID } }]
+    : [];
 }

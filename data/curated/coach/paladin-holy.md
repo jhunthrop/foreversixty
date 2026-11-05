@@ -26,6 +26,7 @@ This is the best Holy Paladin on Forever. Holy heals the tank: Oath of Light on 
 - Divine Favor from twenty-one, then Holy Light, when the tank drops below forty percent.
 - Holy Light on the tank below seventy percent, and Holy Shock on anyone below seventy percent, but only with mana to spare: keep your mana percent no more than five points under the percent of the fight left.
 - Flash of Light from twenty is your staple, on the tank below ninety percent. Everyone else gets it below eighty percent. When your mana falls behind the fight, heal with it alone until you catch up.
+- In a raid, Blessing of Wisdom, Mana Spring and the raid's Intellect buffs pay for the bigger heal.
 - Holy Shock from thirty-two, only while your mana is keeping pace with the fight.
 - Light's Vigil from forty, only for a fight where your whole party takes big damage at once. On an ordinary boss its mana goes to the tank.
 - Voice of Truth makes you immune to silences and interrupts for six seconds, every three minutes: save it for the caster pack or boss that would lock you out.

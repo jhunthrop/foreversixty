@@ -25,7 +25,7 @@ This is the best Assassination Rogue on Forever. Assassination is the Forever ro
 - Ambush hits harder on paper, but it lands into unshredded armor and gets none of Lethality's bonus.
 - Cheap Shot is for trash only: bosses are immune to stuns.
 - Shank on cooldown. It cannot miss, pays back more energy than it costs and, with Venom, adds thirty percent to your poison damage on top of Vile Poisons and makes them land more often for six seconds.
-- At four or more combo points, Slice and Dice first if it is down or about to fall off.
+- At four or more combo points, Slice and Dice first if it is down or about to fall off, and a three-point Slice and Dice once it has dropped: with Improved Slice and Dice even three points keep it up for over twenty seconds.
 - Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter. It lasts six seconds longer, and its ticks can crit in Forever.
 - Cold Blood from thirty-one, at four or more combo points, right before the Eviscerate.
 - Eviscerate at four or more combo points.

@@ -45,6 +45,15 @@ export function tabClass(current: boolean, disabled: boolean): string {
   return `${TAB_STRIP.tab} ${state}`;
 }
 
+/** The section-nav tab (saved sim spec 2026-11-04 §3.4): the same underline in sentence case, 48 px. */
+export function sectionTabClass(current: boolean): string {
+  return (
+    'inline-flex h-12 shrink-0 items-center border-b-2 px-3 text-[14px] font-semibold whitespace-nowrap ' +
+    'transition-colors duration-[120ms] motion-reduce:transition-none focus-visible:outline-2 ' +
+    `focus-visible:-outline-offset-2 focus-visible:outline-gold ${current ? TAB_STRIP.active : TAB_STRIP.idle}`
+  );
+}
+
 /**
  * The tab a key moves to (WAI-ARIA tabs pattern): ArrowRight/ArrowLeft step and wrap, Home and End
  * jump to the ends; a disabled tab is skipped. Null for any other key, or when no tab is enabled.

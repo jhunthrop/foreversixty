@@ -29,7 +29,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 355
     permissions:
       contents: write
       actions: write
@@ -179,7 +179,7 @@ jobs:
             echo "nothing to commit"
           else
             for attempt in 1 2 3 4 5; do
-              if git pull --rebase --autostash origin main; then
+              if git pull --rebase --autostash origin "$GITHUB_REF_NAME"; then
                 git push && break
               elif [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; then
                 # The rebase stopped on one of THIS commit's own generated files
@@ -220,7 +220,7 @@ jobs:
           # does not re-rank the next night. The manifest only digests the build's other
           # files, which the hash already reads.
           hash=$( {
-            git rev-parse HEAD:sim HEAD:data/curated HEAD:web/src/data/active-build.json HEAD:Makefile HEAD:.github/workflows/bis.yml
+            git rev-parse HEAD:sim HEAD:data/curated HEAD:web/src/data/active-build.json HEAD:Makefile HEAD:.github/workflows/bis.yml HEAD:web/src/content/guides
             git ls-tree -r HEAD "data/builds/$BUILD" | grep -vE "/bis/|addon-data\.json|dps-per-point\.|/manifest\.json$"
           } | sha256sum | cut -c1-16)
           last=$(git log -1 --format=%B -- "data/builds/$BUILD/bis" | sed -n 's/^Inputs: //p' | head -1)
@@ -254,8 +254,22 @@ jobs:
       # future spec count regresses the budget.
       - name: rank leveling BiS for every written spec
         if: steps.inputs.outputs.skip != 'true'
+        # Under the job's own timeout, so a slow night fails this step and the
+        # artifact step below still runs (a job-level timeout kills everything).
+        timeout-minutes: 250
         run: make bis
         env: { BIS_ARGS: '-all -weights-iterations 200' }
+      # bis-push lane, 2026-11-05: three rankings were lost overnight (two
+      # rejected pushes, one timeout) with nothing kept. Whatever the ranker
+      # finished is uploaded on every exit, before any commit can fail.
+      - name: keep tonight's picks as an artifact
+        if: always() && steps.inputs.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: bis-picks-${{ github.run_id }}
+          path: data/builds/${{ steps.identity.outputs.build }}/bis
+          retention-days: 14
+          if-no-files-found: warn
       # night-bis-sanity lane, 2026-09-29: the published files are checked
       # for the defects the class audits found by eye (an item above the
       # band, the other side's rep, a two-hander with an off hand, one ring
@@ -329,7 +343,7 @@ jobs:
             # --autostash: the build leaves tracked files dirty (the engine
             # replace in sim/go.mod, regenerated embeds) and a plain rebase
             # refuses to run with unstaged changes.
-            if git pull --rebase --autostash origin main; then
+            if git pull --rebase --autostash origin "$GITHUB_REF_NAME"; then
               git push && exit 0
             elif [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; then
               # The rebase stopped on one of THIS commit's own generated files

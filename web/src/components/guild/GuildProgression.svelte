@@ -9,10 +9,12 @@
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { progressionNightDay } from '../../lib/guild/overview-view';
   import { firstKillLine, progressionEmpty } from '../../lib/guild/progression-view';
+  import { outputFigure, topOutputLabel } from '../../lib/guild/output-figure';
   import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
   import { executionLabel, executionTitle } from '../../lib/sim/execution';
+  import Card from '../ui/Card.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
 
   /** `rosterBest` is v1's own "Roster bests" feature (`GET .../<guild>`'s existing,
@@ -37,13 +39,16 @@
    *  behind it (id 0, no name), which reads as a second row of dashes and is not a boss. */
   const encounterBests = $derived(rosterBest.filter((row) => row.encounter_id > 0 && row.encounter !== ''));
 
-  /** The tank, healer and damage bests that exist, in that order. */
-  function bestParses(best: {
+  /** The tank, healer and damage bests that exist, in that order, each with its role. */
+  function bestByRole(best: {
     tank?: GuildParseRef;
     healer?: GuildParseRef;
     dps?: GuildParseRef;
-  }): GuildParseRef[] {
-    return [best.tank, best.healer, best.dps].filter((parse): parse is GuildParseRef => parse !== undefined);
+  }): { role: string; parse: GuildParseRef }[] {
+    return (['tank', 'healer', 'dps'] as const).flatMap((role) => {
+      const parse = best[role];
+      return parse === undefined ? [] : [{ role, parse }];
+    });
   }
 
   const clock = minuteClock(() => fixedNow);
@@ -54,13 +59,19 @@
 </script>
 
 <section class="flex flex-col gap-6" data-testid="guild-progression-tab">
-  <h2 class="section-title">Progression</h2>
-  {#if progression === null}
-    <EmptyState message="No pulls recorded yet." testid="guild-progression-empty" />
-  {:else if progression.tier.pulls_total === 0}
-    {@const empty = progressionEmpty(now)}
-    <EmptyState message={empty.message} action={empty.action} testid="guild-progression-empty" />
+  {#if progression === null || progression.tier.pulls_total === 0}
+    <!-- Zero pulls: the tab's one region is a card holding the shared empty state, as Loot's is,
+         never a bare line in empty space (guild round 2). -->
+    <Card glyph="trophy" title="Progression" testid="guild-progression-empty-card">
+      {#if progression === null}
+        <EmptyState message="No pulls recorded yet." testid="guild-progression-empty" />
+      {:else}
+        {@const empty = progressionEmpty(now)}
+        <EmptyState message={empty.message} action={empty.action} testid="guild-progression-empty" />
+      {/if}
+    </Card>
   {:else}
+    <h2 class="section-title">Progression</h2>
     {@const tier = progression.tier}
     <div class="flex flex-col gap-2" data-testid="guild-progression-tier">
       <div class="text-muted flex justify-between text-[13px]">
@@ -118,15 +129,16 @@
         <p class="text-[13px]" data-testid="guild-progression-deaths">
           Deaths per pull: {encounter.deaths_per_pull.toFixed(1)} on average.
         </p>
-        {#if bestParses(encounter.best_by_role).length > 0}
+        {#if bestByRole(encounter.best_by_role).length > 0}
+          <!-- Raw output, never called a parse (a percentile to a Classic player): `Top HPS`
+               per role, the figure written as the Raids tab and the roster write it. -->
           <p class="text-[13px]" data-testid="guild-progression-best-parse">
-            Guild best parse:
-            {#each bestParses(encounter.best_by_role) as parse, index (index)}
+            {#each bestByRole(encounter.best_by_role) as { role, parse }, index (role)}
               {#if index > 0}<span class="hidden md:inline" aria-hidden="true">&nbsp;·&nbsp;</span>{/if}
               <span class="block md:inline">
+                <span class="text-muted">{topOutputLabel(parse.metric, role)}</span>
                 <span style={`color:${classColorVar(parse.class)};font-weight:600`}>{parse.name}</span>
-                {parse.value.toFixed(1)}
-                {parse.metric.toUpperCase()}
+                <span class="numeric">{outputFigure(parse.value)}</span>
               </span>
             {/each}
           </p>

@@ -38,6 +38,16 @@ function sameSpell(a: StepLine, b: StepLine): boolean {
   return a.name === b.name && a.rank === b.rank;
 }
 
+/** Whether `line` continues `run`: the same spell and rank, and no note of its own that says
+ *  something else. A step with a different note is another rule of the same spell (Holy
+ *  paladin's "on the tank below 40%" and "with mana to spare, below 70% as well"), and merged
+ *  into one row the card printed only the first. */
+function continuesRun(run: readonly StepLine[], line: StepLine): boolean {
+  if (!sameSpell(run[0], line)) return false;
+  const note = run.find((step) => step.condition !== '')?.condition;
+  return line.condition === '' || note === undefined || line.condition === note;
+}
+
 function distinctNotes(run: readonly StepLine[]): string[] {
   const notes = run.map((line) => line.condition).filter((note) => note !== '');
   return [...new Set(notes)];
@@ -66,7 +76,8 @@ function collapseRun(run: readonly StepLine[]): CollapsedLine {
   };
 }
 
-/** One row per run of consecutive steps that cast the same spell at the same rank. With
+/** One row per run of consecutive steps that cast the same spell at the same rank and say the
+ *  same note (or none). With
  *  `keep` (a card for one build: `buildRunsGates`), the steps that build does not make go
  *  first, so a run of one spell split by build (Arcane's raid and leveling Frostbolt) reads
  *  only the build's own step. */
@@ -77,7 +88,7 @@ export function collapseRuns(
   const runs: StepLine[][] = [];
   for (const line of lines.filter((step) => keep(step.gates))) {
     const current = runs[runs.length - 1];
-    if (current !== undefined && sameSpell(current[0], line)) current.push(line);
+    if (current !== undefined && continuesRun(current, line)) current.push(line);
     else runs.push([line]);
   }
   return foldVariants(runs.map(collapseRun));

@@ -291,6 +291,7 @@ def _write_live_tree(talents_dir: Path, talents: list[dict], tree: str = "Fire")
             "name": t["name"],
             "spell_id": t.get("spell_id", 0),
             "ranks": [{"spell_id": t.get("spell_id", 0)}],
+            **({"tier": t["tier"]} if "tier" in t else {}),
         }
         for t in talents
     ]
@@ -610,3 +611,30 @@ def test_abilities_the_client_removed_are_not_trainable(slug, name, spell_id):
         if t["name"] == name or any(r["id"] == spell_id for r in t["ranks"])
     ]
     assert listed == [], [(t["name"], t["source"]) for t in listed]
+
+
+def test_a_talent_taught_rank_is_learned_when_its_talent_can_first_be_taken(raw, tmp_path):
+    """Sim round 22 platform (shaman X2): the client gives Stormstrike 17364 its spell level
+    40, but it is a tier-3 talent a shaman takes at 25 (tier t opens at 10 + 5t). A rank the
+    talent teaches is learned at its tier's level, and a trainer rank above it no earlier."""
+    early = mage_with_tree(
+        raw,
+        _write_live_tree(
+            tmp_path / "early", [{"name": "Frostfire Bolt", "spell_id": FROSTFIRE_1, "tier": 3}]
+        ),
+    )
+    assert [(r.id, r.level) for r in early["Frostfire Bolt"].ranks] == [
+        (FROSTFIRE_1, 25),
+        (FROSTFIRE_2, 50),
+    ]
+    late = mage_with_tree(
+        raw,
+        _write_live_tree(
+            tmp_path / "late", [{"name": "Frostfire Bolt", "spell_id": FROSTFIRE_1, "tier": 9}]
+        ),
+    )
+    assert [(r.id, r.level) for r in late["Frostfire Bolt"].ranks] == [
+        (FROSTFIRE_1, 55),
+        (FROSTFIRE_2, 55),
+    ]
+    assert [r.level for r in early["Frostbolt"].ranks] == [r.level for r in late["Frostbolt"].ranks]

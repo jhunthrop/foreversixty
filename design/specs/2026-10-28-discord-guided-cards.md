@@ -216,8 +216,8 @@ Discord strings live in a new copy struct `guideCopy` (`api/internal/discordbot/
 | `card.failure` | `Could not load that. Try again.` (the bot spec's `Any failure`, shared) |
 | `card.footer.window` | `Forever Sixty · Picks work for 15 minutes.` (only if capture D13 shows Discord refusing older presses) |
 | `spec.title` | `Which spec tonight?` |
-| `spec.lead` | `The pick signs **{Name}** up as {State} for {Title}, {Date}, and is kept for the next raid.` |
-| `spec.lead.change` | `The pick changes the spec **{Name}** brings to {Title}, {Date}, and is kept for the next raid.` |
+| `spec.lead` | `The pick signs **{Name}** up as {State} for {Title}, {Date}.` |
+| `spec.lead.change` | `The pick changes the spec **{Name}** brings to {Title}, {Date}.` |
 | `spec.placeholder` | `Choose a spec` (shared with `bis.placeholder.spec`) |
 | `spec.kept` | ` {Spec} is kept for {Name}.` (appended to the outcome sentence; alone, without the leading space) |
 | `spec.change` | `Change spec` |
@@ -505,7 +505,7 @@ Reference: the same question as the Discord card, on the surface the member is a
 | Control | One select: label `spec.title` (`Which spec tonight?`), placeholder `spec.placeholder` (`Choose a spec`), options the class's specs by full name (`spec.option`) in catalogue order. A native select cannot draw an icon per option, so the chosen spec's own icon (`/data/{build}/icons/{icon}.webp`, 20 px, in a reserved box, no missing-icon flash) sits beside the control. With a saved spec the control collapses to a 44 px text button `{Spec} · Change spec` (`aria-expanded`) that reveals the select (the saved spec chosen) and the `spec.lead.change` line; a pick collapses it and returns focus to the button. |
 | Copy | The Discord card's keys, verbatim: `spec.title`, `spec.lead` (`spec.lead.change` with a saved spec), `spec.placeholder`, `spec.kept`, `spec.change`. No new strings. |
 | Save | One write path with the Discord card: `guild_characters.raid_spec` after the character is re-checked as the member's, then the sign-up with that spec's role. The pick commits the sign-up, as on the card; there is no separate save button. |
-| Pending press | In, Late or Bench pressed with no saved spec saves nothing: the segment reads pending (dashed outline, `aria-busy`, not checked) until the pick. Escape, or 60 s out of focus, drops it; a reload shows the row unsigned. An unsigned row reserves the block's height (116 px at 360, 100 px from md, 52 px with a saved spec) so the press shifts nothing below it. |
+| Pending press | In, Late or Bench pressed with no saved spec saves nothing: the segment reads pending (dashed outline, `aria-busy`, not checked) until the pick. Escape, or 60 s out of focus, drops it; a reload shows the row unsigned. An unsigned row reserves the block's height (116 px at 360, 100 px from md, 52 px with a saved spec) so the press shifts nothing below it. On a raid only: a run or event page's card shrinks to fit its row, and the block opens under the row on a press (amended 2026-11-05, guild round 2; round 1 left about 140 px empty on paid-gm-dungeon and paid-officer-event). |
 | States | Default: closed select. Hover, focus-visible and active as the site's select. Disabled while saving. Error: `That did not save. Try again.` under the select; the sign-up is not made. Keyboard: native select, arrow keys and Enter; touch: the native picker. 44 px tall at 360. |
 | Unlinked members | Unchanged: the link nudge (`pressCopy.NotLinked` and `Link Discord`); no spec ask until linked. |
 | Roster | The next edit of the post draws the line with the new spec's icon. |

@@ -79,7 +79,7 @@ Weapon and hand words keep the client's casing in sentences: `Main Hand`, `Off H
 | Attendance | 13 px muted `{3} of {4} raid nights` (`1 of 1 raid night` singular). Hidden, cell and header both, while the guild has fewer than 1 counted raid night (`attendance.nights === 0` for every row). |
 | Action | Officer: `Award` (today's control and gate). Member: nothing. |
 
-**Two tiers, visibly two.** Tier-0 rows come first. When an item has tier-1 rows, a 12 px muted sub-label sits above the first one: `Ranked by item level only. Not on their best-in-slot list.` (one line, wraps on phone). Tier-1 rows never sit above a tier-0 row. Both tiers sort as today.
+**Two tiers, visibly two.** Tier-0 rows come first. When an item has tier-1 rows, a 12 px muted sub-label sits above the first one. The first card on the tab that shows a tier-1 row says it in full, `Ranked by item level only. Not on their best-in-slot list.` (one line, wraps on phone); every later card's tier-1 group reads the short `Item level only`, so the sentence is read once per tab, not once per card (amended 2026-11-05, guild round 2). Tier-1 rows never sit above a tier-0 row. Both tiers sort as today.
 
 **Row states.** Hover (fine pointer): `--row-hover`. The viewer's row: the own-row wash `rgba(229,185,85,.06)` at rest. Awarded: today's winner row and `Awarded to {name}` lines. Focus: the item links and `Award` carry the 2 px gold ring.
 
@@ -136,7 +136,7 @@ Before the first kill the list still shows (a council plans ahead), and the boss
 |---|---|
 | Slot eyebrows | `HEAD · CLOTH`, `HEAD · LEATHER`, `HEAD · MAIL`, `HEAD · PLATE`, `TRINKET`, `HELD IN OFF-HAND`, `ONE-HAND · AXE`, `ONE-HAND · SWORD`, `BACK`, `NECK`, `FINGER` |
 | Candidate | `Replaces `, `Empty slot`, `+{g} DPS`, `+{g} HPS`, `+{g} TPS`, `On their BiS list`, `+{n} item levels`, `{p} of {n} raid nights`, `1 of 1 raid night`, `(you)` |
-| Tier-1 label | `Ranked by item level only. Not on their best-in-slot list.` |
+| Tier-1 label | `Ranked by item level only. Not on their best-in-slot list.` (first card); `Item level only` (later cards) |
 | More rows | `Show {n} more` |
 | Footnote | `Candidates are characters who can wear the item at their level. Each is ranked by how much it adds over what they wear now. A drop stays open until an officer awards it.` |
 | Collapsed line | `{n} more drops nobody here ranks for` (`1 more drop nobody here ranks for`) |
@@ -156,7 +156,7 @@ Deleted: `No one on the roster can use this.`, `Gain here is item level. The sim
 
 ## 7. Phone and desktop
 
-- Below 768 a candidate row stacks: line 1 crest, name, gain right-aligned; line 2 `Replaces {item}`; line 3 attendance (when shown) and `Award` right (44 px). Max 120 px a row.
+- Below 768 a candidate row stacks: line 1 crest, name, gain right-aligned; line 2 `Replaces {item}`; line 3 attendance (when shown) and `Award` right (44 px). Max 120 px a row: 6 px top and bottom padding and no gap between the lines below 768 (round 1 measured 128 px at 8 px padding and a 4 px line gap; amended 2026-11-05, guild round 2).
 - Never collapses: the item name and icon, the eyebrow, each candidate's name and gain, the tier-1 label, `Award`.
 - 2000 px: the centred 1344 px column; item cards are full column width.
 

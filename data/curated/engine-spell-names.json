@@ -13,6 +13,10 @@
       "name": "Windfury Totem",
       "engine": "sim/shaman/air_totems.go WindfuryBuffAuraId: the buff each Windfury Totem rank puts on the party"
     },
+    "11722": {
+      "name": "Curse of the Elements",
+      "engine": "sim/core/debuffs.go CurseOfElementsAura: the raid debuff, on an Era id the client carries no row for (the client's rows include 11723 and 11724)"
+    },
     "12577": {
       "name": "Clearcasting",
       "engine": "sim/mage/talents.go: the Arcane Concentration proc"
@@ -145,10 +149,6 @@
       "name": "Holy Shield",
       "engine": "sim/paladin/holy_shield.go procID: the damage of Holy Shield ranks 1 to 3"
     },
-    "27179": {
-      "name": "Holy Shield",
-      "engine": "sim/paladin/holy_shield.go procID: the damage of Holy Shield rank 4 (1239570, client 1.60.1.70753)"
-    },
     "22817": {
       "name": "Fengus' Ferocity",
       "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
@@ -205,6 +205,10 @@
       "name": "Spirit of Zandalar",
       "engine": "sim/core/buffs.go: a world buff no class spellbook owns (Sayge's Dark Fortune reports the variant it rolled)"
     },
+    "27179": {
+      "name": "Holy Shield",
+      "engine": "sim/paladin/holy_shield.go procID: the damage of Holy Shield rank 4 (1239570, client 1.60.1.70753)"
+    },
     "29177": {
       "name": "Elemental Devastation",
       "engine": "sim/shaman/talents.go: ranks 2 and 3 of the proc"
@@ -228,6 +232,10 @@
     "1000101": {
       "name": "Eureka!",
       "engine": "sim/core/racials.go: a racial no class spellbook owns"
+    },
+    "1249110": {
+      "name": "Frozen Heart of the Mountain",
+      "engine": "sim/common/item_effects.go FrozenHeartOfTheMountain: the trinket's use spell; the client names the spell Chthonic Power, and a player knows it as the trinket they clicked"
     },
     "1311648": {
       "name": "Seal of Fury",

@@ -4770,6 +4770,40 @@ public struct RaceInfo: Codable, Sendable, Equatable {
     }
 }
 
+public struct RaidAlsoSignup: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    public let spec: String
+    public let specKey: String?
+    public let state: String
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        spec: String,
+        specKey: String? = nil,
+        state: String
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.spec = spec
+        self.specKey = specKey
+        self.state = state
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case spec
+        case specKey
+        case state
+    }
+}
+
 public struct RaidAttendanceRow: Codable, Sendable, Equatable {
     public let characterKey: String
     public let name: String
@@ -4940,7 +4974,7 @@ public struct RaidComposition: Codable, Sendable, Equatable {
     }
 }
 
-/// Sign-up counts; the role counts count in only.
+/// Sign-up counts; the role counts count in only. melee plus ranged is dps, split by the same group as each row's group (Go raidspec.Group), so the page and the Discord post agree.
 public struct RaidCounts: Codable, Sendable, Equatable {
     public let signedIn: Int
     public let late: Int
@@ -4948,7 +4982,12 @@ public struct RaidCounts: Codable, Sendable, Equatable {
     public let signedOut: Int?
     public let tanks: Int
     public let healers: Int
+    /// Kept for the readiness page and older clients; melee plus ranged.
     public let dps: Int
+    public let melee: Int
+    public let ranged: Int
+    /// In plus Late by class slug, one key per class among signups and not_signed (zeros included), so the figures sum to in plus late. On a raid view only, not on the band's next_raid.
+    public let classes: [String: Int]?
 
     public init(
         signedIn: Int,
@@ -4957,7 +4996,10 @@ public struct RaidCounts: Codable, Sendable, Equatable {
         signedOut: Int? = nil,
         tanks: Int,
         healers: Int,
-        dps: Int
+        dps: Int,
+        melee: Int,
+        ranged: Int,
+        classes: [String: Int]? = nil
     ) {
         self.signedIn = signedIn
         self.late = late
@@ -4966,6 +5008,9 @@ public struct RaidCounts: Codable, Sendable, Equatable {
         self.tanks = tanks
         self.healers = healers
         self.dps = dps
+        self.melee = melee
+        self.ranged = ranged
+        self.classes = classes
     }
 
     enum CodingKeys: String, CodingKey {
@@ -4976,6 +5021,9 @@ public struct RaidCounts: Codable, Sendable, Equatable {
         case tanks
         case healers
         case dps
+        case melee
+        case ranged
+        case classes
     }
 }
 
@@ -5277,7 +5325,8 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
     public let fights: [RaidNightFight]
     public let present: [RaidCharacter]
     public let raidId: Int64?
-    public let topParse: RaidTopParse?
+    public let topHps: RaidTopParse?
+    public let topDps: RaidTopParse?
 
     public init(
         id: String,
@@ -5293,7 +5342,8 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
         fights: [RaidNightFight] = [],
         present: [RaidCharacter] = [],
         raidId: Int64? = nil,
-        topParse: RaidTopParse? = nil
+        topHps: RaidTopParse? = nil,
+        topDps: RaidTopParse? = nil
     ) {
         self.id = id
         self.title = title
@@ -5308,7 +5358,8 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
         self.fights = fights
         self.present = present
         self.raidId = raidId
-        self.topParse = topParse
+        self.topHps = topHps
+        self.topDps = topDps
     }
 
     public init(from decoder: any Decoder) throws {
@@ -5326,7 +5377,8 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
         fights = try c.decodeIfPresent([RaidNightFight].self, forKey: .fights) ?? []
         present = try c.decodeIfPresent([RaidCharacter].self, forKey: .present) ?? []
         raidId = try c.decodeIfPresent(Int64.self, forKey: .raidId)
-        topParse = try c.decodeIfPresent(RaidTopParse.self, forKey: .topParse)
+        topHps = try c.decodeIfPresent(RaidTopParse.self, forKey: .topHps)
+        topDps = try c.decodeIfPresent(RaidTopParse.self, forKey: .topDps)
     }
 }
 
@@ -5401,6 +5453,9 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
     public let name: String
     public let className: String
     public let spec: String
+    public let group: String
+    /// The specs.json key of the spec; null when it does not resolve.
+    public let specKey: String?
     /// The spec's role, for an officer's Add. Lane F4 contract, handler pending.
     public let role: String?
     /// The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending.
@@ -5413,6 +5468,8 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
         name: String,
         className: String,
         spec: String,
+        group: String,
+        specKey: String? = nil,
         role: String? = nil,
         specName: String? = nil,
         specIcon: String? = nil
@@ -5421,6 +5478,8 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
         self.name = name
         self.className = className
         self.spec = spec
+        self.group = group
+        self.specKey = specKey
         self.role = role
         self.specName = specName
         self.specIcon = specIcon
@@ -5431,6 +5490,8 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
         case name
         case className = "class"
         case spec
+        case group
+        case specKey
         case role
         case specName
         case specIcon
@@ -5514,6 +5575,11 @@ public struct RaidSignup: Codable, Sendable, Equatable {
     public let state: String
     public let note: String
     public let own: Bool
+    public let group: String
+    /// The specs.json key of the spec, e.g. "hunter-beast-mastery"; null when it does not resolve.
+    public let specKey: String?
+    /// The account's other answered characters, best place first. The row is the account's best place (In, Late, Bench, Out); these show under it as an Also line and count nowhere.
+    public let also: [RaidAlsoSignup]
     /// The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending.
     public let specName: String?
     /// The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending.
@@ -5528,6 +5594,9 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         state: String,
         note: String,
         own: Bool,
+        group: String,
+        specKey: String? = nil,
+        also: [RaidAlsoSignup] = [],
         specName: String? = nil,
         specIcon: String? = nil
     ) {
@@ -5539,6 +5608,9 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         self.state = state
         self.note = note
         self.own = own
+        self.group = group
+        self.specKey = specKey
+        self.also = also
         self.specName = specName
         self.specIcon = specIcon
     }
@@ -5552,8 +5624,28 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         case state
         case note
         case own
+        case group
+        case specKey
+        case also
         case specName
         case specIcon
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        characterKey = try c.decode(String.self, forKey: .characterKey)
+        name = try c.decode(String.self, forKey: .name)
+        className = try c.decode(String.self, forKey: .className)
+        spec = try c.decode(String.self, forKey: .spec)
+        role = try c.decode(String.self, forKey: .role)
+        state = try c.decode(String.self, forKey: .state)
+        note = try c.decode(String.self, forKey: .note)
+        own = try c.decode(Bool.self, forKey: .own)
+        group = try c.decode(String.self, forKey: .group)
+        specKey = try c.decodeIfPresent(String.self, forKey: .specKey)
+        also = try c.decodeIfPresent([RaidAlsoSignup].self, forKey: .also) ?? []
+        specName = try c.decodeIfPresent(String.self, forKey: .specName)
+        specIcon = try c.decodeIfPresent(String.self, forKey: .specIcon)
     }
 }
 
@@ -5578,6 +5670,7 @@ public struct RaidSpecOption: Codable, Sendable, Equatable {
     }
 }
 
+/// A night's Top HPS (healers, top_hps) or Top DPS (the DPS role, top_dps): the best figure on a boss kill, by the rule Progression's bests read. Left out when the night has none.
 public struct RaidTopParse: Codable, Sendable, Equatable {
     public let name: String
     public let className: String
@@ -5746,7 +5839,7 @@ public struct RaidViewer: Codable, Sendable, Equatable {
     }
 }
 
-/// One of your characters in the guild. When raid_spec is null, ask "Which spec tonight?".
+/// One of your characters in the guild. The spec picker starts on default_spec, and a sign-up with no spec picked waits for one.
 public struct RaidViewerCharacter: Codable, Sendable, Equatable {
     public let characterKey: String
     public let name: String
@@ -5756,11 +5849,15 @@ public struct RaidViewerCharacter: Codable, Sendable, Equatable {
     public let state: String?
     public let role: String
     public let raidSpec: String?
+    /// The specs.json key of spec; null when it does not resolve.
+    public let specKey: String?
+    /// raid_spec, else spec_key, else null: the spec the picker starts on.
+    public let defaultSpec: String?
     /// The display name of raid_spec, else of spec. Lane F4 contract, handler pending.
     public let specName: String?
     /// The icon stem of raid_spec, else of spec. Lane F4 contract, handler pending.
     public let specIcon: String?
-    /// The class's specs in catalogue order, for "Which spec tonight?" (specs.json filtered by class). Lane F4 contract, handler pending.
+    /// The class's specs in catalogue order, for the spec picker (specs.json filtered by class). Lane F4 contract, handler pending.
     public let specOptions: [RaidSpecOption]?
 
     public init(
@@ -5772,6 +5869,8 @@ public struct RaidViewerCharacter: Codable, Sendable, Equatable {
         state: String? = nil,
         role: String,
         raidSpec: String? = nil,
+        specKey: String? = nil,
+        defaultSpec: String? = nil,
         specName: String? = nil,
         specIcon: String? = nil,
         specOptions: [RaidSpecOption]? = nil
@@ -5784,6 +5883,8 @@ public struct RaidViewerCharacter: Codable, Sendable, Equatable {
         self.state = state
         self.role = role
         self.raidSpec = raidSpec
+        self.specKey = specKey
+        self.defaultSpec = defaultSpec
         self.specName = specName
         self.specIcon = specIcon
         self.specOptions = specOptions
@@ -5798,6 +5899,8 @@ public struct RaidViewerCharacter: Codable, Sendable, Equatable {
         case state
         case role
         case raidSpec
+        case specKey
+        case defaultSpec
         case specName
         case specIcon
         case specOptions

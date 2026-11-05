@@ -78,9 +78,11 @@ export const guidesCopy = {
   cooldowns: 'Cooldowns',
   /** A rotation row for a talent only the raid build takes, or a row that needs one. */
   raidBuildTag: 'Raid build only',
-  /** Said once above the lists when a row carries that tag. */
+  /** Said once above the lists when a row carries that tag. It never says "level 60 build":
+   *  a raider is level 60 too and read the old wording as his own build (round 22 mage
+   *  wow-player SHOULD). */
   raidBuildLegend:
-    'Raid build only: needs a talent the level 60 build does not take. On the level 60 build, skip that row.',
+    'Raid build only: needs a talent only the raid build takes. Not on the raid build? Skip that row.',
   bestInSlot: 'Best in slot',
   levelRange: 'Level range',
   bisCaption: (race: string, faction: string): string => `Picks for a ${race} (${faction}).`,

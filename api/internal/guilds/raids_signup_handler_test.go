@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -65,6 +66,10 @@ func TestRaidViewIsOnePlayerPerAccount(t *testing.T) {
 	}
 	if v.Counts.In != 1 || v.Counts.Bench != 0 || len(v.Signups) != 1 {
 		t.Fatalf("counts = %+v signups = %+v", v.Counts, v.Signups)
+	}
+	// The benched main is not hidden: it rides the row's Also line, counted nowhere (§3.7).
+	if also := v.Signups[0].Also; len(also) != 1 || also[0].CharacterKey != memberKeyA || also[0].State != SignupBench {
+		t.Fatalf("also = %+v, want %s on Bench", also, memberKeyA)
 	}
 	w.as(w.member2)
 	v = w.signup(t, raid.ID, member2Key, `{"state":"out"}`).Raid
@@ -186,8 +191,19 @@ func TestRaidViewShape(t *testing.T) {
 
 	// The member is one player, Late on Sunderfel: their benched Kraggor is no second body.
 	want := RaidCounts{In: 1, Late: 1, Bench: 1, Out: 0, Tanks: 0, Healers: 1, DPS: 0}
-	if v.Counts != want {
-		t.Fatalf("counts = %+v, want %+v", v.Counts, want)
+	classes := v.Counts.Classes
+	got := v.Counts
+	got.Classes = nil
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("counts = %+v, want %+v", got, want)
+	}
+	// The class row adds up to the signed-up figure (spec 2026-11-05 §3.1).
+	sum := 0
+	for _, n := range classes {
+		sum += n
+	}
+	if sum != v.Counts.In+v.Counts.Late {
+		t.Fatalf("classes %v sum %d, want %d", classes, sum, v.Counts.In+v.Counts.Late)
 	}
 	order := []string{}
 	for _, s := range v.Signups {

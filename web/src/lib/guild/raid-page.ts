@@ -3,8 +3,9 @@
 // when the page polls, which state it is in, the band's when and count lines, and the strip's
 // loading reserve kept in localStorage.
 import type { GuildRaidView } from './api';
-import { countLine, countRatio, countdown, guildTimeLabel, roleBreakdown } from './raid-copy';
-import { clockText, offsetsDiffer } from './raid-time';
+import { countLine, countRatio, countdown, yourTimeLine } from './raid-copy';
+import { raidBreakdownLine } from './raid-comp';
+import { clockText, zoneAbbreviation } from './raid-time';
 import { chipStatus, raidEndsAt, type RaidChipStatus } from './planned-row';
 import { RAID_DONE_KEY_PREFIX, RAID_ROWS_KEY } from './reserve-keys';
 
@@ -48,14 +49,19 @@ export function raidPageFlags(raid: GuildRaidView, now: Date): RaidPageFlags {
 }
 
 export interface RaidWhen {
-  /** `Thursday 10 December`, on the viewer's calendar. */
+  /** `Thursday 10 December`, on the guild's calendar. */
   date: string;
+  /** `8:00 pm`, the guild's clock. */
   start: string;
+  /** `11:00 pm CST`: the guild's clock, its zone glued on with a no-break space. */
   end: string;
-  /** `8:00 pm CST guild time`, only when the offsets differ. */
-  guildTime: string | null;
+  /** `9:00 pm EST your time`, only when the offsets differ. */
+  yourTime: string | null;
   countdown: string;
 }
+
+/** Glues the zone to the end time, so a wrap never strands `CST` on its own line. */
+const NO_BREAK_SPACE = '\u00a0';
 
 function longDate(d: Date, tz: string, locale: string): string {
   const parts = new Intl.DateTimeFormat(locale, {
@@ -69,16 +75,17 @@ function longDate(d: Date, tz: string, locale: string): string {
   return `${part('weekday')} ${part('day')} ${part('month')}`;
 }
 
-/** The band's when line (3.2 line 4), in the viewer's zone. */
+/** The band's when line (raid comp spec 3.1 line 4): the guild's date, times and zone first, then
+ *  the viewer's own start when the offsets differ. */
 export function raidWhen(raid: GuildRaidView, now: Date, viewerTz: string, locale: string): RaidWhen {
   const startsAt = new Date(raid.starts_at);
   const endsAt = raidEndsAt(raid);
   const guildTz = raid.guild_timezone ?? viewerTz;
   return {
-    date: longDate(startsAt, viewerTz, locale),
-    start: clockText(startsAt, viewerTz, locale, true),
-    end: clockText(endsAt, viewerTz, locale, true),
-    guildTime: offsetsDiffer(startsAt, viewerTz, guildTz) ? guildTimeLabel(startsAt, guildTz, locale) : null,
+    date: longDate(startsAt, guildTz, locale),
+    start: clockText(startsAt, guildTz, locale, true),
+    end: `${clockText(endsAt, guildTz, locale, true)}${NO_BREAK_SPACE}${zoneAbbreviation(guildTz, startsAt)}`,
+    yourTime: yourTimeLine(startsAt, guildTz, viewerTz, locale),
     countdown: countdown(startsAt, endsAt, now),
   };
 }
@@ -100,7 +107,8 @@ export function raidCount(raid: GuildRaidView): RaidCount {
   return {
     line: countLine(n, size),
     ratio: countRatio(n, size),
-    breakdown: roleBreakdown(raid.counts.tanks, raid.counts.healers, raid.counts.dps, raid.counts.late),
+    // Nobody signed up: no role breakdown after the line (guild round 2).
+    breakdown: n === 0 ? '' : raidBreakdownLine(raid),
     fill: size === null || size <= 0 ? null : Math.min(100, Math.round((n / size) * 100)),
   };
 }

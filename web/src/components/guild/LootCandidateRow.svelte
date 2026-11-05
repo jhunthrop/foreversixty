@@ -1,8 +1,9 @@
 <!-- web/src/components/guild/LootCandidateRow.svelte -->
 <!-- One candidate on a loot card (guild loot spec 2026-11-05 §3.3): who, what the drop replaces, the
      gain, attendance and the officer's action, in that order from 768. Below it the row stacks:
-     crest, name and gain, then Replaces, then attendance and the action. Attendance is left out, cell
-     and column, while the guild has no counted raid night. -->
+     crest, name and gain, then Replaces, then attendance and the action, 120 px at most with the
+     44 px Award (6 px padding, no row gap). Attendance is left out, cell and column, while the guild
+     has no counted raid night. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { GuildLootCandidate } from '../../lib/guild/api';
@@ -45,7 +46,7 @@
 </script>
 
 <div
-  class="border-line-soft hover:bg-row-hover grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 border-t px-5 py-2 {grid} {own
+  class="border-line-soft hover:bg-row-hover grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-0 border-t px-5 py-1.5 md:py-2 {grid} {own
     ? ROW_BAND_OWN
     : ''}"
   data-testid="guild-loot-candidate"

@@ -1063,7 +1063,86 @@
             }
           }
         },
-        "notes": "Heal on the tank until you learn Greater Heal at 40: it is your biggest heal until then."
+        "notes": "Heal rank 1 on the tank through 35 and rank 3 from 36, until you learn Greater Heal at 40: rank 1 keeps your whole healing bonus until 33 and heals the most for its mana, and rank 4 costs more mana than its extra healing is worth."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 2053,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentManaPercent": {}
+                          },
+                          "rhs": {
+                            "math": {
+                              "op": "OpMul",
+                              "lhs": {
+                                "remainingTimePercent": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "0.9"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 5
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.8"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "16"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Lesser Heal rank 3 on the tank until you learn Heal at 16: your shield and Renew alone will not keep him up."
       },
       {
         "action": {
@@ -1123,7 +1202,7 @@
             }
           }
         },
-        "notes": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana."
+        "notes": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana."
       },
       {
         "action": {
@@ -1646,7 +1725,7 @@
             }
           }
         },
-        "notes": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%."
+        "notes": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole."
       },
       {
         "action": {
@@ -1702,6 +1781,57 @@
         "action": {
           "castSpell": {
             "spellId": {
+              "spellId": 2053,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "16"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
               "spellId": 2060,
               "rank": 1
             },
@@ -1729,7 +1859,7 @@
             }
           }
         },
-        "notes": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%."
+        "notes": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too."
       },
       {
         "action": {

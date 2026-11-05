@@ -1781,6 +1781,16 @@ data class RaceInfo(
 )
 
 @Serializable
+data class RaidAlsoSignup(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("spec_key") val specKey: String? = null,
+    @SerialName("state") val state: String,
+)
+
+@Serializable
 data class RaidAttendanceRow(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
@@ -1839,7 +1849,7 @@ data class RaidComposition(
     @SerialName("buffs") val buffs: List<RaidBuff> = emptyList(),
 )
 
-/** Sign-up counts; the role counts count in only. */
+/** Sign-up counts; the role counts count in only. melee plus ranged is dps, split by the same group as each row's group (Go raidspec.Group), so the page and the Discord post agree. */
 @Serializable
 data class RaidCounts(
     @SerialName("in") val signedIn: Int,
@@ -1848,7 +1858,12 @@ data class RaidCounts(
     @SerialName("out") val signedOut: Int? = null,
     @SerialName("tanks") val tanks: Int,
     @SerialName("healers") val healers: Int,
+    /** Kept for the readiness page and older clients; melee plus ranged. */
     @SerialName("dps") val dps: Int,
+    @SerialName("melee") val melee: Int,
+    @SerialName("ranged") val ranged: Int,
+    /** In plus Late by class slug, one key per class among signups and not_signed (zeros included), so the figures sum to in plus late. On a raid view only, not on the band's next_raid. */
+    @SerialName("classes") val classes: Map<String, Int>? = null,
 )
 
 @Serializable
@@ -1979,7 +1994,8 @@ data class RaidNightRow(
     @SerialName("fights") val fights: List<RaidNightFight> = emptyList(),
     @SerialName("present") val present: List<RaidCharacter> = emptyList(),
     @SerialName("raid_id") val raidId: Long? = null,
-    @SerialName("top_parse") val topParse: RaidTopParse? = null,
+    @SerialName("top_hps") val topHps: RaidTopParse? = null,
+    @SerialName("top_dps") val topDps: RaidTopParse? = null,
 )
 
 /** GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when there are none; coach_notes is null without log_coach. */
@@ -2008,6 +2024,9 @@ data class RaidNotSigned(
     @SerialName("name") val name: String,
     @SerialName("class") val className: String,
     @SerialName("spec") val spec: String,
+    @SerialName("group") val group: String,
+    /** The specs.json key of the spec; null when it does not resolve. */
+    @SerialName("spec_key") val specKey: String? = null,
     /** The spec's role, for an officer's Add. Lane F4 contract, handler pending. */
     @SerialName("role") val role: String? = null,
     /** The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending. */
@@ -2055,6 +2074,11 @@ data class RaidSignup(
     @SerialName("state") val state: String,
     @SerialName("note") val note: String,
     @SerialName("own") val own: Boolean,
+    @SerialName("group") val group: String,
+    /** The specs.json key of the spec, e.g. "hunter-beast-mastery"; null when it does not resolve. */
+    @SerialName("spec_key") val specKey: String? = null,
+    /** The account's other answered characters, best place first. The row is the account's best place (In, Late, Bench, Out); these show under it as an Also line and count nowhere. */
+    @SerialName("also") val also: List<RaidAlsoSignup> = emptyList(),
     /** The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending. */
     @SerialName("spec_name") val specName: String? = null,
     /** The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending. */
@@ -2071,6 +2095,7 @@ data class RaidSpecOption(
     @SerialName("icon") val icon: String,
 )
 
+/** A night's Top HPS (healers, top_hps) or Top DPS (the DPS role, top_dps): the best figure on a boss kill, by the rule Progression's bests read. Left out when the night has none. */
 @Serializable
 data class RaidTopParse(
     @SerialName("name") val name: String,
@@ -2123,7 +2148,7 @@ data class RaidViewer(
     @SerialName("raid_night") val raidNight: Boolean? = null,
 )
 
-/** One of your characters in the guild. When raid_spec is null, ask "Which spec tonight?". */
+/** One of your characters in the guild. The spec picker starts on default_spec, and a sign-up with no spec picked waits for one. */
 @Serializable
 data class RaidViewerCharacter(
     @SerialName("character_key") val characterKey: String,
@@ -2134,11 +2159,15 @@ data class RaidViewerCharacter(
     @SerialName("state") val state: String? = null,
     @SerialName("role") val role: String,
     @SerialName("raid_spec") val raidSpec: String? = null,
+    /** The specs.json key of spec; null when it does not resolve. */
+    @SerialName("spec_key") val specKey: String? = null,
+    /** raid_spec, else spec_key, else null: the spec the picker starts on. */
+    @SerialName("default_spec") val defaultSpec: String? = null,
     /** The display name of raid_spec, else of spec. Lane F4 contract, handler pending. */
     @SerialName("spec_name") val specName: String? = null,
     /** The icon stem of raid_spec, else of spec. Lane F4 contract, handler pending. */
     @SerialName("spec_icon") val specIcon: String? = null,
-    /** The class's specs in catalogue order, for "Which spec tonight?" (specs.json filtered by class). Lane F4 contract, handler pending. */
+    /** The class's specs in catalogue order, for the spec picker (specs.json filtered by class). Lane F4 contract, handler pending. */
     @SerialName("spec_options") val specOptions: List<RaidSpecOption>? = null,
 )
 

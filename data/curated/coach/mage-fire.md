@@ -15,7 +15,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the best Fire Mage on Forever. Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites.
+This is the best Fire Mage on Forever. Fire casts a three second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites.
 
 ## What they know
 
@@ -24,10 +24,12 @@ This is the best Fire Mage on Forever. Fire spams Scorch, keeps its own Improved
 - Mage Armor, Arcane Brilliance and your food buff go up before the pull.
 - Pyroblast only on three stacks of Heating Up, when it is a one and a half second cast.
 - Scorch from thirty on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. Every Scorch also renews your Improved Scorch stacks.
+- Arcane Blast whenever its buff has dropped, once, then back to Fire.
 - Fire Blast every time it is off cooldown. It is instant, and from Heating Up at thirty every hit is a stack.
+- Arcane Missiles the moment Missile Barrage procs, while the proc is up.
+- On the raid build Fireball is the filler.
 - Combustion once the boss carries five Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
-- Below thirty, Fireball is the filler.
 - Flamestrike is a three second cast that burns the ground for eight seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range.
 - Frost Nova: Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
 

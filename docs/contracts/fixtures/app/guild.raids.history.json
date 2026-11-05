@@ -13,7 +13,7 @@
         "wipe_count": 1,
         "raiders": 10,
         "deaths": 11,
-        "top_parse": {
+        "top_dps": {
           "name": "Pyrelle",
           "class": "mage",
           "metric": "dps",
@@ -140,7 +140,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Morvane",
           "class": "warlock",
           "metric": "dps",
@@ -242,7 +242,7 @@
         "wipe_count": 0,
         "raiders": 10,
         "deaths": 2,
-        "top_parse": {
+        "top_dps": {
           "name": "Skarn",
           "class": "rogue",
           "metric": "dps",
@@ -360,7 +360,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Kraggor",
           "class": "warrior",
           "metric": "dps",
@@ -462,7 +462,7 @@
         "wipe_count": 1,
         "raiders": 5,
         "deaths": 7,
-        "top_parse": {
+        "top_dps": {
           "name": "Pyrelle",
           "class": "mage",
           "metric": "dps",
@@ -573,7 +573,7 @@
         "wipe_count": 0,
         "raiders": 10,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Morvane",
           "class": "warlock",
           "metric": "dps",
@@ -691,7 +691,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Skarn",
           "class": "rogue",
           "metric": "dps",
@@ -793,7 +793,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Kraggor",
           "class": "warrior",
           "metric": "dps",
@@ -895,7 +895,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Pyrelle",
           "class": "mage",
           "metric": "dps",
@@ -997,7 +997,7 @@
         "wipe_count": 2,
         "raiders": 38,
         "deaths": 42,
-        "top_parse": {
+        "top_dps": {
           "name": "Morvane",
           "class": "warlock",
           "metric": "dps",
@@ -1237,7 +1237,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Skarn",
           "class": "rogue",
           "metric": "dps",
@@ -1339,7 +1339,7 @@
         "wipe_count": 2,
         "raiders": 10,
         "deaths": 21,
-        "top_parse": {
+        "top_dps": {
           "name": "Kraggor",
           "class": "warrior",
           "metric": "dps",
@@ -1475,7 +1475,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Pyrelle",
           "class": "mage",
           "metric": "dps",
@@ -1577,7 +1577,7 @@
         "wipe_count": 1,
         "raiders": 10,
         "deaths": 12,
-        "top_parse": {
+        "top_dps": {
           "name": "Morvane",
           "class": "warlock",
           "metric": "dps",
@@ -1704,7 +1704,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Skarn",
           "class": "rogue",
           "metric": "dps",
@@ -1806,7 +1806,7 @@
         "wipe_count": 1,
         "raiders": 5,
         "deaths": 7,
-        "top_parse": {
+        "top_dps": {
           "name": "Kraggor",
           "class": "warrior",
           "metric": "dps",
@@ -1917,7 +1917,7 @@
         "wipe_count": 1,
         "raiders": 10,
         "deaths": 11,
-        "top_parse": {
+        "top_dps": {
           "name": "Pyrelle",
           "class": "mage",
           "metric": "dps",
@@ -2044,7 +2044,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Morvane",
           "class": "warlock",
           "metric": "dps",
@@ -2146,7 +2146,7 @@
         "wipe_count": 0,
         "raiders": 5,
         "deaths": 3,
-        "top_parse": {
+        "top_dps": {
           "name": "Skarn",
           "class": "rogue",
           "metric": "dps",
@@ -2248,7 +2248,7 @@
         "wipe_count": 1,
         "raiders": 5,
         "deaths": 7,
-        "top_parse": {
+        "top_dps": {
           "name": "Kraggor",
           "class": "warrior",
           "metric": "dps",

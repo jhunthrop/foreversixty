@@ -132,7 +132,7 @@ Touch and keyboard as the raid spec: every control 44 px on phone, native select
 | Ended | `This raid has ended.`, `This run has ended.`, `This event has ended.` |
 | Cancelled | `This raid was cancelled.`, `This run was cancelled.`, `This event was cancelled.` |
 | Cancel confirm | `Cancel this {raid|run|event}? Members see it as cancelled.`; `Cancel the {raid|run|event}` |
-| Row zone line | `Guild event · {size}` |
+| Row zone line | `Guild event · {size}`; the event page's h1 follows a title that is not the zone's name with the same words, 15 px muted in their own case, never the h1's uppercase (amended 2026-11-05, guild round 2) |
 | Changelog | `Officers can now post dungeon runs and guild events as well as raids. Members sign up the same way.` |
 
 Every other raid-spec string is unchanged. `Choose a raid.` and `Choose a raid` are replaced by the strings above.

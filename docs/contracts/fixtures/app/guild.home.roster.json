@@ -537,7 +537,9 @@
         "late": 2,
         "tanks": 2,
         "healers": 5,
-        "dps": 11
+        "dps": 11,
+        "melee": 5,
+        "ranged": 6
       },
       "own": {
         "character_key": "us/pvp/obnoxious-yell",

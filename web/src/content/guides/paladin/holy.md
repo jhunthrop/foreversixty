@@ -76,7 +76,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 2. **Divine Favor**, then **Holy Light** (rank 8), when the tank drops below 40%. It is the only heal you can keep casting that outheals a tank by itself, and the crit is guaranteed.
 3. **Holy Light** on the tank below 70%, and **Holy Shock** on anyone below 70%, but only with mana to spare: keep your mana percent no more than 5 points under the percent of the fight left (halfway through, above 45% mana). Once you fall more than 5 points under, heal with Flash of Light alone until you catch up.
 4. **Flash of Light rank 5** on the tank below 90%. This is your staple. Oath of Light adds the same flat amount to every rank close to your level, and rank 5 carries all of your healing power at 60 for less mana than rank 6. Without raid buffs, when mana is the limit, rank 4 does the same job for less again. Rank 1 is a trap at 60: Forever takes the healing power off ranks learned far below your level, and the Oath's bonus goes with it, so rank 1 heals for little more than its base.
-5. **Flash of Light rank 4** on everyone else below 80%, yourself included. Without the Oath bonus it is still the best balance of heal size and mana.
+5. **Flash of Light rank 5** on everyone else below 80%, yourself included. In a raid, Blessing of Wisdom, Mana Spring and the raid's Intellect buffs pay for the bigger heal. Without them, rank 4 is the best balance of heal size and mana, as it is from 50 while you level, even once you have rank 5.
 
 **Ranks.** Bind the ranks you use. Holy Light rank 8 is the top rank a trainer teaches, and the rank 9 book has no known source in Forever yet, so rank 8 is your top rank. Use Holy Shock rank 3 or 4. Rank 1 costs half as much, but it is a level 30 rank, so at 60 it keeps only part of your healing power.
 
@@ -110,7 +110,7 @@ Herbalism and Alchemy keep you in mana potions, Flasks of Distilled Wisdom and e
 
 ### Levels 1 to 19
 
-Holy Light and Seal of Righteousness come at 1, Judgement at 4, Holy Strike at 6, Purify at 8 and Lay on Hands at 10. New Holy Light ranks come at 6 and 14, and Blessing of Wisdom at 14 is your mana blessing once you heal groups.
+Holy Light and Seal of Righteousness come at 1, Judgement at 4, Holy Strike at 6, Purify at 8 and Lay on Hands at 10. New Holy Light ranks come at 6 and 14, and Blessing of Wisdom at 14 is your mana blessing once you heal groups. Until 17, rank 3 is your Holy Light for everything. From 18, while you level, put Holy Light (Rank 1) on its own key and heal with it: at 35 mana against rank 3's 110 it carries all of your healing power, so it heals far more per point of mana, and over a whole dungeon you heal more before you drink. Rank 3 still heals more per cast, so keep it for the hit the tank must survive. Rank 1 stays your Holy Light through 24, with Flash of Light beside it from 20, and from 25 to 29 rank 2 does the same job. From 30 your newest rank takes over.
 
 At 12, the class quest from your trainer teaches Redemption. A healer without it is a long corpse run for the group.
 

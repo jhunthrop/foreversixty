@@ -119,9 +119,11 @@ func TestRaidPresetConsumesFollowTheRole(t *testing.T) {
 	}{
 		{"mage-fire", []string{"flask_of_supreme_power", "greater_arcane_elixir", "elixir_of_firepower", "food_nightfin_soup", "main_hand_imbue:brilliant_wizard_oil", "major_mana_potion", "conjured_demonic_rune"}, []string{"elixir_of_the_mongoose"}},
 		// Classic elixirs of different schools stack (the Battle and Guardian
-		// categories arrived in patch 2.1.0), and every warlock spec deals
-		// both Shadow and Fire damage, so each carries both school elixirs.
-		{"warlock-affliction", []string{"elixir_of_shadow_power", "elixir_of_firepower", "flask_of_supreme_power"}, nil},
+		// categories arrived in patch 2.1.0), so a warlock that deals both
+		// Shadow and Fire damage carries both school elixirs. Affliction's
+		// raid build sacrifices the Imp and casts no Fire spell (round 22),
+		// so it carries Shadow Power only.
+		{"warlock-affliction", []string{"elixir_of_shadow_power", "flask_of_supreme_power"}, []string{"elixir_of_firepower"}},
 		{"warlock-demonology", []string{"elixir_of_shadow_power", "elixir_of_firepower"}, nil},
 		{"warlock-destruction", []string{"elixir_of_shadow_power", "elixir_of_firepower"}, nil},
 		{"warrior-fury", []string{"elixir_of_the_mongoose", "juju_power", "r_o_i_d_s", "food_smoked_desert_dumpling", "juju_might", "mighty_rage_potion", "main_hand_imbue:elemental_sharpening_stone", "off_hand_imbue:dense_sharpening_stone"}, []string{"major_mana_potion", "flask_of_supreme_power"}},

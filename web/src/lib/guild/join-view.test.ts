@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { guildJoinCopy } from './copy';
-import { joiningRow } from './join-view';
+import { holdsErrorRoom, joiningRow } from './join-view';
+
+describe('holdsErrorRoom', () => {
+  it('holds the error line only while joining or after a failure', () => {
+    expect(holdsErrorRoom(false, '')).toBe(false);
+    expect(holdsErrorRoom(true, '')).toBe(true);
+    expect(holdsErrorRoom(false, 'That did not work. Try again.')).toBe(true);
+  });
+});
 
 const ROGUE = { name: 'Thornhide', class: 'rogue', race: 'Night Elf', level: 52, on_roster: true };
 

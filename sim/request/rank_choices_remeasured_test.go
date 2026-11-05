@@ -158,9 +158,11 @@ func TestRound14RankChoicesCastTheWinningRank(t *testing.T) {
 		level                           int
 		want, not                       int32
 	}{
-		{"Arcane Shot at 40 is the default rank 5", "hunter-beast-mastery", "hunter", BarePreset, "troll", 40, 14284, 14282},
-		{"Arcane Shot at 50 is the default rank 6", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 14285, 3044},
-		{"Arcane Shot at bare 60 is the top rank", "hunter-beast-mastery", "hunter", BarePreset, "troll", 60, 14287, 3044},
+		// Round 22 brought Arcane Shot rows back (rank_choices_hunter_r22_test.go): the attack
+		// power share is the same on every rank, so the cheap ranks win while leveling.
+		{"Arcane Shot at 40 is rank 1", "hunter-beast-mastery", "hunter", BarePreset, "troll", 40, 3044, 14284},
+		{"Arcane Shot at 50 is rank 3", "hunter-beast-mastery", "hunter", BarePreset, "dwarf", 50, 14282, 14285},
+		{"Arcane Shot at bare 60 is rank 3", "hunter-beast-mastery", "hunter", BarePreset, "troll", 60, 14282, 14287},
 		{"Human Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "human", 60, 19280, 19276},
 		{"Gnome Devouring Plague at bare 60 is the top rank", "priest-shadow", "priest", BarePreset, "gnome", 60, 19280, 19276},
 		{"Troll Devouring Plague at bare 60 keeps rank 2", "priest-shadow", "priest", BarePreset, "troll", 60, 19276, 19280},
@@ -228,7 +230,7 @@ func TestRound17HunterAimedShotRankRowsFollowTheLevel(t *testing.T) {
 		{"Marksmanship Aimed Shot at 28", "hunter-marksmanship", 28, 19434, 20900},
 		{"Marksmanship Aimed Shot at 39", "hunter-marksmanship", 39, 19434, 20901},
 		{"Marksmanship Aimed Shot at 46", "hunter-marksmanship", 46, 19434, 20902},
-		{"Marksmanship Aimed Shot at 50", "hunter-marksmanship", 50, 20902, 19434},
+		{"Marksmanship Aimed Shot at 50", "hunter-marksmanship", 50, 19434, 20902}, // round 22: rank 1 from 28 to 59
 	} {
 		ids := rotationIDs(t, c.spec, "hunter", c.level, specRankChoices(c.spec, BarePreset, "orc"))
 		if !ids[c.want] || ids[c.not] {
@@ -240,15 +242,16 @@ func TestRound17HunterAimedShotRankRowsFollowTheLevel(t *testing.T) {
 // Round 18 (hunter lane, per-level sweep, guide round 15 HUNTER-R15-3): Marksmanship at 52-59,
 // once rank 5 (20903, 52) is the newest, casts rank 1 again. Rank 1 gains +0.24 to +0.40% at 52,
 // 53, 56 and 59, seeds 1 and 50001, Horde and Alliance, 10000 iterations (error 0.1 DPS on about
-// 260). At 50 and 51, against rank 4, it still ties (0.0 to +0.1), so those levels keep the default.
+// 260). At 50 and 51, against rank 4, it tied (0.0 to +0.1) then; round 22 found rank 1 ahead there
+// by about 5% once Aimed Shot stopped waiting for an auto shot (rank_choices_hunter_r22_test.go).
 func TestRound18MarksmanshipAimedShotRankOneFrom52(t *testing.T) {
 	for _, c := range []struct {
 		name      string
 		level     int
 		want, not int32
 	}{
-		{"Marksmanship Aimed Shot at 50", 50, 20902, 19434},
-		{"Marksmanship Aimed Shot at 51", 51, 20902, 19434},
+		{"Marksmanship Aimed Shot at 50", 50, 19434, 20902}, // round 22
+		{"Marksmanship Aimed Shot at 51", 51, 19434, 20902}, // round 22
 		{"Marksmanship Aimed Shot at 52", 52, 19434, 20903},
 		{"Marksmanship Aimed Shot at 56", 56, 19434, 20903},
 		{"Marksmanship Aimed Shot at 59", 59, 19434, 20903},

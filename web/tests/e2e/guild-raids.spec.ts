@@ -6,7 +6,8 @@
 // axe; and the 44 px floor at 360. The API is stubbed by support/guild-raids.ts.
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { cancelledLineOf, copyList, raidCopy } from '../../src/lib/guild/raid-copy';
+import { cancelledLineOf, raidCopy } from '../../src/lib/guild/raid-copy';
+import { signupListText } from '../../src/lib/guild/raid-comp';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { shortControls } from './support/short-controls';
@@ -79,9 +80,12 @@ test.describe('a member signs up (§9, R3)', () => {
     );
     await expect(page.getByTestId(stripId('status', VIEWER_MEMBER))).toHaveText(raidCopy.stripStatus.saved);
     const puts = writesTo(stub, 'PUT', /\/raids\/7\/signups\/us\/pvp\/zulmara$/);
-    expect(puts.map((w) => w.body)).toEqual([{ state: 'in', role: 'dps', note: '' }]);
+    // In carries the picked spec: state and spec save in one request (raid comp spec 3.2).
+    expect(puts.map((w) => w.body)).toEqual([
+      { state: 'in', role: 'dps', note: '', spec: 'hunter-marksmanship' },
+    ]);
     await expect(page.getByTestId('raid-roster-bench')).toContainText(MEMBER_ALT);
-    await expect(page.getByTestId('raid-roster-dps')).toContainText(VIEWER_MEMBER);
+    await expect(page.getByTestId('raid-roster-ranged')).toContainText(VIEWER_MEMBER);
   });
 
   test('a note typed and then a segment pressed: one save carries both', async ({ page }) => {
@@ -90,7 +94,9 @@ test.describe('a member signs up (§9, R3)', () => {
     await segment(page, VIEWER_MEMBER, 'late').click();
     await expect(page.getByTestId(stripId('status', VIEWER_MEMBER))).toHaveText(raidCopy.stripStatus.saved);
     const puts = writesTo(stub, 'PUT', /signups\/us\/pvp\/zulmara$/);
-    expect(puts.map((w) => w.body)).toEqual([{ state: 'late', role: 'dps', note: 'late by 10' }]);
+    expect(puts.map((w) => w.body)).toEqual([
+      { state: 'late', role: 'dps', note: 'late by 10', spec: 'hunter-marksmanship' },
+    ]);
   });
 
   test('a segment pressed while the note saves is sent when that save settles, never dropped', async ({
@@ -102,7 +108,12 @@ test.describe('a member signs up (§9, R3)', () => {
     await expect(segment(page, MEMBER_ALT, 'late')).toHaveAttribute('aria-checked', 'true');
     await expect(page.getByTestId(stripId('status', MEMBER_ALT))).toHaveText(raidCopy.stripStatus.saved);
     const puts = writesTo(stub, 'PUT', /signups\/us\/pvp\/duskstrider$/).map((w) => w.body);
-    expect(puts.at(-1)).toEqual({ state: 'late', role: 'dps', note: 'late by 10' });
+    expect(puts.at(-1)).toEqual({
+      state: 'late',
+      role: 'dps',
+      note: 'late by 10',
+      spec: 'hunter-marksmanship',
+    });
   });
 
   test('from the band line: the segments act on the character the sentence names', async ({ page }) => {
@@ -113,13 +124,13 @@ test.describe('a member signs up (§9, R3)', () => {
     const segments = page.getByTestId('guild-raid-line-segments');
     // The alt is In, so the sentence names it and the segments show and act on it (spec 3.4).
     await expect(sentence).toHaveText(
-      `Thursday 8 pm, you are In on ${MEMBER_ALT} as DPS, 14 of 40 signed up.`,
+      `Thursday 8 pm CST, you are In on ${MEMBER_ALT} as DPS, 14 of 40 signed up.`,
     );
     await expect(segments).toHaveAttribute('aria-label', `${MEMBER_ALT}'s sign-up`);
     await expect(page.getByTestId('guild-raid-line-segments-in')).toHaveAttribute('aria-checked', 'true');
     await page.getByTestId('guild-raid-line-segments-late').click();
     await expect(sentence).toHaveText(
-      `Thursday 8 pm, you are Late on ${MEMBER_ALT} as DPS, 14 of 40 signed up.`,
+      `Thursday 8 pm CST, you are Late on ${MEMBER_ALT} as DPS, 14 of 40 signed up.`,
     );
     await expect(page.getByTestId('guild-raid-line-segments-late')).toHaveAttribute('aria-checked', 'true');
     expect(writesTo(stub, 'PUT', /signups\/us\/pvp\/duskstrider$/).map((w) => w.body)).toMatchObject([
@@ -249,7 +260,7 @@ test.describe('officer-read-only (§3.2, gate spec §3.4)', () => {
       await copy.click();
       await expect(copy).toHaveText(raidCopy.officerRow.copied);
       const copied = await page.evaluate(() => navigator.clipboard.readText());
-      expect(copied).toBe(copyList(stub.view(ONYXIA_ID), CHICAGO));
+      expect(copied).toBe(signupListText(stub.view(ONYXIA_ID), CHICAGO));
       expect(copied.split('\n')[0]).toBe("Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>");
       expect(stub.writes).toEqual([]);
     } finally {
@@ -307,7 +318,7 @@ test.describe('the guild clock (R4)', () => {
     await expect(page.getByTestId('raid-form-for-you')).toHaveText('For you: same time.');
   });
 
-  test('a repeat across 14 March 2027 keeps 8:00 pm guild time', async ({ page }) => {
+  test('a repeat across 14 March 2027 keeps 8:00 pm in the guild clock', async ({ page }) => {
     const stub = await openRaidsTab(page, { viewer: 'officer', raids: [] }, new Date('2027-03-01T18:00:00Z'));
     await openForm(page);
     await choose(page.getByTestId('raid-form-zone'), 'raid:onyxias-lair');
@@ -333,15 +344,17 @@ test.describe('the guild clock (R4)', () => {
     ]);
     const rows = page.locator('[data-testid^="planned-raid-"][href]');
     await expect(rows).toHaveCount(4);
-    const labels = [
-      '8:00 pm CST guild time',
-      '8:00 pm CDT guild time',
-      '8:00 pm CDT guild time',
-      '8:00 pm CDT guild time',
+    // The guild clock leads, the New York viewer's own under it (raid comp spec 3.4).
+    const labels = ['8:00 pm CST', '8:00 pm CDT', '8:00 pm CDT', '8:00 pm CDT'];
+    const yours = [
+      '9:00 pm EST your time',
+      '9:00 pm EDT your time',
+      '9:00 pm EDT your time',
+      '9:00 pm EDT your time',
     ];
     for (const [index, label] of labels.entries()) {
       await expect(rows.nth(index)).toContainText(label);
-      await expect(rows.nth(index)).toContainText('9:00 pm');
+      await expect(rows.nth(index)).toContainText(yours[index] ?? '');
     }
   });
 });
@@ -440,7 +453,7 @@ test.describe('the officer row in a browser (Task 7)', () => {
     await page.getByTestId('raid-officer-copy').click();
     await expect(page.getByTestId('raid-copy-failed')).toHaveText(raidCopy.copyFailed);
     const text = page.getByTestId('raid-copy-text');
-    await expect(text).toHaveValue(copyList(stub.view(ONYXIA_ID), CHICAGO));
+    await expect(text).toHaveValue(signupListText(stub.view(ONYXIA_ID), CHICAGO));
     const selection = await text.evaluate((node) => {
       const area = node as HTMLTextAreaElement;
       return [area.selectionStart, area.selectionEnd, area.value.length];

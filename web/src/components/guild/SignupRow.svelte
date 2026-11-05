@@ -1,44 +1,37 @@
 <!-- web/src/components/guild/SignupRow.svelte -->
-<!-- One character's row of the sign-up strip (spec 3.3, 4): who, the segments, the role select
-     and the note, then a reserved 20 px status line. The row keeps its own optimistic values while
-     a save is in flight and reverts them when the save is refused. The caller applies a
-     successful save's raid before resolving, so the props carry the saved values afterwards. -->
+<!-- One character's row of the sign-up strip (raids spec 3.3, raid comp spec 3.2): who (crest, name,
+     `Holy Paladin`), the segments, one spec picker whose (spec, role) pair sets the role, and the
+     note, then a reserved 20 px status line. Picking on a signed-up row saves at once; on an
+     unsigned row it only sets what the next press sends. In, Late or Bench with no spec picked
+     waits: `Pick a spec first.`, the picker takes the wipe border and focus, and the first pick saves
+     the held press. The row keeps its own optimistic values while a save is in flight and reverts
+     them when the save is refused; the caller applies a successful save's raid before resolving. -->
 <script lang="ts">
-  import type {
-    GuildRaidRole,
-    GuildRaidViewerCharacter,
-    GuildSignupState,
-    GuildZoneKind,
-  } from '../../lib/guild/api';
+  import { tick } from 'svelte';
+  import { MediaQuery } from 'svelte/reactivity';
+  import type { GuildRaidViewerCharacter, GuildSignupState, GuildZoneKind } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
+  import { pickOf, specClassLine, specOptions, specPicks, whoLine } from '../../lib/guild/raid-comp';
   import { raidCopy } from '../../lib/guild/raid-copy';
-  import { rolesForClass } from '../../lib/guild/raid-roles';
-  import {
-    pressAsksSpec,
-    savedSpec,
-    showsSpecSelect,
-    specOfClass,
-    specsForClass,
-  } from '../../lib/guild/raid-spec';
+  import { RAID_WIDE_QUERY } from '../../lib/guild/raid-layout';
+  import { specIconSrc } from '../../lib/guild/raid-spec';
   import { createSerialSave } from '../../lib/guild/serial-save';
   import {
     NOTE_MAX,
-    ROLE_FIELD_LABEL,
     SAVED_LINE_MS,
     SPEC_ASK_IDLE_MS,
-    SPEC_RESERVE_ASK,
-    SPEC_RESERVE_SAVED,
+    defaultPick,
     failureLine,
-    initialRole,
     noteCounter,
+    pressWaitsForSpec,
+    roleOfPick,
+    stateTakesSpec,
     type SignupChoice,
     type SignupOutcome,
   } from '../../lib/guild/signup-strip';
   import { classColorVar } from '../../lib/report/format';
-  import { specName } from '../../lib/guild/spec-name';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Select from '../ui/Select.svelte';
-  import SignupSpec from './SignupSpec.svelte';
   import SignupSegments from './SignupSegments.svelte';
 
   let {
@@ -47,9 +40,8 @@
     disabled,
     describedBy,
     notice,
+    seenAs = null,
     kind = 'raid',
-    raidTitle,
-    raidDate,
     onClearNotice,
     onSave,
     onMoved,
@@ -61,59 +53,52 @@
     describedBy?: string;
     /** A line the strip sets on this row: `{Name} moved to Bench.` */
     notice: string | null;
+    /** When this answered character is not its account's roster row: `Officers see Quillfeather (Late).` */
+    seenAs?: string | null;
     /** What the night is, for the ended line of a refused save. */
     kind?: GuildZoneKind;
-    /** The raid's title and date, for the spec ask's lead sentence. */
-    raidTitle: string;
-    raidDate: string;
     onClearNotice: () => void;
     onSave: (choice: SignupChoice) => Promise<SignupOutcome>;
     onMoved: (name: string) => void;
   } = $props();
 
-  type RowStatus = { kind: 'saved'; kept: string | null } | { kind: 'error'; message: string; race: boolean };
-
-  /** Only the roles the character's class plays (a mage is never offered tank). */
-  const ROLE_OPTIONS = $derived(
-    rolesForClass(character.class).map((role) => ({
-      value: role,
-      label: raidCopy.roleLabels[role],
-    })),
-  );
+  type RowStatus =
+    { kind: 'saved' } | { kind: 'error'; message: string; race: boolean } | { kind: 'pick-first' };
 
   /** `undefined` while the row shows the props' state. */
   let pendingState = $state<GuildSignupState | undefined>(undefined);
-  let roleChoice = $state<GuildRaidRole | null>(null);
+  /** The pick on this row not yet confirmed by the props: unsaved on an unsigned row, or in flight. */
+  let pickChoice = $state<string | null>(null);
   let noteEdit = $state<string | null>(null);
   let busy = $state(false);
-  /** In, Late or Bench was pressed with no saved spec: the pick, not the press, signs up. Until
-   *  then the segment reads pending and nothing is saved. */
+  /** In, Late or Bench was pressed with no spec picked: the pick, not the press, signs up. */
   let askedState = $state<GuildSignupState | null>(null);
   let rowEl = $state<HTMLLIElement | undefined>(undefined);
   let idleTimer: ReturnType<typeof setTimeout> | undefined;
-  /** The spec picked and in flight; `null` once the props carry the saved one. */
-  let specChoice = $state<string | null>(null);
   let status = $state<RowStatus | null>(null);
   /** The note last sent, so blur after Enter does not save it twice. */
   let sentNote: string | null = null;
   let savedTimer: ReturnType<typeof setTimeout> | undefined;
 
   const key = $derived(character.character_key);
+  const specId = $derived(`signup-spec-${key}`);
+  const statusId = $derived(`signup-status-${key}`);
+  /** From 768 the select's face reads `Restoration · Healer`; below, the spec alone and the Who
+   *  line carries the role (raid comp spec 3.2). The server renders the desktop face. */
+  const wide = new MediaQuery(RAID_WIDE_QUERY, true);
+  const options = $derived(specOptions(specPicks(character.class), !wide.current, specIconSrc));
   const shownState = $derived(pendingState === undefined ? character.state : pendingState);
-  const shownRole = $derived(roleChoice ?? initialRole(character));
+  const shownPick = $derived(
+    pickChoice === null ? defaultPick(character) : pickOf(character.class, pickChoice),
+  );
   const shownNote = $derived(noteEdit ?? savedNote);
   const counter = $derived(noteCounter(shownNote));
-  const saved = $derived(savedSpec(character));
-  const specState = $derived(askedState ?? shownState);
-  const showSpec = $derived(showsSpecSelect(character.class, specState));
-  /** An unsigned row keeps the room the spec block takes, so a press shifts nothing below it. */
-  const reservesSpec = $derived(character.state === null && specsForClass(character.class).length > 1);
-  const chosenSpec = $derived(specChoice ?? saved?.spec ?? '');
-  const specLead = $derived(
-    saved === null
-      ? raidCopy.spec.lead(character.name, raidCopy.segments[specState ?? 'in'], raidTitle, raidDate)
-      : raidCopy.spec.leadChange(character.name, raidTitle, raidDate),
+  const who = $derived(
+    shownPick === null
+      ? specClassLine(character.class, character.spec_key)
+      : whoLine(character.class, shownPick.spec.spec, shownPick.role, !wide.current),
   );
+  const asking = $derived(askedState !== null);
 
   $effect(() => () => {
     clearTimeout(savedTimer);
@@ -123,6 +108,7 @@
   function cancelAsk(): void {
     clearTimeout(idleTimer);
     askedState = null;
+    if (status?.kind === 'pick-first') status = null;
   }
 
   function armIdle(): void {
@@ -152,13 +138,9 @@
     };
   });
 
-  function showSaved(choice: SignupChoice): void {
+  function showSaved(): void {
     clearTimeout(savedTimer);
-    const picked = choice.spec === undefined ? null : specOfClass(character.class, choice.spec);
-    status = {
-      kind: 'saved',
-      kept: picked === null ? null : raidCopy.spec.kept(picked.name, character.name),
-    };
+    status = { kind: 'saved' };
     savedTimer = setTimeout(() => {
       status = null;
     }, SAVED_LINE_MS);
@@ -178,29 +160,30 @@
     if (outcome.ok && outcome.moved !== null) onMoved(outcome.moved);
     if (more) return;
     pendingState = undefined;
-    roleChoice = null;
-    specChoice = null;
+    // A sent pick is now the props' (or refused, and reverts to them); an unsent one stays.
+    if (choice.spec !== undefined) pickChoice = null;
     if (!outcome.ok) {
       sentNote = null;
       status = { kind: 'error', ...failureLine(outcome.code, kind) };
       return;
     }
     if (noteEdit === choice.note) noteEdit = null;
-    showSaved(choice);
+    showSaved();
   }
 
-  /** Saves are serialised per row: a press during a save is sent, merged, when it settles. A
-   *  refusal reverts to the confirmed (props) state, which the caller updates on each success. */
+  /** Saves are serialised per row: a press during a save is sent, merged, when it settles. In, Late
+   *  and Bench carry the pick, so state and spec save in one request. */
   const saver = createSerialSave<SignupChoice, SignupOutcome>({
-    read: () =>
-      shownState === null
-        ? null
-        : {
-            state: shownState,
-            role: shownRole,
-            note: shownNote,
-            ...(specChoice === null ? {} : { spec: specChoice }),
-          },
+    read: () => {
+      if (shownState === null) return null;
+      const pick = stateTakesSpec(shownState) ? shownPick : null;
+      return {
+        state: shownState,
+        role: roleOfPick(shownPick, character),
+        note: shownNote,
+        ...(pick === null ? {} : { spec: pick.spec.spec }),
+      };
+    },
     send: settle,
     settled,
     onBusy: (next) => (busy = next),
@@ -213,15 +196,17 @@
     void saver.request();
   }
 
-  function isRole(value: string): value is GuildRaidRole {
-    return ROLE_OPTIONS.some((option) => option.value === value);
+  async function holdForSpec(state: GuildSignupState): Promise<void> {
+    askedState = state;
+    status = { kind: 'pick-first' };
+    armIdle();
+    await tick();
+    document.getElementById(specId)?.focus();
   }
 
   function pickState(state: GuildSignupState): void {
-    if (pressAsksSpec(character, state)) {
-      askedState = state;
-      status = null;
-      armIdle();
+    if (pressWaitsForSpec(state, shownPick)) {
+      void holdForSpec(state);
       return;
     }
     cancelAsk();
@@ -229,20 +214,13 @@
     save();
   }
 
-  function pickSpec(slug: string): void {
-    const spec = specOfClass(character.class, slug);
-    if (spec === null) return;
-    specChoice = slug;
-    roleChoice = spec.role;
-    if (askedState !== null) pendingState = askedState;
+  function pickSpec(value: string): void {
+    if (value === '' || pickOf(character.class, value) === null || value === shownPick?.value) return;
+    pickChoice = value;
+    const held = askedState;
     cancelAsk();
-    save();
-  }
-
-  function pickRole(value: string): void {
-    if (!isRole(value)) return;
-    roleChoice = value;
-    if (shownState !== null) save();
+    if (held !== null) pendingState = held;
+    if (held !== null || shownState !== null) save();
   }
 
   function commitNote(): void {
@@ -271,23 +249,25 @@
 {:else}
   <li
     bind:this={rowEl}
-    class="border-line-soft border-b pt-3 last:border-b-0"
+    class="border-line-soft border-b pt-2 last:border-b-0 md:pt-3"
     aria-busy={busy}
     data-testid={`signup-row-${key}`}
   >
     <div
-      class="grid grid-cols-[minmax(0,1fr)_120px] items-center gap-2 md:min-h-[68px] md:grid-cols-[minmax(180px,1fr)_auto_152px_minmax(200px,1.4fr)] md:gap-4"
+      class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-2 md:min-h-[68px] md:grid-cols-[minmax(180px,1fr)_auto_220px_minmax(200px,1.4fr)] md:gap-4"
     >
-      <div class="col-start-1 row-start-1 flex min-w-0 items-center gap-3">
+      <div class="col-span-2 col-start-1 row-start-1 flex min-w-0 items-center gap-3 md:col-span-1">
         <ClassCrestRing characterClass={character.class} size={32} />
         <div class="min-w-0">
           <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
             {character.name}
           </p>
-          <p class="text-muted truncate text-[12px]">{specName(character.spec)}</p>
+          <p class="text-muted text-[12px] md:truncate" data-testid={`signup-who-${key}`}>
+            {who}
+          </p>
         </div>
       </div>
-      <div class="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">
+      <div class="col-span-2 row-start-3 md:col-span-1 md:col-start-2 md:row-start-1">
         <SignupSegments
           value={shownState}
           pending={askedState}
@@ -299,21 +279,26 @@
           testid={`signup-segments-${key}`}
         />
       </div>
-      <div class="col-start-2 row-start-1 flex md:col-start-3">
+      <div
+        class="col-span-2 col-start-1 row-start-2 flex w-[176px] min-w-0 md:col-span-1 md:col-start-3 md:row-start-1 md:w-auto"
+      >
         <Select
-          id={`signup-role-${key}`}
+          id={specId}
           class="w-full"
           size="compact"
-          label={ROLE_FIELD_LABEL}
-          value={shownRole}
-          options={ROLE_OPTIONS}
+          label={raidCopy.spec.label(character.name)}
+          placeholder={raidCopy.spec.placeholder}
+          value={shownPick?.value ?? ''}
+          {options}
           {disabled}
-          describedBy={disabled ? describedBy : undefined}
-          testid={`signup-role-${key}`}
-          onchange={(event) => pickRole((event.currentTarget as HTMLSelectElement).value)}
+          {busy}
+          invalid={asking}
+          describedBy={disabled ? describedBy : asking ? statusId : undefined}
+          testid={specId}
+          onchange={(event) => pickSpec((event.currentTarget as HTMLSelectElement).value)}
         />
       </div>
-      <div class="relative col-span-2 row-start-3 md:col-span-1 md:col-start-4 md:row-start-1">
+      <div class="relative col-span-2 row-start-4 md:col-span-1 md:col-start-4 md:row-start-1">
         <input
           type="text"
           class="border-line-warm bg-raised text-text rounded-control placeholder:text-muted hover:border-line-warm-strong focus-visible:outline-gold h-11 w-full min-w-0 border pr-16 pl-3 text-[13px] transition-colors duration-[120ms] focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -336,36 +321,20 @@
         {/if}
       </div>
     </div>
-    {#if showSpec}
-      <SignupSpec
-        id={`signup-spec-${key}`}
-        classSlug={character.class}
-        chosen={chosenSpec}
-        saved={saved !== null}
-        lead={specLead}
-        {busy}
-        {disabled}
-        onPick={pickSpec}
-      />
-    {:else if reservesSpec}
-      <div
-        class={saved === null ? SPEC_RESERVE_ASK : SPEC_RESERVE_SAVED}
-        aria-hidden="true"
-        data-testid={`signup-spec-reserve-${key}`}
-      ></div>
-    {/if}
-    <div class="min-h-5 pt-0.5 pb-2 text-[13px] leading-5" data-testid={`signup-status-${key}`}>
+    <div id={statusId} class="min-h-5 text-[13px] leading-5" data-testid={`signup-status-${key}`}>
       {#key status}
         {#if status?.kind === 'error' && status.race}
           <p class="text-wipe" role="alert" tabindex="-1" use:focusOnMount>{status.message}</p>
         {:else if status?.kind === 'error'}
           <p class="text-wipe" role="alert">{status.message}</p>
+        {:else if status?.kind === 'pick-first'}
+          <p class="text-wipe" role="alert">{raidCopy.spec.pickFirst}</p>
         {:else if status?.kind === 'saved'}
-          <p class="text-text" role="status">
-            {raidCopy.stripStatus.saved}{status.kept === null ? '' : ` ${status.kept}`}
-          </p>
+          <p class="text-text" role="status">{raidCopy.stripStatus.saved}</p>
         {:else if notice !== null}
           <p class="text-text" role="status">{notice}</p>
+        {:else if seenAs !== null}
+          <p class="text-muted" data-testid={`signup-seen-as-${key}`}>{seenAs}</p>
         {/if}
       {/key}
     </div>

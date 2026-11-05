@@ -95,6 +95,14 @@ def test_rogue_has_one_hand_mace():
     assert can_equip(4, WEAPON, 4)
 
 
+def test_rogue_has_one_hand_axe_but_no_two_hand_axe():
+    # Forever added the rogue bit to One-Handed Axes (spell 196): ClassMask
+    # 79 in 70009/70755/70790 against Era's 71, and Hack and Slash (13960)
+    # names "Axe/Sword" as one weapon group. Two-Handed Axes (197) stays 71.
+    assert can_equip(4, WEAPON, 0)
+    assert not can_equip(4, WEAPON, 1)
+
+
 def test_warrior_has_every_melee_subclass():
     melee = {0, 1, 4, 5, 6, 7, 8, 10, 13, 15}
     for subclass_id in melee:
@@ -181,17 +189,16 @@ def test_configure_derives_from_client_tables(tmp_path):
             assert can_equip(class_id, WEAPON, subclass_id) == (subclass_id in expected)
 
 
-def test_configure_still_excludes_the_vestigial_bits_even_if_the_client_carries_them(tmp_path):
+def test_configure_still_excludes_the_vestigial_bit_even_if_the_client_carries_it(tmp_path):
     raw = _minimal_client_tables(
         tmp_path,
         class_mask_overrides={
-            44: 1 + 2 + 4 + 8 + 64,  # Axes: client carries rogue-axe (8) again
             229: 1 + 2 + 4 + 1024,  # Polearms: client carries druid (1024) again
         },
     )
     proficiency.configure(raw)
     assert can_equip(2, WEAPON, 0)  # paladin, one-hand axe: real, not vestigial
-    assert not can_equip(4, WEAPON, 0)  # rogue, one-hand axe
+    assert can_equip(4, WEAPON, 0)  # rogue, one-hand axe: a Forever addition
     assert not can_equip(11, WEAPON, 6)  # druid, polearm
 
 

@@ -31,6 +31,7 @@
     activeTree = $bindable(),
     treeColumnsClass,
     bandDiff = null,
+    readOnly = false,
   }: {
     store: PlannerStore;
     talentIndex: TalentIndex;
@@ -44,6 +45,8 @@
      *  then. Shared across every tree -- each `TreeGrid` only ever reads the ids its own
      *  tree's talents carry. */
     bandDiff?: BandDiffView | null;
+    /** A saved result's trees: nothing to spend, every cell still opens its tooltip. */
+    readOnly?: boolean;
   } = $props();
 
   // Which trees have drawn their grids after the panel. The open tab's grid draws with the panel;
@@ -215,7 +218,7 @@
       </header>
       <div class="flex flex-col gap-3 p-4">
         {#if drawn.includes(i) || activeTree === i}
-          <TreeGrid {store} {tree} {bandDiff} />
+          <TreeGrid {store} {tree} {bandDiff} {readOnly} />
         {:else}
           <!-- The grid's own box, empty: the trees draw one task at a time after the first (see
              `drawn`), and nothing below this panel moves when its cells arrive. -->

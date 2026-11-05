@@ -1,13 +1,14 @@
 <!-- web/src/components/guild/RaidRoster.svelte -->
-<!-- Sign-ups (raids spec 3.7, 4 "Officer state select"): In rows under Tanks, Healers and DPS (four
-     columns from 1280 with DPS across two, three from 1024, two from 768), then Late, Bench, Out and
-     Not signed up. Officers get a label-less state select at the end of every row; a refusal reverts
+<!-- Sign-ups (raids spec 3.7, raid comp spec 3.3, 4 "Officer state select"): In rows under Tanks,
+     Healers, Melee and Ranged by the API's group (four columns from 1280; two from 768, Tanks over
+     Healers beside Melee over Ranged; one below), then Late, Bench, Out and Not signed up. Every row
+     reads its spec and class. Officers get a label-less state select at the end of every row; a refusal reverts
      it, with the line under the roster, or under the row for the plan gate (focused). A change that
      moves the row to another group hands focus to its select there; a saving select stays enabled
      (aria-busy), so the focused control is never disabled under the officer's hand. -->
 <script lang="ts">
   import { tick } from 'svelte';
-  import type { GuildRaidRole, GuildRaidView, GuildSignupState } from '../../lib/guild/api';
+  import type { GuildRaidGroup, GuildRaidView, GuildSignupState } from '../../lib/guild/api';
   import { raidCopy } from '../../lib/guild/raid-copy';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCount } from '../../lib/guild/raid-page';
@@ -17,7 +18,7 @@
   import { SIGNUP_STATES } from '../../lib/guild/segments-keys';
   import type { FilterOption } from '../../lib/rankings/options';
   import { classColorVar } from '../../lib/report/format';
-  import { specName } from '../../lib/guild/spec-name';
+  import { specClassLine } from '../../lib/guild/raid-comp';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Select from '../ui/Select.svelte';
   import RaidDisclosure from './RaidDisclosure.svelte';
@@ -50,17 +51,22 @@
     onSetState: (row: RosterRow, state: GuildSignupState) => Promise<boolean>;
   } = $props();
 
-  const ROLE_COLUMNS: readonly { role: GuildRaidRole; label: string; place: string }[] = [
-    { role: 'tank', label: raidCopy.subheads.tanks, place: 'md:col-start-1 md:row-start-1' },
+  const GROUP_COLUMNS: readonly { group: GuildRaidGroup; label: string; place: string }[] = [
+    { group: 'tank', label: raidCopy.subheads.tanks, place: 'md:col-start-1 md:row-start-1' },
     {
-      role: 'healer',
+      group: 'healer',
       label: raidCopy.subheads.healers,
-      place: 'md:col-start-1 md:row-start-2 lg:col-start-2 lg:row-start-1',
+      place: 'md:col-start-1 md:row-start-2 xl:col-start-2 xl:row-start-1',
     },
     {
-      role: 'dps',
-      label: raidCopy.subheads.dps,
-      place: 'md:col-start-2 md:row-span-2 md:row-start-1 lg:col-start-3 lg:row-span-1 xl:col-span-2',
+      group: 'melee',
+      label: raidCopy.subheads.melee,
+      place: 'md:col-start-2 md:row-start-1 xl:col-start-3',
+    },
+    {
+      group: 'ranged',
+      label: raidCopy.subheads.ranged,
+      place: 'md:col-start-2 md:row-start-2 xl:col-start-4 xl:row-start-1',
     },
   ];
   const STATE_OPTIONS: readonly FilterOption[] = SIGNUP_STATES.map((state) => ({
@@ -114,14 +120,14 @@
 
 {#snippet row(entry: RosterRow, withRole: boolean)}
   {@const busy = busyKey === entry.character_key}
-  {@const specLine = `${specName(entry.spec)}${withRole ? ` · ${raidCopy.roleLabels[entry.role]}` : ''}`}
+  {@const specLine = `${specClassLine(entry.class, entry.spec_key)}${withRole ? ` · ${raidCopy.roleLabels[entry.role]}` : ''}`}
   <!-- §7 caps: 36 px desktop, 44 phone before a note. A bare row centres crest, name and the
        officer select (32 desktop, 44 phone) with no padding past them; a noted row runs from the top. -->
   <li
     class="rounded-control flex min-h-11 break-inside-avoid gap-3 {ownRowBand(
       entry.own,
       2,
-    )} md:min-h-9 {entry.note === '' ? 'items-center' : 'items-start py-1.5'}"
+    )} md:min-h-9 {entry.note === '' && entry.also === null ? 'items-center' : 'items-start py-1.5'}"
     aria-busy={busy}
     data-testid="raid-roster-row"
   >
@@ -136,6 +142,12 @@
         {entry.name}
       </p>
       <p class="text-muted block truncate text-[12px] leading-4" title={specLine}>{specLine}</p>
+      <!-- One row per account: its other answered characters, so a benched alt is never hidden. -->
+      {#if entry.also !== null}
+        <p class="text-muted text-[12px] leading-4 break-words" data-testid="raid-roster-also">
+          {entry.also}
+        </p>
+      {/if}
       {#if entry.note !== ''}<p class="text-text text-[12px] break-words">{entry.note}</p>{/if}
       {#if line?.control === `roster:${entry.character_key}`}
         <p
@@ -172,15 +184,15 @@
 {/snippet}
 
 {#snippet body()}
-  <div class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-    {#each ROLE_COLUMNS as column (column.role)}
-      {@const rows = groups.roles[column.role]}
-      <div class="flex min-w-0 flex-col gap-2 {column.place}" data-testid={`raid-roster-${column.role}`}>
-        {@render heading(column.label, rows.length, `raid-roster-${column.role}-heading`)}
+  <div class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 xl:grid-cols-4">
+    {#each GROUP_COLUMNS as column (column.group)}
+      {@const rows = groups.groups[column.group]}
+      <div class="flex min-w-0 flex-col gap-2 {column.place}" data-testid={`raid-roster-${column.group}`}>
+        {@render heading(column.label, rows.length, `raid-roster-${column.group}-heading`)}
         {#if rows.length === 0}
-          <p class="text-muted text-[13px]">{raidCopy.emptyRole[column.role]}</p>
+          <p class="text-muted text-[13px]">{raidCopy.emptyGroup[column.group]}</p>
         {:else}
-          <ul class={column.role === 'dps' ? 'xl:columns-2 xl:gap-4' : ''}>
+          <ul>
             {#each rows as entry (entry.character_key)}{@render row(entry, false)}{/each}
           </ul>
         {/if}
@@ -213,7 +225,12 @@
           'raid-roster-not-signed-heading',
         )}
         {#if officer}
-          <ul class="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-4">
+          <!-- A strict grid: every cell one person, rows 8 px apart, so two names in a column never
+               sit with their selects touching (guild round 2). -->
+          <ul
+            class="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-2 xl:grid-cols-4"
+            data-testid="raid-roster-not-signed-grid"
+          >
             {#each groups.notSigned as entry (entry.character_key)}{@render row(entry, false)}{/each}
           </ul>
         {:else}

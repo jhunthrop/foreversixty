@@ -13,7 +13,25 @@
     },
     "sources": [
       {
-        "label": "Placeholder — the [data] lane’s stat-weights.json is authoritative",
+        "label": "Placeholder \u2014 the [data] lane\u2019s stat-weights.json is authoritative",
+        "url": "https://www.wowhead.com/classic/guide/classes/warrior/arms/dps-stat-priority",
+        "kind": "community"
+      }
+    ]
+  },
+  {
+    "spec": "warrior-fury",
+    "weights": {
+      "attack_power": 1.0,
+      "strength": 1.9,
+      "agility": 0.7,
+      "hit": 32.0,
+      "crit": 18.0,
+      "expertise": 18.0
+    },
+    "sources": [
+      {
+        "label": "Placeholder \u2014 the [data] lane\u2019s stat-weights.json is authoritative",
         "url": "https://www.wowhead.com/classic/guide/classes/warrior/arms/dps-stat-priority",
         "kind": "community"
       }

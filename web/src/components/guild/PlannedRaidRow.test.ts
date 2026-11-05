@@ -39,23 +39,23 @@ describe('PlannedRaidRow', () => {
     expect(markup).toContain(`href="${HREF}"`);
   });
 
-  it('draws the desktop cells in order, in the viewer’s zone', () => {
+  it('draws the desktop cells in order, the guild clock first and the viewer’s own under it', () => {
     const cells = desktop(html());
     expect(cells).toBe(
-      "Thu 10 Dec Onyxia's Lair Thursday 10 December, 9:00 pm 8:00 pm CST guild time in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS · 2 late In · DPS ›",
+      "Thu 10 Dec Onyxia's Lair Thursday 10 December, 8:00 pm CST 9:00 pm EST your time in 2 days 8 h 23/40 3 tanks · 7 healers · 7 melee · 6 ranged · 2 late In · DPS ›",
     );
   });
 
   it('runs the phone stack as four lines beside the date block, the breakdown on its own', () => {
     const markup = html();
     expect(phone(markup)).toBe(
-      "Thu 10 Dec Onyxia's Lair In · DPS Thursday 10 December, 9:00 pm · 8:00 pm CST guild time · in 2 days 8 h 23/40 3 tanks · 7 healers · 13 DPS · 2 late",
+      "Thu 10 Dec Onyxia's Lair In · DPS Thursday 10 December, 8:00 pm CST · 9:00 pm EST your time · in 2 days 8 h 23/40 3 tanks · 7 healers · 7 melee · 6 ranged · 2 late",
     );
     const breakdown = between(markup, 'planned-raid-7-phone-breakdown', '__end__');
     expect(markup).toMatch(
       /class="text-muted block text-\[12px\] leading-4" data-testid="planned-raid-7-phone-breakdown"/,
     );
-    expect(text(breakdown)).toContain('3 tanks · 7 healers · 13 DPS · 2 late');
+    expect(text(breakdown)).toContain('3 tanks · 7 healers · 7 melee · 6 ranged · 2 late');
   });
 
   it('wraps a long phone title to two lines instead of cutting it', () => {
@@ -130,7 +130,7 @@ describe('PlannedRaidRow', () => {
     const line = between(html(), 'planned-raid-7-phone', '__end__')
       .replace(/<!--[\s\S]*?-->/g, '')
       .replace(/<[^>]+>/g, '');
-    expect(line).toContain('9:00 pm · 8:00 pm CST guild time · in 2 days 8 h');
+    expect(line).toContain('8:00 pm CST · 9:00 pm EST your time · in 2 days 8 h');
   });
 
   it('holds the desktop row to 56 px of content: 7 px padding, within the 72 px cap', () => {

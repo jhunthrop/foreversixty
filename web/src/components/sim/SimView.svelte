@@ -8,7 +8,7 @@
      stays DOM-free and unit-testable, and this component's only job is to read
      `window.location` once and hand the values across. -->
 <script lang="ts">
-  import { onMount, untrack } from 'svelte';
+  import { onMount, tick, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, effectiveServerSims, fetchMeOnce, type Me } from '../../lib/account/api';
   import { heroCharacter } from '../../lib/account/hero-character';
@@ -35,6 +35,7 @@
   import { SIM_LAZY_MIN_H } from '../../lib/sim/lazy-layout';
   import { createServerRunsController } from '../../lib/sim/server-runs-controller.svelte';
   import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
+  import { askToFocusRun, takeFocusRun } from '../../lib/sim/focus-run';
   import { createSavedSimState } from '../../lib/sim/saved-sim-state.svelte';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
@@ -66,9 +67,10 @@
   import LandingState from './LandingState.svelte';
   import ReportOptions from './ReportOptions.svelte';
   import RequestDrawer from './RequestDrawer.svelte';
-  import RotationCard from './RotationCard.svelte';
+  import LiveRotationCard from './LiveRotationCard.svelte';
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
+  import SavedSimLoadFailed from './SavedSimLoadFailed.svelte';
   import SettingsBar from './SettingsBar.svelte';
   import SimRunBlock from './SimRunBlock.svelte';
   import SimSavePanel from './SimSavePanel.svelte';
@@ -180,8 +182,17 @@
             // suffixes included (contract 10.5) -- character.ts's own reason.
             code: codeForCharacterSpec(savedSim.result.request.character, bootstrap.treeVersion),
           });
+    askToFocusRun();
     window.location.href = `/sim${simSearch(target)}`;
   }
+
+  // The other half of "Open in the sim": the setup is loaded, so Enter starts the run.
+  let pendingRunFocus = typeof window !== 'undefined' && !hasSavedSimId && takeFocusRun();
+  $effect(() => {
+    if (!pendingRunFocus || store.character === null) return;
+    pendingRunFocus = false;
+    void tick().then(() => document.querySelector<HTMLElement>('[data-testid="sim-run-button"]')?.focus());
+  });
 
   /** Design 8: a share URL of an edited request is a full reproduction. Null past the budget. */
   function shareUrlFor(request: SimRequest): string | null {
@@ -560,11 +571,13 @@
       <div class="reveal">
         <SavedSim result={savedSim.result} onrerun={onRerunSaved} {simId} />
       </div>
-    {:else if savedSim.error !== null}
+    {:else if savedSim.error === simCopy.notFound}
       <!-- Same reason as the lazyFallback wrapper above: LoadError has no class-passthrough prop. -->
-      <div class="px-[18px] md:px-0">
+      <div class="px-[18px] pt-[22px] md:px-0 md:pt-8">
         <LoadError message={savedSim.error} onRetry={() => savedSim.load(simId)} testid="sim-saved-error" />
       </div>
+    {:else if savedSim.error !== null}
+      <SavedSimLoadFailed onRetry={() => savedSim.load(simId)} />
     {:else}
       <!-- Between mounting and a real, non-prerendered id's fetch resolving. Static,
            trusted markup of our own (skeleton.ts): no data goes into it, and it is the
@@ -773,7 +786,7 @@
 
           {#if store.result !== null && !comparing}
             <DetailsCard result={store.result} />
-            <RotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
+            <LiveRotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
           {/if}
 
           {#if store.result !== null}

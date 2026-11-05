@@ -112,7 +112,18 @@ describe('GuildLoot', () => {
     const label = card.indexOf(`guild-loot-tier-one-${item.item_id}`);
     expect(card.indexOf('+12.4')).toBeLessThan(label);
     expect(card.slice(label)).toContain('item');
-    expect(text(card)).toContain('Ranked by item level only. Not on their best-in-slot list.');
+    expect(text(card)).toMatch(
+      /Ranked by item level only\. Not on their best-in-slot list\.|Item level only/,
+    );
+  });
+
+  it('says the tier-1 sentence once per tab, the short label on later cards', () => {
+    const markup = html(true);
+    const full = 'Ranked by item level only. Not on their best-in-slot list.';
+    const withTierOne = buildMockLoot().items.filter((i) => i.candidates.some((c) => c.tier === 1));
+    expect(withTierOne.length).toBeGreaterThan(1);
+    expect(text(markup).split(full).length - 1).toBe(1);
+    expect(text(markup).split('Item level only').length - 1).toBe(withTierOne.length - 1);
   });
 
   it('shows five candidates and then Show {n} more', () => {

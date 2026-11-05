@@ -6,8 +6,8 @@
 <script lang="ts">
   import type { GuildRaidView } from '../../lib/guild/api';
   import { cancelledLineOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
-  import { dateLabel } from '../../lib/guild/raid-time';
   import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
+  import { officersSeeLine } from '../../lib/guild/raid-roster';
   import { orderedCharacters, type SignupChoice, type SignupHandler } from '../../lib/guild/signup-strip';
   import SignupRow from './SignupRow.svelte';
 
@@ -33,12 +33,6 @@
 
   const rows = $derived(orderedCharacters(raid.viewer.characters, currentKey));
   const savedNotes = $derived(new Map(raid.signups.map((s) => [s.character_key, s.note])));
-  const raidDate = $derived(
-    dateLabel(
-      new Date(raid.starts_at),
-      raid.guild_timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone,
-    ),
-  );
   const stateLine = $derived(locked ? raidCopy.raidStates.locked : null);
   const stateLineId = $derived(`raid-strip-state-${raid.id}`);
   /** An ended or done raid refuses sign-ups like a locked one; their line lives in the band. */
@@ -80,9 +74,8 @@
           disabled={rowsDisabled}
           {describedBy}
           notice={notices[character.character_key] ?? null}
+          seenAs={officersSeeLine(raid, character.character_key)}
           kind={kindOf(raid)}
-          raidTitle={raid.title}
-          {raidDate}
           onClearNotice={() => setNotice(character.character_key, null)}
           onSave={(choice) => save(character.character_key, choice)}
           onMoved={noteMoved}

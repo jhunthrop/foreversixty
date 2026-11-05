@@ -151,7 +151,7 @@
   const PILL_GOLD = 'text-gold bg-[rgba(229,185,85,.14)] border-[rgba(229,185,85,.35)]';
   // Overrides .pill's fixed single-line 22px height for the Enchants pill alone (inline,
   // never a scoped <style> rule touching the shared .pill class every other pill on the
-  // page still uses): a long missing-slot list ("Main hand, Chest +2 more") wraps onto a
+  // page still uses): a long missing-slot list ("Main hand, Chest and 2 more slots") wraps onto a
   // second line instead of overflowing the 120px column, and clamps there -- the cell's
   // own title attribute carries the untruncated list for a reader who needs it.
   const ENCHANT_PILL_STYLE =
@@ -224,7 +224,10 @@
 <section class="flex flex-col gap-3" data-testid="guild-readiness-tab">
   <div class="flex items-center justify-between gap-3">
     <h2 class="section-title">Readiness</h2>
-    {#if officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span>{/if}
+    <!-- Members only, as on Loot: a gated officer reads the plan sentence instead (guild round 2). -->
+    {#if !officer}<span class="text-muted text-[12px]" data-testid="guild-readiness-read-only"
+        >{guildGateCopy.readOnly}</span
+      >{/if}
   </div>
   {#if officerReadOnly}<GuildPlanGate tab="readiness" facts={gateFacts} />{/if}
 

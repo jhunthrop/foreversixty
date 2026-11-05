@@ -139,7 +139,7 @@
         ? (emptyLabel ?? '')
         : multiple
           ? (fieldLabel ?? '')
-          : (picked?.label ?? placeholder ?? ''),
+          : (picked?.faceLabel ?? picked?.label ?? placeholder ?? ''),
   );
   const faceColour = $derived(loading || empty || picked === undefined ? undefined : labelColour(picked));
 

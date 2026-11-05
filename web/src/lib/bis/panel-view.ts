@@ -33,7 +33,7 @@ import type {
   LootQuestsFile,
   RateUnit,
 } from './types';
-import type { ItemTooltipModel } from '../items/tooltip';
+import { TWO_HAND_LABEL, type ItemTooltipModel } from '../items/tooltip';
 import { expertiseCapLine, weightsForGainedStats, type ExpertiseCapLine } from './expertise-cap';
 import { hitCapLine, type HitCapLine } from './hit-cap';
 import { relicNoun, slotDisplayLabel } from './slot-display-labels';
@@ -545,7 +545,7 @@ export function bandInfosFor(
       mainHandRow !== undefined && !isMissingSlot(mainHandRow) && hasKnownSource(mainHandRow)
         ? deps.tooltipFor(mainHandRow.item_id)
         : undefined;
-    const mainHandTwoHanded = mainHandModel?.typeLabel === 'Two-Handed Weapon';
+    const mainHandTwoHanded = mainHandModel?.slotLabel === TWO_HAND_LABEL;
     const mainHandItemName =
       mainHandRow !== undefined && !isMissingSlot(mainHandRow) && hasKnownSource(mainHandRow)
         ? mainHandRow.item_name

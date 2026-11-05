@@ -30,7 +30,7 @@ const privateCache = "private, no-cache"
 func raidViewOptions(prefix string) contract.Options {
 	return contract.Options{Optional: append([]string{
 		prefix + ".viewer.characters[].raid_spec",
-	}, raidViewPending(prefix)...)}
+	}, raidViewPending(prefix)...), Open: raidViewOpen(prefix)}
 }
 
 func TestAppContractGuildHome(t *testing.T) {
@@ -64,6 +64,7 @@ func TestAppContractRaidsList(t *testing.T) {
 	assertGuildCache(t, res, privateCache)
 	contract.AssertFixture(t, "guild.raids", guildBody(t, res, http.StatusOK), contract.Options{
 		Optional: append([]string{"data.next_cursor", "data.guild_timezone"}, raidListOptional...),
+		Open:     raidViewOpen("data.planned[]"),
 	})
 }
 
@@ -101,7 +102,7 @@ func TestAppContractRaidDetailAfterTheNight(t *testing.T) {
 
 	contract.AssertFixture(t, "guild.raid.done",
 		guildBody(t, w.h.do(http.MethodGet, w.path("/raids/%d", night.ID), ""), http.StatusOK),
-		contract.Options{Optional: doneRaidOptional})
+		contract.Options{Optional: doneRaidOptional, Open: raidViewOpen("data")})
 }
 
 func TestAppContractSignup(t *testing.T) {

@@ -21,7 +21,7 @@ This is the best Affliction Warlock on Forever. Affliction keeps three DoTs and 
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Before the pull, get set up: Demon Armor on, Succubus out, a Healthstone in your bag, and Life Tap to full mana while the healers top you off.
+- Before the pull, get set up: Demon Armor on and a Healthstone in your bag.
 - Curse of the Elements when it is not already on the target.
 - Corruption whenever it has fallen off.
 - Bane of Doom at sixty, while a minute or more of the fight is left.
@@ -32,6 +32,7 @@ This is the best Affliction Warlock on Forever. Affliction keeps three DoTs and 
 - Wrack from forty with your DoTs up. Before forty, Shadow Bolt fills instead.
 - Life Tap keeps you casting once mana runs low.
 - Curse of Recklessness, Tongues or Weakness only if your raid leader asks. That is only when another warlock holds Curse of the Elements.
+- Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.
 - Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
 - In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
 - Rain of Fire for trash packs that stay put.

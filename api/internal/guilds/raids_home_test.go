@@ -59,7 +59,7 @@ func TestHomeNextRaid(t *testing.T) {
 	if next.Status != RaidPlanned {
 		t.Fatalf("status = %q, want planned", next.Status)
 	}
-	if next.Counts != (NextRaidCounts{In: 1, Late: 1, Tanks: 0, Healers: 0, DPS: 1}) {
+	if next.Counts != (NextRaidCounts{In: 1, Late: 1, Tanks: 0, Healers: 0, DPS: 1, Ranged: 1}) {
 		t.Fatalf("counts = %+v", next.Counts)
 	}
 }

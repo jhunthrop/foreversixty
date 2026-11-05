@@ -1,63 +1,156 @@
 <!-- web/src/components/sim/RotationCard.svelte -->
-<!-- Design 5.1. The settings bar's fidelity note says the same thing before a run; this
-     says it beside the result, because a saved sim and a shared link have no settings bar
-     and the number is exactly as good as the rotation that produced it.
-
-     A validated spec renders the card with no note at all rather than a green "all is
-     well" line: the absence of a caution is the message.
-
-     Task 3 (healer review MAJOR): `spec` can be a healer or tank spec here -- a saved sim
-     or a share link (`store.result.request.spec`) is not gated by RunControl's own
-     `isSimulatedSpec` disable, so this checks it itself rather than trusting that a result
-     on screen only ever named a dps spec. An unsimulated spec gets no rotation claim and no
-     "what it does" trigger (UnsimulatedSpecCard.svelte's own card, not this one, is where a
-     healer or tank spec lives on /sim/specs) -- only the honest line.
-
-     Task 6 (newcomer BLOCKER, tank MAJOR); final whole-branch review C1 (RotationDisclosure
-     extracted so SettingsBar.svelte's own pre-run copy of this control stopped navigating
-     away too): "what it does" used to be a plain link to `/sim/specs#<spec>`, which explains
-     parse fidelity, not the rotation, and threw away the loaded character and the finished
-     run on the way (Back did not restore either). It is a Disclosure (Ruling 3's one
-     show/hide primitive) now: the trigger opens an in-page drawer with the curated
-     rotation's own step notes (rotations.ts, scripts/sync-rotations.mjs), and the page
-     never navigates. The fidelity detail is still one click away inside the drawer,
-     `target="_blank"`, so nothing is lost either way. -->
+<!-- What the engine was told to press, in words (spec 2026-11-04-sim-results 3.11): always open, the
+     curated APL's own notes, this run's casts per fight beside each line, and a line the run never
+     cast dimmed, and under the head the spec's fidelity when the sim has not validated it. The live
+     /sim page keeps LiveRotationCard and its drawer. -->
 <script lang="ts">
-  import { simCopy } from '../../lib/sim/copy';
-  import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
-  import { needsFidelityNote, specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
-  import type { SpecFidelity } from '../../lib/sim/types';
-  import RotationDisclosure from './RotationDisclosure.svelte';
+  import type { ActionNames } from '../../lib/sim/action-names';
+  import { createCardTables } from '../../lib/sim/card-tables.svelte';
+  import { classSpecPath } from '../../lib/sim/gear-card';
+  import { rotationCardCopy as copy } from '../../lib/sim/input-cards-copy';
+  import { rotationActionKeys, rotationRows } from '../../lib/sim/rotation-card';
+  import { loadRotationLines, type RotationLines } from '../../lib/sim/rotations';
+  import { specDisplayName } from '../../lib/sim/spec-label';
+  import type { SimResult, SpecFidelity } from '../../lib/sim/types';
+  import { isStale } from '../../lib/sim/version';
+  import ActionLink from '../ui/ActionLink.svelte';
+  import Card from '../ui/Card.svelte';
+  import ActionMark from './ActionMark.svelte';
+  import FidelityNote from './FidelityNote.svelte';
 
-  let { spec, fidelity }: { spec: string; fidelity: SpecFidelity | null } = $props();
+  let {
+    result,
+    names,
+    fidelity = null,
+  }: {
+    result: SimResult;
+    names: ActionNames | null;
+    /** The spec list's row; a spec the sim has not validated says so under the head (tenet 8). */
+    fidelity?: SpecFidelity | null;
+  } = $props();
 
-  const name = $derived(specDisplayName(spec));
-  const simulated = $derived(isSimulatedSpec(spec));
-  const showNote = $derived(simulated && needsFidelityNote(fidelity));
+  let lines = $state.raw<RotationLines | null | undefined>(undefined);
+  $effect(() => {
+    const { spec } = result.request;
+    loadRotationLines().then(
+      (all) => (lines = all[spec] ?? null),
+      (error: unknown) => {
+        console.error('sim rotation: the rotation did not load', error);
+        lines = null;
+      },
+    );
+  });
+
+  const tables = createCardTables(
+    () => result,
+    () => names,
+    () => [
+      ...(lines === null || lines === undefined ? [] : rotationActionKeys(lines)),
+      ...result.summary.casts.map((row) => row.spell_name),
+    ],
+  );
+
+  const spec = $derived(specDisplayName(result.request.spec));
+  const rows = $derived(
+    lines === null || lines === undefined ? null : rotationRows(result, lines, tables.names),
+  );
+  const drifted = $derived(
+    lines !== null &&
+      lines !== undefined &&
+      (result.rotation_sha === undefined
+        ? isStale(result.engine_version)
+        : lines.sha !== null && result.rotation_sha !== lines.sha),
+  );
+  const meta = $derived(
+    rows === null ? undefined : `${copy.meta(rows.priority.length)}${drifted ? copy.today : ''}`,
+  );
+
+  function rankOf(action: string | null): number {
+    return action === null ? 0 : tables.visuals(action).rank;
+  }
 </script>
 
-<section
-  class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-2 border p-4 md:mx-0"
-  data-testid="sim-rotation-card"
+{#snippet title(name: string, action: string | null)}
+  <span class="text-strong text-[15px] font-semibold">{name}</span>
+  {#if rankOf(action) > 0}<span class="text-muted ml-1 text-[13px] whitespace-nowrap"
+      >{copy.rank(rankOf(action))}</span
+    >{/if}
+{/snippet}
+
+<Card
+  glyph="list"
+  label={copy.label(spec, result.request.character.level)}
+  title={copy.title}
+  {meta}
+  body="none"
+  class="mx-[18px] md:mx-0"
+  testid="sim-rotation-saved-card"
 >
-  <h2 class="section-title">{simCopy.rotationCard}</h2>
-  {#if simulated}
-    <p class="text-[13px]">{simCopy.rotationCardBody(name)}</p>
-    <RotationDisclosure
-      {spec}
-      idPrefix="sim-rotation-card"
-      triggerClass="label text-nav text-[13px] underline decoration-dotted underline-offset-2"
-      triggerTestId="sim-rotation-card-link"
-    />
+  <FidelityNote {fidelity} class="border-line-soft border-t px-5 py-3" testid="sim-rotation-card-note" />
+  {#if rows === null}
+    {#if lines === null}
+      <p class="text-muted border-line-soft border-t px-5 py-4 text-[14px]">{copy.noRotation(spec)}</p>
+    {/if}
   {:else}
-    <p class="text-[13px]" data-testid="sim-rotation-not-simulated">
-      {simCopy.rotationNotSimulated(name)}
-    </p>
+    {#if rows.prepull.length > 0}
+      <h3 class="quiet-label border-line-soft border-t px-5 py-3.5">{copy.beforePull}</h3>
+      <ol data-testid="rotation-prepull">
+        {#each rows.prepull as row (row.key)}
+          <li
+            class={`border-line-soft grid grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-3 border-t px-5 py-3 ${row.cast === false ? 'opacity-50' : ''}`}
+            data-testid="rotation-prepull-row"
+            data-cast={row.cast}
+          >
+            <span class="text-muted numeric text-[14px] font-semibold whitespace-nowrap">{row.at}</span>
+            <ActionMark action={row.action} {tables} size={28}
+              >{@render title(row.name, row.action)}</ActionMark
+            >
+            {#if row.cast !== null}
+              <span class="text-muted text-right text-[13px]">{row.cast ? copy.cast : copy.notCast}</span>
+            {/if}
+          </li>
+        {/each}
+      </ol>
+    {/if}
+    <h3 class="quiet-label border-line-soft border-t px-5 py-3.5">{copy.thenPriority}</h3>
+    <ol data-testid="rotation-priority">
+      {#each rows.priority as row (row.key)}
+        <li
+          class={`border-line-soft grid grid-cols-[24px_minmax(0,1fr)] gap-x-3 border-t px-5 py-3 md:grid-cols-[44px_minmax(0,1fr)_140px] ${row.dimmed ? 'opacity-50' : ''}`}
+          data-testid="rotation-line"
+          data-dimmed={row.dimmed}
+        >
+          <span class="text-muted numeric pt-1 text-right text-[14px] font-semibold">{row.number}</span>
+          <div class="min-w-0">
+            <div class="flex items-start justify-between gap-3">
+              <ActionMark action={row.action} {tables} size={28}
+                >{@render title(row.name, row.action)}</ActionMark
+              >
+              {#if row.casts !== null}
+                <span class="text-muted shrink-0 pt-1 text-[13px] md:hidden">
+                  {row.dimmed ? copy.notCast : copy.casts(row.casts)}
+                </span>
+              {/if}
+            </div>
+            {#if row.note !== ''}
+              <p class="text-text mt-1 max-w-[var(--measure-wide)] text-[14px] leading-[21px] md:pl-[38px]">
+                {row.note}
+              </p>
+            {/if}
+          </div>
+          {#if row.casts !== null}
+            <span
+              class={`hidden pt-1 text-right md:block ${row.dimmed ? 'text-muted text-[13px]' : 'text-text numeric text-[14px]'}`}
+            >
+              {row.dimmed ? copy.notCast : copy.casts(row.casts)}
+            </span>
+          {/if}
+        </li>
+      {/each}
+    </ol>
+    <div class="border-line-soft flex flex-wrap items-center justify-between gap-x-4 border-t px-5 py-1.5">
+      <p class="text-muted text-[13px]">{copy.foot(spec)}</p>
+      <ActionLink href={`/guides/${classSpecPath(result.request.spec)}`}>{copy.guide(spec)}</ActionLink>
+    </div>
   {/if}
-  {#if showNote && fidelity !== null}
-    <p class="text-muted text-[13px]" data-testid="sim-rotation-card-note">
-      <a href="/sim/specs" class={specPillClass(fidelity.state)}>{specStateLabel(fidelity.state)}</a>
-      {specStateNote(fidelity.state)}
-    </p>
-  {/if}
-</section>
+</Card>

@@ -140,10 +140,9 @@ func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestP
 		from fight_metrics m
 		join reports r on r.id = m.report_id
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
-		where r.guild_id = $1 and m.kill and coalesce(m.encounter_id, 0) > 0 and m.state <> 'removed'
+		where r.guild_id = $1 and `+bossKillMetrics+`
 		  and `+presence.EvidenceReport("r")+`
-		order by m.player_key,
-		  (case when m.role = 'healer' then coalesce(m.metric_hps, 0) else coalesce(m.metric_dps, 0) end) desc`,
+		order by m.player_key, `+roleMetricOrder+` desc`,
 		guildID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: best parses: %w", err)

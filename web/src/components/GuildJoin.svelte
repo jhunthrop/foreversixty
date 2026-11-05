@@ -19,7 +19,7 @@
   } from '../lib/guild/api';
   import { guildJoinCopy } from '../lib/guild/copy';
   import { joinedPlanLine } from '../lib/guild/join-plan';
-  import { joiningRow } from '../lib/guild/join-view';
+  import { holdsErrorRoom, joiningRow } from '../lib/guild/join-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { classColorVar } from '../lib/report/format';
@@ -201,15 +201,19 @@
             {guildJoinCopy.notNow}
           </a>
         </div>
-        <div class="min-h-[21px]">
-          {#if error !== ''}<p
-              class="text-wipe text-[14px]"
-              role="alert"
-              data-testid="guild-join-action-error"
-            >
-              {error}
-            </p>{/if}
-        </div>
+        <!-- The error line's room is held only while a join is in flight (or failed), so a card at
+             rest ends at its buttons with no dead space under them (guild round 2). -->
+        {#if holdsErrorRoom(busy, error)}
+          <div class="min-h-[21px]" data-testid="guild-join-error-slot">
+            {#if error !== ''}<p
+                class="text-wipe text-[14px]"
+                role="alert"
+                data-testid="guild-join-action-error"
+              >
+                {error}
+              </p>{/if}
+          </div>
+        {/if}
       {/if}
     </div>
   {/if}

@@ -100,13 +100,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:284287 ranged:286750 | 13.3 | 5 | other:mana_gain=32.6, spell:1454=32.6, spell:695=29.0, spell:172=14.4, spell:707=13.6 | {SpellID: 18288}, {SpellID: 603} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:6505 ranged:5243 | 38.1 | 7 | other:mana_gain=26.2, spell:1455=26.2, spell:1088=20.8, spell:5019=13.0, spell:6222=12.7 | {SpellID: 18288}, {SpellID: 603} |
-| 30 | 25522300100001000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 59.7 | 9 | other:mana_gain=28.3, spell:1456=28.3, spell:1106=20.7, spell:2941=11.4, spell:6223=10.9 | {SpellID: 603} |
-| 38 | 25522300132001300-0000000000000000000-0000000000000000 | main_hand:873 ranged:13064 | 86.7 | 9 | other:mana_gain=26.4, spell:11687=26.4, spell:7641=25.3, spell:2941=11.7, spell:7648=10.8 | {SpellID: 603} |
-| 40 | 25522300132001311-0000000000000000000-0000000000000000 | main_hand:873 ranged:5216 | 107.1 | 8 | other:mana_gain=20.6, spell:11687=20.6, spell:1316697=16.8, spell:11665=10.5, spell:7648=10.4 | {SpellID: 603} |
-| 50 | 25522300132001351-2004000000000000000-0000000000000000 | main_hand:873 ranged:249232 | 172.2 | 8 | other:mana_gain=18.9, spell:11688=18.9, spell:1316697=17.4, spell:11671=10.3, spell:11667=10.3 | {SpellID: 603} |
-| 60 | 25522300132001351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 331.2 | 9 | spell:1316697=19.2, other:mana_gain=17.7, spell:11689=17.7, spell:11668=10.9, spell:11672=10.8 | - |
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:284287 ranged:286750 | 13.3 | 5 | other:mana_gain=32.6, spell:1454=32.6, spell:695=29.0, spell:172=14.4, spell:707=13.6 | {SpellID: 1316697}, {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18288}, {SpellID: 18788}, {SpellID: 603} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:6505 ranged:5243 | 38.1 | 7 | other:mana_gain=26.2, spell:1455=26.2, spell:1088=20.8, spell:5019=13.0, spell:6222=12.7 | {SpellID: 1316697}, {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18288}, {SpellID: 18788}, {SpellID: 603} |
+| 30 | 25522300100001000-0000000000000000000-0000000000000000 | main_hand:249392 ranged:5213 | 59.7 | 9 | other:mana_gain=28.3, spell:1456=28.3, spell:1106=20.7, spell:2941=11.4, spell:6223=10.9 | {SpellID: 1316697}, {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788}, {SpellID: 603} |
+| 38 | 25522300132001300-0000000000000000000-0000000000000000 | main_hand:873 ranged:13064 | 86.7 | 9 | other:mana_gain=26.4, spell:11687=26.4, spell:7641=25.3, spell:2941=11.7, spell:7648=10.8 | {SpellID: 1316697}, {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788}, {SpellID: 603} |
+| 40 | 25522300132001311-0000000000000000000-0000000000000000 | main_hand:873 ranged:5216 | 107.1 | 8 | other:mana_gain=20.6, spell:11687=20.6, spell:1316697=16.8, spell:11665=10.5, spell:7648=10.4 | {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788}, {SpellID: 603} |
+| 50 | 25522300132001351-2004000000000000000-0000000000000000 | main_hand:873 ranged:249232 | 172.2 | 8 | other:mana_gain=18.9, spell:11688=18.9, spell:1316697=17.4, spell:11671=10.3, spell:11667=10.3 | {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788}, {SpellID: 603} |
+| 60 | 25522300132001351-2005220000000000000-0050000000000000 | main_hand:22630 ranged:22821 | 331.2 | 9 | spell:1316697=19.2, other:mana_gain=17.7, spell:11689=17.7, spell:11668=10.9, spell:11672=10.8 | {SpellID: 17941}, {SpellID: 18094}, {SpellID: 18788} |
 
 ## Learned but unused (informational)
 
@@ -215,10 +215,24 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
+- warlock-affliction level=10 kind=unresolved_id action={SpellID: 17941}
 - warlock-affliction level=10 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=10 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=20 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=20 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=30 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=30 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=38 kind=unresolved_id action={SpellID: 17941}
+- warlock-affliction level=38 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=40 kind=unresolved_id action={SpellID: 17941}
 - warlock-affliction level=40 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=40 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
 - warlock-affliction level=40 kind=zero_casts spell="Shadow Bolt" id=7641 authored=11661
+- warlock-affliction level=50 kind=unresolved_id action={SpellID: 17941}
 - warlock-affliction level=50 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=50 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
 - warlock-affliction level=50 kind=zero_casts spell="Shadow Bolt" id=11659 authored=11661
+- warlock-affliction level=60 kind=unresolved_id action={SpellID: 17941}
 - warlock-affliction level=60 kind=zero_casts id=5019 authored=5019 (untracked ability; not in spellranks.json's rank chains)
+- warlock-affliction level=60 kind=zero_casts id=688 authored=688 (untracked ability; not in spellranks.json's rank chains)
 - warlock-affliction level=60 kind=zero_casts spell="Shadow Bolt" id=11661 authored=11661

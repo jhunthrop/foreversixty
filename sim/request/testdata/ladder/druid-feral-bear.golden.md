@@ -106,7 +106,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 0000000000000000-51230332023102110000-0000000000000000 | main_hand:13045 | 59.3 | 8 | spell:8972/1=72.8, spell:8972=71.1, spell:1328616=29.1, other:rage_gain=17.9, spell:9490=7.8 | - |
 | 40 | 0000000000000000-51230332023102120010-0000000000000000 | main_hand:13045 | 73.9 | 9 | spell:8972/1=71.1, spell:8972=69.9, spell:1328616=30.5, spell:407995=29.9, other:rage_gain=19.8 | - |
 | 50 | 0000000000000000-51230332023102125510-0000000000000000 | main_hand:13045 | 111.4 | 10 | spell:9880/1=70.7, spell:9880=69.5, other:rage_gain=33.2, spell:1235826=31.2, spell:1238069=29.9 | - |
-| 60 | 0000000000000000-51230332023102125510-0550000000000000 | main_hand:22632 | 208.2 | 10 | spell:9881/1=72.8, spell:9881=70.9, other:rage_gain=33.8, spell:1235827=31.0, spell:1238070=29.9 | - |
+| 60 | 0000000000000000-51230332023102125510-0550000000000000 | main_hand:22632 | 208.9 | 10 | spell:9881/1=72.8, spell:9881=70.9, other:rage_gain=33.8, spell:1235827=31.0, spell:1238070=29.9 | - |
 
 ## Learned but unused (informational)
 
@@ -121,7 +121,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Claw (spell 1082)
 - Entangling Roots (spell 1062)
-- Insect Swarm (spell 5570)
 - Moonfire (spell 8925)
 - Rip (spell 1079)
 - Shred (spell 5221)

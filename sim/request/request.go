@@ -9,7 +9,9 @@
 package request
 
 import (
+	"crypto/sha256"
 	"embed"
+	"encoding/hex"
 	"errors"
 	"fmt"
 
@@ -887,8 +889,44 @@ func applySpec(player *proto.Player, slug, class, preset, race string, level int
 		return err
 	}
 	apply(player)
+	assumeRaidBleed(player, preset)
 	player.Rotation = rot
 	return nil
+}
+
+// assumeRaidBleed marks the raid fight's target as bleeding for the feral
+// and bear druid. Rend and Tear reads "on Bleeding targets" and any bleed
+// counts (druid round 21 C2): in a raid a warrior's Deep Wounds or a rogue's
+// Rupture is on the boss from the opening seconds. The bare fight is solo,
+// so only the druid's own bleeds count there.
+func assumeRaidBleed(player *proto.Player, preset string) {
+	if preset != RaidPreset {
+		return
+	}
+	switch spec := player.Spec.(type) {
+	case *proto.Player_FeralDruid:
+		spec.FeralDruid.Options.AssumeBleedActive = true
+	case *proto.Player_FeralTankDruid:
+		spec.FeralTankDruid.Options.AssumeBleedActive = true
+	}
+}
+
+// rotationSHALength is how much of the hash a result carries: enough to tell two
+// rotations apart, short enough to print.
+const rotationSHALength = 12
+
+// RotationSHA names the rotation a run of spec uses: the first 12 hex of the
+// sha256 over its embedded APL, which is the rotation block of
+// data/curated/apl/<spec>.json as `make apl-sync` wrote it. Rank rewrites for a
+// level below the cap are left out, because the rotation a player reads is the
+// authored one. Empty for a spec with no embedded rotation.
+func RotationSHA(spec string) string {
+	b, err := aplFS.ReadFile("apl/" + spec + ".apl.json")
+	if err != nil {
+		return ""
+	}
+	sum := sha256.Sum256(b)
+	return hex.EncodeToString(sum[:])[:rotationSHALength]
 }
 
 // rotation parses one embedded APL, rewritten to level's ranks under

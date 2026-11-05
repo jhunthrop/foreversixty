@@ -16,7 +16,7 @@ describe('rosterStatChips', () => {
     const chips = rosterStatChips(rowNamed('Kraggor'));
     expect(chips[0]).toMatch(/^Item level \d+$/);
     expect(chips.some((c) => /^\d+ of \d+ nights$/.test(c))).toBe(true);
-    expect(chips.some((c) => /^Best (DPS|HPS) \d+$/.test(c))).toBe(true);
+    expect(chips.some((c) => /^Top (DPS|HPS) \d+$/.test(c))).toBe(true);
     expect(chips.some((c) => /^Rating \d+$/.test(c))).toBe(true);
     expect(chips.join(' ')).not.toMatch(/\d+ rating|ilvl|best DPS/);
   });
