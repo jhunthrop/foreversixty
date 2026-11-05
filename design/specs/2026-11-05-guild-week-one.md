@@ -56,7 +56,7 @@ No new control and no new token (tenet 10).
 
 **Row 3, professions (only when cheap).** Shown only when at least one counted row carries `professions`. 13 px muted, wraps with trailing separators (the profile header's rule): primary professions only, alphabetical, each followed by who has it, highest skill first, with the skill when the export carries it: `Alchemy: Rootbound 285, Cindergale · Enchanting: Ashenveil 300`. A profession with more than three people reads its top three then `+{n}`. Today the export carries profession slugs only (`fs1.go` `parseProfessions`), so skill numbers show only once the addon sends them; the names show now. Secondary skills (cooking, first aid, fishing) are left out. Label before it, 13 px `quiet-label`: `Professions`.
 
-**Row 4, the next step.** A `--border-soft` 1 px rule 16 px above it, then a flex row (`justify-between`, gap 16, wraps below 768): one 15 px sentence on the left, the action on the right. Exactly one `button('primary','md')` per viewer; anything else is an `ActionLink`. Order of branches: the first that applies wins.
+**Row 4, the next step.** A `--border-soft` 1 px rule 16 px above it, then a flex row (`justify-between`, gap 16, wraps below 768): one 15 px sentence on the left, the action on the right. **Below 768 the next step leads the card** (amended 2026-11-05, guild round 2): round 1 measured the primary button at about y 950 at 390 x 640 (leveling-gm-overview-390), and moving only professions down still leaves it near y 720, under the 2 by 2 tiles and the two-line raids line. So below 768 the order is: the next-step row (sentence, the full-width primary, then the secondary link), its rule moved below it, then the tiles, the raids-open line and professions last. From 768 the order is as written above. Exactly one `button('primary','md')` per viewer; anything else is an `ActionLink`. Order of branches: the first that applies wins.
 
 | Viewer state | Sentence | Primary button | Secondary `ActionLink` |
 |---|---|---|---|
@@ -108,7 +108,7 @@ No new control and no new token (tenet 10).
 
 One source: `GET /v1/guilds/{id}/progression` (§4.1). Header line under the h2, 13 px muted left, 14 px `numeric` right: `Named bosses down this tier` / `{down} of {named}`. Never `0 · Onyxia`.
 
-- **Zero pulls in the tier** (`tier.pulls_total === 0`): the bar, the Onyxia card and the Barrow Deeps / Hyjal Summit card are not drawn. In their place one `EmptyState`:
+- **Zero pulls in the tier** (`tier.pulls_total === 0`): the bar, the Onyxia card and the Barrow Deeps / Hyjal Summit card are not drawn. In their place one `Card` (`glyph="trophy"`, title `Progression`, which stands in for the h2) holding one `EmptyState`, the same panel Loot's empty state sits in; round 1's bare 13 px line under the h2 read as a page that failed to load (amended 2026-11-05, guild round 2):
   - Before 9 Dec: message `Barrow Deeps, Hyjal Summit and Onyxia's Lair open {Wed 9 Dec}. Progression starts with your first logged pull.` action `{ label: 'How to log a raid', href: '/logs' }`.
   - From 9 Dec: message `No pulls logged yet. Upload your first raid night and it shows here.` action `{ label: 'Upload a log', href: '/logs' }`.
   - Roster bests stay hidden (they have no rows anyway).
@@ -199,7 +199,7 @@ Deleted: `Every readiness check passes. Nothing needed before the next raid.`, `
 ## 7. Phone and desktop
 
 - Never collapses: the four tile figures, the raids-open date and countdown, the next-step sentence and button, `Level {L} · {n} levels to 60`, the needs line's subject name.
-- Collapses: tiles go from 132 px fixed to a 2 by 2 grid below 768; the action row stacks (sentence, then a full-width 44 px button) below 768; professions wrap.
+- Collapses: tiles go from 132 px fixed to a 2 by 2 grid below 768; the action row stacks (sentence, then a full-width 44 px button, then the secondary link) and moves to the top of the card body below 768, with professions last (§3.1 Row 4); professions wrap.
 - 2000 px: everything stays in the centred 1344 px column.
 
 ## 8. Performance

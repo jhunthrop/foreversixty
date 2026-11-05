@@ -1,7 +1,8 @@
 <!-- web/src/components/guild/GuildWeekOneCard.svelte -->
 <!-- The Before raids open card (design/specs/2026-11-05-guild-week-one.md §3.1): the first card on
      Overview while nothing is logged in the tier. The guild's level spread, when the raids open,
-     who has which profession, and the viewer's one next step. The words and branches are
+     who has which profession, and the viewer's one next step. Below 768 the next step leads the
+     card and professions close it, so the primary button sits above the 640 px fold. The words and branches are
      lib/guild/week-one.ts; `loading` and `error` hold its height so the page does not shift. -->
 <script lang="ts">
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
@@ -72,7 +73,8 @@
     { value: spread.forties, label: '40 TO 49', gold: false },
     { value: spread.under40, label: 'UNDER 40', gold: false },
   ]);
-  const actionClass = `${button('primary', 'md')} max-md:w-full`;
+  /** Below 768 the primary leads its row, above the secondary link (§3.1 Row 4, guild round 2). */
+  const actionClass = `${button('primary', 'md')} max-md:order-first max-md:w-full`;
 </script>
 
 {#snippet primary(action: WeekOneAction)}
@@ -135,14 +137,14 @@
       </p>
 
       {#if professions.length > 0}
-        <p class="text-muted text-[13px]" data-testid="guild-week-one-professions">
+        <p class="text-muted text-[13px] max-md:order-last" data-testid="guild-week-one-professions">
           <span class="quiet-label">{weekOneCopy.professions}</span>
           <FactLine facts={professions} />
         </p>
       {/if}
 
       <div
-        class="border-line-soft flex flex-wrap items-center justify-between gap-4 border-t pt-4 max-md:flex-col max-md:items-stretch"
+        class="border-line-soft flex flex-wrap items-center justify-between gap-4 max-md:order-first max-md:flex-col max-md:items-stretch max-md:border-b max-md:pb-4 md:border-t md:pt-4"
         data-testid="guild-week-one-step"
       >
         <p class="text-[15px]" data-testid="guild-week-one-sentence">

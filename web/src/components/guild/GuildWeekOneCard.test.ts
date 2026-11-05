@@ -66,6 +66,19 @@ describe('GuildWeekOneCard', () => {
     expect(markup).toContain('href="/guild/settings#invite"');
   });
 
+  it('leads with the next step and ends with professions below 768, so the button clears the fold', () => {
+    const markup = card();
+    const step = /<div class="([^"]*)"[^>]*data-testid="guild-week-one-step"/.exec(markup)?.[1] ?? '';
+    expect(step).toContain('max-md:order-first');
+    expect(step).toContain('md:border-t');
+    const professions =
+      /<p class="([^"]*)"[^>]*data-testid="guild-week-one-professions"/.exec(markup)?.[1] ?? '';
+    expect(professions).toContain('max-md:order-last');
+    const action =
+      /<button[^>]*class="([^"]*)"[^>]*data-testid="guild-week-one-action"/.exec(markup)?.[1] ?? '';
+    expect(action).toContain('max-md:order-first');
+  });
+
   it('holds its height while it loads and offers a retry when the levels fail', () => {
     expect(card({ status: 'loading' })).toContain('data-testid="guild-week-one-loading"');
     const failed = card({ status: 'error' });
@@ -104,6 +117,11 @@ describe('GuildProgression at zero pulls', () => {
       "Barrow Deeps, Hyjal Summit and Onyxia's Lair open Wed 9 Dec. Progression starts with your first logged pull.",
     );
     expect(text(markup)).toContain('How to log a raid');
+    // The empty state sits in the tab's card, not as a bare line under the h2 (guild round 2).
+    const cardAt = markup.indexOf('data-testid="guild-progression-empty-card"');
+    expect(cardAt).toBeGreaterThan(-1);
+    expect(markup.indexOf('data-testid="guild-progression-empty"')).toBeGreaterThan(cardAt);
+    expect(markup.split('<h2').length - 1).toBe(1);
     expect(markup).not.toContain('guild-progression-tier');
     expect(markup).not.toContain('guild-progression-encounter');
   });

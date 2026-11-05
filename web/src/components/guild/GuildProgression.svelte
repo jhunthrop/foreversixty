@@ -13,6 +13,7 @@
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
   import { executionLabel, executionTitle } from '../../lib/sim/execution';
+  import Card from '../ui/Card.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
 
   /** `rosterBest` is v1's own "Roster bests" feature (`GET .../<guild>`'s existing,
@@ -54,13 +55,19 @@
 </script>
 
 <section class="flex flex-col gap-6" data-testid="guild-progression-tab">
-  <h2 class="section-title">Progression</h2>
-  {#if progression === null}
-    <EmptyState message="No pulls recorded yet." testid="guild-progression-empty" />
-  {:else if progression.tier.pulls_total === 0}
-    {@const empty = progressionEmpty(now)}
-    <EmptyState message={empty.message} action={empty.action} testid="guild-progression-empty" />
+  {#if progression === null || progression.tier.pulls_total === 0}
+    <!-- Zero pulls: the tab's one region is a card holding the shared empty state, as Loot's is,
+         never a bare line in empty space (guild round 2). -->
+    <Card glyph="trophy" title="Progression" testid="guild-progression-empty-card">
+      {#if progression === null}
+        <EmptyState message="No pulls recorded yet." testid="guild-progression-empty" />
+      {:else}
+        {@const empty = progressionEmpty(now)}
+        <EmptyState message={empty.message} action={empty.action} testid="guild-progression-empty" />
+      {/if}
+    </Card>
   {:else}
+    <h2 class="section-title">Progression</h2>
     {@const tier = progression.tier}
     <div class="flex flex-col gap-2" data-testid="guild-progression-tier">
       <div class="text-muted flex justify-between text-[13px]">
