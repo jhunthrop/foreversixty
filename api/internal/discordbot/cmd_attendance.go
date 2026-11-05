@@ -15,8 +15,9 @@ const (
 	optAttendanceName = "name"
 	// attendanceLineDate is "Thu 10 Dec", in the guild's raid zone.
 	attendanceLineDate = "Mon 2 Jan"
-	// rosterTab is the guild page's Roster tab.
-	rosterTab = "/roster"
+	// rosterTab is the guild page's Roster tab: the page opens the tab its fragment names
+	// (the site has no /roster path under a guild).
+	rosterTab = "#roster"
 )
 
 // cmdAttendance answers /attendance: one embed per own character (main first, at most five),
