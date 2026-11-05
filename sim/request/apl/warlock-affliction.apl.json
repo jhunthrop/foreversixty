@@ -250,7 +250,7 @@
       }
     },
     {
-      "notes": "Wrack with your DoTs up. With Soul Siphon it out-damages Shadow Bolt for a fraction of the mana, and your other Shadow DoTs take 10% more while it runs.",
+      "notes": "Wrack with your DoTs up. With Soul Siphon it out-damages Shadow Bolt for a fraction of the mana, and your Corruption and Bane of Agony take 10% more while it runs.",
       "action": {
         "castSpell": {
           "spellId": {
