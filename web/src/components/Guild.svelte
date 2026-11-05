@@ -842,25 +842,23 @@
   }
 </script>
 
-{#if status === 'missing'}
+{#if status === 'missing' || (status === 'notfound' && resolved !== null)}
   <h1 class="sr-only">Guild</h1>
   <!-- Keeps the loading state's box and its lede: this branch replaces the loading state on
-       the client (an address that does not parse never fetches), so the server-rendered
-       lede stays the first paint and a footer that jumps up the page by the skeleton's
-       height (the layout shift the guild Lighthouse row measured) stays put. -->
+       the client, so the server-rendered lede stays the first paint and a footer that jumps up
+       the page by the skeleton's height (the layout shift the guild Lighthouse row measured)
+       stays put. A wrong address and an unknown guild share the box. -->
   <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight} {GUILD_BANDLESS_TOP}">
     <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
-    <p class="text-[14px]" data-testid="guild-missing">
-      That is not a guild address. They look like <code class="font-mono"
-        >/guild/eu/normal/the-last-watch</code
-      >.
-    </p>
-  </div>
-{:else if status === 'notfound' && resolved !== null}
-  <h1 class="sr-only">Guild</h1>
-  <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight} {GUILD_BANDLESS_TOP}">
-    <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
-    <GuildNotFound path={resolved} />
+    {#if status === 'notfound' && resolved !== null}
+      <GuildNotFound path={resolved} />
+    {:else}
+      <p class="text-[14px]" data-testid="guild-missing">
+        That is not a guild address. They look like <code class="font-mono"
+          >/guild/eu/normal/the-last-watch</code
+        >.
+      </p>
+    {/if}
   </div>
 {:else if status === 'loading' || status === 'failed'}
   <h1 class="sr-only">Guild</h1>

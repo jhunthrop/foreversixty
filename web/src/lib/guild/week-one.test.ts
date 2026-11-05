@@ -188,8 +188,8 @@ describe('the raider step', () => {
 
   it('with no spec yet, the class guide says which spec to level as', () => {
     const step = weekOneStep(input({ character: { name: 'A', class: 'warrior', level: 20, spec: null } }));
-    expect(step.action.kind === 'link' && step.action.href).toMatch(/^\/guides\/warrior\/\w+#leveling$/);
-    expect(step.action.label).toMatch(/^Level as \w+$/);
+    expect(step.action?.kind === 'link' && step.action.href).toMatch(/^\/guides\/warrior\/\w+#leveling$/);
+    expect(step.action?.label).toMatch(/^Level as \w+$/);
   });
 
   it('at 60 reads the gear check and its best in slot', () => {

@@ -1197,9 +1197,6 @@ export interface GuildLootCandidate {
   replaces_item: GuildLootWornItem | null;
   /** Awards this character has had in this guild this tier. */
   items_won: number;
-  /** The candidate wears nothing in the drop's slot (guild round 3, from the API lane); absent on
-   *  an older API, which reads as false. */
-  fills_empty_slot?: boolean;
 }
 
 export interface GuildLootWornItem {
