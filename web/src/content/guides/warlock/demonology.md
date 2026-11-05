@@ -121,7 +121,7 @@ Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker c
 
 Your points at 10 and 11 go into Improved Health Funnel: 40% more health moved, 30% cheaper, no threat, and usable at any demon health. It wakes up at 12 with Health Funnel and keeps the Voidwalker standing through bad pulls. Demonic Embrace follows from 12 to 14 for 9% more Stamina, then Unholy Power from 15 to 19 for 10% more pet damage.
 
-Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 cost no mana, and from 13 the wand out-damages your bolts. An enchanter makes both, or check the Auction House. Cloth quest rewards with Intellect and Stamina beat anything a vendor sells.
+Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 cost no mana, and from 13 the Greater wand out-damages your bolts. An enchanter makes both, or check the Auction House. Cloth quest rewards with Intellect and Stamina beat anything a vendor sells.
 
 ### Levels 20 to 60
 
