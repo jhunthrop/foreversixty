@@ -30,6 +30,8 @@ const rowHtml = (key: string): string => {
   return match[0];
 };
 const text = (html: string): string => html.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+/** The text as a browser lays it out: tags add no space, runs of whitespace collapse. */
+const exact = (html: string): string => html.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ');
 
 describe('AbilityTable', () => {
   it('draws a spell row with its icon, rank, figures and tooltip key', () => {
@@ -61,6 +63,17 @@ describe('AbilityTable', () => {
     expect(wounds).toContain('59 ticks');
     expect(wounds).toContain('tick crit 37.3%');
     expect(wounds).toContain('98.9%');
+  });
+
+  it('spaces the separators and a source count as the page reads them', () => {
+    expect(exact(rowHtml('other:attack/1'))).toContain(' · Dodge');
+    const counted = render(AbilityTable, {
+      props: {
+        table,
+        decorate: (row) => ({ ...decorate(row), sources: row.hand === 'extra' ? [{ name: 'Windfury Totem', count: 21 }] : [] }),
+      },
+    }).body;
+    expect(exact(counted)).toContain('From Windfury Totem 21');
   });
 
   it('never draws a broken image: a row with no icon keeps the empty box', () => {

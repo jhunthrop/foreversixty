@@ -21,7 +21,7 @@ const fact = (): string => `<div class="flex flex-col gap-2 py-3 md:pr-10">${blo
 const band = (): string =>
   '<div class="full-bleed surface-band h-[693px] overflow-hidden md:h-[486px] lg:h-[262px]"><div class="page-column px-[18px] pt-5 md:pt-7">' +
   '<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">' +
-  `<div class="flex items-center gap-5">${block('h-14 w-14 shrink-0 rounded-full md:h-16 md:w-16')}<div class="flex flex-col gap-2">${block('h-2.5 w-20')}${block('h-9 w-52')}${block('h-3 w-64 max-w-full')}${block('h-3.5 w-60 max-w-full')}</div></div>` +
+  `<div class="flex items-center gap-5">${block('h-14 w-14 shrink-0 !rounded-full md:h-16 md:w-16')}<div class="flex flex-col gap-2">${block('h-2.5 w-20')}${block('h-9 w-52')}${block('h-3 w-64 max-w-full')}${block('h-3.5 w-60 max-w-full')}</div></div>` +
   `<div class="flex flex-col gap-3 lg:items-end">${block('h-14 w-48')}${block('h-3.5 w-36')}<div class="flex flex-col gap-3 md:flex-row">${block('h-11 w-full md:w-44')}${block('h-11 w-full md:w-32')}</div></div>` +
   '</div>' +
   `<div class="mt-6 grid grid-cols-2 border-t border-[rgba(229,185,85,.14)] md:flex md:flex-wrap">${Array.from({ length: 7 }, fact).join('')}</div>` +

@@ -51,6 +51,10 @@
 
   let sort = $state<AbilitySort>(DEFAULT_SORT);
 
+  // Held in constants: a block's edge trims literal whitespace in the markup.
+  const SEPARATOR = ' · ';
+  const SPACE = ' ';
+
   const SORT_ORDER: Readonly<Record<AbilitySort['direction'], 'descending' | 'ascending'>> = {
     desc: 'descending',
     asc: 'ascending',
@@ -75,7 +79,7 @@
   <th scope="col" class={`py-2.5 pr-3 text-right align-middle ${classes}`} aria-sort={ariaSort(column)}>
     <button
       type="button"
-      class={`quiet-label hover:text-strong focus-visible:outline-gold inline-flex min-h-11 items-center gap-1 whitespace-nowrap focus-visible:outline-2 md:min-h-5 ${sort.column === column ? 'text-strong' : ''}`}
+      class={`quiet-label hover:text-strong focus-visible:outline-gold ml-auto flex min-h-11 items-center gap-1 whitespace-nowrap focus-visible:outline-2 md:min-h-5 ${sort.column === column ? 'text-strong' : ''}`}
       data-game-tip={tip}
       data-testid={`ability-sort-${column}`}
       onclick={() => (sort = nextSort(sort, column))}
@@ -153,12 +157,12 @@
           <p class="text-muted text-[13px] leading-[18px]" data-testid="ability-subline">
             {#if row.periodic}
               {@const [ticks, tickCrit] = copy.ticks(grouped(row.ticks), fixedOne(row.crit ?? 0))}
-              <span class="whitespace-nowrap">{ticks}</span>
-              <span aria-hidden="true">·</span>
-              <span class="whitespace-nowrap">{tickCrit}</span>
+              <span class="whitespace-nowrap">{ticks}</span><span aria-hidden="true">{SEPARATOR}</span><span
+                class="whitespace-nowrap">{tickCrit}</span
+              >
             {:else}
               {#each row.outcomes as outcome, index (outcome.kind)}
-                {#if index > 0}<span aria-hidden="true"> · </span>{/if}
+                {#if index > 0}<span aria-hidden="true">{SEPARATOR}</span>{/if}
                 <span class="whitespace-nowrap"
                   >{copy.outcome[outcome.kind]}
                   <span class="text-text">{fixedOne(outcome.pct)}%</span></span
@@ -166,18 +170,18 @@
               {/each}
             {/if}
             {#if extras.swingsBecame > 0}
-              {#if row.outcomes.length > 0}<span aria-hidden="true"> · </span>{/if}
+              {#if row.outcomes.length > 0}<span aria-hidden="true">{SEPARATOR}</span>{/if}
               <span class="whitespace-nowrap">{copy.becameHeroicStrike(grouped(extras.swingsBecame))}</span>
             {/if}
             {#if extras.sources.length > 0}
-              {#if row.outcomes.length > 0}<span aria-hidden="true"> · </span>{/if}
+              {#if row.outcomes.length > 0}<span aria-hidden="true">{SEPARATOR}</span>{/if}
               <span data-testid="ability-sources"
-                >{copy.fromSources}
-                {#each extras.sources as source, index (source.name)}
-                  {#if index > 0}<span aria-hidden="true"> · </span>{/if}
+                >{copy.fromSources}{SPACE}{#each extras.sources as source, index (source.name)}
+                  {#if index > 0}<span aria-hidden="true">{SEPARATOR}</span>{/if}
                   <span class="whitespace-nowrap"
-                    >{source.name}{#if source.count !== null}
-                      <span class="text-text">{grouped(source.count)}</span>{/if}</span
+                    >{source.name}{#if source.count !== null}{SPACE}<span class="text-text"
+                        >{grouped(source.count)}</span
+                      >{/if}</span
                   >
                 {/each}</span
               >

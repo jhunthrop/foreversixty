@@ -42,10 +42,10 @@ const inline = fixture === undefined ? undefined : JSON.stringify(fixture);
 
       2026-11-04 re-measure for the one-page result (spec 2026-11-04-sim-results 4.2), on this
       Lighthouse fixture (simfixtureab) with the lazy cards at their reserved ready heights:
-      360px settles at 9249px, 1280 and 1440 at 5604px; reserved 24px over each (the CI-fonts
-      buffer): 9273/5628. simfullfixt1 is taller (10925.5/6998), so this never leaves a gap there.
+      360px settles at 9485px, 1280 and 1440 at 5628px; reserved 24px over each (the CI-fonts
+      buffer): 9509/5652. simfullfixt1 is taller (11357.5/7430), so this never leaves a gap there.
     -->
-    <div id="sim" data-sim-mount data-sim-id={id} data-sim-result={inline} class="min-h-[9273px] md:min-h-[5628px]">
+    <div id="sim" data-sim-mount data-sim-id={id} data-sim-result={inline} class="min-h-[9509px] md:min-h-[5652px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
       </div>

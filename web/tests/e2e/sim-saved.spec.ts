@@ -120,6 +120,11 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await page.getByTestId(`ability-sort-${column}`).click();
     await expect(header(column)).toHaveAttribute('aria-sort', isMobile ? 'descending' : 'ascending');
 
+    // Scrolling by hand moves the current link too, not only a click on it.
+    await page.locator('#timeline').scrollIntoViewIfNeeded();
+    await page.evaluate(() => document.getElementById('timeline')?.scrollIntoView());
+    await expect(page.locator('[data-section="timeline"]')).toHaveAttribute('aria-current', 'location');
+
     await page.locator('[data-section="settings"]').click();
     await expect(page.locator('[data-section="settings"]')).toHaveAttribute('aria-current', 'location');
     await expect(page.locator('#settings h2')).toBeFocused();

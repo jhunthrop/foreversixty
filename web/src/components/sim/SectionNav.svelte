@@ -14,12 +14,15 @@
     sections,
     figure,
     figureVisible,
+    drawn,
   }: {
     sections: readonly ResultSection[];
     /** The page's figure, "904.4". */
     figure: string;
     /** Set once the band's own figure has scrolled out. */
     figureVisible: boolean;
+    /** Set once the cards under the answer are in the page, so the observer can find them. */
+    drawn: boolean;
   } = $props();
 
   let strip = $state<HTMLElement | undefined>(undefined);
@@ -30,7 +33,7 @@
   const CURRENT_LINE = 0.3;
 
   $effect(() => {
-    if (typeof IntersectionObserver === 'undefined') return;
+    if (typeof IntersectionObserver === 'undefined' || !drawn) return;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) if (entry.isIntersecting) current = entry.target.id;

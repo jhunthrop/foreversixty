@@ -202,7 +202,7 @@
 
 <div class="sim-result flex flex-col" data-testid="sim-saved-run">
   <ResultBand {result} {onrerun} {raidBuffs} bind:figureElement />
-  <SectionNav {sections} {figure} figureVisible={figureGone} />
+  <SectionNav {sections} {figure} figureVisible={figureGone} drawn={drawnRest} />
 
   <div class="flex flex-col gap-[22px] pt-[22px] md:gap-8 md:pt-8">
     {#if notes.length > 0}
