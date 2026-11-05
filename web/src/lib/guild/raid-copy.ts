@@ -38,8 +38,6 @@ export interface SpecLead {
 
 export const raidCopy = {
   planButton: 'Plan an event',
-  gate: 'Planning and running raids are part of the guild plan. Subscribe your guild.',
-  gateLink: 'Subscribe your guild',
   cap: 'A guild plans at most 12 raids ahead.',
   subheads: {
     planned: 'Planned',

@@ -3,6 +3,7 @@
 // outline buttons, Unlock on a locked raid, Locking… while in flight, the read-only set (Copy stays
 // live, the gate sentence under the row) and the failure line. The confirm's focus and Escape are
 // in the raid e2e; its markup is covered by GuildRaid's wiring.
+import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidView } from '../../lib/guild/api';
@@ -30,7 +31,7 @@ function html({ raid = plannedRaid(), readOnly = false, busy = null, line = null
       busy,
       line,
       gateId: GATE,
-      settingsHref: '/guild/us/pvp/olympus-xxvii/settings',
+      gateFacts: gateFactsFixture(),
       guildTimezone: CHICAGO,
       onEdit: () => {},
       onStatus: () => Promise.resolve(true),
@@ -69,8 +70,8 @@ describe('RaidOfficerRow', () => {
     }
     expect(button(body, 'raid-officer-copy')).not.toMatch(DISABLED);
     expect(body).toContain(`id="${GATE}"`);
-    expect(text(body)).toContain('Planning and running raids are part of the guild plan.');
-    expect(text(body)).toContain(raidCopy.gateLink);
+    expect(text(body)).toContain('Planning raids and events is part of the Guild and Raid guild plans.');
+    expect(text(body)).toContain('Start the 7-day trial');
   });
 
   it('takes no edit, lock or cancel on a cancelled raid', () => {

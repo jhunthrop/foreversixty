@@ -11,7 +11,7 @@
      line, above the tab strip itself (spec §4.0: "the tab strip sits directly under the
      role-based line") -- so they are visible on every tab, not just Overview. -->
 <script lang="ts">
-  import { fetchMeFresh, type Me } from '../lib/account/api';
+  import { fetchMeFresh, type Me, type MeGuild } from '../lib/account/api';
   import {
     characterSlug,
     guildClaimHref,
@@ -68,7 +68,9 @@
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
   import { showBandCounts, showsWeekOne, updatedLine } from '../lib/guild/overview-view';
-  import { claimEntryCopy, claimEntryFor, claimEntryNotes, rosterGateState } from '../lib/guild/roster-gate';
+  import { claimEntryFor, rosterGateState } from '../lib/guild/roster-gate';
+  import { claimRowKind } from '../lib/guild/claim-row';
+  import { gateFactsFrom } from '../lib/guild/plan-gate';
   import { afterApprove, afterRemove, afterRemoveMember } from '../lib/guild/roster-model';
   import { levelingStandingLine, needsLine, standingSentence } from '../lib/guild/standing';
   import { RAID_LEVEL } from '../lib/guild/readiness-view';
@@ -88,6 +90,8 @@
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import FactLine from './guild/FactLine.svelte';
   import GuildUnverifiedNote from './guild/GuildUnverifiedNote.svelte';
+  import GuildClaimRow from './guild/GuildClaimRow.svelte';
+  import GuildClaimedBy from './guild/GuildClaimedBy.svelte';
   import GuildRosterGate from './guild/GuildRosterGate.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -178,16 +182,16 @@
   let contestError = $state('');
   let showContestConfirm = $state(false);
 
-  let myGuildMembership = $state<{ rank: string; verified: boolean; can: string[] } | null>(null);
+  let myGuildMembership = $state<
+    | (Pick<MeGuild, 'claim' | 'covered' | 'subscribe'> & { rank: string; verified: boolean; can: string[] })
+    | null
+  >(null);
   let myCharacterKeys = $state<Set<string>>(new Set());
   /** The site's own record of each of the account's characters' spec (`/v1/me`), by character key: the
    *  header chip reads it, and the roster's spec line says where the addon's snapshot disagrees. */
   let mySiteSpecs = $state<Map<string, string>>(new Map());
   let isModerator = $state(false);
-  /** The signed-in account's own battletag (fix round 1): the only signal available to
-   *  tell "this viewer's own account is the one holding the claim" from "a verified
-   *  officer of a different account" -- `GuildHome.claim.claimed_by_name` is a battletag
-   *  string, never an account id, so that is what this compares against. */
+  /** The signed-in account's own battletag: null reads as signed out for the sign-in prompt. */
   let myBattletag = $state<string | null>(null);
 
   /** Same "fail toward the public-only view" rule as before this rebuild: a stranger, a
@@ -221,6 +225,9 @@
         rank: membership.rank ?? 'member',
         verified: membership.verified,
         can: membership.can ?? [],
+        claim: membership.claim,
+        covered: membership.covered,
+        subscribe: membership.subscribe,
       };
       const show = (page: GuildHome): void => {
         if (resolved !== requested) return;
@@ -275,8 +282,11 @@
       canManage,
       membership: myGuildMembership,
       claimState: home?.claim.state ?? null,
-      claimedBy: home?.claim.claimed_by_name ?? null,
     }),
+  );
+  /** The band's claim row (gating spec §3.1): `/v1/me` answers an unverified guild master too. */
+  const claimRow = $derived(
+    claimRowKind(myGuildMembership?.rank, home?.claim.state ?? myGuildMembership?.claim?.state),
   );
   /** Control-centre contract addition: `home.viewer.role` is the server's own answer,
    *  preferred outright when present; a home response from before this contract landed
@@ -309,6 +319,20 @@
       : '',
   );
   const guildId = $derived(home?.guild.id ?? data?.guild.id ?? null);
+  /** The gate sentence's facts (gating spec §3.2), from `/home` and `/v1/me`: no request of its own. */
+  const gateFacts = $derived(
+    gateFactsFrom({
+      claim: home?.claim ?? null,
+      membership: myGuildMembership,
+      officerTools,
+      raidGuildTools,
+      settingsHref,
+      claimHref:
+        resolved !== null && home !== null
+          ? guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)
+          : '',
+    }),
+  );
   /** Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): `home.guild` (the
    *  member-gated fetch) wins once it resolves -- it is the one place a just-saved/removed
    *  crest shows up without a reload (`onCrestChanged` below re-fetches `home`, nothing
@@ -332,17 +356,8 @@
   );
 
   /** Fix round 1: "Contest this claim" must never reach the account that already holds
-   *  the claim -- a verified officer whose own battletag matches `claim.claimed_by_name`
-   *  is that account, regardless of which of their own characters they are viewing from.
-   *  `undefined`/`null` on either side (a pending claim carries no `claimed_by_name`, a
-   *  signed-out or /v1/me-failed visitor carries no battletag) reads as "not the
-   *  claimant," never a false positive that hides the control from someone who should see
-   *  it. */
-  const isClaimantAccount = $derived(
-    myBattletag !== null &&
-      home?.claim.claimed_by_name !== undefined &&
-      myBattletag === home.claim.claimed_by_name,
-  );
+   *  the claim, regardless of which of their own characters they are viewing from. */
+  const isClaimantAccount = $derived(home?.claim.yours === true);
 
   /** The current character's level from its roster row: the standing and needs lines read it. */
   const myLevel = $derived(myRosterRow?.level ?? null);
@@ -878,26 +893,10 @@
           />
         {/if}
 
-        <!-- Any signed-in viewer who is not a verified officer can start a claim from here;
-               the claim page states the rules and who may claim. A verified officer gets
-               their Guild settings link in the role line below instead. -->
-        {#if meResolved && claimEntry.kind === 'claim'}
-          <p class="text-muted text-[13px]" data-testid="guild-claim-entry">
-            {claimEntryCopy.question}
-            <a
-              href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
-              data-testid="guild-claim-entry-link">{claimEntryCopy.action}</a
-            >
+        {#if meResolved && claimEntry.kind === 'claimedBy'}
+          <p class="text-muted text-[13px]" data-testid="guild-claim-note">
+            <GuildClaimedBy holder={home?.claim.claimed_by} />
           </p>
-        {:else if meResolved && claimEntry.kind === 'getClaimed'}
-          <p class="text-[13px]" data-testid="guild-claim-entry">
-            <a
-              href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
-              data-testid="guild-claim-entry-link">{claimEntryNotes.getClaimed}</a
-            >
-          </p>
-        {:else if meResolved && claimEntry.kind === 'note'}
-          <p class="text-muted text-[13px]" data-testid="guild-claim-note">{claimEntry.text}</p>
         {/if}
 
         <!-- The role-based line (spec §4.0/§4.A.1): unchanged v1 mechanism for claim/
@@ -981,23 +980,7 @@
               {/if}
             </div>
             <div class="flex flex-wrap items-center justify-between gap-3">
-              {#if isOfficerOrLeader && home.claim.state === 'unclaimed'}
-                <a
-                  class="text-[13px] font-semibold"
-                  href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
-                  data-testid="guild-claim-link"
-                >
-                  {guildHomeCopy.claimLink}
-                </a>
-              {:else if isOfficerOrLeader && home.claim.state === 'pending'}
-                <a
-                  class="text-[13px] font-semibold"
-                  href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
-                  data-testid="guild-confirm-claim-link"
-                >
-                  {guildHomeCopy.confirmClaimLink}
-                </a>
-              {:else if myGuildMembership !== null && !myGuildMembership.verified}
+              {#if myGuildMembership !== null && !myGuildMembership.verified}
                 <GuildUnverifiedNote
                   guildName={home.guild.name}
                   hasApprover={home.viewer?.verify?.has_approver}
@@ -1012,6 +995,14 @@
               </p>
             {/if}
           </div>
+        {/if}
+
+        {#if meResolved && claimRow !== null}
+          <GuildClaimRow
+            kind={claimRow}
+            guildName={data.guild.name}
+            claimHref={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
+          />
         {/if}
       </header>
 
@@ -1104,6 +1095,7 @@
           {officerTools}
           memberView={myGuildMembership?.verified === true}
           {settingsHref}
+          {gateFacts}
           {guildPath}
           onPlanned={() => (guildId === null ? Promise.resolve() : loadRaids(guildId))}
           onPlanRefused={() => (officerToolsEnded = true)}
@@ -1148,7 +1140,7 @@
           {officerTools}
           {raidGuildTools}
           {myCharacterKey}
-          {settingsHref}
+          {gateFacts}
         />
       {/if}
     {:else if activeTab === 'loot'}
@@ -1186,7 +1178,7 @@
           ownKeys={[...myCharacterKeys]}
           busyItemId={lootBusyItemId}
           refusal={planRefusal}
-          {settingsHref}
+          {gateFacts}
           onAward={(item, charKey, itemId) => void onAward(item, charKey, itemId)}
           onUndo={(item) => void onUndo(item)}
           onBoss={(encounterId) => void onBoss(encounterId)}

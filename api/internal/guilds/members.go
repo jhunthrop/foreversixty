@@ -157,7 +157,7 @@ func mergeRoster(rows []RosterRow, invited []invitedMember, snapshot []snapshotM
 		}
 		m := lines[key]
 		name, _ := character.SplitUnit(m.Name)
-		e := RosterEntry{Name: name, State: EntryNoAccount, Rank: "member"}
+		e := RosterEntry{Name: name, State: EntryNoAccount, Rank: "member", Class: snapshotClass(m)}
 		e.Level, e.Spec, e.SeenAt = snapshotFacts(m)
 		entries = append(entries, e)
 		counts.InGameNoAccount++
@@ -210,24 +210,24 @@ func (s *Store) invitedMembers(ctx context.Context, guildID int64) ([]invitedMem
 		if err := rows.Scan(&m.UserID, &name, &m.Class, &m.Gear, &m.Rank); err != nil {
 			return nil, fmt.Errorf("guilds: invited members: %w", err)
 		}
-		m.Name = s.inviteeName(ctx, m.UserID, name)
+		m.Name = inviteeName(m.UserID, name)
 		out = append(out, m)
 	}
 	return out, rows.Err()
 }
 
-// inviteeName names an invited account: its main (or first) character's name, else its public
-// name, else a stand-in. The one rule the home's roster and the /v1/me roster count share.
-func (s *Store) inviteeName(ctx context.Context, userID int64, characterName *string) string {
+// invitedStandIn names an invited account with no character yet; its id follows, so the roster
+// can tell two of them apart.
+const invitedStandIn = "Invited member"
+
+// inviteeName names an invited account: its main (or first) character's name, else the
+// stand-in. Never an account tag. The one rule the home's roster and the /v1/me roster count
+// share.
+func inviteeName(userID int64, characterName *string) string {
 	if characterName != nil && *characterName != "" {
 		return *characterName
 	}
-	if s.Accounts != nil {
-		if u, err := s.Accounts.User(ctx, userID); err == nil && u.PublicName() != "" {
-			return u.PublicName()
-		}
-	}
-	return fmt.Sprintf("user-%d", userID)
+	return fmt.Sprintf("%s %d", invitedStandIn, userID)
 }
 
 // invitedRosterRows are the invited accounts' picked characters as full roster rows (gear,

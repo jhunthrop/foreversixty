@@ -2,6 +2,7 @@
 // The Loot tab rendered with svelte/server (initial state, no effects): who sees Award and Undo,
 // the awarded line said once, the game's slot words, the two tiers, attendance hidden with no
 // counted night, and the drops nobody ranks collapsed to one line. The ask-first confirm and the undo are clicked through in guild-centre.spec.ts.
+import { GATE_SETTINGS_HREF, gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { buildMockLoot } from '../../fixtures/guild/mock-guild';
@@ -30,7 +31,10 @@ function html(officer: boolean, extra: LootProps = {}): string {
       memberReadOnly: !officer,
       busyItemId: null,
       refusal: null,
-      settingsHref: SETTINGS_HREF,
+      gateFacts: gateFactsFixture({
+        guildTier: (extra.officerTools ?? true) && !(extra.raidGuildTools ?? true),
+        settingsHref: SETTINGS_HREF,
+      }),
       onAward: () => {},
       onUndo: () => {},
       onBoss: () => {},
@@ -290,8 +294,8 @@ describe('GuildLoot', () => {
       const gateAt = markup.indexOf('data-testid="guild-loot-plan-gate"');
       expect(gateAt).toBeLessThan(markup.indexOf('data-testid="guild-loot-boss-picker"'));
       const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
-      expect(text(gate)).toContain(`${guildGateCopy.sentence.trim()} ${guildGateCopy.link}`);
-      expect(gate).toContain(`href="${SETTINGS_HREF}"`);
+      expect(text(gate)).toContain(`${guildGateCopy.lead.loot} ${guildGateCopy.startTrial}`);
+      expect(gate).toContain(`href="${SETTINGS_HREF}?plan=raid_guild#billing"`);
     });
 
     it('keeps the link whole and gives it a phone-only 44px hit area outside its focus ring', () => {
@@ -349,10 +353,8 @@ describe('GuildLoot', () => {
       const gateAt = markup.indexOf('data-testid="guild-loot-plan-gate"');
       expect(gateAt).toBeGreaterThan(-1);
       const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
-      expect(text(gate)).toContain(
-        `${guildGateCopy.raidGuildSentence.trim()} ${guildGateCopy.raidGuildLink}`,
-      );
-      expect(gate).toContain(`href="${SETTINGS_HREF}#billing"`);
+      expect(text(gate)).toContain(`${guildGateCopy.lead.loot} ${guildGateCopy.moveToRaidGuild}`);
+      expect(gate).toContain(`href="${SETTINGS_HREF}?upgrade=1#billing"`);
       expect(text(markup)).toContain(guildGateCopy.readOnly);
       for (const tag of buttons(markup, 'guild-loot-award-')) {
         expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
@@ -360,10 +362,10 @@ describe('GuildLoot', () => {
       }
     });
 
-    it("keeps today's sentence for a lapsed guild, even if Raid guild is also off", () => {
+    it('offers no Move to a guild with no plan at all', () => {
       const markup = html(true, { officerTools: false, raidGuildTools: false });
-      expect(text(markup)).toContain(guildGateCopy.link);
-      expect(text(markup)).not.toContain(guildGateCopy.raidGuildLink);
+      expect(text(markup)).toContain(guildGateCopy.startTrial);
+      expect(text(markup)).not.toContain(guildGateCopy.moveToRaidGuild);
     });
 
     it('shows a member nothing of the Raid guild gate', () => {

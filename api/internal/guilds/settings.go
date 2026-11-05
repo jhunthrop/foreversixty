@@ -33,13 +33,9 @@ type SettingsPatch struct {
 	OfficerMaxRankIndex *int
 }
 
-type MemberRef struct {
-	Battletag string `json:"battletag"`
-}
-
 type ClaimPendingView struct {
-	By        MemberRef `json:"by"`
-	ExpiresAt time.Time `json:"expires_at"`
+	By        *ClaimHolderRef `json:"by"`
+	ExpiresAt time.Time       `json:"expires_at"`
 }
 
 type InviteView struct {
@@ -49,7 +45,7 @@ type InviteView struct {
 type SettingsView struct {
 	DefaultVisibility   string            `json:"default_visibility"`
 	OfficerMaxRankIndex int               `json:"officer_max_rank_index"`
-	ClaimedBy           *MemberRef        `json:"claimed_by"`
+	ClaimedBy           *ClaimHolderRef   `json:"claimed_by"`
 	ClaimPending        *ClaimPendingView `json:"claim_pending"`
 	Claim               ClaimStateView    `json:"claim"`
 	Invite              InviteView        `json:"invite"`
@@ -57,19 +53,34 @@ type SettingsView struct {
 	Discord *SettingsDiscord `json:"discord,omitempty"`
 }
 
-func (s *Store) Settings(ctx context.Context, guildID int64) (SettingsView, error) {
+// Settings is the guild's settings as viewerID reads them: the claim holder and any pending
+// claimant by their character on the roster, whether a PATCH or a GET asked.
+func (s *Store) Settings(ctx context.Context, guildID, viewerID int64) (SettingsView, error) {
 	g, err := s.getGuild(ctx, guildID)
 	if err != nil {
 		return SettingsView{}, err
 	}
-	return SettingsView{
+	now := time.Now()
+	claim, err := s.withClaimHolder(ctx, claimState(g, now), g, viewerID)
+	if err != nil {
+		return SettingsView{}, err
+	}
+	view := SettingsView{
 		DefaultVisibility: g.DefaultVisibility, OfficerMaxRankIndex: g.OfficerMaxRankIndex,
 		Invite: InviteView{RotatedAt: g.InviteTokenRotatedAt},
-		Claim:  claimState(g, time.Now()),
-	}, nil
+		Claim:  claim, ClaimedBy: claim.ClaimedBy,
+	}
+	if g.pendingActive(now) {
+		by, err := s.claimHolderRef(ctx, guildID, *g.ClaimPendingBy)
+		if err != nil {
+			return SettingsView{}, err
+		}
+		view.ClaimPending = &ClaimPendingView{By: by, ExpiresAt: g.ClaimRequestedAt.Add(ClaimPendingTTL)}
+	}
+	return view, nil
 }
 
-func (s *Store) UpdateSettings(ctx context.Context, guildID int64, in SettingsPatch) (SettingsView, error) {
+func (s *Store) UpdateSettings(ctx context.Context, guildID, viewerID int64, in SettingsPatch) (SettingsView, error) {
 	if in.DefaultVisibility != nil && !validDefaultVisibility[*in.DefaultVisibility] {
 		return SettingsView{}, ErrInvalidSettings
 	}
@@ -113,7 +124,7 @@ func (s *Store) UpdateSettings(ctx context.Context, guildID int64, in SettingsPa
 			return SettingsView{}, fmt.Errorf("guilds: update settings: commit: %w", err)
 		}
 	}
-	return s.Settings(ctx, guildID)
+	return s.Settings(ctx, guildID, viewerID)
 }
 
 // verifiedOfficerOrModerator is the standing check GET/PATCH settings and
@@ -147,7 +158,7 @@ func (s *Service) getSettings(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to see its settings", nil)
 		return
 	}
-	view, err := s.Store.Settings(r.Context(), guildID)
+	view, err := s.Store.Settings(r.Context(), guildID, auth.ActorFrom(r.Context()).UserID)
 	if errors.Is(err, ErrNotFound) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
 		return
@@ -155,23 +166,6 @@ func (s *Service) getSettings(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.fail(w, r, "settings", err, "could not read those settings just now")
 		return
-	}
-	g, err := s.Store.getGuild(r.Context(), guildID)
-	if err != nil {
-		s.fail(w, r, "settings", err, "could not read those settings just now")
-		return
-	}
-	if g.ClaimedBy != nil {
-		if u, err := s.Accounts.User(r.Context(), *g.ClaimedBy); err == nil {
-			view.ClaimedBy = &MemberRef{Battletag: u.PublicName()}
-		}
-	}
-	if g.pendingActive(time.Now()) {
-		if u, err := s.Accounts.User(r.Context(), *g.ClaimPendingBy); err == nil {
-			view.ClaimPending = &ClaimPendingView{
-				By: MemberRef{Battletag: u.PublicName()}, ExpiresAt: g.ClaimRequestedAt.Add(ClaimPendingTTL),
-			}
-		}
 	}
 	if view.Discord, err = s.settingsDiscord(r, guildID); err != nil {
 		s.fail(w, r, "settings", err, "could not read those settings just now")
@@ -210,7 +204,7 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 	if err := decodeJSON(w, r, &in); err != nil {
 		return
 	}
-	view, err := s.Store.UpdateSettings(r.Context(), guildID, SettingsPatch{
+	view, err := s.Store.UpdateSettings(r.Context(), guildID, actor.UserID, SettingsPatch{
 		DefaultVisibility: in.DefaultVisibility, OfficerMaxRankIndex: in.OfficerMaxRankIndex,
 	})
 	switch {

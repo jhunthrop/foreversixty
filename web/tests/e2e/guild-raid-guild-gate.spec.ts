@@ -16,8 +16,12 @@ import {
   type GuildCentreStub,
 } from './support/officer-tools';
 
-const SENTENCE = `${guildGateCopy.raidGuildSentence}${guildGateCopy.raidGuildLink}.`;
-const GUILD_TIER: GuildCentreStub = { viewer: 'officer', officerTools: true, raidGuildTools: false };
+const GUILD_TIER: GuildCentreStub = {
+  viewer: 'officer',
+  officerTools: true,
+  raidGuildTools: false,
+  claimHolder: true,
+};
 
 type Tab = 'loot' | 'readiness';
 
@@ -27,13 +31,13 @@ async function openTab(page: Page, tab: Tab, stub: GuildCentreStub): Promise<voi
 }
 
 for (const tab of ['loot', 'readiness'] as const) {
-  test(`Guild tier: ${tab} says the Raid guild sentence and links to #billing`, async ({ page }) => {
+  test(`Guild tier: ${tab} says the Raid guild sentence and opens the Move confirm`, async ({ page }) => {
     await openTab(page, tab, GUILD_TIER);
     const gate = page.getByTestId(`guild-${tab}-plan-gate`);
     await expect(gate).toBeVisible();
-    await expect(gate).toHaveText(SENTENCE);
-    const link = gate.getByRole('link', { name: guildGateCopy.raidGuildLink });
-    await expect(link).toHaveAttribute('href', new RegExp(`${GUILD_SETTINGS_PATH}#billing$`));
+    await expect(gate).toHaveText(`${guildGateCopy.lead[tab]} ${guildGateCopy.moveToRaidGuild}.`);
+    const link = gate.getByRole('link', { name: guildGateCopy.moveToRaidGuild });
+    await expect(link).toHaveAttribute('href', new RegExp(`${GUILD_SETTINGS_PATH}\\?upgrade=1#billing$`));
   });
 }
 
@@ -61,9 +65,10 @@ test('Raid guild: no sentence and every control live', async ({ page }) => {
   await expect(awardButtons(page).first()).toBeEnabled();
 });
 
-test("a lapsed guild keeps today's sentence", async ({ page }) => {
+test('an officer without the claim is told who turns it on', async ({ page }) => {
   await openTab(page, 'loot', { viewer: 'officer', officerTools: false, raidGuildTools: false });
   await expect(page.getByTestId('guild-loot-plan-gate')).toHaveText(
-    `${guildGateCopy.sentence}${guildGateCopy.link}.`,
+    `${guildGateCopy.lead.loot} ${guildGateCopy.ask}Kraggor${guildGateCopy.askTail}`,
   );
+  await expect(page.getByTestId('guild-loot-plan-gate').getByRole('link')).toHaveCount(0);
 });

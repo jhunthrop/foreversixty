@@ -2,10 +2,12 @@
 // The Raids tab rendered with svelte/server (raids spec 3.1, 4, R1): Plan an event for officers
 // only, the read-only gate and the cap line, Planned with its first four rows and Show all, the
 // empty lines, Raid nights under it, and nothing planned for a visitor.
+import { GATE_SETTINGS_HREF, gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidRow, GuildRaidView } from '../../lib/guild/api';
 import { attendanceCopy } from '../../lib/guild/attendance-copy';
+import { guildGateCopy } from '../../lib/guild/copy';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { NEW_YORK, NOW, plannedRaid, text } from '../../test-support/raid-fixtures';
 import GuildRaids from './GuildRaids.svelte';
@@ -32,6 +34,7 @@ function html({ planned, officer = false, officerTools = true, memberView = true
       officerTools,
       memberView,
       settingsHref: SETTINGS_HREF,
+      gateFacts: gateFactsFixture({ settingsHref: SETTINGS_HREF }),
       guildPath: '/guild/us/pvp/olympus-xxvii',
       now: NOW,
       viewerTimezone: NEW_YORK,
@@ -107,9 +110,8 @@ describe('GuildRaids planned section', () => {
       markup.indexOf('guild-raids-plan-gate'),
       markup.indexOf('</p>', markup.indexOf('guild-raids-plan-gate')),
     );
-    // text() spaces every tag, so the link's closing tag puts a space before the full stop.
-    expect(text(gate)).toContain(raidCopy.gate.replace(raidCopy.gateLink, `${raidCopy.gateLink} `));
-    expect(gate).toContain(`href="${SETTINGS_HREF}"`);
+    expect(text(gate)).toContain(`${guildGateCopy.lead.raids} ${guildGateCopy.startTrial}`);
+    expect(gate).toContain(`href="${SETTINGS_HREF}#billing"`);
   });
 
   it('keeps Plan an event live with the cap line at 12 raids: the cap holds raids only', () => {
@@ -146,7 +148,13 @@ describe('GuildRaids raid nights linked to raids', () => {
 
   function nights(rows: GuildRaidRow[]): string {
     return render(GuildRaids, {
-      props: { rows, guildPath: '/guild/us/pvp/olympus-xxvii', now: NOW, viewerTimezone: NEW_YORK },
+      props: {
+        rows,
+        guildPath: '/guild/us/pvp/olympus-xxvii',
+        now: NOW,
+        viewerTimezone: NEW_YORK,
+        gateFacts: gateFactsFixture(),
+      },
     }).body;
   }
 

@@ -21,6 +21,8 @@
     value,
     muted = false,
     glyph,
+    icon,
+    labelColor,
     tone = 'gold',
     lead,
     labelColor,
@@ -44,6 +46,10 @@
     /** The value is a quiet state (off, not shipped): `--muted` and no chevron. */
     muted?: boolean;
     glyph?: GlyphName;
+    /** Drawn in the icon slot instead of a tile (a character's crest). */
+    icon?: Snippet;
+    /** The label's colour when it names a character (a class colour). */
+    labelColor?: string;
     tone?: TileTone;
     /** The icon slot for something other than a glyph tile (a 24 px class crest). */
     lead?: Snippet;
@@ -99,7 +105,11 @@
   class="{ROW} {interactive ? ROW_INTERACTIVE : ''}"
   style:padding-left={nested ? (glyph === undefined ? '70px' : '46px') : undefined}
 >
-  {#if glyph !== undefined}<IconTile {glyph} size={32} {tone} />{/if}
+  {#if icon !== undefined}{@render icon()}{:else if glyph !== undefined}<IconTile
+      {glyph}
+      size={32}
+      {tone}
+    />{/if}
   {@render lead?.()}
   <span class="flex min-w-0 flex-1 flex-col">
     <span

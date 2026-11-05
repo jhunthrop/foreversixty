@@ -2,6 +2,7 @@
 // The Readiness tab rendered with svelte/server: officer-read-only (officer tools off) shows the
 // plan sentence once and the Read-only label, and keeps every Nudge on screen but disabled; a
 // member sees none of it.
+import { GATE_SETTINGS_HREF, gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { buildMockReadiness } from '../../fixtures/guild/mock-guild';
@@ -18,7 +19,10 @@ function html(officer: boolean, officerTools: boolean, raidGuildTools = true): s
       officerTools,
       raidGuildTools,
       myCharacterKey: null,
-      settingsHref: SETTINGS_HREF,
+      gateFacts: gateFactsFixture({
+        guildTier: officerTools && !raidGuildTools,
+        settingsHref: SETTINGS_HREF,
+      }),
     },
   }).body;
 }
@@ -47,8 +51,8 @@ describe('GuildReadiness', () => {
     expect(gateAt).toBeGreaterThan(markup.indexOf('<h2'));
     expect(gateAt).toBeLessThan(markup.indexOf('data-testid="guild-readiness-header"'));
     const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
-    expect(text(gate)).toContain(`${guildGateCopy.sentence.trim()} ${guildGateCopy.link}`);
-    expect(gate).toContain(`href="${SETTINGS_HREF}"`);
+    expect(text(gate)).toContain(`${guildGateCopy.lead.readiness} ${guildGateCopy.startTrial}`);
+    expect(gate).toContain(`href="${SETTINGS_HREF}?plan=raid_guild#billing"`);
   });
 
   it('leaves a moderator as before: no sentence, Nudge enabled', () => {
@@ -95,15 +99,15 @@ describe('GuildReadiness', () => {
     const gateAt = markup.indexOf('data-testid="guild-readiness-plan-gate"');
     expect(gateAt).toBeGreaterThan(-1);
     const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
-    expect(text(gate)).toContain(`${guildGateCopy.raidGuildSentence.trim()} ${guildGateCopy.raidGuildLink}`);
-    expect(gate).toContain(`href="${SETTINGS_HREF}#billing"`);
+    expect(text(gate)).toContain(`${guildGateCopy.lead.readiness} ${guildGateCopy.moveToRaidGuild}`);
+    expect(gate).toContain(`href="${SETTINGS_HREF}?upgrade=1#billing"`);
     for (const tag of nudges(markup)) expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
   });
 
-  it("keeps today's sentence for a lapsed guild", () => {
+  it('offers no Move to a guild with no plan at all', () => {
     const markup = text(html(true, false, false));
-    expect(markup).toContain(guildGateCopy.link);
-    expect(markup).not.toContain(guildGateCopy.raidGuildLink);
+    expect(markup).toContain(guildGateCopy.startTrial);
+    expect(markup).not.toContain(guildGateCopy.moveToRaidGuild);
   });
 
   it('shows a member nothing of the Raid guild gate', () => {
@@ -138,7 +142,7 @@ describe('GuildReadiness next-raid filter', () => {
         officerTools: true,
         raidGuildTools: true,
         myCharacterKey: null,
-        settingsHref: SETTINGS_HREF,
+        gateFacts: gateFactsFixture({ settingsHref: SETTINGS_HREF }),
         raid,
         nextRaidOnly,
         raidHref: '/guild/x/raids/7',
@@ -191,7 +195,7 @@ describe('GuildReadiness next-raid filter', () => {
         officerTools: true,
         raidGuildTools: true,
         myCharacterKey: null,
-        settingsHref: SETTINGS_HREF,
+        gateFacts: gateFactsFixture({ settingsHref: SETTINGS_HREF }),
         raid,
         nextRaidOnly: true,
         guildTimezone: 'UTC',

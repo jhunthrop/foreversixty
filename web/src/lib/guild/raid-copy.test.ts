@@ -52,11 +52,8 @@ const at = (isoUtc: string): Date => new Date(isoUtc);
 const KINDS = ['raid', 'dungeon', 'event'] as const;
 
 describe('raidCopy constants, verbatim from spec 6.1', () => {
-  it('names the tab button, gate and cap', () => {
+  it('names the tab button and cap', () => {
     expect(raidCopy.planButton).toBe(str3('Tab button'));
-    expect(raidCopy.gate).toBe(str('Gate sentence'));
-    expect(raidCopy.gate).toContain(raidCopy.gateLink);
-    expect(specCell(SPEC, HEADING, 'Gate sentence')).toContain(raidCopy.gateLink);
     expect(raidCopy.cap).toBe(str('Cap'));
   });
 

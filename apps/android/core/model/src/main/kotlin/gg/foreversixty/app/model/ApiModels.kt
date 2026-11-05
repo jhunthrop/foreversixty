@@ -1004,12 +1004,23 @@ data class GuildAttendance(
     @SerialName("nights") val nights: Int? = null,
 )
 
+/** The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag. */
+@Serializable
+data class GuildClaimHolder(
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String? = null,
+    @SerialName("character_key") val characterKey: String,
+)
+
 @Serializable
 data class GuildClaimState(
     @SerialName("state") val state: String,
     @SerialName("frozen") val frozen: Boolean,
     @SerialName("since") val since: String? = null,
-    @SerialName("claimed_by_name") val claimedByName: String? = null,
+    /** The signed-in account holds this guild's claim. */
+    @SerialName("yours") val yours: Boolean,
+    /** The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag. */
+    @SerialName("claimed_by") val claimedBy: GuildClaimHolder? = null,
 )
 
 /** GET /v1/guilds/{id}/home. Verified members only. */

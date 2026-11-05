@@ -226,7 +226,7 @@ func (s *Store) collectInvited(ctx context.Context, rows pgx.Rows) (map[int64][]
 		if err := rows.Scan(&guildID, &m.UserID, &name); err != nil {
 			return nil, fmt.Errorf("guilds: standing invited: %w", err)
 		}
-		m.Name = s.inviteeName(ctx, m.UserID, name)
+		m.Name = inviteeName(m.UserID, name)
 		out[guildID] = append(out[guildID], m)
 	}
 	return out, rows.Err()

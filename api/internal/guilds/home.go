@@ -485,6 +485,7 @@ type snapshotMember struct {
 	GearGap int    `json:"gear_gap"`
 	Build   string `json:"build"`
 	SeenAt  string `json:"seen_at"`
+	Class   string `json:"class"`
 }
 
 // homeAddonSnapshot reads the guild's newest roster snapshot in one query and sets each
@@ -594,12 +595,9 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	describeRosterRows(roster)
 	members, counts := mergeRoster(roster, invited, snapshotLines)
 	describeMembers(members, roster)
-	claim := claimState(g, time.Now())
-	if claim.State == "claimed" && g.ClaimedBy != nil && s.Accounts != nil {
-		if u, uerr := s.Accounts.User(ctx, *g.ClaimedBy); uerr == nil {
-			name := u.PublicName()
-			claim.ClaimedByName = &name
-		}
+	claim, err := s.withClaimHolder(ctx, claimState(g, time.Now()), g, userID)
+	if err != nil {
+		return HomeView{}, err
 	}
 
 	summary, err := s.homeSummary(ctx, guildID, roster)

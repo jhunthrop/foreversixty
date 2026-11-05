@@ -13,6 +13,7 @@
   import type { GuildLootItem, GuildLootPage } from '../../lib/guild/api';
   import type { AttendanceSource, RaidLootAward } from '../../lib/guild/attendance-contract';
   import { guildGateCopy } from '../../lib/guild/copy';
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import {
     LOOT_FOOTNOTE,
     NOBODY_AT_60,
@@ -48,7 +49,7 @@
     ownKeys = [],
     busyItemId,
     refusal,
-    settingsHref,
+    gateFacts,
     onAward,
     onUndo,
     onBoss,
@@ -68,7 +69,8 @@
     /** The Award or Undo the server refused with `guild_plan_required` (§4), per boss and item. */
     refusal: GuildPlanRefusal | null;
     /** Where the plan sentence's link goes: the guild's settings tab. */
-    settingsHref: string;
+    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
+    gateFacts: GateFacts;
     /** `itemId` names the copy when it is not the row's own (a side's Head of Onyxia). */
     onAward: (item: GuildLootItem, characterKey: string, itemId?: number) => void;
     /** Remove the item's award (the award's id is on `item.awarded_to`). */
@@ -143,7 +145,7 @@
 {/snippet}
 
 <section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-loot-tab">
-  {#if officerReadOnly}<GuildPlanGate tab="loot" {settingsHref} raidGuild={officerTools} />{/if}
+  {#if officerReadOnly}<GuildPlanGate tab="loot" facts={gateFacts} />{/if}
 
   <Card
     glyph="star"

@@ -448,7 +448,13 @@ export function buildMockHome(
       verified: viewerRow?.verified ?? false,
       ...(options.officerTools === undefined ? {} : { officer_tools: options.officerTools }),
     },
-    claim: { state: 'claimed', since: '2026-10-01T00:00:00Z', frozen: false, claimed_by_name: 'Kraggor' },
+    claim: {
+      state: 'claimed',
+      since: '2026-10-01T00:00:00Z',
+      frozen: false,
+      yours: false,
+      claimed_by: { name: 'Kraggor', class: 'warrior', character_key: 'us/pvp/kraggor' },
+    },
     summary: {
       // The Overview Roster card's own "N raiders" count (fix round 1, 2026-10-04): every
       // registered roster row, not the verified subset -- `waiting_for_approval` already

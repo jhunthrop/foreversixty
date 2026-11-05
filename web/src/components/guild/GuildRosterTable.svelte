@@ -15,6 +15,7 @@
      /v1/me), never from the rank. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Tag from '../ui/Tag.svelte';
   import SupporterChip from '../SupporterChip.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
   import { classColorVar } from '../../lib/report/format';
@@ -668,21 +669,16 @@
         <div class="flex flex-col" data-testid="guild-roster-entries">
           {#each extras as entry (`${entry.state}:${entry.name}`)}
             <div class={ENTRY_ROW} data-testid="guild-roster-entry" data-state={entry.state}>
-              {#if entry.class === undefined}
-                <!-- No class to ring: a plain circle on the border token, so the empty crest is seen. -->
-                <span
-                  class="border-line inline-block size-9 shrink-0 rounded-full border"
-                  aria-hidden="true"
-                  data-testid="guild-roster-entry-crest"
-                ></span>
-              {:else}
-                <ClassCrestRing characterClass={entry.class} size={36} />
-              {/if}
+              <!-- No class known: the component's neutral ringed disc, never an empty outline. -->
+              <ClassCrestRing
+                characterClass={entry.class ?? ''}
+                size={36}
+                testid="guild-roster-entry-crest"
+              />
               <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
-                <!-- Class-coloured at 70 percent, not grey: the row stays secondary by colour alone. -->
                 <span
-                  class="heading-name text-nav text-[14px]"
-                  style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)};opacity:.7`}
+                  class="heading-name text-text text-[14px]"
+                  style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)}`}
                   data-testid="guild-roster-entry-name">{entry.name}</span
                 >
                 {#if entry.spec !== undefined}
@@ -703,13 +699,17 @@
                     >{entryRankWord(entry)}</span
                   >
                 {/if}
-                <span
-                  class="text-nav text-[12px]"
-                  data-testid="guild-roster-entry-state"
-                  title={entry.state === 'no_account'
-                    ? `The addon saw this character in the guild; no account on the site has claimed it. ${entryRankWord(entry)} until the addon sends ranks.`
-                    : undefined}>{stateWord(entry.state)}</span
-                >
+                {#if entry.state === 'no_account'}
+                  <Tag
+                    tone="muted"
+                    title={`The addon saw this character in the guild; no account on the site has claimed it. ${entryRankWord(entry)} until the addon sends ranks.`}
+                    testid="guild-roster-entry-state">{stateWord(entry.state)}</Tag
+                  >
+                {:else}
+                  <span class="text-nav text-[12px]" data-testid="guild-roster-entry-state"
+                    >{stateWord(entry.state)}</span
+                  >
+                {/if}
               </div>
               {@render entryInGame(entry)}
               {#if canRemove && entry.may_remove === true && entry.account_key !== undefined}

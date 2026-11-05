@@ -94,9 +94,9 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
       envelope({
         default_visibility: 'guild',
         officer_max_rank_index: 1,
-        claimed_by: { battletag: 'Fixture#1234' },
+        claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
         claim_pending: null,
-        claim: { state: 'claimed', since: '2026-09-21T00:00:00Z', frozen: false },
+        claim: { state: 'claimed', since: '2026-09-21T00:00:00Z', frozen: false, yours: true },
         invite: { rotated_at: null },
       }),
     ),
@@ -158,7 +158,7 @@ test("someone else's claim names the holder and offers Contest, with its confirm
       envelope({
         default_visibility: 'guild',
         officer_max_rank_index: 1,
-        claimed_by: { battletag: 'OtherOfficer#5678' },
+        claimed_by: { name: 'Otherofficer', class: 'mage', character_key: 'us/hardcore/otherofficer' },
         claim_pending: null,
         claim: { state: 'claimed', since: '2026-09-20T00:00:00Z', frozen: false },
         invite: { rotated_at: null },
@@ -166,9 +166,7 @@ test("someone else's claim names the holder and offers Contest, with its confirm
     ),
   );
   await openClaim(page);
-  await expect(page.getByTestId('guild-claim-state')).toHaveText(
-    'Claimed by OtherOfficer#5678 since 20 Sep.',
-  );
+  await expect(page.getByTestId('guild-claim-state')).toHaveText('Claimed by Otherofficer since 20 Sep.');
   await expect(page.getByTestId('guild-claim-release')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-next')).toHaveCount(0);
   await page.getByTestId('guild-claim-contest-button').click();
@@ -241,7 +239,6 @@ const LAST_WATCH = {
   ruleset: 'hardcore',
   slug: 'the-last-watch',
 } as const;
-const OWNER_BATTLETAG = 'hunthrop#1894';
 
 const lastWatchMe = (guild: Parameters<typeof stepGuild>[0]): Me =>
   buildMe({ guilds: [stepGuild({ ...LAST_WATCH, ...guild })] });
@@ -256,8 +253,8 @@ const unclaimedSettings = {
 };
 const heldSettings = {
   ...unclaimedSettings,
-  claimed_by: { battletag: OWNER_BATTLETAG },
-  claim: { state: 'claimed', since: '2026-10-20T00:00:00Z', frozen: false },
+  claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
+  claim: { state: 'claimed', since: '2026-10-20T00:00:00Z', frozen: false, yours: true },
 };
 const FORBIDDEN = {
   status: 403,
@@ -432,14 +429,22 @@ test('a pending claim shows who is confirming it and lets a second officer confi
         default_visibility: 'guild',
         officer_max_rank_index: 1,
         claimed_by: null,
-        claim_pending: { by: { battletag: 'OtherOfficer#5678' }, expires_at: '2026-09-28T00:00:00Z' },
+        claim_pending: {
+          by: { name: 'Otherofficer', class: 'mage', character_key: 'us/hardcore/otherofficer' },
+          expires_at: '2026-09-28T00:00:00Z',
+        },
         claim: { state: 'pending', since: '2026-09-21T00:00:00Z', frozen: false },
         invite: { rotated_at: null },
       }),
     ),
   );
   await page.route('**/v1/guilds/501/claim/confirm', (route) =>
-    route.fulfill(envelope({ status: 'confirmed', claimed_by: { battletag: 'OtherOfficer#5678' } })),
+    route.fulfill(
+      envelope({
+        status: 'confirmed',
+        claimed_by: { name: 'Otherofficer', class: 'mage', character_key: 'us/hardcore/otherofficer' },
+      }),
+    ),
   );
   await openClaim(page);
   await expect(page.getByTestId('guild-claim-state')).toHaveText(
@@ -483,7 +488,7 @@ test('a contested claim shows the dedicated contested notice alongside the claim
       envelope({
         default_visibility: 'guild',
         officer_max_rank_index: 1,
-        claimed_by: { battletag: 'OtherOfficer#5678' },
+        claimed_by: { name: 'Otherofficer', class: 'mage', character_key: 'us/hardcore/otherofficer' },
         claim_pending: null,
         claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: true },
         invite: { rotated_at: null },
@@ -494,9 +499,7 @@ test('a contested claim shows the dedicated contested notice alongside the claim
   await expect(page.getByTestId('guild-claim-contested-notice')).toHaveText(
     'This guild’s claim is contested and under review by a moderator.',
   );
-  await expect(page.getByTestId('guild-claim-state')).toHaveText(
-    'Claimed by OtherOfficer#5678 since 19 Sep.',
-  );
+  await expect(page.getByTestId('guild-claim-state')).toHaveText('Claimed by Otherofficer since 19 Sep.');
   // Not the claimant, so no release control -- this is a different account's claim.
   await expect(page.getByTestId('guild-claim-release')).toHaveCount(0);
 });
@@ -514,9 +517,9 @@ test('release stays visible and enabled for the claim holder even while their cl
       envelope({
         default_visibility: 'guild',
         officer_max_rank_index: 1,
-        claimed_by: { battletag: 'Fixture#1234' },
+        claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
         claim_pending: null,
-        claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: true },
+        claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: true, yours: true },
         invite: { rotated_at: null },
       }),
     ),

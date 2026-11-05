@@ -20,7 +20,7 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
 {
   "guild": { "id": 2, "name": "OLYMPUS XXVII", "region": "us", "ruleset": "pvp", "faction": "alliance" },
   "viewer": { "role": "officer", "character_key": "us/pvp/obnoxious-yell", "verified": true },
-  "claim": { "state": "claimed", "since": "...", "frozen": false, "claimed_by_name": "Obnoxious Yell" },
+  "claim": { "state": "claimed", "since": "...", "frozen": false, "yours": false, "claimed_by": { "name": "Obnoxious Yell", "class": "warrior", "character_key": "us/pvp/obnoxious-yell" } },
   "summary": {
     "raiders": 25, "waiting_for_approval": 3, "below_rating_floor": 2,
     "tier": { "name": "First tier", "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"], "named_encounters": 1, "down": 1, "pulls_total": 27 },   // the Progression tab's own
