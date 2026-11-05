@@ -118,8 +118,9 @@ func TestLootListsOnyxiasRealTwentyTwoItems(t *testing.T) {
 	if scaleOfOnyxia.Kind != lootKindSkinned || helmOfWrath.Kind != lootKindGear {
 		t.Fatalf("kinds = %s/%s, want skinned/gear", scaleOfOnyxia.Kind, helmOfWrath.Kind)
 	}
-	// The seeded level-60 hunter is on the hunter helm, off the warrior helm; the reader, with no
-	// export of a level, is not at the cap.
+	// The seeded level-60 hunter is off the warrior helm; the reader, with no export of a level, is
+	// not at the cap. Who is on which item is the real-data tests' job (loot_rules_test.go): this
+	// harness loads no item tables.
 	if len(helmOfWrath.Candidates) != 0 {
 		t.Fatalf("Helm of Wrath candidates = %+v, want none: nobody here is a warrior", helmOfWrath.Candidates)
 	}
@@ -129,8 +130,8 @@ func TestLootListsOnyxiasRealTwentyTwoItems(t *testing.T) {
 	for _, it := range view.Items {
 		switch it.ItemID {
 		case 16939:
-			if len(it.Candidates) != 1 || it.InventoryType != 1 || it.ItemClass != 4 || it.ItemSubclass != 3 {
-				t.Fatalf("Dragonstalker's Helm = %+v, want the hunter and the client's slot facts", it)
+			if it.InventoryType != 1 || it.ItemClass != 4 || it.ItemSubclass != 3 {
+				t.Fatalf("Dragonstalker's Helm = %+v, want the client's slot facts", it)
 			}
 		case 18705:
 			if it.QuestLabel != "Quest: A Proper String (Hunter)" || len(it.Eligible) != 1 {

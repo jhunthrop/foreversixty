@@ -1162,7 +1162,9 @@ test.describe('loot: read-only for a member, awarded state for everyone', () => 
     await expect(page.getByTestId('guild-loot-tab').getByText('Read-only')).toBeVisible();
     const loot = buildMockLoot();
     for (const item of loot.items) {
-      await expect(page.getByTestId(`guild-loot-item-${item.item_id}`)).toBeVisible();
+      const card = page.getByTestId(`guild-loot-item-${item.item_id}`);
+      if (item.kind === 'gear' && item.candidates.length > 0) await expect(card).toBeVisible();
+      else await expect(card).toHaveCount(0);
     }
     await expect(page.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(0);
   });
@@ -1185,6 +1187,10 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     await expect(page.getByTestId('guild-overview-tab')).toBeVisible();
     // The Overview's own Loot summary card prefetches GET .../loot before the tab exists.
     await expect(page.getByTestId('guild-overview-card-loot')).toBeVisible();
+    const lootLine = page.getByTestId('guild-overview-loot-line');
+    await expect(lootLine).toContainText('Next open drop:');
+    await expect(lootLine.locator('[data-testid^="item-hover-"]')).toHaveCount(1);
+    await expect(lootLine).not.toContainText('Scale of Onyxia');
 
     await page.getByTestId('guild-tab-loot').click();
     await expect(page.getByTestId('guild-loot-tab')).toBeVisible();
@@ -1193,9 +1199,9 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     // The API lists a shared name once: 22 drops, 21 rows.
     expect(loot.items).toHaveLength(21);
     for (const item of loot.items) {
-      await expect(page.getByTestId(`guild-loot-item-${item.item_id}`)).toBeVisible();
-      if (item.slot === '') continue; // a quest/reputation/crafting drop, no candidates
+      if (item.kind !== 'gear' || item.candidates.length === 0) continue; // the collapsed line
       const panel = page.getByTestId(`guild-loot-item-${item.item_id}`);
+      await expect(panel).toBeVisible();
       await expect(panel).not.toContainText('NaN');
       for (const candidate of item.candidates) {
         await expect(panel).toContainText(candidate.name);
@@ -1221,7 +1227,8 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     );
     await page.goto(`${GUILD_URL}#loot`);
     await expect(page.getByTestId('guild-loot-error')).toBeVisible();
-    await expect(page.getByTestId('guild-loot-error')).toContainText('the loot ranker fell over');
+    await expect(page.getByTestId('guild-loot-error')).toContainText('Loot did not load.');
+    await expect(page.getByTestId('guild-loot-error').getByRole('button')).toHaveText('Try again');
     await expect(page.getByTestId('guild-loot-missing')).toHaveCount(0);
     await expect(page.getByText(/isn.t live yet/)).toHaveCount(0);
   });

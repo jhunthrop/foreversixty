@@ -64,8 +64,10 @@
 >
   {#if show !== 'name'}
     <span
-      class="rounded-control bg-card-top text-muted inline-flex shrink-0 items-center justify-center overflow-hidden border text-[10px] font-bold"
-      style={`width:${iconSize}px;height:${iconSize}px;border-width:2px;border-color:${rarityBorderColorFor(award.quality)}`}
+      class="{iconSize === 16
+        ? 'rounded-[3px]'
+        : 'rounded-control'} bg-card-top text-muted inline-flex shrink-0 items-center justify-center overflow-hidden border text-[10px] font-bold"
+      style={`width:${iconSize}px;height:${iconSize}px;border-width:${iconSize === 16 ? 1 : 2}px;border-color:${rarityBorderColorFor(award.quality)}`}
       data-testid="raid-loot-icon"
     >
       {#if icon !== null}

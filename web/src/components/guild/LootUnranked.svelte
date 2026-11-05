@@ -51,7 +51,7 @@
 <RaidDisclosure
   heading={unrankedLine(items.length)}
   headingId="guild-loot-unranked-heading"
-  headingClass="text-text text-[14px] font-normal"
+  headingClass="text-text font-body text-[14px] font-normal"
   testid="guild-loot-unranked"
 >
   <ul class="flex flex-col">
