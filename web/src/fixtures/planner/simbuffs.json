@@ -2,12 +2,200 @@
   "entries": {
     "flask_of_supreme_power": {
       "name": "Flask of Supreme Power",
-      "icon": "fixture_item_snakestone_charm"
+      "icon": "fixture_item_snakestone_charm",
+      "target": false
     },
     "elixir_of_the_mongoose": {
       "name": "Elixir of the Mongoose",
-      "icon": "fixture_item_band_of_accuria"
+      "icon": "fixture_item_band_of_accuria",
+      "target": false
     },
-    "battle_shout": { "name": "Battle Shout", "icon": "fixture_improved_battle_shout" }
+    "battle_shout": {
+      "name": "Battle Shout",
+      "icon": "fixture_improved_battle_shout",
+      "target": false,
+      "stats": {
+        "attack_power": 112
+      }
+    },
+    "arcane_brilliance": {
+      "name": "Arcane Brilliance",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "intellect": 31
+      }
+    },
+    "gift_of_the_wild": {
+      "name": "Gift of the Wild",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "strength": 16,
+        "agility": 16,
+        "stamina": 16,
+        "intellect": 16,
+        "spirit": 16,
+        "attack_power": 32
+      }
+    },
+    "power_word_fortitude": {
+      "name": "Power Word: Fortitude",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "stamina": 70
+      }
+    },
+    "divine_spirit": {
+      "name": "Divine Spirit",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "spirit": 40
+      }
+    },
+    "blessing_of_might": {
+      "name": "Blessing of Might",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "attack_power": 112
+      }
+    },
+    "blessing_of_wisdom": {
+      "name": "Blessing of Wisdom",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "mp5": 36
+      }
+    },
+    "trueshot_aura": {
+      "name": "Trueshot Aura",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "ranged_attack_power": 100
+      }
+    },
+    "heart_of_the_lion": {
+      "name": "Heart of the Lion",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "strength": 29.8,
+        "agility": 17.9,
+        "stamina": 23.2,
+        "intellect": 2.6,
+        "spirit": 4.9,
+        "attack_power": 339.6,
+        "ranged_attack_power": 280
+      }
+    },
+    "leader_of_the_pack": {
+      "name": "Leader of the Pack",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "crit": 3
+      }
+    },
+    "moonkin_aura": {
+      "name": "Moonkin Aura",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "crit": 3
+      }
+    },
+    "strength_of_earth_totem": {
+      "name": "Strength of Earth Totem",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "strength": 42,
+        "attack_power": 84
+      }
+    },
+    "windfury_totem": {
+      "name": "Windfury Totem",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "attack_power": 246
+      }
+    },
+    "mana_spring_totem": {
+      "name": "Mana Spring Totem",
+      "icon": "fixture_item_snakestone_charm",
+      "target": false,
+      "stats": {
+        "mp5": 25
+      }
+    },
+    "curse_of_elements": {
+      "name": "Curse of the Elements",
+      "icon": "fixture_item_snakestone_charm",
+      "target": true,
+      "school_damage": [
+        "fire",
+        "frost"
+      ]
+    },
+    "sunder_armor": {
+      "name": "Sunder Armor",
+      "icon": "fixture_item_snakestone_charm",
+      "target": true,
+      "stats": {
+        "target_armor": -2250
+      },
+      "exclusive_with": {
+        "group": "major_armor",
+        "rank": 1
+      }
+    },
+    "faerie_fire": {
+      "name": "Faerie Fire",
+      "icon": "fixture_item_snakestone_charm",
+      "target": true,
+      "stats": {
+        "target_armor": -505
+      }
+    },
+    "judgement_of_wisdom": {
+      "name": "Judgement of Wisdom",
+      "icon": "fixture_item_snakestone_charm",
+      "target": true
+    },
+    "judgement_of_the_crusader": {
+      "name": "Judgement of the Crusader",
+      "icon": "fixture_item_snakestone_charm",
+      "target": true,
+      "school_damage": [
+        "holy"
+      ]
+    },
+    "judgement_of_light": {
+      "name": "Judgement of Light",
+      "icon": "fixture_item_snakestone_charm",
+      "target": true
+    },
+    "hunters_mark": {
+      "name": "Hunter's Mark",
+      "icon": "fixture_item_snakestone_charm",
+      "target": true,
+      "stats": {
+        "ranged_attack_power": 110
+      }
+    },
+    "curse_of_recklessness": {
+      "name": "Curse of Recklessness",
+      "icon": "fixture_item_snakestone_charm",
+      "target": true,
+      "stats": {
+        "target_armor": -505
+      }
+    }
   }
 }

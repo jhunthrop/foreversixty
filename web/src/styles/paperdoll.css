@@ -213,6 +213,26 @@
   color: var(--color-text);
 }
 
+/* The client's green enchant line; it wraps under the name and is never cut (spec 2026-11-04 3.8).
+   The glyph is there because an uncommon item's name is the same green. */
+.pd-enchant {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font: 400 13px/18px var(--font-body);
+  color: var(--color-rarity-uncommon);
+  overflow-wrap: anywhere;
+}
+
+.pd-enchant svg {
+  flex: none;
+  align-self: center;
+}
+
+.pd-right .pd-enchant {
+  flex-direction: row-reverse;
+}
+
 /* ---- The desktop second line: pick, gain; "Best in slot"; the report's detail. ---- */
 .pd-det {
   display: none;

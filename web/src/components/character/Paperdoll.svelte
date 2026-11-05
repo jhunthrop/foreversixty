@@ -38,6 +38,7 @@
   import { dataUrl } from '../../lib/planner/load';
   import { classColorVar } from '../../lib/report/format';
   import ItemHover from '../ItemHover.svelte';
+  import Glyph from '../ui/Glyph.svelte';
   import ClassCrestRing from './ClassCrestRing.svelte';
 
   let {
@@ -205,7 +206,12 @@
         <span class="pd-sock" class:pd-bare={item.icon === null} style={ring(item)}
           >{@render socketIcon(item.icon)}</span
         >
-        <span class="pd-txt"><span class="pd-name {quality(item)}">{hyphenate(item.name)}</span></span>
+        <span class="pd-txt"
+          ><span class="pd-name {quality(item)}">{hyphenate(item.name)}</span>{#if data.enchant !== undefined}<span
+              class="pd-enchant"
+              data-testid={`paperdoll-enchant-${cell.slot}`}><Glyph name="enchant" size={12} />{data.enchant}</span
+            >{/if}</span
+        >
       </ItemHover>
     {:else if data.state === 'unknown'}
       <div class="pd-slot" aria-label={cellLabel(data, classSlug)} role="img">

@@ -67,7 +67,7 @@
   import LandingState from './LandingState.svelte';
   import ReportOptions from './ReportOptions.svelte';
   import RequestDrawer from './RequestDrawer.svelte';
-  import RotationCard from './RotationCard.svelte';
+  import LiveRotationCard from './LiveRotationCard.svelte';
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
   import SavedSimLoadFailed from './SavedSimLoadFailed.svelte';
@@ -786,7 +786,7 @@
 
           {#if store.result !== null && !comparing}
             <DetailsCard result={store.result} />
-            <RotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
+            <LiveRotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
           {/if}
 
           {#if store.result !== null}

@@ -6,8 +6,10 @@
 // so a missing row is a de-underscored id rather than a blank, and a build that ships no
 // file loses the icons and nothing else.
 import { dataUrl, loadOptional } from '../planner/load';
+import type { BuffEffectRow } from './buff-effect';
 
-export interface SimBuffRow {
+/** The effect fields are absent from a file the data lane has not regenerated. */
+export interface SimBuffRow extends BuffEffectRow {
   name: string;
   icon: string;
 }
