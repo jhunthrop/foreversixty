@@ -65,12 +65,12 @@
         {
           "id": "leader_of_the_pack",
           "label": "Leader of the Pack",
-          "reason": "Melee and ranged crit from a raid feral druid, a talent that exists in the live tree."
+          "reason": "3% crit of every kind (aura 290) from a raid feral druid, a talent that exists in the live tree. Exclusive with Moonkin Aura since Blizzard's Forever notes of 3 November 2026, so a raid with both gives 3% once."
         },
         {
           "id": "moonkin_aura",
           "label": "Moonkin Aura",
-          "reason": "Crit from a raid balance druid; the live Balance tree has Moonkin Form and the engine models the aura as a raid buff."
+          "reason": "3% crit of every kind (aura 290) from a raid balance druid; the live Balance tree has Moonkin Form. Exclusive with Leader of the Pack (Blizzard, 3 November 2026): the preset keeps both druids, and the engine gives 3% once."
         },
         {
           "id": "strength_of_earth_totem",
