@@ -144,6 +144,12 @@ describe('the officer step', () => {
     expect(step.text).toBe('Deadmines run Saturday 8 pm, 3 signed up.');
     expect(step.action).toEqual({ kind: 'link', href: '/r/7', label: 'Open the sign-ups' });
   });
+
+  it('never prints 0 signed up', () => {
+    const counts = { in: 0, late: 0, tanks: 0, healers: 0, dps: 0 };
+    const step = weekOneStep(input({ ...officer, nextRaid: raid({ counts }), raidHref: '/r/7' }));
+    expect(step.text).toBe('Deadmines run Saturday 8 pm. Nobody signed up yet.');
+  });
 });
 
 describe('the raider step', () => {

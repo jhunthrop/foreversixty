@@ -53,10 +53,11 @@ line, the first line under the `Billing` heading.
 - The sentence names Nudge on the Loot tab too. That is §4.7's fixed wording; keep it verbatim.
 
 ### 3.3 The `Read-only` label
-- Loot: the existing muted 12 px `Read-only` span at the h2's right edge now shows for
-  `memberReadOnly` or `officer-read-only`.
+- Loot: the existing muted 12 px `Read-only` span at the h2's right edge shows for
+  `memberReadOnly` only. A gated officer reads the plan sentence instead, which already says the
+  controls are off (amended 2026-11-05, guild round 2).
 - Readiness: the h2 gains the same header row (`flex items-center justify-between gap-3`) and the same
-  span, in `officer-read-only` only.
+  span, for members only, as on Loot (amended 2026-11-05, guild round 2).
 
 ### 3.4 The disabled controls (visible, never hidden — tenet 4)
 Every control keeps its position, label, size and border. Each gets native `disabled` and

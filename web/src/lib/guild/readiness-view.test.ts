@@ -170,7 +170,7 @@ describe('cell labels', () => {
     const missing = row({
       enchants: { missing_slots: ['main_hand', 'chest', 'back', 'feet'], checked: true },
     });
-    expect(enchantPillText(missing)).toBe('Main hand, Chest +2 more');
+    expect(enchantPillText(missing)).toBe('Main hand, Chest and 2 more slots');
     expect(enchantLabel(missing)).toBe('Main hand, Chest, Back, Feet');
   });
 
@@ -304,7 +304,12 @@ describe('worstCheck', () => {
           failing: 1,
         }),
       ),
-    ).toEqual({ text: 'No enchant: Main Hand, Chest +2', more: 0 });
+    ).toEqual({ text: 'No enchant: Main Hand, Chest and 2 more slots', more: 0 });
+    expect(
+      worstCheck(
+        row({ enchants: { missing_slots: ['main_hand', 'chest', 'back'], checked: true }, failing: 1 }),
+      ),
+    ).toEqual({ text: 'No enchant: Main Hand, Chest and 1 more slot', more: 0 });
   });
 
   it('falls through talents, consumables and upgrades', () => {

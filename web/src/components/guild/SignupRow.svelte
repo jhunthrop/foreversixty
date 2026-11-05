@@ -106,8 +106,12 @@
   const saved = $derived(savedSpec(character));
   const specState = $derived(askedState ?? shownState);
   const showSpec = $derived(showsSpecSelect(character.class, specState));
-  /** An unsigned row keeps the room the spec block takes, so a press shifts nothing below it. */
-  const reservesSpec = $derived(character.state === null && specsForClass(character.class).length > 1);
+  /** An unsigned row on a raid keeps the room the spec block takes, so a press shifts nothing below
+   *  it. A run or event page shrinks to fit instead (guild round 2): its card is the row and nothing
+   *  else, and round 1 left about 140 px empty under it. */
+  const reservesSpec = $derived(
+    kind === 'raid' && character.state === null && specsForClass(character.class).length > 1,
+  );
   const chosenSpec = $derived(specChoice ?? saved?.spec ?? '');
   const specLead = $derived(
     saved === null

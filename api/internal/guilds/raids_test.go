@@ -99,8 +99,8 @@ func TestRaidsFightsAndPresentAndTopParse(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := h.pool.Exec(ctx,
-		`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, role, metric_dps, kill, fought_at)
-		 values ('raids-detail-report', 1, $1, 'Raidsdetail', 'hunter', 'dps', 300.5, true, now())`, key); err != nil {
+		`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, role, metric_dps, kill, fought_at, encounter_id)
+		 values ('raids-detail-report', 1, $1, 'Raidsdetail', 'hunter', 'dps', 300.5, true, now(), 1084)`, key); err != nil {
 		t.Fatal(err)
 	}
 

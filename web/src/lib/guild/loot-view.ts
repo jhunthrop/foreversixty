@@ -12,6 +12,8 @@ import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem, GuildLootPa
 export const LOOT_FOOTNOTE =
   'Candidates are characters who can wear the item at their level. Each is ranked by how much it adds over what they wear now. A drop stays open until an officer awards it.';
 export const TIER_ONE_LABEL = 'Ranked by item level only. Not on their best-in-slot list.';
+/** The tier-1 group's label on every card after the first that says it in full (guild round 2). */
+export const TIER_ONE_SHORT = 'Item level only';
 export const NOBODY_AT_60 = "Onyxia's drops need level 60. Candidates show here as your raiders reach it.";
 export const NO_CANDIDATES_AT_60 = 'Nobody at 60 can use these drops yet.';
 export const LOOT_LOAD_ERROR = 'Loot did not load.';

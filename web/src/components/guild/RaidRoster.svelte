@@ -213,7 +213,12 @@
           'raid-roster-not-signed-heading',
         )}
         {#if officer}
-          <ul class="grid grid-cols-1 gap-x-4 md:grid-cols-2 xl:grid-cols-4">
+          <!-- A strict grid: every cell one person, rows 8 px apart, so two names in a column never
+               sit with their selects touching (guild round 2). -->
+          <ul
+            class="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-2 xl:grid-cols-4"
+            data-testid="raid-roster-not-signed-grid"
+          >
             {#each groups.notSigned as entry (entry.character_key)}{@render row(entry, false)}{/each}
           </ul>
         {:else}

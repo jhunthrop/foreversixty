@@ -139,8 +139,9 @@
       </button>
     {:else}
       <p class="text-muted text-[13px]" data-testid={`${TESTID}-none`}>{copy.noLinkYet}</p>
+      <!-- Secondary: the plan card holds the page's one fill (guild round 2). -->
       <button
-        class="{button('primary', 'sm')} {busy ? BUSY_CLASS : ''}"
+        class="{button('secondary', 'sm')} {busy ? BUSY_CLASS : ''}"
         onclick={() => void make()}
         disabled={busy || disabled}
         aria-busy={busy}

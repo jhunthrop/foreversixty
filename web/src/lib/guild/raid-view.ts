@@ -5,7 +5,7 @@
 // count is distinct bosses, "kills" the boss pulls that ended in one. Which
 // encounters are bosses is the progression endpoint's tier list; with it unavailable the page
 // falls back to the API's own figure under its old name.
-import type { GuildProgressionPage, GuildRaidRow } from './api';
+import type { GuildProgressionPage, GuildRaidFight, GuildRaidRow } from './api';
 import { counted } from '../plural';
 import { bossCountLabel, distinctBossNames } from '../boss-count';
 
@@ -22,16 +22,58 @@ export interface RaidTally {
   wipes: number;
 }
 
+/** A named fight that is not one of the tier's bosses: a whelp pack, never a boss pull. */
+function isTrash(fight: GuildRaidFight, bossIds: ReadonlySet<number>): boolean {
+  return fight.name !== null && (fight.encounter_id === null || !bossIds.has(fight.encounter_id));
+}
+
 export function raidTally(row: GuildRaidRow, bossIds: ReadonlySet<number>): RaidTally {
   const bosses = distinctBossNames(row.fights, bossIds);
   let bossKills = 0;
   let trashPacks = 0;
+  let trashWipes = 0;
   for (const fight of row.fights) {
-    if (!fight.kill || fight.name === null) continue;
-    if (fight.encounter_id !== null && bossIds.has(fight.encounter_id)) bossKills += 1;
-    else trashPacks += 1;
+    if (isTrash(fight, bossIds)) {
+      if (fight.kill) trashPacks += 1;
+      else trashWipes += 1;
+    } else if (fight.kill && fight.name !== null) bossKills += 1;
   }
-  return { bosses, bossKills, trashPacks, wipes: row.wipe_count };
+  // The API's wipe count is every fight that did not end in a kill; a trash pack that went
+  // badly is not a wipe on the night's line (guild round 2, WP-12).
+  return { bosses, bossKills, trashPacks, wipes: Math.max(0, row.wipe_count - trashWipes) };
+}
+
+/** One fight of an open night as the Raids tab draws it (guild round 2, WP-12). */
+export interface NightFightView {
+  index: number;
+  /** `Onyxia · pull 2` (pulls counted per boss), the pack's own name, or `Pull 3` unnamed. */
+  label: string;
+  /** A trash pack: quiet, no pull number and no Kill or Wipe badge. */
+  trash: boolean;
+  /** No named encounter: the API could not name the fight. */
+  unnamed: boolean;
+  kill: boolean;
+  duration_ms: number;
+}
+
+/** The quiet word a trash row carries in place of a Kill or Wipe badge. */
+export const TRASH_LABEL = 'trash';
+
+/** The night's fights: boss pulls numbered per boss, trash packs named and marked as trash. While
+ *  the tier's boss list is unknown every named fight reads as a pull, numbered per name. */
+export function nightFights(row: GuildRaidRow, bossIds: ReadonlySet<number> | null): NightFightView[] {
+  const pulls = new Map<string, number>();
+  return row.fights.map((fight) => {
+    const base = { index: fight.index, kill: fight.kill, duration_ms: fight.duration_ms };
+    if (fight.name === null)
+      return { ...base, label: `Pull ${fight.index + 1}`, trash: false, unnamed: true };
+    if (bossIds !== null && isTrash(fight, bossIds)) {
+      return { ...base, label: fight.name, trash: true, unnamed: false };
+    }
+    const pull = (pulls.get(fight.name) ?? 0) + 1;
+    pulls.set(fight.name, pull);
+    return { ...base, label: `${fight.name} · pull ${pull}`, trash: false, unnamed: false };
+  });
 }
 
 /** The facts of a night as separate pieces, so a narrow screen can wrap them whole:

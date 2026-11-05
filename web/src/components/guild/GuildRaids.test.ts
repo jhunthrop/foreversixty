@@ -165,6 +165,19 @@ describe('GuildRaids raid nights linked to raids', () => {
     expect(body).toContain('id="guild-raid-night-abc123def"');
   });
 
+  it('labels the night best as Top HPS, never a parse, rounded as the roster writes it', () => {
+    const row = {
+      ...night('abc123def', null),
+      top_parse: { name: 'Rootbound', class: 'druid', metric: 'hps', value: 464.6 },
+    };
+    const body = nights([row]);
+    const at = body.indexOf('data-testid="guild-raid-top-abc123def"');
+    expect(at).toBeGreaterThan(-1);
+    expect(text(body.slice(body.indexOf('>', at) + 1, body.indexOf('</p>', at)))).toBe(
+      'Top HPS Rootbound 465',
+    );
+  });
+
   it('draws no link for a night matched to no raid', () => {
     expect(nights([night('abc123def', null)])).not.toContain('guild-raid-link-');
   });

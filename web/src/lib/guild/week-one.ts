@@ -7,7 +7,7 @@ import { levelingGuideHref, levelingSpecKey, specNameOf } from '../leveling/leve
 import { SPECS } from '../sim/specs';
 import type { GuildRosterEntry, NextRaidView } from './api';
 import { isPrimaryProfession, professionName } from './professions';
-import { countdown, whenPhrase } from './raid-copy';
+import { countdown, NOBODY_SIGNED_UP, whenPhrase } from './raid-copy';
 import { dateLabel } from './raid-time';
 import { RAID_LEVEL } from './readiness-view';
 import { sameSpecName } from './spec-name';
@@ -182,6 +182,12 @@ function signedUpCount(raid: NextRaidView): number {
   return raid.counts.in + raid.counts.late;
 }
 
+/** `{Title} {when}, {n} signed up.`; at 0 `{Title} {when}. Nobody signed up yet.` (guild round 2). */
+function signedUpSentence(raid: NextRaidView, when: string): string {
+  const n = signedUpCount(raid);
+  return n === 0 ? `${raid.title} ${when}. ${NOBODY_SIGNED_UP}.` : `${raid.title} ${when}, ${n} signed up.`;
+}
+
 function officerStep(input: WeekOneInput): WeekOneStep {
   const { nextRaid, raidHref, waiting } = input;
   if (waiting > 0) {
@@ -202,7 +208,7 @@ function officerStep(input: WeekOneInput): WeekOneStep {
   }
   return {
     name: null,
-    text: `${nextRaid.title} ${raidWhen(nextRaid, input)}, ${signedUpCount(nextRaid)} signed up.`,
+    text: signedUpSentence(nextRaid, raidWhen(nextRaid, input)),
     action: { kind: 'link', href: raidHref, label: 'Open the sign-ups' },
     invite: true,
   };

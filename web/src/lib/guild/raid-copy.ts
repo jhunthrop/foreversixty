@@ -211,6 +211,18 @@ export function kindOf(view: { zone_kind?: GuildZoneKind }): GuildZoneKind {
   return view.zone_kind ?? 'raid';
 }
 
+/** The zone beside a title that is not the zone's name, with the size an officer picked for a guild
+ *  event: `Guild event · 20`. The planned row's second line and the event page's h1 read it. */
+export function zoneLineOf(view: {
+  zone_kind?: GuildZoneKind;
+  zone_name: string;
+  size: number | null;
+}): string {
+  return kindOf(view) === 'event' && view.size !== null
+    ? `${view.zone_name}${SEP}${view.size}`
+    : view.zone_name;
+}
+
 /** The page's eyebrow, set uppercase by its `label` class: `RAID`, `DUNGEON`, `EVENT`. */
 export const eyebrowOf = (kind: GuildZoneKind): string => KIND_EYEBROWS[kind];
 /** `Cancel raid`, `Cancel run`, `Cancel event`. */
@@ -247,8 +259,12 @@ function plural(n: number, singular: string, pluralForm: string): string {
   return n === 1 ? singular : pluralForm;
 }
 
-/** `23 of 40 signed up`; `23 signed up` while the size is unknown (ruling R6). */
+/** A count line at zero: never `0 signed up` (guild round 2). */
+export const NOBODY_SIGNED_UP = 'Nobody signed up yet';
+
+/** `23 of 40 signed up`; `23 signed up` while the size is unknown (ruling R6); `Nobody signed up yet` at 0. */
 export function countLine(n: number, size: number | null): string {
+  if (n === 0) return NOBODY_SIGNED_UP;
   return size === null ? `${n} signed up` : `${n} of ${size} signed up`;
 }
 
@@ -408,7 +424,9 @@ export interface BandLineParts {
 export function bandLineParts(args: BandLineArgs): BandLineParts {
   const clause = bandClause(args);
   const count =
-    args.state === null ? `. ${inLine(args.n, args.size)}.` : `, ${countLine(args.n, args.size)}.`;
+    args.state === null
+      ? `. ${inLine(args.n, args.size)}.`
+      : `, ${args.n === 0 ? NOBODY_SIGNED_UP.toLowerCase() : countLine(args.n, args.size)}.`;
   return { head: `${args.when}, ${clause.head}`, word: clause.word, tail: `${clause.tail}${count}` };
 }
 

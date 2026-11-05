@@ -259,7 +259,7 @@ func (s *Store) bestByRole(ctx context.Context, guildID, encounterID int64, role
 		select coalesce(m.player_name, ''), coalesce(m.class, ''), coalesce(m.spec, ''),
 		       coalesce(m.`+orderCol+`, 0), m.report_id, m.fight_index
 		from fight_metrics m join reports r on r.id = m.report_id
-		where r.guild_id = $1 and m.encounter_id = $2 and m.role = $3 and m.kill and m.state <> 'removed'
+		where r.guild_id = $1 and m.encounter_id = $2 and m.role = $3 and `+bossKillMetrics+`
 		  and `+presence.EvidenceReport("r")+`
 		order by coalesce(m.`+orderCol+`, 0) desc limit 1`,
 		guildID, encounterID, role).Scan(&ref.Name, &ref.Class, &ref.Spec, &ref.Value, &ref.ReportID, &ref.FightIndex)

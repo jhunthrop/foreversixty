@@ -19,6 +19,7 @@
     NOBODY_AT_60,
     NO_CANDIDATES_AT_60,
     TIER_ONE_LABEL,
+    TIER_ONE_SHORT,
     UNDO_AWARD,
     awardQuestion,
     awardedLine,
@@ -128,6 +129,13 @@
   function showAll(itemId: number): void {
     expanded = new Set([...expanded, itemId]);
   }
+  const shownRows = (item: GuildLootItem) =>
+    expanded.has(item.item_id) ? item.candidates : item.candidates.slice(0, FIRST_ROWS);
+  /** The first card showing a tier-1 row says the label in full; every later card marks its tier-1
+   *  group with the short label, so the sentence is read once per tab (guild round 2). */
+  const fullTierOneItem = $derived(
+    ranked.find((item) => shownRows(item).some((candidate) => candidate.tier === 1))?.item_id,
+  );
   const officerReadOnly = $derived(officer && !(officerTools && raidGuildTools));
   /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
   const gateDescribedBy = $derived(officerReadOnly ? 'officer-tools-gate-loot' : undefined);
@@ -176,7 +184,7 @@
     <div class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-loot-items">
       {#each ranked as item (item.item_id)}
         {@const firstTierOne = item.candidates.findIndex((candidate) => candidate.tier === 1)}
-        {@const rows = expanded.has(item.item_id) ? item.candidates : item.candidates.slice(0, FIRST_ROWS)}
+        {@const rows = shownRows(item)}
         <Card
           label={slotLine(item.inventory_type, item.item_class, item.item_subclass)}
           title={item.name}
@@ -201,7 +209,7 @@
                   class="border-line-soft text-muted border-t px-5 py-2 text-[12px]"
                   data-testid={`guild-loot-tier-one-${item.item_id}`}
                 >
-                  {TIER_ONE_LABEL}
+                  {item.item_id === fullTierOneItem ? TIER_ONE_LABEL : TIER_ONE_SHORT}
                 </p>
               {/if}
               <LootCandidateRow

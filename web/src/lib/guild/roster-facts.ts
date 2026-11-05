@@ -8,6 +8,7 @@ import type { GuildRosterEntry, GuildRosterRow } from './api';
 import type { AttendanceSource } from './attendance-contract';
 import { attendanceCopy, rosterChip } from './attendance-copy';
 import { nightsLabel } from './nights';
+import { outputFigure, outputUnit } from './output-figure';
 import { addonGapLabel, addonIdentity, addonSeen, addonSpecName } from './roster-addon';
 import { specClassName, specName } from './spec-name';
 
@@ -30,7 +31,7 @@ export function rosterStatChips(row: GuildRosterRow, source: AttendanceSource = 
   if (row.item_level !== undefined) chips.push(`Item level ${row.item_level}`);
   if (row.attendance !== undefined) chips.push(attendanceChip(row, row.attendance, source));
   if (row.best_parse !== undefined && row.best_parse !== null) {
-    chips.push(`Best ${row.best_parse.metric.toUpperCase()} ${Math.round(row.best_parse.value)}`);
+    chips.push(`Best ${outputUnit(row.best_parse.metric)} ${outputFigure(row.best_parse.value)}`);
   }
   if (row.rating !== undefined && row.rating !== null) chips.push(`Rating ${row.rating.overall}`);
   return chips;
