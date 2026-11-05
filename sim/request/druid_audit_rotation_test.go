@@ -69,7 +69,8 @@ func TestCatLetsRipRunToItsLastTick(t *testing.T) {
 // seeds 1 and 50001). Moonfire rank 2 through the 20s and rank 4 from 36;
 // Wrath rank 3 at 22; Insect Swarm rank 2 at 39. Round 20 ends the Wrath
 // rank-3 row at 23 and the Moonfire rank-2 row at 28
-// (TestBalanceRankRowsTwentyToTwentyNine), so 29 is rank 3 here now.
+// (TestBalanceRankRowsTwentyToTwentyNine), so 29 is rank 3 here now; round
+// 24 starts the rank-4 row at 35, so the rank-3 check sits at 34.
 func TestBalanceRankRowsByLevel(t *testing.T) {
 	const (
 		moonfire2, moonfire3, moonfire4, moonfire5 = 8924, 8925, 8926, 8927
@@ -83,7 +84,7 @@ func TestBalanceRankRowsByLevel(t *testing.T) {
 	}{
 		{"Moonfire at 23 is rank 2", 23, moonfire2, moonfire4},
 		{"Moonfire at 29 is rank 3", 29, moonfire3, moonfire5},
-		{"Moonfire at 35 is rank 3", 35, moonfire3, moonfire4},
+		{"Moonfire at 34 is rank 3", 34, moonfire3, moonfire4},
 		{"Moonfire at 36 is rank 4", 36, moonfire4, moonfire3},
 		{"Wrath at 22 is rank 3", 22, wrath3, wrath4},
 		{"Wrath at 27 is rank 4", 27, wrath4, wrath3},
@@ -344,6 +345,67 @@ func TestBalanceRankRowsFortyToFiftyNine(t *testing.T) {
 			if !ids[c.want] || ids[c.not] {
 				t.Errorf("%s (%s): want %d cast and %d not", c.name, race, c.want, c.not)
 			}
+		}
+	}
+}
+
+// Sim-accuracy round 24: the rank sweep below 20, judged level by level with
+// Wrath and Moonfire together (band-20 gear, 10,000 iterations, seeds 1 and
+// 50001, night elf and tauren). The fight runs dry, so Wrath rank 1 wins at
+// 10 to 12 and rank 2 at 13 to 18 (rank 3 from 19); Moonfire rank 2 wins at
+// 16 and rank 1 at 17 to 19. Moonfire rank 4 also wins at 35, a level
+// earlier than round 16's row (round24/druid.md).
+func TestBalanceRankRowsBelowTwentyAndMoonfireAtThirtyFive(t *testing.T) {
+	const (
+		wrath1, wrath2, wrath3          = 5176, 5177, 5178
+		moonfire1, moonfire2, moonfire3 = 8921, 8924, 8925
+		moonfire4                       = 8926
+	)
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Wrath at 10 is rank 1", 10, wrath1, wrath2},
+		{"Wrath at 12 is rank 1", 12, wrath1, wrath2},
+		{"Wrath at 13 is rank 2", 13, wrath2, wrath1},
+		{"Wrath at 14 is rank 2", 14, wrath2, wrath3},
+		{"Wrath at 18 is rank 2", 18, wrath2, wrath3},
+		{"Wrath at 19 is rank 3", 19, wrath3, wrath2},
+		{"Moonfire at 15 is rank 2", 15, moonfire2, moonfire1},
+		{"Moonfire at 16 is rank 2", 16, moonfire2, moonfire3},
+		{"Moonfire at 17 is rank 1", 17, moonfire1, moonfire3},
+		{"Moonfire at 19 is rank 1", 19, moonfire1, moonfire3},
+		{"Moonfire at 20 is rank 2", 20, moonfire2, moonfire1},
+		{"Moonfire at 34 is rank 3", 34, moonfire3, moonfire4},
+		{"Moonfire at 35 is rank 4", 35, moonfire4, moonfire3},
+	} {
+		for _, race := range []string{"night-elf", "tauren"} {
+			ids := rotationIDs(t, "druid-balance", "druid", c.level, specRankChoices("druid-balance", BarePreset, race))
+			if !ids[c.want] || ids[c.not] {
+				t.Errorf("%s (%s): want %d cast and %d not", c.name, race, c.want, c.not)
+			}
+		}
+	}
+}
+
+// Sim-accuracy round 24: Healing Touch rank 5 arrives at 26, and a tauren's
+// hole filler heals 0.2 to 0.5% more with rank 4 at 26 to 28 (both seeds); a
+// night elf ties and casts the top rank.
+func TestRestorationTaurenHealingTouchRankFourAtTwentySixToTwentyEight(t *testing.T) {
+	const healingTouch4, healingTouch5 = 5188, 5189
+	for _, c := range []struct {
+		race      string
+		level     int
+		want, not int32
+	}{
+		{"tauren", 26, healingTouch4, 0},
+		{"tauren", 28, healingTouch4, 0},
+		{"night-elf", 27, healingTouch5, healingTouch4},
+	} {
+		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, c.race))
+		if !ids[c.want] || (c.not != 0 && ids[c.not]) {
+			t.Errorf("%s at %d: want Healing Touch %d cast and %d not", c.race, c.level, c.want, c.not)
 		}
 	}
 }
