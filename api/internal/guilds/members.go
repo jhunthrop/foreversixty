@@ -48,6 +48,11 @@ type RosterEntry struct {
 	Role     *string `json:"role"`
 	SpecName *string `json:"spec_name"`
 	SpecIcon *string `json:"spec_icon"`
+	// AccountKey and MayRemove are set on an invited member's entry only: it has no character
+	// key, so the page removes it by account (DELETE .../members/{account_key}) and shows Remove
+	// exactly where that route would succeed for the viewer, the way a row's may_remove does.
+	AccountKey string `json:"account_key,omitempty"`
+	MayRemove  bool   `json:"may_remove,omitempty"`
 }
 
 // RosterCounts are the numbers the count line above the roster reads: everyone on it, and
@@ -70,6 +75,18 @@ type invitedMember struct {
 	// Gear is the account's consent to show gear: without it the snapshot's level and spec
 	// stay off its entry, the way a character row's do.
 	Gear bool
+	// Rank is the account's highest rank in the guild; MayRemove is mayRemoveRow for the
+	// viewing actor against it (markRemovable). Both zero where only counts are read.
+	Rank      string
+	MayRemove bool
+}
+
+// markRemovable sets each invited member's MayRemove for the viewing actor, by the same rule
+// the remove routes enforce.
+func markRemovable(invited []invitedMember, g Guild, actorID int64, moderator, verifiedOfficer bool) {
+	for i := range invited {
+		invited[i].MayRemove = mayRemoveRow(g, actorID, invited[i].UserID, invited[i].Rank, moderator, verifiedOfficer)
+	}
 }
 
 // mergeRoster builds the roster entries and their counts from the three sources: the
@@ -118,7 +135,8 @@ func mergeRoster(rows []RosterRow, invited []invitedMember, snapshot []snapshotM
 			continue // the same person already has a character row
 		}
 		named[key] = true
-		e := RosterEntry{Name: inv.Name, State: EntryNotSeen, Rank: "member", Class: inv.Class}
+		e := RosterEntry{Name: inv.Name, State: EntryNotSeen, Rank: "member", Class: inv.Class,
+			AccountKey: accountKeyFor(inv.UserID), MayRemove: inv.MayRemove}
 		if m, ok := lines[key]; ok {
 			e.State = EntryApproved
 			e.Level, e.Spec, e.SeenAt = snapshotFacts(m)
@@ -165,7 +183,9 @@ func snapshotFacts(m snapshotMember) (level *int, spec *string, seenAt string) {
 func (s *Store) invitedMembers(ctx context.Context, guildID int64) ([]invitedMember, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select gc.user_id, c.name, case when gm.consent in ('gear', 'gear_bags') then c.class end,
-		       gm.consent in ('gear', 'gear_bags')
+		       gm.consent in ('gear', 'gear_bags'),
+		       (select r.rank from guild_characters r where r.guild_id = gc.guild_id and r.user_id = gc.user_id
+		        order by `+rankOrderSQL("r")+` limit 1)
 		from guild_characters gc
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
 		join users u on u.id = gc.user_id
@@ -184,7 +204,7 @@ func (s *Store) invitedMembers(ctx context.Context, guildID int64) ([]invitedMem
 	for rows.Next() {
 		var m invitedMember
 		var name *string
-		if err := rows.Scan(&m.UserID, &name, &m.Class, &m.Gear); err != nil {
+		if err := rows.Scan(&m.UserID, &name, &m.Class, &m.Gear, &m.Rank); err != nil {
 			return nil, fmt.Errorf("guilds: invited members: %w", err)
 		}
 		m.Name = s.inviteeName(ctx, m.UserID, name)

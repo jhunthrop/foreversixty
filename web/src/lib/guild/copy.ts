@@ -342,6 +342,8 @@ export const guildRosterModelCopy = {
   removeButton: 'Remove',
   /** The one muted line under the Remove question: nobody is locked out by it. */
   removeRejoin: 'They can rejoin with the invite link.',
+  /** The same line for a member who came in by the invite link: it works until an officer replaces it. */
+  removeInvitedRejoin: 'The invite link still lets them back in until you rotate it in Settings.',
   declineQuestion: (name: string): string => `Remove ${name} from the waiting list? They can ask again.`,
   /** "Approve 4, including 1 officer?" */
   approveAllQuestion: (total: number, officers: number): string =>

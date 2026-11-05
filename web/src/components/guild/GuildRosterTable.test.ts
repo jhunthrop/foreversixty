@@ -515,3 +515,29 @@ describe('GuildRosterTable attendance source', () => {
     expect(body).not.toContain('Came: raids attended');
   });
 });
+
+describe('GuildRosterTable: Remove on a member who joined by invite link', () => {
+  const home = buildMockHome(VIEWER_OFFICER);
+  const invited = {
+    name: 'Driftwood',
+    state: 'not_seen' as const,
+    rank: 'member' as const,
+    class: 'rogue',
+    account_key: 'u:9',
+    may_remove: true,
+  };
+  const ask = (can: string[], entry = invited) =>
+    render(GuildRosterTable, {
+      props: { ...props(home), members: [...(home.members ?? []), entry], can },
+    }).body;
+
+  it('offers Remove on the invited entry where the API says may_remove and the account may remove', () => {
+    const html = ask(['remove']);
+    expect(html).toContain('data-testid="guild-roster-entry-remove"');
+    expect(html).toContain('aria-label="Remove Driftwood"');
+  });
+  it('never offers it without the remove capability or without may_remove', () => {
+    expect(ask([])).not.toContain('guild-roster-entry-remove');
+    expect(ask(['remove'], { ...invited, may_remove: false })).not.toContain('guild-roster-entry-remove');
+  });
+});

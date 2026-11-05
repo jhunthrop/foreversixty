@@ -36,12 +36,14 @@
     fetchGuildProgression,
     fetchGuildRaids,
     removeCharacter,
+    removeMember,
     GuildApiError,
     type GuildHome,
     type GuildLootItem,
     type GuildLootPage,
     type GuildProgressionPage,
     type GuildRaidsPage,
+    type GuildRosterEntry,
     type GuildRosterRow,
     type GuildViewerRole,
   } from '../lib/guild/api';
@@ -67,7 +69,7 @@
   import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
   import { claimEntryCopy, claimEntryFor, claimEntryNotes, rosterGateState } from '../lib/guild/roster-gate';
   import { rosterPlannerHref } from '../lib/guild/roster-links';
-  import { afterApprove, afterRemove } from '../lib/guild/roster-model';
+  import { afterApprove, afterRemove, afterRemoveMember } from '../lib/guild/roster-model';
   import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
   import { createRefreshingRead } from '../lib/guild/refreshing-read';
   import {
@@ -422,6 +424,23 @@
         pending: (home.pending ?? []).filter((r) => r.character_key !== row.character_key),
         ...afterRemove(home, row.character_key),
       };
+      await refreshHome();
+    } catch (thrown) {
+      rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
+    } finally {
+      rosterBusy = null;
+    }
+  }
+
+  /** Remove a member who joined by invite link: no character row, so the API takes their account. */
+  async function onRemoveMember(entry: GuildRosterEntry): Promise<void> {
+    if (home === null || entry.account_key === undefined) return;
+    const accountKey = entry.account_key;
+    rosterBusy = accountKey;
+    rosterActionError = '';
+    try {
+      await removeMember(home.guild.id, accountKey);
+      home = { ...home, ...afterRemoveMember(home, accountKey) };
       await refreshHome();
     } catch (thrown) {
       rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
@@ -977,6 +996,7 @@
           {removeOverridesFrozen}
           onApprove={(row) => void onApprove(row)}
           onRemove={(row) => void onRemove(row)}
+          onRemoveMember={(entry) => void onRemoveMember(entry)}
           onDecline={(row) => void onRemove(row)}
           onApproveAll={() => void onApproveAll()}
           {rowPath}

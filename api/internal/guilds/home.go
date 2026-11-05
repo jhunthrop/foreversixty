@@ -532,7 +532,7 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 }
 
 // accountKeyFor is the contract's own "same value for a main and its alts" grouping key.
-func accountKeyFor(userID int64) string { return fmt.Sprintf("u:%d", userID) }
+func accountKeyFor(userID int64) string { return fmt.Sprintf("%s%d", accountKeyPrefix, userID) }
 
 // sumPoints totals a decoded talent split's per-tree points into the single spent-points
 // figure the readiness board's unspent-points check needs.
@@ -581,6 +581,7 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	if err != nil {
 		return HomeView{}, err
 	}
+	markRemovable(invited, g, userID, moderator, verifiedOfficer)
 	describeRosterRows(roster)
 	members, counts := mergeRoster(roster, invited, snapshotLines)
 	describeMembers(members, roster)
