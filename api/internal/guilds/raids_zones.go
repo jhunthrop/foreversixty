@@ -28,6 +28,9 @@ type KeyItem struct {
 	ID      int    `json:"id"`
 	Name    string `json:"name"`
 	Quality int    `json:"quality"`
+	// Door is the one door the key opens when the run has another way in with no lock
+	// (Stratholme: Undead's service entrance); empty when the run needs the key.
+	Door string `json:"door,omitempty"`
 }
 
 // Zone is one schedulable zone. Size, LogZone, the level range and Opens are nil until a

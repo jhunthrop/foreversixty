@@ -120,6 +120,14 @@ describe('the key note', () => {
     expect(text(markup)).toMatch(/^Needs a key: Seal of Ascension ?\.$/);
     expect(markup).toContain('item-hover-12344');
   });
+
+  it('names the door a key opens when the run has a keyless way in, never Needs a key', () => {
+    const key = { id: 12382, name: 'Key to the City', quality: 2, door: 'the service entrance' };
+    const markup = render(ZoneKeyNote, { props: { item: key } }).body;
+    expect(text(markup)).toMatch(/^Key to the City ?opens the service entrance\.$/);
+    expect(text(markup)).not.toContain('Needs a key');
+    expect(markup).toContain('item-hover-12382');
+  });
 });
 
 describe('the needs line deadline', () => {

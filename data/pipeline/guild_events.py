@@ -95,6 +95,9 @@ class KeyItem:
     name: str
     #: Where the lock is stated; recorded in the file's notes.
     evidence: str
+    #: The one door the key opens, when the run has another way in that needs
+    #: no key: the site then says `{key} opens {door}.`, never `Needs a key`.
+    door: str | None = None
 
 
 #: The key a run needs, by GroupFinderActivity id. Each is checked against
@@ -110,6 +113,9 @@ KEY_ITEMS: dict[int, KeyItem] = {
         12382,
         "Key to the City",
         "classic-db gameobject 175368 'Service Entrance Gate', map 329 (lock 879)",
+        # The key opens only the back gate; groups enter the Undead side through
+        # the main gate (no lock), so the run does not need it.
+        door="the service entrance",
     ),
     837: KeyItem(
         12344,
@@ -277,7 +283,8 @@ def _dungeon_row(raw, act, maps, names, normal_cap, per_map, build, qualities) -
 def _key_row(key: KeyItem, qualities: dict[int, int]) -> dict:
     if key.item_id not in qualities:
         raise GuildEventsError(f"{key.name} ({key.item_id}) is not in the build's items.json")
-    return {"id": key.item_id, "name": key.name, "quality": qualities[key.item_id]}
+    row = {"id": key.item_id, "name": key.name, "quality": qualities[key.item_id]}
+    return row if key.door is None else {**row, "door": key.door}
 
 
 def _event_rows() -> list[dict]:
@@ -325,7 +332,8 @@ def _go_row(z: dict) -> str:
     key_go = "nil"
     if key is not None:
         name = json.dumps(key["name"])
-        key_go = f"&KeyItem{{ID: {key['id']}, Name: {name}, Quality: {key['quality']}}}"
+        door = "" if key.get("door") is None else f", Door: {json.dumps(key['door'])}"
+        key_go = f"&KeyItem{{ID: {key['id']}, Name: {name}, Quality: {key['quality']}{door}}}"
     kind = {"dungeon": "ZoneDungeon", "event": "ZoneEvent"}[z["kind"]]
     return (
         f"\t{{Key: {json.dumps(z['key'])}, Name: {json.dumps(z['name'])}, Kind: {kind}, "

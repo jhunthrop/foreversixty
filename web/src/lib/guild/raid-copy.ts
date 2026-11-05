@@ -128,6 +128,8 @@ export const raidCopy = {
     noLimit: 'No limit',
     groups: { event: 'Guild event', dungeons: 'Dungeons', raids: 'Raids' },
     needsKey: 'Needs a key: ',
+    /** A key with a keyless way in: `Key to the City opens the service entrance.` */
+    keyOpens: (door: string): string => ` opens ${door}.`,
     opens: (raid: string, day: string): string => `${raid} opens ${day}.`,
     title: 'Title',
     date: 'Date',

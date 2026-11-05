@@ -16,11 +16,16 @@
   const NO_CLASS = '';
 </script>
 
-<p class="text-muted text-[13px]" data-testid={testid}>
-  {raidCopy.form.needsKey}<ItemHover
+{#snippet keyLink()}<ItemHover
     itemId={item.id}
     classSlug={NO_CLASS}
     build={activeBuild.build}
     model={keyItemTooltipModel(item)}><span class={rarityClassFor(item.quality)}>{item.name}</span></ItemHover
-  >.
+  >{/snippet}
+
+<!-- A key that opens one of two ways in (Stratholme: Undead's service entrance; groups also enter
+     through the main gate) is named for the door it opens, never as a key the run needs. -->
+<p class="text-muted text-[13px]" data-testid={testid}>
+  {#if item.door === undefined}{raidCopy.form
+      .needsKey}{@render keyLink()}.{:else}{@render keyLink()}{raidCopy.form.keyOpens(item.door)}{/if}
 </p>

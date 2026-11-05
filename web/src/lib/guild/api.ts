@@ -933,6 +933,9 @@ export interface GuildKeyItem {
   id: number;
   name: string;
   quality: number;
+  /** The one door the key opens when the run has a way in with no lock (`the service entrance`);
+   *  absent when the run needs the key. */
+  door?: string;
 }
 
 export interface GuildZoneView {

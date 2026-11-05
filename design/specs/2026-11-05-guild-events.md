@@ -77,7 +77,7 @@ Field 1 is renamed and regrouped. Every other field and its order is the raid sp
    - `Dungeons`: in level order, name, size, then level range, each part only when known: `The Deadmines · 5 · 17 to 26`, `Upper Blackrock Spire · 10 · 58 to 60`.
    - `Raids`: `Barrow Deeps · opens 9 Dec`, `Hyjal Summit · opens 9 Dec`, `Onyxia's Lair · 40 · opens 9 Dec`. From 9 Dec the `· opens` suffix is gone. Raids are selectable; the date rule above applies.
    - Default: the guild's last planned key (its event size included); first time, the placeholder.
-   - A dungeon with `key_item`: under the select, 13 px muted `Needs a key: {Seal of Ascension}.` (the key's name as the shared item link, quality colour, tooltip). The same line goes into the event page's band under the when line.
+   - A dungeon with `key_item`: under the select, 13 px muted `Needs a key: {Seal of Ascension}.` (the key's name as the shared item link, quality colour, tooltip). The same line goes into the event page's band under the when line. A key that opens only one of two ways in carries `key_item.door` and reads `{Key to the City} opens the service entrance.` instead (Stratholme: Undead; groups also enter through the main gate, which has no lock) (amended 2026-11-05, guild round 1).
 2. **`Group size` select**, only when `Guild event` is chosen, directly under `What` (same column, half width from 1024): `No limit`, `5`, `10`, `15`, `20`, `40`; default `No limit`, or the last event's size. The pair (`Guild event`, size) maps to the six keys of §3.1. Hidden and not sent for any other choice.
 3. **`Title`**: for a guild event the placeholder is `What is it? (a PvP premade, a quest group)` and an empty title shows the field error `Give the event a title.` on submit. For dungeons and raids the placeholder stays the zone name and empty still saves as the zone name.
 4. **`Date`**: when a raid is chosen before its open day, the input's `min` is the open date and, under the field, 13 px muted: `{Onyxia's Lair} opens {Wed 9 Dec}.` A date before it gets the §3.2 error.
@@ -121,7 +121,7 @@ Touch and keyboard as the raid spec: every control 44 px on phone, native select
 | Placeholders | `Choose a dungeon, event or raid`; `What is it? (a PvP premade, a quest group)` |
 | Groups | `Guild event`, `Dungeons`, `Raids` |
 | Option suffixes | ` · {size}`, ` · {min} to {max}`, ` · opens {9 Dec}` |
-| Key note | `Needs a key: {Item}.` |
+| Key note | `Needs a key: {Item}.`; with a keyless way in, `{Item} opens {door}.` (`Key to the City opens the service entrance.`) |
 | Wing names | `Scarlet Monastery: Graveyard`, `Scarlet Monastery: Library`, `Scarlet Monastery: Armory`, `Scarlet Monastery: Cathedral`, `Dire Maul: East`, `Dire Maul: West`, `Dire Maul: North`, `Stratholme: Live`, `Stratholme: Undead`, `Lower Blackrock Spire`, `Upper Blackrock Spire` |
 | Helper | `{Raid} opens {Wed 9 Dec}.` |
 | Errors | `Choose a dungeon, event or raid.`; `Give the event a title.`; `{Raid} opens {Wed 9 Dec}. Pick that day or later.` |

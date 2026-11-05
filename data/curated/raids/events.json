@@ -341,7 +341,8 @@
       "key_item": {
         "id": 12382,
         "name": "Key to the City",
-        "quality": 2
+        "quality": 2,
+        "door": "the service entrance"
       },
       "log_zone": null,
       "map_id": 329,

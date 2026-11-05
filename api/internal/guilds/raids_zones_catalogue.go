@@ -30,7 +30,7 @@ var eventZones = []Zone{
 	{Key: "dungeon:lower-blackrock-spire", Name: "Lower Blackrock Spire", Kind: ZoneDungeon, Size: intPtr(5), MinLevel: intPtr(55), MaxLevel: intPtr(60), KeyItem: nil},
 	{Key: "dungeon:scholomance", Name: "Scholomance", Kind: ZoneDungeon, Size: intPtr(5), MinLevel: intPtr(58), MaxLevel: intPtr(60), KeyItem: &KeyItem{ID: 13704, Name: "Skeleton Key", Quality: 1}},
 	{Key: "dungeon:stratholme-live", Name: "Stratholme: Live", Kind: ZoneDungeon, Size: intPtr(5), MinLevel: intPtr(58), MaxLevel: intPtr(60), KeyItem: nil},
-	{Key: "dungeon:stratholme-undead", Name: "Stratholme: Undead", Kind: ZoneDungeon, Size: intPtr(5), MinLevel: intPtr(58), MaxLevel: intPtr(60), KeyItem: &KeyItem{ID: 12382, Name: "Key to the City", Quality: 2}},
+	{Key: "dungeon:stratholme-undead", Name: "Stratholme: Undead", Kind: ZoneDungeon, Size: intPtr(5), MinLevel: intPtr(58), MaxLevel: intPtr(60), KeyItem: &KeyItem{ID: 12382, Name: "Key to the City", Quality: 2, Door: "the service entrance"}},
 	{Key: "dungeon:upper-blackrock-spire", Name: "Upper Blackrock Spire", Kind: ZoneDungeon, Size: intPtr(10), MinLevel: intPtr(59), MaxLevel: intPtr(60), KeyItem: &KeyItem{ID: 12344, Name: "Seal of Ascension", Quality: 3}},
 	{Key: "event:guild", Name: "Guild event", Kind: ZoneEvent, Size: nil, MinLevel: nil, MaxLevel: nil, KeyItem: nil},
 	{Key: "event:guild-5", Name: "Guild event", Kind: ZoneEvent, Size: intPtr(5), MinLevel: nil, MaxLevel: nil, KeyItem: nil},

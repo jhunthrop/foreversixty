@@ -221,6 +221,41 @@ def test_the_committed_file_is_the_active_builds_client_data():
     assert order == sorted(order)
 
 
+def test_a_key_with_a_keyless_way_in_names_its_door():
+    # Stratholme: Undead. The Key to the City opens the service entrance only;
+    # groups also come in through the main gate, which has no lock.
+    key = ge.KEY_ITEMS[1603]
+    assert key.door == "the service entrance"
+    row = ge._key_row(key, {12382: 2})
+    assert row == {
+        "id": 12382,
+        "name": "Key to the City",
+        "quality": 2,
+        "door": "the service entrance",
+    }
+    assert "door" not in ge._key_row(ge.KEY_ITEMS[837], {12344: 3})
+    go = ge._go_row(
+        {
+            "key": "dungeon:x",
+            "name": "X",
+            "kind": "dungeon",
+            "size": 5,
+            "min_level": 58,
+            "max_level": 60,
+            "key_item": row,
+        }
+    )
+    assert 'Quality: 2, Door: "the service entrance"}' in go
+
+
+def test_the_committed_stratholme_undead_key_names_its_door():
+    doc = json.loads(Path("curated/raids/events.json").read_text(encoding="utf-8"))
+    zones = {z["key"]: z for z in doc["zones"]}
+    assert zones["dungeon:stratholme-undead"]["key_item"]["door"] == "the service entrance"
+    go = Path("../api/internal/guilds/raids_zones_catalogue.go").read_text(encoding="utf-8")
+    assert ge.render_go(doc) == go
+
+
 def test_slug():
     assert ge.slug("Scarlet Monastery: Library") == "scarlet-monastery-library"
     assert ge.slug("Zul'Farrak") == "zulfarrak"
