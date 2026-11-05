@@ -17,6 +17,7 @@
   import { SIGNUP_STATES } from '../../lib/guild/segments-keys';
   import type { FilterOption } from '../../lib/rankings/options';
   import { classColorVar } from '../../lib/report/format';
+  import { specName } from '../../lib/guild/spec-name';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Select from '../ui/Select.svelte';
   import RaidDisclosure from './RaidDisclosure.svelte';
@@ -113,7 +114,7 @@
 
 {#snippet row(entry: RosterRow, withRole: boolean)}
   {@const busy = busyKey === entry.character_key}
-  {@const specLine = `${entry.spec}${withRole ? ` · ${raidCopy.roleLabels[entry.role]}` : ''}`}
+  {@const specLine = `${specName(entry.spec)}${withRole ? ` · ${raidCopy.roleLabels[entry.role]}` : ''}`}
   <!-- §7 caps: 36 px desktop, 44 phone before a note. A bare row centres crest, name and the
        officer select (32 desktop, 44 phone) with no padding past them; a noted row runs from the top. -->
   <li

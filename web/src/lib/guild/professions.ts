@@ -18,6 +18,14 @@ const PROFESSION_NAMES: Readonly<Record<string, string>> = {
   fishing: 'Fishing',
 };
 
+/** The secondary skills every character can train; the rest of the list are primary professions. */
+const SECONDARY_SKILLS: ReadonlySet<string> = new Set(['cooking', 'first-aid', 'fishing']);
+
+/** A profession a character picks two of, not a secondary skill or a slug the list does not name. */
+export function isPrimaryProfession(slug: string): boolean {
+  return Object.hasOwn(PROFESSION_NAMES, slug) && !SECONDARY_SKILLS.has(slug);
+}
+
 /** "first-aid" -> "First Aid". A slug outside the list reads word by word, capitalised. */
 export function professionName(slug: string): string {
   return (

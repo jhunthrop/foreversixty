@@ -145,6 +145,10 @@ type RosterRow struct {
 	SpecName  *string `json:"spec_name,omitempty"`
 	SpecIcon  *string `json:"spec_icon,omitempty"`
 	ItemLevel *int    `json:"item_level,omitempty"`
+	// Level is the character's level: its export's level= section, else the guild's newest
+	// addon roster snapshot's line (homeAddonSnapshot); null when neither carries one. Both are
+	// read only at gear consent.
+	Level *int `json:"level"`
 	// LoggedAt is addon_exports.updated_at - the contract's own replacement for
 	// logged_recently (kept below too, unchanged, per the contract's own instruction).
 	LoggedAt   time.Time  `json:"logged_at"`
@@ -194,11 +198,6 @@ type RosterRow struct {
 	hasBagsSection     bool
 	talentPointsSpent  int
 	hasTalents         bool
-	// level/hasLevel are the export's own level= section (fs1.Decoded.Level/HasLevel) -
-	// the readiness board's talent-points-unspent check needs the character's real level,
-	// never a level-60 assumption, when the export carries one.
-	level    int
-	hasLevel bool
 }
 
 // AddonMemberView is one roster row's member line from the guild's newest roster
@@ -245,9 +244,13 @@ type ViewerView struct {
 
 // SummaryView is the Overview tab's own glance row (design spec §4.A).
 type SummaryView struct {
-	Raiders             int       `json:"raiders"`
-	WaitingForApproval  int       `json:"waiting_for_approval"`
-	BelowRatingFloor    int       `json:"below_rating_floor"`
+	Raiders            int `json:"raiders"`
+	WaitingForApproval int `json:"waiting_for_approval"`
+	BelowRatingFloor   int `json:"below_rating_floor"`
+	// Tier is the Progression tab's tier bar (Store.Progression for a member): the band and the
+	// Overview read their counts from it. NamedEncountersDown and PullsThisTier restate its
+	// down and pulls_total for the apps.
+	Tier                TierView  `json:"tier"`
 	NamedEncountersDown int       `json:"named_encounters_down"`
 	PullsThisTier       int       `json:"pulls_this_tier"`
 	UpdatedAt           time.Time `json:"updated_at"`
@@ -444,7 +447,10 @@ func (s *Store) scanRosterRow(rows pgx.Rows, g Guild, actorID int64, moderator, 
 			row.bags, row.hasBagsSection = decoded.Bags, hasBagsSection(*export)
 			row.Professions = decoded.Professions
 			row.talentPointsSpent, row.hasTalents = sumPoints(decoded.Talents.Points), true
-			row.level, row.hasLevel = decoded.Level, decoded.HasLevel
+			if decoded.HasLevel {
+				level := decoded.Level
+				row.Level = &level
+			}
 			// Class comes from fight_metrics first (a logged fight is live evidence of
 			// what was actually played), the FS1 export second - the export always
 			// carries a class (fs1.Decoded.ClassSlug), so a character with gear consent
@@ -521,6 +527,9 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 		if hasGearConsent(roster[i].Consent) {
 			level, spec, gap := m.Level, m.Spec, m.GearGap
 			line.Level, line.Spec, line.GearGap = &level, &spec, &gap
+			if roster[i].Level == nil && m.Level > 0 {
+				roster[i].Level = &level
+			}
 			if m.Build != "" {
 				build := m.Build
 				line.Build = &build

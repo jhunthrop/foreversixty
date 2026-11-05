@@ -127,6 +127,9 @@ func mergeRoster(rows []RosterRow, invited []invitedMember, snapshot []snapshotM
 		if row.Addon != nil {
 			e.Level, e.Spec, e.SeenAt = row.Addon.Level, row.Addon.Spec, row.Addon.SeenAt
 		}
+		if row.Level != nil {
+			e.Level = row.Level // the export's level first, as the row reads it
+		}
 		entries = append(entries, e)
 	}
 	for _, inv := range invited {

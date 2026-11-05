@@ -17,6 +17,7 @@ package bnetbuild
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
@@ -75,13 +76,31 @@ func Encode(in Inputs) (code string, report Report, err error) {
 
 	code = strings.Join([]string{
 		"FS1", in.Build, in.Profile.ClassSlug, raceSlug, strings.Join(treeFields, "/"), gear,
-	}, ":")
+	}, ":") + levelSection(in.Profile.Level)
 	return code, Report{
 		UnmatchedTalents: talentResult.Unmatched, Clamped: talentResult.Clamped,
 		NoSuffix: noSuffix, SkippedSlots: skippedSlots,
 		MatchedByName: talentResult.MatchedByName, MatchedByID: talentResult.MatchedByID,
 		MatchedBySpell: talentResult.MatchedBySpell,
 	}, nil
+}
+
+// The level= section's legal range (fs1.parseLevel and Codec.lua's decodeFS1 both refuse
+// anything outside it).
+const (
+	minLevel = 1
+	maxLevel = 60
+)
+
+// levelSection is the profile's level as the export's first pipe section, "|level=52", the
+// section the addon writes first too (Codec.lua encodeFS1). Without it every reader takes a
+// Battle.net character for level 60 (readiness's talent-point check). Empty for a level the
+// grammar does not allow, so nothing is guessed.
+func levelSection(level int) string {
+	if level < minLevel || level > maxLevel {
+		return ""
+	}
+	return "|level=" + strconv.Itoa(level)
 }
 
 // base36Digits is every legal single base-36 digit, lowercase, indexed by value — a talent

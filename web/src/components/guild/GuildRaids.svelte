@@ -65,6 +65,8 @@
     onPlanned?: () => Promise<void>;
     /** A create was refused with `guild_plan_required`: the tab turns officer-read-only. */
     onPlanRefused?: () => void;
+    /** The tab opens with the plan form up: the Before raids open card's Plan an event. */
+    openForm?: boolean;
   }
 
   let {
@@ -84,6 +86,7 @@
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
     onPlanned = () => Promise.resolve(),
     onPlanRefused = () => {},
+    openForm = false,
   }: Props = $props();
 
   const GATE_ID = 'officer-tools-gate-raids';
@@ -102,6 +105,10 @@
   );
 
   let formOpen = $state(false);
+  // The Before raids open card's Plan an event: the tab opens with the form up.
+  $effect(() => {
+    if (openForm) formOpen = true;
+  });
   let planButton = $state<HTMLButtonElement | null>(null);
 
   async function closeForm(): Promise<void> {

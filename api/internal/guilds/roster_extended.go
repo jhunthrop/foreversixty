@@ -318,33 +318,23 @@ func summaryPeople(roster []RosterRow) (raiders, waiting int) {
 }
 
 // homeSummary assembles the Overview tab's own glance row from the already-enriched roster
-// plus two small guild-wide counts (named encounters down, pulls this tier) that do not fit
-// naturally on any one roster row. Both count the guild's private nights too, never a flagged
-// report (presence.NotFlagged).
+// plus the tier's counts. The tier is the Progression tab's own TierView, read the way that
+// tab reads it for a verified member (the home is one), so the band, the Overview and the
+// Progression tab print one set of numbers (week-one spec §4.1). named_encounters_down and
+// pulls_this_tier restate it for the apps. No raid-tier-start timestamp exists anywhere
+// queryable, so the tier's pulls are every pull ever logged in its raids - see
+// CONTROL_CENTRE.md.
 func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterRow) (SummaryView, error) {
 	sv := SummaryView{UpdatedAt: time.Now().UTC()}
 	sv.Raiders, sv.WaitingForApproval = summaryPeople(roster)
 	sv.BelowRatingFloor = belowRatingFloor(roster)
 
-	// The home is a verified member's, so it counts as the Progression tab does for them.
-	down, err := s.tierDown(ctx, guildID, countedReports(true))
+	progression, err := s.Progression(ctx, guildID, true)
 	if err != nil {
 		return SummaryView{}, err
 	}
-	sv.NamedEncountersDown = down
-	// pulls_this_tier: every pull this tier counts - the named encounter's pulls and the unnamed
-	// zones' - the same pulls the Progression tab adds up, so the header and that tab agree
-	// (round 8). A trash pack is no pull at all. No raid-tier-start timestamp exists anywhere
-	// queryable (the design doc's own 9 December 2026 tier open is a future calendar date, not
-	// a stored marker) - see CONTROL_CENTRE.md.
-	if err := s.Pool.QueryRow(ctx, `
-		select count(*) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and (f.encounter_id = $2
-		      or (r.zone = any($3) and (f.encounter_id is null or f.encounter_id = 0)))
-		  and `+presence.NotFlagged("r"), guildID, encounterOnyxia, unnamedZones).
-		Scan(&sv.PullsThisTier); err != nil {
-		return SummaryView{}, fmt.Errorf("guilds: pulls this tier: %w", err)
-	}
+	sv.Tier = progression.Tier
+	sv.NamedEncountersDown, sv.PullsThisTier = sv.Tier.Down, sv.Tier.PullsTotal
 	return sv, nil
 }
 
@@ -394,11 +384,7 @@ func standingFor(s *Store, roster []RosterRow, viewerUserID int64) *StandingView
 		}
 	}
 
-	band, hasBand := s.loadBandFor(self.className, self.specStr, self.faction)
-	cr := computeReadiness(self.Consent, band, hasBand, self.gear, self.enchants,
-		self.bags, self.hasBagsSection, self.talentPointsSpent, self.hasTalents,
-		self.level, self.hasLevel, self.ItemLevel, nil)
-
+	cr := s.readinessOf(*self, nil)
 	return &StandingView{
 		Spec: self.specStr, Class: self.className,
 		SameSpecCount: len(peers), RankByItemLevel: rank, ItemLevel: *self.ItemLevel,

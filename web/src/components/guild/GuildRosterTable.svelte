@@ -26,6 +26,7 @@
     GuildRosterRow,
   } from '../../lib/guild/api';
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
+  import { focusOnMountIf } from '../../lib/guild/focus-now';
   import type { AttendanceSource } from '../../lib/guild/attendance-contract';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
@@ -91,6 +92,7 @@
     mySiteSpec = null,
     now = new Date(),
     attendanceSource = 'reports',
+    focusApproveAll = false,
   }: {
     roster: GuildRosterRow[];
     pending: GuildRosterRow[];
@@ -126,6 +128,8 @@
     now?: Date;
     /** The home's `attendance_source`: in `raids` mode the chip counts raids over two windows. */
     attendanceSource?: AttendanceSource;
+    /** Approve all takes focus as it mounts: the Before raids open card's Approve button came here. */
+    focusApproveAll?: boolean;
   } = $props();
 
   const canApprove = $derived(hasCapability(can, 'approve'));
@@ -444,6 +448,7 @@
               onclick={askApproveAll}
               disabled={frozen}
               data-testid="guild-roster-approve-all"
+              use:focusOnMountIf={focusApproveAll}
             >
               Approve all
             </button>{/if}

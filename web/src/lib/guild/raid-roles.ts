@@ -4,16 +4,17 @@
 // Restoration, Protection) share a role.
 import { SPECS } from '../sim/specs';
 import type { GuildRaidRole } from './api';
+import { specLookupKey } from './spec-name';
 
 /** Spec display name (`Feral Bear`) → raid role. */
 export const SPEC_ROLE: Readonly<Record<string, GuildRaidRole>> = Object.fromEntries(
   SPECS.map((spec) => [spec.name, spec.role]),
 );
 
-const BY_LOWER = new Map<string, GuildRaidRole>(
+const BY_KEY = new Map<string, GuildRaidRole>(
   SPECS.flatMap((spec) => [
-    [spec.name.toLowerCase(), spec.role],
-    [spec.spec.toLowerCase(), spec.role],
+    [specLookupKey(spec.name), spec.role],
+    [specLookupKey(spec.spec), spec.role],
   ]),
 );
 
@@ -27,7 +28,8 @@ export function rolesForClass(cls: string): GuildRaidRole[] {
   return played.size === 0 ? [...ROLE_ORDER] : ROLE_ORDER.filter((role) => played.has(role));
 }
 
-/** The role for a spec name (any case) or spec key (`druid-feral-bear`); `null` when unknown. */
+/** The role for a spec name (any case or spacing, so a log's `BeastMastery` reads) or spec key
+ *  (`druid-feral-bear`); `null` when unknown. */
 export function roleForSpec(spec: string): GuildRaidRole | null {
-  return BY_LOWER.get(spec.trim().toLowerCase()) ?? null;
+  return BY_KEY.get(specLookupKey(spec)) ?? null;
 }

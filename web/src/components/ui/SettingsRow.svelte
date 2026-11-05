@@ -22,6 +22,8 @@
     muted = false,
     glyph,
     tone = 'gold',
+    lead,
+    labelColor,
     href,
     external = false,
     onclick,
@@ -43,6 +45,10 @@
     muted?: boolean;
     glyph?: GlyphName;
     tone?: TileTone;
+    /** The icon slot for something other than a glyph tile (a 24 px class crest). */
+    lead?: Snippet;
+    /** The label's colour, as a CSS value (a class colour); default `text-strong`. */
+    labelColor?: string;
     href?: string;
     /** A link that opens another tab: `target=_blank` with `rel=noopener`. */
     external?: boolean;
@@ -73,7 +79,9 @@
     error !== undefined ? 'text-wipe' : muted || empty || disabled ? 'text-muted' : 'text-text',
   );
   /** Under the label on a phone: the tile's 32 px and the 14 px gap. */
-  const phoneIndent = $derived(glyph === undefined ? '' : 'max-[479px]:pl-[46px]');
+  const phoneIndent = $derived(
+    glyph === undefined ? (lead === undefined ? '' : 'max-[479px]:pl-[38px]') : 'max-[479px]:pl-[46px]',
+  );
 </script>
 
 <!-- The element is a real button whenever it has a click handler (tag above); the compiler cannot see that. -->
@@ -92,10 +100,12 @@
   style:padding-left={nested ? (glyph === undefined ? '70px' : '46px') : undefined}
 >
   {#if glyph !== undefined}<IconTile {glyph} size={32} {tone} />{/if}
+  {@render lead?.()}
   <span class="flex min-w-0 flex-1 flex-col">
     <span
       id={labelId}
       class="{ROW_LABEL} {disabled ? 'text-muted' : 'text-strong'}"
+      style:color={labelColor}
       data-testid={testid === undefined ? undefined : `${testid}-label`}>{label}</span
     >
     {#if sub !== undefined}<span class={ROW_SUB} data-testid="settings-row-sub">{sub}</span>{/if}

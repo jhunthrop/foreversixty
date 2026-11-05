@@ -100,6 +100,7 @@ func TestResolveReadsLoggedNamesWithTheRole(t *testing.T) {
 		{"druid", "Feral Combat", "dps", "druid-feral"},
 		{"druid", "Feral Bear", "tank", "druid-feral-bear"},
 		{"hunter", "Beast Mastery", "dps", "hunter-beast-mastery"},
+		{"hunter", "BeastMastery", "dps", "hunter-beast-mastery"},
 		{"mage", "Holy", "healer", ""},
 		{"mage", "", "dps", ""},
 	}

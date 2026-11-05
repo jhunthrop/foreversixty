@@ -17,7 +17,8 @@
      card for the same reason -- it is now part of Guild.svelte's own full-bleed band, so
      it, too, stays visible on every tab rather than Overview-only. -->
 <script lang="ts">
-  import type { GuildHomeSummary, GuildRaidsPage } from '../../lib/guild/api';
+  import type { Snippet } from 'svelte';
+  import type { GuildHomeSummary, GuildRaidsPage, GuildReadinessRow } from '../../lib/guild/api';
   import {
     fetchGuildLoot,
     fetchGuildProgression,
@@ -26,16 +27,24 @@
   } from '../../lib/guild/api';
   import {
     NO_PUBLIC_REPORTS,
-    checksFailingLine,
+    bossesDownCountLine,
+    bossesDownLine,
     downEncounterNames,
-    encountersDownLine,
     raidNightDay,
     rosterCardParts,
   } from '../../lib/guild/overview-view';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
-  import { sortReadinessWorstFirst } from '../../lib/guild/readiness-view';
+  import {
+    READINESS_READY,
+    READINESS_STARTS_AT_60,
+    isLeveling,
+    sortReadinessWorstFirst,
+    worstCheck,
+  } from '../../lib/guild/readiness-view';
   import { counted } from '../../lib/plural';
+  import { classColorVar } from '../../lib/report/format';
   import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Card from '../ui/Card.svelte';
   import Glyph from '../ui/Glyph.svelte';
   import SettingsRow from '../ui/SettingsRow.svelte';
@@ -66,6 +75,7 @@
     summary,
     showCounts = true,
     onSelectTab,
+    lead,
   }: {
     guildId: number | null;
     role: 'public' | 'member' | 'officer' | 'moderator';
@@ -75,20 +85,23 @@
      *  what the public tabs say instead of counting what the visitor cannot open. */
     showCounts?: boolean;
     onSelectTab: (tab: GuildTabId) => void;
+    /** The first card on the tab, when the page has one to lead with (Before raids open). */
+    lead?: Snippet;
   } = $props();
 
-  let readinessSummary = $state<{ name: string; failing: number }[] | null>(null);
+  /** The Readiness card's rows: the worst of the graded raiders. Null until the board answers. */
+  let readinessSummary = $state<GuildReadinessRow[] | null>(null);
   let lootLine = $state<OverviewLootLine | null>(null);
   /** Live defect 2026-10-05: a public visitor has no `home` (401), so `summary` is undefined
    *  and this card read "0 named encounters down" under a band saying 1 boss down. The
    *  progression endpoint is public and already carries the tier figures, so the card reads
    *  it for every role and falls back to `summary` only while it loads. */
-  let progressionSummary = $state<{ down: number; names: string[] } | null>(null);
-  /** The progression read names the encounters; until it answers the home's own count stands in. */
-  const encountersLine = $derived(
+  let progressionSummary = $state<{ named: number; names: string[] } | null>(null);
+  /** The progression read names the bosses; until it answers the home's own count stands in. */
+  const bossesLine = $derived(
     progressionSummary !== null
-      ? encountersDownLine(progressionSummary.names)
-      : `${counted(summary?.named_encounters_down ?? 0, 'encounter')} down this tier.`,
+      ? bossesDownLine(progressionSummary.names, progressionSummary.named)
+      : bossesDownCountLine(summary?.tier?.down ?? 0, summary?.tier?.named_encounters ?? 0),
   );
   /** The raid nights' fights, so a night reads as bosses, kills and trash packs. */
   let raidsPage = $state<GuildRaidsPage | null>(null);
@@ -98,7 +111,10 @@
     if (guildId === null) return;
     void fetchGuildProgression(guildId)
       .then((page) => {
-        progressionSummary = { down: page.tier.down, names: downEncounterNames(page.encounters) };
+        progressionSummary = {
+          named: page.tier.named_encounters,
+          names: downEncounterNames(page.encounters),
+        };
         bossIds = bossIdsOf(page);
       })
       .catch(() => {
@@ -122,8 +138,8 @@
     void fetchGuildReadiness(guildId)
       .then((page) => {
         readinessSummary = sortReadinessWorstFirst(page.rows)
-          .slice(0, 3)
-          .map((row) => ({ name: row.name, failing: row.failing }));
+          .filter((row) => !isLeveling(row) && !row.no_export)
+          .slice(0, 3);
       })
       .catch(() => {
         readinessSummary = null;
@@ -171,6 +187,7 @@
 {/snippet}
 
 <section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-overview-tab">
+  {@render lead?.()}
   {#if role !== 'public'}
     <Card glyph="user" title="Roster" testid="guild-overview-card-roster">
       {#snippet aside()}{@render seeAll('roster')}{/snippet}
@@ -216,7 +233,7 @@
   <Card glyph="trophy" title="Progression" testid="guild-overview-card-progression">
     {#snippet aside()}{@render seeAll('progression')}{/snippet}
     {#if showCounts}
-      <p>{encountersLine}</p>
+      <p data-testid="guild-overview-progression-line">{bossesLine}</p>
     {:else}
       <p class="text-muted">{NO_PUBLIC_REPORTS}</p>
     {/if}
@@ -226,15 +243,32 @@
     <Card
       glyph="guild"
       title="Readiness"
-      body={readinessSummary === null ? 'text' : 'rows'}
+      body={readinessSummary === null || readinessSummary.length === 0 ? 'text' : 'rows'}
       testid="guild-overview-card-readiness"
     >
       {#snippet aside()}{@render seeAll('readiness')}{/snippet}
       {#if readinessSummary === null}
         <p class="text-muted">No readiness data yet.</p>
+      {:else if readinessSummary.length === 0}
+        <p class="text-muted" data-testid="guild-overview-readiness-none">{READINESS_STARTS_AT_60}</p>
       {:else}
-        {#each readinessSummary as row (row.name)}
-          <SettingsRow label={row.name} value={checksFailingLine(row.failing)} />
+        {#each readinessSummary as row (row.character_key)}
+          {@const worst = worstCheck(row)}
+          <SettingsRow
+            label={row.name}
+            labelColor={classColorVar(row.class)}
+            controlBelow
+            testid="guild-overview-readiness-row"
+          >
+            {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
+            {#snippet control()}
+              <span class="text-text text-[13px]">
+                {worst?.text ?? READINESS_READY}{#if (worst?.more ?? 0) > 0}<span class="text-muted"
+                    >{` · +${worst?.more} more`}</span
+                  >{/if}
+              </span>
+            {/snippet}
+          </SettingsRow>
         {/each}
       {/if}
     </Card>

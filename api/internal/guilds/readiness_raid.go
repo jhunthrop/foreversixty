@@ -95,14 +95,15 @@ func (sc *readinessScope) fresh(loggedAt time.Time) bool {
 	return !loggedAt.Before(sc.raid.StartsAt.AddDate(0, 0, -readinessFreshDays))
 }
 
-// apply judges the row's export against the raid: a stale one adds a failing check.
+// apply judges the row's export against the raid: a stale one adds a failing check, except on
+// a leveling row, which is never graded.
 func (sc *readinessScope) apply(rr *ReadinessRow) {
 	if sc == nil {
 		return
 	}
 	fresh := sc.fresh(rr.LoggedAt)
 	rr.SyncedBeforeCutoff = &fresh
-	if !fresh {
+	if !fresh && !leveling(rr.Level) {
 		rr.Failing++
 	}
 }

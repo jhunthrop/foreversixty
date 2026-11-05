@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
   bandCountsLine,
-  checksFailingLine,
   downEncounterNames,
-  encountersDownLine,
+  bossesDownCountLine,
+  bossesDownLine,
   progressionNightDay,
   raidNightDay,
   rosterCardParts,
   showBandCounts,
+  showsWeekOne,
   updatedLine,
 } from './overview-view';
 
@@ -49,29 +50,33 @@ describe('updatedLine and the raid-night days', () => {
 });
 
 describe('the cards', () => {
-  it('names the encounters down, singular and plural', () => {
-    expect(encountersDownLine(['Onyxia'])).toBe('1 encounter down this tier: Onyxia.');
-    expect(encountersDownLine(['Onyxia', 'Molten Core'])).toBe(
-      '2 encounters down this tier: Onyxia, Molten Core.',
-    );
-    expect(encountersDownLine([])).toBe('No encounter down this tier yet.');
+  it('names the bosses down against the named count, never every encounter', () => {
+    expect(bossesDownLine(['Onyxia'], 1)).toBe('1 of 1 named bosses down: Onyxia.');
+    expect(bossesDownLine([], 1)).toBe('No boss down this tier yet.');
+    expect(bossesDownCountLine(0, 1)).toBe('No boss down this tier yet.');
+    expect(bossesDownCountLine(1, 1)).toBe('1 of 1 named bosses down.');
+  });
+
+  it('shows the Before raids open card to members while nothing is logged in the tier', () => {
+    expect(showsWeekOne('member', { pulls_total: 0 })).toBe(true);
+    expect(showsWeekOne('officer', undefined)).toBe(true);
+    expect(showsWeekOne('member', { pulls_total: 3 })).toBe(false);
+    expect(showsWeekOne('public', { pulls_total: 0 })).toBe(false);
   });
 
   it('names only the encounters killed: one pulled and never downed reads as none down', () => {
     expect(downEncounterNames([{ name: 'Onyxia', kills: 0 }])).toEqual([]);
-    expect(encountersDownLine(downEncounterNames([{ name: 'Onyxia', kills: 0 }]))).toBe(
-      'No encounter down this tier yet.',
+    expect(bossesDownLine(downEncounterNames([{ name: 'Onyxia', kills: 0 }]), 1)).toBe(
+      'No boss down this tier yet.',
     );
     expect(downEncounterNames([{ name: 'Onyxia', kills: 2 }])).toEqual(['Onyxia']);
   });
 
-  it('counts raiders and checks with the plural helper', () => {
+  it('counts raiders with the plural helper', () => {
     expect(rosterCardParts({ raiders: 1, waiting_for_approval: 4, below_rating_floor: 0 })).toEqual({
       raiders: '1 raider with gear on the site',
       waiting: '4 waiting for approval',
       belowFloor: '0 below the rating floor',
     });
-    expect(checksFailingLine(1)).toBe('1 check failing');
-    expect(checksFailingLine(3)).toBe('3 checks failing');
   });
 });
