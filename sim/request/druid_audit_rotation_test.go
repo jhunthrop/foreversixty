@@ -441,3 +441,48 @@ func TestFeralCasterRankRowsBelowTwenty(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 24: Restoration below 20, the four heals judged
+// together (band-20 gear and heal profile, 10,000 iterations, night elf and
+// tauren). The fight runs dry, so the cheap ranks win: party Rejuvenation
+// rank 2 at 10 to 12; at 13 to 16 the factions split (their band-20 gear
+// differs), an Alliance druid moving the tank line to rank 1 and a Horde
+// druid the party line to rank 2, then rank 3 at 16; Healing Touch rank 2 at
+// 14 to 16; and from 17 to 19 rank 1 of the tank and party Rejuvenation,
+// Healing Touch and (from 18) Regrowth.
+func TestRestorationRankRowsBelowTwenty(t *testing.T) {
+	healingTouch := map[int]int{1: 5185, 2: 5186, 3: 5187, 4: 5188}
+	regrowth := map[int]int{1: 8936, 2: 8938}
+	tank := linesCasting(t, "druid-restoration", 9841)
+	party := linesCasting(t, "druid-restoration", 8910)
+	regrowthLine := linesCasting(t, "druid-restoration", 9858)
+	for _, race := range []string{"night-elf", "high-order-skyborne"} {
+		assertRanks(t, party, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
+			{10, BarePreset, 2}, {12, BarePreset, 2}, {13, BarePreset, 1}, {16, BarePreset, 1}, {17, BarePreset, 1},
+		})
+		assertRanks(t, tank, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
+			{12, BarePreset, 2}, {13, BarePreset, 1}, {16, BarePreset, 1}, {19, BarePreset, 1}, {20, BarePreset, 2},
+		})
+	}
+	for _, race := range []string{"tauren", "windshaper-skyborne"} {
+		assertRanks(t, party, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
+			{10, BarePreset, 2}, {13, BarePreset, 2}, {15, BarePreset, 2}, {16, BarePreset, 3}, {17, BarePreset, 1},
+		})
+		assertRanks(t, tank, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
+			{13, BarePreset, 2}, {16, BarePreset, 3}, {17, BarePreset, 1}, {19, BarePreset, 1},
+		})
+	}
+	for _, race := range []string{"night-elf", "tauren"} {
+		// The Nature's Swiftness line keeps the top rank, so only the filler's
+		// own rank is asserted present.
+		for _, c := range []rankCase{{14, BarePreset, 2}, {16, BarePreset, 2}, {17, BarePreset, 1}, {19, BarePreset, 1}} {
+			ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, race))
+			if !ids[int32(healingTouch[c.rank])] {
+				t.Errorf("%s at %d: want Healing Touch rank %d cast", race, c.level, c.rank)
+			}
+		}
+		assertRanks(t, regrowthLine, "druid-restoration", "druid", race, regrowth, []rankCase{
+			{17, BarePreset, 1}, {18, BarePreset, 1}, {19, BarePreset, 1},
+		})
+	}
+}
