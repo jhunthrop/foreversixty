@@ -7,23 +7,24 @@ import {
   bandLineParts,
   cancelActionOf,
   cancelConfirmOf,
-  cancelQuestionOf,
   cancelledLineOf,
+  cancelQuestionOf,
   copyList,
+  countdown,
   countLine,
   countRatio,
-  countdown,
   endedLineOf,
   eyebrowOf,
   guildTimeLabel,
   needsBefore,
   nextRaidDeadline,
+  notesEmptyOf,
   raidCopy,
   roleBreakdown,
   roleBreakdownParts,
   SEP,
-  showsBandLine,
   showAll,
+  showsBandLine,
   whenPhrase,
 } from './raid-copy';
 
@@ -97,8 +98,10 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
     expect(raidCopy.bandNone.member).toBe(str('Band line, none planned', 0));
     expect(raidCopy.bandNone.officer).toBe(str('Band line, none planned', 1));
     expect(raidCopy.bandNone.planLink).toBe(str('Band line, none planned', 2));
-    expect(raidCopy.notesEmpty.member).toBe(str('Notes empty', 0));
-    expect(raidCopy.notesEmpty.officer).toBe(str('Notes empty', 1));
+    expect(notesEmptyOf('raid', false)).toBe(str('Notes empty', 0));
+    expect(notesEmptyOf('raid', true)).toBe(str('Notes empty', 1));
+    expect(notesEmptyOf('dungeon', true)).toBe('No notes yet. Edit the run to add some.');
+    expect(notesEmptyOf('event', false)).toBe('No notes for this event.');
     const e = raidCopy.emptyRole;
     expect([e.tank, e.healer, e.dps]).toEqual(cell('Empty role'));
   });

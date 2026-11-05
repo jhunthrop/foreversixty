@@ -175,10 +175,6 @@ export const raidCopy = {
       failed: 'That did not save. Try again.',
     },
   },
-  notesEmpty: {
-    member: 'No notes for this raid.',
-    officer: 'No notes yet. Edit the raid to add some.',
-  },
   emptyRole: { tank: 'No tanks yet.', healer: 'No healers yet.', dps: 'No DPS yet.' } satisfies Record<
     GuildRaidRole,
     string
@@ -228,6 +224,11 @@ export const cancelQuestionOf = (kind: GuildZoneKind): string =>
   `Cancel this ${KIND_WORDS[kind]}? Members see it as cancelled.`;
 /** The cancel confirm's button. */
 export const cancelConfirmOf = (kind: GuildZoneKind): string => `Cancel the ${KIND_WORDS[kind]}`;
+/** The notes panel with nothing in it: `No notes for this run.` / `No notes yet. Edit the event to add some.` */
+export const notesEmptyOf = (kind: GuildZoneKind, officer: boolean): string =>
+  officer
+    ? `No notes yet. Edit the ${KIND_WORDS[kind]} to add some.`
+    : `No notes for this ${KIND_WORDS[kind]}.`;
 
 /** The needs line reads raids only (guild events spec 3.4): a dungeon run or an event at the head of
  *  the band leaves it at `before the next raid`. */

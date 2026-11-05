@@ -14,7 +14,7 @@
   import { guildClaimCopy } from '../lib/guild/copy';
   import { focusOnMount } from '../lib/guild/focus-now';
   import { browserStorage } from '../lib/guild/reserve-keys';
-  import { SEP, eyebrowOf, kindOf, raidCopy } from '../lib/guild/raid-copy';
+  import { SEP, eyebrowOf, kindOf, notesEmptyOf, raidCopy } from '../lib/guild/raid-copy';
   import {
     raidCount,
     raidPageFlags,
@@ -387,7 +387,7 @@
     {#snippet notesBody()}
       {#if raid.notes_html.trim() === ''}
         <p class="text-muted text-[14px]" data-testid="raid-notes-empty">
-          {officer ? raidCopy.notesEmpty.officer : raidCopy.notesEmpty.member}
+          {notesEmptyOf(kindOf(raid), officer)}
         </p>
       {:else}
         <div

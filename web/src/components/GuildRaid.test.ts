@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { GuildRaidView } from '../lib/guild/api';
 import { attendanceCopy } from '../lib/guild/attendance-copy';
 import { guildClaimCopy } from '../lib/guild/copy';
-import { raidCopy } from '../lib/guild/raid-copy';
+import { notesEmptyOf, raidCopy } from '../lib/guild/raid-copy';
 import { RAID_BAND_LINES_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
 import { RAID_ROWS_KEY } from '../lib/guild/reserve-keys';
 import { RaidPageController } from '../lib/guild/raid-page-controller.svelte';
@@ -179,9 +179,9 @@ describe('the body', () => {
     expect(ready(plannedRaid({ notes_html: '<p><strong>Flasks</strong></p>' }))).toContain(
       '<strong>Flasks</strong>',
     );
-    expect(text(between(html(), 'raid-notes-empty', 'raid-roster'))).toBe(raidCopy.notesEmpty.member);
+    expect(text(between(html(), 'raid-notes-empty', 'raid-roster'))).toBe(notesEmptyOf('raid', false));
     expect(text(between(html({ role: 'officer' }), 'raid-notes-empty', 'raid-roster'))).toBe(
-      raidCopy.notesEmpty.officer,
+      notesEmptyOf('raid', true),
     );
   });
 });
