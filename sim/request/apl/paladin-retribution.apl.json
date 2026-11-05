@@ -241,7 +241,7 @@
       }
     },
     {
-      "notes": "With Unsealed Wrath, once three swings have stored Seal of Command, while your mana percent is at least four fifths of the fight left. Switch to Seal of Righteousness for one swing, and that swing releases all three stored Commands. It is the same pace as Consecration: every Seal costs a global and its mana, 180 to 190 at 60.",
+      "notes": "With Unsealed Wrath, once three swings have stored Seal of Command, while your mana percent is at least four fifths of the fight left. Switch to Seal of Righteousness for one swing, and that swing releases all three stored Commands. Every Seal costs a global and its mana, 180 to 190 at 60, so once you fall behind that pace, stay in Seal of Righteousness until you catch up.",
       "action": {
         "condition": {
           "and": {
@@ -498,7 +498,7 @@
       }
     },
     {
-      "notes": "Last, while your mana percent is at least four fifths of the fight left and covers a Seal, Judgement and Holy Strike (rank 4 at 60 without raid buffs). The mana left after it must still pay for those three, and halfway through a fight the pace means 40% mana or more. Spam it and your Seal lapses before the execute; hold it too long and you end the fight with mana unspent.",
+      "notes": "Last, while your mana and what you regain before the fight ends cover this Consecration plus a bit more than a Judgement's mana for every two seconds left. The mana left after it must also still pay for a Seal, a Judgement and a Holy Strike, and with raid buffs your regen covers far more of it than without them. Spam it and your Seal lapses before the execute; hold it too long and you end the fight with mana unspent. Rank 4 at 60 without raid buffs.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -567,17 +567,60 @@
                 "cmp": {
                   "op": "OpGe",
                   "lhs": {
-                    "currentManaPercent": {}
+                    "math": {
+                      "op": "OpAdd",
+                      "lhs": {
+                        "currentMana": {}
+                      },
+                      "rhs": {
+                        "math": {
+                          "op": "OpMul",
+                          "lhs": {
+                            "manaIncomePerSecond": {
+                              "windowSeconds": 10
+                            }
+                          },
+                          "rhs": {
+                            "remainingTime": {}
+                          }
+                        }
+                      }
+                    }
                   },
                   "rhs": {
                     "math": {
-                      "op": "OpMul",
+                      "op": "OpAdd",
                       "lhs": {
-                        "remainingTimePercent": {}
+                        "math": {
+                          "op": "OpMul",
+                          "lhs": {
+                            "math": {
+                              "op": "OpMul",
+                              "lhs": {
+                                "spellCurrentCost": {
+                                  "spellId": {
+                                    "spellId": 20271
+                                  }
+                                }
+                              },
+                              "rhs": {
+                                "remainingTime": {}
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.57"
+                            }
+                          }
+                        }
                       },
                       "rhs": {
-                        "const": {
-                          "val": "0.8"
+                        "spellCurrentCost": {
+                          "spellId": {
+                            "spellId": 20924,
+                            "rank": 5
+                          }
                         }
                       }
                     }
