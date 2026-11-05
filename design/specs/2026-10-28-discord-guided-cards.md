@@ -216,8 +216,8 @@ Discord strings live in a new copy struct `guideCopy` (`api/internal/discordbot/
 | `card.failure` | `Could not load that. Try again.` (the bot spec's `Any failure`, shared) |
 | `card.footer.window` | `Forever Sixty · Picks work for 15 minutes.` (only if capture D13 shows Discord refusing older presses) |
 | `spec.title` | `Which spec tonight?` |
-| `spec.lead` | `The pick signs **{Name}** up as {State} for {Title}, {Date}, and is kept for the next raid.` |
-| `spec.lead.change` | `The pick changes the spec **{Name}** brings to {Title}, {Date}, and is kept for the next raid.` |
+| `spec.lead` | `The pick signs **{Name}** up as {State} for {Title}, {Date}.` |
+| `spec.lead.change` | `The pick changes the spec **{Name}** brings to {Title}, {Date}.` |
 | `spec.placeholder` | `Choose a spec` (shared with `bis.placeholder.spec`) |
 | `spec.kept` | ` {Spec} is kept for {Name}.` (appended to the outcome sentence; alone, without the leading space) |
 | `spec.change` | `Change spec` |

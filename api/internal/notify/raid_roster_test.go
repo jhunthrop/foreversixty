@@ -148,10 +148,10 @@ func TestRosterSortsByClassThenNameAndMarksFallBack(t *testing.T) {
 	}
 	got := fieldValue(t, rosterPost(roster, marks), "Ranged · 5").Value
 	want := strings.Join([]string{
-		"<:fs_druid_balance:1301000000000000001> Moon",
 		"<:fs_mage_fire:1301000000000000009> bea",
 		"zed · Frost Mage",
 		"<:fs_warlock_affliction:1301000000000000023> Abe",
+		"<:fs_druid_balance:1301000000000000001> Moon",
 		"Nobody",
 	}, "\n")
 	if got != want {

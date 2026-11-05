@@ -19,7 +19,13 @@
       "out": 3,
       "tanks": 2,
       "healers": 5,
-      "dps": 11
+      "dps": 11,
+      "melee": 1,
+      "ranged": 10,
+      "classes": {
+        "warrior": 2,
+        "hunter": 0
+      }
     },
     "composition": {
       "classes": [
@@ -160,7 +166,9 @@
         "note": "",
         "own": true,
         "spec_name": "Fury",
-        "spec_icon": "ability_warrior_innerrage"
+        "spec_icon": "ability_warrior_innerrage",
+        "group": "melee",
+        "spec_key": "warrior-fury"
       },
       {
         "character_key": "us/pvp/kraggor",
@@ -172,7 +180,9 @@
         "note": "",
         "own": false,
         "spec_name": "Protection",
-        "spec_icon": "inv_shield_06"
+        "spec_icon": "inv_shield_06",
+        "group": "tank",
+        "spec_key": "warrior-protection"
       }
     ],
     "not_signed": [
@@ -183,7 +193,9 @@
         "spec": "hunter-marksmanship",
         "role": "dps",
         "spec_name": "Marksmanship",
-        "spec_icon": "ability_marksmanship"
+        "spec_icon": "ability_marksmanship",
+        "group": "ranged",
+        "spec_key": "hunter-marksmanship"
       }
     ],
     "viewer": {
@@ -218,7 +230,9 @@
               "role": "tank",
               "icon": "inv_shield_06"
             }
-          ]
+          ],
+          "spec_key": "warrior-fury",
+          "default_spec": "warrior-fury"
         }
       ],
       "can": [],

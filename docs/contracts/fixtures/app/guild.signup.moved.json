@@ -21,7 +21,19 @@
         "out": 3,
         "tanks": 3,
         "healers": 6,
-        "dps": 14
+        "dps": 14,
+        "melee": 5,
+        "ranged": 9,
+        "classes": {
+          "warrior": 4,
+          "hunter": 3,
+          "rogue": 2,
+          "priest": 4,
+          "shaman": 4,
+          "mage": 2,
+          "warlock": 2,
+          "druid": 3
+        }
       },
       "composition": {
         "classes": [
@@ -162,7 +174,9 @@
           "note": "",
           "own": false,
           "spec_name": "Protection",
-          "spec_icon": "inv_shield_06"
+          "spec_icon": "inv_shield_06",
+          "group": "tank",
+          "spec_key": "warrior-protection"
         },
         {
           "character_key": "us/pvp/ironhide",
@@ -174,7 +188,9 @@
           "note": "",
           "own": false,
           "spec_name": "Protection",
-          "spec_icon": "inv_shield_06"
+          "spec_icon": "inv_shield_06",
+          "group": "tank",
+          "spec_key": "warrior-protection"
         },
         {
           "character_key": "us/pvp/bramblehoof",
@@ -186,7 +202,9 @@
           "note": "",
           "own": false,
           "spec_name": "Feral Bear",
-          "spec_icon": "ability_racial_bearform"
+          "spec_icon": "ability_racial_bearform",
+          "group": "tank",
+          "spec_key": "druid-feral-bear"
         },
         {
           "character_key": "us/pvp/mendara",
@@ -198,7 +216,9 @@
           "note": "",
           "own": false,
           "spec_name": "Holy",
-          "spec_icon": "spell_holy_guardianspirit"
+          "spec_icon": "spell_holy_guardianspirit",
+          "group": "healer",
+          "spec_key": "priest-holy"
         },
         {
           "character_key": "us/pvp/gravemend",
@@ -210,7 +230,9 @@
           "note": "",
           "own": false,
           "spec_name": "Holy",
-          "spec_icon": "spell_holy_guardianspirit"
+          "spec_icon": "spell_holy_guardianspirit",
+          "group": "healer",
+          "spec_key": "priest-holy"
         },
         {
           "character_key": "us/pvp/rainspeaker",
@@ -222,7 +244,9 @@
           "note": "",
           "own": false,
           "spec_name": "Restoration",
-          "spec_icon": "spell_nature_magicimmunity"
+          "spec_icon": "spell_nature_magicimmunity",
+          "group": "healer",
+          "spec_key": "shaman-restoration"
         },
         {
           "character_key": "us/pvp/tidecaller",
@@ -234,7 +258,9 @@
           "note": "Can swap to Elemental",
           "own": false,
           "spec_name": "Restoration",
-          "spec_icon": "spell_nature_magicimmunity"
+          "spec_icon": "spell_nature_magicimmunity",
+          "group": "healer",
+          "spec_key": "shaman-restoration"
         },
         {
           "character_key": "us/pvp/oakenmother",
@@ -246,7 +272,9 @@
           "note": "",
           "own": false,
           "spec_name": "Restoration",
-          "spec_icon": "spell_nature_healingtouch"
+          "spec_icon": "spell_nature_healingtouch",
+          "group": "healer",
+          "spec_key": "druid-restoration"
         },
         {
           "character_key": "us/pvp/soothfang",
@@ -258,7 +286,9 @@
           "note": "",
           "own": false,
           "spec_name": "Discipline",
-          "spec_icon": "spell_holy_wordfortitude"
+          "spec_icon": "spell_holy_wordfortitude",
+          "group": "healer",
+          "spec_key": "priest-discipline"
         },
         {
           "character_key": "us/pvp/obnoxious-yell",
@@ -270,7 +300,9 @@
           "note": "",
           "own": true,
           "spec_name": "Fury",
-          "spec_icon": "ability_warrior_innerrage"
+          "spec_icon": "ability_warrior_innerrage",
+          "group": "melee",
+          "spec_key": "warrior-fury"
         },
         {
           "character_key": "us/pvp/draknar",
@@ -282,7 +314,9 @@
           "note": "",
           "own": false,
           "spec_name": "Fury",
-          "spec_icon": "ability_warrior_innerrage"
+          "spec_icon": "ability_warrior_innerrage",
+          "group": "melee",
+          "spec_key": "warrior-fury"
         },
         {
           "character_key": "us/pvp/ruzga",
@@ -294,7 +328,9 @@
           "note": "",
           "own": false,
           "spec_name": "Fury",
-          "spec_icon": "ability_warrior_innerrage"
+          "spec_icon": "ability_warrior_innerrage",
+          "group": "melee",
+          "spec_key": "warrior-fury"
         },
         {
           "character_key": "us/pvp/ashfang",
@@ -306,7 +342,9 @@
           "note": "",
           "own": false,
           "spec_name": "Marksmanship",
-          "spec_icon": "ability_marksmanship"
+          "spec_icon": "ability_marksmanship",
+          "group": "ranged",
+          "spec_key": "hunter-marksmanship"
         },
         {
           "character_key": "us/pvp/talonmaw",
@@ -318,7 +356,9 @@
           "note": "",
           "own": false,
           "spec_name": "Survival",
-          "spec_icon": "ability_hunter_swiftstrike"
+          "spec_icon": "ability_hunter_swiftstrike",
+          "group": "melee",
+          "spec_key": "hunter-survival"
         },
         {
           "character_key": "us/pvp/skarn",
@@ -330,7 +370,9 @@
           "note": "",
           "own": false,
           "spec_name": "Combat",
-          "spec_icon": "ability_backstab"
+          "spec_icon": "ability_backstab",
+          "group": "melee",
+          "spec_key": "rogue-combat"
         },
         {
           "character_key": "us/pvp/zekra",
@@ -342,7 +384,9 @@
           "note": "",
           "own": false,
           "spec_name": "Combat",
-          "spec_icon": "ability_backstab"
+          "spec_icon": "ability_backstab",
+          "group": "melee",
+          "spec_key": "rogue-combat"
         },
         {
           "character_key": "us/pvp/grimshade",
@@ -354,7 +398,9 @@
           "note": "",
           "own": false,
           "spec_name": "Shadow",
-          "spec_icon": "spell_shadow_shadowwordpain"
+          "spec_icon": "spell_shadow_shadowwordpain",
+          "group": "ranged",
+          "spec_key": "priest-shadow"
         },
         {
           "character_key": "us/pvp/lightningbolltz",
@@ -366,7 +412,9 @@
           "note": "",
           "own": false,
           "spec_name": "Elemental",
-          "spec_icon": "spell_nature_lightning"
+          "spec_icon": "spell_nature_lightning",
+          "group": "ranged",
+          "spec_key": "shaman-elemental"
         },
         {
           "character_key": "us/pvp/emberfang",
@@ -378,7 +426,9 @@
           "note": "",
           "own": false,
           "spec_name": "Fire",
-          "spec_icon": "spell_fire_firebolt02"
+          "spec_icon": "spell_fire_firebolt02",
+          "group": "ranged",
+          "spec_key": "mage-fire"
         },
         {
           "character_key": "us/pvp/frostjaw",
@@ -390,7 +440,9 @@
           "note": "",
           "own": false,
           "spec_name": "Frost",
-          "spec_icon": "spell_frost_frostbolt02"
+          "spec_icon": "spell_frost_frostbolt02",
+          "group": "ranged",
+          "spec_key": "mage-frost"
         },
         {
           "character_key": "us/pvp/vexmora",
@@ -402,7 +454,9 @@
           "note": "",
           "own": false,
           "spec_name": "Destruction",
-          "spec_icon": "spell_shadow_rainoffire"
+          "spec_icon": "spell_shadow_rainoffire",
+          "group": "ranged",
+          "spec_key": "warlock-destruction"
         },
         {
           "character_key": "us/pvp/hexbane",
@@ -414,7 +468,9 @@
           "note": "",
           "own": false,
           "spec_name": "Affliction",
-          "spec_icon": "spell_shadow_deathcoil"
+          "spec_icon": "spell_shadow_deathcoil",
+          "group": "ranged",
+          "spec_key": "warlock-affliction"
         },
         {
           "character_key": "us/pvp/moonclaw",
@@ -426,7 +482,9 @@
           "note": "",
           "own": false,
           "spec_name": "Balance",
-          "spec_icon": "spell_nature_starfall"
+          "spec_icon": "spell_nature_starfall",
+          "group": "ranged",
+          "spec_key": "druid-balance"
         },
         {
           "character_key": "us/pvp/gorehowl",
@@ -438,7 +496,9 @@
           "note": "Late from work, there by 8:30",
           "own": false,
           "spec_name": "Enhancement",
-          "spec_icon": "spell_nature_lightningshield"
+          "spec_icon": "spell_nature_lightningshield",
+          "group": "melee",
+          "spec_key": "shaman-enhancement"
         },
         {
           "character_key": "us/pvp/varkas",
@@ -450,7 +510,9 @@
           "note": "",
           "own": false,
           "spec_name": "Demonology",
-          "spec_icon": "spell_shadow_metamorphosis"
+          "spec_icon": "spell_shadow_metamorphosis",
+          "group": "ranged",
+          "spec_key": "warlock-demonology"
         },
         {
           "character_key": "us/pvp/snaggle",
@@ -462,7 +524,9 @@
           "note": "Away this week",
           "own": false,
           "spec_name": "Assassination",
-          "spec_icon": "ability_rogue_eviscerate"
+          "spec_icon": "ability_rogue_eviscerate",
+          "group": "melee",
+          "spec_key": "rogue-assassination"
         },
         {
           "character_key": "us/pvp/wyrmtalon",
@@ -474,7 +538,9 @@
           "note": "",
           "own": false,
           "spec_name": "Beast Mastery",
-          "spec_icon": "ability_hunter_beasttaming"
+          "spec_icon": "ability_hunter_beasttaming",
+          "group": "ranged",
+          "spec_key": "hunter-beast-mastery"
         },
         {
           "character_key": "us/pvp/felgrin",
@@ -486,7 +552,9 @@
           "note": "",
           "own": false,
           "spec_name": "Arcane",
-          "spec_icon": "spell_holy_magicalsentry"
+          "spec_icon": "spell_holy_magicalsentry",
+          "group": "ranged",
+          "spec_key": "mage-arcane"
         },
         {
           "character_key": "us/pvp/yellfury",
@@ -498,7 +566,9 @@
           "note": "",
           "own": true,
           "spec_name": "Marksmanship",
-          "spec_icon": "ability_marksmanship"
+          "spec_icon": "ability_marksmanship",
+          "group": "ranged",
+          "spec_key": "hunter-marksmanship"
         }
       ],
       "not_signed": [
@@ -509,7 +579,9 @@
           "spec": "hunter-marksmanship",
           "role": "dps",
           "spec_name": "Marksmanship",
-          "spec_icon": "ability_marksmanship"
+          "spec_icon": "ability_marksmanship",
+          "group": "ranged",
+          "spec_key": "hunter-marksmanship"
         },
         {
           "character_key": "us/pvp/brokk",
@@ -518,7 +590,9 @@
           "spec": "warrior-arms",
           "role": "dps",
           "spec_name": "Arms",
-          "spec_icon": "ability_rogue_eviscerate"
+          "spec_icon": "ability_rogue_eviscerate",
+          "group": "melee",
+          "spec_key": "warrior-arms"
         },
         {
           "character_key": "us/pvp/sennah",
@@ -527,7 +601,9 @@
           "spec": "priest-holy",
           "role": "healer",
           "spec_name": "Holy",
-          "spec_icon": "spell_holy_guardianspirit"
+          "spec_icon": "spell_holy_guardianspirit",
+          "group": "healer",
+          "spec_key": "priest-holy"
         }
       ],
       "viewer": {
@@ -562,7 +638,9 @@
                 "role": "tank",
                 "icon": "inv_shield_06"
               }
-            ]
+            ],
+            "spec_key": "warrior-fury",
+            "default_spec": "warrior-fury"
           },
           {
             "character_key": "us/pvp/yellfury",
@@ -594,7 +672,9 @@
                 "role": "dps",
                 "icon": "ability_hunter_swiftstrike"
               }
-            ]
+            ],
+            "spec_key": "hunter-marksmanship",
+            "default_spec": "hunter-marksmanship"
           },
           {
             "character_key": "us/pvp/vorgash",
@@ -626,7 +706,9 @@
                 "role": "dps",
                 "icon": "ability_stealth"
               }
-            ]
+            ],
+            "spec_key": "rogue-combat",
+            "default_spec": "rogue-combat"
           }
         ],
         "can": [],

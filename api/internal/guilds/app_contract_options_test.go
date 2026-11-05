@@ -25,6 +25,12 @@ var doneRaidOptional = append([]string{
 	"data.viewer.characters[].raid_spec",
 }, raidViewPending("data")...)
 
+// raidViewOpen are the raid view's maps keyed by data: counts.classes, one key per class the
+// guild plays, so a fixture's classes need not be the test guild's.
+func raidViewOpen(prefix string) []string {
+	return []string{prefix + ".counts.classes"}
+}
+
 // raidViewPending are the raid view fields lane F4 added to the contract (openapi.yaml, "Lane F4
 // contract, handler pending"): invite_at, the composition block, the viewer's can, tools_ended and raid_night, and the
 // spec's name, icon and options on each row. The apps read each as absent until the handler sends

@@ -2167,8 +2167,10 @@ components:
         professions: { type: array, items: { type: string } }
     RaidCounts:
       type: object
-      description: Sign-up counts; the role counts count in only.
-      required: [in, late, tanks, healers, dps]
+      description: >-
+        Sign-up counts; the role counts count in only. melee plus ranged is dps, split by the
+        same group as each row's group (Go raidspec.Group), so the page and the Discord post agree.
+      required: [in, late, tanks, healers, dps, melee, ranged]
       properties:
         in: { type: integer, x-name: signedIn }
         late: { type: integer }
@@ -2176,7 +2178,16 @@ components:
         out: { type: integer, x-name: signedOut }
         tanks: { type: integer }
         healers: { type: integer }
-        dps: { type: integer }
+        dps: { type: integer, description: Kept for the readiness page and older clients; melee plus ranged. }
+        melee: { type: integer }
+        ranged: { type: integer }
+        classes:
+          type: object
+          description: >-
+            In plus Late by class slug, one key per class among signups and not_signed (zeros
+            included), so the figures sum to in plus late. On a raid view only, not on the band's
+            next_raid.
+          additionalProperties: { type: integer }
     RaidLine:
       type: object
       description: A guild's next raid, the band's raid line; omitted when none.
@@ -2276,6 +2287,10 @@ components:
         character_key: { type: string }
         name: { type: string }
         class: { type: string, x-name: className }
+    RaidGroup:
+      type: string
+      description: The roster group a sign-up fights in (Go raidspec.Group); the Discord post's groups.
+      enum: [tank, healer, melee, ranged]
     RaidDiscord:
       type: object
       required: [available, connected, post_default, remind_default, channel_name]
@@ -2318,7 +2333,7 @@ components:
           items:
             type: object
             title: RaidSignup
-            required: [character_key, name, class, spec, role, state, note, own]
+            required: [character_key, name, class, spec, role, state, note, own, group, spec_key]
             properties:
               character_key: { type: string }
               name: { type: string }
@@ -2328,6 +2343,8 @@ components:
               state: { type: string, enum: [in, late, bench, out] }
               note: { type: string }
               own: { type: boolean }
+              group: { $ref: '#/components/schemas/RaidGroup' }
+              spec_key: { type: [string, "null"], description: 'The specs.json key of the spec, e.g. "hunter-beast-mastery"; null when it does not resolve.' }
               spec_name: { type: string, description: "The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending." }
               spec_icon: { type: string, description: "The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending." }
         not_signed:
@@ -2335,12 +2352,14 @@ components:
           items:
             type: object
             title: RaidNotSigned
-            required: [character_key, name, class, spec]
+            required: [character_key, name, class, spec, group, spec_key]
             properties:
               character_key: { type: string }
               name: { type: string }
               class: { type: string, x-name: className }
               spec: { type: string }
+              group: { $ref: '#/components/schemas/RaidGroup' }
+              spec_key: { type: [string, "null"], description: The specs.json key of the spec; null when it does not resolve. }
               role: { type: string, enum: [tank, healer, dps], description: "The spec's role, for an officer's Add. Lane F4 contract, handler pending." }
               spec_name: { type: string, description: "The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending." }
               spec_icon: { type: string, description: "The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending." }
@@ -2354,8 +2373,10 @@ components:
               items:
                 type: object
                 title: RaidViewerCharacter
-                description: One of your characters in the guild. When raid_spec is null, ask "Which spec tonight?".
-                required: [character_key, name, class, spec, verified, state, role, raid_spec]
+                description: >-
+                  One of your characters in the guild. The spec picker starts on default_spec, and
+                  a sign-up with no spec picked waits for one.
+                required: [character_key, name, class, spec, verified, state, role, raid_spec, spec_key, default_spec]
                 properties:
                   character_key: { type: string }
                   name: { type: string }
@@ -2365,12 +2386,14 @@ components:
                   state: { type: [string, "null"], enum: [in, late, bench, out, null] }
                   role: { type: string }
                   raid_spec: { type: [string, "null"] }
+                  spec_key: { type: [string, "null"], description: The specs.json key of spec; null when it does not resolve. }
+                  default_spec: { type: [string, "null"], description: 'raid_spec, else spec_key, else null: the spec the picker starts on.' }
                   spec_name: { type: string, description: "The display name of raid_spec, else of spec. Lane F4 contract, handler pending." }
                   spec_icon: { type: string, description: "The icon stem of raid_spec, else of spec. Lane F4 contract, handler pending." }
                   spec_options:
                     type: array
                     description: >-
-                      The class's specs in catalogue order, for "Which spec tonight?" (specs.json
+                      The class's specs in catalogue order, for the spec picker (specs.json
                       filtered by class). Lane F4 contract, handler pending.
                     items:
                       type: object
