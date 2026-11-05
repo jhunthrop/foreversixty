@@ -135,7 +135,8 @@
                 {
                   "spellIsKnown": {
                     "spellId": {
-                      "spellId": 18809
+                      "spellId": 18809,
+                      "rank": 8
                     }
                   }
                 },
@@ -175,7 +176,8 @@
                     "val": {
                       "spellIsKnown": {
                         "spellId": {
-                          "spellId": 18809
+                          "spellId": 18809,
+                          "rank": 8
                         }
                       }
                     }
