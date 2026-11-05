@@ -143,8 +143,11 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 400625}":         "Heating Up's buff, which gates the raid build's Fire-second lines, only exists with its talent (sim/mage/heating_up.go); this build takes none.",
 	},
 	"mage-fire": {
-		"{SpellID: 11129}": "Combustion is a talent (sim/mage/talents.go); this build takes none.",
-		"{SpellID: 18809}": "Pyroblast is a talent (sim/mage/pyroblast.go); this build takes none.",
+		"{SpellID: 11129}":   "Combustion is a talent (sim/mage/talents.go); this build takes none.",
+		"{SpellID: 1239700}": "Arcane Blast is a talent (sim/mage/arcane_blast.go); the round 22 Fire raid build takes it, this build takes none.",
+		"{SpellID: 400573}":  "Arcane Blast's stacking buff, which the Fire raid build's Blast line reads, only exists with its talent; this build takes none.",
+		"{SpellID: 400589}":  "Missile Barrage is a talent proc (sim/mage/talents.go); this build takes none.",
+		"{SpellID: 18809}":   "Pyroblast is a talent (sim/mage/pyroblast.go); this build takes none.",
 		"{SpellID: 12873}": "Improved Scorch's debuff aura only exists once sim/mage/talents.go's " +
 			"applyImprovedScorch wires it up (Talents.ImprovedScorch != 0) or the raid debuff toggle " +
 			"is on; this build takes neither, so core.GetAPLAura finds no such aura on the current " +

@@ -41,6 +41,7 @@ from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
 from pipeline.models import AddonRotationBand, AddonRotationLine
 from pipeline.spelltext import SpellText, load_spell_text
+from pipeline.talent_levels import tier_level
 
 #: sim/request/ladder.go's own `ladderLevels`. See the module docstring.
 LEVEL_BANDS = [10, 20, 30, 38, 40, 50, 60]
@@ -759,13 +760,6 @@ def write_spell_icons(
     return path
 
 
-#: A talent tier opens five points after the one above it, and the first
-#: point is spent at level 10 (tier 0, zero-based as talents/<class>.json
-#: numbers them).
-FIRST_TALENT_LEVEL = 10
-POINTS_PER_TIER = 5
-
-
 def load_talent_spells(build_dir: Path, class_slug: str) -> dict[str, list[tuple[int, int]]]:
     """Talent name -> [(the level its tier opens, its spell id)] for every
     talent of `class_slug` on this build (`builds/<build>/talents/<class>.json`),
@@ -775,9 +769,7 @@ def load_talent_spells(build_dir: Path, class_slug: str) -> dict[str, list[tuple
         return {}
     trees = json.loads(path.read_text(encoding="utf-8"))["trees"]
     return {
-        talent["name"]: [
-            (FIRST_TALENT_LEVEL + POINTS_PER_TIER * talent["tier"], talent["spell_id"])
-        ]
+        talent["name"]: [(tier_level(talent["tier"]), talent["spell_id"])]
         for tree in trees
         for talent in tree["talents"]
         if isinstance(talent.get("spell_id"), int)
