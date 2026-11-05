@@ -16,6 +16,10 @@ and the description with its numbers filled in. Every figure here is a client ro
 - a consumable is the item `simbuffs.json` names, matched to `items.json` by exact name,
   and the spell its `ItemEffect` row triggers on use.
 
+Blizzard also changes spells server side, where the client rows (and so their text) never
+follow: `curated/spelltip-overrides.json` holds those, each a sourced find-and-replace on
+one spell's description (`apply_tip_overrides`).
+
 Written to `builds/<build>/spelltips/`, after `trainables` and `loot` (it reads both); the
 data job's later `simdb` re-hashes the manifest with it.
 """
@@ -30,8 +34,10 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from pipeline.csvio import read_csv
+from pipeline.curated import CuratedError, parse_sources
 from pipeline.hotfix_push import require_layered
 from pipeline.icons import icon_names, resolve_icon
+from pipeline.models import Source
 from pipeline.normalize import write_model
 from pipeline.racialicons import RACIAL_LINE_WORD, RACIAL_SKILL_CATEGORY
 from pipeline.simconst import _by_spell_id, _int, _rank
@@ -41,6 +47,8 @@ logger = logging.getLogger(__name__)
 
 SPELLTIPS = "spelltips"
 SHARED = "shared"
+#: `curated/<this>.json`: server-side changes the client text does not carry.
+TIP_OVERRIDES = "spelltip-overrides"
 
 #: `ItemEffect.TriggerType` of an on-use effect.
 ON_USE_TRIGGER = 0
@@ -252,7 +260,65 @@ def consumable_tips(
     return out
 
 
-def write_spell_tips(build: str, root: Path = Path("builds")) -> Path:
+class TipOverride(BaseModel):
+    """One server-side change to one spell's description: `find` in the client text
+    becomes `replace`."""
+
+    spell_id: int
+    find: str
+    replace: str
+    sources: list[Source]
+
+
+def load_tip_overrides(curated: Path) -> list[TipOverride]:
+    """`curated/spelltip-overrides.json`, every entry sourced and non-empty."""
+    path = curated / f"{TIP_OVERRIDES}.json"
+    if not path.exists():
+        raise CuratedError(f"missing curated file {path}")
+    out = []
+    for index, entry in enumerate(_read(path)["overrides"]):  # type: ignore[index]
+        where = f"{path.name} override {index}"
+        parse_sources(entry.get("sources", []), where)
+        override = TipOverride(**entry)
+        if not override.find or not override.replace or override.find == override.replace:
+            raise CuratedError(f"{where} needs a distinct find and replace")
+        out.append(override)
+    return out
+
+
+def apply_tip_overrides(
+    tips: dict[str, SpellTip], overrides: list[TipOverride]
+) -> dict[str, SpellTip]:
+    """A copy of `tips` with each override on a spell it holds applied.
+
+    A description already carrying `replace` (the client caught up) is left alone; one
+    carrying neither text has drifted from what the override was written against, and
+    stops the pipeline rather than publishing a guess.
+    """
+    out = dict(tips)
+    for override in overrides:
+        tip = out.get(str(override.spell_id))
+        if tip is None or override.replace in tip.description:
+            continue
+        if override.find not in tip.description:
+            raise CuratedError(
+                f"spell {override.spell_id}: its tooltip no longer reads {override.find!r}; "
+                f"update {TIP_OVERRIDES}.json"
+            )
+        description = tip.description.replace(override.find, override.replace)
+        out[str(override.spell_id)] = tip.model_copy(update={"description": description})
+    return out
+
+
+def _require_overrides_land(overrides: list[TipOverride], spell_ids: set[str]) -> None:
+    missing = sorted(o.spell_id for o in overrides if str(o.spell_id) not in spell_ids)
+    if missing:
+        raise CuratedError(f"{TIP_OVERRIDES}.json names spells no tooltip carries: {missing}")
+
+
+def write_spell_tips(
+    build: str, root: Path = Path("builds"), curated: Path = Path("curated")
+) -> Path:
     """Write `builds/<build>/spelltips/<class>.json` and `spelltips/shared.json`."""
     build_dir = root / build
     raw = build_dir / "raw"
@@ -262,11 +328,17 @@ def write_spell_tips(build: str, root: Path = Path("builds")) -> Path:
     if not trainables_dir.is_dir():
         raise SystemExit(f"no {trainables_dir}; run `python -m pipeline trainables` first")
     hotfix_layer = require_layered(raw, INPUT_TABLES)
+    overrides = load_tip_overrides(curated)
     tables = _Tables(raw)
-    out = build_dir / SPELLTIPS
-    shutil.rmtree(out, ignore_errors=True)
+    records = []
     for path in sorted(trainables_dir.glob("*.json")):
         record = class_spell_tips(build, _read(path), tables)  # type: ignore[arg-type]
+        spells = apply_tip_overrides(record.spells, overrides)
+        records.append(record.model_copy(update={"spells": spells}))
+    _require_overrides_land(overrides, {spell for r in records for spell in r.spells})
+    out = build_dir / SPELLTIPS
+    shutil.rmtree(out, ignore_errors=True)
+    for record in records:
         write_model(record, out / f"{record.class_slug}.json")
     simbuffs_path = build_dir / "simbuffs.json"
     simbuffs = _read(simbuffs_path)["entries"] if simbuffs_path.exists() else {}  # type: ignore[index]
