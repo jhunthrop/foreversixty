@@ -34,6 +34,9 @@
     action: Snippet;
   } = $props();
 
+  /** Readiness's own-row suffix, space included: a span's leading space is trimmed by Svelte. */
+  const OWN_SUFFIX = ' (you)';
+
   const grid = $derived(
     showAttendance
       ? 'md:grid-cols-[minmax(160px,1.2fr)_minmax(0,1.6fr)_120px_112px_auto]'
@@ -51,7 +54,7 @@
     <ClassCrestRing characterClass={candidate.class} size={24} />
     <div class="min-w-0">
       <p class="truncate text-[14px] font-semibold" style={`color:${classColorVar(candidate.class)}`}>
-        {candidate.name}{#if own}<span class="text-muted font-normal"> (you)</span>{/if}
+        {candidate.name}{#if own}<span class="text-muted font-normal">{OWN_SUFFIX}</span>{/if}
       </p>
       <p class="text-muted truncate text-[12px]" data-testid="guild-loot-candidate-spec">
         {candidateSubline(candidate)}

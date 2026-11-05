@@ -118,7 +118,8 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
     const page = await browser.newPage();
     await openTab(page, 'loot', { viewer: 'officer', officerTools: false });
     await expect(gate(page, 'loot')).toHaveText(SENTENCE);
-    await expect(page.getByTestId('guild-loot-tab').getByText(guildGateCopy.readOnly)).toBeVisible();
+    // Loot spec §3.1: the Read-only label is for members; the gate sentence covers the officer.
+    await expect(page.getByTestId('guild-loot-tab').getByText(guildGateCopy.readOnly)).toHaveCount(0);
     await expectAllDisabled(awardButtons(page), expected.award);
     await expectAllDisabled(undoButtons(page), expected.undo);
     await expect(awardButtons(page).first()).toHaveAttribute('aria-describedby', 'officer-tools-gate-loot');

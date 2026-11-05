@@ -147,12 +147,7 @@
 <section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-loot-tab">
   {#if officerReadOnly}<GuildPlanGate tab="loot" facts={gateFacts} />{/if}
 
-  <Card
-    glyph="star"
-    title="Loot"
-    meta={memberReadOnly || officerReadOnly ? guildGateCopy.readOnly : undefined}
-    body="none"
-  >
+  <Card glyph="star" title="Loot" meta={memberReadOnly ? guildGateCopy.readOnly : undefined} body="none">
     {#snippet aside()}
       {#if loot !== null && loot.items.length > 0}
         <div class="w-56 text-left" data-testid="guild-loot-boss-picker">

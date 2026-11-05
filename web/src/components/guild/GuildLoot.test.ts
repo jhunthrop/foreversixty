@@ -140,6 +140,9 @@ describe('GuildLoot', () => {
     const key = item.candidates[0].character_key;
     const markup = html(false, { loot, ownKeys: [key] });
     expect(text(markup)).toContain(`${item.candidates[0].name} (you)`);
+    // The space is rendered text, not markup whitespace Svelte trims: `Ashenveil (you)`, as on Readiness.
+    expect(markup).toMatch(/>\s*\(you\)</);
+    expect(markup).toMatch(/<span[^>]*> \(you\)<\/span>/);
     expect(markup).toContain('row-band-own');
     expect(html(false, { loot })).not.toContain('row-band-own');
   });
@@ -329,8 +332,12 @@ describe('GuildLoot', () => {
       expect(gateAt).toBeLessThan(markup.indexOf('data-testid="guild-loot-empty"'));
     });
 
-    it('shows the Read-only label', () => {
-      expect(text(readOnly())).toContain(`Loot ${guildGateCopy.readOnly}`);
+    it('shows no Read-only label: the gate sentence covers an officer (loot spec §3.1)', () => {
+      expect(text(readOnly())).not.toContain(guildGateCopy.readOnly);
+    });
+
+    it('shows the Read-only label to a member', () => {
+      expect(text(html(false))).toContain(`Loot ${guildGateCopy.readOnly}`);
     });
 
     it('disables every Award and Undo, described by the sentence', () => {
@@ -355,7 +362,7 @@ describe('GuildLoot', () => {
       const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
       expect(text(gate)).toContain(`${guildGateCopy.lead.loot} ${guildGateCopy.moveToRaidGuild}`);
       expect(gate).toContain(`href="${SETTINGS_HREF}?upgrade=1#billing"`);
-      expect(text(markup)).toContain(guildGateCopy.readOnly);
+      expect(text(markup)).not.toContain(guildGateCopy.readOnly);
       for (const tag of buttons(markup, 'guild-loot-award-')) {
         expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
         expect(tag).toContain('aria-describedby="officer-tools-gate-loot"');
