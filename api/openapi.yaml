@@ -2669,12 +2669,18 @@ components:
           items:
             type: object
             title: LootEncounter
-            required: [encounter_id, name, zone, killed]
+            required: [encounter_id, name, zone, killed, kill_nights, on_farm]
             properties:
               encounter_id: { type: integer }
               name: { type: string }
               zone: { type: string }
               killed: { type: boolean }
+              kill_nights:
+                type: integer
+                description: Separate nights (days in the guild's raid zone) with a kill; two logs of one night count once.
+              on_farm:
+                type: boolean
+                description: "kill_nights >= 3: the boss reads on farm. One or two kill nights read down."
         selected: { type: integer, format: int64 }
         items:
           type: array

@@ -1177,6 +1177,11 @@ export interface GuildLootEncounter {
   name: string;
   zone: string;
   killed: boolean;
+  /** Separate nights with a kill (days in the guild's raid zone). Optional only for fixtures
+   *  written before guild round 3; the API always sends it. */
+  kill_nights?: number;
+  /** The API's rule: kill_nights >= 3 reads "on farm"; fewer kill nights read "down". */
+  on_farm?: boolean;
 }
 
 export interface GuildLootCandidate {

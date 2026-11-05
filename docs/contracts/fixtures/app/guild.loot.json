@@ -6,7 +6,9 @@
         "encounter_id": 1084,
         "name": "Onyxia",
         "zone": "Onyxia's Lair",
-        "killed": true
+        "killed": true,
+        "kill_nights": 3,
+        "on_farm": true
       }
     ],
     "selected": 1084,

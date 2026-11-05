@@ -215,6 +215,42 @@ type LootEncounterOption struct {
 	Name        string `json:"name"`
 	Zone        string `json:"zone"`
 	Killed      bool   `json:"killed"`
+	// KillNights is how many separate nights (days in the guild's raid zone) the guild killed
+	// it on; OnFarm is KillNights >= onFarmKillNights. One kill is "down", not "on farm".
+	KillNights int  `json:"kill_nights"`
+	OnFarm     bool `json:"on_farm"`
+}
+
+// onFarmKillNights is how many separate nights with a kill make a boss "on farm".
+const onFarmKillNights = 3
+
+// killNights counts the separate nights the guild killed encounterID: the distinct days, in the
+// guild's raid zone (zoneOrUTC), of the reports holding a kill, never a flagged report
+// (presence.NotFlagged), a private one included. Two logs of one night count once.
+func (s *Store) killNights(ctx context.Context, guildID, encounterID int64) (int, error) {
+	tz, err := s.GuildRaidTimezone(ctx, guildID)
+	if err != nil {
+		return 0, fmt.Errorf("guilds: kill nights: %w", err)
+	}
+	loc := zoneOrUTC(tz)
+	rows, err := s.Pool.Query(ctx, `
+		select `+logAnchorSQL("r")+` from reports r
+		where r.guild_id = $1 and `+presence.NotFlagged("r")+`
+		  and exists (select 1 from fights f where f.report_id = r.id and f.encounter_id = $2 and f.kill)`,
+		guildID, encounterID)
+	if err != nil {
+		return 0, fmt.Errorf("guilds: kill nights: %w", err)
+	}
+	defer rows.Close()
+	days := map[string]bool{}
+	for rows.Next() {
+		var at time.Time
+		if err := rows.Scan(&at); err != nil {
+			return 0, fmt.Errorf("guilds: kill nights: %w", err)
+		}
+		days[at.In(loc).Format(time.DateOnly)] = true
+	}
+	return len(days), rows.Err()
 }
 
 // LootView is the body of GET /v1/guilds/{id}/loot.
@@ -232,17 +268,16 @@ type LootView struct {
 // nothing else to select yet (design spec's own "next unkilled: none, farm" copy). Killed
 // counts the guild's private nights too, never a flagged report (presence.NotFlagged).
 func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
-	var kills int
-	if err := s.Pool.QueryRow(ctx, `
-		select count(*) filter (where f.kill) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and f.encounter_id = $2 and `+presence.NotFlagged("r"), guildID, onyxiaEncounterID).Scan(&kills); err != nil {
-		return LootView{}, fmt.Errorf("guilds: loot kills: %w", err)
+	killNights, err := s.killNights(ctx, guildID, onyxiaEncounterID)
+	if err != nil {
+		return LootView{}, err
 	}
 
 	view := LootView{
-		Encounters: []LootEncounterOption{{EncounterID: onyxiaEncounterID, Name: encounterName, Zone: zoneOnyxia, Killed: kills > 0}},
-		Selected:   onyxiaEncounterID,
-		Items:      []LootItemView{},
+		Encounters: []LootEncounterOption{{EncounterID: onyxiaEncounterID, Name: encounterName, Zone: zoneOnyxia,
+			Killed: killNights > 0, KillNights: killNights, OnFarm: killNights >= onFarmKillNights}},
+		Selected: onyxiaEncounterID,
+		Items:    []LootItemView{},
 	}
 
 	g, err := s.getGuild(ctx, guildID)

@@ -25,7 +25,7 @@ What the audit found on that screen: a hunter ranked for a caster book, characte
 
 ### 3.1 Header (unchanged structure)
 
-`Card` with `glyph="star"`, title `Loot`, the boss `Select` at the right (`Onyxia · on farm` or `Onyxia · not killed yet`), the `Read-only` label for members. The gate sentence for officers without the plan sits under it (spec C owns the words). The old two lines under the header (`Gain here is item level. The simulator has not checked these.` and the footnote) move: see §3.4.
+`Card` with `glyph="star"`, title `Loot`, the boss `Select` at the right (`Onyxia · on farm` or `Onyxia · not killed yet`; amended guild round 3 API3: `on farm` only from kills on 3 separate nights, the API's `encounters[].on_farm` (`kill_nights >= 3`, days in the guild's raid zone, two logs of one night once); one or two kill nights read `Onyxia · down`), the `Read-only` label for members. The gate sentence for officers without the plan sits under it (spec C owns the words). The old two lines under the header (`Gain here is item level. The simulator has not checked these.` and the footnote) move: see §3.4.
 
 ### 3.2 Who is a candidate (the rule, API side)
 
