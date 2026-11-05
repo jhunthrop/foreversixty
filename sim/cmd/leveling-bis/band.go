@@ -902,7 +902,7 @@ type bandPicks struct {
 // pickBand scores the band's candidates (buildBandPool, wandCredit as
 // score() takes it), builds the per-slot pools and picks the set.
 func pickBand(items []candidate, lootIdx lootIndex, spec specInfo, band int, faction string, weights map[string]float64, wandCredit float64, weaponSubclasses map[int]bool, requiresDagger bool) bandPicks {
-	pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, wandCredit)
+	pool := buildBandPool(withWeaponEnchantCredit(items, spec), lootIdx, spec.ClassSlug, band, faction, weights, wandCredit)
 	// The weapon limits, then the rare-spawn rule over what they
 	// leave (band.go's bandSlotPools).
 	bySlot := bandSlotPools(&pool, spec, weaponSubclasses, requiresDagger)

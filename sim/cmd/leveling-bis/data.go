@@ -84,7 +84,13 @@ type classItem struct {
 	// row carries 1.12 classic-db itemization because the client's
 	// ItemSparse has no stats row for the id (data/pipeline/models.py
 	// GearItem.client_unconfirmed; simitems.json sim_source "classic-db").
+	// The client's Item and item-effect tables clear it on an item they
+	// name in classic-db's shape (data/pipeline/client_evidence.py), so a
+	// row can carry StatsSource "classic-db" without this flag.
 	ClientUnconfirmed bool `json:"client_unconfirmed"`
+	// StatsSource says where the row's numbers come from: "classic-db",
+	// "wowhead", or empty for the client's own.
+	StatsSource string `json:"stats_source"`
 	// WeaponType is a weapon row's own bow/gun/crossbow/wand/thrown (or
 	// melee axe/mace/polearm/sword/staff/fist/dagger) kind - this
 	// lane's brief (bis-ranker-integrity-6), item 9, corrected per the
@@ -216,8 +222,13 @@ type candidate struct {
 	NotInSimDB bool
 	// ClientUnconfirmed is classItem.ClientUnconfirmed carried through:
 	// the item's stats are 1.12's, not yet confirmed by the client.
-	// preferConfirmedStats (confirmed.go) reads it.
+	// loadCandidates drops such an item.
 	ClientUnconfirmed bool
+	// StatsFromClassicDB is classItem.StatsSource == "classic-db": a real
+	// Forever item whose numbers are still 1.12's, because the client's
+	// ItemSparse row has not reached us. preferConfirmedStats (confirmed.go)
+	// holds it to a higher bar through statsInDoubt.
+	StatsFromClassicDB bool
 	// Reputation is classItem.Reputation carried through.
 	Reputation *itemReputation
 	// LimitCategory is classItem.LimitCategory carried through.
@@ -272,11 +283,10 @@ func withEngineWeaponDamage(items []candidate, lookup func(int32) (simdb.WeaponD
 // own doc for why the row still exists in items.json without ever
 // reaching this pool.
 //
-// An item whose class row marks client_unconfirmed (its stats are
-// 1.12's; the client may never resolve the id) is never a candidate
-// either (task L1.6): withoutClientUnconfirmed drops it here, before any
-// band ranks, so every pick, runner-up and alternative is confirmed by
-// construction. unconfirmed counts the rows dropped, for runSpec's
+// An item whose class row marks client_unconfirmed (the client's own
+// tables do not name it in classic-db's shape: it is missing, reworked or
+// another kind of item) is never a candidate either (task L1.6):
+// withoutClientUnconfirmed drops it here, before any band ranks. unconfirmed counts the rows dropped, for runSpec's
 // summary line.
 func loadCandidates(buildDir, classSlug string) (out []candidate, unconfirmed int, missing []string, err error) {
 	all, missing, err := loadClassCandidates(buildDir, classSlug)
@@ -285,6 +295,16 @@ func loadCandidates(buildDir, classSlug string) (out []candidate, unconfirmed in
 	}
 	out, unconfirmed = withoutClientUnconfirmed(all)
 	return out, unconfirmed, missing, nil
+}
+
+// statsSourceClassicDB is GearItem.stats_source on a classic-db row.
+const statsSourceClassicDB = "classic-db"
+
+// statsInDoubt reports whether the candidate's numbers are not the client's
+// own: the item may be picked, but only beyond the doubt margin
+// (preferConfirmedStats).
+func (c candidate) statsInDoubt() bool {
+	return c.ClientUnconfirmed || c.StatsFromClassicDB
 }
 
 // withoutClientUnconfirmed is the one client_unconfirmed filter: items
@@ -360,6 +380,7 @@ func loadClassCandidates(buildDir, classSlug string) (out []candidate, missing [
 			SetID:                  ci.SetID,
 			EffectText:             ci.EffectText,
 			ClientUnconfirmed:      ci.ClientUnconfirmed,
+			StatsFromClassicDB:     ci.StatsSource == statsSourceClassicDB,
 			Reputation:             ci.Reputation,
 			LimitCategory:          ci.LimitCategory,
 		})
@@ -1325,6 +1346,9 @@ type specInfo struct {
 	// top of the class kit - nil for the bare pass. It is not part of
 	// data/curated/specs.json.
 	Applied *request.ResolvedPreset `json:"-"`
+	// RaidEnchants is the spec's data/curated/raid-enchants.json plan,
+	// worn on the raid pass only (enchants.go).
+	RaidEnchants enchantPlan `json:"-"`
 }
 
 func loadAllSpecs(repoRoot string) ([]specInfo, error) {

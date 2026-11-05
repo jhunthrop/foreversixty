@@ -142,7 +142,10 @@ func run(execPath string, args []string) error {
 // shaman were each killed at 30m while reconciling band 60, and the run lost
 // every spec's picks. Forty-five minutes fits them while the -all run still
 // ends inside bis.yml's 300-minute job (about 142 min for the other 25 specs).
-const specTimeout = 45 * time.Minute
+// Eighty since 2026-11-05: the re-admitted items and raid enchants put the
+// slowest healer near the old cap, and a run now ranks a shard
+// (data/curated/bis-shard.json, shard.go), so the job budget is per shard.
+const specTimeout = 80 * time.Minute
 
 // runAllSpecsIsolated runs writtenSpecs, one subprocess per spec, and
 // reports which (if any) failed or hung - see run()'s own doc for why
@@ -152,7 +155,7 @@ const specTimeout = 45 * time.Minute
 // specTimeout) so a test can point both at a fast, scripted stand-in
 // process instead of re-execing the real, slow ranking binary.
 func runAllSpecsIsolated(execPath string, timeout time.Duration, repoRoot, activeBuild, outDir, bandsFlag string, weightsIterations int, memProfile string) error {
-	specs, err := writtenSpecs(repoRoot)
+	specs, err := specsToRank(repoRoot)
 	if err != nil {
 		return err
 	}
@@ -294,6 +297,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	raidPreset, err := resolveRaidPreset(repoRoot, specInfo)
 	if err != nil {
 		return fmt.Errorf("resolving the %s preset for %s: %w", presetRaid, spec, err)
+	}
+	if specInfo.RaidEnchants, err = loadRaidEnchants(repoRoot, specInfo); err != nil {
+		return err
 	}
 	guide, err := loadGuideRaces(repoRoot, buildDir, specInfo.ClassSlug, specInfo.SpecSlug)
 	if err != nil {
@@ -666,6 +672,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				report.Preset = pass.name
 				report.UnconfirmedWithinErrorHeld = heldUnconfirmed
 				report.KeptAlternative = kept
+				report.Slots = withEnchantIDs(specInfo, report.Slots)
 				// "No primary stat ever published as 'not significant'"
 				// (this lane's brief, item 3) - clears Insignificant on
 				// exactly the anchor row, on an otherwise-trustworthy band
@@ -758,6 +765,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		}
 	}
 
+	if err := requireBandsMatchGuide(repoRoot, buildDir, activeBuild, spec, reports); err != nil {
+		return err
+	}
 	jsonPath := filepath.Join(outDir, spec+".json")
 	presets := map[string]request.ResolvedPreset{presetRaid: raidPreset}
 	if err := writeSpecReport(jsonPath, spec, activeBuild, reports, presets, withHealProfile(healProfile)); err != nil {

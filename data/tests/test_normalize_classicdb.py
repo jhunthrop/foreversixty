@@ -197,6 +197,28 @@ def test_merge_class_items_places_gear_only_where_its_allowable_class_mask_permi
             assert gear.client_unconfirmed is True
 
 
+def test_merge_clears_client_unconfirmed_only_on_the_ids_the_client_confirms() -> None:
+    """client_unconfirmed lane, 2026-11-05: `confirmed`
+    (pipeline.client_evidence.confirmed_ids) clears the flag on both the flat
+    row and every class row; every other picked id keeps it."""
+    picked = [_item(id=11815), _item(id=12930, name="Briarwood Reed")]
+    flat = merge_items([], picked, confirmed={11815})
+    assert {i.id: i.client_unconfirmed for i in flat} == {11815: False, 12930: True}
+    records = [ClassItems(build="1.60.1.70790", class_slug="warrior", items=[])]
+    merged = merge_class_items(
+        records,
+        picked,
+        [{"ID": "1", "Name_lang": "Warrior"}],
+        _empty_spell_text(),
+        fork_icons={},
+        wowhead_icons={},
+        confirmed={11815},
+    )
+    rows = {i.id: i for i in merged[0].items}
+    assert (rows[11815].client_unconfirmed, rows[11815].stats_source) == (False, "classic-db")
+    assert rows[12930].client_unconfirmed is True
+
+
 def test_merge_sets_joins_a_known_set_and_counts_an_unknown_one(caplog) -> None:
     caplog.set_level(logging.INFO)
     sets = [ItemSetRecord(id=200, name="Test Set", item_ids=[1, 2], bonuses=[])]

@@ -421,7 +421,7 @@ describe('loadGearExtras for Frost Mage, from the real data', () => {
 
   it('picks a weapon enchant for spell power and lists the preset’s consumables', () => {
     if (extras === undefined) throw new Error('mage-frost has no ranked file');
-    expect(extras.enchants.find((row) => row.slot === 'main_hand')?.gives).toBe('+30 spell power');
+    expect(extras.enchants.find((row) => row.slot === 'main_hand')?.gives).toBe('+65 spell power');
     const names = extras.consumables.map((row) => row.name);
     expect(names).toContain('Flask of Supreme Power');
     expect(names).toContain('Elixir of Frost Power');

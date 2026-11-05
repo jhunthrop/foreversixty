@@ -2,16 +2,15 @@ package main
 
 // Preferring confirmed stats inside the noise.
 //
-// Some items carry stats the client has not confirmed: the id is in the
-// client but its ItemSparse stats row is not, so the ranker would score the
-// 1.12 classic-db itemization (candidate.ClientUnconfirmed). Since task L1.6
-// loadCandidates (data.go) drops every such item before any band ranks, so
-// the pool runSpec ranks is confirmed by construction and this pass finds
-// nothing to do there. It stays for a pool built some other way: such an
-// item may only take a slot from a confirmed-stats item when it beats that
-// item by more than the two runs' combined standard error. A gap inside the
-// error is a tie the noise decides, and a tie goes to the item whose stats
-// we can show.
+// Some items carry stats the client has not stated: the id is in the client's
+// Item table but its ItemSparse row has not reached us, so the ranker scores
+// the 1.12 classic-db numbers (candidate.statsInDoubt). About one such item in
+// six differs from 1.12 once Forever's numbers are known
+// (design/reviews/2026-11-05-client-unconfirmed.md). Such an item may only take
+// a slot from an item with the client's own stats when it beats that item by
+// more than the doubt margin. A gap inside it is a tie, and a tie goes to the
+// item whose stats we can show. An item the client does not name in classic-db's
+// shape at all never gets this far: loadCandidates (data.go) drops it.
 
 import (
 	"fmt"
@@ -24,11 +23,11 @@ import (
 // best-scored confirmed candidate the slot's pool offers. Nil when the slot
 // has none, or when wearing it would break a pair or two-hand rule.
 func confirmedAlternative(picks map[string]slotPick, slot string, pool []scored) *scored {
-	if ru := picks[slot].RunnerUp; ru != nil && !ru.ClientUnconfirmed {
+	if ru := picks[slot].RunnerUp; ru != nil && !ru.statsInDoubt() {
 		return usableAlternative(picks, slot, ru)
 	}
 	for i := range pool {
-		if pool[i].ClientUnconfirmed || pool[i].ID == picks[slot].Item.ID {
+		if pool[i].statsInDoubt() || pool[i].ID == picks[slot].Item.ID {
 			continue
 		}
 		if alt := usableAlternative(picks, slot, &pool[i]); alt != nil {
@@ -67,7 +66,7 @@ func preferConfirmedStats(runner engineRunner, spec specInfo, race, classSlug st
 	var errs []string
 	for _, slot := range slotOrder {
 		cur := picks[slot]
-		if cur.Item == nil || !cur.Item.ClientUnconfirmed {
+		if cur.Item == nil || !cur.Item.statsInDoubt() {
 			continue
 		}
 		alt := confirmedAlternative(picks, slot, bySlot[slot])
@@ -112,7 +111,7 @@ func preferConfirmedStats(runner engineRunner, spec specInfo, race, classSlug st
 
 func hasUnconfirmedPick(picks map[string]slotPick) bool {
 	for _, pk := range picks {
-		if pk.Item != nil && pk.Item.ClientUnconfirmed {
+		if pk.Item != nil && pk.Item.statsInDoubt() {
 			return true
 		}
 	}

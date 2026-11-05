@@ -49,6 +49,13 @@ function decodedFrom(href: string) {
 }
 
 describe('bisSimHref', () => {
+  it('carries the enchants the band published, so the simulator measures the same set', () => {
+    const slots = [{ ...slot('head', 12640), enchant_id: 1506 }, slot('main_hand', 1728)];
+    const gear = decodedFrom(bisSimHref(band({ slots }), index, '1.60.1.70790')).gearSlots;
+    expect(gear).toContainEqual({ slot: 'head', itemId: 12640, enchant: 1506 });
+    expect(gear).toContainEqual({ slot: 'main_hand', itemId: 1728 });
+  });
+
   it('carries the band set as a code the simulator reads: class, race, level, talents and every pick', () => {
     const build = decodedFrom(bisSimHref(band({}), index, '1.60.1.70755'));
     expect(build.dataBuild).toBe('1.60.1.70755');

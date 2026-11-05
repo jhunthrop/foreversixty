@@ -73,14 +73,12 @@ from pipeline.loot.classification import (
     loot_instance_types,
     write_classification,
 )
+from pipeline.loot.client_enchants import build_enchant_table
 from pipeline.loot.client_rep import apply_client_reputations, load_item_reputations
 from pipeline.loot.content_phases import apply_content_phases, load_content_phases
 from pipeline.loot.gear import (
     apply_fork_columns,
-    build_enchants,
     build_suffixes,
-    enchant_display_names,
-    equip_restrictions,
     faction_restrictions,
     suffix_options,
 )
@@ -336,13 +334,9 @@ def write_loot_files(
 
     run = _build_and_write_loot(build_dir, fork, classification, overlay_dir, curated_dir)
 
-    enchants = build_enchants(
-        fork,
-        equip_restrictions(read_csv(raw / "SpellEquippedItems.csv")),
-        enchant_display_names(read_csv(raw / "SpellItemEnchantment.csv")),
-    )
     suffixes = build_suffixes(fork)
     client, icon_for = client_tables(build_dir, raw)
+    enchants = build_enchant_table(build_dir, fork, curated_dir, icon_for)
     ids_text = ids_md.read_text(encoding="utf-8")
     simbuffs = with_effects(
         build_simbuffs(

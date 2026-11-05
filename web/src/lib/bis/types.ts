@@ -77,6 +77,9 @@ export interface BisSlot {
   /** One of loot.ts's LootKind -- the picker's own kinds, so a BiS row's badge reads the
    *  same word as the Droptimizer's. */
   source_kind: string;
+  /** The permanent enchant this item wears, by `enchants.json` id. Present only on a raid
+   *  preset's band 60 row whose slot takes one. */
+  enchant_id?: number;
   /** The stat-weight estimate in the band's `score_unit`; absent on a row the ranker's
    *  own sim decided (trinkets, proc items, weapon pairs), which carries `sim_dps` instead
    *  (ranker-integrity-2, 2026-09-30: one number per row, never two units side by side). */
