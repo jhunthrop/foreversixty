@@ -200,6 +200,9 @@ Attendance, Last seen (the last still a two-bucket `logged_recently` sort pendin
   newest `created_at`).
 - Everything v1 already had (crest, class-colour name, rank pill, item level, logged-recently
   pill, consent-gated `GuildRosterHandoff`, officer Approve/Remove) is unchanged.
+- **Row actions from 1024** (amended 2026-11-05, guild round 3): the actions slot is 216 px,
+  `Open in simulator` over `Open in planner`, each one line (`whitespace-nowrap`), beside
+  `Remove`; round 2's 190 px slot broke each link onto two lines. Phone keeps its layout.
 
 **Member's own row is pinned first**, highlighted (`rgba(229,185,85,.06)` background, the
 same wash the design system's own "active" treatments use), labelled "(you)" — new this

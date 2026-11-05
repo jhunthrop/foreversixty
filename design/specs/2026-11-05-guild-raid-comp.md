@@ -168,7 +168,7 @@ Touch and keyboard: the spec select is a native select (phone picker, arrow keys
 | Who line | `{Spec} {Class}` (`Holy Paladin`, `Beast Mastery Hunter`); off-tank `Fury Warrior · Tank`; unresolved `{Class}`; below 768 always with the role: `Restoration Druid · Healer`, `Fire Mage · DPS` |
 | Spec select face below 768 | `{Spec}` (`Restoration`, `Beast Mastery`); the list keeps `{Spec} · {Role}` |
 | Strip, not the roster row | `Officers see {Name} ({State}).` (`Officers see Quillfeather (Late).`), muted, in the row's status line when the character answered but is not its account's roster row (raids spec §3.7) |
-| Roster Also line | `Also: {Name} · {Spec} {Class} · {State}`, several joined by `, ` (`Also: Rootbound · Restoration Druid · Bench`) |
+| Roster Also line | `Also: {Name} ({Spec} {Class}, {State})`, several joined by `; ` (`Also: Rootbound (Restoration Druid, Bench)`) (amended 2026-11-05, guild round 3) |
 | Roster heads | `Tanks`, `Healers`, `Melee`, `Ranged`, `Late`, `Bench`, `Out`, `Not signed up` |
 | Empty groups | `No tanks yet.`, `No healers yet.`, `No melee yet.`, `No ranged yet.` |
 | Late row sub-line | `{Spec} {Class} · {Role}` |

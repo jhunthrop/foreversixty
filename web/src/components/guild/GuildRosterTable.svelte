@@ -636,7 +636,7 @@
               </div>
               {@render inGame(row)}
               <div
-                class="contents lg:ml-auto lg:flex lg:w-[190px] lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3"
+                class="contents lg:ml-auto lg:flex lg:w-[216px] lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3"
                 data-testid="guild-roster-actions"
               >
                 {#if rosterHoldsHandoff(row)}
@@ -715,7 +715,7 @@
               {#if canRemove && entry.may_remove === true && entry.account_key !== undefined}
                 {@const accountKey = entry.account_key}
                 <div
-                  class="contents lg:ml-auto lg:flex lg:w-[190px] lg:shrink-0 lg:items-center lg:justify-end"
+                  class="contents lg:ml-auto lg:flex lg:w-[216px] lg:shrink-0 lg:items-center lg:justify-end"
                   data-testid="guild-roster-entry-actions"
                 >
                   <button
@@ -729,7 +729,7 @@
                   </button>
                 </div>
               {:else}
-                <div class="ml-auto shrink-0 max-lg:hidden lg:w-[190px]" aria-hidden="true"></div>
+                <div class="ml-auto shrink-0 max-lg:hidden lg:w-[216px]" aria-hidden="true"></div>
               {/if}
             </div>
             {#if entry.account_key !== undefined && removingKey === entry.account_key}

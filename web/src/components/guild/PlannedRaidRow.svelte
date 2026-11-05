@@ -1,6 +1,8 @@
 <!-- web/src/components/guild/PlannedRaidRow.svelte -->
 <!-- One planned raid on the Raids tab (raids spec 3.1): one link to the raid page. Desktop is the
-     six-cell grid (date block, title and zone, when, count, chips, chevron); below md the date
+     six-cell grid (date block, title and zone, when, count, chips, chevron); the count cell is as
+     wide as its breakdown, so `1 late (healer)` never takes a second line from 1024 (768 to
+     1023 may wrap between clauses); below md the date
      block leads a three-line stack. `now` comes from the tab's one minute tick, so rows run no
      timer of their own. Gold shows once a row: the countdown, or the Not signed up chip. -->
 <script lang="ts">
@@ -72,7 +74,7 @@
   data-testid={testid}
 >
   <span
-    class="hidden min-h-16 grid-cols-[56px_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_176px_16px] items-center gap-4 px-3.5 py-[7px] md:grid"
+    class="hidden min-h-16 grid-cols-[56px_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_176px_16px] lg:grid-cols-[56px_minmax(0,1.5fr)_minmax(136px,0.8fr)_minmax(max-content,1.2fr)_176px_16px] items-center gap-4 px-3.5 py-[7px] md:grid"
     data-testid={`${testid}-desktop`}
   >
     {@render dateBlock('h-14 w-14')}
@@ -95,7 +97,9 @@
       <span class="flex items-center gap-2" data-testid={`${testid}-desktop-count`}
         ><span class="numeric text-[15px] {countTone}">{view.count}</span>{@render bar('w-24 shrink-0')}</span
       >
-      <span class="text-muted text-[12px]">{view.breakdown}</span>
+      <span class="text-muted text-[12px] lg:whitespace-nowrap" data-testid={`${testid}-desktop-breakdown`}
+        >{view.breakdown}</span
+      >
     </span>
     <span class="flex flex-wrap items-center justify-end gap-1.5">{@render chips('desktop')}</span>
     <span class="text-muted group-hover:text-gold text-[16px]" aria-hidden="true">›</span>

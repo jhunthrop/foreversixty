@@ -10,7 +10,7 @@ import type {
   GuildSignupState,
 } from './api';
 import { classThenName, rowGroup, specClassLine } from './raid-comp';
-import { SEP, raidCopy } from './raid-copy';
+import { raidCopy } from './raid-copy';
 import { roleForSpec } from './raid-roles';
 
 const ROLE_ORDER: readonly GuildRaidRole[] = ['tank', 'healer', 'dps'];
@@ -34,12 +34,12 @@ export interface RosterRow {
   also: string | null;
 }
 
-/** `Also: Rootbound · Restoration Druid · Bench`: the account's other answered characters, best
- *  place first as the API lists them; `null` when there are none (raids spec 3.7). */
+/** `Also: Rootbound (Restoration Druid, Bench)`: the account's other answered characters, best
+ *  place first as the API lists them, joined by `; `; `null` when there are none (raids spec 3.7). */
 export function alsoLine(also: readonly GuildRaidAlsoSignup[]): string | null {
   if (also.length === 0) return null;
   return raidCopy.also(
-    also.map((a) => [a.name, specClassLine(a.class, a.spec_key), raidCopy.segments[a.state]].join(SEP)),
+    also.map((a) => raidCopy.alsoPart(a.name, specClassLine(a.class, a.spec_key), raidCopy.segments[a.state])),
   );
 }
 

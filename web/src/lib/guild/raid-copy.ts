@@ -74,8 +74,10 @@ export const raidCopy = {
     officersSee: (name: string, state: string): string => `Officers see ${name} (${state}).`,
   },
   /** The roster row's line naming its account's other answered characters (raids spec 3.7):
-   *  `Also: Rootbound · Restoration Druid · Bench`, several joined by `, `. */
-  also: (parts: readonly string[]): string => `Also: ${parts.join(', ')}`,
+   *  `Also: Rootbound (Restoration Druid, Bench)`, several joined by `; ` (guild round 3). */
+  also: (parts: readonly string[]): string => `Also: ${parts.join('; ')}`,
+  /** One character of the Also line: `Rootbound (Restoration Druid, Bench)`. */
+  alsoPart: (name: string, specClass: string, state: string): string => `${name} (${specClass}, ${state})`,
   /** The strip's one spec picker (raid comp spec 3.2, 7). */
   spec: {
     /** The select's visually hidden label. */

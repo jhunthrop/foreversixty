@@ -252,8 +252,12 @@ describe('RaidRoster', () => {
       not_signed: [],
     });
     const body = html({ raid, officer: true });
-    expect(/data-testid="raid-roster-also">([^<]*)</.exec(body)?.[1]).toBe(
-      'Also: Rootbound · Restoration Druid · Bench',
+    expect(/data-testid="raid-roster-also">([^<]*)</.exec(body)?.[1]?.trim()).toBe(
+      'Also: Rootbound (Restoration Druid, Bench)',
+    );
+    // One line from md, the whole line in the title should it still not fit; a phone wraps it.
+    expect(body).toMatch(
+      /class="text-muted text-\[12px\] leading-4 break-words md:truncate" title="Also: Rootbound \(Restoration Druid, Bench\)" data-testid="raid-roster-also"/,
     );
     expect(body).not.toContain('data-testid="raid-roster-bench"');
     expect(body).not.toContain('raid-roster-select-Rootbound');

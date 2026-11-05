@@ -186,7 +186,8 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
       const actions = /<div[^>]*data-testid="guild-roster-actions"[^>]*>/.exec(part)?.[0] ?? '';
       expect(actions).toContain('flex-nowrap');
       expect(actions).toContain('shrink-0');
-      expect(actions).toContain('lg:w-[190px]');
+      // Wide enough for `Open in simulator` on one line beside Remove (guild round 3).
+      expect(actions).toContain('lg:w-[216px]');
       expect(actions).not.toMatch(/\bxl:/);
       expect(slot).not.toMatch(/\bxl:/);
       // Nothing of the row sits between the slot and the actions but the slot's own content.

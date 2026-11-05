@@ -144,7 +144,13 @@
       <p class="text-muted block truncate text-[12px] leading-4" title={specLine}>{specLine}</p>
       <!-- One row per account: its other answered characters, so a benched alt is never hidden. -->
       {#if entry.also !== null}
-        <p class="text-muted text-[12px] leading-4 break-words" data-testid="raid-roster-also">
+        <!-- One line from md, cut with the whole line as its title only when it still cannot fit;
+             a phone wraps it (guild round 3). -->
+        <p
+          class="text-muted text-[12px] leading-4 break-words md:truncate"
+          title={entry.also}
+          data-testid="raid-roster-also"
+        >
           {entry.also}
         </p>
       {/if}
