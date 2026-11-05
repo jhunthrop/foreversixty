@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -113,7 +114,7 @@ func TestHolyFillsWithGreaterHealAheadOfHeal(t *testing.T) {
 	heal := linesCasting(t, "priest-holy", 2054, 6064)
 	greater := linesCasting(t, "priest-holy", 10965)
 	assertRanks(t, heal, "priest-holy", "priest", "troll", healRanks, []rankCase{
-		{16, BarePreset, 1}, {22, BarePreset, 2}, {28, BarePreset, 3}, {34, BarePreset, 3}, {38, BarePreset, 3}, {39, BarePreset, 4}, {50, BarePreset, 4},
+		{16, BarePreset, 1}, {22, BarePreset, 1}, {28, BarePreset, 3}, {34, BarePreset, 1}, {38, BarePreset, 2}, {39, BarePreset, 2}, {40, BarePreset, 4}, {50, BarePreset, 4},
 		{60, BarePreset, 4}, {60, RaidPreset, 4},
 	})
 	assertRanks(t, greater, "priest-holy", "priest", "troll", greaterHealRanks, []rankCase{
@@ -203,12 +204,12 @@ func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) 
 // 2 to 49 as well (+1.0 to +1.3% over rank 1 at 47 to 49), then the top rank.
 // Holy Shock casts rank 1 at 40 to 49: it keeps its whole bonus to 46 for 160
 // mana against rank 2's 225, and +0.3 to +0.6% at 47 to 49; from 50 the ranks
-// tie and the top rank is cast.
+// tie and the top rank is cast. Round 22: rank 5 in a raid at 60.
 func TestHolyPaladinGroupFlashOfLightAndHolyShockBelowFifty(t *testing.T) {
 	group := linesCasting(t, "paladin-holy", 19941)
 	assertRanks(t, group, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
 		{40, BarePreset, 1}, {43, BarePreset, 1}, {44, BarePreset, 2}, {46, BarePreset, 2}, {47, BarePreset, 2}, {49, BarePreset, 2},
-		{50, BarePreset, 4}, {60, RaidPreset, 4},
+		{50, BarePreset, 4}, {60, RaidPreset, 5},
 	})
 	shock := linesCasting(t, "paladin-holy", 20930)
 	assertRanks(t, shock, "paladin-holy", "paladin", "human", holyShockRanks, []rankCase{
@@ -392,7 +393,7 @@ func TestDisciplineHealsTheTankWithHealBeforeGreaterHeal(t *testing.T) {
 	}
 	heal := linesCasting(t, "priest-discipline", 6064)
 	assertRanks(t, heal, "priest-discipline", "priest", "human", healRanks, []rankCase{
-		{20, BarePreset, 1}, {30, BarePreset, 3}, {60, RaidPreset, 4},
+		{20, BarePreset, 1}, {30, BarePreset, 1}, {36, BarePreset, 3}, {60, RaidPreset, 4},
 	})
 }
 
@@ -422,6 +423,34 @@ func compactJSON(t *testing.T, raw json.RawMessage) string {
 // rule has no top-rank exemption (HealRankAdvisor measured Lesser Heal rank
 // 3 penalised in game at 30), and Blizzard's own examples of the rule are
 // at 60. Before 40 Lesser Heal stays.
+// scopedBelowForty reports whether one of an and's terms is currentLevel < N
+// with N at most 40: round 20's line reads < 40, round 22's tank lines < 16.
+func scopedBelowForty(t *testing.T, vals []json.RawMessage) bool {
+	t.Helper()
+	for _, v := range vals {
+		var c struct {
+			Cmp struct {
+				Op  string `json:"op"`
+				Lhs struct {
+					CurrentLevel *struct{} `json:"currentLevel"`
+				} `json:"lhs"`
+				Rhs struct {
+					Const struct {
+						Val string `json:"val"`
+					} `json:"const"`
+				} `json:"rhs"`
+			} `json:"cmp"`
+		}
+		if json.Unmarshal(v, &c) != nil || c.Cmp.Op != "OpLt" || c.Cmp.Lhs.CurrentLevel == nil {
+			continue
+		}
+		if n, err := strconv.Atoi(c.Cmp.Rhs.Const.Val); err == nil && n <= 40 {
+			return true
+		}
+	}
+	return false
+}
+
 func TestDisciplineSkipsLesserHealFromForty(t *testing.T) {
 	var list struct {
 		Rotation struct {
@@ -429,7 +458,6 @@ func TestDisciplineSkipsLesserHealFromForty(t *testing.T) {
 		} `json:"rotation"`
 	}
 	readJSON(t, "../../data/curated/apl/priest-discipline.json", &list)
-	const outside = `{"cmp":{"op":"OpLt","lhs":{"currentLevel":{}},"rhs":{"const":{"val":"40"}}}}`
 	lessers := 0
 	for index, raw := range list.Rotation.PriorityList {
 		var l struct {
@@ -454,8 +482,7 @@ func TestDisciplineSkipsLesserHealFromForty(t *testing.T) {
 				Vals []json.RawMessage `json:"vals"`
 			} `json:"and"`
 		}
-		if err := json.Unmarshal(l.Action.Condition, &and); err != nil || len(and.And.Vals) != 2 ||
-			compactJSON(t, and.And.Vals[1]) != outside {
+		if err := json.Unmarshal(l.Action.Condition, &and); err != nil || !scopedBelowForty(t, and.And.Vals) {
 			t.Errorf("Lesser Heal line %d is not scoped below level 40", index)
 		}
 	}
