@@ -55,6 +55,8 @@ export const GLYPHS = {
   // Controls and charts spec 2026-10-30 §B5.6: the death marker.
   skull:
     '<path d="M12 3a7 7 0 00-7 7c0 2.4 1.2 4 2.5 5v3h9v-3c1.3-1 2.5-2.6 2.5-5a7 7 0 00-7-7z"/><circle cx="9.5" cy="10.5" r="1.3"/><circle cx="14.5" cy="10.5" r="1.3"/><path d="M10 18v3M14 18v3"/>',
+  // The saved sim's timeline card (spec 2026-11-04-sim-results 3.7).
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.500V12l3 2"/>',
 } as const;
 
 export type GlyphName = keyof typeof GLYPHS;
