@@ -38,6 +38,12 @@ export function progressionNightDay(date: string, now: Date = new Date()): strin
   return date.length > 10 ? nightDate(new Date(date), now) : nightDateOnly(date, now);
 }
 
+/** The named encounters the guild has killed, in the progression read's order: the names every
+ *  "down this tier" line lists, so an encounter only pulled is never named as down. */
+export function downEncounterNames(encounters: readonly { name: string; kills: number }[]): string[] {
+  return encounters.filter((encounter) => encounter.kills > 0).map((encounter) => encounter.name);
+}
+
 /** "1 encounter down this tier: Onyxia." / "No encounter down this tier yet." */
 export function encountersDownLine(names: readonly string[]): string {
   if (names.length === 0) return 'No encounter down this tier yet.';

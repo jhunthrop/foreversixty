@@ -110,6 +110,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("DELETE /v1/guilds/{id}/characters/{region}/{ruleset}/{name}", auth.RequireSession(s.removeCharacter))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/members/me", auth.RequireSession(s.patchConsent))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/members/me", auth.RequireSession(s.leaveGuild))
+	mux.HandleFunc("DELETE /v1/guilds/{id}/members/{account}", auth.RequireSession(s.removeMember))
 	mux.HandleFunc("PUT /v1/guilds/{id}/crest", auth.RequireSession(s.putCrest))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/crest", auth.RequireSession(s.deleteCrest))
 	// No RequireSession wrap: a guild's crest is a public mark, served wherever the

@@ -53,6 +53,9 @@ var tierRaids = []string{zoneBarrowDeeps, zoneHyjal, zoneOnyxia}
 // §12.1's own ruling).
 var unnamedZones = []string{zoneBarrowDeeps, zoneHyjal}
 
+// namedTierEncounters are this tier's named encounters: the ones Tier.Down counts.
+var namedTierEncounters = []int64{encounterOnyxia}
+
 // TierView is the Progression tab's own tier bar.
 type TierView struct {
 	Name            string   `json:"name"`
@@ -135,19 +138,19 @@ func countedReports(member bool) string {
 // (countedReports).
 func (s *Store) Progression(ctx context.Context, guildID int64, member bool) (ProgressionView, error) {
 	view := ProgressionView{
-		Tier:       TierView{Name: tierName, Raids: tierRaids, NamedEncounters: 1},
+		Tier:       TierView{Name: tierName, Raids: tierRaids, NamedEncounters: len(namedTierEncounters)},
 		Encounters: []EncounterProgress{},
 		Unnamed:    []UnnamedZoneProgress{},
 	}
 	counted := countedReports(member)
 
-	onyxia, killed, err := s.encounterProgress(ctx, guildID, encounterOnyxia, encounterName, zoneOnyxia, counted)
+	onyxia, err := s.encounterProgress(ctx, guildID, encounterOnyxia, encounterName, zoneOnyxia, counted)
 	if err != nil {
 		return ProgressionView{}, err
 	}
 	view.Encounters = append(view.Encounters, onyxia)
-	if killed {
-		view.Tier.Down = 1
+	if view.Tier.Down, err = s.tierDown(ctx, guildID, counted); err != nil {
+		return ProgressionView{}, err
 	}
 
 	for _, zone := range unnamedZones {
@@ -160,9 +163,23 @@ func (s *Store) Progression(ctx context.Context, guildID int64, member bool) (Pr
 	return view, nil
 }
 
+// tierDown counts this tier's named encounters the guild has killed in the reports counted
+// selects (countedReports): the one figure the Progression tab's tier bar, the Overview and the
+// page header all read, so they never disagree.
+func (s *Store) tierDown(ctx context.Context, guildID int64, counted string) (int, error) {
+	var down int
+	if err := s.Pool.QueryRow(ctx, `
+		select count(distinct f.encounter_id) from fights f join reports r on r.id = f.report_id
+		where r.guild_id = $1 and f.kill and f.encounter_id = any($2) and `+counted,
+		guildID, namedTierEncounters).Scan(&down); err != nil {
+		return 0, fmt.Errorf("guilds: tier down: %w", err)
+	}
+	return down, nil
+}
+
 // encounterProgress reads one named encounter's standing from the reports counted selects
-// (countedReports), and whether it is down.
-func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int64, name, zone, counted string) (EncounterProgress, bool, error) {
+// (countedReports).
+func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int64, name, zone, counted string) (EncounterProgress, error) {
 	ep := EncounterProgress{EncounterID: encounterID, Name: name, Zone: zone, PullsByNight: []NightPulls{}, BestByRole: map[string]*ParseRef{}}
 
 	var firstKillMS *int64
@@ -176,7 +193,7 @@ func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int6
 		where r.guild_id = $1 and f.encounter_id = $2 and `+counted,
 		guildID, encounterID).Scan(&ep.Pulls, &ep.Kills, &firstKillMS, &bestKillMS, &avgDeaths)
 	if err != nil {
-		return EncounterProgress{}, false, fmt.Errorf("guilds: encounter progress: %w", err)
+		return EncounterProgress{}, fmt.Errorf("guilds: encounter progress: %w", err)
 	}
 	if firstKillMS != nil {
 		t := time.UnixMilli(*firstKillMS).UTC()
@@ -194,33 +211,33 @@ func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int6
 		group by r.id, r.created_at order by r.created_at`,
 		guildID, encounterID)
 	if err != nil {
-		return EncounterProgress{}, false, fmt.Errorf("guilds: encounter nights: %w", err)
+		return EncounterProgress{}, fmt.Errorf("guilds: encounter nights: %w", err)
 	}
 	for nightRows.Next() {
 		var n NightPulls
 		var date time.Time
 		if err := nightRows.Scan(&n.ReportID, &date, &n.Pulls, &n.Killed); err != nil {
 			nightRows.Close()
-			return EncounterProgress{}, false, fmt.Errorf("guilds: encounter nights: %w", err)
+			return EncounterProgress{}, fmt.Errorf("guilds: encounter nights: %w", err)
 		}
 		n.Date = date.Format("2006-01-02")
 		ep.PullsByNight = append(ep.PullsByNight, n)
 	}
 	nightRows.Close()
 	if err := nightRows.Err(); err != nil {
-		return EncounterProgress{}, false, err
+		return EncounterProgress{}, err
 	}
 
 	for _, role := range []string{"tank", "healer", "dps"} {
 		ref, ok, err := s.bestByRole(ctx, guildID, encounterID, role)
 		if err != nil {
-			return EncounterProgress{}, false, err
+			return EncounterProgress{}, err
 		}
 		if ok {
 			ep.BestByRole[role] = &ref
 		}
 	}
-	return ep, ep.Kills > 0, nil
+	return ep, nil
 }
 
 // bestByRole is the guild's best kill parse on encounterID for role, from its reports that are

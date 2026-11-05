@@ -25,7 +25,10 @@ const SweepEvery = 5 * time.Minute
 // than AgeingThreshold as of at, then recomputes guild_members for every
 // account it touched, in one transaction — "the account row follows": it
 // downgrades or disappears exactly as if that character's export had
-// gone unguilded.
+// gone unguilded. An invite row (source 'invite') never ages: nothing
+// refreshes it after the member accepts, since no export names its
+// synthetic key, so the member stays until they leave or an officer
+// removes them (removeMember).
 func (s *Store) AgeOut(ctx context.Context, at time.Time) error {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
@@ -34,7 +37,8 @@ func (s *Store) AgeOut(ctx context.Context, at time.Time) error {
 	defer func() { _ = tx.Rollback(ctx) }()
 
 	rows, err := tx.Query(ctx,
-		`delete from guild_characters where refreshed_at < $1 returning guild_id, user_id`,
+		`delete from guild_characters where refreshed_at < $1 and source is distinct from 'invite'
+		 returning guild_id, user_id`,
 		at.Add(-AgeingThreshold))
 	if err != nil {
 		return fmt.Errorf("guilds: age out: delete: %w", err)

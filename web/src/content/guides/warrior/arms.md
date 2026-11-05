@@ -39,7 +39,7 @@ sources:
 
 ## Overview
 
-Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and the biggest Executes in the game.
+Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and a full bar of rage spent on one huge Execute.
 
 ### Strengths
 

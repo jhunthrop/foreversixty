@@ -118,7 +118,7 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ### Levels 1 to 19
 
-You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it is the hardest hit you have this early.
+You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it hits far harder than Sinister Strike.
 
 Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
 

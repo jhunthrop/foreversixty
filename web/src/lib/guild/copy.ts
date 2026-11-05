@@ -342,6 +342,8 @@ export const guildRosterModelCopy = {
   removeButton: 'Remove',
   /** The one muted line under the Remove question: nobody is locked out by it. */
   removeRejoin: 'They can rejoin with the invite link.',
+  /** The same line for a member who came in by the invite link: it works until an officer replaces it. */
+  removeInvitedRejoin: 'The invite link still lets them back in until you rotate it in Settings.',
   declineQuestion: (name: string): string => `Remove ${name} from the waiting list? They can ask again.`,
   /** "Approve 4, including 1 officer?" */
   approveAllQuestion: (total: number, officers: number): string =>
@@ -352,10 +354,10 @@ export const guildRosterModelCopy = {
 
 /** The officer-tools gate (design/specs/2026-10-25-officer-tools-gate.md section 7): the sentence
  *  and its link are separate so the link can be an anchor; together they read
- *  "Award and Nudge are part of the guild plan. Subscribe the guild." */
+ *  "Award and Nudge are part of the guild plan. Subscribe your guild." */
 export const guildGateCopy = {
   sentence: 'Award and Nudge are part of the guild plan. ',
-  link: 'Subscribe the guild',
+  link: 'Subscribe your guild',
   /** A Guild-tier guild (officer tools on, no Raid guild): launch pricing spec §3.2.8. */
   raidGuildSentence: 'Loot council and the readiness board are part of Raid guild. ',
   raidGuildLink: 'Move to Raid guild',

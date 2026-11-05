@@ -324,6 +324,10 @@ export interface GuildRosterEntry {
   spec?: string;
   /** The sender's local `YYYY-MM-DD HH:MM`. */
   seen_at?: string;
+  /** An invited member's account (`u:42`): they have no character row, so Remove names this. */
+  account_key?: string;
+  /** Set on an invited member's entry when the viewer's Remove would succeed (api `may_remove`). */
+  may_remove?: boolean;
 }
 
 export interface GuildRosterCounts {
@@ -700,6 +704,21 @@ export async function removeCharacter(
 ): Promise<RemovedResult> {
   const data = await call<RemovedResult>(
     `/v1/guilds/${guildId}/characters/${region}/${ruleset}/${encodeURIComponent(slug)}`,
+    apiBase,
+    { method: 'DELETE' },
+  );
+  invalidateGuild(guildId, apiBase);
+  return data;
+}
+
+/** An officer removes a member who joined by invite link, by their account (`account_key`). */
+export async function removeMember(
+  guildId: number,
+  accountKey: string,
+  apiBase: string = API_BASE_URL,
+): Promise<RemovedResult> {
+  const data = await call<RemovedResult>(
+    `/v1/guilds/${guildId}/members/${encodeURIComponent(accountKey)}`,
     apiBase,
     { method: 'DELETE' },
   );

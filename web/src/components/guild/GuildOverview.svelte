@@ -27,6 +27,7 @@
   import {
     NO_PUBLIC_REPORTS,
     checksFailingLine,
+    downEncounterNames,
     encountersDownLine,
     raidNightDay,
     rosterCardParts,
@@ -94,7 +95,7 @@
     if (guildId === null) return;
     void fetchGuildProgression(guildId)
       .then((page) => {
-        progressionSummary = { down: page.tier.down, names: page.encounters.map((e) => e.name) };
+        progressionSummary = { down: page.tier.down, names: downEncounterNames(page.encounters) };
         bossIds = bossIdsOf(page);
       })
       .catch(() => {

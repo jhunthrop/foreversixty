@@ -39,6 +39,34 @@ func TestAgeOutRemovesStaleCharactersAndRecomputesTheAccount(t *testing.T) {
 	}
 }
 
+func TestAgeOutKeepsAMemberWhoJoinedByInvite(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	token, _, err := s.RotateInvite(ctx, gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	uid := seedUser(t, pool, "invited-long-ago@example.com")
+	if _, err := s.AcceptInvite(ctx, token, uid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`update guild_characters set refreshed_at = now() - interval '90 days' where character_key = $1`,
+		syntheticKey(uid)); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.AgeOut(ctx, time.Now()); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	pool.QueryRow(ctx, `select count(*) from guild_members where guild_id = $1 and user_id = $2`, gid, uid).Scan(&n)
+	if n != 1 {
+		t.Fatal("a member who joined by invite 90 days ago must still be a member")
+	}
+}
+
 func TestAgeOutLeavesFreshCharactersAlone(t *testing.T) {
 	pool := testPool(t)
 	s := &Store{Pool: pool}
