@@ -142,7 +142,7 @@ Enchanting is the profession your best in slot list asks for. Frozen Heart of th
 
 Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12.
 
-Multi-Shot comes at 18. It is the worst damage for its mana you fire, so once you are under a quarter of your mana, hold it, and from 20 Aimed Shot takes the shared cooldown anyway. Until 34, keep Serpent Sting rolling and Arcane Shot firing on cooldown even under a quarter of your mana; from 34, save that mana for Aimed Shot.
+Multi-Shot comes at 18. It is the worst damage for its mana you fire, so once you are under a quarter of your mana, hold it, and from 20 Aimed Shot takes the shared cooldown when you can afford it. Keep Serpent Sting rolling and Arcane Shot firing on cooldown even then, without waiting on the shared cooldown.
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 

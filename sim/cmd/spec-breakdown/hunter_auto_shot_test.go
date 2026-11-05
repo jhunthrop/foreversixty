@@ -11,6 +11,8 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
+const arcaneShotsAt50Floor = 15.0
+
 // autoShots is the hunter's Auto Shot casts per iteration under rotation.
 func autoShots(t *testing.T, rotation *proto.APLRotation) float64 {
 	t.Helper()
@@ -71,5 +73,48 @@ func TestAutoShotKeepsFiringThroughAimedShot(t *testing.T) {
 	t.Logf("Auto Shots per fight: %.1f with no casts, %.1f with Aimed Shot on cooldown", idle, casting)
 	if casting < 0.97*idle {
 		t.Errorf("Auto Shots with Aimed Shot on cooldown = %.1f, want within 3%% of %.1f with no casts", casting, idle)
+	}
+}
+
+// Marksmanship at 50 and 51 casts the top Aimed Shot rank, which costs more
+// than a hunter under a quarter of his mana often has. The shared cooldown
+// then sat ready with nothing to spend it, and Serpent Sting and Arcane
+// Shot, which wait on it, stood idle too (sim-accuracy round 21, rendered
+// card review). Under a quarter mana they keep firing at every level.
+func TestMarksmanshipAt50KeepsShootingWhenAimedShotIsOutOfReach(t *testing.T) {
+	inproc.Register()
+	o := options{repoRoot: "../../..", spec: "hunter-marksmanship", preset: "bare", band: 50, faction: "horde", iterations: 200, seed: 1}
+	req, err := legalRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := simdb.Attach(engineReq); err != nil {
+		t.Fatal(err)
+	}
+	res := core.RunRaidSim(engineReq)
+	if err := adapter.ResultError(res); err != nil {
+		t.Fatal(err)
+	}
+	player, err := adapter.PlayerMetrics(res)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var arcane float64
+	for _, action := range player.GetActions() {
+		switch action.GetId().GetSpellId() {
+		case 14283, 14284, 14285, 14286, 14287:
+			for _, target := range action.GetTargets() {
+				arcane += float64(target.GetCasts())
+			}
+		}
+	}
+	arcane /= float64(o.iterations)
+	t.Logf("Arcane Shot casts at 50: %.1f", arcane)
+	if arcane < arcaneShotsAt50Floor {
+		t.Errorf("Arcane Shot cast %.1f times at 50, want %v or more", arcane, arcaneShotsAt50Floor)
 	}
 }
