@@ -3712,7 +3712,7 @@
           {
             "spell_id": 5177,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3726,14 +3726,14 @@
           {
             "spell_id": 5177,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5177,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           }
@@ -3752,7 +3752,7 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3766,14 +3766,14 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           }
@@ -3792,7 +3792,7 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3806,14 +3806,14 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           }
@@ -3832,7 +3832,7 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3853,21 +3853,21 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2912,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -3886,7 +3886,7 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3907,21 +3907,21 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8949,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -3940,7 +3940,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3961,21 +3961,21 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8949,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -3994,7 +3994,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4015,21 +4015,21 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8949,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4048,7 +4048,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4069,21 +4069,21 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8950,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4102,7 +4102,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4123,21 +4123,21 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8950,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4156,7 +4156,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4177,21 +4177,21 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8950,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4210,7 +4210,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4231,21 +4231,21 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8950,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4264,7 +4264,7 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4285,21 +4285,21 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8950,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4318,7 +4318,7 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4339,21 +4339,21 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8951,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4372,7 +4372,7 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4393,21 +4393,21 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8951,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4426,7 +4426,7 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4447,21 +4447,21 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8951,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4480,7 +4480,7 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4501,21 +4501,21 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9875,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4534,7 +4534,7 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4555,21 +4555,21 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9875,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4588,7 +4588,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4609,21 +4609,21 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9875,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4642,7 +4642,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4663,21 +4663,21 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9876,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4696,7 +4696,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4717,21 +4717,21 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9876,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -4750,7 +4750,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "When the next Starfire would not finish before the fight ends.",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4771,21 +4771,21 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "With no Eclipse charge banked.",
+            "condition": "From 35, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "While your mana is behind the fight and Innervate is on cooldown.",
+            "condition": "While your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9876,
             "name": "Starfire",
-            "condition": "Everything else, spending the Eclipse charges Wrath banked.",
+            "condition": "Everything else.",
             "icon": "spell_arcane_starfire",
             "race_spell_ids": {}
           }
@@ -9444,7 +9444,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9484,7 +9484,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9524,7 +9524,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9557,7 +9557,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9571,7 +9571,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9604,7 +9604,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9618,7 +9618,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9651,7 +9651,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9665,7 +9665,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9698,7 +9698,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9712,7 +9712,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9745,7 +9745,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9759,7 +9759,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9792,7 +9792,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9806,7 +9806,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9846,7 +9846,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9860,7 +9860,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9900,7 +9900,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9914,7 +9914,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -9954,7 +9954,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9968,7 +9968,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10008,7 +10008,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10022,7 +10022,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10062,7 +10062,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10076,7 +10076,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10116,7 +10116,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10130,7 +10130,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10170,7 +10170,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10184,7 +10184,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10271,7 +10271,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10311,7 +10311,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10351,7 +10351,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10398,7 +10398,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10445,7 +10445,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10492,7 +10492,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10539,7 +10539,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10586,7 +10586,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10633,7 +10633,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10680,7 +10680,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10734,7 +10734,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10788,7 +10788,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10842,7 +10842,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10896,7 +10896,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -10950,7 +10950,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -11004,7 +11004,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -11058,7 +11058,7 @@
           {
             "spell_id": 2643,
             "name": "Multi-Shot",
-            "condition": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot.",
+            "condition": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot.",
             "icon": "ability_upgrademoonglaive",
             "race_spell_ids": {}
           },
@@ -12021,14 +12021,14 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12042,7 +12042,7 @@
           {
             "spell_id": 5143,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12089,14 +12089,14 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
           {
             "spell_id": 205,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12110,7 +12110,7 @@
           {
             "spell_id": 5143,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12157,14 +12157,14 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12178,7 +12178,7 @@
           {
             "spell_id": 5143,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12225,14 +12225,14 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12246,7 +12246,7 @@
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12293,14 +12293,14 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
           {
             "spell_id": 837,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12314,7 +12314,7 @@
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12368,7 +12368,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -12382,7 +12382,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12396,7 +12396,7 @@
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12464,7 +12464,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -12478,7 +12478,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12492,7 +12492,7 @@
           {
             "spell_id": 5144,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12560,7 +12560,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -12574,7 +12574,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12588,7 +12588,7 @@
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12656,7 +12656,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -12670,7 +12670,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12684,7 +12684,7 @@
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12759,7 +12759,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -12773,7 +12773,7 @@
           {
             "spell_id": 8406,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12787,7 +12787,7 @@
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12862,7 +12862,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -12876,7 +12876,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12890,7 +12890,7 @@
           {
             "spell_id": 5145,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -12965,7 +12965,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -12979,7 +12979,7 @@
           {
             "spell_id": 7322,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -12993,7 +12993,7 @@
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13068,7 +13068,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13082,7 +13082,7 @@
           {
             "spell_id": 8407,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13096,7 +13096,7 @@
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13171,7 +13171,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13185,7 +13185,7 @@
           {
             "spell_id": 8407,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13199,7 +13199,7 @@
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13274,7 +13274,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13288,7 +13288,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13302,7 +13302,7 @@
           {
             "spell_id": 8416,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13377,7 +13377,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13391,7 +13391,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13405,7 +13405,7 @@
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13480,7 +13480,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13494,7 +13494,7 @@
           {
             "spell_id": 8408,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13508,7 +13508,7 @@
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13583,7 +13583,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13597,7 +13597,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13611,7 +13611,7 @@
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13686,7 +13686,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13700,7 +13700,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13714,7 +13714,7 @@
           {
             "spell_id": 8417,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13789,7 +13789,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13803,7 +13803,7 @@
           {
             "spell_id": 10179,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13817,7 +13817,7 @@
           {
             "spell_id": 10211,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13892,7 +13892,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -13906,7 +13906,7 @@
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -13920,7 +13920,7 @@
           {
             "spell_id": 10211,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -13995,7 +13995,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -14009,7 +14009,7 @@
           {
             "spell_id": 10180,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -14023,7 +14023,7 @@
           {
             "spell_id": 10211,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -14098,7 +14098,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -14112,7 +14112,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -14126,7 +14126,7 @@
           {
             "spell_id": 10212,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -14201,7 +14201,7 @@
           {
             "spell_id": 12043,
             "name": "Presence of Mind",
-            "condition": "Presence of Mind on cooldown, with Arcane Power.",
+            "condition": "Presence of Mind on cooldown, and with Arcane Power once you have it.",
             "icon": "spell_nature_enchantarmor",
             "race_spell_ids": {}
           },
@@ -14215,7 +14215,7 @@
           {
             "spell_id": 10181,
             "name": "Frostbolt",
-            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.",
+            "condition": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {}
           },
@@ -14229,7 +14229,7 @@
           {
             "spell_id": 10212,
             "name": "Arcane Missiles",
-            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
+            "condition": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt.",
             "icon": "spell_nature_starfall",
             "race_spell_ids": {}
           },
@@ -16006,7 +16006,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16025,7 +16025,7 @@
           {
             "spell_id": 647,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16051,7 +16051,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16126,7 +16126,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16201,7 +16201,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16318,7 +16318,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16435,7 +16435,7 @@
           {
             "spell_id": 1026,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16552,7 +16552,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16669,7 +16669,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16786,7 +16786,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16903,7 +16903,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17020,7 +17020,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17137,7 +17137,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17254,7 +17254,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17371,7 +17371,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17488,7 +17488,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17605,7 +17605,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17717,7 +17717,7 @@
           {
             "spell_id": 1311649,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17738,7 +17738,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17757,7 +17757,7 @@
           {
             "spell_id": 1311649,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17778,7 +17778,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17797,7 +17797,7 @@
           {
             "spell_id": 1311656,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17818,7 +17818,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17844,7 +17844,7 @@
           {
             "spell_id": 1311656,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17865,21 +17865,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 879,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -17905,7 +17905,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17926,21 +17926,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 879,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -17966,7 +17966,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17987,21 +17987,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18027,7 +18027,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18055,21 +18055,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 20116,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18102,7 +18102,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18130,21 +18130,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 20116,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18177,7 +18177,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18205,21 +18205,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 20116,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18252,7 +18252,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18280,21 +18280,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 20116,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18327,7 +18327,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18362,21 +18362,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18409,7 +18409,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18444,21 +18444,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18491,7 +18491,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18526,21 +18526,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18573,7 +18573,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18608,21 +18608,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10312,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18655,7 +18655,7 @@
           {
             "spell_id": 20422,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18690,21 +18690,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10312,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18737,7 +18737,7 @@
           {
             "spell_id": 20422,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18772,21 +18772,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10313,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18819,7 +18819,7 @@
           {
             "spell_id": 20423,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18854,21 +18854,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10313,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 26573,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -18901,7 +18901,7 @@
           {
             "spell_id": 20423,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18936,21 +18936,21 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10314,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
           {
             "spell_id": 20924,
             "name": "Consecration",
-            "condition": "Last, and only above half mana.",
+            "condition": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield.",
             "icon": "spell_holy_innerfire",
             "race_spell_ids": {}
           }
@@ -25442,7 +25442,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25720,7 +25720,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25998,7 +25998,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26276,7 +26276,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26561,7 +26561,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26846,7 +26846,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27124,7 +27124,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27402,7 +27402,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27680,7 +27680,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27958,7 +27958,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28236,7 +28236,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28787,7 +28787,7 @@
           {
             "spell_id": 1309595,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -28855,7 +28855,7 @@
           {
             "spell_id": 1309595,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -28923,7 +28923,7 @@
           {
             "spell_id": 1309595,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -28991,7 +28991,7 @@
           {
             "spell_id": 1309595,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29071,7 +29071,7 @@
           {
             "spell_id": 1309633,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29151,7 +29151,7 @@
           {
             "spell_id": 1309633,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29219,7 +29219,7 @@
           {
             "spell_id": 1309633,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29287,7 +29287,7 @@
           {
             "spell_id": 1309633,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29355,7 +29355,7 @@
           {
             "spell_id": 1309635,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29434,7 +29434,7 @@
           {
             "spell_id": 1309633,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29515,7 +29515,7 @@
           {
             "spell_id": 1309633,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29583,7 +29583,7 @@
           {
             "spell_id": 1309633,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29651,7 +29651,7 @@
           {
             "spell_id": 1309633,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -29719,7 +29719,7 @@
           {
             "spell_id": 1309636,
             "name": "Shadow Word: Death",
-            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+            "condition": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
             "icon": "spell_shadow_demonicfortitude",
             "race_spell_ids": {}
           },
@@ -32127,7 +32127,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32188,7 +32188,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32249,7 +32249,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32317,7 +32317,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32385,7 +32385,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32453,7 +32453,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32521,7 +32521,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32596,7 +32596,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32671,7 +32671,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32746,7 +32746,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32821,7 +32821,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32896,7 +32896,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32971,7 +32971,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -33046,7 +33046,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -33121,7 +33121,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -33196,7 +33196,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -33320,7 +33320,7 @@
           {
             "spell_id": 408341,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33360,7 +33360,7 @@
           {
             "spell_id": 408341,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33400,7 +33400,7 @@
           {
             "spell_id": 408341,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33440,7 +33440,7 @@
           {
             "spell_id": 408341,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33480,7 +33480,7 @@
           {
             "spell_id": 408342,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33534,7 +33534,7 @@
           {
             "spell_id": 408342,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33588,7 +33588,7 @@
           {
             "spell_id": 408342,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33642,7 +33642,7 @@
           {
             "spell_id": 408342,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33703,7 +33703,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33764,7 +33764,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33825,7 +33825,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33886,7 +33886,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33947,7 +33947,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34008,7 +34008,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34069,7 +34069,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34130,7 +34130,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34191,7 +34191,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34252,7 +34252,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34313,7 +34313,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34374,7 +34374,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34435,7 +34435,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34496,7 +34496,7 @@
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34557,7 +34557,7 @@
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34618,7 +34618,7 @@
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34679,7 +34679,7 @@
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34728,7 +34728,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34768,7 +34768,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34808,7 +34808,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34848,7 +34848,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34888,7 +34888,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34928,7 +34928,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34968,7 +34968,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35008,7 +35008,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35048,7 +35048,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35088,7 +35088,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35128,7 +35128,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35175,7 +35175,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35229,7 +35229,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35283,7 +35283,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35337,7 +35337,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35391,7 +35391,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35445,7 +35445,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35499,7 +35499,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35553,7 +35553,7 @@
           {
             "spell_id": 10414,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -43909,7 +43909,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -43970,7 +43970,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44038,7 +44038,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44106,7 +44106,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44181,7 +44181,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44256,7 +44256,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44331,7 +44331,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44406,7 +44406,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44488,7 +44488,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44570,7 +44570,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44652,7 +44652,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44734,7 +44734,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44816,7 +44816,7 @@
           {
             "spell_id": 18499,
             "name": "Berserker Rage",
-            "condition": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds.",
+            "condition": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds.",
             "icon": "spell_nature_ancestralguardian",
             "race_spell_ids": {}
           },
@@ -44858,7 +44858,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44912,7 +44912,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44966,7 +44966,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45034,7 +45034,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45109,7 +45109,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45184,7 +45184,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45259,7 +45259,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45334,7 +45334,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45416,7 +45416,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45498,7 +45498,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45580,7 +45580,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45662,7 +45662,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45744,7 +45744,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45826,7 +45826,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45915,7 +45915,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46004,7 +46004,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46093,7 +46093,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46182,7 +46182,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46271,7 +46271,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46360,7 +46360,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46449,7 +46449,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46538,7 +46538,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46627,7 +46627,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -46716,7 +46716,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+            "condition": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
