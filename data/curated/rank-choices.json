@@ -641,6 +641,18 @@
         "authored": 10333,
         "bands": [
           {
+            "from_level": 12,
+            "to_level": 14,
+            "rank": 1,
+            "note": "Sim-accuracy round 24: rank sweep after rank 2 arrives at 12 (spec-breakdown -level -rank 10333=1 on band 20 with the leveling order's talents, tank fight, 10,000 iterations, seeds 1 and 50001, Dwarf and Undead; design/reviews/2026-11-05-sim-audit-round24/paladin.md P3). Rank 1 beats rank 2 by 2.6 to 3.6% (Dwarf) and 3.6 to 5.6% (Undead) threat at 12 to 14; at 15 the Undead keeps it (+2.4%) and the Dwarf loses 2.1%; at 16 to 19 rank 2 wins for both (0.3 to 3.1%)."
+          },
+          {
+            "from_level": 15,
+            "to_level": 15,
+            "rank": 1,
+            "races": ["undead"]
+          },
+          {
             "from_level": 40,
             "to_level": 42,
             "rank": 1,
