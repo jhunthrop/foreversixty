@@ -110,18 +110,18 @@ SPECS = {
     "shaman-enhancement": dict(core=["Stormstrike"], auras=[], downranks=[], defensives=[]),
     # The rotation keeps its DoTs and bane up (DoTs crit in Forever) and fills with Wrack; Amplify
     # Curse is saved for the Agony after the last Doom at sixty, so it is not judged as a cooldown.
+    # Immolate is not judged: the raid build sacrifices the Imp and drops it (round 26).
     "warlock-affliction": dict(
         core=[],
         auras=[
             ("Corruption", DOT),
             ("Bane of Agony", DOT),
             ("Siphon Life", DOT),
-            ("Immolate", DOT),
         ],
         downranks=[],
         defensives=["Death Coil"],
     ),
-    # Soul Fire is skipped in the raid build ("never cast it in a raid", round 25).
+    # Soul Fire stays out of core: Decimation cuts its cooldown by 90%, which F1 reads at base.
     "warlock-demonology": dict(
         core=["Bane of Doom"],
         auras=[("Corruption", DOT), ("Bane of Doom", DOT), ("Immolate", DOT)],

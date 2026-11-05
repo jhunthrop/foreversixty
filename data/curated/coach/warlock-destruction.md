@@ -21,13 +21,13 @@ This is the best Destruction Warlock on Forever. Destruction keeps Immolate up a
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Before the pull: Demon Armor on, Succubus out, at least one shard spare for Shadowburn, a Healthstone, and Life Tap to full while the healers top you off.
-- Curse of the Elements when no warlock's is on the target.
+- Demon Armor and the Succubus out from twenty, before the pull. Keep a Healthstone, and a spare shard once you have Shadowburn. Life Tap to full while the healers top you off.
+- Curse of the Elements from twenty when no warlock's is on the target.
 - Corruption whenever it has fallen off.
 - Bane of Doom at sixty, the moment the last one fires, with a minute or more of the fight left.
 - Bane of Agony whenever Bane of Doom is not on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Immolate with three seconds or less left on it.
-- Conflagrate once Immolate has six seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.
+- Conflagrate from thirty-four, or thirty-two in the raid build, once Immolate has six seconds or less left. Once you take Shadow and Flame, cast it on cooldown while Immolate is up.
 - Shadowburn on cooldown once you have it, at any boss health.
 - Incinerate from forty for every other cast. Before forty, Shadow Bolt fills instead.
 - Curse of Recklessness, Tongues or Weakness only if your raid leader asks. That is only when another warlock holds Curse of the Elements.

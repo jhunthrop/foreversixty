@@ -22,13 +22,14 @@ This is the best Demonology Warlock on Forever. Demonology sacrifices the Imp fo
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
 - Demonic Sacrifice only with the raid build's Demonic Pact, from forty. Sacrifice the Imp about a minute before the pull, then summon the Succubus. Without Pact, never sacrifice: keep the Succubus out.
-- Put on Demon Armor, make a Healthstone and Life Tap back to full.
-- Soul Link a couple of seconds before the pull, and again after every resummon.
-- Curse of the Elements when no warlock's is on the target.
+- Demon Armor from twenty: put it on, make a Healthstone and Life Tap back to full.
+- Soul Link from thirty, a couple of seconds before the pull, and again after every resummon.
+- Curse of the Elements from twenty when no warlock's is on the target.
 - Corruption whenever it has fallen off.
 - Bane of Doom at sixty, the moment the last one fires, with a minute or more of the fight left.
 - Bane of Agony whenever Bane of Doom is not on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Immolate with three seconds or less left on it.
+- Soul Fire from forty-eight, every six seconds while Decimation is up below thirty-five percent. The raid build casts it only from rank two at fifty-six, and never at sixty.
 - Shadow Bolt for every other cast.
 - Life Tap below ten percent mana.
 - Curse of Recklessness, Tongues or Weakness only if your raid leader asks. That is only when another warlock holds Curse of the Elements.

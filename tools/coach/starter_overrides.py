@@ -129,6 +129,23 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Bane of Doom": "Bane of Doom at sixty, while a minute or more of the fight is left.",
         "Siphon Life": "Siphon Life from thirty whenever it has fallen off.",
         "Wrack": "Wrack from forty with your DoTs up. Before forty, Shadow Bolt fills instead.",
+        # affliction.md: the raid build sacrifices the Imp at fifty-five and takes Nightfall at thirty-four;
+        # Curse of the Elements and Demon Armor train at twenty, Amplify Curse is the twenty-ninth point
+        # (twenty-fourth in the raid build).
+        "Demonic Sacrifice": (
+            "Demonic Sacrifice in the raid build, from fifty-five: summon the Imp and sacrifice it before the pull "
+            "for Burning Shadow. Then summon nothing, since any demon ends it."
+        ),
+        "Demon Armor": "Demon Armor on from twenty before the pull, with a Healthstone in your bag and Life Tap to full.",
+        "Curse of the Elements": "Curse of the Elements from twenty when it is not already on the target.",
+        "Amplify Curse": (
+            "Amplify Curse from twenty-nine, or twenty-four in the raid build, before each Bane of Agony below sixty. "
+            "At sixty, press it before the first Agony after your last Doom fires."
+        ),
+        "Shadow Bolt": (
+            "Shadow Bolt in the raid build, from thirty-four, the moment Nightfall makes it instant with a Shadow "
+            "Trance. From forty it goes ahead of your next Wrack. At sixty its crits put up Improved Shadow Bolt."
+        ),
         # affliction.md: Immolate restarted with about three seconds left; one curse per warlock, so the
         # raid leader's curse only when another warlock holds Curse of the Elements.
         "Immolate": (
@@ -146,7 +163,16 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Bane of Doom": "Bane of Doom at sixty, the moment the last one fires, with a minute or more of the fight left.",
         # demonology.md: the five-step setup; "Your curse slot is then free" after another warlock's Elements.
         "Demonic Sacrifice": "Demonic Sacrifice only with the raid build's Demonic Pact, from forty. Sacrifice the Imp about a minute before the pull, then summon the Succubus. Without Pact, never sacrifice: keep the Succubus out.",
-        "Soul Link": "Soul Link a couple of seconds before the pull, and again after every resummon.",
+        # Soul Link is the thirtieth point; Demon Armor and Curse of the Elements train at twenty; Soul Fire
+        # trains at forty-eight, and the raid build casts it in Decimation only from rank two, fifty-six to
+        # fifty-nine.
+        "Soul Link": "Soul Link from thirty, a couple of seconds before the pull, and again after every resummon.",
+        "Demon Armor": "Demon Armor from twenty: put it on, make a Healthstone and Life Tap back to full.",
+        "Curse of the Elements": "Curse of the Elements from twenty when no warlock's is on the target.",
+        "Soul Fire": (
+            "Soul Fire from forty-eight, every six seconds while Decimation is up below thirty-five percent. "
+            "The raid build casts it only from rank two at fifty-six, and never at sixty."
+        ),
         "Curse of Recklessness": (
             "Curse of Recklessness, Tongues or Weakness only if your raid leader asks. "
             "That is only when another warlock holds Curse of the Elements."
@@ -156,6 +182,18 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         # Bane of Doom trains at sixty; Shadowburn and Incinerate are talents (Incinerate at forty).
         "Bane of Doom": "Bane of Doom at sixty, the moment the last one fires, with a minute or more of the fight left.",
         "Shadowburn": "Shadowburn on cooldown once you have it, at any boss health.",
+        # Demon Armor, the Succubus and Curse of the Elements come at twenty; Conflagrate is the
+        # thirty-fourth point (thirty-second in the raid build).
+        "Demon Armor": (
+            "Demon Armor and the Succubus out from twenty, before the pull. "
+            "Keep a Healthstone, and a spare shard once you have Shadowburn. "
+            "Life Tap to full while the healers top you off."
+        ),
+        "Curse of the Elements": "Curse of the Elements from twenty when no warlock's is on the target.",
+        "Conflagrate": (
+            "Conflagrate from thirty-four, or thirty-two in the raid build, once Immolate has six seconds or less left. "
+            "Once you take Shadow and Flame, cast it on cooldown while Immolate is up."
+        ),
         "Incinerate": "Incinerate from forty for every other cast. Before forty, Shadow Bolt fills instead.",
         "Curse of Recklessness": (
             "Curse of Recklessness, Tongues or Weakness only if your raid leader asks. "
@@ -693,16 +731,17 @@ GUIDE_ORDER: dict[str, tuple[str, ...]] = {
         "Water Shield", "Healing Stream Totem", "Mana Tide Totem", "Riptide", "Chain Heal", "Healing Wave",
         "Lesser Healing Wave", "Nature's Swiftness",
     ),
-    # affliction.md: "Then Corruption, Bane of Doom, Siphon Life and Immolate, and Wrack".
+    # affliction.md: the sacrifice and setup, then "Corruption, Bane of Doom and Siphon Life, and Wrack";
+    # the card puts the Shadow Trance bolt ahead of Wrack.
     "warlock-affliction": (
-        "Demon Armor", "Curse of the Elements", "Corruption", "Bane of Doom", "Amplify Curse", "Bane of Agony",
-        "Siphon Life", "Immolate", "Wrack", "Life Tap",
+        "Demonic Sacrifice", "Demon Armor", "Curse of the Elements", "Corruption", "Bane of Doom", "Amplify Curse",
+        "Bane of Agony", "Siphon Life", "Immolate", "Shadow Bolt", "Wrack", "Life Tap",
     ),
     # demonology.md: the setup, then "Curse of the Elements ..., then Corruption, then Bane of Doom, then
     # Immolate, then Shadow Bolt".
     "warlock-demonology": (
         "Demonic Sacrifice", "Demon Armor", "Soul Link", "Curse of the Elements", "Corruption", "Bane of Doom",
-        "Bane of Agony", "Immolate", "Shadow Bolt", "Life Tap",
+        "Bane of Agony", "Immolate", "Soul Fire", "Shadow Bolt", "Life Tap",
     ),
 }
 
@@ -724,8 +763,8 @@ EXCLUDED: dict[str, frozenset[str]] = {
     "shaman-enhancement": frozenset({"Flame Shock"}),
     # The raid leader's curse is one line with its condition (Curse of Recklessness).
     "warlock-affliction": frozenset({"Curse of Tongues", "Curse of Weakness"}),
-    # demonology.md: Soul Fire "Skip it anyway ... never cast it in a raid"; Searing Pain "Keep it off your bars in raids".
-    "warlock-demonology": frozenset({"Soul Fire", "Searing Pain", "Curse of Tongues", "Curse of Weakness"}),
+    # demonology.md: Searing Pain "Keep it off your bars in raids".
+    "warlock-demonology": frozenset({"Searing Pain", "Curse of Tongues", "Curse of Weakness"}),
     # destruction.md: Searing Pain off the raid bars; Hellfire burns you.
     "warlock-destruction": frozenset({"Searing Pain", "Hellfire", "Curse of Tongues", "Curse of Weakness"}),
 }

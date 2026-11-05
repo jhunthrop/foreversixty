@@ -15,24 +15,25 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the best Affliction Warlock on Forever. Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps with Wrack, and every one of those ticks can crit in Forever.
+This is the best Affliction Warlock on Forever. Affliction keeps Corruption, Siphon Life and a bane rolling on the boss and fills the gaps with Wrack, and every one of those ticks can crit in Forever.
 
 ## What they know
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Before the pull, get set up: Demon Armor on and a Healthstone in your bag.
-- Curse of the Elements when it is not already on the target.
+- Demonic Sacrifice in the raid build, from fifty-five: summon the Imp and sacrifice it before the pull for Burning Shadow. Then summon nothing, since any demon ends it.
+- Demon Armor on from twenty before the pull, with a Healthstone in your bag and Life Tap to full.
+- Curse of the Elements from twenty when it is not already on the target.
 - Corruption whenever it has fallen off.
 - Bane of Doom at sixty, while a minute or more of the fight is left.
-- Amplify Curse before each Bane of Agony whenever it is ready below sixty, and at sixty before the first Agony after your last Doom fires.
+- Amplify Curse from twenty-nine, or twenty-four in the raid build, before each Bane of Agony below sixty. At sixty, press it before the first Agony after your last Doom fires.
 - Bane of Agony whenever no Bane of Doom is on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Siphon Life from thirty whenever it has fallen off.
 - Immolate while you level, with about three seconds left, so it lands a moment before the old one ends. The fresh hit is worth the tick you give up. The raid build sacrifices the Imp and drops it.
+- Shadow Bolt in the raid build, from thirty-four, the moment Nightfall makes it instant with a Shadow Trance. From forty it goes ahead of your next Wrack. At sixty its crits put up Improved Shadow Bolt.
 - Wrack from forty with your DoTs up. Before forty, Shadow Bolt fills instead.
 - Life Tap keeps you casting once mana runs low.
 - Curse of Recklessness, Tongues or Weakness only if your raid leader asks. That is only when another warlock holds Curse of the Elements.
-- Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.
 - Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.
 - In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
 - Rain of Fire for trash packs that stay put.

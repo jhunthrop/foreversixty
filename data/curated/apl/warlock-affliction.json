@@ -349,7 +349,7 @@
         }
       },
       {
-        "notes": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next. It is instant, and each crit puts up Improved Shadow Bolt, so your Wrack and Shadow DoTs take 20% more for 12 seconds.",
+        "notes": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40. It is instant, and at 60 each crit puts up Improved Shadow Bolt, so your Wrack and Shadow DoTs take 20% more for 12 seconds.",
         "action": {
           "condition": {
             "and": {
