@@ -74,7 +74,7 @@ engine-pin:
 	if ! grep -q "export const ENGINE_VERSION = '$$sha';" "$$web_version"; then \
 	  echo "engine-pin: failed to rewrite ENGINE_VERSION in $$web_version"; exit 1; \
 	fi; \
-	for fixture in web/src/fixtures/sim/result.json web/src/fixtures/sim/specs.json; do \
+	for fixture in web/src/fixtures/sim/result.json web/src/fixtures/sim/result-full.json web/src/fixtures/sim/specs.json; do \
 	  if [ ! -f "$$fixture" ]; then \
 	    echo "engine-pin: $$fixture is missing; it is a tracked file and one of the places the pin lives"; exit 1; \
 	  fi; \
