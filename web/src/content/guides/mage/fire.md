@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70790:mage:human:2520150000002/51520101230133031/003:'
 raidBuild: 'FS1:1.60.1.70790:mage:human:0501052001000/55500201230133031/003:'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]
-description: 'Fire Mage in Forever: the pre-pull Pyroblast, the 3 second Fireball, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
+description: 'Fire Mage in Forever: the pre-pull Pyroblast, Fireball, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
 updated: 2026-11-04
 confidence: inferred
 sources:
@@ -31,7 +31,7 @@ Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns c
 
 ### Strengths
 
-- Five points of Accelerant make Fireball a 3 second cast, and every one is a chance at a free, fast Arcane Missiles
+- Five points of Accelerant make Fireball a 3 second cast, and with Missile Barrage every Fireball has a 20% chance at a free, fast Arcane Missiles
 - Every Fireball, Scorch and Fire Blast crit pays twice, once through Ignite and once through Heating Up
 - Fire Power rewards you for every burn you keep on the boss
 - Fire Blast is instant and a 3-stack Pyroblast is short enough to cast between steps, so you keep doing damage through movement
@@ -54,7 +54,7 @@ Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns c
 - **Pyroblast** (1 point): the payoff for Heating Up, and the spell you cast before the pull.
 - **Ignite** (5 points): every Fire crit burns the boss for another 40% of the hit over 4 seconds.
 - **Fire Power** (3 points): 3% more Fire damage for each of your Fire effects on the target, up to 12%. Improved Scorch, Ignite and Pyroblast's burn are three of them.
-- **Incineration** and **Critical Mass** (8 points): 10% more crit on Scorch and Fire Blast and 6% more on every Fire spell, which is what keeps Ignite and Heating Up rolling.
+- **Incineration** and **Critical Mass** (8 points): 10% more crit on Scorch, Fire Blast and Arcane Blast and 6% more on every Fire spell, which is what keeps Ignite and Heating Up rolling.
 - **Master of Elements** (3 points): every Fire crit refunds 30% of the spell's base cost. It is the steady trickle that makes the gems and potions last.
 - **Improved Fire Blast** (2 points): Fire Blast every 6 seconds instead of 8, and 15 yards more range. With Heating Up, that is a Pyroblast stack every 6 seconds.
 - **Combustion** (1 point): each Fire hit adds 10% Fire crit until three non-periodic crits land, on a 3 minute cooldown.
@@ -66,7 +66,7 @@ Combustion asks for 30 points above it. The Fire damage talents above it come to
 
 The other 17 points buy hit and a little Arcane. Three go into **Precision** in Frost for 6% hit. Fourteen in Arcane take **Improved Channeling**, which opens the tree and keeps your Missiles from being pushed back, **Arcane Concentration** (a free spell 10% of the time), **Missile Barrage**, **Arcane Blast** and a point of Arcane Subtlety. Wand Specialization and Arcane Resilience do nothing on a boss, and Arcane Meditation's regeneration is worth less than Missile Barrage and Arcane Blast, so all three are left out.
 
-The leveling build is different: it pays the toll to Combustion with **Flame Throwing**, a point in **Burning Soul**, a 23% chance to keep a cast from being pushed back and 10% less Fire threat, and a point in Accelerant, which speeds up Fireball, your filler below 30. From 30 it fills with Scorch. Respec into the raid build when you start raiding. [Open the planner](/planner?class=mage) to change the build.
+The level 60 build is different: it pays the toll to Combustion with **Flame Throwing**, a point in **Burning Soul**, a 23% chance to keep a cast from being pushed back and 10% less Fire threat, and a point in Accelerant, which speeds up Fireball, your filler below 30. From 30 it fills with Scorch. Respec into the raid build when you start raiding. [Open the planner](/planner?class=mage) to change the build.
 
 ## Rotation and priority
 
@@ -116,4 +116,4 @@ Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater
 
 ### Levels 20 to 60
 
-Fireball stays your nuke through the 20s, with Fire Blast on cooldown: at the ranks you have in the 20s Fireball does more damage for its mana than Scorch, and mana is what runs out first. Once you take Improved Scorch at 27, spend a few Scorches on its stacks when a fight is long enough to pay for them. From 30, with Heating Up in, Scorch and Fire Blast take over on single targets, every few crits turn into a fast Pyroblast, and the Burning Soul point from 24 keeps a mob's hits from pushing back every cast. Open on a mob with Pyroblast from range, Fireball (Scorch from 30) as it closes, and finish it with Fire Blast. Keep Frost Nova and Blink for anything that reaches you, and Frostbolt for kiting: none of your Fire spells slow until Frostfire Bolt at 40, and Frostbolt is still the cheaper slow after that. Flamestrike into Arcane Explosion clears packs once you have the Stamina for it. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
+Fireball stays your nuke through the 20s, with Fire Blast on cooldown: at the ranks you have in the 20s Fireball does more damage for its mana than Scorch, and mana is what runs out first. Improved Scorch's first point at 27 lands a stack only one Scorch in three, so at 27 build the stacks only on a mob or elite that lives a minute or more. From 28, with two points, Scorch to 5 stacks first on anything that lives 20 seconds. From 30, with Heating Up in, Scorch and Fire Blast take over on single targets, every few crits turn into a fast Pyroblast, and the Burning Soul point from 24 keeps a mob's hits from pushing back every cast. Open on a mob with Pyroblast from range, Fireball (Scorch from 30) as it closes, and finish it with Fire Blast. Keep Frost Nova and Blink for anything that reaches you, and Frostbolt for kiting: none of your Fire spells slow until Frostfire Bolt at 40, and Frostbolt is still the cheaper slow after that. Flamestrike into Arcane Explosion clears packs once you have the Stamina for it. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
