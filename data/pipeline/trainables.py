@@ -72,9 +72,10 @@ import logging
 import re
 import shutil
 from collections import defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 
 from pydantic import BaseModel
 
@@ -83,6 +84,7 @@ from pipeline.hotfix_push import SHIPPED_DIR
 from pipeline.normalize import write_model
 from pipeline.proficiency import CLASS_MASK_BIT, CLASS_SLUG_BY_ID
 from pipeline.simconst import SPELL_FAMILY_BY_CLASS_SLUG, _by_spell_id, _int, _rank
+from pipeline.talent_levels import load_talent_spell_levels
 
 logger = logging.getLogger(__name__)
 
@@ -486,8 +488,27 @@ def _unique_by_spell(candidates: list[_Candidate]) -> list[_Candidate]:
     return unique
 
 
+def _with_talent_levels(trainable: Trainable, talent_levels: Mapping[int, int]) -> Trainable:
+    """A rank a talent teaches is learned when its talent can first be taken
+    (`pipeline.talent_levels`), and a trainer rank above it no earlier: the client's spell
+    level says 40 for Stormstrike, a tier-3 talent taken at 25."""
+    floors = [talent_levels[r.id] for r in trainable.ranks if r.id in talent_levels]
+    if not floors:
+        return trainable
+    floor = min(floors)
+    ranks = [
+        r.model_copy(update={"level": talent_levels.get(r.id, max(r.level, floor))})
+        for r in trainable.ranks
+    ]
+    return trainable.model_copy(update={"ranks": ranks})
+
+
 def _class_trainables(
-    candidates: list[_Candidate], tables: _SpellTables, live: _LiveTree, class_slug: str
+    candidates: list[_Candidate],
+    tables: _SpellTables,
+    live: _LiveTree,
+    class_slug: str,
+    talent_levels: Mapping[int, int] = MappingProxyType({}),
 ) -> list[Trainable]:
     listed = [
         _build_trainable(group, tables)
@@ -498,7 +519,10 @@ def _class_trainables(
         _build_trainable(group, tables)
         for group in _group_by_ability(talents, tables.names).values()
     ]
-    return sorted((_classified(t, live) for t in listed), key=lambda t: (t.name, t.ranks[0].id))
+    return sorted(
+        (_with_talent_levels(_classified(t, live), talent_levels) for t in listed),
+        key=lambda t: (t.name, t.ranks[0].id),
+    )
 
 
 #: A client build directory name, and the number that orders them.
@@ -603,7 +627,11 @@ def build_trainables(
             build=build,
             class_slug=slug,
             trainables=_class_trainables(
-                by_class[slug], tables, _live_tree(talents_dir, slug), slug
+                by_class[slug],
+                tables,
+                _live_tree(talents_dir, slug),
+                slug,
+                load_talent_spell_levels(talents_dir, slug),
             ),
         )
         for slug in sorted(SPELL_FAMILY_BY_CLASS_SLUG)
