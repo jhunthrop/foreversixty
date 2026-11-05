@@ -108,6 +108,50 @@ func TestSubtletyDeathMarksAtFourComboPoints(t *testing.T) {
 	t.Fatal("Subtlety casts no Death Mark")
 }
 
+// subtletyCondition is the whitespace-free condition of Subtlety's first
+// curated line casting spellID.
+func subtletyCondition(t *testing.T, spellID int32) string {
+	t.Helper()
+	curated, err := loadLadderCurated(repoRoot, "rogue-subtlety")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot := &proto.APLRotation{}
+	if err := protojson.Unmarshal(curated.Rotation, rot); err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range rot.PriorityList {
+		if item.GetAction().GetCastSpell().GetSpellId().GetSpellId() == spellID {
+			return strings.Join(strings.Fields(protojson.Format(item.GetAction().GetCondition())), "")
+		}
+	}
+	t.Fatalf("Subtlety casts no %d", spellID)
+	return ""
+}
+
+// Holding Shank at four or five combo points cost its energy on every
+// leveling band (bare 30 to 59: +0.1 to +1.4% with the hold lifted) and
+// only paid at 60, where Death Mark's top rank makes every five-point
+// finisher count. Holding it only with 50 energy or more is ahead or level
+// everywhere, raid 60 included (round 21).
+func TestSubtletyShanksWhenShortOnEnergy(t *testing.T) {
+	cond := subtletyCondition(t, 1329549)
+	if !strings.Contains(cond, `"currentEnergy"`) || !strings.Contains(cond, `"val":"50"`) {
+		t.Errorf("Shank's condition does not let it go below 50 energy: %s", cond)
+	}
+}
+
+// Rupture trains at 20, so a finisher gated on Rupture ticking named a
+// condition no rogue below 20 can meet. Both finishers carry a
+// before-Rupture branch (SIM-R11-1, carried since round 11).
+func TestSubtletyFinishersBeforeRupture(t *testing.T) {
+	for _, id := range []int32{11300, 6774} {
+		if cond := subtletyCondition(t, id); !strings.Contains(cond, `"spellIsKnown":{"spellId":{"spellId":11275`) {
+			t.Errorf("spell %d has no branch for a rogue without Rupture: %s", id, cond)
+		}
+	}
+}
+
 // Before Mutilate (40) and Hemorrhage (30), Assassination and Subtlety
 // built with Sinister Strike even with a dagger in the main hand, behind
 // a boss, where Backstab is the bigger hit (and Opportunity, which

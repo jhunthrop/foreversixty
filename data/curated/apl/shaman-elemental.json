@@ -119,22 +119,40 @@
         }
       },
       {
-        "notes": "Searing Totem on a single target: it is your Fire totem for one target. It is cheap for its damage and its bolts reach 20 yards, so drop it within 20 yards of the boss; from 26, Magma Totem costs several times its mana and only burns within 8 yards.",
+        "notes": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from. It is cheap for its damage and its bolts reach 20 yards, so drop it within 20 yards of the boss; from 26, Magma Totem costs several times its mana and only burns within 8 yards.",
         "action": {
           "condition": {
             "and": {
               "vals": [
                 {
-                  "cmp": {
-                    "op": "OpEq",
-                    "lhs": {
-                      "numberTargets": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "1"
+                  "or": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpEq",
+                          "lhs": {
+                            "numberTargets": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "1"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "not": {
+                          "val": {
+                            "spellIsKnown": {
+                              "spellId": {
+                                "spellId": 10587,
+                                "rank": 4
+                              }
+                            }
+                          }
+                        }
                       }
-                    }
+                    ]
                   }
                 },
                 {

@@ -32,7 +32,7 @@ The bear tanks on health and armor, with Dodge as its only avoidance and Lacerat
 ### Strengths
 
 - Dire Bear Form adds a flat block of health and multiplies the armor on your gear, and Heart of the Wild adds 20% Stamina on top
-- Primal Bite and Lacerate both carry high threat, so a bear holds a boss on very little rage
+- Bear Form adds 115% to all the threat you generate, and Primal Bite and Lacerate both carry high threat on top, so a bear holds a boss on very little rage
 - Defense on gear now works for a bear as it does for other tanks, and Thick Hide adds armor for every point of Defense over five times your level
 - Potions, weapon stones and racials all work in Bear Form now, so you never shift to drink
 
@@ -77,8 +77,8 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 2. **Lacerate** until it has five stacks, then again when it has under 3 seconds left. The stacks make each cast hit harder, and the bleed turns on Rend and Tear.
 3. **Faerie Fire** whenever the boss does not have it.
 4. **Demoralizing Roar** whenever the boss does not have it, and again in its last 3 seconds, unless a warrior's Demoralizing Shout is already on it.
-5. **Maul** queued on your next swing whenever you have 15 rage spare.
-6. **Swipe** as the rage dump above 40 rage. It hits up to three targets.
+5. **Maul** queued on your next swing whenever you have 15 rage spare. At levels 40 to 53 rage is short: queue Maul only at 30 rage, so Primal Bite never waits on rage when it comes off cooldown.
+6. **Swipe** only with two or more targets in front of you, above 40 rage. It hits up to three, and each hit grows with your attack power. On a single boss, leave it on the bar: the same rage does more threat in Maul, Lacerate and Primal Bite.
 
 **Adds.** Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
 

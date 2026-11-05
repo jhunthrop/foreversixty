@@ -23,6 +23,8 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 17 | 2026-11-04 | design/reviews/2026-11-04-sim-audit-round17/ (one lane per class, platform, integration) | about 15 fixed; the addon/API gear-score rating bug (5-15x) fixed alongside | b2c4a2d05 | no |
 | 18 | 2026-11-04 | design/reviews/2026-11-04-sim-audit-round18/ (one lane per class, platform, integration) | about 26 fixed, mostly priest rank rows re-judged level by level under the penalty | 6ea675594 | no |
 | 19 | 2026-11-04 | design/reviews/2026-11-04-sim-audit-round19/ (one lane per class, platform, integration) | about 39 fixed, all older; Ice Lance 0.107 from beta logs (Frost -9%), Heroic Strike/Cleave off the proc table and Deep Wounds rollover on Forever logs (Arms/Fury +4%); rogue the first zero lane; three method rules (rank rows on any gain beyond error, client coefficient 0 means check the logs, confirm a lower rank was cast) | da54b7b06 | no |
+| 20 | 2026-11-04 to 2026-11-05 | design/reviews/2026-11-04-sim-audit-round20/ (one lane per class, platform, integration) | 31 fixed; hunter attack power shares from Blizzard's 3 Nov notes (BM +14.5%, MM +16.6%); 70790 activated on the way | d5c708834 | no |
+| 21 | 2026-11-05 | design/reviews/2026-11-05-sim-audit-round21/ (one lane per class, platform, items, integration) | 41 fixed: 32 old, 7 new-data, 1 R20, 1 R21; Bear Form 115% and Defensive Stance 80% threat (+45%, +38%), Auto Shot through casts (MM +5.8%); Blizzard's notes read line by line against the engine | 170a59c39 | no |
 
 ## Loop structure
 

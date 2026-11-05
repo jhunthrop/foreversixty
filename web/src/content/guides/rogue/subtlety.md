@@ -73,7 +73,7 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 ### The priority
 
-**Shank** on cooldown, right behind any damage racial and your trinket, while you have three combo points or fewer: with Boot Knife it is two points for 5 energy. At four or five, finish first and Shank right after; a 10 second cooldown loses nothing to one global.
+**Shank** on cooldown, right behind any damage racial and your trinket, while you have three combo points or fewer: with Boot Knife it is two points for 5 energy. At four or five with 50 energy or more, finish first and Shank right after; a 10 second cooldown loses nothing to one global. Below 50 energy, Shank anyway: the energy it hands back is worth more than a point Boot Knife might spill.
 
 Ghostly Strike goes on cooldown too, just never at five points. Every Ghostly Strike that lands is followed by a **Garrote** at four points or fewer, even with the old one still ticking: the strike lets it in without Stealth, a fresh Garrote is worth more than the ticks it replaces, and with Initiative it gives two combo points, which Hemorrhage does not. At exactly four with a Ghostly Strike just landed, Garrote first: its window is 7 seconds and Rupture can wait one global.
 
@@ -123,6 +123,8 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 Combat levels faster with a sword, so if you only want Subtlety for raids, level Combat and respec at 60. If you level Subtlety, here is how it starts. You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. Keep a dagger in the main hand while you level: Backstab and Ambush need one, and they are what your first talents build on until Hemorrhage at 30.
 
 Poised at 18 takes 10 Energy off your opener when you are at full Energy out of combat, so Ambush from stealth costs 50.
+
+Rupture does not train until 20, so on anything that lives a while, put three points into Slice and Dice whenever it is down, and Eviscerate at three or more while Slice and Dice is up.
 
 Your first three points, 10 to 12, go into Master of Deception, which lets you sneak past mobs as if you were three levels higher. Opportunity from 13 to 17 adds 20% to Backstab, Garrote and Ambush. Both points of Dirty Deeds, at 18 and 19, make Garrote 20 Energy cheaper and let you use it from the front.
 

@@ -229,6 +229,9 @@ var singleTierLevelOverrides = map[string]map[int32]int{
 		3045:   26, // Rapid Fire; sim/hunter/rapid_fire.go: registerRapidFire returns immediately if hunter.Level < 26
 		469145: 60, // Aspect of the Falcon; sim/hunter/aspect_of_the_falcon.go: registerAspectOfTheFalconSpell returns below aspectOfTheFalconLevel 60
 	},
+	"mage": {
+		12051: 20, // Evocation; the fork registers it from its trainer level 20 (sim-accuracy round 21, mage X4)
+	},
 	"paladin": {
 		407632: 40, // Hammer of the Righteous; sim/paladin/hammer_of_the_righteous.go: hammerOfTheRighteousLevel = 40, registration returns below it
 	},

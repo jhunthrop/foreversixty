@@ -101,12 +101,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:3440 | 10.0 | 4 | spell:6807/1=59.2, spell:6807=56.3, other:attack/1=16.8, spell:99=8.5, spell:1259799=1.5 | - |
-| 20 | 0000000000000000-51220001000000000000-0000000000000000 | main_hand:7230 | 24.1 | 7 | spell:6808/1=72.4, spell:6808=71.1, spell:779=31.2, other:rage_gain=10.1, spell:1735=8.5 | - |
-| 30 | 0000000000000000-51230332000100100000-0000000000000000 | main_hand:13045 | 49.3 | 8 | spell:6809/1=72.2, spell:6809=70.6, spell:780=37.5, spell:1328617=29.4, other:rage_gain=10.1 | - |
-| 38 | 0000000000000000-51230332023102110000-0000000000000000 | main_hand:13045 | 66.7 | 9 | spell:8972/1=72.4, spell:8972=70.1, spell:769=53.7, spell:1328616=28.9, other:rage_gain=21.4 | - |
-| 40 | 0000000000000000-51230332023102120010-0000000000000000 | main_hand:13045 | 77.8 | 10 | spell:8972/1=71.7, spell:8972=68.4, spell:769=31.5, spell:1328616=30.5, spell:407995=29.2 | - |
-| 50 | 0000000000000000-51230332023102125510-0000000000000000 | main_hand:13045 | 119.9 | 11 | spell:9880/1=71.9, spell:9880=68.8, other:rage_gain=35.5, spell:9754=33.2, spell:1235826=30.2 | - |
-| 60 | 0000000000000000-51230332023102125510-0550000000000000 | main_hand:22632 | 221.4 | 11 | spell:9881/1=72.5, spell:9881=70.2, other:rage_gain=36.8, spell:9908=36.6, spell:1235827=31.6 | - |
+| 20 | 0000000000000000-51220001000000000000-0000000000000000 | main_hand:7230 | 22.5 | 6 | spell:6808/1=73.1, spell:6808=72.1, other:rage_gain=10.2, spell:1735=8.5, spell:770/1=5.9 | - |
+| 30 | 0000000000000000-51230332000100100000-0000000000000000 | main_hand:13045 | 46.1 | 7 | spell:6809/1=73.0, spell:6809=72.0, spell:1328617=29.8, other:rage_gain=10.2, spell:1735=7.8 | - |
+| 38 | 0000000000000000-51230332023102110000-0000000000000000 | main_hand:13045 | 59.3 | 8 | spell:8972/1=72.8, spell:8972=71.1, spell:1328616=29.1, other:rage_gain=17.9, spell:9490=7.8 | - |
+| 40 | 0000000000000000-51230332023102120010-0000000000000000 | main_hand:13045 | 73.9 | 9 | spell:8972/1=71.1, spell:8972=69.9, spell:1328616=30.5, spell:407995=29.9, other:rage_gain=19.8 | - |
+| 50 | 0000000000000000-51230332023102125510-0000000000000000 | main_hand:13045 | 111.4 | 10 | spell:9880/1=70.7, spell:9880=69.5, other:rage_gain=33.2, spell:1235826=31.2, spell:1238069=29.9 | - |
+| 60 | 0000000000000000-51230332023102125510-0550000000000000 | main_hand:22632 | 208.2 | 10 | spell:9881/1=72.8, spell:9881=70.9, other:rage_gain=33.8, spell:1235827=31.0, spell:1238070=29.9 | - |
 
 ## Learned but unused (informational)
 
@@ -126,6 +126,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Rip (spell 1079)
 - Shred (spell 5221)
 - Starfire (spell 2912)
+- Swipe (spell 779)
 - Wrath (spell 5178)
 
 ### Level 30
@@ -139,6 +140,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Rip (spell 9492)
 - Shred (spell 6800)
 - Starfire (spell 8949)
+- Swipe (spell 780)
 - Wrath (spell 5180)
 
 ### Level 38
@@ -153,6 +155,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Rip (spell 9493)
 - Shred (spell 8992)
 - Starfire (spell 8950)
+- Swipe (spell 769)
 - Wrath (spell 6780)
 
 ### Level 40
@@ -168,6 +171,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Rip (spell 9493)
 - Shred (spell 8992)
 - Starfire (spell 8950)
+- Swipe (spell 769)
 - Wrath (spell 6780)
 
 ### Level 50
@@ -183,6 +187,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Rip (spell 9752)
 - Shred (spell 9829)
 - Starfire (spell 9875)
+- Swipe (spell 9754)
 - Wrath (spell 8905)
 
 ### Level 60
@@ -199,9 +204,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Rip (spell 9896)
 - Shred (spell 9830)
 - Starfire (spell 9876)
+- Swipe (spell 9908)
 - Test Maul (spell 24042)
 - Wrath (spell 9912)
 
 ## Violations found in this run
 
-None.
+- druid-feral-bear level=20 kind=zero_casts spell="Swipe" id=779 authored=9908
+- druid-feral-bear level=30 kind=zero_casts spell="Swipe" id=780 authored=9908
+- druid-feral-bear level=38 kind=zero_casts spell="Swipe" id=769 authored=9908
+- druid-feral-bear level=40 kind=zero_casts spell="Swipe" id=769 authored=9908
+- druid-feral-bear level=50 kind=zero_casts spell="Swipe" id=9754 authored=9908
+- druid-feral-bear level=60 kind=zero_casts spell="Swipe" id=9908 authored=9908

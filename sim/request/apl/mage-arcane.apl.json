@@ -7,7 +7,7 @@
       }
     },
     {
-      "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a fight: spend your mana gem from 28 and a mana potion first, and at 60 a Demonic Rune too. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
+      "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a boss: spend your gem, a Major Mana Potion and a Demonic Rune first. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
       "action": {
         "condition": {
           "and": {
@@ -72,7 +72,7 @@
       }
     },
     {
-      "notes": "Presence of Mind on cooldown, and with Arcane Power once you have it. Your next spell is instant: spend it on Pyroblast, your longest cast, once the raid build has Heating Up, and on Frostbolt before that and with the leveling build. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
+      "notes": "Presence of Mind on cooldown, and with Arcane Power once you have it. Your next spell is instant: spend it on Pyroblast, your longest cast, once the raid build has it at 54, and on Frostbolt before that and with the leveling build. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
       "action": {
         "condition": {
           "cmp": {
@@ -95,15 +95,16 @@
       }
     },
     {
-      "notes": "Pyroblast the moment Presence of Mind is up, once you have Heating Up: the 6 second cast goes out instant, the most cast time Presence of Mind can save you.",
+      "notes": "Pyroblast the moment Presence of Mind is up, from 54 on the raid build: a 6 second cast without Heating Up stacks goes out instant, the most cast time Presence of Mind can save you.",
       "action": {
         "condition": {
           "and": {
             "vals": [
               {
-                "auraIsKnown": {
-                  "auraId": {
-                    "spellId": 400625
+                "spellIsKnown": {
+                  "spellId": {
+                    "spellId": 18809,
+                    "rank": 8
                   }
                 }
               },
@@ -133,7 +134,7 @@
       }
     },
     {
-      "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
+      "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Pyroblast at 54 on the raid build, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
       "action": {
         "condition": {
           "and": {
@@ -141,9 +142,10 @@
               {
                 "not": {
                   "val": {
-                    "auraIsKnown": {
-                      "auraId": {
-                        "spellId": 400625
+                    "spellIsKnown": {
+                      "spellId": {
+                        "spellId": 18809,
+                        "rank": 8
                       }
                     }
                   }
@@ -175,7 +177,7 @@
       }
     },
     {
-      "notes": "Arcane Missiles the moment Missile Barrage lights up. The proc makes it free, or 30% of its cost inside Arcane Power, halves the channel and fires a missile every half second. With both ranks Arcane Blast procs it 40% of the time and Arcane Wrath, Fireball and Frostbolt 20%, half that with one rank, so this is a big share of your damage. Rank 7 is the top trainer rank; rank 8 is a book from Ahn'Qiraj.",
+      "notes": "Arcane Missiles the moment Missile Barrage lights up. The proc makes it free, halves the channel and fires a missile every half second. Arcane Blast procs it 40% of the time, and Arcane Wrath, Fireball and Frostbolt 20%, so this is a big share of your damage. Rank 7 is the top trainer rank; rank 8 is a book from Ahn'Qiraj.",
       "action": {
         "condition": {
           "and": {
@@ -398,7 +400,7 @@
       }
     },
     {
-      "notes": "Frostbolt in a raid only when you are too low on mana for a Fireball. It costs a quarter less than the Fireball you have before 60 and a third less than Fireball's top rank at 60, and still procs Missile Barrage 20% of the time, but it feeds no Ignite or Heating Up, so it only stretches the last of your mana.",
+      "notes": "Frostbolt in a raid only when you are too low on mana for a Fireball. It costs a third less and still procs Missile Barrage 20% of the time, but it feeds no Ignite or Heating Up, so it only stretches the last of your mana.",
       "action": {
         "condition": {
           "auraIsKnown": {
@@ -416,7 +418,7 @@
       }
     },
     {
-      "notes": "Frostbolt as the filler once you stop blasting on the way to 60. The stacks' spell damage still applies to it and it costs a fraction of a stacked Blast, and once both ranks of Missile Barrage are in it procs a free Missiles 20% of the time. When the stacks fall off, the next Blast starts a cheap new set.",
+      "notes": "Frostbolt as the filler once you stop blasting on the way to 60. The stacks' spell damage still applies to it, it procs Missile Barrage 20% of the time, and it costs a fraction of a stacked Blast. When the stacks fall off, the next Blast starts a cheap new set.",
       "action": {
         "condition": {
           "not": {
