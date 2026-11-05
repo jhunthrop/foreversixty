@@ -14,6 +14,11 @@ import (
 // runs dry, so Fireball is the filler at 22 to 29 and Scorch takes over only
 // once Heating Up is known. The Improved Scorch stack line still casts Scorch
 // from 27.
+//
+// Round 22 platform: the Fireball filler carries the complement of the Scorch
+// filler's gate, not auraIsKnown(Heating Up), so the two still cover every
+// case, and the raid card (whose build takes Heating Up) no longer prints a
+// "Below 30" Fireball row with the raid rank.
 func TestFireScorchFillerWaitsForHeatingUp(t *testing.T) {
 	const (
 		scorch     = 10207
@@ -45,8 +50,8 @@ func TestFireScorchFillerWaitsForHeatingUp(t *testing.T) {
 			}
 		case fireball:
 			fireballAt = i
-			if action.GetCondition() != nil {
-				t.Errorf("the Fireball filler (line %d) must be unconditional, got %v", i, action.GetCondition())
+			if !knowsAura(action.GetCondition().GetNot().GetVal(), heatingUp) {
+				t.Errorf("the Fireball filler (line %d) must be gated on not auraIsKnown(%d), got %v", i, heatingUp, action.GetCondition())
 			}
 		}
 	}

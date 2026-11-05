@@ -887,8 +887,26 @@ func applySpec(player *proto.Player, slug, class, preset, race string, level int
 		return err
 	}
 	apply(player)
+	assumeRaidBleed(player, preset)
 	player.Rotation = rot
 	return nil
+}
+
+// assumeRaidBleed marks the raid fight's target as bleeding for the feral
+// and bear druid. Rend and Tear reads "on Bleeding targets" and any bleed
+// counts (druid round 21 C2): in a raid a warrior's Deep Wounds or a rogue's
+// Rupture is on the boss from the opening seconds. The bare fight is solo,
+// so only the druid's own bleeds count there.
+func assumeRaidBleed(player *proto.Player, preset string) {
+	if preset != RaidPreset {
+		return
+	}
+	switch spec := player.Spec.(type) {
+	case *proto.Player_FeralDruid:
+		spec.FeralDruid.Options.AssumeBleedActive = true
+	case *proto.Player_FeralTankDruid:
+		spec.FeralTankDruid.Options.AssumeBleedActive = true
+	}
 }
 
 // rotation parses one embedded APL, rewritten to level's ranks under
