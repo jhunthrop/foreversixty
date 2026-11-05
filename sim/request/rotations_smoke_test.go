@@ -219,10 +219,11 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 425464}": "Demonic Pact's passive aura, which the prepull's sacrifice gate reads, exists only with its talent (sim/warlock/talents.go's applyDemonicPact); this build takes none.",
 	},
 	"warlock-destruction": {
-		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
-		"{SpellID: 412758}":  "Shadow Bolt's spellIsKnown(412758) gate (rotation-accuracy program, 2026-09-28) checks Incinerate's rank-1 id directly; this build takes no Incinerate talent, so the id it checks is as unregistered as 1293813 above.",
-		"{SpellID: 18871}":   "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
-		"{SpellID: 18932}":   "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
+		"{SpellID: 1293813}":        "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
+		"{SpellID: 412758}":         "Shadow Bolt's spellIsKnown(412758) gate (rotation-accuracy program, 2026-09-28) checks Incinerate's rank-1 id directly; this build takes no Incinerate talent, so the id it checks is as unregistered as 1293813 above.",
+		"{SpellID: 18871}":          "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
+		"{SpellID: 18932}":          "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
+		"{SpellID: 426316, Tag: 1}": "Shadow and Flame's rank aura, which the Conflagrate lines read to stop holding for the end of Immolate (sim-accuracy round 21), exists only with its talent; this build takes none.",
 	},
 	"paladin-retribution": {
 		"{SpellID: 1310735}": "Unsealed Wrath is a talent (sim/paladin/unsealed_wrath.go, Forever's tree); this build takes none.",

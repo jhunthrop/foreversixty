@@ -2,8 +2,7 @@
   "spec": "mage-frost",
   "state": "written",
   "inert": [
-    5019,
-    12051
+    5019
   ],
   "expected_idle": [
     {
@@ -288,6 +287,6 @@
     ]
   },
   "engineering_notes": {
-    "1": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md X4): Evocation (12051) is declared inert because it trains at 20 and the engine no longer registers it below that level, so the level-10 ladder rung cannot resolve the line."
+    "1": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md X4): Evocation (12051) trains at 20 and the engine no longer registers it below that level; the ladder level-gates the line through idLearnLevelOverrides (sim/request/ladder.go) and sim/internal/spellranks' singleTierLevelOverrides, so it is not declared inert."
   }
 }
