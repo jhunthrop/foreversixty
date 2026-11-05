@@ -28,7 +28,7 @@ This is the Demonology Warlock as the site's guide describes it. Demonology sacr
 - Corruption whenever it has fallen off.
 - Immolate with three seconds or less left on it.
 - Shadow Bolt for every other cast.
-- Soul Fire every six seconds while Decimation is up.
+- Soul Fire every six seconds while Decimation is up, except in the raid build at sixty.
 - Searing Pain also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses.
 - Life Tap below ten percent mana.
 - Portal of Summoning: Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown.

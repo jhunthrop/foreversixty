@@ -23,7 +23,7 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Aspect of the Hawk goes up before the pull.
 - Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.
 - Bestial Wrath on the pull with Rapid Fire and your trinkets, then again every two minutes.
-- Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.
+- Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from forty with Bestial Wrath.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Serpent Sting when it is about to drop.
 - Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away or you are under a quarter of your mana.
@@ -35,7 +35,7 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Feign Death: Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
 - Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel.
 - Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it.
-- Explosive Trap under a pack the tank is holding is good damage for its mana.
+- Explosive Trap under a pack the tank is holding hits everything within ten yards, and at sixty it costs even more than Volley, so save it for the same big packs.
 - Tranquilizing Shot removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage.
 - Distracting Shot puts a big lump of threat on a loose add, enough to pull it off a healer and onto you.
 

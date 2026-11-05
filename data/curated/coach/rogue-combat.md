@@ -23,12 +23,12 @@ This is the Combat Rogue as the site's guide describes it. Combat is the steadie
 - Garrote: Stealth before the pull, walk in behind the boss, and open with Garrote once the tank has the boss.
 - Ambush and Backstab from stealth both hit into armor that has no shred on it yet, and neither leaves a bleed behind.
 - Cheap Shot is for trash: bosses are immune to stuns.
-- Shank on cooldown, right behind your racial and trinket: an off-hand stab for five energy that cannot miss and gives forty back with Flash of Steel.
+- Shank on cooldown, right behind any damage racial and your trinket: an off-hand stab for five energy that cannot miss and gives forty back with Flash of Steel.
 - Slice and Dice whenever it drops, at one or two combo points.
 - Eviscerate at five combo points.
 - Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder.
 - Sinister Strike only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you.
-- Adrenaline Rush on cooldown, with your racial, a trinket and a potion.
+- Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.
 - Blade Flurry costs twenty-five and can go at any energy.
 - Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five.
 - Kick stops a cast for twenty-five energy.

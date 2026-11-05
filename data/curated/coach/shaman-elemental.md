@@ -28,7 +28,7 @@ This is the Elemental Shaman as the site's guide describes it. Elemental is the 
 - Then Lightning Mastery with your cooldowns, Flame Shock, Searing Totem, and Lightning Bolt for the rest of the fight.
 - Earth Shock stays on your bar for interrupts.
 - Fire Nova on a Clearcasting proc only when your Fire totem is out and the boss stands close to it. Otherwise the proc goes to your next Lightning Bolt.
-- Flame Shock whenever it is not on the target: with Call of Flame it ticks for twenty-one seconds, and nothing else wants the shock cooldown.
+- Forever's Flame Shock hits hard up front and ticks hard after, and with Call of Flame one global keeps it burning for twenty-one seconds.
 
 **The mistakes the coach looks for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
