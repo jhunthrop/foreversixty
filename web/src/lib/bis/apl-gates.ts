@@ -67,6 +67,7 @@ export const CONDITION_NODES: ReadonlySet<string> = new Set([
   'dotIsActive',
   'dotRemainingTime',
   'isExecutePhase',
+  'manaIncomePerSecond',
   'math',
   'numberTargets',
   'remainingTime',
