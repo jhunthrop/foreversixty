@@ -1,12 +1,12 @@
 <!-- web/src/components/guild/RaidSignupStrip.svelte -->
 <!-- Your sign-up (spec 3.3, 4 "Page states" and "Races"): one row per character of the viewer in
-     this guild, the header selector's current character first. Locked and ended put their line
-     above disabled rows; cancelled replaces the rows with its line. The strip owns every row, so
+     this guild, the header selector's current character first. Locked puts its line above disabled
+     rows; ended and cancelled replace the rows with their line (guild round 3: an ended raid draws
+     no segments). The strip owns every row, so
      it can tell the row the API moved to Bench (R3) that it moved. -->
 <script lang="ts">
   import type { GuildRaidView } from '../../lib/guild/api';
-  import { cancelledLineOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
-  import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
+  import { cancelledLineOf, endedLineOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import { officersSeeLine } from '../../lib/guild/raid-roster';
   import { orderedCharacters, type SignupChoice, type SignupHandler } from '../../lib/guild/signup-strip';
   import SignupRow from './SignupRow.svelte';
@@ -35,9 +35,13 @@
   const savedNotes = $derived(new Map(raid.signups.map((s) => [s.character_key, s.note])));
   const stateLine = $derived(locked ? raidCopy.raidStates.locked : null);
   const stateLineId = $derived(`raid-strip-state-${raid.id}`);
-  /** An ended or done raid refuses sign-ups like a locked one; their line lives in the band. */
-  const rowsDisabled = $derived(stateLine !== null || ended || raid.status === 'done');
-  const describedBy = $derived(stateLine !== null ? stateLineId : ended ? RAID_ENDED_LINE_ID : undefined);
+  /** A done raid refuses sign-ups like a locked one. */
+  const rowsDisabled = $derived(stateLine !== null || raid.status === 'done');
+  const describedBy = $derived(stateLine !== null ? stateLineId : undefined);
+  /** The line that replaces the rows: cancelled, else ended; null while sign-ups are open. */
+  const closedLine = $derived(
+    cancelled ? cancelledLineOf(kindOf(raid)) : ended ? endedLineOf(kindOf(raid)) : null,
+  );
 
   function setNotice(key: string, line: string | null): void {
     const { [key]: _dropped, ...rest } = notices;
@@ -71,8 +75,8 @@
   data-testid="raid-signup-strip"
 >
   <h2 id="raid-signup-heading" class="section-title">{raidCopy.subheads.yourSignup}</h2>
-  {#if cancelled}
-    <p class="text-muted mt-3 text-[14px]" data-testid="raid-strip-state">{cancelledLineOf(kindOf(raid))}</p>
+  {#if closedLine !== null}
+    <p class="text-muted mt-3 text-[14px]" data-testid="raid-strip-state">{closedLine}</p>
   {:else}
     {#if stateLine !== null}
       <p id={stateLineId} class="text-text mt-3 text-[14px]" data-testid="raid-strip-state">{stateLine}</p>
