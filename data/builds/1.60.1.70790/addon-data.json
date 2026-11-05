@@ -16006,7 +16006,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16025,7 +16025,7 @@
           {
             "spell_id": 647,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16051,7 +16051,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16126,7 +16126,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16201,7 +16201,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16318,7 +16318,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16435,7 +16435,7 @@
           {
             "spell_id": 1026,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16552,7 +16552,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16669,7 +16669,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16786,7 +16786,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16903,7 +16903,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17020,7 +17020,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17137,7 +17137,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17254,7 +17254,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17371,7 +17371,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17488,7 +17488,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17605,7 +17605,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
+            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17717,7 +17717,7 @@
           {
             "spell_id": 1311649,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17738,7 +17738,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17757,7 +17757,7 @@
           {
             "spell_id": 1311649,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17778,7 +17778,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17797,7 +17797,7 @@
           {
             "spell_id": 1311656,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17818,7 +17818,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17844,7 +17844,7 @@
           {
             "spell_id": 1311656,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17865,14 +17865,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 879,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -17905,7 +17905,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17926,14 +17926,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 879,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -17966,7 +17966,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17987,14 +17987,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18027,7 +18027,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18055,14 +18055,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18102,7 +18102,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18130,14 +18130,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18177,7 +18177,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18205,14 +18205,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18252,7 +18252,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18280,14 +18280,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18327,7 +18327,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18362,14 +18362,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18409,7 +18409,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18444,14 +18444,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18491,7 +18491,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18526,14 +18526,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18573,7 +18573,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18608,14 +18608,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10312,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18655,7 +18655,7 @@
           {
             "spell_id": 20422,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18690,14 +18690,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10312,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18737,7 +18737,7 @@
           {
             "spell_id": 20422,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18772,14 +18772,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10313,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18819,7 +18819,7 @@
           {
             "spell_id": 20423,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18854,14 +18854,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10313,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18901,7 +18901,7 @@
           {
             "spell_id": 20423,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over.",
+            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18936,14 +18936,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10314,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -32127,7 +32127,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32188,7 +32188,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32249,7 +32249,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32317,7 +32317,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32385,7 +32385,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32453,7 +32453,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32521,7 +32521,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32596,7 +32596,7 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32671,7 +32671,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32746,7 +32746,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32821,7 +32821,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32896,7 +32896,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -32971,7 +32971,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -33046,7 +33046,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -33121,7 +33121,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
@@ -33196,7 +33196,7 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, every time once all five points are in at 39, so at four or five you finish first.",
+            "condition": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },

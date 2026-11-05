@@ -45,7 +45,7 @@
         }
       },
       {
-        "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a fight: spend your mana gem from 28 and your mana potions first, and at 60 a Major Mana Potion and a Demonic Rune too. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
+        "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a fight: spend your mana gem from 28 and a mana potion first, and at 60 a Demonic Rune too. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
         "action": {
           "condition": {
             "and": {

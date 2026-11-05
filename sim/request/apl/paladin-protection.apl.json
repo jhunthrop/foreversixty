@@ -190,7 +190,7 @@
           }
         }
       },
-      "notes": "Keep it up, and recast it in its last 2 seconds, from 30 only with Holy Shield's mana left over. Judgement does not consume it, so this is one cast every 30 seconds."
+      "notes": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over. Judgement does not consume it, so this is one cast every 30 seconds."
     },
     {
       "action": {
@@ -298,7 +298,7 @@
           }
         }
       },
-      "notes": "On cooldown, and from 30 only once Holy Shield's mana is safe. Off the global cooldown for 6% of base mana, and under Seal of Fury it is your taunt."
+      "notes": "On cooldown; from level 30, only once Holy Shield's mana is safe. Off the global cooldown for 6% of base mana, and under Seal of Fury it is your taunt."
     },
     {
       "action": {
@@ -352,7 +352,7 @@
           }
         }
       },
-      "notes": "On Undead and Demons only, and from 30 only once Holy Shield's mana is safe. It cannot be cast on anything else."
+      "notes": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe. It cannot be cast on anything else."
     },
     {
       "action": {
