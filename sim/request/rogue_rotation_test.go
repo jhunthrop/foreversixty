@@ -112,7 +112,13 @@ func TestSubtletyDeathMarksAtFourComboPoints(t *testing.T) {
 // curated line casting spellID.
 func subtletyCondition(t *testing.T, spellID int32) string {
 	t.Helper()
-	curated, err := loadLadderCurated(repoRoot, "rogue-subtlety")
+	return specCondition(t, "rogue-subtlety", spellID)
+}
+
+// specCondition is spellID's condition on spec's curated card, compacted.
+func specCondition(t *testing.T, spec string, spellID int32) string {
+	t.Helper()
+	curated, err := loadLadderCurated(repoRoot, spec)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -125,8 +131,32 @@ func subtletyCondition(t *testing.T, spellID int32) string {
 			return strings.Join(strings.Fields(protojson.Format(item.GetAction().GetCondition())), "")
 		}
 	}
-	t.Fatalf("Subtlety casts no %d", spellID)
+	t.Fatalf("%s casts no %d", spec, spellID)
 	return ""
+}
+
+// atMostFourComboPoints is the compacted `currentComboPoints <= 4` test.
+const atMostFourComboPoints = `{"cmp":{"op":"OpLe","lhs":{"currentComboPoints":{}},"rhs":{"const":{"val":"4"}}}}`
+
+// Hemorrhage at five combo points spills its point when no finisher is
+// ready (Rupture ticking, Death Mark cooling): gating it at four or fewer
+// gains 0.6% at raid 60 on both factions and ties at bare 30 to 60
+// (round 22, guide r24 sim request).
+func TestSubtletyHemorrhageNeverAtFiveComboPoints(t *testing.T) {
+	if cond := subtletyCondition(t, 16511); !strings.Contains(cond, atMostFourComboPoints) {
+		t.Errorf("Hemorrhage's condition does not stop at five combo points: %s", cond)
+	}
+}
+
+// With the 31/20/0 raid build (Flawless Execution, Aggression) Assassination
+// finished into Eviscerate so often that Slice and Dice sat down for a
+// quarter of the fight: a three-point one once it has dropped gains 0.4% at
+// raid 60 and ties or gains at every bare band (round 22).
+func TestAssassinationSliceAndDiceAtThreeOnceDown(t *testing.T) {
+	cond := specCondition(t, "rogue-assassination", 6774)
+	if !strings.Contains(cond, `{"cmp":{"op":"OpGe","lhs":{"currentComboPoints":{}},"rhs":{"const":{"val":"3"}}}},{"not":{"val":{"auraIsActive"`) {
+		t.Errorf("Slice and Dice has no three-point line once it has dropped: %s", cond)
+	}
 }
 
 // Holding Shank at four or five combo points cost its energy on every
