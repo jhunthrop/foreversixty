@@ -8,7 +8,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { clockLabel } from '../../lib/chart/time-axis';
-  import { withShardNames, type ActionNames } from '../../lib/sim/action-names';
+  import { withShardOverlay, type ActionNames } from '../../lib/sim/action-names';
   import {
     actionVisuals,
     loadVisualTables,
@@ -80,7 +80,7 @@
   const BROWSER = typeof window !== 'undefined';
 
   // An item proc or a racial no class table names is read from the build's shards, once.
-  let shardedNames = $state<ActionNames | null>(null);
+  let shardedNames = $state.raw<ActionNames | null>(null);
   const liveNames = $derived(shardedNames ?? names);
   $effect(() => {
     const base = names;
@@ -90,7 +90,7 @@
       ...(result.sample_auras ?? []).map((aura) => aura.action),
     ];
     let cancelled = false;
-    withShardNames(base, new Set(keys)).then(
+    withShardOverlay(base, new Set(keys)).then(
       (named) => {
         if (!cancelled && named !== base) shardedNames = named;
       },
@@ -106,7 +106,7 @@
   const model = $derived(buildTimeline(result, liveNames));
 
   // --- The build's icons and ranks: names are the only input the first paint needs. ---
-  let tables = $state<Awaited<ReturnType<typeof loadVisualTables>> | null>(null);
+  let tables = $state.raw<Awaited<ReturnType<typeof loadVisualTables>> | null>(null);
   const visuals = $derived<ActionVisuals>(tables === null ? pendingVisual : actionVisuals(tables, liveNames));
   const visualsLoaded = $derived(tables !== null);
 
