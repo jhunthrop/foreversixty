@@ -28,7 +28,7 @@ This is the best Beast Mastery Hunter on Forever. Beast Mastery is the pet spec:
 - Aimed Shot from twenty, every time the cooldown it shares with Multi-Shot comes up. Your auto shots keep firing while you cast it.
 - Multi-Shot on its cooldown at eighteen and nineteen. From twenty it is for packs and for moving, and never under a quarter of your mana.
 - Serpent Sting when it is about to drop.
-- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away or you are under a quarter of your mana.
+- Arcane Shot to fill a gap; from eighteen, only with the shared cooldown over a global away or under a quarter mana.
 - Feign Death from thirty, before you reach the tank's threat, not after the boss turns. If it says Resisted, you still have all your threat.
 - Volley from forty is a mana-heavy channel, worth it only on a big pack that lives through it.
 - Freezing Trap from twenty is your crowd control, laid before the pull. Any damage breaks it.

@@ -28,7 +28,7 @@ This is the best Marksmanship Hunter on Forever. Marksmanship's damage is your o
 - Sniper Shot with the raid build from forty, whenever it is ready and the shared cooldown is not.
 - Multi-Shot on its cooldown at eighteen and nineteen. From twenty it is for packs and for moving, and never under a quarter of your mana.
 - Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot.
-- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away or you are under a quarter of your mana.
+- Arcane Shot to fill a gap; from eighteen, only with the shared cooldown over a global away or under a quarter mana.
 - Feign Death from thirty, before you reach the tank's threat, not after the boss turns. If it says Resisted, you still have all your threat.
 - Volley from forty is a mana-heavy channel, worth it only on a big pack that lives through it.
 - Freezing Trap from twenty is your crowd control, laid before the pull.
