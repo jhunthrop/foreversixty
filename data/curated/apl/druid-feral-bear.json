@@ -276,7 +276,7 @@
         }
       },
       {
-        "notes": "Above 40 rage, as the rage dump. It hits up to three targets, so on a pack it is your main threat.",
+        "notes": "On two or more targets, above 40 rage. It hits up to three, so on a pack of three it is your main threat; on a single boss the same rage does more in Maul, Lacerate and Primal Bite.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -285,16 +285,35 @@
             }
           },
           "condition": {
-            "cmp": {
-              "op": "OpGe",
-              "lhs": {
-                "currentRage": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "40"
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "numberTargets": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "2"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentRage": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
+                      }
+                    }
+                  }
                 }
-              }
+              ]
             }
           }
         }
