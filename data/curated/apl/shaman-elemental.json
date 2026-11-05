@@ -119,22 +119,40 @@
         }
       },
       {
-        "notes": "Searing Totem on a single target: it is your strongest Fire totem. Its bolts only reach 20 yards, so drop it within 20 yards of the boss.",
+        "notes": "Searing Totem on a single target, and in the pack until Magma Totem at 26: it is your strongest single-target Fire totem, and until 26 the only one Fire Nova can burst from. Its bolts only reach 20 yards, so on a boss drop it within 20 yards.",
         "action": {
           "condition": {
             "and": {
               "vals": [
                 {
-                  "cmp": {
-                    "op": "OpEq",
-                    "lhs": {
-                      "numberTargets": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "1"
+                  "or": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpEq",
+                          "lhs": {
+                            "numberTargets": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "1"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "not": {
+                          "val": {
+                            "spellIsKnown": {
+                              "spellId": {
+                                "spellId": 10587,
+                                "rank": 4
+                              }
+                            }
+                          }
+                        }
                       }
-                    }
+                    ]
                   }
                 },
                 {
@@ -227,7 +245,7 @@
         }
       },
       {
-        "notes": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop Magma Totem in the pack first. It only hits within 10 yards of that totem; on a single boss your Searing Totem stands 20 yards out, and Lightning Bolt is the better cast.",
+        "notes": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on). It only hits within 10 yards of that totem; on a single boss your Searing Totem stands 20 yards out, and Lightning Bolt is the better cast.",
         "action": {
           "condition": {
             "cmp": {
