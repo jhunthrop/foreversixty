@@ -75,7 +75,7 @@ Weapon and hand words keep the client's casing in sentences: `Main Hand`, `Off H
 |---|---|
 | Who | `ClassCrestRing` 24, the name 14 px 600 in class colour, `(you)` for the viewer; under it 12 px muted the spec (`Beast Mastery Hunter`). |
 | Replaces | 13 px: `Replaces ` then the worn item as the shared item link (16 px icon, quality colour, tooltip), or `Empty slot` muted. For a ring, a trinket or a one-hander a dual wielder could put in either hand, it names the weaker of the two worn items (lower gain verdict, else lower item level), since that is the one the drop pushes out. |
-| Gain | `numeric` 14 px. Tier 0 with a sim gain: `+12.4 DPS` (healers `HPS`, tanks `TPS`, the unit from the BiS file; no unit, no figure: `On their BiS list`). Tier 1: `+14 item levels`, 13 px muted. |
+| Gain | `numeric` 14 px. Tier 0 with a sim gain: `+12.4 DPS` (healers `HPS`, tanks `TPS`, the unit from the BiS file; no unit, no figure: `On their BiS list`). Tier 1: `+14 item levels`, 13 px muted; when the candidate wears nothing in the slot (`fills_empty_slot`), `Fills an empty slot` instead, since the gap would only be the item's own level (amended 2026-11-05, guild round 3). |
 | Attendance | 13 px muted `{3} of {4} raid nights` (`1 of 1 raid night` singular). Hidden, cell and header both, while the guild has fewer than 1 counted raid night (`attendance.nights === 0` for every row). |
 | Action | Officer: `Award` (today's control and gate). Member: nothing. |
 
@@ -135,7 +135,7 @@ Before the first kill the list still shows (a council plans ahead), and the boss
 | Where | String |
 |---|---|
 | Slot eyebrows | `HEAD · CLOTH`, `HEAD · LEATHER`, `HEAD · MAIL`, `HEAD · PLATE`, `TRINKET`, `HELD IN OFF-HAND`, `ONE-HAND · AXE`, `ONE-HAND · SWORD`, `BACK`, `NECK`, `FINGER` |
-| Candidate | `Replaces `, `Empty slot`, `+{g} DPS`, `+{g} HPS`, `+{g} TPS`, `On their BiS list`, `+{n} item levels`, `{p} of {n} raid nights`, `1 of 1 raid night`, `(you)` |
+| Candidate | `Replaces `, `Empty slot`, `+{g} DPS`, `+{g} HPS`, `+{g} TPS`, `On their BiS list`, `+{n} item levels`, `Fills an empty slot`, `{p} of {n} raid nights`, `1 of 1 raid night`, `(you)` |
 | Tier-1 label | `Ranked by item level only. Not on their best-in-slot list.` (first card); `Item level only` (later cards) |
 | More rows | `Show {n} more` |
 | Footnote | `Candidates are characters who can wear the item at their level. Each is ranked by how much it adds over what they wear now. A drop stays open until an officer awards it.` |

@@ -107,6 +107,15 @@ describe('nextUnkilledEncounter', () => {
 });
 
 describe('candidateGainLabel', () => {
+  it('reads Fills an empty slot when the candidate wears nothing there, never the raw item level', () => {
+    expect(candidateGainLabel(candidateRow({ tier: 1, ilvl_delta: 76, fills_empty_slot: true }))).toBe(
+      'Fills an empty slot',
+    );
+    expect(candidateGainLabel(candidateRow({ tier: 1, ilvl_delta: 14, fills_empty_slot: false }))).toBe(
+      '+14 item levels',
+    );
+  });
+
   it("reads a tier-0 gain to one decimal, in the BiS file's unit", () => {
     expect(candidateGainLabel(candidateRow({ tier: 0, gain_dps: 40.44, gain_unit: 'dps' }))).toBe(
       '+40.4\u00a0DPS',
