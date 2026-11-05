@@ -925,3 +925,15 @@ Answers `design/reviews/2026-11-04-sim-results-spec-wow-player.md`, with the coo
 | 21 | Buffs that do nothing | Damage first, then "No effect on your damage", decided from `simbuffs.json` `stats` against the spec's weights (§3.12). |
 | 22 | Holy Strength labels | Kept, pending the tag check (§13). |
 | 23 | Whirlwind (off hand) | Use the client's name if it has one; confirm the tooltip (§11.4). |
+
+## 15. Build rulings after spec review (binding; wow-player round 2 SHIP WITH FIXES)
+
+Spec status: SHIPPED for build on 2026-11-04 with these fixes folded in. Lanes build to them; reviewers check them.
+
+- **R1 icons (lane E, lane A/B/C render):** no icon exemptions at merge. An action key with no icon never draws an empty box. Chthonic Power (1249110) shows its source item's icon and name, as a clicked trinket does in game (lane E finds the item). Thrash (21919) stays off the page until lane E names its source.
+- **R2 buffs (lane C):** the Buffs card uses the same "No effect on your damage" rule and the same full buff list as Settings. Faerie Fire appears; Curse of the Elements sits under "No effect on your damage" for a warrior.
+- **R3 stats (lane E data, lane C render):** `final_stats` fills attack power and haste ("0%" when none). If lane E cannot supply `final_stats` by merge, the block is hidden, never dashes.
+- **R4 target (lane E data, lane A render):** the Target settings row shows armor and armor after debuffs from `target_stats`; hidden parts are omitted, never dashed.
+- **R5 rage (lane E):** `resource_sources` comes from the engine's per-action ResourceMetrics; a self-damage rage source (Bloodrage, a health cost) is a gain, never a spend; a fixture test covers it.
+- **R6 enchants (lane C):** an enchanted fixture variant (test-made) proves the enchant line ("+7 Strength", "Crusader") at 1440 and 390 in the acceptance captures.
+- **R7 crit (lane A):** crit % is crits over landed hits counting glances (the Warcraft Logs convention). The Crit header carries a tooltip: "Share of landed hits that crit. White swings count glancing blows as landed, which is why they read lower than your crit chance on the boss."

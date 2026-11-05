@@ -187,3 +187,93 @@ Fix: once blocker 1 is fixed, the board shows the run's own trees. Until then, t
 4. **Holy Strength hand tags.** Confirm from the adapter, then ship the "(main hand)" and "(off hand)" labels.
 5. **Overpower.** Never "Overpower ready" in Buffs, and not shown at all for Fury. When the rotation casts Overpower, show a timeline lane "Overpower window" (finding 8).
 6. **`created_at`.** Add it. "Saved 18 Sep 2026" is how a player tells an old link from a fresh one, and it is the one date the band needs.
+
+## Round 2 (13596808d): verdict SHIP WITH FIXES
+
+Reviewed: the spec's §13 and §14; every new 1440 board, plus `timeline-390`, the top of `result-390` and `states-1440`; and the new run, `fury-request.json` and `fury-result.json`. The run is the published Fury raid entry: troll, 10,000 runs, 904.4 DPS.
+
+**No blockers remain.** This now reads like a real Fury parse:
+- Bloodthirst Rank 4 has 22 casts.
+- Windfury Totem procs show as their own "Extra attacks" row.
+- Death Wish and Recklessness go up at 2:10 to 2:12, just as the Execute phase opens.
+- Rage pools before Execute and then sits near 0 while Execute is spammed.
+- The W2 state ("Bloodthirst was never pressed in this run.") is correct and in plain words.
+
+All 23 round 1 findings are answered in §14. The items below are what is left. None of them changes the layout.
+
+### Must fix
+
+**R1. A missing icon ships as an empty box.**
+- "Chthonic Power" (1249110) shows an empty box in the Casts lane, the cast list, the On you list and on the phone. "Thrash" (21919) shows an empty box in Up all fight.
+- §11.4's icon test exempts "ids on this list while their icon is pending". That lets an empty box reach players, and an empty box is the missing-icon flash the tenets forbid.
+
+Fix:
+- No exemptions at merge: the test fails for any key without an icon.
+- Chthonic Power comes from a use effect on worn gear. Show the source item's icon and name its item on hover ("Chthonic Power · {item}"), the way the in-game cast bar shows a trinket you clicked. Today a player has no idea what "Chthonic Power" is.
+- Thrash stays off the page until lane E names its source (§11.4 already says so). Remove it from the board's Up all fight row until then.
+
+**R2. The Buffs card and Settings disagree about what helps your damage.**
+- Settings puts Curse of the Elements under "No effect on your damage". That is correct: it does nothing for physical damage.
+- The Buffs card's On the target still lists Curse of the Elements as "Up all fight".
+- Faerie Fire, which lowers armor and so helps a warrior, is missing from the Buffs card entirely.
+
+Fix: the Buffs card's On the target uses the same `simbuffs.json` `stats` rule and the same full list as Settings. Debuffs that affect your damage go up top; the rest go in a muted "No effect on your damage" row.
+
+**R3. Character stats show dashes for the two numbers that matter.**
+- "Attack power –" and "Haste –". Attack power is the first stat a warrior reads. A dash there reads as broken, not as "illustrative".
+
+Fix:
+- The hand fixture fills Attack power.
+- Haste reads "0%" when gear gives none. If Flurry is meant to count, write "30% with Flurry".
+- If lane E cannot supply `final_stats` by merge, hide the whole block. Do not ship dashes.
+
+**R4. The Target row has no armor.**
+- §3.12 and §14 item 7 promise "armor and armor after debuffs". The board's Target row reads only "Level 63 boss".
+
+Fix: draw "Level 63 boss · {armor} armor, {after} after Sunder Armor, Faerie Fire and Curse of Recklessness" from `target_stats` in the board and the fixture. Without it the round 1 finding is only half done.
+
+**R5. The fixture's rage sources contradict the rotation note.**
+- "Spent on: Reckless Swings 106". But rotation line 9 says Reckless Swings "costs a quarter of your base health" and makes white swings bring more rage.
+- So it should appear under "Gained from", or nowhere, not under "Spent on".
+- 106 is also exactly Bloodrage's gain, which looks copied.
+
+Fix: lane E derives both lists from the engine's per-action rage. Add the case to the §10 check 8 fixture test.
+
+**R6. The enchant line has never been drawn.**
+- The new run has "no enchants", so the round 1 fix ("+7 Strength", "Crusader") appears on no board.
+- A published level 60 raid list with no Crusader and no +Strength gloves or bracers is also something a warrior notices straight away ("BiS with no Crusader?").
+
+Fix:
+- Add a gear board from a fixture variant with real enchants (Crusader on both weapons, +7 Strength gloves, +9 Strength bracers, +8 Strength head and legs), at 1440 and 390.
+- Send "the published Fury raid entry carries no enchants" to the data and accuracy lane. A player will compare this number against sims that enchant.
+
+**R7. Open question 7 (crit on white rows): keep crits over landed hits, glances included, as Warcraft Logs counts them.**
+- Never use crits over non-glancing hits. "90.9%" on Main hand and "100.0%" elsewhere would be screenshotted as a bug.
+- The WCL convention still puts white rows (Main hand 42.6%, Extra attacks 43.8%) well above "Crit on the boss 30.9%" in the stats block. A player who compares the two will think one of them is wrong.
+
+Fix: give the Crit header a tooltip, "Crits out of the hits that landed, as Warcraft Logs counts them; misses and dodges are left out."
+
+### Polish
+
+- **Phone lane names.** The names sit in dark boxes over the first ~130px of the plot, so on a scrolled plot they hide ticks and bar starts (Death Wish, Mighty Rage Potion). Fade the box to about 60% or sit the name on the lane's top edge.
+- **The talents meta** reads "17/32/2" on the board but "17 / 32 / 2" in the copy table. Pick one.
+
+### Data I do not believe (for the accuracy reviewer, not the page)
+
+- **Berserking (20554)** shows 1 cast and 20.8 s up (11.6%). In 1.12 the Troll Berserking lasts 10 s. Verify the Forever duration.
+- **Heart of the Lion (409583)** is in the raid preset. That id and buff are a Season of Discovery hunter rune. Confirm it exists in the Forever 1.60 client before it counts as a raid buff.
+- **Hunter's Mark** is grouped as helping a warrior's damage. In 1.12 it raises ranged attack power only. Verify the Forever tooltip; if it matches 1.12, it belongs in "No effect on your damage".
+- **The published raid list's own picks** look odd at 60: Skibi's Pendant (Neck · 49), Rune of the Guard Captain (green, Trinket · 51), Blackstone Ring (Finger · 54), and no enchants at all. Forever stats may justify them. The BiS reviewer should confirm.
+- **The off-hand miss gap** is now 8.5% against 19.0%, wider than round 1's. It is already with the accuracy loop. I agree with the ruling that the page carries no note until the loop signs off.
+
+### The open questions, round 2
+
+1. **Talent strings:** still lane E's. W2 now covers the dangerous case, so it no longer blocks.
+2. **Off-hand misses:** agree with the ruling (accuracy loop, no row note).
+3. **`rotation_sha`:** good.
+4. **Holy Strength hand tags:** good; they don't arise on this run.
+5. **Overpower window:** settled. "Overpower window" as a timeline lane only when the rotation casts it is right.
+6. **`created_at`:** good.
+7. **Crit definition:** see R7.
+8. **`final_stats`:** see R3. If the engine call is not there by merge, hide the block rather than show dashes.
+9. **Fixture contradictions:** add R5's rage list to lane E's list.
