@@ -214,14 +214,15 @@ export function kindCountsRoles(kind: GuildZoneKind): boolean {
 }
 
 /** The zone beside a title that is not the zone's name, with the size an officer picked for a guild
- *  event: `Guild event · 20`. The planned row's second line and the event page's h1 read it. */
+ *  event: `Guild event · 20 players` (a bare `20` read as nothing, guild round 3). The planned row's
+ *  second line and the event page's h1 read it. */
 export function zoneLineOf(view: {
   zone_kind?: GuildZoneKind;
   zone_name: string;
   size: number | null;
 }): string {
   return kindOf(view) === 'event' && view.size !== null
-    ? `${view.zone_name}${SEP}${view.size}`
+    ? `${view.zone_name}${SEP}${view.size} players`
     : view.zone_name;
 }
 

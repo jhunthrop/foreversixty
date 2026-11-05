@@ -88,7 +88,7 @@ describe('the band', () => {
       size: 20,
     });
     const body = ready(event);
-    expect(text(between(body, 'raid-title', 'raid-when'))).toBe('Stormwind photo · Guild event · 20');
+    expect(text(between(body, 'raid-title', 'raid-when'))).toBe('Stormwind photo · Guild event · 20 players');
     expect(between(body, 'raid-title-zone', 'raid-when')).not.toBe('');
     expect(body).toMatch(/class="[^"]*normal-case[^"]*" data-testid="raid-title-zone"/);
   });
