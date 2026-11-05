@@ -3,6 +3,8 @@ package guilds
 import (
 	"context"
 	"fmt"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // ReportCompleted is the reports.Completed hook: a report has just completed, or a complete
@@ -44,6 +46,65 @@ func (s *Service) ReportGuildMoved(ctx context.Context, reportID string, by int6
 		s.markRaid(ctx, m.raidID)
 		s.logger().Info("guilds", "op", "report_guild_moved", "report", reportID, "raid", m.raidID, "user_id", by)
 	}
+}
+
+// ReportVisibilityChanged is the reports.VisibilityChanged hook: a PATCH has just changed
+// reportID's visibility. Every raid holding the report recomputes its attendance (a log made
+// public again counts the sign-ups corrected while it was private); a report no raid holds runs
+// the completion hook, so a log made visible after it completed still finds its raid. Best
+// effort: a failure is logged, never returned.
+func (s *Service) ReportVisibilityChanged(ctx context.Context, reportID string) {
+	raids, err := s.Store.raidsHolding(ctx, reportID)
+	if err != nil {
+		s.logger().Error("guilds", "op", "report_visibility", "report", reportID, "err", err)
+		return
+	}
+	if len(raids) == 0 {
+		complete, err := s.Store.reportComplete(ctx, reportID)
+		if err != nil {
+			s.logger().Error("guilds", "op", "report_visibility", "report", reportID, "err", err)
+			return
+		}
+		if complete {
+			s.ReportCompleted(ctx, reportID)
+		}
+		return
+	}
+	for _, id := range raids {
+		s.recomputeAttendance(ctx, id)
+	}
+}
+
+// recomputeAttendance rebuilds raidID's attendance and marks its post. Best effort: a failure is
+// logged, never returned (the write that asked for it already stands).
+func (s *Service) recomputeAttendance(ctx context.Context, raidID int64) {
+	if err := s.Store.RecomputeAttendance(ctx, raidID); err != nil {
+		s.logger().Error("guilds", "op", "recompute_attendance", "raid_id", raidID, "err", err)
+	}
+	s.markRaid(ctx, raidID)
+}
+
+// raidsHolding is the ids of the raids whose log is reportID.
+func (s *Store) raidsHolding(ctx context.Context, reportID string) ([]int64, error) {
+	rows, err := s.Pool.Query(ctx, `select id from guild_raids where report_id = $1 order by id`, reportID)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: raids holding report: %w", err)
+	}
+	ids, err := pgx.CollectRows(rows, pgx.RowTo[int64])
+	if err != nil {
+		return nil, fmt.Errorf("guilds: raids holding report: %w", err)
+	}
+	return ids, nil
+}
+
+// reportComplete reports whether reportID is a complete report.
+func (s *Store) reportComplete(ctx context.Context, reportID string) (bool, error) {
+	var ok bool
+	if err := s.Pool.QueryRow(ctx,
+		`select exists (select 1 from reports where id = $1 and status = 'complete')`, reportID).Scan(&ok); err != nil {
+		return false, fmt.Errorf("guilds: report complete: %w", err)
+	}
+	return ok, nil
 }
 
 // raidRefKey names one raid by its guild.

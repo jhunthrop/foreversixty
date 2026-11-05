@@ -129,7 +129,12 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	}
 	s.logger().Info("guilds", "op", "raid_signup", "guild_id", cmd.GuildID, "raid_id", raid.ID,
 		"user_id", char.userID, "actor", cmd.ActorID, "character_key", char.CharacterKey, "as_officer", asOfficer)
-	s.markRaid(ctx, raid.ID)
+	if raid.Status == RaidDone {
+		// An officer's correction to a logged raid: its attendance reads the sign-ups.
+		s.recomputeAttendance(ctx, raid.ID)
+	} else {
+		s.markRaid(ctx, raid.ID)
+	}
 	if cmd.State == SignupOut {
 		s.publishLateChange(ctx, raid, char.CharacterKey, char.Name, time.Now())
 	}

@@ -75,10 +75,18 @@ type GuildMoved interface {
 	ReportGuildMoved(ctx context.Context, reportID string, by int64)
 }
 
-// GuildHooks is both hooks, as the guilds service provides them.
+// VisibilityChanged is told when a PATCH changes a report's visibility, so a raid holding the
+// report recomputes its attendance (or a report just made visible gets its match).
+// guilds.Service satisfies it.
+type VisibilityChanged interface {
+	ReportVisibilityChanged(ctx context.Context, reportID string)
+}
+
+// GuildHooks is every hook, as the guilds service provides them.
 type GuildHooks interface {
 	Completed
 	GuildMoved
+	VisibilityChanged
 }
 
 // callCompleted tells hook of reportID; a nil hook is a deployment that listens to nothing.
