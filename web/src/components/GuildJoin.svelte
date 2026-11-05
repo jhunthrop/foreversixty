@@ -18,7 +18,7 @@
     type InvitePeekResult,
   } from '../lib/guild/api';
   import { guildJoinCopy } from '../lib/guild/copy';
-  import { joinedPlanLine } from '../lib/guild/join-plan';
+  import { joinedPlanLineFor } from '../lib/guild/join-plan';
   import { holdsErrorRoom, joiningRow } from '../lib/guild/join-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildMarkSrc } from '../lib/guild/mark';
@@ -80,13 +80,14 @@
     joined === null && signedIn && (!alreadyIn || peek?.joins_as?.on_roster === true),
   );
 
-  /** The guild's plan sentence from a fresh `/v1/me`; null when that read fails (the line is left out). */
+  /** The guild's plan sentence from a fresh `/v1/me`, for an officer or the guild master; null for a
+   *  member or when that read fails (the line is left out). */
   async function readPlanLine(guildId: number, guildName: string): Promise<string | null> {
     forgetSession();
     try {
       const fresh = await fetchMeOnce();
       const entry = fresh?.guilds.find((g) => g.id === guildId);
-      return entry === undefined ? null : joinedPlanLine(guildName, entry.covered);
+      return entry === undefined ? null : joinedPlanLineFor(guildName, entry);
     } catch {
       return null;
     }

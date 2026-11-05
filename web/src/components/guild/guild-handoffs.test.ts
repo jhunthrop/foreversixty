@@ -13,7 +13,7 @@ import {
   showsBillingHandoff,
 } from '../../lib/guild/billing-handoff';
 import { guildHomeCopy, guildJoinCopy, guildSettingsCopy } from '../../lib/guild/copy';
-import { joinedPlanLine } from '../../lib/guild/join-plan';
+import { joinedPlanLine, joinedPlanLineFor } from '../../lib/guild/join-plan';
 import { claimEntryFor } from '../../lib/guild/roster-gate';
 import GuildJoinedBlock from './GuildJoinedBlock.svelte';
 import BillingHandoff from './BillingHandoff.svelte';
@@ -114,6 +114,15 @@ describe('joinedPlanLine', () => {
     expect(joinedPlanLine(G, covered({}))).toBe(`${G} is on the Raid guild plan.`);
     expect(joinedPlanLine(G, null)).toBe(`${G} is on the free plan.`);
     expect(joinedPlanLine(G, covered({ state: 'lapsed' }))).toBe(`${G} is on the free plan.`);
+  });
+
+  it('is said to an officer or the guild master, never to a member who joined (guild loop round 3)', () => {
+    expect(joinedPlanLineFor(G, { rank: 'leader', covered: null })).toBe(`${G} is on the free plan.`);
+    expect(joinedPlanLineFor(G, { rank: 'officer', covered: covered({}) })).toBe(
+      `${G} is on the Raid guild plan.`,
+    );
+    expect(joinedPlanLineFor(G, { rank: 'member', covered: null })).toBeNull();
+    expect(joinedPlanLineFor(G, { covered: covered({}) })).toBeNull();
   });
 });
 

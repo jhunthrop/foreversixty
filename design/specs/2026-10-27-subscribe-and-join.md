@@ -402,7 +402,7 @@ Touch: every control is at least 44 px tall at 360. Keyboard: tab order follows 
 
 - The unverified note (`Guild.svelte`, `guildHomeCopy.notVerifiedNote`) picks by `viewer.verify.has_approver` (§8). With an approver: today's sentence. Without one: the §9.3 sentence and the inline gold link `Send your guild master a link` to the claim page.
 - The header claim slot for a member of an unclaimed guild reads `Get the guild claimed` and links to the claim page. It no longer offers `Claim this guild` to someone who cannot claim.
-- Invite link, joined state: under `You joined the guild.`, 13 px muted, the guild's plan sentence (§9.3), then `Open the guild`.
+- Invite link, joined state: under `You joined the guild.`, 13 px muted, the guild's plan sentence (§9.3), then `Open the guild`. The plan sentence is for an officer or the guild master only; a member who joins reads no plan line (amended 2026-11-05, guild loop round 3: a raider has nothing to do about the plan).
 
 ### 6.4 Guild settings `#billing`, an officer who does not hold the claim
 
