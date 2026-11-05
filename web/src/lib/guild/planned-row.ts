@@ -3,7 +3,7 @@
 // and numbers it draws, so PlannedRaidRow.svelte only lays them out. Times read in the viewer's zone;
 // the guild-time label shows only when the offsets differ.
 import type { GuildRaidRole, GuildRaidStatus, GuildRaidView, GuildSignupState } from './api';
-import { countdown, countLine, countRatio, guildTimeLabel, kindOf, roleBreakdown, SEP } from './raid-copy';
+import { countdown, countLine, countRatio, guildTimeLabel, roleBreakdown, zoneLineOf } from './raid-copy';
 import { clockText, offsetsDiffer } from './raid-time';
 
 const MINUTE_MS = 60_000;
@@ -73,13 +73,6 @@ export function viewerAnswer(raid: GuildRaidView): ViewerAnswer | null {
 
 function datePart(d: Date, tz: string, locale: string, option: Intl.DateTimeFormatOptions): string {
   return new Intl.DateTimeFormat(locale, { timeZone: tz, ...option }).format(d);
-}
-
-/** The title cell's second line: the zone, with the size an officer picked for a guild event. */
-function zoneLineOf(raid: GuildRaidView): string {
-  return kindOf(raid) === 'event' && raid.size !== null
-    ? `${raid.zone_name}${SEP}${raid.size}`
-    : raid.zone_name;
 }
 
 export function plannedRowView(

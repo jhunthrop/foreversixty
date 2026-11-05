@@ -14,7 +14,7 @@
   import { guildClaimCopy } from '../lib/guild/copy';
   import { focusOnMount } from '../lib/guild/focus-now';
   import { browserStorage } from '../lib/guild/reserve-keys';
-  import { SEP, eyebrowOf, kindOf, notesEmptyOf, raidCopy } from '../lib/guild/raid-copy';
+  import { SEP, eyebrowOf, kindOf, notesEmptyOf, raidCopy, zoneLineOf } from '../lib/guild/raid-copy';
   import {
     raidCount,
     raidPageFlags,
@@ -265,9 +265,11 @@
           </div>
         {:else}
           <h1 class="heading-page md:col-span-2" data-testid="raid-title">
+            <!-- The zone line in its own case, as the planned row writes it: `· Guild event · 20`,
+                 never the h1's uppercase (guild round 2). -->
             {raid.title}{#if raid.title !== raid.zone_name}<span
-                class="text-muted font-sans text-[15px] font-normal whitespace-nowrap"
-                >{SEP}{raid.zone_name}</span
+                class="text-muted font-sans text-[15px] font-normal tracking-normal whitespace-nowrap normal-case"
+                data-testid="raid-title-zone">{SEP}{zoneLineOf(raid)}</span
               >{/if}
           </h1>
           <!-- Phone: three lines (date; times; guild time and countdown); one line from md. The
@@ -300,9 +302,10 @@
                   >
                 {/if}
                 <span
-                  ><span class="{countText} numeric text-[15px]">{count.line}</span><span
-                    class="text-muted text-[13px]">{SEP}{count.breakdown}</span
-                  ></span
+                  ><span class="{countText} numeric text-[15px]">{count.line}</span
+                  >{#if count.breakdown !== ''}<span class="text-muted text-[13px]"
+                      >{SEP}{count.breakdown}</span
+                    >{/if}</span
                 >
               </p>
             {/if}

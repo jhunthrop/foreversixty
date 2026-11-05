@@ -211,6 +211,18 @@ export function kindOf(view: { zone_kind?: GuildZoneKind }): GuildZoneKind {
   return view.zone_kind ?? 'raid';
 }
 
+/** The zone beside a title that is not the zone's name, with the size an officer picked for a guild
+ *  event: `Guild event · 20`. The planned row's second line and the event page's h1 read it. */
+export function zoneLineOf(view: {
+  zone_kind?: GuildZoneKind;
+  zone_name: string;
+  size: number | null;
+}): string {
+  return kindOf(view) === 'event' && view.size !== null
+    ? `${view.zone_name}${SEP}${view.size}`
+    : view.zone_name;
+}
+
 /** The page's eyebrow, set uppercase by its `label` class: `RAID`, `DUNGEON`, `EVENT`. */
 export const eyebrowOf = (kind: GuildZoneKind): string => KIND_EYEBROWS[kind];
 /** `Cancel raid`, `Cancel run`, `Cancel event`. */

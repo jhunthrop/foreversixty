@@ -96,6 +96,16 @@ describe('raidCount', () => {
   it('drops the bar while the size is unknown', () => {
     expect(raidCount(plannedRaid({ size: null }))).toMatchObject({ line: '23 signed up', fill: null });
   });
+
+  it('says nobody signed up, with no role breakdown, at zero', () => {
+    const counts = { in: 0, late: 0, bench: 1, out: 2, tanks: 0, healers: 0, dps: 0 };
+    expect(raidCount(plannedRaid({ counts, size: 5 }))).toEqual({
+      line: 'Nobody signed up yet',
+      ratio: '0/5',
+      breakdown: '',
+      fill: 0,
+    });
+  });
 });
 
 describe('strip reserve rows', () => {

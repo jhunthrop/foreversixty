@@ -100,7 +100,9 @@ export function raidCount(raid: GuildRaidView): RaidCount {
   return {
     line: countLine(n, size),
     ratio: countRatio(n, size),
-    breakdown: roleBreakdown(raid.counts.tanks, raid.counts.healers, raid.counts.dps, raid.counts.late),
+    // Nobody signed up: no `0 tanks · 0 healers · 0 DPS` after the line (guild round 2).
+    breakdown:
+      n === 0 ? '' : roleBreakdown(raid.counts.tanks, raid.counts.healers, raid.counts.dps, raid.counts.late),
     fill: size === null || size <= 0 ? null : Math.min(100, Math.round((n / size) * 100)),
   };
 }

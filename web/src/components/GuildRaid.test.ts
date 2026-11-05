@@ -79,6 +79,20 @@ describe('the band', () => {
     expect(text(between(body, 'raid-title', 'raid-when'))).toBe("Ony farm · Onyxia's Lair");
   });
 
+  it('follows an event title with Guild event and its size, in its own case', () => {
+    const event = plannedRaid({
+      title: 'Stormwind photo',
+      zone: 'event:guild-20',
+      zone_name: 'Guild event',
+      zone_kind: 'event',
+      size: 20,
+    });
+    const body = ready(event);
+    expect(text(between(body, 'raid-title', 'raid-when'))).toBe('Stormwind photo · Guild event · 20');
+    expect(between(body, 'raid-title-zone', 'raid-when')).not.toBe('');
+    expect(body).toMatch(/class="[^"]*normal-case[^"]*" data-testid="raid-title-zone"/);
+  });
+
   it('keeps the spaces around every separator, which the md-up inline layout shows as is', () => {
     const body = html({ raid: plannedRaid({ title: 'Ony farm' }) }, NEW_YORK);
     const markup = (from: string, to: string): string =>

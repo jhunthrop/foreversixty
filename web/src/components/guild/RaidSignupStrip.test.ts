@@ -220,6 +220,14 @@ describe('RaidSignupStrip', () => {
       expect(out).not.toContain('signup-spec-reserve-');
     });
 
+    it('reserves no spec block on a run or event page, so the card fits its row', () => {
+      const unsigned = [character('Aurelith', { class: 'paladin' })];
+      for (const zone_kind of ['dungeon', 'event'] as const) {
+        const markup = html({ view: { ...raid(unsigned), zone_kind } });
+        expect(markup).not.toContain('signup-spec-reserve-');
+      }
+    });
+
     it('collapses a saved spec into the toggle, closed', () => {
       const markup = html({ view: raid([{ ...PALADIN, raid_spec: 'paladin-retribution' }]) });
       expect(markup).toMatch(

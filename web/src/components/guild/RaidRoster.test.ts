@@ -158,6 +158,11 @@ describe('RaidRoster', () => {
     expect(signed).not.toContain('—');
   });
 
+  it('lays the officer Not signed up list in a strict grid with a row gap', () => {
+    const body = html({ officer: true });
+    expect(body).toMatch(/<ul class="grid [^"]*gap-y-2[^"]*" data-testid="raid-roster-not-signed-grid"/);
+  });
+
   it('disables the officer selects in read-only, naming the gate', () => {
     const body = html({ officer: true, officerTools: false });
     const select = /<select[^>]*data-testid="raid-roster-select-Bolt"[^>]*>/.exec(body)?.[0] ?? '';
