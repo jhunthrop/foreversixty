@@ -99,7 +99,7 @@ Deleted strings: `Award and Nudge are part of the guild plan. ` + `Subscribe the
 
 Capture `only-stranger-invite-1440`: a 480 px card hard left, `Lifecycle Test · PvP US invited you.` (a guild cannot invite), no character.
 
-**Layout.** One `card-surface` card, max width 560 px, centred in the 1344 px column, 32 px from the header (18 px gutter on phone, full width). Top to bottom, 16 px gaps:
+**Layout.** One `card-surface` card on the form measure (`measure-form`, 480 px), centred in the 1344 px column, 32 px from the header (18 px gutter on phone, full width). Top to bottom, 16 px gaps:
 
 1. **Guild row**: `FactionCrest` 44 px, the guild name in `heading-plan` (24 px, the heading face, its own case), then 13 px muted `{Realm} · {n} members on Forever Sixty`.
 2. **Invite line**, 15 px `--text`: `You are invited to join {Guild}.` The inviter is not named until §4.1 lands (no column records who made the link). Then it becomes `ClassCrestRing` 24 px + `{Inviter}` in class colour 600 + ` invited you to join.`

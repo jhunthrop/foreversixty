@@ -33,7 +33,7 @@
   import SettingsRow from './ui/SettingsRow.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
-  const CARD = 'card-surface mx-auto flex w-full max-w-[560px] flex-col gap-4 rounded-panel p-5';
+  const CARD = 'card-surface measure-form flex w-full flex-col gap-4 rounded-panel p-5';
 
   let { token }: { token: string } = $props();
 
