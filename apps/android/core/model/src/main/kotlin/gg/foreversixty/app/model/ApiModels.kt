@@ -1213,6 +1213,16 @@ data class GuildStanding(
     @SerialName("rank_by_item_level") val rankByItemLevel: Int,
     @SerialName("item_level") val itemLevel: Int,
     @SerialName("needs_before_next_raid") val needsBeforeNextRaid: List<String> = emptyList(),
+    /** The raid needs_before_next_raid is before: the next planned raid of kind raid, the one Readiness and /raid name first (never a dungeon run or guild event the band may show); null when none is planned. */
+    @SerialName("needs_raid") val needsRaid: GuildStandingNeedsRaid? = null,
+)
+
+/** The raid needs_before_next_raid is before: the next planned raid of kind raid, the one Readiness and /raid name first (never a dungeon run or guild event the band may show); null when none is planned. */
+@Serializable
+data class GuildStandingNeedsRaid(
+    @SerialName("title") val title: String,
+    /** RFC 3339, UTC */
+    @SerialName("starts_at") val startsAt: String,
 )
 
 @Serializable
@@ -1515,6 +1525,10 @@ data class LootEncounter(
     @SerialName("name") val name: String,
     @SerialName("zone") val zone: String,
     @SerialName("killed") val killed: Boolean,
+    /** Separate nights (days in the guild's raid zone) with a kill; two logs of one night count once. */
+    @SerialName("kill_nights") val killNights: Int,
+    /** kill_nights >= 3: the boss reads on farm. One or two kill nights read down. */
+    @SerialName("on_farm") val onFarm: Boolean,
 )
 
 /** /data/{build}/loot.json (W3-C8). Every source of every item, the quest rewards and the factions' sides. */

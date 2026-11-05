@@ -146,6 +146,8 @@ describe('rosterSpecLine', () => {
       'Survival Hunter on the site',
     );
     expect(rosterSpecLine({ siteSpec: 'Survival', className: 'hunter' })).toBe('Survival Hunter on the site');
-    expect(rosterSpecLine({ addonSpec: null, className: 'hunter' })).toBe('');
+    // No spec anywhere (no talents spent): the class alone, never a bare row (guild round 3).
+    expect(rosterSpecLine({ addonSpec: null, className: 'hunter' })).toBe('Hunter');
+    expect(rosterSpecLine({ addonSpec: null })).toBe('');
   });
 });

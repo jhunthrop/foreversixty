@@ -79,8 +79,10 @@ function item(overrides: Partial<GuildLootItem> = {}): GuildLootItem {
 }
 
 describe('bossPickerLabel', () => {
-  it('reads "on farm" for a boss that is down, never filter jargon', () => {
-    expect(bossPickerLabel(encounter({ killed: true }))).toBe('Onyxia · on farm');
+  it('reads "on farm" only once the API says so, "down" before, never filter jargon', () => {
+    expect(bossPickerLabel(encounter({ killed: true, on_farm: true }))).toBe('Onyxia · on farm');
+    expect(bossPickerLabel(encounter({ killed: true, on_farm: false }))).toBe('Onyxia · down');
+    expect(bossPickerLabel(encounter({ killed: true }))).toBe('Onyxia · down');
   });
 
   it('reads "not killed yet" for an unkilled boss', () => {
@@ -229,7 +231,9 @@ describe('the overview line', () => {
 
   it('never offers the skinned scale, and reads the boss word when nothing is open', () => {
     const scale = item({ item_id: 15410, kind: 'skinned', candidates: [] });
-    expect(overviewLootLine(page({ encounters: [encounter()], at_level_cap: 3, items: [scale] }))).toEqual({
+    expect(
+      overviewLootLine(page({ encounters: [encounter({ on_farm: true })], at_level_cap: 3, items: [scale] })),
+    ).toEqual({
       kind: 'text',
       text: 'Onyxia · on farm',
     });

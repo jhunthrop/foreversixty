@@ -332,7 +332,7 @@ func (s *Service) outcome(ctx context.Context, a signupAsk, res guilds.SignupRes
 		}
 		return a.reply(lead+countClause(res.Raid), change...)
 	case guilds.SignupLate:
-		text := fill(roleless(pressCopy.LateSaved, noRoles), raid...) + moved
+		text := fill(roleless(pressCopy.LateSaved, noRoles), append(raid, "{kind}", kindWord(res.Raid.ZoneKind))...) + moved
 		return a.reply(text, append(change, linkButton(pressCopy.NoteButton, s.noteURL(ctx, a.RaidID)))...)
 	case guilds.SignupBench:
 		return a.reply(fill(pressCopy.BenchSaved, raid...), change...)

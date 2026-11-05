@@ -56,8 +56,13 @@ type reportPlan struct {
 	Label     string // the zone-ish name the title is built from, e.g. "Onyxia"
 	Zone      string
 	DaysAgo   int
-	StartHour int // the raid's local-feeling start hour, UTC, for a stable time of day
-	Fights    []fightPlan
+	StartHour int // the raid's start hour, in Clock (UTC when Clock is empty)
+	// StartMinute is the minute past StartHour the first pull goes.
+	StartMinute int
+	// Clock is the zone StartHour is read in, the guild's raid zone; nil is UTC, the mock
+	// seed's stable time of day.
+	Clock  *time.Location
+	Fights []fightPlan
 }
 
 // raidPlans is the four raid nights this seed writes: one Barrow Deeps night and one
@@ -132,9 +137,15 @@ func raidPlans() []reportPlan {
 const pullGap = 4 * time.Minute
 
 // schedule turns a reportPlan into its created_at, completed_at, and each fight's own
-// start time, anchored on now.
+// start time, anchored on now: DaysAgo days before today at StartHour:StartMinute on the plan's
+// clock.
 func (p reportPlan) schedule(now time.Time) (createdAt, completedAt time.Time, starts []time.Time) {
-	createdAt = time.Date(now.Year(), now.Month(), now.Day(), p.StartHour, 0, 0, 0, time.UTC).
+	loc := time.UTC
+	if p.Clock != nil {
+		loc = p.Clock
+	}
+	local := now.In(loc)
+	createdAt = time.Date(local.Year(), local.Month(), local.Day(), p.StartHour, p.StartMinute, 0, 0, loc).
 		AddDate(0, 0, -p.DaysAgo)
 	at := createdAt
 	starts = make([]time.Time, len(p.Fights))

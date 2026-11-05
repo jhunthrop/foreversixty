@@ -1833,6 +1833,22 @@ components:
               class: { type: [string, "null"], x-name: className }
               level: { type: [integer, "null"] }
               spec: { type: [string, "null"], description: Always null today. }
+    GuildSearch:
+      type: object
+      required: [rows]
+      properties:
+        rows:
+          type: array
+          maxItems: 5
+          items:
+            type: object
+            title: GuildSearchRow
+            required: [name, region, ruleset, path]
+            properties:
+              name: { type: string }
+              region: { type: string }
+              ruleset: { type: string }
+              path: { type: string, description: "The guild page's site path, /guild/{region}/{ruleset}/{slug}" }
     SimInput:
       type: object
       description: >-
@@ -2055,7 +2071,7 @@ components:
           type: object
           title: GuildStanding
           description: Omitted when it cannot be derived.
-          required: [spec, class, same_spec_count, rank_by_item_level, item_level, needs_before_next_raid]
+          required: [spec, class, same_spec_count, rank_by_item_level, item_level, needs_before_next_raid, needs_raid]
           properties:
             spec: { type: string }
             class: { type: string, x-name: className }
@@ -2063,6 +2079,17 @@ components:
             rank_by_item_level: { type: integer }
             item_level: { type: integer }
             needs_before_next_raid: { type: array, items: { type: string } }
+            needs_raid:
+              title: GuildStandingNeedsRaid
+              type: [object, "null"]
+              description: >-
+                The raid needs_before_next_raid is before: the next planned raid of kind raid,
+                the one Readiness and /raid name first (never a dungeon run or guild event the
+                band may show); null when none is planned.
+              required: [title, starts_at]
+              properties:
+                title: { type: string }
+                starts_at: { type: string, format: date-time, description: "RFC 3339, UTC" }
         reports:
           type: array
           description: The last 7 days.
@@ -2658,12 +2685,18 @@ components:
           items:
             type: object
             title: LootEncounter
-            required: [encounter_id, name, zone, killed]
+            required: [encounter_id, name, zone, killed, kill_nights, on_farm]
             properties:
               encounter_id: { type: integer }
               name: { type: string }
               zone: { type: string }
               killed: { type: boolean }
+              kill_nights:
+                type: integer
+                description: Separate nights (days in the guild's raid zone) with a kill; two logs of one night count once.
+              on_farm:
+                type: boolean
+                description: "kill_nights >= 3: the boss reads on farm. One or two kill nights read down."
         selected: { type: integer, format: int64 }
         items:
           type: array
@@ -5757,6 +5790,36 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '404':
           description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/search:
+    get:
+      operationId: searchGuilds
+      summary: Guilds whose name contains the typed text (the guild lookup's "Did you mean")
+      description: >-
+        Public, rate-limited like the other public guild reads (the router's per-client
+        limit). q is trimmed and must then be 3 to 40 characters, else 400. A case-insensitive
+        contains match on the guild's name over every guild that has a page (any guild the
+        site knows); the text matches literally (% and _ are not wildcards). region and ruleset
+        narrow it when given. At most 5 rows: names that start with the text first, then by
+        name. Each row is { name, region, ruleset, path }, path the guild page's site path
+        (/guild/{region}/{ruleset}/{slug}, the site's guildHref slug). rows is never null.
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 3, maxLength: 40 }, description: "Trimmed first; 3 to 40 characters." }
+        - { name: region, in: query, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: query, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+      responses:
+        '200':
+          description: "Matching guilds"
+          x-fixtures: [guild.search]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildSearch' } } }
+        '400':
+          description: "bad_request: q under 3 or over 40 characters once trimmed, or an unknown region or ruleset"
+          x-fixtures: [guild.search.error-bad-request]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:

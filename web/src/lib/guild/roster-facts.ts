@@ -73,7 +73,11 @@ export function rosterSpecLine(input: {
     input.addonSpec === undefined || input.addonSpec === null || input.addonSpec === ''
       ? ''
       : specName(addonSpecName(input.addonSpec));
-  if (game === '') return site === '' ? '' : siteSpecLabel(specClassName(site, input.className));
+  if (game === '' && site === '') {
+    // No spec on either side (a character with no talents spent): the class alone, never a bare row.
+    return input.className === undefined || input.className === '' ? '' : classDisplayName(input.className);
+  }
+  if (game === '') return siteSpecLabel(specClassName(site, input.className));
   const named = specClassName(game, input.className);
   if (site === '' || site.toLowerCase() === game.toLowerCase()) return named;
   return `${named} · ${siteSpecLabel(site)}`;

@@ -94,9 +94,16 @@ func TestUnfilteredReadinessNamesTheNextRaid(t *testing.T) {
 		t.Fatalf("unfiltered rows = %+v", out.Rows)
 	}
 	for _, r := range out.Rows {
-		if r.SyncedBeforeCutoff != nil || r.NoExport {
-			t.Fatalf("unfiltered row carries raid facts: %+v", r)
+		if r.NoExport {
+			t.Fatalf("unfiltered row carries a no_export row: %+v", r)
 		}
+	}
+	// Freshness is judged against now on the unfiltered board too (guild round 3 API3).
+	if r := by[officerKey]; r.SyncedBeforeCutoff == nil || *r.SyncedBeforeCutoff || r.Failing != 0 {
+		t.Fatalf("unfiltered fresh row = %+v", r)
+	}
+	if r := by[memberKeyA]; r.SyncedBeforeCutoff == nil || !*r.SyncedBeforeCutoff || r.Failing != 1 || r.NudgeText == nil {
+		t.Fatalf("unfiltered stale row = %+v, want synced_before_cutoff, one failing check and a nudge", r)
 	}
 	if out.Raid != nil {
 		t.Fatalf("unfiltered raid = %+v", out.Raid)

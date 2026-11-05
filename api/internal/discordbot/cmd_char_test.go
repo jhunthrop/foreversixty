@@ -274,11 +274,12 @@ func TestCharCard(t *testing.T) {
 		if texts[1] != "**Top upgrades** · level 60\n"+panelCopy.UpgradesByScore {
 			t.Fatalf("lead = %q", texts[1])
 		}
-		// Nothing measured, so the list reads in points, in frame order by gap: head, hands, feet, wrist.
+		// Nothing measured, so the list reads in points, largest gap first: the top 3 of head, hands,
+		// feet, wrist, then the more line for the fourth.
 		want := []string{"**Pick head**\nHead · +9.0 points\n-# Epic · item level 61 · Source head",
 			"**Pick hands**\nHands · +7.0 points\n-# Epic · item level 61 · Source hands",
 			"**Pick feet**\nFeet · +5.0 points\n-# Epic · item level 61 · Source feet",
-			"**Pick wrist**\nWrist · +2.0 points\n-# Epic · item level 61 · Source wrist"}
+			panelCopy.UpgradesMoreOne}
 		if got := texts[2:]; strings.Join(got, "|") != strings.Join(want, "|") {
 			t.Fatalf("upgrades = %q", got)
 		}

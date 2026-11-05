@@ -222,6 +222,10 @@ func (s *Store) streamLoot(ctx context.Context, guildID int64, emit func([]strin
 		return fmt.Errorf("guilds: export loot: %w", err)
 	}
 	defer rows.Close()
+	loc, err := s.exportLocation(ctx, guildID)
+	if err != nil {
+		return err
+	}
 	for rows.Next() {
 		var (
 			night             time.Time
@@ -235,12 +239,25 @@ func (s *Store) streamLoot(ctx context.Context, guildID int64, emit func([]strin
 		if encounterID == onyxiaEncounterID {
 			boss = encounterName
 		}
-		if err := emit(safeRow(night.UTC().Format(exportDateLayout), raid, boss,
+		if err := emit(safeRow(night.In(loc).Format(exportDateLayout), raid, boss,
 			strconv.FormatInt(item, 10), itemNames[int(item)], character)); err != nil {
 			return err
 		}
 	}
 	return rows.Err()
+}
+
+// exportLocation is the zone both CSVs write night dates in: the guild's raid zone, the one
+// every planned raid is posted and shown in, so a Wednesday 7 pm raid in Chicago is dated
+// Wednesday. A logged night with no planned raid uses the same zone. A guild that never set a
+// raid zone gets UTC: a report stores no time zone of its own (reports.zone is the instance),
+// so there is nothing closer to the players' clock to read.
+func (s *Store) exportLocation(ctx context.Context, guildID int64) (*time.Location, error) {
+	tz, err := s.GuildRaidTimezone(ctx, guildID)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: export zone: %w", err)
+	}
+	return zoneOrUTC(tz), nil
 }
 
 // safeRow escapes every cell of a row against formula injection.

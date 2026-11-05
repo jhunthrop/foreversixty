@@ -251,6 +251,26 @@ func TestHomeStandingRanksAmongVerifiedSameSpecGearConsentPeers(t *testing.T) {
 	if view.Standing.ItemLevel != 60 {
 		t.Errorf("item_level = %d, want 60", view.Standing.ItemLevel)
 	}
+	if view.Standing.NeedsRaid != nil {
+		t.Errorf("needs_raid = %+v, want null with nothing planned", view.Standing.NeedsRaid)
+	}
+
+	// A dungeon run sooner than the raid: the band shows the run, the needs line names the raid.
+	ony := time.Now().Add(72 * time.Hour).UTC().Truncate(time.Second)
+	if _, err := h.pool.Exec(ctx, `
+		insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, created_by) values
+		  ($1, 'dungeon:the-deadmines', 'The Deadmines', now() + interval '1 day', 120, $2),
+		  ($1, 'raid:onyxias-lair', 'Onyxia''s Lair', $3, 180, $2)`, gid, self, ony); err != nil {
+		t.Fatal(err)
+	}
+	view = HomeView{}
+	h.data(h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), ""), &view)
+	if view.NextRaid == nil || view.NextRaid.Title != "The Deadmines" {
+		t.Fatalf("band next_raid = %+v, want The Deadmines", view.NextRaid)
+	}
+	if nr := view.Standing.NeedsRaid; nr == nil || nr.Title != "Onyxia's Lair" || !nr.StartsAt.Equal(ony) {
+		t.Errorf("needs_raid = %+v, want Onyxia's Lair at %s", nr, ony)
+	}
 }
 
 // TestPullsThisTierCountsPullsAndNeverATrashPack checks the header's pull count is the pulls the

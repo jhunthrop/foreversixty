@@ -35,7 +35,9 @@ export function awardQuestion(itemName: string, candidateName: string): string {
  *  killed yet". Never the filter's own jargon. */
 export function bossPickerLabel(selected: GuildLootEncounter | undefined): string {
   if (selected === undefined) return 'No bosses killed yet this tier';
-  return selected.killed ? `${selected.name} · on farm` : `${selected.name} · not killed yet`;
+  if (!selected.killed) return `${selected.name} · not killed yet`;
+  // "On farm" only once the API says so (kills on 3 separate nights); before that it is "down".
+  return selected.on_farm === true ? `${selected.name} · on farm` : `${selected.name} · down`;
 }
 
 /** The drops the council ranks: a slotted drop with at least one candidate, in the boss's order. */

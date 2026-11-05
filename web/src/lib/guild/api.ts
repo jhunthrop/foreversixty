@@ -151,6 +151,15 @@ export interface GuildHomeStanding {
   needs_raid?: NeedsRaid | null;
 }
 
+/** One row of `GET /v1/guilds/search` (`data.rows`, at most 5): a stranger's "Did you mean". */
+export interface GuildSearchRow {
+  name: string;
+  region: string;
+  ruleset: string;
+  /** The guild page's site path, `/guild/{region}/{ruleset}/{slug}`. */
+  path: string;
+}
+
 export interface ClaimPendingView {
   by: ClaimHolder | null;
   expires_at: string;
@@ -1175,6 +1184,11 @@ export interface GuildLootEncounter {
   name: string;
   zone: string;
   killed: boolean;
+  /** Separate nights with a kill (days in the guild's raid zone). Optional only for fixtures
+   *  written before guild round 3; the API always sends it. */
+  kill_nights?: number;
+  /** The API's rule: kill_nights >= 3 reads "on farm"; fewer kill nights read "down". */
+  on_farm?: boolean;
 }
 
 export interface GuildLootCandidate {

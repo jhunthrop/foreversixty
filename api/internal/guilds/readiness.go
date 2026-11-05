@@ -60,9 +60,9 @@ type ReadinessRow struct {
 	ItemLevelDelta      *int            `json:"item_level_delta"`
 	LoggedAt            time.Time       `json:"logged_at"`
 	Failing             int             `json:"failing"`
-	// SyncedBeforeCutoff and NoExport are the raid-filtered read's: true when the export was
-	// synced before the raid's cutoff_at, more than READINESS_FRESH_DAYS ago (stale; null on the
-	// unfiltered read and on a no_export row), and a signed character with no export at all.
+	// SyncedBeforeCutoff is true when the export was synced more than READINESS_FRESH_DAYS ago,
+	// judged against now on the filtered and unfiltered read alike (stale; null only on a
+	// no_export row). NoExport is the raid-filtered read's signed character with no export.
 	SyncedBeforeCutoff *bool   `json:"synced_before_cutoff"`
 	NoExport           bool    `json:"no_export"`
 	NudgeText          *string `json:"nudge_text,omitempty"`
@@ -138,8 +138,12 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 		}
 	}
 
+	now := time.Now()
+	if scope != nil {
+		now = scope.now
+	}
 	median := medianItemLevel(roster)
-	view := ReadinessView{MedianItemLevel: median, GeneratedAt: time.Now().UTC(), Rows: []ReadinessRow{}}
+	view := ReadinessView{MedianItemLevel: median, GeneratedAt: now.UTC(), Rows: []ReadinessRow{}}
 	seen := map[string]bool{}
 	for _, row := range roster {
 		if !row.Verified || !scope.includes(row.CharacterKey) {
@@ -148,10 +152,10 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 		seen[row.CharacterKey] = true
 		cr := s.readinessOf(row, median)
 		rr := readinessRowOf(row, cr)
-		scope.apply(&rr)
+		markFreshness(&rr, now)
 		rr.readinessScore = float64(rr.Failing)*readinessFailWeight + cr.GearGap.GainDps
 		if officerView && !cr.Leveling {
-			text := nudgeText(row.Name, cr, nudgeDay, scope.staleFailure(rr)...)
+			text := nudgeText(row.Name, cr, nudgeDay, staleFailure(rr, now)...)
 			rr.NudgeText = &text
 		}
 		view.Rows = append(view.Rows, rr)
@@ -237,13 +241,17 @@ func (s *Store) nudgeDay(ctx context.Context, guildID int64, raid *Raid) (string
 // raidWeekday is start's weekday ("Thursday") in the IANA zone tz, UTC when tz is empty or
 // unknown.
 func raidWeekday(start time.Time, tz string) string {
-	loc := time.UTC
+	return start.In(zoneOrUTC(tz)).Weekday().String()
+}
+
+// zoneOrUTC loads the IANA zone tz, UTC when tz is empty or unknown.
+func zoneOrUTC(tz string) *time.Location {
 	if tz != "" {
 		if l, err := time.LoadLocation(tz); err == nil {
-			loc = l
+			return l
 		}
 	}
-	return start.In(loc).Weekday().String()
+	return time.UTC
 }
 
 // nudgeText is the officer-only clipboard message (design spec §4.E): the character's own

@@ -89,6 +89,7 @@ No new control and no new token (tenet 10).
    - Every check passes: `{Name} passes every readiness check.` in `--color-kill`. The old `Every readiness check passes. Nothing needed before the next raid.` is deleted; it read as a guild-wide claim beside a board with failures (WP-7).
    - Under 60: `{Name} is level {L}. Rank and readiness checks start at 60.` 14 px `--text`, never green, no link. It shows for every viewer whose current character is on the roster under 60, officers included, and is the band's only viewer line.
    - The fails list is built from the viewer's row on the same `/readiness` response the board renders (`readinessFails`), so the line and the board can never disagree.
+   - The line names the raid it means (amended 2026-11-05, guild round 3 API3): `home.standing.needs_raid` (`{title, starts_at}` or null) is the next planned raid of kind `raid`, the rule Readiness's chip and `/raid` use first, never the dungeon run or event the band may show. With it the line can say `before Onyxia's Lair, Thu 10 Dec` (date in the guild's raid zone); null keeps `before the next raid`.
 
 ### 3.3 Overview summary cards after the Before raids open card
 

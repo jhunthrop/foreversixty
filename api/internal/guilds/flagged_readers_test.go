@@ -224,6 +224,36 @@ func TestHomeSummaryCountsAPrivateKillAndNeverAFlaggedOne(t *testing.T) {
 	}
 }
 
+// One kill is "down", not "on farm": on_farm needs kills on onFarmKillNights separate nights, and
+// two logs of one night count once.
+func TestLootOnFarmNeedsThreeKillNights(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Farm Nights")
+	kill := []seedFight{{encounterID: int(onyxiaEncounterID), kill: true, duration: 4 * time.Minute}}
+	night := func(id string, at time.Time) { seedNight(t, pool, gid, id, "Onyxia's Lair", at, kill) }
+	first := time.Date(2026, 12, 10, 1, 0, 0, 0, time.UTC)
+	night("farm-1", first)
+	night("farm-1-second-log", first.Add(20*time.Minute))
+	check := func(nights int, onFarm bool) {
+		t.Helper()
+		view, err := s.Loot(ctx, gid)
+		if err != nil {
+			t.Fatal(err)
+		}
+		e := view.Encounters[0]
+		if !e.Killed || e.KillNights != nights || e.OnFarm != onFarm {
+			t.Fatalf("encounter = %+v, want killed, %d nights, on_farm %v", e, nights, onFarm)
+		}
+	}
+	check(1, false)
+	night("farm-2", first.Add(7*24*time.Hour))
+	check(2, false)
+	night("farm-3", first.Add(14*24*time.Hour))
+	check(3, true)
+}
+
 // The Loot tab's killed reads a flagged Onyxia kill as no kill, and a private one as a kill.
 func TestLootKilledIgnoresAFlaggedKillAndCountsAPrivateOne(t *testing.T) {
 	s, gid := seedL612Counts(t, 1084)

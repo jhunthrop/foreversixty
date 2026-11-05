@@ -82,10 +82,30 @@ func (s *Service) readinessGate(ctx context.Context, guildID, viewerID int64) er
 	if err != nil {
 		return fmt.Errorf("guilds: raid guild tools: %w", err)
 	}
-	if !ok {
-		return ErrRaidGuildRequired
+	if ok {
+		return nil
 	}
-	return nil
+	granted, err := s.Store.planGranted(ctx, guildID)
+	if err != nil {
+		return err
+	}
+	if granted {
+		return ErrRaidGuildGranted
+	}
+	return ErrRaidGuildRequired
+}
+
+// planGranted reports whether the guild's plan is one Forever Sixty granted
+// (entitlements.GrantedWholePlan); false when the plan read is not wired.
+func (s *Store) planGranted(ctx context.Context, guildID int64) (bool, error) {
+	if s.Plans == nil {
+		return false, nil
+	}
+	plans, err := s.Plans.GuildBillings(ctx, []int64{guildID})
+	if err != nil {
+		return false, fmt.Errorf("guilds: plan granted: %w", err)
+	}
+	return entitlements.GrantedWholePlan(plans[guildID]), nil
 }
 
 func readinessAnswerOf(raid Raid, view ReadinessView, now time.Time) ReadinessAnswer {

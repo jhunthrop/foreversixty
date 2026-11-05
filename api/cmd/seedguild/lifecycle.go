@@ -124,13 +124,27 @@ var lifecycleExtraRoster = []struct {
 	{"Oldmarrow", "Arms", 58},
 }
 
+// lifecycleRaidZone is the lifecycle guild's raid zone, the one its raids are posted in; the
+// seeded log is timed on its clock.
+const lifecycleRaidZone = "America/Chicago"
+
+// lifecycleRaidHour and lifecycleRaidMinute are the seeded night's first pull, 7:30 pm.
+const (
+	lifecycleRaidHour   = 19
+	lifecycleRaidMinute = 30
+)
+
 // lifecycleReport is the one complete report, credited to the guild master: two whelp packs, one
 // Onyxia wipe and one Onyxia kill (Onyxia is the only boss the game data publishes; see raid.go).
 // Every page that counts the night then agrees: "1 boss (Onyxia) · 1 kill · 2 trash packs · 1 wipe",
 // Progression's "2 pulls" with one KILL, and the header's two pulls.
-func lifecycleReport() reportPlan {
+//
+// The night is yesterday at 7:30 pm on clock, the guild's raid zone (lifecycleRaidZone), so the
+// log reads as the evening raid it is rather than an afternoon in UTC.
+func lifecycleReport(clock *time.Location) reportPlan {
 	return reportPlan{
-		Tag: "ony", Label: "Onyxia", Zone: zoneOnyxia, DaysAgo: 1, StartHour: 19,
+		Tag: "ony", Label: "Onyxia", Zone: zoneOnyxia, DaysAgo: 1,
+		StartHour: lifecycleRaidHour, StartMinute: lifecycleRaidMinute, Clock: clock,
 		Fights: []fightPlan{
 			{Name: "Onyxian Whelp", DurationMS: 60_000, Kill: true, Trash: true},
 			{Name: "Onyxia", EncounterID: encOnyxia, Kill: false, DurationMS: 240_000},
@@ -359,9 +373,12 @@ func putLifecycleSnapshot(ctx context.Context, addonStore *addon.Store, gmUserID
 // writeLifecycleReport writes the one complete report, owned by the guild master and
 // logged by the guild master's character, with a fight_metrics row for each member present.
 func writeLifecycleReport(ctx context.Context, pool *pgxpool.Pool, guildID, gmUserID int64, present []plannedCharacter) error {
-	plan := lifecycleReport()
-	now := time.Now().UTC()
-	createdAt, completedAt, starts := plan.schedule(now)
+	clock, err := time.LoadLocation(lifecycleRaidZone)
+	if err != nil {
+		return fmt.Errorf("seedguild: lifecycle raid zone %s: %w", lifecycleRaidZone, err)
+	}
+	plan := lifecycleReport(clock)
+	createdAt, completedAt, starts := plan.schedule(time.Now())
 	pr := plannedReport{
 		Plan: plan, ID: lifecycleTag + "-report-" + plan.Tag, Title: plan.titleFor(createdAt),
 		CreatedAt: createdAt, CompletedAt: completedAt, FightStarts: starts,

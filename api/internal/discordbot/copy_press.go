@@ -39,7 +39,7 @@ var pressCopy = struct {
 	InSaved:           "{Name} is In as {Role} for {Title}, {Date}.",
 	Count:             " {signed} of {size} signed up.",
 	CountOpen:         " {n} signed up.",
-	LateSaved:         "{Name} is Late as {Role} for {Title}, {Date}. Add a note for the officers on the raid page.",
+	LateSaved:         "{Name} is Late as {Role} for {Title}, {Date}. Add a note for the officers on the {kind} page.",
 	NoteButton:        "Add a note",
 	BenchSaved:        "{Name} is on the Bench for {Title}, {Date}.",
 	OutSaved:          "{Name} is Out for {Title}, {Date}.",
