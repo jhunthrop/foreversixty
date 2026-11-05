@@ -50,7 +50,7 @@ Arcane stacks Arcane Blast for spell damage, fires free Missiles on Missile Barr
 ## Talents and builds
 
 - **Arcane Blast** (1 point): the spec. Each cast gives you 12% of your Intellect as spell damage and raises the next Blast's cost by 100%, up to 4 stacks for 18 seconds from the first Blast.
-- **Missile Barrage** (2 points): Arcane Blast procs it 40% of the time, and Arcane Wrath, Fireball and Frostbolt 20%. The proc makes your next Arcane Missiles free, halves its channel and fires a missile every half second.
+- **Missile Barrage** (2 points): Arcane Blast procs it 40% of the time, and Arcane Wrath, Fireball and Frostbolt 20%. The proc makes your next Arcane Missiles free (30% of its cost inside Arcane Power), halves its channel and fires a missile every half second.
 - **Arcane Concentration** (5 points): 10% of your damage spells make the next one free, and that includes a 4-stack Arcane Blast.
 - **Arcane Meditation** (3 points): half your mana regeneration keeps running while you cast. With Mage Armor on top, all of it runs, and on a boss that regeneration is what pays for the fourth and fifth Blast.
 - **Presence of Mind** (1 point): your next spell under 10 seconds is instant. In a raid spend it on Pyroblast, your longest cast; with the leveling build, spend it on Frostbolt. Never spend it on a 1.5 second Arcane Blast that the global cooldown already caps.
