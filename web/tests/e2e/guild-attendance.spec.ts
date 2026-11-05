@@ -403,13 +403,13 @@ test('officer-read-only: match, clear, Excused and Post disabled; Copy live', as
 });
 
 test.describe('the roster chip (§3.6)', () => {
-  test('raid mode: two windows, No raids yet and the footnote', async ({ page }) => {
+  test('raid mode: two windows, No raid nights yet and the footnote', async ({ page }) => {
     await stubGuildAttendance(page, { viewer: 'member', attendanceSource: 'raids' });
     await page.clock.install({ time: NOW });
     await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
     const rows = page.getByTestId('guild-roster-rows');
     await expect(rows).toContainText(/Came \d of 8 · \d+ of 30 raids/);
-    await expect(rows).toContainText(attendanceCopy.roster.noRaids);
+    await expect(rows).toContainText(attendanceCopy.roster.noNights);
     // One read for the roster and the guild line (WP 4): Kraggor, who led the raid, has raids.
     const { last8, last30 } = rosterAttendance('Kraggor');
     await expect(rows).toContainText(`Came ${last8.present} of 8 · ${last30.present} of 30 raids`);

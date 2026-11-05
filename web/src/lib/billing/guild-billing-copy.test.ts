@@ -155,9 +155,13 @@ describe('moved plan and billed lines', () => {
   it('prints the plan line by who bills and whether it ends', () => {
     expect(guildPlanLine(billing(), 'UTC')).toBe('Renews 31 Dec 2026');
     expect(guildPlanLine(billing({ cancel_at_period_end: true }), 'UTC')).toBe('Ends 31 Dec 2026');
-    expect(guildPlanLine(billing({ billed_by: '' }), 'UTC')).toBe(spec('Plan line', 6, { date: '31 Dec 2026' }));
+    expect(guildPlanLine(billing({ billed_by: '' }), 'UTC')).toBe(
+      spec('Plan line', 6, { date: '31 Dec 2026' }),
+    );
     // A dateless grant: the card title names the tier, so the row never reads `Guild plan` again.
-    expect(guildPlanLine(billing({ current_period_end: null, billed_by: '' }), 'UTC')).toBe(spec('Plan line', 7));
+    expect(guildPlanLine(billing({ current_period_end: null, billed_by: '' }), 'UTC')).toBe(
+      spec('Plan line', 7),
+    );
     expect(guildPlanLine(billing({ scope: 'officer_tools', billed_by: '' }), 'UTC')).toBe(
       'Officer tools · until 31 Dec 2026',
     );

@@ -8,7 +8,6 @@ import { billingBlockCopy } from '../billing/copy';
 import { guildPlanLine } from '../billing/guild-billing-copy';
 import { premiumSourceCopy } from '../billing/premium-source-copy';
 import { zonedDayMonthYear } from '../dates';
-import { settingsWords } from '../guild/settings-view';
 import type { BillingView, GuildBillingView, Me } from './api';
 
 export interface EndedSeatLine {

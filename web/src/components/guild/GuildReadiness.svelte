@@ -162,7 +162,8 @@
   // never a scoped <style> rule touching the shared .pill class every other pill on the
   // page still uses): the missing-slot list is the point of the cell, so it wraps onto as
   // many lines as it needs and is never clamped or cut (tenet 4; guild loop round 3, web4).
-  const ENCHANT_PILL_STYLE = 'height:auto;min-height:22px;white-space:normal;line-height:1.3;text-align:left;';
+  const ENCHANT_PILL_STYLE =
+    'height:auto;min-height:22px;white-space:normal;line-height:1.3;text-align:left;';
 
   /** A signed character with no export has no gear to read (UX 16): Gear gap to Item level read a dash. */
   const NO_EXPORT_CELLS = ['Gear gap', 'Enchants', 'Consumables', 'Talent points', 'Item level'] as const;
@@ -331,8 +332,10 @@
             {#if enchantKind(row) === 'consent'}
               <span class="text-muted text-[12px]">{enchantLabel(row)}</span>
             {:else}
-              <span class={pillClass(enchantKind(row))} style={ENCHANT_PILL_STYLE} data-testid="guild-readiness-enchants"
-                >{enchantLabel(row)}</span
+              <span
+                class={pillClass(enchantKind(row))}
+                style={ENCHANT_PILL_STYLE}
+                data-testid="guild-readiness-enchants">{enchantLabel(row)}</span
               >
             {/if}
             {#if consumablesKind(row) === 'consent'}

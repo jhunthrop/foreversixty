@@ -68,7 +68,7 @@ test('case 10: a trial reads its first charge and the cancel-before date', async
   };
   await openWith(page, read);
   await expect(page.getByTestId('guild-billing-plan')).toContainText(
-    'Guild · trial · first charge 4 Nov 2026: $15',
+    'Trial · first charge 4 Nov 2026: $15',
   );
   await expect(page.getByTestId('guild-billing-contact')).toHaveText(
     'Cancel before 4 Nov and nothing is charged. Billed to you.',
@@ -108,7 +108,7 @@ test('case 11: the commit updates the plan line and says it is done', async ({ p
   await page.getByTestId('guild-move-raid-guild').click();
   await expect(page.getByTestId('guild-upgrade-commit')).toBeEnabled();
   await page.getByTestId('guild-upgrade-commit').click();
-  await expect(page.getByTestId('guild-billing-plan')).toContainText('Raid guild · renews 1 Dec 2026');
+  await expect(page.getByTestId('guild-billing-plan')).toContainText('Renews 1 Dec 2026');
   await expect(page.getByTestId('guild-upgrade-done')).toBeVisible();
   await expect(page.getByTestId('guild-size-line')).toHaveCount(0);
 });
