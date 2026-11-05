@@ -108,7 +108,7 @@ When mana gets low, hold Multi-Shot first: it is the worst damage for its mana y
 
 **Threat.** Feign Death when you get close to the tank's threat, not after the boss turns. It can be resisted: if it says Resisted, you still have all your threat.
 
-**Trash.** Multi-Shot hits three targets. Volley is a mana-heavy channel, worth it only on a big pack that lives through it. Freezing Trap is your crowd control, laid before the pull. Explosive Trap under a pack the tank is holding is good damage for its mana.
+**Trash.** Multi-Shot hits three targets. Volley is a mana-heavy channel, worth it only on a big pack that lives through it. Freezing Trap is your crowd control, laid before the pull. Explosive Trap under a pack the tank is holding hits everything within 10 yards, and at 60 it costs even more than Volley, so save it for the same big packs.
 
 There is no execute phase for a hunter: the priority holds to the end.
 
