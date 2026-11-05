@@ -47,3 +47,24 @@ func TestALoggedSpecIsNotAskedAgain(t *testing.T) {
 		t.Fatalf("press = %+v", rep.Message)
 	}
 }
+
+// Out with two characters, only one of them signed up: it is that one, with no select.
+func TestOutTakesTheOneSignedUpCharacter(t *testing.T) {
+	w := newPressWorld(t)
+	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+	w.addChar(t, w.gid, w.uid, keyDusk, "Duskstrider", true)
+	if rep := w.pick(t, "in", keyZulmara); !strings.HasPrefix(rep.Message.Content, "Zulmara is In") {
+		t.Fatalf("in = %+v", rep.Message)
+	}
+	rep := w.press(t, "out")
+	if !strings.HasPrefix(rep.Message.Content, "Zulmara is Out") {
+		t.Fatalf("out = %+v, want Zulmara out with no select", rep.Message)
+	}
+	// With neither signed up, Out still asks which.
+	w2 := newPressWorld(t)
+	w2.addChar(t, w2.gid, w2.uid, keyZulmara, "Zulmara", true)
+	w2.addChar(t, w2.gid, w2.uid, keyDusk, "Duskstrider", true)
+	if rep := w2.press(t, "out"); len(rep.Message.Components) == 0 || rep.Message.Components[0][0].Kind != KindStringSelect {
+		t.Fatalf("out with nobody signed = %+v, want the select", rep.Message)
+	}
+}

@@ -144,7 +144,42 @@ func (s *Service) signupFlow(ctx context.Context, a signupAsk) (Reply, error) {
 	if len(verified) == 1 {
 		return s.signUp(ctx, a, verified[0])
 	}
+	if a.State == guilds.SignupOut {
+		c, ok, err := s.onlySignedUp(ctx, a, verified)
+		if err != nil {
+			return Reply{}, err
+		}
+		if ok {
+			return s.signUp(ctx, a, c)
+		}
+	}
 	return s.characterSelect(ctx, a, raid, verified), nil
+}
+
+// onlySignedUp is the one of verified signed up In, Late or Bench for the raid: an Out press then
+// means that character, with no select (bot spec §3.3.2, amended 2026-11-05). ok is false when
+// none or several are.
+func (s *Service) onlySignedUp(ctx context.Context, a signupAsk, verified []guilds.SignupCandidate) (guilds.SignupCandidate, bool, error) {
+	view, found, err := s.d.Guilds.MemberRaidView(ctx, a.GuildID, a.UserID, a.RaidID)
+	if err != nil || !found {
+		return guilds.SignupCandidate{}, false, err
+	}
+	signed := map[string]bool{}
+	for _, sg := range view.Signups {
+		if sg.State != guilds.SignupOut {
+			signed[sg.CharacterKey] = true
+		}
+	}
+	var only []guilds.SignupCandidate
+	for _, c := range verified {
+		if signed[c.CharacterKey] {
+			only = append(only, c)
+		}
+	}
+	if len(only) != 1 {
+		return guilds.SignupCandidate{}, false, nil
+	}
+	return only[0], true, nil
 }
 
 // raidRefusal is the sentence of a raid nobody can sign up for from Discord: cancelled, ended

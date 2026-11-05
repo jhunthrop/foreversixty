@@ -84,6 +84,7 @@ describe('guildBotCopy, verbatim from spec 6.1', () => {
     expect(i.linkedMembers(9, 31)).toBe(row('Linked members', 0, { linked: '9', members: '31' }));
     expect(i.linkedMembers(1, 31)).toBe(row('Linked members', 1));
     expect(i.linkedMembers(0, 31)).toBe(row('Linked members', 2));
+    expect(i.linkedMembers(3, 3)).toBe(row('Linked members', 3));
   });
 
   it('pins removed in Discord and the remove question', () => {
