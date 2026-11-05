@@ -256,16 +256,18 @@
     <div
       class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-2 md:min-h-[68px] md:grid-cols-[minmax(180px,1fr)_auto_220px_minmax(200px,1.4fr)] md:gap-4"
     >
-      <div class="col-start-1 row-start-1 flex min-w-0 items-center gap-3">
+      <div class="col-span-2 col-start-1 row-start-1 flex min-w-0 items-center gap-3 md:col-span-1">
         <ClassCrestRing characterClass={character.class} size={32} />
         <div class="min-w-0">
           <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
             {character.name}
           </p>
-          <p class="text-muted truncate text-[12px]" data-testid={`signup-who-${key}`}>{who}</p>
+          <p class="text-muted text-[12px] md:truncate" data-testid={`signup-who-${key}`}>
+            {who}
+          </p>
         </div>
       </div>
-      <div class="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">
+      <div class="col-span-2 row-start-3 md:col-span-1 md:col-start-2 md:row-start-1">
         <SignupSegments
           value={shownState}
           pending={askedState}
@@ -277,7 +279,9 @@
           testid={`signup-segments-${key}`}
         />
       </div>
-      <div class="col-start-2 row-start-1 flex min-w-0 md:col-start-3">
+      <div
+        class="col-span-2 col-start-1 row-start-2 flex w-[176px] min-w-0 md:col-span-1 md:col-start-3 md:row-start-1 md:w-auto"
+      >
         <Select
           id={specId}
           class="w-full"
@@ -294,7 +298,7 @@
           onchange={(event) => pickSpec((event.currentTarget as HTMLSelectElement).value)}
         />
       </div>
-      <div class="relative col-span-2 row-start-3 md:col-span-1 md:col-start-4 md:row-start-1">
+      <div class="relative col-span-2 row-start-4 md:col-span-1 md:col-start-4 md:row-start-1">
         <input
           type="text"
           class="border-line-warm bg-raised text-text rounded-control placeholder:text-muted hover:border-line-warm-strong focus-visible:outline-gold h-11 w-full min-w-0 border pr-16 pl-3 text-[13px] transition-colors duration-[120ms] focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"

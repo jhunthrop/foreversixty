@@ -19,7 +19,7 @@ export const RAID_BAND_OFFICER = 'pb-[108px] md:pb-[22px]';
 /** The sign-up strip, ready: panel padding and sub-head, then each row (179 / 101 px for the
  *  first, one px less for each later row, which loses its top divider). */
 export const RAID_STRIP_RESERVE =
-  'h-[calc(62px+var(--strip-rows)*178px)] md:h-[calc(70px+var(--strip-rows)*100px)]';
+  'h-[calc(62px+var(--strip-rows)*226px)] md:h-[calc(70px+var(--strip-rows)*100px)]';
 
 /** The Raids tab's planned block, ready: the tab's header row and the `PLANNED n` sub-head (62 px),
  *  then each planned row: 71 desktop (the date block sets it); on phone the mean of the fixture's

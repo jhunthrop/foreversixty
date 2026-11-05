@@ -83,7 +83,7 @@ One control picks the spec, and the spec sets the role. `SignupSpec.svelte` and 
 
 **3.2.1 Off-tank rule.** An option is a (spec, role) pair. The catalogue gives one pair per spec. Warrior Arms and Warrior Fury add a second pair with role `tank`, because a Classic raid's second and third tanks are usually Fury or Arms warriors in a defensive stance with a shield. No other spec gets an off-tank pair: Feral already has `Feral Bear · Tank`, Protection Paladin is the paladin tank, and a Retribution tank is not a real Classic raid role. The pair keeps the spec's name, icon and key (`warrior-fury`); only the role differs. The save sends `{spec: "warrior-fury", role: "tank"}`; the API keeps a sent role whenever `raidspec.Plays(class, role)` is true and the spec is of that class, and otherwise answers 422 on `role`. `group` follows the role first, so an off-tank sits under Tanks, never Melee. The Who line reads `Fury Warrior · Tank`; a DPS pick reads `Fury Warrior`. The default spec's role is the sign-up's saved role, so a returning off-tank defaults to `Fury · Tank`.
 
-Phone row at most 180 px (12 top, 44 who and spec, 8, 44 segments, 8, 44 note, 20 status). The 150 px empty reserve is gone, so three characters stack in 540 px instead of 1040.
+Phone row at most 228 px: the crest, name and who line take the full width (the who line wraps to at most two lines and is never cut off), then the 176 px spec select on its own line, then the segments and the note (8 top, 40 who, 8, 44 select, 8, 44 segments, 8, 44 note, 20 status). The 150 px empty reserve is gone.
 
 ### 3.3 Sign-ups roster (`RaidRoster.svelte`, replaces raids spec §3.7's role columns)
 
@@ -190,7 +190,7 @@ Changelog: `Sign-ups now show spec and class, a class count for buffs, and Melee
 **Never collapses:** the guild time and its zone; every count; the spec and class on every row; every group head; the status line.
 **Collapses:** below 768 the class row drops class names (crest and count stay), the roster stacks to one column, the strip row stacks to three lines, and the spec select's face drops the role, which moves to the Who line. 768 to 1279: the roster is two columns. At 2000 everything stays in the centred 1344 px column.
 
-Height caps: band line 6 at most 30 px desktop and 56 px at 360; strip row 68 px desktop, at most 180 px phone; roster row unchanged.
+Height caps: band line 6 at most 30 px desktop and 56 px at 360; strip row 68 px desktop, at most 228 px phone; roster row unchanged.
 
 ## 9. Performance
 
