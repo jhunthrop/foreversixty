@@ -236,7 +236,7 @@
       }
     },
     {
-      "notes": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing. One is enough, since it does not stack with a druid's Demoralizing Roar. Refresh it in its last 3 seconds.",
+      "notes": "Keep it on the boss: the attack power it strips takes a real slice off every swing. One is enough, since it does not stack with a druid's Demoralizing Roar. Refresh it in its last 3 seconds.",
       "action": {
         "condition": {
           "or": {

@@ -81,7 +81,7 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 **Lightning Bolt ranks.** Rank 10 costs 220 mana and rank 9 costs 190 for about 16% less base damage, with the same spell power bonus. In a raid, cast rank 10 the whole fight: raid buffs carry its mana close enough to the end that the bigger bolt is worth it. Without raid buffs, rank 10 alone runs you dry on a long fight, so pace it: cast rank 10 while your mana bar is fuller than the share of the fight left (above half mana at the halfway point, for example), and drop to rank 8 the moment it is not. Rank 8 is the cheapest bolt that still takes all of your spell damage at 60. That spends your spare mana on the bigger bolt without ever standing around empty.
 
-**Packs.** On two or more targets drop Magma Totem in the pack (20 seconds), cast Chain Lightning on its 6 second cooldown and Fire Nova on its 10 second cooldown while you stand close enough to place the totem, with Lightning Bolt between. Under Lightning Mastery Chain Lightning has no cooldown at all; save Mastery for the pack if the pull is worth it.
+**Packs.** On two or more targets drop Magma Totem in the pack (40 seconds with Trial by Fire), and cast Chain Lightning and Fire Nova each on its 6 second cooldown while you stand close enough to place the totem, with Lightning Bolt between. Under Lightning Mastery Chain Lightning has no cooldown at all; save Mastery for the pack if the pull is worth it.
 
 **Moving.** Every shock and every totem is instant. If you have to run, refresh Flame Shock, drop a totem or use Earth Shock as an interrupt, and start casting again the moment you stop.
 

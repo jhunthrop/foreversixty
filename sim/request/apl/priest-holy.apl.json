@@ -1077,7 +1077,7 @@
           }
         }
       },
-      "notes": "Greater Heal rank 1 when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60."
+      "notes": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60."
     },
     {
       "action": {
