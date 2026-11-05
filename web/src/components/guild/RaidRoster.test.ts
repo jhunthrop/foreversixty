@@ -288,4 +288,47 @@ describe('RaidRoster', () => {
     expect(rosterSelectId('us/pvp/bolt')).toBe('raid-roster-state-us/pvp/bolt');
     expect(between(body, 'raid-roster-bench', 'never')).toContain(`id="${rosterSelectId('us/pvp/bolt')}"`);
   });
+
+  it('lists a guild event as one list by state, each row crest, name and class (guild round 3)', () => {
+    const event = plannedRaid({
+      zone_kind: 'event',
+      signups: [
+        signup('Kraggor', {
+          class: 'warrior',
+          spec: 'Protection',
+          spec_key: 'warrior-protection',
+          role: 'tank',
+          group: 'tank',
+        }),
+        signup('Menda', {
+          class: 'priest',
+          spec: 'Holy',
+          spec_key: 'priest-holy',
+          role: 'healer',
+          group: 'healer',
+          state: 'late',
+        }),
+        signup('Ashenveil', {
+          class: 'paladin',
+          spec: 'Holy',
+          spec_key: 'paladin-holy',
+          role: 'healer',
+          group: 'healer',
+          state: 'bench',
+        }),
+      ],
+      not_signed: [],
+    });
+    const body = html({ raid: event });
+    expect(body).not.toContain('data-testid="raid-roster-tank"');
+    expect(body).not.toContain('data-testid="raid-roster-healer"');
+    const heads = [...body.matchAll(/data-testid="raid-roster-(in|late|bench|out)-heading">([^<]*)/g)].map(
+      (m) => m[2]?.trim(),
+    );
+    expect(heads).toEqual(['In', 'Late', 'Bench']);
+    const lines = [
+      ...body.matchAll(/text-muted block truncate text-\[12px\] leading-4" title="([^"]*)"/g),
+    ].map((m) => m[1]);
+    expect(lines).toEqual(['Warrior', 'Priest', 'Paladin']);
+  });
 });

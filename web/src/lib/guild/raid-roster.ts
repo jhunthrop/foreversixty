@@ -39,7 +39,9 @@ export interface RosterRow {
 export function alsoLine(also: readonly GuildRaidAlsoSignup[]): string | null {
   if (also.length === 0) return null;
   return raidCopy.also(
-    also.map((a) => raidCopy.alsoPart(a.name, specClassLine(a.class, a.spec_key), raidCopy.segments[a.state])),
+    also.map((a) =>
+      raidCopy.alsoPart(a.name, specClassLine(a.class, a.spec_key), raidCopy.segments[a.state]),
+    ),
   );
 }
 
@@ -52,6 +54,8 @@ export function officersSeeLine(raid: Pick<GuildRaidView, 'signups'>, characterK
 
 export interface RosterGroups {
   groups: Readonly<Record<GuildRaidGroup, RosterRow[]>>;
+  /** Every In row, class then name: a guild event's In group, which has no roles. */
+  in: RosterRow[];
   late: RosterRow[];
   bench: RosterRow[];
   out: RosterRow[];
@@ -107,6 +111,7 @@ export function rosterGroups(raid: GuildRaidView): RosterGroups {
   const of = (group: GuildRaidGroup): RosterRow[] => signedIn.filter((row) => row.group === group);
   return {
     groups: { tank: of('tank'), healer: of('healer'), melee: of('melee'), ranged: of('ranged') },
+    in: signedIn,
     late: inState(signed, 'late'),
     bench: inState(signed, 'bench'),
     out: inState(signed, 'out'),

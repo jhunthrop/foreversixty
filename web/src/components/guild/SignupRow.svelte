@@ -5,14 +5,23 @@
      unsigned row it only sets what the next press sends. In, Late or Bench with no spec picked
      waits: `Pick a spec first.`, the picker takes the wipe border and focus, and the first pick saves
      the held press. The row keeps its own optimistic values while a save is in flight and reverts
-     them when the save is refused; the caller applies a successful save's raid before resolving. -->
+     them when the save is refused; the caller applies a successful save's raid before resolving.
+     A guild event asks no spec: the row is who (crest, name, class), the segments and the note,
+     and a press saves at once (guild events spec 3.5, guild round 3). -->
 <script lang="ts">
   import { tick } from 'svelte';
   import { MediaQuery } from 'svelte/reactivity';
   import type { GuildRaidViewerCharacter, GuildSignupState, GuildZoneKind } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
-  import { pickOf, specClassLine, specOptions, specPicks, whoLine } from '../../lib/guild/raid-comp';
-  import { raidCopy } from '../../lib/guild/raid-copy';
+  import {
+    classWord,
+    pickOf,
+    specClassLine,
+    specOptions,
+    specPicks,
+    whoLine,
+  } from '../../lib/guild/raid-comp';
+  import { kindCountsRoles, raidCopy } from '../../lib/guild/raid-copy';
   import { RAID_WIDE_QUERY } from '../../lib/guild/raid-layout';
   import { specIconSrc } from '../../lib/guild/raid-spec';
   import { createSerialSave } from '../../lib/guild/serial-save';
@@ -81,6 +90,8 @@
   let savedTimer: ReturnType<typeof setTimeout> | undefined;
 
   const key = $derived(character.character_key);
+  /** A raid or a run asks the spec; a guild event does not. */
+  const asksSpec = $derived(kindCountsRoles(kind));
   const specId = $derived(`signup-spec-${key}`);
   const statusId = $derived(`signup-status-${key}`);
   /** From 768 the select's face reads `Restoration · Healer`; below, the spec alone and the Who
@@ -94,9 +105,11 @@
   const shownNote = $derived(noteEdit ?? savedNote);
   const counter = $derived(noteCounter(shownNote));
   const who = $derived(
-    shownPick === null
-      ? specClassLine(character.class, character.spec_key)
-      : whoLine(character.class, shownPick.spec.spec, shownPick.role, !wide.current),
+    !asksSpec
+      ? classWord(character.class)
+      : shownPick === null
+        ? specClassLine(character.class, character.spec_key)
+        : whoLine(character.class, shownPick.spec.spec, shownPick.role, !wide.current),
   );
   const asking = $derived(askedState !== null);
 
@@ -176,10 +189,10 @@
   const saver = createSerialSave<SignupChoice, SignupOutcome>({
     read: () => {
       if (shownState === null) return null;
-      const pick = stateTakesSpec(shownState) ? shownPick : null;
+      const pick = asksSpec && stateTakesSpec(shownState) ? shownPick : null;
       return {
         state: shownState,
-        role: roleOfPick(shownPick, character),
+        role: roleOfPick(asksSpec ? shownPick : null, character),
         note: shownNote,
         ...(pick === null ? {} : { spec: pick.spec.spec }),
       };
@@ -205,7 +218,7 @@
   }
 
   function pickState(state: GuildSignupState): void {
-    if (pressWaitsForSpec(state, shownPick)) {
+    if (asksSpec && pressWaitsForSpec(state, shownPick)) {
       void holdForSpec(state);
       return;
     }
@@ -254,7 +267,10 @@
     data-testid={`signup-row-${key}`}
   >
     <div
-      class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-2 md:min-h-[68px] md:grid-cols-[minmax(180px,1fr)_auto_220px_minmax(200px,1.4fr)] md:gap-4"
+      class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-2 md:min-h-[68px] md:gap-4 {asksSpec
+        ? 'md:grid-cols-[minmax(180px,1fr)_auto_220px_minmax(200px,1.4fr)]'
+        : 'md:grid-cols-[minmax(180px,1fr)_auto_minmax(200px,1.4fr)]'}"
+      data-testid={`signup-grid-${key}`}
     >
       <div class="col-span-2 col-start-1 row-start-1 flex min-w-0 items-center gap-3 md:col-span-1">
         <ClassCrestRing characterClass={character.class} size={32} />
@@ -267,7 +283,11 @@
           </p>
         </div>
       </div>
-      <div class="col-span-2 row-start-3 md:col-span-1 md:col-start-2 md:row-start-1">
+      <div
+        class="col-span-2 md:col-span-1 md:col-start-2 md:row-start-1 {asksSpec
+          ? 'row-start-3'
+          : 'row-start-2'}"
+      >
         <SignupSegments
           value={shownState}
           pending={askedState}
@@ -279,26 +299,32 @@
           testid={`signup-segments-${key}`}
         />
       </div>
+      {#if asksSpec}
+        <div
+          class="col-span-2 col-start-1 row-start-2 flex w-[176px] min-w-0 md:col-span-1 md:col-start-3 md:row-start-1 md:w-auto"
+        >
+          <Select
+            id={specId}
+            class="w-full"
+            size="compact"
+            label={raidCopy.spec.label(character.name)}
+            placeholder={raidCopy.spec.placeholder}
+            value={shownPick?.value ?? ''}
+            {options}
+            {disabled}
+            {busy}
+            invalid={asking}
+            describedBy={disabled ? describedBy : asking ? statusId : undefined}
+            testid={specId}
+            onchange={(event) => pickSpec((event.currentTarget as HTMLSelectElement).value)}
+          />
+        </div>
+      {/if}
       <div
-        class="col-span-2 col-start-1 row-start-2 flex w-[176px] min-w-0 md:col-span-1 md:col-start-3 md:row-start-1 md:w-auto"
+        class="relative col-span-2 md:col-span-1 md:row-start-1 {asksSpec
+          ? 'row-start-4 md:col-start-4'
+          : 'row-start-3 md:col-start-3'}"
       >
-        <Select
-          id={specId}
-          class="w-full"
-          size="compact"
-          label={raidCopy.spec.label(character.name)}
-          placeholder={raidCopy.spec.placeholder}
-          value={shownPick?.value ?? ''}
-          {options}
-          {disabled}
-          {busy}
-          invalid={asking}
-          describedBy={disabled ? describedBy : asking ? statusId : undefined}
-          testid={specId}
-          onchange={(event) => pickSpec((event.currentTarget as HTMLSelectElement).value)}
-        />
-      </div>
-      <div class="relative col-span-2 row-start-4 md:col-span-1 md:col-start-4 md:row-start-1">
         <input
           type="text"
           class="border-line-warm bg-raised text-text rounded-control placeholder:text-muted hover:border-line-warm-strong focus-visible:outline-gold h-11 w-full min-w-0 border pr-16 pl-3 text-[13px] transition-colors duration-[120ms] focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"

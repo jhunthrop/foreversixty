@@ -96,6 +96,15 @@ Labels: the form's h2 and button change from raid words to event words (§5). `P
 
 `GuildRaid.svelte` unchanged in layout. Words that say `raid` follow §5 by kind: eyebrow `RAID` / `DUNGEON` / `EVENT`; `Cancel raid` / `Cancel run` / `Cancel event`; `This raid has ended.` / `This run has ended.` / `This event has ended.`; cancel confirm `Cancel this {raid|run|event}? Members see it as cancelled.`; `Logged as a raid night.` stays raid-only. One copy function per string, keyed by `zone.kind`, in `raid-copy.ts`.
 
+**A guild event is a plain list** (amended 2026-11-05, guild round 3: a guild meeting showed the Tanks / Healers / Melee / Ranged grid and a class row). One rule, `kindCountsRoles(kind)` in `raid-copy.ts`: kind `event` counts no roles; `raid` and `dungeon` do (a run needs a tank and a healer). For kind `event`:
+- **Band**: no class row. The count line has no role words: `12 of 20 signed up`, then ` · 2 late` only when someone is late.
+- **Your sign-up**: each row is who (crest, name, the class alone: `Priest`), the segments `In` · `Late` · `Bench` · `Out`, and the note. No spec picker, no `Pick a spec first.`; a press saves at once and sends no spec (the character's own role rides along unseen). Desktop grid `minmax(180px,1fr) auto minmax(200px,1.4fr)`; phone: who, segments, note.
+- **Sign-ups**: no role grid. One list grouped by state, `In {n}`, `Late {n}`, `Bench {n}`, `Out {n}` (the 11 px `label` heads), side by side from 1280 (four columns), two from 768, stacked below; an empty group is left out. Each row is crest, name in class colour, and the class (`Priest`), never a spec or a role word. `Not signed up` and the officer selects are unchanged.
+- **Planned row**: the breakdown is empty, or `2 late`; the viewer chip reads `In`, `Late` with no role.
+- **Band raid line** on the guild page: `Sunday 8 pm CST, you are In, 12 of 20 signed up.`, never `In as DPS`.
+- **Copy the sign-up list**: no `Classes:` line and no role groups; `In: …`, then `Late`, `Bench`, `Out`.
+- Not this round: the Discord post's role fields and the bot's `Which spec tonight?` still follow raid rules on an event (Go, `notify` and `raids_discord*`); a follow-up.
+
 ### 3.6 Discord
 
 Same `raid_posted` and `raid_changed` embeds (raid spec §6.2), same channel, same box. The title is `{Title} · Thursday 12 November`. `Signed up` reads `3 of 5`, or `None yet`. No new event type, no thumbnail change.

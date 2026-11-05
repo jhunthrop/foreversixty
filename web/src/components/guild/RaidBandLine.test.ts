@@ -310,4 +310,11 @@ describe('nextRaidAfterRefusal', () => {
   it('leaves the band as it was on any other failure', () => {
     expect(nextRaidAfterRefusal(raid(), new Error('down'))).toBeUndefined();
   });
+
+  it('says no role on a guild event: `you are In`, never `In as Tank` (guild round 3)', () => {
+    const body = html({
+      nextRaid: raid({ zone_kind: 'event', own: { character_key: KEY, state: 'in', role: 'tank' } }),
+    });
+    expect(text(body, 'guild-raid-line-sentence')).toBe('Thursday 8 pm CST, you are In, 23 of 40 signed up.');
+  });
 });

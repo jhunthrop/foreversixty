@@ -206,6 +206,13 @@ export function kindOf(view: { zone_kind?: GuildZoneKind }): GuildZoneKind {
   return view.zone_kind ?? 'raid';
 }
 
+/** Whether a night counts roles. A guild event is a meeting: no role grid, no class row, no role
+ *  words, no spec picker; raids and dungeon runs (which need a tank and a healer) keep them
+ *  (guild events spec 3.5, guild round 3). */
+export function kindCountsRoles(kind: GuildZoneKind): boolean {
+  return kind !== 'event';
+}
+
 /** The zone beside a title that is not the zone's name, with the size an officer picked for a guild
  *  event: `Guild event · 20`. The planned row's second line and the event page's h1 read it. */
 export function zoneLineOf(view: {
@@ -493,6 +500,8 @@ export interface CopyListComp {
   specClass: (row: GuildRaidSignup) => string;
   /** The roster's order within a group. */
   order: (a: GuildRaidSignup, b: GuildRaidSignup) => number;
+  /** False for a guild event: the In rows are one list, not four role groups. */
+  roles: boolean;
 }
 
 function namesLine(label: string, rows: readonly GuildRaidSignup[], comp: CopyListComp): string | null {
@@ -532,11 +541,16 @@ export function copyList(
     view.signups.filter((s) => s.state === state);
   const inGroup = (group: GuildRaidGroup): GuildRaidSignup[] =>
     inState('in').filter((s) => comp.groupOf(s) === group);
+  const inLines = comp.roles
+    ? [
+        namesLine(heads.tanks, inGroup('tank'), comp),
+        namesLine(heads.healers, inGroup('healer'), comp),
+        namesLine(heads.melee, inGroup('melee'), comp),
+        namesLine(heads.ranged, inGroup('ranged'), comp),
+      ]
+    : [namesLine(raidCopy.segments.in, inState('in'), comp)];
   const groups = [
-    namesLine(heads.tanks, inGroup('tank'), comp),
-    namesLine(heads.healers, inGroup('healer'), comp),
-    namesLine(heads.melee, inGroup('melee'), comp),
-    namesLine(heads.ranged, inGroup('ranged'), comp),
+    ...inLines,
     namesLine(heads.late, inState('late'), comp),
     namesLine(heads.bench, inState('bench'), comp),
     namesLine(heads.out, inState('out'), comp),
@@ -544,7 +558,7 @@ export function copyList(
   const classes = comp.classes.filter((c) => c.count > 0).map((c) => `${c.name} ${c.count}`);
   const lines = [
     header,
-    `${size}: ${comp.breakdown.join(', ')}`,
+    comp.breakdown.length === 0 ? size : `${size}: ${comp.breakdown.join(', ')}`,
     ...(classes.length === 0 ? [] : [`${raidCopy.copyClasses}: ${classes.join(', ')}`]),
   ];
   return [...lines, ...groups.filter((line): line is string => line !== null)].join('\n');

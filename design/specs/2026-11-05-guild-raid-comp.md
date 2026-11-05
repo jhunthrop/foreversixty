@@ -50,7 +50,7 @@ Tokens as the raids spec §3: `--color-raised`, `--color-line`, `--color-line-so
 - `ClassCrestRing` 20 px, 6 px gap, the class name 13 px 600 in class colour, 4 px gap, the count `numeric` 13 px 700 `--strong`. Item height 24 px; it is not interactive.
 - Each item carries its specs: `title` `Holy 3, Discipline 1, Shadow 1` (catalogue names, most first, then catalogue order; an unresolved spec counts as `Unknown 1`), and the same words in its accessible name: `Priest 5: Holy 3, Discipline 1, Shadow 1`. The `title` is a desktop extra; touch and screen readers get the accessible name. Off-tanks list as `Fury (tank) 1`.
 - Counts are In plus Late rows (the band's `signed up` figure), so the row adds up to it. Bench and Out never count.
-- Which classes show: only the classes with someone In or Late, on raids, dungeon runs and guild events alike (one rule). A class at 0 is left out, never a greyed `Paladin 0` (amended 2026-11-05, guild round 3: a benched paladin read as a 0 beside the class row's real counts). Bench stays in the roster's Bench group; the class row draws no bench tail. Guild events draw no class row at all (§3.6).
+- Which classes show: only the classes with someone In or Late, on raids, dungeon runs and guild events alike (one rule). A class at 0 is left out, never a greyed `Paladin 0` (amended 2026-11-05, guild round 3: a benched paladin read as a 0 beside the class row's real counts). Bench stays in the roster's Bench group; the class row draws no bench tail. Guild events draw no class row at all (guild events spec §3.5).
 - Phone (< 768): the class name is dropped; each item is the 20 px crest and the count, and the `li` carries the full accessible name above (`Warrior 5: Protection 3, Fury 2`). At 360 the nine items fit two rows (item about 44 px wide, 7 per 324 px row).
 - With nobody In or Late, line 6 is absent (amended 2026-11-05, guild round 3).
 - Cancelled or started: the counts read `--muted`, crests at 45%.
@@ -102,6 +102,10 @@ Within a group: class in the game's order, then name (unchanged). An empty group
 **Row** (every group, Late, Bench, Out and the officer's Not signed up rows): `ClassCrestRing` 24, the name 14 px 600 class colour (line 18) over 12 px muted (line 16) `Holy Paladin`. Late rows add the role: `Holy Paladin · Healer`. A sign-up whose spec does not resolve reads the class alone, `Paladin`. Heights unchanged (34 px bare row, 36 desktop and 44 phone minimums). Officer select unchanged.
 
 Late, Bench, Out, Not signed up: unchanged layout. The member's `Not signed up` line of class-coloured names stays (the colour carries the class; the names are short and there is no spec on file to add).
+
+### 3.3a Guild events count no roles (amended 2026-11-05, guild round 3)
+
+Everything in §3.1 to §3.3 applies to raids and dungeon runs. A guild event (zone kind `event`) has no role grid, no class row, no role words in its count line and no spec picker; its sign-ups are one list grouped by state. The full rule is guild events spec §3.5.
 
 ### 3.4 Planned row and band raid line (raids spec §3.1, §3.4)
 

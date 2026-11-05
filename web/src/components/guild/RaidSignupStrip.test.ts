@@ -271,4 +271,18 @@ describe('RaidSignupStrip', () => {
     expect(text(markup)).toContain('Officers see Kraggor (Late).');
     expect(markup).not.toContain(`data-testid="signup-seen-as-${KRAGGOR.character_key}"`);
   });
+
+  it('asks a guild event only In, Late, Bench or Out and a note: no spec picker, the class as who', () => {
+    const body = html({ view: { ...raid([KRAGGOR, MENDA]), zone_kind: 'event' } });
+    expect(body).not.toContain('data-testid="signup-spec-');
+    expect(body).toContain('data-testid="signup-segments-us-forever-menda"');
+    expect(body).toContain('data-testid="signup-note-us-forever-menda"');
+    expect(/data-testid="signup-who-us-forever-menda">([^<]*)</.exec(body)?.[1]?.trim()).toBe('Priest');
+    expect(body).toContain('md:grid-cols-[minmax(180px,1fr)_auto_minmax(200px,1.4fr)]');
+  });
+
+  it('keeps the spec picker on a dungeon run, which needs a tank and a healer', () => {
+    const body = html({ view: { ...raid([MENDA]), zone_kind: 'dungeon' } });
+    expect(body).toContain('data-testid="signup-spec-us-forever-menda"');
+  });
 });

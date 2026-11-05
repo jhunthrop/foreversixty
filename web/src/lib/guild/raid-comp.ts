@@ -12,7 +12,7 @@ import type {
   GuildRaidView,
 } from './api';
 import type { SelectOption } from '../ui/listbox-model';
-import { SEP, compCopy, copyList, raidCopy } from './raid-copy';
+import { SEP, compCopy, copyList, kindCountsRoles, kindOf, raidCopy } from './raid-copy';
 import { specName } from './spec-name';
 
 /** The game's class order (Warrior to Druid): the class row, every roster group, the copied list
@@ -177,8 +177,15 @@ export function compBreakdownParts(
   return counts.late > 0 ? [...parts, compCopy.late(counts.late, late.tanks, late.healers)] : parts;
 }
 
-/** A raid view's breakdown clauses. */
-export function raidBreakdownParts(raid: Pick<GuildRaidView, 'counts' | 'signups'>): string[] {
+/** The part of a view the comp reads. */
+type CompView = Pick<GuildRaidView, 'counts' | 'signups' | 'zone_kind'>;
+
+/** A raid view's breakdown clauses. A guild event says no role words: only `2 late` when someone
+ *  is late (guild round 3). */
+export function raidBreakdownParts(raid: CompView): string[] {
+  if (!kindCountsRoles(kindOf(raid))) {
+    return raid.counts.late > 0 ? [compCopy.late(raid.counts.late, 0, 0)] : [];
+  }
   return compBreakdownParts(raid.counts, lateRoles(raid.signups));
 }
 
@@ -186,7 +193,7 @@ const NO_BREAK_SPACE = ' ';
 
 /** The breakdown as the page shows it: each clause glued with no-break spaces, so a line wraps
  *  only between clauses and `1 late (healer)` never splits (the copied list keeps plain spaces). */
-export function raidBreakdownLine(raid: Pick<GuildRaidView, 'counts' | 'signups'>): string {
+export function raidBreakdownLine(raid: CompView): string {
   return raidBreakdownParts(raid)
     .map((clause) => clause.replaceAll(' ', NO_BREAK_SPACE))
     .join(SEP);
@@ -246,8 +253,9 @@ function classCounts(raid: Pick<GuildRaidView, 'counts' | 'signups' | 'not_signe
 /** The band's class row (spec 3.1 line 6): the classes with someone In or Late, in the game's
  *  order, with that count and their specs. A class with nobody counted is left out, on raids,
  *  runs and events alike (guild round 3: a benched paladin read as a greyed `Paladin 0`);
- *  empty when nobody is In or Late. */
-export function classRow(raid: Pick<GuildRaidView, 'counts' | 'signups' | 'not_signed'>): ClassRowItem[] {
+ *  empty when nobody is In or Late, and always for a guild event, which counts no classes. */
+export function classRow(raid: CompView & Pick<GuildRaidView, 'not_signed'>): ClassRowItem[] {
+  if (!kindCountsRoles(kindOf(raid))) return [];
   const counts = classCounts(raid);
   return Object.keys(counts)
     .filter((slug) => slug !== '' && (counts[slug] ?? 0) > 0)
@@ -282,6 +290,7 @@ export function signupListText(view: GuildRaidView, tz: string, locale?: string)
       groupOf: rowGroup,
       specClass: (row) => specClassLine(row.class, row.spec_key),
       order: classThenName,
+      roles: kindCountsRoles(kindOf(view)),
     },
     locale,
   );

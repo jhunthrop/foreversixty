@@ -294,4 +294,24 @@ describe('signupListText (spec 4.2)', () => {
       '0 signed up: 2 tanks, 1 healer, 1 melee, 1 ranged',
     ]);
   });
+
+  describe('a guild event (guild round 3)', () => {
+    const EVENT = { ...ONYXIA, zone_kind: 'event' } as GuildRaidView;
+
+    it('says no role words in the count line: only the late count', () => {
+      expect(raidBreakdownParts({ ...EVENT, counts: { ...EVENT.counts, late: 0 } })).toEqual([]);
+      expect(raidBreakdownParts({ ...EVENT, counts: { ...EVENT.counts, late: 2 } })).toEqual(['2 late']);
+    });
+
+    it('draws no class row', () => {
+      expect(classRow(EVENT)).toEqual([]);
+    });
+
+    it('copies the In rows as one list, with no Classes line and no role groups', () => {
+      const list = signupListText(EVENT, 'America/Chicago', 'en-US');
+      expect(list).not.toContain('Classes:');
+      expect(list).not.toMatch(/^(Tanks|Healers|Melee|Ranged):/m);
+      expect(list).toMatch(/^In: /m);
+    });
+  });
 });

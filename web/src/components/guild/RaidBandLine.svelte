@@ -57,7 +57,7 @@
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { guildRaidHref } from '../../lib/characters';
   import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
-  import { bandLineParts, whenPhrase } from '../../lib/guild/raid-copy';
+  import { bandLineParts, kindCountsRoles, kindOf, whenPhrase } from '../../lib/guild/raid-copy';
   import { putSignup } from '../../lib/guild/raids-api';
   import SignupSegments from './SignupSegments.svelte';
 
@@ -159,7 +159,8 @@
     return bandLineParts({
       when,
       state: shown?.state ?? null,
-      role: shown?.role,
+      // A guild event counts no roles: `you are In`, never `In as DPS` (guild round 3).
+      role: kindCountsRoles(kindOf(nextRaid)) ? shown?.role : undefined,
       characterName: named ? ownCharacters.find((c) => c.character_key === shown.key)?.name : undefined,
       n: nextRaid.counts.in + nextRaid.counts.late,
       size: nextRaid.size,
