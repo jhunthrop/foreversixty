@@ -1534,7 +1534,7 @@
           }
         }
       },
-      "notes": "Heal rank 1 is your filler until 33 at most levels: it keeps your whole healing bonus until then and heals the most for its mana. Rank 2 or 3 takes over at 28 and 32 for most races, at 27 for a Human, Gnome or Night Elf, and at 30 and 31 for an Undead or Troll. Rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 and to 38 as an Undead; a Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
+      "notes": "Heal rank 1 is your filler until 33, though some races cast rank 2 or 3 at a few levels: it keeps your whole healing bonus until then and heals the most for its mana. Rank 2 or 3 takes over at 28 and 32 for most races, at 27 for a Human, Gnome or Night Elf, and at 30 and 31 for an Undead or Troll. Rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 and to 38 as an Undead; a Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
     },
     {
       "action": {
