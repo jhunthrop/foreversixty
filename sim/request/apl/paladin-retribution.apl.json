@@ -121,7 +121,7 @@
       }
     },
     {
-      "notes": "On cooldown. Judgement is off the global cooldown, costs 6% of base mana and never consumes your Seal, and Sanctified Judgement hands back 60% of the judged Seal's cost.",
+      "notes": "On cooldown. Judgement is off the global cooldown, costs 6% of base mana and never consumes your Seal, and from 22 Sanctified Judgement hands back 60% of the judged Seal's cost.",
       "action": {
         "condition": {
           "spellCanCast": {
@@ -192,7 +192,7 @@
       }
     },
     {
-      "notes": "With Unsealed Wrath, once three swings have stored Seal of Command. Switch to Seal of Righteousness for one swing, and that swing releases all three stored Commands. Only above 30% mana and with raid buffs on you (1200 attack power or more): every Seal costs a global and 150 to 190 mana, and with less attack power Seal of Command does less than Seal of Righteousness.",
+      "notes": "With Unsealed Wrath, once three swings have stored Seal of Command. Switch to Seal of Righteousness for one swing, and that swing releases all three stored Commands. Only above 30% mana and with raid buffs on you (1200 attack power or more): every Seal costs a global and a Seal's worth of mana, 150 to 190 at 60, and with less attack power Seal of Command does less than Seal of Righteousness.",
       "action": {
         "condition": {
           "and": {
@@ -445,7 +445,7 @@
       }
     },
     {
-      "notes": "On cooldown. Twenty mana for a Holy weapon strike, and with Sacred Arbiter it refreshes every Judgement on the target.",
+      "notes": "On cooldown. A cheap Holy weapon strike, twenty mana at 60, and with Sacred Arbiter it refreshes every Judgement on the target.",
       "action": {
         "condition": {
           "spellCanCast": {
