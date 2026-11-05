@@ -218,7 +218,7 @@
       }
     },
     {
-      "notes": "Scorch is the filler, not Fireball. You land two Scorches in the time of one Fireball, so you roll twice the crits for Ignite; once all three ranks of Improved Scorch are in at 29 every cast keeps your stacks rolling, and from 30 every crit counts for Heating Up too.",
+      "notes": "Scorch is the filler, not Fireball. You land two Scorches in the time of one Fireball, so you roll twice the crits for Ignite; once all three ranks of Improved Scorch are in at 29, every cast keeps your stacks rolling, and from 30 every crit counts for Heating Up too.",
       "action": {
         "castSpell": {
           "spellId": {

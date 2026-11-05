@@ -157,7 +157,7 @@
         }
       },
       {
-        "notes": "On cooldown. Judgement is off the global cooldown, costs 6% of base mana less Benediction's discount and never consumes your Seal, and from 22 Sanctified Judgement hands back 60% of the judged Seal's cost.",
+        "notes": "On cooldown. Judgement is off the global cooldown, costs 6% of base mana, a tenth less once Benediction is full at 14, and never consumes your Seal, and from 22 Sanctified Judgement hands back 60% of the judged Seal's cost.",
         "action": {
           "condition": {
             "spellCanCast": {
