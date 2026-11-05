@@ -96,7 +96,6 @@
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import GuildOverview from './guild/GuildOverview.svelte';
-  import GuildWeekOneCard from './guild/GuildWeekOneCard.svelte';
   import GuildTabs, {
     tabAfterHashChange,
     tabFromHash,
@@ -128,6 +127,9 @@
   /** The raid line in the band (raids spec 3.4): its own chunk, started the moment the viewer's
    *  membership is known, so it lands alongside /home and keeps the entry chunk under budget. */
   const bandLineLazy = createLazyComponent(() => import('./guild/RaidBandLine.svelte'));
+  // The Before raids open card is its own chunk (the GuildShell bundle budget); it starts loading
+  // with the viewer's membership, alongside the home fetch it waits on anyway.
+  const weekOneLazy = createLazyComponent(() => import('./guild/GuildWeekOneCard.svelte'));
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -234,7 +236,10 @@
         home = page;
         homeStatus = 'ready';
       };
-      if (membership.verified) bandLineLazy.load();
+      if (membership.verified) {
+        bandLineLazy.load();
+        weekOneLazy.load();
+      }
       return fetchGuildHome(membership.id, undefined, undefined, show).then(show);
     };
     void fetchMeFresh((fresh) => void apply(fresh)?.catch(() => {}))
@@ -1015,8 +1020,8 @@
         onSelectTab={selectTab}
       >
         {#snippet lead()}
-          {#if showWeekOne}
-            <GuildWeekOneCard
+          {#if showWeekOne && weekOneLazy.current}
+            <weekOneLazy.current
               status={weekOneStatus}
               officer={officerView}
               waiting={home?.summary?.waiting_for_approval ?? 0}
