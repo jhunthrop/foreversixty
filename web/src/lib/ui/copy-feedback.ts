@@ -5,6 +5,9 @@
 
 export const COPIED_VISIBLE_MS = 2000;
 
+/** A link you paste elsewhere (the invite, the claim link): the word stays while you switch windows. */
+export const COPIED_LONG_MS = 4000;
+
 export type CopyFeedbackState = 'idle' | 'copied' | 'failed';
 
 export interface CopyFeedback {

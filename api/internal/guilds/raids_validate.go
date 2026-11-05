@@ -6,6 +6,7 @@ package guilds
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -26,6 +27,10 @@ const (
 	maxRaidAhead       = 366 * 24 * time.Hour
 	raidStartsAtInPast = "Pick a time after now."
 	raidStartsAtTooFar = "Pick a date within the next year."
+	// raidZoneMissing is the What select's error (guild events spec §5).
+	raidZoneMissing = "Choose a dungeon, event or raid."
+	// zoneOpensDay is how the open day reads in the date error: `Wed 9 Dec`.
+	zoneOpensDay       = "Mon 2 Jan"
 	controlCharMessage = "Remove the control characters."
 )
 
@@ -60,7 +65,7 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 	plan := raidPlan{repeat: req.RepeatWeeks}
 	zone, ok := ZoneByKey(req.Zone)
 	if !ok {
-		fields["zone"] = "Pick a raid."
+		fields["zone"] = raidZoneMissing
 	}
 	title, titleClean := cleanText(strings.TrimSpace(req.Title))
 	if !titleClean {
@@ -89,6 +94,9 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 	if msg == "" && !repeatWithinReach(startsAt, req.RepeatWeeks, now, keepStart) {
 		msg = raidStartsAtTooFar
 	}
+	if msg == "" && ok && err == nil && !zone.OpenedBy(startsAt, loc) {
+		msg = zoneOpensMessage(zone)
+	}
 	if msg != "" {
 		fields["starts_at"] = msg
 	}
@@ -104,6 +112,12 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 		Notes: req.Notes, PostDefault: ticked(req.PostToDiscord),
 	}
 	return plan, nil
+}
+
+// zoneOpensMessage is the date error for a raid posted before it opens (guild events spec
+// §3.2): `Onyxia's Lair opens Wed 9 Dec. Pick that day or later.`
+func zoneOpensMessage(z Zone) string {
+	return fmt.Sprintf("%s opens %s. Pick that day or later.", z.Name, z.Opens.UTC().Format(zoneOpensDay))
 }
 
 // loadTimezone loads an IANA zone name; an empty name is refused, never read as UTC.
@@ -182,6 +196,42 @@ type signupRequest struct {
 	// Spec, when set, is a specs.json key saved as the character's raid spec before the sign-up,
 	// whose role the sign-up then takes (spec 2026-10-28 §P.10.7).
 	Spec string `json:"spec"`
+}
+
+// RoleNotOfClassError is a sign-up asking for a role the character's class cannot play (a
+// mage tank); Message is the in-voice line the site and the bot show.
+type RoleNotOfClassError struct{ Class, Role string }
+
+func (e *RoleNotOfClassError) Error() string {
+	return fmt.Sprintf("guilds: a %s cannot sign up as %s", e.Class, e.Role)
+}
+
+// roleVerbs is what each role a class can be refused does, for the refusal line (every class
+// deals damage).
+var roleVerbs = map[string]string{RoleTank: "tank", RoleHealer: "heal"}
+
+// roleWords is each role as the pick names it.
+var roleWords = map[string]string{RoleTank: "tank", RoleHealer: "healer", RoleDPS: "DPS"}
+
+// Message is "Mages don't tank. Pick DPS." or "Warriors don't heal. Pick tank or DPS."
+func (e *RoleNotOfClassError) Message() string {
+	class := strings.ToLower(e.Class)
+	if class != "" {
+		class = strings.ToUpper(class[:1]) + class[1:]
+	}
+	picks := make([]string, 0, 3)
+	for _, r := range raidspec.ClassRoles(e.Class) {
+		picks = append(picks, roleWords[r])
+	}
+	return fmt.Sprintf("%ss don't %s. Pick %s.", class, roleVerbs[e.Role], strings.Join(picks, " or "))
+}
+
+// checkClassRole refuses a role the class cannot play; an unknown class is not judged.
+func checkClassRole(class, role string) error {
+	if raidspec.Plays(class, role) {
+		return nil
+	}
+	return &RoleNotOfClassError{Class: class, Role: role}
 }
 
 // validateSignup checks a sign-up body; role may be empty (the spec's default applies).

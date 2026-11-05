@@ -24,6 +24,4 @@ export const guildDiscordCopy = {
     'Could not connect. You need to manage webhooks in that channel and be an officer of this guild. Ask a server admin for the permission, then try again.',
   connectStuck: 'Discord did not open. Try again.',
   planEnded: raidCopy.races.officerToolsEnded,
-  gate: raidCopy.gate,
-  gateLink: raidCopy.gateLink,
 } as const;

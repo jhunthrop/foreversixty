@@ -1004,12 +1004,23 @@ data class GuildAttendance(
     @SerialName("nights") val nights: Int? = null,
 )
 
+/** The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag. */
+@Serializable
+data class GuildClaimHolder(
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String? = null,
+    @SerialName("character_key") val characterKey: String,
+)
+
 @Serializable
 data class GuildClaimState(
     @SerialName("state") val state: String,
     @SerialName("frozen") val frozen: Boolean,
     @SerialName("since") val since: String? = null,
-    @SerialName("claimed_by_name") val claimedByName: String? = null,
+    /** The signed-in account holds this guild's claim. */
+    @SerialName("yours") val yours: Boolean,
+    /** The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag. */
+    @SerialName("claimed_by") val claimedBy: GuildClaimHolder? = null,
 )
 
 /** GET /v1/guilds/{id}/home. Verified members only. */
@@ -1061,6 +1072,8 @@ data class GuildHomeViewer(
 
 @Serializable
 data class GuildLoot(
+    /** Verified roster characters whose level on file is 60. */
+    @SerialName("at_level_cap") val atLevelCap: Int,
     @SerialName("encounters") val encounters: List<LootEncounter> = emptyList(),
     @SerialName("selected") val selected: Long,
     @SerialName("items") val items: List<LootItem> = emptyList(),
@@ -1179,6 +1192,8 @@ data class GuildRosterRow(
     @SerialName("spec_icon") val specIcon: String? = null,
     /** Withheld without gear consent. */
     @SerialName("item_level") val itemLevel: Int? = null,
+    /** The export's level, else the addon roster's; null when neither carries one or without gear consent. */
+    @SerialName("level") val level: Int? = null,
     @SerialName("attendance_30") val attendance30: GuildAttendance? = null,
     @SerialName("best_parse") val bestParse: RosterBestParse? = null,
     @SerialName("rating") val rating: RosterRating? = null,
@@ -1204,6 +1219,18 @@ data class GuildSummary(
     @SerialName("named_encounters_down") val namedEncountersDown: Int,
     @SerialName("pulls_this_tier") val pullsThisTier: Int,
     @SerialName("updated_at") val updatedAt: String,
+    /** The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet. */
+    @SerialName("tier") val tier: GuildTierCounts? = null,
+)
+
+/** The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet. */
+@Serializable
+data class GuildTierCounts(
+    @SerialName("name") val name: String? = null,
+    @SerialName("raids") val raids: List<String>? = null,
+    @SerialName("named_encounters") val namedEncounters: Int? = null,
+    @SerialName("down") val down: Int? = null,
+    @SerialName("pulls_total") val pullsTotal: Int? = null,
 )
 
 /** What a healer did against the heal profile's fake raid; present only when the request set role_metrics for a healer spec. */
@@ -1453,12 +1480,27 @@ data class LootCandidate(
     @SerialName("class") val className: String,
     @SerialName("spec") val spec: String,
     @SerialName("gain_dps") val gainDps: Double? = null,
+    /** What gain_dps counts; null when gain_dps is. */
+    @SerialName("gain_unit") val gainUnit: String? = null,
+    /** 0 when the item is on the character's BiS list; 1 when ranked by item level only. */
+    @SerialName("tier") val tier: Int,
     @SerialName("not_sim_checked") val notSimChecked: Boolean,
     @SerialName("ilvl_delta") val ilvlDelta: Int? = null,
     @SerialName("attendance") val attendance: GuildAttendance,
     @SerialName("already_equivalent") val alreadyEquivalent: Boolean,
     @SerialName("replaces") val replaces: String,
+    /** The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name. */
+    @SerialName("replaces_item") val replacesItem: LootWornItem? = null,
     @SerialName("items_won") val itemsWon: Int,
+)
+
+@Serializable
+data class LootEligible(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    /** The copy of the drop this character would get. */
+    @SerialName("item_id") val itemId: Int,
 )
 
 @Serializable
@@ -1485,7 +1527,20 @@ data class LootItem(
     @SerialName("name") val name: String,
     @SerialName("icon") val icon: String,
     @SerialName("quality") val quality: Int,
+    /** For logic only; word the slot from inventory_type and item_class/item_subclass. */
     @SerialName("slot") val slot: String,
+    /** The client's Item.InventoryType. */
+    @SerialName("inventory_type") val inventoryType: Int,
+    /** The client's Item.ClassID. */
+    @SerialName("item_class") val itemClass: Int,
+    /** The client's Item.SubclassID. */
+    @SerialName("item_subclass") val itemSubclass: Int,
+    /** gear is a slotted drop the council ranks; skinned is Scale of Onyxia, never a pick. */
+    @SerialName("kind") val kind: String,
+    /** A quest drop's sourced line ("Quest: A Proper String (Hunter)"); empty otherwise. */
+    @SerialName("quest_label") val questLabel: String,
+    /** Who an officer can hand a quest drop or the bag to. Empty for gear and the skinned scale. */
+    @SerialName("eligible") val eligible: List<LootEligible> = emptyList(),
     @SerialName("copies") val copies: Int,
     @SerialName("awarded_to") val awardedTo: LootAward? = null,
     /** Ranked best first. */
@@ -1539,6 +1594,15 @@ data class LootSource(
     @SerialName("source_origin") val sourceOrigin: String? = null,
     @SerialName("source_note") val sourceNote: String? = null,
     @SerialName("reitemised_from") val reitemisedFrom: Map<String, Int>? = null,
+)
+
+/** The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name. */
+@Serializable
+data class LootWornItem(
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("quality") val quality: Int,
 )
 
 /** GET /v1/me's data (Go auth.Me): who you are, your characters, your guilds and what you may use. The apps gate a feature on entitlements only. */

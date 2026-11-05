@@ -3,7 +3,9 @@ package guilds
 
 import (
 	"reflect"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 )
@@ -15,9 +17,17 @@ func testBand() bis.Band {
 	}}
 }
 
+func lvl(n int) *int { return &n }
+
+// at60 is a level-60 input with consent, everything else empty; tests fill what they check.
+func at60(consent string) readinessInput {
+	return readinessInput{Consent: consent, Level: lvl(60)}
+}
+
 func TestComputeReadinessWithoutConsentChecksNothingGear(t *testing.T) {
-	cr := computeReadiness("roster", testBand(), true,
-		map[string]int{"chest": 999}, nil, nil, true, 10, true, 60, true, nil, nil)
+	in := at60("roster")
+	in.Band, in.HasBand, in.Gear, in.HasBagsSection = testBand(), true, map[string]int{"chest": 999}, true
+	cr := computeReadiness(in)
 	if cr.GearChecked || cr.EnchantsChecked {
 		t.Fatalf("checked = gear:%v enchants:%v, want both false without gear consent", cr.GearChecked, cr.EnchantsChecked)
 	}
@@ -27,101 +37,104 @@ func TestComputeReadinessWithoutConsentChecksNothingGear(t *testing.T) {
 }
 
 func TestComputeReadinessGearUpgradeAndEnchantGap(t *testing.T) {
-	gear := map[string]int{"chest": 200, "feet": 300} // chest is the listed alt (+5), feet is the pick (no gap)
-	enchants := map[string]int{"feet": 42}            // chest equipped, no enchant; feet enchanted
-	cr := computeReadiness("gear", testBand(), true, gear, enchants, nil, true, 10, true, 60, true, nil, nil)
-	if !cr.GearChecked || cr.GearGap.Upgrades != 1 || cr.GearGap.GainDps != 5 {
-		t.Fatalf("gearGap = %+v, want 1 upgrade worth +5", cr.GearGap)
+	in := at60("gear")
+	in.Band, in.HasBand = testBand(), true
+	in.Gear = map[string]int{"chest": 200, "feet": 300} // chest is the listed alt (+5), feet is the pick (no gap)
+	in.Enchants = map[string]int{"feet": 42}            // chest equipped, no enchant; feet enchanted
+	cr := computeReadiness(in)
+	if !cr.GearChecked || cr.GearGap.Upgrades != 1 || cr.GearGap.GainDps != 5 || cr.GearUnit != "dps" {
+		t.Fatalf("gearGap = %+v unit %q, want 1 upgrade worth +5 DPS", cr.GearGap, cr.GearUnit)
 	}
 	if !cr.EnchantsChecked || !reflect.DeepEqual(cr.MissingEnchantSlots, []string{"chest"}) {
 		t.Fatalf("missingEnchants = %v, want [chest]", cr.MissingEnchantSlots)
 	}
 }
 
+// A healer's or tank's band measures no DPS: the gap has no unit and never prints one.
+func TestComputeReadinessHealerGapHasNoUnit(t *testing.T) {
+	in := at60("gear")
+	band := testBand()
+	band.Role = "healer"
+	in.Band, in.HasBand, in.Gear = band, true, map[string]int{"chest": 200}
+	cr := computeReadiness(in)
+	if cr.GearUnit != "" {
+		t.Fatalf("unit = %q, want none for a healer band", cr.GearUnit)
+	}
+	if got := cr.failText()[0]; strings.Contains(got, "DPS") {
+		t.Fatalf("healer fail text = %q, want no DPS figure", got)
+	}
+}
+
 func TestComputeReadinessConsumablesGatedOnGearBagsConsent(t *testing.T) {
-	short := computeReadiness("gear_bags", bis.Band{}, false, nil, nil, []int{}, true, 0, false, 60, true, nil, nil)
-	if short.ConsumablesState != "short" {
-		t.Fatalf("consumables = %q, want short for an empty bags section", short.ConsumablesState)
+	short := at60("gear_bags")
+	short.Bags, short.HasBagsSection = []int{}, true
+	if got := computeReadiness(short).ConsumablesState; got != "short" {
+		t.Fatalf("consumables = %q, want short for an empty bags section", got)
 	}
-	stocked := computeReadiness("gear_bags", bis.Band{}, false, nil, nil, []int{13510}, true, 0, false, 60, true, nil, nil)
-	if stocked.ConsumablesState != "stocked" {
-		t.Fatalf("consumables = %q, want stocked", stocked.ConsumablesState)
+	stocked := at60("gear_bags")
+	stocked.Bags, stocked.HasBagsSection = []int{13510}, true
+	if got := computeReadiness(stocked).ConsumablesState; got != "stocked" {
+		t.Fatalf("consumables = %q, want stocked", got)
 	}
-	unknown := computeReadiness("gear", bis.Band{}, false, nil, nil, []int{13510}, true, 0, false, 60, true, nil, nil)
-	if unknown.ConsumablesState != "unknown" {
-		t.Fatalf("consumables = %q, want unknown without gear_bags consent even with bag data present", unknown.ConsumablesState)
+	unknown := at60("gear")
+	unknown.Bags, unknown.HasBagsSection = []int{13510}, true
+	if got := computeReadiness(unknown).ConsumablesState; got != "unknown" {
+		t.Fatalf("consumables = %q, want unknown without gear_bags consent even with bag data present", got)
 	}
 }
 
 func TestComputeReadinessTalentPointsUnspent(t *testing.T) {
-	cr := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 45, true, 60, true, nil, nil)
-	if cr.TalentPointsUnspent != 6 {
-		t.Fatalf("unspent = %d, want 6 (51-45)", cr.TalentPointsUnspent)
+	in := at60("roster")
+	in.TalentPointsSpent, in.HasTalents = 45, true
+	cr := computeReadiness(in)
+	if cr.TalentPointsUnspent != 6 || cr.TalentLevelAssumed {
+		t.Fatalf("unspent = %d assumed %v, want 6 (51-45) on a real level", cr.TalentPointsUnspent, cr.TalentLevelAssumed)
 	}
-	if cr.TalentLevelAssumed {
-		t.Fatal("talentLevelAssumed = true, want false with a real level on file")
-	}
-	full := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 51, true, 60, true, nil, nil)
-	if full.TalentPointsUnspent != 0 {
+	in.TalentPointsSpent = 51
+	if full := computeReadiness(in); full.TalentPointsUnspent != 0 {
 		t.Fatalf("unspent = %d, want 0 at full spend", full.TalentPointsUnspent)
 	}
-}
 
-// TestComputeReadinessTalentPointsUseRealLevel is defect 1's own regression: a level-23
-// character's max is level-9 (14), never talentPointsAtLevel60's level-60 figure (51) - the
-// bug the owner's real level-23 warrior hit, reading "40 unspent" instead of the true,
-// much smaller gap.
-func TestComputeReadinessTalentPointsUseRealLevel(t *testing.T) {
-	cr := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 0, true, 23, true, nil, nil)
-	if cr.TalentPointsUnspent != 14 {
-		t.Fatalf("unspent = %d, want 14 (23-9) at a real level 23, never level 60's 51", cr.TalentPointsUnspent)
-	}
-	if cr.TalentLevelAssumed {
-		t.Fatal("talentLevelAssumed = true, want false with a real level on file")
-	}
-
-	atCap := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 14, true, 23, true, nil, nil)
-	if atCap.TalentPointsUnspent != 0 {
-		t.Fatalf("unspent = %d, want 0 at level 23's own full spend (14)", atCap.TalentPointsUnspent)
-	}
-
-	noLevel := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 11, true, 0, false, nil, nil)
-	if noLevel.TalentPointsUnspent != 40 {
-		t.Fatalf("unspent = %d, want 40 (51-11) assuming level 60 with no level on the export", noLevel.TalentPointsUnspent)
-	}
-	if !noLevel.TalentLevelAssumed {
-		t.Fatal("talentLevelAssumed = false, want true when the export carries no level section")
-	}
-
-	belowTen := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 0, true, 5, true, nil, nil)
-	if belowTen.TalentPointsUnspent != 0 {
-		t.Fatalf("unspent = %d, want 0 below level 10 (no points awarded yet)", belowTen.TalentPointsUnspent)
+	noLevel := readinessInput{Consent: "roster", TalentPointsSpent: 11, HasTalents: true}
+	cr = computeReadiness(noLevel)
+	if cr.TalentPointsUnspent != 40 || !cr.TalentLevelAssumed {
+		t.Fatalf("unspent = %d assumed %v, want 40 (51-11) assuming level 60 with no level on file", cr.TalentPointsUnspent, cr.TalentLevelAssumed)
 	}
 }
 
-// TestMaxTalentPointsDigitSum is the digit-sum half of defect 1: a level-60 character's
-// three-tree talent string must total 51 once fs1.Decode sums it, the real seeded string
-// this bug was found against.
-func TestMaxTalentPointsDigitSum(t *testing.T) {
-	trees := []string{"35311103002000000", "353211005050010051", "0"}
-	total := 0
-	for _, tree := range trees {
-		for _, digit := range tree {
-			total += int(digit - '0')
+// Talent points follow the level: 1 at level 10, one more each level, 51 at 60, none below 10.
+func TestMaxTalentPointsFollowTheLevel(t *testing.T) {
+	cases := []struct{ level, want int }{{5, 0}, {9, 0}, {10, 1}, {23, 14}, {52, 43}, {60, 51}}
+	for _, c := range cases {
+		if got, assumed := maxTalentPoints(lvl(c.level)); got != c.want || assumed {
+			t.Errorf("maxTalentPoints(%d) = (%d, %v), want (%d, false)", c.level, got, assumed, c.want)
 		}
 	}
-	if total != 51 {
-		t.Fatalf("digit sum = %d, want 51", total)
+	if got, assumed := maxTalentPoints(nil); got != 51 || !assumed {
+		t.Fatalf("maxTalentPoints(nil) = (%d, %v), want (51, true)", got, assumed)
 	}
-	maxPoints, assumed := maxTalentPoints(60, true)
-	if maxPoints != total || assumed {
-		t.Fatalf("maxTalentPoints(60, true) = (%d, %v), want (%d, false)", maxPoints, assumed, total)
+}
+
+// A character under 60 is leveling: nothing is graded, whatever its gear, bags or talents say.
+func TestComputeReadinessLevelingGradesNothing(t *testing.T) {
+	in := readinessInput{
+		Consent: "gear_bags", Band: testBand(), HasBand: true, Gear: map[string]int{"chest": 999},
+		Bags: []int{}, HasBagsSection: true, HasTalents: true, Level: lvl(52), ItemLevel: lvl(40), MedianItemLevel: lvl(60),
+	}
+	cr := computeReadiness(in)
+	if !cr.Leveling || cr.GearChecked || cr.EnchantsChecked || cr.ConsumablesState != "unknown" ||
+		cr.TalentPointsUnspent != 0 || cr.ItemLevelDelta != nil || cr.FailingCount() != 0 {
+		t.Fatalf("leveling readiness = %+v, want nothing graded", cr)
+	}
+	if cr.ItemLevel == nil || *cr.ItemLevel != 40 || cr.Level == nil || *cr.Level != 52 {
+		t.Fatalf("level %v item level %v, want 52 and 40 kept", cr.Level, cr.ItemLevel)
 	}
 }
 
 func TestComputeReadinessItemLevelDelta(t *testing.T) {
-	lvl, median := 58, 63
-	cr := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 0, false, 0, false, &lvl, &median)
+	in := at60("roster")
+	in.ItemLevel, in.MedianItemLevel = lvl(58), lvl(63)
+	cr := computeReadiness(in)
 	if cr.ItemLevel == nil || *cr.ItemLevel != 58 {
 		t.Fatalf("itemLevel = %v, want 58", cr.ItemLevel)
 	}
@@ -132,7 +145,7 @@ func TestComputeReadinessItemLevelDelta(t *testing.T) {
 
 func TestFailTextOrderAndNeedsCap(t *testing.T) {
 	cr := CharacterReadiness{
-		GearChecked: true, GearGap: bis.GearGap{Upgrades: 3, GainDps: 23.8},
+		GearChecked: true, GearGap: bis.GearGap{Upgrades: 3, GainDps: 23.8}, GearUnit: "dps",
 		EnchantsChecked: true, MissingEnchantSlots: []string{"chest", "feet"},
 		ConsumablesState:    "short",
 		TalentPointsUnspent: 1,
@@ -158,6 +171,14 @@ func TestFailTextOrderAndNeedsCap(t *testing.T) {
 	}
 }
 
+// An upgrade nothing sim-checked has no gain to print: never "(+0.0 DPS)".
+func TestFailTextOmitsAnUnsimmedGain(t *testing.T) {
+	cr := CharacterReadiness{GearChecked: true, GearGap: bis.GearGap{Upgrades: 2, NotSimChecked: 2}, GearUnit: "dps"}
+	if got := cr.failText(); !reflect.DeepEqual(got, []string{"2 gear upgrades waiting"}) {
+		t.Fatalf("failText = %v, want the count alone", got)
+	}
+}
+
 func TestFailTextCleanRowIsEmpty(t *testing.T) {
 	cr := CharacterReadiness{GearChecked: true, EnchantsChecked: true, ConsumablesState: "stocked"}
 	if got := cr.failText(); len(got) != 0 {
@@ -168,12 +189,85 @@ func TestFailTextCleanRowIsEmpty(t *testing.T) {
 // TestComputeReadinessTalentsRead: a zero unspent is only a real zero when the export carried
 // talents at all; the board says "not read yet" for the other zero.
 func TestComputeReadinessTalentsRead(t *testing.T) {
-	read := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 51, true, 60, true, nil, nil)
-	if !read.TalentsRead || read.TalentPointsUnspent != 0 {
+	in := at60("roster")
+	in.TalentPointsSpent, in.HasTalents = 51, true
+	if read := computeReadiness(in); !read.TalentsRead || read.TalentPointsUnspent != 0 {
 		t.Fatalf("read = %v unspent = %d, want a real zero", read.TalentsRead, read.TalentPointsUnspent)
 	}
-	unread := computeReadiness("roster", bis.Band{}, false, nil, nil, nil, false, 0, false, 60, true, nil, nil)
-	if unread.TalentsRead || unread.TalentPointsUnspent != 0 {
+	in.TalentPointsSpent, in.HasTalents = 0, false
+	if unread := computeReadiness(in); unread.TalentsRead || unread.TalentPointsUnspent != 0 {
 		t.Fatalf("read = %v unspent = %d, want an unread zero", unread.TalentsRead, unread.TalentPointsUnspent)
+	}
+}
+
+// The nudge asks for the fix by the planned raid's day, and only lists it with none planned.
+func TestNudgeTextNamesTheRaidDay(t *testing.T) {
+	cr := CharacterReadiness{ConsumablesState: "short", Level: lvl(60)}
+	if got := nudgeText("Rootbound", cr, "Tuesday"); got != "Rootbound: consumables short. Check before Tuesday." {
+		t.Fatalf("nudge = %q", got)
+	}
+	if got := nudgeText("Rootbound", cr, ""); got != "Rootbound: consumables short." {
+		t.Fatalf("nudge with no raid = %q", got)
+	}
+}
+
+func TestRaidWeekdayReadsTheGuildZone(t *testing.T) {
+	// 02:00 UTC on Friday 6 Nov 2026 is Thursday evening in Chicago.
+	start := time.Date(2026, 11, 6, 2, 0, 0, 0, time.UTC)
+	if got := raidWeekday(start, "America/Chicago"); got != "Thursday" {
+		t.Fatalf("Chicago weekday = %q, want Thursday", got)
+	}
+	if got := raidWeekday(start, ""); got != "Friday" {
+		t.Fatalf("UTC weekday = %q, want Friday", got)
+	}
+}
+
+// Graded rows lead worst-first; leveling rows follow, highest level first, then by name.
+func TestSortReadinessRowsPutsLevelingLast(t *testing.T) {
+	rows := []ReadinessRow{
+		{Name: "Low", Level: lvl(20)},
+		{Name: "Clean", Level: lvl(60)},
+		{Name: "Bravo", Level: lvl(52)},
+		{Name: "Worst", Level: lvl(60), readinessScore: 300},
+		{Name: "Alpha", Level: lvl(52)},
+	}
+	sortReadinessRows(rows)
+	var got []string
+	for _, r := range rows {
+		got = append(got, r.Name)
+	}
+	if want := []string{"Worst", "Clean", "Alpha", "Bravo", "Low"}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("order = %v, want %v", got, want)
+	}
+}
+
+// The bot's gear words: a healer's or tank's gap is the count alone, and a figure needs a gain.
+func TestGearGapWordsPrintAFigureOnlyWithAUnitAndAGain(t *testing.T) {
+	dps := gearUnitDPS
+	cases := []struct {
+		gap  GearGapView
+		want string
+	}{
+		{GearGapView{Upgrades: 4, GainDps: 31}, "4 upgrades"},
+		{GearGapView{Upgrades: 2, NotSimChecked: 2, Unit: &dps}, "2 upgrades · not simmed yet"},
+		{GearGapView{Upgrades: 1, Unit: &dps}, "1 upgrade"},
+		{GearGapView{Upgrades: 3, GainDps: 24, Unit: &dps}, "3 upgrades · +24 DPS"},
+	}
+	for _, c := range cases {
+		if got := gearGapWords(c.gap); got != c.want {
+			t.Errorf("gearGapWords(%+v) = %q, want %q", c.gap, got, c.want)
+		}
+	}
+}
+
+// The median is the level-60 raiders': a leveling character's item level is left out.
+func TestMedianItemLevelSkipsLevelingRows(t *testing.T) {
+	roster := []RosterRow{
+		{ItemLevel: lvl(60), Level: lvl(60)},
+		{ItemLevel: lvl(62), Level: lvl(60)},
+		{ItemLevel: lvl(30), Level: lvl(41)},
+	}
+	if got := medianItemLevel(roster); got == nil || *got != 61 {
+		t.Fatalf("median = %v, want 61 from the two 60s", got)
 	}
 }

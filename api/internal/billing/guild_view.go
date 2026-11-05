@@ -139,7 +139,7 @@ func (s *Service) planView(ctx context.Context, gb *entitlements.GuildBilling, g
 		v.Status = statusCanceled
 	}
 	if gb.BillingUserID != nil {
-		// The payer's character in the guild; their public name only without one.
+		// The payer's character in the guild; the stand-in without one.
 		name, err := s.displayName(ctx, guildID, *gb.BillingUserID, "")
 		if err != nil {
 			return nil, fmt.Errorf("billing: billing user of guild row %d: %w", gb.ID, err)
@@ -170,8 +170,12 @@ func (s *Service) transferCandidates(ctx context.Context, a guildActor) ([]seats
 	return out, nil
 }
 
-// displayName is the account's character name in the guild, or its public
-// name when it has no character to show.
+// memberStandIn names an account with no character on the guild's roster: guild pages never
+// print an account tag.
+const memberStandIn = "a guild member"
+
+// displayName is the account's character name in the guild, or the stand-in when it has no
+// character to show.
 func (s *Service) displayName(ctx context.Context, guildID, userID int64, known string) (string, error) {
 	if known != "" {
 		return known, nil
@@ -180,9 +184,5 @@ func (s *Service) displayName(ctx context.Context, guildID, userID int64, known 
 	if err != nil || name != "" {
 		return name, err
 	}
-	u, err := s.Users.User(ctx, userID)
-	if err != nil {
-		return "", fmt.Errorf("billing: name of user %d: %w", userID, err)
-	}
-	return u.PublicName(), nil
+	return memberStandIn, nil
 }

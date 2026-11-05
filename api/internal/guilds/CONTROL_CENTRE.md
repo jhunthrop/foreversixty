@@ -59,7 +59,7 @@ data and `gear_bags` consent — well under the 300ms target. Logged verbatim by
 ## Store changes
 
 `guilds.Store` gained two fields, wired in `api/cmd/api/main.go`:
-- `Accounts` — resolves `claimed_by_name` (home) and loot-award `by_name` (loot).
+- `Accounts` — resolves the loot-award `by_name` (loot). `claim.claimed_by` (home, settings) is the holder's character on the roster (`guildCharacterRefs`), never an account tag.
 - `DataDir` — `api/internal/bis` band reads (same `TreeDataDir` every other build-scoped reader already uses).
 
 ## Test summary (verbatim)

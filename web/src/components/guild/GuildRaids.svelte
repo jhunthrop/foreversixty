@@ -5,8 +5,8 @@
      (public sees public reports only, per the existing report-visibility rule server
      side) -- this component renders whatever `rows` it is given.
      Raids spec 3.1: above the nights, verified members and officers get `Planned`; officers get
-     `Plan a raid` (disabled with the gate sentence in officer-read-only, and with the cap line at
-     12) and the form in place under the header row. One minute tick feeds every row's countdown. -->
+     `Plan an event` (disabled with the gate sentence in officer-read-only; the cap line at 12 raids
+     limits raids only, so the button stays live) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { tick } from 'svelte';
@@ -27,16 +27,11 @@
   import { raidCopy } from '../../lib/guild/raid-copy';
   import { nightFromHash } from '../../lib/guild/raids-hash';
   import { guildRaidHref } from '../../lib/characters';
-  import {
-    RAID_CAP,
-    lastPlannedRaid,
-    openRaidCount,
-    splitAtLink,
-    type RaidSubmitResult,
-  } from '../../lib/guild/raid-form';
+  import { RAID_CAP, lastPlannedRaid, openRaidCount, type RaidSubmitResult } from '../../lib/guild/raid-form';
   import { createRaid, type RaidInput } from '../../lib/guild/raids-api';
   import { planRaid } from '../../lib/guild/raids-tab-controller';
   import { button } from '../../lib/ui/button';
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import GuildPlannedRaids from './GuildPlannedRaids.svelte';
   import RaidForm from './RaidForm.svelte';
@@ -56,6 +51,8 @@
     /** A verified member of this guild. */
     memberView?: boolean;
     settingsHref?: string;
+    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
+    gateFacts: GateFacts;
     /** The guild page's own path; each planned row links under it. */
     guildPath?: string;
     /** Pins the clock (tests); otherwise the tab ticks once a minute. */
@@ -65,6 +62,8 @@
     onPlanned?: () => Promise<void>;
     /** A create was refused with `guild_plan_required`: the tab turns officer-read-only. */
     onPlanRefused?: () => void;
+    /** The tab opens with the plan form up: the Before raids open card's Plan an event. */
+    openForm?: boolean;
   }
 
   let {
@@ -79,16 +78,17 @@
     officerTools = true,
     memberView = false,
     settingsHref = '',
+    gateFacts,
     guildPath = '',
     now,
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
     onPlanned = () => Promise.resolve(),
     onPlanRefused = () => {},
+    openForm = false,
   }: Props = $props();
 
   const GATE_ID = 'officer-tools-gate-raids';
   const CAP_ID = 'guild-raids-cap';
-  const gateLead = splitAtLink(raidCopy.gate, raidCopy.gateLink).before;
 
   const showPlanned = $derived(planned !== undefined && (memberView || officer));
   const readOnly = $derived(officer && !officerTools);
@@ -102,6 +102,10 @@
   );
 
   let formOpen = $state(false);
+  // The Before raids open card's Plan an event: the tab opens with the form up.
+  $effect(() => {
+    if (openForm) formOpen = true;
+  });
   let planButton = $state<HTMLButtonElement | null>(null);
 
   async function closeForm(): Promise<void> {
@@ -188,8 +192,8 @@
         <button
           type="button"
           bind:this={planButton}
-          class={button('primary', 'sm')}
-          disabled={readOnly || atCap}
+          class={button(readOnly ? 'secondary' : 'primary', 'md')}
+          disabled={readOnly}
           aria-describedby={planDescribedBy}
           onclick={() => (formOpen = true)}
           data-testid="guild-raids-plan">{raidCopy.planButton}</button
@@ -199,7 +203,7 @@
     {#if officer && showPlanned && (readOnly || atCap || (formOpen && planned !== undefined))}
       <div class="border-line-soft flex flex-col gap-3 border-t px-5 py-4">
         {#if officer && showPlanned && readOnly}
-          <GuildPlanGate tab="raids" {settingsHref} sentence={gateLead} />
+          <GuildPlanGate tab="raids" facts={gateFacts} />
         {:else if officer && showPlanned && atCap}
           <p id={CAP_ID} class="text-muted text-[13px]" data-testid="guild-raids-cap">{raidCopy.cap}</p>
         {/if}

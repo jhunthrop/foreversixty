@@ -4,9 +4,15 @@
      a save is in flight and reverts them when the save is refused. The caller applies a
      successful save's raid before resolving, so the props carry the saved values afterwards. -->
 <script lang="ts">
-  import type { GuildRaidRole, GuildRaidViewerCharacter, GuildSignupState } from '../../lib/guild/api';
+  import type {
+    GuildRaidRole,
+    GuildRaidViewerCharacter,
+    GuildSignupState,
+    GuildZoneKind,
+  } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import { rolesForClass } from '../../lib/guild/raid-roles';
   import {
     pressAsksSpec,
     savedSpec,
@@ -29,6 +35,7 @@
     type SignupOutcome,
   } from '../../lib/guild/signup-strip';
   import { classColorVar } from '../../lib/report/format';
+  import { specName } from '../../lib/guild/spec-name';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Select from '../ui/Select.svelte';
   import SignupSpec from './SignupSpec.svelte';
@@ -40,6 +47,7 @@
     disabled,
     describedBy,
     notice,
+    kind = 'raid',
     raidTitle,
     raidDate,
     onClearNotice,
@@ -53,6 +61,8 @@
     describedBy?: string;
     /** A line the strip sets on this row: `{Name} moved to Bench.` */
     notice: string | null;
+    /** What the night is, for the ended line of a refused save. */
+    kind?: GuildZoneKind;
     /** The raid's title and date, for the spec ask's lead sentence. */
     raidTitle: string;
     raidDate: string;
@@ -63,10 +73,13 @@
 
   type RowStatus = { kind: 'saved'; kept: string | null } | { kind: 'error'; message: string; race: boolean };
 
-  const ROLE_OPTIONS = (['tank', 'healer', 'dps'] as const).map((role) => ({
-    value: role,
-    label: raidCopy.roleLabels[role],
-  }));
+  /** Only the roles the character's class plays (a mage is never offered tank). */
+  const ROLE_OPTIONS = $derived(
+    rolesForClass(character.class).map((role) => ({
+      value: role,
+      label: raidCopy.roleLabels[role],
+    })),
+  );
 
   /** `undefined` while the row shows the props' state. */
   let pendingState = $state<GuildSignupState | undefined>(undefined);
@@ -169,7 +182,7 @@
     specChoice = null;
     if (!outcome.ok) {
       sentNote = null;
-      status = { kind: 'error', ...failureLine(outcome.code) };
+      status = { kind: 'error', ...failureLine(outcome.code, kind) };
       return;
     }
     if (noteEdit === choice.note) noteEdit = null;
@@ -271,7 +284,7 @@
           <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
             {character.name}
           </p>
-          <p class="text-muted truncate text-[12px]">{character.spec}</p>
+          <p class="text-muted truncate text-[12px]">{specName(character.spec)}</p>
         </div>
       </div>
       <div class="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">

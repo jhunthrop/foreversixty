@@ -40,9 +40,23 @@
             },
             "already_equivalent": false,
             "replaces": "Lionheart Helm",
-            "items_won": 1
+            "items_won": 1,
+            "gain_unit": "dps",
+            "tier": 0,
+            "replaces_item": {
+              "item_id": 12640,
+              "name": "Lionheart Helm",
+              "icon": "inv_helmet_36",
+              "quality": 4
+            }
           }
-        ]
+        ],
+        "inventory_type": 1,
+        "item_class": 4,
+        "item_subclass": 2,
+        "kind": "gear",
+        "quest_label": "",
+        "eligible": []
       },
       {
         "item_id": 15410,
@@ -52,9 +66,39 @@
         "slot": "",
         "copies": 1,
         "awarded_to": null,
-        "candidates": []
+        "candidates": [],
+        "inventory_type": 0,
+        "item_class": 7,
+        "item_subclass": 6,
+        "kind": "skinned",
+        "quest_label": "",
+        "eligible": []
+      },
+      {
+        "item_id": 18705,
+        "name": "Mature Black Dragon Sinew",
+        "icon": "spell_holy_dispelmagic",
+        "quality": 4,
+        "slot": "",
+        "copies": 1,
+        "awarded_to": null,
+        "candidates": [],
+        "inventory_type": 0,
+        "item_class": 12,
+        "item_subclass": 0,
+        "kind": "quest",
+        "quest_label": "Quest: A Proper String (Hunter)",
+        "eligible": [
+          {
+            "character_key": "us/pvp/kraggor",
+            "name": "Kraggor",
+            "class": "hunter",
+            "item_id": 18705
+          }
+        ]
       }
-    ]
+    ],
+    "at_level_cap": 1
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"

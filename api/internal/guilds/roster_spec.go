@@ -94,3 +94,40 @@ func describeMembers(entries []RosterEntry, rows []RosterRow) {
 }
 
 func strp(s string) *string { return &s }
+
+// snapshotClass is a snapshot line's class slug: the addon's own class token when it sent one
+// and the catalogue knows it, else what the spec word alone says. Nil when neither answers.
+func snapshotClass(m snapshotMember) *string {
+	class := strings.ToLower(strings.TrimSpace(m.Class))
+	if len(raidspec.ForClass(class)) > 0 {
+		return &class
+	}
+	return classFromSpec(m.Spec)
+}
+
+// classFromSpec is the class a spec word can only belong to: a specs.json key ("warrior-arms"),
+// or a bare name or slug one class alone plays ("arms", "beast-mastery"). "protection", "holy"
+// and "restoration" belong to two classes each and stay unknown.
+func classFromSpec(spec string) *string {
+	word := strings.ToLower(strings.TrimSpace(spec))
+	if word == "" {
+		return nil
+	}
+	if s, ok := raidspec.ByKey(word); ok {
+		return &s.Class
+	}
+	var class string
+	for _, s := range raidspec.All() {
+		if strings.ReplaceAll(strings.ToLower(s.Name), " ", "-") != strings.ReplaceAll(word, " ", "-") || s.Class == class {
+			continue
+		}
+		if class != "" {
+			return nil
+		}
+		class = s.Class
+	}
+	if class == "" {
+		return nil
+	}
+	return &class
+}

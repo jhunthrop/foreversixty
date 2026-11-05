@@ -1534,7 +1534,7 @@
           }
         }
       },
-      "notes": "Heal is your filler before you learn Greater Heal at 40. A new rank costs more mana than its extra healing is worth at first, so keep rank 2 at 28 and rank 3 from 34 to 37. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
+      "notes": "Heal is your filler before you learn Greater Heal at 40. Rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37, to 38 as a Troll and to 39 as an Undead. A Human or Undead also keeps rank 2 at 28, and an Undead at 29. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
     },
     {
       "action": {

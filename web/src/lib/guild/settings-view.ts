@@ -4,12 +4,11 @@
 // are pinned without a page.
 import type { GuildBillingView } from '../account/api';
 import { utcDayMonthYear } from '../dates';
-import type { ClaimStateView, MemberRef } from './api';
 
 export const settingsWords = {
-  officerRank: 'Officers are guild ranks at or above',
+  officerRank: 'Officer ranks',
   officerRankHelp:
-    'Rank number, 0 is the guild master. This rank and every rank above it can approve members and award loot.',
+    '0 is the guild master, 1 the rank under it, and so on. This rank and every rank above it can approve members and award loot.',
   releaseOnClaimPage: 'Release on the claim page',
   visibilityHelp: 'Public, Unlisted (link only) or Guild only. Applies to new reports.',
   guildPlan: 'Guild plan',
@@ -20,14 +19,6 @@ export const settingsWords = {
   tryAgain: 'Try again',
   guildSettingsLink: 'Guild settings',
 } as const;
-
-/** "Claimed by hunthrop#1894" for a claimed guild; null otherwise (a contested claim shows the
- *  frozen notice instead, never both). */
-export function claimedByLine(claim: ClaimStateView, claimedBy: MemberRef | null): string | null {
-  if (claim.state !== 'claimed') return null;
-  const name = claimedBy?.battletag ?? claim.claimed_by_name;
-  return name === undefined || name === '' ? 'Claimed' : `Claimed by ${name}`;
-}
 
 function planEndDate(billing: Pick<GuildBillingView, 'current_period_end'>): string {
   return billing.current_period_end === null ? '' : utcDayMonthYear(billing.current_period_end);

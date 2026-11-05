@@ -10,7 +10,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
-  import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
+  import { COPIED_VISIBLE_MS, createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import { uiCopy } from '../../lib/ui/copy';
 
   let {
@@ -23,6 +23,8 @@
     labelVisible = true,
     onCard = false,
     phoneFullWidth = false,
+    copiedMs = COPIED_VISIBLE_MS,
+    autoSelect = false,
   }: {
     url: string;
     /** The field label: visible, or for screen readers only (`labelVisible` false). */
@@ -40,6 +42,10 @@
     onCard?: boolean;
     /** Below 768 the buttons fill the row (two columns when Share exists). */
     phoneFullWidth?: boolean;
+    /** How long `Copied` stays. */
+    copiedMs?: number;
+    /** Selected on mount: the field is the fallback after a clipboard refusal. */
+    autoSelect?: boolean;
   } = $props();
 
   let feedback = $state<CopyFeedbackState>('idle');
@@ -48,6 +54,7 @@
   const copier = createCopyFeedback(
     (text) => navigator.clipboard.writeText(text),
     (next) => (feedback = next),
+    copiedMs,
   );
 
   const fieldGround = $derived(onCard ? 'bg-bg' : 'bg-raised');
@@ -59,6 +66,10 @@
   const buttonWidth = $derived(phoneFullWidth ? 'w-full justify-center md:w-fit' : 'w-fit');
 
   $effect(() => copier.dispose);
+
+  function selectOnMount(field: HTMLInputElement): void {
+    if (autoSelect) field.select();
+  }
 
   async function onShare(): Promise<void> {
     try {
@@ -79,6 +90,7 @@
       type="text"
       readonly
       value={url}
+      use:selectOnMount
       onfocus={(event) => (event.currentTarget as HTMLInputElement).select()}
       data-testid={`${testid}-url`}
     />

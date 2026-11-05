@@ -18,7 +18,9 @@
   import { dateLabel } from '../../lib/guild/raid-time';
   import { syncCell } from '../../lib/guild/readiness-raid';
   import EmptyState from '../ui/EmptyState.svelte';
+  import Tag from '../ui/Tag.svelte';
   import { guildGateCopy } from '../../lib/guild/copy';
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import {
     consumablesKind,
     consumablesLabel,
@@ -26,11 +28,22 @@
     enchantLabel,
     enchantPillText,
     gearGapLabel,
+    AVG_ITEM_LEVEL,
+    AVG_ITEM_LEVEL_TOOLTIP,
+    LEVELING_GROUP,
+    LEVELING_SUFFIX,
+    READINESS_EMPTY,
+    READINESS_READY,
+    isLeveling,
     isWithheldWord,
-    itemLevelKind,
+    itemLevelChip,
     itemLevelLabel,
+    levelingLabel,
+    medianCaption,
     nudgeText,
+    passesEveryCheck,
     pinReadinessOwnRow,
+    readinessGroups,
     sortReadinessWorstFirst,
     talentPointsKind,
     talentPointsLabel,
@@ -45,7 +58,7 @@
     officerTools,
     raidGuildTools,
     myCharacterKey,
-    settingsHref,
+    gateFacts,
     raid = null,
     nextRaidOnly = false,
     onToggleNextRaid = () => {},
@@ -61,7 +74,8 @@
     raidGuildTools: boolean;
     myCharacterKey: string | null;
     /** Where the plan sentence's link goes: the guild's settings tab. */
-    settingsHref: string;
+    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
+    gateFacts: GateFacts;
     /** The next planned or locked raid's filtered board header; null shows no toggle. */
     raid?: ReadinessRaid | null;
     /** The toggle's state, held by the page so it survives a re-read. */
@@ -93,11 +107,14 @@
   // only ("own row pinned first, no Nudge button"); an officer's own matrix cell reads
   // "Nudge on every row" with no pin clause -- the officer board stays strictly
   // worst-first throughout, exactly the raid leader's own pre-pull triage order.
-  const ordered = $derived(
-    officer
-      ? sortReadinessWorstFirst(rows)
-      : pinReadinessOwnRow(sortReadinessWorstFirst(rows), myCharacterKey),
+  // The leveling characters follow the raiders under their own rule (week-one spec §3.5); a
+  // member's own row pins first within whichever group it is in.
+  const groups = $derived(readinessGroups(sortReadinessWorstFirst(rows)));
+  const graded = $derived(officer ? groups.graded : pinReadinessOwnRow(groups.graded, myCharacterKey));
+  const levelingRows = $derived(
+    officer ? groups.leveling : pinReadinessOwnRow(groups.leveling, myCharacterKey),
   );
+  const ordered = $derived([...graded, ...levelingRows]);
 
   let copiedKey = $state<string | null>(null);
 
@@ -123,6 +140,8 @@
   const NUDGE_BTN =
     'inline-flex h-8 items-center justify-center rounded-control border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] text-strong uppercase disabled:opacity-50 disabled:cursor-default';
   const CHIP = 'flex flex-col gap-0.5 text-[12px] text-text';
+  /** Fits the 1024 px content width, where the board's grid starts: the name and gear gap columns give. */
+  const BOARD_COLUMNS = 'minmax(120px,170px) minmax(120px,170px) 120px 100px 100px 140px 90px 84px';
 
   /** The pill treatment per cell kind (Enchants/Consumables/Talent points): `consent`
    *  reads as plain muted text (never a coloured pill -- there is nothing to flag), `ok`
@@ -165,14 +184,25 @@
     return dayWord(new Date(row.logged_at));
   }
 
-  /** Item level reads as plain coloured text, never a pill (spec: "signed and coloured
-   *  -- green at or above, red below"). */
-  function itemLevelTextClass(kind: ReadinessCellKind): string {
-    if (kind === 'ok') return 'text-[#7bff5c]';
-    if (kind === 'warn') return 'text-[#ff6b5c]';
-    return 'text-muted';
+  /** The median caption's colour: above green, below red, at the median muted (week-one spec §3.5). */
+  function medianClass(row: GuildReadinessRow): string {
+    const delta = row.item_level_delta ?? 0;
+    if (delta > 0) return 'text-kill';
+    return delta < 0 ? 'text-wipe' : 'text-muted';
   }
 </script>
+
+{#snippet raiderName(row: GuildReadinessRow, pinned: boolean)}
+  <span class="flex min-w-0 items-center gap-2">
+    <ClassCrestRing characterClass={row.class} size={26} />
+    <span class="truncate text-[13px] font-bold" style={`color:${classColorVar(row.class)}`}>
+      {row.name}{pinned ? ' (you)' : ''}
+    </span>
+    {#if pinned && passesEveryCheck(row)}<Tag tone="success" testid="guild-readiness-ready"
+        >{READINESS_READY}</Tag
+      >{/if}
+  </span>
+{/snippet}
 
 <!-- Last synced: the day, or (next-raid board) a sync older than the raid's cutoff in the warn pill,
      or a signed character with no export, muted. -->
@@ -196,7 +226,7 @@
     <h2 class="section-title">Readiness</h2>
     {#if officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span>{/if}
   </div>
-  {#if officerReadOnly}<GuildPlanGate tab="readiness" {settingsHref} raidGuild={officerTools} />{/if}
+  {#if officerReadOnly}<GuildPlanGate tab="readiness" facts={gateFacts} />{/if}
 
   {#if raid !== null && showing !== null}
     <div class="flex flex-col gap-2">
@@ -221,18 +251,24 @@
   {/if}
   {#if filtered && rows.length === 0}
     <EmptyState message={attendanceCopy.readiness.nobodySigned} testid="guild-readiness-nobody" />
+  {:else if rows.length === 0}
+    <EmptyState
+      message={READINESS_EMPTY}
+      action={officer ? { label: 'Open the roster', href: '#roster' } : undefined}
+      testid="guild-readiness-empty"
+    />
   {/if}
 
   {#if ordered.length > 0}<div
-      class="hidden gap-2 px-1 pb-1 md:grid"
-      style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
+      class="hidden gap-2 px-1 pb-1 lg:grid"
+      style:grid-template-columns={BOARD_COLUMNS}
       data-testid="guild-readiness-header"
     >
       <span class="quiet-label">Raider</span>
       <span
         class="quiet-label"
         style="cursor:default"
-        title="Slots with a better item in the best-in-slot list, and the DPS a simulation says they are worth"
+        title="Slots with a better item in the best-in-slot list, and for a damage spec the DPS a simulation says they are worth"
         >Gear gap</span
       >
       <span
@@ -249,32 +285,35 @@
       <span class="quiet-label" style="cursor:default" title="Spent points vs 51 at level 60"
         >Talent points</span
       >
-      <span class="quiet-label" style="cursor:default" title="This character vs the roster's own median"
-        >Item level</span
-      >
+      <span class="quiet-label" style="cursor:default" title={AVG_ITEM_LEVEL_TOOLTIP}>{AVG_ITEM_LEVEL}</span>
       <span class="quiet-label">Last synced</span>
       <span></span>
     </div>{/if}
 
   <div class="flex flex-col" data-testid="guild-readiness-rows">
-    {#each ordered as row (row.character_key)}
+    {#each ordered as row, index (row.character_key)}
       {@const pinned = row.character_key === myCharacterKey}
+      {@const leveling = isLeveling(row)}
+      {#if leveling && index === graded.length && graded.length > 0}
+        <div class="border-line-soft border-t pt-3 pb-1" data-testid="guild-readiness-leveling-group">
+          <span class="quiet-label">{LEVELING_GROUP}</span>
+        </div>
+      {/if}
       <!-- One box per raider holds the rule and the own band (lib/ui/row.ts), so the band and the
            rules beside it are the same at every width whichever layout below is shown. -->
       <div class={`border-line-soft border-b ${ROW_RULE} ${ownRowBand(pinned, 1)}`}>
         <!-- Desktop grid -->
         <div
-          class="hidden items-center gap-2 py-2 md:grid"
-          style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
+          class="hidden items-center gap-2 py-2 lg:grid"
+          style:grid-template-columns={BOARD_COLUMNS}
           data-testid={`guild-readiness-row-${row.character_key}`}
         >
-          <span class="flex min-w-0 items-center gap-2">
-            <ClassCrestRing characterClass={row.class} size={26} />
-            <span class="truncate text-[13px] font-bold" style={`color:${classColorVar(row.class)}`}>
-              {row.name}{pinned ? ' (you)' : ''}
+          {@render raiderName(row, pinned)}
+          {#if leveling}
+            <span class="text-text col-span-5 text-[14px]" data-testid="guild-readiness-leveling">
+              {levelingLabel(row.level ?? 0)}<span class="text-muted text-[13px]">{LEVELING_SUFFIX}</span>
             </span>
-          </span>
-          {#if row.no_export}
+          {:else if row.no_export}
             {#each NO_EXPORT_CELLS as cell (cell)}<span
                 class="text-muted text-[12px]"
                 data-testid="guild-readiness-dash">{DASH}</span
@@ -298,12 +337,20 @@
             {:else}
               <span class="text-muted text-[12px]">{talentPointsLabel(row)}</span>
             {/if}
-            <span class={`numeric text-[12px] ${itemLevelTextClass(itemLevelKind(row))}`}
-              >{itemLevelLabel(row)}</span
-            >
+            <span class="flex flex-col" data-testid="guild-readiness-item-level">
+              <span
+                class={row.item_level === null ? 'text-muted text-[12px]' : 'numeric text-text text-[14px]'}
+                >{itemLevelLabel(row)}</span
+              >
+              {#if medianCaption(row) !== ''}<span class="text-[12px] {medianClass(row)}"
+                  >{medianCaption(row)}</span
+                >{/if}
+            </span>
           {/if}
           {@render syncedCell(row, 'text-[11px]', syncedDay(row))}
-          {#if officer}
+          {#if officer && leveling}
+            <span></span>
+          {:else if officer}
             <button
               class={NUDGE_BTN}
               onclick={() => void onNudge(row)}
@@ -317,24 +364,23 @@
           {/if}
         </div>
 
-        <!-- Phone stacked card: its own Tailwind `md:hidden` (not a scoped <style> block --
+        <!-- Phone stacked card: its own Tailwind `lg:hidden` (not a scoped <style> block --
            see this component's own header comment) is the only thing controlling display
            at this breakpoint, so there is no cascade-order risk of it fighting the desktop
-           grid's `hidden md:grid` above. -->
+           grid's `hidden lg:grid` above. -->
         <div
-          class="flex flex-col gap-2.5 py-2.5 md:hidden"
+          class="flex flex-col gap-2.5 py-2.5 lg:hidden"
           data-testid={`guild-readiness-row-${row.character_key}`}
         >
           <div class="flex items-center justify-between gap-2">
-            <span class="flex min-w-0 items-center gap-2">
-              <ClassCrestRing characterClass={row.class} size={26} />
-              <span class="truncate text-[13px] font-bold" style={`color:${classColorVar(row.class)}`}>
-                {row.name}{pinned ? ' (you)' : ''}
-              </span>
-            </span>
+            {@render raiderName(row, pinned)}
             {@render syncedCell(row, 'text-[11px]', `Synced ${syncedDay(row)}`)}
           </div>
-          {#if row.no_export}
+          {#if leveling}
+            <p class="text-text text-[14px]" data-testid="guild-readiness-leveling">
+              {levelingLabel(row.level ?? 0)}
+            </p>
+          {:else if row.no_export}
             <div class="flex flex-wrap gap-4">
               {#each NO_EXPORT_CELLS as cell (cell)}<span class={CHIP}
                   ><span class="quiet-label">{cell}</span><span
@@ -379,12 +425,12 @@
                 {/if}
               </span>
               <span class={CHIP}>
-                <span class="quiet-label">Item level</span>
-                <span class={itemLevelTextClass(itemLevelKind(row))}>{itemLevelLabel(row)}</span>
+                <span class="quiet-label">{AVG_ITEM_LEVEL}</span>
+                <span class={medianClass(row)}>{itemLevelChip(row)}</span>
               </span>
             </div>
           {/if}
-          {#if officer}
+          {#if officer && !leveling}
             <button
               class={`${NUDGE_BTN} w-fit`}
               onclick={() => void onNudge(row)}

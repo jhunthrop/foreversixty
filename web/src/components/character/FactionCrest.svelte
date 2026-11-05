@@ -63,7 +63,14 @@
     faction,
     testid,
     src,
-  }: { faction: Faction | null | undefined; testid?: string; src?: string | null } = $props();
+    small = false,
+  }: {
+    faction: Faction | null | undefined;
+    testid?: string;
+    src?: string | null;
+    /** 44px at every width (the join card's guild row); otherwise 64px from 1024. */
+    small?: boolean;
+  } = $props();
 
   const knownFaction = $derived(faction === 'alliance' || faction === 'horde');
   const resolvedSrc = $derived(
@@ -80,7 +87,9 @@
     height={64}
     loading="eager"
     decoding="async"
-    class="bg-raised box-border h-11 w-11 shrink-0 rounded-full object-contain p-[7px] lg:h-16 lg:w-16 lg:p-[10px]"
+    class="bg-raised box-border h-11 w-11 shrink-0 rounded-full object-contain p-[7px] {small
+      ? ''
+      : 'lg:h-16 lg:w-16 lg:p-[10px]'}"
     style={knownFaction ? `box-shadow: 0 0 0 2px ${FACTION_BAR_COLOR[faction as Faction]};` : ''}
     data-testid={testid}
     data-faction-name={faction ?? undefined}

@@ -47,6 +47,26 @@ describe('ratingFloor / isBelowRatingFloor', () => {
     expect(ratingFloor([row({ rating: null }), row({ rating: undefined })])).toBeNull();
   });
 
+  const ratedRows = (overalls: number[]) =>
+    overalls.map((overall, i) =>
+      row({
+        character_key: `r${i}`,
+        rating: { overall, output: 0, survival: 0, mechanics: 0, utility: 0, preparation: 0, activity: 0 },
+      }),
+    );
+
+  it('has no floor with fewer than eight rated raiders, or with everyone within five points', () => {
+    expect(ratingFloor(ratedRows([40, 90]))).toBeNull();
+    expect(ratingFloor(ratedRows([10, 50, 60, 70, 80, 90, 95]))).toBeNull();
+    expect(ratingFloor(ratedRows([80, 81, 82, 82, 83, 84, 85, 85]))).toBeNull();
+  });
+
+  it('flags only the raiders strictly under the floor', () => {
+    const rows = ratedRows([30, 40, 60, 65, 70, 75, 80, 90]);
+    const floor = ratingFloor(rows);
+    expect(rows.filter((r) => isBelowRatingFloor(r, floor)).map((r) => r.rating?.overall)).toEqual([30, 40]);
+  });
+
   it('never counts a missing rating as "below"', () => {
     expect(isBelowRatingFloor(row({ rating: undefined }), 50)).toBe(false);
     expect(isBelowRatingFloor(row({ rating: null }), 50)).toBe(false);

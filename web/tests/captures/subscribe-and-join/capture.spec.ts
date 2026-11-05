@@ -62,7 +62,7 @@ const CLAIM_PATH = `/guild/us/pvp/${GUILD_SLUG}/claim`;
 const CLOCK = '2026-10-27T18:00:00Z';
 const ROTATED_TOKEN = 'fixedtokenfixedtokenfixedtoken0';
 const ROTATED_AT = '2026-10-27T12:00:00Z';
-const OWNER_BATTLETAG = 'hunthrop#1894';
+const OWNER_HOLDER = { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' };
 const OWNER_GUILD_ID = 2;
 /** Guild names render as stored (spec §9). */
 const STORED_GUILD_NAME = 'OLYMPUS XXVII';
@@ -213,7 +213,7 @@ async function stubClaimPosts(page: Page, cell: MeCell, claimed: Me): Promise<vo
   await page.route('**/v1/guilds/*/claim', succeed({ status: 'confirmed' }));
   await page.route(
     '**/v1/guilds/*/claim/confirm',
-    succeed({ status: 'confirmed', claimed_by: { battletag: OWNER_BATTLETAG } }),
+    succeed({ status: 'confirmed', claimed_by: OWNER_HOLDER }),
   );
 }
 
@@ -413,7 +413,7 @@ function claimSettings(claimed: boolean): unknown {
   return {
     default_visibility: 'guild',
     officer_max_rank_index: 1,
-    claimed_by: claimed ? { battletag: OWNER_BATTLETAG } : null,
+    claimed_by: claimed ? OWNER_HOLDER : null,
     claim_pending: null,
     claim: claimed
       ? { state: 'claimed', since: CLOCK, frozen: false }

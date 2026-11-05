@@ -23,12 +23,12 @@ func TestCandidateSortByAttendanceRatioThenPresent(t *testing.T) {
 func TestLootCandidatesCarryTheirOwnNights(t *testing.T) {
 	s := realTreesStore(t)
 	roster := []RosterRow{
-		{CharacterKey: "a", Verified: true, className: "warrior", specStr: "Fury", faction: "alliance",
+		{CharacterKey: "a", Verified: true, className: "warrior", specStr: "Fury", faction: "alliance", Level: i(60),
 			Attendance: Attendance{Present: 2, Nights: 3}},
-		{CharacterKey: "b", Verified: true, className: "warrior", specStr: "Fury", faction: "alliance",
+		{CharacterKey: "b", Verified: true, className: "warrior", specStr: "Fury", faction: "alliance", Level: i(60),
 			Attendance: Attendance{Present: 6, Nights: 8}},
 	}
-	cands := s.lootCandidates(roster, lootItem{ItemID: 16963, Slot: "head"})
+	cands := s.lootCandidates(roster, onyxiaRow(t, 16963))
 	if len(cands) != len(roster) {
 		t.Fatalf("candidates = %+v, want one per roster row", cands)
 	}

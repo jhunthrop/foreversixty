@@ -1,0 +1,531 @@
+{
+  "build": "1.60.1.70790",
+  "source": [
+    "https://wago.tools/db2/SkillLine/csv?build=1.60.1.70790",
+    "https://wago.tools/db2/SkillLineAbility/csv?build=1.60.1.70790",
+    "https://wago.tools/db2/SkillRaceClassInfo/csv?build=1.60.1.70790"
+  ],
+  "classes": {
+    "druid": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Leather",
+          "level": 1
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 4,
+          "skill": "Maces",
+          "level": 1
+        },
+        {
+          "subclass": 5,
+          "skill": "Two-Handed Maces",
+          "level": 1
+        },
+        {
+          "subclass": 10,
+          "skill": "Staves",
+          "level": 1
+        },
+        {
+          "subclass": 13,
+          "skill": "Fist Weapons",
+          "level": 1
+        },
+        {
+          "subclass": 15,
+          "skill": "Daggers",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": null
+    },
+    "hunter": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Leather",
+          "level": 1
+        },
+        {
+          "subclass": 3,
+          "skill": "Mail",
+          "level": 40
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 0,
+          "skill": "Axes",
+          "level": 1
+        },
+        {
+          "subclass": 1,
+          "skill": "Two-Handed Axes",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Bows",
+          "level": 1
+        },
+        {
+          "subclass": 3,
+          "skill": "Guns",
+          "level": 1
+        },
+        {
+          "subclass": 6,
+          "skill": "Polearms",
+          "level": 20
+        },
+        {
+          "subclass": 7,
+          "skill": "Swords",
+          "level": 1
+        },
+        {
+          "subclass": 8,
+          "skill": "Two-Handed Swords",
+          "level": 1
+        },
+        {
+          "subclass": 10,
+          "skill": "Staves",
+          "level": 1
+        },
+        {
+          "subclass": 13,
+          "skill": "Fist Weapons",
+          "level": 1
+        },
+        {
+          "subclass": 15,
+          "skill": "Daggers",
+          "level": 1
+        },
+        {
+          "subclass": 16,
+          "skill": "Thrown",
+          "level": 1
+        },
+        {
+          "subclass": 18,
+          "skill": "Crossbows",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": 20
+    },
+    "mage": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 7,
+          "skill": "Swords",
+          "level": 1
+        },
+        {
+          "subclass": 10,
+          "skill": "Staves",
+          "level": 1
+        },
+        {
+          "subclass": 15,
+          "skill": "Daggers",
+          "level": 1
+        },
+        {
+          "subclass": 19,
+          "skill": "Wands",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": null
+    },
+    "paladin": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Leather",
+          "level": 1
+        },
+        {
+          "subclass": 3,
+          "skill": "Mail",
+          "level": 1
+        },
+        {
+          "subclass": 4,
+          "skill": "Plate Mail",
+          "level": 40
+        },
+        {
+          "subclass": 6,
+          "skill": "Shield",
+          "level": 1
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 0,
+          "skill": "Axes",
+          "level": 1
+        },
+        {
+          "subclass": 1,
+          "skill": "Two-Handed Axes",
+          "level": 1
+        },
+        {
+          "subclass": 4,
+          "skill": "Maces",
+          "level": 1
+        },
+        {
+          "subclass": 5,
+          "skill": "Two-Handed Maces",
+          "level": 1
+        },
+        {
+          "subclass": 6,
+          "skill": "Polearms",
+          "level": 20
+        },
+        {
+          "subclass": 7,
+          "skill": "Swords",
+          "level": 1
+        },
+        {
+          "subclass": 8,
+          "skill": "Two-Handed Swords",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": null
+    },
+    "priest": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 4,
+          "skill": "Maces",
+          "level": 1
+        },
+        {
+          "subclass": 10,
+          "skill": "Staves",
+          "level": 1
+        },
+        {
+          "subclass": 15,
+          "skill": "Daggers",
+          "level": 1
+        },
+        {
+          "subclass": 19,
+          "skill": "Wands",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": null
+    },
+    "rogue": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Leather",
+          "level": 1
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 0,
+          "skill": "Axes",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Bows",
+          "level": 1
+        },
+        {
+          "subclass": 3,
+          "skill": "Guns",
+          "level": 1
+        },
+        {
+          "subclass": 4,
+          "skill": "Maces",
+          "level": 1
+        },
+        {
+          "subclass": 7,
+          "skill": "Swords",
+          "level": 1
+        },
+        {
+          "subclass": 13,
+          "skill": "Fist Weapons",
+          "level": 1
+        },
+        {
+          "subclass": 15,
+          "skill": "Daggers",
+          "level": 1
+        },
+        {
+          "subclass": 16,
+          "skill": "Thrown",
+          "level": 1
+        },
+        {
+          "subclass": 18,
+          "skill": "Crossbows",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": 10
+    },
+    "shaman": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Leather",
+          "level": 1
+        },
+        {
+          "subclass": 3,
+          "skill": "Mail",
+          "level": 40
+        },
+        {
+          "subclass": 6,
+          "skill": "Shield",
+          "level": 1
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 0,
+          "skill": "Axes",
+          "level": 1
+        },
+        {
+          "subclass": 1,
+          "skill": "Two-Handed Axes",
+          "level": 1
+        },
+        {
+          "subclass": 4,
+          "skill": "Maces",
+          "level": 1
+        },
+        {
+          "subclass": 5,
+          "skill": "Two-Handed Maces",
+          "level": 1
+        },
+        {
+          "subclass": 10,
+          "skill": "Staves",
+          "level": 1
+        },
+        {
+          "subclass": 13,
+          "skill": "Fist Weapons",
+          "level": 1
+        },
+        {
+          "subclass": 15,
+          "skill": "Daggers",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": null
+    },
+    "warlock": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 7,
+          "skill": "Swords",
+          "level": 1
+        },
+        {
+          "subclass": 10,
+          "skill": "Staves",
+          "level": 1
+        },
+        {
+          "subclass": 15,
+          "skill": "Daggers",
+          "level": 1
+        },
+        {
+          "subclass": 19,
+          "skill": "Wands",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": null
+    },
+    "warrior": {
+      "armor": [
+        {
+          "subclass": 1,
+          "skill": "Cloth",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Leather",
+          "level": 1
+        },
+        {
+          "subclass": 3,
+          "skill": "Mail",
+          "level": 1
+        },
+        {
+          "subclass": 4,
+          "skill": "Plate Mail",
+          "level": 40
+        },
+        {
+          "subclass": 6,
+          "skill": "Shield",
+          "level": 1
+        }
+      ],
+      "weapons": [
+        {
+          "subclass": 0,
+          "skill": "Axes",
+          "level": 1
+        },
+        {
+          "subclass": 1,
+          "skill": "Two-Handed Axes",
+          "level": 1
+        },
+        {
+          "subclass": 2,
+          "skill": "Bows",
+          "level": 1
+        },
+        {
+          "subclass": 3,
+          "skill": "Guns",
+          "level": 1
+        },
+        {
+          "subclass": 4,
+          "skill": "Maces",
+          "level": 1
+        },
+        {
+          "subclass": 5,
+          "skill": "Two-Handed Maces",
+          "level": 1
+        },
+        {
+          "subclass": 6,
+          "skill": "Polearms",
+          "level": 20
+        },
+        {
+          "subclass": 7,
+          "skill": "Swords",
+          "level": 1
+        },
+        {
+          "subclass": 8,
+          "skill": "Two-Handed Swords",
+          "level": 1
+        },
+        {
+          "subclass": 10,
+          "skill": "Staves",
+          "level": 1
+        },
+        {
+          "subclass": 13,
+          "skill": "Fist Weapons",
+          "level": 1
+        },
+        {
+          "subclass": 15,
+          "skill": "Daggers",
+          "level": 1
+        },
+        {
+          "subclass": 16,
+          "skill": "Thrown",
+          "level": 1
+        },
+        {
+          "subclass": 18,
+          "skill": "Crossbows",
+          "level": 1
+        }
+      ],
+      "dual_wield_level": 20
+    }
+  },
+  "dropped": [
+    {
+      "class": "druid",
+      "subclass": 6,
+      "skill": "Polearms",
+      "why": "The client mask carries it, but no trainer teaches it (sim audit round 8, K1)."
+    }
+  ]
+}

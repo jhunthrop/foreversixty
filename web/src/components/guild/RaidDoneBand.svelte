@@ -11,7 +11,7 @@
   import { MatchPicker, PLAN_REQUIRED, type MatchOutcome } from '../../lib/guild/match-picker.svelte';
   import { raidEndsAt } from '../../lib/guild/planned-row';
   import { RAID_BUTTON } from '../../lib/guild/raid-buttons';
-  import { SEP } from '../../lib/guild/raid-copy';
+  import { SEP, kindOf } from '../../lib/guild/raid-copy';
   import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
   import type { MatchCandidates } from '../../lib/guild/attendance-contract';
   import Figures from './Figures.svelte';
@@ -134,6 +134,7 @@
 {#if raid.match !== null}
   <RaidMatchLine
     match={raid.match}
+    kind={kindOf(raid)}
     {guildPath}
     {viewerTimezone}
     {guildTimezone}

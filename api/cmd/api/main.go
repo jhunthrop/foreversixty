@@ -223,12 +223,13 @@ func objects(cfg config.Config, log *slog.Logger) *r2.Client {
 //
 // hooks is the guilds service: told when a patch sets a report's guild
 // (GuildMoved, releasing a match another guild's raid held) and when it
-// sets the guild of a complete report (Completed).
+// sets the guild of a complete report (Completed), and when it changes a report's visibility
+// (VisibilityChanged, recomputing the attendance of the raid holding it).
 func newReportsService(reportStore *reports.Store, authStore *auth.Store, guildStore *guilds.Store,
 	rankStore *rankings.Store, hooks reports.GuildHooks, cfg config.Config, log *slog.Logger) *reports.Service {
 	return &reports.Service{
 		Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore, Places: rankStore,
-		Completed: hooks, Moved: hooks, PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
+		Completed: hooks, Moved: hooks, Visibility: hooks, PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 	}
 }
 

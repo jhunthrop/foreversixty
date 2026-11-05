@@ -178,7 +178,9 @@ func (s *Store) SchedulesOf(ctx context.Context, raidIDs []int64) (map[int64]Rai
 
 // ClaimDueSchedules leases up to limit rows that are due at now: an unposted row whose
 // post_at has come, or a posted row whose reminder is on, unsent, within 24 h of the start
-// and posted at least 36 h before it. Only planned raids that have not started qualify.
+// and posted at least 36 h before it. Only raids that have not started qualify: a post for a
+// planned or locked raid (an officer may lock the roster before the post goes up), a reminder
+// for a planned one only (a locked raid takes no more sign-ups).
 func (s *Store) ClaimDueSchedules(ctx context.Context, now time.Time, limit int) ([]DueSchedule, error) {
 	rows, err := s.Pool.Query(ctx, `
 		update guild_raid_discord_schedule s set lease_until = $1::timestamptz + make_interval(secs => $3)
@@ -187,9 +189,9 @@ func (s *Store) ClaimDueSchedules(ctx context.Context, now time.Time, limit int)
 		  join guild_raids r on r.id = d.raid_id
 		  where (d.lease_until is null or d.lease_until <= $1)
 		    and d.next_attempt_at <= $1
-		    and r.status = 'planned' and r.starts_at > $1
+		    and r.status in ('planned', 'locked') and r.starts_at > $1
 		    and ((d.posted_at is null and d.post_at <= $1)
-		      or (d.remind and d.posted_at is not null and d.reminded_at is null
+		      or (r.status = 'planned' and d.remind and d.posted_at is not null and d.reminded_at is null
 		          and r.starts_at - make_interval(secs => $4) <= $1
 		          and d.posted_at <= r.starts_at - make_interval(secs => $5)))
 		  order by d.next_attempt_at

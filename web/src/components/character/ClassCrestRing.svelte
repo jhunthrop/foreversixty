@@ -23,7 +23,7 @@
      ones -- the one guard every caller gets for free, rather than GuildReadiness.svelte and
      GuildRosterTable.svelte each repeating it. -->
 <script lang="ts">
-  import { classCrestSrc } from '../../lib/class-crest';
+  import { classCrestSrc, hasClassCrest } from '../../lib/class-crest';
   import { classColorVar } from '../../lib/report/format';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
 
@@ -41,19 +41,27 @@
     class?: string;
   } = $props();
 
+  /** The neutral disc's ring colour: visible on the row, never a class colour. */
+  const NEUTRAL_RING = 'var(--color-muted)';
+
   const box = $derived(sizeClass === '' ? `width: ${size}px; height: ${size}px;` : '');
 
   const slug = $derived(classSlugFromName(characterClass));
   const color = $derived(classColorVar(characterClass));
 </script>
 
-{#if characterClass === ''}
+{#if !hasClassCrest(slug)}
+  <!-- Gating spec §3.5: the neutral disc carries the same 2 px ring as a crest, in --muted, and a
+       class-less silhouette, so an unknown class reads as a person on the row, never a dark hole. -->
   <span
-    class="bg-raised border-line inline-block shrink-0 rounded-full border {sizeClass}"
-    style={box}
+    class="crest-ring bg-raised text-muted inline-flex shrink-0 items-end justify-center overflow-hidden rounded-full {sizeClass}"
+    style={`--c: ${NEUTRAL_RING}; ${box}`}
     aria-hidden="true"
     data-testid={testid ? `${testid}-fallback` : undefined}
-  ></span>
+    ><svg class="h-[78%] w-[78%]" viewBox="0 0 24 24" fill="currentColor"
+      ><circle cx="12" cy="9" r="4.5" /><path d="M3.5 24c0-5.2 3.8-8.5 8.5-8.5s8.5 3.3 8.5 8.5z" /></svg
+    ></span
+  >
 {:else}
   <img
     src={classCrestSrc(slug)}

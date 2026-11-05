@@ -1,7 +1,8 @@
 // web/src/components/guild/GuildLoot.test.ts
 // The Loot tab rendered with svelte/server (initial state, no effects): who sees Award and Undo,
-// the awarded line said once, a shared item name listed once, and the honest empty candidate
-// list. The ask-first confirm and the undo are clicked through in guild-centre.spec.ts.
+// the awarded line said once, the game's slot words, the two tiers, attendance hidden with no
+// counted night, and the drops nobody ranks collapsed to one line. The ask-first confirm and the undo are clicked through in guild-centre.spec.ts.
+import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { buildMockLoot } from '../../fixtures/guild/mock-guild';
@@ -14,6 +15,7 @@ const SETTINGS_HREF = '/guild/us/hardcore/the-last-watch/settings';
 
 type LootProps = {
   loot?: GuildLootPage | null;
+  ownKeys?: readonly string[];
   officerTools?: boolean;
   raidGuildTools?: boolean;
   refusal?: GuildPlanRefusal | null;
@@ -29,7 +31,10 @@ function html(officer: boolean, extra: LootProps = {}): string {
       memberReadOnly: !officer,
       busyItemId: null,
       refusal: null,
-      settingsHref: SETTINGS_HREF,
+      gateFacts: gateFactsFixture({
+        guildTier: (extra.officerTools ?? true) && !(extra.raidGuildTools ?? true),
+        settingsHref: SETTINGS_HREF,
+      }),
       onAward: () => {},
       onUndo: () => {},
       onBoss: () => {},
@@ -67,27 +72,182 @@ describe('GuildLoot', () => {
     expect(html(false)).not.toContain('guild-loot-award-');
   });
 
-  it('prints no gain rider for an empty slot, and keeps the rider as one non-breaking chunk otherwise', () => {
+  it("prints the game's slot words, never the enum", () => {
+    const markup = text(html(true));
+    expect(markup).toContain('Head · Leather');
+    expect(markup).toContain('One-Hand · Sword');
+    expect(markup).toContain('Held In Off-hand');
+    expect(markup).not.toMatch(/\b(off_hand|main_hand|OFF_HAND|MAIN_HAND|finger|trinket)\b/);
+  });
+
+  it('prints the gain of a tier-1 row with an empty slot and says Empty slot', () => {
     const loot = buildMockLoot();
     const item = loot.items.find((i) => i.candidates.length > 0 && i.awarded_to === null);
     expect(item).toBeDefined();
     if (item === undefined) return;
-    item.candidates[0] = { ...item.candidates[0], replaces: '', ilvl_delta: 76, gain_dps: null };
-    item.candidates[1] = {
-      ...item.candidates[1],
-      replaces: 'Beastmaster Cap',
-      ilvl_delta: 16,
-      gain_dps: null,
+    item.candidates[0] = { ...item.candidates[0], replaces: '', replaces_item: null, ilvl_delta: 76 };
+    const markup = html(true, { loot });
+    const panel = markup.slice(markup.indexOf(`data-testid="guild-loot-item-${item.item_id}"`));
+    expect(text(panel.slice(0, panel.indexOf('guild-loot-candidate-gain') + 80))).toContain('Empty slot');
+    const figure = /guild-loot-candidate-gain[^>]*>\s*([^<]*)</.exec(panel);
+    expect(figure?.[1].trim().replace(/\u00a0/g, ' ')).toBe('+76 item levels');
+  });
+
+  it('labels the first tier-1 row once, and never above a tier-0 row', () => {
+    const loot = buildMockLoot();
+    const item = loot.items.find((i) => i.candidates.length > 2 && i.awarded_to === null);
+    expect(item).toBeDefined();
+    if (item === undefined) return;
+    item.candidates[0] = {
+      ...item.candidates[0],
+      tier: 0,
+      gain_dps: 12.4,
+      gain_unit: 'dps',
+      ilvl_delta: null,
     };
     const markup = html(true, { loot });
     const panel = markup.slice(markup.indexOf(`data-testid="guild-loot-item-${item.item_id}"`));
-    const firstLine = panel.slice(panel.indexOf('guild-loot-candidate-line'));
-    const firstRow = firstLine.slice(0, firstLine.indexOf('Replaces'));
-    expect(text(firstRow)).toContain('Empty slot');
-    expect(text(firstRow)).not.toContain('item levels');
-    // Exactly one rider on the item: the second candidate's, whole.
-    const riders = [...panel.matchAll(/guild-loot-candidate-gain[^>]*>([^<]*)</g)].map((m) => m[1]);
-    expect(riders[0]).toBe('+16 item levels');
+    const card = panel.slice(0, panel.indexOf('data-testid="guild-loot-item-', 10));
+    expect(card.split(`guild-loot-tier-one-${item.item_id}`).length - 1).toBe(1);
+    const label = card.indexOf(`guild-loot-tier-one-${item.item_id}`);
+    expect(card.indexOf('+12.4')).toBeLessThan(label);
+    expect(card.slice(label)).toContain('item');
+    expect(text(card)).toContain('Ranked by item level only. Not on their best-in-slot list.');
+  });
+
+  it('shows five candidates and then Show {n} more', () => {
+    const loot = buildMockLoot();
+    const item = loot.items.find((i) => i.candidates.length > 0 && i.awarded_to === null);
+    expect(item).toBeDefined();
+    if (item === undefined) return;
+    const first = item.candidates[0];
+    item.candidates = Array.from({ length: 7 }, (_, n) => ({
+      ...first,
+      character_key: `us/hardcore/row${n}`,
+      name: `Row${n}`,
+    }));
+    const markup = html(true, { loot });
+    expect(markup).toContain('guild-loot-award-' + item.item_id + '-us/hardcore/row4');
+    expect(markup).not.toContain('guild-loot-award-' + item.item_id + '-us/hardcore/row5');
+    expect(text(markup)).toContain('Show 2 more');
+  });
+
+  it("washes the viewer's row and says (you)", () => {
+    const loot = buildMockLoot();
+    const item = loot.items.find((i) => i.candidates.length > 0 && i.awarded_to === null);
+    expect(item).toBeDefined();
+    if (item === undefined) return;
+    const key = item.candidates[0].character_key;
+    const markup = html(false, { loot, ownKeys: [key] });
+    expect(text(markup)).toContain(`${item.candidates[0].name} (you)`);
+    // The space is rendered text, not markup whitespace Svelte trims: `Ashenveil (you)`, as on Readiness.
+    expect(markup).toMatch(/>\s*\(you\)</);
+    expect(markup).toMatch(/<span[^>]*> \(you\)<\/span>/);
+    expect(markup).toContain('row-band-own');
+    expect(html(false, { loot })).not.toContain('row-band-own');
+  });
+
+  it('hides attendance with no counted night, and shows it otherwise', () => {
+    expect(html(true)).toContain('guild-loot-candidate-attendance');
+    const loot = buildMockLoot();
+    for (const item of loot.items) {
+      for (const candidate of item.candidates) candidate.attendance = { present: 0, nights: 0 };
+    }
+    const markup = html(true, { loot });
+    expect(markup).not.toContain('guild-loot-candidate-attendance');
+    expect(text(markup)).not.toContain('raid night');
+  });
+
+  it('says what to expect while nobody is 60, and collapses every drop', () => {
+    const loot = buildMockLoot();
+    loot.at_level_cap = 0;
+    for (const item of loot.items) {
+      item.candidates = [];
+      item.eligible = [];
+      item.awarded_to = null;
+    }
+    const markup = html(true, { loot });
+    expect(text(markup)).toContain(
+      "Onyxia's drops need level 60. Candidates show here as your raiders reach it.",
+    );
+    expect(markup).not.toContain('guild-loot-items');
+    expect(text(markup)).toContain(`${loot.items.length} more drops nobody here ranks for`);
+    expect(markup).not.toContain('guild-loot-award-');
+  });
+
+  it('says so when someone is 60 and nobody can use a drop', () => {
+    const loot = buildMockLoot();
+    for (const item of loot.items) {
+      item.candidates = [];
+      item.awarded_to = null;
+    }
+    expect(text(html(true, { loot }))).toContain('Nobody at 60 can use these drops yet.');
+  });
+
+  describe('the collapsed line', () => {
+    it('never draws a card for a quest drop, the bag or the scale, or for a drop nobody can use', () => {
+      const markup = html(true);
+      for (const id of [15410, 17966, 18422, 18705, 21108, 16955]) {
+        expect(markup).not.toContain(`data-testid="guild-loot-item-${id}"`);
+        expect(markup).toContain(`data-testid="guild-loot-unranked-${id}"`);
+      }
+    });
+
+    it('labels each drop', () => {
+      const markup = text(html(true));
+      expect(markup).toContain('Quest: Victory for the Alliance / Victory for the Horde');
+      expect(markup).toContain('Quest: A Proper String (Hunter)');
+      expect(markup).not.toContain('The Only Prescription');
+      expect(markup).toContain('Quest item');
+      expect(markup).toContain('Bag. Anyone can use it.');
+      expect(markup).toContain('Skinned from Onyxia. Not a drop.');
+      expect(markup).toContain('Nobody here can use it yet.');
+      expect(markup).not.toContain('No one on the roster can use this.');
+      expect(markup).not.toContain('The simulator has not checked these');
+    });
+
+    it('offers an officer Award on a quest drop and the bag, never on the scale', () => {
+      const markup = html(true);
+      expect(buttons(markup, 'guild-loot-award-18705')).toHaveLength(1);
+      expect(buttons(markup, 'guild-loot-award-17966')).toHaveLength(1);
+      expect(buttons(markup, 'guild-loot-award-15410')).toHaveLength(0);
+      expect(buttons(html(false), 'guild-loot-award-18705')).toHaveLength(0);
+    });
+
+    it('disables that Award for an officer with the tools off, described by the sentence', () => {
+      const [tag] = buttons(html(true, { officerTools: false }), 'guild-loot-award-18705');
+      expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
+      expect(tag).toContain('aria-describedby="officer-tools-gate-loot"');
+    });
+
+    it('prints the award on an awarded quest drop, with Undo for the officer', () => {
+      const loot = buildMockLoot();
+      const sinew = loot.items.find((i) => i.item_id === 18705);
+      if (sinew === undefined) throw new Error('fixture lost the Sinew');
+      sinew.awarded_to = {
+        award_id: 9,
+        character_key: 'us/hardcore/x',
+        name: 'Bowman',
+        at: '2026-12-15T20:10:00Z',
+        by_name: 'Kraggor',
+      };
+      const markup = html(true, { loot });
+      expect(text(markup)).toContain('Awarded to Bowman');
+      expect(markup).toContain('guild-loot-row-undo-18705');
+      expect(buttons(markup, 'guild-loot-award-18705')).toHaveLength(0);
+    });
+
+    it('is absent when every drop has candidates', () => {
+      const loot = buildMockLoot();
+      loot.items = loot.items.filter((i) => i.kind === 'gear' && i.candidates.length > 0);
+      expect(html(true, { loot })).not.toContain('guild-loot-unranked');
+    });
+  });
+
+  it('puts the one footnote at the bottom of the tab', () => {
+    const markup = html(true);
+    expect(markup.indexOf('guild-loot-footnote')).toBeGreaterThan(markup.indexOf('guild-loot-unranked'));
+    expect(text(markup).split('Candidates are characters who can wear the item').length - 1).toBe(1);
   });
 
   it('says "Already awarded" on the other candidates, without a live Award button', () => {
@@ -102,9 +262,7 @@ describe('GuildLoot', () => {
   });
 
   it('lists "Head of Onyxia" once, for both copies', () => {
-    const markup = html(true);
-    expect(text(markup).split('Head of Onyxia').length - 1).toBe(1); // the icon's aria-label is not text
-    expect(text(markup)).toContain('Head of Onyxia x2');
+    expect(text(html(true)).split('Head of Onyxia').length - 1).toBe(1); // the icon's aria-label is not text
   });
 
   it('shows no Award confirm until Award is pressed', () => {
@@ -113,16 +271,9 @@ describe('GuildLoot', () => {
 
   it('never offers a paladin helm to a warrior', () => {
     const markup = html(true);
-    const crown = markup.slice(markup.indexOf('Judgement Crown'));
-    const panel = crown.slice(0, crown.indexOf('data-testid="guild-loot-item-', 10));
-    expect(panel).toContain('No one on the roster can use this.');
-    expect(panel).not.toContain('data-testid="guild-loot-award-');
-  });
-
-  it('reads each candidate as what they replace, their spec and their raid nights', () => {
-    const first = text(html(true).slice(html(true).indexOf('data-testid="guild-loot-candidate-line"')));
-    expect(first).toMatch(/^[^]*Replaces [A-Z][^·]+ · [A-Za-z ]+ · \d+ of 8 raid nights/);
-    expect(text(html(true))).not.toContain('over their current');
+    const row = markup.slice(markup.indexOf('data-testid="guild-loot-unranked-16955"'));
+    expect(row).toContain('Nobody here can use it yet.');
+    expect(markup).not.toContain('data-testid="guild-loot-item-16955"');
   });
 
   it('puts the awarded line in the card head, no dot before Undo, and Awarded · Undo on the winner', () => {
@@ -147,8 +298,8 @@ describe('GuildLoot', () => {
       const gateAt = markup.indexOf('data-testid="guild-loot-plan-gate"');
       expect(gateAt).toBeLessThan(markup.indexOf('data-testid="guild-loot-boss-picker"'));
       const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
-      expect(text(gate)).toContain(`${guildGateCopy.sentence.trim()} ${guildGateCopy.link}`);
-      expect(gate).toContain(`href="${SETTINGS_HREF}"`);
+      expect(text(gate)).toContain(`${guildGateCopy.lead.loot} ${guildGateCopy.startTrial}`);
+      expect(gate).toContain(`href="${SETTINGS_HREF}?plan=raid_guild#billing"`);
     });
 
     it('keeps the link whole and gives it a phone-only 44px hit area outside its focus ring', () => {
@@ -182,8 +333,12 @@ describe('GuildLoot', () => {
       expect(gateAt).toBeLessThan(markup.indexOf('data-testid="guild-loot-empty"'));
     });
 
-    it('shows the Read-only label', () => {
-      expect(text(readOnly())).toContain(`Loot ${guildGateCopy.readOnly}`);
+    it('shows no Read-only label: the gate sentence covers an officer (loot spec §3.1)', () => {
+      expect(text(readOnly())).not.toContain(guildGateCopy.readOnly);
+    });
+
+    it('shows the Read-only label to a member', () => {
+      expect(text(html(false))).toContain(`Loot ${guildGateCopy.readOnly}`);
     });
 
     it('disables every Award and Undo, described by the sentence', () => {
@@ -206,21 +361,19 @@ describe('GuildLoot', () => {
       const gateAt = markup.indexOf('data-testid="guild-loot-plan-gate"');
       expect(gateAt).toBeGreaterThan(-1);
       const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
-      expect(text(gate)).toContain(
-        `${guildGateCopy.raidGuildSentence.trim()} ${guildGateCopy.raidGuildLink}`,
-      );
-      expect(gate).toContain(`href="${SETTINGS_HREF}#billing"`);
-      expect(text(markup)).toContain(guildGateCopy.readOnly);
+      expect(text(gate)).toContain(`${guildGateCopy.lead.loot} ${guildGateCopy.moveToRaidGuild}`);
+      expect(gate).toContain(`href="${SETTINGS_HREF}?upgrade=1#billing"`);
+      expect(text(markup)).not.toContain(guildGateCopy.readOnly);
       for (const tag of buttons(markup, 'guild-loot-award-')) {
         expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
         expect(tag).toContain('aria-describedby="officer-tools-gate-loot"');
       }
     });
 
-    it("keeps today's sentence for a lapsed guild, even if Raid guild is also off", () => {
+    it('offers no Move to a guild with no plan at all', () => {
       const markup = html(true, { officerTools: false, raidGuildTools: false });
-      expect(text(markup)).toContain(guildGateCopy.link);
-      expect(text(markup)).not.toContain(guildGateCopy.raidGuildLink);
+      expect(text(markup)).toContain(guildGateCopy.startTrial);
+      expect(text(markup)).not.toContain(guildGateCopy.moveToRaidGuild);
     });
 
     it('shows a member nothing of the Raid guild gate', () => {

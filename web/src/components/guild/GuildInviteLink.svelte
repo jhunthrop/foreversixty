@@ -1,137 +1,156 @@
 <!-- web/src/components/guild/GuildInviteLink.svelte -->
-<!-- The invite-link block shared by the Settings tab/page and the officer strip: Rotate asks
-     first ("the old link stops working"), then the new link is a read-only field holding the
-     full URL with a Copy button ("Copied" for two seconds) and, where the browser has it, a
-     Share button. The API stores only a hash of the token, so the link is shown once and
-     the block says so, with the day the current link was made underneath. -->
+<!-- The invite row of the Members and access card (spec 2026-11-05 §3.3, the no-migration interim).
+     The API keeps only a fingerprint of the token, so the link can be shown only right after it is
+     made: the row says so instead of offering a "show current link" it cannot honour. A first link
+     needs no confirm, nothing breaks; a new one asks first, because the old one stops working. The
+     URL lives in this component's state only, never in storage. -->
 <script lang="ts">
+  import { tick } from 'svelte';
   import { guildInviteHref } from '../../lib/characters';
-  import { GuildApiError, rotateInvite } from '../../lib/guild/api';
-  import { guildSettingsCopy } from '../../lib/guild/copy';
+  import { rotateInvite } from '../../lib/guild/api';
+  import { guildSettingsCopy as copy } from '../../lib/guild/copy';
   import { formatMadeOn, inviteUrl } from '../../lib/guild/invite-link';
-  import CopyLinkField from '../ui/CopyLinkField.svelte';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { button } from '../../lib/ui/button';
+  import { COPIED_LONG_MS } from '../../lib/ui/copy-feedback';
+  import CopyLinkField from '../ui/CopyLinkField.svelte';
   import SettingsRow from '../ui/SettingsRow.svelte';
+
+  const TESTID = 'guild-invite';
 
   let {
     guildId,
+    guildName,
     rotatedAt = null,
     disabled = false,
-    testidPrefix = 'guild-invite',
     onRotated = undefined,
-    row = false,
   }: {
     guildId: number;
-    /** When the current link was made (the settings read), for the muted line underneath. */
+    guildName: string;
+    /** When the current link was made (the settings read); null when none exists. */
     rotatedAt?: string | null;
     disabled?: boolean;
-    testidPrefix?: string;
     onRotated?: (rotatedAt: string) => void;
-    /** Drawn as a settings row (the Members and access card); the default is the stand-alone block. */
-    row?: boolean;
   } = $props();
 
   let confirming = $state(false);
   let busy = $state(false);
-  let error = $state('');
+  let failed = $state(false);
   let url = $state<string | null>(null);
-  let madeAt = $state<string | null>(null);
+  let root = $state<HTMLElement | null>(null);
+  let cancelButton = $state<HTMLButtonElement | null>(null);
+  let newLinkButton = $state<HTMLButtonElement | null>(null);
 
-  const made = $derived(madeAt ?? rotatedAt);
-  const madeOn = $derived(made === null ? '' : formatMadeOn(made));
+  const madeOn = $derived(rotatedAt === null ? '' : formatMadeOn(rotatedAt));
 
-  async function onRotate(): Promise<void> {
+  async function make(): Promise<void> {
     busy = true;
-    error = '';
+    failed = false;
     try {
       const result = await rotateInvite(guildId);
       url = inviteUrl(guildInviteHref(result.token));
-      madeAt = result.rotated_at;
       confirming = false;
       onRotated?.(result.rotated_at);
-    } catch (thrown) {
-      error = thrown instanceof GuildApiError ? thrown.message : guildSettingsCopy.actionFailed;
+      await tick();
+      root?.querySelector<HTMLElement>(`[data-testid="${TESTID}-copy"]`)?.focus();
+    } catch {
+      failed = true;
     } finally {
       busy = false;
     }
   }
+
+  async function askFirst(): Promise<void> {
+    confirming = true;
+    failed = false;
+    await tick();
+    cancelButton?.focus();
+  }
+
+  async function cancel(): Promise<void> {
+    confirming = false;
+    await tick();
+    newLinkButton?.focus();
+  }
+
+  function onConfirmKey(event: KeyboardEvent): void {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    void cancel();
+  }
 </script>
 
-{#snippet rotate(cls: string)}
-  <button
-    class="{cls} {busy ? BUSY_CLASS : ''}"
-    onclick={() => (confirming = true)}
-    disabled={busy || disabled}
-    aria-busy={busy}
-    data-testid={`${testidPrefix}-rotate`}
-  >
-    {guildSettingsCopy.rotateButton}
-  </button>
-{/snippet}
-
-{#snippet details()}
-  {#if confirming}
-    <div
-      class="border-line-soft flex flex-col gap-3 border p-4"
-      data-testid={`${testidPrefix}-rotate-confirm`}
-    >
-      <p class="text-[13px]">{guildSettingsCopy.rotateConfirmLine}</p>
-      <div class="flex gap-3">
-        <button
-          class="{button('secondary', 'sm')} {busy ? BUSY_CLASS : ''}"
-          onclick={() => void onRotate()}
-          disabled={busy}
-          aria-busy={busy}
-          data-testid={`${testidPrefix}-rotate-confirm-button`}
-        >
-          {guildSettingsCopy.rotateConfirmButton}
-        </button>
-        <button class={button('ghost', 'sm')} onclick={() => (confirming = false)} disabled={busy}>
-          {guildSettingsCopy.rotateCancel}
-        </button>
+<div bind:this={root} id="invite" class="flex scroll-mt-20 flex-col" data-testid={`${TESTID}-block`}>
+  <SettingsRow label={copy.inviteHeading} sub={copy.inviteHelp(guildName)} />
+  <div class="flex flex-col items-start gap-3 px-5 pb-4">
+    {#if url !== null}
+      <div class="w-full">
+        {#key url}
+          <CopyLinkField
+            {url}
+            label={copy.linkLabel}
+            shareTitle={copy.inviteShareTitle}
+            shareText={copy.inviteShareText}
+            testid={TESTID}
+            copiedMs={COPIED_LONG_MS}
+          />
+        {/key}
       </div>
-    </div>
-  {/if}
-  {#if url !== null}
-    {#key url}
-      <CopyLinkField
-        {url}
-        label={guildSettingsCopy.linkLabel}
-        shareTitle={guildSettingsCopy.inviteShareTitle}
-        shareText={guildSettingsCopy.inviteShareText}
-        testid={testidPrefix}
+      <p class="text-muted text-[13px]" data-testid={`${TESTID}-shown-once`}>{copy.tokenShownOnce}</p>
+    {:else if confirming}
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div
+        class="border-line-soft flex w-full flex-col gap-3 border p-4"
+        onkeydown={onConfirmKey}
+        data-testid={`${TESTID}-rotate-confirm`}
       >
-        {#snippet note()}
-          <span class="text-muted text-[13px]">{guildSettingsCopy.tokenShownOnce}</span>
-        {/snippet}
-      </CopyLinkField>
-    {/key}
-  {/if}
-  {#if madeOn !== ''}
-    <p class="text-muted text-[12px]" data-testid={`${testidPrefix}-made`}>
-      {guildSettingsCopy.currentLinkMade(madeOn)}
-    </p>
-  {/if}
-  {#if error !== ''}
-    <p class="text-[13px]" role="alert" data-testid={`${testidPrefix}-error`}>{error}</p>
-  {/if}
-{/snippet}
-
-{#if row}
-  <div data-testid={`${testidPrefix}-block`}>
-    <SettingsRow label={guildSettingsCopy.inviteHeading} sub={guildSettingsCopy.inviteHelp} controlBelow>
-      {#snippet control()}
-        {#if !confirming}{@render rotate(button('secondary', 'sm'))}{/if}
-      {/snippet}
-    </SettingsRow>
-    {#if confirming || url !== null || madeOn !== '' || error !== ''}
-      <div class="flex flex-col gap-3 px-5 pb-4">{@render details()}</div>
+        <p class="text-[13px]">{copy.rotateConfirmLine}</p>
+        <div class="flex gap-3">
+          <button
+            class="{button('primary', 'sm')} {busy ? BUSY_CLASS : ''}"
+            onclick={() => void make()}
+            disabled={busy}
+            aria-busy={busy}
+            data-testid={`${TESTID}-rotate-confirm-button`}
+          >
+            {busy ? copy.making : copy.newLinkButton}
+          </button>
+          <button
+            bind:this={cancelButton}
+            class={button('ghost', 'sm')}
+            onclick={() => void cancel()}
+            disabled={busy}
+            data-testid={`${TESTID}-rotate-cancel`}
+          >
+            {copy.rotateCancel}
+          </button>
+        </div>
+      </div>
+    {:else if madeOn !== ''}
+      <p class="text-muted text-[13px]" data-testid={`${TESTID}-made`}>{copy.currentLinkMade(madeOn)}</p>
+      <button
+        bind:this={newLinkButton}
+        class={button('secondary', 'sm')}
+        onclick={() => void askFirst()}
+        {disabled}
+        data-testid={`${TESTID}-rotate`}
+      >
+        {copy.newLinkButton}
+      </button>
+    {:else}
+      <p class="text-muted text-[13px]" data-testid={`${TESTID}-none`}>{copy.noLinkYet}</p>
+      <button
+        class="{button('primary', 'sm')} {busy ? BUSY_CLASS : ''}"
+        onclick={() => void make()}
+        disabled={busy || disabled}
+        aria-busy={busy}
+        data-testid={`${TESTID}-make`}
+      >
+        {busy ? copy.making : copy.firstLinkButton}
+      </button>
+    {/if}
+    {#if failed}
+      <p class="text-wipe text-[13px]" role="alert" data-testid={`${TESTID}-error`}>{copy.inviteFailed}</p>
     {/if}
   </div>
-{:else}
-  <div class="flex w-full flex-col gap-3" data-testid={`${testidPrefix}-block`}>
-    {#if !confirming}{@render rotate(`${button('secondary')} w-fit`)}{/if}
-    {@render details()}
-  </div>
-{/if}
+</div>

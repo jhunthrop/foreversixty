@@ -24,17 +24,24 @@ export const DEFAULT_ROSTER_FILTERS: RosterFilters = {
   belowFloorOnly: false,
 };
 
-/** Spec §4.A's "below the rating floor" count: percentile 25 within the roster's own
- *  rated population. `null` when nobody on the roster has a rating yet (never a fabricated
- *  floor of 0). */
+/** The API's rating floor rule (roster_extended.go belowRatingFloor), so the filter and the
+ *  Overview's count agree: the 25th percentile, only once enough raiders are rated for it to
+ *  mean something, and never while everyone sits within a few points of each other. */
+const RATING_FLOOR_PERCENTILE = 0.25;
+const RATING_FLOOR_MIN_RATED = 8;
+const RATING_FLOOR_BAND = 5;
+
+/** Spec §4.A's "below the rating floor" line: percentile 25 within the roster's own rated
+ *  population. `null` when there is no floor: too few rated raiders, a level guild, or nobody
+ *  rated yet (never a fabricated floor of 0). */
 export function ratingFloor(rows: readonly GuildRosterRow[]): number | null {
   const values = rows
     .map((row) => row.rating?.overall)
     .filter((value): value is number => value !== undefined && value !== null)
     .sort((a, b) => a - b);
-  if (values.length === 0) return null;
-  const index = Math.min(Math.floor(values.length * 0.25), values.length - 1);
-  return values[index];
+  if (values.length < RATING_FLOOR_MIN_RATED) return null;
+  if (values[values.length - 1] - values[0] <= RATING_FLOOR_BAND) return null;
+  return values[Math.floor(values.length * RATING_FLOOR_PERCENTILE)];
 }
 
 /** A row with no rating is never counted as "below" -- that is a missing fact, not a

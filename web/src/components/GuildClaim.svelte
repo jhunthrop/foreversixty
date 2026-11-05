@@ -115,8 +115,6 @@
     void load();
   });
 
-  const myBattletag = $derived(me?.user.battletag ?? null);
-
   /**
    * Same identity rule as Guild.svelte's own membership match (region + ruleset +
    * slugified name, not region + ruleset alone, which many guilds share): the viewer's
@@ -130,8 +128,10 @@
   const eligible = $derived(view.viewer === 'eligible');
   const claimState = $derived(view.claim?.state ?? null);
   /** The signed-in account is the one holding the claim: the page is then about the claim it holds. */
-  const holdsClaim = $derived(
-    settings !== null && settings.claimed_by !== null && settings.claimed_by.battletag === myBattletag,
+  const holdsClaim = $derived(settings?.claim.yours === true);
+  /** An officer's read of a held claim: a holder with no character on the roster still holds it. */
+  const claimHeld = $derived(
+    settings !== null && (settings.claimed_by !== null || settings.claim.state === 'claimed' || holdsClaim),
   );
 
   async function run(action: () => Promise<void>): Promise<void> {
@@ -268,9 +268,9 @@
         <p class="text-[14px]" data-testid="guild-claim-contested-notice">{guildClaimCopy.contested}</p>
       {/if}
 
-      {#if settings !== null && settings.claimed_by !== null}
+      {#if settings !== null && claimHeld}
         <!-- An officer's read: who holds the claim, and release for the holder. -->
-        {#if settings.claimed_by.battletag === myBattletag}
+        {#if holdsClaim}
           <p class="text-[16px]" data-testid="guild-claim-state">{guildClaimCopy.youHold(guildName)}</p>
           {#if claimState !== 'contested'}
             <ClaimNextSteps {subscribe} {claimPlan} {guildBase} {settingsBase} />
@@ -314,7 +314,7 @@
         {:else}
           <p class="text-[14px]" data-testid="guild-claim-state">
             {guildClaimCopy.claimedBySomeoneElse(
-              settings.claimed_by.battletag,
+              settings.claimed_by?.name ?? guildClaimCopy.theGuildMaster,
               settings.claim.since === undefined ? undefined : formatMadeOn(settings.claim.since),
             )}
           </p>

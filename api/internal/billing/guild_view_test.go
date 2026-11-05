@@ -279,13 +279,16 @@ func TestGuildBilling_BilledByNamesThePayersCharacter(t *testing.T) {
 	}
 }
 
-func TestGuildBilling_BilledByFallsBackToPublicName(t *testing.T) {
+func TestGuildBilling_BilledByNeverPrintsAnAccountTag(t *testing.T) {
 	h := newHarness(t)
 	gid, leader := h.payerGuild(t, "billedbyfallback")
+	if _, err := h.pool.Exec(t.Context(), `update users set battletag = 'Kraggor#1234' where id = $1`, leader); err != nil {
+		t.Fatal(err)
+	}
 	officer := h.member(t, gid, "officer", "officer")
 	h.seedPlan(t, gid, guildPlan{subID: "sub_bbf", billedBy: leader, key: catalog.LookupKeyGuildMonthly, cents: 1500})
 	read, _ := h.readBilling(t, gid, officer)
-	if read.Billing == nil || read.Billing.BilledBy != fmt.Sprintf("user-%d", leader) {
-		t.Fatalf("billed_by = %+v, want the public name", read.Billing)
+	if read.Billing == nil || read.Billing.BilledBy != memberStandIn {
+		t.Fatalf("billed_by = %+v, want the stand-in, never the BattleTag", read.Billing)
 	}
 }

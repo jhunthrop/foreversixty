@@ -819,7 +819,7 @@ test.describe('settings: billing and release belong to the guild master', () => 
         envelope({
           default_visibility: 'guild',
           officer_max_rank_index: 2,
-          claimed_by: { battletag: 'Fixture#1234' },
+          claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
           claim_pending: null,
           claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
           invite: { rotated_at: null },
@@ -948,6 +948,35 @@ test.describe('loot: Award asks first and can be undone', () => {
     return record;
   }
 
+  test('the Sinew award picker holds hunters alone, and the award posts that copy', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/raids*`, (route) => route.fulfill(envelope(buildMockRaids())));
+    await page.route(`**/v1/guilds/${GUILD_ID}/progression`, (route) =>
+      route.fulfill(envelope(buildMockProgression())),
+    );
+    const record = await stubAwards(page);
+    const sinew = buildMockLoot().items.find((i) => i.item_id === 18705);
+    expect(sinew?.eligible.length).toBeGreaterThan(0);
+    expect(sinew?.eligible.every((row) => row.class === 'hunter')).toBe(true);
+    await page.goto(`${GUILD_URL}#loot`);
+    await page.getByTestId('guild-loot-unranked-summary').click();
+    await page.getByTestId('guild-loot-award-18705').click();
+    const confirm = page.getByTestId('guild-loot-award-confirm-18705');
+    await expect(confirm.locator('select option')).toHaveCount(sinew?.eligible.length ?? 0);
+    await page.getByTestId('guild-loot-award-yes-18705').click();
+    await expect.poll(() => (record.posts[0] as { item_id: number } | undefined)?.item_id).toBe(18705);
+  });
+
+  test('the skinned scale is never a pick, and no slot word prints as an enum', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(`${GUILD_URL}#loot`);
+    await expect(page.getByTestId('guild-loot-items').getByText('Scale of Onyxia')).toHaveCount(0);
+    await expect(page.getByTestId('guild-loot-items')).not.toContainText(
+      /OFF_HAND|MAIN_HAND|off_hand|main_hand/,
+    );
+  });
+
   test('the officer is asked, can Cancel, awards, sees who got it, and can Undo', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.route(`**/v1/guilds/${GUILD_ID}/raids*`, (route) => route.fulfill(envelope(buildMockRaids())));
@@ -1070,10 +1099,14 @@ test.describe('loot: Award asks first and can be undone', () => {
     const item = buildMockLoot().items.find((i) => i.name === 'Stormrage Cover');
     const first = item?.candidates[0];
     if (item === undefined || first === undefined) throw new Error('fixture lost Stormrage Cover');
-    const line = page.getByTestId(`guild-loot-item-${item.item_id}`).getByTestId('guild-loot-candidate-line');
-    await expect(line.first()).toContainText(`Replaces ${first.replaces} · ${first.spec} · `);
-    await expect(line.first()).toContainText('raid nights');
-    await expect(line.first()).not.toContainText('over their current');
+    const row = page
+      .getByTestId(`guild-loot-item-${item.item_id}`)
+      .getByTestId('guild-loot-candidate')
+      .first();
+    await expect(row.getByTestId('guild-loot-candidate-replaces')).toContainText(`Replaces`);
+    await expect(row.getByTestId('guild-loot-candidate-replaces')).toContainText(first.replaces);
+    await expect(row.getByTestId('guild-loot-candidate-spec')).toContainText(first.spec);
+    await expect(row.getByTestId('guild-loot-candidate-attendance')).toContainText('raid nights');
   });
 
   test('a member sees an awarded item but no Undo and no Award', async ({ page }) => {
@@ -1089,10 +1122,14 @@ test.describe('loot: Award asks first and can be undone', () => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await stubDepthEndpoints(page);
     await page.goto(`${GUILD_URL}#loot`);
-    await expect(page.getByTestId('guild-loot-items').getByText('Head of Onyxia')).toHaveCount(1);
     const crown = buildMockLoot().items.find((i) => i.name === 'Judgement Crown');
     expect(crown?.candidates).toEqual([]);
-    await expect(page.getByTestId(`guild-loot-no-candidate-${crown?.item_id}`)).toBeVisible();
+    await expect(page.getByTestId(`guild-loot-item-${crown?.item_id}`)).toHaveCount(0);
+    await page.getByTestId('guild-loot-unranked-summary').click();
+    await expect(page.getByTestId(`guild-loot-unranked-label-${crown?.item_id}`)).toHaveText(
+      'Nobody here can use it yet.',
+    );
+    await expect(page.getByTestId('guild-loot-unranked').getByText('Head of Onyxia')).toHaveCount(1);
   });
 });
 
@@ -1125,7 +1162,9 @@ test.describe('loot: read-only for a member, awarded state for everyone', () => 
     await expect(page.getByTestId('guild-loot-tab').getByText('Read-only')).toBeVisible();
     const loot = buildMockLoot();
     for (const item of loot.items) {
-      await expect(page.getByTestId(`guild-loot-item-${item.item_id}`)).toBeVisible();
+      const card = page.getByTestId(`guild-loot-item-${item.item_id}`);
+      if (item.kind === 'gear' && item.candidates.length > 0) await expect(card).toBeVisible();
+      else await expect(card).toHaveCount(0);
     }
     await expect(page.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(0);
   });
@@ -1148,6 +1187,10 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     await expect(page.getByTestId('guild-overview-tab')).toBeVisible();
     // The Overview's own Loot summary card prefetches GET .../loot before the tab exists.
     await expect(page.getByTestId('guild-overview-card-loot')).toBeVisible();
+    const lootLine = page.getByTestId('guild-overview-loot-line');
+    await expect(lootLine).toContainText('Next open drop:');
+    await expect(lootLine.locator('[data-testid^="item-hover-"]')).toHaveCount(1);
+    await expect(lootLine).not.toContainText('Scale of Onyxia');
 
     await page.getByTestId('guild-tab-loot').click();
     await expect(page.getByTestId('guild-loot-tab')).toBeVisible();
@@ -1156,9 +1199,9 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     // The API lists a shared name once: 22 drops, 21 rows.
     expect(loot.items).toHaveLength(21);
     for (const item of loot.items) {
-      await expect(page.getByTestId(`guild-loot-item-${item.item_id}`)).toBeVisible();
-      if (item.slot === '') continue; // a quest/reputation/crafting drop, no candidates
+      if (item.kind !== 'gear' || item.candidates.length === 0) continue; // the collapsed line
       const panel = page.getByTestId(`guild-loot-item-${item.item_id}`);
+      await expect(panel).toBeVisible();
       await expect(panel).not.toContainText('NaN');
       for (const candidate of item.candidates) {
         await expect(panel).toContainText(candidate.name);
@@ -1184,7 +1227,8 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     );
     await page.goto(`${GUILD_URL}#loot`);
     await expect(page.getByTestId('guild-loot-error')).toBeVisible();
-    await expect(page.getByTestId('guild-loot-error')).toContainText('the loot ranker fell over');
+    await expect(page.getByTestId('guild-loot-error')).toContainText('Loot did not load.');
+    await expect(page.getByTestId('guild-loot-error').getByRole('button')).toHaveText('Try again');
     await expect(page.getByTestId('guild-loot-missing')).toHaveCount(0);
     await expect(page.getByText(/isn.t live yet/)).toHaveCount(0);
   });
@@ -1318,7 +1362,7 @@ test('visiting a different guild sharing region/ruleset shows no role-line from 
 // (unchanged v1 mechanism, now living above the tab strip, Guild.svelte) and the roster
 // tab's approve/remove mutations.
 test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', () => {
-  test('an officer of an unclaimed guild sees "Claim this guild"', async ({ page }) => {
+  test('the guild master of an unclaimed guild sees the claim row', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
       route.fulfill(
@@ -1326,11 +1370,14 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       ),
     );
     await page.goto(GUILD_URL);
-    await expect(page.getByTestId('guild-claim-link')).toHaveText('Claim this guild');
+    await expect(page.getByTestId('guild-claim-row-sentence')).toContainText(
+      'Claim it here to approve members',
+    );
+    await expect(page.getByTestId('guild-claim-link')).toHaveText(`Claim ${buildMockGuildPage().guild.name}`);
     await expect(page.getByTestId('guild-settings-link')).toHaveCount(0);
   });
 
-  test('an officer of a guild with a pending claim sees "Confirm the claim"', async ({ page }) => {
+  test('an officer of a guild with a pending claim sees "Open the claim"', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
       route.fulfill(
@@ -1338,14 +1385,13 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       ),
     );
     await page.goto(GUILD_URL);
-    await expect(page.getByTestId('guild-confirm-claim-link')).toHaveText('Confirm the claim');
+    await expect(page.getByTestId('guild-confirm-claim-link')).toContainText('Open the claim');
   });
 
   // Fix round 1, item 2: "Contest this claim" moved out of the header band entirely and
   // into the Settings tab, under the claim block -- and it never reaches the account that
-  // already holds the claim. This officer's own battletag ('Fixture#1234', meFixture's
-  // default) does not match `claim.claimed_by_name` ('Kraggor', buildMockHome's own
-  // fixture value), so they read as "a verified officer of a different account."
+  // already holds the claim. buildMockHome's own `claim.yours` is false, so this officer reads
+  // as "a verified officer of a different account."
   test('"Contest this claim" never renders in the header, only in Settings for a non-claimant officer', async ({
     page,
   }) => {
@@ -1355,7 +1401,12 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       homeCalls += 1;
       const claim =
         homeCalls === 1
-          ? { state: 'claimed' as const, frozen: false, claimed_by_name: 'Kraggor' }
+          ? {
+              state: 'claimed' as const,
+              frozen: false,
+              yours: false,
+              claimed_by: { name: 'Kraggor', class: 'warrior', character_key: 'us/pvp/kraggor' },
+            }
           : { state: 'contested' as const, since: '2026-12-01T00:00:00Z', frozen: true };
       return route.fulfill(envelope({ ...buildMockHome(VIEWER_OFFICER), claim }));
     });
@@ -1377,9 +1428,12 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
   test('the claimant’s own account sees no Contest control anywhere, not even in Settings', async ({
     page,
   }) => {
-    // This officer's own battletag matches buildMockHome's own `claimed_by_name`
-    // ('Kraggor') -- they are the account that holds the claim.
-    await stubCore(page, VIEWER_OFFICER, 'leader', 'Kraggor');
+    // `claim.yours`: this officer's account holds the claim.
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) => {
+      const home = buildMockHome(VIEWER_OFFICER);
+      return route.fulfill(envelope({ ...home, claim: { ...home.claim, yours: true } }));
+    });
     await page.goto(`${GUILD_URL}#settings`);
     await expect(page.getByTestId('guild-settings-claim-contest')).toHaveCount(0);
     await expect(page.getByTestId('guild-home-contest-button')).toHaveCount(0);

@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"testing"
 	"unicode/utf8"
 )
@@ -73,6 +74,24 @@ func TestEveryIconExistsInTheActiveBuild(t *testing.T) {
 	}
 }
 
+// The Classic roles: tank warrior, druid, paladin; heal priest, druid, paladin, shaman; DPS all.
+func TestClassRolesAreTheClassicOnes(t *testing.T) {
+	want := map[string][]string{
+		"warrior": {RoleTank, RoleDPS}, "druid": {RoleTank, RoleHealer, RoleDPS},
+		"paladin": {RoleTank, RoleHealer, RoleDPS}, "priest": {RoleHealer, RoleDPS},
+		"shaman": {RoleHealer, RoleDPS}, "hunter": {RoleDPS}, "mage": {RoleDPS},
+		"rogue": {RoleDPS}, "warlock": {RoleDPS},
+	}
+	for class, roles := range want {
+		if got := ClassRoles(class); !slices.Equal(got, roles) {
+			t.Errorf("ClassRoles(%s) = %v, want %v", class, got, roles)
+		}
+	}
+	if Plays("mage", RoleTank) || Plays("rogue", RoleHealer) || !Plays("Druid", RoleTank) || !Plays("", RoleTank) {
+		t.Fatal("Plays disagrees with ClassRoles")
+	}
+}
+
 func TestResolveReadsLoggedNamesWithTheRole(t *testing.T) {
 	cases := []struct{ class, name, role, want string }{
 		{"paladin", "Holy", "healer", "paladin-holy"},
@@ -81,6 +100,7 @@ func TestResolveReadsLoggedNamesWithTheRole(t *testing.T) {
 		{"druid", "Feral Combat", "dps", "druid-feral"},
 		{"druid", "Feral Bear", "tank", "druid-feral-bear"},
 		{"hunter", "Beast Mastery", "dps", "hunter-beast-mastery"},
+		{"hunter", "BeastMastery", "dps", "hunter-beast-mastery"},
 		{"mage", "Holy", "healer", ""},
 		{"mage", "", "dps", ""},
 	}

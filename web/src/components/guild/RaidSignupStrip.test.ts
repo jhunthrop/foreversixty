@@ -116,6 +116,19 @@ describe('RaidSignupStrip', () => {
     expect(select(MENDA.character_key)).toMatch(/<option value="healer"[^>]*selected/);
   });
 
+  it("offers only the roles the character's class plays", () => {
+    const markup = html();
+    const options = (key: string): string[] => {
+      const select =
+        markup.match(
+          new RegExp(`<select[^>]*data-testid="signup-role-${key}"[^>]*>[\\s\\S]*?</select>`),
+        )?.[0] ?? '';
+      return [...select.matchAll(/<option value="(\w+)"/g)].map((m) => m[1] ?? '');
+    };
+    expect(options(KRAGGOR.character_key)).toEqual(['tank', 'dps']);
+    expect(options(MENDA.character_key)).toEqual(['healer', 'dps']);
+  });
+
   it('mutes a character waiting for approval, with the sentence and no controls', () => {
     const markup = html();
     const row = markup.split(`data-testid="signup-row-${WAITING.character_key}"`)[1] ?? '';
@@ -166,7 +179,7 @@ describe('RaidSignupStrip', () => {
 
   it('is replaced by the cancelled line when the raid is cancelled', () => {
     const markup = html({ cancelled: true });
-    expect(text(markup)).toContain(raidCopy.raidStates.cancelled);
+    expect(text(markup)).toContain('This raid was cancelled.');
     expect(rowOrder(markup)).toEqual([]);
   });
 

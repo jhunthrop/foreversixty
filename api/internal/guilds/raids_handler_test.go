@@ -51,7 +51,7 @@ func TestRaidRouteHidesFromNonMembers(t *testing.T) {
 		if got := string(page["guild_timezone"]); got != `"America/Chicago"` {
 			t.Fatalf("guild_timezone = %s", got)
 		}
-		if !strings.Contains(string(page["zones"]), `"key":"raid:onyxias-lair","name":"Onyxia's Lair","size":40`) {
+		if !strings.Contains(string(page["zones"]), `"key":"raid:onyxias-lair","name":"Onyxia's Lair","kind":"raid","size":40`) {
 			t.Fatalf("zones = %s", page["zones"])
 		}
 		if got := w.getRaid(t, raid.ID); got.ID != raid.ID {

@@ -74,6 +74,27 @@ func TestSignUpIsThePutRoute(t *testing.T) {
 	}
 }
 
+func TestSignUpWithNoRoleKeepsTheStoredRole(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	w.signup(t, raid.ID, memberKeyA, `{"state":"in","role":"tank"}`)
+	res, err := w.svcSignUp(w.cmd(raid.ID, w.member, memberKeyA, SignupIn))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !res.Unchanged || res.Character.Role != RoleTank {
+		t.Fatalf("unchanged = %v, role = %q", res.Unchanged, res.Character.Role)
+	}
+	if _, err := w.svcSignUp(w.cmd(raid.ID, w.member, memberKeyA, SignupLate)); err != nil {
+		t.Fatal(err)
+	}
+	got := w.getRaid(t, raid.ID)
+	if len(got.Signups) != 1 || got.Signups[0].Role != RoleTank || got.Signups[0].State != SignupLate {
+		t.Fatalf("signups = %+v", got.Signups)
+	}
+}
+
 func (w raidWorld) signupUpdatedAt(t *testing.T, raidID int64, key string) time.Time {
 	t.Helper()
 	var at time.Time

@@ -2686,22 +2686,50 @@ public struct GuildAttendance: Codable, Sendable, Equatable {
     }
 }
 
+/// The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag.
+public struct GuildClaimHolder: Codable, Sendable, Equatable {
+    public let name: String
+    public let className: String?
+    public let characterKey: String
+
+    public init(
+        name: String,
+        className: String? = nil,
+        characterKey: String
+    ) {
+        self.name = name
+        self.className = className
+        self.characterKey = characterKey
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case className = "class"
+        case characterKey
+    }
+}
+
 public struct GuildClaimState: Codable, Sendable, Equatable {
     public let state: String
     public let frozen: Bool
     public let since: Date?
-    public let claimedByName: String?
+    /// The signed-in account holds this guild's claim.
+    public let yours: Bool
+    /// The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag.
+    public let claimedBy: GuildClaimHolder?
 
     public init(
         state: String,
         frozen: Bool,
         since: Date? = nil,
-        claimedByName: String? = nil
+        yours: Bool,
+        claimedBy: GuildClaimHolder? = nil
     ) {
         self.state = state
         self.frozen = frozen
         self.since = since
-        self.claimedByName = claimedByName
+        self.yours = yours
+        self.claimedBy = claimedBy
     }
 }
 
@@ -2837,15 +2865,19 @@ public struct GuildHomeViewer: Codable, Sendable, Equatable {
 }
 
 public struct GuildLoot: Codable, Sendable, Equatable {
+    /// Verified roster characters whose level on file is 60.
+    public let atLevelCap: Int
     public let encounters: [LootEncounter]
     public let selected: Int64
     public let items: [LootItem]
 
     public init(
+        atLevelCap: Int,
         encounters: [LootEncounter] = [],
         selected: Int64,
         items: [LootItem] = []
     ) {
+        self.atLevelCap = atLevelCap
         self.encounters = encounters
         self.selected = selected
         self.items = items
@@ -2853,6 +2885,7 @@ public struct GuildLoot: Codable, Sendable, Equatable {
 
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
+        atLevelCap = try c.decode(Int.self, forKey: .atLevelCap)
         encounters = try c.decodeIfPresent([LootEncounter].self, forKey: .encounters) ?? []
         selected = try c.decode(Int64.self, forKey: .selected)
         items = try c.decodeIfPresent([LootItem].self, forKey: .items) ?? []
@@ -3100,6 +3133,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let specIcon: String?
     /// Withheld without gear consent.
     public let itemLevel: Int?
+    /// The export's level, else the addon roster's; null when neither carries one or without gear consent.
+    public let level: Int?
     public let attendance30: GuildAttendance?
     public let bestParse: RosterBestParse?
     public let rating: RosterRating?
@@ -3129,6 +3164,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         specName: String? = nil,
         specIcon: String? = nil,
         itemLevel: Int? = nil,
+        level: Int? = nil,
         attendance30: GuildAttendance? = nil,
         bestParse: RosterBestParse? = nil,
         rating: RosterRating? = nil,
@@ -3157,6 +3193,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         self.specName = specName
         self.specIcon = specIcon
         self.itemLevel = itemLevel
+        self.level = level
         self.attendance30 = attendance30
         self.bestParse = bestParse
         self.rating = rating
@@ -3187,6 +3224,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         case specName
         case specIcon
         case itemLevel
+        case level
         case attendance30
         case bestParse
         case rating
@@ -3246,6 +3284,8 @@ public struct GuildSummary: Codable, Sendable, Equatable {
     public let namedEncountersDown: Int
     public let pullsThisTier: Int
     public let updatedAt: Date
+    /// The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet.
+    public let tier: GuildTierCounts?
 
     public init(
         raiders: Int,
@@ -3253,7 +3293,8 @@ public struct GuildSummary: Codable, Sendable, Equatable {
         belowRatingFloor: Int,
         namedEncountersDown: Int,
         pullsThisTier: Int,
-        updatedAt: Date
+        updatedAt: Date,
+        tier: GuildTierCounts? = nil
     ) {
         self.raiders = raiders
         self.waitingForApproval = waitingForApproval
@@ -3261,6 +3302,30 @@ public struct GuildSummary: Codable, Sendable, Equatable {
         self.namedEncountersDown = namedEncountersDown
         self.pullsThisTier = pullsThisTier
         self.updatedAt = updatedAt
+        self.tier = tier
+    }
+}
+
+/// The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet.
+public struct GuildTierCounts: Codable, Sendable, Equatable {
+    public let name: String?
+    public let raids: [String]?
+    public let namedEncounters: Int?
+    public let down: Int?
+    public let pullsTotal: Int?
+
+    public init(
+        name: String? = nil,
+        raids: [String]? = nil,
+        namedEncounters: Int? = nil,
+        down: Int? = nil,
+        pullsTotal: Int? = nil
+    ) {
+        self.name = name
+        self.raids = raids
+        self.namedEncounters = namedEncounters
+        self.down = down
+        self.pullsTotal = pullsTotal
     }
 }
 
@@ -3904,11 +3969,17 @@ public struct LootCandidate: Codable, Sendable, Equatable {
     public let className: String
     public let spec: String
     public let gainDps: Double?
+    /// What gain_dps counts; null when gain_dps is.
+    public let gainUnit: String?
+    /// 0 when the item is on the character's BiS list; 1 when ranked by item level only.
+    public let tier: Int
     public let notSimChecked: Bool
     public let ilvlDelta: Int?
     public let attendance: GuildAttendance
     public let alreadyEquivalent: Bool
     public let replaces: String
+    /// The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name.
+    public let replacesItem: LootWornItem?
     public let itemsWon: Int
 
     public init(
@@ -3917,11 +3988,14 @@ public struct LootCandidate: Codable, Sendable, Equatable {
         className: String,
         spec: String,
         gainDps: Double? = nil,
+        gainUnit: String? = nil,
+        tier: Int,
         notSimChecked: Bool,
         ilvlDelta: Int? = nil,
         attendance: GuildAttendance,
         alreadyEquivalent: Bool,
         replaces: String,
+        replacesItem: LootWornItem? = nil,
         itemsWon: Int
     ) {
         self.characterKey = characterKey
@@ -3929,11 +4003,14 @@ public struct LootCandidate: Codable, Sendable, Equatable {
         self.className = className
         self.spec = spec
         self.gainDps = gainDps
+        self.gainUnit = gainUnit
+        self.tier = tier
         self.notSimChecked = notSimChecked
         self.ilvlDelta = ilvlDelta
         self.attendance = attendance
         self.alreadyEquivalent = alreadyEquivalent
         self.replaces = replaces
+        self.replacesItem = replacesItem
         self.itemsWon = itemsWon
     }
 
@@ -3943,12 +4020,42 @@ public struct LootCandidate: Codable, Sendable, Equatable {
         case className = "class"
         case spec
         case gainDps
+        case gainUnit
+        case tier
         case notSimChecked
         case ilvlDelta
         case attendance
         case alreadyEquivalent
         case replaces
+        case replacesItem
         case itemsWon
+    }
+}
+
+public struct LootEligible: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    /// The copy of the drop this character would get.
+    public let itemId: Int
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        itemId: Int
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.itemId = itemId
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case itemId
     }
 }
 
@@ -4002,7 +4109,20 @@ public struct LootItem: Codable, Sendable, Equatable {
     public let name: String
     public let icon: String
     public let quality: Int
+    /// For logic only; word the slot from inventory_type and item_class/item_subclass.
     public let slot: String
+    /// The client's Item.InventoryType.
+    public let inventoryType: Int
+    /// The client's Item.ClassID.
+    public let itemClass: Int
+    /// The client's Item.SubclassID.
+    public let itemSubclass: Int
+    /// gear is a slotted drop the council ranks; skinned is Scale of Onyxia, never a pick.
+    public let kind: String
+    /// A quest drop's sourced line ("Quest: A Proper String (Hunter)"); empty otherwise.
+    public let questLabel: String
+    /// Who an officer can hand a quest drop or the bag to. Empty for gear and the skinned scale.
+    public let eligible: [LootEligible]
     public let copies: Int
     public let awardedTo: LootAward?
     /// Ranked best first.
@@ -4014,6 +4134,12 @@ public struct LootItem: Codable, Sendable, Equatable {
         icon: String,
         quality: Int,
         slot: String,
+        inventoryType: Int,
+        itemClass: Int,
+        itemSubclass: Int,
+        kind: String,
+        questLabel: String,
+        eligible: [LootEligible] = [],
         copies: Int,
         awardedTo: LootAward? = nil,
         candidates: [LootCandidate] = []
@@ -4023,6 +4149,12 @@ public struct LootItem: Codable, Sendable, Equatable {
         self.icon = icon
         self.quality = quality
         self.slot = slot
+        self.inventoryType = inventoryType
+        self.itemClass = itemClass
+        self.itemSubclass = itemSubclass
+        self.kind = kind
+        self.questLabel = questLabel
+        self.eligible = eligible
         self.copies = copies
         self.awardedTo = awardedTo
         self.candidates = candidates
@@ -4035,6 +4167,12 @@ public struct LootItem: Codable, Sendable, Equatable {
         icon = try c.decode(String.self, forKey: .icon)
         quality = try c.decode(Int.self, forKey: .quality)
         slot = try c.decode(String.self, forKey: .slot)
+        inventoryType = try c.decode(Int.self, forKey: .inventoryType)
+        itemClass = try c.decode(Int.self, forKey: .itemClass)
+        itemSubclass = try c.decode(Int.self, forKey: .itemSubclass)
+        kind = try c.decode(String.self, forKey: .kind)
+        questLabel = try c.decode(String.self, forKey: .questLabel)
+        eligible = try c.decodeIfPresent([LootEligible].self, forKey: .eligible) ?? []
         copies = try c.decode(Int.self, forKey: .copies)
         awardedTo = try c.decodeIfPresent(LootAward.self, forKey: .awardedTo)
         candidates = try c.decodeIfPresent([LootCandidate].self, forKey: .candidates) ?? []
@@ -4167,6 +4305,26 @@ public struct LootSource: Codable, Sendable, Equatable {
         self.sourceOrigin = sourceOrigin
         self.sourceNote = sourceNote
         self.reitemisedFrom = reitemisedFrom
+    }
+}
+
+/// The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name.
+public struct LootWornItem: Codable, Sendable, Equatable {
+    public let itemId: Int
+    public let name: String
+    public let icon: String
+    public let quality: Int
+
+    public init(
+        itemId: Int,
+        name: String,
+        icon: String,
+        quality: Int
+    ) {
+        self.itemId = itemId
+        self.name = name
+        self.icon = icon
+        self.quality = quality
     }
 }
 

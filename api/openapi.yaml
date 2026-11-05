@@ -2011,12 +2011,25 @@ components:
         claim:
           type: object
           title: GuildClaimState
-          required: [state, frozen]
+          required: [state, frozen, yours]
           properties:
             state: { type: string }
             frozen: { type: boolean }
             since: { type: string, format: date-time }
-            claimed_by_name: { type: string }
+            yours:
+              type: boolean
+              description: The signed-in account holds this guild's claim.
+            claimed_by:
+              description: >
+                The claim holder's character on this guild's roster; null when no claim is
+                held or the holder has no character on it. Never an account tag.
+              type: [object, "null"]
+              title: GuildClaimHolder
+              required: [name, class, character_key]
+              properties:
+                name: { type: string }
+                class: { type: [string, "null"], x-name: className }
+                character_key: { type: string }
         summary:
           type: object
           title: GuildSummary
@@ -2028,6 +2041,16 @@ components:
             named_encounters_down: { type: integer }
             pulls_this_tier: { type: integer }
             updated_at: { type: string, format: date-time }
+            tier:
+              type: object
+              title: GuildTierCounts
+              description: The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet.
+              properties:
+                name: { type: string }
+                raids: { type: array, items: { type: string } }
+                named_encounters: { type: integer }
+                down: { type: integer }
+                pulls_total: { type: integer }
         standing:
           type: object
           title: GuildStanding
@@ -2116,6 +2139,7 @@ components:
         spec_name: { type: string, description: "W3-C16: the full spec name (\"Fury Warrior\"), withheld with spec." }
         spec_icon: { type: string, description: "W3-C16: the spec's talent-tab icon stem, withheld with spec." }
         item_level: { type: integer, description: Withheld without gear consent. }
+        level: { type: [integer, "null"], description: "The export's level, else the addon roster's; null when neither carries one or without gear consent." }
         attendance_30: { $ref: '#/components/schemas/GuildAttendance' }
         best_parse:
           type: object
@@ -2579,8 +2603,9 @@ components:
         post_to_discord: { type: boolean }
     GuildLoot:
       type: object
-      required: [encounters, selected, items]
+      required: [encounters, selected, items, at_level_cap]
       properties:
+        at_level_cap: { type: integer, description: Verified roster characters whose level on file is 60. }
         encounters:
           type: array
           items:
@@ -2598,13 +2623,30 @@ components:
           items:
             type: object
             title: LootItem
-            required: [item_id, name, icon, quality, slot, copies, awarded_to, candidates]
+            required: [item_id, name, icon, quality, slot, copies, awarded_to, candidates, inventory_type, item_class, item_subclass, kind, quest_label, eligible]
             properties:
               item_id: { type: integer }
               name: { type: string }
               icon: { type: string }
               quality: { type: integer, minimum: 0, maximum: 5 }
-              slot: { type: string }
+              slot: { type: string, description: For logic only; word the slot from inventory_type and item_class/item_subclass. }
+              inventory_type: { type: integer, description: The client's Item.InventoryType. }
+              item_class: { type: integer, description: The client's Item.ClassID. }
+              item_subclass: { type: integer, description: The client's Item.SubclassID. }
+              kind: { type: string, enum: [gear, quest, bag, skinned], description: 'gear is a slotted drop the council ranks; skinned is Scale of Onyxia, never a pick.' }
+              quest_label: { type: string, description: 'A quest drop''s sourced line ("Quest: A Proper String (Hunter)"); empty otherwise.' }
+              eligible:
+                type: array
+                description: Who an officer can hand a quest drop or the bag to. Empty for gear and the skinned scale.
+                items:
+                  type: object
+                  title: LootEligible
+                  required: [character_key, name, class, item_id]
+                  properties:
+                    character_key: { type: string }
+                    name: { type: string }
+                    class: { type: string, x-name: className }
+                    item_id: { type: integer, description: The copy of the drop this character would get. }
               copies: { type: integer }
               awarded_to:
                 type: [object, "null"]
@@ -2622,18 +2664,30 @@ components:
                 items:
                   type: object
                   title: LootCandidate
-                  required: [character_key, name, class, spec, gain_dps, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, items_won]
+                  required: [character_key, name, class, spec, gain_dps, gain_unit, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, replaces_item, items_won, tier]
                   properties:
                     character_key: { type: string }
                     name: { type: string }
                     class: { type: string, x-name: className }
                     spec: { type: string }
                     gain_dps: { type: [number, "null"] }
+                    gain_unit: { type: [string, "null"], enum: [dps, hps, tps, null], description: What gain_dps counts; null when gain_dps is. }
+                    tier: { type: integer, description: 0 when the item is on the character's BiS list; 1 when ranked by item level only. }
                     not_sim_checked: { type: boolean }
                     ilvl_delta: { type: [integer, "null"] }
                     attendance: { $ref: '#/components/schemas/GuildAttendance' }
                     already_equivalent: { type: boolean }
                     replaces: { type: string }
+                    replaces_item:
+                      type: [object, "null"]
+                      title: LootWornItem
+                      description: The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name.
+                      required: [item_id, name, icon, quality]
+                      properties:
+                        item_id: { type: integer }
+                        name: { type: string }
+                        icon: { type: string }
+                        quality: { type: integer, minimum: 0, maximum: 5 }
                     items_won: { type: integer }
 
     # Reports and builds -------------------------------------------------------------------

@@ -6,6 +6,7 @@ import { relativeTime } from '../dates';
 import { SPEC_BY_KEY } from '../sim/specs';
 import type { GuildAddonSnapshot, GuildRosterRow } from './api';
 import { guildRosterAddonCopy } from './copy';
+import { sameSpecName } from './spec-name';
 
 /** The spec's own name ("Beast Mastery") for the snapshot's slug; an unknown slug is printed
  *  unchanged rather than guessed at. Read from the generated spec list directly, not through
@@ -26,7 +27,7 @@ export function addonIdentity(row: GuildRosterRow): { level: number | null; spec
   if (addon === undefined || addon === null) return null;
   if (addon.spec === null) return { level: addon.level, spec: null };
   const name = addonSpecName(addon.spec);
-  const same = row.spec !== undefined && row.spec.toLowerCase() === name.toLowerCase();
+  const same = row.spec !== undefined && sameSpecName(row.spec, name);
   return { level: addon.level, spec: same ? null : name };
 }
 
