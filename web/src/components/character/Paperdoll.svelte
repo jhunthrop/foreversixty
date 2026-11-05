@@ -202,6 +202,7 @@
         class="pd-slot pd-known"
         label={cellLabel(data, classSlug)}
         testid={`paperdoll-item-${cell.slot}`}
+        enchant={data.enchant}
       >
         <span class="pd-sock" class:pd-bare={item.icon === null} style={ring(item)}
           >{@render socketIcon(item.icon)}</span

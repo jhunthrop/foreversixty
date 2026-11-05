@@ -139,30 +139,43 @@ describe('itemTooltipModel', () => {
     expect(itemTooltipModel(item(), NO_SOURCES).weapon).toBeNull();
   });
 
-  it('labels handedness and shields from fields the row actually carries, nothing invented', () => {
-    const twoHander = item({
-      slot: 'main_hand',
-      armor: 0,
-      damage_min: 1,
-      damage_max: 2,
-      speed: 1,
-      two_hand: true,
-    });
-    const oneHander = item({
-      slot: 'main_hand',
-      armor: 0,
-      damage_min: 1,
-      damage_max: 2,
-      speed: 1,
-      two_hand: false,
-    });
-    const ranged = item({ slot: 'ranged', armor: 0, damage_min: 1, damage_max: 2, speed: 1 });
+  it('prints the slot line as the client does: inventory type left, weapon type right', () => {
+    // Persuader (22384) and Ironwood Blade (279259): Item.csv class 2, subclass 4 and 7,
+    // inventory type 13. Arcanite Reaper (12784): subclass 1, inventory type 17.
+    const weapon = (overrides: Partial<Item>) =>
+      itemTooltipModel(
+        item({
+          slot: 'main_hand',
+          armor: 0,
+          damage_min: 1,
+          damage_max: 2,
+          speed: 1,
+          class_id: 2,
+          ...overrides,
+        }),
+        NO_SOURCES,
+      );
+    const persuader = weapon({ subclass_id: 4, inventory_type: 13 });
+    expect([persuader.slotLabel, persuader.typeLabel]).toEqual(['One-Hand', 'Mace']);
+    const ironwood = weapon({ subclass_id: 7, inventory_type: 13 });
+    expect([ironwood.slotLabel, ironwood.typeLabel]).toEqual(['One-Hand', 'Sword']);
+    const reaper = weapon({ subclass_id: 1, inventory_type: 17, two_hand: true });
+    expect([reaper.slotLabel, reaper.typeLabel]).toEqual(['Two-Hand', 'Axe']);
+    const mainOnly = weapon({ subclass_id: 15, inventory_type: 21 });
+    expect([mainOnly.slotLabel, mainOnly.typeLabel]).toEqual(['Main Hand', 'Dagger']);
+    const offOnly = weapon({ slot: 'off_hand', subclass_id: 13, inventory_type: 22 });
+    expect([offOnly.slotLabel, offOnly.typeLabel]).toEqual(['Off Hand', 'Fist Weapon']);
+    const crossbow = weapon({ slot: 'ranged', subclass_id: 18, inventory_type: 26 });
+    expect([crossbow.slotLabel, crossbow.typeLabel]).toEqual(['Ranged', 'Crossbow']);
+  });
+
+  it('labels shields from fields the row actually carries, nothing invented', () => {
     const shield = item({ slot: 'off_hand', armor: 300 });
     const plainChest = item({ slot: 'chest', armor: 400 });
-    expect(itemTooltipModel(twoHander, NO_SOURCES).typeLabel).toBe('Two-Handed Weapon');
-    expect(itemTooltipModel(oneHander, NO_SOURCES).typeLabel).toBe('One-Handed Weapon');
-    expect(itemTooltipModel(ranged, NO_SOURCES).typeLabel).toBe('Ranged Weapon');
+    // A weapon row with no class or subclass: no type, never a guess.
+    const bare = item({ slot: 'main_hand', armor: 0, damage_min: 1, damage_max: 2, speed: 1 });
     expect(itemTooltipModel(shield, NO_SOURCES).typeLabel).toBe('Shield');
+    expect(itemTooltipModel(bare, NO_SOURCES).typeLabel).toBeUndefined();
     // No class/subclass id in the published row -- undefined, never a guessed material.
     expect(itemTooltipModel(plainChest, NO_SOURCES).typeLabel).toBeUndefined();
   });
