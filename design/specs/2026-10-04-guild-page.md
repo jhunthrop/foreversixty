@@ -134,7 +134,9 @@ and a `See all` link to the full tab:
 - **This week's raid nights summary**: the three most recent nights, zone/date/kills/wipes
   (**EXISTS**, unchanged from v1).
 - **Progression summary**: named-encounters-down count and the honest Barrow Deeps/Hyjal
-  Summit caveat (**EXISTS + DERIVABLE**, §4.D).
+  Summit caveat (**EXISTS + DERIVABLE**, §4.D). With nothing the viewer can open it reads
+  `No public logs yet.` (progression is not weekly, so never the raid-nights card's `No public
+  reports this week yet.`; amended 2026-11-05, guild loop round 3 web4).
 - **Readiness summary** (member/officer only): the three worst-readiness raiders by name and
   fail count (**DERIVABLE + NEEDS NEW DATA**, §4.E).
 - **Loot summary** (member/officer only): current boss, drop count, next pick

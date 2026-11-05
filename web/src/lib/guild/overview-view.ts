@@ -78,4 +78,7 @@ export function rosterCardFacts(summary: {
 }
 
 export const NO_PUBLIC_REPORTS = 'No public reports this week yet.';
+/** The Progression card with nothing the viewer can open: progression is not weekly, so it never
+ *  borrows the raid-nights card's `this week` (guild-page spec §4.A, guild loop round 3). */
+export const NO_PUBLIC_LOGS = 'No public logs yet.';
 export const NO_PUBLIC_RAID_NIGHTS = 'No public raid nights yet.';

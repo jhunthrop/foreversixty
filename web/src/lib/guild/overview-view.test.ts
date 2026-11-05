@@ -1,5 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  NO_PUBLIC_LOGS,
   bandCountsLine,
   downEncounterNames,
   bossesDownCountLine,
@@ -83,5 +85,17 @@ describe('the cards', () => {
     expect(
       rosterCardFacts({ raiders: 5, waiting_for_approval: 0, below_rating_floor: 2 }).map((f) => f.text),
     ).toEqual(['5 raiders with gear on the site', '2 below the rating floor']);
+  });
+});
+
+describe('NO_PUBLIC_LOGS', () => {
+  it("is the guild-page spec's Progression empty line, never weekly (guild loop round 3)", () => {
+    const spec = readFileSync(
+      new URL('../../../../design/specs/2026-10-04-guild-page.md', import.meta.url),
+      'utf8',
+    );
+    expect(NO_PUBLIC_LOGS).toBe('No public logs yet.');
+    expect(spec).toContain(`\`${NO_PUBLIC_LOGS}\``);
+    expect(NO_PUBLIC_LOGS).not.toContain('week');
   });
 });

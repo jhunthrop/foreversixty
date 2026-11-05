@@ -26,6 +26,7 @@
     fetchGuildReadiness,
   } from '../../lib/guild/api';
   import {
+    NO_PUBLIC_LOGS,
     NO_PUBLIC_REPORTS,
     bossesDownCountLine,
     bossesDownLine,
@@ -227,7 +228,7 @@
     {#if showCounts}
       <p data-testid="guild-overview-progression-line">{bossesLine}</p>
     {:else}
-      <p class="text-muted">{NO_PUBLIC_REPORTS}</p>
+      <p class="text-muted" data-testid="guild-overview-progression-empty">{NO_PUBLIC_LOGS}</p>
     {/if}
   </Card>
 
