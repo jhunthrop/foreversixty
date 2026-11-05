@@ -61,6 +61,12 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 	}
 }
 
+// knownStaleBISFiles are specs whose committed files predate their guide,
+// each with the reason. It exists only while a split ranking lands one
+// shard at a time; the run that lands the last shard empties it, and it
+// never carries a spec past that landing.
+var knownStaleBISFiles = map[string]string{}
+
 // TestPublishedBISMatchesGuides: the active build's committed bis files
 // wear the races and talents their guides name. Not gated like
 // TestPublishedBISFilesPassSanityChecks: a guide that moves its race or
@@ -90,6 +96,9 @@ func TestPublishedBISMatchesGuides(t *testing.T) {
 			g, err := loadGuideExpectation(publishedRepoRoot, buildDir, activeBuild, f.Spec)
 			if err != nil {
 				t.Fatal(err)
+			}
+			if reason, stale := knownStaleBISFiles[f.Spec]; stale {
+				t.Skipf("known stale: %s", reason)
 			}
 			for _, line := range guideDivergences(g, f.Bands) {
 				t.Error(line)
