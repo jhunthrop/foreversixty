@@ -150,7 +150,7 @@ describe('buildTimeline: lanes', () => {
           cast(0, 'other:attack/1'),
           cast(1, 'other:attack/2'),
           cast(2, 'other:attack/3'),
-          cast(3, 'spell:12867'),
+          cast(3, 'spell:12867', undefined, { outcome: 'tick', amount: 141 }),
           cast(4, 'other:rage_gain'),
         ],
         {},
@@ -169,11 +169,70 @@ describe('buildTimeline: lanes', () => {
 
   it('orders the hands by hand, whichever swung first, then the periodic lanes', () => {
     const model = built(
-      result([cast(0, 'spell:12867'), cast(1, 'other:attack/2'), cast(2, 'other:attack/1')], {}, [
-        { name: 'spell:12867', ticks: 1, total: 1, school: 1 },
-      ]),
+      result(
+        [
+          cast(0, 'spell:12867', undefined, { outcome: 'tick' }),
+          cast(1, 'other:attack/2'),
+          cast(2, 'other:attack/1'),
+        ],
+        {},
+        [{ name: 'spell:12867', ticks: 1, total: 1, school: 1 }],
+      ),
     );
     expect(model.swings.map((lane) => lane.name)).toEqual(['Main hand', 'Off hand', 'Deep Wounds ticks']);
+  });
+
+  it('never counts a periodic application as a tick or a press in a run with outcomes', () => {
+    const model = built(
+      result(
+        [cast(0, 'spell:12867'), cast(1000, 'spell:12867', undefined, { outcome: 'tick_crit', amount: 9 })],
+        {},
+        [{ name: 'spell:12867', ticks: 1, total: 9, school: 1 }],
+      ),
+    );
+    expect(model.swings[0]?.events.map((event) => event.atMs)).toEqual([1000]);
+    expect(model.casts).toHaveLength(0);
+    expect(model.presses).toHaveLength(0);
+  });
+
+  it('keeps an older run periodic rows without calling them ticks', () => {
+    const model = built(
+      result([cast(0, 'spell:12867')], {}, [{ name: 'spell:12867', ticks: 1, total: 9, school: 1 }]),
+    );
+    expect(model.swings[0]?.name).toBe('Deep Wounds');
+    expect(model.periodicName).toBeNull();
+  });
+
+  it('puts a hit nobody pressed on Swings and ticks, the off-hand strike named for its hand', () => {
+    const model = built(
+      result(
+        [
+          cast(0, 'spell:1680', 5, { outcome: 'hit' }),
+          cast(0, 'spell:462891', 5, { outcome: 'crit', amount: 7 }),
+        ],
+        {},
+        [
+          { name: 'spell:1680', total: 9, school: 1 },
+          { name: 'spell:462891', total: 7, school: 1 },
+        ],
+        [{ spell_name: 'spell:1680', succeeded: 1 }],
+      ),
+    );
+    expect(model.casts.map((lane) => lane.action)).toEqual(['spell:1680']);
+    expect(model.swings[0]?.action).toBe('spell:462891');
+    expect(model.swings[0]?.name).toMatch(/\(off hand\)$/);
+    expect(model.presses).toHaveLength(1);
+  });
+
+  it('never draws Thrash, a lane or a bar', () => {
+    const model = built(
+      result([cast(0, 'spell:21919'), cast(1, 'spell:2687')], {
+        sample_auras: [{ action: 'spell:21919', on: 'player', segments: [[0, 10]] }],
+        sample_duration_ms: 1000,
+      }),
+    );
+    expect(model.casts.map((lane) => lane.action)).toEqual(['spell:2687']);
+    expect(model.onYou).toHaveLength(0);
   });
 
   it('splits a castable DoT: the cast on Casts, its ticks on the ticks lane', () => {
@@ -218,6 +277,22 @@ describe('buildTimeline: bars', () => {
     expect(model.onYou.map((bar) => bar.name)).toEqual(['Death Wish', 'Flurry']);
     expect(model.onTarget.map((bar) => bar.name)).toEqual(['Sunder Armor']);
     expect(model.hasAuras).toBe(true);
+  });
+
+  it('leaves raid buffs up all fight on you to the Buffs card, and a queue window off the bars', () => {
+    const model = built(
+      result([cast(0, 'spell:11567/1'), cast(5, 'spell:11567')], {
+        sample_duration_ms: 1000,
+        sample_auras: [
+          { action: 'spell:10442', on: 'player', segments: [[0, 1000]] },
+          { action: 'spell:12328', on: 'player', segments: [[0, 400]] },
+          { action: 'spell:11567/1', on: 'player', segments: [[0, 5]] },
+          { action: 'spell:11597', on: 'target', segments: [[0, 1000]] },
+        ],
+      }),
+    );
+    expect(model.onYou.map((bar) => bar.action)).toEqual(['spell:12328']);
+    expect(model.onTarget).toHaveLength(1);
   });
 
   it('says so when the result has no aura data', () => {

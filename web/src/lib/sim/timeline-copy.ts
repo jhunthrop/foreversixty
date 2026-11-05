@@ -50,6 +50,7 @@ export const timelineCopy = {
   hands: { 1: 'Main hand', 2: 'Off hand', 3: 'Extra attacks' } as Readonly<Record<number, string>>,
   ticksLane: (name: string): string => `${name} ticks`,
   overpowerWindow: 'Overpower window',
+  offHandHit: (name: string): string => `${name} (off hand)`,
 
   axisTime: 'Time',
   axisPull: 'Pull',

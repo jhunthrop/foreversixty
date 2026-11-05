@@ -1,4 +1,5 @@
 <!-- web/src/components/sim/SimTimeline.svelte -->
+<!-- The anchor and the loading skeleton are the page's (LazySection, id `timeline`); this is the card. -->
 <!-- The saved sim's fight timeline (spec 2026-11-04-sim-results 3.7): the median run, one lane per
      ability, buff and debuff bars, the resource line, the Execute wash, a brush, a crosshair with
      its readout, tick tooltips and the cast list. A lazy chunk: lib/sim/timeline.ts holds the
@@ -401,13 +402,12 @@
 {/snippet}
 
 <Card
-  id="timeline"
   glyph="clock"
   label={timelineCopy.label}
   title={timelineCopy.title}
   {meta}
   body="none"
-  class="scroll-mt-16"
+  class="mx-[18px] md:mx-0"
   testid="sim-timeline"
 >
   {#if model === null}
@@ -904,7 +904,7 @@
   .phone .notice {
     position: sticky;
     left: 48px;
-    width: calc(100vw - 100px);
+    width: calc(100vw - 136px);
     padding: 0 8px;
   }
   .name-row {

@@ -28,7 +28,14 @@ const AXIS_TAIL_MS = 1_000;
 const EXECUTE_SPELL_IDS: ReadonlySet<number> = new Set([5308, 20658, 20660, 20661, 20662]);
 const OVERPOWER_KEY = 'spell:11585';
 const SWING_LABEL = 'attack';
+const UNPRESSED_ORDER = 50;
 const PERIODIC_ORDER = 99;
+/** Lane E: Thrash is not a buff and left the results; an older result may still carry it. */
+const NEVER_DRAWN: ReadonlySet<string> = new Set(['spell:21919']);
+/** The off-hand half of a two-hand strike: the client names it as the press itself. */
+const OFF_HAND_HITS: ReadonlySet<string> = new Set(['spell:462891']);
+/** An aura on you up this much of the run is the raid's, not the fight's: the Buffs card lists it. */
+const ALWAYS_UP_SHARE = 0.99;
 
 /** The bit the engine's school mask sets, to the design system's school token. */
 const SCHOOL_TOKENS: Readonly<Record<number, string>> = {
@@ -203,28 +210,45 @@ interface Placement {
 }
 
 /** Where one event draws (spec 3.7, lane membership). Null: an event no lane shows. */
-function placeEvent(cast: SampleCast, facts: AbilityFacts, casts: ReadonlySet<string>): Placement | null {
+function placeEvent(
+  cast: SampleCast,
+  facts: AbilityFacts,
+  casts: ReadonlySet<string>,
+  hasOutcomes: boolean,
+): Placement | null {
   const parsed = parseActionKey(cast.action);
   if (parsed?.kind === 'other') {
     if (parsed.label !== SWING_LABEL) return null;
     return { group: 'swings', laneId: cast.action, action: cast.action, periodic: false };
   }
   const base = baseActionKey(cast.action);
+  if (NEVER_DRAWN.has(base)) return null;
   const isTick = cast.outcome === 'tick' || cast.outcome === 'tick_crit';
-  if (isTick || (facts.periodic.has(base) && !casts.has(base))) {
-    return { group: 'swings', laneId: `ticks:${base}`, action: base, periodic: true };
+  const tickLane = { group: 'swings', laneId: `ticks:${base}`, action: base, periodic: true } as const;
+  if (isTick) return tickLane;
+  if (facts.periodic.has(base) && !casts.has(base)) {
+    // A run with outcomes records each tick as its own row, so a bare row here is an application:
+    // neither a tick nor a press. An older run cannot tell them apart and draws them as they are.
+    return hasOutcomes ? null : tickLane;
+  }
+  // Damage with no cast row is a hit no one pressed (the off-hand Whirlwind, a proc): it lands on
+  // Swings and ticks, so a lane on Casts never reads as a second press.
+  if (casts.size > 0 && !casts.has(base) && facts.schools.has(base)) {
+    return { group: 'swings', laneId: base, action: base, periodic: false };
   }
   return { group: 'casts', laneId: base, action: base, periodic: false };
 }
 
-function laneName(place: Placement, names: ActionNames | null): string {
+function laneName(place: Placement, names: ActionNames | null, hasOutcomes: boolean): string {
   const parsed = parseActionKey(place.action);
   if (parsed?.kind === 'other' && parsed.label === SWING_LABEL) {
     const hand = timelineCopy.hands[parsed.tag];
     if (hand !== undefined) return hand;
   }
   const name = resolveActionName(place.action, names);
-  return place.periodic ? timelineCopy.ticksLane(name) : name;
+  if (OFF_HAND_HITS.has(place.action)) return timelineCopy.offHandHit(name);
+  // Only rows known to be ticks are called ticks: an older run's rows may be applications.
+  return place.periodic && hasOutcomes ? timelineCopy.ticksLane(name) : name;
 }
 
 function isExecute(key: string): boolean {
@@ -254,9 +278,18 @@ function buildBars(result: SimResult, names: ActionNames | null, spanMs: number)
   });
 }
 
-/** Main hand, off hand, extra attacks, then the periodic lanes in first use (spec 3.7). */
+/** Main hand, off hand, extra attacks, the hits nobody pressed, then the periodic lanes (spec 3.7). */
 function swingOrder(lane: TickLane): number {
-  return lane.periodic ? PERIODIC_ORDER : (parseActionKey(lane.action)?.tag ?? PERIODIC_ORDER);
+  if (lane.periodic) return PERIODIC_ORDER;
+  return parseActionKey(lane.action)?.tag || UNPRESSED_ORDER;
+}
+
+/** A bar worth a lane: not a removed effect, not a queue's own window, not up from pull to end on you. */
+function isFightAura(bar: BarLane, seen: ReadonlySet<string>): boolean {
+  const base = baseActionKey(bar.action);
+  if (NEVER_DRAWN.has(base)) return false;
+  if (bar.action !== base && seen.has(base) && seen.has(bar.action)) return false;
+  return bar.group !== 'player' || bar.share < ALWAYS_UP_SHARE;
 }
 
 const firstStart = (lane: BarLane): number => lane.segments[0]?.[0] ?? Number.POSITIVE_INFINITY;
@@ -276,11 +309,10 @@ export function buildTimeline(result: SimResult, names: ActionNames | null): Tim
   const lanes = new Map<string, TickLane>();
   const presses: TimelineEvent[] = [];
   let executeAtMs: number | null = null;
-  let hasOutcomes = false;
+  const hasOutcomes = sample.some((cast) => cast.outcome !== undefined);
 
   for (const cast of sample) {
-    if (cast.outcome !== undefined) hasOutcomes = true;
-    const place = placeEvent(cast, facts, casted);
+    const place = placeEvent(cast, facts, casted, hasOutcomes);
     if (place === null) continue;
     let lane = lanes.get(place.laneId);
     if (lane === undefined) {
@@ -289,7 +321,7 @@ export function buildTimeline(result: SimResult, names: ActionNames | null): Tim
         id: place.laneId,
         group: place.group,
         action: place.action,
-        name: laneName(place, names),
+        name: laneName(place, names, hasOutcomes),
         schoolToken: facts.schools.get(baseActionKey(place.action)) ?? null,
         periodic: place.periodic,
         events: [],
@@ -319,11 +351,11 @@ export function buildTimeline(result: SimResult, names: ActionNames | null): Tim
   presses.sort((a, b) => a.atMs - b.atMs);
 
   const endMs = result.sample_duration_ms ?? last.at_ms + AXIS_TAIL_MS;
-  const bars = buildBars(result, names, endMs - Math.min(first.at_ms, 0));
+  const bars = buildBars(result, names, endMs);
   const overpower = casted.has(OVERPOWER_KEY)
     ? bars.find((bar) => bar.group === 'player' && baseActionKey(bar.action) === OVERPOWER_KEY)
     : undefined;
-  const others = bars.filter((bar) => baseActionKey(bar.action) !== OVERPOWER_KEY);
+  const others = bars.filter((bar) => baseActionKey(bar.action) !== OVERPOWER_KEY && isFightAura(bar, seen));
   const swings = allLanes
     .filter((lane) => lane.group === 'swings')
     .sort((a, b) => swingOrder(a) - swingOrder(b));
@@ -348,7 +380,7 @@ export function buildTimeline(result: SimResult, names: ActionNames | null): Tim
     landings: casts
       .flatMap((lane) => lane.events.map((event) => ({ event, lane })))
       .sort((a, b) => a.event.atMs - b.event.atMs),
-    periodicName: periodic === undefined ? null : resolveActionName(periodic.action, names),
+    periodicName: periodic === undefined || !hasOutcomes ? null : resolveActionName(periodic.action, names),
   };
 }
 

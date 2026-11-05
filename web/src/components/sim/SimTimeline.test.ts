@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import fullFixture from '../../fixtures/sim/result-full.json';
 import olderFixture from '../../fixtures/sim/result.json';
 import type { ActionNames } from '../../lib/sim/action-names';
+import { buildTimeline } from '../../lib/sim/timeline';
 import { timelineCopy } from '../../lib/sim/timeline-copy';
 import type { SimResult } from '../../lib/sim/types';
 import SimTimeline from './SimTimeline.svelte';
@@ -32,9 +33,9 @@ function olderShape(): SimResult {
 }
 
 describe('SimTimeline', () => {
-  it('carries its anchor, head and toolbar', () => {
+  it('carries its head and toolbar, and leaves the anchor to the page', () => {
     const body = html(full);
-    expect(body).toContain('id="timeline"');
+    expect(body).not.toContain('id="timeline"');
     expect(body).toContain(timelineCopy.title);
     expect(body).toContain(timelineCopy.label);
     expect(body).toContain('The median run · 2:53 long');
@@ -54,13 +55,9 @@ describe('SimTimeline', () => {
 
   it('draws one label per lane with its tooltip key, and every group with lanes', () => {
     const body = html(full);
-    const lanes = new Set(
-      (full.sample ?? [])
-        .filter((event) => !event.action.startsWith('other:') && event.action !== 'spell:12867')
-        .map((event) => event.action.replace(/\/\d+$/, '')),
-    );
-    const bars = (full.sample_auras ?? []).length;
-    expect(count(body, 'data-testid="timeline-lane-label"')).toBe(lanes.size + bars);
+    const model = buildTimeline(full, NAMES)!;
+    const lanes = model.casts.length + model.onYou.length + model.onTarget.length;
+    expect(count(body, 'data-testid="timeline-lane-label"')).toBe(lanes);
     expect(count(body, 'data-testid="timeline-group"')).toBe(3);
     expect(body).toContain('data-game-tip="spell:20662"');
   });
