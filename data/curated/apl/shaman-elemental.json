@@ -119,7 +119,7 @@
         }
       },
       {
-        "notes": "Searing Totem on a single target: it is your Fire totem for one target. It costs a fraction of Magma Totem's mana, lasts far longer, and its bolts reach 20 yards where Magma Totem only burns within 8, so drop it within 20 yards of the boss.",
+        "notes": "Searing Totem on a single target: it is your Fire totem for one target. It is cheap for its damage and its bolts reach 20 yards, so drop it within 20 yards of the boss; from 26, Magma Totem costs several times its mana and only burns within 8 yards.",
         "action": {
           "condition": {
             "and": {
