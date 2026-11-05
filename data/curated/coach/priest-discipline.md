@@ -7,6 +7,7 @@ sources:
   - web/src/content/guides/priest/discipline.md
   - data/curated/apl/priest-discipline.json
   - data/builds/1.60.1.70790/spellconst/priest.json
+  - sim/request/raid-consumes.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,40 +15,41 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Discipline Priest as the site's guide describes it. Discipline heals the tank with Penance on cooldown, a shield to open Renewed Hope, and crits that leave Divine Aegis shields behind. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the best Discipline Priest on Forever. Discipline heals the tank with Penance on cooldown, a shield to open Renewed Hope, and crits that leave Divine Aegis shields behind.
 
 ## What they know
 
-**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
 - Drop Lightwell and tell the raid it is up.
 - Fear Ward the tank if the boss fears.
+- Penance from thirty on cooldown, on whoever is hurt: three heals one second apart every twelve seconds.
+- Power Word: Shield on the tank at the top rank once he is hurt and Weakened Soul is off him. Your mana has to keep pace with the fight.
 - Keep Renew on the tank all fight; at sixty that means rank seven or higher.
-- Greater Heal at the top rank as the tank's filler at sixty: he takes the big hits, so the big heal goes on him.
-- Lesser Heal is the party's small top-up for little mana before forty.
-- Heal on the tank until you learn Greater Heal at forty: it is your biggest heal until then.
 - Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
-- Prayer of Healing when three or more in a group are hurt.
-- Inner Focus on a Greater Heal or a Prayer of Healing. It makes the spell free and adds twenty-five percent crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
-- Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every twelve seconds, cheap for all it heals.
+- Prayer of Healing from thirty, when three or more in a group are hurt.
+- Greater Heal at the top rank as the tank's filler at sixty: he takes the big hits, so the big heal goes on him.
+- Heal on the tank until you learn Greater Heal at forty: it is your biggest heal until then.
+- Lesser Heal is the party's small top-up for little mana before forty.
+- Inner Focus on your most expensive heal, from forty a Greater Heal. Its crit leaves the biggest Divine Aegis you can make. It makes the spell free and adds twenty-five percent crit chance.
 - Dark Sacrifice if you are Undead, once your mana is down enough.
 
-**The mistakes the coach looks for, by finding.**
-- Core abilities under-used: a mana or efficiency cooldown sitting ready for most of the fight.
-- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off the target.
+**The mistakes to look for, by finding.**
+- Core abilities under-used: a mana or efficiency cooldown sitting ready long after the bar had room for it.
+- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off when its line says to keep it up.
 - Mana: the mana bar empty well before the end of the fight.
-- Ranks: a big rank landing mostly as overheal when a lower rank of the same heal would have covered the hole.
+- Ranks: a big rank landing mostly as overheal where the rank your level calls for would have covered the hole.
 - Pull preparation: a missing flask, food and combat potion.
 - Death review: dying, because a dead healer heals nothing for the rest of the pull.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of Distilled Wisdom); food (Sage's Tea); a combat potion (Major Mana Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** Before a boss you want a flask (Flask of Distilled Wisdom); food (Sage's Tea); a combat potion (Major Mana Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
-- drill.core_casts: When the mana bar drops below half, check your mana cooldowns before the next cast. Press each one as soon as the bar has room for its full return.
+- drill.core_casts: When the mana bar drops, check your mana cooldowns before the next cast. Press each one as soon as the bar has room for its full return.
 - drill.uptime: Recast your self buff as part of the ready check, and again the moment you are back up after a death.
-- drill.resource: Before the pull, note the mana you should have at the halfway mark. If you are behind it, lean on your cheapest heal and save the fast, dear heal for the real emergency.
-- drill.ranks: Bind a mid rank of your filler heal and use it for every small hole on the tank. Save the top rank for a hole as deep as it heals.
+- drill.resource: Before the pull, note the mana you should have at the halfway mark. If you are behind it, keep Penance and the shield on the tank, let the filler wait for a deeper hole, and save Flash Heal for the emergency.
+- drill.ranks: Bind Greater Heal rank one for the party's small holes, and keep the top rank for the tank, who takes the big hits.
 - drill.preparation: Before every boss, check a flask, food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, pick a spot in range of the tank and out of anything the boss breathes or cleaves. When damage lands on you, move first and finish the cast after.
 

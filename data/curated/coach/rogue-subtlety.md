@@ -7,6 +7,7 @@ sources:
   - web/src/content/guides/rogue/subtlety.md
   - data/curated/apl/rogue-subtlety.json
   - data/builds/1.60.1.70790/spellconst/rogue.json
+  - sim/request/raid-consumes.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,49 +15,52 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Subtlety Rogue as the site's guide describes it. Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and Boot Knife Shanks to build, Rupture as the main finisher and Death Mark to cash the bleeds in. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the best Subtlety Rogue on Forever. Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and Boot Knife Shanks to build, Rupture as the main finisher and Death Mark to cash the bleeds in.
 
 ## What they know
 
-**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Open with Garrote once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet.
-- Ambush needs a dagger in the main hand, so with a sword it is off your bar.
-- Ghostly Strike goes on cooldown too, just never at five points.
-- On trash that will die fast, open with Cheap Shot, which Initiative makes three combo points and which holds the mob still for four seconds, then Eviscerate.
+- Premeditation a couple of seconds before the pull for two combo points. Press it again every two minutes in the fight whenever you have three or fewer. Spend them inside twenty seconds.
+- Garrote opens from Stealth once the tank has the boss, and a bleed does not care about missing Sunders. From twenty-six it follows every Ghostly Strike at four points or fewer: the strike lets it in without Stealth.
+- Ghostly Strike from twenty-six on cooldown, never at five points.
+- Rupture at four or more combo points whenever it is not ticking: it is the bleed every mark feeds on.
+- Death Mark from forty, at four or more combo points while Rupture ticks, never into a lapsed bleed. It comes back every ten seconds, so a mark now beats a bigger one later.
+- Slice and Dice at three or more combo points while Rupture ticks, when it is down or nearly down.
+- Eviscerate at three or more combo points while Rupture is ticking, or before Rupture trains at twenty while Slice and Dice is up, and only before you have Death Mark: from forty, those points go into Death Mark instead.
 - Shank on cooldown at three combo points or fewer, or under fifty energy: an off-hand stab that cannot miss and pays back more energy than it costs.
-- Death Mark is your only damage cooldown and it comes back every ten seconds, so there is nothing to hold.
-- Slice and Dice.
-- Hemorrhage builds, and waits a moment when Ghostly Strike is about to come off cooldown unless you are close to full energy.
+- Backstab from behind with a dagger in your main hand is the builder until Hemorrhage at thirty. Sinister Strike only when you cannot get behind or hold no dagger.
+- Hemorrhage from thirty builds. It waits a moment when Ghostly Strike is about to come back, unless you are close to full energy.
+- Ambush needs a dagger in the main hand, so with a sword it is off your bar.
+- Cheap Shot opens on trash that will die fast, three combo points once Initiative is full, then Eviscerate.
 - Preparation finishes every other rogue cooldown, once every ten minutes.
-- Premeditation: A couple of seconds before the pull, press Premeditation for two combo points. They last twenty seconds, so do not press it early.
-- Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five.
+- Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per combo point. Five seconds at five, six once rank two trains at fifty.
 - Kick, Gouge and Blind handle the rest; with Elusiveness, Blind comes back every three and a half minutes.
 - Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.
 - Feint on cooldown on bosses where you sit near the tank's threat.
 
-**The mistakes the coach looks for, by finding.**
+**The mistakes to look for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
-- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off the target.
+- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off when its line says to keep it up.
 - Dead time: time with no button pressed while the boss was alive and in reach.
 - Resource waste: the main resource bar left to cap or to run dry.
-- Ranks: a spell left at an old rank because the trainer visit was skipped.
-- Pull preparation: a missing flask and food.
+- Ranks: a spell at an older rank than your level calls for, because the trainer visit was skipped.
+- Pull preparation: a missing food and combat potion.
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Poached Sunscale Salmon). The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** Before a boss you want food (Poached Sunscale Salmon); a combat potion (Major Frenzy Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
 - drill.core_casts: On a dummy, press the first button of the priority list the moment it is ready, before any filler. Read the list top to bottom and check it again after every cooldown.
-- drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each with 3 seconds left, and again the moment you are back up after a death or a phase change.
+- drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each when its line says, never earlier, and again the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the energy bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
-- drill.ranks: Visit your trainer every time you level and read your spellbook after: every button on the priority list should show its top rank.
-- drill.preparation: Before every boss, check a flask and food on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
+- drill.preparation: Before every boss, check food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
-- drill.adherence: On a dummy, play only the buttons on the priority list for 3 minutes. Anything else on your bars waits.
+- drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
 ## Voice
 
