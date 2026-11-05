@@ -131,7 +131,7 @@
   <!-- §7 caps: 36 px desktop, 44 phone before a note. A bare row centres crest, name and the
        officer select (32 desktop, 44 phone) with no padding past them; a noted row runs from the top. -->
   <li
-    class="rounded-control flex min-h-11 break-inside-avoid gap-x-3 md:flex-wrap {ownRowBandInside(
+    class="rounded-control flex min-h-11 break-inside-avoid flex-wrap gap-x-3 {ownRowBandInside(
       entry.own,
     )} md:min-h-9 {entry.note === '' && entry.also === null ? 'items-center' : 'items-start py-1.5'}"
     aria-busy={busy}
@@ -158,7 +158,6 @@
           {entry.also}
         </p>
       {/if}
-      {#if entry.note !== ''}<p class="text-text text-[12px] break-words">{entry.note}</p>{/if}
       {#if line?.control === `roster:${entry.character_key}`}
         <p
           class="text-wipe text-[13px]"
@@ -172,10 +171,13 @@
       {/if}
     </div>
     {#if officer}
-      <!-- The select's own floor (select.css .sel-root, 120 px): the slot is that wide, so the
-           field and its chevron stay inside the row and its band. -->
-      <div class="w-30 shrink-0">
+      <!-- 104 px, under the select's bare-field floor (select.css .sel-root, 120 px, which
+           `min-w-0` lifts): `Bench` and the chevron fit, and the name block gains the 16 px that
+           lets `Beast Mastery Hunter` read in full in a four-column roster at 1440 and 2000 (guild
+           loop round 3). The field and its chevron stay inside the row and its band. -->
+      <div class="w-26 shrink-0">
         <Select
+          class="min-w-0"
           id={rosterSelectId(entry.character_key)}
           size="dense"
           align="end"
@@ -200,6 +202,14 @@
         data-testid="raid-roster-also"
       >
         {entry.also}
+      </p>
+    {/if}
+    {#if entry.note !== ''}
+      <!-- The note spans the row under the Also line at every width, indented past the crest, so
+           Also always reads before the note (guild loop round 3: phone had Also first, desktop
+           the note first). -->
+      <p class="text-text basis-full pl-9 text-[12px] break-words" data-testid="raid-roster-note">
+        {entry.note}
       </p>
     {/if}
   </li>

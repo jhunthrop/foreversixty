@@ -270,6 +270,37 @@ describe('RaidRoster', () => {
     expect(body).not.toContain('raid-roster-select-Rootbound');
   });
 
+  it('reads Also before the note at every width: the note spans the row after both Also lines (guild loop round 3)', () => {
+    const also = [
+      {
+        character_key: 'us/pvp/rootbound',
+        name: 'Rootbound',
+        class: 'druid',
+        spec: 'Restoration',
+        spec_key: 'druid-restoration',
+        state: 'bench' as const,
+      },
+    ];
+    const raid = plannedRaid({
+      signups: [signup('Quillfeather', { class: 'priest', note: 'Late by ten', also })],
+      not_signed: [],
+    });
+    const body = html({ raid, officer: true });
+    const note = body.indexOf('data-testid="raid-roster-note"');
+    expect(note).toBeGreaterThan(body.indexOf('data-testid="raid-roster-also"'));
+    expect(note).toBeGreaterThan(body.indexOf('data-testid="raid-roster-also-phone"'));
+    expect(body).toMatch(
+      /class="text-text basis-full pl-9 text-\[12px\] break-words" data-testid="raid-roster-note"/,
+    );
+  });
+
+  it('gives the officer select 104 px so the spec line keeps its room (guild loop round 3)', () => {
+    const body = html({ officer: true });
+    expect(body).toContain('<div class="w-26 shrink-0">');
+    expect(body).not.toContain('w-30 shrink-0');
+    expect(body).toMatch(/class="sel-root min-w-0"/);
+  });
+
   it('puts a plan refusal under its row and a failure under the roster', () => {
     const refusal = html({
       officer: true,
