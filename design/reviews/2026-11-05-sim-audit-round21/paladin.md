@@ -2,7 +2,7 @@
 
 Lane paladin. Site wt/r21-paladin from int/r21 (9aa26ed8e, later merged up to da6152025, which carries guides rounds 19 and 20), fork lane/r21-paladin from int/r21 (later merged up to 2c435413f). Client 1.60.1.70790: every paladin file under data/builds/1.60.1.70790 (talents, trainables, spelltips, spellconst) is identical to 70755 except the build stamp, and hotfix-push.json touches no paladin spell. Every sim went through `$R/sim.sh`; frozen BiS (`$R/bis-frozen`), guide builds (`$R/rt`) at raid 60, the band's published build below 60, Holy with `-heal` on its band's heal profile. Lane files: `$R/paladin/` (scan.py, *.tsv, variant rotations, notes/raw.txt, cap/).
 
-**Result: 2 CONFIRMED-BUGs, both fixed (both `old`).** A Consecration rank row at 53 (Dwarf and Undead take rank 4) and Sanctified Judgement's mana making threat (Blizzard's 16 October note plus the client's no-threat flag). The Retribution opener question is decided on measurement (the shipped row wins; guide text changed). The Holy emergency Holy Light is decided (the shipped ranks hold). No raid-60 number moves.
+**Result: 3 CONFIRMED-BUGs, all fixed (all `old`).** A Consecration rank row at 53 (Dwarf and Undead take rank 4), Sanctified Judgement's mana making threat (Blizzard's 16 October note plus the client's no-threat flag), and (follow-up T1) the Unsealed Wrath twist gated on 1200 attack power, which misfired off our raid preset; it is now paced on the fight's mana (raid 60 +0.3%, bare 60 +0.5 to +1.8%). The Retribution opener question is decided on measurement (the shipped row wins; guide text changed). The Holy emergency Holy Light is decided (the shipped ranks hold).
 
 ## Seeds
 
@@ -29,32 +29,42 @@ Read from the thread's raw text (https://us.forums.blizzard.com/en/wow/t/2360696
 |---|---|---|---|---|---|
 | F1 | 70790 changed no paladin row (talents, trainables, spelltips and spellconst differ from 70755 only in the build stamp; hotfix-push.json names no paladin spell), so round 20's spell-by-spell tables (Holy H4, Protection P2, Retribution R2) stand on 70790. Round 20's own changes (Seal of Righteousness 0.0765/0.12 on every rank, rank 8 from 58, the split opener, Oath of Light's whole amount under the level rule and the Holy rows) were re-read for side effects: the raid-60 numbers on this branch equal `$R/before.tsv` to the decimal for Retribution and Protection, and the 53 Consecration split (C1) predates them. | data diff; `$R/paladin/after.tsv` | Aligned | - | - |
 
+## Follow-up: the Seal of Command attack power gate (MythicSim comparison lead)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| T1 | **The Unsealed Wrath twist was gated on 1200 attack power, a stand-in for raid buffs that misfired under other buff sets.** Three lines carried it: the Seal of Righteousness release at three stacks (priority 6), the switch back to Seal of Command (7) and Command's upkeep (8), each also behind a flat 30% mana gate (the opener row 2 had none, O1). The comparison lane saw 1.9 Seal of Command casts against 16.9 under its own raid buffs (`$S/competitor/lanes/hybrids.md` R4); verified here: raid build, frozen BiS, 10,000 iterations, seeds 1 / 50001, four buff states, shipped against (a) the attack power gate removed and (b) the gate removed with the 30% mana gate replaced by the Consecration pace (mana percent at least 0.8 of the fight's remaining percent):<br>- raid 60: shipped Human 789.7/789.2, Undead 797.0/796.6; (a) identical; (b) 792.3/791.9 (+0.32/+0.34%) and 799.4/799.2 (+0.30/+0.33%).<br>- bare 60: shipped 292.9/292.8 and 295.4/295.2; (a) +0.68% Human but -0.95/-0.71% Undead (runs dry 20 s); (b) 297.9/298.0 (+1.70/+1.77%) and 296.8/297.5 (+0.49/+0.79%).<br>- raid without Blessing of Might and Battle Shout: all three 708.0/708.4 and 695.8/696.2 (attack power stays above 1200), a tie.<br>- raid without Heart of the Lion and Trueshot Aura: shipped 572.2/571.6 and 565.9/566.0 (Seal of Command 1.8 casts); (a) and (b) 658.5/659.0 (+15.1/+15.3%) and 647.8/648.3 (+14.5/+14.5%).<br>**What was wrong:** the twist turned off whenever the paladin's own attack power fell under 1200, which tracks one buff set, not whether the twist pays; the old note's reason (with little attack power Seal of Command does less than Righteousness) does not hold on this build at any buff state measured. **Fix:** the three lines drop the attack power term and twist while the mana keeps the Consecration pace; notes rows 2, 6, 8, 9 and retribution.md (strengths bullet, opener, the raid twist) say to twist while the mana keeps pace, raid buffs or not. Test first: `TestRetributionTwistIsPacedNotGatedOnAttackPower` (red on lines 6-8, green). | `$R/paladin/gate-raid.tsv`, `gate-bare.tsv`, `gate-pa.tsv`, `gate-pb.tsv`, `gate-explore.tsv` (40/50/60% flat mana gates explored too; the pace beat them at bare); variants `ret-noap.json`, `ret-pace.json` | CONFIRMED-BUG (fragile gate; the buff-independent rule wins or ties everywhere) | old (the gate is round 2's Unsealed Wrath twist, 2 Nov; no round varied the buff set) | S 7716885f4, E 05e15be85 |
+
 ## Before/after
 
-Raid 60, frozen BiS, guide raid builds, 10,000 iterations, seeds 1 / 50001: Retribution 789.7/789.2 alliance and 797.0/796.6 horde, Protection 1151.9/1152.2 and 1150.0/1149.5, unchanged (`$R/paladin/after.tsv` against `$R/before.tsv`). Holy raid 60 untouched (no Holy change). Bare 60 Retribution unchanged (the opener row stays).
+Raid 60, frozen BiS, guide raid builds, 10,000 iterations, seeds 1 / 50001 (`$R/paladin/after2.tsv` against `$R/before.tsv`): Retribution 789.7/789.2 to 792.3/791.9 alliance (+0.33/+0.34%), 797.0/796.6 to 799.4/799.2 horde (+0.30/+0.33%) (T1); Protection 1151.9/1152.2 and 1150.0/1149.5 unchanged; Holy untouched. Bare 60 Retribution (raid build): Human 292.9 to 297.9 (+1.7%), Undead 295.4 to 296.8 (+0.5%) at seed 1 (T1).
 
 Retribution bare band 50 at level 53: Dwarf 195.28/195.26 to 196.88/196.85 (+0.82/+0.81%), Undead 196.42/196.09 to 196.73/196.78 (+0.16/+0.35%), Human unchanged (198.9/198.8). No other level moves.
 
 ## Files to regenerate
 
-- addon-data, then Data.lua (addonrotation): the Retribution Consecration row at 53 (raceSpellId for Human; Dwarf and Undead show rank 4) and card row 2's note.
+- addon-data, then Data.lua (addonrotation): the Retribution Consecration row at 53 (raceSpellId for Human; Dwarf and Undead show rank 4), the three twist lines' new conditions and card notes 2, 6, 8, 9.
+- dps-per-point and the Retribution stat weights at 60 (the twist now runs on every buff state; attack power's value moves); coach starters if they quote the twist's 30% or 1200.
 - sim/request ladder golden testdata/ladder/paladin-retribution.golden.md only if it carries a 53 Dwarf/Undead row (TestRotationLadder).
 - Fork: nothing generated; the Sanctified Judgement fix moves no golden in sim/paladin.
 
 ## Measure at refresh
 
+- Retribution 60, both presets: the gear search under the paced twist (Seal of Command now runs on every buff state, so slow weapons and attack power may rank higher).
 - Retribution band 50, level 53, Undead: rank 3 against rank 4 (rank 3 0.1% ahead, about two errors) on the re-ranked gear.
 
 ## For other lanes
 
 - No shared code touched. No commit moves DPS outside paladin.
+- Coordinator: the comparison's R4 (MythicSim lead) is fixed as T1.
 - Integrator: `data/tests/test_apl.py::test_every_spell_the_rotations_name_exists_with_that_rank` fails on int/r21 for mage-arcane ("names spell 18809 at rank 0; the build says rank 8"), from the mage lane's Presence of Mind gate, not this branch.
 - Integrator: retribution.md's opener paragraph conflicted with guides round 20 in the int/r21 merge; this branch's version (round 20's wording plus the Seal of Command line, split into two paragraphs) is the one to keep.
 
 ## For the guide lane
 
 - Shipped: retribution.md opener (two paragraphs now), the Consecration paragraph and the Levels 20-59 Consecration line; card row 2's note (curated, request and fork copies). `_prose.test.ts` passes.
-- **wow-player on the rendered page** (dev build of this branch, `$R/paladin/cap`, 1440 and 390): **SHIP**, no MUSTs; SHOULDs 1-5 applied in f84045998 (when to leave Command, "each with its normal chance to fire", the race clause, "by then"); 6 (split the opener) applied too. The rotation card renders nightly addon-data, so row 2's new note shows after the regen.
+- T1 (follow-up): retribution.md strengths and weaknesses bullets, opener, priority step 4, "The Seal twist" paragraph (renamed from "The raid twist", whose inline talent link broke the bold) and a new common mistake; card notes 2, 6, 8, 9. **wow-player on the rendered page: SHIP**, no MUSTs; SHOULDs 1, 3, 4, 5, 6 and 7 applied, 2 in part (the pace now reads 80% at the pull, 40% halfway, 20% with a quarter left; no trash rule was added because none was measured).
+- **wow-player on the rendered page** (first pass, dev build of this branch, `$R/paladin/cap`, 1440 and 390): **SHIP**, no MUSTs; SHOULDs 1-5 applied in f84045998 (when to leave Command, "each with its normal chance to fire", the race clause, "by then"); 6 (split the opener) applied too. The rotation card renders nightly addon-data, so row 2's new note shows after the regen.
 
 ## Still open
 
