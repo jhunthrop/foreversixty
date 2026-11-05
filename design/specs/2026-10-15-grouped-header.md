@@ -36,7 +36,13 @@ href by `isNavItemCurrent`).
 When a Guild row's page is not resolvable (no session, no guild), the panel still shows the
 four rows and `/guild` is the guild landing: a guild lookup (name, region, ruleset), the top
 guilds, and a line for officers on claiming; a signed-in member of a verified guild is sent on
-to their guild's page from it. The Guild door itself carries `data-guild-tab="overview"`, so
+to their guild's page from it. (Amended 2026-11-05, guild round 3: a signed-in player whose
+current character has no guild sees a `Your guilds` card above the lookup listing every guild in
+`/v1/me` `guilds`, each row the guild name linking to its page and `{REGION} {Ruleset}` muted on
+the right, and the lookup's region and ruleset start on the first of those guilds. A lookup that
+names no guild lands on `No guild by that name on {REGION} {Ruleset}. Check the spelling and the
+ruleset.` with the inline link `Look it up again` to `/guild`, never the API's message and a
+retry. The API has no guild search, so the name field suggests nothing as you type.) The Guild door itself carries `data-guild-tab="overview"`, so
 the session rewrite below points it at the member's guild too. When the session
 resolves with a verified guild (`Me.guilds[0]`), the header fills the first row's title with the
 guild's name and rewrites the four hrefs to `guildHref(region, ruleset, name)` plus the tab

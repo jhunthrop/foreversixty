@@ -13,6 +13,10 @@ export const guildHomeCopy = {
   // thing on screen is server-rendered text that hydration does not change: the page's
   // largest-contentful-paint candidate lands with the HTML instead of waiting for, or
   // being replaced by, the island's scripts (W.16).
+  // A guild address that names no guild the site knows (guild round 3): where it looked, in words.
+  notFound: (where: string): string =>
+    `No guild by that name on ${where}. Check the spelling and the ruleset.`,
+  lookUpAgain: 'Look it up again',
   lede: "A guild's progression per boss, pull counts, kill dates and roster bests. Its roster, raid nights and loot sit in the tabs once it has loaded.",
   reportsHeading: "This week's reports",
   // The public block's own reports heading (UX review defect 2, 2026-09-28): distinguishes
@@ -322,6 +326,7 @@ export const guildLandingCopy = {
   eyebrow: 'Guild',
   heading: 'Guilds',
   lookupHeading: 'Open a guild',
+  mineHeading: 'Your guilds',
   namePlaceholder: 'Guild name',
   lead: "Your guild's progress, roster, raid nights and loot, from the logs and the addon.",
   nameLabel: 'Guild name',

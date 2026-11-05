@@ -87,7 +87,8 @@
   import { nextRaidDeadline, raidCopy, raidDeadlineStart, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
-  import { fetchGuild, type GuildPage } from '../lib/rankings/api';
+  import { fetchGuild, RankingsError, type GuildPage } from '../lib/rankings/api';
+  import GuildNotFound from './guild/GuildNotFound.svelte';
   import FactLine from './guild/FactLine.svelte';
   import GuildUnverifiedNote from './guild/GuildUnverifiedNote.svelte';
   import GuildClaimRow from './guild/GuildClaimRow.svelte';
@@ -138,7 +139,7 @@
   );
 
   let data = $state<GuildPage | null>(null);
-  let status = $state<'loading' | 'ready' | 'failed' | 'missing'>('loading');
+  let status = $state<'loading' | 'ready' | 'failed' | 'missing' | 'notfound'>('loading');
   let error = $state('');
   let attempt = $state(0);
 
@@ -158,6 +159,11 @@
       })
       .catch((thrown: unknown) => {
         if (resolved !== requested) return;
+        // A 404 is a wrong name or ruleset, not a failure: a retry cannot help (guild round 3).
+        if (thrown instanceof RankingsError && thrown.status === 404) {
+          status = 'notfound';
+          return;
+        }
         status = 'failed';
         error = thrown instanceof Error ? thrown.message : 'That guild did not load.';
       });
@@ -849,6 +855,12 @@
         >/guild/eu/normal/the-last-watch</code
       >.
     </p>
+  </div>
+{:else if status === 'notfound' && resolved !== null}
+  <h1 class="sr-only">Guild</h1>
+  <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight} {GUILD_BANDLESS_TOP}">
+    <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
+    <GuildNotFound path={resolved} />
   </div>
 {:else if status === 'loading' || status === 'failed'}
   <h1 class="sr-only">Guild</h1>

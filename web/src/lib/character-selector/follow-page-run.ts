@@ -42,10 +42,13 @@ export async function followGuildPage(
   );
 }
 
-/** The guild landing on load: the current character's guild page when it has one. */
-export function openCurrentGuild(): Promise<void> {
+/** The guild landing on load: the current character's guild page when it has one. Answers the
+ *  session it read (null signed out), so the landing lists the account's guilds from the same
+ *  `/v1/me` (guild round 3). */
+export async function openCurrentGuild(): Promise<Me | null> {
   const raw = readCurrentRaw();
-  return followGuildPage({ previousRaw: raw, nextRaw: raw }, (href) => window.location.replace(href));
+  await followGuildPage({ previousRaw: raw, nextRaw: raw }, (href) => window.location.replace(href));
+  return sessionOrNull();
 }
 
 /** A character page after a choice of character (`onCurrentCharacterSwitch`). */
