@@ -243,4 +243,33 @@ def test_a_melee_weapon_stones_hit_is_left_to_the_engine_and_its_crit_stays():
 def test_enchant_display_names_read_the_clients_own_text():
     from pipeline.loot.gear import enchant_display_names
 
-    assert enchant_display_names([{"ID": "247", "Name_lang": "+7 Strength"}]) == {247: "+7 Strength"}
+    assert enchant_display_names([{"ID": "247", "Name_lang": "+7 Strength"}]) == {
+        247: "+7 Strength"
+    }
+
+
+def test_enchant_display_names_fill_the_clients_amount_tokens():
+    """Armor kits and a few enchants name their amounts as $k<n>, effect n's points."""
+    from pipeline.loot.gear import enchant_display_names
+
+    rows = [
+        {
+            "ID": "15",
+            "Name_lang": "Stamina +$k2 and Armor +$k1",
+            "EffectPointsMin_0": "8",
+            "EffectPointsMin_1": "3",
+            "EffectPointsMin_2": "0",
+        },
+        {"ID": "2463", "Name_lang": "+$K1 Fire Resistance", "EffectPointsMin_0": "7"},
+    ]
+    assert enchant_display_names(rows) == {
+        15: "Stamina +3 and Armor +8",
+        2463: "+7 Fire Resistance",
+    }
+
+
+def test_enchant_display_names_leave_out_a_token_they_cannot_fill():
+    """A token with no points behind it is never printed raw on the page."""
+    from pipeline.loot.gear import enchant_display_names
+
+    assert enchant_display_names([{"ID": "9", "Name_lang": "Armor +$k1"}]) == {}
