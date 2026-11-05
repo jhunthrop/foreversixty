@@ -301,11 +301,10 @@ export const guildConsentCopy = {
 } as const;
 
 /** Task L8.3: the Roster tab's "In game" column and the line above the table, from the
- *  guild's newest addon roster snapshot (Task L6.14). The gap is read as DPS: the addon's
- *  hello carries no unit, so the column's hover says it is the addon's own figure. */
+ *  guild's newest addon roster snapshot (Task L6.14). Its gear gap is the readiness board's
+ *  (guild round 3), read as DPS by the chip's own words (`gap`). */
 export const guildRosterAddonCopy = {
   column: 'In game',
-  columnHover: 'Gear gap in DPS: what the best-in-slot list would add, from the readiness board',
   /** Read before each row's cell, for a screen reader: the rows have no table headers. */
   srLabel: 'In game:',
   notSeen: '—',
