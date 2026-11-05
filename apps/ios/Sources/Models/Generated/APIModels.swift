@@ -3247,6 +3247,8 @@ public struct GuildStanding: Codable, Sendable, Equatable {
     public let rankByItemLevel: Int
     public let itemLevel: Int
     public let needsBeforeNextRaid: [String]
+    /// The raid needs_before_next_raid is before: the next planned raid of kind raid, the one Readiness and /raid name first (never a dungeon run or guild event the band may show); null when none is planned.
+    public let needsRaid: GuildStandingNeedsRaid?
 
     public init(
         spec: String,
@@ -3254,7 +3256,8 @@ public struct GuildStanding: Codable, Sendable, Equatable {
         sameSpecCount: Int,
         rankByItemLevel: Int,
         itemLevel: Int,
-        needsBeforeNextRaid: [String] = []
+        needsBeforeNextRaid: [String] = [],
+        needsRaid: GuildStandingNeedsRaid? = nil
     ) {
         self.spec = spec
         self.className = className
@@ -3262,6 +3265,7 @@ public struct GuildStanding: Codable, Sendable, Equatable {
         self.rankByItemLevel = rankByItemLevel
         self.itemLevel = itemLevel
         self.needsBeforeNextRaid = needsBeforeNextRaid
+        self.needsRaid = needsRaid
     }
 
     enum CodingKeys: String, CodingKey {
@@ -3271,6 +3275,7 @@ public struct GuildStanding: Codable, Sendable, Equatable {
         case rankByItemLevel
         case itemLevel
         case needsBeforeNextRaid
+        case needsRaid
     }
 
     public init(from decoder: any Decoder) throws {
@@ -3281,6 +3286,22 @@ public struct GuildStanding: Codable, Sendable, Equatable {
         rankByItemLevel = try c.decode(Int.self, forKey: .rankByItemLevel)
         itemLevel = try c.decode(Int.self, forKey: .itemLevel)
         needsBeforeNextRaid = try c.decodeIfPresent([String].self, forKey: .needsBeforeNextRaid) ?? []
+        needsRaid = try c.decodeIfPresent(GuildStandingNeedsRaid.self, forKey: .needsRaid)
+    }
+}
+
+/// The raid needs_before_next_raid is before: the next planned raid of kind raid, the one Readiness and /raid name first (never a dungeon run or guild event the band may show); null when none is planned.
+public struct GuildStandingNeedsRaid: Codable, Sendable, Equatable {
+    public let title: String
+    /// RFC 3339, UTC
+    public let startsAt: Date
+
+    public init(
+        title: String,
+        startsAt: Date
+    ) {
+        self.title = title
+        self.startsAt = startsAt
     }
 }
 
@@ -4076,17 +4097,25 @@ public struct LootEncounter: Codable, Sendable, Equatable {
     public let name: String
     public let zone: String
     public let killed: Bool
+    /// Separate nights (days in the guild's raid zone) with a kill; two logs of one night count once.
+    public let killNights: Int
+    /// kill_nights >= 3: the boss reads on farm. One or two kill nights read down.
+    public let onFarm: Bool
 
     public init(
         encounterId: Int,
         name: String,
         zone: String,
-        killed: Bool
+        killed: Bool,
+        killNights: Int,
+        onFarm: Bool
     ) {
         self.encounterId = encounterId
         self.name = name
         self.zone = zone
         self.killed = killed
+        self.killNights = killNights
+        self.onFarm = onFarm
     }
 }
 
