@@ -1019,3 +1019,56 @@ def test_fury_berserker_rage_starts_at_36_and_overpower_ends_there():
     for level in (36, 40, 60):
         assert "Berserker Rage" in fury[level], level
         assert "Overpower" not in fury[level], level
+
+
+# Sim round 22 platform (hunter F3 on the talent-level fix): a card row for a talent's spell
+# starts at the level the spec's published build spends its first point in that talent, not
+# when its tier opens. Survival's order takes Counterattack at 32 (tier 3 opens at 25),
+# Enhancement takes Stormstrike at 25 and Fury takes Death Wish at 30.
+@pytest.mark.parametrize(
+    ("spec", "spell", "first"),
+    [
+        ("hunter-survival", "Counterattack", 32),
+        ("shaman-enhancement", "Stormstrike", 25),
+        ("warrior-fury", "Death Wish", 30),
+    ],
+)
+def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, spell, first):
+    """On the active build's spellranks as the talent-level fix writes them (built here, not
+    read: the committed file waits for the data job's regeneration)."""
+    from pipeline import spellranks as sr
+    from pipeline.addonrotation import (
+        _class_slug,
+        build_rotation,
+        load_talent_spells,
+        load_trainable_ids,
+    )
+    from pipeline.manifest import newest_build
+    from pipeline.talent_levels import load_spec_point_levels, load_talent_spell_levels
+
+    data = Path(__file__).resolve().parents[1]
+    build_dir = data / "builds" / newest_build(data / "builds")
+    records = sr.load_class_spell_constants(build_dir / "spellconst")
+    talent_levels = {
+        r.class_slug: load_talent_spell_levels(build_dir / "talents", r.class_slug) for r in records
+    }
+    spellranks = sr.build_spell_ranks(
+        build_dir.name,
+        records,
+        sr.load_book_ids(data / "curated"),
+        sr.load_inferior_ids(data / "curated"),
+        talent_levels,
+    ).model_dump(exclude_defaults=True)
+    cls = _class_slug(spec)
+    bands = build_rotation(
+        spec,
+        data / "curated",
+        spellranks,
+        None,
+        load_trainable_ids(build_dir, cls),
+        load_talent_spells(build_dir, cls),
+        load_spec_point_levels(build_dir, spec, cls),
+    )
+    levels = [band.level for band in bands if any(line.name == spell for line in band.lines)]
+    assert levels, f"{spell} is on no {spec} band"
+    assert min(levels) == first
