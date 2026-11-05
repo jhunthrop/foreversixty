@@ -6,7 +6,7 @@ import {
   bossesDownLine,
   progressionNightDay,
   raidNightDay,
-  rosterCardParts,
+  rosterCardFacts,
   showBandCounts,
   showsWeekOne,
   updatedLine,
@@ -72,11 +72,17 @@ describe('the cards', () => {
     expect(downEncounterNames([{ name: 'Onyxia', kills: 2 }])).toEqual(['Onyxia']);
   });
 
-  it('counts raiders with the plural helper', () => {
-    expect(rosterCardParts({ raiders: 1, waiting_for_approval: 4, below_rating_floor: 0 })).toEqual({
-      raiders: '1 raider with gear on the site',
-      waiting: '4 waiting for approval',
-      belowFloor: '0 below the rating floor',
-    });
+  it('counts raiders with the plural helper and leaves zero clauses out', () => {
+    expect(rosterCardFacts({ raiders: 1, waiting_for_approval: 4, below_rating_floor: 0 })).toEqual([
+      { text: '1 raider with gear on the site' },
+      { text: '4 waiting for approval', class: 'text-gold' },
+    ]);
+    expect(rosterCardFacts({ raiders: 5, waiting_for_approval: 0, below_rating_floor: 0 })).toEqual([
+      { text: '5 raiders with gear on the site' },
+    ]);
+    expect(rosterCardFacts({ raiders: 5, waiting_for_approval: 0, below_rating_floor: 2 }).map((f) => f.text)).toEqual([
+      '5 raiders with gear on the site',
+      '2 below the rating floor',
+    ]);
   });
 });

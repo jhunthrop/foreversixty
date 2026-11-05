@@ -31,7 +31,7 @@
     bossesDownLine,
     downEncounterNames,
     raidNightDay,
-    rosterCardParts,
+    rosterCardFacts,
   } from '../../lib/guild/overview-view';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import {
@@ -169,8 +169,8 @@
       : [];
   }
 
-  const rosterParts = $derived(
-    rosterCardParts({
+  const rosterFacts = $derived(
+    rosterCardFacts({
       raiders: summary?.raiders ?? 0,
       waiting_for_approval: summary?.waiting_for_approval ?? 0,
       below_rating_floor: summary?.below_rating_floor ?? 0,
@@ -190,13 +190,7 @@
     <Card glyph="user" title="Roster" testid="guild-overview-card-roster">
       {#snippet aside()}{@render seeAll('roster')}{/snippet}
       <p data-testid="guild-overview-roster-facts">
-        <FactLine
-          facts={[
-            rosterParts.raiders,
-            { text: rosterParts.waiting, class: (summary?.waiting_for_approval ?? 0) > 0 ? 'text-gold' : '' },
-            rosterParts.belowFloor,
-          ]}
-        />
+        <FactLine facts={rosterFacts} />
       </p>
     </Card>
   {/if}

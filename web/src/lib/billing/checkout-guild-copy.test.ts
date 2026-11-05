@@ -71,6 +71,8 @@ describe('card facts', () => {
   it('facts', () => {
     const fill = (extra: Record<string, string>): Record<string, string> => extra;
     expect(copy.facts.verified(4)).toBe(row('Facts', 0, fill({ n: '4' })));
+    expect(copy.facts.verified(1)).toBe('1 verified member');
+    expect(copy.facts.onRoster(1)).toBe('1 character on the roster');
     expect(copy.facts.noneVerified).toBe(row('Facts', 1));
     expect(copy.facts.onRoster(9)).toBe(row('Facts', 2, { m: '9' }));
     expect(copy.facts.noPlan).toBe(row('Facts', 3));

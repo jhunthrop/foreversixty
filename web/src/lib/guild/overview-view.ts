@@ -5,6 +5,7 @@
 import { dayWord, nightDate, nightDateOnly } from '../dates';
 import { counted } from '../plural';
 import type { GuildViewerRole } from './api';
+import type { Fact } from './fact-line';
 
 /** "1 boss down · 2 pulls". */
 export function bandCountsLine(killed: number, pulls: number): string {
@@ -60,17 +61,20 @@ export function showsWeekOne(role: GuildViewerRole, tier: { pulls_total: number 
   return role !== 'public' && (tier === undefined || tier.pulls_total === 0);
 }
 
-/** "1 raider · 4 waiting for approval · 0 below the rating floor". */
-export function rosterCardParts(summary: {
+/** The Roster card's line, "1 raider with gear on the site · 4 waiting for approval · 2 below the
+ *  rating floor": a zero clause after the first is left out, like the roster's count line (guild
+ *  loop round 3: "0 waiting · 0 below the rating floor"). Waiting reads gold, an officer's to-do. */
+export function rosterCardFacts(summary: {
   raiders: number;
   waiting_for_approval: number;
   below_rating_floor: number;
-}): { raiders: string; waiting: string; belowFloor: string } {
-  return {
-    raiders: `${counted(summary.raiders, 'raider')} with gear on the site`,
-    waiting: `${summary.waiting_for_approval} waiting for approval`,
-    belowFloor: `${summary.below_rating_floor} below the rating floor`,
-  };
+}): Fact[] {
+  const facts: Fact[] = [{ text: `${counted(summary.raiders, 'raider')} with gear on the site` }];
+  if (summary.waiting_for_approval > 0)
+    facts.push({ text: `${summary.waiting_for_approval} waiting for approval`, class: 'text-gold' });
+  if (summary.below_rating_floor > 0)
+    facts.push({ text: `${summary.below_rating_floor} below the rating floor` });
+  return facts;
 }
 
 export const NO_PUBLIC_REPORTS = 'No public reports this week yet.';

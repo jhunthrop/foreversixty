@@ -108,8 +108,8 @@ describe('GuildStepCard you row and facts', () => {
     expect(body).toContain(`${copy.facts.noneVerified} · ,${copy.facts.noPlan}`);
     expect(body).not.toContain('on the roster');
     const known = plain(html([guild({ verified_count: 12, roster_count: 31 })])).replace(/\s+/g, ' ');
-    expect(known).toContain('12 verified · ,31 on the roster · ,No plan');
-    expect(html([guild({ verified_count: 12 })])).toMatch(/<span class="numeric">12<\/span> verified/);
+    expect(known).toContain('12 verified members · ,31 characters on the roster · ,No plan');
+    expect(html([guild({ verified_count: 12 })])).toMatch(/<span class="numeric">12<\/span> verified members/);
     expect(html([guild({})])).not.toMatch(/numeric">No one/);
   });
 

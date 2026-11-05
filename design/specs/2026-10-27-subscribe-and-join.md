@@ -180,7 +180,7 @@ Desktop (from 768): grid `minmax(0,1fr) 320px`, gap 24, `items-start`.
 Left column, three lines:
 1. **Identity row**, flex, gap 12, items centred. The guild crest is a 40 px circle with a 2 px `--gold` ring holding the `guildMarkSrc` image at 40 x 40 `object-cover` (the render `GuildCrestSettings` uses). With no crest, `FactionMark` at 24 px sits centred in the ring. With no faction either, the ring is empty. Then the name, Cinzel 700 16 px `--strong`, truncating; under it the ruleset and region, 13 px muted (`Forever · US`).
 2. **You row**, 8 px below, flex wrap, gap 8, 14 px. One entry per character of the viewer in this guild (`me.characters` whose `guild.id` matches), main character first, at most two, then `+{n} more` muted. Each entry: `ClassCrestRing` at 20 px; the character name in its class colour (Barlow 600); the rank word (`Guild master`, `Officer`, `Member`) in `--text`; the verify mark. Verified: a 12 px `--kill` tick (the plans page tick glyph, `aria-hidden`) and `Verified` in `--kill`. Not verified: `Not verified` in `--muted`. Separator ` · ` muted. The name and the rank word never break inside (`white-space: nowrap`); on a narrow phone the verify mark, with its separator, drops to its own line (gate round 2, row 1b at 360).
-3. **Guild facts**, 6 px below, 13 px muted, numbers in JetBrains Mono: `{n} verified` (or `No one verified yet` at 0), then `{m} on the roster` (left out when the guild has no addon snapshot), then the plan word (§9.1), joined by ` · `.
+3. **Guild facts**, 6 px below, 13 px muted, numbers in JetBrains Mono: `{n} verified members` (or `No one verified yet` at 0), then `{m} characters on the roster` (left out when the guild has no addon snapshot), then the plan word (§9.1), joined by ` · `.
 
 Right column, the **step block**, flex column, gap 10:
 - The step sentence, 14 px `--text`, at most four lines at 320 px.
@@ -482,7 +482,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | Rank words | `Guild master`; `Officer`; `Member` |
 | Verify mark | `Verified`; `Not verified` |
 | More characters | `+{n} more` |
-| Facts | `{n} verified`; `No one verified yet`; `{m} on the roster`; `No plan`; `Guild plan`; `Raid guild plan`; `{Tier} plan · trial`; `{Tier} plan · ends {date}`; `Plan ended {date}` |
+| Facts | `{n} verified members`; `No one verified yet`; `{m} characters on the roster` (each names what it counts, singular at 1; amended 2026-11-05, guild loop round 3); `No plan`; `Guild plan`; `Raid guild plan`; `{Tier} plan · trial`; `{Tier} plan · ends {date}`; `Plan ended {date}` |
 | `ready`, trial unused | `You hold {Guild}'s claim.`; button `Start the 7-day trial` |
 | `ready`, trial used | `You hold {Guild}'s claim.`; button `Subscribe · {price}` |
 | `ready`, lapsed | `{Guild}'s plan ended {date}. You hold its claim.`; button `Subscribe again · {price}` |
