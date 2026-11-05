@@ -4,223 +4,167 @@
   "engine_version": "d5c708834",
   "spec": "warrior-fury",
   "source": {
-   "kind": "manual",
+   "kind": "build",
    "ref": "",
-   "captured_at": "2026-09-18T00:00:00Z"
+   "captured_at": "2026-11-04T20:58:00Z"
   },
   "character": {
-   "name": "Sim",
-   "race": "orc",
+   "name": "breakdown",
+   "race": "troll",
    "class": "warrior",
    "level": 60,
-   "talents": "33305013002000000-15353100051010501-000000000000000000",
+   "talents": "30323013002000000-051531025120100231-200000000000000000",
    "gear": [
     {
      "slot": "head",
-     "item_id": 12640,
-     "enchant": 1506
+     "item_id": 12640
     },
     {
      "slot": "neck",
-     "item_id": 18404
+     "item_id": 13089
     },
     {
      "slot": "shoulder",
-     "item_id": 15055
+     "item_id": 20212
     },
     {
      "slot": "back",
-     "item_id": 20068,
-     "enchant": 849
+     "item_id": 20068
     },
     {
      "slot": "chest",
-     "item_id": 13090,
-     "enchant": 1891
+     "item_id": 252484
     },
     {
      "slot": "wrist",
-     "item_id": 275739,
-     "enchant": 1885
+     "item_id": 19578
     },
     {
      "slot": "hands",
-     "item_id": 281280,
-     "enchant": 927
+     "item_id": 272095
     },
     {
      "slot": "waist",
-     "item_id": 20252
+     "item_id": 19044
     },
     {
      "slot": "legs",
-     "item_id": 22000,
-     "enchant": 1506
+     "item_id": 22651
     },
     {
      "slot": "feet",
-     "item_id": 20050,
-     "enchant": 911
+     "item_id": 275618
     },
     {
      "slot": "finger1",
-     "item_id": 20307
+     "item_id": 19325
     },
     {
      "slot": "finger2",
-     "item_id": 18821
+     "item_id": 17713
     },
     {
      "slot": "trinket1",
-     "item_id": 276337
+     "item_id": 249469
     },
     {
      "slot": "trinket2",
-     "item_id": 2820
+     "item_id": 19120
     },
     {
      "slot": "main_hand",
-     "item_id": 21521,
-     "enchant": 1900
+     "item_id": 279259
     },
     {
      "slot": "off_hand",
-     "item_id": 19168,
-     "enchant": 1900
+     "item_id": 22384
     },
     {
      "slot": "ranged",
-     "item_id": 272594
+     "item_id": 12651
     }
    ],
    "buffs": [
-    "curse_of_elements",
-    "curse_of_recklessness",
-    "curse_of_shadow",
-    "curse_of_weakness",
-    "demoralizing_roar",
-    "demoralizing_shout",
-    "expose_armor",
-    "faerie_fire",
-    "improved_scorch",
-    "improved_shadow_bolt",
-    "insect_swarm",
-    "judgement_of_light",
-    "judgement_of_the_crusader",
-    "judgement_of_wisdom",
-    "scorpid_sting",
-    "shadow_weaving",
-    "stormstrike",
-    "sunder_armor",
-    "thunder_clap",
-    "winters_chill",
-    "blessing_of_kings",
-    "blessing_of_might",
-    "blessing_of_sanctuary",
-    "blessing_of_wisdom",
     "arcane_brilliance",
-    "battle_shout",
-    "blood_pact",
-    "devotion_aura",
-    "divine_spirit",
-    "fire_resistance_aura",
-    "fire_resistance_totem",
-    "frost_resistance_aura",
-    "frost_resistance_totem",
     "gift_of_the_wild",
-    "grace_of_air_totem",
-    "leader_of_the_pack",
-    "mana_spring_totem",
-    "moonkin_aura",
-    "nature_resistance_totem",
     "power_word_fortitude",
-    "retribution_aura",
-    "sanctity_aura",
-    "shadow_protection",
+    "divine_spirit",
+    "blessing_of_might",
+    "blessing_of_wisdom",
+    "battle_shout",
+    "trueshot_aura",
+    "heart_of_the_lion",
+    "leader_of_the_pack",
+    "moonkin_aura",
     "strength_of_earth_totem",
-    "thorns",
-    "trueshot_aura"
+    "windfury_totem",
+    "mana_spring_totem:improved",
+    "curse_of_elements",
+    "sunder_armor",
+    "faerie_fire",
+    "judgement_of_wisdom",
+    "judgement_of_the_crusader",
+    "judgement_of_light",
+    "hunters_mark",
+    "curse_of_recklessness"
    ],
-   "consumes": []
+   "consumes": [
+    "food_smoked_desert_dumpling",
+    "mighty_rage_potion",
+    "off_hand_imbue:dense_sharpening_stone",
+    "elixir_of_the_mongoose",
+    "juju_power",
+    "r_o_i_d_s",
+    "juju_might",
+    "main_hand_imbue:elemental_sharpening_stone"
+   ]
   },
   "encounter": {
    "duration_sec": 180,
    "variation": 0.2,
    "targets": 1,
    "execute_ratio": 0.25,
-   "profile": ""
+   "profile": "",
+   "target_type": "unknown"
   },
-  "iterations": 3000,
-  "random_seed": 1
+  "iterations": 10000,
+  "random_seed": 1,
+  "preset": "raid"
  },
  "lane": "server",
  "dps": {
-  "mean": 402.34805558901814,
-  "stddev": 28.202602370126684,
-  "error": 0.5149067166155682,
-  "min": 311.0620665343831,
-  "max": 511.4953386743475
+  "mean": 904.3739092695862,
+  "stddev": 49.46355668740831,
+  "error": 0.49463556687408305,
+  "min": 731.2860466788345,
+  "max": 1115.9552653116982
  },
- "iterations_run": 3000,
- "duration_ms": 980,
+ "iterations_run": 10000,
+ "duration_ms": 2636,
  "summary": {
   "engine_version": "sim:d5c708834",
   "fight_index": 1,
-  "duration_ms": 179501,
+  "duration_ms": 179920,
   "damage_done": [
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "class": "warrior",
-    "total": 72222,
-    "effective": 72222,
-    "active_ms": 179501,
+    "total": 162715,
+    "effective": 162715,
+    "active_ms": 179920,
     "abilities": [
      {
       "spell_id": 20662,
       "name": "spell:20662",
       "school": 1,
-      "total": 22260,
-      "effective": 22260,
-      "hits": 17,
-      "crits": 9,
+      "total": 34337,
+      "effective": 34337,
+      "hits": 23,
+      "crits": 12,
       "ticks": 0,
       "misses": {
-       "DODGE": 1,
-       "MISS": 1
-      },
-      "min": 0,
-      "max": 0
-     },
-     {
-      "spell_id": 10022000007,
-      "name": "other:attack/1",
-      "school": 1,
-      "total": 13908,
-      "effective": 13908,
-      "hits": 42,
-      "crits": 16,
-      "ticks": 0,
-      "misses": {
-       "DODGE": 4,
-       "GLANCING": 24,
-       "MISS": 15
-      },
-      "min": 0,
-      "max": 0
-     },
-     {
-      "spell_id": 11567,
-      "name": "spell:11567",
-      "school": 1,
-      "total": 12672,
-      "effective": 12672,
-      "hits": 24,
-      "crits": 7,
-      "ticks": 0,
-      "misses": {
-       "DODGE": 2,
-       "MISS": 2
+       "DODGE": 2
       },
       "min": 0,
       "max": 0
@@ -229,55 +173,44 @@
       "spell_id": 20022000007,
       "name": "other:attack/2",
       "school": 1,
-      "total": 12395,
-      "effective": 12395,
-      "hits": 85,
-      "crits": 30,
+      "total": 25464,
+      "effective": 25464,
+      "hits": 70,
+      "crits": 27,
       "ticks": 0,
       "misses": {
-       "DODGE": 7,
-       "GLANCING": 43,
-       "MISS": 16
+       "DODGE": 5,
+       "GLANCING": 33,
+       "MISS": 7
       },
       "min": 0,
       "max": 0
      },
      {
-      "spell_id": 1680,
-      "name": "spell:1680",
+      "spell_id": 10022000007,
+      "name": "other:attack/1",
       "school": 1,
-      "total": 4558,
-      "effective": 4558,
-      "hits": 12,
-      "crits": 3,
+      "total": 23802,
+      "effective": 23802,
+      "hits": 47,
+      "crits": 20,
       "ticks": 0,
       "misses": {
-       "DODGE": 1,
-       "MISS": 1
+       "DODGE": 4,
+       "GLANCING": 25,
+       "MISS": 12
       },
       "min": 0,
       "max": 0
      },
      {
-      "spell_id": 12867,
-      "name": "spell:12867",
+      "spell_id": 23894,
+      "name": "spell:23894",
       "school": 1,
-      "total": 3927,
-      "effective": 3927,
-      "hits": 0,
-      "crits": 19,
-      "ticks": 58,
-      "min": 0,
-      "max": 0
-     },
-     {
-      "spell_id": 462891,
-      "name": "spell:462891",
-      "school": 1,
-      "total": 2502,
-      "effective": 2502,
-      "hits": 13,
-      "crits": 3,
+      "total": 22564,
+      "effective": 22564,
+      "hits": 21,
+      "crits": 6,
       "ticks": 0,
       "misses": {
        "DODGE": 1
@@ -286,13 +219,76 @@
       "max": 0
      },
      {
-      "spell_id": 12328,
-      "name": "spell:12328",
-      "total": 0,
-      "effective": 0,
-      "hits": 0,
-      "crits": 0,
+      "spell_id": 11567,
+      "name": "spell:11567",
+      "school": 1,
+      "total": 21462,
+      "effective": 21462,
+      "hits": 30,
+      "crits": 9,
       "ticks": 0,
+      "misses": {
+       "DODGE": 2
+      },
+      "min": 0,
+      "max": 0
+     },
+     {
+      "spell_id": 1680,
+      "name": "spell:1680",
+      "school": 1,
+      "total": 10780,
+      "effective": 10780,
+      "hits": 15,
+      "crits": 5,
+      "ticks": 0,
+      "misses": {
+       "DODGE": 1
+      },
+      "min": 0,
+      "max": 0
+     },
+     {
+      "spell_id": 30022000007,
+      "name": "other:attack/3",
+      "school": 1,
+      "total": 8906,
+      "effective": 8906,
+      "hits": 16,
+      "crits": 7,
+      "ticks": 0,
+      "misses": {
+       "DODGE": 1,
+       "GLANCING": 9,
+       "MISS": 4
+      },
+      "min": 0,
+      "max": 0
+     },
+     {
+      "spell_id": 12867,
+      "name": "spell:12867",
+      "school": 1,
+      "total": 8315,
+      "effective": 8315,
+      "hits": 0,
+      "crits": 22,
+      "ticks": 59,
+      "min": 0,
+      "max": 0
+     },
+     {
+      "spell_id": 462891,
+      "name": "spell:462891",
+      "school": 1,
+      "total": 7085,
+      "effective": 7085,
+      "hits": 15,
+      "crits": 5,
+      "ticks": 0,
+      "misses": {
+       "DODGE": 1
+      },
       "min": 0,
       "max": 0
      },
@@ -308,8 +304,8 @@
       "max": 0
      },
      {
-      "spell_id": 1719,
-      "name": "spell:1719",
+      "spell_id": 20554,
+      "name": "spell:20554",
       "total": 0,
       "effective": 0,
       "hits": 0,
@@ -330,8 +326,30 @@
       "max": 0
      },
      {
-      "spell_id": 20572,
-      "name": "spell:20572",
+      "spell_id": 12328,
+      "name": "spell:12328",
+      "total": 0,
+      "effective": 0,
+      "hits": 0,
+      "crits": 0,
+      "ticks": 0,
+      "min": 0,
+      "max": 0
+     },
+     {
+      "spell_id": 12013442,
+      "name": "item:13442",
+      "total": 0,
+      "effective": 0,
+      "hits": 0,
+      "crits": 0,
+      "ticks": 0,
+      "min": 0,
+      "max": 0
+     },
+     {
+      "spell_id": 1719,
+      "name": "spell:1719",
       "total": 0,
       "effective": 0,
       "hits": 0,
@@ -361,13 +379,35 @@
       "ticks": 0,
       "min": 0,
       "max": 0
+     },
+     {
+      "spell_id": 1249110,
+      "name": "spell:1249110",
+      "total": 0,
+      "effective": 0,
+      "hits": 0,
+      "crits": 0,
+      "ticks": 0,
+      "min": 0,
+      "max": 0
+     },
+     {
+      "spell_id": 1329555,
+      "name": "spell:1329555",
+      "total": 0,
+      "effective": 0,
+      "hits": 0,
+      "crits": 0,
+      "ticks": 0,
+      "min": 0,
+      "max": 0
      }
     ],
     "targets": [
      {
       "guid": "sim-target-0",
       "name": "Target 1",
-      "total": 72222
+      "total": 162715
      }
     ],
     "series": []
@@ -380,287 +420,245 @@
   "auras": [
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 9910,
-    "name": "spell:9910",
-    "type": "BUFF",
-    "applications": 1,
-    "max_stacks": 0,
-    "uptime_ms": 179856,
-    "segments": [],
-    "appliers": [
-     "Sim"
-    ]
-   },
-   {
-    "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 20906,
     "name": "spell:20906",
     "type": "BUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 180136,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 20217,
-    "name": "spell:20217",
-    "type": "BUFF",
-    "applications": 2,
-    "max_stacks": 0,
-    "uptime_ms": 179856,
-    "segments": [],
-    "appliers": [
-     "Sim"
-    ]
-   },
-   {
-    "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 20218,
-    "name": "spell:20218",
-    "type": "BUFF",
-    "applications": 2,
-    "max_stacks": 0,
-    "uptime_ms": 179856,
-    "segments": [],
-    "appliers": [
-     "Sim"
-    ]
-   },
-   {
-    "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 10293,
-    "name": "spell:10293",
+    "target_name": "breakdown",
+    "spell_id": 409583,
+    "name": "spell:409583",
     "type": "BUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 180136,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 10301,
-    "name": "spell:10301",
-    "type": "BUFF",
-    "applications": 1,
-    "max_stacks": 0,
-    "uptime_ms": 179856,
-    "segments": [],
-    "appliers": [
-     "Sim"
-    ]
-   },
-   {
-    "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 11551,
     "name": "spell:11551",
     "type": "BUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 180136,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 19838,
     "name": "spell:19838",
     "type": "BUFF",
     "applications": 2,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 180136,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 10442,
     "name": "spell:10442",
     "type": "BUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 180136,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 10627,
-    "name": "spell:10627",
+    "target_name": "breakdown",
+    "spell_id": 21919,
+    "name": "spell:21919",
     "type": "BUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 180136,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 2458,
     "name": "spell:2458",
     "type": "BUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 180136,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 12319,
     "name": "spell:12319",
     "type": "BUFF",
-    "applications": 68,
+    "applications": 91,
     "max_stacks": 0,
-    "uptime_ms": 138613,
+    "uptime_ms": 155673,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 11585,
     "name": "spell:11585",
     "type": "BUFF",
-    "applications": 16,
+    "applications": 18,
     "max_stacks": 0,
-    "uptime_ms": 64107,
+    "uptime_ms": 71644,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 18499,
     "name": "spell:18499",
     "type": "BUFF",
     "applications": 6,
     "max_stacks": 0,
-    "uptime_ms": 61248,
+    "uptime_ms": 56553,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
+    "spell_id": 1329555,
+    "name": "spell:1329555",
+    "type": "BUFF",
+    "applications": 11,
+    "max_stacks": 0,
+    "uptime_ms": 52390,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
     "spell_id": 10002011567,
     "name": "spell:11567/1",
     "type": "BUFF",
-    "applications": 28,
+    "applications": 32,
     "max_stacks": 0,
-    "uptime_ms": 46670,
+    "uptime_ms": 43702,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 10002020007,
-    "name": "spell:20007/1",
+    "target_name": "breakdown",
+    "spell_id": 12013442,
+    "name": "item:13442",
     "type": "BUFF",
-    "applications": 3,
+    "applications": 2,
     "max_stacks": 0,
-    "uptime_ms": 43215,
+    "uptime_ms": 40000,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 20002020007,
-    "name": "spell:20007/2",
-    "type": "BUFF",
-    "applications": 3,
-    "max_stacks": 0,
-    "uptime_ms": 38452,
-    "segments": [],
-    "appliers": [
-     "Sim"
-    ]
-   },
-   {
-    "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 12328,
     "name": "spell:12328",
     "type": "BUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 32561,
+    "uptime_ms": 32509,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 2687,
     "name": "spell:2687",
     "type": "BUFF",
     "applications": 4,
     "max_stacks": 0,
-    "uptime_ms": 32099,
+    "uptime_ms": 32096,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
-    "spell_id": 20572,
-    "name": "spell:20572",
+    "target_name": "breakdown",
+    "spell_id": 20554,
+    "name": "spell:20554",
     "type": "BUFF",
-    "applications": 2,
+    "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 30000,
+    "uptime_ms": 20843,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
+    "spell_id": 1249110,
+    "name": "spell:1249110",
+    "type": "BUFF",
+    "applications": 1,
+    "max_stacks": 0,
+    "uptime_ms": 15000,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
     "spell_id": 1719,
     "name": "spell:1719",
     "type": "BUFF",
@@ -669,12 +667,110 @@
     "uptime_ms": 15000,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
+    "spell_id": 10610,
+    "name": "spell:10610",
+    "type": "BUFF",
+    "applications": 26,
+    "max_stacks": 0,
+    "uptime_ms": 12913,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
+    "spell_id": 20002020554,
+    "name": "spell:20554/2",
+    "type": "BUFF",
+    "applications": 0,
+    "max_stacks": 0,
+    "uptime_ms": 0,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
+    "spell_id": 30002020554,
+    "name": "spell:20554/3",
+    "type": "BUFF",
+    "applications": 0,
+    "max_stacks": 0,
+    "uptime_ms": 0,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
+    "spell_id": 40002020554,
+    "name": "spell:20554/4",
+    "type": "BUFF",
+    "applications": 0,
+    "max_stacks": 0,
+    "uptime_ms": 0,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
+    "spell_id": 50002020554,
+    "name": "spell:20554/5",
+    "type": "BUFF",
+    "applications": 0,
+    "max_stacks": 0,
+    "uptime_ms": 0,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
+    "spell_id": 60002020554,
+    "name": "spell:20554/6",
+    "type": "BUFF",
+    "applications": 0,
+    "max_stacks": 0,
+    "uptime_ms": 0,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
+    "spell_id": 12317,
+    "name": "spell:12317",
+    "type": "BUFF",
+    "applications": 0,
+    "max_stacks": 0,
+    "uptime_ms": 0,
+    "segments": [],
+    "appliers": [
+     "breakdown"
+    ]
+   },
+   {
+    "target_guid": "sim-player",
+    "target_name": "breakdown",
     "spell_id": 2457,
     "name": "spell:2457",
     "type": "BUFF",
@@ -683,12 +779,12 @@
     "uptime_ms": 0,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 71,
     "name": "spell:71",
     "type": "BUFF",
@@ -697,12 +793,12 @@
     "uptime_ms": 0,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 11601,
     "name": "spell:11601",
     "type": "BUFF",
@@ -711,12 +807,12 @@
     "uptime_ms": 0,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 20230,
     "name": "spell:20230",
     "type": "BUFF",
@@ -725,12 +821,12 @@
     "uptime_ms": 0,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 10002020569,
     "name": "spell:20569/1",
     "type": "BUFF",
@@ -739,12 +835,12 @@
     "uptime_ms": 0,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
     "target_guid": "sim-player",
-    "target_name": "Sim",
+    "target_name": "breakdown",
     "spell_id": 22000014,
     "name": "other:move",
     "type": "BUFF",
@@ -753,7 +849,7 @@
     "uptime_ms": 0,
     "segments": [],
     "appliers": [
-     "Sim"
+     "breakdown"
     ]
    },
    {
@@ -762,9 +858,9 @@
     "spell_id": 12867,
     "name": "spell:12867",
     "type": "DEBUFF",
-    "applications": 26,
+    "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 178339,
+    "uptime_ms": 179910,
     "segments": [],
     "appliers": [
      "Sim"
@@ -778,7 +874,7 @@
     "type": "DEBUFF",
     "applications": 1,
     "max_stacks": 5,
-    "uptime_ms": 179856,
+    "uptime_ms": 179920,
     "segments": [],
     "appliers": [
      "Sim"
@@ -792,7 +888,7 @@
     "type": "DEBUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 179920,
     "segments": [],
     "appliers": [
      "Sim"
@@ -801,12 +897,12 @@
    {
     "target_guid": "target-1",
     "target_name": "Target 1",
-    "spell_id": 17937,
-    "name": "spell:17937",
+    "spell_id": 11722,
+    "name": "spell:11722",
     "type": "DEBUFF",
     "applications": 1,
     "max_stacks": 0,
-    "uptime_ms": 179856,
+    "uptime_ms": 179920,
     "segments": [],
     "appliers": [
      "Sim"
@@ -816,79 +912,115 @@
   "casts": [
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 20022000007,
     "spell_name": "other:attack/2",
-    "started": 108,
-    "succeeded": 108,
+    "started": 82,
+    "succeeded": 82,
     "failed": 0,
     "cast_time_ms": 0,
     "sequence": []
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 10022000007,
     "spell_name": "other:attack/1",
-    "started": 61,
-    "succeeded": 61,
+    "started": 63,
+    "succeeded": 63,
     "failed": 0,
     "cast_time_ms": 0,
     "sequence": []
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 11567,
     "spell_name": "spell:11567",
-    "started": 28,
-    "succeeded": 28,
+    "started": 32,
+    "succeeded": 32,
     "failed": 0,
     "cast_time_ms": 0,
     "sequence": []
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 10002011567,
     "spell_name": "spell:11567/1",
-    "started": 28,
-    "succeeded": 28,
+    "started": 32,
+    "succeeded": 32,
     "failed": 0,
     "cast_time_ms": 0,
     "sequence": []
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 20662,
     "spell_name": "spell:20662",
-    "started": 19,
-    "succeeded": 19,
+    "started": 24,
+    "succeeded": 24,
     "failed": 0,
     "cast_time_ms": 0,
     "sequence": []
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
+    "owner_guid": "sim-player",
+    "spell_id": 23894,
+    "spell_name": "spell:23894",
+    "started": 22,
+    "succeeded": 22,
+    "failed": 0,
+    "cast_time_ms": 0,
+    "sequence": []
+   },
+   {
+    "guid": "sim-player",
+    "name": "breakdown",
+    "owner_guid": "sim-player",
+    "spell_id": 30022000007,
+    "spell_name": "other:attack/3",
+    "started": 21,
+    "succeeded": 21,
+    "failed": 0,
+    "cast_time_ms": 0,
+    "sequence": []
+   },
+   {
+    "guid": "sim-player",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 1680,
     "spell_name": "spell:1680",
-    "started": 14,
-    "succeeded": 14,
+    "started": 16,
+    "succeeded": 16,
     "failed": 0,
     "cast_time_ms": 0,
     "sequence": []
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
+    "owner_guid": "sim-player",
+    "spell_id": 1329555,
+    "spell_name": "spell:1329555",
+    "started": 11,
+    "succeeded": 11,
+    "failed": 0,
+    "cast_time_ms": 0,
+    "sequence": []
+   },
+   {
+    "guid": "sim-player",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 18499,
     "spell_name": "spell:18499",
@@ -900,7 +1032,7 @@
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 2687,
     "spell_name": "spell:2687",
@@ -912,10 +1044,10 @@
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "owner_guid": "sim-player",
-    "spell_id": 20572,
-    "spell_name": "spell:20572",
+    "spell_id": 12013442,
+    "spell_name": "item:13442",
     "started": 2,
     "succeeded": 2,
     "failed": 0,
@@ -924,7 +1056,19 @@
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
+    "owner_guid": "sim-player",
+    "spell_id": 20554,
+    "spell_name": "spell:20554",
+    "started": 1,
+    "succeeded": 1,
+    "failed": 0,
+    "cast_time_ms": 0,
+    "sequence": []
+   },
+   {
+    "guid": "sim-player",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 12328,
     "spell_name": "spell:12328",
@@ -936,10 +1080,22 @@
    },
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "owner_guid": "sim-player",
     "spell_id": 1719,
     "spell_name": "spell:1719",
+    "started": 1,
+    "succeeded": 1,
+    "failed": 0,
+    "cast_time_ms": 0,
+    "sequence": []
+   },
+   {
+    "guid": "sim-player",
+    "name": "breakdown",
+    "owner_guid": "sim-player",
+    "spell_id": 1249110,
+    "spell_name": "spell:1249110",
     "started": 1,
     "succeeded": 1,
     "failed": 0,
@@ -952,15 +1108,15 @@
   "resources": [
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "power_type": 1,
     "series": [],
-    "gained": 1109,
-    "spent": 1104,
+    "gained": 2127,
+    "spent": 2116,
     "zero_ms": 0,
     "max": 0,
     "at_max_ms": 0,
-    "wasted": 14
+    "wasted": 57
    }
   ],
   "threat": [],
@@ -970,18 +1126,18 @@
   "roster": [
    {
     "guid": "sim-player",
-    "name": "Sim",
+    "name": "breakdown",
     "class": "warrior",
     "class_source": "sim",
     "spec": "fury",
     "role": "dps",
-    "active_ms": 179501,
+    "active_ms": 179920,
     "activity_pct": 100,
     "deaths": 0,
-    "damage_done": 72222,
+    "damage_done": 162715,
     "healing_done": 0,
     "damage_taken": 0,
-    "dps": 402.34805558901814,
+    "dps": 904.3739092695862,
     "hps": 0,
     "dtps": 0
    }
@@ -998,233 +1154,150 @@
    "action": "spell:2687",
    "target": "Target 1",
    "resources": {
-    "rage": 10
+    "rage": 15
    }
   },
   {
    "at_ms": 0,
    "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 12
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 0,
-   "action": "spell:20572",
-   "target": "Target 1",
-   "resources": {
-    "rage": 12
-   }
-  },
-  {
-   "at_ms": 0,
-   "action": "spell:12328",
-   "target": "Target 1",
-   "resources": {
-    "rage": 2
-   }
-  },
-  {
-   "at_ms": 932,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 3
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 1500,
-   "action": "spell:18499",
-   "target": "Target 1",
-   "resources": {
-    "rage": 11
-   }
-  },
-  {
-   "at_ms": 1800,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 12
-   },
-   "outcome": "hit",
-   "amount": 131
-  },
-  {
-   "at_ms": 1810,
-   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 18
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 3012,
-   "action": "other:attack/1",
+   "at_ms": 0,
+   "action": "spell:20554",
    "target": "Target 1",
    "resources": {
-    "rage": 20
-   },
-   "outcome": "hit",
-   "amount": 249
+    "rage": 18
+   }
   },
   {
-   "at_ms": 3437,
-   "action": "other:attack/2",
+   "at_ms": 0,
+   "action": "spell:1249110",
    "target": "Target 1",
    "resources": {
-    "rage": 20
-   },
-   "outcome": "hit",
-   "amount": 155
+    "rage": 18
+   }
   },
   {
-   "at_ms": 3500,
+   "at_ms": 0,
+   "action": "item:13442",
+   "target": "Target 1",
+   "resources": {
+    "rage": 75
+   }
+  },
+  {
+   "at_ms": 0,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 45
+   },
+   "outcome": "crit",
+   "amount": 1618
+  },
+  {
+   "at_ms": 0,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 45
+   },
+   "outcome": "crit",
+   "amount": 857
+  },
+  {
+   "at_ms": 10,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 60
+   }
+  },
+  {
+   "at_ms": 10,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 60
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 1500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 46
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 1500,
    "action": "spell:1680",
    "target": "Target 1",
    "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 961
-  },
-  {
-   "at_ms": 5012,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 1
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 5073,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 10
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 5083,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 16
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 6709,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 20
-   },
-   "outcome": "crit",
-   "amount": 279
-  },
-  {
-   "at_ms": 7012,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 24
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 8346,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 25
-   },
-   "outcome": "hit",
-   "amount": 143
-  },
-  {
-   "at_ms": 8356,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 32
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 9012,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 33
-   },
-   "outcome": "hit",
-   "amount": 285
-  },
-  {
-   "at_ms": 9982,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 40
-   },
-   "outcome": "hit",
-   "amount": 138
-  },
-  {
-   "at_ms": 9992,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 46
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 11012,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
     "rage": 46
    },
    "outcome": "hit",
-   "amount": 267
+   "amount": 586
   },
   {
-   "at_ms": 11619,
+   "at_ms": 1680,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 47
+   },
+   "outcome": "hit",
+   "amount": 576
+  },
+  {
+   "at_ms": 1960,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 54
+    "rage": 47
    },
    "outcome": "crit",
-   "amount": 296
+   "amount": 625
   },
   {
-   "at_ms": 13012,
+   "at_ms": 3000,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 57
+   }
+  },
+  {
+   "at_ms": 3358,
    "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 57
+   },
+   "outcome": "crit",
+   "amount": 888
+  },
+  {
+   "at_ms": 3918,
+   "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 58
    },
-   "outcome": "hit",
-   "amount": 296
+   "outcome": "dodge"
   },
   {
-   "at_ms": 13022,
+   "at_ms": 3928,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
@@ -1232,117 +1305,25 @@
    }
   },
   {
-   "at_ms": 13278,
-   "action": "other:attack/2",
+   "at_ms": 4000,
+   "action": "spell:18499",
    "target": "Target 1",
    "resources": {
-    "rage": 67
-   },
-   "outcome": "glance",
-   "amount": 98
+    "rage": 72
+   }
   },
   {
-   "at_ms": 13288,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 73
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 13500,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 49
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 13500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 49
-   },
-   "outcome": "hit",
-   "amount": 359
-  },
-  {
-   "at_ms": 14916,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 49
-   },
-   "outcome": "crit",
-   "amount": 247
-  },
-  {
-   "at_ms": 15036,
+   "at_ms": 5369,
    "action": "spell:11567",
    "target": "Target 1",
    "resources": {
-    "rage": 42
+    "rage": 61
    },
    "outcome": "hit",
-   "amount": 577
+   "amount": 565
   },
   {
-   "at_ms": 16552,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 42
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 16562,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 48
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 17036,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 49
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 18188,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 50
-   },
-   "outcome": "crit",
-   "amount": 275
-  },
-  {
-   "at_ms": 19036,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 53
-   },
-   "outcome": "hit",
-   "amount": 295
-  },
-  {
-   "at_ms": 19046,
+   "at_ms": 5369,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
@@ -1350,828 +1331,1119 @@
    }
   },
   {
-   "at_ms": 19825,
+   "at_ms": 6000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 34
+   },
+   "outcome": "crit",
+   "amount": 1776
+  },
+  {
+   "at_ms": 6460,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 62
+    "rage": 34
    },
    "outcome": "crit",
-   "amount": 272
+   "amount": 625
   },
   {
-   "at_ms": 21156,
+   "at_ms": 7551,
    "action": "spell:11567",
    "target": "Target 1",
    "resources": {
-    "rage": 54
+    "rage": 37
    },
    "outcome": "hit",
-   "amount": 739
+   "amount": 619
   },
   {
-   "at_ms": 21624,
+   "at_ms": 7561,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 37
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 9006,
    "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 38
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 9500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 25
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 9500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 25
+   },
+   "outcome": "hit",
+   "amount": 607
+  },
+  {
+   "at_ms": 9687,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 25
+   },
+   "outcome": "crit",
+   "amount": 842
+  },
+  {
+   "at_ms": 11078,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 40
+   },
+   "outcome": "hit",
+   "amount": 329
+  },
+  {
+   "at_ms": 11088,
+   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 54
    },
-   "outcome": "miss"
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 23356,
+   "at_ms": 11365,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
     "rage": 54
    },
-   "outcome": "miss"
+   "outcome": "glance",
+   "amount": 379
   },
   {
-   "at_ms": 23366,
+   "at_ms": 11375,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
-    "rage": 62
+    "rage": 71
    }
   },
   {
-   "at_ms": 23424,
+   "at_ms": 11375,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 71
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 12000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 42
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 12000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 42
+   },
+   "outcome": "hit",
+   "amount": 826
+  },
+  {
+   "at_ms": 13036,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 63
+    "rage": 42
    },
    "outcome": "glance",
-   "amount": 98
+   "amount": 272
   },
   {
-   "at_ms": 23500,
+   "at_ms": 13044,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 30
+   },
+   "outcome": "crit",
+   "amount": 1043
+  },
+  {
+   "at_ms": 13054,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 38
+   },
+   "outcome": "crit",
+   "amount": 845
+  },
+  {
+   "at_ms": 14732,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 46
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 14994,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 56
+   },
+   "outcome": "crit",
+   "amount": 576
+  },
+  {
+   "at_ms": 15004,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 71
+   }
+  },
+  {
+   "at_ms": 15004,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 71
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 16551,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 60
+   },
+   "outcome": "hit",
+   "amount": 646
+  },
+  {
+   "at_ms": 16551,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 60
+   }
+  },
+  {
+   "at_ms": 17147,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 60
+   },
+   "outcome": "crit",
+   "amount": 572
+  },
+  {
+   "at_ms": 17500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 43
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 17500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 43
+   },
+   "outcome": "hit",
+   "amount": 666
+  },
+  {
+   "at_ms": 18397,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 32
+   },
+   "outcome": "crit",
+   "amount": 1083
+  },
+  {
+   "at_ms": 19000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 2
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 19000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 2
+   },
+   "outcome": "hit",
+   "amount": 929
+  },
+  {
+   "at_ms": 19301,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 2
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 20244,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 11
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 20500,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 20
+   }
+  },
+  {
+   "at_ms": 21455,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 21
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 22277,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 34
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 22287,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 48
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 22297,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 65
+   }
+  },
+  {
+   "at_ms": 22297,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 65
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 23801,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 70
+   },
+   "outcome": "crit",
+   "amount": 583
+  },
+  {
+   "at_ms": 24136,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 71
+   },
+   "outcome": "hit",
+   "amount": 553
+  },
+  {
+   "at_ms": 24136,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 71
+   }
+  },
+  {
+   "at_ms": 25000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 41
+   },
+   "outcome": "hit",
+   "amount": 981
+  },
+  {
+   "at_ms": 25955,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 41
+   },
+   "outcome": "crit",
+   "amount": 570
+  },
+  {
+   "at_ms": 25982,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 38
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 23500,
-   "action": "spell:1680",
+   "at_ms": 25982,
+   "action": "spell:11567",
    "target": "Target 1",
    "resources": {
     "rage": 38
    },
    "outcome": "hit",
-   "amount": 431
+   "amount": 554
   },
   {
-   "at_ms": 25067,
+   "at_ms": 26500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 13
+   },
+   "outcome": "crit",
+   "amount": 1072
+  },
+  {
+   "at_ms": 27828,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 14
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 27838,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 30
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 28108,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 30
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 29674,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 38
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 30262,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 39
    },
    "outcome": "glance",
-   "amount": 98
+   "amount": 272
   },
   {
-   "at_ms": 25077,
+   "at_ms": 30272,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 45
+    "rage": 54
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 25369,
+   "at_ms": 31000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 25
+   },
+   "outcome": "hit",
+   "amount": 826
+  },
+  {
+   "at_ms": 31000,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 25
+   },
+   "outcome": "crit",
+   "amount": 827
+  },
+  {
+   "at_ms": 31010,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 33
+    "rage": 42
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 25369,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 33
-   },
-   "outcome": "dodge"
-  },
-  {
-   "at_ms": 26703,
+   "at_ms": 32416,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 33
+    "rage": 43
    },
    "outcome": "glance",
-   "amount": 98
+   "amount": 272
   },
   {
-   "at_ms": 27369,
+   "at_ms": 32426,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 57
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 32846,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 38
+    "rage": 58
    },
    "outcome": "glance",
-   "amount": 189
+   "amount": 379
   },
   {
-   "at_ms": 28340,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 46
-   },
-   "outcome": "hit",
-   "amount": 148
-  },
-  {
-   "at_ms": 29471,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 50
-   },
-   "outcome": "hit",
-   "amount": 284
-  },
-  {
-   "at_ms": 30000,
+   "at_ms": 32856,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
-    "rage": 60
+    "rage": 66
    }
   },
   {
-   "at_ms": 30139,
+   "at_ms": 34000,
+   "action": "spell:18499",
+   "target": "Target 1",
+   "resources": {
+    "rage": 68
+   }
+  },
+  {
+   "at_ms": 34570,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 60
+    "rage": 68
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 34692,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 56
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 34692,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 56
+   },
+   "outcome": "hit",
+   "amount": 668
+  },
+  {
+   "at_ms": 35500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 31
+   },
+   "outcome": "hit",
+   "amount": 560
+  },
+  {
+   "at_ms": 36538,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 32
    },
    "outcome": "miss"
   },
   {
-   "at_ms": 31500,
-   "action": "spell:18499",
+   "at_ms": 36548,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 41
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 36558,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 57
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 36724,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 57
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 37000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 37000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "crit",
+   "amount": 1555
+  },
+  {
+   "at_ms": 37000,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "crit",
+   "amount": 827
+  },
+  {
+   "at_ms": 38500,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   }
+  },
+  {
+   "at_ms": 38846,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 38856,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 44
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 38878,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 49
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 38888,
+   "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
     "rage": 64
    }
   },
   {
-   "at_ms": 31671,
+   "at_ms": 38888,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 52
+    "rage": 64
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 31671,
+   "at_ms": 40692,
    "action": "spell:11567",
    "target": "Target 1",
    "resources": {
-    "rage": 52
+    "rage": 59
    },
    "outcome": "hit",
-   "amount": 723
+   "amount": 652
   },
   {
-   "at_ms": 31914,
+   "at_ms": 41032,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 52
-   },
-   "outcome": "hit",
-   "amount": 135
-  },
-  {
-   "at_ms": 31924,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 58
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 33500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 34
-   },
-   "outcome": "hit",
-   "amount": 364
-  },
-  {
-   "at_ms": 33551,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 34
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 33561,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 40
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 33671,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 41
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 35187,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 41
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 35671,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 44
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 36823,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 54
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 36833,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   }
-  },
-  {
-   "at_ms": 36833,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 37671,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 61
-   },
-   "outcome": "dodge"
-  },
-  {
-   "at_ms": 37671,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 61
-   }
-  },
-  {
-   "at_ms": 38460,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 61
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 39671,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 54
-   },
-   "outcome": "hit",
-   "amount": 557
-  },
-  {
-   "at_ms": 40096,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 54
-   },
-   "outcome": "hit",
-   "amount": 125
-  },
-  {
-   "at_ms": 41827,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 57
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 41837,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 65
-   }
-  },
-  {
-   "at_ms": 41895,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 65
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 43500,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 45
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 43500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 45
+    "rage": 59
    },
    "outcome": "crit",
-   "amount": 927
+   "amount": 566
   },
   {
-   "at_ms": 43677,
+   "at_ms": 41042,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 73
+   }
+  },
+  {
+   "at_ms": 41042,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 73
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 42538,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 67
+   },
+   "outcome": "hit",
+   "amount": 612
+  },
+  {
+   "at_ms": 42538,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 67
+   }
+  },
+  {
+   "at_ms": 43000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 37
+   },
+   "outcome": "hit",
+   "amount": 862
+  },
+  {
+   "at_ms": 43185,
    "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 37
+   },
+   "outcome": "hit",
+   "amount": 331
+  },
+  {
+   "at_ms": 44384,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 37
+   },
+   "outcome": "hit",
+   "amount": 637
+  },
+  {
+   "at_ms": 44500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 12
+   },
+   "outcome": "hit",
+   "amount": 593
+  },
+  {
+   "at_ms": 45339,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 13
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 45349,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 28
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 46230,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 29
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 46240,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 37
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 47493,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 37
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 48086,
+   "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
     "rage": 45
    },
    "outcome": "hit",
-   "amount": 139
+   "amount": 425
   },
   {
-   "at_ms": 43979,
-   "action": "spell:11567",
+   "at_ms": 48096,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "crit",
+   "amount": 971
+  },
+  {
+   "at_ms": 48106,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 62
+   }
+  },
+  {
+   "at_ms": 49000,
+   "action": "spell:23894",
    "target": "Target 1",
    "resources": {
     "rage": 33
    },
    "outcome": "crit",
-   "amount": 1238
+   "amount": 1625
   },
   {
-   "at_ms": 45314,
+   "at_ms": 50112,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 34
+    "rage": 33
    },
    "outcome": "glance",
-   "amount": 98
+   "amount": 272
   },
   {
-   "at_ms": 45979,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 37
-   },
-   "outcome": "crit",
-   "amount": 462
-  },
-  {
-   "at_ms": 47046,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 46
-   },
-   "outcome": "hit",
-   "amount": 125
-  },
-  {
-   "at_ms": 48178,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 47
-   },
-   "outcome": "crit",
-   "amount": 544
-  },
-  {
-   "at_ms": 48846,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 55
-   },
-   "outcome": "hit",
-   "amount": 148
-  },
-  {
-   "at_ms": 50378,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 58
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 50388,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 66
-   }
-  },
-  {
-   "at_ms": 50646,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 66
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 50656,
+   "at_ms": 50496,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 72
+    "rage": 28
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 52283,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 74
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 52404,
+   "at_ms": 50496,
    "action": "spell:11567",
    "target": "Target 1",
    "resources": {
-    "rage": 65
+    "rage": 28
    },
    "outcome": "hit",
-   "amount": 704
+   "amount": 656
   },
   {
-   "at_ms": 52404,
-   "action": "spell:11567/1",
+   "at_ms": 52343,
+   "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 65
-   }
+    "rage": 29
+   },
+   "outcome": "crit",
+   "amount": 835
   },
   {
-   "at_ms": 53500,
+   "at_ms": 52355,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 38
+   },
+   "outcome": "crit",
+   "amount": 600
+  },
+  {
+   "at_ms": 52365,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 52
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 52500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 52500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 52500,
    "action": "spell:1680",
    "target": "Target 1",
    "resources": {
-    "rage": 40
-   },
-   "outcome": "crit",
-   "amount": 918
-  },
-  {
-   "at_ms": 53920,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 40
+    "rage": 27
    },
    "outcome": "hit",
-   "amount": 152
+   "amount": 641
   },
   {
-   "at_ms": 53930,
+   "at_ms": 54000,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 28
+   }
+  },
+  {
+   "at_ms": 54189,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 28
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 54199,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 47
+    "rage": 45
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 54404,
+   "at_ms": 54508,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 51
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 54518,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 63
+   }
+  },
+  {
+   "at_ms": 55000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 33
+   },
+   "outcome": "hit",
+   "amount": 968
+  },
+  {
+   "at_ms": 56035,
    "action": "spell:11567",
    "target": "Target 1",
    "resources": {
-    "rage": 37
+    "rage": 21
    },
    "outcome": "hit",
    "amount": 596
   },
   {
-   "at_ms": 55556,
+   "at_ms": 56662,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 37
+    "rage": 21
    },
-   "outcome": "hit",
-   "amount": 120
+   "outcome": "crit",
+   "amount": 543
   },
   {
-   "at_ms": 56404,
-   "action": "other:attack/1",
+   "at_ms": 56672,
+   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 37
+    "rage": 36
    },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 57192,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 46
-   },
-   "outcome": "glance",
-   "amount": 98
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
    "at_ms": 57500,
    "action": "spell:2687",
    "target": "Target 1",
    "resources": {
-    "rage": 60
+    "rage": 57
    }
   },
   {
-   "at_ms": 57500,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   }
-  },
-  {
-   "at_ms": 58524,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 49
-   },
-   "outcome": "hit",
-   "amount": 739
-  },
-  {
-   "at_ms": 58991,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 49
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 60724,
+   "at_ms": 57881,
    "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 55
-   },
-   "outcome": "hit",
-   "amount": 306
-  },
-  {
-   "at_ms": 60734,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 71
-   }
-  },
-  {
-   "at_ms": 60734,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 71
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 60786,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 71
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 61500,
-   "action": "spell:18499",
-   "target": "Target 1",
-   "resources": {
-    "rage": 75
-   }
-  },
-  {
-   "at_ms": 62423,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 75
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 62725,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 68
-   },
-   "outcome": "crit",
-   "amount": 1184
-  },
-  {
-   "at_ms": 62725,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 68
-   }
-  },
-  {
-   "at_ms": 63500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 45
-   },
-   "outcome": "hit",
-   "amount": 462
-  },
-  {
-   "at_ms": 64059,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 45
-   },
-   "outcome": "hit",
-   "amount": 152
-  },
-  {
-   "at_ms": 64069,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 51
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 64725,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 40
-   },
-   "outcome": "hit",
-   "amount": 729
-  },
-  {
-   "at_ms": 65695,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 41
-   },
-   "outcome": "hit",
-   "amount": 139
-  },
-  {
-   "at_ms": 66725,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 47
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 67332,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 56
-   },
-   "outcome": "hit",
-   "amount": 152
-  },
-  {
-   "at_ms": 67342,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 62
-   }
-  },
-  {
-   "at_ms": 67342,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 62
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 68725,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 52
-   },
-   "outcome": "hit",
-   "amount": 630
-  },
-  {
-   "at_ms": 68968,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 52
-   },
-   "outcome": "hit",
-   "amount": 126
-  },
-  {
-   "at_ms": 70604,
-   "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 57
@@ -2179,7 +2451,151 @@
    "outcome": "miss"
   },
   {
-   "at_ms": 70614,
+   "at_ms": 57891,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 65
+   }
+  },
+  {
+   "at_ms": 58816,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 72
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 59727,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 69
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 59727,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 69
+   },
+   "outcome": "hit",
+   "amount": 565
+  },
+  {
+   "at_ms": 59727,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 69
+   }
+  },
+  {
+   "at_ms": 60500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 47
+   },
+   "outcome": "hit",
+   "amount": 630
+  },
+  {
+   "at_ms": 60970,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 47
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 61573,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 43
+   },
+   "outcome": "crit",
+   "amount": 1033
+  },
+  {
+   "at_ms": 62000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 13
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 62000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 13
+   },
+   "outcome": "hit",
+   "amount": 918
+  },
+  {
+   "at_ms": 63124,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 16
+   },
+   "outcome": "crit",
+   "amount": 625
+  },
+  {
+   "at_ms": 63419,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 24
+   },
+   "outcome": "crit",
+   "amount": 770
+  },
+  {
+   "at_ms": 63429,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 41
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 64000,
+   "action": "spell:18499",
+   "target": "Target 1",
+   "resources": {
+    "rage": 42
+   }
+  },
+  {
+   "at_ms": 65266,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 44
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 65276,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
@@ -2187,152 +2603,637 @@
    }
   },
   {
-   "at_ms": 70725,
+   "at_ms": 65276,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 60
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 65278,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 61
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 65288,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 76
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 67112,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 81
+   },
+   "outcome": "crit",
+   "amount": 1126
+  },
+  {
+   "at_ms": 67112,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 81
+   }
+  },
+  {
+   "at_ms": 67432,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 81
+   },
+   "outcome": "dodge"
+  },
+  {
+   "at_ms": 67442,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 95
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 68000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 68
+   },
+   "outcome": "hit",
+   "amount": 905
+  },
+  {
+   "at_ms": 68000,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 56
+   },
+   "outcome": "hit",
+   "amount": 598
+  },
+  {
+   "at_ms": 69500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 32
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 69500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 32
+   },
+   "outcome": "hit",
+   "amount": 614
+  },
+  {
+   "at_ms": 69500,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 32
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 69585,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 41
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 69595,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 56
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 71000,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 56
+   }
+  },
+  {
+   "at_ms": 71346,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 56
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 71356,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 72
+   }
+  },
+  {
+   "at_ms": 71356,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 72
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 71739,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 78
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 71749,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 93
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 73192,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 87
+   },
+   "outcome": "dodge"
+  },
+  {
+   "at_ms": 73192,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 87
+   }
+  },
+  {
+   "at_ms": 73893,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 87
+   },
+   "outcome": "crit",
+   "amount": 578
+  },
+  {
+   "at_ms": 74000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 69
+   },
+   "outcome": "hit",
+   "amount": 881
+  },
+  {
+   "at_ms": 75038,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 58
+   },
+   "outcome": "hit",
+   "amount": 642
+  },
+  {
+   "at_ms": 75048,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 58
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 75058,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 75
+   }
+  },
+  {
+   "at_ms": 75058,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 75
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 76047,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 81
+   },
+   "outcome": "crit",
+   "amount": 556
+  },
+  {
+   "at_ms": 76894,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 76
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 76894,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 76
+   },
+   "outcome": "hit",
+   "amount": 615
+  },
+  {
+   "at_ms": 76894,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 76
+   }
+  },
+  {
+   "at_ms": 76904,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 76
+   },
+   "outcome": "hit",
+   "amount": 601
+  },
+  {
+   "at_ms": 76904,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 76
+   }
+  },
+  {
+   "at_ms": 77500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 51
+   },
+   "outcome": "hit",
+   "amount": 612
+  },
+  {
+   "at_ms": 78201,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 52
+   },
+   "outcome": "crit",
+   "amount": 585
+  },
+  {
+   "at_ms": 78750,
    "action": "spell:11567",
    "target": "Target 1",
    "resources": {
     "rage": 48
    },
    "outcome": "hit",
-   "amount": 709
+   "amount": 632
   },
   {
-   "at_ms": 72241,
+   "at_ms": 78760,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 48
+   },
+   "outcome": "crit",
+   "amount": 847
+  },
+  {
+   "at_ms": 80000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "hit",
+   "amount": 975
+  },
+  {
+   "at_ms": 80355,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 49
+    "rage": 27
    },
-   "outcome": "miss"
+   "outcome": "dodge"
   },
   {
-   "at_ms": 72772,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 49
-   },
-   "outcome": "hit",
-   "amount": 282
-  },
-  {
-   "at_ms": 73500,
+   "at_ms": 80365,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 33
+    "rage": 41
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 73500,
-   "action": "spell:1680",
+   "at_ms": 80606,
+   "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 33
-   },
-   "outcome": "hit",
-   "amount": 373
-  },
-  {
-   "at_ms": 73991,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 33
+    "rage": 42
    },
    "outcome": "miss"
   },
   {
-   "at_ms": 74838,
+   "at_ms": 82453,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 36
-   },
-   "outcome": "hit",
-   "amount": 272
-  },
-  {
-   "at_ms": 75627,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 46
-   },
-   "outcome": "hit",
-   "amount": 155
-  },
-  {
-   "at_ms": 76958,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 50
-   },
-   "outcome": "crit",
-   "amount": 499
-  },
-  {
-   "at_ms": 77426,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 58
+    "rage": 52
    },
    "outcome": "glance",
-   "amount": 98
+   "amount": 379
   },
   {
-   "at_ms": 77436,
+   "at_ms": 82463,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
-    "rage": 65
+    "rage": 61
    }
   },
   {
-   "at_ms": 77436,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 65
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 79002,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 55
-   },
-   "outcome": "hit",
-   "amount": 603
-  },
-  {
-   "at_ms": 79063,
+   "at_ms": 82508,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 55
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 80700,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 59
+    "rage": 61
    },
    "outcome": "miss"
   },
   {
-   "at_ms": 80710,
+   "at_ms": 82518,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 75
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 84299,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 64
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 84299,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 64
+   },
+   "outcome": "crit",
+   "amount": 1183
+  },
+  {
+   "at_ms": 84299,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 64
+   }
+  },
+  {
+   "at_ms": 84662,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 64
+   },
+   "outcome": "hit",
+   "amount": 287
+  },
+  {
+   "at_ms": 84672,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 79
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 85500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 85500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "hit",
+   "amount": 567
+  },
+  {
+   "at_ms": 85500,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 42
+   },
+   "outcome": "hit",
+   "amount": 573
+  },
+  {
+   "at_ms": 86816,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 42
+   },
+   "outcome": "crit",
+   "amount": 580
+  },
+  {
+   "at_ms": 87000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 21
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 87000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 21
+   },
+   "outcome": "hit",
+   "amount": 851
+  },
+  {
+   "at_ms": 87346,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 21
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 87356,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 38
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 88500,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 39
+   }
+  },
+  {
+   "at_ms": 88970,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 39
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 89192,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 52
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 89202,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 60
+   }
+  },
+  {
+   "at_ms": 91038,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 91038,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "hit",
+   "amount": 635
+  },
+  {
+   "at_ms": 91124,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 91134,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
@@ -2340,55 +3241,75 @@
    }
   },
   {
-   "at_ms": 81002,
+   "at_ms": 92884,
    "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 52
-   },
-   "outcome": "hit",
-   "amount": 641
-  },
-  {
-   "at_ms": 82336,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 52
-   },
-   "outcome": "hit",
-   "amount": 136
-  },
-  {
-   "at_ms": 83067,
-   "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
     "rage": 56
    },
    "outcome": "hit",
-   "amount": 272
+   "amount": 549
   },
   {
-   "at_ms": 83077,
-   "action": "spell:11567/1",
+   "at_ms": 93000,
+   "action": "spell:23894",
    "target": "Target 1",
    "resources": {
-    "rage": 64
-   }
+    "rage": 27
+   },
+   "outcome": "hit",
+   "amount": 915
   },
   {
-   "at_ms": 83500,
+   "at_ms": 93278,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 94500,
    "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 14
+   },
+   "outcome": "hit",
+   "amount": 668
+  },
+  {
+   "at_ms": 94730,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 14
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 94740,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 22
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 94750,
+   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 39
    },
-   "outcome": "crit",
-   "amount": 824
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 84135,
+   "at_ms": 95434,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
@@ -2397,123 +3318,303 @@
    "outcome": "miss"
   },
   {
-   "at_ms": 85267,
-   "action": "spell:11567",
+   "at_ms": 95444,
+   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 32
+    "rage": 54
    },
-   "outcome": "dodge"
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 85935,
+   "at_ms": 96000,
+   "action": "spell:18499",
+   "target": "Target 1",
+   "resources": {
+    "rage": 55
+   }
+  },
+  {
+   "at_ms": 96589,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 55
+   },
+   "outcome": "crit",
+   "amount": 750
+  },
+  {
+   "at_ms": 96599,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 72
+   }
+  },
+  {
+   "at_ms": 96599,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 72
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 97588,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 32
+    "rage": 72
    },
-   "outcome": "crit",
-   "amount": 277
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 85945,
+   "at_ms": 97598,
    "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 86
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 98435,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 74
+   },
+   "outcome": "hit",
+   "amount": 578
+  },
+  {
+   "at_ms": 98435,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 74
+   }
+  },
+  {
+   "at_ms": 98445,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 62
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 98445,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 62
+   },
+   "outcome": "hit",
+   "amount": 616
+  },
+  {
+   "at_ms": 98445,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 62
+   }
+  },
+  {
+   "at_ms": 99000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 57
+   },
+   "outcome": "crit",
+   "amount": 1567
+  },
+  {
+   "at_ms": 99742,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 57
+   },
+   "outcome": "crit",
+   "amount": 532
+  },
+  {
+   "at_ms": 100291,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 100291,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "hit",
+   "amount": 644
+  },
+  {
+   "at_ms": 101895,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 54
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 101905,
+   "action": "spell:11567/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 68
+   }
+  },
+  {
+   "at_ms": 101905,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 68
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 102137,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 58
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 102137,
+   "action": "spell:11567",
+   "target": "Target 1",
+   "resources": {
+    "rage": 58
+   },
+   "outcome": "crit",
+   "amount": 1227
+  },
+  {
+   "at_ms": 102500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 33
+   },
+   "outcome": "hit",
+   "amount": 617
+  },
+  {
+   "at_ms": 103983,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 33
+   },
+   "outcome": "crit",
+   "amount": 750
+  },
+  {
+   "at_ms": 104000,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 33
+   }
+  },
+  {
+   "at_ms": 104049,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 33
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 105000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 16
+   },
+   "outcome": "crit",
+   "amount": 1602
+  },
+  {
+   "at_ms": 105829,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 16
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 105839,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 33
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 106203,
+   "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 38
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 87329,
+   "at_ms": 107676,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 40
+    "rage": 51
    },
-   "outcome": "hit",
-   "amount": 255
+   "outcome": "glance",
+   "amount": 379
   },
   {
-   "at_ms": 87572,
+   "at_ms": 108357,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 40
+    "rage": 52
    },
-   "outcome": "hit",
-   "amount": 151
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 89209,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 43
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 89329,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 47
-   },
-   "outcome": "crit",
-   "amount": 503
-  },
-  {
-   "at_ms": 89339,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 62
-   }
-  },
-  {
-   "at_ms": 89339,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 62
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 90845,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 64
-   },
-   "outcome": "hit",
-   "amount": 142
-  },
-  {
-   "at_ms": 90855,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 71
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 91329,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   },
-   "outcome": "hit",
-   "amount": 638
-  },
-  {
-   "at_ms": 91329,
+   "at_ms": 108367,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
@@ -2521,84 +3622,47 @@
    }
   },
   {
-   "at_ms": 91500,
-   "action": "spell:18499",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   }
-  },
-  {
-   "at_ms": 92481,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   },
-   "outcome": "hit",
-   "amount": 140
-  },
-  {
-   "at_ms": 93329,
+   "at_ms": 109522,
    "action": "spell:11567",
    "target": "Target 1",
    "resources": {
     "rage": 53
    },
-   "outcome": "hit",
-   "amount": 656
+   "outcome": "crit",
+   "amount": 1144
   },
   {
-   "at_ms": 93500,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 28
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 93500,
+   "at_ms": 110500,
    "action": "spell:1680",
    "target": "Target 1",
    "resources": {
     "rage": 28
    },
    "outcome": "hit",
-   "amount": 445
+   "amount": 551
   },
   {
-   "at_ms": 94118,
+   "at_ms": 110511,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 28
    },
-   "outcome": "hit",
-   "amount": 129
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 95329,
-   "action": "other:attack/1",
+   "at_ms": 110521,
+   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 31
+    "rage": 42
    },
-   "outcome": "hit",
-   "amount": 297
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 95754,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 38
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 97329,
+   "at_ms": 111368,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
@@ -2607,74 +3671,7 @@
    "outcome": "miss"
   },
   {
-   "at_ms": 97339,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 59
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 97390,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 59
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 97400,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 65
-   }
-  },
-  {
-   "at_ms": 97400,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 65
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 99027,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 67
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 99037,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 73
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 99329,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 61
-   },
-   "outcome": "crit",
-   "amount": 1366
-  },
-  {
-   "at_ms": 99329,
+   "at_ms": 111378,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
@@ -2682,1020 +3679,393 @@
    }
   },
   {
-   "at_ms": 100663,
-   "action": "other:attack/2",
+   "at_ms": 111378,
+   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 61
    },
-   "outcome": "hit",
-   "amount": 125
-  },
-  {
-   "at_ms": 100673,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 67
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 101329,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 55
-   },
-   "outcome": "hit",
-   "amount": 580
-  },
-  {
-   "at_ms": 102300,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 56
-   },
-   "outcome": "hit",
-   "amount": 128
-  },
-  {
-   "at_ms": 102310,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 63
-   }
-  },
-  {
-   "at_ms": 102310,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 63
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 103329,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 51
-   },
-   "outcome": "hit",
-   "amount": 647
-  },
-  {
-   "at_ms": 103500,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 26
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 103500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 26
-   },
-   "outcome": "hit",
+   "outcome": "tick_crit",
    "amount": 377
   },
   {
-   "at_ms": 103936,
+   "at_ms": 112000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 31
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 112000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 31
+   },
+   "outcome": "hit",
+   "amount": 856
+  },
+  {
+   "at_ms": 112665,
    "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 31
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 113214,
+   "action": "spell:11567",
    "target": "Target 1",
    "resources": {
     "rage": 26
    },
-   "outcome": "glance",
-   "amount": 98
+   "outcome": "crit",
+   "amount": 1217
   },
   {
-   "at_ms": 105329,
+   "at_ms": 114818,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 27
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 115060,
    "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 31
-   },
-   "outcome": "hit",
-   "amount": 245
-  },
-  {
-   "at_ms": 105572,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 31
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 107209,
-   "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 35
    },
-   "outcome": "crit",
-   "amount": 284
+   "outcome": "glance",
+   "amount": 379
   },
   {
-   "at_ms": 107340,
+   "at_ms": 116906,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 39
+    "rage": 44
    },
-   "outcome": "glance",
-   "amount": 189
+   "outcome": "crit",
+   "amount": 811
   },
   {
-   "at_ms": 107350,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 54
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 108857,
+   "at_ms": 116989,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 56
+    "rage": 53
    },
-   "outcome": "miss"
+   "outcome": "hit",
+   "amount": 299
   },
   {
-   "at_ms": 109341,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 56
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 109351,
+   "at_ms": 116999,
    "action": "spell:11567/1",
    "target": "Target 1",
    "resources": {
-    "rage": 64
+    "rage": 60
    }
-  },
-  {
-   "at_ms": 110493,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 64
-   },
-   "outcome": "hit",
-   "amount": 121
-  },
-  {
-   "at_ms": 110503,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 70
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 111341,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 59
-   },
-   "outcome": "hit",
-   "amount": 741
-  },
-  {
-   "at_ms": 112130,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 59
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 112140,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 62
-   }
-  },
-  {
-   "at_ms": 113341,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 50
-   },
-   "outcome": "crit",
-   "amount": 1408
-  },
-  {
-   "at_ms": 113500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 25
-   },
-   "outcome": "crit",
-   "amount": 820
-  },
-  {
-   "at_ms": 113766,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 25
-   },
-   "outcome": "hit",
-   "amount": 129
-  },
-  {
-   "at_ms": 115341,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 30
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 115408,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 30
-   },
-   "outcome": "hit",
-   "amount": 148
-  },
-  {
-   "at_ms": 117208,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 35
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 117218,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 42
-   },
-   "outcome": "tick",
-   "amount": 48
   },
   {
    "at_ms": 117500,
    "action": "spell:2687",
    "target": "Target 1",
    "resources": {
-    "rage": 52
+    "rage": 77
    }
   },
   {
-   "at_ms": 117511,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 52
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 118845,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 53
-   },
-   "outcome": "hit",
-   "amount": 122
-  },
-  {
-   "at_ms": 118855,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 59
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 118855,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   }
-  },
-  {
-   "at_ms": 119511,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 49
-   },
-   "outcome": "hit",
-   "amount": 708
-  },
-  {
-   "at_ms": 120000,
-   "action": "spell:20572",
-   "target": "Target 1",
-   "resources": {
-    "rage": 50
-   }
-  },
-  {
-   "at_ms": 120481,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 50
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 121500,
-   "action": "spell:18499",
-   "target": "Target 1",
-   "resources": {
-    "rage": 55
-   }
-  },
-  {
-   "at_ms": 121511,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 55
-   },
-   "outcome": "crit",
-   "amount": 598
-  },
-  {
-   "at_ms": 122118,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 55
-   },
-   "outcome": "hit",
-   "amount": 142
-  },
-  {
-   "at_ms": 123500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 33
-   },
-   "outcome": "crit",
-   "amount": 746
-  },
-  {
-   "at_ms": 123649,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 33
-   },
-   "outcome": "crit",
-   "amount": 476
-  },
-  {
-   "at_ms": 123917,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 41
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 125717,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 43
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 125849,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 47
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 127517,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 50
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 127527,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 56
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 128001,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 57
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 128011,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 65
-   }
-  },
-  {
-   "at_ms": 129154,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 66
-   },
-   "outcome": "crit",
-   "amount": 280
-  },
-  {
-   "at_ms": 129164,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 72
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 130001,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   },
-   "outcome": "hit",
-   "amount": 556
-  },
-  {
-   "at_ms": 130001,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   }
-  },
-  {
-   "at_ms": 130790,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 60
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 132001,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 53
-   },
-   "outcome": "dodge"
-  },
-  {
-   "at_ms": 132427,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 53
-   },
-   "outcome": "hit",
-   "amount": 126
-  },
-  {
-   "at_ms": 133500,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 32
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 133500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 32
-   },
-   "outcome": "hit",
-   "amount": 370
-  },
-  {
-   "at_ms": 134001,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 32
-   },
-   "outcome": "hit",
-   "amount": 269
-  },
-  {
-   "at_ms": 134063,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 32
-   },
-   "outcome": "hit",
-   "amount": 140
-  },
-  {
-   "at_ms": 134073,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 38
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 135699,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 40
-   },
-   "outcome": "hit",
-   "amount": 133
-  },
-  {
-   "at_ms": 135709,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 46
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 136001,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 47
-   },
-   "outcome": "hit",
-   "amount": 281
-  },
-  {
-   "at_ms": 137336,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 55
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 138001,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 56
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 138011,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 64
-   }
-  },
-  {
-   "at_ms": 138972,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 64
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 138982,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 70
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 140001,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 58
-   },
-   "outcome": "crit",
-   "amount": 1393
-  },
-  {
-   "at_ms": 140608,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 58
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 140618,
-   "action": "spell:11567/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 61
-   }
-  },
-  {
-   "at_ms": 142001,
-   "action": "spell:11567",
-   "target": "Target 1",
-   "resources": {
-    "rage": 51
-   },
-   "outcome": "crit",
-   "amount": 1433
-  },
-  {
-   "at_ms": 142245,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 51
-   },
-   "outcome": "hit",
-   "amount": 130
-  },
-  {
-   "at_ms": 143500,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 29
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 143500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 29
-   },
-   "outcome": "crit",
-   "amount": 829
-  },
-  {
-   "at_ms": 143881,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 29
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 144001,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 30
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 145517,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 30
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 146001,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 34
-   },
-   "outcome": "hit",
-   "amount": 273
-  },
-  {
-   "at_ms": 146011,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 50
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 147154,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 51
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 147164,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 57
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 148001,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 58
-   },
-   "outcome": "hit",
-   "amount": 258
-  },
-  {
-   "at_ms": 148790,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 58
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 150001,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 63
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 150468,
-   "action": "other:attack/2",
+   "at_ms": 118000,
+   "action": "spell:23894",
    "target": "Target 1",
    "resources": {
     "rage": 71
    },
    "outcome": "hit",
-   "amount": 127
+   "amount": 938
   },
   {
-   "at_ms": 150478,
+   "at_ms": 119303,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 78
+    "rage": 61
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 151500,
-   "action": "spell:18499",
+   "at_ms": 119303,
+   "action": "spell:11567",
    "target": "Target 1",
    "resources": {
-    "rage": 79
-   }
+    "rage": 61
+   },
+   "outcome": "hit",
+   "amount": 553
   },
   {
-   "at_ms": 152044,
-   "action": "other:attack/1",
+   "at_ms": 119500,
+   "action": "spell:1680",
    "target": "Target 1",
    "resources": {
-    "rage": 79
+    "rage": 36
    },
    "outcome": "crit",
-   "amount": 501
+   "amount": 1205
   },
   {
-   "at_ms": 152105,
+   "at_ms": 119677,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 79
+    "rage": 37
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 121000,
+   "action": "item:13442",
+   "target": "Target 1",
+   "resources": {
+    "rage": 93
+   }
+  },
+  {
+   "at_ms": 121000,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 93
+   }
+  },
+  {
+   "at_ms": 121150,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 93
    },
    "outcome": "miss"
   },
   {
-   "at_ms": 153500,
-   "action": "spell:1680",
-   "target": "Target 1",
-   "resources": {
-    "rage": 59
-   },
-   "outcome": "crit",
-   "amount": 719
-  },
-  {
-   "at_ms": 153742,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 59
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 153752,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 65
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 154044,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 65
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 154054,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 80
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 155378,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 81
-   },
-   "outcome": "hit",
-   "amount": 150
-  },
-  {
-   "at_ms": 156044,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 85
-   },
-   "outcome": "hit",
-   "amount": 300
-  },
-  {
-   "at_ms": 157014,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 85
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 158146,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 89
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 158813,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 89
-   },
-   "outcome": "crit",
-   "amount": 298
-  },
-  {
-   "at_ms": 158823,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 96
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 160207,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 97
-   },
-   "outcome": "crit",
-   "amount": 594
-  },
-  {
-   "at_ms": 160451,
+   "at_ms": 121831,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 100
    },
-   "outcome": "hit",
-   "amount": 149
+   "outcome": "miss"
   },
   {
-   "at_ms": 161150,
+   "at_ms": 121841,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 100
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 122996,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 100
+   },
+   "outcome": "crit",
+   "amount": 837
+  },
+  {
+   "at_ms": 123006,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 100
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 123985,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 100
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 124000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 70
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 124000,
+   "action": "spell:23894",
+   "target": "Target 1",
+   "resources": {
+    "rage": 70
+   },
+   "outcome": "hit",
+   "amount": 905
+  },
+  {
+   "at_ms": 124842,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 71
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 124852,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 88
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 126139,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 90
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 126688,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 92
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 127500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 68
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 127500,
+   "action": "spell:1680",
+   "target": "Target 1",
+   "resources": {
+    "rage": 68
+   },
+   "outcome": "hit",
+   "amount": 616
+  },
+  {
+   "at_ms": 128292,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 68
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 128302,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 83
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 128534,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 84
+   },
+   "outcome": "crit",
+   "amount": 787
+  },
+  {
+   "at_ms": 128544,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 92
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 130000,
+   "action": "spell:12328",
+   "target": "Target 1",
+   "resources": {
+    "rage": 83
+   }
+  },
+  {
+   "at_ms": 130390,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 83
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 130446,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 91
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 130456,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 100
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 131500,
    "action": "spell:1719",
    "target": "Target 1",
    "resources": {
@@ -3703,1201 +4073,983 @@
    }
   },
   {
-   "at_ms": 162087,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 100
-   },
-   "outcome": "crit",
-   "amount": 281
-  },
-  {
-   "at_ms": 162207,
+   "at_ms": 132236,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
     "rage": 100
    },
-   "outcome": "hit",
-   "amount": 294
+   "outcome": "glance",
+   "amount": 379
   },
   {
-   "at_ms": 162650,
-   "action": "spell:12867",
+   "at_ms": 132600,
+   "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 0
+    "rage": 100
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 162650,
+   "at_ms": 133000,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
-    "rage": 0
+    "rage": 12
    },
-   "outcome": "hit",
-   "amount": 1310
+   "outcome": "crit",
+   "amount": 2275
   },
   {
-   "at_ms": 163723,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 128
-  },
-  {
-   "at_ms": 163733,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 6
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 164207,
+   "at_ms": 134083,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 6
+    "rage": 12
    },
    "outcome": "miss"
   },
   {
-   "at_ms": 164250,
+   "at_ms": 134093,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 28
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 134500,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 164250,
+   "at_ms": 134500,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "crit",
-   "amount": 2066
+   "amount": 2160
   },
   {
-   "at_ms": 165360,
+   "at_ms": 134754,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 134764,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 14
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 135929,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 15
+   },
+   "outcome": "dodge"
+  },
+  {
+   "at_ms": 135939,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 24
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 136000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 136000,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "hit",
+   "amount": 1308
+  },
+  {
+   "at_ms": 136908,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "hit",
+   "amount": 302
+  },
+  {
+   "at_ms": 137500,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 7
+   }
+  },
+  {
+   "at_ms": 137785,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 7
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 137795,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 23
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 138500,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 138500,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 2495
+  },
+  {
+   "at_ms": 139062,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 621
+  },
+  {
+   "at_ms": 139631,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 848
+  },
+  {
+   "at_ms": 139641,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 16
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 140000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 140000,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 2400
+  },
+  {
+   "at_ms": 141215,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 1
    },
-   "outcome": "hit",
-   "amount": 145
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 165370,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 166207,
+   "at_ms": 141477,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 7
+    "rage": 14
    },
-   "outcome": "hit",
-   "amount": 269
+   "outcome": "crit",
+   "amount": 863
   },
   {
-   "at_ms": 166250,
+   "at_ms": 141487,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 30
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 141500,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 166250,
+   "at_ms": 141500,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
+   },
+   "outcome": "hit",
+   "amount": 1315
+  },
+  {
+   "at_ms": 143000,
+   "action": "spell:18499",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   }
+  },
+  {
+   "at_ms": 143323,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 734
+  },
+  {
+   "at_ms": 143369,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 8
    },
    "outcome": "dodge"
   },
   {
-   "at_ms": 166996,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 140
-  },
-  {
-   "at_ms": 167006,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 6
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 168207,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "hit",
-   "amount": 234
-  },
-  {
-   "at_ms": 168633,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "crit",
-   "amount": 244
-  },
-  {
-   "at_ms": 170207,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 170250,
+   "at_ms": 144500,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 170250,
+   "at_ms": 144500,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "crit",
-   "amount": 2512
+   "amount": 2549
   },
   {
-   "at_ms": 170269,
+   "at_ms": 144500,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 145523,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 9
+   },
+   "outcome": "crit",
+   "amount": 603
+  },
+  {
+   "at_ms": 145533,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 23
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 146000,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 146000,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 2530
+  },
+  {
+   "at_ms": 146346,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 815
+  },
+  {
+   "at_ms": 146356,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 16
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 147500,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 2501
+  },
+  {
+   "at_ms": 147677,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
-   "outcome": "hit",
-   "amount": 135
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 171905,
-   "action": "other:attack/2",
+   "at_ms": 147687,
+   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 4
+    "rage": 14
    },
-   "outcome": "hit",
-   "amount": 151
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 172207,
+   "at_ms": 148192,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 7
+    "rage": 15
    },
-   "outcome": "hit",
-   "amount": 235
+   "outcome": "miss"
   },
   {
-   "at_ms": 172217,
+   "at_ms": 148202,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 23
+   },
+   "outcome": "glance",
+   "amount": 417
+  },
+  {
+   "at_ms": 149000,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 12
+   },
+   "outcome": "crit",
+   "amount": 2503
+  },
+  {
+   "at_ms": 149831,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 12
+   },
+   "outcome": "crit",
+   "amount": 568
+  },
+  {
+   "at_ms": 150048,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 21
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 150500,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "hit",
+   "amount": 1298
+  },
+  {
+   "at_ms": 151894,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 152009,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 8
+   },
+   "outcome": "miss"
+  },
+  {
+   "at_ms": 152019,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 22
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 172250,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 172250,
+   "at_ms": 152050,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "crit",
-   "amount": 2515
+   "amount": 2504
   },
   {
-   "at_ms": 173542,
+   "at_ms": 153550,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 1
+   }
+  },
+  {
+   "at_ms": 153767,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 1
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 154165,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 1
+   },
+   "outcome": "crit",
+   "amount": 530
+  },
+  {
+   "at_ms": 154550,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "hit",
+   "amount": 1317
+  },
+  {
+   "at_ms": 155613,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 812
+  },
+  {
+   "at_ms": 156050,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 2206
+  },
+  {
+   "at_ms": 156319,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 637
+  },
+  {
+   "at_ms": 157550,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 157550,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 2369
+  },
+  {
+   "at_ms": 157741,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "hit",
+   "amount": 426
+  },
+  {
+   "at_ms": 158754,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "glance",
-   "amount": 98
+   "amount": 272
   },
   {
-   "at_ms": 174207,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 5
-   },
-   "outcome": "crit",
-   "amount": 468
-  },
-  {
-   "at_ms": 174217,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 20
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 174250,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 174250,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 1239
-  },
-  {
-   "at_ms": 175178,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 281
-  },
-  {
-   "at_ms": 176207,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 3
-   },
-   "outcome": "hit",
-   "amount": 239
-  },
-  {
-   "at_ms": 176814,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 3
-   },
-   "outcome": "crit",
-   "amount": 320
-  },
-  {
-   "at_ms": 176824,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 9
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 177500,
-   "action": "spell:2687",
-   "target": "Target 1",
-   "resources": {
-    "rage": 20
-   }
-  },
-  {
-   "at_ms": 177500,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 2315
-  },
-  {
-   "at_ms": 178207,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 265
-  },
-  {
-   "at_ms": 178451,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 178461,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 13
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 179000,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 1070
-  },
-  {
-   "at_ms": 180087,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 2
-   },
-   "outcome": "crit",
-   "amount": 282
-  },
-  {
-   "at_ms": 180207,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 5
-   },
-   "outcome": "crit",
-   "amount": 591
-  },
-  {
-   "at_ms": 181500,
-   "action": "spell:18499",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   }
-  },
-  {
-   "at_ms": 181723,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "hit",
-   "amount": 148
-  },
-  {
-   "at_ms": 182207,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 183000,
-   "action": "spell:12328",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   }
-  },
-  {
-   "at_ms": 183360,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "hit",
-   "amount": 120
-  },
-  {
-   "at_ms": 184291,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 12
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 184301,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 28
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 184500,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 12
-   },
-   "outcome": "crit",
-   "amount": 2204
-  },
-  {
-   "at_ms": 185081,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 13
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 186000,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 2583
-  },
-  {
-   "at_ms": 186292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 186717,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 8
-   },
-   "outcome": "hit",
-   "amount": 124
-  },
-  {
-   "at_ms": 186727,
+   "at_ms": 158764,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 14
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 187500,
+   "at_ms": 159050,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
-    "rage": 12
+    "rage": 0
    },
    "outcome": "hit",
-   "amount": 1313
+   "amount": 1195
   },
   {
-   "at_ms": 188292,
+   "at_ms": 159587,
    "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 13
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 188302,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 28
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 188354,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 29
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 189000,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 189000,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 1203
-  },
-  {
-   "at_ms": 189990,
-   "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "glance",
-   "amount": 98
+   "amount": 379
   },
   {
-   "at_ms": 190292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 4
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 191626,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 4
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 192292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 9
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 192302,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 24
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 192350,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 1096
-  },
-  {
-   "at_ms": 193263,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 260
-  },
-  {
-   "at_ms": 194292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 3
-   },
-   "outcome": "crit",
-   "amount": 519
-  },
-  {
-   "at_ms": 194302,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 18
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 194350,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 194350,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 1281
-  },
-  {
-   "at_ms": 194899,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 158
-  },
-  {
-   "at_ms": 196292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 4
-   },
-   "outcome": "hit",
-   "amount": 233
-  },
-  {
-   "at_ms": 196350,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 2521
-  },
-  {
-   "at_ms": 196535,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 242
-  },
-  {
-   "at_ms": 196545,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 6
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 198172,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 7
-   },
-   "outcome": "crit",
-   "amount": 277
-  },
-  {
-   "at_ms": 198182,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 13
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 198200,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 198200,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 2512
-  },
-  {
-   "at_ms": 198292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 565
-  },
-  {
-   "at_ms": 199808,
+   "at_ms": 160908,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 8
    },
-   "outcome": "glance",
-   "amount": 98
+   "outcome": "dodge"
   },
   {
-   "at_ms": 199850,
+   "at_ms": 160918,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 0
+    "rage": 22
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 199850,
+   "at_ms": 160950,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
-   "outcome": "crit",
-   "amount": 2110
+   "outcome": "hit",
+   "amount": 1175
   },
   {
-   "at_ms": 200292,
+   "at_ms": 161433,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
-   "outcome": "miss"
+   "outcome": "crit",
+   "amount": 872
   },
   {
-   "at_ms": 201444,
-   "action": "other:attack/2",
+   "at_ms": 161443,
+   "action": "other:attack/3",
    "target": "Target 1",
    "resources": {
     "rage": 9
    },
-   "outcome": "glance",
-   "amount": 98
+   "outcome": "crit",
+   "amount": 961
   },
   {
-   "at_ms": 201500,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 12
-   },
-   "outcome": "hit",
-   "amount": 1073
-  },
-  {
-   "at_ms": 202292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 12
-   },
-   "outcome": "hit",
-   "amount": 265
-  },
-  {
-   "at_ms": 202302,
+   "at_ms": 162450,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 27
+    "rage": 0
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 203000,
+   "at_ms": 162450,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "crit",
-   "amount": 2056
+   "amount": 2151
   },
   {
-   "at_ms": 203081,
+   "at_ms": 163062,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "glance",
-   "amount": 98
+   "amount": 272
   },
   {
-   "at_ms": 204292,
+   "at_ms": 163289,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 5
+    "rage": 7
    },
-   "outcome": "miss"
+   "outcome": "glance",
+   "amount": 379
   },
   {
-   "at_ms": 204302,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 20
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 204500,
+   "at_ms": 163950,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "crit",
-   "amount": 2392
+   "amount": 2314
   },
   {
-   "at_ms": 204717,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 136
-  },
-  {
-   "at_ms": 206292,
+   "at_ms": 165135,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 4
+    "rage": 1
    },
    "outcome": "glance",
-   "amount": 189
+   "amount": 379
   },
   {
-   "at_ms": 206302,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 19
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 206350,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "crit",
-   "amount": 2230
-  },
-  {
-   "at_ms": 206354,
+   "at_ms": 165216,
    "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "miss"
-  },
-  {
-   "at_ms": 207990,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 4
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 208000,
-   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
     "rage": 10
    },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 208292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 11
-   },
    "outcome": "crit",
-   "amount": 540
+   "amount": 611
   },
   {
-   "at_ms": 208302,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 26
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 208350,
-   "action": "spell:20662",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "hit",
-   "amount": 1072
-  },
-  {
-   "at_ms": 209626,
-   "action": "other:attack/2",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "glance",
-   "amount": 98
-  },
-  {
-   "at_ms": 210292,
-   "action": "other:attack/1",
-   "target": "Target 1",
-   "resources": {
-    "rage": 4
-   },
-   "outcome": "glance",
-   "amount": 189
-  },
-  {
-   "at_ms": 210302,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 19
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 210350,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 0
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 210350,
+   "at_ms": 165450,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "crit",
-   "amount": 2663
+   "amount": 2592
   },
   {
-   "at_ms": 211263,
-   "action": "other:attack/2",
+   "at_ms": 165450,
+   "action": "other:attack/3",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
-   "outcome": "hit",
-   "amount": 119
+   "outcome": "crit",
+   "amount": 853
   },
   {
-   "at_ms": 211850,
-   "action": "spell:18499",
+   "at_ms": 165460,
+   "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 4
-   }
+    "rage": 16
+   },
+   "outcome": "tick_crit",
+   "amount": 377
   },
   {
-   "at_ms": 212292,
+   "at_ms": 166950,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 2626
+  },
+  {
+   "at_ms": 167296,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
-    "rage": 4
+    "rage": 0
+   },
+   "outcome": "glance",
+   "amount": 379
+  },
+  {
+   "at_ms": 167306,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 16
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 167370,
+   "action": "other:attack/2",
+   "target": "Target 1",
+   "resources": {
+    "rage": 17
+   },
+   "outcome": "glance",
+   "amount": 272
+  },
+  {
+   "at_ms": 167380,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 32
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 168450,
+   "action": "spell:12867",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 168450,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "crit",
+   "amount": 2172
+  },
+  {
+   "at_ms": 169142,
+   "action": "other:attack/1",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
    },
    "outcome": "miss"
   },
   {
-   "at_ms": 212302,
-   "action": "spell:12867",
-   "target": "Target 1",
-   "resources": {
-    "rage": 19
-   },
-   "outcome": "tick",
-   "amount": 48
-  },
-  {
-   "at_ms": 212899,
+   "at_ms": 169524,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 20
+    "rage": 9
    },
-   "outcome": "hit",
-   "amount": 138
+   "outcome": "crit",
+   "amount": 632
   },
   {
-   "at_ms": 213350,
+   "at_ms": 169950,
    "action": "spell:20662",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
    "outcome": "crit",
-   "amount": 2267
+   "amount": 2393
   },
   {
-   "at_ms": 214292,
+   "at_ms": 170988,
    "action": "other:attack/1",
    "target": "Target 1",
    "resources": {
     "rage": 0
    },
-   "outcome": "hit",
-   "amount": 298
+   "outcome": "miss"
   },
   {
-   "at_ms": 214535,
+   "at_ms": 171450,
+   "action": "spell:1329555",
+   "target": "Target 1",
+   "resources": {
+    "rage": 9
+   }
+  },
+  {
+   "at_ms": 171677,
    "action": "other:attack/2",
    "target": "Target 1",
    "resources": {
-    "rage": 8
+    "rage": 9
    },
-   "outcome": "crit",
-   "amount": 247
+   "outcome": "glance",
+   "amount": 272
   },
   {
-   "at_ms": 214545,
+   "at_ms": 172450,
    "action": "spell:12867",
    "target": "Target 1",
    "resources": {
-    "rage": 14
+    "rage": 0
    },
-   "outcome": "tick",
-   "amount": 48
+   "outcome": "tick_crit",
+   "amount": 377
+  },
+  {
+   "at_ms": 172450,
+   "action": "spell:20662",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "hit",
+   "amount": 1348
+  },
+  {
+   "at_ms": 172450,
+   "action": "other:attack/3",
+   "target": "Target 1",
+   "resources": {
+    "rage": 0
+   },
+   "outcome": "glance",
+   "amount": 417
   }
  ],
  "sim_id": "simfullfixt1",
  "dps_histogram": {
-  "start": 311,
+  "start": 731,
   "bin_dps": 1,
   "counts": [
    1,
@@ -4915,6 +5067,18 @@
    0,
    0,
    0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
    1,
    1,
    1,
@@ -4922,6 +5086,14 @@
    1,
    1,
    1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   2,
+   2,
+   2,
    2,
    2,
    2,
@@ -4931,39 +5103,55 @@
    3,
    3,
    3,
+   3,
+   3,
+   4,
    4,
    4,
    4,
    5,
    5,
+   5,
+   5,
    6,
    6,
+   6,
+   6,
+   7,
    7,
    7,
    8,
    8,
    9,
    9,
+   9,
+   10,
    10,
    11,
    11,
    12,
+   12,
    13,
    13,
    14,
+   14,
+   15,
    15,
    16,
    16,
    17,
    18,
+   18,
    19,
    20,
+   20,
    21,
-   21,
+   22,
    22,
    23,
    24,
    25,
+   26,
    26,
    27,
    28,
@@ -4975,93 +5163,203 @@
    33,
    34,
    35,
-   35,
    36,
    37,
-   37,
    38,
    39,
+   40,
+   41,
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   50,
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62,
+   63,
+   64,
+   65,
+   65,
+   66,
+   67,
+   68,
+   69,
+   69,
+   70,
+   71,
+   72,
+   72,
+   73,
+   74,
+   74,
+   75,
+   75,
+   76,
+   76,
+   77,
+   77,
+   78,
+   78,
+   78,
+   79,
+   79,
+   79,
+   80,
+   80,
+   80,
+   80,
+   80,
+   80,
+   80,
+   80,
+   80,
+   80,
+   80,
+   80,
+   80,
+   79,
+   79,
+   79,
+   79,
+   78,
+   78,
+   78,
+   77,
+   77,
+   76,
+   76,
+   75,
+   248,
+   74,
+   73,
+   73,
+   72,
+   71,
+   71,
+   70,
+   69,
+   69,
+   68,
+   67,
+   66,
+   65,
+   64,
+   64,
+   63,
+   62,
+   61,
+   60,
+   59,
+   58,
+   57,
+   56,
+   55,
+   54,
+   53,
+   52,
+   51,
+   50,
+   49,
+   48,
+   47,
+   46,
+   45,
+   44,
+   43,
+   42,
+   41,
+   40,
    39,
-   40,
-   40,
-   41,
-   41,
-   41,
-   41,
-   42,
-   42,
-   42,
-   42,
-   42,
-   42,
-   42,
-   42,
-   41,
-   41,
-   41,
-   40,
-   129,
-   40,
    39,
    38,
-   38,
-   37,
    37,
    36,
    35,
-   34,
    34,
    33,
    32,
    31,
    30,
    29,
-   28,
+   29,
    28,
    27,
    26,
    25,
+   25,
    24,
    23,
+   22,
    22,
    21,
    20,
    19,
    19,
    18,
+   18,
    17,
+   16,
    16,
    15,
    15,
    14,
    13,
+   13,
    12,
    12,
+   11,
+   11,
    11,
    10,
    10,
    9,
    9,
    8,
+   8,
+   8,
    7,
    7,
+   7,
+   6,
    6,
    6,
    6,
    5,
    5,
+   5,
+   5,
    4,
    4,
    4,
+   4,
    3,
    3,
    3,
    3,
+   3,
+   3,
    2,
    2,
    2,
    2,
    2,
+   2,
+   2,
    1,
    1,
    1,
@@ -5069,6 +5367,44 @@
    1,
    1,
    1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
    0,
    0,
    0,
@@ -5109,62 +5445,68 @@
    "gained": [
     {
      "action": "other:attack/1",
-     "amount": 510.1,
-     "wasted": 6.0
+     "amount": 850.8,
+     "wasted": 22.8
     },
     {
      "action": "other:attack/2",
-     "amount": 421.4,
-     "wasted": 5.0
+     "amount": 680.6,
+     "wasted": 17.1
+    },
+    {
+     "action": "other:attack/3",
+     "amount": 255.2,
+     "wasted": 11.4
     },
     {
      "action": "spell:2687",
-     "amount": 99.8,
-     "wasted": 3.0
+     "amount": 106.4,
+     "wasted": 0
+    },
+    {
+     "action": "item:13442",
+     "amount": 148.9,
+     "wasted": 5.7
     },
     {
      "action": "spell:18499",
-     "amount": 77.6,
+     "amount": 85.1,
      "wasted": 0
     }
    ],
    "spent": [
     {
-     "action": "spell:11567",
-     "amount": 452.6
+     "action": "spell:20662",
+     "amount": 529.0
     },
     {
-     "action": "spell:20662",
-     "amount": 364.3
+     "action": "spell:23894",
+     "amount": 423.2
+    },
+    {
+     "action": "spell:11567",
+     "amount": 634.8
     },
     {
      "action": "spell:1680",
-     "amount": 198.7
+     "amount": 423.2
     },
     {
-     "action": "spell:12328",
-     "amount": 33.1
-    },
-    {
-     "action": "spell:11585",
-     "amount": 55.2
+     "action": "spell:1329555",
+     "amount": 105.8
     }
    ]
   }
  ],
- "sample_duration_ms": 214545,
+ "sample_duration_ms": 173950,
  "sample_auras": [
   {
    "action": "spell:12328",
    "on": "player",
    "segments": [
     [
-     0,
-     30000
-    ],
-    [
-     183000,
-     213000
+     130000,
+     160000
     ]
    ]
   },
@@ -5173,8 +5515,8 @@
    "on": "player",
    "segments": [
     [
-     161150,
-     176150
+     131500,
+     146500
     ]
    ]
   },
@@ -5193,24 +5535,16 @@
     [
      117500,
      127500
-    ],
-    [
-     177500,
-     187500
     ]
    ]
   },
   {
-   "action": "spell:20572",
+   "action": "spell:20554",
    "on": "player",
    "segments": [
     [
      0,
-     15000
-    ],
-    [
-     120000,
-     135000
+     10000
     ]
    ]
   },
@@ -5219,36 +5553,38 @@
    "on": "player",
    "segments": [
     [
-     1500,
-     11500
+     4000,
+     14000
     ],
     [
-     31500,
-     41500
+     34000,
+     44000
     ],
     [
-     61500,
-     71500
+     64000,
+     74000
     ],
     [
-     91500,
-     101500
+     96000,
+     106000
     ],
     [
-     121500,
-     131500
+     143000,
+     153000
+    ]
+   ]
+  },
+  {
+   "action": "item:13442",
+   "on": "player",
+   "segments": [
+    [
+     0,
+     20000
     ],
     [
-     151500,
-     161500
-    ],
-    [
-     181500,
-     191500
-    ],
-    [
-     211850,
-     214545
+     121000,
+     141000
     ]
    ]
   },
@@ -5354,23 +5690,7 @@
     ],
     [
      173767,
-     179817
-    ],
-    [
-     180716,
-     188203
-    ],
-    [
-     188960,
-     196583
-    ],
-    [
-     197327,
-     205397
-    ],
-    [
-     206740,
-     213806
+     173950
     ]
    ]
   },
@@ -5379,8 +5699,8 @@
    "on": "target",
    "segments": [
     [
-     1810,
-     214545
+     10,
+     173950
     ]
    ]
   },
@@ -5390,7 +5710,7 @@
    "segments": [
     [
      0,
-     214545
+     173950
     ]
    ]
   },
@@ -5400,21 +5720,21 @@
    "segments": [
     [
      0,
-     214545
+     173950
     ]
    ]
   },
   {
-   "action": "spell:17937",
+   "action": "spell:11722",
    "on": "target",
    "segments": [
     [
      0,
-     214545
+     173950
     ]
    ]
   }
  ],
  "created_at": "2026-11-04T21:04:11Z",
- "_fixture_note": "HAND-MADE by the simview coordinator from a real run plus illustrative new fields; lane E regenerates it from a real engine run before merge."
+ "_fixture_note": "HAND-MADE by the simview coordinator: a real forever-sim run of the published warrior-fury L60 raid BiS entry (design/mocks/data/simview/fury-request.json) plus ILLUSTRATIVE new fields (dps_histogram, resource_sources, sample_auras, sample outcome/amount, DEBUFF tracks, created_at). Lane E regenerates it from a real engine run before merge."
 }
