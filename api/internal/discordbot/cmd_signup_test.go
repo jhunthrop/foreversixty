@@ -54,6 +54,22 @@ func TestSignupCommand(t *testing.T) {
 			t.Fatalf("reply = %q, want no role for a guild event (events spec §3.5)", rep.Message.Content)
 		}
 	})
+	t.Run("Late names the night's own page", func(t *testing.T) {
+		for _, c := range []struct{ zone, title, want string }{
+			{"raid:onyxias-lair", "Onyxia's Lair", "Zulmara is Late as DPS for Onyxia's Lair, {d}. Add a note for the officers on the raid page."},
+			{"dungeon:ragefire-chasm", "Ragefire Chasm", "Zulmara is Late as DPS for Ragefire Chasm, {d}. Add a note for the officers on the run page."},
+			{"event:guild", "Guild meeting", "Zulmara is Late for Guild meeting, {d}. Add a note for the officers on the event page."},
+		} {
+			w := newPressWorld(t)
+			w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+			w.addRaid(t, w.gid, time.Now().Add(96*time.Hour))
+			w.exec(t, `update guild_raids set zone = $1, title = $2`, c.zone, c.title)
+			rep := w.signupCmd(t, opt(optStatus, "late"))
+			if want := strings.Replace(c.want, "{d}", w.day(), 1); rep.Message.Content != want {
+				t.Errorf("%s: reply = %q, want %q", c.zone, rep.Message.Content, want)
+			}
+		}
+	})
 	t.Run("none planned", func(t *testing.T) {
 		w := newPressWorld(t)
 		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)

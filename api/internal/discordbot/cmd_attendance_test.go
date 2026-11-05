@@ -34,11 +34,11 @@ func TestAttendanceRules(t *testing.T) {
 		main.Description != "7 of 8 raid nights · 26 of the last 30" || main.Fields[0].Name != segment(1, nil) {
 		t.Fatalf("main = %+v", main)
 	}
-	if got := main.Fields[0].Value; got != "Thu 10 Dec Present\nThu 3 Dec Late, excused\nSat 28 Nov Not in the log" ||
+	if got := main.Fields[0].Value; got != "Thu 10 Dec · Present\nThu 3 Dec · Late, excused\nSat 28 Nov · Not in the log" ||
 		strings.Contains(strings.ToLower(got), "no-show") {
 		t.Fatalf("last raids = %q", got)
 	}
-	if got := rep.Message.Embeds[1].Fields[0].Value; got != "Thu 10 Dec Came as Zulmara" {
+	if got := rep.Message.Embeds[1].Fields[0].Value; got != "Thu 10 Dec · Came as Zulmara" {
 		t.Fatalf("alt = %q", got)
 	}
 	if b := rep.Message.Components[0][0]; b.Label != segment(2, nil) || !strings.HasSuffix(b.URL, "#roster") || strings.Contains(b.URL, "/roster") {

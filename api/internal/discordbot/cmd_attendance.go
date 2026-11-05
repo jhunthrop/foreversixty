@@ -135,7 +135,7 @@ func attendanceEmbed(r guilds.AttendanceRecord, roster, zone string) notify.Embe
 	loc := raidLocation(zone)
 	lines := make([]string, len(r.Last))
 	for i, l := range r.Last {
-		lines[i] = l.StartsAt.In(loc).Format(attendanceLineDate) + " " + outcomeLine(l)
+		lines[i] = l.StartsAt.In(loc).Format(attendanceLineDate) + lineJoin + outcomeLine(l)
 	}
 	e.Fields = []notify.EmbedField{{Name: officerCopy.LastRaids, Value: strings.Join(lines, "\n")}}
 	return e

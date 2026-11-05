@@ -387,7 +387,7 @@ func TestPressFlowSentences(t *testing.T) {
 		{name: "late", setup: zulmara,
 			act: func(t *testing.T, w *pressWorld) Reply { return w.press(t, "late") },
 			want: func(w *pressWorld) string {
-				return spec(t, "Press: outcomes", 1, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title, "Date": w.day()})
+				return spec(t, "Press: outcomes", 1, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title, "Date": w.day(), "kind": "raid"})
 			},
 			buttons: func(w *pressWorld) []wantButton {
 				return []wantButton{changeSpecButton(w, keyZulmara), {label: pressCopy.NoteButton, url: w.raidURL() + "#signup"}}

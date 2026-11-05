@@ -41,6 +41,14 @@ var kindWords = map[string]string{
 	guilds.ZoneEvent:   "event",
 }
 
+// kindWord is kindWords' word for a zone kind, "raid" for a kind it does not name.
+func kindWord(zoneKind string) string {
+	if word, ok := kindWords[zoneKind]; ok {
+		return word
+	}
+	return kindWords[guilds.ZoneRaid]
+}
+
 // The option descriptions that more than one command shares.
 const (
 	descRaidOption       = "Which raid. The next one if left out."
