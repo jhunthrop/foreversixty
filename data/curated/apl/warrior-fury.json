@@ -33,12 +33,12 @@
     {
       "from_level": 60,
       "step": 8,
-      "notes": "On cooldown, right behind Whirlwind: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover."
+      "notes": "On cooldown, right behind Whirlwind: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover."
     },
     {
       "from_level": 60,
       "step": 9,
-      "notes": "Under 80 rage, back every 30 seconds: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2. Hold it for the fears on Magmadar, Onyxia and Nefarian."
+      "notes": "On cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2."
     },
     {
       "from_level": 60,
@@ -267,7 +267,7 @@
         }
       },
       {
-        "notes": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+        "notes": "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -277,7 +277,7 @@
         }
       },
       {
-        "notes": "From 36, under 80 rage, back every 30 seconds: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2. Hold it for the fears on Magmadar, Onyxia and Nefarian.",
+        "notes": "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2.",
         "action": {
           "condition": {
             "and": {
@@ -343,7 +343,7 @@
         }
       },
       {
-        "notes": "Only above 60 rage, and once you have Execute never in the Execute phase: hold that rage for it. It is queued on your next swing and costs no global cooldown.",
+        "notes": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it. It is queued on your next swing and costs no global cooldown.",
         "action": {
           "condition": {
             "and": {
