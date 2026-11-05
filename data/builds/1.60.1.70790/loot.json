@@ -56959,6 +56959,7 @@
       "id": "world:bone-witch",
       "kind": "world",
       "name": "Bone Witch",
+      "opens": "later",
       "items": [
         23090,
         23093
@@ -70685,6 +70686,7 @@
       "id": "world:lumbering-horror",
       "kind": "world",
       "name": "Lumbering Horror",
+      "opens": "later",
       "items": [
         23090,
         23093
@@ -80443,6 +80445,7 @@
       "id": "world:spirit-of-the-damned",
       "kind": "world",
       "name": "Spirit of the Damned",
+      "opens": "later",
       "items": [
         23090,
         23093
@@ -103691,7 +103694,6 @@
       "id": "vendor:227853",
       "kind": "vendor",
       "name": "Pix Xizzix",
-      "opens": "later",
       "npc_id": 227853,
       "items": [
         228175,
@@ -134402,7 +134404,8 @@
         "faction_source": "classic-db",
         "min_level": 60,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       }
     ],
     "18366": [
@@ -134637,7 +134640,8 @@
         "faction_source": "classic-db",
         "min_level": 56,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       },
       {
         "quest_id": 7877,
@@ -134646,7 +134650,8 @@
         "faction_source": "classic-db",
         "min_level": 56,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       }
     ],
     "18421": [
@@ -134657,7 +134662,8 @@
         "faction_source": "classic-db",
         "min_level": 56,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       },
       {
         "quest_id": 7877,
@@ -134666,7 +134672,8 @@
         "faction_source": "classic-db",
         "min_level": 56,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       }
     ],
     "18424": [
@@ -134677,7 +134684,8 @@
         "faction_source": "classic-db",
         "min_level": 56,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       },
       {
         "quest_id": 7877,
@@ -134686,7 +134694,8 @@
         "faction_source": "classic-db",
         "min_level": 56,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       }
     ],
     "18465": [
@@ -134698,6 +134707,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "rogue"
         ]
@@ -134712,6 +134722,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "warrior"
         ]
@@ -134726,6 +134737,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "warlock"
         ]
@@ -134740,6 +134752,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "mage"
         ]
@@ -134754,6 +134767,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "priest"
         ]
@@ -134768,6 +134782,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "druid"
         ]
@@ -134782,6 +134797,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "shaman"
         ]
@@ -134796,6 +134812,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "paladin"
         ]
@@ -134810,6 +134827,7 @@
         "min_level": 54,
         "level": 60,
         "level_source": "classic-db",
+        "opens": "later",
         "classes": [
           "hunter"
         ]
@@ -134845,7 +134863,8 @@
         "faction_source": "classic-db",
         "min_level": 56,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       }
     ],
     "18536": [
@@ -134856,7 +134875,8 @@
         "faction_source": "classic-db",
         "min_level": 56,
         "level": 60,
-        "level_source": "classic-db"
+        "level_source": "classic-db",
+        "opens": "later"
       }
     ],
     "18585": [
