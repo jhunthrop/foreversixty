@@ -67,7 +67,7 @@ The leveling build pays that toll with a point in **Burning Soul**, a 23% chance
 
 ## Rotation and priority
 
-**Opener.** Mage Armor, Arcane Brilliance and your food buff go up before the pull. Conjure a Mana Ruby and a Mana Citrine and drink back to full. Start Pyroblast 6 seconds before the pull so it lands just after the tank's first hit: the full cast happens while nothing else is going on, and its burn starts your Fire Power count. Then Scorch to 5 stacks. Fire Blast whenever it is ready.
+**Opener.** Mage Armor, Arcane Brilliance and your food buff go up before the pull. Conjure a Mana Ruby and a Mana Citrine and drink back to full. Start Pyroblast 6 seconds before the pull so it lands just after the tank's first hit: the full cast happens while nothing else is going on, and its burn starts your Fire Power count. Then Scorch to 5 stacks, and from there Fire Blast whenever it is ready.
 
 **The loop.** Keep 5 Improved Scorch stacks rolling: every filler Scorch refreshes them, so you only think about the refresh after a movement break or a target swap. Fire Blast every time it is off cooldown. Pyroblast only on 3 stacks of Heating Up. Everything else is Scorch. A Pyroblast at the full 6 seconds, or on 1 or 2 stacks, loses to Scorch, and Fireball as a filler loses to Scorch even while your mana is full.
 
