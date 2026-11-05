@@ -35,7 +35,7 @@ import (
 // centreHarness mounts guilds.Mount on a real HTTP server, with DataDir pointed at this
 // repo's own data/builds (api/internal/bis's band reads, exactly as api/cmd/api/main.go
 // wires TreeDataDir in production) and Accounts backed by a real auth.Store so
-// claimed_by_name/loot award attribution resolve real battletags.
+// claimed_by/loot award attribution resolve real characters and battletags.
 type centreHarness struct {
 	t      *testing.T
 	store  *guilds.Store
@@ -223,7 +223,10 @@ func TestGuildCentreAcrossEveryViewerRole(t *testing.T) {
 		// all - every tank/healer spec has none, CONTROL_CENTRE.md's own documented gap)
 		// must get a real gear_gap and checked enchants, never the "no gear consent" read
 		// a missing class/spec/faction used to produce for every row on this guild.
-		if row.Consent == "gear" || row.Consent == "gear_bags" {
+		// Week-one spec 3.3: a character under 60 is leveling and is not graded, so it has no
+		// enchant check, no talent shortfall and no nudge.
+		levelingRow := row.Level != nil && *row.Level < 60
+		if !levelingRow && (row.Consent == "gear" || row.Consent == "gear_bags") {
 			if !row.Enchants.Checked {
 				t.Errorf("row %s has gear consent but enchants.checked = false", row.CharacterKey)
 			}
@@ -238,13 +241,11 @@ func TestGuildCentreAcrossEveryViewerRole(t *testing.T) {
 			if row.Class == "" {
 				t.Errorf("owner row's class is empty, want %q from its own export", homeClass[ownerKey])
 			}
-			// Live-fix round, defect 1: the owner's own real export carries level=23, no
-			// talents spent - the max a level-23 character can have spent is 23-9=14,
-			// never talentPointsAtLevel60's level-60 figure (51), which used to read as
-			// "40 unspent" instead of the true, much smaller 14.
-			if row.TalentPointsUnspent != 14 {
-				t.Errorf("owner row talent_points_unspent = %d, want 14 (level 23, never a level-60 assumption)",
-					row.TalentPointsUnspent)
+			// The owner's own real export carries level=23: leveling, so nothing is graded and no
+			// talent shortfall is reported (never talentPointsAtLevel60's "40 unspent").
+			if !levelingRow || row.TalentPointsUnspent != 0 {
+				t.Errorf("owner row level %v talent_points_unspent = %d, want a leveling row with 0",
+					row.Level, row.TalentPointsUnspent)
 			}
 		}
 	}
@@ -289,16 +290,22 @@ func TestGuildCentreAcrossEveryViewerRole(t *testing.T) {
 	res = h.get(fmt.Sprintf("/v1/guilds/%d/readiness", guildID))
 	h.data(res, &readiness)
 	for _, row := range readiness.Rows {
+		if row.Level != nil && *row.Level < 60 {
+			if row.NudgeText != nil {
+				t.Errorf("officer view leveling row %s has nudge_text %q, want none", row.CharacterKey, *row.NudgeText)
+			}
+			continue
+		}
 		if row.NudgeText == nil {
 			t.Errorf("officer view row %s missing nudge_text", row.CharacterKey)
 		}
 	}
 
-	// --- owner/leader: claimed_by_name resolves ---
+	// --- owner/leader: claimed_by names the holder's character ---
 	h.actor = auth.Actor{UserID: ownerID, Role: "user", Method: "session"}
 	res = h.get(fmt.Sprintf("/v1/guilds/%d/home", guildID))
 	h.data(res, &home)
-	if home.Claim.State != "claimed" || home.Claim.ClaimedByName == nil {
+	if home.Claim.State != "claimed" || home.Claim.ClaimedBy == nil {
 		t.Errorf("claim = %+v, want claimed with a resolved name", home.Claim)
 	}
 

@@ -3133,6 +3133,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let specIcon: String?
     /// Withheld without gear consent.
     public let itemLevel: Int?
+    /// The export's level, else the addon roster's; null when neither carries one or without gear consent.
+    public let level: Int?
     public let attendance30: GuildAttendance?
     public let bestParse: RosterBestParse?
     public let rating: RosterRating?
@@ -3162,6 +3164,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         specName: String? = nil,
         specIcon: String? = nil,
         itemLevel: Int? = nil,
+        level: Int? = nil,
         attendance30: GuildAttendance? = nil,
         bestParse: RosterBestParse? = nil,
         rating: RosterRating? = nil,
@@ -3190,6 +3193,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         self.specName = specName
         self.specIcon = specIcon
         self.itemLevel = itemLevel
+        self.level = level
         self.attendance30 = attendance30
         self.bestParse = bestParse
         self.rating = rating
@@ -3220,6 +3224,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         case specName
         case specIcon
         case itemLevel
+        case level
         case attendance30
         case bestParse
         case rating
@@ -3279,6 +3284,8 @@ public struct GuildSummary: Codable, Sendable, Equatable {
     public let namedEncountersDown: Int
     public let pullsThisTier: Int
     public let updatedAt: Date
+    /// The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet.
+    public let tier: GuildTierCounts?
 
     public init(
         raiders: Int,
@@ -3286,7 +3293,8 @@ public struct GuildSummary: Codable, Sendable, Equatable {
         belowRatingFloor: Int,
         namedEncountersDown: Int,
         pullsThisTier: Int,
-        updatedAt: Date
+        updatedAt: Date,
+        tier: GuildTierCounts? = nil
     ) {
         self.raiders = raiders
         self.waitingForApproval = waitingForApproval
@@ -3294,6 +3302,30 @@ public struct GuildSummary: Codable, Sendable, Equatable {
         self.namedEncountersDown = namedEncountersDown
         self.pullsThisTier = pullsThisTier
         self.updatedAt = updatedAt
+        self.tier = tier
+    }
+}
+
+/// The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet.
+public struct GuildTierCounts: Codable, Sendable, Equatable {
+    public let name: String?
+    public let raids: [String]?
+    public let namedEncounters: Int?
+    public let down: Int?
+    public let pullsTotal: Int?
+
+    public init(
+        name: String? = nil,
+        raids: [String]? = nil,
+        namedEncounters: Int? = nil,
+        down: Int? = nil,
+        pullsTotal: Int? = nil
+    ) {
+        self.name = name
+        self.raids = raids
+        self.namedEncounters = namedEncounters
+        self.down = down
+        self.pullsTotal = pullsTotal
     }
 }
 

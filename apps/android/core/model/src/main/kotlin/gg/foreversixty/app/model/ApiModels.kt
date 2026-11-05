@@ -1192,6 +1192,8 @@ data class GuildRosterRow(
     @SerialName("spec_icon") val specIcon: String? = null,
     /** Withheld without gear consent. */
     @SerialName("item_level") val itemLevel: Int? = null,
+    /** The export's level, else the addon roster's; null when neither carries one or without gear consent. */
+    @SerialName("level") val level: Int? = null,
     @SerialName("attendance_30") val attendance30: GuildAttendance? = null,
     @SerialName("best_parse") val bestParse: RosterBestParse? = null,
     @SerialName("rating") val rating: RosterRating? = null,
@@ -1217,6 +1219,18 @@ data class GuildSummary(
     @SerialName("named_encounters_down") val namedEncountersDown: Int,
     @SerialName("pulls_this_tier") val pullsThisTier: Int,
     @SerialName("updated_at") val updatedAt: String,
+    /** The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet. */
+    @SerialName("tier") val tier: GuildTierCounts? = null,
+)
+
+/** The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet. */
+@Serializable
+data class GuildTierCounts(
+    @SerialName("name") val name: String? = null,
+    @SerialName("raids") val raids: List<String>? = null,
+    @SerialName("named_encounters") val namedEncounters: Int? = null,
+    @SerialName("down") val down: Int? = null,
+    @SerialName("pulls_total") val pullsTotal: Int? = null,
 )
 
 /** What a healer did against the heal profile's fake raid; present only when the request set role_metrics for a healer spec. */
