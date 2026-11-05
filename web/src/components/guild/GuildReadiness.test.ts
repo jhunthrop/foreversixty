@@ -237,7 +237,7 @@ describe('GuildReadiness next-raid filter', () => {
     }).body;
     const at = markup.indexOf('data-testid="guild-readiness-enchants"');
     const pill = markup.slice(markup.lastIndexOf('<span', at), markup.indexOf('</span>', at));
-    expect(text(pill)).toContain('Main hand, Chest, Back, Feet');
+    expect(text(pill)).toContain('Main Hand, Chest, Back, Feet');
     expect(pill).not.toContain('line-clamp');
     expect(pill).not.toContain('overflow:hidden');
     expect(markup).not.toContain('more slots');

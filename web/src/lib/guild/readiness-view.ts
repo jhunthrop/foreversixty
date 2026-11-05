@@ -120,15 +120,18 @@ export function gearGapLabel(row: GuildReadinessRow): string {
   return `${upgrades} · +${gain} DPS`;
 }
 
-/** Humanises an enchant slot key ("main_hand" -> "Main hand") via the shared slot-label
+/** Humanises an enchant slot key ("main_hand" -> "Main Hand") via the shared slot-label
  *  table every other item surface already uses (web/src/lib/planner/types.ts's
  *  `SLOT_LABELS`) -- never a second, drifting slot-name table for this one cell. Falls
  *  back to a bare capitalised slug for a key `SLOT_LABELS` does not carry, the same
  *  fail-open leniency `capitalize` alone already gave an unrecognised value. */
 function enchantSlotLabel(slot: string): string {
-  return Object.prototype.hasOwnProperty.call(SLOT_LABELS, slot)
-    ? SLOT_LABELS[slot as Slot]
-    : capitalize(slot);
+  const label = Object.prototype.hasOwnProperty.call(SLOT_LABELS, slot) ? SLOT_LABELS[slot as Slot] : slot;
+  // The client's own tooltip casing ("Main Hand"), the words the loot cards and the bot use.
+  return label
+    .split(/[\s_]+/)
+    .map((word) => capitalize(word))
+    .join(' ');
 }
 
 /** Spec §4.E's Enchants cell, full text -- `checked: false` means no gear consent, read

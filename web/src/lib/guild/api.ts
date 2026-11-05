@@ -131,6 +131,9 @@ export interface GuildHomeSummary {
 export interface NeedsRaid {
   title: string;
   starts_at: string;
+  /** The character the viewer's account signed up for that raid (In, then Late, then Bench);
+   *  null with no such sign-up, when the line keeps the header character (guild round 3). */
+  character_key?: string | null;
 }
 
 /** `GET .../home`'s `standing` -- member and officer only; `null` when the viewer has no

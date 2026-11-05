@@ -153,12 +153,12 @@ describe('cell labels', () => {
 
   // Live-fix round, defect 4: the four real contract slot keys (readiness_core.go's
   // enchantableSlots) humanise via the shared SLOT_LABELS table, not a bare capitalised
-  // slug (main_hand -> "Main hand", never "Main_hand").
+  // slug (main_hand -> "Main Hand", the client's casing, never "Main_hand").
   it('enchantLabel humanises the real contract slot keys via SLOT_LABELS', () => {
     const missing = row({
       enchants: { missing_slots: ['main_hand', 'chest', 'back', 'feet'], checked: true },
     });
-    expect(enchantLabel(missing)).toBe('Main hand, Chest, Back, Feet');
+    expect(enchantLabel(missing)).toBe('Main Hand, Chest, Back, Feet');
   });
 
   it('consumablesLabel reads Stocked/Short, else why not', () => {

@@ -97,13 +97,13 @@ describe('RaidBandLine sentence', () => {
 
   it('reads the unsigned sentence', () => {
     expect(text(html(), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm CST, you have not signed up yet. 23 of 40 are in.',
+      'Thursday 8 pm CST, you have not signed up yet. 23 of 40 in.',
     );
   });
 
-  it('reads `{n} are in` while unsigned and the size is unknown', () => {
+  it('reads `{n} in` while unsigned and the size is unknown', () => {
     expect(text(html({ nextRaid: raid({ size: null }) }), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm CST, you have not signed up yet. 23 are in.',
+      'Thursday 8 pm CST, you have not signed up yet. 23 in.',
     );
   });
 
@@ -122,7 +122,7 @@ describe('RaidBandLine sentence', () => {
 
   it('keeps the guild clock first and adds the viewer’s own when the offsets differ', () => {
     expect(text(html({ viewerTimezone: 'America/New_York' }), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm CST (9 pm EST your time), you have not signed up yet. 23 of 40 are in.',
+      'Thursday 8 pm CST (9 pm EST your time), you have not signed up yet. 23 of 40 in.',
     );
   });
 });

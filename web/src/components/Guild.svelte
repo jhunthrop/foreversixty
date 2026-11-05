@@ -394,7 +394,8 @@
       myReadiness = null;
       return;
     }
-    const key = myCharacterKey;
+    // The needs line is the character the account signed up for that raid, else the header one.
+    const key = home.standing?.needs_raid?.character_key ?? myCharacterKey;
     void fetchGuildReadiness(home.guild.id)
       .then((page) => {
         myReadiness = page.rows.find((row) => row.character_key === key) ?? null;
