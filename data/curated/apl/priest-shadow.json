@@ -247,7 +247,7 @@
         }
       },
       {
-        "notes": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+        "notes": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
         "action": {
           "castSpell": {
             "spellId": {
