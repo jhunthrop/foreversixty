@@ -3726,7 +3726,7 @@
           {
             "spell_id": 5177,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3766,7 +3766,7 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3806,7 +3806,7 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3853,7 +3853,7 @@
           {
             "spell_id": 5178,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3907,7 +3907,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -3961,7 +3961,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4015,7 +4015,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4069,7 +4069,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4123,7 +4123,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4177,7 +4177,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4231,7 +4231,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4285,7 +4285,7 @@
           {
             "spell_id": 5179,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4339,7 +4339,7 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4393,7 +4393,7 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4447,7 +4447,7 @@
           {
             "spell_id": 6780,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4501,7 +4501,7 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4555,7 +4555,7 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4609,7 +4609,7 @@
           {
             "spell_id": 8905,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4663,7 +4663,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4717,7 +4717,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4771,7 +4771,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4825,7 +4825,7 @@
           {
             "spell_id": 9912,
             "name": "Wrath",
-            "condition": "From 35, whenever no Eclipse charge is banked.",
+            "condition": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked.",
             "icon": "spell_nature_abolishmagic",
             "race_spell_ids": {}
           },
@@ -4999,7 +4999,7 @@
           {
             "spell_id": 5221,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5053,7 +5053,7 @@
           {
             "spell_id": 5221,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5114,7 +5114,7 @@
           {
             "spell_id": 5221,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5175,7 +5175,7 @@
           {
             "spell_id": 5221,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5236,7 +5236,7 @@
           {
             "spell_id": 6800,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5304,7 +5304,7 @@
           {
             "spell_id": 6800,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5372,7 +5372,7 @@
           {
             "spell_id": 6800,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5440,7 +5440,7 @@
           {
             "spell_id": 6800,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5508,7 +5508,7 @@
           {
             "spell_id": 8992,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5576,7 +5576,7 @@
           {
             "spell_id": 8992,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5644,7 +5644,7 @@
           {
             "spell_id": 8992,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5712,7 +5712,7 @@
           {
             "spell_id": 8992,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5780,7 +5780,7 @@
           {
             "spell_id": 9829,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5848,7 +5848,7 @@
           {
             "spell_id": 9829,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5916,7 +5916,7 @@
           {
             "spell_id": 9829,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -5984,7 +5984,7 @@
           {
             "spell_id": 9829,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -6052,7 +6052,7 @@
           {
             "spell_id": 9830,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -6120,7 +6120,7 @@
           {
             "spell_id": 9830,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -6188,7 +6188,7 @@
           {
             "spell_id": 9830,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -6256,7 +6256,7 @@
           {
             "spell_id": 9830,
             "name": "Shred",
-            "condition": "Your builder from level 20, always from behind the target.",
+            "condition": "Your builder from level 22, always from behind the target.",
             "icon": "spell_shadow_vampiricaura",
             "race_spell_ids": {}
           },
@@ -28711,7 +28711,7 @@
           {
             "spell_id": 8092,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           }
@@ -28737,7 +28737,7 @@
           {
             "spell_id": 8102,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           }
@@ -28763,7 +28763,7 @@
           {
             "spell_id": 8102,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           }
@@ -28810,7 +28810,7 @@
           {
             "spell_id": 8102,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -28864,7 +28864,7 @@
           {
             "spell_id": 8103,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -28918,7 +28918,7 @@
           {
             "spell_id": 8103,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -28975,7 +28975,7 @@
           {
             "spell_id": 8104,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29036,7 +29036,7 @@
           {
             "spell_id": 8104,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29097,7 +29097,7 @@
           {
             "spell_id": 8104,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29165,7 +29165,7 @@
           {
             "spell_id": 8105,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29233,7 +29233,7 @@
           {
             "spell_id": 8105,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29301,7 +29301,7 @@
           {
             "spell_id": 8105,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29375,7 +29375,7 @@
           {
             "spell_id": 8106,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "dwarf": 8104,
@@ -29455,7 +29455,7 @@
           {
             "spell_id": 8106,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "dwarf": 8104,
@@ -29529,7 +29529,7 @@
           {
             "spell_id": 8106,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29597,7 +29597,7 @@
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29665,7 +29665,7 @@
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29742,7 +29742,7 @@
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "undead": 8106
@@ -29822,7 +29822,7 @@
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "dwarf": 8106,
@@ -29893,7 +29893,7 @@
           {
             "spell_id": 10946,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29961,7 +29961,7 @@
           {
             "spell_id": 10947,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -30029,7 +30029,7 @@
           {
             "spell_id": 10947,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: your biggest hit for its cast time, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -31266,7 +31266,7 @@
           {
             "spell_id": 53,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31299,7 +31299,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31332,7 +31332,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31365,7 +31365,7 @@
           {
             "spell_id": 2589,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31398,7 +31398,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31431,7 +31431,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31471,7 +31471,7 @@
           {
             "spell_id": 2590,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31511,7 +31511,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31551,7 +31551,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31591,7 +31591,7 @@
           {
             "spell_id": 2591,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31631,7 +31631,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31671,7 +31671,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31711,7 +31711,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31758,7 +31758,7 @@
           {
             "spell_id": 8721,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31805,7 +31805,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31852,7 +31852,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31899,7 +31899,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31946,7 +31946,7 @@
           {
             "spell_id": 11279,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -31993,7 +31993,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -32040,7 +32040,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -32087,7 +32087,7 @@
           {
             "spell_id": 11280,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -32134,7 +32134,7 @@
           {
             "spell_id": 11281,
             "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Opportunity and Lethality land on it too.",
+            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
             "icon": "ability_backstab",
             "race_spell_ids": {}
           },
@@ -33844,7 +33844,7 @@
           {
             "spell_id": 8190,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -33898,7 +33898,7 @@
           {
             "spell_id": 8190,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -33952,7 +33952,7 @@
           {
             "spell_id": 8190,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34006,7 +34006,7 @@
           {
             "spell_id": 8190,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34067,7 +34067,7 @@
           {
             "spell_id": 8190,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34128,7 +34128,7 @@
           {
             "spell_id": 10585,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34189,7 +34189,7 @@
           {
             "spell_id": 10585,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34250,7 +34250,7 @@
           {
             "spell_id": 10585,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34311,7 +34311,7 @@
           {
             "spell_id": 10585,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34372,7 +34372,7 @@
           {
             "spell_id": 10585,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34433,7 +34433,7 @@
           {
             "spell_id": 10585,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34494,7 +34494,7 @@
           {
             "spell_id": 10585,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34555,7 +34555,7 @@
           {
             "spell_id": 10586,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34616,7 +34616,7 @@
           {
             "spell_id": 10586,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34677,7 +34677,7 @@
           {
             "spell_id": 10586,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34738,7 +34738,7 @@
           {
             "spell_id": 10586,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34799,7 +34799,7 @@
           {
             "spell_id": 10586,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34860,7 +34860,7 @@
           {
             "spell_id": 10587,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34921,7 +34921,7 @@
           {
             "spell_id": 10587,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -34982,7 +34982,7 @@
           {
             "spell_id": 10587,
             "name": "Magma Totem",
-            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds.",
+            "condition": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
             "icon": "spell_fire_selfdestruct",
             "race_spell_ids": {}
           },
@@ -42255,7 +42255,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42269,7 +42269,7 @@
           {
             "spell_id": 6546,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
@@ -42309,7 +42309,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42323,14 +42323,14 @@
           {
             "spell_id": 6546,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42370,7 +42370,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42384,14 +42384,14 @@
           {
             "spell_id": 6546,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42431,7 +42431,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42445,14 +42445,14 @@
           {
             "spell_id": 6547,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42466,7 +42466,7 @@
           {
             "spell_id": 1240193,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -42499,7 +42499,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42513,14 +42513,14 @@
           {
             "spell_id": 6547,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42534,7 +42534,7 @@
           {
             "spell_id": 1240193,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -42567,7 +42567,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42581,14 +42581,14 @@
           {
             "spell_id": 6547,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7384,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42609,7 +42609,7 @@
           {
             "spell_id": 1240193,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -42642,7 +42642,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42656,14 +42656,14 @@
           {
             "spell_id": 6547,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42684,7 +42684,7 @@
           {
             "spell_id": 1240193,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -42724,7 +42724,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42738,14 +42738,14 @@
           {
             "spell_id": 6548,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42766,7 +42766,7 @@
           {
             "spell_id": 1464,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -42806,7 +42806,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42820,14 +42820,14 @@
           {
             "spell_id": 6548,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42848,7 +42848,7 @@
           {
             "spell_id": 1464,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -42888,7 +42888,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42902,14 +42902,14 @@
           {
             "spell_id": 6548,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -42930,7 +42930,7 @@
           {
             "spell_id": 8820,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -42970,7 +42970,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -42984,14 +42984,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43019,7 +43019,7 @@
           {
             "spell_id": 8820,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43059,7 +43059,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43073,14 +43073,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 7887,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43108,7 +43108,7 @@
           {
             "spell_id": 8820,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43148,7 +43148,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43162,14 +43162,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43197,7 +43197,7 @@
           {
             "spell_id": 8820,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43237,7 +43237,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43251,14 +43251,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43286,7 +43286,7 @@
           {
             "spell_id": 11604,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43326,7 +43326,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43340,14 +43340,14 @@
           {
             "spell_id": 11572,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43375,7 +43375,7 @@
           {
             "spell_id": 11604,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43415,7 +43415,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43429,14 +43429,14 @@
           {
             "spell_id": 11573,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43464,7 +43464,7 @@
           {
             "spell_id": 11604,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43504,7 +43504,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43518,14 +43518,14 @@
           {
             "spell_id": 11573,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43553,7 +43553,7 @@
           {
             "spell_id": 11604,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43593,7 +43593,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43607,14 +43607,14 @@
           {
             "spell_id": 11573,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43642,7 +43642,7 @@
           {
             "spell_id": 11605,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43682,7 +43682,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43696,14 +43696,14 @@
           {
             "spell_id": 11573,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11584,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43731,7 +43731,7 @@
           {
             "spell_id": 11605,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43771,7 +43771,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43785,14 +43785,14 @@
           {
             "spell_id": 11574,
             "name": "Rend",
-            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, only a target bleeding from your Rend lights Overpower.",
+            "condition": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
             "icon": "ability_gouge",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11585,
             "name": "Overpower",
-            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with Improved Overpower it crits most of the time.",
+            "condition": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -43820,7 +43820,7 @@
           {
             "spell_id": 11605,
             "name": "Slam",
-            "condition": "Between Mortal Strikes, only with Improved Slam: the talent keeps your swing timer running through the cast.",
+            "condition": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast.",
             "icon": "ability_warrior_decisivestrike",
             "race_spell_ids": {}
           },
@@ -43855,7 +43855,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43895,7 +43895,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43942,7 +43942,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -43989,7 +43989,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44036,7 +44036,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44083,7 +44083,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44137,7 +44137,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44191,7 +44191,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44245,7 +44245,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44299,7 +44299,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44360,7 +44360,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44421,7 +44421,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44489,7 +44489,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44557,7 +44557,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44625,7 +44625,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44700,7 +44700,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44775,7 +44775,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44850,7 +44850,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -44925,7 +44925,7 @@
           {
             "spell_id": 2687,
             "name": "Bloodrage",
-            "condition": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+            "condition": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
             "icon": "ability_racial_bloodrage",
             "race_spell_ids": {}
           },
@@ -45145,7 +45145,7 @@
           {
             "spell_id": 1160,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45220,7 +45220,7 @@
           {
             "spell_id": 1160,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45295,7 +45295,7 @@
           {
             "spell_id": 1160,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45370,7 +45370,7 @@
           {
             "spell_id": 1160,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45445,7 +45445,7 @@
           {
             "spell_id": 1160,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45520,7 +45520,7 @@
           {
             "spell_id": 6190,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45602,7 +45602,7 @@
           {
             "spell_id": 6190,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45684,7 +45684,7 @@
           {
             "spell_id": 6190,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45766,7 +45766,7 @@
           {
             "spell_id": 6190,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45848,7 +45848,7 @@
           {
             "spell_id": 11554,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -45930,7 +45930,7 @@
           {
             "spell_id": 11554,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46019,7 +46019,7 @@
           {
             "spell_id": 11554,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46108,7 +46108,7 @@
           {
             "spell_id": 11554,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46197,7 +46197,7 @@
           {
             "spell_id": 11555,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46286,7 +46286,7 @@
           {
             "spell_id": 11555,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46375,7 +46375,7 @@
           {
             "spell_id": 11555,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46464,7 +46464,7 @@
           {
             "spell_id": 11555,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46553,7 +46553,7 @@
           {
             "spell_id": 11555,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46642,7 +46642,7 @@
           {
             "spell_id": 11556,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46731,7 +46731,7 @@
           {
             "spell_id": 11556,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46820,7 +46820,7 @@
           {
             "spell_id": 11556,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
@@ -46909,7 +46909,7 @@
           {
             "spell_id": 11556,
             "name": "Demoralizing Shout",
-            "condition": "Keep it on the boss: 204 less melee attack power at 60 takes a real slice off every swing.",
+            "condition": "Keep it on the boss: less attack power on the boss takes a real slice off every swing.",
             "icon": "ability_warrior_warcry",
             "race_spell_ids": {}
           },
