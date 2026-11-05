@@ -121,7 +121,7 @@ This is the guild's one channel for `raid_posted` and `raid_changed` (§6.2). Re
 
 **Gate (ruling G2).** Connect and test sit behind the same check as the raid writes, `CanForGuild(officer_views)`. A grandfathered guild passes it through its grant, exactly as its raid writes do. A guild with neither plan nor grant cannot post a raid, so a channel it connected would post nothing. `Remove` stays live in officer-read-only, as `Copy the sign-up list` does: stopping posts is never behind the plan. Officer-read-only (`officerTools === false`, gate spec §3.1, passed down from `GuildSettingsTab`) works as follows:
 - The gate sentence (§6.1, the raids sentence verbatim) sits under the h2 as `p#officer-tools-gate-discord`.
-- Its `Subscribe the guild` links to `#billing`. The Billing `<section>` gains `id="billing" class="scroll-mt-20"`.
+- Its `Subscribe your guild` links to `#billing`. The Billing `<section>` gains `id="billing" class="scroll-mt-20"`.
 - `Connect a Discord channel` renders as an `<a>` with no `href`, `aria-disabled="true"` and `opacity-50`, described by the sentence, and out of the tab order.
 - `Send test message` and `Test and switch on` are native `disabled`, described by the same sentence.
 
@@ -183,7 +183,7 @@ Touch and keyboard parity: every control is 44 px tall on phone; nothing is hove
 | Where | String |
 |---|---|
 | Tab button | `Plan a raid` |
-| Gate sentence (Raids tab, raid page) | `Planning and running raids are part of the guild plan. Subscribe the guild.` (link `Subscribe the guild`) |
+| Gate sentence (Raids tab, raid page) | `Planning and running raids are part of the guild plan. Subscribe your guild.` (link `Subscribe your guild`) |
 | Sub-heads | `Planned`, `Raid nights`, `Your sign-up`, `Sign-ups`, `Notes`, `Tanks`, `Healers`, `DPS`, `Late`, `Bench`, `Out`, `Not signed up` |
 | Show more | `Show all {n} planned raids` |
 | Empty Planned | member `No raid planned yet. Officers plan raids here.`; officer `No raid planned yet. Plan one and the guild can sign up.` |
@@ -217,7 +217,7 @@ Touch and keyboard parity: every control is 44 px tall on phone; nothing is hove
 | Settings · Discord (added 2026-10-27, lane G1b) | h2 `Discord`; button `Connect a Discord channel` (`Opening Discord…`) |
 | Settings · Discord explanation | `Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post this guild's raids there. You must manage webhooks in it. We keep only that webhook, encrypted.` |
 | Settings · Discord connected | `Posts raids to` `a Discord channel` / `Channel {first 4}…{last 4}` + ` · ` + `Open in Discord`; `Send test message` (`Sending…`), `Remove` (`Removing…`); `Connect a different channel` / `Connecting again replaces this channel and removes its webhook from Discord.` |
-| Settings · Discord gate | `Planning and running raids are part of the guild plan. Subscribe the guild.` (link `Subscribe the guild` to `#billing`); 403 line `Not saved. This guild's officer tools have ended.` |
+| Settings · Discord gate | `Planning and running raids are part of the guild plan. Subscribe your guild.` (link `Subscribe your guild` to `#billing`); 403 line `Not saved. This guild's officer tools have ended.` |
 | Settings · Discord return | connected `Connected. Send a test message to see it in the channel.`; denied `Cancelled in Discord. Nothing was connected.`; failed `Could not connect. You need to manage webhooks in that channel and be an officer of this guild. Ask a server admin for the permission, then try again.`; stuck `Discord did not open. Try again.` |
 | Settings · Discord test | `Sent. Check the channel.`; `Sent. Posts are on again.`; `Discord said: {error}.`; `Wait a minute before sending another test.`; `Could not send the test. Try again.` |
 | Settings · Discord warning, switched off | account §6.1 `Warning, one`, `Warning, several` and the connected `Switched off` rows verbatim (`Switched off after 5 failed posts in a row.`, `Last error from Discord: {last_error}.`, `Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.`, `Test and switch on`) |

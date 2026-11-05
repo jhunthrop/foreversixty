@@ -136,7 +136,7 @@ describe('GuildDiscordSection', () => {
     const body = html(NOT_CONNECTED, { officerTools: false });
     expect(body).toContain('id="officer-tools-gate-discord"');
     expect(text(body)).toContain('Planning and running raids are part of the guild plan.');
-    expect(body).toMatch(/<a[^>]*href="#billing"[^>]*>Subscribe the guild<\/a>/);
+    expect(body).toMatch(/<a[^>]*href="#billing"[^>]*>Subscribe your guild<\/a>/);
     const link = tag(body, 'discord-connect');
     expect(link).not.toContain('href=');
     expect(link).toContain('aria-disabled="true"');

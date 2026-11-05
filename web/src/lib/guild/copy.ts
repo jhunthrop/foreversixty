@@ -354,10 +354,10 @@ export const guildRosterModelCopy = {
 
 /** The officer-tools gate (design/specs/2026-10-25-officer-tools-gate.md section 7): the sentence
  *  and its link are separate so the link can be an anchor; together they read
- *  "Award and Nudge are part of the guild plan. Subscribe the guild." */
+ *  "Award and Nudge are part of the guild plan. Subscribe your guild." */
 export const guildGateCopy = {
   sentence: 'Award and Nudge are part of the guild plan. ',
-  link: 'Subscribe the guild',
+  link: 'Subscribe your guild',
   /** A Guild-tier guild (officer tools on, no Raid guild): launch pricing spec §3.2.8. */
   raidGuildSentence: 'Loot council and the readiness board are part of Raid guild. ',
   raidGuildLink: 'Move to Raid guild',

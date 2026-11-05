@@ -32,7 +32,7 @@ import {
   type GuildCentreStub,
 } from './support/officer-tools';
 
-const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe the guild.';
+const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe your guild.';
 const MASTER_ONLY = 'The subscriber or the guild leader manages billing and seats.';
 const SCOPED_PLAN_LINE = 'Officer tools · until 12 Dec 2026';
 const CLIPBOARD_SENTINEL = 'clipboard untouched';
@@ -309,7 +309,7 @@ test.describe('guild settings billing on a scoped grant (§5, states 10–12)', 
     you_are_billing_contact: false,
   });
 
-  test('state 10: the claim holder reads the grant and can subscribe the guild', async ({ page }) => {
+  test('state 10: the claim holder reads the grant and can subscribe your guild', async ({ page }) => {
     await openWith(page, guildBillingRead({ billing: SCOPED_GRANT_PLAN }));
     await expect(page.getByTestId('guild-billing-plan')).toHaveText(SCOPED_PLAN_LINE);
     await expect(page.getByTestId('guild-billing-contact')).toHaveText(
