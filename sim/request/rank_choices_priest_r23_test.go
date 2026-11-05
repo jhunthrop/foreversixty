@@ -65,3 +65,32 @@ func TestRound23ShadowMindBlastAndDeathRankRows(t *testing.T) {
 		}
 	}
 }
+
+// Round 23 (priest lane): a new shield rank costs more than the extra it
+// soaks for a few levels on band gear, race by race (Discipline rank 5 at 36
+// to 40, rank 4 at 30 for an Undead, rank 8 at 54 and 55 for a Human), and a
+// Holy Undead keeps Flash Heal rank 2 at 32.
+func TestRound23PriestShieldAndFlashHealRankRows(t *testing.T) {
+	const pws4, pws5, pws6, pws8, pws9 = 3747, 6065, 6066, 10899, 10900
+	const fh2, fh3 = 9472, 9473
+	for _, c := range []struct {
+		name, spec, race string
+		level            int
+		want, not        int32
+	}{
+		{"Undead shield at 30", "priest-discipline", "undead", 30, pws4, pws5},
+		{"Human shield at 30 is the top rank", "priest-discipline", "human", 30, pws5, pws4},
+		{"Troll shield at 36", "priest-discipline", "troll", 36, pws5, pws6},
+		{"Dwarf shield at 37", "priest-discipline", "dwarf", 37, pws5, pws6},
+		{"Gnome shield at 38 is the top rank", "priest-discipline", "gnome", 38, pws6, pws5},
+		{"Human shield at 40", "priest-discipline", "human", 40, pws5, pws6},
+		{"Human shield at 55", "priest-discipline", "human", 55, pws8, pws9},
+		{"Holy Undead Flash Heal at 32", "priest-holy", "undead", 32, fh2, fh3},
+		{"Holy Human Flash Heal at 32 is the top rank", "priest-holy", "human", 32, fh3, fh2},
+	} {
+		ids := rotationIDs(t, c.spec, "priest", c.level, specRankChoices(c.spec, BarePreset, c.race))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
