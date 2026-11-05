@@ -34287,7 +34287,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34320,7 +34320,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34360,7 +34360,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34400,7 +34400,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34440,7 +34440,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34480,7 +34480,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34527,7 +34527,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34581,7 +34581,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34635,7 +34635,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34689,7 +34689,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34750,7 +34750,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34811,7 +34811,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34872,7 +34872,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34933,7 +34933,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34994,7 +34994,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35055,7 +35055,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35116,7 +35116,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35177,7 +35177,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35238,7 +35238,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35299,7 +35299,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35360,7 +35360,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35421,7 +35421,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35482,7 +35482,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35543,7 +35543,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35604,7 +35604,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35665,7 +35665,7 @@
           {
             "spell_id": 10438,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },

@@ -5493,41 +5493,41 @@ ns.Data = {
 		["shaman-elemental"] = {
 			{ level = 10, lines = {
 				{ spellId = 8050, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 3599, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 3599, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 529, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
 				{ spellId = 529, name = "Lightning Bolt", condition = "Lightning Bolt for everything else." },
 			} },
 			{ level = 12, lines = {
 				{ spellId = 8050, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 3599, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 3599, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 408341, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
 				{ spellId = 529, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
 				{ spellId = 529, name = "Lightning Bolt", condition = "Lightning Bolt for everything else." },
 			} },
 			{ level = 14, lines = {
 				{ spellId = 8050, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 3599, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 3599, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 408341, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
 				{ spellId = 548, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
 				{ spellId = 548, name = "Lightning Bolt", condition = "Lightning Bolt for everything else." },
 			} },
 			{ level = 18, lines = {
 				{ spellId = 8052, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 3599, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 3599, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 408341, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
 				{ spellId = 548, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
 				{ spellId = 548, name = "Lightning Bolt", condition = "Lightning Bolt for everything else." },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 8052, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6363, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6363, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 408341, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
 				{ spellId = 915, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
 				{ spellId = 915, name = "Lightning Bolt", condition = "Lightning Bolt for everything else." },
 			} },
 			{ level = 22, lines = {
 				{ spellId = 8052, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6363, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6363, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 408342, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
 				{ spellId = 915, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
 				{ spellId = 915, name = "Lightning Bolt", condition = "Lightning Bolt for everything else." },
@@ -5535,7 +5535,7 @@ ns.Data = {
 			{ level = 26, lines = {
 				{ spellId = 5675, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 8052, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6363, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6363, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 8190, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 408342, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
 				{ spellId = 943, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
@@ -5544,7 +5544,7 @@ ns.Data = {
 			{ level = 28, lines = {
 				{ spellId = 5675, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 8053, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6363, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6363, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 8190, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 408342, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
 				{ spellId = 943, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
@@ -5553,7 +5553,7 @@ ns.Data = {
 			{ level = 30, lines = {
 				{ spellId = 5675, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 8053, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 8190, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 408342, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
 				{ spellId = 943, name = "Lightning Bolt", condition = "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left." },
@@ -5562,7 +5562,7 @@ ns.Data = {
 			{ level = 32, lines = {
 				{ spellId = 5675, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 8053, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 8190, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 421, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408343, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5572,7 +5572,7 @@ ns.Data = {
 			{ level = 34, lines = {
 				{ spellId = 5675, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 8053, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 8190, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 421, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408343, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5582,7 +5582,7 @@ ns.Data = {
 			{ level = 36, lines = {
 				{ spellId = 10495, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 8053, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10585, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 421, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408343, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5592,7 +5592,7 @@ ns.Data = {
 			{ level = 38, lines = {
 				{ spellId = 10495, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 8053, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10585, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 421, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408343, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5602,7 +5602,7 @@ ns.Data = {
 			{ level = 39, lines = {
 				{ spellId = 10495, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 8053, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6364, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10585, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 421, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408343, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5612,7 +5612,7 @@ ns.Data = {
 			{ level = 40, lines = {
 				{ spellId = 10495, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10447, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10585, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 930, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408343, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5622,7 +5622,7 @@ ns.Data = {
 			{ level = 42, lines = {
 				{ spellId = 10495, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10447, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10585, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 930, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408344, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5632,7 +5632,7 @@ ns.Data = {
 			{ level = 44, lines = {
 				{ spellId = 10495, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10447, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10585, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 930, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408344, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5642,7 +5642,7 @@ ns.Data = {
 			{ level = 45, lines = {
 				{ spellId = 10495, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10447, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10585, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 930, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408344, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5652,7 +5652,7 @@ ns.Data = {
 			{ level = 46, lines = {
 				{ spellId = 10496, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10447, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10586, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 930, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408344, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5662,7 +5662,7 @@ ns.Data = {
 			{ level = 48, lines = {
 				{ spellId = 10496, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10447, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 6365, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10586, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 2860, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408344, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5672,7 +5672,7 @@ ns.Data = {
 			{ level = 50, lines = {
 				{ spellId = 10496, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10447, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10586, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 2860, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408344, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5682,7 +5682,7 @@ ns.Data = {
 			{ level = 51, lines = {
 				{ spellId = 10496, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10447, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10586, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 2860, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408344, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5692,7 +5692,7 @@ ns.Data = {
 			{ level = 52, lines = {
 				{ spellId = 10496, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10448, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10586, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 2860, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408345, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5702,7 +5702,7 @@ ns.Data = {
 			{ level = 56, lines = {
 				{ spellId = 10497, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10448, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10587, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 10605, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408345, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5712,7 +5712,7 @@ ns.Data = {
 			{ level = 57, lines = {
 				{ spellId = 10497, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 10448, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 10437, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10587, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 10605, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408345, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
@@ -5722,7 +5722,7 @@ ns.Data = {
 			{ level = 60, lines = {
 				{ spellId = 10497, name = "Mana Spring Totem", condition = "Mana Spring Totem when your Water slot is empty: drop it before the pull, and again if it dies." },
 				{ spellId = 29228, name = "Flame Shock", condition = "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown." },
-				{ spellId = 10438, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from." },
+				{ spellId = 10438, name = "Searing Totem", condition = "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from." },
 				{ spellId = 10587, name = "Magma Totem", condition = "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire." },
 				{ spellId = 10605, name = "Chain Lightning", condition = "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time." },
 				{ spellId = 408345, name = "Fire Nova", condition = "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on)." },
