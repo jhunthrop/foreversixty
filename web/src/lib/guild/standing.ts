@@ -24,9 +24,12 @@ export function standingSentence(standing: GuildHomeStanding): string {
   );
 }
 
-/** The standing line for a character under 60: it has no rank by item level yet. */
-export function levelingStandingLine(name: string, level: number): string {
-  return `${name} is level ${level}. Your guild rank by item level starts at ${RAID_LEVEL}.`;
+/**
+ * The band's one line for a character under 60 (week-one spec §3.2): it has neither a rank by item
+ * level nor readiness checks yet, so the standing line is dropped and this single line says both.
+ */
+export function levelingLine(name: string, level: number): string {
+  return `${name} is level ${level}. Rank and readiness checks start at ${RAID_LEVEL}.`;
 }
 
 /** The needs line's three outcomes; `clear` is the green one, `leveling` plain text. */
@@ -44,7 +47,7 @@ export function needsLine(row: GuildReadinessRow, before: string): NeedsLine | n
   if (isLeveling(row)) {
     return {
       kind: 'leveling',
-      text: `${row.name} is level ${row.level}. Readiness checks start at ${RAID_LEVEL}.`,
+      text: levelingLine(row.name, row.level ?? 0),
     };
   }
   if (passesEveryCheck(row)) return { kind: 'clear', text: `${row.name} passes every readiness check.` };

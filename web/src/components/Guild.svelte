@@ -72,7 +72,7 @@
   import { claimRowKind } from '../lib/guild/claim-row';
   import { gateFactsFrom } from '../lib/guild/plan-gate';
   import { afterApprove, afterRemove, afterRemoveMember } from '../lib/guild/roster-model';
-  import { levelingStandingLine, needsLine, standingSentence } from '../lib/guild/standing';
+  import { levelingLine, needsLine, standingSentence } from '../lib/guild/standing';
   import { RAID_LEVEL } from '../lib/guild/readiness-view';
   import type { WeekOneCharacter } from '../lib/guild/week-one';
   import { classSlugFromName } from '../lib/report/tree-sizes';
@@ -362,6 +362,13 @@
 
   /** The current character's level from its roster row: the standing and needs lines read it. */
   const myLevel = $derived(myRosterRow?.level ?? null);
+  /** Week-one spec §3.2: under 60 the band drops the standing line and says the level once, in
+   *  the needs line's place, for every viewer with a character here (officers included). */
+  const myLevelingLine = $derived(
+    myRosterRow !== null && myLevel !== null && myLevel < RAID_LEVEL
+      ? levelingLine(myRosterRow.name, myLevel)
+      : null,
+  );
 
   /** The viewer's own row on the /readiness response the board renders (week-one spec §3.2.3), so
    *  the needs line and the board can never disagree. A member's read, once per page: the answer
@@ -913,11 +920,7 @@
                    separate from the claim/settings row below it (unchanged v1 mechanism),
                    rather than the two fighting over the same slot. -->
             <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
-              {#if myRosterRow !== null && myLevel !== null && myLevel < RAID_LEVEL}
-                <p class="text-text text-[14px]" data-testid="guild-standing-leveling">
-                  {levelingStandingLine(myRosterRow.name, myLevel)}
-                </p>
-              {:else if home.standing !== null && home.standing !== undefined}
+              {#if myLevelingLine === null && home.standing !== null && home.standing !== undefined}
                 {@const sentence = standingSentence(home.standing)}
                 <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
                        gloss read as a second spec beside the header chip's. -->
@@ -969,7 +972,12 @@
                   ></div>
                 {/if}
               {/if}
-              {#if role === 'member' && needs !== null}
+              {#if myLevelingLine !== null}
+                <!-- Week-one spec 3.2: under 60 this is the band's only viewer line, never green. -->
+                <p class="text-text text-[14px]" data-testid="guild-standing-leveling">
+                  {myLevelingLine}
+                </p>
+              {:else if role === 'member' && needs !== null}
                 <!-- Week-one spec 3.2: the viewer's own line. The fails read --text (a to-do list, not a
                        failure); every check passing reads green; a leveling character is never green. -->
                 <p

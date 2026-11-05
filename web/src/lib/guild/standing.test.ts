@@ -1,6 +1,6 @@
 // web/src/lib/guild/standing.test.ts
 import { describe, expect, it } from 'vitest';
-import { levelingStandingLine, needsLine, standingSentence } from './standing';
+import { levelingLine, needsLine, standingSentence } from './standing';
 import type { GuildHomeStanding, GuildReadinessRow } from './api';
 
 function standing(overrides: Partial<GuildHomeStanding> = {}): GuildHomeStanding {
@@ -82,7 +82,7 @@ describe('needsLine', () => {
   it('a leveling character is told when checks start, never green', () => {
     expect(needsLine(readinessRow({ level: 52 }), 'before Thursday')).toEqual({
       kind: 'leveling',
-      text: 'Rootbound is level 52. Readiness checks start at 60.',
+      text: 'Rootbound is level 52. Rank and readiness checks start at 60.',
     });
   });
 
@@ -97,10 +97,10 @@ describe('needsLine', () => {
   });
 });
 
-describe('levelingStandingLine', () => {
-  it('says when the guild rank starts', () => {
-    expect(levelingStandingLine('Rootbound', 52)).toBe(
-      'Rootbound is level 52. Your guild rank by item level starts at 60.',
+describe('levelingLine', () => {
+  it('says the level once, and when rank and readiness start', () => {
+    expect(levelingLine('Rootbound', 52)).toBe(
+      'Rootbound is level 52. Rank and readiness checks start at 60.',
     );
   });
 });

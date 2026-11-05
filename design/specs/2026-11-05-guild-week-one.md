@@ -81,12 +81,12 @@ No new control and no new token (tenet 10).
 1. **Facts line** (`FactLine`, band): `PvP US · {bossesDown} · {pulls} · Updated today`. Both counts come from `home.summary.tier` (§4.1), the same object Progression reads. With zero pulls the two counts are left out and the line is `PvP US · Updated today`. Never `0 bosses down · 0 pulls`.
 2. **The standing line.** The orphan `Gear in the planner` link (captures: every `*-overview-1440`) is replaced:
    - Viewer's current character at 60 with gear consent: today's ranked sentence, unchanged.
-   - Under 60: `{Name} is level {L}. Your guild rank by item level starts at 60.` No link. 14 px `--text`.
+   - Under 60: no standing line. The level is said once, by the needs line (item 3). (Round 1 fix: the band said the level twice.)
    - No export: no standing line at all. The Before raids open card carries the import step.
 3. **The needs line** (guild spec §4.A.2, raid spec §3.4). It is the viewer's own line and now says so.
    - Its subject is the viewer's current character: `What {Name} needs before {Weekday}: {fails}.`
    - Every check passes: `{Name} passes every readiness check.` in `--color-kill`. The old `Every readiness check passes. Nothing needed before the next raid.` is deleted; it read as a guild-wide claim beside a board with failures (WP-7).
-   - Under 60: `{Name} is level {L}. Readiness checks start at 60.` in `--text`, never green.
+   - Under 60: `{Name} is level {L}. Rank and readiness checks start at 60.` 14 px `--text`, never green, no link. It shows for every viewer whose current character is on the roster under 60, officers included, and is the band's only viewer line.
    - The fails list is built from the viewer's row on the same `/readiness` response the board renders (`readinessFails`), so the line and the board can never disagree.
 
 ### 3.3 Overview summary cards after the Before raids open card
@@ -174,10 +174,9 @@ One source: `GET /v1/guilds/{id}/progression` (§4.1). Header line under the h2,
 | Secondary link | `Copy the invite link` |
 | Card empty | `Nobody's level is on file yet. Levels show once members sync the addon or import from Battle.net.` |
 | Card error | `The guild's levels did not load.` |
-| Standing, under 60 | `{Name} is level {L}. Your guild rank by item level starts at 60.` |
 | Needs line | `What {Name} needs before {Weekday}: {fails}.` |
 | Needs line, clear | `{Name} passes every readiness check.` |
-| Needs line, leveling | `{Name} is level {L}. Readiness checks start at 60.` |
+| Needs line, leveling (the band's only viewer line under 60) | `{Name} is level {L}. Rank and readiness checks start at 60.` |
 | Overview progression | `No boss down this tier yet.` / `{n} of {named} named bosses down: {names}.` |
 | Overview readiness | `No enchant: {slots}` (e.g. `Main Hand, Chest`), `{n} talent points unspent`, `Bags short on consumables`, `{n} upgrades waiting`, ` · +{k} more`, `Readiness starts when someone reaches 60.` |
 | Progression header | `Named bosses down this tier` / `{down} of {named}` |

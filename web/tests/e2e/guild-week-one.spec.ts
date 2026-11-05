@@ -194,8 +194,13 @@ test.describe('zero logs', () => {
     await expect(facts).not.toContainText('bosses');
     await expect(facts).not.toContainText('pull');
     await expect(page.getByTestId('guild-standing-leveling')).toHaveText(
-      `${VIEWER_MEMBER} is level 52. Your guild rank by item level starts at 60.`,
+      `${VIEWER_MEMBER} is level 52. Rank and readiness checks start at 60.`,
     );
+    // Under 60 the level is said once: no ranked standing line and no second needs line.
+    const band = await page.getByTestId('guild-overview-standing').innerText();
+    expect(band.split('is level 52.').length - 1).toBe(1);
+    await expect(page.getByTestId('guild-standing-rank')).toHaveCount(0);
+    await expect(page.getByTestId('guild-overview-needs')).toHaveCount(0);
     await expect(page.getByTestId('guild-overview-progression-line')).toHaveText(
       'No boss down this tier yet.',
     );
