@@ -102,7 +102,7 @@ When mana gets low, hold Multi-Shot first: it is the worst damage for its mana y
 
 **Threat.** A Beast Mastery hunter with Bestial Wrath up can pass a fresh tank in the opening seconds. Watch your threat and Feign Death before you reach the tank, not after the boss turns. Feign Death can be resisted: if it says Resisted, you still have all your threat. The pet keeps its own threat, which is fine, since it sits behind the boss.
 
-**Trash.** Multi-Shot hits three targets and is your AoE on most packs. Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel. Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it. Explosive Trap under a pack the tank is holding is good damage for its mana.
+**Trash.** Multi-Shot hits three targets and is your AoE on most packs. Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel. Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it. Explosive Trap under a pack the tank is holding hits everything within 10 yards, and at 60 it costs even more than Volley, so save it for the same big packs.
 
 There is no execute phase for a hunter: the priority holds to the end.
 

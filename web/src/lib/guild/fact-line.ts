@@ -32,7 +32,8 @@ export function asFacts(facts: readonly (Fact | string)[]): Fact[] {
 }
 
 /** The header's line: the ruleset and region, the tier's boss and pull counts as two facts, and when the
- *  guild was last updated ("Updated today", when the page knows), all one sentence. */
+ *  guild was last updated ("Updated today", when the page knows), all one sentence. A guild with no
+ *  pulls logged says nothing about bosses, never `0 bosses down · 0 pulls` (week-one spec §3.2). */
 export function bandFacts(
   ruleset: string,
   region: string,
@@ -40,7 +41,7 @@ export function bandFacts(
   updated = '',
 ): string[] {
   const facts = [`${ruleset} ${region.toUpperCase()}`];
-  if (counts !== null) {
+  if (counts !== null && counts.pulls > 0) {
     facts.push(`${counted(counts.killed, 'boss', 'bosses')} down`, counted(counts.pulls, 'pull'));
   }
   if (updated !== '') facts.push(updated);

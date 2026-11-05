@@ -8,6 +8,7 @@ import type { GuildRosterEntry, GuildRosterRow } from './api';
 import type { AttendanceSource } from './attendance-contract';
 import { attendanceCopy, rosterChip } from './attendance-copy';
 import { nightsLabel } from './nights';
+import { outputFigure, topOutputLabel } from './output-figure';
 import { addonGapLabel, addonIdentity, addonSeen, addonSpecName } from './roster-addon';
 import { specClassName, specName } from './spec-name';
 
@@ -23,14 +24,14 @@ function attendanceChip(
   return rosterChip(last8, row.attendance_30);
 }
 
-/** "Item level 68", "5 of 8 nights", "Best DPS 238", "Rating 65": every figure with its unit
+/** "Item level 68", "5 of 8 nights", "Top DPS 238", "Rating 65": every figure with its unit
  *  named first, never a bare "65 rating". */
 export function rosterStatChips(row: GuildRosterRow, source: AttendanceSource = 'reports'): string[] {
   const chips: string[] = [];
   if (row.item_level !== undefined) chips.push(`Item level ${row.item_level}`);
   if (row.attendance !== undefined) chips.push(attendanceChip(row, row.attendance, source));
   if (row.best_parse !== undefined && row.best_parse !== null) {
-    chips.push(`Best ${row.best_parse.metric.toUpperCase()} ${Math.round(row.best_parse.value)}`);
+    chips.push(`${topOutputLabel(row.best_parse.metric)} ${outputFigure(row.best_parse.value)}`);
   }
   if (row.rating !== undefined && row.rating !== null) chips.push(`Rating ${row.rating.overall}`);
   return chips;
@@ -46,11 +47,6 @@ export function gearSetLabel(build: string): string {
   return `Gear set: ${named}`;
 }
 
-/** "Survival in game": the spec the addon's snapshot carries. */
-export function inGameSpecLabel(spec: string): string {
-  return `${spec} in game`;
-}
-
 /** "Survival on the site": the spec the site's own record carries. */
 export function siteSpecLabel(spec: string): string {
   return `${spec} on the site`;
@@ -61,8 +57,8 @@ export function siteSpecLabel(spec: string): string {
  * snapshot and the site's record can name two specs for one character (a respec the site has not
  * seen, or an export the addon has not re-sent), and a line that names one without saying whose
  * reads as a bug:
- *  - the snapshot carries a spec and the site agrees (or has none): "Beast Mastery Hunter in game";
- *  - they disagree: "Beast Mastery Hunter in game · Survival on the site";
+ *  - the snapshot carries a spec and the site agrees (or has none): "Beast Mastery Hunter";
+ *  - they disagree: "Beast Mastery Hunter · Survival on the site";
  *  - the snapshot carries none: the site's, "Survival Hunter on the site".
  * `addonSpec` is the snapshot's slug; `siteSpec` the site's spec as it writes it. Empty when neither.
  */
@@ -77,9 +73,9 @@ export function rosterSpecLine(input: {
       ? ''
       : specName(addonSpecName(input.addonSpec));
   if (game === '') return site === '' ? '' : siteSpecLabel(specClassName(site, input.className));
-  const inGame = inGameSpecLabel(specClassName(game, input.className));
-  if (site === '' || site.toLowerCase() === game.toLowerCase()) return inGame;
-  return `${inGame} · ${siteSpecLabel(site)}`;
+  const named = specClassName(game, input.className);
+  if (site === '' || site.toLowerCase() === game.toLowerCase()) return named;
+  return `${named} · ${siteSpecLabel(site)}`;
 }
 
 export type InGameFactKey = 'level' | 'gap' | 'build' | 'seen';

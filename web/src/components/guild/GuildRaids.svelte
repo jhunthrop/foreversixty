@@ -5,8 +5,8 @@
      (public sees public reports only, per the existing report-visibility rule server
      side) -- this component renders whatever `rows` it is given.
      Raids spec 3.1: above the nights, verified members and officers get `Planned`; officers get
-     `Plan a raid` (disabled with the gate sentence in officer-read-only, and with the cap line at
-     12) and the form in place under the header row. One minute tick feeds every row's countdown. -->
+     `Plan an event` (disabled with the gate sentence in officer-read-only; the cap line at 12 raids
+     limits raids only, so the button stays live) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { tick } from 'svelte';
@@ -20,23 +20,19 @@
     type GuildZoneView,
   } from '../../lib/guild/api';
   import { NO_PUBLIC_RAID_NIGHTS, raidNightDay } from '../../lib/guild/overview-view';
-  import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
+  import { nightTops, outputFigure, topOutputLabel } from '../../lib/guild/output-figure';
+  import { TRASH_LABEL, bossIdsOf, nightFights, raidTallyParts } from '../../lib/guild/raid-view';
   import Card from '../ui/Card.svelte';
   import FactLine from './FactLine.svelte';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { raidCopy } from '../../lib/guild/raid-copy';
   import { nightFromHash } from '../../lib/guild/raids-hash';
   import { guildRaidHref } from '../../lib/characters';
-  import {
-    RAID_CAP,
-    lastPlannedRaid,
-    openRaidCount,
-    splitAtLink,
-    type RaidSubmitResult,
-  } from '../../lib/guild/raid-form';
+  import { RAID_CAP, lastPlannedRaid, openRaidCount, type RaidSubmitResult } from '../../lib/guild/raid-form';
   import { createRaid, type RaidInput } from '../../lib/guild/raids-api';
   import { planRaid } from '../../lib/guild/raids-tab-controller';
   import { button } from '../../lib/ui/button';
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import GuildPlannedRaids from './GuildPlannedRaids.svelte';
   import RaidForm from './RaidForm.svelte';
@@ -56,6 +52,8 @@
     /** A verified member of this guild. */
     memberView?: boolean;
     settingsHref?: string;
+    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
+    gateFacts: GateFacts;
     /** The guild page's own path; each planned row links under it. */
     guildPath?: string;
     /** Pins the clock (tests); otherwise the tab ticks once a minute. */
@@ -65,6 +63,8 @@
     onPlanned?: () => Promise<void>;
     /** A create was refused with `guild_plan_required`: the tab turns officer-read-only. */
     onPlanRefused?: () => void;
+    /** The tab opens with the plan form up: the Before raids open card's Plan an event. */
+    openForm?: boolean;
   }
 
   let {
@@ -79,16 +79,17 @@
     officerTools = true,
     memberView = false,
     settingsHref = '',
+    gateFacts,
     guildPath = '',
     now,
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
     onPlanned = () => Promise.resolve(),
     onPlanRefused = () => {},
+    openForm = false,
   }: Props = $props();
 
   const GATE_ID = 'officer-tools-gate-raids';
   const CAP_ID = 'guild-raids-cap';
-  const gateLead = splitAtLink(raidCopy.gate, raidCopy.gateLink).before;
 
   const showPlanned = $derived(planned !== undefined && (memberView || officer));
   const readOnly = $derived(officer && !officerTools);
@@ -102,6 +103,10 @@
   );
 
   let formOpen = $state(false);
+  // The Before raids open card's Plan an event: the tab opens with the form up.
+  $effect(() => {
+    if (openForm) formOpen = true;
+  });
   let planButton = $state<HTMLButtonElement | null>(null);
 
   async function closeForm(): Promise<void> {
@@ -188,8 +193,8 @@
         <button
           type="button"
           bind:this={planButton}
-          class={button('primary', 'sm')}
-          disabled={readOnly || atCap}
+          class={button(readOnly ? 'secondary' : 'primary', 'md')}
+          disabled={readOnly}
           aria-describedby={planDescribedBy}
           onclick={() => (formOpen = true)}
           data-testid="guild-raids-plan">{raidCopy.planButton}</button
@@ -199,7 +204,7 @@
     {#if officer && showPlanned && (readOnly || atCap || (formOpen && planned !== undefined))}
       <div class="border-line-soft flex flex-col gap-3 border-t px-5 py-4">
         {#if officer && showPlanned && readOnly}
-          <GuildPlanGate tab="raids" {settingsHref} sentence={gateLead} />
+          <GuildPlanGate tab="raids" facts={gateFacts} />
         {:else if officer && showPlanned && atCap}
           <p id={CAP_ID} class="text-muted text-[13px]" data-testid="guild-raids-cap">{raidCopy.cap}</p>
         {/if}
@@ -270,20 +275,33 @@
                     >{row.present.length} of {row.raiders} present</span
                   >
                 </div>
-                {#if row.top_parse !== null}
-                  <p class="text-[13px]">
-                    Top parse <span style={`color:${classColorVar(row.top_parse.class)};font-weight:600`}
-                      >{row.top_parse.name}</span
-                    >
-                    {row.top_parse.value.toFixed(1)}
-                    {row.top_parse.metric.toUpperCase()}
+                {#if nightTops(row).length > 0}
+                  <!-- Healing then damage, worded and laid out as Progression's per-role line. -->
+                  <p class="text-[13px]" data-testid={`guild-raid-top-${row.id}`}>
+                    {#each nightTops(row) as top, index (top.metric)}
+                      {#if index > 0}<span class="hidden md:inline" aria-hidden="true">&nbsp;·&nbsp;</span
+                        >{/if}
+                      <span class="block md:inline">
+                        <span class="text-muted">{topOutputLabel(top.metric)}</span>
+                        <span style={`color:${classColorVar(top.class)};font-weight:600`}>{top.name}</span>
+                        <span class="numeric">{outputFigure(top.value)}</span>
+                      </span>
+                    {/each}
                   </p>
                 {/if}
                 <div class="flex flex-col" data-testid={`guild-raid-fights-${row.id}`}>
-                  {#each row.fights as fight (fight.index)}
-                    <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
-                      {#if fight.name !== null}
-                        <span class="min-w-[120px] text-[13px]">{fight.name} · pull {fight.index + 1}</span>
+                  {#each nightFights(row, bossIds) as fight (fight.index)}
+                    <div
+                      class="border-line-soft flex items-center gap-3 border-b py-1.5"
+                      data-testid={fight.trash ? 'guild-raid-fight-trash' : 'guild-raid-fight'}
+                    >
+                      {#if fight.trash}
+                        <!-- Trash: named, quiet, no pull number and no badge (guild round 2, WP-12). -->
+                        <span class="text-muted min-w-[120px] text-[13px]">{fight.label}</span>
+                        <span class="text-muted numeric text-[12px]">{clock(fight.duration_ms)}</span>
+                        <span class="text-muted text-[12px]">{TRASH_LABEL}</span>
+                      {:else if !fight.unnamed}
+                        <span class="min-w-[120px] text-[13px]">{fight.label}</span>
                         <span class="text-muted numeric text-[12px]">{clock(fight.duration_ms)}</span>
                         <span
                           class="pill"
@@ -295,7 +313,7 @@
                           {fight.kill ? 'Kill' : 'Wipe'}
                         </span>
                       {:else}
-                        <span class="min-w-[120px] text-[13px]">Pull {fight.index + 1}</span>
+                        <span class="min-w-[120px] text-[13px]">{fight.label}</span>
                         <span class="text-muted text-[12px]">no named encounter published</span>
                       {/if}
                     </div>

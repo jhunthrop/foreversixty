@@ -1,11 +1,13 @@
 // web/src/components/guild/GuildRaids.test.ts
-// The Raids tab rendered with svelte/server (raids spec 3.1, 4, R1): Plan a raid for officers
+// The Raids tab rendered with svelte/server (raids spec 3.1, 4, R1): Plan an event for officers
 // only, the read-only gate and the cap line, Planned with its first four rows and Show all, the
 // empty lines, Raid nights under it, and nothing planned for a visitor.
+import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidRow, GuildRaidView } from '../../lib/guild/api';
 import { attendanceCopy } from '../../lib/guild/attendance-copy';
+import { guildGateCopy } from '../../lib/guild/copy';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { NEW_YORK, NOW, plannedRaid, text } from '../../test-support/raid-fixtures';
 import GuildRaids from './GuildRaids.svelte';
@@ -32,6 +34,7 @@ function html({ planned, officer = false, officerTools = true, memberView = true
       officerTools,
       memberView,
       settingsHref: SETTINGS_HREF,
+      gateFacts: gateFactsFixture({ settingsHref: SETTINGS_HREF }),
       guildPath: '/guild/us/pvp/olympus-xxvii',
       now: NOW,
       viewerTimezone: NEW_YORK,
@@ -53,15 +56,15 @@ function planButton(markup: string): string {
 }
 
 describe('GuildRaids planned section', () => {
-  it('gives an officer Plan a raid in the header row, enabled', () => {
+  it('gives an officer Plan an event in the header row, enabled', () => {
     const markup = html({ planned: weeks(2), officer: true });
     const button = planButton(markup);
     expect(button).not.toBe('');
     expect(button).not.toMatch(DISABLED);
-    expect(text(markup)).toMatch(/^Raids Plan a raid/);
+    expect(text(markup)).toMatch(/^Raids Plan an event/);
   });
 
-  it('gives a member no Plan a raid', () => {
+  it('gives a member no Plan an event', () => {
     expect(planButton(html({ planned: weeks(2) }))).toBe('');
   });
 
@@ -97,7 +100,7 @@ describe('GuildRaids planned section', () => {
     expect(planButton(markup)).toBe('');
   });
 
-  it('keeps Plan a raid disabled under the gate sentence in officer-read-only', () => {
+  it('keeps Plan an event disabled under the gate sentence in officer-read-only', () => {
     const markup = html({ planned: weeks(1), officer: true, officerTools: false });
     const button = planButton(markup);
     expect(button).toMatch(DISABLED);
@@ -107,14 +110,13 @@ describe('GuildRaids planned section', () => {
       markup.indexOf('guild-raids-plan-gate'),
       markup.indexOf('</p>', markup.indexOf('guild-raids-plan-gate')),
     );
-    // text() spaces every tag, so the link's closing tag puts a space before the full stop.
-    expect(text(gate)).toContain(raidCopy.gate.replace(raidCopy.gateLink, `${raidCopy.gateLink} `));
-    expect(gate).toContain(`href="${SETTINGS_HREF}"`);
+    expect(text(gate)).toContain(`${guildGateCopy.lead.raids} ${guildGateCopy.startTrial}`);
+    expect(gate).toContain(`href="${SETTINGS_HREF}#billing"`);
   });
 
-  it('disables Plan a raid with the cap line at 12 planned', () => {
+  it('keeps Plan an event live with the cap line at 12 raids: the cap holds raids only', () => {
     const markup = html({ planned: weeks(12), officer: true });
-    expect(planButton(markup)).toMatch(DISABLED);
+    expect(planButton(markup)).not.toMatch(DISABLED);
     expect(planButton(markup)).toContain('aria-describedby="guild-raids-cap"');
     expect(text(markup)).toContain(raidCopy.cap);
     expect(html({ planned: weeks(11), officer: true })).not.toContain('data-testid="guild-raids-cap"');
@@ -138,7 +140,8 @@ describe('GuildRaids raid nights linked to raids', () => {
     wipe_count: 3,
     raiders: 23,
     deaths: 14,
-    top_parse: null,
+    top_hps: null,
+    top_dps: null,
     fights: [],
     present: [],
     raid_id: raidId,
@@ -146,7 +149,13 @@ describe('GuildRaids raid nights linked to raids', () => {
 
   function nights(rows: GuildRaidRow[]): string {
     return render(GuildRaids, {
-      props: { rows, guildPath: '/guild/us/pvp/olympus-xxvii', now: NOW, viewerTimezone: NEW_YORK },
+      props: {
+        rows,
+        guildPath: '/guild/us/pvp/olympus-xxvii',
+        now: NOW,
+        viewerTimezone: NEW_YORK,
+        gateFacts: gateFactsFixture(),
+      },
     }).body;
   }
 
@@ -155,6 +164,35 @@ describe('GuildRaids raid nights linked to raids', () => {
     expect(body).toContain('href="/guild/us/pvp/olympus-xxvii/raids/7"');
     expect(text(body)).toContain(attendanceCopy.match.openRaid);
     expect(body).toContain('id="guild-raid-night-abc123def"');
+  });
+
+  it('reads the night as Top HPS then Top DPS, never a parse, rounded as the roster writes it', () => {
+    const row = {
+      ...night('abc123def', null),
+      top_hps: { name: 'Rootbound', class: 'druid', metric: 'hps', value: 449.4 },
+      top_dps: { name: 'Bow Jackzon', class: 'hunter', metric: 'dps', value: 272.2 },
+    };
+    const body = nights([row]);
+    const at = body.indexOf('data-testid="guild-raid-top-abc123def"');
+    expect(at).toBeGreaterThan(-1);
+    expect(text(body.slice(body.indexOf('>', at) + 1, body.indexOf('</p>', at)))).toBe(
+      'Top HPS Rootbound 449 · Top DPS Bow Jackzon 272',
+    );
+  });
+
+  it('shows the one figure a night has, and no line for a night with none', () => {
+    const dpsOnly = nights([
+      {
+        ...night('abc123def', null),
+        top_dps: { name: 'Bow Jackzon', class: 'hunter', metric: 'dps', value: 272 },
+      },
+    ]);
+    const at = dpsOnly.indexOf('data-testid="guild-raid-top-abc123def"');
+    expect(text(dpsOnly.slice(dpsOnly.indexOf('>', at) + 1, dpsOnly.indexOf('</p>', at)))).toBe(
+      'Top DPS Bow Jackzon 272',
+    );
+    const { top_hps: _h, top_dps: _d, ...omitted } = night('abc123def', null);
+    expect(nights([omitted])).not.toContain('guild-raid-top-');
   });
 
   it('draws no link for a night matched to no raid', () => {

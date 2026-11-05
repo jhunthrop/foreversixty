@@ -160,7 +160,7 @@ atWidths('8 readiness member', PAIR, async (page, width) => {
   await shoot(page, '08-readiness-member', width, tabPanel(page, 'readiness'), TOP_CROP_PX);
 });
 
-// 9. Focus-visible on Subscribe the guild, reached with the keyboard.
+// 9. Focus-visible on Subscribe your guild, reached with the keyboard.
 atWidths('9 link focus-visible', PAIR, async (page, width) => {
   await openTab(page, width, 'loot', { viewer: 'officer', officerTools: false });
   await page.keyboard.press('Shift');

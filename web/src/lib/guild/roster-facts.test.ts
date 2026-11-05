@@ -16,7 +16,7 @@ describe('rosterStatChips', () => {
     const chips = rosterStatChips(rowNamed('Kraggor'));
     expect(chips[0]).toMatch(/^Item level \d+$/);
     expect(chips.some((c) => /^\d+ of \d+ nights$/.test(c))).toBe(true);
-    expect(chips.some((c) => /^Best (DPS|HPS) \d+$/.test(c))).toBe(true);
+    expect(chips.some((c) => /^Top (DPS|HPS) \d+$/.test(c))).toBe(true);
     expect(chips.some((c) => /^Rating \d+$/.test(c))).toBe(true);
     expect(chips.join(' ')).not.toMatch(/\d+ rating|ilvl|best DPS/);
   });
@@ -104,16 +104,16 @@ describe('specClassName', () => {
 
 // One spec per character, labelled with the record it comes from (lifecycle round 8, P8-1).
 describe('rosterSpecLine', () => {
-  it('says "in game" alone when the snapshot and the site agree', () => {
+  it('names the spec and class alone when the snapshot and the site agree', () => {
     expect(rosterSpecLine({ siteSpec: 'BeastMastery', addonSpec: 'BeastMastery', className: 'hunter' })).toBe(
-      'Beast Mastery Hunter in game',
+      'Beast Mastery Hunter',
     );
-    expect(rosterSpecLine({ addonSpec: 'Holy', className: 'priest' })).toBe('Holy Priest in game');
+    expect(rosterSpecLine({ addonSpec: 'Holy', className: 'priest' })).toBe('Holy Priest');
   });
 
   it('adds the sites spec when it disagrees with the snapshot', () => {
     expect(rosterSpecLine({ siteSpec: 'Survival', addonSpec: 'BeastMastery', className: 'hunter' })).toBe(
-      'Beast Mastery Hunter in game · Survival on the site',
+      'Beast Mastery Hunter · Survival on the site',
     );
   });
 

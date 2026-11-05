@@ -123,8 +123,8 @@ var guideCopy = guideStrings{
 	CardFailure: commonCopy.Failure,
 
 	SpecTitle:       "Which spec tonight?",
-	SpecLead:        "The pick signs **{Name}** up as {State} for {Title}, {Date}, and is kept for the next raid.",
-	SpecLeadChange:  "The pick changes the spec **{Name}** brings to {Title}, {Date}, and is kept for the next raid.",
+	SpecLead:        "The pick signs **{Name}** up as {State} for {Title}, {Date}.",
+	SpecLeadChange:  "The pick changes the spec **{Name}** brings to {Title}, {Date}.",
 	SpecPlaceholder: "Choose a spec",
 	SpecKept:        " {Spec} is kept for {Name}.",
 	SpecChange:      "Change spec",

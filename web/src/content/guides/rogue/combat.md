@@ -74,7 +74,7 @@ Every rogue picks up **Poised** at 18: at full energy out of combat, your next a
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
+**Shank** on cooldown, right behind any damage racial and your trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
 
 ### Energy
 
@@ -84,7 +84,7 @@ Backstab costs 60 and you are energy-limited all fight, so you spend the moment 
 
 ### Cooldowns and adds
 
-On a single target, Adrenaline Rush goes a few seconds into the pull with Blade Flurry, your racial, a trinket and a potion. On a 3 minute kill you get two Blade Flurries and one Adrenaline Rush, so do not hold them. If a fight brings adds in the first minute, hold Blade Flurry for them and keep Adrenaline Rush with it.
+On a single target, Adrenaline Rush goes a few seconds into the pull with Blade Flurry, any damage racial, a trinket and a potion. On a 3 minute kill you get two Blade Flurries and one Adrenaline Rush, so do not hold them. If a fight brings adds in the first minute, hold Blade Flurry for them and keep Adrenaline Rush with it.
 
 Blade Flurry hits anything next to your target. Never turn it on next to a Sapped, Polymorphed, Shackled or Feared mob: one cleave breaks it and the pull goes wrong. Cancel the buff if you have to.
 

@@ -1,87 +1,178 @@
 <!-- web/src/components/sim/DpsDistribution.svelte -->
-<!-- The run's distribution, as twenty bars and four numbers. Deliberately not a chart
-     library and not a canvas: it is a shape, the four rows below it are the data, and a
-     dependency for twenty divs would cost more than the whole island's budget allows.
-     The bars are aria-hidden; a screen reader reads the numbers. -->
+<!-- The run's DPS spread (spec 2026-11-04-sim-results 3.6): the engine's real bins as at most 40
+     bars, the mean line, the two-thirds caption and six tiles. A result saved before the engine
+     kept the bins draws a range strip instead, and says so: a drawn shape the run did not produce
+     would break the accuracy tenet. No chart library: the bars are spans, the tiles are the data.
+     Tiles sit under the plot, or beside it where the card is full width (1024 to 1279). -->
 <script lang="ts">
-  import { valueLabel } from '../../lib/chart/value-axis';
-  import { simCopy } from '../../lib/sim/copy';
-  import { confidenceBand } from '../../lib/sim/estimate';
-  import type { Estimate } from '../../lib/sim/types';
+  import { grouped, oneDecimal, spreadCopy } from '../../lib/sim/result-copy';
+  import { spreadOf, type SpreadBar } from '../../lib/sim/spread';
+  import type { DpsHistogram, Estimate } from '../../lib/sim/types';
+  import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
+  import StatTile from '../ui/StatTile.svelte';
 
-  let { estimate, iterationsRun }: { estimate: Estimate; iterationsRun: number } = $props();
+  let {
+    estimate,
+    iterationsRun,
+    histogram,
+  }: { estimate: Estimate; iterationsRun: number; histogram?: DpsHistogram } = $props();
 
-  const BUCKETS = 20;
+  /** The readout's width and the side of the plot past which it flips left. */
+  const TOOLTIP_WIDTH = 240;
+  const TOOLTIP_FLIP_SHARE = 0.55;
 
-  /** Normal density at the run's own mean and standard deviation, scaled to the tallest bar. */
-  const bars = $derived.by(() => {
-    const spread = estimate.max - estimate.min;
-    if (spread <= 0 || estimate.stddev <= 0) return [] as { height: number; inBand: boolean }[];
-    const band = confidenceBand(estimate);
-    const raw = Array.from({ length: BUCKETS }, (_, i) => {
-      const at = estimate.min + (spread * (i + 0.5)) / BUCKETS;
-      const z = (at - estimate.mean) / estimate.stddev;
-      return { density: Math.exp(-0.5 * z * z), inBand: Math.abs(at - estimate.mean) <= band };
-    });
-    const peak = Math.max(...raw.map((bucket) => bucket.density));
-    return raw.map((bucket) => ({
-      height: Math.round((bucket.density / peak) * 100),
-      inBand: bucket.inBand,
-    }));
-  });
+  const spread = $derived(spreadOf(histogram));
+  const range = $derived(estimate.max - estimate.min);
+  /** Where a DPS figure sits across the plot, 0..100. */
+  const pct = (value: number): number => (range <= 0 ? 50 : ((value - estimate.min) / range) * 100);
+  /** The histogram's own axis runs over its bins, which the range rounds inside. */
+  const barsLow = $derived(spread?.bars[0]?.low ?? estimate.min);
+  const barsHigh = $derived(spread?.bars.at(-1)?.high ?? estimate.max);
+  const meanAt = $derived(((estimate.mean - barsLow) / Math.max(1, barsHigh - barsLow)) * 100);
 
-  /** Where a DPS figure sits across the strip, 0..100 (controls and charts spec §B10 row 9). */
-  const pct = (value: number): number => {
-    const spread = estimate.max - estimate.min;
-    return spread <= 0 ? 50 : ((value - estimate.min) / spread) * 100;
-  };
-  const band = $derived(confidenceBand(estimate));
-
-  const rows = $derived([
-    [simCopy.distMean, Math.round(estimate.mean).toLocaleString('en-US')],
-    [simCopy.distStdDev, Math.round(estimate.stddev).toLocaleString('en-US')],
-    [simCopy.distLowest, Math.round(estimate.min).toLocaleString('en-US')],
-    [simCopy.distHighest, Math.round(estimate.max).toLocaleString('en-US')],
-    [simCopy.distIterations, iterationsRun.toLocaleString('en-US')],
+  const tiles = $derived([
+    { id: 'mean', label: spreadCopy.tiles.mean, value: oneDecimal(estimate.mean) },
+    { id: 'error', label: spreadCopy.tiles.error, value: `± ${oneDecimal(estimate.error)}` },
+    { id: 'spread', label: spreadCopy.tiles.spread, value: `± ${oneDecimal(estimate.stddev)}` },
+    { id: 'lowest', label: spreadCopy.tiles.lowest, value: grouped(estimate.min) },
+    { id: 'highest', label: spreadCopy.tiles.highest, value: grouped(estimate.max) },
+    { id: 'runs', label: spreadCopy.tiles.runs, value: grouped(iterationsRun) },
   ]);
+
+  // The readout's panel is the report's own, fetched the first time a bar is pointed at.
+  const tooltipLazy = createLazyComponent(() => import('../chart/ChartTooltip.svelte'));
+
+  let plot = $state<HTMLDivElement | undefined>(undefined);
+  let active = $state<number | null>(null);
+  let focused = $state(false);
+  const activeBar = $derived<SpreadBar | null>(active === null ? null : (spread?.bars[active] ?? null));
+
+  function moveTo(index: number): void {
+    const last = (spread?.bars.length ?? 1) - 1;
+    active = Math.max(0, Math.min(last, index));
+  }
+
+  function onKeydown(event: KeyboardEvent): void {
+    const last = (spread?.bars.length ?? 1) - 1;
+    const from = active ?? -1;
+    const next: Record<string, number> = { ArrowRight: from + 1, ArrowLeft: from - 1, Home: 0, End: last };
+    const target = next[event.key];
+    if (target === undefined) return;
+    event.preventDefault();
+    moveTo(target);
+  }
+
+  const tooltipBox = $derived.by(() => {
+    if (plot === undefined || active === null || spread === null) return { x: 0, y: 0, flip: false };
+    const rect = plot.getBoundingClientRect();
+    const share = (active + 0.5) / spread.bars.length;
+    return { x: rect.left + rect.width * share, y: rect.top, flip: share > TOOLTIP_FLIP_SHARE };
+  });
 </script>
 
-<div class="flex flex-col gap-4 p-4" data-testid="sim-distribution">
-  {#if bars.length > 0}
-    <div class="flex flex-col gap-1" aria-hidden="true">
-      <div class="relative flex h-32 items-end gap-[2px]">
-        <span
-          class="absolute inset-y-0"
-          style={`left:${Math.max(0, pct(estimate.mean - band))}%; right:${Math.max(0, 100 - pct(estimate.mean + band))}%; background: rgba(229,185,85,.13)`}
-          data-testid="sim-distribution-band"
-        ></span>
-        {#each bars as bar, i (i)}
-          <span
-            class={`relative flex-1 rounded-t-[2px] ${bar.inBand ? 'bg-gold/70' : 'bg-line'}`}
-            style={`height:${Math.max(2, bar.height)}%`}
-          ></span>
-        {/each}
-        <span
-          class="bg-gold absolute inset-y-0 w-[2px] -translate-x-1/2"
-          style={`left:${pct(estimate.mean)}%`}
-          data-testid="sim-distribution-mean"
-        ></span>
-      </div>
-      <div class="text-muted numeric relative h-4 text-[11px]">
-        <span class="absolute left-0">{valueLabel(estimate.min)}</span>
-        <span class="absolute -translate-x-1/2" style={`left:${pct(estimate.mean)}%`}
-          >{valueLabel(estimate.mean)}</span
+<div class="grid grid-cols-1 gap-4 p-5 lg:grid-cols-[7fr_5fr] xl:grid-cols-1" data-testid="sim-distribution">
+  <div class="flex min-w-0 flex-col gap-3">
+    {#if spread !== null}
+      <div class="pt-6">
+        <!-- One image with a readout: hover or arrow keys step the bars (spec 3.6). -->
+        <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+        <div
+          bind:this={plot}
+          class="focus-visible:outline-gold border-line relative flex h-[168px] items-end gap-[2px] border-b focus-visible:outline-2 focus-visible:outline-offset-2"
+          role="img"
+          tabindex="0"
+          aria-label={spreadCopy.image(
+            grouped(spread.total),
+            grouped(estimate.min),
+            grouped(estimate.max),
+            grouped(estimate.mean),
+          )}
+          data-testid="sim-spread-plot"
+          onfocus={() => {
+            focused = true;
+            tooltipLazy.load();
+          }}
+          onpointerenter={tooltipLazy.load}
+          onblur={() => {
+            focused = false;
+            active = null;
+          }}
+          onkeydown={onKeydown}
+          onpointerleave={() => {
+            if (!focused) active = null;
+          }}
         >
-        <span class="absolute right-0">{valueLabel(estimate.max)}</span>
+          {#each spread.bars as bar, index (bar.low)}
+            <span
+              class={`min-w-0 flex-1 rounded-t-[2px] ${index === active ? 'bg-gold-light' : bar.central ? 'bg-[rgba(229,185,85,.7)]' : 'bg-line'}`}
+              style:height={`${Math.max(1, (bar.count / spread.peak) * 100)}%`}
+              data-testid="sim-spread-bar"
+              onpointerenter={() => (active = index)}
+              aria-hidden="true"
+            ></span>
+          {/each}
+          <span
+            class="bg-gold-light pointer-events-none absolute -top-1.5 bottom-0 w-[2px] -translate-x-1/2"
+            style:left={`${meanAt}%`}
+            data-testid="sim-distribution-mean"
+          ></span>
+          <span
+            class="text-gold-light numeric pointer-events-none absolute -top-6 -translate-x-1/2 text-[13px] font-semibold"
+            style:left={`${meanAt}%`}>{oneDecimal(estimate.mean)}</span
+          >
+        </div>
+        <div class="text-muted numeric mt-2 flex justify-between text-[13px]">
+          <span>{grouped(estimate.min)}</span>
+          <span>{spreadCopy.axis}</span>
+          <span>{grouped(estimate.max)}</span>
+        </div>
       </div>
-    </div>
-  {/if}
-  <dl class="flex flex-col">
-    {#each rows as [key, value] (key)}
-      <div class="border-line-soft flex justify-between gap-3 border-b py-1 last:border-b-0">
-        <dt class="text-muted text-[13px]">{key}</dt>
-        <dd class="text-strong numeric m-0 text-[13px]">{value}</dd>
+      <p class="text-muted text-[13px]" data-testid="sim-spread-caption">
+        {spreadCopy.caption(grouped(spread.low), grouped(spread.high))}
+      </p>
+      {#if tooltipLazy.current}
+        <tooltipLazy.current
+          open={activeBar !== null}
+          x={tooltipBox.x}
+          y={tooltipBox.y}
+          flip={tooltipBox.flip}
+          title={activeBar === null
+            ? ''
+            : spreadCopy.bar(grouped(activeBar.low), grouped(activeBar.high), grouped(activeBar.count))}
+          note=""
+          events={[]}
+          rows={[]}
+          more={0}
+          width={TOOLTIP_WIDTH}
+        />
+      {/if}
+    {:else if range > 0}
+      <!-- A result saved before the engine kept the bins: the range it did keep. -->
+      <div class="flex flex-col gap-2 pt-2" data-testid="sim-spread-range">
+        <div class="bg-line-soft relative h-2 rounded-[4px]">
+          <span
+            class="absolute inset-y-0 bg-[rgba(229,185,85,.35)]"
+            style:left={`${Math.max(0, pct(estimate.mean - estimate.stddev))}%`}
+            style:right={`${Math.max(0, 100 - pct(estimate.mean + estimate.stddev))}%`}
+          ></span>
+          <span
+            class="bg-gold-light absolute -inset-y-1 w-[2px] -translate-x-1/2"
+            style:left={`${pct(estimate.mean)}%`}
+            data-testid="sim-distribution-mean"
+          ></span>
+        </div>
+        <div class="text-muted numeric flex justify-between text-[13px]">
+          <span>{grouped(estimate.min)}</span>
+          <span>{spreadCopy.rangeMean(oneDecimal(estimate.mean))}</span>
+          <span>{grouped(estimate.max)}</span>
+        </div>
       </div>
+      <p class="text-muted text-[13px]" data-testid="sim-spread-caption">{spreadCopy.rangeCaption}</p>
+    {/if}
+  </div>
+  <div class="grid grid-cols-2 gap-2 self-start sm:grid-cols-3" data-testid="sim-spread-tiles">
+    {#each tiles as tile (tile.id)}
+      <StatTile label={tile.label} value={tile.value} testid={`sim-spread-tile-${tile.id}`} />
     {/each}
-  </dl>
+  </div>
 </div>

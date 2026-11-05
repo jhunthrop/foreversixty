@@ -165,7 +165,7 @@ func simRun(_ js.Value, args []js.Value) any {
 	if err != nil {
 		return failJSON(req, err.Error())
 	}
-	return encodeOrError(stamp(api.SimResult{
+	detailed, err := adapter.WithDetail(api.SimResult{
 		Request:       req,
 		DPS:           adapter.DPS(engineRes),
 		IterationsRun: int(engineRes.IterationsDone),
@@ -174,7 +174,12 @@ func simRun(_ js.Value, args []js.Value) any {
 		Sample:        adapter.Sample(engineRes),
 		Healing:       healing,
 		Tank:          tank,
-	}))
+		RotationSHA:   request.RotationSHA(req.Spec),
+	}, engineRes)
+	if err != nil {
+		return failJSON(req, err.Error())
+	}
+	return encodeOrError(stamp(detailed))
 }
 
 // simSplit(requestJSON, n) returns a JSON array of n request JSONs, one

@@ -105,6 +105,57 @@ func TestPutSignupSavesTheSpec(t *testing.T) {
 	expectError(t, unknown, http.StatusUnprocessableEntity, "invalid")
 }
 
+// putSpec PUTs a sign-up with a spec, failing the test on anything but 200, and reads the raid.
+func putSpec(t *testing.T, w raidWorld, raidID int64, key, body string) RaidView {
+	t.Helper()
+	res := w.putSignup(raidID, key, body)
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status %d: %s", res.StatusCode, readBody(res))
+	}
+	_ = res.Body.Close()
+	return w.getRaid(t, raidID)
+}
+
+func signupOf(t *testing.T, v RaidView, key string) SignupView {
+	t.Helper()
+	for _, s := range v.Signups {
+		if s.CharacterKey == key {
+			return s
+		}
+	}
+	t.Fatalf("no sign-up for %s", key)
+	return SignupView{}
+}
+
+// A Fury warrior signs up as tank (spec 2026-11-05 §3.2.1): the role stays, the row sits under
+// Tanks with its spec key, and the picker defaults to Fury. Fury as DPS is Melee; Fury cannot heal.
+func TestPutSignupKeepsAnOffTankRole(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	view := putSpec(t, w, raid.ID, memberKeyA, `{"state":"in","role":"tank","spec":"warrior-fury"}`)
+	row := signupOf(t, view, memberKeyA)
+	if row.Role != RoleTank || row.Group != "tank" || row.SpecKey == nil || *row.SpecKey != "warrior-fury" {
+		t.Fatalf("off-tank row = %+v", row)
+	}
+	if view.Counts.Tanks != 1 || view.Counts.Melee != 0 || view.Counts.Classes["warrior"] != 1 {
+		t.Fatalf("counts = %+v", view.Counts)
+	}
+	for _, c := range view.Viewer.Characters {
+		if c.CharacterKey == memberKeyA && (c.DefaultSpec == nil || *c.DefaultSpec != "warrior-fury" || c.Role != RoleTank) {
+			t.Fatalf("viewer character = %+v", c)
+		}
+	}
+	view = putSpec(t, w, raid.ID, memberKeyA, `{"state":"in","role":"dps","spec":"warrior-fury"}`)
+	if row := signupOf(t, view, memberKeyA); row.Role != RoleDPS || row.Group != "melee" || view.Counts.Melee != 1 {
+		t.Fatalf("fury dps row = %+v counts %+v", row, view.Counts)
+	}
+	healer := w.putSignup(raid.ID, memberKeyA, `{"state":"in","role":"healer","spec":"warrior-fury"}`)
+	if body := expectError(t, healer, http.StatusUnprocessableEntity, "invalid"); body.Fields["role"] == "" {
+		t.Fatalf("fields = %v", body.Fields)
+	}
+}
+
 // A locked raid's PUT with a spec changes nothing: no raid spec saved, the row's role unmoved.
 func TestPutSignupWithASpecOnALockedRaidChangesNothing(t *testing.T) {
 	w := newRaidWorld(t, true)

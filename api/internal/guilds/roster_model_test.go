@@ -66,10 +66,10 @@ func TestMergeRosterTable(t *testing.T) {
 		{
 			name:    "an invited member the snapshot does not name is not seen in game yet",
 			rows:    []RosterRow{approved("Bow", "us/pvp/bow", "leader")},
-			invited: []invitedMember{{UserID: 9, Name: "Driftwood", Class: strp("rogue"), Gear: true}},
+			invited: []invitedMember{{UserID: 9, Name: "Driftwood", Class: strp("rogue"), Gear: true, MayRemove: true}},
 			want: []RosterEntry{
 				{Name: "Bow", CharacterKey: "us/pvp/bow", State: EntryApproved, Rank: "leader"},
-				{Name: "Driftwood", State: EntryNotSeen, Rank: "member", Class: strp("rogue")},
+				{Name: "Driftwood", State: EntryNotSeen, Rank: "member", Class: strp("rogue"), AccountKey: "u:9", MayRemove: true},
 			},
 			counts: RosterCounts{OnRoster: 2, NotSeen: 1},
 		},
@@ -78,7 +78,7 @@ func TestMergeRosterTable(t *testing.T) {
 			invited:  []invitedMember{{UserID: 9, Name: "Driftwood", Class: strp("rogue"), Gear: true}},
 			snapshot: []snapshotMember{line("Driftwood")},
 			want: []RosterEntry{
-				{Name: "Driftwood", State: EntryApproved, Rank: "member", Class: strp("rogue"), Level: i(60), Spec: strp("Protection"), SeenAt: "2026-10-20 18:00"},
+				{Name: "Driftwood", State: EntryApproved, Rank: "member", Class: strp("rogue"), Level: i(60), Spec: strp("Protection"), SeenAt: "2026-10-20 18:00", AccountKey: "u:9"},
 			},
 			counts: RosterCounts{OnRoster: 1},
 		},
@@ -87,7 +87,7 @@ func TestMergeRosterTable(t *testing.T) {
 			invited:  []invitedMember{{UserID: 9, Name: "Driftwood"}},
 			snapshot: []snapshotMember{line("Driftwood")},
 			want: []RosterEntry{
-				{Name: "Driftwood", State: EntryApproved, Rank: "member", SeenAt: "2026-10-20 18:00"},
+				{Name: "Driftwood", State: EntryApproved, Rank: "member", SeenAt: "2026-10-20 18:00", AccountKey: "u:9"},
 			},
 			counts: RosterCounts{OnRoster: 1},
 		},
@@ -486,11 +486,13 @@ func TestLootListsEachDropOnce(t *testing.T) {
 	if !reflect.DeepEqual(dupes, map[string]int{"Head of Onyxia": 2}) {
 		t.Fatalf("names the table repeats = %v, want only Head of Onyxia twice", dupes)
 	}
-	items := []LootItemView{{Name: "A"}, {Name: "Head of Onyxia"}}
-	if i := indexOfLootName(items, "Head of Onyxia"); i != 1 {
-		t.Errorf("indexOfLootName = %d, want 1", i)
+	groups := lootGroups(onyxiaLoot)
+	if len(groups) != len(onyxiaLoot)-1 {
+		t.Errorf("lootGroups = %d groups, want %d", len(groups), len(onyxiaLoot)-1)
 	}
-	if i := indexOfLootName(items, "Nope"); i != -1 {
-		t.Errorf("indexOfLootName(missing) = %d, want -1", i)
+	for _, group := range groups {
+		if group[0].Name == "Head of Onyxia" && len(group) != 2 {
+			t.Errorf("Head of Onyxia group = %+v, want both copies", group)
+		}
 	}
 }

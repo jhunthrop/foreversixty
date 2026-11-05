@@ -39,7 +39,7 @@ func TestARowLeasedByAnotherClaimIsNotSent(t *testing.T) {
 	}
 }
 
-func TestARaidLockedAfterTheClaimIsNotSent(t *testing.T) {
+func TestARaidCancelledAfterTheClaimIsNotSent(t *testing.T) {
 	w, events, _ := postingWorld(t)
 	ctx := context.Background()
 	raid := w.createRaids(t, scheduleBody(startIn(10*day), 0, "true", "true"))[0]
@@ -48,11 +48,11 @@ func TestARaidLockedAfterTheClaimIsNotSent(t *testing.T) {
 	if len(due) != 1 {
 		t.Fatalf("claimed %+v", due)
 	}
-	if _, err := w.h.pool.Exec(ctx, `update guild_raids set status = 'locked' where id = $1`, raid.ID); err != nil {
+	if _, err := w.h.pool.Exec(ctx, `update guild_raids set status = 'cancelled' where id = $1`, raid.ID); err != nil {
 		t.Fatal(err)
 	}
 	if got := w.h.svc.runDue(ctx, due[0], at); got != outcomeSkipped || len(events.posted) != 0 {
-		t.Fatalf("a locked raid: outcome %v, posted %d", got, len(events.posted))
+		t.Fatalf("a cancelled raid: outcome %v, posted %d", got, len(events.posted))
 	}
 	if _, leased := w.attemptsOf(t, raid.ID); leased {
 		t.Fatal("the skipped row kept its lease")

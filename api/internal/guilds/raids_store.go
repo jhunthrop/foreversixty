@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -21,7 +22,8 @@ const (
 	RaidCancelled = "cancelled"
 )
 
-// RaidCap is the most planned or locked raids one guild may hold at once.
+// RaidCap is the most planned or locked raids one guild may hold at once. Dungeon runs and
+// guild events do not count (guild events spec §3.2).
 const RaidCap = 12
 
 // raidLingerHours is how long a planned or locked raid stays listed after it ends.
@@ -31,6 +33,8 @@ var (
 	ErrRaidCap       = errors.New("guilds: raid cap reached")
 	ErrRaidLocked    = errors.New("guilds: raid is locked")
 	ErrRaidCancelled = errors.New("guilds: raid is cancelled")
+	// ErrRaidEnded is a member's sign-up to a raid past its end that no log has closed yet.
+	ErrRaidEnded = errors.New("guilds: raid has ended")
 	// ErrRaidStatus is a status move or an edit the raid's current status does not allow.
 	ErrRaidStatus = errors.New("guilds: raid status does not allow that")
 )
@@ -114,7 +118,7 @@ func (s *Store) CreateRaid(ctx context.Context, in RaidInput) (Raid, error) {
 }
 
 // CreateRaids inserts every raid of ins for guildID in one transaction, or none of them when
-// the guild's planned and locked raids that have not ended would then exceed RaidCap. The guild row lock
+// the guild's planned and locked raids (kind raid only) that have not ended would then exceed RaidCap. The guild row lock
 // serialises concurrent creates, so the cap holds under a race. A non-empty timezone is
 // stored as the guild's raid timezone in the same transaction.
 func (s *Store) CreateRaids(ctx context.Context, guildID int64, timezone string, ins []RaidInput) ([]Raid, error) {
@@ -129,11 +133,11 @@ func (s *Store) CreateRaids(ctx context.Context, guildID int64, timezone string,
 	var open int
 	if err := tx.QueryRow(ctx,
 		`select count(*) from guild_raids where guild_id = $1 and status in ('planned','locked')
-		   and starts_at + make_interval(mins => duration_minutes) > now()`,
-		guildID).Scan(&open); err != nil {
+		   and starts_at + make_interval(mins => duration_minutes) > now() and starts_with(zone, $2)`,
+		guildID, raidKeyPrefix).Scan(&open); err != nil {
 		return nil, fmt.Errorf("guilds: create raid: count: %w", err)
 	}
-	if open+len(ins) > RaidCap {
+	if open+countRaidKind(ins) > RaidCap {
 		return nil, ErrRaidCap
 	}
 	out := make([]Raid, 0, len(ins))
@@ -260,13 +264,25 @@ func (s *Store) PlannedRaids(ctx context.Context, guildID int64, now time.Time) 
 	return raids, nil
 }
 
-// NextRaid is the first raid that is Signable at now.
+// NextRaid is the first raid of kind raid that is Signable at now: what Readiness's Next raid
+// chip and needs line read, never a dungeon run or a guild event (guild events spec §3.4).
 func (s *Store) NextRaid(ctx context.Context, guildID int64, now time.Time) (Raid, bool, error) {
+	return s.nextSignable(ctx, guildID, now, raidKeyPrefix)
+}
+
+// NextPlanned is the first raid, dungeon run or guild event that is Signable at now: the band
+// line's and the bot's next night.
+func (s *Store) NextPlanned(ctx context.Context, guildID int64, now time.Time) (Raid, bool, error) {
+	return s.nextSignable(ctx, guildID, now, "")
+}
+
+// nextSignable is the first Signable row at now whose zone key starts with prefix.
+func (s *Store) nextSignable(ctx context.Context, guildID int64, now time.Time, prefix string) (Raid, bool, error) {
 	raid, err := scanRaid(s.Pool.QueryRow(ctx, `
 		select `+raidColumns+` from guild_raids
 		where guild_id = $1 and status in ('planned','locked')
-			and starts_at + make_interval(mins => duration_minutes) > $2
-		order by starts_at, id limit 1`, guildID, now))
+			and starts_at + make_interval(mins => duration_minutes) > $2 and starts_with(zone, $3)
+		order by starts_at, id limit 1`, guildID, now, prefix))
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Raid{}, false, nil
 	}
@@ -274,6 +290,17 @@ func (s *Store) NextRaid(ctx context.Context, guildID int64, now time.Time) (Rai
 		return Raid{}, false, fmt.Errorf("guilds: next raid: %w", err)
 	}
 	return raid, true, nil
+}
+
+// countRaidKind counts the inputs the raid cap holds: raid zones only.
+func countRaidKind(ins []RaidInput) int {
+	n := 0
+	for _, in := range ins {
+		if strings.HasPrefix(in.Zone, raidKeyPrefix) {
+			n++
+		}
+	}
+	return n
 }
 
 // SetGuildRaidTimezone stores the guild's IANA raid timezone.

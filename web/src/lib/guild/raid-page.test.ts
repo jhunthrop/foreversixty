@@ -65,21 +65,26 @@ describe('raidPageFlags', () => {
 });
 
 describe('raidWhen', () => {
-  it('reads the date and times in the viewer zone, with no guild time when the offsets agree', () => {
+  it('reads the date, times and zone in the guild clock, with no your-time line when the offsets agree', () => {
     expect(raidWhen(plannedRaid(), NOW, CHICAGO, 'en-US')).toEqual({
       date: 'Thursday 10 December',
       start: '8:00 pm',
-      end: '11:00 pm',
-      guildTime: null,
+      end: '11:00 pm\u00a0CST',
+      yourTime: null,
       countdown: 'in 2 days 8 h',
     });
   });
 
-  it('adds the guild time when the offsets differ', () => {
+  it('keeps the guild clock first and adds the viewer’s own start when the offsets differ (spec 3.1)', () => {
     const when = raidWhen(plannedRaid(), NOW, NEW_YORK, 'en-US');
-    expect(when.start).toBe('9:00 pm');
-    expect(when.end).toBe('12:00 am');
-    expect(when.guildTime).toBe('8:00 pm CST guild time');
+    expect(when.date).toBe('Thursday 10 December');
+    expect(when.start).toBe('8:00 pm');
+    expect(when.end).toBe('11:00 pm\u00a0CST');
+    expect(when.yourTime).toBe('9:00 pm EST your time');
+  });
+
+  it('names the viewer’s weekday when their date is another', () => {
+    expect(raidWhen(plannedRaid(), NOW, 'Europe/London', 'en-US').yourTime).toBe('Fri 2:00 am GMT your time');
   });
 });
 
@@ -88,13 +93,24 @@ describe('raidCount', () => {
     expect(raidCount(plannedRaid())).toEqual({
       line: '23 of 40 signed up',
       ratio: '23/40',
-      breakdown: '3 tanks · 7 healers · 13 DPS · 2 late',
+      // Each clause glued with no-break spaces: the line wraps only between clauses.
+      breakdown: '3\u00a0tanks · 7\u00a0healers · 7\u00a0melee · 6\u00a0ranged · 2\u00a0late',
       fill: 57,
     });
   });
 
   it('drops the bar while the size is unknown', () => {
     expect(raidCount(plannedRaid({ size: null }))).toMatchObject({ line: '23 signed up', fill: null });
+  });
+
+  it('says nobody signed up, with no role breakdown, at zero', () => {
+    const counts = { in: 0, late: 0, bench: 1, out: 2, tanks: 0, healers: 0, dps: 0 };
+    expect(raidCount(plannedRaid({ counts, size: 5 }))).toEqual({
+      line: 'Nobody signed up yet',
+      ratio: '0/5',
+      breakdown: '',
+      fill: 0,
+    });
   });
 });
 

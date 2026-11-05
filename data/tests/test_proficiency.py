@@ -170,7 +170,7 @@ def _minimal_client_tables(tmp_path, *, class_mask_overrides=None):
         raw / "SkillLine.csv",
         [
             {"ID": skill_id, "DisplayName_lang": name, "CategoryID": 6}
-            for skill_id, name in proficiency._WEAPON_SKILL_LINE_NAME.items()
+            for skill_id, name in proficiency.WEAPON_SKILL_LINE_NAME.items()
         ],
     )
     _write_skill_line_ability(

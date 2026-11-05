@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 import httpx
 
@@ -240,6 +241,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     tr.add_argument("--build", required=True)
 
+    es = sub.add_parser(
+        "equip-skills",
+        help="write builds/<build>/equip-skills.json (who equips which weapon and armour, "
+        "from what level) from SkillLine, SkillLineAbility and SkillRaceClassInfo; needs raw/ "
+        "from `fetch`",
+    )
+    es.add_argument("--build", required=True)
+    es.add_argument("--raw", type=Path, default=None, help="the three tables' directory")
+
     st = sub.add_parser(
         "spelltips",
         help="write the game's own spell tooltips (builds/<build>/spelltips/) for the site's "
@@ -301,6 +311,20 @@ def build_parser() -> argparse.ArgumentParser:
         "--check",
         action="store_true",
         help="write nothing; exit non-zero if a generated file has drifted",
+    )
+
+    ge = sub.add_parser(
+        "guild-events",
+        help="write the guild calendar's dungeon runs and guild events "
+        "(curated/raids/events.json and its Go twin) from the client's Group Finder tables",
+    )
+    ge.add_argument("--build", required=True, help="the client build the tables are read for")
+    ge.add_argument("--raw", required=True, help="a directory of its own for the fetched CSVs")
+    ge.add_argument("--fetch", action="store_true", help="download the tables into --raw first")
+    ge.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if either output has drifted",
     )
 
     ph = sub.add_parser("phases", help="emit the phase calendar for the web")
@@ -620,6 +644,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.trainables import write_trainables
 
         print(write_trainables(args.build))
+    elif args.command == "equip-skills":
+        from pipeline.equip_skills import write_equip_skills
+
+        print(write_equip_skills(args.build, raw=args.raw))
     elif args.command == "spelltips":
         from pipeline.spelltips import write_spell_tips
 
@@ -682,6 +710,25 @@ def main(argv: list[str] | None = None) -> int:
                 )
             return 1 if stale else 0
         for path in write_specs(Path("curated"), build_dir, *outputs):
+            print(path)
+    elif args.command == "guild-events":
+        import json
+        from pathlib import Path
+
+        from pipeline import guild_events
+
+        raw = Path(args.raw)
+        if args.fetch:
+            guild_events.fetch(args.build, raw)
+        loot = json.loads(Path("builds", args.build, "loot.json").read_text(encoding="utf-8"))
+        items = json.loads(Path("builds", args.build, "items.json").read_text(encoding="utf-8"))
+        doc = guild_events.build_events(raw, args.build, loot, items)
+        if args.check:
+            drifted = guild_events.stale(doc)
+            for path in drifted:
+                logging.getLogger("pipeline").error("%s has drifted; run guild-events", path)
+            return 1 if drifted else 0
+        for path in guild_events.write(doc):
             print(path)
     elif args.command == "phases":
         from pathlib import Path

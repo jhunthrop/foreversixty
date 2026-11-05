@@ -55,26 +55,18 @@ type RosterLine struct {
 // Marks are the application emoji ids by name (fs_{class}_{spec}); nil draws every line as text.
 type Marks map[string]string
 
-// rosterGroup is one of the four In groups.
+// rosterGroup is one of the four In groups: its header and the raidspec.Group it lists, the one
+// mapping the site's Sign-ups columns read too (spec 2026-11-05 §4.1).
 type rosterGroup struct {
 	label string
-	in    func(RosterLine, raidspec.Spec, bool) bool
+	group string
 }
 
 var rosterGroups = []rosterGroup{
-	{rosterCopy.Tanks, func(l RosterLine, _ raidspec.Spec, _ bool) bool { return l.Role == raidspec.RoleTank }},
-	{rosterCopy.Healers, func(l RosterLine, _ raidspec.Spec, _ bool) bool { return l.Role == raidspec.RoleHealer }},
-	{rosterCopy.Melee, func(l RosterLine, sp raidspec.Spec, ok bool) bool { return isDPS(l) && isMelee(l, sp, ok) }},
-	{rosterCopy.Ranged, func(l RosterLine, sp raidspec.Spec, ok bool) bool { return isDPS(l) && !isMelee(l, sp, ok) }},
-}
-
-func isDPS(l RosterLine) bool { return l.Role != raidspec.RoleTank && l.Role != raidspec.RoleHealer }
-
-func isMelee(l RosterLine, sp raidspec.Spec, ok bool) bool {
-	if ok {
-		return sp.Melee()
-	}
-	return raidspec.MeleeClass(l.Class)
+	{rosterCopy.Tanks, raidspec.GroupTank},
+	{rosterCopy.Healers, raidspec.GroupHealer},
+	{rosterCopy.Melee, raidspec.GroupMelee},
+	{rosterCopy.Ranged, raidspec.GroupRanged},
 }
 
 // rosterLimits are the caps the embed guard tightens (spec §P.9.5).
@@ -183,8 +175,7 @@ func listFields(roster []RosterLine, marks Marks, lim rosterLimits) []EmbedField
 func inGroup(roster []RosterLine, g rosterGroup) []RosterLine {
 	var out []RosterLine
 	for _, r := range sortedState(roster, rosterIn) {
-		sp, ok := raidspec.Resolve(r.Class, r.Spec, r.Role)
-		if g.in(r, sp, ok) {
+		if raidspec.Group(r.Class, r.Spec, r.Role) == g.group {
 			out = append(out, r)
 		}
 	}

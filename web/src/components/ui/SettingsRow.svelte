@@ -21,7 +21,10 @@
     value,
     muted = false,
     glyph,
+    icon,
+    labelColor,
     tone = 'gold',
+    lead,
     href,
     external = false,
     onclick,
@@ -42,7 +45,13 @@
     /** The value is a quiet state (off, not shipped): `--muted` and no chevron. */
     muted?: boolean;
     glyph?: GlyphName;
+    /** Drawn in the icon slot instead of a tile (a character's crest). */
+    icon?: Snippet;
+    /** The label's colour when it names a character (a class colour). */
+    labelColor?: string;
     tone?: TileTone;
+    /** The icon slot for something other than a glyph tile (a 24 px class crest). */
+    lead?: Snippet;
     href?: string;
     /** A link that opens another tab: `target=_blank` with `rel=noopener`. */
     external?: boolean;
@@ -73,7 +82,9 @@
     error !== undefined ? 'text-wipe' : muted || empty || disabled ? 'text-muted' : 'text-text',
   );
   /** Under the label on a phone: the tile's 32 px and the 14 px gap. */
-  const phoneIndent = $derived(glyph === undefined ? '' : 'max-[479px]:pl-[46px]');
+  const phoneIndent = $derived(
+    glyph === undefined ? (lead === undefined ? '' : 'max-[479px]:pl-[38px]') : 'max-[479px]:pl-[46px]',
+  );
 </script>
 
 <!-- The element is a real button whenever it has a click handler (tag above); the compiler cannot see that. -->
@@ -91,11 +102,17 @@
   class="{ROW} {interactive ? ROW_INTERACTIVE : ''}"
   style:padding-left={nested ? (glyph === undefined ? '70px' : '46px') : undefined}
 >
-  {#if glyph !== undefined}<IconTile {glyph} size={32} {tone} />{/if}
+  {#if icon !== undefined}{@render icon()}{:else if glyph !== undefined}<IconTile
+      {glyph}
+      size={32}
+      {tone}
+    />{/if}
+  {@render lead?.()}
   <span class="flex min-w-0 flex-1 flex-col">
     <span
       id={labelId}
       class="{ROW_LABEL} {disabled ? 'text-muted' : 'text-strong'}"
+      style:color={labelColor}
       data-testid={testid === undefined ? undefined : `${testid}-label`}>{label}</span
     >
     {#if sub !== undefined}<span class={ROW_SUB} data-testid="settings-row-sub">{sub}</span>{/if}

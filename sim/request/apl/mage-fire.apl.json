@@ -7,7 +7,7 @@
       }
     },
     {
-      "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a boss: spend your gem, a Major Mana Potion and a Demonic Rune first. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
+      "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a fight: spend your mana gem from 28 and a mana potion first, and at 60 a Demonic Rune too. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
       "action": {
         "condition": {
           "and": {
@@ -49,7 +49,7 @@
       }
     },
     {
-      "notes": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial. Every Fire hit then adds 10% crit until three non-periodic crits land, and each Fire crit is an Ignite and a Heating Up stack. Give a fresh tank a few seconds of threat first.",
+      "notes": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one. Every Fire hit then adds 10% crit until three non-periodic crits land, and each Scorch or Fire Blast crit is an Ignite and a Heating Up stack. Give a fresh tank a few seconds of threat first.",
       "action": {
         "condition": {
           "cmp": {
@@ -207,7 +207,7 @@
       }
     },
     {
-      "notes": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack. Both points of Improved Fire Blast, by 26, make it a 6 second cooldown. In raid gear it costs more mana for its damage than Scorch, Fireball or Pyroblast, but skipping it to save mana costs more damage than the mana buys.",
+      "notes": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack. Both points of Improved Fire Blast, by 26, make it a 6 second cooldown. From Improved Scorch at 27, the Scorches that build your 5 stacks go ahead of it, and from Heating Up at 30 so does a Pyroblast on 3 stacks. In raid gear it costs more mana for its damage than Scorch, Fireball or Pyroblast, but skipping it to save mana costs more damage than the mana buys.",
       "action": {
         "castSpell": {
           "spellId": {

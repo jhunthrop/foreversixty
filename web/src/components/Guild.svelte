@@ -11,8 +11,7 @@
      line, above the tab strip itself (spec §4.0: "the tab strip sits directly under the
      role-based line") -- so they are visible on every tab, not just Overview. -->
 <script lang="ts">
-  import { fetchMeFresh, type Me } from '../lib/account/api';
-  import { lookupAddonExport } from '../lib/addon-export';
+  import { fetchMeFresh, type Me, type MeGuild } from '../lib/account/api';
   import {
     characterSlug,
     guildClaimHref,
@@ -35,13 +34,17 @@
     fetchGuildLoot,
     fetchGuildProgression,
     fetchGuildRaids,
+    fetchGuildReadiness,
     removeCharacter,
+    removeMember,
     GuildApiError,
     type GuildHome,
     type GuildLootItem,
     type GuildLootPage,
     type GuildProgressionPage,
     type GuildRaidsPage,
+    type GuildRosterEntry,
+    type GuildReadinessRow,
     type GuildRosterRow,
     type GuildViewerRole,
   } from '../lib/guild/api';
@@ -64,11 +67,15 @@
   import { GUILD_BANDLESS_TOP, PLANNED_RESERVE } from '../lib/guild/raid-layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
-  import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
-  import { claimEntryCopy, claimEntryFor, claimEntryNotes, rosterGateState } from '../lib/guild/roster-gate';
-  import { rosterPlannerHref } from '../lib/guild/roster-links';
-  import { afterApprove, afterRemove } from '../lib/guild/roster-model';
-  import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
+  import { showBandCounts, showsWeekOne, updatedLine } from '../lib/guild/overview-view';
+  import { claimEntryFor, rosterGateState } from '../lib/guild/roster-gate';
+  import { claimRowKind } from '../lib/guild/claim-row';
+  import { gateFactsFrom } from '../lib/guild/plan-gate';
+  import { afterApprove, afterRemove, afterRemoveMember } from '../lib/guild/roster-model';
+  import { levelingLine, needsLine, standingSentence } from '../lib/guild/standing';
+  import { RAID_LEVEL } from '../lib/guild/readiness-view';
+  import type { WeekOneCharacter } from '../lib/guild/week-one';
+  import { classSlugFromName } from '../lib/report/tree-sizes';
   import { createRefreshingRead } from '../lib/guild/refreshing-read';
   import {
     attendanceSourceOf,
@@ -77,12 +84,14 @@
     type TabFetchStatus,
   } from '../lib/guild/guild-page-decisions';
   import { loadReadinessBoard, type ReadinessBoard } from '../lib/guild/readiness-raid';
-  import { nextRaidDeadline, raidCopy, showsBandLine } from '../lib/guild/raid-copy';
+  import { nextRaidDeadline, raidCopy, raidDeadlineStart, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import FactLine from './guild/FactLine.svelte';
   import GuildUnverifiedNote from './guild/GuildUnverifiedNote.svelte';
+  import GuildClaimRow from './guild/GuildClaimRow.svelte';
+  import GuildClaimedBy from './guild/GuildClaimedBy.svelte';
   import GuildRosterGate from './guild/GuildRosterGate.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -95,6 +104,8 @@
   } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
+  import LoadError from './ui/LoadError.svelte';
+  import { LOOT_LOAD_ERROR } from '../lib/guild/loot-view';
   import PageHead from './ui/PageHead.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
@@ -116,6 +127,9 @@
   /** The raid line in the band (raids spec 3.4): its own chunk, started the moment the viewer's
    *  membership is known, so it lands alongside /home and keeps the entry chunk under budget. */
   const bandLineLazy = createLazyComponent(() => import('./guild/RaidBandLine.svelte'));
+  // The Before raids open card is its own chunk (the GuildShell bundle budget); it starts loading
+  // with the viewer's membership, alongside the home fetch it waits on anyway.
+  const weekOneLazy = createLazyComponent(() => import('./guild/GuildWeekOneCard.svelte'));
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -158,6 +172,7 @@
 
   let home = $state<GuildHome | null>(null);
   let homeStatus = $state<'idle' | 'loading' | 'ready'>('idle');
+  let homeAttempt = $state(0);
   /** True once /v1/me has answered (signed in or not), so the public sign-in prompt never
    *  flashes for a member during the first render. */
   let meResolved = $state(false);
@@ -169,16 +184,16 @@
   let contestError = $state('');
   let showContestConfirm = $state(false);
 
-  let myGuildMembership = $state<{ rank: string; verified: boolean; can: string[] } | null>(null);
+  let myGuildMembership = $state<
+    | (Pick<MeGuild, 'claim' | 'covered' | 'subscribe'> & { rank: string; verified: boolean; can: string[] })
+    | null
+  >(null);
   let myCharacterKeys = $state<Set<string>>(new Set());
   /** The site's own record of each of the account's characters' spec (`/v1/me`), by character key: the
    *  header chip reads it, and the roster's spec line says where the addon's snapshot disagrees. */
   let mySiteSpecs = $state<Map<string, string>>(new Map());
   let isModerator = $state(false);
-  /** The signed-in account's own battletag (fix round 1): the only signal available to
-   *  tell "this viewer's own account is the one holding the claim" from "a verified
-   *  officer of a different account" -- `GuildHome.claim.claimed_by_name` is a battletag
-   *  string, never an account id, so that is what this compares against. */
+  /** The signed-in account's own battletag: null reads as signed out for the sign-in prompt. */
   let myBattletag = $state<string | null>(null);
 
   /** Same "fail toward the public-only view" rule as before this rebuild: a stranger, a
@@ -187,6 +202,7 @@
   $effect(() => {
     const requested = resolved;
     if (requested === null) return;
+    void homeAttempt; // Try again on the Before raids open card asks again.
     homeStatus = 'loading';
     // Painted from the cache at once, then asked again: a join, a grant or an approval since
     // the last visit replaces the answer through `apply` (`onFresh`) without a reload.
@@ -211,13 +227,19 @@
         rank: membership.rank ?? 'member',
         verified: membership.verified,
         can: membership.can ?? [],
+        claim: membership.claim,
+        covered: membership.covered,
+        subscribe: membership.subscribe,
       };
       const show = (page: GuildHome): void => {
         if (resolved !== requested) return;
         home = page;
         homeStatus = 'ready';
       };
-      if (membership.verified) bandLineLazy.load();
+      if (membership.verified) {
+        bandLineLazy.load();
+        weekOneLazy.load();
+      }
       return fetchGuildHome(membership.id, undefined, undefined, show).then(show);
     };
     void fetchMeFresh((fresh) => void apply(fresh)?.catch(() => {}))
@@ -252,10 +274,6 @@
       myGuildMembership.verified &&
       (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
   );
-  const isOfficerOrLeader = $derived(
-    myGuildMembership !== null &&
-      (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
-  );
 
   /** What the band says about claiming: the "Run this guild? Claim it." prompt only for an officer
    *  rank in an unclaimed guild, who holds a claimed guild for its members, nothing for a stranger. */
@@ -265,8 +283,11 @@
       canManage,
       membership: myGuildMembership,
       claimState: home?.claim.state ?? null,
-      claimedBy: home?.claim.claimed_by_name ?? null,
     }),
+  );
+  /** The band's claim row (gating spec §3.1): `/v1/me` answers an unverified guild master too. */
+  const claimRow = $derived(
+    claimRowKind(myGuildMembership?.rank, home?.claim.state ?? myGuildMembership?.claim?.state),
   );
   /** Control-centre contract addition: `home.viewer.role` is the server's own answer,
    *  preferred outright when present; a home response from before this contract landed
@@ -299,6 +320,20 @@
       : '',
   );
   const guildId = $derived(home?.guild.id ?? data?.guild.id ?? null);
+  /** The gate sentence's facts (gating spec §3.2), from `/home` and `/v1/me`: no request of its own. */
+  const gateFacts = $derived(
+    gateFactsFrom({
+      claim: home?.claim ?? null,
+      membership: myGuildMembership,
+      officerTools,
+      raidGuildTools,
+      settingsHref,
+      claimHref:
+        resolved !== null && home !== null
+          ? guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)
+          : '',
+    }),
+  );
   /** Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md): `home.guild` (the
    *  member-gated fetch) wins once it resolves -- it is the one place a just-saved/removed
    *  crest shows up without a reload (`onCrestChanged` below re-fetches `home`, nothing
@@ -322,38 +357,63 @@
   );
 
   /** Fix round 1: "Contest this claim" must never reach the account that already holds
-   *  the claim -- a verified officer whose own battletag matches `claim.claimed_by_name`
-   *  is that account, regardless of which of their own characters they are viewing from.
-   *  `undefined`/`null` on either side (a pending claim carries no `claimed_by_name`, a
-   *  signed-out or /v1/me-failed visitor carries no battletag) reads as "not the
-   *  claimant," never a false positive that hides the control from someone who should see
-   *  it. */
-  const isClaimantAccount = $derived(
-    myBattletag !== null &&
-      home?.claim.claimed_by_name !== undefined &&
-      myBattletag === home.claim.claimed_by_name,
+   *  the claim, regardless of which of their own characters they are viewing from. */
+  const isClaimantAccount = $derived(home?.claim.yours === true);
+
+  /** The current character's level from its roster row: the standing and needs lines read it. */
+  const myLevel = $derived(myRosterRow?.level ?? null);
+  /** Week-one spec §3.2: under 60 the band drops the standing line and says the level once, in
+   *  the needs line's place, for every viewer with a character here (officers included). */
+  const myLevelingLine = $derived(
+    myRosterRow !== null && myLevel !== null && myLevel < RAID_LEVEL
+      ? levelingLine(myRosterRow.name, myLevel)
+      : null,
   );
 
-  /** Fix round 1, item 3: the standing line's "Gear in the planner" link, built the exact
-   *  same way `GuildRosterHandoff.svelte` builds it per roster row -- one lookup, for the
-   *  viewer's own character only, never a second mechanism (tenet 10). `requestedKey`
-   *  guards against a stale resolution landing after `myRosterRow` has already moved on to
-   *  a different character (the same guard `GuildRosterHandoff` itself uses via its own
-   *  `result.path !== requested` check, adapted here since this lookup is keyed by
-   *  character rather than by path identity). */
-  let viewerPlannerHref = $state<string | null>(null);
+  /** The viewer's own row on the /readiness response the board renders (week-one spec §3.2.3), so
+   *  the needs line and the board can never disagree. A member's read, once per page: the answer
+   *  is the same cached one the Readiness and Overview tabs read. */
+  let myReadiness = $state<GuildReadinessRow | null>(null);
+  const needs = $derived.by(() => {
+    const row = myReadiness;
+    return row === null ? null : needsLine(row, nextRaidDeadline(raidDeadlineStart(home?.next_raid)));
+  });
   $effect(() => {
-    const row = myRosterRow;
-    if (row === null || row.consent === 'roster') {
-      viewerPlannerHref = null;
+    if (role !== 'member' || home === null || myCharacterKey === null) {
+      myReadiness = null;
       return;
     }
-    const requestedKey = row.character_key;
-    void lookupAddonExport(rowPath(row)).then((result) => {
-      if (myRosterRow?.character_key !== requestedKey) return;
-      viewerPlannerHref = result.code !== null ? rosterPlannerHref(result.code) : null;
-    });
+    const key = myCharacterKey;
+    void fetchGuildReadiness(home.guild.id)
+      .then((page) => {
+        myReadiness = page.rows.find((row) => row.character_key === key) ?? null;
+      })
+      .catch(() => {
+        myReadiness = null;
+      });
   });
+
+  /** The Before raids open card's character: the current one, with the spec the logs or the site know. */
+  const weekOneCharacter = $derived<WeekOneCharacter | null>(
+    myRosterRow === null
+      ? null
+      : {
+          name: myRosterRow.name,
+          class: classSlugFromName(myRosterRow.class ?? ''),
+          level: myLevel,
+          spec:
+            myRosterRow.spec ?? (myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)),
+        },
+  );
+  /** The card reads the home: it loads with it, and only a verified member's failure is an error. */
+  const weekOneStatus = $derived<'loading' | 'error' | 'ready'>(
+    home !== null ? 'ready' : homeStatus === 'loading' ? 'loading' : 'error',
+  );
+  const showWeekOne = $derived(
+    home === null
+      ? meResolved && myGuildMembership?.verified === true
+      : showsWeekOne(role, home.summary?.tier),
+  );
 
   /** After a roster action: the mutation dropped the cached home, so this reads the guild's
    *  own answer (roster, pending list, waiting count) rather than trusting the local edit.
@@ -430,6 +490,23 @@
     }
   }
 
+  /** Remove a member who joined by invite link: no character row, so the API takes their account. */
+  async function onRemoveMember(entry: GuildRosterEntry): Promise<void> {
+    if (home === null || entry.account_key === undefined) return;
+    const accountKey = entry.account_key;
+    rosterBusy = accountKey;
+    rosterActionError = '';
+    try {
+      await removeMember(home.guild.id, accountKey);
+      home = { ...home, ...afterRemoveMember(home, accountKey) };
+      await refreshHome();
+    } catch (thrown) {
+      rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
+    } finally {
+      rosterBusy = null;
+    }
+  }
+
   async function onContest(): Promise<void> {
     if (home === null) return;
     contestBusy = true;
@@ -484,10 +561,10 @@
    *  nothing about bosses and pulls beside a tab reading "No public reports this week yet". */
   const showCounts = $derived(showBandCounts(role, data?.reports.length ?? 0));
   const killed = $derived(
-    home?.summary?.named_encounters_down ?? (data?.progression ?? []).filter((row) => row.kills > 0).length,
+    home?.summary?.tier?.down ?? (data?.progression ?? []).filter((row) => row.kills > 0).length,
   );
   const pulls = $derived(
-    home?.summary?.pulls_this_tier ??
+    home?.summary?.tier?.pulls_total ??
       (data?.progression ?? []).reduce((total, row) => total + row.pull_count, 0),
   );
 
@@ -516,9 +593,26 @@
     return () => window.removeEventListener('hashchange', onHashChange);
   });
 
+  /** The card's two tab buttons: the tab opens ready for the job they name. A tab chosen any other
+   *  way opens as it always does. */
+  let focusApproveAll = $state(false);
+  let openPlanForm = $state(false);
+
   function selectTab(tab: GuildTabId): void {
     activeTab = tab;
+    focusApproveAll = false;
+    openPlanForm = false;
     if (typeof window !== 'undefined') window.history.replaceState(null, '', `#${tab}`);
+  }
+
+  function approveFromCard(): void {
+    selectTab('roster');
+    focusApproveAll = true;
+  }
+
+  function planFromCard(): void {
+    selectTab('raids');
+    openPlanForm = true;
   }
 
   /** Starts the chunk fetch for whichever tab is now active -- `load()` is itself a no-op
@@ -685,14 +779,15 @@
     return true;
   }
 
-  async function onAward(item: GuildLootItem, charKey: string): Promise<void> {
+  /** `itemId` names the copy of the drop when it is not the row's own (a side's Head of Onyxia). */
+  async function onAward(item: GuildLootItem, charKey: string, itemId = item.item_id): Promise<void> {
     if (guildId === null || loot === null || loot.selected === null) return;
     lootBusyItemId = item.item_id;
     lootError = '';
     try {
       await awardLoot(guildId, {
         encounter_id: loot.selected,
-        item_id: item.item_id,
+        item_id: itemId,
         character_key: charKey,
       });
       loot = await fetchGuildLoot(guildId, loot.selected);
@@ -806,26 +901,10 @@
           />
         {/if}
 
-        <!-- Any signed-in viewer who is not a verified officer can start a claim from here;
-               the claim page states the rules and who may claim. A verified officer gets
-               their Guild settings link in the role line below instead. -->
-        {#if meResolved && claimEntry.kind === 'claim'}
-          <p class="text-muted text-[13px]" data-testid="guild-claim-entry">
-            {claimEntryCopy.question}
-            <a
-              href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
-              data-testid="guild-claim-entry-link">{claimEntryCopy.action}</a
-            >
+        {#if meResolved && claimEntry.kind === 'claimedBy'}
+          <p class="text-muted text-[13px]" data-testid="guild-claim-note">
+            <GuildClaimedBy holder={home?.claim.claimed_by} />
           </p>
-        {:else if meResolved && claimEntry.kind === 'getClaimed'}
-          <p class="text-[13px]" data-testid="guild-claim-entry">
-            <a
-              href={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
-              data-testid="guild-claim-entry-link">{claimEntryNotes.getClaimed}</a
-            >
-          </p>
-        {:else if meResolved && claimEntry.kind === 'note'}
-          <p class="text-muted text-[13px]" data-testid="guild-claim-note">{claimEntry.text}</p>
         {/if}
 
         <!-- The role-based line (spec §4.0/§4.A.1): unchanged v1 mechanism for claim/
@@ -841,26 +920,19 @@
                    separate from the claim/settings row below it (unchanged v1 mechanism),
                    rather than the two fighting over the same slot. -->
             <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
-              {#if home.standing !== null && home.standing !== undefined}
+              {#if myLevelingLine === null && home.standing !== null && home.standing !== undefined}
                 {@const sentence = standingSentence(home.standing)}
-                <p class="flex flex-wrap items-center gap-3 text-[14px] font-semibold">
-                  <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
-                         gloss read as a second spec beside the header chip's. -->
-                  {#if sentence !== ''}
-                    <span style={`color:${classColorVar(home.standing.class)}`}>
-                      {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{sentence}
-                    </span>
-                  {/if}
-                  {#if viewerPlannerHref !== null}
-                    <a
-                      href={viewerPlannerHref}
-                      class="text-[13px] font-bold"
-                      data-testid="guild-standing-planner-link"
-                    >
-                      Gear in the planner
-                    </a>
-                  {/if}
-                </p>
+                <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
+                       gloss read as a second spec beside the header chip's. -->
+                {#if sentence !== ''}
+                  <p
+                    class="text-[14px] font-semibold"
+                    style={`color:${classColorVar(home.standing.class)}`}
+                    data-testid="guild-standing-rank"
+                  >
+                    {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{sentence}
+                  </p>
+                {/if}
               {/if}
               <!-- Raids spec 3.4: the next raid's line, for verified viewers only (R1), between
                      the standing line and the needs line. Its chunk loads alongside /home; the box
@@ -872,6 +944,7 @@
                     guildId={home.guild.id}
                     nextRaid={home.next_raid ?? null}
                     officer={officerView}
+                    {officerTools}
                     {guildPath}
                     currentKey={myCharacterKey}
                     ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
@@ -888,7 +961,7 @@
                     class="text-gold text-[13px] font-bold"
                     data-testid="guild-raid-line-link">{home.next_raid.zone_name} →</a
                   >
-                {:else if bandLineLazy.error !== '' && officerView}
+                {:else if bandLineLazy.error !== '' && officerView && officerTools}
                   <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
                     >{raidCopy.bandNone.planLink}</a
                   >
@@ -900,39 +973,24 @@
                   ></div>
                 {/if}
               {/if}
-              {#if role === 'member' && home.standing !== null && home.standing !== undefined}
-                <!-- Guild spec 4.A.2: the fails read --text (a to-do list, not a failure); every check
-                       passing reads green. -->
+              {#if myLevelingLine !== null}
+                <!-- Week-one spec 3.2: under 60 this is the band's only viewer line, never green. -->
+                <p class="text-text text-[14px]" data-testid="guild-standing-leveling">
+                  {myLevelingLine}
+                </p>
+              {:else if role === 'member' && needs !== null}
+                <!-- Week-one spec 3.2: the viewer's own line. The fails read --text (a to-do list, not a
+                       failure); every check passing reads green; a leveling character is never green. -->
                 <p
-                  class="text-[13px] {home.standing.needs_before_next_raid.length === 0 ? '' : 'text-text'}"
-                  style={home.standing.needs_before_next_raid.length === 0 ? 'color:#7bff5c' : undefined}
+                  class="text-[13px] {needs.kind === 'clear' ? 'text-kill' : 'text-text'}"
                   data-testid="guild-overview-needs"
                 >
-                  {needsBeforeSentence(
-                    home.standing.needs_before_next_raid,
-                    nextRaidDeadline(home.next_raid?.starts_at),
-                  )}
+                  {needs.text}
                 </p>
               {/if}
             </div>
             <div class="flex flex-wrap items-center justify-between gap-3">
-              {#if isOfficerOrLeader && home.claim.state === 'unclaimed'}
-                <a
-                  class="text-[13px] font-semibold"
-                  href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
-                  data-testid="guild-claim-link"
-                >
-                  {guildHomeCopy.claimLink}
-                </a>
-              {:else if isOfficerOrLeader && home.claim.state === 'pending'}
-                <a
-                  class="text-[13px] font-semibold"
-                  href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
-                  data-testid="guild-confirm-claim-link"
-                >
-                  {guildHomeCopy.confirmClaimLink}
-                </a>
-              {:else if myGuildMembership !== null && !myGuildMembership.verified}
+              {#if myGuildMembership !== null && !myGuildMembership.verified}
                 <GuildUnverifiedNote
                   guildName={home.guild.name}
                   hasApprover={home.viewer?.verify?.has_approver}
@@ -948,6 +1006,14 @@
             {/if}
           </div>
         {/if}
+
+        {#if meResolved && claimRow !== null}
+          <GuildClaimRow
+            kind={claimRow}
+            guildName={data.guild.name}
+            claimHref={guildClaimHref(resolved.region, resolved.ruleset, data.guild.name)}
+          />
+        {/if}
       </header>
 
       <GuildTabs active={activeTab} {role} onSelect={selectTab} />
@@ -961,7 +1027,26 @@
         summary={home?.summary}
         {showCounts}
         onSelectTab={selectTab}
-      />
+      >
+        {#snippet lead()}
+          {#if showWeekOne && weekOneLazy.current}
+            <weekOneLazy.current
+              status={weekOneStatus}
+              officer={officerView}
+              waiting={home?.summary?.waiting_for_approval ?? 0}
+              entries={home?.members ?? []}
+              rows={home?.roster ?? []}
+              character={weekOneCharacter}
+              nextRaid={home?.next_raid ?? null}
+              raidHref={home?.next_raid == null ? null : guildRaidHref(guildPath, home.next_raid.id)}
+              inviteHref={settingsHref === '' ? '' : `${settingsHref}#invite`}
+              onRetry={() => (homeAttempt += 1)}
+              onApprove={approveFromCard}
+              onPlan={planFromCard}
+            />
+          {/if}
+        {/snippet}
+      </GuildOverview>
     {:else if activeTab === 'roster' && home !== null}
       {#if rosterLazy.current}
         <rosterLazy.current
@@ -977,12 +1062,14 @@
           {removeOverridesFrozen}
           onApprove={(row) => void onApprove(row)}
           onRemove={(row) => void onRemove(row)}
+          onRemoveMember={(entry) => void onRemoveMember(entry)}
           onDecline={(row) => void onRemove(row)}
           onApproveAll={() => void onApproveAll()}
           {rowPath}
           addonSnapshot={home.addon_snapshot ?? null}
           mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
           attendanceSource={attendanceSourceOf(home)}
+          {focusApproveAll}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />
@@ -1018,9 +1105,11 @@
           {officerTools}
           memberView={myGuildMembership?.verified === true}
           {settingsHref}
+          {gateFacts}
           {guildPath}
           onPlanned={() => (guildId === null ? Promise.resolve() : loadRaids(guildId))}
           onPlanRefused={() => (officerToolsEnded = true)}
+          openForm={openPlanForm}
         />
       {/if}
     {:else if activeTab === 'progression'}
@@ -1061,12 +1150,14 @@
           {officerTools}
           {raidGuildTools}
           {myCharacterKey}
-          {settingsHref}
+          {gateFacts}
         />
       {/if}
     {:else if activeTab === 'loot'}
       {#if lootStatus === 'loading' || (lootStatus === 'ready' && !lootLazy.current)}
         <Skeleton lines={5} minHeight="min-h-[240px]" testid="guild-loot-skeleton" />
+        <Skeleton lines={3} minHeight="min-h-[168px]" testid="guild-loot-item-skeleton" />
+        <Skeleton lines={3} minHeight="min-h-[168px]" testid="guild-loot-item-skeleton" />
         {@render lazyFallback(lootLazy)}
       {:else if lootStatus === 'missing'}
         <EmptyState
@@ -1078,7 +1169,14 @@
              live yet" copy above -- its own message, rendered without waiting on the lazy
              GuildLoot.svelte chunk (which a slow connection may not have finished loading
              yet when the fetch itself has already failed). -->
-        <p class="text-[13px]" role="alert" data-testid="guild-loot-error">{lootError}</p>
+        <LoadError
+          message={LOOT_LOAD_ERROR}
+          testid="guild-loot-error"
+          onRetry={() => {
+            lootError = '';
+            lootStatus = 'idle';
+          }}
+        />
       {:else if lootLazy.current}
         <lootLazy.current
           loot={lootStatus === 'ready' ? loot : null}
@@ -1087,10 +1185,11 @@
           {raidGuildTools}
           memberReadOnly={role === 'member'}
           attendanceSource={attendanceSourceOf(home)}
+          ownKeys={[...myCharacterKeys]}
           busyItemId={lootBusyItemId}
           refusal={planRefusal}
-          {settingsHref}
-          onAward={(item, charKey) => void onAward(item, charKey)}
+          {gateFacts}
+          onAward={(item, charKey, itemId) => void onAward(item, charKey, itemId)}
           onUndo={(item) => void onUndo(item)}
           onBoss={(encounterId) => void onBoss(encounterId)}
         />

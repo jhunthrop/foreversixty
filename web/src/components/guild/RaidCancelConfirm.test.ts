@@ -28,9 +28,9 @@ describe('RaidCancelConfirm', () => {
     const body = html(false, false);
     expect(text(body)).toBe(
       [
-        raidCopy.cancelConfirm.question,
+        'Cancel this raid? Members see it as cancelled.',
         raidCopy.cancelConfirm.postToDiscord,
-        raidCopy.cancelConfirm.confirm,
+        'Cancel the raid',
         raidCopy.cancelConfirm.keep,
       ].join(' '),
     );

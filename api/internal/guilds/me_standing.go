@@ -98,8 +98,9 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 			Covered:      plan.covered[id.id],
 		}
 		if id.snapshot {
+			// OnRoster already counts the names in game without an account.
 			_, counts := mergeRoster(rows[id.id], invited[id.id], id.members)
-			n := counts.OnRoster + counts.InGameNoAccount
+			n := counts.OnRoster
 			st.RosterCount = &n
 		}
 		out[id.id] = st
@@ -225,7 +226,7 @@ func (s *Store) collectInvited(ctx context.Context, rows pgx.Rows) (map[int64][]
 		if err := rows.Scan(&guildID, &m.UserID, &name); err != nil {
 			return nil, fmt.Errorf("guilds: standing invited: %w", err)
 		}
-		m.Name = s.inviteeName(ctx, m.UserID, name)
+		m.Name = inviteeName(m.UserID, name)
 		out[guildID] = append(out[guildID], m)
 	}
 	return out, rows.Err()

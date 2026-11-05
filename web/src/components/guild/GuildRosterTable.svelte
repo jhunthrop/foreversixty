@@ -15,6 +15,7 @@
      /v1/me), never from the rank. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Tag from '../ui/Tag.svelte';
   import SupporterChip from '../SupporterChip.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
   import { classColorVar } from '../../lib/report/format';
@@ -26,9 +27,11 @@
     GuildRosterRow,
   } from '../../lib/guild/api';
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
+  import { focusOnMountIf } from '../../lib/guild/focus-now';
   import type { AttendanceSource } from '../../lib/guild/attendance-contract';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
+  import { professionName } from '../../lib/guild/professions';
   import { addonSnapshotLine } from '../../lib/guild/roster-addon';
   import { rosterHoldsHandoff } from '../../lib/guild/roster-links';
   import {
@@ -82,6 +85,7 @@
     removeOverridesFrozen = () => false,
     onApprove,
     onRemove,
+    onRemoveMember = () => {},
     onDecline,
     onApproveAll,
     rowPath,
@@ -89,6 +93,7 @@
     mySiteSpec = null,
     now = new Date(),
     attendanceSource = 'reports',
+    focusApproveAll = false,
   }: {
     roster: GuildRosterRow[];
     pending: GuildRosterRow[];
@@ -108,6 +113,9 @@
     removeOverridesFrozen?: (row: GuildRosterRow) => boolean;
     onApprove: (row: GuildRosterRow) => void;
     onRemove: (row: GuildRosterRow) => void;
+    /** Remove a member who joined by invite link: their entry has no character row, so the API
+     *  removes them by account (`account_key`). */
+    onRemoveMember?: (entry: GuildRosterEntry) => void;
     /** Turn a waiting character away: the API's remove, so the row leaves the list. */
     onDecline: (row: GuildRosterRow) => void;
     onApproveAll: () => void;
@@ -121,6 +129,8 @@
     now?: Date;
     /** The home's `attendance_source`: in `raids` mode the chip counts raids over two windows. */
     attendanceSource?: AttendanceSource;
+    /** Approve all takes focus as it mounts: the Before raids open card's Approve button came here. */
+    focusApproveAll?: boolean;
   } = $props();
 
   const canApprove = $derived(hasCapability(can, 'approve'));
@@ -131,7 +141,7 @@
   let sortKey = $state<RosterSortKey>(DEFAULT_ROSTER_SORT);
   /** The waiting row whose Decline is asking first, and whether Approve all is. */
   let decliningKey = $state<string | null>(null);
-  /** The verified row whose Remove is asking first. */
+  /** The verified row (character key) or invited entry (account key) whose Remove is asking first. */
   let removingKey = $state<string | null>(null);
   let confirmingApproveAll = $state(false);
 
@@ -210,6 +220,10 @@
   function doRemove(row: GuildRosterRow): void {
     removingKey = null;
     onRemove(row);
+  }
+  function doRemoveMember(entry: GuildRosterEntry): void {
+    removingKey = null;
+    onRemoveMember(entry);
   }
   function doDecline(row: GuildRosterRow): void {
     decliningKey = null;
@@ -329,6 +343,37 @@
   </div>
 {/snippet}
 
+{#snippet removeConfirm(name: string, rejoin: string, onYes: () => void)}
+  <!-- Indented to the name column at every width, as the award confirm is. Remove is the danger
+   token (as Leave guild is), Cancel a ghost with the focus ring on open. -->
+  <div
+    class="border-line-soft flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2.5 pl-12"
+    role="group"
+    aria-label={guildRosterModelCopy.removeQuestion(name)}
+    data-testid="guild-roster-remove-confirm"
+  >
+    <div class="flex basis-full flex-col gap-0.5">
+      <span class="text-[13px]">{guildRosterModelCopy.removeQuestion(name)}</span>
+      <span class="text-muted text-[12px]" data-testid="guild-roster-remove-rejoin">{rejoin}</span>
+    </div>
+    <button
+      class="rounded-control border-wipe bg-wipe text-bg inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
+      onclick={onYes}
+      data-testid="guild-roster-remove-yes"
+    >
+      {guildRosterModelCopy.removeButton}
+    </button>
+    <button
+      class="rounded-control text-muted inline-flex h-11 items-center justify-center bg-none px-4 text-[12px] font-bold tracking-[0.06em] uppercase focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-gold)]"
+      onclick={() => (removingKey = null)}
+      use:focusOnMount
+      data-testid="guild-roster-remove-cancel"
+    >
+      {guildRosterModelCopy.cancel}
+    </button>
+  </div>
+{/snippet}
+
 {#snippet pendingRows()}
   <div class="px-5" id="guild-roster-unverified" data-testid="guild-roster-unverified-list">
     {#each shownPending as row (row.character_key)}
@@ -404,6 +449,7 @@
               onclick={askApproveAll}
               disabled={frozen}
               data-testid="guild-roster-approve-all"
+              use:focusOnMountIf={focusApproveAll}
             >
               Approve all
             </button>{/if}
@@ -583,7 +629,8 @@
                 {#if row.professions !== undefined && row.professions.length > 0}
                   <span
                     class="text-muted block truncate text-[12px] lg:pl-[84px]"
-                    data-testid="guild-roster-professions">{row.professions.join(' / ')}</span
+                    data-testid="guild-roster-professions"
+                    >{row.professions.map(professionName).join(' / ')}</span
                   >
                 {/if}
               </div>
@@ -613,36 +660,7 @@
               </div>
             </div>
             {#if removingKey === row.character_key}
-              <!-- Indented to the name column at every width, as the award confirm is. Remove is the danger
-               token (as Leave guild is), Cancel a ghost with the focus ring on open. -->
-              <div
-                class="border-line-soft flex flex-wrap items-center gap-x-4 gap-y-2 border-b py-2.5 pl-12"
-                role="group"
-                aria-label={guildRosterModelCopy.removeQuestion(row.name)}
-                data-testid="guild-roster-remove-confirm"
-              >
-                <div class="flex basis-full flex-col gap-0.5">
-                  <span class="text-[13px]">{guildRosterModelCopy.removeQuestion(row.name)}</span>
-                  <span class="text-muted text-[12px]" data-testid="guild-roster-remove-rejoin"
-                    >{guildRosterModelCopy.removeRejoin}</span
-                  >
-                </div>
-                <button
-                  class="rounded-control border-wipe bg-wipe text-bg inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
-                  onclick={() => doRemove(row)}
-                  data-testid="guild-roster-remove-yes"
-                >
-                  {guildRosterModelCopy.removeButton}
-                </button>
-                <button
-                  class="rounded-control text-muted inline-flex h-11 items-center justify-center bg-none px-4 text-[12px] font-bold tracking-[0.06em] uppercase focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-gold)]"
-                  onclick={() => (removingKey = null)}
-                  use:focusOnMount
-                  data-testid="guild-roster-remove-cancel"
-                >
-                  {guildRosterModelCopy.cancel}
-                </button>
-              </div>
+              {@render removeConfirm(row.name, guildRosterModelCopy.removeRejoin, () => doRemove(row))}
             {/if}
           {/each}
         </div>
@@ -651,21 +669,16 @@
         <div class="flex flex-col" data-testid="guild-roster-entries">
           {#each extras as entry (`${entry.state}:${entry.name}`)}
             <div class={ENTRY_ROW} data-testid="guild-roster-entry" data-state={entry.state}>
-              {#if entry.class === undefined}
-                <!-- No class to ring: a plain circle on the border token, so the empty crest is seen. -->
-                <span
-                  class="border-line inline-block size-9 shrink-0 rounded-full border"
-                  aria-hidden="true"
-                  data-testid="guild-roster-entry-crest"
-                ></span>
-              {:else}
-                <ClassCrestRing characterClass={entry.class} size={36} />
-              {/if}
+              <!-- No class known: the component's neutral ringed disc, never an empty outline. -->
+              <ClassCrestRing
+                characterClass={entry.class ?? ''}
+                size={36}
+                testid="guild-roster-entry-crest"
+              />
               <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
-                <!-- Class-coloured at 70 percent, not grey: the row stays secondary by colour alone. -->
                 <span
-                  class="heading-name text-nav text-[14px]"
-                  style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)};opacity:.7`}
+                  class="heading-name text-text text-[14px]"
+                  style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)}`}
                   data-testid="guild-roster-entry-name">{entry.name}</span
                 >
                 {#if entry.spec !== undefined}
@@ -686,17 +699,44 @@
                     >{entryRankWord(entry)}</span
                   >
                 {/if}
-                <span
-                  class="text-nav text-[12px]"
-                  data-testid="guild-roster-entry-state"
-                  title={entry.state === 'no_account'
-                    ? `The addon saw this character in the guild; no account on the site has claimed it. ${entryRankWord(entry)} until the addon sends ranks.`
-                    : undefined}>{stateWord(entry.state)}</span
-                >
+                {#if entry.state === 'no_account'}
+                  <Tag
+                    tone="muted"
+                    title={`The addon saw this character in the guild; no account on the site has claimed it. ${entryRankWord(entry)} until the addon sends ranks.`}
+                    testid="guild-roster-entry-state">{stateWord(entry.state)}</Tag
+                  >
+                {:else}
+                  <span class="text-nav text-[12px]" data-testid="guild-roster-entry-state"
+                    >{stateWord(entry.state)}</span
+                  >
+                {/if}
               </div>
               {@render entryInGame(entry)}
-              <div class="ml-auto shrink-0 max-lg:hidden lg:w-[190px]" aria-hidden="true"></div>
+              {#if canRemove && entry.may_remove === true && entry.account_key !== undefined}
+                {@const accountKey = entry.account_key}
+                <div
+                  class="contents lg:ml-auto lg:flex lg:w-[190px] lg:shrink-0 lg:items-center lg:justify-end"
+                  data-testid="guild-roster-entry-actions"
+                >
+                  <button
+                    class={`${button('secondary', 'sm')} ${rosterBusy === accountKey ? BUSY_CLASS : ''}`}
+                    onclick={() => (removingKey = accountKey)}
+                    disabled={rosterBusy === accountKey || frozen}
+                    aria-label={`Remove ${entry.name}`}
+                    data-testid="guild-roster-entry-remove"
+                  >
+                    Remove
+                  </button>
+                </div>
+              {:else}
+                <div class="ml-auto shrink-0 max-lg:hidden lg:w-[190px]" aria-hidden="true"></div>
+              {/if}
             </div>
+            {#if entry.account_key !== undefined && removingKey === entry.account_key}
+              {@render removeConfirm(entry.name, guildRosterModelCopy.removeInvitedRejoin, () =>
+                doRemoveMember(entry),
+              )}
+            {/if}
           {/each}
         </div>
       {/if}

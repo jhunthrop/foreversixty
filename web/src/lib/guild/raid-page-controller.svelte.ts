@@ -3,7 +3,7 @@
 // R1): who may see the raid, its load, the 10 s poll while visible and open, the optimistic sign-up,
 // the race codes, the officer actions and the plan gate (officer-tools gate spec 4). Every network
 // call and clock comes in through `RaidPageDeps`, so the tests drive it with fakes and fake timers.
-import type { Me } from '../account/api';
+import type { Me, MeGuild } from '../account/api';
 import { characterSlug } from '../characters';
 import {
   GuildApiError,
@@ -18,7 +18,7 @@ import { attendanceCopy } from './attendance-copy';
 import { guildMarkSrc } from './mark';
 import { NightActions } from './night-actions.svelte';
 import { PLAN_REQUIRED, REPORT_MATCHED, type MatchOutcome } from './match-picker.svelte';
-import { raidCopy } from './raid-copy';
+import { kindOf, raidCopy } from './raid-copy';
 import type { RaidSubmitResult } from './raid-form';
 import type {
   OfficerLine,
@@ -61,6 +61,9 @@ export class RaidPageController {
   raid = $state<GuildRaidView | null>(null);
   role = $state<RaidPageRole>('member');
   officerToolsField = $state<boolean | undefined>(undefined);
+  /** The claim and the viewer's /v1/me entry: the gate sentence's facts (spec 2026-11-05 §3.2). */
+  claim = $state<GuildHome['claim'] | null>(null);
+  membership = $state<MeGuild | null>(null);
   officerToolsEnded = $state(false);
   currentKey = $state<string | null>(null);
   pollPaused = $state(false);
@@ -172,6 +175,7 @@ export class RaidPageController {
     const membership = me?.guilds.find(
       (g) => g.region === region && g.ruleset === ruleset && characterSlug(g.name) === slug,
     );
+    this.membership = membership ?? null;
     if (me === null) this.access = 'signed-out';
     else if (membership === undefined) this.access = 'not-member';
     else if (!membership.verified) this.access = 'unverified';
@@ -184,6 +188,7 @@ export class RaidPageController {
   private applyHome(home: GuildHome): void {
     this.role = homeRole(home.viewer?.role, this.role);
     this.officerToolsField = home.viewer?.officer_tools;
+    this.claim = home.claim;
     this.currentKey = home.viewer?.character_key ?? null;
   }
 
@@ -378,7 +383,20 @@ export class RaidPageController {
     this.editing = true;
     const { raid, guild } = this;
     if (raid === null || guild === null) return;
-    if (this.zones.length === 0) this.zones = [{ key: raid.zone, name: raid.zone_name, size: raid.size }];
+    if (this.zones.length === 0) {
+      this.zones = [
+        {
+          key: raid.zone,
+          name: raid.zone_name,
+          kind: kindOf(raid),
+          size: raid.size,
+          opens: null,
+          min_level: null,
+          max_level: null,
+          key_item: raid.key_item ?? null,
+        },
+      ];
+    }
     void this.deps
       .loadZones(guild.id)
       .then((zones) => {

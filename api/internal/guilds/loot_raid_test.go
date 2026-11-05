@@ -48,6 +48,21 @@ func TestAnAwardNamesADoneRaid(t *testing.T) {
 	if len(got) != 2 || got[0] != prev.ID || got[1] != night.ID {
 		t.Fatalf("last week's award was overwritten: %v", got)
 	}
+	// Both nights are over: the drop is free to award tonight, and both awards still count.
+	view, err := w.h.store.Loot(t.Context(), w.gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if item := view.Items[0]; item.ItemID != onyxiaLoot[0].ItemID || item.AwardedTo != nil {
+		t.Fatalf("a past night's award still marks the drop: %+v", item.AwardedTo)
+	}
+	all, err := w.h.store.lootAwards(t.Context(), w.gid, onyxiaEncounterID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if won := awardCounts(all)[officerKey]; won != 2 {
+		t.Fatalf("items won = %d, want 2", won)
+	}
 	// Re-awarding the same drop for the same raid replaces that raid's row only.
 	if res := w.postAward(&night.ID, memberKeyB); res.StatusCode != http.StatusOK {
 		t.Fatalf("re-award = %d", res.StatusCode)

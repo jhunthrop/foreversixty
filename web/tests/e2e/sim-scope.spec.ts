@@ -2,7 +2,7 @@
 // task-2-brief.md: the healer and tank persona reviews both found nothing on the site
 // states the simulator is DPS-only. The lane's acceptance criterion (constraints.md) is
 // specific -- the scope sentence must be visible without scrolling at 390x844 on every
-// simulator page -- so this proves that directly, on all seven pages, rather than only
+// simulator page -- so this proves that directly, on every tool page (a saved run is always a damage spec, so /sim/<id> carries no note), rather than only
 // asserting the copy key is present somewhere in the DOM.
 import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
@@ -12,17 +12,7 @@ import { landingCopy } from '../../src/lib/sim/landing-copy';
 // the same literal viewport tests/e2e/sim-tabs.spec.ts's own phone-width block uses, rather
 // than the --project=mobile device (Pixel 7, 412px) most of this suite's phone coverage
 // runs under.
-const FIXTURE_SIM_ID = 'simfixtureab';
-
-const PAGES = [
-  '/sim',
-  '/sim/gear',
-  '/sim/drops',
-  '/sim/talents',
-  '/sim/weights',
-  '/sim/specs',
-  `/sim/${FIXTURE_SIM_ID}`,
-];
+const PAGES = ['/sim', '/sim/gear', '/sim/drops', '/sim/talents', '/sim/weights', '/sim/specs'];
 
 test.describe('the DPS-only scope sentence', () => {
   test.use({ viewport: { width: 390, height: 844 } });

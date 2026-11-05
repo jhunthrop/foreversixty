@@ -1,8 +1,18 @@
 // web/src/lib/guild/raid-copy.ts
-// Every string of design/specs/2026-10-26-guild-raids.md 6.1, in one module: constants where the
-// words are fixed, functions where the data fills them. No number is typed into prose; raid-copy.test.ts
-// reads the spec table itself, so a drift in either file fails.
-import type { GuildRaidRole, GuildRaidSignup, GuildRaidView, GuildSignupState, GuildViewerRole } from './api';
+// Every string of design/specs/2026-10-26-guild-raids.md 6.1, as amended by the raid comp spec
+// (2026-11-05-guild-raid-comp.md 7), in one module: constants where the words are fixed, functions
+// where the data fills them. No number is typed into prose; raid-copy.test.ts reads the spec tables
+// themselves, so a drift in either file fails.
+import type {
+  GuildRaidGroup,
+  GuildRaidRole,
+  GuildRaidSignup,
+  GuildRaidView,
+  GuildSignupState,
+  GuildViewerRole,
+  GuildZoneKind,
+  NextRaidView,
+} from './api';
 import {
   DEFAULT_LOCALE,
   clockText,
@@ -21,17 +31,8 @@ const WEEKDAY_WINDOW_DAYS = 6;
  *  as an expression (`{SEP}`). */
 export const SEP = ' · ';
 
-/** A sentence whose middle word is bold. */
-export interface SpecLead {
-  before: string;
-  name: string;
-  after: string;
-}
-
 export const raidCopy = {
-  planButton: 'Plan a raid',
-  gate: 'Planning and running raids are part of the guild plan. Subscribe the guild.',
-  gateLink: 'Subscribe the guild',
+  planButton: 'Plan an event',
   cap: 'A guild plans at most 12 raids ahead.',
   subheads: {
     planned: 'Planned',
@@ -41,7 +42,8 @@ export const raidCopy = {
     notes: 'Notes',
     tanks: 'Tanks',
     healers: 'Healers',
-    dps: 'DPS',
+    melee: 'Melee',
+    ranged: 'Ranged',
     late: 'Late',
     bench: 'Bench',
     out: 'Out',
@@ -50,45 +52,41 @@ export const raidCopy = {
   segments: { in: 'In', late: 'Late', bench: 'Bench', out: 'Out' },
   roleLabels: { tank: 'Tank', healer: 'Healer', dps: 'DPS' } satisfies Record<GuildRaidRole, string>,
   emptyPlanned: {
-    member: 'No raid planned yet. Officers plan raids here.',
-    officer: 'No raid planned yet. Plan one and the guild can sign up.',
+    member: 'Nothing planned yet. Officers post dungeon runs, events and raids here.',
+    officer: 'Nothing planned yet. Post a dungeon run or a guild event and the guild can sign up.',
   },
   bandNone: {
-    member: 'No raid planned yet.',
-    officer: 'No raid planned yet.',
-    planLink: 'Plan a raid',
+    member: 'Nothing planned yet.',
+    officer: 'Nothing planned yet.',
+    planLink: 'Plan an event',
   },
-  placeholders: { note: 'Note for the officers (optional)', chooseRaid: 'Choose a raid' },
+  placeholders: {
+    note: 'Note for the officers (optional)',
+    chooseWhat: 'Choose a dungeon, event or raid',
+    eventTitle: 'What is it? (a PvP premade, a quest group)',
+  },
   stripStatus: {
     saved: 'Saved.',
     failed: 'That did not save. Try again.',
     movedToBench: (name: string): string => `${name} moved to Bench.`,
     left: (n: number): string => `${n} left`,
+    /** On an answered character that is not the account's roster row: `Officers see Quillfeather (Late).` */
+    officersSee: (name: string, state: string): string => `Officers see ${name} (${state}).`,
   },
-  /** The raid page's spec ask: the Discord spec card's keys (guided-cards spec P.7). */
+  /** The roster row's line naming its account's other answered characters (raids spec 3.7):
+   *  `Also: Rootbound · Restoration Druid · Bench`, several joined by `, `. */
+  also: (parts: readonly string[]): string => `Also: ${parts.join(', ')}`,
+  /** The strip's one spec picker (raid comp spec 3.2, 7). */
   spec: {
-    title: 'Which spec tonight?',
+    /** The select's visually hidden label. */
+    label: (name: string): string => `Spec for ${name}`,
     placeholder: 'Choose a spec',
-    change: 'Change spec',
-    /** `spec.lead`: the name is the bold part. */
-    lead: (name: string, state: string, title: string, date: string): SpecLead => ({
-      before: 'The pick signs ',
-      name,
-      after: ` up as ${state} for ${title}, ${date}, and is kept for the next raid.`,
-    }),
-    /** `spec.lead.change`. */
-    leadChange: (name: string, title: string, date: string): SpecLead => ({
-      before: 'The pick changes the spec ',
-      name,
-      after: ` brings to ${title}, ${date}, and is kept for the next raid.`,
-    }),
-    /** `spec.kept`, alone (without its leading space). */
-    kept: (spec: string, name: string): string => `${spec} is kept for ${name}.`,
+    /** In, Late or Bench pressed with no spec chosen. */
+    pickFirst: 'Pick a spec first.',
   },
   waitingCharacter: 'Waiting for approval. You can sign it up once an officer approves it.',
   raidStates: {
     locked: 'Sign-ups are locked. An officer can still change yours.',
-    cancelled: 'This raid was cancelled.',
   },
   races: {
     locked: 'This raid was locked while you were signing up.',
@@ -105,19 +103,25 @@ export const raidCopy = {
     unlock: 'Unlock sign-ups',
     copy: 'Copy the sign-up list',
     copied: 'Copied',
-    cancel: 'Cancel raid',
     failed: 'That did not save; try again.',
   },
   cancelConfirm: {
-    question: 'Cancel this raid? Members see it as cancelled.',
     postToDiscord: 'Post the cancellation to Discord',
-    confirm: 'Cancel the raid',
     confirming: 'Cancelling…',
     keep: 'Keep it',
   },
   copyFailed: 'Could not copy. Select the list and copy it.',
+  /** The copied list's class line head (raid comp spec 4.2). */
+  copyClasses: 'Classes',
   form: {
-    raid: 'Raid',
+    what: 'What',
+    groupSize: 'Group size',
+    noLimit: 'No limit',
+    groups: { event: 'Guild event', dungeons: 'Dungeons', raids: 'Raids' },
+    needsKey: 'Needs a key: ',
+    /** A key with a keyless way in: `Key to the City opens the service entrance.` */
+    keyOpens: (door: string): string => ` opens ${door}.`,
+    opens: (raid: string, day: string): string => `${raid} opens ${day}.`,
     title: 'Title',
     date: 'Date',
     time: 'Time',
@@ -141,7 +145,7 @@ export const raidCopy = {
     remindNeedsPost: 'Turn on Post to Discord to send a reminder.',
     posted: (channel: string): string => `Posted to ${channel}. The post updates itself.`,
     reminded: 'Reminder sent.',
-    submitCreate: 'Post the raid',
+    submitCreate: 'Post the event',
     submitCreating: 'Posting…',
     submitEdit: 'Save changes',
     submitEditing: 'Saving…',
@@ -153,21 +157,21 @@ export const raidCopy = {
     connectDiscord: 'Connect a Discord channel in Settings to post raids there.',
     connectDiscordLink: 'Settings',
     errors: {
-      raid: 'Choose a raid.',
+      what: 'Choose a dungeon, event or raid.',
+      eventTitle: 'Give the event a title.',
+      opens: (raid: string, day: string): string => `${raid} opens ${day}. Pick that day or later.`,
       date: 'Pick a date.',
       time: 'Pick a time after now.',
       cap: 'A guild plans at most 12 raids ahead.',
       failed: 'That did not save. Try again.',
     },
   },
-  notesEmpty: {
-    member: 'No notes for this raid.',
-    officer: 'No notes yet. Edit the raid to add some.',
-  },
-  emptyRole: { tank: 'No tanks yet.', healer: 'No healers yet.', dps: 'No DPS yet.' } satisfies Record<
-    GuildRaidRole,
-    string
-  >,
+  emptyGroup: {
+    tank: 'No tanks yet.',
+    healer: 'No healers yet.',
+    melee: 'No melee yet.',
+    ranged: 'No ranged yet.',
+  } satisfies Record<GuildRaidGroup, string>,
   notVisible: {
     members: (guild: string): string => `Planned raids are for members of ${guild}.`,
     unverified: 'You are waiting for approval. Planned raids show once an officer approves you.',
@@ -191,6 +195,52 @@ export const raidCopy = {
     "Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up in one tap, from the raid page or the guild page.",
 } as const;
 
+/** What each kind of night is called in a sentence (guild events spec 3.5). */
+const KIND_WORDS: Record<GuildZoneKind, string> = { raid: 'raid', dungeon: 'run', event: 'event' };
+const KIND_EYEBROWS: Record<GuildZoneKind, string> = { raid: 'Raid', dungeon: 'Dungeon', event: 'Event' };
+
+/** The zone kind a view carries; a view from before kinds is a raid. */
+export function kindOf(view: { zone_kind?: GuildZoneKind }): GuildZoneKind {
+  return view.zone_kind ?? 'raid';
+}
+
+/** The zone beside a title that is not the zone's name, with the size an officer picked for a guild
+ *  event: `Guild event · 20`. The planned row's second line and the event page's h1 read it. */
+export function zoneLineOf(view: {
+  zone_kind?: GuildZoneKind;
+  zone_name: string;
+  size: number | null;
+}): string {
+  return kindOf(view) === 'event' && view.size !== null
+    ? `${view.zone_name}${SEP}${view.size}`
+    : view.zone_name;
+}
+
+/** The page's eyebrow, set uppercase by its `label` class: `RAID`, `DUNGEON`, `EVENT`. */
+export const eyebrowOf = (kind: GuildZoneKind): string => KIND_EYEBROWS[kind];
+/** `Cancel raid`, `Cancel run`, `Cancel event`. */
+export const cancelActionOf = (kind: GuildZoneKind): string => `Cancel ${KIND_WORDS[kind]}`;
+/** `This raid has ended.`, `This run has ended.`, `This event has ended.` */
+export const endedLineOf = (kind: GuildZoneKind): string => `This ${KIND_WORDS[kind]} has ended.`;
+/** `This raid was cancelled.`, `This run was cancelled.`, `This event was cancelled.` */
+export const cancelledLineOf = (kind: GuildZoneKind): string => `This ${KIND_WORDS[kind]} was cancelled.`;
+/** The cancel confirm's question. */
+export const cancelQuestionOf = (kind: GuildZoneKind): string =>
+  `Cancel this ${KIND_WORDS[kind]}? Members see it as cancelled.`;
+/** The cancel confirm's button. */
+export const cancelConfirmOf = (kind: GuildZoneKind): string => `Cancel the ${KIND_WORDS[kind]}`;
+/** The notes panel with nothing in it: `No notes for this run.` / `No notes yet. Edit the event to add some.` */
+export const notesEmptyOf = (kind: GuildZoneKind, officer: boolean): string =>
+  officer
+    ? `No notes yet. Edit the ${KIND_WORDS[kind]} to add some.`
+    : `No notes for this ${KIND_WORDS[kind]}.`;
+
+/** The needs line reads raids only (guild events spec 3.4): a dungeon run or an event at the head of
+ *  the band leaves it at `before the next raid`. */
+export function raidDeadlineStart(next: NextRaidView | null | undefined): string | undefined {
+  return next != null && kindOf(next) === 'raid' ? next.starts_at : undefined;
+}
+
 const SIGNED_UP_STATE_WORDS: Record<GuildSignupState, string> = {
   in: raidCopy.segments.in,
   late: raidCopy.segments.late,
@@ -202,8 +252,12 @@ function plural(n: number, singular: string, pluralForm: string): string {
   return n === 1 ? singular : pluralForm;
 }
 
-/** `23 of 40 signed up`; `23 signed up` while the size is unknown (ruling R6). */
+/** A count line at zero: never `0 signed up` (guild round 2). */
+export const NOBODY_SIGNED_UP = 'Nobody signed up yet';
+
+/** `23 of 40 signed up`; `23 signed up` while the size is unknown (ruling R6); `Nobody signed up yet` at 0. */
 export function countLine(n: number, size: number | null): string {
+  if (n === 0) return NOBODY_SIGNED_UP;
   return size === null ? `${n} signed up` : `${n} of ${size} signed up`;
 }
 
@@ -212,21 +266,41 @@ export function countRatio(n: number, size: number | null): string {
   return size === null ? `${n}` : `${n}/${size}`;
 }
 
-/** `3 tanks · 7 healers · 13 DPS · 1 late`: the roles count In rows, so the late clause (only when
- *  someone is late) makes the parts add up to the signed-up count. */
-export function roleBreakdown(tanks: number, healers: number, dps: number, late: number): string {
-  return roleBreakdownParts(tanks, healers, dps, late).join(SEP);
-}
-
-/** The breakdown's clauses, for a line that joins them its own way (the copied list's commas). */
-export function roleBreakdownParts(tanks: number, healers: number, dps: number, late: number): string[] {
-  const parts = [
-    `${tanks} ${plural(tanks, 'tank', 'tanks')}`,
-    `${healers} ${plural(healers, 'healer', 'healers')}`,
-    `${dps} DPS`,
-  ];
-  return late > 0 ? [...parts, `${late} late`] : parts;
-}
+/** The raid comp's words (raid comp spec 7): the count clauses, the class row and the spec
+ *  picker's options. The groups count In rows, so the late clause (only when someone is late)
+ *  makes the parts add up to the signed-up count. */
+export const compCopy = {
+  tanks: (n: number): string => `${n} ${plural(n, 'tank', 'tanks')}`,
+  healers: (n: number): string => `${n} ${plural(n, 'healer', 'healers')}`,
+  melee: (n: number): string => `${n} melee`,
+  ranged: (n: number): string => `${n} ranged`,
+  /** `2 late`; `2 late (1 tank, 1 healer)`; a single part that is all of them drops its number:
+   *  `1 late (healer)`. */
+  late: (n: number, tanks: number, healers: number): string => {
+    const parts = [
+      { n: tanks, word: plural(tanks, 'tank', 'tanks') },
+      { n: healers, word: plural(healers, 'healer', 'healers') },
+    ].filter((part) => part.n > 0);
+    if (parts.length === 0) return `${n} late`;
+    const only = parts.length === 1 && parts[0]?.n === n;
+    const inner = only ? (parts[0]?.word ?? '') : parts.map((part) => `${part.n} ${part.word}`).join(', ');
+    return `${n} late (${inner})`;
+  },
+  /** The class row's list name. */
+  classRowLabel: 'Classes signed up',
+  /** `Holy 3`. */
+  specCount: (spec: string, n: number): string => `${spec} ${n}`,
+  /** `Fury (tank)`: an off-tank's part. */
+  offTank: (spec: string): string => `${spec} (tank)`,
+  unknownSpec: 'Unknown',
+  /** `Priest 5: Holy 3, Discipline 1, Shadow 1`; `Mage 0` with nobody in. */
+  classItem: (className: string, n: number, specs: string): string =>
+    specs === '' ? `${className} ${n}` : `${className} ${n}: ${specs}`,
+  /** `Holy · Healer`. */
+  specOption: (spec: string, role: string): string => `${spec}${SEP}${role}`,
+  /** `9:00 pm EST your time`. */
+  yourTime: (clock: string): string => `${clock} your time`,
+} as const;
 
 /** `23 of 40 are in`; `23 are in` while the size is unknown: the unsigned band line's count. */
 function inLine(n: number, size: number | null): string {
@@ -255,14 +329,35 @@ export function nextRaidDeadline(
   );
 }
 
-/** `8:00 pm CST guild time`. */
-export function guildTimeLabel(startsAt: Date, tz: string, locale: string = DEFAULT_LOCALE): string {
-  return `${guildClock(startsAt, tz, locale)} guild time`;
+/** `8:00 pm CST`: a clock with its zone abbreviation (`8 pm CST` when minutes are optional). */
+export function zonedClock(
+  at: Date,
+  tz: string,
+  locale: string = DEFAULT_LOCALE,
+  alwaysMinutes = true,
+): string {
+  return `${clockText(at, tz, locale, alwaysMinutes)} ${zoneAbbreviation(tz, at)}`;
 }
 
-/** `8:00 pm CST`: the guild clock with its zone abbreviation. */
 function guildClock(startsAt: Date, tz: string, locale: string): string {
-  return `${clockText(startsAt, tz, locale, true)} ${zoneAbbreviation(tz, startsAt)}`;
+  return zonedClock(startsAt, tz, locale);
+}
+
+/** The viewer's own clock under the guild's (raid comp spec 3.1): `9:00 pm EST your time`, with the
+ *  short weekday first when the viewer's date is another (`Fri 2:00 am GMT your time`); `null`
+ *  when the two zones read the same offset. */
+export function yourTimeLine(
+  startsAt: Date,
+  guildTz: string,
+  viewerTz: string,
+  locale: string = DEFAULT_LOCALE,
+  alwaysMinutes = true,
+): string | null {
+  if (!offsetsDiffer(startsAt, viewerTz, guildTz)) return null;
+  const clock = zonedClock(startsAt, viewerTz, locale, alwaysMinutes);
+  const otherDay = calendarDayDiff(startsAt, startsAt, guildTz, viewerTz) !== 0;
+  const weekday = new Intl.DateTimeFormat(locale, { timeZone: viewerTz, weekday: 'short' }).format(startsAt);
+  return compCopy.yourTime(otherDay ? `${weekday} ${clock}` : clock);
 }
 
 /** The form's line under the zone select: the entered guild wall time as the viewer reads it. */
@@ -280,18 +375,20 @@ export function forYouLine(
   );
 }
 
-function calendarDayDiff(from: Date, to: Date, tz: string): number {
-  const asDay = (d: Date): number =>
+/** Calendar days from `from` (read in `fromTz`) to `to` (read in `toTz`, default the same zone). */
+function calendarDayDiff(from: Date, to: Date, fromTz: string, toTz: string = fromTz): number {
+  const asDay = (d: Date, tz: string): number =>
     Date.parse(`${new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(d)}T00:00:00Z`);
-  return Math.round((asDay(to) - asDay(from)) / DAY_MS);
+  return Math.round((asDay(to, toTz) - asDay(from, fromTz)) / DAY_MS);
 }
 
 function browserZone(): string {
   return new Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
-/** The spec's `{when}`: `Tonight 8 pm`, `Thursday 8 pm`, `Thu 17 Dec, 8 pm`, then the guild's own
- *  clock when its offset differs from the viewer's. */
+/** The band's `{when}` in the guild's clock first (raid comp spec 3.4): `Tonight 8 pm CST`,
+ *  `Thursday 8 pm CST`, `Thu 17 Dec, 8 pm CST`, then ` (9 pm EST your time)` when the viewer's
+ *  offset differs. */
 export function whenPhrase(
   startsAt: Date,
   now: Date,
@@ -299,17 +396,17 @@ export function whenPhrase(
   guildTz: string,
   viewerTz: string = browserZone(),
 ): string {
-  const time = clockText(startsAt, viewerTz, locale);
-  const days = calendarDayDiff(now, startsAt, viewerTz);
+  const time = zonedClock(startsAt, guildTz, locale, false);
+  const days = calendarDayDiff(now, startsAt, guildTz);
   let phrase: string;
   if (days === 0) phrase = `Tonight ${time}`;
   else if (days === 1) phrase = `Tomorrow ${time}`;
   else if (days > 1 && days <= WEEKDAY_WINDOW_DAYS) {
-    const weekday = new Intl.DateTimeFormat(locale, { timeZone: viewerTz, weekday: 'long' }).format(startsAt);
+    const weekday = new Intl.DateTimeFormat(locale, { timeZone: guildTz, weekday: 'long' }).format(startsAt);
     phrase = `${weekday} ${time}`;
-  } else phrase = `${dateLabel(startsAt, viewerTz, locale)}, ${time}`;
-  if (!offsetsDiffer(startsAt, viewerTz, guildTz)) return phrase;
-  return `${phrase} (${clockText(startsAt, guildTz, locale)} guild time)`;
+  } else phrase = `${dateLabel(startsAt, guildTz, locale)}, ${time}`;
+  const yours = yourTimeLine(startsAt, guildTz, viewerTz, locale, false);
+  return yours === null ? phrase : `${phrase} (${yours})`;
 }
 
 /** `2 days`, `1 day 4 h`, `5 h 20 min`, `12 min`. */
@@ -363,7 +460,9 @@ export interface BandLineParts {
 export function bandLineParts(args: BandLineArgs): BandLineParts {
   const clause = bandClause(args);
   const count =
-    args.state === null ? `. ${inLine(args.n, args.size)}.` : `, ${countLine(args.n, args.size)}.`;
+    args.state === null
+      ? `. ${inLine(args.n, args.size)}.`
+      : `, ${args.n === 0 ? NOBODY_SIGNED_UP.toLowerCase() : countLine(args.n, args.size)}.`;
   return { head: `${args.when}, ${clause.head}`, word: clause.word, tail: `${clause.tail}${count}` };
 }
 
@@ -379,16 +478,27 @@ export function showsBandLine(verified: boolean, role: GuildViewerRole): boolean
   return verified && role !== 'public';
 }
 
-function signupsIn(signups: readonly GuildRaidSignup[], state: GuildSignupState, role?: GuildRaidRole) {
-  return signups.filter((s) => s.state === state && (role === undefined || s.role === role));
+/** What the copied list needs from the comp rules (raid-comp.ts), passed in so this module stays
+ *  free of the spec catalogue. */
+export interface CopyListComp {
+  /** The breakdown clauses: `3 tanks`, ..., `1 late (healer)`. */
+  breakdown: readonly string[];
+  /** The class row's items in the game's order. */
+  classes: readonly { name: string; count: number }[];
+  /** A row's roster group. */
+  groupOf: (row: GuildRaidSignup) => GuildRaidGroup;
+  /** `Protection Warrior`, or the class alone. */
+  specClass: (row: GuildRaidSignup) => string;
+  /** The roster's order within a group. */
+  order: (a: GuildRaidSignup, b: GuildRaidSignup) => number;
 }
 
-function namesLine(label: string, rows: readonly GuildRaidSignup[]): string | null {
-  return rows.length === 0 ? null : `${label}: ${rows.map((row) => row.name).join(', ')}`;
-}
-
-function breakdownList(counts: GuildRaidView['counts']): string {
-  return roleBreakdownParts(counts.tanks, counts.healers, counts.dps, counts.late).join(', ');
+function namesLine(label: string, rows: readonly GuildRaidSignup[], comp: CopyListComp): string | null {
+  if (rows.length === 0) return null;
+  return `${label}: ${[...rows]
+    .sort(comp.order)
+    .map((row) => `${row.name} (${comp.specClass(row)})`)
+    .join(', ')}`;
 }
 
 /** Discord's `<t:{unix}:F>` stamp, which each reader's client draws in their own zone. */
@@ -396,8 +506,14 @@ function discordStamp(at: Date): string {
   return `<t:${Math.floor(at.getTime() / 1000)}:F>`;
 }
 
-/** Spec 4 "Copy the sign-up list": plain text in guild time, groups in roster order, empty groups left out. */
-export function copyList(view: GuildRaidView, tz: string, locale: string = DEFAULT_LOCALE): string {
+/** Spec 4 "Copy the sign-up list" (raid comp spec 4.2): plain text in guild time, the class line,
+ *  then the groups in roster order, empty groups and classes at 0 left out. */
+export function copyList(
+  view: GuildRaidView,
+  tz: string,
+  comp: CopyListComp,
+  locale: string = DEFAULT_LOCALE,
+): string {
   const startsAt = new Date(view.starts_at);
   const heads = raidCopy.subheads;
   const { counts } = view;
@@ -410,14 +526,24 @@ export function copyList(view: GuildRaidView, tz: string, locale: string = DEFAU
     view.size === null
       ? `${counts.in + counts.late} signed up`
       : `${counts.in + counts.late} of ${view.size}`;
+  const inState = (state: GuildSignupState): GuildRaidSignup[] =>
+    view.signups.filter((s) => s.state === state);
+  const inGroup = (group: GuildRaidGroup): GuildRaidSignup[] =>
+    inState('in').filter((s) => comp.groupOf(s) === group);
   const groups = [
-    namesLine(heads.tanks, signupsIn(view.signups, 'in', 'tank')),
-    namesLine(heads.healers, signupsIn(view.signups, 'in', 'healer')),
-    namesLine(heads.dps, signupsIn(view.signups, 'in', 'dps')),
-    namesLine(heads.late, signupsIn(view.signups, 'late')),
-    namesLine(heads.bench, signupsIn(view.signups, 'bench')),
-    namesLine(heads.out, signupsIn(view.signups, 'out')),
+    namesLine(heads.tanks, inGroup('tank'), comp),
+    namesLine(heads.healers, inGroup('healer'), comp),
+    namesLine(heads.melee, inGroup('melee'), comp),
+    namesLine(heads.ranged, inGroup('ranged'), comp),
+    namesLine(heads.late, inState('late'), comp),
+    namesLine(heads.bench, inState('bench'), comp),
+    namesLine(heads.out, inState('out'), comp),
   ];
-  const lines = [header, `${size}: ${breakdownList(counts)}`];
+  const classes = comp.classes.filter((c) => c.count > 0).map((c) => `${c.name} ${c.count}`);
+  const lines = [
+    header,
+    `${size}: ${comp.breakdown.join(', ')}`,
+    ...(classes.length === 0 ? [] : [`${raidCopy.copyClasses}: ${classes.join(', ')}`]),
+  ];
   return [...lines, ...groups.filter((line): line is string => line !== null)].join('\n');
 }

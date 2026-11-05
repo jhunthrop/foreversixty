@@ -32,7 +32,7 @@ import {
   type GuildCentreStub,
 } from './support/officer-tools';
 
-const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe the guild.';
+const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe your guild.';
 const MASTER_ONLY = 'The subscriber or the guild leader manages billing and seats.';
 const SCOPED_PLAN_LINE = 'Officer tools · until 12 Dec 2026';
 const CLIPBOARD_SENTINEL = 'clipboard untouched';
@@ -118,7 +118,8 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
     const page = await browser.newPage();
     await openTab(page, 'loot', { viewer: 'officer', officerTools: false });
     await expect(gate(page, 'loot')).toHaveText(SENTENCE);
-    await expect(page.getByTestId('guild-loot-tab').getByText(guildGateCopy.readOnly)).toBeVisible();
+    // Loot spec §3.1: the Read-only label is for members; the gate sentence covers the officer.
+    await expect(page.getByTestId('guild-loot-tab').getByText(guildGateCopy.readOnly)).toHaveCount(0);
     await expectAllDisabled(awardButtons(page), expected.award);
     await expectAllDisabled(undoButtons(page), expected.undo);
     await expect(awardButtons(page).first()).toHaveAttribute('aria-describedby', 'officer-tools-gate-loot');
@@ -167,12 +168,12 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
 
   for (const tab of ['loot', 'readiness'] as const) {
     test(`the ${tab} sentence links to the guild's settings`, async ({ page }) => {
-      await openTab(page, tab, { viewer: 'officer', officerTools: false });
-      const link = gate(page, tab).getByRole('link', { name: guildGateCopy.link });
-      await expect(link).toHaveAttribute('href', GUILD_SETTINGS_PATH);
+      await openTab(page, tab, { viewer: 'officer', officerTools: false, claimHolder: true });
+      const link = gate(page, tab).getByRole('link', { name: guildGateCopy.subscribe });
+      await expect(link).toHaveAttribute('href', `${GUILD_SETTINGS_PATH}?plan=raid_guild#billing`);
       await page.route(`**/v1/guilds/*/settings`, (route) => route.fulfill(envelope({})));
       await link.click();
-      await page.waitForURL(`**${GUILD_SETTINGS_PATH}`);
+      await page.waitForURL(`**${GUILD_SETTINGS_PATH}?plan=raid_guild#billing`);
     });
   }
 
@@ -309,7 +310,7 @@ test.describe('guild settings billing on a scoped grant (§5, states 10–12)', 
     you_are_billing_contact: false,
   });
 
-  test('state 10: the claim holder reads the grant and can subscribe the guild', async ({ page }) => {
+  test('state 10: the claim holder reads the grant and can subscribe your guild', async ({ page }) => {
     await openWith(page, guildBillingRead({ billing: SCOPED_GRANT_PLAN }));
     await expect(page.getByTestId('guild-billing-plan')).toHaveText(SCOPED_PLAN_LINE);
     await expect(page.getByTestId('guild-billing-contact')).toHaveText(
@@ -342,7 +343,7 @@ test.describe('guild settings billing on a scoped grant (§5, states 10–12)', 
     await expect(page.getByTestId('guild-billing-plan')).toHaveCount(0);
     await expect(page.getByTestId('guild-billing-chooser')).toHaveCount(0);
     await expect(page.getByTestId('guild-billing-subscribe')).toHaveCount(0);
-    await expect(page.getByRole('link', { name: guildGateCopy.link })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: guildGateCopy.subscribe })).toHaveCount(0);
   });
 
   test('the claim holder with no plan gets the chooser and nothing else above Records', async ({ page }) => {

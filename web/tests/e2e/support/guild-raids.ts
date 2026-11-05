@@ -21,6 +21,7 @@ import {
   buildMockRoster,
 } from '../../../src/fixtures/guild/mock-guild';
 import type {
+  GuildRaidGroup,
   GuildRaidRole,
   GuildRaidStatus,
   GuildRaidDiscord,
@@ -28,6 +29,8 @@ import type {
   GuildRaidView,
   GuildRaidsPage,
   GuildSignupState,
+  GuildKeyItem,
+  GuildZoneKind,
   GuildZoneView,
   NextRaidView,
 } from '../../../src/lib/guild/api';
@@ -47,10 +50,49 @@ export const HYJAL_ID = 9;
 /** The id the stub gives the first raid an officer plans. */
 export const FIRST_NEW_ID = 100;
 
+/** The day the first raid tier opens (data/curated/phases.json `raids-1`). */
+const RAIDS_OPEN = '2026-12-09T00:00:00Z';
+const RAID_ZONE = {
+  kind: 'raid',
+  opens: RAIDS_OPEN,
+  min_level: null,
+  max_level: null,
+  key_item: null,
+} as const;
+const EVENT_ZONE = {
+  kind: 'event',
+  name: 'Guild event',
+  opens: null,
+  min_level: null,
+  max_level: null,
+  key_item: null,
+} as const;
+const DUNGEON_ZONE = { kind: 'dungeon', opens: null, key_item: null } as const;
+
 export const ZONES: GuildZoneView[] = [
-  { key: 'raid:barrow-deeps', name: 'Barrow Deeps', size: null },
-  { key: 'raid:hyjal-summit', name: 'Hyjal Summit', size: null },
-  { key: 'raid:onyxias-lair', name: "Onyxia's Lair", size: 40 },
+  {
+    ...DUNGEON_ZONE,
+    key: 'dungeon:the-deadmines',
+    name: 'The Deadmines',
+    size: 5,
+    min_level: 17,
+    max_level: 26,
+  },
+  {
+    ...DUNGEON_ZONE,
+    key: 'dungeon:upper-blackrock-spire',
+    name: 'Upper Blackrock Spire',
+    size: 10,
+    min_level: 59,
+    max_level: 60,
+    key_item: { id: 12344, name: 'Seal of Ascension', quality: 3 },
+  },
+  { ...EVENT_ZONE, key: 'event:guild', size: null },
+  { ...EVENT_ZONE, key: 'event:guild-5', size: 5 },
+  { ...EVENT_ZONE, key: 'event:guild-10', size: 10 },
+  { ...RAID_ZONE, key: 'raid:barrow-deeps', name: 'Barrow Deeps', size: null },
+  { ...RAID_ZONE, key: 'raid:hyjal-summit', name: 'Hyjal Summit', size: null },
+  { ...RAID_ZONE, key: 'raid:onyxias-lair', name: "Onyxia's Lair", size: 40 },
 ];
 
 /** Who is looking: a verified member with an alt, the officer, or one of R1's three outsiders. */
@@ -94,6 +136,8 @@ export interface StoredRaid {
   duration_minutes: number;
   status: GuildRaidStatus;
   size: number | null;
+  zone_kind?: GuildZoneKind;
+  key_item?: GuildKeyItem | null;
   notes_html: string;
   notes: string;
   signups: StoredSignup[];
@@ -242,17 +286,58 @@ const OWN_NAMES: Record<RaidViewer, string[]> = {
 const ON_THE_ROSTER: GuildSignupState[] = ['in', 'late'];
 const DAY_MS = 86_400_000;
 
-function counts(signups: readonly StoredSignup[]): GuildRaidView['counts'] {
+// The API's raidspec.Group, as the stub serves it (raid comp spec 4.1): the role first, then the
+// spec's melee mark, then the class's.
+const MELEE_SPECS = new Set([
+  'druid-feral',
+  'hunter-survival',
+  'paladin-retribution',
+  'rogue-assassination',
+  'rogue-combat',
+  'rogue-subtlety',
+  'shaman-enhancement',
+  'warrior-arms',
+  'warrior-fury',
+]);
+const MELEE_CLASSES = new Set(['paladin', 'rogue', 'warrior']);
+
+function specKeyOf(cls: string, spec: string): string | null {
+  return SPECS.find((s) => s.class_slug === cls && (s.spec === spec || s.name === spec))?.spec ?? null;
+}
+
+function groupOf(cls: string, spec: string, role: GuildRaidRole): GuildRaidGroup {
+  if (role !== 'dps') return role;
+  const key = specKeyOf(cls, spec);
+  return (key === null ? MELEE_CLASSES.has(cls) : MELEE_SPECS.has(key)) ? 'melee' : 'ranged';
+}
+
+function withComp<T extends { class: string; spec: string; role: GuildRaidRole }>(
+  row: T,
+): T & { group: GuildRaidGroup; spec_key: string | null } {
+  return { ...row, group: groupOf(row.class, row.spec, row.role), spec_key: specKeyOf(row.class, row.spec) };
+}
+
+function counts(
+  signups: readonly StoredSignup[],
+  notSigned: readonly { class: string }[],
+): GuildRaidView['counts'] {
   const n = (state: GuildSignupState) => signups.filter((s) => s.state === state).length;
-  const inRole = (role: GuildRaidRole) => signups.filter((s) => s.state === 'in' && s.role === role).length;
+  const ins = signups.filter((s) => s.state === 'in').map(withComp);
+  const inGroup = (group: GuildRaidGroup) => ins.filter((s) => s.group === group).length;
+  const classes: Record<string, number> = {};
+  for (const row of [...notSigned, ...signups]) classes[row.class] ??= 0;
+  for (const row of signups) if (ON_THE_ROSTER.includes(row.state)) classes[row.class] += 1;
   return {
     in: n('in'),
     late: n('late'),
     bench: n('bench'),
     out: n('out'),
-    tanks: inRole('tank'),
-    healers: inRole('healer'),
-    dps: inRole('dps'),
+    tanks: inGroup('tank'),
+    healers: inGroup('healer'),
+    dps: inGroup('melee') + inGroup('ranged'),
+    melee: inGroup('melee'),
+    ranged: inGroup('ranged'),
+    classes,
   };
 }
 
@@ -349,18 +434,23 @@ export class RaidStub {
     const signed = new Set(signups.map((s) => s.character_key));
     const notSigned = buildMockRoster()
       .filter((r) => r.verified && !signed.has(r.character_key))
-      .map((r) => ({
-        character_key: r.character_key,
-        name: r.name,
-        class: r.class ?? '',
-        spec: r.spec ?? '',
-      }));
+      .map((r) => {
+        const row = withComp({ class: r.class ?? '', spec: r.spec ?? '', role: r.role ?? ('dps' as const) });
+        return {
+          character_key: r.character_key,
+          name: r.name,
+          class: row.class,
+          spec: row.spec,
+          group: row.group,
+          spec_key: row.spec_key,
+        };
+      });
     return {
       ...NO_LOG_YET,
       ...raid,
       guild_timezone: this.guildTimezone,
-      counts: counts(raid.signups),
-      signups: signups.map((s) => ({ ...s, own: own.has(s.character_key) })),
+      counts: counts(raid.signups, notSigned),
+      signups: signups.map((s) => withComp({ ...s, own: own.has(s.character_key) })),
       not_signed: notSigned,
       viewer: {
         characters: OWN_NAMES[this.viewer].map((name) => {
@@ -375,6 +465,8 @@ export class RaidStub {
             state: mine?.state ?? null,
             role: mine?.role ?? row.role ?? 'dps',
             raid_spec: this.raidSpecs.get(row.character_key) ?? null,
+            spec_key: specKeyOf(row.class ?? '', row.spec ?? ''),
+            default_spec: this.raidSpecs.get(row.character_key) ?? null,
           };
         }),
       },
@@ -404,7 +496,7 @@ export class RaidStub {
     const current = keyOf(OWN_NAMES[this.viewer][0]);
     const mine = view.signups.filter((s) => s.own);
     const own = mine.find((s) => s.character_key === current) ?? mine[0];
-    const { in: inCount, late, tanks, healers, dps } = view.counts;
+    const { in: inCount, late, tanks, healers, dps, melee, ranged } = view.counts;
     return {
       id: next.id,
       zone: next.zone,
@@ -414,7 +506,7 @@ export class RaidStub {
       status: next.status === 'locked' ? 'locked' : 'planned',
       size: next.size,
       guild_timezone: this.guildTimezone,
-      counts: { in: inCount, late, tanks, healers, dps },
+      counts: { in: inCount, late, tanks, healers, dps, melee, ranged },
       own:
         own === undefined
           ? null
@@ -442,6 +534,7 @@ export class RaidStub {
   ): { raid: GuildRaidView; moved: string | null } {
     const own = this.ownKeys;
     if (body.spec !== undefined) this.raidSpecs.set(key, body.spec);
+    const picked = body.spec === undefined ? undefined : SPECS.find((s) => s.spec === body.spec);
     let moved: string | null = null;
     this.update(id, (raid) => {
       const others = raid.signups
@@ -460,7 +553,14 @@ export class RaidStub {
       if (name === undefined) throw new Error(`guild-raids stub: no roster row for ${key}`);
       return {
         ...raid,
-        signups: [...others, { ...signup({ name, state: body.state, role: body.role }), note: body.note }],
+        signups: [
+          ...others,
+          {
+            ...signup({ name, state: body.state, role: body.role }),
+            ...(picked === undefined ? {} : { spec: picked.name }),
+            note: body.note,
+          },
+        ],
       };
     });
     return { raid: this.view(id), moved };
@@ -478,6 +578,8 @@ export class RaidStub {
         id: this.nextId++,
         zone: zone.key,
         zone_name: zone.name,
+        zone_kind: zone.kind,
+        key_item: zone.key_item,
         title: body.title === '' ? zone.name : body.title,
         starts_at: startsAt,
         duration_minutes: body.duration_minutes,
@@ -645,6 +747,6 @@ export function writesTo(stub: RaidStub, method: string, suffix: RegExp): Record
 
 /** The test id of a strip row's part for a character (`signup-segments-us/pvp/zulmara`). */
 export const stripId = (
-  part: 'row' | 'segments' | 'role' | 'note' | 'status' | 'spec',
+  part: 'row' | 'segments' | 'who' | 'note' | 'status' | 'spec',
   name: string,
 ): string => `signup-${part}-${keyOf(name)}`;

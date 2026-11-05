@@ -4,6 +4,7 @@
 // draws the /bis neutral tile with the name's letters, never the client's red question mark; and,
 // for an item no class file carries (a quest item such as Head of Onyxia), a tooltip model built
 // from the award.
+import type { GuildKeyItem } from './api';
 import type { RaidLootAward } from './attendance-contract';
 import type { ItemTooltipModel } from '../items/tooltip';
 
@@ -15,13 +16,13 @@ export function lootIconOf(award: Pick<RaidLootAward, 'icon'>): string | null {
 /** The two letters the neutral tile shows when there is no icon to draw. */
 export const lootInitials = (name: string): string => name.slice(0, 2);
 
-/** The facts the award carries, and nothing it does not: no item level, slot or stats. */
-export function awardTooltipModel(award: RaidLootAward): ItemTooltipModel {
+/** A tooltip of an item's name, quality and icon, and nothing else. */
+function bareTooltipModel(id: number, name: string, quality: number, icon: string): ItemTooltipModel {
   return {
-    id: award.item_id,
-    name: award.item_name,
-    quality: award.quality,
-    icon: award.icon,
+    id,
+    name,
+    quality,
+    icon,
     slotLabel: '',
     typeLabel: undefined,
     bindLabel: null,
@@ -36,4 +37,14 @@ export function awardTooltipModel(award: RaidLootAward): ItemTooltipModel {
     unique: false,
     clientUnconfirmed: false,
   };
+}
+
+/** The facts the award carries, and nothing it does not: no item level, slot or stats. */
+export function awardTooltipModel(award: RaidLootAward): ItemTooltipModel {
+  return bareTooltipModel(award.item_id, award.item_name, award.quality, award.icon);
+}
+
+/** A run's key: the API names it and its quality, and no class file carries it. */
+export function keyItemTooltipModel(item: GuildKeyItem): ItemTooltipModel {
+  return bareTooltipModel(item.id, item.name, item.quality, '');
 }

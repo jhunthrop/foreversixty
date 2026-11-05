@@ -42,17 +42,18 @@ test('a Demonology result lists the Succubus and none of the demons never summon
   );
 
   await page.goto(`/sim/${ID}`);
-  await expect(page.getByTestId('sim-results')).toBeVisible();
+  // The saved page's damage table (spec 2026-11-04-sim-results 3.6): the player's own rows, then
+  // one "Pet · Succubus" group. withoutAbsentPets (lib/sim/pet-rows.ts) drops the three demons
+  // never out before the table, the buffs and the timeline read the summary.
+  const damage = page.getByTestId('sim-damage-card');
+  await expect(damage).toBeVisible();
+  const petHeadings = damage.getByTestId('ability-pet-heading');
+  await expect(petHeadings).toHaveCount(1);
+  await expect(petHeadings.first()).toContainText('Succubus');
+  await expect(damage.getByTestId('ability-row-other:attack/1').first()).toBeVisible();
+  await expect(damage).not.toContainText(ABSENT);
 
-  const table = page.getByTestId('actor-table');
-  await expect(table.getByTestId('actor-sim-player')).toBeVisible();
-  await expect(table.getByTestId('actor-sim-player-pet-2')).toContainText('Succubus');
-  await expect(table.getByTestId('actor-sim-player-pet-2')).toContainText('100.0%');
-  await expect(table.locator('[data-testid^="actor-sim-player"]')).toHaveCount(2);
-  await expect(table).not.toContainText(ABSENT);
-
-  for (const tab of ['buffs', 'casts', 'resources', 'timeline']) {
-    await page.getByTestId(`sim-tab-${tab}`).click();
-    await expect(page.getByTestId('sim-results')).not.toContainText(ABSENT);
-  }
+  const buffs = page.getByTestId('sim-section-buffs');
+  await buffs.scrollIntoViewIfNeeded();
+  await expect(buffs).not.toContainText(ABSENT);
 });

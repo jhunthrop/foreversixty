@@ -27,6 +27,7 @@ assume A7's spelling.
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
@@ -179,14 +180,52 @@ def with_equip_restrictions(
     return out
 
 
+#: `$k<n>` in an enchant's name: effect n's points (1-based), as the client fills it.
+_AMOUNT_TOKEN = re.compile(r"\$[kK]([1-3])")
+
+
+def _fill_amounts(row: Mapping[str, str]) -> str | None:
+    """The name with every `$k<n>` filled from `EffectPointsMin_<n-1>`, or None when a
+    token has no points behind it (never print a raw token)."""
+    missing = False
+
+    def amount(match: re.Match[str]) -> str:
+        nonlocal missing
+        points = row.get(f"EffectPointsMin_{int(match.group(1)) - 1}", "")
+        if points in ("", "0"):
+            missing = True
+            return match.group(0)
+        return points
+
+    filled = _AMOUNT_TOKEN.sub(amount, row["Name_lang"])
+    return None if missing else filled
+
+
+def enchant_display_names(rows: Iterable[Mapping[str, str]]) -> dict[int, str]:
+    """`SpellItemEnchantment.Name_lang` by id: the enchant's own text, the line the
+    game prints on the item ("+7 Strength"), not the recipe's name. Amount tokens are
+    filled the way the client fills them; a name that cannot be filled is left out."""
+    out: dict[int, str] = {}
+    for row in rows:
+        text = _fill_amounts(row)
+        if text is not None:
+            out[int(row["ID"])] = text
+    return out
+
+
 def build_enchants(
-    fork: ForkDatabase, restrictions: Mapping[int, EquipRestriction]
+    fork: ForkDatabase,
+    restrictions: Mapping[int, EquipRestriction],
+    display_names: Mapping[int, str] | None = None,
 ) -> list[EnchantRecord]:
-    """`restrictions` is `equip_restrictions` over the build's SpellEquippedItems."""
+    """`restrictions` is `equip_restrictions` over the build's SpellEquippedItems;
+    `display_names` is `enchant_display_names` over its SpellItemEnchantment."""
+    displays = display_names or {}
     records = [
         EnchantRecord(
             id=int(row["effectId"]),
             name=row["name"],
+            display=displays.get(int(row["effectId"]), ""),
             icon=_enchant_icon(fork, row),
             slots=sorted(
                 {

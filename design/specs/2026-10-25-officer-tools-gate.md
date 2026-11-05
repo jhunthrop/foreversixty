@@ -9,7 +9,7 @@ Status: spec, 2026-10-25. Implements the experience half of premium spec §4.7
 
 An officer opens Loot or Readiness and asks: **"Why can't I press Award or Nudge, and how do I get them back?"**
 The answer is one sentence at the top of the tab panel, above every row:
-`Award and Nudge are part of the guild plan. Subscribe the guild.`
+`Award and Nudge are part of the guild plan. Subscribe your guild.`
 It is visible without scrolling at 360, 390, 1440 and 2000. It sits under the tab's h2, so it is
 inside the first 160 px of the tab panel at every width.
 
@@ -38,7 +38,7 @@ line, the first line under the `Billing` heading.
 - Once per tab, never once per control.
 - Element: a `p` with `id="officer-tools-gate-{tab}"`, classes `text-text text-[13px] leading-5`,
   `data-testid="guild-{tab}-plan-gate"`. Barlow 400, 13 px, 20 px line, `--text` `#e9e4d8`.
-- `Subscribe the guild` is an inline link to `guildSettingsHref(region, ruleset, name)`.
+- `Subscribe your guild` is an inline link to `guildSettingsHref(region, ruleset, name)`.
   It uses the inline-link recipe (DESIGN-SYSTEM.md, Accent): underlined, `--gold` `#e5b955` at rest,
   `--gold-hover` `#f5d27a` on hover and `:active`, 2 px gold focus ring at 2 px offset.
   The link is `whitespace-nowrap`, so it never splits across lines; at 360 the break falls after `plan.`.
@@ -53,10 +53,11 @@ line, the first line under the `Billing` heading.
 - The sentence names Nudge on the Loot tab too. That is §4.7's fixed wording; keep it verbatim.
 
 ### 3.3 The `Read-only` label
-- Loot: the existing muted 12 px `Read-only` span at the h2's right edge now shows for
-  `memberReadOnly` or `officer-read-only`.
+- Loot: the existing muted 12 px `Read-only` span at the h2's right edge shows for
+  `memberReadOnly` only. A gated officer reads the plan sentence instead, which already says the
+  controls are off (amended 2026-11-05, guild round 2).
 - Readiness: the h2 gains the same header row (`flex items-center justify-between gap-3`) and the same
-  span, in `officer-read-only` only.
+  span, for members only, as on Loot (amended 2026-11-05, guild round 2).
 
 ### 3.4 The disabled controls (visible, never hidden — tenet 4)
 Every control keeps its position, label, size and border. Each gets native `disabled` and
@@ -71,7 +72,7 @@ Every control keeps its position, label, size and border. Each gets native `disa
 - None of the three has a hover style today. None gains one. Disabled shows no hover, focus or active state.
 - Native `disabled` takes them out of the tab order. A loot list can hold 80 or more Award buttons;
   80 dead tab stops would be a defect.
-- Keyboard order in `officer-read-only`: the tab strip, then `Subscribe the guild`, then whatever follows.
+- Keyboard order in `officer-read-only`: the tab strip, then `Subscribe your guild`, then whatever follows.
   Screen readers in browse mode read each button as dimmed, with the sentence as its description.
 - axe: disabled controls are exempt from contrast (WCAG 1.4.3). The sentence is `#e9e4d8` on `--bg`.
   The link is gold and underlined, so `link-in-text-block` passes. The e2e runs axe on both tabs in this state.
@@ -116,7 +117,7 @@ Needs: `GuildApiError` gains `readonly code: string` from the envelope. Branch o
 2. Explanation, 13 px muted, in the `billedLine` slot (`guild-billing-contact`):
    `Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only, until 12 Dec 2026. After that they need the guild plan.` (amended 2026-10-26, review round)
 3. Price line, 13 px muted: today's `notOnPlanLines().detail`, unchanged.
-4. `Subscribe the guild`, `PRIMARY_BUTTON_FIXED w-fit px-4`, today's checkout href
+4. `Subscribe your guild`, `PRIMARY_BUTTON_FIXED w-fit px-4`, today's checkout href
    (`plan=guild&interval=monthly&guild_id=`). It is the same link as the not-on-plan state.
    A scoped guild can buy the plan (product design §4.1). There is no Manage billing.
 
@@ -159,14 +160,14 @@ New strings go in `web/src/lib/guild/copy.ts` (tabs) and `settings-view.ts` (`se
 
 | Where | String |
 |---|---|
-| Gate sentence, Loot and Readiness | `Award and Nudge are part of the guild plan. Subscribe the guild.` (link text `Subscribe the guild`) |
+| Gate sentence, Loot and Readiness | `Award and Nudge are part of the guild plan. Subscribe your guild.` (link text `Subscribe your guild`) |
 | Header label (reused) | `Read-only` |
 | 403 on Award | `Not awarded. This guild's officer tools have ended.` |
 | 403 on Undo | `Not undone. This guild's officer tools have ended.` |
 | Settings plan line, scoped | `Officer tools · until {d Mon yyyy}` |
 | Settings explanation, scoped | `Granted by Forever Sixty for the first raid nights: Award, Undo and Nudge only, until {d Mon yyyy}. After that they need the guild plan.` (amended 2026-10-26, review round) |
 | Settings price line (reused) | `notOnPlanLines().detail` |
-| Settings button (reused) | `Subscribe the guild` |
+| Settings button (reused) | `Subscribe your guild` |
 | Settings, not the claim holder (reused) | `Only the guild master can subscribe the guild, release the claim or change billing.` (amended 2026-10-26, review round) |
 | Account guild row | `{plan line} · Guild settings` (link text `Guild settings`) |
 
@@ -187,7 +188,7 @@ The PR attaches each one. Stub `home.viewer.officer_tools` in the guild fixture 
 | 6 | Loot, after the 403 on Award: row line focused, sentence shown | | x | x | |
 | 7 | Readiness, `officer-read-only` (grid and stacked cards) | x | x | x | x |
 | 8 | Readiness, member | | x | x | |
-| 9 | Focus-visible on `Subscribe the guild` (keyboard) | | x | x | |
+| 9 | Focus-visible on `Subscribe your guild` (keyboard) | | x | x | |
 | 10 | Settings, scoped grant, claim holder | x | x | x | |
 | 11 | Settings, scoped grant, officer without the claim | | x | x | |
 | 12 | Settings, `granted` full plan (regression) | | x | x | |

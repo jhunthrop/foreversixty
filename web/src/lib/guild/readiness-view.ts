@@ -6,6 +6,9 @@ import type { GuildReadinessRow } from './api';
 import { SLOT_LABELS, type Slot } from '../planner/types';
 import { counted } from '../plural';
 
+/** The level a character raids at: every readiness check is measured for it. */
+export const RAID_LEVEL = 60;
+
 /** Spec §4.E: `readinessScore = failCount * 100 + gearGainDps`, so a raider failing more
  *  checks always sorts above one failing fewer, ties broken by the bigger gear gain. The
  *  API already sends `failing`; this never recomputes it from the row's own fields. */
@@ -13,11 +16,15 @@ export function readinessScore(row: GuildReadinessRow): number {
   return row.failing * 100 + (row.gear_gap?.gain_dps ?? 0);
 }
 
-/** Worst-first, stable otherwise, a signed character with no export last -- never mutates `rows`. */
+/** Worst-first, a signed character with no export after that, the leveling characters last, highest
+ *  level first then by name (week-one spec §3.5) -- never mutates `rows`. */
 export function sortReadinessWorstFirst(rows: readonly GuildReadinessRow[]): GuildReadinessRow[] {
-  return [...rows].sort(
-    (a, b) => Number(a.no_export) - Number(b.no_export) || readinessScore(b) - readinessScore(a),
-  );
+  return [...rows].sort((a, b) => {
+    const leveling = Number(isLeveling(a)) - Number(isLeveling(b));
+    if (leveling !== 0) return leveling;
+    if (isLeveling(a)) return (b.level ?? 0) - (a.level ?? 0) || a.name.localeCompare(b.name);
+    return Number(a.no_export) - Number(b.no_export) || readinessScore(b) - readinessScore(a);
+  });
 }
 
 /** The viewer's own row pins first (member and officer, spec §4.E) -- applied after the
@@ -30,6 +37,53 @@ export function pinReadinessOwnRow(
   return [...rows].sort(
     (a, b) => Number(b.character_key === myCharacterKey) - Number(a.character_key === myCharacterKey),
   );
+}
+
+/** A character under 60 is not graded: level-60 raid needs are not a level 52's to chase. */
+export function isLeveling(row: Pick<GuildReadinessRow, 'level'>): boolean {
+  return row.level !== null && row.level !== undefined && row.level < RAID_LEVEL;
+}
+
+/** `Level 52 · 8 levels to 60`, the whole of a leveling character's row. */
+export function levelingLabel(level: number): string {
+  return `Level ${level} · ${counted(RAID_LEVEL - level, 'level')} to ${RAID_LEVEL}`;
+}
+
+export const LEVELING_SUFFIX = ` · checks start at ${RAID_LEVEL}`;
+export const LEVELING_GROUP = 'LEVELING';
+/** The own row's tag with nothing to fix, and the Overview's value for a clean raider. */
+export const READINESS_READY = 'Ready';
+/** The Overview's Readiness card with no one to grade yet. */
+export const READINESS_STARTS_AT_60 = `Readiness starts when someone reaches ${RAID_LEVEL}.`;
+export const READINESS_EMPTY = 'No raiders on the board yet. Approve members on the Roster tab.';
+export const AVG_ITEM_LEVEL = 'Avg item level';
+export const AVG_ITEM_LEVEL_TOOLTIP =
+  'Your average item level, and how far it is from the middle of your level-60 raiders.';
+
+/** The board's two groups: the graded rows, then the leveling ones under their rule. */
+export function readinessGroups(rows: readonly GuildReadinessRow[]): {
+  graded: GuildReadinessRow[];
+  leveling: GuildReadinessRow[];
+} {
+  return {
+    graded: rows.filter((row) => !isLeveling(row)),
+    leveling: rows.filter((row) => isLeveling(row)),
+  };
+}
+
+/** Whether the board read anything at all for this row: a row with nothing shared passes nothing. */
+function anyCheckRead(row: GuildReadinessRow): boolean {
+  return (
+    row.gear_gap !== null ||
+    row.enchants.checked ||
+    row.consumables.state !== 'unknown' ||
+    row.talent_points_read === true
+  );
+}
+
+/** A graded row with something read and nothing failing: the viewer's `Ready`, the needs line's clear. */
+export function passesEveryCheck(row: GuildReadinessRow): boolean {
+  return !isLeveling(row) && !row.no_export && row.failing === 0 && anyCheckRead(row);
 }
 
 export const NOT_SHARED = 'Not shared';
@@ -51,14 +105,17 @@ function withheldWord(row: GuildReadinessRow, sharedAt: 'gear' | 'gear_bags'): s
  *  API's fail-closed shape for `roster` consent) reads "Not shared", never a leaked figure; a
  *  member who shares gear whose band has no entry yet reads "Not checked yet". The gain is
  *  printed only when a simulation produced it: upgrades with no simulated gain read
- *  "15 upgrades · not simmed yet", never "+0 DPS". */
+ *  "15 upgrades · not simmed yet", never "+0 DPS". A healer's or tank's gap has no unit and is the
+ *  upgrade count alone, never a DPS figure (week-one spec §3.5). */
 export function gearGapLabel(row: GuildReadinessRow): string {
   const gap = row.gear_gap;
   if (gap === null || gap.upgrades === null) return withheldWord(row, 'gear');
   if (gap.upgrades === 0) return NO_UPGRADES;
   const upgrades = counted(gap.upgrades, 'upgrade');
+  if (gap.unit !== 'dps') return upgrades;
   const gain = Math.round(gap.gain_dps ?? 0);
   if (gain <= 0 && gap.not_sim_checked > 0) return `${upgrades} · ${NOT_SIMMED_YET}`;
+  if (gain <= 0) return upgrades;
   if (gap.not_sim_checked > 0) return `${upgrades} · +${gain} DPS · ${gap.not_sim_checked} ${NOT_SIMMED_YET}`;
   return `${upgrades} · +${gain} DPS`;
 }
@@ -101,7 +158,13 @@ export function enchantPillText(row: GuildReadinessRow): string {
   const labels = row.enchants.missing_slots.map(enchantSlotLabel);
   if (labels.length <= ENCHANT_PILL_MAX_SLOTS) return labels.join(', ');
   const shown = labels.slice(0, ENCHANT_PILL_MAX_SLOTS).join(', ');
-  return `${shown} +${labels.length - ENCHANT_PILL_MAX_SLOTS} more`;
+  return `${shown}${moreSlots(labels.length - ENCHANT_PILL_MAX_SLOTS)}`;
+}
+
+/** The slots past the named ones, in words: ` and 2 more slots`, never `+2`, which reads as an
+ *  enchant's own `+2` (guild round 2). Empty at 0. */
+export function moreSlots(rest: number): string {
+  return rest > 0 ? ` and ${counted(rest, 'more slot', 'more slots')}` : '';
 }
 
 /** Spec §4.E's Consumables cell -- `gear_bags` consent only, stricter than Gear gap/
@@ -123,13 +186,56 @@ export function talentPointsLabel(row: GuildReadinessRow): string {
   return row.talent_points_read === true ? 'None unspent' : '—';
 }
 
-/** Spec §4.E's Item level cell: signed delta against the roster's own median, `—` when the
- *  character carries no item level at all and the roster-only consent explains why. */
+/** Spec §4.E's Item level cell: the character's average item level, `—` when it carries none and
+ *  `Not shared` when the roster-only consent explains why. */
 export function itemLevelLabel(row: GuildReadinessRow): string {
   if (row.item_level === null) return row.consent === 'roster' ? NOT_SHARED : '—';
-  const delta = row.item_level_delta ?? 0;
-  const sign = delta >= 0 ? '+' : '';
-  return `${row.item_level} (${sign}${delta})`;
+  return String(row.item_level);
+}
+
+/** `1 above the raid median`, `2 below the raid median`, `at the raid median`; empty with no delta. */
+export function medianCaption(row: GuildReadinessRow): string {
+  const delta = row.item_level_delta;
+  if (delta === null || delta === undefined) return '';
+  if (delta === 0) return 'at the raid median';
+  return `${Math.abs(delta)} ${delta > 0 ? 'above' : 'below'} the raid median`;
+}
+
+/** The phone chip: `Item level 60 · 1 below median`, or the cell's words with no figure. */
+export function itemLevelChip(row: GuildReadinessRow): string {
+  if (row.item_level === null) return itemLevelLabel(row);
+  const caption = medianCaption(row).replace(' the raid median', ' median');
+  return caption === '' ? `Item level ${row.item_level}` : `Item level ${row.item_level} · ${caption}`;
+}
+
+/** The slot as the client's Character panel writes it: `Main Hand`, `Chest`. */
+function clientSlotName(slot: string): string {
+  return enchantSlotLabel(slot)
+    .split(' ')
+    .map((word) => capitalize(word))
+    .join(' ');
+}
+
+/** How many slots the Overview's enchant line names before `and {n} more slots`. */
+const WORST_CHECK_SLOTS = 2;
+
+/** The Overview's row: the worst failing check in words, and how many more fail (week-one spec
+ *  §3.3). Null for a row failing nothing. */
+export function worstCheck(row: GuildReadinessRow): { text: string; more: number } | null {
+  if (row.failing <= 0) return null;
+  const more = row.failing - 1;
+  const missing = row.enchants.checked ? row.enchants.missing_slots : [];
+  if (missing.length > 0) {
+    const named = missing.slice(0, WORST_CHECK_SLOTS).map(clientSlotName).join(', ');
+    const rest = missing.length - WORST_CHECK_SLOTS;
+    return { text: `No enchant: ${named}${moreSlots(rest)}`, more };
+  }
+  if (row.talent_points_unspent > 0) {
+    return { text: `${counted(row.talent_points_unspent, 'talent point')} unspent`, more };
+  }
+  if (row.consumables.state === 'short') return { text: 'Bags short on consumables', more };
+  const upgrades = row.gear_gap?.upgrades ?? 0;
+  return upgrades > 0 ? { text: `${counted(upgrades, 'upgrade')} waiting`, more } : null;
 }
 
 /** Which visual treatment each cell takes (GuildReadiness.svelte's own pill/colour
@@ -170,15 +276,17 @@ export function itemLevelKind(row: GuildReadinessRow): ReadinessCellKind {
 
 /**
  * The checks this one character fails right now, worst-first phrasing matching spec
- * §4.A.2/§6's own template clauses -- the Readiness tab's own long-form fail list, used to
- * build a Nudge message when the API has not sent `nudge_text` (a fixture, or an older
- * officer response shape).
+ * §4.A.2/§6's own template clauses: the needs line reads it, so the line and the board can never
+ * disagree, and it builds a Nudge message when the API has not sent `nudge_text`. A gain prints
+ * only for a damage spec's sim-checked upgrades.
  */
 export function readinessFails(row: GuildReadinessRow): string[] {
   const fails: string[] = [];
   const gap = row.gear_gap;
-  if (gap !== null && gap.upgrades !== null && gap.upgrades >= 3) {
-    fails.push(`${gap.upgrades} gear upgrades waiting (${Math.round(gap.gain_dps ?? 0)} DPS)`);
+  if (gap !== null && gap.upgrades !== null && gap.upgrades > 0) {
+    const gain = gap.unit === 'dps' ? Math.round(gap.gain_dps ?? 0) : 0;
+    const upgrades = `${gap.upgrades} gear upgrade${gap.upgrades === 1 ? '' : 's'} waiting`;
+    fails.push(gain > 0 ? `${upgrades} (+${gain} DPS)` : upgrades);
   }
   if (row.enchants.checked && row.enchants.missing_slots.length > 0) {
     fails.push(`no enchant: ${row.enchants.missing_slots.map(enchantSlotLabel).join(', ')}`);
@@ -202,7 +310,7 @@ export function nudgeText(row: GuildReadinessRow): string {
   if (row.nudge_text !== undefined) return row.nudge_text;
   const fails = readinessFails(row);
   if (fails.length === 0) return `${row.name}: every readiness check passes.`;
-  return `${row.name}: ${fails.join(', ')} -- check before Thursday.`;
+  return `${row.name}: ${fails.join('; ')}.`;
 }
 
 function capitalize(value: string): string {

@@ -64,6 +64,15 @@ func TestRaidCommandStates(t *testing.T) {
 			t.Fatalf("reply = %+v", rep)
 		}
 	})
+	t.Run("waiting for approval", func(t *testing.T) {
+		w := newPressWorld(t)
+		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", false)
+		rep := w.raidCmdAs(t, pressDiscord)
+		want := fill(pressCopy.WaitingOne, "{Name}", "Zulmara")
+		if rep.Message.Content != want || len(rep.Message.Embeds) != 0 {
+			t.Fatalf("reply = %+v, want %q and no raid", rep, want)
+		}
+	})
 	t.Run("none planned", func(t *testing.T) {
 		w := newPressWorld(t)
 		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)

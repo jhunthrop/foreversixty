@@ -19,6 +19,38 @@
       "kind": "site"
     }
   ],
+  "level_notes": [
+    {
+      "from_level": 60,
+      "step": 5,
+      "notes": "First, in the Execute phase, ahead of Bloodthirst: it takes every point of rage you hold."
+    },
+    {
+      "from_level": 60,
+      "step": 7,
+      "notes": "On cooldown, right behind Bloodthirst: it hits up to four targets with both weapons."
+    },
+    {
+      "from_level": 60,
+      "step": 8,
+      "notes": "On cooldown, right behind Whirlwind: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover."
+    },
+    {
+      "from_level": 60,
+      "step": 9,
+      "notes": "On cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2."
+    },
+    {
+      "from_level": 60,
+      "step": 10,
+      "notes": "Never at 60: Overpower needs Battle Stance, and Fury fights in Berserker Stance."
+    },
+    {
+      "from_level": 60,
+      "step": 11,
+      "notes": "Only above 60 rage, and never in the Execute phase: hold that rage for Execute. It is queued on your next swing and costs no global cooldown."
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
     "prepullActions": [
@@ -71,7 +103,7 @@
         }
       },
       {
-        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
+        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute. Improved Bloodrage raises both by a quarter at 1/2 and by half at 2/2, to 15 and 15.",
         "action": {
           "condition": {
             "cmp": {
@@ -94,7 +126,7 @@
         }
       },
       {
-        "notes": "At the pull when a second one still fits, otherwise in the execute phase, or in the last 30 seconds when that phase is shorter than the buff.",
+        "notes": "At the pull when a second one still fits, otherwise in the Execute phase, or in the last 30 seconds when that phase is shorter than the buff.",
         "action": {
           "condition": {
             "or": {
@@ -141,7 +173,7 @@
         }
       },
       {
-        "notes": "In the execute phase, or in the last 15 seconds when that phase is short. It is a once-a-fight button.",
+        "notes": "In the Execute phase, or in the last 15 seconds when that phase is short. It is a once-a-fight button.",
         "action": {
           "condition": {
             "or": {
@@ -175,7 +207,7 @@
         }
       },
       {
-        "notes": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
+        "notes": "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards.",
         "action": {
           "condition": {
             "not": {
@@ -198,7 +230,7 @@
         }
       },
       {
-        "notes": "First, below 20%: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
+        "notes": "First, in the Execute phase: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
         "action": {
           "condition": {
             "isExecutePhase": {
@@ -235,7 +267,7 @@
         }
       },
       {
-        "notes": "On cooldown, right behind Whirlwind once you have it: your next four white swings each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+        "notes": "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -245,7 +277,7 @@
         }
       },
       {
-        "notes": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds. Hold it for the fear on Magmadar, Onyxia and Nefarian.",
+        "notes": "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2.",
         "action": {
           "condition": {
             "and": {
@@ -311,7 +343,7 @@
         }
       },
       {
-        "notes": "Only above 60 rage, and once you have Execute never from 25% down: hold that rage for it. It is queued on your next swing and costs no global cooldown.",
+        "notes": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it. It is queued on your next swing and costs no global cooldown.",
         "action": {
           "condition": {
             "and": {

@@ -288,11 +288,11 @@ describe("the v2 wire contracts, addon side", function()
 			assert.are.equal("FS1:", request.gear_code:sub(1, 4))
 		end)
 
-		it("carries roster members with exactly the six contract fields", function()
+		it("carries roster members with exactly the seven contract fields", function()
 			assert.is_string(outbox.roster_snapshot.guild)
 			assert.is_true(#outbox.roster_snapshot.members >= 1)
 			for _, member in ipairs(outbox.roster_snapshot.members) do
-				assert.are.same({ "build", "gear_gap", "level", "name", "seen_at", "spec" }, sortedKeys(member))
+				assert.are.same({ "build", "class", "gear_gap", "level", "name", "seen_at", "spec" }, sortedKeys(member))
 				assert.is_truthy(member.seen_at:match("^%d%d%d%d%-%d%d%-%d%d %d%d:%d%d$"))
 			end
 		end)

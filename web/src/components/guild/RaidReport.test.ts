@@ -3,6 +3,7 @@
 // header buttons by rank and webhook state, the two-column and one-column block order, kill-order
 // rows, deaths and consumables with Show all, the no-buff line, loot grouped with empty lines by
 // rank, and the changes block with and without a previous raid.
+import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { ReportCopy } from '../../lib/guild/report-copy.svelte';
@@ -28,6 +29,7 @@ function view(
       guildName: 'Olympus XXVII',
       guildPath: '/guild/us/pvp/olympus-xxvii',
       settingsHref: SETTINGS,
+      gateFacts: gateFactsFixture(),
       officer: extra.officer ?? true,
       officerTools: extra.officerTools ?? true,
       gateId: 'officer-tools-gate-raids',
@@ -88,7 +90,7 @@ describe('the header', () => {
     expect(body).toMatch(
       /disabled[^>]*aria-describedby="officer-tools-gate-raids"|aria-describedby="officer-tools-gate-raids"[^>]*disabled/,
     );
-    expect(text(body)).toContain('Subscribe the guild');
+    expect(text(body)).toContain('Start the 7-day trial');
     expect(body).not.toMatch(
       /disabled=""[^>]*data-testid="raid-report-copy"|data-testid="raid-report-copy"[^>]*disabled/,
     );

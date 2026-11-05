@@ -13,6 +13,8 @@
   import { splitUnitName } from '../../lib/characters';
   import { formatDuration, formatPercent, schoolName, schoolToken } from '../../lib/report/format';
   import type { AuraTrack } from '../../lib/report/types';
+  import type { AuraColumn } from '../../lib/sim/aura-card';
+  import type { CardTables } from '../../lib/sim/card-tables.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -23,6 +25,11 @@
     bossNames = new Set<string>(),
     names = new Map<string, string>(),
     emptyMessage,
+    variant = 'table',
+    bars,
+    heading = '',
+    tables,
+    note,
   }: {
     tracks: AuraTrack[];
     durationMs: number;
@@ -41,6 +48,13 @@
      * (copy.ts's AURA_EMPTY_MESSAGE, Task 4).
      */
     emptyMessage?: string;
+    /** `bars` is the saved sim's one column of uptime bars; the logs report keeps `table`. */
+    variant?: 'table' | 'bars';
+    /** The `bars` variant's rows, already filed (lib/sim/aura-card.ts). */
+    bars?: AuraColumn;
+    heading?: string;
+    tables?: CardTables;
+    note?: string;
   } = $props();
 
   /**
@@ -119,7 +133,12 @@
   });
 </script>
 
-{#if rows.length === 0}
+{#if variant === 'bars' && bars !== undefined && tables !== undefined}
+  <!-- Its own chunk: the logs report's island never carries the saved sim's bars. -->
+  {#await import('./AuraBars.svelte') then { default: AuraBars }}
+    <AuraBars column={bars} {heading} side={kind === 'BUFF' ? 'player' : 'target'} {tables} {note} />
+  {/await}
+{:else if rows.length === 0}
   <p class="text-muted text-[14px]" data-testid="table-empty">
     {emptyMessage ?? `No ${kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.`}
   </p>

@@ -214,13 +214,23 @@ func (s *Store) streamAttendance(ctx context.Context, guildID int64, emit func([
 	return rows.Err()
 }
 
+// streamLoot names each award's character by its export. An award to an invited member names
+// the account's synthetic row (syntheticKey), which has no export: it reads as the account's
+// main (else first) character, else the stand-in, the rule inviteeName applies on the roster.
 func (s *Store) streamLoot(ctx context.Context, guildID int64, emit func([]string) error) error {
 	rows, err := s.Pool.Query(ctx, `
 		select la.awarded_at, coalesce(r.title, ''), la.encounter_id, la.item_id,
-		       coalesce(nullif(ae.name, ''), la.character_key)
+		       coalesce(nullif(ae.name, ''), inv.name,
+		                case when u.id is not null then '`+invitedStandIn+` ' || u.id end, la.character_key)
 		from loot_awards la
 		left join guild_raids r on r.id = la.raid_id
 		left join addon_exports ae on ae.character_key = la.character_key
+		left join users u on la.character_key like 'account:%'
+		  and u.id = nullif(substring(la.character_key from '^account:([0-9]+)$'), '')::bigint
+		left join lateral (
+		  select c.name from characters c where c.user_id = u.id
+		  order by (c.key = u.main_character_key) desc, c.name limit 1
+		) inv on true
 		where la.guild_id = $1
 		order by la.awarded_at, la.id`, guildID)
 	if err != nil {

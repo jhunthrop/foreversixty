@@ -9771,7 +9771,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9818,7 +9818,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9865,7 +9865,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9912,7 +9912,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9959,7 +9959,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10006,7 +10006,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10060,7 +10060,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10114,7 +10114,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10168,7 +10168,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10222,7 +10222,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10276,7 +10276,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10330,7 +10330,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10384,7 +10384,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -12625,7 +12625,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12693,7 +12693,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12761,7 +12761,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12829,7 +12829,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12897,7 +12897,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12972,7 +12972,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13068,7 +13068,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13164,7 +13164,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13260,7 +13260,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13363,7 +13363,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13466,7 +13466,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13569,7 +13569,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13672,7 +13672,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13775,7 +13775,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13878,7 +13878,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13981,7 +13981,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14084,7 +14084,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14187,7 +14187,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14290,7 +14290,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14393,7 +14393,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14496,7 +14496,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14599,7 +14599,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14702,7 +14702,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14805,7 +14805,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -15301,7 +15301,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15355,7 +15355,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15409,7 +15409,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15463,7 +15463,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15517,7 +15517,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15571,7 +15571,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15625,7 +15625,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15679,7 +15679,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15733,7 +15733,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -20831,7 +20831,7 @@
           {
             "spell_id": 17,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20906,7 +20906,7 @@
           {
             "spell_id": 592,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -20981,7 +20981,7 @@
           {
             "spell_id": 592,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21070,7 +21070,7 @@
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21166,7 +21166,7 @@
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21297,7 +21297,7 @@
           {
             "spell_id": 600,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21428,7 +21428,7 @@
           {
             "spell_id": 3747,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21559,7 +21559,7 @@
           {
             "spell_id": 3747,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21690,7 +21690,7 @@
           {
             "spell_id": 3747,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -21856,7 +21856,7 @@
           {
             "spell_id": 6065,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22033,7 +22033,7 @@
           {
             "spell_id": 6065,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22210,7 +22210,7 @@
           {
             "spell_id": 6065,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22383,7 +22383,7 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22556,7 +22556,7 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22729,7 +22729,7 @@
           {
             "spell_id": 6066,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -22916,7 +22916,7 @@
           {
             "spell_id": 10898,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23103,7 +23103,7 @@
           {
             "spell_id": 10898,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23296,7 +23296,7 @@
           {
             "spell_id": 10898,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23489,7 +23489,7 @@
           {
             "spell_id": 10899,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23676,7 +23676,7 @@
           {
             "spell_id": 10899,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -23863,7 +23863,7 @@
           {
             "spell_id": 10900,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -24050,7 +24050,7 @@
           {
             "spell_id": 10900,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -24242,7 +24242,7 @@
           {
             "spell_id": 10900,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -24434,7 +24434,7 @@
           {
             "spell_id": 10900,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -24627,7 +24627,7 @@
           {
             "spell_id": 10901,
             "name": "Power Word: Shield",
-            "condition": "On the tank at the top rank whenever Weakened Soul is off him: it soaks the next hit and costs a warrior no rage.",
+            "condition": "On the tank at the top rank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
             "race_spell_ids": {}
           },
@@ -24952,14 +24952,14 @@
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -25076,14 +25076,14 @@
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 2061,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -25200,14 +25200,14 @@
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -25324,14 +25324,14 @@
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -25478,14 +25478,14 @@
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -25622,14 +25622,14 @@
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9472,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -25753,14 +25753,14 @@
           {
             "spell_id": 9473,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9473,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -25884,14 +25884,14 @@
           {
             "spell_id": 9473,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9473,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -26015,14 +26015,14 @@
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -26176,14 +26176,14 @@
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -26320,7 +26320,7 @@
           {
             "spell_id": 401859,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -26334,14 +26334,14 @@
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 9474,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -26598,7 +26598,7 @@
           {
             "spell_id": 401859,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -26612,14 +26612,14 @@
           {
             "spell_id": 10915,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10915,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -26876,7 +26876,7 @@
           {
             "spell_id": 401859,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -26890,14 +26890,14 @@
           {
             "spell_id": 10915,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10915,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -27154,7 +27154,7 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -27168,14 +27168,14 @@
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -27432,7 +27432,7 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -27453,14 +27453,14 @@
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -27717,7 +27717,7 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -27738,14 +27738,14 @@
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -28002,7 +28002,7 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -28016,14 +28016,14 @@
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10916,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -28280,7 +28280,7 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -28294,14 +28294,14 @@
           {
             "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -28558,7 +28558,7 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -28572,14 +28572,14 @@
           {
             "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -28836,7 +28836,7 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -28850,14 +28850,14 @@
           {
             "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -29114,7 +29114,7 @@
           {
             "spell_id": 1240827,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
+            "condition": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight.",
             "icon": "spell_holy_prayerofmendingtga",
             "race_spell_ids": {}
           },
@@ -29128,14 +29128,14 @@
           {
             "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters.",
+            "condition": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10917,
             "name": "Flash Heal",
-            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana.",
+            "condition": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana.",
             "icon": "spell_holy_flashheal",
             "race_spell_ids": {}
           },
@@ -29401,7 +29401,7 @@
           {
             "spell_id": 8092,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           }
@@ -29427,7 +29427,7 @@
           {
             "spell_id": 8102,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           }
@@ -29453,7 +29453,7 @@
           {
             "spell_id": 8102,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           }
@@ -29500,7 +29500,7 @@
           {
             "spell_id": 8102,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29554,7 +29554,7 @@
           {
             "spell_id": 8103,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29608,7 +29608,7 @@
           {
             "spell_id": 8103,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29665,7 +29665,7 @@
           {
             "spell_id": 8104,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29726,7 +29726,7 @@
           {
             "spell_id": 8104,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29787,7 +29787,7 @@
           {
             "spell_id": 8104,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29855,7 +29855,7 @@
           {
             "spell_id": 8105,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29923,7 +29923,7 @@
           {
             "spell_id": 8105,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -29991,7 +29991,7 @@
           {
             "spell_id": 8105,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -30065,7 +30065,7 @@
           {
             "spell_id": 8106,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "dwarf": 8104,
@@ -30145,7 +30145,7 @@
           {
             "spell_id": 8106,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "dwarf": 8104,
@@ -30219,7 +30219,7 @@
           {
             "spell_id": 8106,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -30287,7 +30287,7 @@
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -30355,7 +30355,7 @@
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -30432,7 +30432,7 @@
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "undead": 8106
@@ -30512,7 +30512,7 @@
           {
             "spell_id": 10945,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {
               "dwarf": 8106,
@@ -30583,7 +30583,7 @@
           {
             "spell_id": 10946,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -30651,7 +30651,7 @@
           {
             "spell_id": 10947,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -30719,7 +30719,7 @@
           {
             "spell_id": 10947,
             "name": "Mind Blast",
-            "condition": "Mind Blast on cooldown, ahead of Mind Flay: a big hit for its short cast, at half cost in Shadowform.",
+            "condition": "Mind Blast on cooldown, ahead of Mind Flay once you have it: a big hit for its short cast, at half cost in Shadowform.",
             "icon": "spell_shadow_unholyfrenzy",
             "race_spell_ids": {}
           },
@@ -32408,7 +32408,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32455,7 +32455,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32502,7 +32502,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32549,7 +32549,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32596,7 +32596,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32643,7 +32643,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32690,7 +32690,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32737,7 +32737,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32784,7 +32784,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32831,7 +32831,7 @@
           {
             "spell_id": 13750,
             "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion.",
+            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
             "icon": "spell_shadow_shadowworddominate",
             "race_spell_ids": {}
           },
@@ -32852,7 +32852,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32892,7 +32892,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32932,7 +32932,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32979,7 +32979,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33026,7 +33026,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33080,7 +33080,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33141,7 +33141,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33202,7 +33202,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33263,7 +33263,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33331,7 +33331,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33399,7 +33399,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33467,7 +33467,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33535,7 +33535,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33610,7 +33610,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33685,7 +33685,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33760,7 +33760,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33835,7 +33835,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33910,7 +33910,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33985,7 +33985,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -34060,7 +34060,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -34135,7 +34135,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -34210,7 +34210,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -34287,7 +34287,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34320,7 +34320,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34360,7 +34360,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34400,7 +34400,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34440,7 +34440,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34480,7 +34480,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34527,7 +34527,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34581,7 +34581,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34635,7 +34635,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34689,7 +34689,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34703,7 +34703,7 @@
           {
             "spell_id": 421,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -34750,7 +34750,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34764,7 +34764,7 @@
           {
             "spell_id": 421,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -34811,7 +34811,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34825,7 +34825,7 @@
           {
             "spell_id": 421,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -34872,7 +34872,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34886,7 +34886,7 @@
           {
             "spell_id": 421,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -34933,7 +34933,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34947,7 +34947,7 @@
           {
             "spell_id": 421,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -34994,7 +34994,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35008,7 +35008,7 @@
           {
             "spell_id": 930,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35055,7 +35055,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35069,7 +35069,7 @@
           {
             "spell_id": 930,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35116,7 +35116,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35130,7 +35130,7 @@
           {
             "spell_id": 930,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35177,7 +35177,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35191,7 +35191,7 @@
           {
             "spell_id": 930,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35238,7 +35238,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35252,7 +35252,7 @@
           {
             "spell_id": 930,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35299,7 +35299,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35313,7 +35313,7 @@
           {
             "spell_id": 2860,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35360,7 +35360,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35374,7 +35374,7 @@
           {
             "spell_id": 2860,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35421,7 +35421,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35435,7 +35435,7 @@
           {
             "spell_id": 2860,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35482,7 +35482,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35496,7 +35496,7 @@
           {
             "spell_id": 2860,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35543,7 +35543,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35557,7 +35557,7 @@
           {
             "spell_id": 10605,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35604,7 +35604,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35618,7 +35618,7 @@
           {
             "spell_id": 10605,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -35665,7 +35665,7 @@
           {
             "spell_id": 10438,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35679,7 +35679,7 @@
           {
             "spell_id": 10605,
             "name": "Chain Lightning",
-            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+            "condition": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time.",
             "icon": "spell_nature_chainlightning",
             "race_spell_ids": {}
           },
@@ -37446,7 +37446,7 @@
           {
             "spell_id": 408521,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -37570,7 +37570,7 @@
           {
             "spell_id": 408521,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -37694,7 +37694,7 @@
           {
             "spell_id": 408521,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -37818,7 +37818,7 @@
           {
             "spell_id": 408521,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -37942,7 +37942,7 @@
           {
             "spell_id": 408521,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -38066,7 +38066,7 @@
           {
             "spell_id": 1239242,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -38190,7 +38190,7 @@
           {
             "spell_id": 1239242,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -38314,7 +38314,7 @@
           {
             "spell_id": 1239242,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -38438,7 +38438,7 @@
           {
             "spell_id": 1239242,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -38562,7 +38562,7 @@
           {
             "spell_id": 1239242,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -38686,7 +38686,7 @@
           {
             "spell_id": 1239243,
             "name": "Riptide",
-            "condition": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more.",
+            "condition": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick.",
             "icon": "spell_nature_riptide",
             "race_spell_ids": {}
           },
@@ -38998,7 +38998,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39052,7 +39052,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39106,7 +39106,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39160,7 +39160,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39214,7 +39214,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39275,7 +39275,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39336,7 +39336,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39397,7 +39397,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39458,7 +39458,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39526,7 +39526,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39594,7 +39594,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39662,7 +39662,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39730,7 +39730,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39798,7 +39798,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39866,7 +39866,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39934,7 +39934,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40002,7 +40002,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40077,7 +40077,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },

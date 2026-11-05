@@ -110,7 +110,7 @@ async function targetsAreBigEnough(page: Page): Promise<void> {
 async function sectionsKeepGutter(page: Page): Promise<void> {
   const { width } = page.viewportSize() ?? { width: 0 };
   const edges = await page.evaluate(() =>
-    [...document.querySelectorAll('#sim .rounded-panel')]
+    [...document.querySelectorAll('#sim .rounded-panel, #sim .card-surface, #sim .card-surface-quiet')]
       .filter((element) => {
         const box = element.getBoundingClientRect();
         return box.width > 0 && box.height > 0;
@@ -341,8 +341,8 @@ test('a saved sim at /sim/simfixtureab has no sideways scroll and every target c
   page,
 }) => {
   await page.goto('/sim/simfixtureab');
-  await expect(page.getByTestId('sim-saved-header')).toBeVisible();
-  await expect(page.getByTestId('sim-results')).toBeVisible();
+  await expect(page.getByTestId('sim-result-band')).toBeVisible();
+  await expect(page.getByTestId('sim-damage-card')).toBeVisible();
 
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);

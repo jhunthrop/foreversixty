@@ -1,6 +1,6 @@
 // web/src/components/guild/RaidRoster.test.ts
-// The Sign-ups roster rendered with svelte/server (raids spec 3.7): role columns in roster order,
-// the empty-role lines, the Late, Bench, Out and Not signed up groups, the members' one-line names
+// The Sign-ups roster rendered with svelte/server (raids spec 3.7, raid comp spec 3.3): Tanks,
+// Healers, Melee and Ranged by the API's group, each row's spec and class, the empty-group lines, the Late, Bench, Out and Not signed up groups, the members' one-line names
 // and the officers' inline selects with the `—` first option, disabled in read-only.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
@@ -34,11 +34,38 @@ function unsigned(name: string): GuildRaidNotSigned {
 
 const RAID = plannedRaid({
   signups: [
-    signup('Zed', { class: 'druid', spec: 'Balance', note: 'Bringing **flasks** for everyone tonight' }),
-    signup('Bolt'),
-    signup('Mend', { role: 'healer', class: 'priest', spec: 'Holy' }),
-    signup('Tardy', { state: 'late', role: 'healer', class: 'priest', spec: 'Holy' }),
-    signup('Benched', { state: 'bench' }),
+    signup('Zed', {
+      class: 'druid',
+      spec: 'Balance',
+      spec_key: 'druid-balance',
+      group: 'ranged',
+      note: 'Bringing **flasks** for everyone tonight',
+    }),
+    signup('Zulmara', {
+      class: 'hunter',
+      spec: 'Marksmanship',
+      spec_key: 'hunter-marksmanship',
+      group: 'ranged',
+    }),
+    signup('Kelthar', { class: 'hunter', spec: 'Survival', spec_key: 'hunter-survival', group: 'melee' }),
+    signup('Bolt', { spec_key: 'warrior-fury', group: 'melee' }),
+    signup('Brokk', { role: 'tank', spec_key: 'warrior-fury', group: 'tank' }),
+    signup('Mend', {
+      role: 'healer',
+      class: 'priest',
+      spec: 'Holy',
+      spec_key: 'priest-holy',
+      group: 'healer',
+    }),
+    signup('Tardy', {
+      state: 'late',
+      role: 'healer',
+      class: 'paladin',
+      spec: 'Holy',
+      spec_key: 'paladin-holy',
+      group: 'healer',
+    }),
+    signup('Benched', { state: 'bench', spec_key: null }),
     signup('Gone', { state: 'out' }),
   ],
   not_signed: [unsigned('Mira'), unsigned('Lightbrand')],
@@ -84,13 +111,31 @@ describe('RaidRoster', () => {
     expect(rows.some((row) => row.includes('items-start py-1.5'))).toBe(true);
   });
 
-  it('draws the heading with the ratio and the role columns in roster order', () => {
+  it('draws the heading with the ratio and Tanks, Healers, Melee and Ranged by the API group', () => {
     const body = html();
     expect(text(between(body, 'raid-roster', 'raid-roster-tank'))).toContain('Sign-ups 23/40');
-    expect(text(between(body, 'raid-roster-healer', 'raid-roster-dps'))).toContain('Healers 1 Mend');
-    const dps = text(between(body, 'raid-roster-dps', 'raid-roster-late'));
-    expect(dps.indexOf('Bolt')).toBeLessThan(dps.indexOf('Zed'));
-    expect(dps).toContain('Bringing **flasks** for everyone tonight');
+    expect(text(between(body, 'raid-roster-tank', 'raid-roster-healer'))).toContain(
+      'Tanks 1 Brokk Fury Warrior',
+    );
+    expect(text(between(body, 'raid-roster-healer', 'raid-roster-melee'))).toContain(
+      'Healers 1 Mend Holy Priest',
+    );
+    const melee = text(between(body, 'raid-roster-melee', 'raid-roster-ranged'));
+    expect(melee).toContain('Melee 2');
+    expect(melee.indexOf('Bolt')).toBeLessThan(melee.indexOf('Kelthar'));
+    expect(melee).toContain('Kelthar Survival Hunter');
+    const ranged = text(between(body, 'raid-roster-ranged', 'raid-roster-late'));
+    expect(ranged).toContain('Ranged 2 Zulmara Marksmanship Hunter Zed Balance Druid');
+    expect(ranged).toContain('Bringing **flasks** for everyone tonight');
+  });
+
+  it('places the groups in four columns from 1280 and two from 768, Tanks over Healers', () => {
+    const body = html();
+    expect(body).toContain('class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 xl:grid-cols-4"');
+    expect(body).toMatch(
+      /md:col-start-1 md:row-start-2 xl:col-start-2 xl:row-start-1" data-testid="raid-roster-healer"/,
+    );
+    expect(body).toMatch(/md:col-start-2 md:row-start-1 xl:col-start-3" data-testid="raid-roster-melee"/);
   });
 
   it('sets the name over the spec, each one line with its full text in title', () => {
@@ -99,8 +144,9 @@ describe('RaidRoster', () => {
       /<p class="block truncate text-\[14px\] leading-\[18px\] font-semibold"[^>]*title="Bolt"/,
     );
     expect(body).toMatch(
-      /<p class="text-muted block truncate text-\[12px\] leading-4" title="Holy · Healer">/,
+      /<p class="text-muted block truncate text-\[12px\] leading-4" title="Holy Paladin · Healer">/,
     );
+    expect(body).toMatch(/<p class="text-muted block truncate text-\[12px\] leading-4" title="Warrior">/);
   });
 
   it('heads every group with the 11 px label, its count in tabular numerals', () => {
@@ -128,15 +174,19 @@ describe('RaidRoster', () => {
     expect(others).toContain('raid-roster-out');
   });
 
-  it('says an empty role is empty', () => {
-    expect(text(between(html(), 'raid-roster-tank', 'raid-roster-healer'))).toContain(
-      raidCopy.emptyRole.tank,
+  it('says an empty group is empty', () => {
+    const raid = plannedRaid({ signups: [signup('Bolt', { group: 'melee' })], not_signed: [] });
+    expect(text(between(html({ raid }), 'raid-roster-tank', 'raid-roster-healer'))).toContain(
+      raidCopy.emptyGroup.tank,
+    );
+    expect(text(between(html({ raid }), 'raid-roster-ranged', 'never'))).toContain(
+      raidCopy.emptyGroup.ranged,
     );
   });
 
   it('lists Late with the role word, then Bench, Out and Not signed up', () => {
     const body = text(html());
-    expect(body).toContain('Late 1 Tardy Holy · Healer');
+    expect(body).toContain('Late 1 Tardy Holy Paladin · Healer');
     expect(body.indexOf('Bench 1')).toBeLessThan(body.indexOf('Out 1'));
     expect(body.indexOf('Out 1')).toBeLessThan(body.indexOf('Not signed up 2'));
   });
@@ -158,6 +208,11 @@ describe('RaidRoster', () => {
     expect(signed).not.toContain('—');
   });
 
+  it('lays the officer Not signed up list in a strict grid with a row gap', () => {
+    const body = html({ officer: true });
+    expect(body).toMatch(/<ul class="grid [^"]*gap-y-2[^"]*" data-testid="raid-roster-not-signed-grid"/);
+  });
+
   it('disables the officer selects in read-only, naming the gate', () => {
     const body = html({ officer: true, officerTools: false });
     const select = /<select[^>]*data-testid="raid-roster-select-Bolt"[^>]*>/.exec(body)?.[0] ?? '';
@@ -171,6 +226,37 @@ describe('RaidRoster', () => {
     )?.[0];
     expect(select).toMatch(DISABLED);
     expect(select).not.toContain('aria-describedby');
+  });
+
+  it('names an account’s other answered characters under its one row, counting nowhere', () => {
+    const raid = plannedRaid({
+      signups: [
+        signup('Quillfeather', {
+          class: 'priest',
+          spec: 'Holy',
+          spec_key: 'priest-holy',
+          role: 'healer',
+          state: 'late',
+          also: [
+            {
+              character_key: 'us/pvp/rootbound',
+              name: 'Rootbound',
+              class: 'druid',
+              spec: 'Restoration',
+              spec_key: 'druid-restoration',
+              state: 'bench',
+            },
+          ],
+        }),
+      ],
+      not_signed: [],
+    });
+    const body = html({ raid, officer: true });
+    expect(/data-testid="raid-roster-also">([^<]*)</.exec(body)?.[1]).toBe(
+      'Also: Rootbound · Restoration Druid · Bench',
+    );
+    expect(body).not.toContain('data-testid="raid-roster-bench"');
+    expect(body).not.toContain('raid-roster-select-Rootbound');
   });
 
   it('puts a plan refusal under its row and a failure under the roster', () => {

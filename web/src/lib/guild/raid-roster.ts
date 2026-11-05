@@ -1,22 +1,19 @@
 // web/src/lib/guild/raid-roster.ts
-// The Sign-ups roster's groups (design/specs/2026-10-26-guild-raids.md 3.7): In rows under their
-// role, then Late, Bench, Out and Not signed up. Within a group: role, then class in the game's
-// order, then name.
-import type { GuildRaidRole, GuildRaidView, GuildSignupState } from './api';
+// The Sign-ups roster's groups (raids spec 3.7, raid comp spec 3.3): In rows under Tanks, Healers,
+// Melee and Ranged by the API's `group`, then Late, Bench, Out and Not signed up. Within an In
+// group: class in the game's order, then name; Late, Bench and Out lead with the role.
+import type {
+  GuildRaidAlsoSignup,
+  GuildRaidGroup,
+  GuildRaidRole,
+  GuildRaidView,
+  GuildSignupState,
+} from './api';
+import { classThenName, rowGroup, specClassLine } from './raid-comp';
+import { SEP, raidCopy } from './raid-copy';
 import { roleForSpec } from './raid-roles';
 
 const ROLE_ORDER: readonly GuildRaidRole[] = ['tank', 'healer', 'dps'];
-const CLASS_ORDER: readonly string[] = [
-  'warrior',
-  'paladin',
-  'hunter',
-  'rogue',
-  'priest',
-  'shaman',
-  'mage',
-  'warlock',
-  'druid',
-];
 
 export interface RosterRow {
   character_key: string;
@@ -24,15 +21,37 @@ export interface RosterRow {
   class: string;
   spec: string;
   role: GuildRaidRole;
+  /** The API's roster group. */
+  group: GuildRaidGroup;
+  /** The row's catalogue spec key, `null` when it does not resolve. */
+  spec_key: string | null;
   /** `null` for a member who has not signed up. */
   state: GuildSignupState | null;
   note: string;
   /** The viewer's own character (the row's wash). */
   own: boolean;
+  /** The muted line naming the account's other answered characters, `null` when it has none. */
+  also: string | null;
+}
+
+/** `Also: Rootbound · Restoration Druid · Bench`: the account's other answered characters, best
+ *  place first as the API lists them; `null` when there are none (raids spec 3.7). */
+export function alsoLine(also: readonly GuildRaidAlsoSignup[]): string | null {
+  if (also.length === 0) return null;
+  return raidCopy.also(
+    also.map((a) => [a.name, specClassLine(a.class, a.spec_key), raidCopy.segments[a.state]].join(SEP)),
+  );
+}
+
+/** On the viewer's answered character that is not its account's roster row: `Officers see
+ *  Quillfeather (Late).`, naming the row the officers read; else `null`. */
+export function officersSeeLine(raid: Pick<GuildRaidView, 'signups'>, characterKey: string): string | null {
+  const row = raid.signups.find((s) => s.own && (s.also ?? []).some((a) => a.character_key === characterKey));
+  return row === undefined ? null : raidCopy.stripStatus.officersSee(row.name, raidCopy.segments[row.state]);
 }
 
 export interface RosterGroups {
-  roles: Readonly<Record<GuildRaidRole, RosterRow[]>>;
+  groups: Readonly<Record<GuildRaidGroup, RosterRow[]>>;
   late: RosterRow[];
   bench: RosterRow[];
   out: RosterRow[];
@@ -44,21 +63,17 @@ export function rosterSelectId(characterKey: string): string {
   return `raid-roster-state-${characterKey}`;
 }
 
-function rank(order: readonly string[], value: string): number {
-  const index = order.indexOf(value.toLowerCase());
-  return index < 0 ? order.length : index;
+function roleRank(role: GuildRaidRole | null): number {
+  const index = role === null ? -1 : ROLE_ORDER.indexOf(role);
+  return index < 0 ? ROLE_ORDER.length : index;
 }
 
-/** Role, then class in the game's order, then name: the order every raid group lists in. */
+/** Role, then class in the game's order, then name: the order Late, Bench and Out list in. */
 export function rosterOrder(
   a: Pick<RosterRow, 'class' | 'name'> & { role: GuildRaidRole | null },
   b: Pick<RosterRow, 'class' | 'name'> & { role: GuildRaidRole | null },
 ): number {
-  return (
-    rank(ROLE_ORDER, a.role ?? '') - rank(ROLE_ORDER, b.role ?? '') ||
-    rank(CLASS_ORDER, a.class) - rank(CLASS_ORDER, b.class) ||
-    a.name.localeCompare(b.name)
-  );
+  return roleRank(a.role) - roleRank(b.role) || classThenName(a, b);
 }
 
 function inState(rows: readonly RosterRow[], state: GuildSignupState): RosterRow[] {
@@ -66,24 +81,32 @@ function inState(rows: readonly RosterRow[], state: GuildSignupState): RosterRow
 }
 
 export function rosterGroups(raid: GuildRaidView): RosterGroups {
-  const signed: RosterRow[] = raid.signups.map((s) => ({ ...s }));
+  const signed: RosterRow[] = raid.signups.map((s) => ({
+    ...s,
+    group: rowGroup(s),
+    spec_key: s.spec_key ?? null,
+    also: alsoLine(s.also ?? []),
+  }));
   const ownKeys = new Set(raid.viewer.characters.map((c) => c.character_key));
   const notSigned = raid.not_signed
-    .map((m): RosterRow => ({
-      ...m,
-      role: roleForSpec(m.spec) ?? 'dps',
-      state: null,
-      note: '',
-      own: ownKeys.has(m.character_key),
-    }))
+    .map((m): RosterRow => {
+      const role = roleForSpec(m.spec) ?? 'dps';
+      return {
+        ...m,
+        role,
+        group: rowGroup({ ...m, role }),
+        spec_key: m.spec_key ?? null,
+        state: null,
+        note: '',
+        own: ownKeys.has(m.character_key),
+        also: null,
+      };
+    })
     .sort(rosterOrder);
-  const signedIn = inState(signed, 'in');
+  const signedIn = signed.filter((row) => row.state === 'in').sort(classThenName);
+  const of = (group: GuildRaidGroup): RosterRow[] => signedIn.filter((row) => row.group === group);
   return {
-    roles: {
-      tank: signedIn.filter((row) => row.role === 'tank'),
-      healer: signedIn.filter((row) => row.role === 'healer'),
-      dps: signedIn.filter((row) => row.role === 'dps'),
-    },
+    groups: { tank: of('tank'), healer: of('healer'), melee: of('melee'), ranged: of('ranged') },
     late: inState(signed, 'late'),
     bench: inState(signed, 'bench'),
     out: inState(signed, 'out'),

@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fixtureResult } from '../../test-support/sim-api';
-import { parseActionKey, resolveActionName, withShardNames, type ActionNames } from './action-names';
+import {
+  parseActionKey,
+  resolveActionName,
+  withShardNames,
+  withShardOverlay,
+  type ActionNames,
+} from './action-names';
 
 const names: ActionNames = {
   spell: { '25286': 'Heroic Strike', '20662': 'Execute' },
@@ -198,5 +204,32 @@ describe('withShardNames', () => {
     const requested = stubShards();
     expect(await withShardNames(names, ['spell:21919'])).toBe(names);
     expect(requested).toEqual([]);
+  });
+});
+
+describe('withShardOverlay', () => {
+  const names: ActionNames = {
+    spell: { '1': 'Known' },
+    item: {},
+    shards: { build: 'test-build', count: 2 },
+  };
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('reads a missing name through the shard and keeps the table untouched', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve(new Response(JSON.stringify({ '20554': 'Berserking' })))),
+    );
+    const named = await withShardOverlay(names, ['spell:1', 'spell:20554']);
+    expect(resolveActionName('spell:20554', named)).toBe('Berserking');
+    expect(resolveActionName('spell:1', named)).toBe('Known');
+    expect(names.spell['20554']).toBeUndefined();
+  });
+
+  it('returns the same names with no fetch when nothing is missing', async () => {
+    await expect(withShardOverlay(names, ['spell:1'])).resolves.toBe(names);
   });
 });

@@ -5,6 +5,7 @@
 package raidspec
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/sim/specs"
@@ -96,18 +97,101 @@ func Resolve(class, name, role string) (Spec, bool) {
 		return ByKey("druid-feral")
 	}
 	for _, s := range ForClass(class) {
-		if strings.EqualFold(s.Name, name) {
+		if SameName(s.Name, name) {
 			return s, true
 		}
 	}
 	return Spec{}, false
 }
 
+// ClassRoles is the roles the class's specs play, in tank, healer, DPS order: a warrior tanks
+// or deals damage, a priest heals or deals damage. nil for an unknown class.
+func ClassRoles(class string) []string {
+	specs := ForClass(class)
+	if len(specs) == 0 {
+		return nil
+	}
+	var out []string
+	for _, role := range []string{RoleTank, RoleHealer, RoleDPS} {
+		for _, s := range specs {
+			if s.Role == role {
+				out = append(out, role)
+				break
+			}
+		}
+	}
+	return out
+}
+
+// Plays reports whether the class can sign up as role. An unknown class is not judged.
+func Plays(class, role string) bool {
+	roles := ClassRoles(class)
+	return roles == nil || slices.Contains(roles, role)
+}
+
+// SameName reports whether two spec names are one spec however they are written: case aside and
+// with the spaces gone, so a log's "BeastMastery" is the catalogue's "Beast Mastery"
+// (rankings/query.go compares board filters the same way).
+func SameName(a, b string) bool {
+	return strings.EqualFold(strings.ReplaceAll(a, " ", ""), strings.ReplaceAll(b, " ", ""))
+}
+
 // MeleeClass reports whether a DPS line with no spec goes to Melee, by class.
 func MeleeClass(class string) bool { return meleeClasses[strings.ToLower(class)] }
 
-// ClassOrder is the game's class order (classChoices); the roster sorts by it.
-var ClassOrder = []string{"druid", "hunter", "mage", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"}
+// offTankSpecs are the DPS specs that also sign up as tank: a Classic raid's second and third
+// tanks are Fury or Arms warriors in Defensive Stance (spec 2026-11-05 §3.2.1).
+var offTankSpecs = map[string]bool{"warrior-arms": true, "warrior-fury": true}
+
+// Roles is the roles a spec signs up as: its own, then tank for an off-tank spec.
+func (s Spec) Roles() []string {
+	if offTankSpecs[s.Key] {
+		return []string{s.Role, RoleTank}
+	}
+	return []string{s.Role}
+}
+
+// SignupRole is the role a sign-up with this spec takes when the body asks for asked: asked
+// when it is one of the spec's Roles, else the spec's own role.
+func (s Spec) SignupRole(asked string) string {
+	if slices.Contains(s.Roles(), asked) {
+		return asked
+	}
+	return s.Role
+}
+
+// The roster groups a sign-up fights in (spec 2026-11-05 §4.1): the site's Sign-ups columns and
+// the Discord post's fields.
+const (
+	GroupTank   = "tank"
+	GroupHealer = "healer"
+	GroupMelee  = "melee"
+	GroupRanged = "ranged"
+)
+
+// Group is the roster group of a sign-up's class, spec name and role: the role first (a Fury
+// warrior signed as tank is a tank), else the spec's melee mark, else the class's. The site and
+// the bot both read it, so the page and the post never disagree.
+func Group(class, spec, role string) string {
+	switch role {
+	case RoleTank:
+		return GroupTank
+	case RoleHealer:
+		return GroupHealer
+	}
+	melee := MeleeClass(class)
+	if sp, ok := Resolve(class, spec, role); ok {
+		melee = sp.Melee()
+	}
+	if melee {
+		return GroupMelee
+	}
+	return GroupRanged
+}
+
+// ClassOrder is the game's class order (the character-create screen's: Warrior first, Druid
+// last); the roster, the class row and the Discord post sort by it (spec 2026-11-05 §3.1).
+var ClassOrder = []string{"warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid"}
 
 // ClassRank is the class's place in ClassOrder; an unknown or empty class sorts after every class.
 func ClassRank(class string) int {

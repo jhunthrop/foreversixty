@@ -162,20 +162,15 @@ test('the Timeline tab draws one lane, the player rostered from the sample itera
   await expect(page.getByTestId('lane-sim-player')).toContainText('Thrallgar');
 });
 
-test('the Distribution tab shows the mean and five rows, and stands in for the missing chart', async ({
-  page,
-}) => {
+test('the Distribution tab shows the spread tiles, and stands in for the missing chart', async ({ page }) => {
   await loadFuryAndRun(page);
 
   await page.getByTestId('sim-tab-distribution').click();
   const distribution = page.getByTestId('sim-distribution');
   await expect(distribution).toBeVisible();
-  await expect(distribution).toContainText('Mean DPS');
-  await expect(distribution).toContainText('Standard deviation');
-  await expect(distribution).toContainText('Lowest iteration');
-  await expect(distribution).toContainText('Highest iteration');
-  await expect(distribution).toContainText('Iterations');
-  await expect(distribution.locator('dl > div')).toHaveCount(5);
+  for (const tile of ['mean', 'error', 'spread', 'lowest', 'highest', 'runs']) {
+    await expect(page.getByTestId(`sim-spread-tile-${tile}`)).toBeVisible();
+  }
 });
 
 test('no brushable time chart exists anywhere on the page', async ({ page }) => {

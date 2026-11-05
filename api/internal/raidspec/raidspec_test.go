@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"testing"
 	"unicode/utf8"
 )
@@ -73,6 +74,24 @@ func TestEveryIconExistsInTheActiveBuild(t *testing.T) {
 	}
 }
 
+// The Classic roles: tank warrior, druid, paladin; heal priest, druid, paladin, shaman; DPS all.
+func TestClassRolesAreTheClassicOnes(t *testing.T) {
+	want := map[string][]string{
+		"warrior": {RoleTank, RoleDPS}, "druid": {RoleTank, RoleHealer, RoleDPS},
+		"paladin": {RoleTank, RoleHealer, RoleDPS}, "priest": {RoleHealer, RoleDPS},
+		"shaman": {RoleHealer, RoleDPS}, "hunter": {RoleDPS}, "mage": {RoleDPS},
+		"rogue": {RoleDPS}, "warlock": {RoleDPS},
+	}
+	for class, roles := range want {
+		if got := ClassRoles(class); !slices.Equal(got, roles) {
+			t.Errorf("ClassRoles(%s) = %v, want %v", class, got, roles)
+		}
+	}
+	if Plays("mage", RoleTank) || Plays("rogue", RoleHealer) || !Plays("Druid", RoleTank) || !Plays("", RoleTank) {
+		t.Fatal("Plays disagrees with ClassRoles")
+	}
+}
+
 func TestResolveReadsLoggedNamesWithTheRole(t *testing.T) {
 	cases := []struct{ class, name, role, want string }{
 		{"paladin", "Holy", "healer", "paladin-holy"},
@@ -81,6 +100,7 @@ func TestResolveReadsLoggedNamesWithTheRole(t *testing.T) {
 		{"druid", "Feral Combat", "dps", "druid-feral"},
 		{"druid", "Feral Bear", "tank", "druid-feral-bear"},
 		{"hunter", "Beast Mastery", "dps", "hunter-beast-mastery"},
+		{"hunter", "BeastMastery", "dps", "hunter-beast-mastery"},
 		{"mage", "Holy", "healer", ""},
 		{"mage", "", "dps", ""},
 	}
@@ -102,7 +122,54 @@ func TestMeleeFollowsTheSpecThenTheClass(t *testing.T) {
 	if !MeleeClass("rogue") || MeleeClass("mage") {
 		t.Error("class fallback")
 	}
-	if ClassRank("druid") != 0 || ClassRank("") != len(ClassOrder) {
+}
+
+// The game's order: Warrior first, Druid last (spec 2026-11-05 §3.1).
+func TestClassRankFollowsTheGamesOrder(t *testing.T) {
+	want := []string{"warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid"}
+	if !slices.Equal(ClassOrder, want) {
+		t.Fatalf("ClassOrder %v", ClassOrder)
+	}
+	if ClassRank("Warrior") != 0 || ClassRank("druid") != 8 || ClassRank("") != len(ClassOrder) {
 		t.Error("class rank")
+	}
+}
+
+// Arms and Fury warriors also sign as tank; no other spec gets a second role (§3.2.1).
+func TestOnlyArmsAndFuryOffTank(t *testing.T) {
+	for _, s := range All() {
+		roles := s.Roles()
+		off := s.Key == "warrior-arms" || s.Key == "warrior-fury"
+		if want := map[bool]int{true: 2, false: 1}[off]; len(roles) != want || roles[0] != s.Role {
+			t.Errorf("%s roles %v", s.Key, roles)
+		}
+	}
+	fury, _ := ByKey("warrior-fury")
+	holy, _ := ByKey("priest-holy")
+	if fury.SignupRole(RoleTank) != RoleTank || fury.SignupRole(RoleHealer) != RoleDPS || holy.SignupRole(RoleDPS) != RoleHealer {
+		t.Error("SignupRole")
+	}
+}
+
+func TestGroupReadsTheRoleThenTheSpecThenTheClass(t *testing.T) {
+	cases := []struct{ class, spec, role, want string }{
+		{"hunter", "Survival", "dps", GroupMelee},
+		{"hunter", "Marksmanship", "dps", GroupRanged},
+		{"druid", "Feral", "dps", GroupMelee},
+		{"druid", "Feral Bear", "tank", GroupTank},
+		{"shaman", "Enhancement", "dps", GroupMelee},
+		{"shaman", "Elemental", "dps", GroupRanged},
+		{"paladin", "Protection", "tank", GroupTank},
+		{"warrior", "Fury", "tank", GroupTank},
+		{"priest", "Holy", "healer", GroupHealer},
+		{"rogue", "", "dps", GroupMelee},
+		{"paladin", "", "dps", GroupMelee},
+		{"hunter", "", "dps", GroupRanged},
+		{"druid", "", "dps", GroupRanged},
+	}
+	for _, c := range cases {
+		if got := Group(c.class, c.spec, c.role); got != c.want {
+			t.Errorf("Group(%q,%q,%q) = %q, want %q", c.class, c.spec, c.role, got, c.want)
+		}
 	}
 }

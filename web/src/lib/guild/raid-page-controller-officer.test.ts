@@ -100,9 +100,12 @@ describe('officer actions', () => {
       class: 'mage',
       spec: 'Frost',
       role: 'dps' as const,
+      group: 'ranged' as const,
+      spec_key: 'mage-frost',
       state: null,
       note: 'late',
       own: false,
+      also: null,
     };
     await expect(c.setRosterState(row, 'bench')).resolves.toBe(true);
     expect(putSignup).toHaveBeenCalledWith(2, '7', 'us/pvp/mira', {
@@ -120,9 +123,12 @@ describe('officer actions', () => {
       class: 'mage',
       spec: 'Frost',
       role: 'dps' as const,
+      group: 'ranged' as const,
+      spec_key: 'mage-frost',
       state: null,
       note: '',
       own: false,
+      also: null,
     };
     const failing = await started(
       deps({ loadMe: officerMe, loadHome: officerHome, putSignup: () => Promise.reject(new Error('x')) }),
@@ -157,7 +163,7 @@ describe('officer actions', () => {
     };
     c.openEdit();
     expect(c.editing).toBe(true);
-    expect(c.zones.map((z) => z.key)).toEqual(['onyxias-lair']);
+    expect(c.zones.map((z) => z.key)).toEqual(['raid:onyxias-lair']);
     await vi.advanceTimersByTimeAsync(0);
     expect(c.zones).toEqual(ZONES);
     await expect(c.saveEdit(payload)).resolves.toEqual({ ok: true });

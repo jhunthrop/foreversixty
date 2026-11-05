@@ -282,6 +282,9 @@ func finalResult(req api.SimRequest, stage StageRequests, ranked []scored, equip
 	// says a stage sim's cast log is never read; this is the half of
 	// that which does not depend on anyone else's cooperation.
 	out.Sample = nil
+	// The same goes for the rest of a single run's detail: the spread and the
+	// resource sources of one combination are not the ladder's.
+	out = out.WithoutDetail()
 	// The equipped run's own wall time is not the ladder's. base is
 	// the LAST stage's equipped sim - one of dozens - so inheriting
 	// its DurationMS reports a fraction of the run as the whole of it.

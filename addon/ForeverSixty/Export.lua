@@ -471,10 +471,21 @@ Export.OUTBOX_FORMAT = 1
 --- requested_at, gear_code }, all as of the request.
 Export.simRequest = nil
 
---- The members of `guild` this session heard on GUILD, by name: the six contract fields,
+--- The class tokens of the client's guild roster, by name without the realm. Empty where the
+--- client has not sent the roster yet.
+local function rosterClasses()
+	local classes = {}
+	for _, row in ipairs(Theme.guildRoster()) do
+		classes[(row.name:gsub("%-.*$", ""))] = row.classToken
+	end
+	return classes
+end
+
+--- The members of `guild` this session heard on GUILD, by name: the seven contract fields,
 --- `seen_at` as local wall time. `seen` is Comms.seen (its `time` is the game clock), `now`
---- the game clock and `wallNow` the wall clock at the same moment.
-local function rosterMembers(seen, now, wallNow)
+--- the game clock and `wallNow` the wall clock at the same moment; `classes` is the class
+--- token by name, and a name it lacks leaves `class` out.
+local function rosterMembers(seen, now, wallNow, classes)
 	local members = {}
 	for name, entry in pairs(seen or {}) do
 		if entry.channel == "GUILD" then
@@ -485,6 +496,7 @@ local function rosterMembers(seen, now, wallNow)
 				gear_gap = entry.gearGap or 0,
 				build = entry.buildName or "",
 				seen_at = date(Export.SAVED_AT_FORMAT, wallNow - (now - (entry.time or now))),
+				class = (classes or {})[(name:gsub("%-.*$", ""))],
 			}
 		end
 	end
@@ -495,11 +507,11 @@ local function rosterMembers(seen, now, wallNow)
 end
 
 --- The outbox, built from plain values: { character, code, wallNow, simRequest, guild (a name,
---- or nil/false outside a guild), seen, now }. Pure.
+--- or nil/false outside a guild), seen, now, classes }. Pure.
 function Export.outbox(parts)
 	local roster
 	if parts.guild then
-		local members = rosterMembers(parts.seen, parts.now or 0, parts.wallNow)
+		local members = rosterMembers(parts.seen, parts.now or 0, parts.wallNow, parts.classes)
 		if #members > 0 then
 			roster = { guild = parts.guild, members = members }
 		end
@@ -598,6 +610,7 @@ function Export.saveOutbox(data, code)
 		guild = guild ~= nil and guild.name or nil,
 		seen = Comms.seen,
 		now = now,
+		classes = rosterClasses(),
 	})
 	-- The roster heard in the world stands when logout finds none to read (X.2).
 	if outbox.roster_snapshot == nil and guild ~= nil and Export.lastRoster ~= nil
@@ -626,7 +639,7 @@ local function snapshotRoster()
 		return
 	end
 	local Comms = ns.Comms or require("Comms")
-	local members = rosterMembers(Comms.seen, Theme.now(), time())
+	local members = rosterMembers(Comms.seen, Theme.now(), time(), rosterClasses())
 	if #members > 0 then
 		Export.lastRoster = { guild = guild.name, members = members }
 	end

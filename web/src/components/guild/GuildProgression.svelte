@@ -5,13 +5,16 @@
 <script lang="ts">
   import { characterHref, splitUnitName, type Region, type Ruleset } from '../../lib/characters';
   import { classColorVar, rowLink } from '../../lib/report/format';
-  import { dayWord } from '../../lib/dates';
   import type { GuildParseRef, GuildProgressionPage } from '../../lib/guild/api';
+  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { progressionNightDay } from '../../lib/guild/overview-view';
+  import { firstKillLine, progressionEmpty } from '../../lib/guild/progression-view';
+  import { outputFigure, topOutputLabel } from '../../lib/guild/output-figure';
   import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
   import { executionLabel, executionTitle } from '../../lib/sim/execution';
+  import Card from '../ui/Card.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
 
   /** `rosterBest` is v1's own "Roster bests" feature (`GET .../<guild>`'s existing,
@@ -22,53 +25,68 @@
     rosterBest = [],
     region,
     ruleset,
+    fixedNow,
   }: {
     progression: GuildProgressionPage | null;
     rosterBest?: GuildRosterBest[];
     region: Region;
     ruleset: Ruleset;
+    /** A fixed clock for tests; the page runs on the minute tick. */
+    fixedNow?: Date;
   } = $props();
 
   /** One row per raider per encounter: the API also sends each raider's best with no encounter
    *  behind it (id 0, no name), which reads as a second row of dashes and is not a boss. */
   const encounterBests = $derived(rosterBest.filter((row) => row.encounter_id > 0 && row.encounter !== ''));
 
-  /** The tank, healer and damage bests that exist, in that order. */
-  function bestParses(best: {
+  /** The tank, healer and damage bests that exist, in that order, each with its role. */
+  function bestByRole(best: {
     tank?: GuildParseRef;
     healer?: GuildParseRef;
     dps?: GuildParseRef;
-  }): GuildParseRef[] {
-    return [best.tank, best.healer, best.dps].filter((parse): parse is GuildParseRef => parse !== undefined);
+  }): { role: string; parse: GuildParseRef }[] {
+    return (['tank', 'healer', 'dps'] as const).flatMap((role) => {
+      const parse = best[role];
+      return parse === undefined ? [] : [{ role, parse }];
+    });
   }
 
-  function clock(ms: number | null): string {
-    if (ms === null) return '—';
-    const totalSeconds = Math.round(ms / 1000);
-    return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, '0')}`;
-  }
+  const clock = minuteClock(() => fixedNow);
+  const now = $derived(clock.now);
+  /** Only the zones and encounters with pulls: a card of nothing is not drawn (week-one spec §3.4). */
+  const unnamed = $derived((progression?.unnamed ?? []).filter((zone) => zone.pulls > 0));
+  const encounters = $derived((progression?.encounters ?? []).filter((encounter) => encounter.pulls > 0));
 </script>
 
 <section class="flex flex-col gap-6" data-testid="guild-progression-tab">
-  <h2 class="section-title">Progression</h2>
-  {#if progression === null}
-    <EmptyState message="No pulls recorded yet." testid="guild-progression-empty" />
+  {#if progression === null || progression.tier.pulls_total === 0}
+    <!-- Zero pulls: the tab's one region is a card holding the shared empty state, as Loot's is,
+         never a bare line in empty space (guild round 2). -->
+    <Card glyph="trophy" title="Progression" testid="guild-progression-empty-card">
+      {#if progression === null}
+        <EmptyState message="No pulls recorded yet." testid="guild-progression-empty" />
+      {:else}
+        {@const empty = progressionEmpty(now)}
+        <EmptyState message={empty.message} action={empty.action} testid="guild-progression-empty" />
+      {/if}
+    </Card>
   {:else}
+    <h2 class="section-title">Progression</h2>
     {@const tier = progression.tier}
     <div class="flex flex-col gap-2" data-testid="guild-progression-tier">
       <div class="text-muted flex justify-between text-[13px]">
-        <span>Named encounters down this tier</span>
-        <span class="numeric text-[14px]"
-          >{tier.down} · {progression.encounters.map((e) => e.name).join(', ') || '—'}</span
+        <span>Named bosses down this tier</span>
+        <span class="numeric text-[14px]" data-testid="guild-progression-down"
+          >{tier.down} of {tier.named_encounters}</span
         >
       </div>
-      <div class="border-line-soft h-1.5 overflow-hidden rounded-full">
+      <div class="bg-line-soft h-2 overflow-hidden rounded-full">
         <div
           class="bg-gold h-full"
           style={`width:${tier.named_encounters === 0 ? 0 : Math.min(100, (tier.down / tier.named_encounters) * 100)}%`}
         ></div>
       </div>
-      {#if progression.unnamed.length > 0}
+      {#if unnamed.length > 0}
         <!-- Our to-do, so only when this guild has pulls it applies to (P.1, player review S2-5). -->
         <p class="text-muted text-[12px]" data-testid="guild-progression-unnamed-note">
           Barrow Deeps and Hyjal Summit have no encounter list yet. Their pulls count toward the tier total
@@ -77,17 +95,18 @@
       {/if}
     </div>
 
-    {#each progression.encounters as encounter (encounter.encounter_id)}
+    {#each encounters as encounter (encounter.encounter_id)}
+      {@const kill = firstKillLine(encounter, now)}
       <div
         class="border-line-soft bg-raised flex flex-col gap-3 rounded-md border p-5"
         data-testid="guild-progression-encounter"
       >
         <h3 class="section-title">{encounter.name} · pulls to kill</h3>
-        {#if encounter.first_kill_at !== null}
-          <p class="text-[13px]">
-            First kill {dayWord(new Date(encounter.first_kill_at))} · best kill time {clock(
-              encounter.best_kill_ms,
-            )}
+        {#if kill !== null}
+          <p class="text-[13px]" data-testid="guild-progression-kill">{kill}</p>
+        {:else if encounter.kills === 0}
+          <p class="text-[13px]" data-testid="guild-progression-no-kill">
+            {counted(encounter.pulls, 'pull')}, no kill yet.
           </p>
         {/if}
         <div class="flex flex-col">
@@ -107,19 +126,19 @@
             </div>
           {/each}
         </div>
-        <p class="text-[13px]">
-          Deaths per pull: {encounter.deaths_per_pull.toFixed(1)} on average. We do not track what killed people
-          yet.
+        <p class="text-[13px]" data-testid="guild-progression-deaths">
+          Deaths per pull: {encounter.deaths_per_pull.toFixed(1)} on average.
         </p>
-        {#if bestParses(encounter.best_by_role).length > 0}
+        {#if bestByRole(encounter.best_by_role).length > 0}
+          <!-- Raw output, never called a parse (a percentile to a Classic player): `Top HPS`
+               per role, the figure written as the Raids tab and the roster write it. -->
           <p class="text-[13px]" data-testid="guild-progression-best-parse">
-            Guild best parse:
-            {#each bestParses(encounter.best_by_role) as parse, index (index)}
+            {#each bestByRole(encounter.best_by_role) as { role, parse }, index (role)}
               {#if index > 0}<span class="hidden md:inline" aria-hidden="true">&nbsp;·&nbsp;</span>{/if}
               <span class="block md:inline">
+                <span class="text-muted">{topOutputLabel(parse.metric, role)}</span>
                 <span style={`color:${classColorVar(parse.class)};font-weight:600`}>{parse.name}</span>
-                {parse.value.toFixed(1)}
-                {parse.metric.toUpperCase()}
+                <span class="numeric">{outputFigure(parse.value)}</span>
               </span>
             {/each}
           </p>
@@ -127,13 +146,13 @@
       </div>
     {/each}
 
-    {#if progression.unnamed.length > 0}
+    {#if unnamed.length > 0}
       <div
         class="border-line-soft bg-raised flex flex-col gap-2 rounded-md border p-5"
         data-testid="guild-progression-unnamed"
       >
         <h3 class="section-title">Barrow Deeps / Hyjal Summit</h3>
-        {#each progression.unnamed as zone (zone.zone)}
+        {#each unnamed as zone (zone.zone)}
           <div class="border-line-soft flex items-center gap-3 border-b py-1.5">
             <span class="flex-1 text-[14px] font-semibold">{zone.zone}</span>
             <span class="text-muted numeric text-[13px]">{counted(zone.pulls, 'pull')} logged</span>
@@ -144,7 +163,7 @@
     {/if}
   {/if}
 
-  {#if encounterBests.length > 0}
+  {#if encounterBests.length > 0 && progression?.tier.pulls_total !== 0}
     <div class="flex flex-col gap-2" data-testid="guild-roster-best">
       <h3 class="section-title">Roster bests</h3>
       {#each encounterBests as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}

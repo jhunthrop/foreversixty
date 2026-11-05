@@ -56,12 +56,15 @@ from pipeline.loot.buffs import (
     build_simbuffs,
     client_tables,
     consumable_ids,
+    debuff_ids,
     fork_item_table,
     fork_tables,
     ids_md_ids,
+    load_effects,
     load_overrides,
     load_simbuffs,
     merge_simbuffs,
+    with_effects,
 )
 from pipeline.loot.classification import (
     LootClassification,
@@ -76,6 +79,7 @@ from pipeline.loot.gear import (
     apply_fork_columns,
     build_enchants,
     build_suffixes,
+    enchant_display_names,
     equip_restrictions,
     faction_restrictions,
     suffix_options,
@@ -332,18 +336,26 @@ def write_loot_files(
 
     run = _build_and_write_loot(build_dir, fork, classification, overlay_dir, curated_dir)
 
-    enchants = build_enchants(fork, equip_restrictions(read_csv(raw / "SpellEquippedItems.csv")))
+    enchants = build_enchants(
+        fork,
+        equip_restrictions(read_csv(raw / "SpellEquippedItems.csv")),
+        enchant_display_names(read_csv(raw / "SpellItemEnchantment.csv")),
+    )
     suffixes = build_suffixes(fork)
     client, icon_for = client_tables(build_dir, raw)
     ids_text = ids_md.read_text(encoding="utf-8")
-    simbuffs = build_simbuffs(
-        ids_md_ids(ids_text),
-        fork_tables(fork) + client,
-        load_overrides(curated_dir),
-        icon_for,
-        # client_tables returns [spells, items]: a consumable's icon is its item's.
-        item_tables=[fork_item_table(fork), client[1]],
-        consumables=consumable_ids(ids_text),
+    simbuffs = with_effects(
+        build_simbuffs(
+            ids_md_ids(ids_text),
+            fork_tables(fork) + client,
+            load_overrides(curated_dir),
+            icon_for,
+            # client_tables returns [spells, items]: a consumable's icon is its item's.
+            item_tables=[fork_item_table(fork), client[1]],
+            consumables=consumable_ids(ids_text),
+        ),
+        load_effects(curated_dir),
+        debuff_ids(ids_text),
     )
     write_records(enchants, build_dir / ENCHANTS)
     write_records(suffixes, build_dir / SUFFIXES)
@@ -412,13 +424,17 @@ def merge_loot_files(
             name_tables += client
             item_tables.append(client[1])
         ids_text = IDS_MD.read_text(encoding="utf-8")
-        simbuffs = merge_simbuffs(
-            ids_md_ids(ids_text),
-            name_tables,
-            committed_simbuffs,
-            load_overrides(curated_dir),
-            item_tables=item_tables,
-            consumables=consumable_ids(ids_text),
+        simbuffs = with_effects(
+            merge_simbuffs(
+                ids_md_ids(ids_text),
+                name_tables,
+                committed_simbuffs,
+                load_overrides(curated_dir),
+                item_tables=item_tables,
+                consumables=consumable_ids(ids_text),
+            ),
+            load_effects(curated_dir),
+            debuff_ids(ids_text),
         )
         write_document(simbuffs, build_dir / SIMBUFFS)
     _log_loot_run("loot-merge", run)

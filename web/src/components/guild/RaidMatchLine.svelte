@@ -5,6 +5,7 @@
      gold is the link, once. A refusal's line sits under the row. -->
 <script lang="ts">
   import { tick } from 'svelte';
+  import type { GuildZoneKind } from '../../lib/guild/api';
   import type { RaidMatch } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, uploadedLine } from '../../lib/guild/attendance-copy';
   import { PHONE_HIT_AREA } from '../../lib/guild/field-styles';
@@ -16,6 +17,7 @@
 
   let {
     match,
+    kind = 'raid',
     guildPath,
     viewerTimezone,
     guildTimezone,
@@ -27,6 +29,8 @@
     confirming = $bindable(false),
   }: {
     match: RaidMatch;
+    /** `Logged as a raid night.` is said of raids only (guild events spec 3.5). */
+    kind?: GuildZoneKind;
     guildPath: string;
     viewerTimezone: string;
     guildTimezone: string;
@@ -66,7 +70,7 @@
 
 <div class="flex flex-col text-[13px]" data-testid="raid-match-line">
   <p class="text-text">
-    {copy.loggedAsNight}&#32;<a
+    {#if kind === 'raid'}{copy.loggedAsNight}&#32;{/if}<a
       id="raid-open-night"
       href={nightHref(guildPath, match.report_id)}
       class="text-gold font-bold {PHONE_HIT_AREA}"

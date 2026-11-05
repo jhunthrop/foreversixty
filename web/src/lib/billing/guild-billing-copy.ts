@@ -6,6 +6,7 @@ import type { GuildBillingView } from '../account/api';
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
 import { settingsWords } from '../guild/settings-view';
 import type { GuildTier } from './contract';
+import { counted } from '../plural';
 import { priceFor } from './plan-costs';
 import {
   GUILD_TIER_MEMBER_LIMIT,
@@ -121,7 +122,7 @@ export const guildBillingCopy = {
     compare: 'Compare Guild and Raid guild',
     tierName,
     tierLine: tierMemberLine,
-    verifiedToday: (count: number): string => `${count} verified members today.`,
+    verifiedToday: (count: number): string => `${counted(count, 'verified member')} today.`,
     startTrial: `Start the ${GUILD_TRIAL_DAYS}-day trial`,
     subscribe: (tier: GuildTier, interval: Interval, founder: boolean): string => {
       return `Subscribe · ${formatPrice(priceFor(tier, interval, founder), interval)}`;

@@ -1,0 +1,162 @@
+// web/src/lib/sim/result-copy.ts
+// Every player-facing word of the saved run result page that lane A draws (spec
+// design/specs/2026-11-04-sim-results.md section 6, verbatim): the band, the section nav,
+// Worth knowing, Damage by ability, the DPS spread, Settings and the page's errors. Its own
+// module rather than more keys on copy.ts, which is already past the 800-line ceiling. Settings
+// has its own (settings-copy.ts), because that card is its own chunk.
+
+/** Thousands separators, the way every figure on the page reads ("10,000", "162,715"). */
+export function grouped(value: number): string {
+  return Math.round(value).toLocaleString('en-US');
+}
+
+/** One decimal with separators: "904.4", "1,116.0". */
+export function oneDecimal(value: number): string {
+  return value.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+
+/** "m:ss" of a length in seconds, rounded down: 179.9 s is "2:59". */
+export function clock(seconds: number): string {
+  const whole = Math.floor(seconds);
+  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`;
+}
+
+export const bandCopy = {
+  eyebrow: 'SAVED SIM',
+  level: (level: number) => `Level ${level}`,
+  talents: (split: string) => `${split} talents`,
+  nextStep: 'Next: find the upgrade that adds the most.',
+  nextStepLink: 'Run Top Gear',
+  nextStepHref: '/sim/gear',
+  dps: 'DPS',
+  error: 'error',
+  openInSim: 'Open in the sim',
+  copyLink: 'Copy link',
+  copied: 'Copied',
+  copyFailed: 'Copy failed',
+  facts: {
+    fight: 'Fight',
+    targets: 'Targets',
+    buffs: 'Buffs',
+    consumables: 'Consumables',
+    range: 'Range',
+    runs: 'Runs',
+    saved: 'Saved',
+  },
+  buffsRaid: 'Raid',
+  buffsCustom: 'Custom',
+  none: 'None',
+  range: (low: string, high: string) => `${low} to ${high}`,
+  fight: (length: string, variation: number) => `${length} ± ${variation}%`,
+} as const;
+
+export const navCopy = {
+  label: 'Sections of this result',
+  damage: 'Damage',
+  timeline: 'Timeline',
+  gear: 'Gear',
+  talents: 'Talents',
+  buffs: 'Buffs',
+  rotation: 'Rotation',
+  settings: 'Settings',
+  /** The resource section's link reads the player's power. */
+  resource: { rage: 'Rage', energy: 'Energy', mana: 'Mana' },
+} as const;
+
+/** The lazy cards' heads while their chunks load (spec section 6). */
+export const sectionHeadCopy = {
+  timeline: { label: 'ONE FIGHT', title: 'Timeline' },
+  gear: { label: "THIS RUN'S INPUT", title: 'Gear' },
+  talents: { label: "THIS RUN'S INPUT", title: 'Talents' },
+  resource: { label: 'AVERAGE FIGHT' },
+  buffs: { label: 'AVERAGE FIGHT', title: 'Buffs and debuffs' },
+  rotation: {
+    title: 'Rotation',
+    label: (spec: string, level: number) => `${spec.toUpperCase()}, AT ${level}`,
+  },
+  settings: { label: "THIS RUN'S INPUT", title: 'Settings' },
+} as const;
+
+export const warningsCopy = {
+  label: 'THIS RUN',
+  title: 'Worth knowing',
+  notes: (count: number) => (count === 1 ? '1 note' : `${count} notes`),
+  stale: 'This run used an older engine. A run today may give a different number.',
+  capstone: (spell: string) =>
+    `${spell} was never pressed in this run. Check the talents in Open in the sim.`,
+  missingTalent: (spell: string, spec: string) =>
+    `${spell} is in the ${spec} rotation, but these talents do not take it.`,
+  /** `length` reads as an adjective ("30 minute"), `every` as a noun ("30 minutes"). */
+  longCooldown: (spell: string, length: string, every: string) =>
+    `${spell} has a ${length} cooldown, longer than this fight, so the result counts one use every pull. In a raid it is back only every ${every}.`,
+  atCap: (amount: string, resource: string, percent: string) =>
+    `${amount} ${resource} (${percent}%) was lost at the cap.`,
+  atCapRage: 'Queue Heroic Strike sooner so swings do not land at full rage.',
+  atCapEnergy: 'Spend before the bar fills.',
+  wideError: (margin: string) =>
+    `This run's error is ± ${margin} DPS. A difference smaller than that between two runs is noise.`,
+  openInSim: 'Open in the sim',
+  openInPlanner: 'Open in planner',
+} as const;
+
+export const damageCopy = {
+  label: 'THIS RUN',
+  title: 'Damage by ability',
+  meta: (dps: string, length: string) => `${dps} DPS over ${length} on average`,
+  headers: {
+    ability: 'Ability',
+    dps: 'DPS',
+    share: 'Share',
+    casts: 'Casts',
+    avgHit: 'Avg hit',
+    crit: 'Crit',
+    biggestHit: 'Biggest hit',
+    uptime: 'Uptime',
+  },
+  critTip:
+    'Crits out of the hits that landed, glancing blows included. Misses, dodges and parries are left out, so a row can read above or below your crit chance on the boss.',
+  rank: (rank: number) => `Rank ${rank}`,
+  outcome: { MISS: 'Miss', DODGE: 'Dodge', PARRY: 'Parry', GLANCING: 'Glance', BLOCK: 'Block' },
+  ticks: (count: string, crit: string) => [`${count} ticks`, `tick crit ${crit}%`] as const,
+  becameHeroicStrike: (count: string) => `${count} swings became Heroic Strike`,
+  fromSources: 'From',
+  phoneCasts: (count: string, swings: boolean) => `${count} ${swings ? 'swings' : 'casts'}`,
+  phoneAvg: (avg: string) => `${avg} avg hit`,
+  phoneCrit: (crit: string) => `crit ${crit}%`,
+  pet: (name: string) => `Pet · ${name}`,
+  total: (sources: number) => `Total, ${sources} sources`,
+  totalDamage: (damage: string) => `${damage} damage a fight`,
+  dash: '–',
+  /** The swing rows' own names (spec section 6). */
+  hands: { main: 'Main hand', off: 'Off hand', extra: 'Extra attacks' },
+  offHandSuffix: '(off hand)',
+} as const;
+
+export const spreadCopy = {
+  label: (runs: string) => `${runs} RUNS`,
+  title: 'DPS spread',
+  axis: 'DPS per run',
+  caption: (low: string, high: string) => `Two runs in three land between ${low} and ${high} DPS.`,
+  bar: (low: string, high: string, runs: string) => `${low} to ${high} DPS: ${runs} runs`,
+  image: (runs: string, low: string, high: string, mean: string) =>
+    `DPS of each of ${runs} runs, from ${low} to ${high}, most near ${mean}`,
+  rangeCaption:
+    'This run kept the range, not the shape. The shaded part is one spread either side of the mean.',
+  rangeMean: (mean: string) => `mean ${mean}`,
+  tiles: {
+    mean: 'Mean',
+    error: 'Error',
+    spread: 'Spread',
+    lowest: 'Lowest',
+    highest: 'Highest',
+    runs: 'Runs',
+  },
+} as const;
+
+export const pageErrorCopy = {
+  label: 'SAVED SIM',
+  title: 'This sim did not load',
+  body: 'The server did not answer. Your link is fine; try again in a moment.',
+  retry: 'Try again',
+  partFailed: "This part of the page didn't load.",
+} as const;

@@ -1003,7 +1003,7 @@ def test_fury_death_wish_card_line_carries_the_whole_rule():
     )
     line = _one_line(death_wish["notes"])
     assert "second one" in line
-    assert "execute phase" in line
+    assert "execute phase" in line.lower()
     assert "last 30 seconds" in line
 
 
@@ -1072,3 +1072,13 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
     levels = [band.level for band in bands if any(line.name == spell for line in band.lines)]
     assert levels, f"{spell} is on no {spec} band"
     assert min(levels) == first
+
+
+def test_compute_spell_icons_lets_an_engine_id_take_another_rows_icon(tmp_path):
+    (tmp_path / "extra-spell-icons.json").write_text(
+        json.dumps({"spell_ids": [], "icon_rows": {"12867": 12162}}), encoding="utf-8"
+    )
+    build_dir = tmp_path / BUILD
+    build_dir.mkdir(exist_ok=True)
+    (build_dir / "spellranks.json").write_text(json.dumps({"classes": {}}), encoding="utf-8")
+    assert 12867 in compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)

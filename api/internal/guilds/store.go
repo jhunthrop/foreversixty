@@ -80,10 +80,9 @@ func (g Guild) activeClaimant(now time.Time) (claimant int64, ok bool) {
 // Store is every guild-mutation read and write.
 type Store struct {
 	Pool *pgxpool.Pool
-	// Accounts resolves a user id to a battletag - the guild control centre's own
-	// claimed_by_name (home) and loot award attribution (loot) need this the same way
-	// Service.Accounts already does; optional, nil in a test harness that never reads
-	// either field (claimed_by_name/awarded_to.by_name are simply omitted/empty then).
+	// Accounts resolves a user id to an account - loot award attribution (loot) needs this the
+	// same way Service.Accounts already does; optional, nil in a test harness that never reads
+	// it (awarded_to.by_name is simply empty then).
 	Accounts Accounts
 	// DataDir is the BiS band reader's own root (api/internal/bis.LoadBand) - the same
 	// TreeDataDir config every other build-scoped read in this service uses. Empty in a
@@ -146,10 +145,10 @@ func (s *Store) IsVerifiedMember(ctx context.Context, guildID, userID int64) (bo
 }
 
 // IsMember reports whether this account has any guild_characters row in
-// this guild, verified or not — the gate for leaving the guild and for
-// the Readiness tab, never for report visibility or edit rights (those
-// stay on auth.Store.GuildRank, which is verified-only) nor for Home or
-// Loot (IsVerifiedMember).
+// this guild, verified or not — the gate for leaving the guild, never for
+// report visibility or edit rights (those stay on auth.Store.GuildRank,
+// which is verified-only) nor for Home, Loot or Readiness
+// (IsVerifiedMember).
 func (s *Store) IsMember(ctx context.Context, guildID, userID int64) (bool, error) {
 	var exists bool
 	if err := s.Pool.QueryRow(ctx,

@@ -43,10 +43,6 @@ describe('guildClaimCopy', () => {
 });
 
 describe('guildJoinCopy', () => {
-  it('names the guild and its realm', () => {
-    expect(guildJoinCopy.invitedYou('Lifecycle Test', 'PvP US')).toBe('Lifecycle Test · PvP US invited you.');
-  });
-
   it('says what joining does and where to change it', () => {
     expect(guildJoinCopy.consequence).toBe(
       'Joining puts your characters on its roster and shares your gear with its officers; you can change that on your account.',
@@ -86,8 +82,12 @@ describe('guildConsentCopy', () => {
 
 describe('guildSettingsCopy invite block', () => {
   it('asks before rotating, and says the link is shown once', () => {
-    expect(guildSettingsCopy.rotateConfirmLine).toBe('Rotate the invite link? The old link stops working.');
-    expect(guildSettingsCopy.tokenShownOnce).toBe('Shown once. Copy it now.');
+    expect(guildSettingsCopy.rotateConfirmLine).toBe(
+      'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
+    );
+    expect(guildSettingsCopy.tokenShownOnce).toBe(
+      'Copy it now. For safety we keep only a fingerprint, so it cannot be shown again after you leave this page.',
+    );
     expect(guildSettingsCopy.copyButton).toBe('Copy link');
     expect(guildSettingsCopy.copied).toBe('Copied');
     expect(guildSettingsCopy.copyFailed).toBe('Could not copy. Select the link and copy it.');
@@ -120,23 +120,28 @@ describe('guildGateCopy', () => {
   const spec = (label: string, index = 0): string =>
     specString(GATE_SPEC, '## 7. Copy, verbatim', label, index);
 
-  it('reads the gate sentence from the spec: the sentence, then the link, then a full stop', () => {
-    expect(`${guildGateCopy.sentence}${guildGateCopy.link}.`).toBe(spec('Gate sentence, Loot and Readiness'));
-    expect(guildGateCopy.link).toBe(spec('Settings button (reused)'));
+  it('reads both parts of the gate sentence from the gating spec', () => {
+    const gating = new URL(
+      '../../../../design/specs/2026-11-05-guild-gating-and-invites.md',
+      import.meta.url,
+    );
+    const part = (label: string, index: number): string =>
+      specString(gating, '## 5. Copy, verbatim', label, index);
+    expect(guildGateCopy.lead.raids).toBe(part('Gate part 1', 0));
+    expect(guildGateCopy.lead.discord).toBe(part('Gate part 1', 1));
+    expect(guildGateCopy.lead.loot).toBe(part('Gate part 1', 2));
+    expect(guildGateCopy.lead.readiness).toBe(part('Gate part 1', 3));
+    expect(guildGateCopy.startTrial).toBe(part('Gate part 2', 0));
+    expect(guildGateCopy.subscribe).toBe(part('Gate part 2', 1));
+    expect(guildGateCopy.moveToRaidGuild).toBe(part('Gate part 2', 2));
+    expect(guildGateCopy.claimFirst).toBe(part('Gate part 2', 4));
+    expect(guildGateCopy.masterClaimsFirst).toBe(part('Gate part 2', 5));
   });
 
   it('reads the refusals and the label from the spec', () => {
     expect(guildGateCopy.awardRefused).toBe(spec('403 on Award'));
     expect(guildGateCopy.undoRefused).toBe(spec('403 on Undo'));
     expect(guildGateCopy.readOnly).toBe(spec('Header label (reused)'));
-  });
-
-  it('reads the Guild-tier gate sentence from the launch pricing spec §6.2', () => {
-    const pricing = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
-    const row = (index: number): string =>
-      specString(pricing, '## 6. Copy, verbatim', 'Gate, Guild tier', index);
-    expect(guildGateCopy.raidGuildSentence).toBe(row(0));
-    expect(guildGateCopy.raidGuildLink).toBe(row(1));
   });
 
   it('reads the account guild row link text from the spec', () => {

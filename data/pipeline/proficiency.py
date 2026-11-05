@@ -40,7 +40,7 @@ Cross-checking every other weapon subclass's `ClassMask` in build
 them an exact match, with one exception the client's raw `ClassMask`
 carries but that was never reachable in play: Druid in Polearms (229),
 whose bit Era's own client carries too (spell 200, mask 1031 in both) and no
-Classic trainer teaches. `_VESTIGIAL_CLIENT_BITS` documents it so a future
+Classic trainer teaches. `VESTIGIAL_CLIENT_BITS` documents it so a future
 build's data can be checked against it rather than re-derived from scratch.
 Rogue in Axes (44) was listed beside it until sim-accuracy round 22, which
 found it is a Forever addition, not a leftover: One-Handed Axes (spell 196)
@@ -119,10 +119,10 @@ WEAPON_SUBCLASSES: dict[int, frozenset[int]] = {
 
 #: Item.SubclassID (WEAPON) -> the SkillLine.ID that gates it, restricted to
 #: `SkillLine.CategoryID == 6` ("Weapon Skills"). Verified against build
-#: 1.60.1.70009's own `SkillLine.csv` -- see `_WEAPON_SKILL_LINE_NAME`, which
+#: 1.60.1.70009's own `SkillLine.csv` -- see `WEAPON_SKILL_LINE_NAME`, which
 #: `configure()` cross-checks at run time so a build that renumbers these
 #: ids fails loudly rather than deriving a silently wrong table.
-_WEAPON_SKILL_LINE: dict[int, int] = {
+WEAPON_SKILL_LINE: dict[int, int] = {
     0: 44,
     1: 172,
     2: 45,
@@ -142,7 +142,7 @@ _WEAPON_SKILL_LINE: dict[int, int] = {
 
 _WEAPON_SKILL_CATEGORY = 6  # SkillLine.CategoryID for "Weapon Skills"
 
-_WEAPON_SKILL_LINE_NAME: dict[int, str] = {
+WEAPON_SKILL_LINE_NAME: dict[int, str] = {
     44: "Axes",
     172: "Two-Handed Axes",
     45: "Bows",
@@ -202,7 +202,7 @@ CLASS_SLUG_BY_ID: dict[int, str] = {
 #: reachable in play -- see the module docstring for the evidence trail.
 #: `configure()` drops these out of the client-derived table the same way
 #: the hand-written `WEAPON_SUBCLASSES` fallback already omits them.
-_VESTIGIAL_CLIENT_BITS: frozenset[tuple[int, int]] = frozenset(
+VESTIGIAL_CLIENT_BITS: frozenset[tuple[int, int]] = frozenset(
     {
         (11, 6),  # druid, polearm
     }
@@ -220,7 +220,7 @@ def _derive_weapon_subclasses_from_client(raw: Path) -> dict[int, frozenset[int]
     the only caller and treats every one of those as "fall back"."""
     with (raw / "SkillLine.csv").open(newline="", encoding="utf-8") as f:
         skill_lines = {int(row["ID"]): row for row in csv.DictReader(f)}
-    for skill_id, name in _WEAPON_SKILL_LINE_NAME.items():
+    for skill_id, name in WEAPON_SKILL_LINE_NAME.items():
         row = skill_lines.get(skill_id)
         if (
             row is None
@@ -236,17 +236,15 @@ def _derive_weapon_subclasses_from_client(raw: Path) -> dict[int, frozenset[int]
     with (raw / "SkillLineAbility.csv").open(newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             skill_id = int(row["SkillLine"])
-            if skill_id not in _WEAPON_SKILL_LINE_NAME:
+            if skill_id not in WEAPON_SKILL_LINE_NAME:
                 continue
-            skill_class_mask[skill_id] = skill_class_mask.get(skill_id, 0) | int(
-                row["ClassMask"]
-            )
+            skill_class_mask[skill_id] = skill_class_mask.get(skill_id, 0) | int(row["ClassMask"])
 
     derived: dict[int, set[int]] = {class_id: set() for class_id in CLASS_MASK_BIT}
-    for subclass_id, skill_id in _WEAPON_SKILL_LINE.items():
+    for subclass_id, skill_id in WEAPON_SKILL_LINE.items():
         mask = skill_class_mask.get(skill_id, 0)
         for class_id, bit in CLASS_MASK_BIT.items():
-            if mask & bit and (class_id, subclass_id) not in _VESTIGIAL_CLIENT_BITS:
+            if mask & bit and (class_id, subclass_id) not in VESTIGIAL_CLIENT_BITS:
                 derived[class_id].add(subclass_id)
     return {class_id: frozenset(subclasses) for class_id, subclasses in derived.items()}
 

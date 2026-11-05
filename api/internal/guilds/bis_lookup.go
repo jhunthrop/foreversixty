@@ -48,9 +48,9 @@ func sourceBuildOf(dataDir string, data *trees.Data) string {
 // BisBuild is Store.BisBuild.
 func (s *Service) BisBuild() string { return s.Store.BisBuild() }
 
-// bisBandLevel is the level band every raider on this page is assumed to be - level 60,
-// design spec §4.E's own assumption throughout the guild control centre.
-const bisBandLevel = 60
+// bisBandLevel is the level band a raider is measured against: raidLevel. Only graded
+// characters read it for readiness; one under 60 is not graded (computeReadiness).
+const bisBandLevel = raidLevel
 
 // loadBandFor is FileSlugFor+LoadBand, folded into "do we have a band for this character at
 // all" - any failure (unknown spec, missing file, read/parse error) reads as false, never an

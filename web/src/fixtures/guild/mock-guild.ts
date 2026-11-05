@@ -448,7 +448,13 @@ export function buildMockHome(
       verified: viewerRow?.verified ?? false,
       ...(options.officerTools === undefined ? {} : { officer_tools: options.officerTools }),
     },
-    claim: { state: 'claimed', since: '2026-10-01T00:00:00Z', frozen: false, claimed_by_name: 'Kraggor' },
+    claim: {
+      state: 'claimed',
+      since: '2026-10-01T00:00:00Z',
+      frozen: false,
+      yours: false,
+      claimed_by: { name: 'Kraggor', class: 'warrior', character_key: 'us/pvp/kraggor' },
+    },
     summary: {
       // The Overview Roster card's own "N raiders" count (fix round 1, 2026-10-04): every
       // registered roster row, not the verified subset -- `waiting_for_approval` already
@@ -457,6 +463,13 @@ export function buildMockHome(
       raiders: roster.length,
       waiting_for_approval: pending.length,
       below_rating_floor: belowFloor,
+      tier: {
+        name: 'First tier',
+        raids: ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"],
+        named_encounters: 1,
+        down: 1,
+        pulls_total: NIGHTS.reduce((sum, n) => sum + n[3], 0),
+      },
       named_encounters_down: 1,
       pulls_this_tier: NIGHTS.reduce((sum, n) => sum + n[3], 0),
       updated_at: '2026-12-22T21:40:00Z',
@@ -587,7 +600,8 @@ export function buildMockRaids(): GuildRaidsPage {
         wipe_count: pulls - kills,
         raiders: present.length,
         deaths: fights.reduce((sum, f) => sum + f.deaths, 0),
-        top_parse: { name: 'Pyrewisp', class: 'mage', metric: 'dps', value: 358.2 },
+        top_hps: { name: 'Lightbrand', class: 'priest', metric: 'hps', value: 301.9 },
+        top_dps: { name: 'Pyrewisp', class: 'mage', metric: 'dps', value: 358.2 },
         fights,
         present,
       };
@@ -610,6 +624,7 @@ export function buildMockProgression(): GuildProgressionPage {
       raids: ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"],
       named_encounters: 1,
       down: 1,
+      pulls_total: NIGHTS.reduce((sum, n) => sum + n[3], 0),
     },
     encounters: [
       {
@@ -674,7 +689,10 @@ export function buildMockReadiness(): GuildReadinessPage {
         class: r.class ?? '',
         spec: r.spec ?? '',
         consent: r.consent,
-        gear_gap: hasGear ? { upgrades: gap.upgrades, gain_dps: gap.gain, not_sim_checked: 0 } : null,
+        level: 60,
+        gear_gap: hasGear
+          ? { upgrades: gap.upgrades, gain_dps: gap.gain, not_sim_checked: 0, unit: 'dps' as const }
+          : null,
         enchants: { missing_slots: missing, checked: hasGear },
         consumables: {
           state: hasBags
@@ -690,10 +708,51 @@ export function buildMockReadiness(): GuildReadinessPage {
         failing: fails.length,
         no_export: false,
         synced_before_cutoff: null,
-        nudge_text: `${r.name}: ${fails.length === 0 ? 'every readiness check passes.' : `${fails.join(', ')} -- check before Thursday.`}`,
+        nudge_text: `${r.name}: ${fails.length === 0 ? 'every readiness check passes.' : `${fails.join('; ')}.`}`,
       };
     });
   return { median_item_level: MEDIAN_ILVL, generated_at: '2026-12-22T21:40:00Z', rows };
+}
+
+// DROP_CLIENT_FACTS is api/internal/guilds/loot.go's client columns for each drop:
+// [inventory_type, item_class, item_subclass].
+const DROP_CLIENT_FACTS: Record<number, [number, number, number]> = {
+  15410: [0, 7, 6],
+  16900: [1, 4, 2],
+  16908: [1, 4, 2],
+  16914: [1, 4, 1],
+  16921: [1, 4, 1],
+  16929: [1, 4, 1],
+  16939: [1, 4, 3],
+  16947: [1, 4, 3],
+  16955: [1, 4, 4],
+  16963: [1, 4, 4],
+  17064: [12, 4, 0],
+  17067: [23, 4, 0],
+  17068: [13, 2, 0],
+  17075: [13, 2, 7],
+  17078: [16, 4, 1],
+  17966: [18, 1, 0],
+  18205: [2, 4, 0],
+  18422: [0, 12, 0],
+  18423: [0, 12, 0],
+  18705: [0, 12, 0],
+  18813: [11, 4, 0],
+  21108: [0, 15, 0],
+};
+
+// The API's sourced line for each quest drop (loot_quests.go).
+const QUEST_LABELS: Record<number, string> = {
+  18422: 'Quest: Victory for the Alliance / Victory for the Horde',
+  18705: 'Quest: A Proper String (Hunter)',
+  // The Only Prescription is the Ahn'Qiraj Scepter chain, gated in Forever: no quest name (round 1).
+  21108: 'Quest item',
+};
+
+function dropKind(itemId: number, slot: string): GuildLootPage['items'][number]['kind'] {
+  if (itemId === 15410) return 'skinned';
+  if (slot !== '') return 'gear';
+  return itemId === 17966 ? 'bag' : 'quest';
 }
 
 // ilvlDeltaFor is this fixture's own stand-in for the contract's tier-1 `ilvl_delta`
@@ -749,13 +808,35 @@ export function buildMockLoot(): GuildLootPage {
         class: r.class ?? '',
         spec: r.spec ?? '',
         gain_dps: null,
+        gain_unit: null,
+        tier: 1 as const,
         not_sim_checked: true,
         ilvl_delta: ilvlDeltaFor(r.name, name),
         attendance: attendanceFor(r.name),
         already_equivalent: false,
         replaces: wornNameFor(r.name, slot),
+        replaces_item: {
+          item_id: itemId + 100000,
+          name: wornNameFor(r.name, slot),
+          icon: '',
+          quality: 3,
+        },
         items_won: 0,
       }));
+    const kind = dropKind(itemId, slot);
+    const [inventoryType, itemClass, itemSubclass] = DROP_CLIENT_FACTS[itemId];
+    const forQuestOrBag = kind === 'quest' || kind === 'bag';
+    const questClass = itemId === 18705 ? 'hunter' : null;
+    const handTo = forQuestOrBag
+      ? roster
+          .filter((r) => r.verified && (questClass === null || r.class === questClass))
+          .map((r) => ({
+            character_key: r.character_key,
+            name: r.name,
+            class: r.class ?? '',
+            item_id: itemId,
+          }))
+      : [];
     const isAwarded = itemId === 16963 && candidates.length > 0; // Helm of Wrath -- this fixture's own long-standing awarded item
     items.push({
       item_id: itemId,
@@ -763,6 +844,12 @@ export function buildMockLoot(): GuildLootPage {
       icon,
       quality,
       slot,
+      inventory_type: inventoryType,
+      item_class: itemClass,
+      item_subclass: itemSubclass,
+      kind,
+      quest_label: QUEST_LABELS[itemId] ?? '',
+      eligible: handTo,
       copies: 1,
       awarded_to: isAwarded
         ? {
@@ -776,10 +863,20 @@ export function buildMockLoot(): GuildLootPage {
       candidates,
     });
   }
-  // What each character has won this tier, counted from the awards on the page, as the API counts them.  const won = new Map<string, number>();  for (const item of items) {    if (item.awarded_to !== null) {      won.set(item.awarded_to.character_key, (won.get(item.awarded_to.character_key) ?? 0) + 1);    }  }  for (const item of items) {    for (const candidate of item.candidates) candidate.items_won = won.get(candidate.character_key) ?? 0;  }
+  // What each character has won this tier, counted from the awards on the page, as the API counts them.
+  const won = new Map<string, number>();
+  for (const item of items) {
+    if (item.awarded_to !== null) {
+      won.set(item.awarded_to.character_key, (won.get(item.awarded_to.character_key) ?? 0) + 1);
+    }
+  }
+  for (const item of items) {
+    for (const candidate of item.candidates) candidate.items_won = won.get(candidate.character_key) ?? 0;
+  }
   return {
     encounters: [{ encounter_id: ONYXIA_ENCOUNTER_ID, name: 'Onyxia', zone: "Onyxia's Lair", killed: true }],
     selected: ONYXIA_ENCOUNTER_ID,
     items,
+    at_level_cap: roster.filter((r) => r.verified).length,
   };
 }

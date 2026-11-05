@@ -14,7 +14,7 @@ import {
 } from '../../lib/guild/billing-handoff';
 import { guildHomeCopy, guildJoinCopy, guildSettingsCopy } from '../../lib/guild/copy';
 import { joinedPlanLine } from '../../lib/guild/join-plan';
-import { claimEntryFor, claimEntryNotes } from '../../lib/guild/roster-gate';
+import { claimEntryFor } from '../../lib/guild/roster-gate';
 import GuildJoinedBlock from './GuildJoinedBlock.svelte';
 import BillingHandoff from './BillingHandoff.svelte';
 import GuildUnverifiedNote from './GuildUnverifiedNote.svelte';
@@ -60,7 +60,6 @@ describe('copy pinned to spec 9.3', () => {
   });
 
   it('claim slot, settings and invite lines', () => {
-    expect(claimEntryNotes.getClaimed).toBe(row('Guild page claim slot, member of an unclaimed guild'));
     expect(guildSettingsCopy.sendThemThisLink).toBe(row('Settings, not the claim holder, no plan'));
     expect(guildJoinCopy.onPlan(G, 'Guild')).toBe(row('Invite joined', 0, { Guild: G, Tier: 'Guild' }));
     expect(guildJoinCopy.noPlanYet(G)).toBe(row('Invite joined', 1, { Guild: G }));
@@ -87,15 +86,14 @@ describe('GuildUnverifiedNote', () => {
 });
 
 describe('the claim slot', () => {
-  it('reads Get the guild claimed for a member of an unclaimed guild', () => {
+  it('draws nothing for a member of an unclaimed guild: the Before raids open card carries their step', () => {
     const entry = claimEntryFor({
       signedIn: true,
       canManage: false,
       membership: { rank: 'member' },
       claimState: 'unclaimed',
-      claimedBy: null,
     });
-    expect(entry).toEqual({ kind: 'getClaimed' });
+    expect(entry).toEqual({ kind: 'none' });
   });
 });
 

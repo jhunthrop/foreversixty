@@ -198,14 +198,17 @@ describe('settings', () => {
         default_visibility: 'guild',
         officer_max_rank_index: 1,
         claimed_by: null,
-        claim_pending: { by: { battletag: 'Fixture#1234' }, expires_at: '2026-10-01T00:00:00Z' },
+        claim_pending: {
+          by: { name: 'Thornhide', class: 'druid', character_key: 'us/pvp/thornhide' },
+          expires_at: '2026-10-01T00:00:00Z',
+        },
         claim: { state: 'pending', since: '2026-09-17T00:00:00Z', frozen: false },
         invite: { rotated_at: null },
       }),
     );
     vi.stubGlobal('fetch', upstream);
     const settings = await fetchGuildSettings(42, API);
-    expect(settings.claim_pending?.by.battletag).toBe('Fixture#1234');
+    expect(settings.claim_pending?.by?.name).toBe('Thornhide');
     expect(settings.claim.state).toBe('pending');
   });
 });

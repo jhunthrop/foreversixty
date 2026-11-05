@@ -140,10 +140,9 @@ func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestP
 		from fight_metrics m
 		join reports r on r.id = m.report_id
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
-		where r.guild_id = $1 and m.kill and coalesce(m.encounter_id, 0) > 0 and m.state <> 'removed'
+		where r.guild_id = $1 and `+bossKillMetrics+`
 		  and `+presence.EvidenceReport("r")+`
-		order by m.player_key,
-		  (case when m.role = 'healer' then coalesce(m.metric_hps, 0) else coalesce(m.metric_dps, 0) end) desc`,
+		order by m.player_key, `+roleMetricOrder+` desc`,
 		guildID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: best parses: %w", err)
@@ -264,9 +263,18 @@ func (s *Store) lastReportAtByOwner(ctx context.Context, guildID int64) (map[int
 // percentile to mean anything.
 const ratingFloorPercentile = 0.25
 
-// belowRatingFloor counts roster rows whose overall rating sits at or below the guild's own
-// 25th percentile, among every row that has a rating at all (design spec §4.A). Zero or one
-// rated row never has a floor to sit below.
+// ratingFloorMinRated is how many rated characters a guild needs before its 25th percentile
+// says anything: below it, a floor would only ever name whoever happens to be lowest.
+const ratingFloorMinRated = 8
+
+// ratingFloorBand is the overall-rating spread (top minus bottom) at or under which the guild
+// is level: nobody is called below a floor that sits a point or two under everyone else.
+const ratingFloorBand = 5.0
+
+// belowRatingFloor counts roster rows whose overall rating sits strictly below the guild's own
+// 25th percentile, among every row that has a rating at all (design spec §4.A). The web's
+// Below rating floor filter (roster-sort.ts ratingFloor) applies the same rule. Fewer than
+// ratingFloorMinRated rated rows, or a spread within ratingFloorBand, flags nobody.
 func belowRatingFloor(roster []RosterRow) int {
 	var overalls []float64
 	for _, row := range roster {
@@ -274,55 +282,58 @@ func belowRatingFloor(roster []RosterRow) int {
 			overalls = append(overalls, row.Rating.Overall)
 		}
 	}
-	if len(overalls) < 2 {
+	if len(overalls) < ratingFloorMinRated {
 		return 0
 	}
 	sort.Float64s(overalls)
-	idx := int(float64(len(overalls)-1) * ratingFloorPercentile)
-	floor := overalls[idx]
+	if overalls[len(overalls)-1]-overalls[0] <= ratingFloorBand {
+		return 0
+	}
+	floor := overalls[int(float64(len(overalls))*ratingFloorPercentile)]
 	n := 0
-	for _, row := range roster {
-		if row.Rating != nil && row.Rating.Overall <= floor {
+	for _, overall := range overalls {
+		if overall < floor {
 			n++
 		}
 	}
 	return n
 }
 
-// homeSummary assembles the Overview tab's own glance row from the already-enriched roster
-// plus two small guild-wide counts (named encounters down, pulls this tier) that do not fit
-// naturally on any one roster row. Both count the guild's private nights too, never a flagged
-// report (presence.NotFlagged).
-func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterRow) (SummaryView, error) {
-	sv := SummaryView{UpdatedAt: time.Now().UTC()}
+// summaryPeople counts people, not characters: raiders are the accounts with a verified
+// character whose owner shows gear (the Overview reads them as "with gear on the site"), and
+// waiting the accounts with a character an officer has not approved yet. A main and two alts
+// are one person either way.
+func summaryPeople(roster []RosterRow) (raiders, waiting int) {
+	withGear, unapproved := map[int64]bool{}, map[int64]bool{}
 	for _, row := range roster {
-		if row.Verified {
-			sv.Raiders++
-		} else {
-			sv.WaitingForApproval++
+		switch {
+		case !row.Verified:
+			unapproved[row.ownerUserID] = true
+		case hasGearConsent(row.Consent):
+			withGear[row.ownerUserID] = true
 		}
 	}
+	return len(withGear), len(unapproved)
+}
+
+// homeSummary assembles the Overview tab's own glance row from the already-enriched roster
+// plus the tier's counts. The tier is the Progression tab's own TierView, read the way that
+// tab reads it for a verified member (the home is one), so the band, the Overview and the
+// Progression tab print one set of numbers (week-one spec §4.1). named_encounters_down and
+// pulls_this_tier restate it for the apps. No raid-tier-start timestamp exists anywhere
+// queryable, so the tier's pulls are every pull ever logged in its raids - see
+// CONTROL_CENTRE.md.
+func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterRow) (SummaryView, error) {
+	sv := SummaryView{UpdatedAt: time.Now().UTC()}
+	sv.Raiders, sv.WaitingForApproval = summaryPeople(roster)
 	sv.BelowRatingFloor = belowRatingFloor(roster)
 
-	if err := s.Pool.QueryRow(ctx, `
-		select count(distinct f.encounter_id) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and f.kill and f.encounter_id is not null and `+presence.NotFlagged("r"), guildID).
-		Scan(&sv.NamedEncountersDown); err != nil {
-		return SummaryView{}, fmt.Errorf("guilds: named encounters down: %w", err)
+	progression, err := s.Progression(ctx, guildID, true)
+	if err != nil {
+		return SummaryView{}, err
 	}
-	// pulls_this_tier: every pull this tier counts - the named encounter's pulls and the unnamed
-	// zones' - the same pulls the Progression tab adds up, so the header and that tab agree
-	// (round 8). A trash pack is no pull at all. No raid-tier-start timestamp exists anywhere
-	// queryable (the design doc's own 9 December 2026 tier open is a future calendar date, not
-	// a stored marker) - see CONTROL_CENTRE.md.
-	if err := s.Pool.QueryRow(ctx, `
-		select count(*) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and (f.encounter_id = $2
-		      or (r.zone = any($3) and (f.encounter_id is null or f.encounter_id = 0)))
-		  and `+presence.NotFlagged("r"), guildID, encounterOnyxia, unnamedZones).
-		Scan(&sv.PullsThisTier); err != nil {
-		return SummaryView{}, fmt.Errorf("guilds: pulls this tier: %w", err)
-	}
+	sv.Tier = progression.Tier
+	sv.NamedEncountersDown, sv.PullsThisTier = sv.Tier.Down, sv.Tier.PullsTotal
 	return sv, nil
 }
 
@@ -372,11 +383,7 @@ func standingFor(s *Store, roster []RosterRow, viewerUserID int64) *StandingView
 		}
 	}
 
-	band, hasBand := s.loadBandFor(self.className, self.specStr, self.faction)
-	cr := computeReadiness(self.Consent, band, hasBand, self.gear, self.enchants,
-		self.bags, self.hasBagsSection, self.talentPointsSpent, self.hasTalents,
-		self.level, self.hasLevel, self.ItemLevel, nil)
-
+	cr := s.readinessOf(*self, nil)
 	return &StandingView{
 		Spec: self.specStr, Class: self.className,
 		SameSpecCount: len(peers), RankByItemLevel: rank, ItemLevel: *self.ItemLevel,

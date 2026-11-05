@@ -21,7 +21,7 @@ since (per the original report below) no BiS band in this repo names a raid-tier
 | Endpoint | Source |
 |---|---|
 | `GET /home` | `home.go` + `roster_extended.go`. Roster base query joins `guild_characters`/`addon_exports`/`guild_members` + a lateral `fight_metrics` row (class/spec/role/ilvl/faction, consent-gated). `professions`/`gear`/`enchants`/`bags`/talent points come from `fs1.Decode(ae.export)`, same consent gate. `attendance`/`best_parse`/`rating`/`last_report_at` are four small batch queries over the guild's own reports (`roster_extended.go`). `summary.below_rating_floor` is the 25th percentile of `rating.Overall` **guild-wide**, not per-role (see Deviations). `summary.pulls_this_tier` counts every fight ever logged for the guild — no tier-start timestamp exists anywhere queryable (see Deviations). `standing` is derived in-memory from the already-built roster slice; `claim.claimed_by_name` resolves via the new `Store.Accounts`. |
-| `GET /raids` | `raids.go`. Cursor-paginated `reports`, visibility clause from `HomeReports`' report rules, plus: a flagged report only to a verified member who owns it (`visibilityClause`, task L6.12). Present-roster name/class read from `addon_exports`/`fight_metrics` directly (report data, never gated by guild consent). `top_parse` is `fight_metrics`' single best kill-fight row for that report. |
+| `GET /raids` | `raids.go`. Cursor-paginated `reports`, visibility clause from `HomeReports`' report rules, plus: a flagged report only to a verified member who owns it (`visibilityClause`, task L6.12). Present-roster name/class read from `addon_exports`/`fight_metrics` directly (report data, never gated by guild consent). `top_hps` and `top_dps` are the report's best healer HPS and DPS-role DPS on a boss kill (`parse_source.go`). |
 | `GET /progression` | `progression.go`. Public (no session needed); the counts depend on the viewer (task L6.12): a verified member reads the guild's own numbers, private nights counted, never a flagged report (`presence.NotFlagged`), in a private response; anyone else reads the public guild page's numbers (`presence.EvidenceReport`), in a public one. Tier/raid names are hardcoded constants (see Deviations); Onyxia's own depth is a live query over `fights`/`fight_metrics`. |
 | `GET /readiness` | `readiness.go` + `readiness_core.go`. One row per **verified** roster character; `computeReadiness` is the exact function the home endpoint's `standing.needs_before_next_raid` also calls. Measured latency below. |
 | `GET /loot`, `POST`/`DELETE /loot/awards` | `loot.go`. Onyxia's 22 real drops are a hand-curated Go literal (see Deviations for why, and for the candidate-ranking data gap). Awards persist in the new `loot_awards` table (migration 0030). |
@@ -59,7 +59,7 @@ data and `gear_bags` consent — well under the 300ms target. Logged verbatim by
 ## Store changes
 
 `guilds.Store` gained two fields, wired in `api/cmd/api/main.go`:
-- `Accounts` — resolves `claimed_by_name` (home) and loot-award `by_name` (loot).
+- `Accounts` — resolves the loot-award `by_name` (loot). `claim.claimed_by` (home, settings) is the holder's character on the roster (`guildCharacterRefs`), never an account tag.
 - `DataDir` — `api/internal/bis` band reads (same `TreeDataDir` every other build-scoped reader already uses).
 
 ## Test summary (verbatim)

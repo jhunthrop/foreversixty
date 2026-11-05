@@ -124,25 +124,83 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 	return InviteAccept{GuildID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Rank: "member"}, nil
 }
 
-// InvitePeek is what PeekInvite answers with: the guild a token opens, and nothing
-// about who holds it or who is in it.
+// InvitePeek is what PeekInvite answers with: the guild a token opens and how many verified
+// accounts it has, and nothing about who holds the token or who is in the guild.
 type InvitePeek struct {
 	GuildID               int64
 	Region, Ruleset, Name string
 	Faction, CrestKey     *string
+	Members               int
 }
 
-// PeekInvite looks a token up without redeeming it, so the invite page can name the
-// guild before anyone joins. Unknown and rotated-away tokens both answer ErrNotFound.
+// PeekInvite looks a token up without redeeming it, so the invite page can name the guild before
+// anyone joins. Members is the billing count, verified accounts. Unknown and rotated-away tokens
+// both answer ErrNotFound.
 func (s *Store) PeekInvite(ctx context.Context, token string) (InvitePeek, error) {
 	var p InvitePeek
 	err := s.Pool.QueryRow(ctx,
-		`select id, region, ruleset, name, faction, crest_key from guilds where invite_token_hash = $1`,
-		auth.TokenHash(token)).Scan(&p.GuildID, &p.Region, &p.Ruleset, &p.Name, &p.Faction, &p.CrestKey)
+		`select g.id, g.region, g.ruleset, g.name, g.faction, g.crest_key,
+		        (select count(distinct m.user_id) from guild_members m
+		         where m.guild_id = g.id and m.verified_at is not null)
+		 from guilds g where g.invite_token_hash = $1`,
+		auth.TokenHash(token)).Scan(&p.GuildID, &p.Region, &p.Ruleset, &p.Name, &p.Faction, &p.CrestKey, &p.Members)
 	if err != nil {
 		return InvitePeek{}, ErrNotFound
 	}
 	return p, nil
+}
+
+// JoinsAs is the character an invited account would join a guild as (spec 2026-11-05 §3.4): the
+// name, class and level as the site knows them. OnRoster is false for the stand-in officers see
+// until one of the account's characters shows on the guild's roster.
+type JoinsAs struct {
+	Name     string  `json:"name"`
+	Class    *string `json:"class"`
+	Race     *string `json:"race"`
+	Level    *int    `json:"level"`
+	OnRoster bool    `json:"on_roster"`
+}
+
+// JoinsAsFor picks userID's character for p's guild: the character on the guild's roster (a
+// guild_characters row or its newest addon snapshot names it) at the highest level; else the main
+// with an export, else the newest export, else the main, else the first by name. Nil for an
+// account with no characters.
+func (s *Store) JoinsAsFor(ctx context.Context, p InvitePeek, userID int64) (*JoinsAs, error) {
+	rows, err := s.Pool.Query(ctx, `
+		with mine as (
+		  select c.key, c.name, nullif(c.class, '') as class, nullif(c.race, '') as race, c.level,
+		         c.region = $3 and c.ruleset = $4 and (
+		           exists (select 1 from guild_characters gc where gc.guild_id = $2 and gc.character_key = c.key)
+		           or exists (select 1 from guild_roster_snapshots snap, jsonb_array_elements(snap.members) m
+		                      where snap.guild_id = $2
+		                        and lower(split_part(m->>'name', '-', 1)) = lower(c.name))
+		         ) as on_roster,
+		         c.key is not distinct from u.main_character_key as main,
+		         ae.updated_at as exported_at
+		  from characters c
+		  join users u on u.id = c.user_id
+		  left join addon_exports ae on ae.character_key = c.key
+		  where c.user_id = $1
+		)
+		select name, class, race, level, on_roster from mine
+		order by on_roster desc,
+		         case when on_roster then level end desc nulls last,
+		         (main and exported_at is not null) desc,
+		         exported_at desc nulls last,
+		         main desc, name
+		limit 1`, userID, p.GuildID, p.Region, p.Ruleset)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: joins as: %w", err)
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return nil, rows.Err()
+	}
+	var j JoinsAs
+	if err := rows.Scan(&j.Name, &j.Class, &j.Race, &j.Level, &j.OnRoster); err != nil {
+		return nil, fmt.Errorf("guilds: joins as: %w", err)
+	}
+	return &j, rows.Err()
 }
 
 func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
@@ -176,15 +234,23 @@ func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// peekInvite answers GET /v1/guild-invites/{token}: the guild's name, realm, faction
-// and crest for a valid token, signed in or not. The token is the secret (a 32-char
-// random value only an officer can mint), so holding it is already the right to know
-// which guild it opens; the route is rate-limited like the redemption it precedes.
+// peekInvite answers GET /v1/guild-invites/{token}: the guild's name, realm, faction, crest and
+// verified count for a valid token, signed in or not, and for a signed-in viewer the character
+// they would join as. The token is the secret (a 32-char random value only an officer can mint),
+// so holding it is already the right to know which guild it opens; the route is rate-limited like
+// the redemption it precedes.
 func (s *Service) peekInvite(w http.ResponseWriter, r *http.Request) {
 	p, err := s.Store.PeekInvite(r.Context(), r.PathValue("token"))
 	if errors.Is(err, ErrNotFound) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "that invite link is not valid", nil)
 		return
+	}
+	var joinsAs *JoinsAs
+	if actor := auth.ActorFrom(r.Context()); actor.UserID != 0 {
+		if joinsAs, err = s.Store.JoinsAsFor(r.Context(), p, actor.UserID); err != nil {
+			s.fail(w, r, "peek_invite", err, "could not read that invite just now")
+			return
+		}
 	}
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{
 		"guild": map[string]any{
@@ -192,6 +258,8 @@ func (s *Service) peekInvite(w http.ResponseWriter, r *http.Request) {
 			"faction":   p.Faction,
 			"crest_url": CrestURL(s.Store.APIBaseURL, p.GuildID, p.CrestKey),
 		},
+		"members":  p.Members,
+		"joins_as": joinsAs,
 	})
 }
 

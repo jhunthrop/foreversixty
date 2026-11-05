@@ -93,7 +93,7 @@ Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet ou
 
 On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and the shared cooldown is about to come back, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
-Then work the shared six second cooldown: cast Aimed Shot every time it comes up. In Forever your auto shots keep firing while you cast it, so neither Aimed Shot nor Sniper Shot costs you an auto shot, and with Barrage Aimed Shot outhits Multi-Shot by a wide margin. With the raid build, Sniper Shot comes next: start it the moment it is ready and the shared cooldown is not. Multi-Shot is for packs and for when you have to move. Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
+Then work the shared six second cooldown: cast Aimed Shot every time it comes up. In Forever your auto shots keep firing while you cast it, so neither Aimed Shot nor Sniper Shot costs you an auto shot, and Aimed Shot outhits Multi-Shot by a wide margin. With the raid build, Sniper Shot comes next: start it the moment it is ready and the shared cooldown is not. Multi-Shot is for packs and for when you have to move. Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
 
 Auto Shot does more damage than any button you press, so protect it:
 
@@ -108,7 +108,7 @@ When mana gets low, hold Multi-Shot first: it is the worst damage for its mana y
 
 **Threat.** Feign Death when you get close to the tank's threat, not after the boss turns. It can be resisted: if it says Resisted, you still have all your threat.
 
-**Trash.** Multi-Shot hits three targets. Volley is a mana-heavy channel, worth it only on a big pack that lives through it. Freezing Trap is your crowd control, laid before the pull. Explosive Trap under a pack the tank is holding is good damage for its mana.
+**Trash.** Multi-Shot hits three targets. Volley is a mana-heavy channel, worth it only on a big pack that lives through it. Freezing Trap is your crowd control, laid before the pull. Explosive Trap under a pack the tank is holding hits everything within 10 yards, and at 60 it costs even more than Volley, so save it for the same big packs.
 
 There is no execute phase for a hunter: the priority holds to the end.
 

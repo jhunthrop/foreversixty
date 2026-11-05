@@ -15,6 +15,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
 
@@ -25,6 +26,9 @@ const signupFailMessage = "could not save that sign-up just now"
 
 // signupNotYoursMessage is the forbidden body for a member answering for another's character.
 const signupNotYoursMessage = "You can only sign up your own characters."
+
+// raidEndedMessage is the refusal for a sign-up to a raid past its end, the bot's own sentence.
+const raidEndedMessage = "This raid has ended."
 
 // signupAnswerView is the PUT's answer: the raid as it now stands and the character R3 moved
 // to bench, null when none.
@@ -77,13 +81,18 @@ func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
 	spec := RaidSpecCommand{GuildID: guildID, ActorID: actorID, RaidID: raid.ID, CharacterKey: key, Spec: req.Spec}
 	if req.Spec != "" {
 		// The spec is checked first and saved only once the sign-up stands, so a refused sign-up
-		// (a locked or cancelled raid) changes nothing; the sign-up takes the spec's role.
-		_, sp, err := s.raidSpecTarget(r.Context(), spec)
+		// (a locked or cancelled raid) changes nothing. The sign-up takes the spec's role, or the
+		// asked one when the spec signs as it: a Fury or Arms warrior off-tanks (spec 2026-11-05
+		// §3.2.1). A role the class never plays stays asked, so signUp refuses it on role.
+		char, sp, err := s.raidSpecTarget(r.Context(), spec)
 		if err != nil {
 			s.writeSignupErr(w, r, err)
 			return
 		}
-		cmd.Role = sp.Role
+		if cmd.Role == "" || raidspec.Plays(char.Class, cmd.Role) {
+			cmd.Role = sp.SignupRole(cmd.Role)
+		}
+		spec.Role = cmd.Role
 	}
 	res, err := s.signUp(r.Context(), cmd, false)
 	if err != nil {
@@ -115,7 +124,10 @@ func (s *Service) saveSignupSpec(ctx context.Context, spec RaidSpecCommand, cmd 
 
 // writeSignupErr answers a failed sign-up in the shapes the PUT route has always used.
 func (s *Service) writeSignupErr(w http.ResponseWriter, r *http.Request, err error) {
+	var notOfClass *RoleNotOfClassError
 	switch {
+	case errors.As(err, &notOfClass):
+		writeInvalid(w, r, map[string]string{"role": notOfClass.Message()})
 	case errors.Is(err, ErrNotMember), errors.Is(err, ErrNotFound):
 		writeRaidNotFound(w, r)
 	case errors.Is(err, ErrCharacterNotFound):
@@ -134,6 +146,8 @@ func (s *Service) writeSignupErr(w http.ResponseWriter, r *http.Request, err err
 		httpx.WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
 	case errors.Is(err, ErrRaidLocked):
 		httpx.WriteError(w, r, http.StatusConflict, "raid_locked", "sign-ups for this raid are locked", nil)
+	case errors.Is(err, ErrRaidEnded):
+		httpx.WriteError(w, r, http.StatusConflict, "raid_ended", raidEndedMessage, nil)
 	case errors.Is(err, ErrSpecNotOfClass):
 		writeInvalid(w, r, map[string]string{"spec": "Choose a spec of that character's class."})
 	case errors.Is(err, ErrRaidCancelled):

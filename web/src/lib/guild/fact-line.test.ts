@@ -27,6 +27,11 @@ describe('bandFacts', () => {
     expect(bandFacts('PvP', 'us', { killed: 1, pulls: 2 })).toEqual(['PvP US', '1 boss down', '2 pulls']);
     expect(bandFacts('PvP', 'us', { killed: 3, pulls: 1 })).toEqual(['PvP US', '3 bosses down', '1 pull']);
     expect(bandFacts('Hardcore', 'eu', null)).toEqual(['Hardcore EU']);
+    // No pulls logged: the counts are left out, never "0 bosses down · 0 pulls".
+    expect(bandFacts('PvP', 'us', { killed: 0, pulls: 0 }, 'Updated today')).toEqual([
+      'PvP US',
+      'Updated today',
+    ]);
     expect(bandFacts('PvP', 'us', { killed: 1, pulls: 2 }, 'Updated today')).toEqual([
       'PvP US',
       '1 boss down',

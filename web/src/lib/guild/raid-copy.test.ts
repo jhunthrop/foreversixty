@@ -1,24 +1,28 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { specCell, specString } from '../../test-support/spec-table';
-import type { GuildRaidView } from './api';
 import {
   bandLine,
   bandLineParts,
-  copyList,
+  cancelActionOf,
+  cancelConfirmOf,
+  cancelledLineOf,
+  cancelQuestionOf,
+  compCopy,
+  countdown,
   countLine,
   countRatio,
-  countdown,
-  guildTimeLabel,
+  endedLineOf,
+  eyebrowOf,
   needsBefore,
   nextRaidDeadline,
+  notesEmptyOf,
   raidCopy,
-  roleBreakdown,
-  roleBreakdownParts,
-  SEP,
-  showsBandLine,
   showAll,
+  showsBandLine,
   whenPhrase,
+  yourTimeLine,
+  zonedClock,
 } from './raid-copy';
 
 const SPEC = new URL('../../../../design/specs/2026-10-26-guild-raids.md', import.meta.url);
@@ -31,43 +35,49 @@ const cell = (label: string): string[] => specCell(SPEC, HEADING, label);
 const str = (label: string, index = 0, fill: Record<string, string> = {}): string =>
   specString(SPEC, HEADING, label, index, fill);
 
+const SPEC4 = new URL('../../../../design/specs/2026-11-05-guild-raid-comp.md', import.meta.url);
+const HEADING4 = '## 7. Copy, verbatim';
+const cell4 = (label: string): string[] => specCell(SPEC4, HEADING4, label);
+const str4 = (label: string, index = 0, fill: Record<string, string> = {}): string =>
+  specString(SPEC4, HEADING4, label, index, fill);
+
+const SPEC3 = new URL('../../../../design/specs/2026-11-05-guild-events.md', import.meta.url);
+const HEADING3 = '## 5. Copy, verbatim';
+const cell3 = (label: string): string[] => specCell(SPEC3, HEADING3, label);
+const str3 = (label: string, index = 0, fill: Record<string, string> = {}): string =>
+  specString(SPEC3, HEADING3, label, index, fill);
+
 const CHICAGO = 'America/Chicago';
 const NEW_YORK = 'America/New_York';
 // Wednesday 9 Dec 2026, 10:00 am Chicago.
 const NOW = new Date('2026-12-09T16:00:00Z');
 const at = (isoUtc: string): Date => new Date(isoUtc);
 
+const KINDS = ['raid', 'dungeon', 'event'] as const;
+
 describe('raidCopy constants, verbatim from spec 6.1', () => {
-  it('names the tab button, gate and cap', () => {
-    expect(raidCopy.planButton).toBe(str('Tab button'));
-    expect(raidCopy.gate).toBe(str('Gate sentence'));
-    expect(raidCopy.gate).toContain(raidCopy.gateLink);
-    expect(specCell(SPEC, HEADING, 'Gate sentence')).toContain(raidCopy.gateLink);
+  it('names the tab button and cap', () => {
+    expect(raidCopy.planButton).toBe(str3('Tab button'));
     expect(raidCopy.cap).toBe(str('Cap'));
   });
 
-  it('has every sub-head, in the spec order', () => {
+  it('has every sub-head, the roster heads as the raid comp spec amends them', () => {
     const s = raidCopy.subheads;
-    expect([
-      s.planned,
-      s.raidNights,
-      s.yourSignup,
-      s.signups,
-      s.notes,
-      s.tanks,
-      s.healers,
-      s.dps,
-      s.late,
-      s.bench,
-      s.out,
-      s.notSigned,
-    ]).toEqual(cell('Sub-heads'));
+    expect([s.planned, s.raidNights, s.yourSignup, s.signups, s.notes]).toEqual(
+      cell('Sub-heads').slice(0, 5),
+    );
+    expect([s.tanks, s.healers, s.melee, s.ranged, s.late, s.bench, s.out, s.notSigned]).toEqual(
+      cell4('Roster heads'),
+    );
   });
 
   it('has the segments, placeholders and strip status', () => {
     const g = raidCopy.segments;
     expect([g.in, g.late, g.bench, g.out]).toEqual(cell('Segments'));
-    expect([raidCopy.placeholders.note, raidCopy.placeholders.chooseRaid]).toEqual(cell('Placeholders'));
+    expect(raidCopy.placeholders.note).toBe(str('Placeholders', 0));
+    expect([raidCopy.placeholders.chooseWhat, raidCopy.placeholders.eventTitle]).toEqual(
+      cell3('Placeholders'),
+    );
     expect(raidCopy.stripStatus.saved).toBe(str('Strip status', 0));
     expect(raidCopy.stripStatus.failed).toBe(str('Strip status', 1));
     expect(raidCopy.stripStatus.movedToBench('Lightbrand')).toBe(
@@ -78,22 +88,26 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
   });
 
   it('has the empty states', () => {
-    expect(raidCopy.emptyPlanned.member).toBe(str('Empty Planned', 0));
-    expect(raidCopy.emptyPlanned.officer).toBe(str('Empty Planned', 1));
+    expect(raidCopy.emptyPlanned.member).toBe(str3('Empty Planned', 0));
+    expect(raidCopy.emptyPlanned.officer).toBe(str3('Empty Planned', 1));
     expect(raidCopy.bandNone.member).toBe(str('Band line, none planned', 0));
     expect(raidCopy.bandNone.officer).toBe(str('Band line, none planned', 1));
     expect(raidCopy.bandNone.planLink).toBe(str('Band line, none planned', 2));
-    expect(raidCopy.notesEmpty.member).toBe(str('Notes empty', 0));
-    expect(raidCopy.notesEmpty.officer).toBe(str('Notes empty', 1));
-    const e = raidCopy.emptyRole;
-    expect([e.tank, e.healer, e.dps]).toEqual(cell('Empty role'));
+    expect(notesEmptyOf('raid', false)).toBe(str('Notes empty', 0));
+    expect(notesEmptyOf('raid', true)).toBe(str('Notes empty', 1));
+    expect(notesEmptyOf('dungeon', true)).toBe('No notes yet. Edit the run to add some.');
+    expect(notesEmptyOf('event', false)).toBe('No notes for this event.');
+    const e = raidCopy.emptyGroup;
+    expect([e.tank, e.healer, e.melee, e.ranged]).toEqual(cell4('Empty groups'));
   });
 
   it('has the raid states, races and poll line', () => {
     const r = raidCopy.raidStates;
     // The ended, done and open-night lines moved to the attendance copy (its spec 3.1).
-    const [locked, , cancelled] = cell('Raid states');
-    expect([r.locked, r.cancelled]).toEqual([locked, cancelled]);
+    const [locked] = cell('Raid states');
+    expect(r.locked).toBe(locked);
+    expect(KINDS.map(cancelledLineOf)).toEqual(cell3('Cancelled'));
+    expect(KINDS.map(endedLineOf)).toEqual(cell3('Ended'));
     const c = raidCopy.races;
     expect([c.locked, c.cancelled, c.officerToolsEnded]).toEqual(cell('Races'));
     expect(raidCopy.poll).toBe(str('Poll'));
@@ -101,18 +115,47 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
 
   it('has the officer row and the cancel confirm', () => {
     const o = raidCopy.officerRow;
-    expect([o.edit, o.lock, o.locking, o.unlock, o.copy, o.copied, o.cancel, o.failed]).toEqual(
+    expect([o.edit, o.lock, o.locking, o.unlock, o.copy, o.copied, 'Cancel raid', o.failed]).toEqual(
       cell('Officer row'),
     );
+    expect(KINDS.map(cancelActionOf)).toEqual(cell3('Officer row'));
     const k = raidCopy.cancelConfirm;
-    expect([k.question, k.postToDiscord, k.confirm, k.confirming, k.keep]).toEqual(cell('Cancel confirm'));
+    const [, postToDiscord, , confirming, keep] = cell('Cancel confirm');
+    expect([k.postToDiscord, k.confirming, k.keep]).toEqual([postToDiscord, confirming, keep]);
+    // The spec's template holds pipes, which split a table cell, so it is read as quoted text.
+    const question = 'Cancel this {raid|run|event}? Members see it as cancelled.';
+    const confirm = 'Cancel the {raid|run|event}';
+    const spec = readFileSync(SPEC3, 'utf8');
+    expect(spec).toContain(`\`${question}\``);
+    expect(spec).toContain(`\`${confirm}\``);
+    const words = { raid: 'raid', dungeon: 'run', event: 'event' } as const;
+    for (const kind of KINDS) {
+      expect(cancelQuestionOf(kind)).toBe(question.replace('{raid|run|event}', words[kind]));
+      expect(cancelConfirmOf(kind)).toBe(confirm.replace('{raid|run|event}', words[kind]));
+    }
+    expect(KINDS.map((kind) => eyebrowOf(kind).toUpperCase())).toEqual(cell3('Eyebrow'));
     expect(raidCopy.copyFailed).toBe(str('Copy failed'));
   });
 
   it('has the form labels, helpers and errors', () => {
     const f = raidCopy.form;
-    expect([
-      f.raid,
+    expect(f.what).toBe(str3('Form label', 0));
+    expect(f.groupSize).toBe(str3('Form label', 1));
+    expect(f.noLimit).toBe(str3('Form label', 2));
+    expect([f.groups.event, f.groups.dungeons, f.groups.raids]).toEqual(cell3('Groups'));
+    expect(f.opens("Onyxia's Lair", 'Wed 9 Dec')).toBe(
+      str3('Helper', 0, { Raid: "Onyxia's Lair", 'Wed 9 Dec': 'Wed 9 Dec' }),
+    );
+    expect(f.submitCreate).toBe(str3('Submit', 0));
+    expect(f.submitCreating).toBe(str3('Submit', 1));
+    expect(f.submitEdit).toBe(str3('Submit', 2));
+    expect(f.submitEditing).toBe(str3('Submit', 3));
+    const [, ...oldLabels] = cell('Form labels');
+    expect(
+      oldLabels.filter(
+        (label) => label !== 'Post the raid' && !label.endsWith('…') && label !== 'Save changes',
+      ),
+    ).toEqual([
       f.title,
       f.date,
       f.time,
@@ -122,12 +165,8 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
       f.repeat,
       f.postToDiscord,
       f.postToDiscordIfMoved,
-      f.submitCreate,
-      f.submitCreating,
-      f.submitEdit,
-      f.submitEditing,
       f.cancel,
-    ]).toEqual(cell('Form labels'));
+    ]);
     expect(f.forYou('Thu 10 Dec, 9:00 pm')).toBe(str('Form helpers', 0));
     expect(f.forYouSame).toBe(str('Form helpers', 1));
     expect(f.markdownHelper).toBe(str('Form helpers', 2));
@@ -135,7 +174,13 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
     expect(f.connectDiscord).toBe(str('Form helpers', 4));
     expect(f.connectDiscordLink).toBe('Settings');
     const e = f.errors;
-    expect([e.raid, e.date, e.time, e.cap, e.failed]).toEqual(cell('Form errors'));
+    const [, ...oldErrors] = cell('Form errors');
+    expect([e.date, e.time, e.cap, e.failed]).toEqual(oldErrors);
+    expect(e.what).toBe(str3('Errors', 0));
+    expect(e.eventTitle).toBe(str3('Errors', 1));
+    expect(e.opens("Onyxia's Lair", 'Wed 9 Dec')).toBe(
+      str3('Errors', 2, { Raid: "Onyxia's Lair", 'Wed 9 Dec': 'Wed 9 Dec' }),
+    );
   });
 
   it('form strings match P.7', () => {
@@ -183,33 +228,60 @@ describe('whenPhrase', () => {
   const when = (starts: string, tz = CHICAGO, viewerTz = CHICAGO, now = NOW): string =>
     whenPhrase(at(starts), now, 'en-US', tz, viewerTz);
 
-  it('says Tonight for the viewer’s own day', () => {
-    expect(when('2026-12-10T02:00:00Z')).toBe('Tonight 8 pm');
+  it('says Tonight for the guild’s own day, in the guild’s clock and zone', () => {
+    expect(when('2026-12-10T02:00:00Z')).toBe('Tonight 8 pm CST');
   });
 
   it('says Tomorrow for the next day', () => {
-    expect(when('2026-12-11T02:00:00Z')).toBe('Tomorrow 8 pm');
+    expect(when('2026-12-11T02:00:00Z')).toBe('Tomorrow 8 pm CST');
   });
 
   it('names the weekday within six days', () => {
-    expect(when('2026-12-12T02:00:00Z')).toBe('Friday 8 pm');
-    expect(when('2026-12-15T02:00:00Z')).toBe('Monday 8 pm');
+    expect(when('2026-12-12T02:00:00Z')).toBe('Friday 8 pm CST');
+    expect(when('2026-12-15T02:00:00Z')).toBe('Monday 8 pm CST');
   });
 
   it('spells the date from the seventh day', () => {
-    expect(when('2026-12-18T02:00:00Z')).toBe('Thu 17 Dec, 8 pm');
+    expect(when('2026-12-18T02:00:00Z')).toBe('Thu 17 Dec, 8 pm CST');
   });
 
-  it('appends the guild clock when the offsets differ', () => {
-    expect(when('2026-12-10T02:00:00Z', NEW_YORK, CHICAGO)).toBe('Tonight 8 pm (9 pm guild time)');
+  it('puts the guild clock first and the viewer’s own after it when the offsets differ (spec 3.4)', () => {
+    // A Chicago guild's 8 pm raid, read in New York.
+    expect(when('2026-12-11T02:00:00Z', CHICAGO, NEW_YORK)).toBe('Tomorrow 8 pm CST (9 pm EST your time)');
+    expect(when('2026-12-11T02:00:00Z', CHICAGO, NEW_YORK)).toBe(
+      `Tomorrow 8 pm CST${str4('Band `{when}`', 1)}`,
+    );
   });
 
   it('writes minutes off the hour', () => {
-    expect(when('2026-12-10T02:30:00Z')).toBe('Tonight 8:30 pm');
+    expect(when('2026-12-10T02:30:00Z')).toBe('Tonight 8:30 pm CST');
   });
 
   it('uses a 24-hour clock where the locale does', () => {
-    expect(whenPhrase(at('2026-12-10T02:00:00Z'), NOW, 'de-DE', CHICAGO, CHICAGO)).toBe('Tonight 20:00');
+    expect(whenPhrase(at('2026-12-10T02:00:00Z'), NOW, 'de-DE', CHICAGO, CHICAGO)).toBe('Tonight 20:00 CST');
+  });
+});
+
+describe('yourTimeLine', () => {
+  it('is null when the offsets agree', () => {
+    expect(yourTimeLine(at('2026-12-11T02:00:00Z'), CHICAGO, CHICAGO)).toBeNull();
+  });
+
+  it('reads the viewer’s start and zone, the spec’s words', () => {
+    expect(yourTimeLine(at('2026-12-11T02:00:00Z'), CHICAGO, NEW_YORK)).toBe(
+      str4('When, guild first', 1, { start: '9:00 pm', ZONE: 'EST' }),
+    );
+  });
+
+  it('names the viewer’s weekday when their date is another', () => {
+    // 8 pm Thursday in Chicago is 2 am Friday in London.
+    expect(yourTimeLine(at('2026-12-11T02:00:00Z'), CHICAGO, 'Europe/London')).toBe(
+      'Fri 2:00 am GMT your time',
+    );
+  });
+
+  it('glues a zone to its clock', () => {
+    expect(zonedClock(at('2026-12-11T02:00:00Z'), CHICAGO)).toBe('8:00 pm CST');
   });
 });
 
@@ -244,16 +316,26 @@ describe('counts', () => {
     expect(countLine(23, 40)).toBe(str('Count', 0, { n: '23', size: '40' }));
     expect(countRatio(23, 40)).toBe(str('Count', 1, { n: '23', size: '40' }));
     expect(countLine(23, null)).toBe('23 signed up');
+    expect(countLine(0, null)).toBe('Nobody signed up yet');
+    expect(countLine(0, 40)).toBe('Nobody signed up yet');
   });
 
-  it('breaks the roles down, singular at one, late only when there is one', () => {
-    expect(roleBreakdown(3, 7, 13, 1)).toBe(str('Count', 2, { t: '3', h: '7', d: '13', l: '1' }));
-    expect(roleBreakdown(3, 7, 13, 0)).toBe('3 tanks · 7 healers · 13 DPS');
-    expect(roleBreakdown(1, 1, 0, 2)).toBe('1 tank · 1 healer · 0 DPS · 2 late');
+  it('writes the count clauses, singular at one (raid comp spec 7)', () => {
+    expect([compCopy.tanks(1), compCopy.tanks(3), compCopy.healers(1), compCopy.healers(7)]).toEqual([
+      '1 tank',
+      '3 tanks',
+      '1 healer',
+      '7 healers',
+    ]);
+    expect([compCopy.melee(7), compCopy.ranged(5)]).toEqual(['7 melee', '5 ranged']);
   });
 
-  it('labels the guild clock', () => {
-    expect(guildTimeLabel(at('2026-12-10T02:00:00Z'), CHICAGO, 'en-US')).toBe(str('Guild time'));
+  it('names the late roles, a single part that is all of them without its number', () => {
+    expect(compCopy.late(1, 0, 1)).toBe('1 late (healer)');
+    expect(compCopy.late(2, 1, 1)).toBe('2 late (1 tank, 1 healer)');
+    expect(compCopy.late(3, 0, 1)).toBe('3 late (1 healer)');
+    expect(compCopy.late(2, 0, 0)).toBe('2 late');
+    expect(compCopy.late(2, 0, 2)).toBe('2 late (healers)');
   });
 
   it('offers to show them all', () => {
@@ -344,6 +426,10 @@ describe('bandLineParts', () => {
     });
   });
 
+  it('says nobody rather than 0 signed up', () => {
+    expect(bandLineParts({ ...base, n: 0, state: 'out' }).tail).toBe(', nobody signed up yet.');
+  });
+
   it('has no state word while unsigned', () => {
     const parts = bandLineParts({ ...base, state: null });
     expect(parts.word).toBe('');
@@ -358,101 +444,5 @@ describe('showsBandLine', () => {
     expect(showsBandLine(false, 'member')).toBe(false);
     expect(showsBandLine(false, 'officer')).toBe(false);
     expect(showsBandLine(true, 'public')).toBe(false);
-  });
-});
-
-describe('copyList', () => {
-  const member = (key: string, name: string, role: string, state: string): unknown => ({
-    character_key: key,
-    name,
-    class: 'warrior',
-    spec: 'x',
-    role,
-    state,
-    note: '',
-    own: false,
-  });
-  const view = {
-    title: "Onyxia's Lair",
-    starts_at: '2026-12-11T02:00:00Z',
-    size: 40,
-    counts: { in: 4, late: 1, bench: 1, out: 1, tanks: 1, healers: 1, dps: 2 },
-    signups: [
-      member('a', 'Kraggor', 'tank', 'in'),
-      member('b', 'Amy', 'healer', 'in'),
-      member('c', 'Zed', 'dps', 'in'),
-      member('d', 'Bo', 'dps', 'in'),
-      member('e', 'Late1', 'dps', 'late'),
-      member('f', 'Benched', 'dps', 'bench'),
-      member('g', 'Cy', 'dps', 'out'),
-    ],
-    not_signed: [{ character_key: 'h', name: 'Di', class: 'druid', spec: 'balance' }],
-  } as unknown as GuildRaidView;
-
-  it('builds its count line from the role parts, never by rewriting the band breakdown', () => {
-    expect(roleBreakdown(1, 1, 2, 1)).toBe(roleBreakdownParts(1, 1, 2, 1).join(SEP));
-    expect(copyList(view, CHICAGO).split('\n')[1]).toBe(
-      `5 of 40: ${roleBreakdownParts(1, 1, 2, 1).join(', ')}`,
-    );
-  });
-
-  it('drops the late clause when nobody is late', () => {
-    const onTime = { ...view, counts: { ...view.counts, late: 0 } } as GuildRaidView;
-    expect(copyList(onTime, CHICAGO).split('\n')[1]).toBe('4 of 40: 1 tank, 1 healer, 2 DPS');
-  });
-
-  it("follows the spec's example: header, count, then one line per non-empty group in roster order", () => {
-    expect(copyList(view, CHICAGO)).toBe(
-      [
-        "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>",
-        '5 of 40: 1 tank, 1 healer, 2 DPS, 1 late',
-        'Tanks: Kraggor',
-        'Healers: Amy',
-        'DPS: Zed, Bo',
-        'Late: Late1',
-        'Bench: Benched',
-        'Out: Cy',
-      ].join('\n'),
-    );
-  });
-
-  it('leaves an empty group out and reads a null size as signed up', () => {
-    const sparse = {
-      ...view,
-      size: null,
-      signups: [member('a', 'Kraggor', 'tank', 'in')],
-    } as unknown as GuildRaidView;
-    expect(copyList(sparse, CHICAGO).split('\n')).toEqual([
-      "Onyxia's Lair · Thu 10 Dec, 8:00 pm CST · <t:1796954400:F>",
-      '5 signed up: 1 tank, 1 healer, 2 DPS, 1 late',
-      'Tanks: Kraggor',
-    ]);
-  });
-});
-
-describe('raidCopy.spec, verbatim from the guided-cards spec G.7', () => {
-  const strG7 = (key: string, index = 0, fill: Record<string, string> = {}): string =>
-    specString(SPEC2, '## G.7 Copy, verbatim', key, index, fill);
-  const fill = { Name: 'Aurelith', State: 'In', Title: "Onyxia's Lair", Date: 'Thu 10 Dec', Spec: 'Holy' };
-  const joined = (lead: { before: string; name: string; after: string }): string =>
-    `${lead.before}**${lead.name}**${lead.after}`;
-
-  it('names the ask, its placeholder and the change label', () => {
-    expect(raidCopy.spec.title).toBe(strG7('`spec.title`'));
-    expect(raidCopy.spec.placeholder).toBe(strG7('`spec.placeholder`'));
-    expect(raidCopy.spec.change).toBe(strG7('`spec.change`'));
-  });
-
-  it('writes the lead for a new pick and for a change', () => {
-    expect(joined(raidCopy.spec.lead('Aurelith', 'In', "Onyxia's Lair", 'Thu 10 Dec'))).toBe(
-      strG7('`spec.lead`', 0, fill),
-    );
-    expect(joined(raidCopy.spec.leadChange('Aurelith', "Onyxia's Lair", 'Thu 10 Dec'))).toBe(
-      strG7('`spec.lead.change`', 0, fill),
-    );
-  });
-
-  it('writes the kept line alone, without the leading space', () => {
-    expect(raidCopy.spec.kept('Holy', 'Aurelith')).toBe(strG7('`spec.kept`', 0, fill).trim());
   });
 });

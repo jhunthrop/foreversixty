@@ -18,7 +18,7 @@ func TestSettingsReadsTheCurrentGuildState(t *testing.T) {
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Forever")
 
-	view, err := s.Settings(ctx, gid)
+	view, err := s.Settings(ctx, gid, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -37,15 +37,15 @@ func TestUpdateSettingsValidatesVisibilityAndThreshold(t *testing.T) {
 	gid := seedGuild(t, pool, "Forever")
 
 	private := "private"
-	if _, err := s.UpdateSettings(ctx, gid, SettingsPatch{DefaultVisibility: &private}); !errors.Is(err, ErrInvalidSettings) {
+	if _, err := s.UpdateSettings(ctx, gid, 0, SettingsPatch{DefaultVisibility: &private}); !errors.Is(err, ErrInvalidSettings) {
 		t.Fatalf("private default_visibility = %v, want ErrInvalidSettings", err)
 	}
 	tooHigh := 10
-	if _, err := s.UpdateSettings(ctx, gid, SettingsPatch{OfficerMaxRankIndex: &tooHigh}); !errors.Is(err, ErrInvalidSettings) {
+	if _, err := s.UpdateSettings(ctx, gid, 0, SettingsPatch{OfficerMaxRankIndex: &tooHigh}); !errors.Is(err, ErrInvalidSettings) {
 		t.Fatalf("officer_max_rank_index = 10 = %v, want ErrInvalidSettings", err)
 	}
 	guildVis := "guild"
-	view, err := s.UpdateSettings(ctx, gid, SettingsPatch{DefaultVisibility: &guildVis})
+	view, err := s.UpdateSettings(ctx, gid, 0, SettingsPatch{DefaultVisibility: &guildVis})
 	if err != nil || view.DefaultVisibility != "guild" {
 		t.Fatalf("view = %+v, %v, want default_visibility = guild", view, err)
 	}
@@ -64,7 +64,7 @@ func TestUpdateSettingsRederivesEveryCharactersRankAndRecomputesTheAccounts(t *t
 	}
 
 	widened := 5
-	if _, err := s.UpdateSettings(ctx, gid, SettingsPatch{OfficerMaxRankIndex: &widened}); err != nil {
+	if _, err := s.UpdateSettings(ctx, gid, 0, SettingsPatch{OfficerMaxRankIndex: &widened}); err != nil {
 		t.Fatal(err)
 	}
 	var rank, memberRank string
@@ -95,8 +95,9 @@ func TestSettingsExposesClaimStateAndPopulatesClaimant(t *testing.T) {
 	if view.Claim.State != "claimed" {
 		t.Fatalf("claim.state = %q, want claimed", view.Claim.State)
 	}
-	if view.ClaimedBy == nil || view.ClaimedBy.Battletag == "" {
-		t.Fatalf("claimed_by = %v, want populated (this was the bug the review found: always null)", view.ClaimedBy)
+	// The holder's only row names no character the site can read yet: "the guild master".
+	if view.ClaimedBy != nil || !view.Claim.Yours {
+		t.Fatalf("claimed_by = %+v, yours = %v; want no character named, and the claim the viewer's", view.ClaimedBy, view.Claim.Yours)
 	}
 }
 

@@ -31,7 +31,7 @@ from pipeline.csvio import read_csv
 from pipeline.curated import parse_sources
 from pipeline.forkdb import ForkDatabase
 from pipeline.icons import icon_names, resolve_icon
-from pipeline.models import BuffOverride, SimBuffEntry, SimBuffsFile
+from pipeline.models import BuffOverride, SimBuffEffect, SimBuffEntry, SimBuffsFile
 
 SIMBUFFS = "simbuffs.json"
 logger = logging.getLogger(__name__)
@@ -42,6 +42,7 @@ IDS_MD = Path("../sim/request/IDS.md")
 type NameTable = dict[str, tuple[str, str]]
 
 _ROW = re.compile(r"^\| `([a-z0-9_]+(?::[a-z0-9_]+)?)` \|", re.M)
+_DEBUFF_ROW = re.compile(r"^\| `([a-z0-9_]+(?::[a-z0-9_]+)?)` \| Debuffs \|", re.M)
 #: A graded buff's stronger grade ("blessing_of_might:improved"): the panel
 #: draws it as its base id's row, so it needs no entry of its own.
 IMPROVED = ":improved"
@@ -203,6 +204,43 @@ def load_overrides(
             )
         overrides[key] = override
     return overrides
+
+
+def load_effects(
+    curated_dir: Path = Path("curated"), name: str = SIMBUFFS
+) -> dict[str, SimBuffEffect]:
+    """The curated `effects` block, validated. An id with no effect has no row."""
+    path = curated_dir / name
+    if not path.exists():
+        return {}
+    document = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        buff_id: SimBuffEffect.model_validate(row)
+        for buff_id, row in document.get("effects", {}).items()
+    }
+
+
+def debuff_ids(text: str) -> frozenset[str]:
+    """The ids IDS.md lands in the engine's Debuffs message: those are on the target."""
+    return frozenset(_DEBUFF_ROW.findall(text))
+
+
+def with_effects(
+    file: SimBuffsFile, effects: dict[str, SimBuffEffect], on_target: frozenset[str]
+) -> SimBuffsFile:
+    """Each entry with its side and its curated effect. A pure join over a file a
+    full rebuild or a merge already named, so both paths publish the same fields."""
+    return SimBuffsFile(
+        entries={
+            buff_id: entry.model_copy(
+                update={
+                    "target": buff_id in on_target,
+                    **(dict(effects[buff_id]) if buff_id in effects else {}),
+                }
+            )
+            for buff_id, entry in file.entries.items()
+        }
+    )
 
 
 def override_for(buff_id: str, overrides: dict[str, BuffOverride]) -> BuffOverride | None:

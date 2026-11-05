@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidFight, GuildRaidRow } from './api';
 import { buildMockProgression, buildMockRaids } from '../../fixtures/guild/mock-guild';
-import { bossIdsOf, raidTally, raidTallyLine, raidTallyParts, reportTallyLine } from './raid-view';
+import {
+  bossIdsOf,
+  nightFights,
+  raidTally,
+  raidTallyLine,
+  raidTallyParts,
+  reportTallyLine,
+} from './raid-view';
 
 function fight(
   index: number,
@@ -24,7 +31,8 @@ function night(fights: GuildRaidFight[], wipes = 0): GuildRaidRow {
     wipe_count: wipes,
     raiders: 5,
     deaths: 0,
-    top_parse: null,
+    top_hps: null,
+    top_dps: null,
     fights,
     present: [],
   };
@@ -46,6 +54,18 @@ describe('raidTallyLine', () => {
   it('leaves the trash out when there was none and pluralises the bosses', () => {
     const row = night([fight(0, 'Onyxia', 1084, true), fight(1, 'Onyxia', 1084, true)], 1);
     expect(raidTallyLine(row, BOSSES)).toBe('1 boss (Onyxia) · 2 kills · 1 wipe');
+  });
+
+  it('never counts a trash pack that went badly as a wipe', () => {
+    const row = night(
+      [
+        fight(0, 'Onyxian Whelp', null, false),
+        fight(1, 'Onyxia', 1084, false),
+        fight(2, 'Onyxia', 1084, true),
+      ],
+      2,
+    );
+    expect(raidTallyLine(row, BOSSES)).toBe('1 boss (Onyxia) · 1 kill · 1 wipe');
   });
 
   it('reads 0 bosses on a night with no boss down', () => {
@@ -86,6 +106,36 @@ describe('raidTallyParts', () => {
 
   it('is the two API counts while the tier list is unknown', () => {
     expect(raidTallyParts(night([fight(0, 'Onyxia', 1084, true)]), null)).toEqual(['1 kill', '0 wipes']);
+  });
+});
+
+describe('nightFights', () => {
+  const row = night([
+    fight(0, 'Onyxian Whelp', null, true),
+    fight(1, 'Onyxia', 1084, false),
+    fight(2, 'Onyxian Whelp', 2001, true),
+    fight(3, 'Onyxia', 1084, true),
+    fight(4, null, null, false),
+  ]);
+
+  it('numbers boss pulls per boss and names trash quietly, with no pull number', () => {
+    expect(nightFights(row, BOSSES).map((f) => [f.label, f.trash])).toEqual([
+      ['Onyxian Whelp', true],
+      ['Onyxia · pull 1', false],
+      ['Onyxian Whelp', true],
+      ['Onyxia · pull 2', false],
+      ['Pull 5', false],
+    ]);
+  });
+
+  it('reads every named fight as a pull while the boss list is unknown', () => {
+    expect(nightFights(row, null).map((f) => f.label)).toEqual([
+      'Onyxian Whelp · pull 1',
+      'Onyxia · pull 1',
+      'Onyxian Whelp · pull 2',
+      'Onyxia · pull 2',
+      'Pull 5',
+    ]);
   });
 });
 

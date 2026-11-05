@@ -59,6 +59,13 @@ export interface GuildSummary {
 
 export type ClaimState = 'unclaimed' | 'pending' | 'claimed' | 'contested';
 
+/** A claim holder or pending claimant, the way the game names them. */
+export interface ClaimHolder {
+  name: string;
+  class: string | null;
+  character_key: string;
+}
+
 /**
  * GET .../home and GET .../settings both expose this (2026-09-21 security amendment).
  * `frozen` is exactly `state === 'contested'`: two earlier, narrower freeze rules (a
@@ -73,11 +80,11 @@ export interface ClaimStateView {
   state: ClaimState;
   since?: string;
   frozen: boolean;
-  /** Control-centre contract addition (2026-10-04): who holds a `claimed` guild, for the
-   *  officer tools strip's "Claimed · by {name}" line. Absent on an unclaimed/pending/
-   *  contested guild, and absent until every caller of this type is updated -- never
-   *  rendered as a blank "by" when missing. */
-  claimed_by_name?: string;
+  /** The signed-in account holds this claim. Filled by home and settings. */
+  yours?: boolean;
+  /** Who holds the claim, by their character on this guild's roster; never an account tag.
+   *  Null when no claim is held or the holder has no character on it. */
+  claimed_by?: ClaimHolder | null;
 }
 
 /** `GET .../home`'s `viewer` (control-centre contract, 2026-10-04): the server's own answer
@@ -113,6 +120,8 @@ export interface GuildHomeSummary {
   raiders: number;
   waiting_for_approval: number;
   below_rating_floor: number;
+  /** The Progression tab's own tier counts: the band and the Overview print these. */
+  tier: GuildProgressionTier;
   named_encounters_down: number;
   pulls_this_tier: number;
   updated_at: string;
@@ -133,12 +142,8 @@ export interface GuildHomeStanding {
   needs_before_next_raid: string[];
 }
 
-export interface MemberRef {
-  battletag: string;
-}
-
 export interface ClaimPendingView {
-  by: MemberRef;
+  by: ClaimHolder | null;
   expires_at: string;
 }
 
@@ -212,6 +217,8 @@ export interface GuildRosterRow {
   logged_at?: string;
   /** Present only at gear/gear_bags consent (spec section 3.2's fail-closed query rule). */
   item_level?: number;
+  /** The export's level, else the addon roster's; null with neither or below gear consent. */
+  level?: number | null;
   consent: GuildConsent;
   attendance?: GuildRosterAttendance;
   /** Raid mode only: the same figure over the guild's last 30 logged raids. */
@@ -318,12 +325,16 @@ export interface GuildRosterEntry {
   state: GuildEntryState;
   rank: GuildRank;
   class?: string;
-  /** The snapshot's level; absent when the member withholds it. */
+  /** The export's level, else the snapshot's; absent when the member withholds it. */
   level?: number;
   /** The snapshot's spec slug (`warrior-arms`); absent when withheld. */
   spec?: string;
   /** The sender's local `YYYY-MM-DD HH:MM`. */
   seen_at?: string;
+  /** An invited member's account (`u:42`): they have no character row, so Remove names this. */
+  account_key?: string;
+  /** Set on an invited member's entry when the viewer's Remove would succeed (api `may_remove`). */
+  may_remove?: boolean;
 }
 
 export interface GuildRosterCounts {
@@ -339,7 +350,7 @@ export type GuildCapability = 'approve' | 'remove' | 'settings' | 'award' | 'bil
 export interface GuildSettingsData {
   default_visibility: GuildVisibility;
   officer_max_rank_index: number;
-  claimed_by: MemberRef | null;
+  claimed_by: ClaimHolder | null;
   claim_pending: ClaimPendingView | null;
   claim: ClaimStateView;
   invite: { rotated_at: string | null };
@@ -413,7 +424,7 @@ export interface ClaimResult {
 }
 export interface ClaimConfirmResult {
   status: 'confirmed';
-  claimed_by: { battletag: string };
+  claimed_by: ClaimHolder | null;
 }
 export interface ClaimReleaseResult {
   status: 'released';
@@ -427,6 +438,19 @@ export interface InviteRotateResult {
  *  and without a session, so the invite page can name the guild to a signed-out visitor too. */
 export interface InvitePeekResult {
   guild: GuildSummary;
+  /** Verified accounts in the guild. */
+  members?: number;
+  /** A signed-in viewer's character for this guild; null with none (and always, signed out). */
+  joins_as?: InviteJoinsAs | null;
+}
+/** Which of the viewer's characters would join: on the guild's roster, or the one officers see
+ *  until one of theirs shows on it. */
+export interface InviteJoinsAs {
+  name: string;
+  class: string | null;
+  race: string | null;
+  level: number | null;
+  on_roster: boolean;
 }
 export interface InviteAcceptResult {
   guild: GuildSummary;
@@ -707,6 +731,21 @@ export async function removeCharacter(
   return data;
 }
 
+/** An officer removes a member who joined by invite link, by their account (`account_key`). */
+export async function removeMember(
+  guildId: number,
+  accountKey: string,
+  apiBase: string = API_BASE_URL,
+): Promise<RemovedResult> {
+  const data = await call<RemovedResult>(
+    `/v1/guilds/${guildId}/members/${encodeURIComponent(accountKey)}`,
+    apiBase,
+    { method: 'DELETE' },
+  );
+  invalidateGuild(guildId, apiBase);
+  return data;
+}
+
 export async function updateConsent(
   guildId: number,
   consent: GuildConsent,
@@ -768,7 +807,9 @@ export interface GuildRaidRow {
   wipe_count: number;
   raiders: number;
   deaths: number;
-  top_parse: GuildRaidTopParse | null;
+  /** The night's best healer HPS and DPS-role DPS on a boss kill; absent when it has none. */
+  top_hps?: GuildRaidTopParse | null;
+  top_dps?: GuildRaidTopParse | null;
   fights: GuildRaidFight[];
   present: GuildRaidPresentPlayer[];
   /** The guild raid this night is matched to (a verified member's read only), else `null`. */
@@ -792,6 +833,8 @@ export interface GuildRaidsPage {
 export type GuildRaidStatus = 'planned' | 'locked' | 'done' | 'cancelled';
 export type GuildSignupState = 'in' | 'late' | 'bench' | 'out';
 export type GuildRaidRole = 'tank' | 'healer' | 'dps';
+/** The roster group a sign-up fights in (the API's `raidspec.Group`, the Discord post's groups). */
+export type GuildRaidGroup = 'tank' | 'healer' | 'melee' | 'ranged';
 
 export interface GuildRaidCounts {
   in: number;
@@ -800,10 +843,24 @@ export interface GuildRaidCounts {
   out: number;
   tanks: number;
   healers: number;
+  /** Melee plus ranged; kept for the readiness page. */
   dps: number;
+  /** In rows by group (absent from an API that predates them, which reads 0). */
+  melee?: number;
+  ranged?: number;
+  /** In plus Late by class slug, one key per class the guild plays (zeros included). */
+  classes?: Readonly<Record<string, number>>;
 }
 
-export interface GuildRaidSignup {
+/** A row's place in the roster and its catalogue spec (raid comp spec 4.1). Absent from an API
+ *  that predates them: such a row reads its role's group, DPS as ranged, and its class alone. */
+export interface GuildRaidRowComp {
+  group?: GuildRaidGroup;
+  /** The `specs.json` key of the row's spec, `null` when it does not resolve. */
+  spec_key?: string | null;
+}
+
+export interface GuildRaidSignup extends GuildRaidRowComp {
   character_key: string;
   name: string;
   class: string;
@@ -813,9 +870,22 @@ export interface GuildRaidSignup {
   note: string;
   /** The viewer's own character. */
   own: boolean;
+  /** The account's other answered characters, best place first: the row is the account's best
+   *  place, these ride its Also line and count nowhere (raids spec 3.7). Absent from an older API. */
+  also?: GuildRaidAlsoSignup[];
 }
 
-export interface GuildRaidNotSigned {
+/** Another answered character of a sign-up row's account. */
+export interface GuildRaidAlsoSignup {
+  character_key: string;
+  name: string;
+  class: string;
+  spec: string;
+  spec_key: string | null;
+  state: GuildSignupState;
+}
+
+export interface GuildRaidNotSigned extends GuildRaidRowComp {
   character_key: string;
   name: string;
   class: string;
@@ -834,12 +904,20 @@ export interface GuildRaidViewerCharacter {
   /** The character's saved raid spec in this guild (a slug from the spec catalogue, e.g.
    *  `paladin-holy`), `null` while unset. Absent from an API that predates it, which reads unset. */
   raid_spec?: string | null;
+  /** The `specs.json` key of `spec`, `null` when it does not resolve. */
+  spec_key?: string | null;
+  /** The spec the picker starts on: `raid_spec`, else `spec_key`, else `null`. */
+  default_spec?: string | null;
 }
 
 export interface GuildRaidView extends RaidAttendanceFields {
   id: number;
   zone: string;
   zone_name: string;
+  /** What the zone is, which the page's words follow; absent from older fixtures, which read raid. */
+  zone_kind?: GuildZoneKind;
+  /** The key the run's door asks for; `null` or absent when none. */
+  key_item?: GuildKeyItem | null;
   title: string;
   /** RFC 3339, UTC. */
   starts_at: string;
@@ -882,10 +960,29 @@ export interface GuildRaidDiscordPost {
   remind: boolean;
 }
 
+/** What an officer posts (guild events spec 3.1). */
+export type GuildZoneKind = 'raid' | 'dungeon' | 'event';
+
+/** The item a run's door asks for: name and quality are the client's. */
+export interface GuildKeyItem {
+  id: number;
+  name: string;
+  quality: number;
+  /** The one door the key opens when the run has a way in with no lock (`the service entrance`);
+   *  absent when the run needs the key. */
+  door?: string;
+}
+
 export interface GuildZoneView {
   key: string;
   name: string;
+  kind: GuildZoneKind;
   size: number | null;
+  /** RFC 3339; the day a raid opens, `null` for anything open now or without a date. */
+  opens: string | null;
+  min_level: number | null;
+  max_level: number | null;
+  key_item: GuildKeyItem | null;
 }
 
 /** The band line's fields: `GuildHome.next_raid`. */
@@ -893,13 +990,15 @@ export interface NextRaidView {
   id: number;
   zone: string;
   zone_name: string;
+  /** Absent from older fixtures, which read raid. */
+  zone_kind?: GuildZoneKind;
   title: string;
   starts_at: string;
   /** `planned` or `locked`; a locked raid's band segments are inert (absent from older fixtures). */
   status?: 'planned' | 'locked';
   size: number | null;
   guild_timezone: string | null;
-  counts: Pick<GuildRaidCounts, 'in' | 'late' | 'tanks' | 'healers' | 'dps'>;
+  counts: Pick<GuildRaidCounts, 'in' | 'late' | 'tanks' | 'healers' | 'dps' | 'melee' | 'ranged'>;
   /** The current character's sign-up; `null` while unsigned. `note` travels with it. */
   own: { character_key: string; state: GuildSignupState; role: GuildRaidRole; note?: string } | null;
 }
@@ -942,10 +1041,12 @@ export interface GuildProgressionEncounter {
   encounter_id: number;
   name: string;
   zone: string;
-  first_kill_at: string | null;
+  /** Omitted by the API with no kill; read with `typeof`, never `!== null`. */
+  first_kill_at?: string | null;
   pulls: number;
   kills: number;
-  best_kill_ms: number | null;
+  /** Omitted by the API with no kill; read with `typeof`, never `!== null`. */
+  best_kill_ms?: number | null;
   pulls_by_night: GuildProgressionPullsByNight[];
   deaths_per_pull: number;
   best_by_role: { tank?: GuildParseRef; healer?: GuildParseRef; dps?: GuildParseRef };
@@ -962,6 +1063,8 @@ export interface GuildProgressionTier {
   raids: string[];
   named_encounters: number;
   down: number;
+  /** Every pull this tier, named and unnamed. Zero: nothing is logged in the tier yet. */
+  pulls_total: number;
 }
 
 export interface GuildProgressionPage {
@@ -989,6 +1092,9 @@ export interface GuildReadinessGearGap {
   upgrades: number | null;
   gain_dps: number | null;
   not_sim_checked: number;
+  /** What `gain_dps` counts: `dps` for a damage spec; null for a healer or tank, whose gap prints
+   *  no figure. */
+  unit: 'dps' | 'hps' | 'tps' | null;
 }
 
 export interface GuildReadinessEnchants {
@@ -1006,6 +1112,8 @@ export interface GuildReadinessRow extends ReadinessRaidRowFields {
   class: string;
   spec: string;
   consent: GuildConsent;
+  /** Export level, else the addon roster's; null with neither. Under 60 nothing is graded. */
+  level: number | null;
   gear_gap: GuildReadinessGearGap | null;
   enchants: GuildReadinessEnchants;
   consumables: GuildReadinessConsumables;
@@ -1062,13 +1170,15 @@ export interface GuildLootCandidate {
   name: string;
   class: string;
   spec: string;
-  /** `null` for a tier-1 (fallback) candidate — contract's own loot section, 2026-10-04
-   *  addition: no BiS file in this build names any raid-tier item yet, so every real
-   *  candidate on a live roster is tier-1 today, and this is null for every one of them.
-   *  A caller must branch on this before formatting a DPS figure, never call a number
-   *  method on it directly (defect 5's own live-fix round: `candidate.gain_dps.toFixed(0)`
-   *  threw for every real candidate and broke the whole Loot tab). */
+  /** `null` for a tier-1 (item level) candidate, and for a tier-0 one the sim never measured. A
+   *  caller must branch on this before formatting a figure, never call a number method on it
+   *  directly (defect 5's own live-fix round: `candidate.gain_dps.toFixed(0)` threw for every real
+   *  candidate and broke the whole Loot tab). */
   gain_dps: number | null;
+  /** What `gain_dps` counts; `null` when it is. */
+  gain_unit: 'dps' | 'hps' | 'tps' | null;
+  /** 0: the item is on the character's BiS list. 1: ranked by item level only. */
+  tier: 0 | 1;
   not_sim_checked: boolean;
   /** Tier-1 only (contract's loot section): the item's own item level minus what the
    *  candidate wears in that slot (or the item's own item level when the slot is empty).
@@ -1076,10 +1186,27 @@ export interface GuildLootCandidate {
   ilvl_delta: number | null;
   attendance: GuildRosterAttendance;
   already_equivalent: boolean;
-  /** The item they wear now in the drop's slot; absent or empty when the slot is empty. */
-  replaces?: string;
-  /** Awards this character has had in this guild this tier; absent reads as none. */
-  items_won?: number;
+  /** The item they wear now in the drop's slot; empty when the slot is empty. */
+  replaces: string;
+  /** The same item for the shared item link; `null` for an empty slot. */
+  replaces_item: GuildLootWornItem | null;
+  /** Awards this character has had in this guild this tier. */
+  items_won: number;
+}
+
+export interface GuildLootWornItem {
+  item_id: number;
+  name: string;
+  icon: string;
+  quality: number;
+}
+
+/** Who an officer can hand a quest drop or the bag to, and the copy of the drop they would get. */
+export interface GuildLootEligible {
+  character_key: string;
+  name: string;
+  class: string;
+  item_id: number;
 }
 
 export interface GuildLootAwardedTo {
@@ -1096,18 +1223,28 @@ export interface GuildLootItem {
   name: string;
   icon: string;
   quality: number;
+  /** Logic only, never printed: the words come from `slotLine` over the three client fields. */
   slot: string;
+  inventory_type: number;
+  item_class: number;
+  item_subclass: number;
+  /** `gear`: a slotted drop the council ranks. `skinned`: Scale of Onyxia, never a pick. */
+  kind: 'gear' | 'quest' | 'bag' | 'skinned';
+  /** A quest drop's sourced line; empty otherwise. */
+  quest_label: string;
+  eligible: GuildLootEligible[];
   awarded_to: GuildLootAwardedTo | null;
   candidates: GuildLootCandidate[];
-  /** How many of the table's drops this row stands for (two items can share a name); absent
-   *  on a response from before it, read as 1. */
-  copies?: number;
+  /** How many of the table's drops this row stands for (two items can share a name). */
+  copies: number;
 }
 
 export interface GuildLootPage {
   encounters: GuildLootEncounter[];
   selected: number | null;
   items: GuildLootItem[];
+  /** Verified roster characters whose level on file is 60. */
+  at_level_cap: number;
 }
 
 function guildLootKey(guildId: number, encounterId: number | undefined, apiBase: string): string {

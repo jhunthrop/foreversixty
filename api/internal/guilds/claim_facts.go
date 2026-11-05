@@ -125,11 +125,21 @@ func viewerApproves(approvers map[int64]approverFact) map[int64]bool {
 	return out
 }
 
-// guildCharacterNames is, for each guild in holders (guild -> account), the name of that
-// account's character in it, one query for all: the account's verified character first, then
-// its highest rank. A guild whose account has no named character is absent.
-func (s *Store) guildCharacterNames(ctx context.Context, holders map[int64]int64) (map[int64]string, error) {
-	out := map[int64]string{}
+// ClaimHolderRef names the account holding (or asking for) a guild's claim the way the game
+// does: its character on this guild's roster, never an account tag. Class is nil when the site
+// has not learned it.
+type ClaimHolderRef struct {
+	Name         string  `json:"name"`
+	Class        *string `json:"class"`
+	CharacterKey string  `json:"character_key"`
+}
+
+// guildCharacterRefs is, for each guild in holders (guild -> account), that account's character
+// on the guild's roster, one query for all: verified before unverified (an unapproved export names
+// nobody), then its lowest rank number, ties to its main,
+// then by name. A guild whose account has no named character there is absent.
+func (s *Store) guildCharacterRefs(ctx context.Context, holders map[int64]int64) (map[int64]ClaimHolderRef, error) {
+	out := map[int64]ClaimHolderRef{}
 	if len(holders) == 0 {
 		return out, nil
 	}
@@ -138,27 +148,71 @@ func (s *Store) guildCharacterNames(ctx context.Context, holders map[int64]int64
 		guildIDs, userIDs = append(guildIDs, guildID), append(userIDs, userID)
 	}
 	rows, err := s.Pool.Query(ctx, `
-		select distinct on (gc.guild_id) gc.guild_id, coalesce(ae.name, c.name)
+		select distinct on (gc.guild_id) gc.guild_id, coalesce(ae.name, c.name), nullif(c.class, ''), gc.character_key
 		from guild_characters gc
 		join unnest($1::bigint[], $2::bigint[]) as h(guild_id, user_id)
 		  on h.guild_id = gc.guild_id and h.user_id = gc.user_id
+		join users u on u.id = gc.user_id
 		left join addon_exports ae on ae.character_key = gc.character_key
 		left join characters c on c.key = gc.character_key
 		where gc.character_key not like 'account:%' and coalesce(ae.name, c.name) is not null
-		order by gc.guild_id, gc.verified_at is not null desc,
-		         (gc.rank = 'leader') desc, (gc.rank = 'officer') desc, coalesce(ae.name, c.name)`,
+		order by gc.guild_id, gc.verified_at is not null desc, gc.rank_index nulls last, `+rankOrderSQL("gc")+`,
+		         (gc.character_key = u.main_character_key) desc nulls last, coalesce(ae.name, c.name)`,
 		guildIDs, userIDs)
 	if err != nil {
-		return nil, fmt.Errorf("guilds: claim holder names: %w", err)
+		return nil, fmt.Errorf("guilds: claim holder characters: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var guildID int64
-		var name string
-		if err := rows.Scan(&guildID, &name); err != nil {
-			return nil, fmt.Errorf("guilds: claim holder names: %w", err)
+		var ref ClaimHolderRef
+		if err := rows.Scan(&guildID, &ref.Name, &ref.Class, &ref.CharacterKey); err != nil {
+			return nil, fmt.Errorf("guilds: claim holder characters: %w", err)
 		}
-		out[guildID] = name
+		out[guildID] = ref
 	}
 	return out, rows.Err()
+}
+
+// guildCharacterNames is guildCharacterRefs' names: the one rule that names a claim holder or a
+// payer in a guild.
+func (s *Store) guildCharacterNames(ctx context.Context, holders map[int64]int64) (map[int64]string, error) {
+	refs, err := s.guildCharacterRefs(ctx, holders)
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[int64]string, len(refs))
+	for guildID, ref := range refs {
+		out[guildID] = ref.Name
+	}
+	return out, nil
+}
+
+// claimHolderRef is guildCharacterRefs for one guild; nil when the account has no named
+// character on its roster (the page then says "the guild master").
+func (s *Store) claimHolderRef(ctx context.Context, guildID, userID int64) (*ClaimHolderRef, error) {
+	refs, err := s.guildCharacterRefs(ctx, map[int64]int64{guildID: userID})
+	if err != nil {
+		return nil, err
+	}
+	ref, ok := refs[guildID]
+	if !ok {
+		return nil, nil
+	}
+	return &ref, nil
+}
+
+// withClaimHolder is a claim view as viewerID reads it: whether the claim is theirs and which
+// character holds it. claimState itself stays pure.
+func (s *Store) withClaimHolder(ctx context.Context, view ClaimStateView, g Guild, viewerID int64) (ClaimStateView, error) {
+	if g.ClaimedBy == nil {
+		return view, nil
+	}
+	ref, err := s.claimHolderRef(ctx, g.ID, *g.ClaimedBy)
+	if err != nil {
+		return view, err
+	}
+	view.Yours = *g.ClaimedBy == viewerID
+	view.ClaimedBy = ref
+	return view, nil
 }

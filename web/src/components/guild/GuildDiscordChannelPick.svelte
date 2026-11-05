@@ -217,7 +217,7 @@
         </button>
       {:else}
         <button
-          class="{button('primary')} {saveOff ? 'cursor-not-allowed opacity-50' : ''}"
+          class="{button(gated ? 'secondary' : 'primary')} {saveOff ? 'cursor-not-allowed opacity-50' : ''}"
           disabled={saveOff}
           aria-busy={saving}
           onclick={() => void save()}
