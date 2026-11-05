@@ -1,6 +1,9 @@
 package request
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 // Round 21 (priest lane): the filler Heal before Greater Heal. A new Heal rank
 // costs more mana than its extra size returns on band gear in its first levels:
@@ -38,5 +41,70 @@ func TestRound21PriestHealRankRows(t *testing.T) {
 		if !ids[c.want] || ids[c.not] {
 			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
 		}
+	}
+}
+
+// Round 21 (priest lane): before Heal at 16 a Holy priest's only filler is
+// Lesser Heal rank 3 (learned at 10). The list had no Lesser Heal line, so
+// the band-10 card and the engine cast Renew alone at 10 to 15. Lesser Heal
+// holds the filler until 16 and leaves the list once Heal is trained.
+func TestRound21HolyLesserHealBeforeHeal(t *testing.T) {
+	const lesserHeal3, heal1 = 2053, 2054
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Holy at 10", 10, lesserHeal3, heal1},
+		{"Holy at 15", 15, lesserHeal3, heal1},
+	} {
+		ids := rotationIDs(t, "priest-holy", "priest", c.level, specRankChoices("priest-holy", BarePreset, "human"))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
+
+// TestRound21HolyLesserHealStopsAtSixteen: every Holy Lesser Heal line is
+// scoped below 16, where Heal takes the filler.
+func TestRound21HolyLesserHealStopsAtSixteen(t *testing.T) {
+	var list struct {
+		Rotation struct {
+			PriorityList []json.RawMessage `json:"priorityList"`
+		} `json:"rotation"`
+	}
+	readJSON(t, "../../data/curated/apl/priest-holy.json", &list)
+	const below = `{"cmp":{"op":"OpLt","lhs":{"currentLevel":{}},"rhs":{"const":{"val":"16"}}}}`
+	lessers := 0
+	for index, raw := range list.Rotation.PriorityList {
+		var l struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int `json:"spellId"`
+					} `json:"spellId"`
+				} `json:"castSpell"`
+				Condition json.RawMessage `json:"condition"`
+			} `json:"action"`
+		}
+		if err := json.Unmarshal(raw, &l); err != nil {
+			t.Fatal(err)
+		}
+		if l.Action.CastSpell == nil || l.Action.CastSpell.SpellID.SpellID != 2053 {
+			continue
+		}
+		lessers++
+		var and struct {
+			And struct {
+				Vals []json.RawMessage `json:"vals"`
+			} `json:"and"`
+		}
+		if err := json.Unmarshal(l.Action.Condition, &and); err != nil || len(and.And.Vals) != 2 ||
+			compactJSON(t, and.And.Vals[1]) != below {
+			t.Errorf("Holy Lesser Heal line %d is not scoped below level 16", index)
+		}
+	}
+	if lessers != 10 {
+		t.Errorf("Holy casts Lesser Heal rank 3 on %d lines, want 10 (the Heal lines' targets)", lessers)
 	}
 }
