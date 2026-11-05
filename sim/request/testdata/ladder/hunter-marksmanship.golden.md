@@ -100,13 +100,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 27.4 | 2 | other:shoot=80.2, spell:1130=2.5, other:move=1.0, spell:13165=1.0 | {SpellID: 13813}, {SpellID: 2643} |
-| 20 | 0000000000000000-0050510000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 63.0 | 5 | other:shoot=74.3, spell:14282=13.6, spell:13550=10.6, spell:19434=8.4, spell:1130=2.5 | {SpellID: 13813} |
-| 30 | 0000000000000000-0050552001300000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 93.8 | 6 | other:shoot=74.4, spell:19434=18.1, spell:14283=7.0, spell:13551=4.7, spell:14323=2.4 | {SpellID: 13813} |
-| 38 | 0000000000000000-0050552001521030-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 128.7 | 6 | other:shoot=78.2, spell:19434=19.9, spell:14284=9.3, spell:13552=5.3, spell:14323=2.4 | - |
-| 40 | 0000000000000000-0050552001521050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 145.9 | 6 | other:shoot=78.9, spell:19434=20.2, spell:14284=9.8, spell:13552=5.7, spell:14324=2.4 | {SpellID: 1310687} |
-| 50 | 5320000000000000-0050552001521050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 181.4 | 6 | other:shoot=157.8, spell:20902=13.4, spell:14285=5.7, spell:13554=3.3, spell:14324=2.5 | {SpellID: 1310785} |
-| 60 | 5320000500000000-0050552001521050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 312.0 | 6 | other:shoot=83.2, spell:20904=11.2, spell:14287=4.9, spell:13555=3.1, spell:14325=2.5 | {SpellID: 1310786} |
+| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 27.4 | 2 | other:shoot=80.2, spell:1130=2.5, other:move=1.0, spell:13165=1.0 | {SpellID: 2643} |
+| 20 | 0000000000000000-0050510000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 63.0 | 5 | other:shoot=74.3, spell:14282=13.6, spell:13550=10.6, spell:19434=8.4, spell:1130=2.5 | - |
+| 30 | 0000000000000000-0050552001300000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 93.8 | 6 | other:shoot=74.4, spell:19434=18.1, spell:14283=7.0, spell:13551=4.7, spell:14323=2.4 | - |
+| 38 | 0000000000000000-0050552001521030-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 128.7 | 6 | other:shoot=78.2, spell:19434=19.8, spell:14284=9.4, spell:13552=5.4, spell:14323=2.4 | - |
+| 40 | 0000000000000000-0050552001521050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 145.7 | 6 | other:shoot=78.9, spell:19434=20.0, spell:14284=10.0, spell:13552=5.6, spell:14324=2.4 | {SpellID: 1310687} |
+| 50 | 5320000000000000-0050552001521050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 187.6 | 6 | other:shoot=157.2, spell:14285=17.5, spell:20902=5.9, spell:13554=3.3, spell:14324=2.5 | {SpellID: 1310785} |
+| 60 | 5320000500000000-0050552001521050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 320.2 | 6 | other:shoot=83.5, spell:14287=14.9, spell:20904=5.1, spell:13555=3.1, spell:14325=2.4 | {SpellID: 1310786} |
 
 ## Learned but unused (informational)
 

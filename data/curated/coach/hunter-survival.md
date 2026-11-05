@@ -20,14 +20,13 @@ This is the Survival Hunter as the site's guide describes it. Survival is a mele
 
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
-- Hunter's Mark whenever the target is not marked.
-- Aspect of the Beast.
+- Mark the boss with Hunter's Mark first, so the mana is back by the pull, then put up Aspect of the Beast and leave it up.
 - At sixty, Aspect of the Falcon gives the same melee attack power as Beast, and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade.
 - On the pull, press Rapid Fire, your trinkets and your racial together.
 - Raptor Strike queued on every swing it is ready.
 - Counterattack only after you parry: it is free and cannot be blocked, dodged or parried.
 - Strider Kick on its own short cooldown, ahead of Immolation Trap.
-- Immolation Trap at your feet on cooldown.
+- Immolation Trap on cooldown.
 - Mongoose Bite only after you dodge, or while Expose Prey is up: it is a counterattack.
 - Lacerate whenever its bleed has fallen off.
 - Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. Without the totem it loses damage.
