@@ -375,13 +375,9 @@ describe('candidateSubline', () => {
   });
 });
 
-describe('raid mode loot line', () => {
-  it('reads 7 of 8 raids', () => {
-    expect(attendanceLabel(7, 8, 'raids')).toBe('7 of 8 raids');
-    expect(attendanceLabel(1, 1, 'raids')).toBe('1 of 1 raid');
-  });
-
-  it('keeps report mode on raid nights', () => {
-    expect(attendanceLabel(7, 8, 'reports')).toBe('7 of 8 raid nights');
+describe('loot line in either attendance mode', () => {
+  it("reads raid nights, the roster and the bot's one form", () => {
+    expect(attendanceLabel(7, 8)).toBe('7 of 8 raid nights');
+    expect(attendanceLabel(1, 1)).toBe('1 of 1 raid night');
   });
 });

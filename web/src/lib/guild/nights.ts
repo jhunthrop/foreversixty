@@ -1,7 +1,8 @@
 // web/src/lib/guild/nights.ts
-// "1 of 1 night", "5 of 8 nights": one rule for the roster's attendance chip and the loot line
-// (lifecycle round 8, F8-3). The noun is singular when the denominator is 1; the loot line keeps
-// its longer noun, "raid night".
-export function nightsLabel(present: number, nights: number, noun = 'night'): string {
-  return `${present} of ${nights} ${noun}${nights === 1 ? '' : 's'}`;
+// "1 of 1 raid night", "5 of 8 raid nights": the one attendance figure on the roster, the Loot tab,
+// the character guild line and the bot (api guilds attendanceChip). Lifecycle round 8 (F8-3) made
+// the rule; guild loop round 3 made it one noun everywhere ("Came 1 of 1 raids" and "1 of 1 raid"
+// read beside each other for one night). The noun is singular when the denominator is 1.
+export function nightsLabel(present: number, nights: number): string {
+  return `${present} of ${nights} raid night${nights === 1 ? '' : 's'}`;
 }

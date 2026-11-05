@@ -3,9 +3,7 @@
 // GET .../loot) already ranks candidates and names the awardee; this module only formats
 // what it sent -- never re-ranks or re-decides an award client-side.
 import { dayWord } from '../dates';
-import type { AttendanceSource } from './attendance-contract';
 import { raidsAttended } from './attendance-copy';
-import { nightsLabel } from './nights';
 import { specClassName } from './spec-name';
 import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem, GuildLootPage } from './api';
 
@@ -74,14 +72,8 @@ export function showsAttendance(items: readonly GuildLootItem[]): boolean {
   return items.some((item) => item.candidates.some((candidate) => candidate.attendance.nights > 0));
 }
 
-/** "3 of 4 raid nights", the attendance cell; in raid mode the figure counts raids ("7 of 8 raids"). */
-export function attendanceLabel(
-  present: number,
-  nights: number,
-  source: AttendanceSource = 'reports',
-): string {
-  return source === 'raids' ? raidsAttended(present, nights) : nightsLabel(present, nights, 'raid night');
-}
+/** "3 of 4 raid nights", the attendance cell: the one attendance figure (attendance-copy). */
+export const attendanceLabel = raidsAttended;
 
 /** "Awarded to Rootbound · today · by Bow Jackzon": said once, on the item. */
 export function awardedLine(

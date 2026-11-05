@@ -1210,7 +1210,6 @@
           {officerTools}
           {raidGuildTools}
           memberReadOnly={role === 'member'}
-          attendanceSource={attendanceSourceOf(home)}
           ownKeys={[...myCharacterKeys]}
           busyItemId={lootBusyItemId}
           refusal={planRefusal}

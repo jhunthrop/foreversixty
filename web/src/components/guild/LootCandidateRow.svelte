@@ -7,7 +7,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { GuildLootCandidate } from '../../lib/guild/api';
-  import type { AttendanceSource } from '../../lib/guild/attendance-contract';
   import {
     EMPTY_SLOT,
     attendanceLabel,
@@ -23,14 +22,12 @@
     candidate,
     own,
     showAttendance,
-    attendanceSource,
     action,
   }: {
     candidate: GuildLootCandidate;
     /** The viewer's own row: the own-row wash and `(you)`. */
     own: boolean;
     showAttendance: boolean;
-    attendanceSource: AttendanceSource;
     /** The officer's Award or the awarded state. */
     action: Snippet;
   } = $props();
@@ -104,7 +101,7 @@
       class="text-muted row-start-3 text-[13px] md:row-start-auto"
       data-testid="guild-loot-candidate-attendance"
     >
-      {attendanceLabel(candidate.attendance.present, candidate.attendance.nights, attendanceSource)}
+      {attendanceLabel(candidate.attendance.present, candidate.attendance.nights)}
     </div>
   {/if}
   <div class="col-start-2 row-start-3 justify-self-end md:col-start-auto md:row-start-auto">

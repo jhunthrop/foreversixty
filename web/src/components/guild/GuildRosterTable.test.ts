@@ -531,13 +531,13 @@ describe('GuildRosterTable attendance source', () => {
     const body = text(
       render(GuildRosterTable, { props: { ...props(raidHome), attendanceSource: 'raids' } }).body,
     );
-    expect(body).toContain('Came 7 of 8 \u00b7 26 of 30 raids');
-    expect(body.split('Came: raids attended of raids signed up for or attended').length - 1).toBe(1);
+    expect(body).toContain('7 of 8 raid nights \u00b7 26 of the last 30');
+    expect(body.split('Raid nights each raider came to').length - 1).toBe(1);
   });
 
   it('keeps report mode on nights with no footnote', () => {
     const body = text(render(GuildRosterTable, { props: props(raidHome) }).body);
-    expect(body).toContain('7 of 8 nights');
+    expect(body).toContain('7 of 8 raid nights');
     expect(body).not.toContain('Came: raids attended');
   });
 });

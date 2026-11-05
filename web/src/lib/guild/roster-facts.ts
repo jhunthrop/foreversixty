@@ -7,25 +7,25 @@ import { guildRosterAddonCopy } from './copy';
 import type { GuildRosterEntry, GuildRosterRow } from './api';
 import type { AttendanceSource } from './attendance-contract';
 import { attendanceCopy, rosterChip } from './attendance-copy';
-import { nightsLabel } from './nights';
 import { outputFigure, topOutputLabel } from './output-figure';
 import { addonGapLabel, addonIdentity, addonSeen, addonSpecName } from './roster-addon';
 import { specClassName, specName } from './spec-name';
 import { classDisplayName } from '../sim/spec-label';
 
-/** One row's attendance chip: raid mode counts raids over two windows (`Came 7 of 8 · 26 of 30`, or
- *  `No raids yet` for a character with none), report mode counts nights. */
+/** One row's attendance chip, the bot's words in both modes: `7 of 8 raid nights`, and in raid mode
+ *  ` · 26 of the last 30` when the longer window holds more, or `No raids yet` for a character with
+ *  none. */
 function attendanceChip(
   row: GuildRosterRow,
   last8: NonNullable<GuildRosterRow['attendance']>,
   source: AttendanceSource,
 ): string {
-  if (source !== 'raids') return nightsLabel(last8.present, last8.nights);
+  if (source !== 'raids') return rosterChip(last8, undefined);
   if (last8.nights === 0) return attendanceCopy.roster.noRaids;
   return rosterChip(last8, row.attendance_30);
 }
 
-/** "Item level 68", "5 of 8 nights", "Top DPS 238", "Rating 65": every figure with its unit
+/** "Item level 68", "5 of 8 raid nights", "Top DPS 238", "Rating 65": every figure with its unit
  *  named first, never a bare "65 rating". */
 export function rosterStatChips(row: GuildRosterRow, source: AttendanceSource = 'reports'): string[] {
   const chips: string[] = [];

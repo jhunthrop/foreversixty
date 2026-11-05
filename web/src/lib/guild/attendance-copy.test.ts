@@ -137,6 +137,18 @@ describe('night line', () => {
     expect(nightLine({ ...NIGHT, kills: 2, deaths: 1 })).toContain('2 kills · 3 wipes · 1 death ·');
   });
 
+  it("says the bot's sentence when nobody signed up beforehand, never 0 of 0 came", () => {
+    const unsigned = { ...NIGHT, signed: 0, came: 0, joined: 5, kills: 0, wipes: 0, deaths: 0, duration_ms: 0 };
+    expect(nightLine(unsigned)).toBe('5 came, nobody signed up beforehand');
+    expect(nightLine(unsigned)).toBe(str('Night line', 2, { n: '5' }));
+    expect(nightLine({ ...unsigned, joined: 1 })).toBe('1 came, nobody signed up beforehand');
+    expect(nightLine({ ...unsigned, joined: 0 })).toBe(str('Night line', 3));
+    expect(nightLine({ ...unsigned, kills: 1 })).toBe('5 came, nobody signed up beforehand · 1 kill');
+    expect(attendanceSummary({ ...NIGHT, signed: 0, came: 0, late: 0, not_in_log: 0, joined: 5 })).toBe(
+      '5 came, nobody signed up beforehand',
+    );
+  });
+
   it('formats durations and kill times', () => {
     expect(durationLabel(161 * 60_000)).toBe('2 h 41 min');
     expect(durationLabel(120 * 60_000)).toBe('2 h');
@@ -217,9 +229,9 @@ describe('report words', () => {
       deaths: '',
       firstPull: false,
     });
-    expect(unnamedLine({ pulls: 7, kills: 5, wipes: 2 })).toBe(
-      '7 pulls with no named encounter published: 5 kills, 2 wipes.',
-    );
+    expect(unnamedLine({ pulls: 7, kills: 5, wipes: 2 })).toBe('5 trash packs');
+    expect(unnamedLine({ pulls: 2, kills: 1, wipes: 1 })).toBe(str('Kill order', 4, { k: '1' }).replace('(s)', ''));
+    expect(unnamedLine({ pulls: 2, kills: 0, wipes: 2 })).toBeNull();
   });
 
   it('changes and consumables', () => {
@@ -245,14 +257,15 @@ describe('attendance, roster and readiness', () => {
   });
 
   it('roster chip and lines', () => {
+    // The bot's chip (api guilds attendanceChip), one form on every surface.
     expect(rosterChip({ present: 7, nights: 8 }, { present: 26, nights: 30 })).toBe(
-      'Came 7 of 8 · 26 of 30 raids',
+      '7 of 8 raid nights · 26 of the last 30',
     );
-    expect(rosterChip({ present: 3, nights: 3 }, { present: 3, nights: 3 })).toBe('Came 3 of 3 raids');
-    expect(rosterChip({ present: 3, nights: 3 }, undefined)).toBe('Came 3 of 3 raids');
-    expect(raidsAttended(7, 8)).toBe('7 of 8 raids');
-    expect(raidsAttended(1, 1)).toBe('1 of 1 raid');
-    expect(cameGuildLine(7, 8)).toBe(' · came 7 of 8 raids');
+    expect(rosterChip({ present: 3, nights: 3 }, { present: 3, nights: 3 })).toBe('3 of 3 raid nights');
+    expect(rosterChip({ present: 1, nights: 1 }, undefined)).toBe('1 of 1 raid night');
+    expect(raidsAttended(7, 8)).toBe('7 of 8 raid nights');
+    expect(raidsAttended(1, 1)).toBe('1 of 1 raid night');
+    expect(cameGuildLine(7, 8)).toBe(' · came 7 of 8 raid nights');
   });
 
   it('readiness lines', () => {

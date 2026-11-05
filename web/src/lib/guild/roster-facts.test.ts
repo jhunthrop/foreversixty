@@ -22,7 +22,7 @@ describe('rosterStatChips', () => {
   it('names the unit first on every chip', () => {
     const chips = rosterStatChips(rowNamed('Kraggor'));
     expect(chips[0]).toMatch(/^Item level \d+$/);
-    expect(chips.some((c) => /^\d+ of \d+ nights$/.test(c))).toBe(true);
+    expect(chips.some((c) => /^\d+ of \d+ raid nights?$/.test(c))).toBe(true);
     expect(chips.some((c) => /^Top (DPS|HPS) \d+$/.test(c))).toBe(true);
     expect(chips.some((c) => /^Rating \d+$/.test(c))).toBe(true);
     expect(chips.join(' ')).not.toMatch(/\d+ rating|ilvl|best DPS/);
@@ -34,15 +34,14 @@ describe('rosterStatChips in raid mode', () => {
   type Window = { present: number; nights: number };
   const raidRow = (last8: Window, last30?: Window) => ({ ...base, attendance: last8, attendance_30: last30 });
 
-  it('reads Came 7 of 8 \u00b7 26 of 30', () => {
+  it('reads the bot chip, 7 of 8 raid nights \u00b7 26 of the last 30', () => {
     const chips = rosterStatChips(raidRow({ present: 7, nights: 8 }, { present: 26, nights: 30 }), 'raids');
-    expect(chips).toContain('Came 7 of 8 \u00b7 26 of 30 raids');
-    expect(chips.some((c) => /nights?$/.test(c))).toBe(false);
+    expect(chips).toContain('7 of 8 raid nights \u00b7 26 of the last 30');
   });
 
-  it('reads Came 3 of 3 alone when the long window adds nothing', () => {
+  it('reads 3 of 3 raid nights alone when the long window adds nothing', () => {
     const chips = rosterStatChips(raidRow({ present: 3, nights: 3 }, { present: 3, nights: 3 }), 'raids');
-    expect(chips).toContain('Came 3 of 3 raids');
+    expect(chips).toContain('3 of 3 raid nights');
   });
 
   it('says No raids yet for a 0 of 0 chip', () => {
@@ -50,9 +49,9 @@ describe('rosterStatChips in raid mode', () => {
     expect(chips).toContain('No raids yet');
   });
 
-  it('keeps report mode unchanged', () => {
-    expect(rosterStatChips(raidRow({ present: 5, nights: 8 }), 'reports')).toContain('5 of 8 nights');
-    expect(rosterStatChips(raidRow({ present: 5, nights: 8 }))).toContain('5 of 8 nights');
+  it('reads the same words in report mode', () => {
+    expect(rosterStatChips(raidRow({ present: 5, nights: 8 }), 'reports')).toContain('5 of 8 raid nights');
+    expect(rosterStatChips(raidRow({ present: 1, nights: 1 }))).toContain('1 of 1 raid night');
   });
 });
 

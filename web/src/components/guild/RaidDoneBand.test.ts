@@ -61,7 +61,7 @@ describe('the night line', () => {
       doneRaid({ night: raidNight({ came: 10, signed: 20, joined: 0, kills: 0, wipes: 0, deaths: 0 }) }),
     );
     expect(text(between(body, 'raid-night-line', 'raid-match-line'))).toBe(
-      `${cameRatio({ came: 10, signed: 20 })} · 2 h 41 min`,
+      `${cameRatio({ came: 10, signed: 20, joined: 0 })} · 2 h 41 min`,
     );
     expect(body).toContain('width: 50%');
   });
