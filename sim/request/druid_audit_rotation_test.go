@@ -409,3 +409,35 @@ func TestRestorationTaurenHealingTouchRankFourAtTwentySixToTwentyEight(t *testin
 		}
 	}
 }
+
+// Sim-accuracy round 24: the feral card's caster lines before Cat Form, swept
+// below 20 with Wrath and Moonfire together. Wrath rank 1 and Moonfire rank 1
+// win at 10 to 13 (the fight runs dry), the newest ranks at 14 and 15, and
+// Moonfire rank 2 at 16 to 19 over the rank 3 learned at 16.
+func TestFeralCasterRankRowsBelowTwenty(t *testing.T) {
+	const (
+		wrath1, wrath2, wrath3          = 5176, 5177, 5178
+		moonfire1, moonfire2, moonfire3 = 8921, 8924, 8925
+	)
+	for _, c := range []struct {
+		name      string
+		level     int
+		want, not int32
+	}{
+		{"Wrath at 10 is rank 1", 10, wrath1, wrath2},
+		{"Wrath at 13 is rank 1", 13, wrath1, wrath2},
+		{"Wrath at 14 is rank 3", 14, wrath3, wrath1},
+		{"Moonfire at 10 is rank 1", 10, moonfire1, moonfire2},
+		{"Moonfire at 13 is rank 1", 13, moonfire1, moonfire2},
+		{"Moonfire at 14 is rank 2", 14, moonfire2, moonfire1},
+		{"Moonfire at 16 is rank 2", 16, moonfire2, moonfire3},
+		{"Moonfire at 19 is rank 2", 19, moonfire2, moonfire3},
+	} {
+		for _, race := range []string{"night-elf", "tauren"} {
+			ids := rotationIDs(t, "druid-feral", "druid", c.level, specRankChoices("druid-feral", BarePreset, race))
+			if !ids[c.want] || ids[c.not] {
+				t.Errorf("%s (%s): want %d cast and %d not", c.name, race, c.want, c.not)
+			}
+		}
+	}
+}
