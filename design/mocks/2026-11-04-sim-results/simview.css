@@ -346,3 +346,26 @@ html, body { margin: 0; background: var(--bg); color: var(--text); font: 400 15p
   #spread .hbars, #spread .haxis, #spread .hcap { grid-column: 1; }
   #spread .hstats { grid-column: 2; grid-row: 1 / span 3; margin-top: 22px; align-content: start; }
 }
+/* Round 2. */
+.pair { white-space: nowrap; }
+.lg-x { width: 4px; height: 16px; background: var(--gold-light); border-radius: 1px; }
+.lg-m { width: 3px; height: 12px; border: 1px solid var(--muted); border-radius: 1px; }
+.lost { font: 400 13px Barlow; color: var(--ember); margin-left: 6px; }
+.fstats { max-width: 960px; margin: 16px auto 0; border: 1px solid var(--line-soft); border-radius: 12px; padding: 12px 16px 14px; background: #0b0e14; }
+.fs-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.fs-row { display: grid; grid-template-columns: 1fr 2fr 1fr 1fr 1fr; gap: 16px; }
+.fs .k { font: 600 13px/18px Barlow; color: var(--muted); }
+.fs .v { font: 600 15px/22px Barlow; color: var(--strong); }
+.hitbar { position: relative; height: 6px; background: var(--line-soft); border-radius: 3px; margin: 6px 0 4px; max-width: 220px; }
+.hitbar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--gold); border-radius: 3px; }
+.hitbar b { position: absolute; top: -3px; width: 2px; height: 12px; background: var(--gold-light); }
+.ref { font: 400 13px Barlow; color: var(--muted); }
+.chip.quiet { opacity: .62; }
+.chips-sub { flex-basis: 100%; font: 600 13px Barlow; color: var(--muted); padding-top: 6px; }
+@media (max-width: 767px) {
+  .fs-row { grid-template-columns: 1fr 1fr; }
+  .fs-row .fs:nth-child(2) { grid-column: 1 / -1; order: -1; }
+  .fstats { padding: 12px; }
+}
+.lrow.nob { grid-template-columns: 24px minmax(0,1fr) 96px 136px; }
+@media (max-width: 767px) { .lrow.nob { grid-template-columns: 24px minmax(0,1fr) 48px 112px; } }

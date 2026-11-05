@@ -1,10 +1,12 @@
-"""The timeline region as SVG: lanes, ticks, bars, the rage line, the axis, the brush (spec 5.3)."""
+"""The timeline region as SVG: lanes, ticks, bars, the rage line, the axis, the brush (spec 3.7)."""
 import html as h
 import data as D
 
 LANE, GROUP, AXIS, RAGE = 24, 30, 30, 72
 DMG = "#e8c96a"     # --color-school-physical: a damaging cast
 CD = "#e9e4d8"      # --color-text: a cast that deals no damage
+CRIT = "#fbe7a1"    # --gold-light
+MUTED = "#9a9484"
 BUFF = "rgba(233,228,216,.35)"
 DEBUFF = "rgba(168,118,42,.78)"
 EXEC = "rgba(214,110,40,.07)"
@@ -31,22 +33,24 @@ for x in D.SAMPLE:
     if k not in CAST_KEYS:
         CAST_KEYS.append(k)
 DAMAGING = {r["key"] for r in D.ability_rows()}
-SWING_KEYS = ["other:attack/1", "other:attack/2", "spell:12867"]
-BUFF_KEYS = ["spell:12328", "spell:1719", "spell:20572", "spell:2687", "spell:18499"]
-BUFF_LEN = {"spell:12328": 30000, "spell:1719": 15000, "spell:20572": 15000, "spell:2687": 10000, "spell:18499": 10000}
+SWING_KEYS = ["other:attack/1", "other:attack/2", "other:attack/3", "spell:12867"]
+BUFF_KEYS = [a["action"] for a in D.SAMPLE_AURAS if a["on"] == "player"]
+DEBUFF_KEYS = [a["action"] for a in D.SAMPLE_AURAS if a["on"] == "target"]
 EXEC_AT = D.sample_times("spell:20662")[0]
 
 
+def lane_name(kind, k):
+    if kind == "swing" and k == "spell:12867":
+        return "Deep Wounds ticks"
+    return D.name_of(k)
+
+
 def lanes(swings):
-    out = [("group", "Casts", len(CAST_KEYS))]
-    out += [("cast", k) for k in CAST_KEYS]
+    out = [("group", "Casts", len(CAST_KEYS))] + [("cast", k) for k in CAST_KEYS]
     if swings:
-        out += [("group", "Swings and ticks", 3)]
-        out += [("swing", k) for k in SWING_KEYS]
-    out += [("group", "On you", len(BUFF_KEYS))]
-    out += [("buff", k) for k in BUFF_KEYS]
-    out += [("group", "On the target", 1)]
-    out += [("debuff", "spell:12867")]
+        out += [("group", "Swings and ticks", len(SWING_KEYS))] + [("swing", k) for k in SWING_KEYS]
+    out += [("group", "On you", len(BUFF_KEYS))] + [("buff", k) for k in BUFF_KEYS]
+    out += [("group", "On the target", len(DEBUFF_KEYS))] + [("debuff", k) for k in DEBUFF_KEYS]
     out += [("rage", None)]
     return out
 
@@ -55,40 +59,60 @@ def height_of(row):
     return {"group": GROUP, "rage": RAGE}.get(row[0], LANE)
 
 
+def icon_img(k, name):
+    ic = D.icon_of(k)
+    if not ic:
+        return f'<span class="ic" style="width:18px;height:18px;background:#14171f" aria-label="{h.escape(name)}"></span>'
+    return f'<img class="ic" src="{D.icon_path(ic).as_uri()}" alt="{h.escape(name)}">'
+
+
 def labels(swings):
-    parts = [f'<div class="tl-axis"><span>Time</span></div>']
+    parts = ['<div class="tl-axis"><span>Time</span></div>']
     for row in lanes(swings):
         if row[0] == "group":
             parts.append(f'<div class="tl-grp"><span>{h.escape(row[1])}</span></div>')
         elif row[0] == "rage":
-            parts.append('<div class="tl-rage"><b>Rage</b><span>peak 100 of 100</span></div>')
+            peak = max(v for _, v in D.rage_points())
+            parts.append(f'<div class="tl-rage"><b>Rage</b><span>peak {peak} of 100</span></div>')
         else:
-            k = row[1]
-            nm = D.name_of(k)
-            if row[0] == "swing" and k == "spell:12867":
-                nm = "Deep Wounds ticks"
-            parts.append(f'<div class="tl-row" title="{h.escape(nm)}"><img class="ic" src="{D.icon_path(D.icon_of(k)).as_uri()}" alt="{h.escape(nm)}"><span>{h.escape(nm)}</span></div>')
+            nm = lane_name(row[0], row[1])
+            parts.append(f'<div class="tl-row" title="{h.escape(nm)}">{icon_img(row[1], nm)}<span>{h.escape(nm)}</span></div>')
     return "".join(parts)
 
 
-def plot(width, t0, t1, swings, step, crosshair=None):
+def tick(x, y, hh, ev, kind, col):
+    """A cast tick, shaped by its outcome when the run records one (spec 3.7)."""
+    outcome = ev.get("outcome")
+    if kind == "swing":
+        w, th = 2, 10
+    else:
+        w, th = 3, 14
+    if kind == "swing" and ev["action"] == "spell:12867":
+        outcome = None                       # periodic ticks draw plain at every outcome
+    if outcome == "crit":
+        w, th, col = w + 1, th + 4, CRIT
+    if outcome in ("miss", "dodge", "parry"):
+        return f'<rect x="{x - w / 2:.1f}" y="{y + (hh - th) / 2:.1f}" width="{w}" height="{th}" rx="1" fill="none" stroke="{MUTED}" stroke-width="1"/>'
+    op = ".6" if outcome == "glance" else (".8" if kind == "swing" else "1")
+    return f'<rect x="{x - w / 2:.1f}" y="{y + (hh - th) / 2:.1f}" width="{w}" height="{th}" rx="1" fill="{col}" opacity="{op}"/>'
+
+
+def plot(width, t0, t1, swings, step, crosshair=None, close=False, inlabels=False):
     span = t1 - t0
     X = lambda t: (t - t0) / span * width
     rows = lanes(swings)
     total_h = AXIS + sum(height_of(r) for r in rows)
     s = [f'<svg width="{width}" height="{total_h}" viewBox="0 0 {width} {total_h}" xmlns="http://www.w3.org/2000/svg" font-family="Barlow" font-size="13">']
-    # execute phase
     ex = max(EXEC_AT, t0)
     if ex < t1:
         s.append(f'<rect x="{X(ex):.1f}" y="{AXIS}" width="{width - X(ex):.1f}" height="{total_h - AXIS}" fill="{EXEC}"/>')
-        s.append(f'<text x="{X(ex) + 6:.1f}" y="{AXIS + 14}" fill="#d66e28" font-weight="700" font-size="11" letter-spacing="1.4">EXECUTE</text>')
-    # grid + axis
+        s.append(f'<text x="{X(ex) + 6:.1f}" y="{AXIS + 14}" fill="#d66e28" font-weight="700" font-size="11" letter-spacing="1.4">EXECUTE PHASE</text>')
     t = (t0 // step + 1) * step
     while t < t1:
         x = X(t)
         s.append(f'<line x1="{x:.1f}" x2="{x:.1f}" y1="{AXIS - 6}" y2="{total_h}" stroke="#1c2230"/>')
         if t != 0:
-            s.append(f'<text x="{x:.1f}" y="{AXIS - 10}" fill="#9a9484" text-anchor="middle" font-weight="600">{clock(t)}</text>')
+            s.append(f'<text x="{x:.1f}" y="{AXIS - 10}" fill="{MUTED}" text-anchor="middle" font-weight="600">{clock(t)}</text>')
         t += step
     if t0 < 0 < t1:
         s.append(f'<line x1="{X(0):.1f}" x2="{X(0):.1f}" y1="{AXIS - 6}" y2="{total_h}" stroke="#4a4030" stroke-dasharray="3 3"/>')
@@ -99,24 +123,17 @@ def plot(width, t0, t1, swings, step, crosshair=None):
         kind = row[0]
         if kind in ("cast", "swing"):
             k = row[1]
-            if k == "spell:11567":
+            if k == "spell:11567" and close:
                 for tt in D.sample_times("spell:11567/1"):
                     if t0 <= tt <= t1:
                         s.append(f'<rect x="{X(tt) - 1.5:.1f}" y="{y + 5}" width="3" height="14" rx="1" fill="none" stroke="{DMG}" stroke-width="1"/>')
             col = DMG if k in DAMAGING else CD
-            w, th = (2, 10) if kind == "swing" else (3, 14)
-            for tt in D.sample_times(k):
-                if t0 <= tt <= t1:
-                    s.append(f'<rect x="{X(tt) - w / 2:.1f}" y="{y + (hh - th) / 2:.1f}" width="{w}" height="{th}" rx="1" fill="{col}"{" opacity=\".8\"" if kind == "swing" else ""}/>')
+            for ev in D.sample_events(k):
+                if t0 <= ev["at_ms"] <= t1:
+                    s.append(tick(X(ev["at_ms"]), y, hh, ev, kind, col))
         elif kind in ("buff", "debuff"):
-            k = row[1]
-            if kind == "buff":
-                segs = [[tt, tt + BUFF_LEN[k]] for tt in D.sample_times(k)]
-                col = BUFF
-            else:
-                segs = [[a, b + 3000] for a, b in D.merged(D.sample_times(k), 3100)]
-                col = DEBUFF
-            for a, b in segs:
+            col = BUFF if kind == "buff" else DEBUFF
+            for a, b in D.segments(row[1], "player" if kind == "buff" else "target"):
                 a, b = max(a, t0), min(b, D.SAMPLE_END, t1)
                 if b > a:
                     s.append(f'<rect x="{X(a):.1f}" y="{y + 7}" width="{max(2, X(b) - X(a)):.1f}" height="10" rx="3" fill="{col}"/>')
@@ -125,8 +142,7 @@ def plot(width, t0, t1, swings, step, crosshair=None):
             top, bot = y + 8, y + hh - 8
             Y = lambda v: bot - v / 100 * (bot - top)
             s.append(f'<line x1="0" x2="{width}" y1="{Y(100):.1f}" y2="{Y(100):.1f}" stroke="#3a3326" stroke-dasharray="2 4"/>')
-            path, area = [], []
-            prev = None
+            path, prev = [], None
             for tt, v in pts:
                 if tt < t0 or tt > t1:
                     prev = v if tt < t0 else prev
@@ -139,6 +155,10 @@ def plot(width, t0, t1, swings, step, crosshair=None):
             d = "".join(path)
             s.append(f'<path d="{d}V{bot}H{X(max(t0, pts[0][0])):.1f}Z" fill="rgba(229,185,85,.12)"/>')
             s.append(f'<path d="{d}" fill="none" stroke="#e5b955" stroke-width="1.5"/>')
+        if inlabels and kind in ("cast", "swing", "buff", "debuff"):
+            nm = lane_name(kind, row[1])
+            s.append(f'<rect x="2" y="{y + 5}" width="{len(nm) * 5.6 + 8:.0f}" height="14" rx="3" fill="#0d0f15" opacity=".88"/>'
+                     f'<text x="6" y="{y + 16}" fill="{MUTED}" font-size="11">{h.escape(nm)}</text>')
         y += hh
     if crosshair is not None:
         x = X(crosshair)
@@ -149,13 +169,10 @@ def plot(width, t0, t1, swings, step, crosshair=None):
 
 
 def brush(width, t0, t1, w0, w1):
-    """OverviewBrush under the plot: the whole fight's rage as a 28 px sparkline and the window."""
     span = t1 - t0
     X = lambda t: (t - t0) / span * width
-    pts = D.rage_points()
-    d = "M" + " ".join(f"{X(t):.1f},{36 - v / 100 * 24:.1f}" for t, v in pts if t0 <= t <= t1)
-    s = [f'<svg width="{width}" height="44" xmlns="http://www.w3.org/2000/svg">',
-         f'<path d="{d}" fill="none" stroke="#5d5849" stroke-width="1"/>']
+    d = "M" + " ".join(f"{X(t):.1f},{36 - v / 100 * 24:.1f}" for t, v in D.rage_points() if t0 <= t <= t1)
+    s = [f'<svg width="{width}" height="44" xmlns="http://www.w3.org/2000/svg">', f'<path d="{d}" fill="none" stroke="#5d5849" stroke-width="1"/>']
     if w0 is not None:
         s.append(f'<rect x="{X(w0):.1f}" y="4" width="{X(w1) - X(w0):.1f}" height="36" rx="4" fill="rgba(229,185,85,.10)" stroke="#e5b955"/>')
         for xx in (X(w0), X(w1)):
