@@ -77,7 +77,7 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 2. **Lacerate** until it has five stacks, then again when it has under 3 seconds left. The stacks make each cast hit harder, and the bleed turns on Rend and Tear.
 3. **Faerie Fire** whenever the boss does not have it.
 4. **Demoralizing Roar** whenever the boss does not have it, and again in its last 3 seconds, unless a warrior's Demoralizing Shout is already on it.
-5. **Maul** queued on your next swing whenever you have 15 rage spare. At levels 40 to 53 rage is short: queue Maul only at 30 rage, so Primal Bite never waits on rage when it comes off cooldown.
+5. **Maul** queued on your next swing whenever you have 15 rage spare. At levels 40 to 53 rage is short: queue Maul only at 30 rage, so Primal Bite seldom waits on rage when it comes off cooldown.
 6. **Swipe** only with two or more targets in front of you, above 40 rage. It hits up to three, and each hit grows with your attack power. On a single boss, leave it on the bar: the same rage does more threat in Maul, Lacerate and Primal Bite.
 
 **Adds.** Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.

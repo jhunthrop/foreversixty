@@ -235,7 +235,7 @@
       }
     },
     {
-      "notes": "Queued on your next swing whenever you have 15 rage, and at levels 40 to 53 only at 30 rage. Ferocity cuts its cost to 10 rage by level 14, so the 15 keeps a little rage back for Lacerate from level 25; in your forties and early fifties rage is short, and the 30 makes sure Primal Bite fires every time it comes off cooldown.",
+      "notes": "Queued on your next swing whenever you have 15 rage, and at levels 40 to 53 only at 30 rage. Ferocity cuts its cost to 10 rage by level 14, so the 15 keeps a little rage back for Lacerate from level 25; in your forties and early fifties rage is short, and the 30 keeps rage for Primal Bite nearly every time it comes off cooldown.",
       "action": {
         "castSpell": {
           "spellId": {
@@ -311,7 +311,7 @@
       }
     },
     {
-      "notes": "On two or more targets, above 40 rage. It hits up to three, so on a pack of three it is your main threat; on a single boss the same rage does more in Maul, Lacerate and Primal Bite.",
+      "notes": "On two or more targets, above 40 rage. It hits up to three, so on a pack of three it is your main threat; on a single boss the rage is better spent on Maul, and on Lacerate from 25 and Primal Bite from 40.",
       "action": {
         "castSpell": {
           "spellId": {
