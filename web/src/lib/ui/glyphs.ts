@@ -55,6 +55,13 @@ export const GLYPHS = {
   // Controls and charts spec 2026-10-30 §B5.6: the death marker.
   skull:
     '<path d="M12 3a7 7 0 00-7 7c0 2.4 1.2 4 2.5 5v3h9v-3c1.3-1 2.5-2.6 2.5-5a7 7 0 00-7-7z"/><circle cx="9.5" cy="10.5" r="1.3"/><circle cx="14.5" cy="10.5" r="1.3"/><path d="M10 18v3M14 18v3"/>',
+  // Saved sim result spec 2026-11-04 §3: the band's actions and the result cards' heads.
+  play: '<path d="M7 4.5l12 7.5-12 7.5v-15z"/>',
+  link: '<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
+  alert: '<path d="M12 4l9.5 16h-19L12 4z"/><path d="M12 10v5M12 17.500h.01"/>',
+  spark: '<path d="M12 3v5M12 16v5M3 12h5M16 12h5M5.600 5.600l3.200 3.200M15.200 15.200l3.200 3.200M18.400 5.600l-3.200 3.200M8.800 15.200l-3.200 3.200"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.600 5.600l2.100 2.100M16.300 16.300l2.100 2.100M18.400 5.600l-2.100 2.100M7.700 16.300l-2.100 2.100"/>',
+  copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4V4h11v1"/>',
 } as const;
 
 export type GlyphName = keyof typeof GLYPHS;

@@ -341,8 +341,8 @@ test('a saved sim at /sim/simfixtureab has no sideways scroll and every target c
   page,
 }) => {
   await page.goto('/sim/simfixtureab');
-  await expect(page.getByTestId('sim-saved-header')).toBeVisible();
-  await expect(page.getByTestId('sim-results')).toBeVisible();
+  await expect(page.getByTestId('sim-result-band')).toBeVisible();
+  await expect(page.getByTestId('sim-damage-card')).toBeVisible();
 
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);
