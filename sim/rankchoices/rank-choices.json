@@ -521,9 +521,16 @@
           },
           {
             "from_level": 50,
+            "to_level": 52,
+            "rank": 1,
+            "note": "Sim-accuracy round 19: re-judged level by level at 50 to 59 (10,000 iterations, seeds 1 and 50001, both factions): from 54 the top rank learned (4) gains +0.6 to +2.2% for Undead and +0.25 to +1.1% for Human from 56, level at 54 and 55 (design/reviews/2026-11-04-sim-audit-round19/paladin.md). Round 21: ranks 1 to 4 at 50 to 53 on the paced line and with both of its conditions taken away (owner ruling 2): rank 1 beats ranks 2 to 4 by 0.5 to 2.5% at 50 to 52 for Human, Dwarf and Undead, and by 3 to 6% without the pacing, where the higher ranks run dry (design/reviews/2026-11-05-sim-audit-round21/paladin.md C1)."
+          },
+          {
+            "from_level": 53,
             "to_level": 53,
             "rank": 1,
-            "note": "Sim-accuracy round 19: re-judged level by level at 50 to 59 (10,000 iterations, seeds 1 and 50001, both factions): rank 1 holds to 53; from 54 the top rank learned (4) gains +0.6 to +2.2% for Undead and +0.25 to +1.1% for Human from 56, level at 54 and 55 (design/reviews/2026-11-04-sim-audit-round19/paladin.md)."
+            "races": ["human"],
+            "note": "Sim-accuracy round 21: at 53 the races split. Human keeps rank 1 (+0.2% over ranks 3 and 4 at seeds 1 and 50001); Dwarf (+0.8%) and Undead (+0.2 to +0.4%) gain with the top rank learned, so they take the default rule (design/reviews/2026-11-05-sim-audit-round21/paladin.md C1)."
           },
           {
             "from_level": 60,
