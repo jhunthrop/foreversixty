@@ -157,7 +157,7 @@ describe('officer actions', () => {
     };
     c.openEdit();
     expect(c.editing).toBe(true);
-    expect(c.zones.map((z) => z.key)).toEqual(['onyxias-lair']);
+    expect(c.zones.map((z) => z.key)).toEqual(['raid:onyxias-lair']);
     await vi.advanceTimersByTimeAsync(0);
     expect(c.zones).toEqual(ZONES);
     await expect(c.saveEdit(payload)).resolves.toEqual({ ok: true });

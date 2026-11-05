@@ -4,7 +4,12 @@
      a save is in flight and reverts them when the save is refused. The caller applies a
      successful save's raid before resolving, so the props carry the saved values afterwards. -->
 <script lang="ts">
-  import type { GuildRaidRole, GuildRaidViewerCharacter, GuildSignupState } from '../../lib/guild/api';
+  import type {
+    GuildRaidRole,
+    GuildRaidViewerCharacter,
+    GuildSignupState,
+    GuildZoneKind,
+  } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCopy } from '../../lib/guild/raid-copy';
   import { rolesForClass } from '../../lib/guild/raid-roles';
@@ -41,6 +46,7 @@
     disabled,
     describedBy,
     notice,
+    kind = 'raid',
     raidTitle,
     raidDate,
     onClearNotice,
@@ -54,6 +60,8 @@
     describedBy?: string;
     /** A line the strip sets on this row: `{Name} moved to Bench.` */
     notice: string | null;
+    /** What the night is, for the ended line of a refused save. */
+    kind?: GuildZoneKind;
     /** The raid's title and date, for the spec ask's lead sentence. */
     raidTitle: string;
     raidDate: string;
@@ -173,7 +181,7 @@
     specChoice = null;
     if (!outcome.ok) {
       sentNote = null;
-      status = { kind: 'error', ...failureLine(outcome.code) };
+      status = { kind: 'error', ...failureLine(outcome.code, kind) };
       return;
     }
     if (noteEdit === choice.note) noteEdit = null;

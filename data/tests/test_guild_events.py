@@ -109,6 +109,8 @@ def raw(tmp_path: Path) -> Path:
     return tmp_path
 
 
+ITEMS = [{"id": 12344, "quality": 3}]
+
 LOOT = {
     "sources": [
         {"id": "dungeon:the-deadmines", "kind": "dungeon", "zone_id": 1581},
@@ -132,7 +134,7 @@ def no_thanes(monkeypatch):
 
 
 def test_reads_size_levels_and_wings_off_the_group_finder(raw, no_thanes):
-    zones = ge.build_events(raw, BUILD, LOOT)["zones"]
+    zones = ge.build_events(raw, BUILD, LOOT, ITEMS)["zones"]
     dungeons = [z for z in zones if z["kind"] == "dungeon"]
     assert [(z["key"], z["name"], z["size"], z["min_level"], z["max_level"]) for z in dungeons] == [
         ("dungeon:the-deadmines", "The Deadmines", 5, 17, 26),
@@ -144,20 +146,21 @@ def test_reads_size_levels_and_wings_off_the_group_finder(raw, no_thanes):
 
 
 def test_gated_dungeons_and_raids_stay_out(raw, no_thanes):
-    keys = {z["key"] for z in ge.build_events(raw, BUILD, LOOT)["zones"]}
+    keys = {z["key"] for z in ge.build_events(raw, BUILD, LOOT, ITEMS)["zones"]}
     assert not any("dire-maul" in k or "onyxia" in k for k in keys)
 
 
 def test_a_key_ships_only_with_a_client_lock(raw, no_thanes):
-    zones = {z["key"]: z for z in ge.build_events(raw, BUILD, LOOT)["zones"]}
+    zones = {z["key"]: z for z in ge.build_events(raw, BUILD, LOOT, ITEMS)["zones"]}
     assert zones["dungeon:upper-blackrock-spire"]["key_item"] == {
         "id": 12344,
         "name": "Seal of Ascension",
+        "quality": 3,
     }
     assert zones["dungeon:the-deadmines"]["key_item"] is None
     _write(raw, "Lock", [_lock("1", "1")])
     with pytest.raises(ge.GuildEventsError, match="no client Lock"):
-        ge.build_events(raw, BUILD, LOOT)
+        ge.build_events(raw, BUILD, LOOT, ITEMS)
 
 
 def test_a_map_that_is_not_an_instance_is_refused(raw, no_thanes):
@@ -169,22 +172,22 @@ def test_a_map_that_is_not_an_instance_is_refused(raw, no_thanes):
     ]
     _write(raw, "Map", maps)
     with pytest.raises(ge.GuildEventsError):
-        ge.build_events(raw, BUILD, LOOT)
+        ge.build_events(raw, BUILD, LOOT, ITEMS)
 
 
 def test_a_split_map_needs_every_wing_named(raw, no_thanes, monkeypatch):
     monkeypatch.setattr(ge, "WING_NAMES", {812: "Lower Blackrock Spire"})
     with pytest.raises(ge.GuildEventsError, match="needs a wing name"):
-        ge.build_events(raw, BUILD, LOOT)
+        ge.build_events(raw, BUILD, LOOT, ITEMS)
 
 
 def test_a_new_dungeon_the_client_does_not_name_fails(raw):
     with pytest.raises(ge.GuildEventsError, match="Hall of Thanes"):
-        ge.build_events(raw, BUILD, LOOT)
+        ge.build_events(raw, BUILD, LOOT, ITEMS)
 
 
 def test_six_guild_event_keys_after_the_dungeons(raw, no_thanes):
-    events = [z for z in ge.build_events(raw, BUILD, LOOT)["zones"] if z["kind"] == "event"]
+    events = [z for z in ge.build_events(raw, BUILD, LOOT, ITEMS)["zones"] if z["kind"] == "event"]
     assert [(z["key"], z["name"], z["size"]) for z in events] == [
         ("event:guild", "Guild event", None),
         ("event:guild-5", "Guild event", 5),
@@ -196,14 +199,14 @@ def test_six_guild_event_keys_after_the_dungeons(raw, no_thanes):
 
 
 def test_writes_json_and_go_and_reports_drift(raw, no_thanes, tmp_path):
-    doc = ge.build_events(raw, BUILD, LOOT)
+    doc = ge.build_events(raw, BUILD, LOOT, ITEMS)
     out_json, out_go = tmp_path / "events.json", tmp_path / "catalogue.go"
     ge.write(doc, out_json, out_go)
     assert json.loads(out_json.read_text())["zones"] == doc["zones"]
     go = out_go.read_text()
     assert "DO NOT EDIT" in go
     assert 'Key: "dungeon:upper-blackrock-spire"' in go
-    assert '&KeyItem{ID: 12344, Name: "Seal of Ascension"}' in go
+    assert '&KeyItem{ID: 12344, Name: "Seal of Ascension", Quality: 3}' in go
     assert ge.stale(doc, out_json, out_go) == []
     out_go.write_text("package guilds\n")
     assert ge.stale(doc, out_json, out_go) == [out_go]

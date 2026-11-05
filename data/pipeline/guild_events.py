@@ -217,7 +217,7 @@ def _check_key(raw: Path, activity: int, key: KeyItem) -> None:
     raise GuildEventsError(f"activity {activity}: no client Lock opens with item {key.item_id}")
 
 
-def _dungeon_rows(raw: Path, build: str, loot: dict) -> list[dict]:
+def _dungeon_rows(raw: Path, build: str, loot: dict, qualities: dict[int, int]) -> list[dict]:
     maps = {int(r["ID"]): r for r in _rows(raw, "Map")}
     normal_cap = {
         int(r["MapID"]): int(r["MaxPlayers"])
@@ -238,11 +238,11 @@ def _dungeon_rows(raw: Path, build: str, loot: dict) -> list[dict]:
         per_map[int(a["MapID"])] = per_map.get(int(a["MapID"]), 0) + 1
     if missing := set(wanted) - set(per_map):
         raise GuildEventsError(f"maps with no Group Finder dungeon row: {sorted(missing)}")
-    out = [_dungeon_row(raw, a, maps, wanted, normal_cap, per_map, build) for a in acts]
+    out = [_dungeon_row(raw, a, maps, wanted, normal_cap, per_map, build, qualities) for a in acts]
     return sorted(out, key=lambda z: (z["min_level"], z["max_level"], z["name"]))
 
 
-def _dungeon_row(raw, act, maps, names, normal_cap, per_map, build) -> dict:
+def _dungeon_row(raw, act, maps, names, normal_cap, per_map, build, qualities) -> dict:
     act_id, map_id = int(act["ID"]), int(act["MapID"])
     instance = int(maps[map_id]["InstanceType"])
     if instance not in DUNGEON_INSTANCE_TYPES:
@@ -266,12 +266,18 @@ def _dungeon_row(raw, act, maps, names, normal_cap, per_map, build) -> dict:
         "size": size,
         "min_level": int(act["MinLevel"]),
         "max_level": int(act["MaxLevelSuggestion"]),
-        "key_item": None if key is None else {"id": key.item_id, "name": key.name},
+        "key_item": None if key is None else _key_row(key, qualities),
         "log_zone": None,
         "map_id": map_id,
         "activity_id": act_id,
         "build": build,
     }
+
+
+def _key_row(key: KeyItem, qualities: dict[int, int]) -> dict:
+    if key.item_id not in qualities:
+        raise GuildEventsError(f"{key.name} ({key.item_id}) is not in the build's items.json")
+    return {"id": key.item_id, "name": key.name, "quality": qualities[key.item_id]}
 
 
 def _event_rows() -> list[dict]:
@@ -293,7 +299,9 @@ def _event_rows() -> list[dict]:
     ]
 
 
-def build_events(raw: Path, build: str, loot: dict) -> dict:
+def build_events(raw: Path, build: str, loot: dict, items: list[dict]) -> dict:
+    """items is the build's items.json: a key's quality colour is the client's."""
+    qualities = {int(i["id"]): int(i["quality"]) for i in items}
     keys_note = "; ".join(f"{k.name}: {k.evidence}" for k in KEY_ITEMS.values())
     return {
         "notes": (
@@ -304,7 +312,7 @@ def build_events(raw: Path, build: str, loot: dict) -> dict:
             f"Keys: {keys_note}. Guild events are curated (spec 2026-11-05 section 3.1)."
         ),
         "build": build,
-        "zones": _dungeon_rows(raw, build, loot) + _event_rows(),
+        "zones": _dungeon_rows(raw, build, loot, qualities) + _event_rows(),
     }
 
 
@@ -314,9 +322,10 @@ def _go_int(v: int | None) -> str:
 
 def _go_row(z: dict) -> str:
     key = z["key_item"]
-    key_go = (
-        "nil" if key is None else f"&KeyItem{{ID: {key['id']}, Name: {json.dumps(key['name'])}}}"
-    )
+    key_go = "nil"
+    if key is not None:
+        name = json.dumps(key["name"])
+        key_go = f"&KeyItem{{ID: {key['id']}, Name: {name}, Quality: {key['quality']}}}"
     kind = {"dungeon": "ZoneDungeon", "event": "ZoneEvent"}[z["kind"]]
     return (
         f"\t{{Key: {json.dumps(z['key'])}, Name: {json.dumps(z['name'])}, Kind: {kind}, "

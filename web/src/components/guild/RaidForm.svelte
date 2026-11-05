@@ -1,8 +1,9 @@
 <!-- web/src/components/guild/RaidForm.svelte -->
 <!-- The raid form (raids spec 3.5): create on the Raids tab, edit on the raid page. Fields in the
      guild's wall clock; the For you line renders it in the viewer's zone. Every rule lives in
-     lib/guild/raid-form.ts; this file draws the fields and the 6.1 lines under them. The Raid
-     select takes focus on open; Escape and Cancel close. -->
+     lib/guild/raid-form.ts; this file draws the fields and the 6.1 lines under them. The What
+     select (guild events spec 3.3: a guild event, a dungeon or a raid) takes focus on open; Escape
+     and Cancel close. -->
 <script lang="ts">
   import { viewerLocale } from '../../lib/guild/raid-time';
   import { onMount } from 'svelte';
@@ -29,6 +30,7 @@
     editDefaults,
     forYou,
     notesCounter,
+    opensHint,
     raidPayload,
     repeatHelper,
     splitAtLink,
@@ -41,11 +43,22 @@
     type RaidSubmitResult,
   } from '../../lib/guild/raid-form';
   import { timeZoneOptions } from '../../lib/guild/raid-zones';
+  import {
+    GUILD_EVENT_KEY,
+    eventKeyOf,
+    eventSizeOf,
+    groupSizeOptions,
+    isEventKey,
+    isRaidKey,
+    whatOptions,
+    whatValueOf,
+  } from '../../lib/guild/zone-catalogue';
   import type { RaidInput } from '../../lib/guild/raids-api';
   import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import RaidFormDiscord from './RaidFormDiscord.svelte';
   import { selectCopy } from '../../lib/ui/copy';
   import Select from '../ui/Select.svelte';
+  import ZoneKeyNote from './ZoneKeyNote.svelte';
 
   /** The block is only drawn with a channel; this stands in while there is none. */
   const CLOSED_DISCORD: GuildRaidDiscord = {
@@ -111,11 +124,17 @@
   const id = (field: string): string => `raid-form-${mode}-${field}`;
   const errorId = (field: RaidFormField | 'form'): string => `${id(field)}-error`;
   const chosenZone = $derived(zones.find((zone) => zone.key === values.zone) ?? null);
+  const isEvent = $derived(isEventKey(values.zone));
+  /** The size `Guild event` comes back to after another choice: the last event's, or none. */
+  let eventSize = $state(eventSizeOf(values.zone));
+  const opensLine = $derived(opensHint(chosenZone, clock()));
+  /** Only raids count against the cap (guild events spec 3.2). */
+  const heldByCap = $derived(isRaidKey(values.zone));
   const zoneGroups = $derived(timeZoneOptions(clock(), [values.timezone, viewerTimezone]));
   const forYouText = $derived(forYou(values, viewerTimezone, clock(), locale));
   const notesLeft = $derived(notesCounter(values.notes.length));
-  const repeatLine = $derived(mode === 'create' ? repeatHelper(plannedCount) : null);
-  const repeatAllowed = $derived(canRepeat(plannedCount));
+  const repeatLine = $derived(mode === 'create' && heldByCap ? repeatHelper(plannedCount) : null);
+  const repeatAllowed = $derived(!heldByCap || canRepeat(plannedCount));
   const submitLabel = $derived.by(() => {
     if (mode === 'create') return busy ? raidCopy.form.submitCreating : raidCopy.form.submitCreate;
     return busy ? raidCopy.form.submitEditing : raidCopy.form.submitEdit;
@@ -139,19 +158,35 @@
 
   function set<K extends keyof RaidFormValues>(key: K, value: RaidFormValues[K]): void {
     values = { ...values, [key]: value };
-    const cleared = key === 'zone' || key === 'date' || key === 'time' ? { [key]: undefined } : {};
+    const cleared =
+      key === 'zone' || key === 'title' || key === 'date' || key === 'time' ? { [key]: undefined } : {};
     errors = { ...errors, ...cleared, form: planEnded ? errors.form : undefined };
   }
 
+  function chooseWhat(value: string): void {
+    set('zone', value === GUILD_EVENT_KEY ? eventKeyOf(eventSize) : value);
+  }
+
+  function chooseGroupSize(size: string): void {
+    eventSize = size;
+    set('zone', eventKeyOf(size));
+  }
+
   function focusFirstError(found: RaidFormErrors): void {
-    const first = (['zone', 'date', 'time'] as const).find((field) => found[field] !== undefined);
+    const first = (['zone', 'title', 'date', 'time'] as const).find((field) => found[field] !== undefined);
     if (first !== undefined) document.getElementById(id(first))?.focus();
   }
 
   async function submit(event: SubmitEvent): Promise<void> {
     event.preventDefault();
     if (busy || planEnded) return;
-    const found = validateRaidForm(values, { now: clock(), plannedCount, mode, keepStartsAt });
+    const found = validateRaidForm(values, {
+      now: clock(),
+      plannedCount,
+      mode,
+      keepStartsAt,
+      zone: chosenZone,
+    });
     errors = found;
     if (Object.keys(found).length > 0) {
       focusFirstError(found);
@@ -200,20 +235,34 @@
 >
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
     <div class="flex flex-col gap-2">
-      {@render label('zone', raidCopy.form.raid)}
+      {@render label('zone', raidCopy.form.what)}
       <Select
         id={id('zone')}
-        size="compact"
-        value={values.zone}
-        placeholder={values.zone === '' ? raidCopy.placeholders.chooseRaid : undefined}
-        options={zones.map((zone) => ({ value: zone.key, label: zone.name }))}
+        value={whatValueOf(values.zone)}
+        placeholder={values.zone === '' ? raidCopy.placeholders.chooseWhat : undefined}
+        options={whatOptions(zones, clock())}
         disabled={busy}
         invalid={errors.zone !== undefined}
         describedBy={errors.zone !== undefined ? errorId('zone') : undefined}
         testid="raid-form-zone"
-        onchange={(event) => set('zone', (event.currentTarget as HTMLSelectElement).value)}
+        onchange={(event) => chooseWhat((event.currentTarget as HTMLSelectElement).value)}
       />
       {@render fieldError('zone')}
+      {#if chosenZone?.key_item != null}
+        <ZoneKeyNote item={chosenZone.key_item} testid="raid-form-key" />
+      {/if}
+      {#if isEvent}
+        {@render label('group-size', raidCopy.form.groupSize)}
+        <Select
+          id={id('group-size')}
+          size="compact"
+          value={eventSize}
+          options={groupSizeOptions(zones)}
+          disabled={busy}
+          testid="raid-form-group-size"
+          onchange={(event) => chooseGroupSize((event.currentTarget as HTMLSelectElement).value)}
+        />
+      {/if}
     </div>
     <div class="flex flex-col gap-2">
       {@render label('title', raidCopy.form.title)}
@@ -222,12 +271,15 @@
         type="text"
         class={FIELD_CHROME}
         maxlength={TITLE_MAX}
-        placeholder={chosenZone?.name ?? ''}
+        placeholder={isEvent ? raidCopy.placeholders.eventTitle : (chosenZone?.name ?? '')}
         value={values.title}
         disabled={busy}
+        aria-invalid={errors.title !== undefined}
+        aria-describedby={errors.title !== undefined ? errorId('title') : undefined}
         oninput={(event) => set('title', event.currentTarget.value)}
         data-testid="raid-form-title"
       />
+      {@render fieldError('title')}
     </div>
   </div>
 
@@ -238,6 +290,7 @@
         id={id('date')}
         type="date"
         class={FIELD_CHROME}
+        min={opensLine?.min}
         value={values.date}
         disabled={busy}
         aria-invalid={errors.date !== undefined}
@@ -245,6 +298,9 @@
         oninput={(event) => set('date', event.currentTarget.value)}
         data-testid="raid-form-date"
       />
+      {#if opensLine !== null}
+        <p class="text-muted text-[13px]" data-testid="raid-form-opens">{opensLine.line}</p>
+      {/if}
       {@render fieldError('date')}
     </div>
     <div class="flex flex-col gap-2">

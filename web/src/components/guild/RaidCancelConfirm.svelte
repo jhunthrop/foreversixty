@@ -5,15 +5,19 @@
 <script lang="ts">
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { RAID_BUTTON, RAID_WIPE_BUTTON } from '../../lib/guild/raid-buttons';
-  import { raidCopy } from '../../lib/guild/raid-copy';
+  import type { GuildZoneKind } from '../../lib/guild/api';
+  import { cancelConfirmOf, cancelQuestionOf, raidCopy } from '../../lib/guild/raid-copy';
 
   let {
+    kind = 'raid',
     postCancel,
     busy,
     onPostChange,
     onConfirm,
     onKeep,
   }: {
+    /** Whose words the question and the button use. */
+    kind?: GuildZoneKind;
     postCancel: boolean;
     /** The cancel is in flight. */
     busy: boolean;
@@ -37,7 +41,7 @@
   onkeydown={onKeydown}
   data-testid="raid-cancel-confirm"
 >
-  <p id="raid-cancel-question" class="text-strong text-[14px]">{raidCopy.cancelConfirm.question}</p>
+  <p id="raid-cancel-question" class="text-strong text-[14px]">{cancelQuestionOf(kind)}</p>
   <label class="flex min-h-11 items-center gap-3 text-[14px]">
     <input
       type="checkbox"
@@ -55,7 +59,7 @@
       disabled={busy}
       onclick={onConfirm}
       data-testid="raid-cancel-confirm-button"
-      >{busy ? raidCopy.cancelConfirm.confirming : raidCopy.cancelConfirm.confirm}</button
+      >{busy ? raidCopy.cancelConfirm.confirming : cancelConfirmOf(kind)}</button
     >
     <button type="button" class={RAID_BUTTON} use:focusOnMount onclick={onKeep} data-testid="raid-cancel-keep"
       >{raidCopy.cancelConfirm.keep}</button

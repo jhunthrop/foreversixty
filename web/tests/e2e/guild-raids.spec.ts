@@ -6,7 +6,7 @@
 // axe; and the 44 px floor at 360. The API is stubbed by support/guild-raids.ts.
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { copyList, raidCopy } from '../../src/lib/guild/raid-copy';
+import { cancelledLineOf, copyList, raidCopy } from '../../src/lib/guild/raid-copy';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { shortControls } from './support/short-controls';
@@ -130,7 +130,7 @@ test.describe('a member signs up (§9, R3)', () => {
   });
 });
 
-test('Plan a raid hides while the form is open, then returns with focus', async ({ page }) => {
+test('Plan an event hides while the form is open, then returns with focus', async ({ page }) => {
   await openRaidsTab(page, { viewer: 'officer' });
   await openForm(page);
   await expect(page.getByTestId('guild-raids-plan')).toHaveCount(0);
@@ -163,7 +163,7 @@ test('an officer posts a raid with Post to Discord, and the planned row opens it
   await expect(page.getByTestId('raid-title')).toContainText("Onyxia's Lair");
 });
 
-test('a 429 on Post the raid says to wait, keeps the form and posts nothing', async ({ page }) => {
+test('a 429 on Post the event says to wait, keeps the form and posts nothing', async ({ page }) => {
   const stub = await openRaidsTab(page, { viewer: 'officer' });
   await openForm(page);
   stub.refuseNext = { create: { code: 'rate_limited', status: 429 } };
@@ -210,7 +210,7 @@ test.describe('race lines take focus (§4 "Races")', () => {
     const line = page.getByTestId('raid-race-line');
     await expect(line).toHaveText(raidCopy.races.cancelled);
     await expect(line).toBeFocused();
-    await expect(page.getByTestId('raid-strip-state')).toHaveText(raidCopy.raidStates.cancelled);
+    await expect(page.getByTestId('raid-strip-state')).toHaveText(cancelledLineOf('raid'));
   });
 });
 
@@ -257,7 +257,7 @@ test.describe('officer-read-only (§3.2, gate spec §3.4)', () => {
     }
   });
 
-  test('the Raids tab keeps Plan a raid, disabled under the gate sentence', async ({ page }) => {
+  test('the Raids tab keeps Plan an event, disabled under the gate sentence', async ({ page }) => {
     await openRaidsTab(page, { viewer: 'officer', officerTools: false });
     await expect(page.getByTestId('guild-raids-plan')).toBeDisabled();
     await expect(page.getByTestId('guild-raids-plan')).toHaveAttribute(

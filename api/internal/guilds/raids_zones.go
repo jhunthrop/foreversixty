@@ -25,8 +25,9 @@ const raidKeyPrefix = "raid:"
 
 // KeyItem is the item a run's door asks for.
 type KeyItem struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	Quality int    `json:"quality"`
 }
 
 // Zone is one schedulable zone. Size, LogZone, the level range and Opens are nil until a

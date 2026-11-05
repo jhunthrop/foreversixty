@@ -707,7 +707,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.fetch:
             guild_events.fetch(args.build, raw)
         loot = json.loads(Path("builds", args.build, "loot.json").read_text(encoding="utf-8"))
-        doc = guild_events.build_events(raw, args.build, loot)
+        items = json.loads(Path("builds", args.build, "items.json").read_text(encoding="utf-8"))
+        doc = guild_events.build_events(raw, args.build, loot, items)
         if args.check:
             drifted = guild_events.stale(doc)
             for path in drifted:

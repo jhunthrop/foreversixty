@@ -18,7 +18,7 @@ import { attendanceCopy } from './attendance-copy';
 import { guildMarkSrc } from './mark';
 import { NightActions } from './night-actions.svelte';
 import { PLAN_REQUIRED, REPORT_MATCHED, type MatchOutcome } from './match-picker.svelte';
-import { raidCopy } from './raid-copy';
+import { kindOf, raidCopy } from './raid-copy';
 import type { RaidSubmitResult } from './raid-form';
 import type {
   OfficerLine,
@@ -378,7 +378,20 @@ export class RaidPageController {
     this.editing = true;
     const { raid, guild } = this;
     if (raid === null || guild === null) return;
-    if (this.zones.length === 0) this.zones = [{ key: raid.zone, name: raid.zone_name, size: raid.size }];
+    if (this.zones.length === 0) {
+      this.zones = [
+        {
+          key: raid.zone,
+          name: raid.zone_name,
+          kind: kindOf(raid),
+          size: raid.size,
+          opens: null,
+          min_level: null,
+          max_level: null,
+          key_item: raid.key_item ?? null,
+        },
+      ];
+    }
     void this.deps
       .loadZones(guild.id)
       .then((zones) => {

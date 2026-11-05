@@ -310,7 +310,8 @@
       "max_level": 60,
       "key_item": {
         "id": 13704,
-        "name": "Skeleton Key"
+        "name": "Skeleton Key",
+        "quality": 1
       },
       "log_zone": null,
       "map_id": 289,
@@ -339,7 +340,8 @@
       "max_level": 60,
       "key_item": {
         "id": 12382,
-        "name": "Key to the City"
+        "name": "Key to the City",
+        "quality": 2
       },
       "log_zone": null,
       "map_id": 329,
@@ -355,7 +357,8 @@
       "max_level": 60,
       "key_item": {
         "id": 12344,
-        "name": "Seal of Ascension"
+        "name": "Seal of Ascension",
+        "quality": 3
       },
       "log_zone": null,
       "map_id": 229,

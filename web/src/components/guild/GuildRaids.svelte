@@ -5,8 +5,8 @@
      (public sees public reports only, per the existing report-visibility rule server
      side) -- this component renders whatever `rows` it is given.
      Raids spec 3.1: above the nights, verified members and officers get `Planned`; officers get
-     `Plan a raid` (disabled with the gate sentence in officer-read-only, and with the cap line at
-     12) and the form in place under the header row. One minute tick feeds every row's countdown. -->
+     `Plan an event` (disabled with the gate sentence in officer-read-only; the cap line at 12 raids
+     limits raids only, so the button stays live) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { tick } from 'svelte';
@@ -188,8 +188,8 @@
         <button
           type="button"
           bind:this={planButton}
-          class={button('primary', 'sm')}
-          disabled={readOnly || atCap}
+          class={button('primary', 'md')}
+          disabled={readOnly}
           aria-describedby={planDescribedBy}
           onclick={() => (formOpen = true)}
           data-testid="guild-raids-plan">{raidCopy.planButton}</button

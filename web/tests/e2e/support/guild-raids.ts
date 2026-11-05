@@ -47,10 +47,12 @@ export const HYJAL_ID = 9;
 /** The id the stub gives the first raid an officer plans. */
 export const FIRST_NEW_ID = 100;
 
+const RAID_ZONE = { kind: 'raid', opens: null, min_level: null, max_level: null, key_item: null } as const;
+
 export const ZONES: GuildZoneView[] = [
-  { key: 'raid:barrow-deeps', name: 'Barrow Deeps', size: null },
-  { key: 'raid:hyjal-summit', name: 'Hyjal Summit', size: null },
-  { key: 'raid:onyxias-lair', name: "Onyxia's Lair", size: 40 },
+  { ...RAID_ZONE, key: 'raid:barrow-deeps', name: 'Barrow Deeps', size: null },
+  { ...RAID_ZONE, key: 'raid:hyjal-summit', name: 'Hyjal Summit', size: null },
+  { ...RAID_ZONE, key: 'raid:onyxias-lair', name: "Onyxia's Lair", size: 40 },
 ];
 
 /** Who is looking: a verified member with an alt, the officer, or one of R1's three outsiders. */
