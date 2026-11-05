@@ -71,7 +71,7 @@
         }
       },
       {
-        "notes": "Whenever rage is under 80: with Improved Bloodrage, 15 rage at once and 15 more over 10 seconds, back every minute.",
+        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60.",
         "action": {
           "condition": {
             "cmp": {
