@@ -335,7 +335,7 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Mutilate": "Mutilate from forty is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.",
         # assassination.md: Cold Blood (thirty-one raid, thirty-three leveling); poisons swapped at sixty;
         # Kidney Shot rank two at fifty.
-        "Cold Blood": "Cold Blood from thirty-one, at four or more combo points, right before the Eviscerate.",
+        "Cold Blood": "Cold Blood from thirty-three, at four or more combo points, right before the Eviscerate.",
         "Deadly Poison": (
             "Deadly Poison on the main hand and Instant on the off hand from thirty to fifty-nine. "
             "At sixty swap them: the off hand then holds Deadly at five stacks on its own."
@@ -402,7 +402,7 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Mana Spring Totem from twenty-six, a few seconds before the pull and whenever your Water slot is empty. "
             "Skip it if a Restoration shaman already has one down for your group."
         ),
-        "Lightning Mastery": "Lightning Mastery from forty with your trinkets and Blood Fury on the pull, and again every three minutes.",
+        "Lightning Mastery": "Lightning Mastery from forty with your trinkets and any damage racial on the pull, and again every three minutes.",
         "Flame Shock": "Flame Shock the moment it falls off, ahead of everything but your cooldowns.",
         "Searing Totem": (
             "Searing Totem on a single target, and on packs until Magma Totem at twenty-six. "
@@ -418,7 +418,7 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "On a single boss, a Clearcasting proc goes to your next Lightning Bolt."
         ),
         "Lightning Bolt": (
-            "Lightning Bolt with every other global. "
+            "Lightning Bolt on every global the lines above leave free. "
             "Cast your top rank while your mana is ahead of the fight, a cheaper one when it falls behind."
         ),
     },
@@ -437,7 +437,7 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         ),
         "Windfury Totem": "Windfury Totem from thirty-two in your Air slot when no other shaman has it down near the melee.",
         "Totemic Call": "Totemic Call from twenty-two when the boss moves away from your totems: follow it, and it brings them to you.",
-        "Rage of the Farseer": "Rage of the Farseer from forty, with your trinkets and Blood Fury, on the pull and again on cooldown.",
+        "Rage of the Farseer": "Rage of the Farseer from forty, with your trinkets and any damage racial, on the pull and again on cooldown.",
         "Stormstrike": (
             "Stormstrike on cooldown from twenty-five. "
             "It makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder."

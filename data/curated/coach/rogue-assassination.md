@@ -27,7 +27,7 @@ This is the best Assassination Rogue on Forever. Assassination is the Forever ro
 - Shank on cooldown. It cannot miss, pays back more energy than it costs and, with Venom, adds thirty percent to your poison damage on top of Vile Poisons and makes them land more often for six seconds.
 - At four or more combo points, Slice and Dice first if it is down or about to fall off, and a three-point Slice and Dice once it has dropped: with Improved Slice and Dice even three points keep it up for over twenty seconds.
 - Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter. It lasts six seconds longer, and its ticks can crit in Forever.
-- Cold Blood from thirty-one, at four or more combo points, right before the Eviscerate.
+- Cold Blood from thirty-three, at four or more combo points, right before the Eviscerate.
 - Eviscerate at four or more combo points.
 - Mutilate from forty is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
 - Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.

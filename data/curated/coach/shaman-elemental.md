@@ -22,13 +22,13 @@ This is the best Elemental Shaman on Forever. Elemental is the shaman's caster s
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
 - Mana Spring Totem from twenty-six, a few seconds before the pull and whenever your Water slot is empty. Skip it if a Restoration shaman already has one down for your group.
-- Lightning Mastery from forty with your trinkets and Blood Fury on the pull, and again every three minutes.
+- Lightning Mastery from forty with your trinkets and any damage racial on the pull, and again every three minutes.
 - Flame Shock the moment it falls off, ahead of everything but your cooldowns.
 - Searing Totem on a single target, and on packs until Magma Totem at twenty-six. Its bolts reach twenty yards, so drop it within twenty yards of the boss.
 - Magma Totem from twenty-six on two or more targets, in place of Searing Totem.
 - Chain Lightning from thirty-two on two or more targets. Its first hit beats a Lightning Bolt, and each jump deals seventy percent of the hit before it.
 - Fire Nova from twelve on two or more targets, bursting from the Fire totem you dropped in the pack. On a single boss, a Clearcasting proc goes to your next Lightning Bolt.
-- Lightning Bolt with every other global. Cast your top rank while your mana is ahead of the fight, a cheaper one when it falls behind.
+- Lightning Bolt on every global the lines above leave free. Cast your top rank while your mana is ahead of the fight, a cheaper one when it falls behind.
 - Earth Shock stays on your bar for interrupts.
 
 **The mistakes to look for, by finding.**
