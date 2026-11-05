@@ -46,12 +46,7 @@ describe('RaidOfficerRow', () => {
   it('draws Edit, Lock sign-ups, Copy the sign-up list and Cancel raid, none filled', () => {
     const body = html();
     expect(text(body)).toBe(
-      [
-        raidCopy.officerRow.edit,
-        raidCopy.officerRow.lock,
-        raidCopy.officerRow.copy,
-        raidCopy.officerRow.cancel,
-      ].join(' '),
+      [raidCopy.officerRow.edit, raidCopy.officerRow.lock, raidCopy.officerRow.copy, 'Cancel raid'].join(' '),
     );
     expect(body).not.toContain('bg-gold');
     for (const id of ['raid-officer-edit', 'raid-officer-lock', 'raid-officer-copy', 'raid-officer-cancel']) {

@@ -79,7 +79,7 @@
     type TabFetchStatus,
   } from '../lib/guild/guild-page-decisions';
   import { loadReadinessBoard, type ReadinessBoard } from '../lib/guild/readiness-raid';
-  import { nextRaidDeadline, raidCopy, showsBandLine } from '../lib/guild/raid-copy';
+  import { nextRaidDeadline, raidCopy, raidDeadlineStart, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
@@ -932,7 +932,7 @@
                 >
                   {needsBeforeSentence(
                     home.standing.needs_before_next_raid,
-                    nextRaidDeadline(home.next_raid?.starts_at),
+                    nextRaidDeadline(raidDeadlineStart(home.next_raid)),
                   )}
                 </p>
               {/if}

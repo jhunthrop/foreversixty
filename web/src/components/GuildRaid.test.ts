@@ -213,7 +213,7 @@ describe('page states', () => {
 
   it('replaces the strip on a cancelled raid and mutes the roster', () => {
     const body = ready(plannedRaid({ status: 'cancelled' }));
-    expect(text(between(body, 'raid-strip-state', 'raid-notes'))).toBe(raidCopy.raidStates.cancelled);
+    expect(text(between(body, 'raid-strip-state', 'raid-notes'))).toBe('This raid was cancelled.');
     expect(body).toMatch(/class="[^"]*opacity-60[^"]*"[^>]*data-testid="raid-roster"/);
   });
 

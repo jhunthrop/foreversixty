@@ -5,7 +5,7 @@
      it can tell the row the API moved to Bench (R3) that it moved. -->
 <script lang="ts">
   import type { GuildRaidView } from '../../lib/guild/api';
-  import { raidCopy } from '../../lib/guild/raid-copy';
+  import { cancelledLineOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import { dateLabel } from '../../lib/guild/raid-time';
   import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
   import { orderedCharacters, type SignupChoice, type SignupHandler } from '../../lib/guild/signup-strip';
@@ -67,7 +67,7 @@
 >
   <h2 id="raid-signup-heading" class="section-title">{raidCopy.subheads.yourSignup}</h2>
   {#if cancelled}
-    <p class="text-muted mt-3 text-[14px]" data-testid="raid-strip-state">{raidCopy.raidStates.cancelled}</p>
+    <p class="text-muted mt-3 text-[14px]" data-testid="raid-strip-state">{cancelledLineOf(kindOf(raid))}</p>
   {:else}
     {#if stateLine !== null}
       <p id={stateLineId} class="text-text mt-3 text-[14px]" data-testid="raid-strip-state">{stateLine}</p>
@@ -80,6 +80,7 @@
           disabled={rowsDisabled}
           {describedBy}
           notice={notices[character.character_key] ?? null}
+          kind={kindOf(raid)}
           raidTitle={raid.title}
           {raidDate}
           onClearNotice={() => setNotice(character.character_key, null)}

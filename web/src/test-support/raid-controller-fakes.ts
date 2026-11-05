@@ -2,7 +2,7 @@
 // Fake deps, a fake /v1/me and fake timers for the raid page controller's tests.
 import { afterEach, beforeEach, vi } from 'vitest';
 import type { Me } from '../lib/account/api';
-import type { GuildHome } from '../lib/guild/api';
+import type { GuildHome, GuildZoneView } from '../lib/guild/api';
 import { RaidPageController } from '../lib/guild/raid-page-controller.svelte';
 import type { RaidPageDeps } from '../lib/guild/raid-page-types';
 import type { GuildPage } from '../lib/rankings/api';
@@ -49,9 +49,11 @@ export function deferred<T>(): {
   return { promise, resolve, reject };
 }
 
-export const ZONES = [
-  { key: 'barrow-deeps', name: 'Barrow Deeps', size: null },
-  { key: 'onyxias-lair', name: "Onyxia's Lair", size: 40 },
+const RAID_ZONE = { kind: 'raid', opens: null, min_level: null, max_level: null, key_item: null } as const;
+
+export const ZONES: GuildZoneView[] = [
+  { ...RAID_ZONE, key: 'raid:barrow-deeps', name: 'Barrow Deeps', size: null },
+  { ...RAID_ZONE, key: 'raid:onyxias-lair', name: "Onyxia's Lair", size: 40 },
 ];
 
 /** The document's visibility the fake deps report; each test starts visible. */

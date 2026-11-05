@@ -859,6 +859,10 @@ export interface GuildRaidView extends RaidAttendanceFields {
   id: number;
   zone: string;
   zone_name: string;
+  /** What the zone is, which the page's words follow; absent from older fixtures, which read raid. */
+  zone_kind?: GuildZoneKind;
+  /** The key the run's door asks for; `null` or absent when none. */
+  key_item?: GuildKeyItem | null;
   title: string;
   /** RFC 3339, UTC. */
   starts_at: string;
@@ -901,10 +905,26 @@ export interface GuildRaidDiscordPost {
   remind: boolean;
 }
 
+/** What an officer posts (guild events spec 3.1). */
+export type GuildZoneKind = 'raid' | 'dungeon' | 'event';
+
+/** The item a run's door asks for: name and quality are the client's. */
+export interface GuildKeyItem {
+  id: number;
+  name: string;
+  quality: number;
+}
+
 export interface GuildZoneView {
   key: string;
   name: string;
+  kind: GuildZoneKind;
   size: number | null;
+  /** RFC 3339; the day a raid opens, `null` for anything open now or without a date. */
+  opens: string | null;
+  min_level: number | null;
+  max_level: number | null;
+  key_item: GuildKeyItem | null;
 }
 
 /** The band line's fields: `GuildHome.next_raid`. */
@@ -912,6 +932,8 @@ export interface NextRaidView {
   id: number;
   zone: string;
   zone_name: string;
+  /** Absent from older fixtures, which read raid. */
+  zone_kind?: GuildZoneKind;
   title: string;
   starts_at: string;
   /** `planned` or `locked`; a locked raid's band segments are inert (absent from older fixtures). */

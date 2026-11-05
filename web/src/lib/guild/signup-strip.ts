@@ -1,8 +1,8 @@
 // web/src/lib/guild/signup-strip.ts
 // The sign-up strip's pure rules (spec 3.3 and 4 "Races"): row order, the prefilled role, the
 // note counter and the line a failed save shows.
-import type { GuildRaidRole, GuildRaidViewerCharacter, GuildSignupState } from './api';
-import { raidCopy } from './raid-copy';
+import type { GuildRaidRole, GuildRaidViewerCharacter, GuildSignupState, GuildZoneKind } from './api';
+import { endedLineOf, raidCopy } from './raid-copy';
 import { roleForSpec } from './raid-roles';
 
 /** The note's `maxlength`. */
@@ -24,7 +24,6 @@ export const SAVED_LINE_MS = 4000;
 const RACE_LINES: Readonly<Record<string, string>> = {
   raid_locked: raidCopy.races.locked,
   raid_cancelled: raidCopy.races.cancelled,
-  raid_ended: raidCopy.races.ended,
 };
 
 /** What one sign-up save sends. */
@@ -71,8 +70,8 @@ export function noteCounter(note: string): string | null {
 }
 
 /** The status line of a refused save: a race names what changed and takes focus. */
-export function failureLine(code: string): { message: string; race: boolean } {
-  const race = RACE_LINES[code];
+export function failureLine(code: string, kind: GuildZoneKind = 'raid'): { message: string; race: boolean } {
+  const race = code === 'raid_ended' ? endedLineOf(kind) : RACE_LINES[code];
   return race === undefined
     ? { message: raidCopy.stripStatus.failed, race: false }
     : { message: race, race: true };

@@ -10,10 +10,14 @@ import type { RaidInput } from './raids-api';
 const STATUS_RATE_LIMITED = 429;
 
 const FIELD_LINES = {
-  zone: raidCopy.form.errors.raid,
+  zone: raidCopy.form.errors.what,
+  title: raidCopy.form.errors.eventTitle,
   date: raidCopy.form.errors.date,
   time: raidCopy.form.errors.time,
 };
+
+/** How the API's raid-before-it-opens line ends: it names the raid and day, so it shows as written. */
+const OPENS_LINE_TAIL = 'Pick that day or later.';
 
 /** The API's per-credential rate limit refused the write (`429 rate_limited`). */
 export function isRateLimited(thrown: unknown): boolean {
@@ -38,6 +42,10 @@ export function submitRefusal(thrown: unknown): RaidSubmitResult {
   const field = Object.keys(thrown.fields ?? {})
     .map(serverFieldFor)
     .find((mapped) => mapped !== null);
+  const opens = thrown.fields?.starts_at;
+  if (thrown.code === 'invalid' && opens !== undefined && opens.endsWith(OPENS_LINE_TAIL)) {
+    return { ok: false, code: thrown.code, message: opens, field: 'date' };
+  }
   if (thrown.code === 'invalid' && field !== undefined) {
     return { ok: false, code: thrown.code, message: FIELD_LINES[field], field };
   }

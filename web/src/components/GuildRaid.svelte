@@ -13,7 +13,7 @@
   import { guildClaimCopy } from '../lib/guild/copy';
   import { focusOnMount } from '../lib/guild/focus-now';
   import { browserStorage } from '../lib/guild/reserve-keys';
-  import { SEP, raidCopy } from '../lib/guild/raid-copy';
+  import { SEP, eyebrowOf, kindOf, raidCopy } from '../lib/guild/raid-copy';
   import {
     raidCount,
     raidPageFlags,
@@ -46,6 +46,7 @@
   import RaidOfficerRow from './guild/RaidOfficerRow.svelte';
   import RaidRoster from './guild/RaidRoster.svelte';
   import RaidSignupStrip from './guild/RaidSignupStrip.svelte';
+  import ZoneKeyNote from './guild/ZoneKeyNote.svelte';
   import RaidYourNight from './guild/RaidYourNight.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -134,7 +135,9 @@
 
 {#snippet raidEyebrow()}
   <span class="label text-gold flex items-center gap-2.5">
-    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raidCopy.page.eyebrow}
+    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raid === null
+      ? raidCopy.page.eyebrow
+      : eyebrowOf(kindOf(raid))}
   </span>
 {/snippet}
 
@@ -270,6 +273,9 @@
                 >{SEP}{/if}<Figures text={when.countdown} class={goldText} /></span
             >
           </p>
+          {#if raid.key_item != null}
+            <div class="md:col-span-2"><ZoneKeyNote item={raid.key_item} testid="raid-key" /></div>
+          {/if}
           <div class="flex flex-col gap-2 md:col-span-2" data-testid="raid-count">
             {#if raid.night === null}
               <p class="flex flex-wrap items-center gap-x-3 gap-y-1">

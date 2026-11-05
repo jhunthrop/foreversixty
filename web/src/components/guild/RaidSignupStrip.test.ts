@@ -179,7 +179,7 @@ describe('RaidSignupStrip', () => {
 
   it('is replaced by the cancelled line when the raid is cancelled', () => {
     const markup = html({ cancelled: true });
-    expect(text(markup)).toContain(raidCopy.raidStates.cancelled);
+    expect(text(markup)).toContain('This raid was cancelled.');
     expect(rowOrder(markup)).toEqual([]);
   });
 

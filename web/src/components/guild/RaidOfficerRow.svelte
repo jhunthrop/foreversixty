@@ -9,7 +9,7 @@
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
-  import { copyList, raidCopy } from '../../lib/guild/raid-copy';
+  import { cancelActionOf, copyList, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import { splitAtLink } from '../../lib/guild/raid-form';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
   import { RAID_BUTTON as BUTTON } from '../../lib/guild/raid-buttons';
@@ -109,6 +109,7 @@
 <div class="flex flex-col gap-2" data-testid="raid-officer-row">
   {#if confirming}
     <RaidCancelConfirm
+      kind={kindOf(raid)}
       {postCancel}
       busy={busy === 'cancel'}
       onPostChange={(post) => (postCancel = post)}
@@ -145,7 +146,7 @@
           disabled={writesDisabled}
           aria-describedby={describedBy}
           onclick={openConfirm}
-          data-testid="raid-officer-cancel">{raidCopy.officerRow.cancel}</button
+          data-testid="raid-officer-cancel">{cancelActionOf(kindOf(raid))}</button
         >
       {/if}
     </div>
