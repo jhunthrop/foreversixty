@@ -1,7 +1,8 @@
 <!-- web/src/components/sim/TimelineReadout.svelte -->
 <!-- The crosshair's readout (spec 2026-11-04-sim-results 3.7): the time, the resource and what is
-     up on you, then the five most recent casts. Pinned, it gains a close button. Positioned by its
-     parent: floating beside the line on a desktop, full width under the brush on a phone. -->
+     up on you and on the target, then the five most recent casts. Pinned, it gains a close
+     button. Positioned by its parent: floating beside the line on a desktop, full width under the
+     brush on a phone. -->
 <script lang="ts">
   import type { ActionVisuals } from '../../lib/sim/action-visuals';
   import { seconds, type Readout } from '../../lib/sim/timeline';
@@ -53,6 +54,11 @@
       <strong class="text-strong font-semibold">{readout.resource.value}</strong>{SEPARATOR}
     {/if}{timelineCopy.readoutOnYou(readout.onYou)}
   </p>
+  {#if readout.onTarget.length > 0}
+    <p class="text-muted text-[13px] leading-[19px]" data-testid="timeline-readout-target">
+      {timelineCopy.readoutOnTarget(readout.onTarget)}
+    </p>
+  {/if}
   {#if readout.casts.length > 0}
     <hr class="border-line-soft my-2 border-t" />
     <ul class="flex flex-col">

@@ -63,6 +63,7 @@ export const timelineCopy = {
   readoutResource: (label: string, value: string): string => `${label} ${value}`,
   readoutOnYou: (names: readonly string[]): string =>
     names.length === 0 ? 'On you: nothing extra' : `On you: ${names.join(', ')}`,
+  readoutOnTarget: (names: readonly string[]): string => `On the target: ${names.join(', ')}`,
   secondsAgo: (seconds: string): string => `${seconds} s ago`,
   closeReadout: 'Close the readout',
 

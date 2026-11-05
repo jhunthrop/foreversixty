@@ -25,7 +25,6 @@ import {
   stacksAt,
   tickFollow,
   tickNear,
-  timelineReadyHeight,
   windowIncluding,
   type TickLane,
   type TimelineEvent,
@@ -267,7 +266,7 @@ describe('buildTimeline: bars', () => {
   const auras: SampleAura[] = [
     { action: 'spell:12319', on: 'player', segments: [[5000, 90_000]] },
     { action: 'spell:12328', on: 'player', segments: [[1000, 4000]] },
-    { action: 'spell:11597', on: 'target', segments: [[0, 100_000]], stacks: [[0, 5]] },
+    { action: 'spell:11597', on: 'target', segments: [[2000, 100_000]], stacks: [[2000, 5]] },
   ];
 
   it('orders each group by first application', () => {
@@ -279,7 +278,7 @@ describe('buildTimeline: bars', () => {
     expect(model.hasAuras).toBe(true);
   });
 
-  it('leaves raid buffs up all fight on you to the Buffs card, and a queue window off the bars', () => {
+  it('leaves raid buffs and debuffs up all fight to the Buffs card, and a queue window off the bars', () => {
     const model = built(
       result([cast(0, 'spell:11567/1'), cast(5, 'spell:11567')], {
         sample_duration_ms: 1000,
@@ -292,7 +291,17 @@ describe('buildTimeline: bars', () => {
       }),
     );
     expect(model.onYou.map((bar) => bar.action)).toEqual(['spell:12328']);
-    expect(model.onTarget).toHaveLength(1);
+    expect(model.onTarget).toHaveLength(0);
+  });
+
+  it('keeps a debuff applied after the pull, even when it then stays up to the end', () => {
+    const model = built(
+      result([cast(0, 'spell:20662')], {
+        sample_duration_ms: 100_000,
+        sample_auras: [{ action: 'spell:12867', on: 'target', segments: [[10, 100_000]] }],
+      }),
+    );
+    expect(model.onTarget.map((bar) => bar.name)).toEqual(['Deep Wounds']);
   });
 
   it('says so when the result has no aura data', () => {
@@ -482,11 +491,12 @@ describe('readoutAt', () => {
     }),
   );
 
-  it('reads the resource, the short auras up now, and leaves out one up most of the fight', () => {
+  it('reads the resource and every aura up now, even one up most of the fight', () => {
     const readout = readoutAt(model, 2200);
     expect(readout.time).toBe('0:02.2');
     expect(readout.resource).toEqual({ label: 'Rage', value: '55' });
-    expect(readout.onYou).toEqual(['Death Wish']);
+    expect(readout.onYou).toEqual(['Flurry', 'Death Wish']);
+    expect(readout.onTarget).toEqual([]);
   });
 
   it('lists recent casts newest first and never a swing', () => {
@@ -496,7 +506,7 @@ describe('readoutAt', () => {
       ['Execute', 2500],
       ['Bloodrage', 3500],
     ]);
-    expect(readout.onYou).toEqual([]);
+    expect(readout.onYou).toEqual(['Flurry']);
   });
 
   it('is empty before the first cast', () => {
@@ -576,11 +586,21 @@ describe('rows and the ready height', () => {
     expect(notice(true)).toBeGreaterThan(notice(false)!);
   });
 
-  it('follows the spec formula, and has no height without a fight', () => {
-    // 56 toolbar + 30 axis + 30 x 1 group + 24 x 2 lanes + 64 notice + 72 resource
-    // + 44 brush + 52 foot + 40 x 2 rows (fewer than five casts).
-    expect(timelineReadyHeight(result(sample))).toBe(56 + 30 + 30 + 48 + 64 + 72 + 44 + 52 + 80);
-    expect(timelineReadyHeight(result([]))).toBeNull();
+  it('prints every lane name on its own row above the lane on a phone', () => {
+    const { rows } = layoutRows(built(result(sample)), false, true);
+    expect(rows.map((row) => row.kind)).toEqual([
+      'axis',
+      'group',
+      'name',
+      'lane',
+      'name',
+      'lane',
+      'notice',
+      'resource',
+    ]);
+    const lane = rows.find((row) => row.kind === 'lane');
+    const name = rows.find((row) => row.kind === 'name');
+    expect(name!.y + name!.height).toBe(lane!.y);
   });
 });
 
@@ -602,5 +622,37 @@ describe('the fixture', () => {
     expect(pressesInView(model, { startMs: model.startMs, endMs: model.endMs })).toHaveLength(
       model.presses.length,
     );
+  });
+});
+
+describe('the fixture readout (wow-player M8)', () => {
+  const names: ActionNames = {
+    spell: {
+      ...NAMES.spell,
+      '1719': 'Recklessness',
+      '18499': 'Berserker Rage',
+      '20554': 'Berserking',
+      '1249110': 'Frozen Heart of the Mountain',
+      '10610': 'Windfury Totem',
+      '1329555': 'Reckless Swings',
+    },
+    item: { '13442': 'Mighty Rage Potion' },
+  };
+  const model = buildTimeline(fullFixture as unknown as SimResult, names)!;
+
+  it('lists every aura up at 0:16.5, Flurry included', () => {
+    const readout = readoutAt(model, 16_500);
+    expect(readout.onYou).toEqual(['Mighty Rage Potion', 'Flurry']);
+    expect(readout.onTarget).toEqual(['Deep Wounds']);
+  });
+
+  it('lists the cooldowns first and then Flurry at 2:21.5', () => {
+    const readout = readoutAt(model, 141_500);
+    expect(readout.onYou).toEqual(['Death Wish', 'Recklessness', 'Flurry']);
+    expect(readout.onTarget).toEqual(['Deep Wounds']);
+  });
+
+  it('leaves the debuffs up from pull to end to the Buffs card, and keeps Deep Wounds', () => {
+    expect(model.onTarget.map((bar) => bar.name)).toEqual(['Deep Wounds']);
   });
 });

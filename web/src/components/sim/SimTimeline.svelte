@@ -36,6 +36,7 @@
     type ZoomWindow,
   } from '../../lib/sim/timeline';
   import { timelineCopy } from '../../lib/sim/timeline-copy';
+  import { timelineHeadMeta } from '../../lib/sim/timeline-lanes';
   import { drawnTicks, plotMarkup, xOf, timeOf, type PlotView } from '../../lib/sim/timeline-draw';
   import type { SimResult } from '../../lib/sim/types';
   import { yieldToMain } from '../../lib/yield';
@@ -379,7 +380,8 @@
   // --- The legend ---
   const damageToken = $derived(model?.casts.find((lane) => lane.schoolToken !== null)?.schoolToken ?? null);
   const hasCooldown = $derived(model?.casts.some((lane) => lane.schoolToken === null) ?? false);
-  const meta = $derived(model === null ? undefined : timelineCopy.meta(clockLabel(model.endMs)));
+  /** The same meta the loading head printed (SavedRun), so nothing pops in on load. */
+  const meta = $derived(timelineHeadMeta(result));
 </script>
 
 {#snippet laneLabel(row: Extract<PlotRow, { kind: 'lane' }>)}
@@ -528,7 +530,7 @@
                 </div>
               {:else if row.kind === 'lane'}
                 {@render laneLabel(row)}
-              {:else if row.kind === 'notice'}
+              {:else if row.kind === 'notice' || row.kind === 'name'}
                 <div style:height="{row.height}px"></div>
               {:else}
                 <div class="resource-label" style:height="{row.height}px">
@@ -574,8 +576,9 @@
             </svg>
 
             {#if phone}
-              {#each rows as row (row.kind === 'lane' ? row.lane.id : `${row.kind}-${row.y}`)}
-                {#if row.kind === 'lane'}
+              <!-- Each name on its own row above its lane: it never sits over a bar or a tick (B1). -->
+              {#each rows as row (`${row.kind}-${row.y}`)}
+                {#if row.kind === 'name'}
                   <div
                     class="name-row"
                     style:top="{row.y}px"
@@ -920,17 +923,13 @@
     right: 0;
     left: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     pointer-events: none;
   }
+  /* Its own row, so no backing: the name stays at the visible left edge as the plot scrolls. */
   .name-chip {
     position: sticky;
-    left: 48px;
-    height: 14px;
-    margin-left: 4px;
-    padding: 0 4px;
-    border-radius: 3px;
-    background: rgba(13, 15, 21, 0.88);
+    left: 52px;
     color: var(--color-muted);
     font-size: 11px;
     line-height: 14px;

@@ -6,10 +6,26 @@
 import { parseActionKey, resolveActionName, type ActionNames } from './action-names';
 import { simCopy } from './copy';
 import { timelineCopy } from './timeline-copy';
+import {
+  abilityFacts,
+  axisEndMs,
+  auraShare,
+  baseActionKey,
+  castKeys,
+  drawnSample,
+  isFightAura,
+  isQueuePress,
+  laneHeight,
+  lineResource,
+  OVERPOWER_KEY,
+  placeEvent,
+  ROW_HEIGHT,
+  type Placement,
+} from './timeline-lanes';
 import type { SampleCast, SampleOutcome, SimResult } from './types';
 
-/** Spec 8: the most events a timeline draws. */
-export const MAX_EVENTS = 5_000;
+export { baseActionKey, COLLAPSED_CAST_ROWS, MAX_EVENTS, ROW_HEIGHT } from './timeline-lanes';
+
 /** Close up's first window. */
 export const CLOSE_UP_MS = 30_000;
 /** The brush never resizes below this. */
@@ -18,38 +34,14 @@ export const MIN_WINDOW_MS = 10_000;
 export const BRUSH_STEP_MS = 5_000;
 /** How many casts the readout lists. */
 export const READOUT_CASTS = 5;
-/** An aura up longer than this share of the run is left out of the readout's "On you" line: it
- *  says nothing about this moment (Flurry, spec 3.7). */
-export const READOUT_AURA_MAX_SHARE = 0.5;
-/** Without `sample_duration_ms` the axis ends this long after the last event (spec 4.3). */
-const AXIS_TAIL_MS = 1_000;
 
 /** Every rank of Execute: the phase wash starts at the first of these in the sample. */
 const EXECUTE_SPELL_IDS: ReadonlySet<number> = new Set([5308, 20658, 20660, 20661, 20662]);
-const OVERPOWER_KEY = 'spell:11585';
 const SWING_LABEL = 'attack';
 const UNPRESSED_ORDER = 50;
 const PERIODIC_ORDER = 99;
-/** Lane E: Thrash is not a buff and left the results; an older result may still carry it. */
-const NEVER_DRAWN: ReadonlySet<string> = new Set(['spell:21919']);
 /** The off-hand half of a two-hand strike: the client names it as the press itself. */
 const OFF_HAND_HITS: ReadonlySet<string> = new Set(['spell:462891']);
-/** An aura on you up this much of the run is the raid's, not the fight's: the Buffs card lists it. */
-const ALWAYS_UP_SHARE = 0.99;
-
-/** The bit the engine's school mask sets, to the design system's school token. */
-const SCHOOL_TOKENS: Readonly<Record<number, string>> = {
-  1: '--color-school-physical',
-  2: '--color-school-holy',
-  4: '--color-school-fire',
-  8: '--color-school-nature',
-  16: '--color-school-frost',
-  32: '--color-school-shadow',
-  64: '--color-school-arcane',
-};
-
-/** The resources a timeline can draw, in the order it prefers them. */
-const LINE_RESOURCES = ['rage', 'energy', 'focus', 'mana'] as const;
 const RESOURCE_CAP: Readonly<Record<string, number>> = { rage: 100, energy: 100, focus: 100 };
 
 export type LaneGroup = 'casts' | 'swings' | 'player' | 'target';
@@ -132,59 +124,8 @@ export interface TimelineModel {
   periodicName: string | null;
 }
 
-/** `spell:11567/1+r3` to `spell:11567`. A key outside the grammar is its own base. */
-export function baseActionKey(key: string): string {
-  const parsed = parseActionKey(key);
-  if (parsed === null || parsed.kind === 'unknown' || parsed.kind === 'other') return key;
-  return `${parsed.kind}:${parsed.label}`;
-}
-
-function schoolToken(mask: number | null | undefined): string | null {
-  if (mask === null || mask === undefined) return null;
-  const bit = Object.keys(SCHOOL_TOKENS)
-    .map(Number)
-    .find((candidate) => (mask & candidate) !== 0);
-  return bit === undefined ? null : SCHOOL_TOKENS[bit]!;
-}
-
-interface AbilityFacts {
-  /** Base key to the school token of the row that dealt damage. */
-  schools: Map<string, string>;
-  /** Base keys whose row records periodic ticks. */
-  periodic: Set<string>;
-}
-
-function abilityFacts(result: SimResult): AbilityFacts {
-  const schools = new Map<string, string>();
-  const periodic = new Set<string>();
-  for (const actor of result.summary.damage_done ?? []) {
-    for (const ability of actor.abilities) {
-      const base = baseActionKey(ability.name);
-      const token = ability.total > 0 ? schoolToken(ability.school) : null;
-      if (token !== null) schools.set(base, token);
-      if ((ability.ticks ?? 0) > 0) periodic.add(base);
-    }
-  }
-  return { schools, periodic };
-}
-
-function castKeys(result: SimResult): Set<string> {
-  return new Set(
-    result.summary.casts.filter((row) => row.succeeded > 0).map((row) => baseActionKey(row.spell_name)),
-  );
-}
-
 function resourceOf(cast: SampleCast, key: string | null): number | null {
   return key === null ? null : (cast.resources?.[key] ?? null);
-}
-
-/** The pool this class plays: rage, energy or focus before mana (a cat's energy, not its mana). */
-function lineResource(sample: readonly SampleCast[]): string | null {
-  const seen = new Set<string>();
-  for (const cast of sample) {
-    for (const key of Object.keys(cast.resources ?? {})) seen.add(key);
-  }
-  return LINE_RESOURCES.find((key) => seen.has(key)) ?? null;
 }
 
 function buildResource(sample: readonly SampleCast[], key: string | null): ResourceLine | null {
@@ -200,43 +141,6 @@ function buildResource(sample: readonly SampleCast[], key: string | null): Resou
   if (points.length === 0) return null;
   const cap = Math.max(RESOURCE_CAP[key] ?? peak, peak);
   return { key, label: simCopy.resourceLabel[key] ?? key, points, peak: Math.round(peak), cap };
-}
-
-interface Placement {
-  group: 'casts' | 'swings';
-  laneId: string;
-  action: string;
-  periodic: boolean;
-}
-
-/** Where one event draws (spec 3.7, lane membership). Null: an event no lane shows. */
-function placeEvent(
-  cast: SampleCast,
-  facts: AbilityFacts,
-  casts: ReadonlySet<string>,
-  hasOutcomes: boolean,
-): Placement | null {
-  const parsed = parseActionKey(cast.action);
-  if (parsed?.kind === 'other') {
-    if (parsed.label !== SWING_LABEL) return null;
-    return { group: 'swings', laneId: cast.action, action: cast.action, periodic: false };
-  }
-  const base = baseActionKey(cast.action);
-  if (NEVER_DRAWN.has(base)) return null;
-  const isTick = cast.outcome === 'tick' || cast.outcome === 'tick_crit';
-  const tickLane = { group: 'swings', laneId: `ticks:${base}`, action: base, periodic: true } as const;
-  if (isTick) return tickLane;
-  if (facts.periodic.has(base) && !casts.has(base)) {
-    // A run with outcomes records each tick as its own row, so a bare row here is an application:
-    // neither a tick nor a press. An older run cannot tell them apart and draws them as they are.
-    return hasOutcomes ? null : tickLane;
-  }
-  // Damage with no cast row is a hit no one pressed (the off-hand Whirlwind, a proc): it lands on
-  // Swings and ticks, so a lane on Casts never reads as a second press.
-  if (casts.size > 0 && !casts.has(base) && facts.schools.has(base)) {
-    return { group: 'swings', laneId: base, action: base, periodic: false };
-  }
-  return { group: 'casts', laneId: base, action: base, periodic: false };
 }
 
 function laneName(place: Placement, names: ActionNames | null, hasOutcomes: boolean): string {
@@ -256,14 +160,14 @@ function isExecute(key: string): boolean {
   return parsed?.kind === 'spell' && EXECUTE_SPELL_IDS.has(parsed.id);
 }
 
-/** Moves a tagged key's events to queue presses when the same lane also records landings. */
-function isQueuePress(cast: SampleCast, base: string, seen: ReadonlySet<string>): boolean {
-  return cast.action !== base && (parseActionKey(cast.action)?.tag ?? 0) !== 0 && seen.has(base);
-}
-
-function buildBars(result: SimResult, names: ActionNames | null, spanMs: number): BarLane[] {
-  return (result.sample_auras ?? []).map((aura) => {
-    const up = aura.segments.reduce((total, [start, end]) => total + Math.max(0, end - start), 0);
+function buildBars(
+  result: SimResult,
+  names: ActionNames | null,
+  spanMs: number,
+  seen: ReadonlySet<string>,
+): { overpower: BarLane | undefined; fight: BarLane[] } {
+  const auras = result.sample_auras ?? [];
+  const bars = auras.map((aura) => {
     const group = aura.on === 'target' ? ('target' as const) : ('player' as const);
     return {
       kind: 'bars' as const,
@@ -273,9 +177,15 @@ function buildBars(result: SimResult, names: ActionNames | null, spanMs: number)
       name: resolveActionName(aura.action, names),
       segments: aura.segments,
       stacks: aura.stacks ?? [],
-      share: spanMs <= 0 ? 0 : up / spanMs,
+      share: auraShare(aura, spanMs),
     };
   });
+  return {
+    overpower: bars.find((bar) => bar.group === 'player' && baseActionKey(bar.action) === OVERPOWER_KEY),
+    fight: bars.filter(
+      (bar, index) => baseActionKey(bar.action) !== OVERPOWER_KEY && isFightAura(auras[index]!, seen, spanMs),
+    ),
+  };
 }
 
 /** Main hand, off hand, extra attacks, the hits nobody pressed, then the periodic lanes (spec 3.7). */
@@ -284,23 +194,14 @@ function swingOrder(lane: TickLane): number {
   return parseActionKey(lane.action)?.tag || UNPRESSED_ORDER;
 }
 
-/** A bar worth a lane: not a removed effect, not a queue's own window, not up from pull to end on you. */
-function isFightAura(bar: BarLane, seen: ReadonlySet<string>): boolean {
-  const base = baseActionKey(bar.action);
-  if (NEVER_DRAWN.has(base)) return false;
-  if (bar.action !== base && seen.has(base) && seen.has(bar.action)) return false;
-  return bar.group !== 'player' || bar.share < ALWAYS_UP_SHARE;
-}
-
 const firstStart = (lane: BarLane): number => lane.segments[0]?.[0] ?? Number.POSITIVE_INFINITY;
 const byFirstApplication = (a: BarLane, b: BarLane): number => firstStart(a) - firstStart(b);
 
 /** The whole timeline, in one pass over the sample. Null when the run recorded no fight. */
 export function buildTimeline(result: SimResult, names: ActionNames | null): TimelineModel | null {
-  const sample = (result.sample ?? []).slice(0, MAX_EVENTS);
+  const sample = drawnSample(result);
   const first = sample[0];
-  const last = sample.at(-1);
-  if (first === undefined || last === undefined) return null;
+  if (first === undefined) return null;
 
   const facts = abilityFacts(result);
   const casted = castKeys(result);
@@ -350,12 +251,10 @@ export function buildTimeline(result: SimResult, names: ActionNames | null): Tim
   }
   presses.sort((a, b) => a.atMs - b.atMs);
 
-  const endMs = result.sample_duration_ms ?? last.at_ms + AXIS_TAIL_MS;
-  const bars = buildBars(result, names, endMs);
-  const overpower = casted.has(OVERPOWER_KEY)
-    ? bars.find((bar) => bar.group === 'player' && baseActionKey(bar.action) === OVERPOWER_KEY)
-    : undefined;
-  const others = bars.filter((bar) => baseActionKey(bar.action) !== OVERPOWER_KEY && isFightAura(bar, seen));
+  const endMs = axisEndMs(result, sample);
+  const bars = buildBars(result, names, endMs, seen);
+  const overpower = casted.has(OVERPOWER_KEY) ? bars.overpower : undefined;
+  const others = bars.fight;
   const swings = allLanes
     .filter((lane) => lane.group === 'swings')
     .sort((a, b) => swingOrder(a) - swingOrder(b));
@@ -563,8 +462,26 @@ export interface Readout {
   atMs: number;
   time: string;
   resource: { label: string; value: string } | null;
+  /** Every bar on you up at this moment, the cooldowns you pressed first. */
   onYou: string[];
+  /** Every bar on the target up at this moment. */
+  onTarget: string[];
   casts: ReadoutCast[];
+}
+
+/** The names of the bars up at `atMs`, in lane order after `rank`. */
+function upAt(bars: readonly BarLane[], atMs: number, rank: (bar: BarLane) => number): string[] {
+  return bars
+    .filter((bar) => bar.segments.some(([start, end]) => start <= atMs && atMs < end))
+    .map((bar, index) => ({ bar, index }))
+    .sort((a, b) => rank(a.bar) - rank(b.bar) || a.index - b.index)
+    .map(({ bar }) => bar.name);
+}
+
+/** A bar you pressed (a cooldown on the Casts lanes) ranks ahead of a proc (spec 3.7's example). */
+function pressedFirst(model: TimelineModel): (bar: BarLane) => number {
+  const pressed = new Set(model.casts.map((lane) => lane.action));
+  return (bar) => (pressed.has(baseActionKey(bar.action)) ? 0 : 1);
 }
 
 /** What a readout reads at `atMs` (spec 3.7). */
@@ -578,13 +495,8 @@ export function readoutAt(model: TimelineModel, atMs: number): Readout {
       model.resource === null || value === null
         ? null
         : { label: model.resource.label, value: String(Math.round(value)) },
-    onYou: model.onYou
-      .filter(
-        (bar) =>
-          bar.share < READOUT_AURA_MAX_SHARE &&
-          bar.segments.some(([start, end]) => start <= atMs && atMs < end),
-      )
-      .map((bar) => bar.name),
+    onYou: upAt(model.onYou, atMs, pressedFirst(model)),
+    onTarget: upAt(model.onTarget, atMs, () => 0),
     casts: model.landings
       .slice(Math.max(0, upTo - READOUT_CASTS + 1), upTo + 1)
       .reverse()
@@ -699,29 +611,12 @@ export function pressesInView(model: TimelineModel, window: ZoomWindow): Timelin
 
 // --- Rows, and the card's ready height ---
 
-export const ROW_HEIGHT = {
-  toolbar: 56,
-  axis: 30,
-  group: 30,
-  lane: 24,
-  window: 16,
-  resource: 72,
-  /** Spec 4.3's one line in place of the bar groups. */
-  notice: 64,
-  /** The same line and its link, wrapped in a phone's column. */
-  noticePhone: 112,
-  brush: 44,
-  castFoot: 52,
-  castRow: 40,
-} as const;
-
-/** How many rows the collapsed cast list shows. */
-export const COLLAPSED_CAST_ROWS = 5;
-
 export type PlotRow =
   | { kind: 'axis'; y: number; height: number }
   | { kind: 'group'; group: LaneGroup; label: string; y: number; height: number }
   | { kind: 'lane'; lane: TimelineLane; y: number; height: number }
+  /** A phone's lane name, on its own row above the lane so it never covers the plot. */
+  | { kind: 'name'; lane: TimelineLane; y: number; height: number }
   | { kind: 'notice'; y: number; height: number }
   | { kind: 'resource'; line: ResourceLine; y: number; height: number };
 
@@ -742,8 +637,9 @@ export function layoutRows(
     if (lanes.length === 0) return;
     rows.push({ kind: 'group', group: id, label: timelineCopy.groups[id], ...advance(ROW_HEIGHT.group) });
     for (const lane of lanes) {
-      const height = lane.kind === 'bars' && lane.group === 'window' ? ROW_HEIGHT.window : ROW_HEIGHT.lane;
-      rows.push({ kind: 'lane', lane, ...advance(height) });
+      const window = lane.kind === 'bars' && lane.group === 'window';
+      if (phone) rows.push({ kind: 'name', lane, ...advance(ROW_HEIGHT.laneName) });
+      rows.push({ kind: 'lane', lane, ...advance(laneHeight(window, false)) });
     }
   };
 
@@ -760,21 +656,4 @@ export function layoutRows(
     rows.push({ kind: 'resource', line: model.resource, ...advance(ROW_HEIGHT.resource) });
   }
   return { rows, height: y };
-}
-
-/**
- * The card's body at its ready height, CardHead excluded (spec 3.7's loading formula), computed
- * from the same lane rules the plot uses. Null when the run has no fight: the card is one line.
- */
-export function timelineReadyHeight(result: SimResult): number | null {
-  const model = buildTimeline(result, null);
-  if (model === null) return null;
-  const castRows = Math.min(COLLAPSED_CAST_ROWS, model.presses.length);
-  return (
-    ROW_HEIGHT.toolbar +
-    layoutRows(model, false).height +
-    ROW_HEIGHT.brush +
-    ROW_HEIGHT.castFoot +
-    ROW_HEIGHT.castRow * castRows
-  );
 }
