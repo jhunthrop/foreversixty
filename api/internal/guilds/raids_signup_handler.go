@@ -118,7 +118,10 @@ func (s *Service) saveSignupSpec(ctx context.Context, spec RaidSpecCommand, cmd 
 
 // writeSignupErr answers a failed sign-up in the shapes the PUT route has always used.
 func (s *Service) writeSignupErr(w http.ResponseWriter, r *http.Request, err error) {
+	var notOfClass *RoleNotOfClassError
 	switch {
+	case errors.As(err, &notOfClass):
+		writeInvalid(w, r, map[string]string{"role": notOfClass.Message()})
 	case errors.Is(err, ErrNotMember), errors.Is(err, ErrNotFound):
 		writeRaidNotFound(w, r)
 	case errors.Is(err, ErrCharacterNotFound):

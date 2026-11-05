@@ -226,6 +226,33 @@ func TestSignupRateLimitIsPerAccount(t *testing.T) {
 
 // TestOfficerOwnSignupOnALockedRaid: an officer with the plan still answers for their own
 // character on a locked raid, unless the claim is contested (officer powers frozen).
+// A class signs up only in a role it plays in Classic, on the site and from Discord.
+func TestSignupRoleMustBeTheClasses(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	cases := map[string]string{
+		memberKeyB: `{"state":"in","role":"tank"}`,   // a mage
+		memberKeyA: `{"state":"in","role":"healer"}`, // a warrior
+	}
+	want := map[string]string{memberKeyB: "Mages don't tank. Pick DPS.", memberKeyA: "Warriors don't heal. Pick tank or DPS."}
+	for key, body := range cases {
+		e := expectError(t, w.putSignup(raid.ID, key, body), http.StatusUnprocessableEntity, "invalid")
+		if e.Fields["role"] != want[key] {
+			t.Fatalf("%s: role = %q, want %q", key, e.Fields["role"], want[key])
+		}
+	}
+	cmd := w.cmd(raid.ID, w.member, memberKeyB, SignupIn)
+	cmd.Role = RoleHealer
+	var notOfClass *RoleNotOfClassError
+	if _, err := w.svcSignUp(cmd); !errors.As(err, &notOfClass) {
+		t.Fatalf("bot mage healer err = %v", err)
+	}
+	if a := w.signup(t, raid.ID, memberKeyA, `{"state":"in","role":"tank"}`); a.Raid.Counts.In != 1 {
+		t.Fatalf("warrior tank refused: %+v", a.Raid.Counts)
+	}
+}
+
 // A raid past its end with no log yet refuses a member's PUT as the site and the bot do; an
 // officer still corrects it, for their own character and for a member's.
 func TestSignupAfterTheRaidEnded(t *testing.T) {

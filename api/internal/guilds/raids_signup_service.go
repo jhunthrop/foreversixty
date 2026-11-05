@@ -94,6 +94,11 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	if err != nil {
 		return SignupResult{}, err
 	}
+	if cmd.Role != "" {
+		if err := checkClassRole(char.Class, cmd.Role); err != nil {
+			return SignupResult{}, err
+		}
+	}
 	role, err := s.signupRole(ctx, raid.ID, cmd.Role, char)
 	if err != nil {
 		return SignupResult{}, err
