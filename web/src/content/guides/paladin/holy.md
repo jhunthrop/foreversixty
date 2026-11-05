@@ -92,7 +92,7 @@ The rest is utility. **Guardian's Favor** takes 2 minutes off Blessing of Protec
 
 ## Stat priority
 
-Mana per 5 seconds keeps you casting, and you run out of mana long before you run out of heals. Intellect is your mana bar and your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 heal with Flash of Light rank 4 or 5 and Holy Shock rank 3 or 4, not rank 1. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30% and the 50% Illumination gives you for 15 seconds after every critical heal, which is one more reason crit is a mana stat for you. Spell damage does nothing for a heal. The table above has the order.
+Mana per 5 seconds keeps you casting, and you run out of mana long before you run out of heals. Intellect is your mana bar and your crit, and crit is mana through Illumination and healing through Holy Power. Healing power adds the same amount to every rank close to your level, but ranks learned far below your level lose most or all of it, so at 60 your Flash of Light is rank 4 or 5 and your Holy Shock rank 3 or 4, never rank 1. Spirit only works once you have gone five seconds without a cast, apart from Reverence's 30% and the 50% Illumination gives you for 15 seconds after every critical heal, which is one more reason crit is a mana stat for you. Spell damage does nothing for a heal. The table above has the order.
 
 ## Best in slot
 

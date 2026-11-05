@@ -32162,7 +32162,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32202,7 +32202,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32242,7 +32242,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32289,7 +32289,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32336,7 +32336,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32390,7 +32390,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32451,7 +32451,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32512,7 +32512,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32573,7 +32573,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32641,7 +32641,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32709,7 +32709,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32777,7 +32777,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32845,7 +32845,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32920,7 +32920,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -32995,7 +32995,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33070,7 +33070,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33145,7 +33145,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33220,7 +33220,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33295,7 +33295,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33370,7 +33370,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33445,7 +33445,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
@@ -33520,7 +33520,7 @@
           {
             "spell_id": 14278,
             "name": "Ghostly Strike",
-            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point.",
+            "condition": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
             "icon": "spell_shadow_curse",
             "race_spell_ids": {}
           },
