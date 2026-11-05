@@ -12,6 +12,6 @@ export function rosterBestLabels(row: GuildRosterBest): { what: string; value: s
   return {
     what: `${specClassName(row.player.spec, row.player.class)} · ${row.encounter}`,
     value: `${outputFigure(row.value)} ${unit}`,
-    hover: `Best ${unit} in any ${row.encounter} kill`,
+    hover: `Top ${unit} in any ${row.encounter} kill`,
   };
 }

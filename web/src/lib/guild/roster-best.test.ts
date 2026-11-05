@@ -32,6 +32,6 @@ describe('rosterBestLabels', () => {
     );
     expect(labels.what).toBe('Fire Mage · Onyxia');
     expect(labels.value).toBe('394 DPS');
-    expect(labels.hover).toBe('Best DPS in any Onyxia kill');
+    expect(labels.hover).toBe('Top DPS in any Onyxia kill');
   });
 });

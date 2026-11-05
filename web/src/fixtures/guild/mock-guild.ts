@@ -600,7 +600,8 @@ export function buildMockRaids(): GuildRaidsPage {
         wipe_count: pulls - kills,
         raiders: present.length,
         deaths: fights.reduce((sum, f) => sum + f.deaths, 0),
-        top_parse: { name: 'Pyrewisp', class: 'mage', metric: 'dps', value: 358.2 },
+        top_hps: { name: 'Lightbrand', class: 'priest', metric: 'hps', value: 301.9 },
+        top_dps: { name: 'Pyrewisp', class: 'mage', metric: 'dps', value: 358.2 },
         fights,
         present,
       };

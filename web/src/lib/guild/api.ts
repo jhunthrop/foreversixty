@@ -807,7 +807,9 @@ export interface GuildRaidRow {
   wipe_count: number;
   raiders: number;
   deaths: number;
-  top_parse: GuildRaidTopParse | null;
+  /** The night's best healer HPS and DPS-role DPS on a boss kill; absent when it has none. */
+  top_hps?: GuildRaidTopParse | null;
+  top_dps?: GuildRaidTopParse | null;
   fights: GuildRaidFight[];
   present: GuildRaidPresentPlayer[];
   /** The guild raid this night is matched to (a verified member's read only), else `null`. */

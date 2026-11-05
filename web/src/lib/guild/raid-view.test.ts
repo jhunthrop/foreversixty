@@ -31,7 +31,8 @@ function night(fights: GuildRaidFight[], wipes = 0): GuildRaidRow {
     wipe_count: wipes,
     raiders: 5,
     deaths: 0,
-    top_parse: null,
+    top_hps: null,
+    top_dps: null,
     fights,
     present: [],
   };

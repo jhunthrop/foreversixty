@@ -158,8 +158,8 @@ describe('GuildProgression with pulls', () => {
 
   it('labels the role bests as output, never a parse, rounded as the roster writes them', () => {
     const copy = text(progressionHtml(buildMockProgression()));
-    expect(copy).toContain('Best HPS Lightbrand 302');
-    expect(copy).toContain('Best DPS Pyrewisp 358');
+    expect(copy).toContain('Top HPS Lightbrand 302');
+    expect(copy).toContain('Top DPS Pyrewisp 358');
     expect(copy).not.toMatch(/parse/i);
   });
 });

@@ -9,7 +9,7 @@
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { progressionNightDay } from '../../lib/guild/overview-view';
   import { firstKillLine, progressionEmpty } from '../../lib/guild/progression-view';
-  import { bestOutputLabel, outputFigure } from '../../lib/guild/output-figure';
+  import { outputFigure, topOutputLabel } from '../../lib/guild/output-figure';
   import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
@@ -130,13 +130,13 @@
           Deaths per pull: {encounter.deaths_per_pull.toFixed(1)} on average.
         </p>
         {#if bestByRole(encounter.best_by_role).length > 0}
-          <!-- Raw output, never called a parse (a percentile to a Classic player): `Best HPS`
+          <!-- Raw output, never called a parse (a percentile to a Classic player): `Top HPS`
                per role, the figure written as the Raids tab and the roster write it. -->
           <p class="text-[13px]" data-testid="guild-progression-best-parse">
             {#each bestByRole(encounter.best_by_role) as { role, parse }, index (role)}
               {#if index > 0}<span class="hidden md:inline" aria-hidden="true">&nbsp;·&nbsp;</span>{/if}
               <span class="block md:inline">
-                <span class="text-muted">{bestOutputLabel(role, parse.metric)}</span>
+                <span class="text-muted">{topOutputLabel(parse.metric, role)}</span>
                 <span style={`color:${classColorVar(parse.class)};font-weight:600`}>{parse.name}</span>
                 <span class="numeric">{outputFigure(parse.value)}</span>
               </span>
