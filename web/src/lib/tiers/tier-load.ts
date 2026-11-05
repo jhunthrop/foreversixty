@@ -9,7 +9,10 @@ import activeBuild from '../../data/active-build.json';
 import { latest } from '../dates';
 import { bandEntry, loadBisFile, readSpecCatalog } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
-import type { BisFile, BisRole, Faction, SpecCatalogEntry } from '../bis/types';
+import { rankingSimHrefFor } from '../bis/sim-link';
+import type { BisBand, BisFile, BisRole, Faction, SpecCatalogEntry } from '../bis/types';
+import { loadTalentFile } from '../guides/build-tree';
+import { indexTalents, type TalentIndex } from '../planner/rules';
 import { TIER_ROLES, healerOrderMeasured, rankRole, type TierInput, type TierRow } from './tier-list';
 
 const TIER_BAND = 60;
@@ -42,6 +45,8 @@ export interface TierLoadDeps {
   catalog: readonly SpecCatalogEntry[];
   loadFile: (spec: string) => BisFile | null;
   readBossSwingSeconds: () => number | undefined;
+  /** The row's "View ranking sim" href, or `undefined` where /sim cannot rerun the band. */
+  rankingSimHref: (entry: SpecCatalogEntry, band: BisBand) => string | undefined;
 }
 
 function emptyLists(): RoleLists {
@@ -51,10 +56,13 @@ function emptyLists(): RoleLists {
 function inputsFor(
   files: readonly { entry: SpecCatalogEntry; file: BisFile }[],
   faction: Faction,
+  rankingSimHref: TierLoadDeps['rankingSimHref'] = () => undefined,
 ): TierInput[] {
   return files.flatMap(({ entry, file }) => {
     const band = bandEntry(file, TIER_BAND, faction);
-    return band === undefined ? [] : [{ entry, band }];
+    if (band === undefined) return [];
+    const simHref = rankingSimHref(entry, band);
+    return [simHref === undefined ? { entry, band } : { entry, band, simHref }];
   });
 }
 
@@ -83,8 +91,9 @@ export function buildTierData(deps: TierLoadDeps): TierData {
     .find((candidate) => candidate.band !== undefined);
   return {
     lists: {
-      alliance: loaded.length === 0 ? emptyLists() : listsFor(inputsFor(loaded, 'alliance')),
-      horde: loaded.length === 0 ? emptyLists() : listsFor(inputsFor(loaded, 'horde')),
+      alliance:
+        loaded.length === 0 ? emptyLists() : listsFor(inputsFor(loaded, 'alliance', deps.rankingSimHref)),
+      horde: loaded.length === 0 ? emptyLists() : listsFor(inputsFor(loaded, 'horde', deps.rankingSimHref)),
     },
     presetLabel: firstBand?.band === undefined ? null : presetLabelFor(firstBand.file, firstBand.band),
     updated: files.length === 0 ? null : latest(files.map((file) => new Date(file.generated_at))),
@@ -106,10 +115,37 @@ function readBossSwingSeconds(): number | undefined {
   return parsed.boss?.swing_speed_sec?.value;
 }
 
+/** The active build's talent trees per class, read once each: the sim link's code carries the
+ *  band's points these trees can reach, as the BiS page's own links do. */
+function talentIndexReader(build: string): (classSlug: string) => TalentIndex {
+  const cache = new Map<string, TalentIndex>();
+  return (classSlug) => {
+    const cached = cache.get(classSlug);
+    if (cached !== undefined) return cached;
+    const file = loadTalentFile(build, classSlug);
+    if (file === undefined) {
+      throw new Error(
+        `data/builds/${build}/talents/${classSlug}.json is missing; the sim link needs the trees`,
+      );
+    }
+    const index = indexTalents(file);
+    cache.set(classSlug, index);
+    return index;
+  };
+}
+
+/** The tier row's sim link over the active build: tank and healer bands get none, since their
+ *  DTPS/HPS is not a figure the browser sim runs (`rankingSimHrefFor`). */
+export function tierRankingSimHref(build: string): TierLoadDeps['rankingSimHref'] {
+  const indexFor = talentIndexReader(build);
+  return (entry, band) => rankingSimHrefFor(band, indexFor(entry.class_slug), build);
+}
+
 export function loadTierData(): TierData {
   return buildTierData({
     catalog: readSpecCatalog(),
     loadFile: (spec) => loadBisFile(spec, activeBuild.build),
     readBossSwingSeconds,
+    rankingSimHref: tierRankingSimHref(activeBuild.build),
   });
 }
