@@ -652,7 +652,7 @@
         }
       },
       {
-        "notes": "On the tank whenever it is not ticking. Let it run out before you recast it, so Bloom heals him when it does.",
+        "notes": "On the tank whenever it is not ticking. Let it run out before you recast it: from 20, Bloom heals him when it does.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -702,7 +702,7 @@
         }
       },
       {
-        "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it, so Bloom heals him when it does. While leveling your mana runs out first, so a lower rank heals more for it: rank 2 from 20 to 37, rank 4 from 38 to 43, rank 5 from 44 to 48, rank 6 from 49 to 56 and rank 8 from 57 to 59.",
+        "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it: from 20, Bloom heals him when it does. While leveling your mana runs out first, so a lower rank heals more for it: rank 2 from 20 to 37, rank 4 from 38 to 43, rank 5 from 44 to 48, rank 6 from 49 to 56 and rank 8 from 57 to 59.",
         "action": {
           "castSpell": {
             "spellId": {
