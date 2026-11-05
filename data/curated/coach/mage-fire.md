@@ -21,14 +21,14 @@ This is the best Fire Mage on Forever. Fire casts a three second Fireball, keeps
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Mage Armor, Arcane Brilliance and your food buff go up before the pull.
-- Pyroblast only on three stacks of Heating Up, when it is a one and a half second cast.
-- Scorch is the filler from thirty with the leveling build. Cast it on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. Every Scorch also renews your Improved Scorch stacks. Below thirty, Fireball is the filler.
-- Arcane Blast whenever its buff has dropped, once, then back to Fire.
-- Fire Blast every time it is off cooldown. It is instant, and from Heating Up at thirty every hit is a stack.
+- Scorch to five Improved Scorch stacks, and again whenever five seconds or less are left on them. With one point of the talent, build them only on a boss that lives a minute or more. With the raid build, also Scorch when Fire Blast is back before a Scorch would finish. With the raid build, every other free global is Fireball. With the leveling build Scorch is the filler once you have Heating Up. Cast it on every global not spent on a three-stack Pyroblast or Fire Blast. Before that, Fireball is the filler.
+- Combustion from forty, once the boss carries five Improved Scorch stacks, with your on-use trinkets. Add your damage racial if your race has one.
+- Pyroblast before the pull, started six seconds out, and on a mob from range while leveling. After that only on three stacks of Heating Up, when it is a one and a half second cast.
+- Fire Blast every time it is off cooldown. It is instant, and once you have Heating Up every hit is a stack.
 - Arcane Missiles the moment Missile Barrage procs, while the proc is up.
+- Arcane Blast with the raid build, once whenever its buff has dropped, then back to Fire. Its spell damage lasts eighteen seconds, and a second cast on top doubles its cost.
 - On the raid build Fireball is the filler.
-- Combustion once the boss carries five Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.
+- Mage Armor from thirty-four before the pull, with your food buff and Arcane Intellect, or Arcane Brilliance from fifty-six. Before thirty-four, wear Frost Armor or Ice Armor.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
 - Flamestrike is a three second cast that burns the ground for eight seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range.
 - Frost Nova: Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.

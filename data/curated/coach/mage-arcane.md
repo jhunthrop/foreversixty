@@ -21,16 +21,16 @@ This is the best Arcane Mage on Forever. Arcane stacks Arcane Blast for spell da
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Arcane Blast to three stacks. Past three, keep blasting only while your mana bar is fuller than the boss's health bar. Stop below a fifth of your mana.
-- Arcane Missiles the moment Missile Barrage lights up: the proc makes it free and halves the channel.
-- Pyroblast with the raid build, on three Heating Up stacks, when it is a one and a half second cast.
+- Arcane Blast to three stacks, from twenty. Past three, keep blasting only while your mana bar is fuller than the boss's health bar. Stop below a fifth of your mana.
+- Arcane Missiles is your main spell until both ranks of Missile Barrage are in. That is twenty-three with the leveling build, twenty-four with the raid build. After that, Missiles only the moment Missile Barrage lights up: the proc makes it free and halves the channel.
+- Pyroblast with the raid build: instant off Presence of Mind from fifty-four. From fifty-seven, also on three Heating Up stacks, when it is a one and a half second cast.
 - Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a six second cooldown.
 - Arcane Wrath with the raid build, every time it is ready while you hold three Blast stacks.
 - Fireball fills in a raid once you stop blasting.
 - Frostbolt is the filler with the leveling build. In a raid, cast it only when you are too low on mana for a Fireball.
-- Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.
-- Presence of Mind on cooldown, and with Arcane Power once you have it.
-- Mage Armor, Arcane Brilliance and your food buff go up before the pull.
+- Arcane Power from forty on cooldown, with Presence of Mind and your on-use trinkets. Add your damage racial if your race has one.
+- Presence of Mind from thirty-one on cooldown, with Arcane Power once you have it. Spend it on Pyroblast with the raid build from fifty-four. Before that, and with the leveling build, spend it on Frostbolt. Never spend it on an Arcane Blast.
+- Mage Armor from thirty-four before the pull, with your food buff and Arcane Intellect, or Arcane Brilliance from fifty-six. Before thirty-four, wear Frost Armor or Ice Armor.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
 - Arcane Explosion is instant and hits everything within ten yards, so you stand in the pack with the tank and spam it.
 - Frost Nova.

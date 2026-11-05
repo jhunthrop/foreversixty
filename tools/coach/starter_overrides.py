@@ -203,23 +203,72 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         # arcane.md: "Blast to 3 stacks ... Past 3, keep blasting only while your mana bar is fuller than the
         # boss's health bar and you are above 20% mana"; Missiles on Missile Barrage; the raid build's
         # Pyroblast on three Heating Up stacks and Arcane Wrath; Frostbolt the leveling filler.
+        # Blast is the twentieth point on both orders (round 26).
         "Arcane Blast": (
-            "Arcane Blast to three stacks. Past three, keep blasting only while your mana bar is fuller than the "
-            "boss's health bar. Stop below a fifth of your mana."
+            "Arcane Blast to three stacks, from twenty. Past three, keep blasting only while your mana bar is fuller "
+            "than the boss's health bar. Stop below a fifth of your mana."
         ),
-        "Arcane Missiles": "Arcane Missiles the moment Missile Barrage lights up: the proc makes it free and halves the channel.",
-        "Pyroblast": "Pyroblast with the raid build, on three Heating Up stacks, when it is a one and a half second cast.",
+        # arcane.md: "From 20 to 22, until both ranks of Missile Barrage are in, Arcane Missiles still does
+        # more damage for its mana than Blast, so lead with Missiles"; both ranks at 23 leveling, 24 raid.
+        "Arcane Missiles": (
+            "Arcane Missiles is your main spell until both ranks of Missile Barrage are in. "
+            "That is twenty-three with the leveling build, twenty-four with the raid build. "
+            "After that, Missiles only the moment Missile Barrage lights up: the proc makes it free and halves the channel."
+        ),
+        # The card: Pyroblast the moment Presence of Mind is up from 54 on the raid build; Heating Up at 57.
+        "Pyroblast": (
+            "Pyroblast with the raid build: instant off Presence of Mind from fifty-four. "
+            "From fifty-seven, also on three Heating Up stacks, when it is a one and a half second cast."
+        ),
         "Arcane Wrath": "Arcane Wrath with the raid build, every time it is ready while you hold three Blast stacks.",
         "Frostbolt": "Frostbolt is the filler with the leveling build. In a raid, cast it only when you are too low on mana for a Fireball.",
+        # Arcane Power is the fortieth point, Presence of Mind the thirty-first; arcane.md:56 and :84 spend
+        # Presence of Mind on Pyroblast (raid, 54) or Frostbolt, "Never spend it on an Arcane Blast".
+        "Arcane Power": (
+            "Arcane Power from forty on cooldown, with Presence of Mind and your on-use trinkets. "
+            "Add your damage racial if your race has one."
+        ),
+        "Presence of Mind": (
+            "Presence of Mind from thirty-one on cooldown, with Arcane Power once you have it. "
+            "Spend it on Pyroblast with the raid build from fifty-four. "
+            "Before that, and with the leveling build, spend it on Frostbolt. Never spend it on an Arcane Blast."
+        ),
     },
     "mage-fire": {
-        # fire.md: "Everything else is Scorch" from thirty, with Fireball the filler below thirty.
+        # fire.md:75: "Keep 5 Improved Scorch stacks rolling: refresh them with one Scorch when 5 seconds or
+        # less are left ... Everything else is Fireball, except when Fire Blast comes back in less than a
+        # Scorch's cast: then cast Scorch". fire.md:119: one point at 27 only on a mob that lives a minute or
+        # more, from 28 on anything that lives 20 seconds; "From 30, with Heating Up in, Scorch and Fire
+        # Blast take over".
         "Scorch": (
-            "Scorch is the filler from thirty with the leveling build. Cast it on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. "
-            "Every Scorch also renews your Improved Scorch stacks. Below thirty, Fireball is the filler."
+            "Scorch to five Improved Scorch stacks, and again whenever five seconds or less are left on them. "
+            "With one point of the talent, build them only on a boss that lives a minute or more. "
+            "With the raid build, also Scorch when Fire Blast is back before a Scorch would finish. "
+            "With the raid build, every other free global is Fireball. "
+            "With the leveling build Scorch is the filler once you have Heating Up. "
+            "Cast it on every global not spent on a three-stack Pyroblast or Fire Blast. Before that, Fireball is the filler."
+        ),
+        # fire.md:73 and :119: the pre-pull Pyroblast and the leveling pull from range.
+        "Pyroblast": (
+            "Pyroblast before the pull, started six seconds out, and on a mob from range while leveling. "
+            "After that only on three stacks of Heating Up, when it is a one and a half second cast."
+        ),
+        # Arcane Blast is a raid build talent only (round 26).
+        "Arcane Blast": (
+            "Arcane Blast with the raid build, once whenever its buff has dropped, then back to Fire. "
+            "Its spell damage lasts eighteen seconds, and a second cast on top doubles its cost."
+        ),
+        # The raid order takes Heating Up at 33, the leveling order at 30: name the talent, not the level.
+        "Fire Blast": "Fire Blast every time it is off cooldown. It is instant, and once you have Heating Up every hit is a stack.",
+        # Combustion is the fortieth point.
+        "Combustion": (
+            "Combustion from forty, once the boss carries five Improved Scorch stacks, with your on-use trinkets. "
+            "Add your damage racial if your race has one."
         ),
     },
     "mage-frost": {
+        # Ice Barrier is the fortieth point.
+        "Ice Barrier": "Ice Barrier from forty whenever the shield is down.",
         # frost.md: Cone of Cold on a boss within ten yards, above half mana, on five Winter's Chill stacks.
         "Cone of Cold": (
             "Cone of Cold on a boss only within ten yards, above half mana, on five Winter's Chill stacks. "
@@ -560,6 +609,13 @@ GUIDE_LINES["hunter-survival"].update(
     }
 )
 
+# Round 26: the mage pre-pull line names when each buff trains (Mage Armor 34, Arcane Brilliance 56).
+for _mage_spec in ("mage-arcane", "mage-fire", "mage-frost"):
+    GUIDE_LINES[_mage_spec]["Mage Armor"] = (
+        "Mage Armor from thirty-four before the pull, with your food buff and Arcane Intellect, "
+        "or Arcane Brilliance from fifty-six. Before thirty-four, wear Frost Armor or Ice Armor."
+    )
+
 
 # The guide's own order statements, which win over the order of first mention. Listed abilities lead.
 GUIDE_ORDER: dict[str, tuple[str, ...]] = {
@@ -592,6 +648,10 @@ GUIDE_ORDER: dict[str, tuple[str, ...]] = {
     "mage-arcane": (
         "Arcane Blast", "Arcane Missiles", "Pyroblast", "Fire Blast", "Arcane Wrath", "Fireball", "Frostbolt",
         "Arcane Power", "Presence of Mind",
+    ),
+    # fire.md:75 and the card: the stacks, Combustion, Pyroblast, Fire Blast, Missiles, Arcane Blast, Fireball.
+    "mage-fire": (
+        "Scorch", "Combustion", "Pyroblast", "Fire Blast", "Arcane Missiles", "Arcane Blast", "Fireball",
     ),
     # protection.md list items in order.
     "paladin-protection": (

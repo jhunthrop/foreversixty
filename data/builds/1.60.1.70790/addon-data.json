@@ -13764,7 +13764,7 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13785,7 +13785,7 @@
           {
             "spell_id": 143,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13797,7 +13797,7 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13818,7 +13818,7 @@
           {
             "spell_id": 145,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13830,7 +13830,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13851,7 +13851,7 @@
           {
             "spell_id": 145,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13863,7 +13863,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13884,7 +13884,7 @@
           {
             "spell_id": 145,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13896,7 +13896,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13917,7 +13917,7 @@
           {
             "spell_id": 3140,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13943,7 +13943,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13964,7 +13964,7 @@
           {
             "spell_id": 3140,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13997,7 +13997,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14018,7 +14018,7 @@
           {
             "spell_id": 2948,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14032,7 +14032,7 @@
           {
             "spell_id": 3140,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14065,7 +14065,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14086,7 +14086,7 @@
           {
             "spell_id": 2948,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14100,7 +14100,7 @@
           {
             "spell_id": 8400,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14133,7 +14133,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14154,7 +14154,7 @@
           {
             "spell_id": 8444,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14168,7 +14168,7 @@
           {
             "spell_id": 8400,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14201,7 +14201,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14222,7 +14222,7 @@
           {
             "spell_id": 2948,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14236,7 +14236,7 @@
           {
             "spell_id": 8401,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14269,7 +14269,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14290,7 +14290,7 @@
           {
             "spell_id": 2948,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14304,7 +14304,7 @@
           {
             "spell_id": 8401,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14337,7 +14337,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14358,7 +14358,7 @@
           {
             "spell_id": 2948,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14372,7 +14372,7 @@
           {
             "spell_id": 8402,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14405,7 +14405,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14426,7 +14426,7 @@
           {
             "spell_id": 2948,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14440,7 +14440,7 @@
           {
             "spell_id": 8402,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14480,7 +14480,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14501,7 +14501,7 @@
           {
             "spell_id": 8444,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14515,7 +14515,7 @@
           {
             "spell_id": 8402,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14555,7 +14555,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14576,7 +14576,7 @@
           {
             "spell_id": 8444,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14590,7 +14590,7 @@
           {
             "spell_id": 10148,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14630,7 +14630,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14651,7 +14651,7 @@
           {
             "spell_id": 8445,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14665,7 +14665,7 @@
           {
             "spell_id": 10148,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14705,7 +14705,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14726,7 +14726,7 @@
           {
             "spell_id": 8445,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14740,7 +14740,7 @@
           {
             "spell_id": 10149,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14780,7 +14780,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14801,7 +14801,7 @@
           {
             "spell_id": 10205,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14815,7 +14815,7 @@
           {
             "spell_id": 10149,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14855,7 +14855,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14876,7 +14876,7 @@
           {
             "spell_id": 10206,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14890,7 +14890,7 @@
           {
             "spell_id": 10149,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14930,7 +14930,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14951,7 +14951,7 @@
           {
             "spell_id": 10206,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -14965,7 +14965,7 @@
           {
             "spell_id": 10150,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -15005,7 +15005,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15026,7 +15026,7 @@
           {
             "spell_id": 10206,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -15040,7 +15040,7 @@
           {
             "spell_id": 10150,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -15080,7 +15080,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15108,7 +15108,7 @@
           {
             "spell_id": 10206,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -15122,7 +15122,7 @@
           {
             "spell_id": 10150,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -15162,7 +15162,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15190,7 +15190,7 @@
           {
             "spell_id": 10207,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -15204,7 +15204,7 @@
           {
             "spell_id": 10150,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -15244,7 +15244,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15272,7 +15272,7 @@
           {
             "spell_id": 10207,
             "name": "Scorch",
-            "condition": "On the leveling build Scorch is the filler once you have Heating Up at 30, not Fireball.",
+            "condition": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball.",
             "icon": "spell_fire_soulburn",
             "race_spell_ids": {}
           },
@@ -15286,7 +15286,7 @@
           {
             "spell_id": 10151,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }

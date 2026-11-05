@@ -21,8 +21,8 @@ This is the best Frost Mage on Forever. Frost casts Frostbolt behind Ice Barrier
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Mage Armor, Arcane Brilliance and your food buff go up before the pull.
-- Ice Barrier whenever the shield is down.
+- Mage Armor from thirty-four before the pull, with your food buff and Arcane Intellect, or Arcane Brilliance from fifty-six. Before thirty-four, wear Frost Armor or Ice Armor.
+- Ice Barrier from forty whenever the shield is down.
 - Frostbolt is the filler, and you never stop casting it to wait on a proc.
 - Ice Lance while Fingers of Frost is up and its eight second cooldown is ready.
 - Arcane Missiles the moment Missile Barrage lights up.

@@ -390,7 +390,10 @@ def test_figures_must_be_in_the_guide() -> None:
 
 
 def test_pyroblast_carries_the_guides_condition() -> None:
-    assert any(line.startswith("Pyroblast only") for line in ps.priority_lines(ps.spec_row("mage-fire")))
+    assert any(
+        line.startswith("Pyroblast") and "only on three stacks of Heating Up" in line
+        for line in ps.priority_lines(ps.spec_row("mage-fire"))
+    )
 
 
 def test_swiftmend_carries_the_guides_gate() -> None:
