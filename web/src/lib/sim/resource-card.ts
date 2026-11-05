@@ -72,11 +72,13 @@ function manaLeft(result: SimResult): number | undefined {
   return undefined;
 }
 
-function thirdTile(result: SimResult, title: string, gained: number, wasted: number): ResourceTile[] {
+function thirdTile(result: SimResult, title: string, gained: number, wasted: number | undefined): ResourceTile[] {
   if (title === MANA) {
     const left = manaLeft(result);
     return left === undefined ? [] : [{ label: copy.endedWith, value: grouped(left) }];
   }
+  // A run that never recorded the overflow says nothing about it, rather than a 0 it did not measure.
+  if (wasted === undefined) return [];
   const share = gained === 0 ? 0 : (wasted / gained) * 100;
   return [{ label: copy.lostAtCap, value: copy.capValue(grouped(wasted), oneDecimal(share)) }];
 }
@@ -92,7 +94,7 @@ export function resourceCard(result: SimResult, names: ActionNames | null): Reso
     tiles: [
       { label: copy.gained, value: grouped(resource.gained) },
       { label: copy.spent, value: grouped(resource.spent) },
-      ...thirdTile(result, title, resource.gained, resource.wasted ?? 0),
+      ...thirdTile(result, title, resource.gained, resource.wasted),
     ],
     lists:
       sources === undefined

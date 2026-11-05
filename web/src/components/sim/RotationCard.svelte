@@ -59,7 +59,7 @@
 
 {#snippet title(name: string, action: string | null)}
   <span class="text-strong text-[15px] font-semibold">{name}</span>
-  {#if rankOf(action) > 0}<span class="text-muted ml-1 text-[13px]">{copy.rank(rankOf(action))}</span>{/if}
+  {#if rankOf(action) > 0}<span class="text-muted ml-1 text-[13px] whitespace-nowrap">{copy.rank(rankOf(action))}</span>{/if}
 {/snippet}
 
 <Card
