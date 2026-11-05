@@ -252,12 +252,12 @@
       "Bloom": [
         {
           "id": 1328621,
-          "level": 1,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 1328622,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -474,22 +474,22 @@
       "Eclipse": [
         {
           "id": 408248,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 408255,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 409813,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 441260,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -695,7 +695,7 @@
         },
         {
           "id": 414925,
-          "level": 0,
+          "level": 20,
           "rank": 0
         },
         {
@@ -705,7 +705,7 @@
         },
         {
           "id": 1238124,
-          "level": 0,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -748,12 +748,12 @@
       "Feral Swiftness": [
         {
           "id": 17002,
-          "level": 0,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 24867,
-          "level": 8,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -867,7 +867,7 @@
       "Genesis": [
         {
           "id": 1223081,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -1137,12 +1137,12 @@
       "Improved Moonfire": [
         {
           "id": 16821,
-          "level": 0,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 28854,
-          "level": 0,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -1156,12 +1156,12 @@
       "Improved Starfire": [
         {
           "id": 16850,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 24480,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -1197,17 +1197,17 @@
       "Improved Wrath": [
         {
           "id": 16814,
-          "level": 0,
+          "level": 10,
           "rank": 0
         },
         {
           "id": 436287,
-          "level": 0,
+          "level": 10,
           "rank": 0
         },
         {
           "id": 1248996,
-          "level": 0,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -1233,7 +1233,7 @@
       "Insect Swarm": [
         {
           "id": 5570,
-          "level": 20,
+          "level": 25,
           "rank": 1
         },
         {
@@ -1299,12 +1299,12 @@
       "Leader of the Pack": [
         {
           "id": 17007,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 24932,
-          "level": 0,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -1536,14 +1536,14 @@
       "Natural Instinct": [
         {
           "id": 1223242,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
       "Natural Reaction": [
         {
           "id": 417051,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -1577,12 +1577,12 @@
       "Nature's Grace": [
         {
           "id": 16880,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 16886,
-          "level": 0,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -1621,26 +1621,26 @@
       "Nature's Majesty": [
         {
           "id": 1223082,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
       "Nature's Splendor": [
         {
           "id": 1223083,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
       "Nature's Swiftness": [
         {
           "id": 17116,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 29274,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -2385,7 +2385,7 @@
       "Shifting Power": [
         {
           "id": 1322605,
-          "level": 1,
+          "level": 40,
           "rank": 0
         }
       ],
@@ -2605,7 +2605,7 @@
       "Swiftmend": [
         {
           "id": 18562,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -2679,12 +2679,12 @@
       "Thick Hide": [
         {
           "id": 16929,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 1306459,
-          "level": 0,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -3442,7 +3442,7 @@
       "Careful Aim": [
         {
           "id": 1223984,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -3623,7 +3623,7 @@
       "Counterattack": [
         {
           "id": 19306,
-          "level": 30,
+          "level": 25,
           "rank": 1
         },
         {
@@ -4081,12 +4081,12 @@
       "Focused Fire": [
         {
           "id": 1223755,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 1242139,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -4115,17 +4115,17 @@
       "Frenzy": [
         {
           "id": 19621,
-          "level": 0,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 428728,
-          "level": 1,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 431606,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -4400,12 +4400,12 @@
       "Improved Mend Pet": [
         {
           "id": 19572,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 23560,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
@@ -4417,12 +4417,12 @@
       "Improved Revive Pet": [
         {
           "id": 24443,
-          "level": 0,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 1293639,
-          "level": 0,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -4545,12 +4545,12 @@
       "Lacerating Strikes": [
         {
           "id": 1310533,
-          "level": 0,
+          "level": 40,
           "rank": 0
         },
         {
           "id": 1310536,
-          "level": 1,
+          "level": 40,
           "rank": 0
         }
       ],
@@ -4659,22 +4659,22 @@
       "Lone Wolf": [
         {
           "id": 409979,
-          "level": 1,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 415370,
-          "level": 1,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 415372,
-          "level": 1,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 1310684,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -4894,24 +4894,24 @@
       "Rapid Killing": [
         {
           "id": 415405,
-          "level": 0,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 415407,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
       "Rapid Recuperation": [
         {
           "id": 1223987,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 1242512,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -5012,12 +5012,12 @@
       "Resourcefulness": [
         {
           "id": 440529,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 440558,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -5566,7 +5566,7 @@
       "Survivalist's Discipline": [
         {
           "id": 1310496,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -6044,7 +6044,7 @@
       "Accelerant": [
         {
           "id": 11069,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -6141,7 +6141,7 @@
       "Arcane Concentration": [
         {
           "id": 11213,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -6187,14 +6187,14 @@
       "Arcane Geometry": [
         {
           "id": 11247,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
       "Arcane Impact": [
         {
           "id": 11242,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -6245,7 +6245,7 @@
       "Arcane Mind": [
         {
           "id": 11232,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -6302,21 +6302,21 @@
       "Arcane Power": [
         {
           "id": 12042,
-          "level": 1,
+          "level": 40,
           "rank": 0
         }
       ],
       "Arcane Shielding": [
         {
           "id": 11252,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
       "Arcane Subtlety": [
         {
           "id": 11210,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -6553,7 +6553,7 @@
       "Burning Soul": [
         {
           "id": 11083,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -6665,7 +6665,7 @@
       "Cold Snap": [
         {
           "id": 12472,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -6876,7 +6876,7 @@
       "Critical Mass": [
         {
           "id": 11115,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -7103,22 +7103,22 @@
       "Fingers of Frost": [
         {
           "id": 400647,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 400669,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 400670,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 401741,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -7204,7 +7204,7 @@
       "Fire Power": [
         {
           "id": 11124,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -7369,7 +7369,7 @@
       "Flame Throwing": [
         {
           "id": 11100,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -7496,7 +7496,7 @@
       "Frost Channeling": [
         {
           "id": 11160,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -7584,14 +7584,14 @@
       "Frost Warding": [
         {
           "id": 11189,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
       "Frostbite": [
         {
           "id": 11071,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -7794,12 +7794,12 @@
       "Heating Up": [
         {
           "id": 400624,
-          "level": 1,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 400625,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -7972,12 +7972,12 @@
       "Ice Block": [
         {
           "id": 11958,
-          "level": 4,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 27619,
-          "level": 4,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -8016,7 +8016,7 @@
       "Ice Shards": [
         {
           "id": 11207,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -8040,29 +8040,29 @@
       "Ignite": [
         {
           "id": 11119,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 412538,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 412545,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
       "Impact": [
         {
           "id": 11103,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 1239832,
-          "level": 10,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -8093,73 +8093,73 @@
       "Improved Blizzard": [
         {
           "id": 11185,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
       "Improved Channeling": [
         {
           "id": 11237,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
       "Improved Cone of Cold": [
         {
           "id": 11190,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
       "Improved Counterspell": [
         {
           "id": 11255,
-          "level": 1,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 24429,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
       "Improved Fire Blast": [
         {
           "id": 11078,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
       "Improved Fire Ward": [
         {
           "id": 11094,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
       "Improved Flamestrike": [
         {
           "id": 11108,
-          "level": 1,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 24491,
-          "level": 0,
+          "level": 20,
           "rank": 0
         }
       ],
       "Improved Frost Nova": [
         {
           "id": 11165,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
       "Improved Frostbolt": [
         {
           "id": 11070,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -8316,7 +8316,7 @@
       "Magic Absorption": [
         {
           "id": 29441,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -8444,7 +8444,7 @@
       "Master of Elements": [
         {
           "id": 29074,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -8479,27 +8479,27 @@
       "Missile Barrage": [
         {
           "id": 400588,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 400589,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 401736,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 467409,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 1326083,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -8589,7 +8589,7 @@
       "Permafrost": [
         {
           "id": 11175,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -8707,7 +8707,7 @@
       "Precision": [
         {
           "id": 29438,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -8721,7 +8721,7 @@
       "Presence of Mind": [
         {
           "id": 12043,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -9081,7 +9081,7 @@
       "Shatter": [
         {
           "id": 11170,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -9397,12 +9397,12 @@
       "Winter's Chill": [
         {
           "id": 11180,
-          "level": 1,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 12579,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -9694,7 +9694,7 @@
       "Boundless Light": [
         {
           "id": 1328550,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -10267,17 +10267,17 @@
       "Holy Power": [
         {
           "id": 5923,
-          "level": 0,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 28789,
-          "level": 0,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 1226461,
-          "level": 0,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -10479,12 +10479,12 @@
       "Improved Hammer of Justice": [
         {
           "id": 20487,
-          "level": 0,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 24188,
-          "level": 0,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -10568,22 +10568,22 @@
       "Infusion of Light": [
         {
           "id": 53672,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 426065,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 426179,
-          "level": 1,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 437063,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -11019,12 +11019,12 @@
       "Purifying Power": [
         {
           "id": 429144,
-          "level": 0,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 429254,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -11065,7 +11065,7 @@
       "Repentance": [
         {
           "id": 20066,
-          "level": 20,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -11320,7 +11320,7 @@
       "Sacred Duty": [
         {
           "id": 1224697,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -11597,12 +11597,12 @@
       "Shieldsworn": [
         {
           "id": 1328544,
-          "level": 1,
+          "level": 40,
           "rank": 0
         },
         {
           "id": 1328551,
-          "level": 1,
+          "level": 40,
           "rank": 0
         }
       ],
@@ -11621,7 +11621,7 @@
       "Stoicism": [
         {
           "id": 1328546,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -11635,7 +11635,7 @@
       "Swift Judgement": [
         {
           "id": 1310994,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -11868,34 +11868,34 @@
       "Blackout": [
         {
           "id": 15268,
-          "level": 0,
+          "level": 10,
           "rank": 1
         },
         {
           "id": 15323,
-          "level": 0,
+          "level": 10,
           "rank": 2
         },
         {
           "id": 15324,
-          "level": 0,
+          "level": 10,
           "rank": 3
         },
         {
           "id": 15325,
-          "level": 0,
+          "level": 10,
           "rank": 4
         },
         {
           "id": 15326,
-          "level": 0,
+          "level": 10,
           "rank": 5
         }
       ],
       "Blessed Recovery": [
         {
           "id": 27811,
-          "level": 0,
+          "level": 20,
           "rank": 0
         },
         {
@@ -12108,12 +12108,12 @@
       "Dark Inspiration": [
         {
           "id": 1326159,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 1326168,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -12290,12 +12290,12 @@
       "Divine Aegis": [
         {
           "id": 431622,
-          "level": 0,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 431624,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -12707,12 +12707,12 @@
       "Holy Binding": [
         {
           "id": 1328569,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 1328570,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -12793,7 +12793,7 @@
       "Holy Precision": [
         {
           "id": 1309957,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -12853,17 +12853,17 @@
       "Improved Power Word: Shield": [
         {
           "id": 14748,
-          "level": 0,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 24191,
-          "level": 0,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 468278,
-          "level": 0,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -13618,12 +13618,12 @@
       "Renewed Hope": [
         {
           "id": 425280,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 425303,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -13853,12 +13853,12 @@
       "Shadow Weaving": [
         {
           "id": 15257,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 15258,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -14203,7 +14203,7 @@
       "Vampiric Embrace": [
         {
           "id": 15286,
-          "level": 30,
+          "level": 25,
           "rank": 0
         },
         {
@@ -14213,7 +14213,7 @@
         },
         {
           "id": 1237618,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -14513,7 +14513,7 @@
       "Blade Flurry": [
         {
           "id": 13877,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -14807,7 +14807,7 @@
       "Dirty Tricks": [
         {
           "id": 1224782,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -15113,12 +15113,12 @@
       "Ghostly Strike": [
         {
           "id": 14278,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 1329326,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -15183,24 +15183,24 @@
       "Improved Kick": [
         {
           "id": 13754,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 24434,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
       "Improved Poisons": [
         {
           "id": 14113,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 21881,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -15532,7 +15532,7 @@
       "Puncturing Wounds": [
         {
           "id": 1224716,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -15563,12 +15563,12 @@
       "Quick Getaway": [
         {
           "id": 1310728,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 1329282,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -15803,7 +15803,7 @@
       "Seal Fate": [
         {
           "id": 14186,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -16165,7 +16165,7 @@
       "Venom": [
         {
           "id": 1310703,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
@@ -16823,19 +16823,19 @@
       "Elemental Devastation": [
         {
           "id": 30160,
-          "level": 0,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 30165,
-          "level": 0,
+          "level": 15,
           "rank": 0
         }
       ],
       "Elemental Focus": [
         {
           "id": 16164,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -17423,7 +17423,7 @@
       "Improved Stormstrike": [
         {
           "id": 1223031,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -17592,7 +17592,7 @@
       "Lightning Overload": [
         {
           "id": 408438,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -17650,17 +17650,17 @@
       "Maelstrom Weapon": [
         {
           "id": 408498,
-          "level": 1,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 408505,
-          "level": 1,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 409946,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -17755,7 +17755,7 @@
       "Mana Tide Totem": [
         {
           "id": 16190,
-          "level": 1,
+          "level": 25,
           "rank": 1
         },
         {
@@ -17777,12 +17777,12 @@
       "Mental Dexterity": [
         {
           "id": 415140,
-          "level": 0,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 415144,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -17891,7 +17891,7 @@
       "Nature's Swiftness": [
         {
           "id": 16188,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -17982,7 +17982,7 @@
       "Rage of the Farseer": [
         {
           "id": 425336,
-          "level": 1,
+          "level": 40,
           "rank": 0
         }
       ],
@@ -18345,7 +18345,7 @@
       "Shamanistic Focus": [
         {
           "id": 1223030,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -18416,7 +18416,7 @@
       "Spirit Weapons": [
         {
           "id": 16268,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -18589,7 +18589,7 @@
       "Stormstrike": [
         {
           "id": 17364,
-          "level": 40,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -19087,17 +19087,17 @@
       "Bane of Havoc": [
         {
           "id": 1225228,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 1243338,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 1243339,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -19641,12 +19641,12 @@
       "Decimation": [
         {
           "id": 440870,
-          "level": 1,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 440873,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -19699,19 +19699,19 @@
       "Demonic Aegis": [
         {
           "id": 470279,
-          "level": 1,
+          "level": 15,
           "rank": 0
         },
         {
           "id": 1235316,
-          "level": 0,
+          "level": 15,
           "rank": 0
         }
       ],
       "Demonic Brand": [
         {
           "id": 1293695,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
@@ -19764,29 +19764,29 @@
       "Demonic Knowledge": [
         {
           "id": 412732,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 415749,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 1243120,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
       "Demonic Pact": [
         {
           "id": 425464,
-          "level": 0,
+          "level": 40,
           "rank": 0
         },
         {
           "id": 425466,
-          "level": 0,
+          "level": 40,
           "rank": 0
         }
       ],
@@ -20320,12 +20320,12 @@
       "Improved Corruption": [
         {
           "id": 17810,
-          "level": 0,
+          "level": 10,
           "rank": 0
         },
         {
           "id": 24486,
-          "level": 0,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -20877,7 +20877,7 @@
       "Nightfall": [
         {
           "id": 18094,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -20891,12 +20891,12 @@
       "Pandemic": [
         {
           "id": 427712,
-          "level": 0,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 429283,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -21341,12 +21341,12 @@
       "Shadow and Flame": [
         {
           "id": 426316,
-          "level": 0,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 426449,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -21468,12 +21468,12 @@
       "Soul Siphon": [
         {
           "id": 17804,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 403863,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -22106,19 +22106,19 @@
       "Bloodthrill": [
         {
           "id": 1289681,
-          "level": 1,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 1289682,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
       "Booming Voice": [
         {
           "id": 12321,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -22288,7 +22288,7 @@
       "Death Wish": [
         {
           "id": 12328,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -22307,12 +22307,12 @@
       "Deep Wounds": [
         {
           "id": 12834,
-          "level": 1,
+          "level": 20,
           "rank": 0
         },
         {
           "id": 23255,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -22591,12 +22591,12 @@
       "Focused Rage": [
         {
           "id": 29787,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 415745,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
@@ -22655,12 +22655,12 @@
       "Gore Drinker": [
         {
           "id": 1323967,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
           "id": 1323968,
-          "level": 0,
+          "level": 30,
           "rank": 0
         },
         {
@@ -22809,7 +22809,7 @@
       "Improved Bloodrage": [
         {
           "id": 12301,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -22828,7 +22828,7 @@
       "Improved Charge": [
         {
           "id": 12285,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -22869,26 +22869,26 @@
       "Improved Disarm": [
         {
           "id": 12313,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
       "Improved Hamstring": [
         {
           "id": 12289,
-          "level": 1,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 24428,
-          "level": 0,
+          "level": 35,
           "rank": 0
         }
       ],
       "Improved Heroic Strike": [
         {
           "id": 12282,
-          "level": 1,
+          "level": 10,
           "rank": 0
         }
       ],
@@ -22934,12 +22934,12 @@
       "Improved Overpower": [
         {
           "id": 12290,
-          "level": 1,
+          "level": 15,
           "rank": 1
         },
         {
           "id": 12963,
-          "level": 1,
+          "level": 15,
           "rank": 2
         }
       ],
@@ -22970,14 +22970,14 @@
       "Improved Revenge": [
         {
           "id": 12797,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
       "Improved Shield Bash": [
         {
           "id": 12311,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -23001,28 +23001,28 @@
       "Improved Shield Wall": [
         {
           "id": 12312,
-          "level": 1,
+          "level": 30,
           "rank": 0
         }
       ],
       "Improved Slam": [
         {
           "id": 12862,
-          "level": 1,
+          "level": 35,
           "rank": 0
         }
       ],
       "Improved Sunder Armor": [
         {
           "id": 12308,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
       "Improved Tactical Mastery": [
         {
           "id": 12295,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
@@ -23041,19 +23041,19 @@
       "Improved Thunder Clap": [
         {
           "id": 12287,
-          "level": 1,
+          "level": 15,
           "rank": 0
         }
       ],
       "Improved Whirlwind": [
         {
           "id": 24431,
-          "level": 0,
+          "level": 35,
           "rank": 0
         },
         {
           "id": 1310315,
-          "level": 0,
+          "level": 35,
           "rank": 0
         }
       ],
@@ -23105,7 +23105,7 @@
       "Last Stand": [
         {
           "id": 12975,
-          "level": 1,
+          "level": 20,
           "rank": 0
         }
       ],
@@ -23348,12 +23348,12 @@
       "Reckless Swings": [
         {
           "id": 1329554,
-          "level": 0,
+          "level": 25,
           "rank": 0
         },
         {
           "id": 1329555,
-          "level": 0,
+          "level": 25,
           "rank": 0
         }
       ],
@@ -23780,7 +23780,7 @@
       "Spearing Strike": [
         {
           "id": 1310222,
-          "level": 1,
+          "level": 25,
           "rank": 0
         }
       ],
