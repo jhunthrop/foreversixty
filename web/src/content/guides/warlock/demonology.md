@@ -95,7 +95,7 @@ Movement: Corruption needs you to stand still in this build, and Doom is only du
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt, Corruption and Doom. Fire power reaches Immolate on a boss and Rain of Fire on trash, since this build skips Soul Fire at 60. Crit pays twice through Ruin and Improved Shadow Bolt, and crit on your gear also reaches your Succubus. Intellect is mana, plus a little crit, which pays the same way. Spirit only matters through Life Tap. The table above gives the order for your gear.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt, Corruption and Doom. Fire power reaches Immolate on a boss and Rain of Fire on trash, since this build skips Soul Fire at 60. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana, plus a little crit, which pays the same way. Crit on your gear also reaches your Succubus; the crit from Intellect does not. Spirit only matters through Life Tap. The table above gives the order for your gear.
 
 ## Best in slot
 
