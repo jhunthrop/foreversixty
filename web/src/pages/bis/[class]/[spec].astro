@@ -536,8 +536,12 @@ const crossScopeCss =
 <script>
   // The header selector is the one way to switch character: follow it (a bundled script, so
   // the inline ones above stay framework-free).
-  import { mountBisFollow } from '../../../lib/bis/follow-selector-client';
+  // With no band in the URL it opens on ?band= or the selected character's band.
+  import { applyBisDefaultBand, mountBisFollow } from '../../../lib/bis/follow-selector-client';
 
   const root = document.querySelector<HTMLElement>('.page-body[data-bis-spec]');
-  if (root !== null) mountBisFollow(root);
+  if (root !== null) {
+    mountBisFollow(root);
+    applyBisDefaultBand(root);
+  }
 </script>
