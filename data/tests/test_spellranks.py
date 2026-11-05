@@ -340,3 +340,64 @@ def test_the_active_builds_hawk_rank_6_is_not_inferior():
     rows = {row["id"]: row for row in hawk}
     assert not rows[14322].get("inferior")
     assert not rows[14321].get("inferior")
+
+
+# Sim round 22 platform (shaman X2): since client 70753 the spell constants carry
+# Stormstrike 17364 at its client spell level 40, and the cards, the ladder and the
+# addon read that as its learn level. Stormstrike is a tier-3 talent: a shaman takes
+# it at 25 (tier t opens at 10 + 5t) and the engine casts it from there. A spell a
+# talent teaches is learned when the talent can first be taken, and a trainer rank
+# above it is learned no earlier than that.
+def test_a_talent_taught_spell_is_learned_at_its_tiers_level():
+    spells = {
+        "17364": _spell("Stormstrike", rank=0, level=40, gcd_ms=1500),
+        "5570": _spell("Insect Swarm", rank=1, level=20, cost=45, gcd_ms=1500),
+        "24974": _spell("Insect Swarm", rank=2, level=22, cost=60, gcd_ms=1500),
+        "24975": _spell("Insect Swarm", rank=3, level=30, cost=85, gcd_ms=1500),
+        "403": _spell("Lightning Bolt", rank=1, level=1, cost=15, cast_time_ms=1500),
+    }
+    talent_levels = {17364: 25, 5570: 25}
+    ranks = _spell_ranks_for_class(spells, talent_levels=talent_levels)
+    assert [(r.id, r.level) for r in ranks["Stormstrike"]] == [(17364, 25)]
+    assert [(r.id, r.level) for r in ranks["Insect Swarm"]] == [
+        (5570, 25),
+        (24974, 25),
+        (24975, 30),
+    ]
+    assert [(r.id, r.level) for r in ranks["Lightning Bolt"]] == [(403, 1)]
+
+
+def test_a_talent_level_never_adds_a_name_the_client_levels_leave_out():
+    """Shadowform 15473 is a single level-0 row: nothing to rewrite or gate, so the file
+    leaves it out, and its talent's level does not bring it in."""
+    spells = {"15473": _spell("Shadowform", rank=0, level=0, gcd_ms=1500)}
+    assert "Shadowform" not in _spell_ranks_for_class(spells, talent_levels={15473: 40})
+
+
+def test_talent_levels_open_each_tier_five_levels_apart(tmp_path: Path):
+    talents = {
+        "trees": [
+            {
+                "name": "Enhancement",
+                "talents": [
+                    {
+                        "name": "Stormstrike",
+                        "tier": 3,
+                        "spell_id": 17364,
+                        "ranks": [{"spell_id": 17364}],
+                    },
+                    {
+                        "name": "Ancestral Knowledge",
+                        "tier": 0,
+                        "spell_id": 17485,
+                        "ranks": [{"spell_id": 17485}, {"spell_id": 17486}],
+                    },
+                ],
+            }
+        ]
+    }
+    (tmp_path / "shaman.json").write_text(json.dumps(talents), encoding="utf-8")
+    from pipeline.talent_levels import load_talent_spell_levels
+
+    assert load_talent_spell_levels(tmp_path, "shaman") == {17364: 25, 17485: 10, 17486: 10}
+    assert load_talent_spell_levels(tmp_path, "mage") == {}

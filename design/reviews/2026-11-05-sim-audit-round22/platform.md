@@ -56,6 +56,46 @@ Both lane branches merged int/r22 (fast-forward: site 2cafd03c7, fork 83f1c08c4)
 
 **Files to regenerate (follow-up):** none. F6 and B1 move no published number and no golden.
 
+## Second follow-up (shaman X2: talent-taught learn levels; the raid build legend)
+
+Both branches merged int/r22 again (site 48c46c8ee, fork 95223c008).
+
+**Confirmed and fixed: 2** (T1 `70753` with a guides handoff, T2 `old`). T1 is data generation only: it moves no number until the integrator regenerates. Once regenerated it changes the addon's rotation rows and the site sim's rank tables for talent spells (below). It moves no published raid-60 DPS: every spell it moves is learned below 60 either way.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| T1 | **A talent's spell took its client spell level as its learn level.** Every consumer reads its learn level from the generated `spellranks.json`, and the trainers' view from `trainables/`. That covers the addon rows (`addonrotation._family_ranks`), the site sim's rank rewriter and ladder (embedded spellranks), and the web's `knownAtFor` (first level of a family). Both files took `SpellLevels.SpellLevel`. Since 70753 that row gives Stormstrike 17364 level 40, a tier-3 talent a shaman takes at 25 and the engine casts from 25 (shaman N5). So the Enhancement rows dropped it from 25 to 39. The talent fallback at tier level in `_family_ranks` only covered spells spellranks did not track. Now `pipeline/talent_levels.py` holds the tier ladder (10 + 5 x tier, moved out of addonrotation). A talent's own spells are learned at their tier's first level, and a trainer rank above one no earlier. `spellranks` and `trainables` both apply it. The decision to leave out a single level-0 row is still made on the client's levels, so no new names appear (Shadowform stays out). | `data/pipeline/talent_levels.py`, `spellranks.py`, `trainables.py`, `addonrotation.py`; tests `test_a_talent_taught_spell_is_learned_at_its_tiers_level`, `test_talent_levels_open_each_tier_five_levels_apart` (red: unexpected keyword, missing module), `test_a_talent_taught_rank_is_learned_when_its_talent_can_first_be_taken` (red: 40 for 25), `test_a_talent_level_never_adds_a_name_the_client_levels_leave_out`; `tests/test_spellranks.py`, `test_trainables.py`, `test_addonrotation.py`, `test_addondata.py` pass (122 passed, 1 skipped) | CONFIRMED-BUG (data generation) | 70753 (the client's level moved under the old rule) + guides-handoff (guides r20 to r24 carried "RequiredLevel 40") | S b4a82d5ad |
+| T2 | **The card legend read backwards to a raider:** "On the level 60 build, skip that row", read by a level-60 raider. The page's build names stay. "Level 60 build" was chosen in the 22 Oct review (cc11b1035), and the guides' prose uses it. The legend now names the raid build alone: "Raid build only: needs a talent only the raid build takes. Not on the raid build? Skip that row." Captures: `$R/platform/shots4/{mage-arcane,warrior-arms}-card.png`. | `web/src/lib/guides/copy.ts`; vitest `raid-build-legend.test.ts` (red on the old text, then green); `src/lib/guides` 30 files, 549 tests pass | CONFIRMED (copy); wow-player SHIP with one SHOULD (name the Level 60 build chip in the legend: not taken, it was the original confusion) | old | S d0a8bc90e |
+
+**What T1 moves at the next regeneration**, simulated against the committed 70790 files without writing them:
+- **spellranks, spells with a cost, cast or GCD (14 families):**
+  - Talent spells that move earlier: Stormstrike 40 to 25; Counterattack 30 to 25; Vampiric Embrace 30 to 25 (and its 1237618 0 to 25).
+  - Talent spells that move later: Insect Swarm rank 1 20 to 25; Repentance 20 to 30; Ice Block 4 to 25.
+  - Talent actives that sat at level 0 or 1, now at their tier's level: Shifting Power 40, Swiftmend 25, Blade Flurry 30, Ghostly Strike 25, Mana Tide Totem 25, Death Wish 30, Reckless Swings 25, Spearing Strike 25.
+  - 131 passive talent families move from level 0 or 1 to their tier's level.
+- **trainables (active abilities, 38):** the same moves, plus talent actives the trainers' list had at level 0 or 1:
+  - Druid: Nature's Swiftness 30.
+  - Mage: Arcane Power 40, Presence of Mind 30, Cold Snap 30.
+  - Paladin: Divine Favor 20, Oath of Light 25, Templar's Bulwark 20, Swift Judgement 25.
+  - Priest: Inner Focus 20, Shadowform 40, Silence 30.
+  - Rogue: Adrenaline Rush 40, Cold Blood 25, Preparation 30, Riposte 20.
+  - Shaman: Lightning Mastery 40, Nature's Swiftness 30, Rage of the Farseer 40.
+  - Warlock: Amplify Curse 20, Bane of Havoc 30, Curse of Exhaustion 25, Fel Domination 25, Soul Link 30.
+  - Warrior: Last Stand 20.
+  - Turn Evil (paladin) does not move. Its trainer ranks 1328372 to 1328374 are not the talent's own spell (1328370), so they stay at 38 and 52. Improved Mend Pet is passive.
+- **Addon rotation rows (cards):**
+  - Rows gained: Enhancement Stormstrike 25 to 39; Survival Counterattack 25 to 29; Shadow Vampiric Embrace 25 to 29.
+  - Rows dropped before their talent's tier (a level-10 character showed them):
+    - Druid: Balance Insect Swarm 20 to 24; Feral Shifting Power 10 to 39; Restoration Nature's Swiftness 10 to 29 and Swiftmend 10 to 24.
+    - Mage: Arcane Power 10 to 39, Presence of Mind 10 to 29.
+    - Paladin: Protection Swift Judgement 10 to 24.
+    - Rogue: Subtlety Ghostly Strike 10 to 24.
+    - Shaman: Restoration Mana Tide 10 to 24, Nature's Swiftness 10 to 29.
+    - Warrior: Arms Reckless Swings and Spearing Strike 10 to 24; Fury Death Wish 10 to 29, Reckless Swings 10 to 24; Protection Last Stand 10 to 19.
+- **Web:** the BiS Play It panels and the level-60 guide cards are unchanged at their band tops. `knownAtFor` reads talent families as open from their first level, now the tier's.
+
+**Files to regenerate (second follow-up), in order, by the integrator (the data job's steps):** `python -m pipeline trainables --build 1.60.1.70790`, then `spellranks`, then the addon data step (`addon-data.json` rotations and `ability_levels`, and the addon's `Data.lua`), then `make simdb` (embeds spellranks). After the regen, run the touched sim/request tests, which read spellranks: rank registration, required-level floors and the ladder. Their goldens follow (TestRotationLadder for the specs listed above). `test_the_committed_rotations_never_show_an_ability_before_its_trainer_level` passes only once trainables and addon-data are regenerated together.
+
 ## Before/after
 
 Raid 60, frozen BiS, guide raid builds, 10,000 iterations. Before is `$R/sb-before` from site-before; after is this branch.

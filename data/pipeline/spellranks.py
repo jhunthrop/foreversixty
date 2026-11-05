@@ -29,12 +29,15 @@ from __future__ import annotations
 import json
 import logging
 from collections import defaultdict
+from collections.abc import Mapping
 from pathlib import Path
+from types import MappingProxyType
 
 from pipeline.manifest import refresh_manifest
 from pipeline.models import ClassSpellConstants, SpellConstant, SpellRank, SpellRanksFile
 from pipeline.normalize import _write
 from pipeline.simconst import SPELLCONST
+from pipeline.talent_levels import load_talent_spell_levels
 
 logger = logging.getLogger(__name__)
 
@@ -169,16 +172,34 @@ def load_inferior_ids(curated: Path) -> frozenset[int]:
     return frozenset(int(entry["id"]) for entry in inferior)
 
 
+def _with_talent_levels(chain: list[_Entry], talent_levels: Mapping[int, int]) -> list[_Entry]:
+    """A talent-taught id is learned at its talent's first level (`pipeline.talent_levels`),
+    and every rank of its chain no earlier than that: a trainer cannot teach rank 2 of a
+    spell the talent has not taught yet. A chain with no talent id is unchanged."""
+    floors = [talent_levels[entry[0]] for entry in chain if entry[0] in talent_levels]
+    if not floors:
+        return chain
+    floor = min(floors)
+    return [
+        (i, r, talent_levels[i] if i in talent_levels else max(lvl, floor), castable)
+        for i, r, lvl, castable in chain
+    ]
+
+
 def _spell_ranks_for_class(
     spells: dict[str, SpellConstant],
     book_ids: frozenset[int] = frozenset(),
     inferior_ids: frozenset[int] = frozenset(),
+    talent_levels: Mapping[int, int] = MappingProxyType({}),
 ) -> dict[str, list[SpellRank]]:
     names: dict[str, list[SpellRank]] = {}
     for name, entries in sorted(_entries_by_name(spells).items()):
         chain = _rank_chain(entries)
+        # Decided on the client's levels: a talent level never adds a name the file left
+        # out (a passive talent's single level-0 row has nothing to rewrite or gate).
         if len(chain) <= 1 and all(level == 0 for _id, _rank, level, _castable in chain):
             continue
+        chain = _with_talent_levels(chain, talent_levels)
         names[name] = [
             SpellRank(id=i, rank=r, level=lvl, book=i in book_ids, inferior=i in inferior_ids)
             for i, r, lvl, _castable in chain
@@ -191,25 +212,35 @@ def build_spell_ranks(
     records: list[ClassSpellConstants],
     book_ids: frozenset[int] = frozenset(),
     inferior_ids: frozenset[int] = frozenset(),
+    talent_levels: Mapping[str, Mapping[int, int]] = MappingProxyType({}),
 ) -> SpellRanksFile:
-    """The pure transform: every class's spell constants, no file I/O."""
+    """The pure transform: every class's spell constants, no file I/O. `talent_levels` is
+    each class's talent-taught spell levels (`pipeline.talent_levels`)."""
     classes = {
-        record.class_slug: _spell_ranks_for_class(record.spells, book_ids, inferior_ids)
+        record.class_slug: _spell_ranks_for_class(
+            record.spells,
+            book_ids,
+            inferior_ids,
+            talent_levels.get(record.class_slug, MappingProxyType({})),
+        )
         for record in sorted(records, key=lambda r: r.class_slug)
     }
     return SpellRanksFile(build=build, classes=classes)
 
 
-def write_spell_ranks(
-    build: str, root: Path = Path("builds"), curated: Path = CURATED_DIR
-) -> Path:
+def write_spell_ranks(build: str, root: Path = Path("builds"), curated: Path = CURATED_DIR) -> Path:
     build_dir = root / build
     spellconst_dir = build_dir / SPELLCONST
     if not spellconst_dir.exists():
         raise SystemExit(f"no {spellconst_dir}; run `python -m pipeline simconst` first")
     records = load_class_spell_constants(spellconst_dir)
+    talents_dir = build_dir / "talents"
+    talent_levels = {
+        record.class_slug: load_talent_spell_levels(talents_dir, record.class_slug)
+        for record in records
+    }
     result = build_spell_ranks(
-        build, records, load_book_ids(curated), load_inferior_ids(curated)
+        build, records, load_book_ids(curated), load_inferior_ids(curated), talent_levels
     )
     path = build_dir / SPELLRANKS_FILE
     _write(result.model_dump(exclude_defaults=True), path, sort_keys=True)
