@@ -255,10 +255,17 @@ describe('RaidRoster', () => {
     expect(/data-testid="raid-roster-also">([^<]*)</.exec(body)?.[1]?.trim()).toBe(
       'Also: Rootbound (Restoration Druid, Bench)',
     );
-    // One line from md, the whole line in the title should it still not fit; a phone wraps it.
+    // From md the line spans the whole row (under the name block and the select), one line, the
+    // whole line in the title should it still not fit; a phone wraps it under the spec line.
     expect(body).toMatch(
-      /class="text-muted text-\[12px\] leading-4 break-words md:truncate" title="Also: Rootbound \(Restoration Druid, Bench\)" data-testid="raid-roster-also"/,
+      /class="text-muted hidden basis-full truncate pl-9 text-\[12px\] leading-4 md:block" title="Also: Rootbound \(Restoration Druid, Bench\)" data-testid="raid-roster-also"/,
     );
+    const select = body.indexOf('raid-roster-select-');
+    expect(body.indexOf('data-testid="raid-roster-also"')).toBeGreaterThan(select);
+    expect(body).toMatch(
+      /class="text-muted text-\[12px\] leading-4 break-words md:hidden" data-testid="raid-roster-also-phone"/,
+    );
+    expect(body.indexOf('raid-roster-also-phone')).toBeLessThan(select);
     expect(body).not.toContain('data-testid="raid-roster-bench"');
     expect(body).not.toContain('raid-roster-select-Rootbound');
   });

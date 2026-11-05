@@ -15,7 +15,7 @@
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCount } from '../../lib/guild/raid-page';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
-  import { ownRowBand } from '../../lib/ui/row';
+  import { ownRowBandInside } from '../../lib/ui/row';
   import { rosterGroups, rosterSelectId, type RosterRow } from '../../lib/guild/raid-roster';
   import { SIGNUP_STATES } from '../../lib/guild/segments-keys';
   import type { FilterOption } from '../../lib/rankings/options';
@@ -131,9 +131,8 @@
   <!-- §7 caps: 36 px desktop, 44 phone before a note. A bare row centres crest, name and the
        officer select (32 desktop, 44 phone) with no padding past them; a noted row runs from the top. -->
   <li
-    class="rounded-control flex min-h-11 break-inside-avoid gap-3 {ownRowBand(
+    class="rounded-control flex min-h-11 break-inside-avoid gap-x-3 md:flex-wrap {ownRowBandInside(
       entry.own,
-      2,
     )} md:min-h-9 {entry.note === '' && entry.also === null ? 'items-center' : 'items-start py-1.5'}"
     aria-busy={busy}
     data-testid="raid-roster-row"
@@ -151,12 +150,10 @@
       <p class="text-muted block truncate text-[12px] leading-4" title={specLine}>{specLine}</p>
       <!-- One row per account: its other answered characters, so a benched alt is never hidden. -->
       {#if entry.also !== null}
-        <!-- One line from md, cut with the whole line as its title only when it still cannot fit;
-             a phone wraps it (guild round 3). -->
+        <!-- Phone: wrapped under the spec line (guild round 3). -->
         <p
-          class="text-muted text-[12px] leading-4 break-words md:truncate"
-          title={entry.also}
-          data-testid="raid-roster-also"
+          class="text-muted text-[12px] leading-4 break-words md:hidden"
+          data-testid="raid-roster-also-phone"
         >
           {entry.also}
         </p>
@@ -192,6 +189,18 @@
           onchange={(event) => void change(entry, (event.currentTarget as HTMLSelectElement).value)}
         />
       </div>
+    {/if}
+    {#if entry.also !== null}
+      <!-- From md the Also line spans the row under the name block and the select, indented past
+           the crest (24 + 12 px), so it reads in full; cut with the whole line as its title only
+           when the row still cannot hold it (guild round 3: the name column ellipsised it). -->
+      <p
+        class="text-muted hidden basis-full truncate pl-9 text-[12px] leading-4 md:block"
+        title={entry.also}
+        data-testid="raid-roster-also"
+      >
+        {entry.also}
+      </p>
     {/if}
   </li>
 {/snippet}
