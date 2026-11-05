@@ -7,6 +7,7 @@
 // same reason sim-sources.spec.ts and sim-specs.spec.ts read their own fixtures this way.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { curatedRotationNotes } from './support/rotation-notes';
 import { expect, test } from './support/test';
 import type { CharacterSpec } from '../../src/lib/sim/types';
 
@@ -179,14 +180,6 @@ test.describe('a saved sim from the prerendered fixture', () => {
   });
 });
 
-// Task 13: the rotation card. The prerendered fixture's own client-side fetch of /v1/specs
-// has to be stubbed, the same way sim-specs.spec.ts stubs it, or the fidelity note has
-// nothing to render off of -- the card would show with no note and the second assertion
-// below would be checking an element that never appears.
-//
-// Task 6: "what it does" no longer links straight to /sim/specs#<spec> -- it opens the
-// rotation drawer in place, and the fidelity link moves inside that drawer. Clicking it
-// open is this test's own proof the trigger is a Disclosure now, not a navigating anchor.
 // A saved sim is somebody else's result opened cold: no character is "loaded" here, and the
 // chip's empty line ("No character loaded...") sat directly above a full result. The casts
 // tab also carried the log viewer's note about other players' rows, which a one-player
@@ -203,80 +196,31 @@ test('a saved sim opened cold says nothing about a missing character or other pl
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
 });
 
-test('a saved sim names the rotation it used, opens its drawer, and carries its fidelity', async ({
-  page,
-}) => {
-  await page.route('**/v1/specs', (route) =>
-    route.fulfill(
-      envelope({
-        specs: [
-          {
-            spec: 'warrior-fury',
-            state: 'in_progress',
-            median_gap: 0.08,
-            parses: 12,
-            worst_actions: [],
-            engine_version: activeBuild.build,
-            updated_at: '2026-01-01',
-          },
-        ],
-      }),
-    ),
-  );
-
+// Spec 2026-11-04-sim-results 3.11: the saved page's Rotation card is an always-open list, not
+// the old disclosure. It names the rotation the run used with the run's spec and level, prints each
+// line's note in place (the old drawer's job) and links the spec's guide. The old card's fidelity
+// note is not on the rebuilt card; whether it returns is an open spec question (fix round
+// 2026-11-05), so this test pins only what the spec asks for.
+test('a saved sim names the rotation it used and prints its notes in place', async ({ page }) => {
   await page.goto('/sim/simfixtureab');
   await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
-  const card = page.getByTestId('sim-rotation-card');
+  const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
+  await expect(card).toContainText('FURY, AT 60');
+  await expect(card).toContainText('Then, from the top at every decision');
+
+  const notes = curatedRotationNotes('warrior-fury');
+  const lines = card.getByTestId('rotation-line');
+  await expect(lines.first()).toBeVisible();
+  // Bloodthirst's note has no level version, so the run reads the curated note itself.
+  const bloodthirst = notes.find((note) => note.startsWith('On cooldown: the button'));
+  expect(bloodthirst).toBeDefined();
+  await expect(card).toContainText(bloodthirst!);
+
   const url = page.url();
-
-  // The trigger opens the drawer in place -- no navigation.
-  await card.getByTestId('sim-rotation-card-link').click();
-  const panel = card.getByTestId('sim-rotation-card-drawer-panel');
-  await expect(panel).toBeVisible();
+  const guide = card.getByRole('link', { name: 'Read the Fury guide' });
+  await expect(guide).toHaveAttribute('href', '/guides/warrior/fury');
   expect(page.url()).toBe(url);
-
-  // The fidelity link moved inside the drawer, and opens a new tab rather than this one.
-  const fidelityLink = panel.getByTestId('sim-rotation-drawer-fidelity-link');
-  await expect(fidelityLink).toHaveAttribute('href', '/sim/specs#warrior-fury');
-  await expect(fidelityLink).toHaveAttribute('target', '_blank');
-
-  // The fixture's warrior-fury row is not validated, so the note is there; a validated
-  // spec renders the card without one.
-  await expect(card.getByTestId('sim-rotation-card-note')).toBeVisible();
-});
-
-// Fix round 1, Finding 3: the card's defining behaviour -- a validated spec renders no
-// note at all, rather than a green "all is well" line -- had no coverage. Dropping the
-// `!== 'validated'` clause in needsFidelityNote would break nothing without this.
-test('a saved sim for a validated spec carries the rotation card with no fidelity note', async ({ page }) => {
-  await page.route('**/v1/specs', (route) =>
-    route.fulfill(
-      envelope({
-        specs: [
-          {
-            spec: 'warrior-fury',
-            state: 'validated',
-            median_gap: 0.02,
-            parses: 50,
-            worst_actions: [],
-            engine_version: activeBuild.build,
-            updated_at: '2026-01-01',
-          },
-        ],
-      }),
-    ),
-  );
-
-  await page.goto('/sim/simfixtureab');
-  await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
-  const card = page.getByTestId('sim-rotation-card');
-  await expect(card).toBeVisible();
-  await card.getByTestId('sim-rotation-card-link').click();
-  await expect(
-    card.getByTestId('sim-rotation-card-drawer-panel').getByTestId('sim-rotation-drawer-fidelity-link'),
-  ).toHaveAttribute('href', '/sim/specs#warrior-fury');
-  await expect(card.getByTestId('sim-rotation-card-note')).toHaveCount(0);
 });
 
 test('a saved sim whose stored request has no gear drops the nav link', async ({ page }) => {
