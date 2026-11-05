@@ -243,7 +243,7 @@
           }
         }
       },
-      "notes": "Riptide on the tank whenever it is ready and the tank is hurt: no single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
+      "notes": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick. No single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
     },
     {
       "action": {
@@ -886,7 +886,7 @@
           }
         }
       },
-      "notes": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last. Cast on someone in your own party it only jumps inside your party; cast on anyone else it can jump to any raid member near them. While leveling, cast rank 1 until 59, even after ranks 2 (46) and 3 (54) arrive: with Tidal Focus it costs 247 mana to about 300 for rank 2 and 385 for rank 3, so it heals more before your mana runs out. At 60 without raid buffs, cast rank 2."
+      "notes": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last. Cast on someone in your own party it only jumps inside your party; cast on anyone else it can jump to any raid member near them. While leveling, cast rank 1 until 59, even after ranks 2 (46) and 3 (54) arrive: with Tidal Focus it costs 247 mana to about 300 for rank 2 and 385 for rank 3, so in healing gear it heals more before your mana runs out. At 60 without raid buffs, cast rank 2."
     },
     {
       "action": {
@@ -919,7 +919,7 @@
           }
         }
       },
-      "notes": "Healing Wave when the tank drops below 60%. To save mana at 60 drop to rank 8, never lower: a rank loses your healing bonus once you are 17 levels past it, and ranks 1 to 4 keep none of it at 60. While leveling from 20 a cheaper rank heals more before your mana runs out than your top rank: rank 2 until 25, 3 until 36, 4 until 41, 5 from 42 to 46, 6 until 55, 7 from 56 to 58, and 8 at 59."
+      "notes": "Healing Wave when the tank drops below 60%. To save mana at 60 drop to rank 8, never lower: a rank loses your healing bonus once you are 17 levels past it, and ranks 1 to 4 keep none of it at 60. While leveling from 20, once you wear healing gear a cheaper rank heals more before your mana runs out than your top rank: rank 2 until 25, 3 until 36, 4 until 41, 5 from 42 to 46, 6 until 55, 7 from 56 to 58, and 8 at 59."
     }
   ]
 }

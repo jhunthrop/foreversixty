@@ -35,7 +35,7 @@ Forever keeps that whole kit and rebuilds the three trees underneath, so a 1.12 
 
 - **Orc Mage** is new for Forever and gives the Horde a third mage race, with Blood Fury's spell power on a 2 minute cooldown.
 - **Skyborne** can be mages too, but only the Alliance High Order Skyborne, and the race is a paid unlock; the Horde Windshapers cannot.
-- **Gnome** is the Alliance pick for Arcane and Frost: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds, every 2 minutes. Arcane Power comes back every 3, so pair Eureka! with it whenever both are ready. **Human** is the Alliance pick for Fire, a hair ahead of Gnome: Ruthless adds 1% crit, which Fire turns into Ignite. On the Horde, **Undead** is the pick for all three specs, with Orc close behind.
+- **Gnome** is the Alliance pick for Arcane and Frost: Eureka! makes your damage spells, all but Arcane Wrath, hit 10% harder and cost 10% less for 8 seconds, every 2 minutes. Arcane Power comes back every 3, so pair Eureka! with it whenever both are ready. **Human** is the Alliance pick for Fire, a hair ahead of Gnome: Ruthless adds 1% crit, which Fire turns into Ignite. On the Horde, **Undead** is the pick for all three specs, with Orc close behind.
 
 ## Raids and leveling
 

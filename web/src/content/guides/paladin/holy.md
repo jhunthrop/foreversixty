@@ -30,7 +30,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 
 ### Strengths
 
-- Oath of Light adds a flat amount to every Holy Light, Flash of Light and Holy Shock on the tank, so a Flash of Light a rank or two below your top one heals for most of what the top rank does and gets more healing out of every point of mana
+- Oath of Light adds a flat amount to every Holy Light, Flash of Light and Holy Shock you cast on the tank, as long as the rank is close to your level, so a Flash of Light a rank or two below your top one heals for most of what the top rank does and gets more healing out of every point of mana
 - Holy Shock is an instant heal for movement and emergencies, and Divine Favor guarantees a crit when it counts
 - Illumination refunds half the cost of every critical heal
 - Spiritual Focus and Concentration Aura keep your casts going while you take damage
@@ -56,7 +56,7 @@ The build is 31 Holy, 12 Protection and 8 Retribution.
 - **Illumination** (5 points): every critical heal gives back half the spell's base cost. It also keeps half your Spirit regeneration running while you cast for 15 seconds. It is the reason crit is a mana stat for you.
 - **Divine Favor** (1 point): your next Flash of Light, Holy Light or Holy Shock is a sure crit, on a 2 minute cooldown.
 - **Infusion of Light** (2 points): a Flash of Light or Holy Shock crit makes your next Holy Light within 15 seconds a second faster.
-- **Oath of Light** (1 point): sworn on one ally for 5 minutes, it adds a flat amount to every Holy Light, Flash of Light and Holy Shock you put on them. It took Blessing of Light's place, and it is the biggest point in the tree.
+- **Oath of Light** (1 point): sworn on one ally for 5 minutes, it adds a flat amount to every Holy Light, Flash of Light and Holy Shock you put on them, as long as the rank is close to your level. It took Blessing of Light's place, and it is the biggest point in the tree.
 - **Holy Shock** (1 point): an instant heal on a 10 second cooldown.
 - **Boundless Light** (2 points): 30% more crit on Holy Shock on anyone without your Oath.
 - **Holy Power** (5 points): your critical heals land for 175% instead of 150%. It no longer adds crit chance.

@@ -27,7 +27,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 
 ### Strengths
 
-- Prayer of Mending is the cheapest healing you can cast all fight: five heals for one cast
+- Prayer of Mending is the cheapest healing you can cast all fight: up to five heals for one cast
 - Prayer of Healing heals any five-player group at once, not only your own
 - Spiritual Guidance and Meditation turn Spirit into both healing and mana
 - Lightwell heals the melee while you heal the tank, and Holy Binding heals you every time you Flash Heal someone else
@@ -85,7 +85,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every heal. Spirit pays you twice: Spiritual Guidance turns it into healing, and Meditation keeps half of its regeneration running while you cast. Intellect deepens the bar. A critical heal is a bigger heal, and for Holy that is all it is, since Inspiration only adds armor to the target. Spell power with no healing on it does nothing for a heal.
+The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every heal, though a rank learned far below your level keeps less of it, or none. Spirit pays you twice: Spiritual Guidance turns it into healing, and Meditation keeps half of its regeneration running while you cast. Intellect deepens the bar. A critical heal is a bigger heal, and for Holy that is all it is, since Inspiration only adds armor to the target. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 

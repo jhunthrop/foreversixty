@@ -146,7 +146,7 @@
           }
         }
       },
-      "notes": "Adrenaline Rush on cooldown, with your racial, a trinket and a potion."
+      "notes": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion."
     },
     {
       "action": {
