@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 import httpx
 
@@ -239,6 +240,15 @@ def build_parser() -> argparse.ArgumentParser:
         "client's SkillLineAbility; needs raw/ from `fetch`",
     )
     tr.add_argument("--build", required=True)
+
+    es = sub.add_parser(
+        "equip-skills",
+        help="write builds/<build>/equip-skills.json (who equips which weapon and armour, "
+        "from what level) from SkillLine, SkillLineAbility and SkillRaceClassInfo; needs raw/ "
+        "from `fetch`",
+    )
+    es.add_argument("--build", required=True)
+    es.add_argument("--raw", type=Path, default=None, help="the three tables' directory")
 
     st = sub.add_parser(
         "spelltips",
@@ -620,6 +630,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.trainables import write_trainables
 
         print(write_trainables(args.build))
+    elif args.command == "equip-skills":
+        from pipeline.equip_skills import write_equip_skills
+
+        print(write_equip_skills(args.build, raw=args.raw))
     elif args.command == "spelltips":
         from pipeline.spelltips import write_spell_tips
 

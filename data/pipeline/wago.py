@@ -54,6 +54,9 @@ TABLES = [
     # CategoryID 6 rows are the "Weapon Skills" lines (Axes, Swords, ...);
     # SkillLineAbility's ClassMask says which classes may train each one.
     "SkillLineAbility",
+    # The level a class learns a weapon or armour skill at (mail and plate at 40, Dual
+    # Wield at 10 or 20): pipeline.equip_skills, for the guild Loot tab's candidates.
+    "SkillRaceClassInfo",
     # The 1.60 client's talent trees live in the modern trait tables rather than
     # the legacy Talent rows above, which it still ships for its own UI chrome.
     # pipeline/normalize/traits.py reads these; Classic Era has no class trait
