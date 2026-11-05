@@ -180,6 +180,24 @@ def test_consumables_follow_the_spec_not_the_role(tmp_path: Path) -> None:
     assert "Sharpening" in know("warrior-arms", tmp_path)
 
 
+def test_consumables_name_the_level_they_arrive(tmp_path: Path) -> None:
+    # Round 26 (WARRIOR-R26-7): the coach expects only the band's items, so a consumable first
+    # carried at a later raid band is named with its level, in the paragraph and the drill.
+    arms = run_starter("warrior-arms", tmp_path)
+    assert "food (Smoked Desert Dumplings) from forty-five" in arms
+    assert "a combat potion (Mighty Rage Potion) from forty-six" in arms
+    drill = line_of(arms, "drill.preparation")
+    assert "food from thirty-five" in drill and "a combat potion from forty-six" in drill
+
+
+def test_arms_multi_target_buttons_stay_with_their_condition(tmp_path: Path) -> None:
+    # Round 26 (WARRIOR-R26-6): Whirlwind only in the Sweeping Strikes line; Cleave and Spearing
+    # Strike name their levels.
+    arms = know("warrior-arms", tmp_path)
+    assert "- Whirlwind" not in arms
+    assert "Cleave from twenty" in arms and "Spearing Strike from twenty-five" in arms
+
+
 def test_food_is_the_published_presets_food(tmp_path: Path) -> None:
     # Round 9's raid foods (sim/request/raid-consumes.json, top band): casters and the
     # spell-power Protection paladin Baked Salmon, Strength users and the other tanks Smoked
@@ -248,10 +266,13 @@ def names_in(name: str, text: str) -> bool:
 def test_only_abilities_the_guide_names_positively() -> None:
     # The ruled-out set is read from each guide's rotation section, the single source of truth: a
     # button the guide rules out or makes conditional is never named, unless a recorded correction
-    # restates the guide's condition for it.
+    # restates the guide's condition for it, as its own line or inside another (round 26: Arms
+    # Whirlwind lives only in the Sweeping Strikes line).
     for slug in starter_slugs():
         row = ps.spec_row(slug)
-        ruled_out = ps.ruled_out_of(row) - set(ps.GUIDE_LINES.get(slug, {}))
+        corrections = ps.GUIDE_LINES.get(slug, {})
+        restated = {name for name in ps.ruled_out_of(row) if any(names_in(name, line) for line in corrections.values())}
+        ruled_out = ps.ruled_out_of(row) - set(corrections) - restated
         text = priority_text(slug)
         for name in ruled_out:
             assert not names_in(name, text), (slug, name)

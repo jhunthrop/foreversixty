@@ -46,7 +46,7 @@ This is the best Protection Paladin on Forever. Protection tanks with a shield a
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want a flask (Flask of the Titans); food (Baked Salmon); a combat potion (Major Spellblasting Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want a flask (Flask of the Titans) from fifty; food (Baked Salmon) from forty-five; a combat potion (Major Spellblasting Potion) from fifty-five, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -55,7 +55,7 @@ This is the best Protection Paladin on Forever. Protection tanks with a shield a
 - drill.idle: When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check a flask, food, a combat potion and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask from fifty, food from thirty-five, a combat potion from forty-nine and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: From twenty, put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

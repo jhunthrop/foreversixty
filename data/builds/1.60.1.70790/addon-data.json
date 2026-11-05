@@ -44418,7 +44418,7 @@
           {
             "spell_id": 284,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44451,7 +44451,7 @@
           {
             "spell_id": 284,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44484,7 +44484,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44517,7 +44517,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44550,7 +44550,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44590,7 +44590,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44630,7 +44630,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44677,7 +44677,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44731,7 +44731,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44785,7 +44785,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44846,7 +44846,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44907,7 +44907,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44975,7 +44975,7 @@
           {
             "spell_id": 11565,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45043,7 +45043,7 @@
           {
             "spell_id": 11565,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45111,7 +45111,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45186,7 +45186,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45261,7 +45261,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45336,7 +45336,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45411,7 +45411,7 @@
           {
             "spell_id": 11567,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45486,7 +45486,7 @@
           {
             "spell_id": 11567,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }

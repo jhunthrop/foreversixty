@@ -40,7 +40,7 @@ This is the best Feral Druid on Forever. The cat opens with Ravage, keeps Rip on
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want food (Smoked Desert Dumplings); a weapon enchant (Elemental Sharpening Stone); a combat potion (Major Frenzy Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want food (Smoked Desert Dumplings) from forty-five; a weapon enchant (Elemental Sharpening Stone) from fifty; a combat potion (Major Frenzy Potion) from fifty-five, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -49,7 +49,7 @@ This is the best Feral Druid on Forever. The cat opens with Ravage, keeps Rip on
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the energy bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for.
-- drill.preparation: Before every boss, check food, a weapon enchant and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check food from thirty-five, a weapon enchant from fifty and a combat potion from twenty-five on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

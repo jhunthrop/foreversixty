@@ -43,7 +43,7 @@ This is the best Feral Bear Druid on Forever. The bear tanks on health and armor
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want a flask (Flask of the Titans); food (Smoked Desert Dumplings); a weapon enchant (Elemental Sharpening Stone); a combat potion (Mighty Rage Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want a flask (Flask of the Titans) from fifty; food (Smoked Desert Dumplings) from forty-five; a weapon enchant (Elemental Sharpening Stone) from fifty; a combat potion (Mighty Rage Potion) from forty-six, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -52,7 +52,7 @@ This is the best Feral Bear Druid on Forever. The bear tanks on health and armor
 - drill.idle: When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.
 - drill.resource: Watch the rage bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for.
-- drill.preparation: Before every boss, check a flask, food, a weapon enchant, a combat potion and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask from fifty, food from thirty-five, a weapon enchant from fifty, a combat potion from forty-six and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Put your emergency cooldown on a key you can hit without looking, and press it on a dummy pull the moment your health falls past half.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

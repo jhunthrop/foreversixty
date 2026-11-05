@@ -42,7 +42,7 @@ This is the best Discipline Priest on Forever. Discipline heals the tank with Pe
 - Pull preparation: a missing flask, food and combat potion.
 - Death review: dying, because a dead healer heals nothing for the rest of the pull.
 
-**Consumables and world buffs.** Before a boss you want a flask (Flask of Distilled Wisdom); food (Sage's Tea); a combat potion (Major Mana Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want a flask (Flask of Distilled Wisdom) from fifty; food (Sage's Tea) from forty-five; a combat potion (Major Mana Potion) from forty-nine, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -50,7 +50,7 @@ This is the best Discipline Priest on Forever. Discipline heals the tank with Pe
 - drill.uptime: Recast your self buff as part of the ready check, and again the moment you are back up after a death.
 - drill.resource: Before the pull, note your halfway mana. If you are behind it, keep Penance on cooldown, hold the shield until you are back on pace, let the filler wait and save Flash Heal for the emergency.
 - drill.ranks: Before forty, bind the Heal rank your level calls for. From forty, bind Greater Heal rank one: it is the party's small-hole heal, and the tank's filler too until you learn rank four at fifty-eight. From then the tank gets the top rank.
-- drill.preparation: Before every boss, check a flask, food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask from fifty, food from forty-five and a combat potion from forty-nine on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, pick a spot in range of the tank and out of anything the boss breathes or cleaves. When damage lands on you, move first and finish the cast after.
 
 ## Voice

@@ -222,7 +222,10 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         ),
         "Mortal Strike": "Mortal Strike on cooldown from forty, and from fifty-seven in the raid build Reckless Swings right behind it.",
         "Slam": "Slam only with Improved Slam, between Mortal Strikes from forty: the talent keeps your swing timer running through the cast.",
-        "Spearing Strike": "Spearing Strike in the raid build, on any free global in Battle Stance. It stops at the execute swap.",
+        "Spearing Strike": (
+            "Spearing Strike from twenty-five in the raid build, on any free global in Battle Stance. "
+            "It stops at the execute swap."
+        ),
         "Heroic Strike": (
             "Heroic Strike only when you are about to cap at ninety or more. "
             "Below that, keep the rage for Overpower from twelve, Execute from twenty-four and Mortal Strike from forty."
@@ -243,6 +246,8 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Sweeping Strikes only with two or more targets, from thirty-six. "
             "Press it in Battle Stance, then Berserker Stance and Whirlwind, and back for Overpower and Rend."
         ),
+        # arms.md puts Cleave under "Two or more targets"; it trains at twenty.
+        "Cleave": "Cleave from twenty instead of Heroic Strike when two mobs are in front of you.",
     },
     "mage-arcane": {
         # arcane.md: "Blast to 3 stacks ... Past 3, keep blasting only while your mana bar is fuller than the
@@ -806,6 +811,8 @@ EXCLUDED: dict[str, frozenset[str]] = {
     "warlock-demonology": frozenset({"Searing Pain", "Curse of Tongues", "Curse of Weakness"}),
     # destruction.md: Searing Pain off the raid bars; Hellfire burns you.
     "warlock-destruction": frozenset({"Searing Pain", "Hellfire", "Curse of Tongues", "Curse of Weakness"}),
+    # arms.md: Whirlwind is a two-or-more-targets button, already in the Sweeping Strikes line.
+    "warrior-arms": frozenset({"Whirlwind"}),
 }
 
 # The short names the guides use for a button, by full name. The generator reads the short name

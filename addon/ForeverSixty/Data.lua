@@ -7135,45 +7135,45 @@ ns.Data = {
 			{ level = 10, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
 				{ spellId = 6673, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards." },
-				{ spellId = 284, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 284, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 12, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
 				{ spellId = 5242, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards." },
 				{ spellId = 7384, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 284, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 284, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 16, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
 				{ spellId = 5242, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards." },
 				{ spellId = 7384, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 285, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 285, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
 				{ spellId = 5242, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards." },
 				{ spellId = 7384, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 285, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 285, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 22, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards." },
 				{ spellId = 7384, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 285, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 285, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 24, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards." },
 				{ spellId = 5308, name = "Execute", condition = "First, in the Execute phase: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too." },
 				{ spellId = 7384, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 28, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards." },
 				{ spellId = 5308, name = "Execute", condition = "First, in the Execute phase: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too." },
 				{ spellId = 7887, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 30, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7181,7 +7181,7 @@ ns.Data = {
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards." },
 				{ spellId = 5308, name = "Execute", condition = "First, in the Execute phase: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too." },
 				{ spellId = 7887, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 31, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7190,7 +7190,7 @@ ns.Data = {
 				{ spellId = 5308, name = "Execute", condition = "First, in the Execute phase: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 7887, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 32, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7199,7 +7199,7 @@ ns.Data = {
 				{ spellId = 20658, name = "Execute", condition = "First, in the Execute phase: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 7887, name = "Overpower", condition = "Only before level 36, while you still fight in Battle Stance." },
-				{ spellId = 11564, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11564, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 36, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7209,7 +7209,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11564, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11564, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 38, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7219,7 +7219,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11564, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11564, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 40, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7230,7 +7230,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11565, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11565, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 42, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7241,7 +7241,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11565, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11565, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 48, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7252,7 +7252,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 50, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7264,7 +7264,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 52, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7276,7 +7276,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 54, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7288,7 +7288,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11566, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 56, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7300,7 +7300,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11567, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11567, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 			{ level = 60, lines = {
 				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute." },
@@ -7312,7 +7312,7 @@ ns.Data = {
 				{ spellId = 1680, name = "Whirlwind", condition = "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst." },
 				{ spellId = 1329555, name = "Reckless Swings", condition = "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover." },
 				{ spellId = 18499, name = "Berserker Rage", condition = "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2." },
-				{ spellId = 11567, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it." },
+				{ spellId = 11567, name = "Heroic Strike", condition = "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it." },
 			} },
 		},
 		["warrior-protection"] = {
