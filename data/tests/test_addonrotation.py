@@ -1081,6 +1081,16 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
     [
         ("shaman-restoration", "Your highest rank of Healing Wave right after Nature's", 44),
         ("shaman-enhancement", "Lightning Bolt at five Maelstrom Weapon stacks", 37),
+        # Round 24 (platform): the gate is on Clearcasting (16246), the aura Elemental Focus
+        # (16164) gives; the raid order takes the talent at 52, the leveling build never does.
+        ("shaman-enhancement", "Fire Nova on a Clearcasting proc", 52),
+        # The mage proc buffs (Missile Barrage 400589, Heating Up 400625) and the Improved
+        # Scorch debuff (12873) printed from 10, 20 and 22, before the talents.
+        ("mage-fire", "Pyroblast only on 3 stacks of Heating Up", 30),
+        ("mage-fire", "Scorch to build Improved Scorch to 5 stacks", 27),
+        ("mage-fire", "Arcane Missiles the moment Missile Barrage procs", 55),
+        ("mage-frost", "Arcane Missiles the moment Missile Barrage lights up", 51),
+        ("mage-arcane", "Arcane Missiles the moment Missile Barrage lights up", 22),
     ],
 )
 def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec, note, first):
@@ -1104,7 +1114,11 @@ def _active_build_bands(spec):
         load_trainable_ids,
     )
     from pipeline.manifest import newest_build
-    from pipeline.talent_levels import load_spec_point_levels, load_talent_spell_levels
+    from pipeline.talent_levels import (
+        load_spec_point_levels,
+        load_talent_owned_auras,
+        load_talent_spell_levels,
+    )
 
     data = Path(__file__).resolve().parents[1]
     build_dir = data / "builds" / newest_build(data / "builds")
@@ -1127,7 +1141,9 @@ def _active_build_bands(spec):
         None,
         load_trainable_ids(build_dir, cls),
         load_talent_spells(build_dir, cls),
-        load_spec_point_levels(build_dir, spec, cls),
+        load_spec_point_levels(
+            build_dir, spec, cls, load_talent_owned_auras(data / "curated", cls)
+        ),
     )
 
 

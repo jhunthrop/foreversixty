@@ -110,6 +110,13 @@ describe('ladderTalentString', () => {
   it('reads a build code by tree', () => {
     expect(buildCodeDigits('FS1:1.60.1.70753:warrior:human:0332/0505/005:')).toEqual(['0332', '0505', '005']);
     expect(buildCodeDigits('not a code')).toBeUndefined();
+    // Sim-accuracy round 24: a build that spends nothing in a tree, as sim/leveling reads it
+    // since round 23 (Assassination's raid build ends in an empty Subtlety tree).
+    expect(buildCodeDigits('FS1:1.60.1.70790:rogue:night-elf:00530311251051031/30230302020122/:')).toEqual([
+      '00530311251051031',
+      '30230302020122',
+      '',
+    ]);
     expect([...guideTargets(trees, ['55', '3'])]).toEqual([
       [1, 5],
       [2, 5],
@@ -216,6 +223,17 @@ describe('the ladder’s point order', () => {
       'Spirit Tap',
       'Spirit Tap',
     ]);
+  });
+
+  // Sim-accuracy round 24: a reservation is spent in its own order across trees, so Fire's
+  // Wand Specialization (Arcane) comes right after Combustion, not after the whole Fire tree.
+  it('takes Fire’s Wand Specialization at 41 and 42, right after Combustion', () => {
+    const fire = guideBuilds().find((row) => row.spec === 'mage-fire')!;
+    const order = guideLadderOrder(BUILD, 'mage', 'mage-fire', fire.treeIndex, fire.build);
+    const trees = loadLadderTrees(BUILD, 'mage')!;
+    const nameOf = new Map(trees.flatMap((tree) => tree.talents.map((t) => [t.id, t.name] as const)));
+    const at = (level: number) => nameOf.get(order[level - 10]!);
+    expect([at(40), at(41), at(42)]).toEqual(['Combustion', 'Wand Specialization', 'Wand Specialization']);
   });
 });
 

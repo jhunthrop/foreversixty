@@ -57,7 +57,8 @@ export function loadLadderTrees(build: string, classSlug: string): LadderTalentT
 
 /** The per-tree digit strings of an FS1 build code, or undefined for a code that is not one. */
 export function buildCodeDigits(code: string): [string, string, string] | undefined {
-  const match = /^FS1:[^:]+:[^:]+:[^:]+:([^/]+)\/([^/]+)\/([^:]+):$/.exec(code);
+  // A tree may be empty (sim/leveling's FS1 regexes, round 23): a build spends nothing there.
+  const match = /^FS1:[^:]+:[^:]+:[^:]+:([^/:]*)\/([^/:]*)\/([^/:]*):$/.exec(code);
   return match === null ? undefined : [match[1]!, match[2]!, match[3]!];
 }
 
@@ -359,10 +360,11 @@ function walkLevel(
   return digits;
 }
 
-/** A reservation's ranks in another tree than the spec's own (Shadow's Wand
- *  Specialization, in Discipline), spent before the own tree one rank at a time in list
- *  order, each capped at the guide's target and its max rank, and only for a first-row
- *  talent with no prerequisite (sim/leveling reserveOffTree). */
+/** A reservation's ranks in another tree than the spec's own (Shadow's Wand Specialization,
+ *  in Discipline; Fire's, in Arcane), one rank at a time in list order, each capped at the
+ *  guide's target and its max rank, only for a first-row talent with no prerequisite, and
+ *  only once the budget has paid for the own-tree ranks listed before it
+ *  (sim/leveling reserveOffTree). */
 function reserveOffTree(
   trees: readonly LadderTalentTree[],
   targets: Targets,
@@ -371,8 +373,9 @@ function reserveOffTree(
   budget: number,
 ): { reserved: Map<number, Ranks>; budget: number } {
   const reserved = new Map<number, Ranks>();
+  const ahead = ownRanksAhead(trees, targets, ownTreeIndex, first);
   let left = budget;
-  for (const row of first) {
+  first.forEach((row, i) => {
     trees.forEach((tree, ti) => {
       if (ti === ownTreeIndex) return;
       for (const node of tree.talents) {
@@ -380,14 +383,43 @@ function reserveOffTree(
         const ranks = reserved.get(ti) ?? new Map<number, number>();
         reserved.set(ti, ranks);
         const cap = Math.min(row.rank, target(targets, node.id), node.max_rank);
-        while ((ranks.get(node.id) ?? 0) < cap && left > 0) {
+        while ((ranks.get(node.id) ?? 0) < cap && left > ahead[i]!) {
           ranks.set(node.id, (ranks.get(node.id) ?? 0) + 1);
           left--;
         }
       }
     });
-  }
+  });
   return { reserved, budget: left };
+}
+
+/** For each reservation entry, the own-tree ranks the entries before it reserve, each talent
+ *  capped at the guide's target and its max rank (sim/leveling ownRanksAhead): an off-tree
+ *  rank listed after own-tree ranks waits until the budget has paid for them. */
+function ownRanksAhead(
+  trees: readonly LadderTalentTree[],
+  targets: Targets,
+  ownTreeIndex: number,
+  first: readonly LadderFirstRank[],
+): number[] {
+  const own = trees[ownTreeIndex];
+  if (own === undefined) return first.map(() => 0);
+  const byName = new Map(own.talents.map((node) => [node.name, node] as const));
+  const held = new Map<number, number>();
+  let total = 0;
+  return first.map((row) => {
+    const before = total;
+    const node = byName.get(row.talent);
+    if (node !== undefined) {
+      const rank = Math.min(row.rank, target(targets, node.id), node.max_rank);
+      const had = held.get(node.id) ?? 0;
+      if (rank > had) {
+        total += rank - had;
+        held.set(node.id, rank);
+      }
+    }
+    return before;
+  });
 }
 
 interface LadderFirstFile {
