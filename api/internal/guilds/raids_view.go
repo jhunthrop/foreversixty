@@ -510,6 +510,25 @@ func (s *Store) NextRaidFor(ctx context.Context, guildID, viewerID int64, header
 	if err != nil || !ok {
 		return nil, err
 	}
+	return s.nextRaidView(ctx, guildID, viewerID, headerKey, raid)
+}
+
+// NextRaidFirstFor is /raid's night for viewerID: the next planned raid of kind raid, the one
+// Readiness names, else the next dungeon run or guild event; nil when none (bot spec §6.2,
+// amended 2026-11-05).
+func (s *Store) NextRaidFirstFor(ctx context.Context, guildID, viewerID int64, now time.Time) (*NextRaidView, error) {
+	raid, ok, err := s.NextRaid(ctx, guildID, now)
+	if err != nil {
+		return nil, err
+	}
+	if !ok {
+		return s.NextRaidFor(ctx, guildID, viewerID, nil, now)
+	}
+	return s.nextRaidView(ctx, guildID, viewerID, nil, raid)
+}
+
+// nextRaidView is raid as the band line shows it to viewerID.
+func (s *Store) nextRaidView(ctx context.Context, guildID, viewerID int64, headerKey *string, raid Raid) (*NextRaidView, error) {
 	vc, err := s.loadRaidOwnership(ctx, guildID, viewerID)
 	if err != nil {
 		return nil, err

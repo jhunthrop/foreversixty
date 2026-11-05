@@ -39,7 +39,7 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 		return s.notSignable(ctx, ask, cands)
 	}
 	now := s.now()
-	next, err := s.d.Guilds.NextRaidFor(ctx, guildID, userID, nil, now)
+	next, err := s.d.Guilds.NextRaidFirstFor(ctx, guildID, userID, now)
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: raid next: %w", err)
 	}
@@ -59,6 +59,10 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 	}
 	msg := PostMessage(postFor(facts, s.postStateOf(facts, movedFrom), movedFrom), facts.RaidURL, facts.NightURL, now)
 	msg.Embeds[0] = s.raidAnswerEmbed(ctx, facts, movedFrom, next.Own, cands)
+	if word, ok := kindWords[next.ZoneKind]; ok && next.ZoneKind != guilds.ZoneRaid {
+		// No raid is planned, so the next night is a run or an event: say which.
+		msg.Content = fill(commandCopy.RaidFallback, "{kind}", word)
+	}
 	msg.Ephemeral = true
 	return Reply{Message: msg}, nil
 }
