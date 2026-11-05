@@ -3,7 +3,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { Me } from '../account/api';
 import GuildLanding from '../../components/GuildLanding.svelte';
-import { lookupDefaults, myGuildRows } from './landing-mine';
+import { heldClaimRow, lookupDefaults, myGuildRows } from './landing-mine';
 
 /** An account whose current character is an alt with no guild: its guilds come from its other characters. */
 const ME = {
@@ -56,5 +56,25 @@ describe('the landing for a signed-in player', () => {
   it('draws no Your guilds card signed out', () => {
     const { body } = render(GuildLanding, { props: {} });
     expect(body).not.toContain('guild-landing-mine');
+  });
+});
+
+describe('the foot line for a claim holder', () => {
+  const HOLDER = {
+    ...ME,
+    guilds: [ME.guilds[0], { ...ME.guilds[1], claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: null } }],
+  } as unknown as Me;
+
+  it('finds the guild whose claim the account holds', () => {
+    expect(heldClaimRow(HOLDER)?.name).toBe('The Last Watch');
+    expect(heldClaimRow(ME)).toBeNull();
+    expect(heldClaimRow(null)).toBeNull();
+  });
+
+  it('says the claim is held instead of asking Run a guild?', () => {
+    const { body } = render(GuildLanding, { props: { me: HOLDER } });
+    expect(body).toContain("You hold The Last Watch's claim.");
+    expect(body).not.toContain('Run a guild?');
+    expect(render(GuildLanding, { props: { me: ME } }).body).toContain('Run a guild?');
   });
 });

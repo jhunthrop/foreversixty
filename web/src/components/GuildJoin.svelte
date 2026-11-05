@@ -19,7 +19,7 @@
   } from '../lib/guild/api';
   import { guildJoinCopy } from '../lib/guild/copy';
   import { joinedPlanLineFor } from '../lib/guild/join-plan';
-  import { holdsErrorRoom, joiningRow } from '../lib/guild/join-view';
+  import { holdsErrorRoom, joiningRow, showsInvitedLine } from '../lib/guild/join-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { classColorVar } from '../lib/report/format';
@@ -134,7 +134,7 @@
           </p>
         </div>
       </div>
-      {#if !alreadyIn || joined !== null}
+      {#if showsInvitedLine(alreadyIn, joined !== null)}
         <p class="text-text text-[15px]" data-testid="guild-join-invited">
           {guildJoinCopy.invited(guild.name)}
         </p>

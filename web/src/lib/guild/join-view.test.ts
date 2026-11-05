@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { guildJoinCopy } from './copy';
-import { holdsErrorRoom, joiningRow } from './join-view';
+import { holdsErrorRoom, joiningRow, showsInvitedLine } from './join-view';
+
+describe('showsInvitedLine', () => {
+  it('shows the invite only while it can be taken', () => {
+    expect(showsInvitedLine(false, false)).toBe(true);
+    expect(showsInvitedLine(false, true)).toBe(false);
+    expect(showsInvitedLine(true, false)).toBe(false);
+    expect(showsInvitedLine(true, true)).toBe(false);
+  });
+});
 
 describe('holdsErrorRoom', () => {
   it('holds the error line only while joining or after a failure', () => {

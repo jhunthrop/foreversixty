@@ -179,7 +179,7 @@ export const guildSettingsCopy = {
   officerThreshold: 'Officer rank threshold',
   inviteHeading: 'Invite link',
   inviteHelp: (guildName: string): string =>
-    `Anyone with this link joins ${guildName} as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once.`,
+    `Anyone with this link joins ${guildName} as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once. A character with an officer rank in game still waits for an officer.`,
   membersHeading: 'Members and access',
   recordsHeading: 'Records and crest',
   recordsOnlyHeading: 'Records',
@@ -338,6 +338,8 @@ export const guildLandingCopy = {
   emptyName: "Type the guild's name as the game writes it.",
   topHeading: 'Top guilds',
   officerLine: 'Run a guild? Open its page and choose Claim this guild.',
+  /** In the officer line's place for a player who already holds a claim (guild loop round 3). */
+  holdsClaim: (guildName: string): string => `You hold ${possessive(guildName)} claim.`,
 } as const;
 
 /** The roster as everyone the addon saw, with a word beside each (lifecycle review round 4,

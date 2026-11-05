@@ -18,7 +18,7 @@
   import Select from './ui/Select.svelte';
   import HomeTopGuilds from './HomeTopGuilds.svelte';
   import GuildLandingMine from './guild/GuildLandingMine.svelte';
-  import { lookupDefaults, myGuildRows, type MyGuildRow } from '../lib/guild/landing-mine';
+  import { heldClaimRow, lookupDefaults, myGuildRows, type MyGuildRow } from '../lib/guild/landing-mine';
   import type { Me } from '../lib/account/api';
 
   /** The session, when a test hands one in; the page reads its own on mount. */
@@ -32,11 +32,14 @@
   let ruleset = $state<string>(DEFAULT_RULESET);
   let status = $state('');
   let mine = $state<MyGuildRow[]>(myGuildRows(givenMe));
+  /** The guild whose claim the account holds: the foot line says so instead of asking. */
+  let held = $state<MyGuildRow | null>(heldClaimRow(givenMe));
   /** The player changed a select: the session's defaults never overwrite their choice. */
   let placeTouched = false;
 
   function applySession(me: Me | null): void {
     mine = myGuildRows(me);
+    held = heldClaimRow(me);
     const defaults = lookupDefaults(me);
     if (defaults === null || placeTouched) return;
     region = defaults.region;
@@ -135,7 +138,7 @@
     <div class="border-line-soft border-t px-5 py-2"><HomeTopGuilds /></div>
     {#snippet foot()}
       <p id="claim" class="text-muted scroll-mt-24 text-[13px]" data-testid="guild-landing-claim">
-        {copy.officerLine}
+        {held === null ? copy.officerLine : copy.holdsClaim(held.name)}
       </p>
     {/snippet}
   </Card>

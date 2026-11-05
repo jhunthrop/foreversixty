@@ -125,7 +125,7 @@ describe('GuildInviteLink', () => {
     expect(body).toContain('id="invite"');
     expect(body).toContain('scroll-mt-20');
     expect(text(body)).toContain(
-      'Anyone with this link joins Olympus as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once.',
+      'Anyone with this link joins Olympus as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once. A character with an officer rank in game still waits for an officer.',
     );
   });
 

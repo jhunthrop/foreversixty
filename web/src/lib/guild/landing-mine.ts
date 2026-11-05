@@ -29,3 +29,10 @@ export function lookupDefaults(me: Me | null): { region: string; ruleset: string
   const first = me?.guilds.find((guild) => isRegion(guild.region) && isRuleset(guild.ruleset));
   return first === undefined ? null : { region: first.region, ruleset: first.ruleset };
 }
+
+/** The guild whose claim the account holds, for the landing's foot line: a claim holder is not
+ *  asked "Run a guild?" (guild loop round 3). Null when the account holds none. */
+export function heldClaimRow(me: Me | null): MyGuildRow | null {
+  const index = (me?.guilds ?? []).findIndex((guild) => guild.claim?.yours === true);
+  return index === -1 ? null : (myGuildRows(me)[index] ?? null);
+}

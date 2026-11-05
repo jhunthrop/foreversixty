@@ -55,3 +55,10 @@ export function joiningRow(joinsAs: InviteJoinsAs | null | undefined, guildName:
 export function holdsErrorRoom(busy: boolean, error: string): boolean {
   return busy || error !== '';
 }
+
+/** `You are invited to join {Guild}.` shows only while there is an invite to take: not to a member
+ *  already in the guild, and not once the join went through (guild loop round 3: the joined card
+ *  still said it above `Open the guild`). */
+export function showsInvitedLine(alreadyIn: boolean, joined: boolean): boolean {
+  return !alreadyIn && !joined;
+}
