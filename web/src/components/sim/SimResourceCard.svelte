@@ -58,9 +58,9 @@
     class="mx-[18px] md:mx-0"
     testid="sim-resource-card"
   >
-    <div class="border-line-soft grid grid-cols-1 gap-3 border-t p-5 md:grid-cols-3">
+    <div class="border-line-soft grid grid-cols-3 gap-2 border-t px-[14px] py-4 md:gap-3 md:p-5">
       {#each card.tiles as tile (tile.label)}
-        <StatTile value={tile.value} label={tile.label} testid="resource-tile" />
+        <StatTile value={tile.value} label={tile.label} figureClass="max-md:!text-[19px] whitespace-nowrap" testid="resource-tile" />
       {/each}
     </div>
     {#if card.lists !== null}
