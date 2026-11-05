@@ -260,10 +260,16 @@ describe('gear card', () => {
     expect(value('crit')).toBe(`${stats.melee_crit_pct_vs_target!.toFixed(1)}%`);
     expect(value('skill')).toBe(`${stats.weapon_skill!.main_hand} · ${stats.weapon_skill!.off_hand}`);
     expect(value('haste')).toBe('0%');
-    expect(block.hit?.reference?.tickPct).toBeCloseTo((8 / 27) * 100, 5);
   });
 
-  it('one weapon drops the 27% reference, another boss level drops the bar', () => {
+  it('puts the run’s own measured miss rate under hit, never a fixed cap', () => {
+    // Specials: 0 MISS in the fixture's yellow rows. White: 12 + 7 + 4 misses over 63 + 82 + 21 swings.
+    expect(statsBlock(full)?.hit?.reference?.note).toBe(
+      'Missed in this run: 0% of specials · 13.9% of white swings',
+    );
+  });
+
+  it('one weapon keeps the hit line; the skill shows one figure', () => {
     const oneHand: SimResult = {
       ...full,
       request: {
@@ -274,12 +280,9 @@ describe('gear card', () => {
         },
       },
     };
-    expect(statsBlock(oneHand)?.hit?.reference?.note).toBe('8% specials');
     expect(statsBlock(oneHand)?.cells.find((cell) => cell.id === 'skill')?.value).toBe(
       String(full.final_stats!.weapon_skill!.main_hand),
     );
-    const lower: SimResult = { ...full, target_stats: { level: 60 } };
-    expect(statsBlock(lower)?.hit?.reference).toBeNull();
   });
 
   it('hides the block without final_stats, never dashes', () => {

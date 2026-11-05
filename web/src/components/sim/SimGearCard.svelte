@@ -118,17 +118,9 @@
                 <dt class="text-muted text-[13px]">{stats.hit.label}</dt>
                 <dd class="text-strong numeric m-0 text-[15px] font-semibold">{stats.hit.value}</dd>
                 {#if stats.hit.reference !== null}
-                  <div class="bg-line-soft relative mt-1.5 h-1.5 w-full max-w-[220px] rounded-full">
-                    <span
-                      class="bg-gold block h-full rounded-full"
-                      style:width={`${stats.hit.reference.fillPct}%`}
-                    ></span>
-                    <span
-                      class="bg-gold-light absolute -top-0.5 block h-2.5 w-0.5"
-                      style:left={`${stats.hit.reference.tickPct}%`}
-                    ></span>
-                  </div>
-                  <p class="text-muted mt-1.5 text-[13px]">{stats.hit.reference.note}</p>
+                  <dd class="text-muted m-0 mt-1 text-[13px]" data-testid="sim-stat-hit-measured">
+                    {stats.hit.reference.note}
+                  </dd>
                 {/if}
               </div>
             {/if}

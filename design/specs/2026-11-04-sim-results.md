@@ -354,7 +354,7 @@ The lane count follows §3.7's membership rules with Swings and ticks off. The s
 - The paperdoll's other parts work as specced there: hover, focus and tap open the shared item tooltip, the right column opens toward the centre, and the centre shows the crest and the average item level.
 - **Character stats** (new data `final_stats`, §11.2): one inset block under the stage. It has the same `#0b0e14` ground, 1px `--border-soft` and 12px radius, and the stage's 960px max width. It opens with a `quiet-label` head: "Character stats in the fight, against a level 63 boss" (the boss level is the request's `target_level`). Five cells follow, each a 13px muted label over a 15px 600 `--strong` numeric value:
   - **Attack power:** `final_stats.attack_power`, whole number.
-  - **Hit:** `final_stats.melee_hit_pct`, one decimal ("8.0%"). Under it, a 220 by 6px bar to 27% (fill `--gold`), a 2px `--gold-light` tick at 8%, and the 13px muted reference "8% specials · 27% dual-wield swings". The references are for a level 63 target. A one-hander drops the 27% and its tick.
+  - **Hit:** `final_stats.melee_hit_pct`, one decimal ("8.0%"). Under it, a 13px muted line with the run's own measured miss rate, counted as the damage table counts it (misses over attempts, glances landed): "Missed in this run: 0% of specials · 13.9% of white swings". No fixed cap is printed, so the line can never contradict the run. (Revised 2026-11-05 after the build review, wow-player M2; the bar and its 8% and 27% references are gone.)
   - **Crit on the boss:** `final_stats.melee_crit_pct_vs_target`, one decimal. This is the crit chance after the level 63 suppression, not the character sheet's.
   - **Weapon skill:** `final_stats.weapon_skill.main_hand · off_hand` ("300 · 300"); one figure without an off hand.
   - **Haste:** `final_stats.melee_haste_pct`, one decimal, at the pull. Flurry, Berserking and other procs are uptimes in Buffs, not a stat.
@@ -636,7 +636,7 @@ No em dashes anywhere. Figures are examples from this run.
 **Gear:**
 - Label "THIS RUN'S INPUT", title "Gear", meta "{17} of 17 slots · {11} enchants" / "· no enchants".
 - Enchant lines as the client prints them ("+7 Strength", "Crusader").
-- Stats head "Character stats in the fight, against a level {63} boss"; labels "Attack power", "Hit", "Crit on the boss", "Weapon skill", "Haste"; reference "8% specials · 27% dual-wield swings".
+- Stats head "Character stats in the fight, against a level {63} boss"; labels "Attack power", "Hit", "Crit on the boss", "Weapon skill", "Haste"; measured line "Missed in this run: {0}% of specials · {13.9}% of white swings".
 - Foot "No set bonus is active: no two pieces share a set.", "Set: {name} {2} of {5}", "Upgrades for this character on Best in slot", "This run had no gear on file."
 
 **Talents:** label "THIS RUN'S INPUT", title "Talents", "Read only. Hover or focus a talent for its tooltip.", phone "Read only. Tap a talent for its tooltip.", "Open in planner", §4.7's line, "Talents didn't load."
