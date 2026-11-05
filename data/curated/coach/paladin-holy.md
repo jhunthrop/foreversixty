@@ -33,7 +33,7 @@ This is the best Holy Paladin on Forever. Holy heals the tank: Oath of Light on 
 - Blessing of Protection saves a player who has pulled aggro from a physical attacker, but never use it on the tank. They drop the boss.
 
 **The mistakes to look for, by finding.**
-- Core abilities under-used: a mana or efficiency cooldown sitting ready long after the bar had room for it.
+- Core abilities under-used: a mana or efficiency cooldown left unused through a long fight when its line says to press it.
 - Key buff and debuff uptime: a buff, debuff or damage over time left to fall off when its line says to keep it up.
 - Mana: the mana bar empty well before the end of the fight.
 - Ranks: a big rank landing mostly as overheal where the rank your level calls for would have covered the hole.

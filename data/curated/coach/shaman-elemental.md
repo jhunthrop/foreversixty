@@ -22,7 +22,7 @@ This is the best Elemental Shaman on Forever. Elemental is the shaman's caster s
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
 - Mana Spring Totem from twenty-six, a few seconds before the pull and whenever your Water slot is empty. Skip it if a Restoration shaman already has one down for your group.
-- Lightning Mastery from forty with your trinkets and any damage racial on the pull, and again every three minutes.
+- Lightning Mastery from forty with your trinkets and Blood Fury on the pull, and again every three minutes. A Troll presses Berserking after it ends.
 - Flame Shock the moment it falls off, ahead of everything but your cooldowns.
 - Searing Totem on a single target, and on packs until Magma Totem at twenty-six. Its bolts reach twenty yards, so drop it within twenty yards of the boss.
 - Magma Totem from twenty-six on two or more targets, in place of Searing Totem.

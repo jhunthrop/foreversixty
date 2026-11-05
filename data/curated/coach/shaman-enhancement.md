@@ -24,15 +24,15 @@ This is the best Enhancement Shaman on Forever. Enhancement is the shaman's mele
 - Windfury Weapon on your weapon from thirty, before the pull and whenever it falls off. Before thirty, and in a raid where a Windfury Totem reaches you, use Rockbiter Weapon.
 - Windfury Totem from thirty-two in your Air slot when no other shaman has it down near the melee.
 - Strength of Earth Totem whenever it is down. It is Strength for every melee player near you, and in Forever the totem reaches the whole raid within thirty yards.
-- If your party has no other shaman, put Mana Spring Totem in your Water slot as well.
+- Mana Spring Totem from twenty-six in your Water slot when your party has no other shaman.
 - Totemic Call from twenty-two when the boss moves away from your totems: follow it, and it brings them to you.
 - Rage of the Farseer from forty, with your trinkets and any damage racial, on the pull and again on cooldown.
 - Stormstrike on cooldown from twenty-five. It makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
 - Lightning Bolt at five Maelstrom Weapon stacks once you have all five points: it is instant and free then.
 - Searing Totem when it is down, unless the boss is about to die.
 - Fire Nova on a Clearcasting proc, with the raid build. It is free then, and in melee your Searing Totem stands within its ten yards of the boss.
-- Earth Shock last, on cooldown while your mana is above a quarter. Keep that last quarter for Stormstrike and your totems.
-- Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it.
+- Earth Shock last, on cooldown while your mana is above a quarter. Keep that last quarter for your totems, and from twenty-five for Stormstrike.
+- Magma Totem from twenty-six on a big pack, with Fire Nova on cooldown and Chain Lightning while mana lasts. Both totems' bursts reach a few yards, and in melee you stand at the totem.
 - Lightning Shield only fires when something hits you, which behind a boss is never.
 
 **The mistakes to look for, by finding.**

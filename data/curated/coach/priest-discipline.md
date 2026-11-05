@@ -35,7 +35,7 @@ This is the best Discipline Priest on Forever. Discipline heals the tank with Pe
 - Dark Sacrifice if you are Undead, once your mana is down enough.
 
 **The mistakes to look for, by finding.**
-- Core abilities under-used: a mana or efficiency cooldown sitting ready long after the bar had room for it.
+- Core abilities under-used: a mana or efficiency cooldown left unused through a long fight when its line says to press it.
 - Key buff and debuff uptime: a buff, debuff or damage over time left to fall off when its line says to keep it up.
 - Mana: the mana bar empty well before the end of the fight.
 - Ranks: a big rank landing mostly as overheal where the rank your level calls for would have covered the hole.

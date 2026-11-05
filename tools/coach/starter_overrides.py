@@ -530,7 +530,10 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Mana Spring Totem from twenty-six, a few seconds before the pull and whenever your Water slot is empty. "
             "Skip it if a Restoration shaman already has one down for your group."
         ),
-        "Lightning Mastery": "Lightning Mastery from forty with your trinkets and any damage racial on the pull, and again every three minutes.",
+        "Lightning Mastery": (
+            "Lightning Mastery from forty with your trinkets and Blood Fury on the pull, and again every three minutes. "
+            "A Troll presses Berserking after it ends."
+        ),
         "Flame Shock": "Flame Shock the moment it falls off, ahead of everything but your cooldowns.",
         "Searing Totem": (
             "Searing Totem on a single target, and on packs until Magma Totem at twenty-six. "
@@ -570,7 +573,17 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Stormstrike on cooldown from twenty-five. "
             "It makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder."
         ),
-        "Earth Shock": "Earth Shock last, on cooldown while your mana is above a quarter. Keep that last quarter for Stormstrike and your totems.",
+        "Earth Shock": (
+            "Earth Shock last, on cooldown while your mana is above a quarter. "
+            "Keep that last quarter for your totems, and from twenty-five for Stormstrike."
+        ),
+        # enhancement.md: Mana Spring and Magma Totem train at twenty-six; Magma and Fire Nova are the big-pack
+        # buttons ("On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning").
+        "Mana Spring Totem": "Mana Spring Totem from twenty-six in your Water slot when your party has no other shaman.",
+        "Magma Totem": (
+            "Magma Totem from twenty-six on a big pack, with Fire Nova on cooldown and Chain Lightning while mana lasts. "
+            "Both totems' bursts reach a few yards, and in melee you stand at the totem."
+        ),
     },
     "shaman-restoration": {
         # restoration.md and the card: Water Shield and Healing Stream at twenty, Mana Tide (twenty-five)
@@ -598,6 +611,12 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "When your mana falls behind, drop a rank, but never below rank eight at sixty."
         ),
         "Lesser Healing Wave": "Lesser Healing Wave from twenty when the tank is down to thirty percent and the next hit could kill it.",
+        # Trainer: Cure Poison sixteen, Poison Cleansing Totem and Cure Disease twenty-two, Disease Cleansing Totem thirty-eight.
+        "Poison Cleansing Totem": (
+            "Poison Cleansing Totem from twenty-two in the Water slot on fights that poison. "
+            "Disease Cleansing Totem from thirty-eight on fights that disease."
+        ),
+        "Cure Poison": "Cure Poison from sixteen and Cure Disease from twenty-two reach anyone the totems do not.",
         "Nature's Swiftness": (
             "Nature's Swiftness from forty-four when the tank drops below twenty-five percent, into your highest rank "
             "of Healing Wave."

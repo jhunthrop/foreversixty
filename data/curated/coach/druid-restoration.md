@@ -31,7 +31,7 @@ This is the best Restoration Druid on Forever. Restoration heals with time: Regr
 - Innervate from forty when your mana drops below thirty percent.
 
 **The mistakes to look for, by finding.**
-- Core abilities under-used: a mana or efficiency cooldown sitting ready long after the bar had room for it.
+- Core abilities under-used: a mana or efficiency cooldown left unused through a long fight when its line says to press it.
 - Key buff and debuff uptime: a buff, debuff or damage over time left to fall off when its line says to keep it up.
 - Mana: the mana bar empty well before the end of the fight.
 - Ranks: a big rank landing mostly as overheal where the rank your level calls for would have covered the hole.

@@ -71,7 +71,7 @@ MISTAKES = {
     "adherence": "buttons outside the priority list taking globals the list would have used.",
 }
 HEALER_MISTAKES = {
-    "core_casts": "a mana or efficiency cooldown sitting ready long after the bar had room for it.",
+    "core_casts": "a mana or efficiency cooldown left unused through a long fight when its line says to press it.",
     "resource": "the mana bar empty well before the end of the fight.",
     "ranks": "a big rank landing mostly as overheal where the rank your level calls for would have covered the hole.",
     "death": "dying, because a dead healer heals nothing for the rest of the pull.",
