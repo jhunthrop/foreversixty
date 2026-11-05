@@ -1660,35 +1660,42 @@ func pickWandItem(items []buildItem, known map[int]bool, floors map[int]int, lev
 	return best, found
 }
 
-// talentOwnedAuraIDs maps an aura id a rotation condition names to the
-// talent spell id (the rank-1 id talents.json's ranks[].spell_id lists)
-// whose talent registers that aura in the pinned engine. The aura is not
+// talentOwnedAuraIDs reads data/curated/talent-owned-auras.json, the one table the card
+// pipeline (data/pipeline/talent_levels.py) reads too: it maps an aura id a rotation
+// condition names to the talent spell id (the rank-1 id talents.json's ranks[].spell_id
+// lists) whose talent registers that aura in the pinned engine. The aura is not
 // a spell of its own - spellranks.json does not track it, and talents.json
 // lists the talent's cast or proc id, not the buff - so harness rule 1's
 // "zero points on this talent" exemption cannot find it through the two
 // tables, yet the engine registers the aura only when the character has
 // spent a point on the talent, and warns it cannot resolve the id until
 // then, exactly as it does for the talent's own spell id.
-var talentOwnedAuraIDs = map[string]map[int]int{
-	"mage": {
-		// sim/mage/arcane_blast.go: registerArcaneBlastSpell returns before
-		// RegisterAura(arcaneBlastBuffSpellId) unless Talents.ArcaneBlast.
-		400573: 400574,
-		// sim/mage/fingers_of_frost.go: applyFingersOfFrost returns before
-		// RegisterAura(fingersOfFrostBuffSpellId) when
-		// Talents.FingersOfFrost == 0.
-		400669: 400647,
-		// sim/mage/talents.go: applyWintersChill returns before it builds
-		// the Winter's Chill debuff array (core.WintersChillAura, 12579)
-		// when Talents.WintersChill == 0.
-		12579: 11180,
-	},
+func talentOwnedAuraIDs(repoRoot, class string) (map[int]int, error) {
+	path := filepath.Join(repoRoot, "data", "curated", "talent-owned-auras.json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("ladder: reading %s: %w", path, err)
+	}
+	var f struct {
+		Classes map[string][]struct {
+			Aura        int `json:"aura"`
+			TalentSpell int `json:"talent_spell"`
+		} `json:"classes"`
+	}
+	if err := json.Unmarshal(b, &f); err != nil {
+		return nil, fmt.Errorf("ladder: parsing %s: %w", path, err)
+	}
+	owned := map[int]int{}
+	for _, row := range f.Classes[class] {
+		owned[row.Aura] = row.TalentSpell
+	}
+	return owned, nil
 }
 
-// addTalentOwnedAuras gives each aura in talentOwnedAuraIDs[class] the node
-// of the talent that owns it, when talentSpellIDs knows that talent.
-func addTalentOwnedAuras(class string, talentSpellIDs map[int]int) map[int]int {
-	for aura, owner := range talentOwnedAuraIDs[class] {
+// addTalentOwnedAuras gives each aura in owned (aura -> talent spell) the node of the
+// talent that owns it, when talentSpellIDs knows that talent.
+func addTalentOwnedAuras(owned, talentSpellIDs map[int]int) map[int]int {
+	for aura, owner := range owned {
 		if node, ok := talentSpellIDs[owner]; ok {
 			talentSpellIDs[aura] = node
 		}

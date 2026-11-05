@@ -481,14 +481,17 @@ func RequireGuideBuildMatchesActive(guideBuild, activeBuild string) error {
 }
 
 // reserveOffTree spends a reservation's ranks that sit in another tree than the spec's own
-// (Shadow's Wand Specialization, in Discipline) before the own tree, one rank at a time in
-// list order, each capped at the guide's target and its max rank, and only where the rank
-// is legal on its own: a first-row talent with no prerequisite (a deeper one would need
-// that tree's points first, which the plain walk spends after the own tree). It returns
-// each tree's reserved ranks and the budget left.
+// (Shadow's Wand Specialization, in Discipline; Fire's, in Arcane) in list order, one rank
+// at a time, each capped at the guide's target and its max rank, and only where the rank is
+// legal on its own: a first-row talent with no prerequisite (a deeper one would need that
+// tree's points first, which the plain walk spends after the own tree). An off-tree rank
+// listed after own-tree ranks waits until the budget has paid for those (ownRanksAhead), so
+// the list is the build's own sequence across trees. It returns each tree's reserved ranks
+// and the budget left.
 func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, first []LadderFirstRank, budget int) (map[int]map[int]int, int) {
 	reserved := map[int]map[int]int{}
-	for _, r := range first {
+	ahead := ownRanksAhead(trees, targets, ownTreeIndex, first)
+	for i, r := range first {
 		for ti, tree := range trees {
 			if ti == ownTreeIndex {
 				continue
@@ -500,7 +503,7 @@ func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, f
 				if reserved[ti] == nil {
 					reserved[ti] = map[int]int{}
 				}
-				for reserved[ti][node.ID] < min(r.Rank, targets[node.ID], node.MaxRank) && budget > 0 {
+				for reserved[ti][node.ID] < min(r.Rank, targets[node.ID], node.MaxRank) && budget > ahead[i] {
 					reserved[ti][node.ID]++
 					budget--
 				}
@@ -508,4 +511,31 @@ func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, f
 		}
 	}
 	return reserved, budget
+}
+
+// ownRanksAhead is, for each entry of first, how many ranks of the spec's own tree the
+// entries before it reserve (each talent capped at the guide's target and its max rank).
+func ownRanksAhead(trees []TalentTree, targets map[int]int, ownTreeIndex int, first []LadderFirstRank) []int {
+	ahead := make([]int, len(first))
+	if ownTreeIndex < 0 || ownTreeIndex >= len(trees) {
+		return ahead
+	}
+	byName := make(map[string]TalentNode, len(trees[ownTreeIndex].Talents))
+	for _, node := range trees[ownTreeIndex].Talents {
+		byName[node.Name] = node
+	}
+	held := map[int]int{}
+	total := 0
+	for i, r := range first {
+		ahead[i] = total
+		node, ok := byName[r.Talent]
+		if !ok {
+			continue
+		}
+		if rank := min(r.Rank, targets[node.ID], node.MaxRank); rank > held[node.ID] {
+			total += rank - held[node.ID]
+			held[node.ID] = rank
+		}
+	}
+	return ahead
 }
