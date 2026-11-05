@@ -99,8 +99,8 @@ export const checkoutGuildCopy = {
     button: 'Confirm the claim',
   },
   confirm: {
-    // The claiming rules print right under the confirm (subscribe-and-join spec, guild round 3).
-    claim: (guild: string): string => `Claim ${guild}?`,
+    claim: (guild: string): string =>
+      `Claim ${guild}? ${LAST_CLAIM_WINDOW}, hold one claimed guild at a time, and a claim can be contested.`,
     yesClaim: 'Yes, claim it',
     startClaim: (guild: string): string =>
       `Start a claim on ${guild}? A second officer or the guild master confirms it. ${LAST_CLAIM_WINDOW}.`,

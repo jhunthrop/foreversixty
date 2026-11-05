@@ -489,7 +489,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | `ready`, Guild chosen, over 25 verified | `{n} verified members, more than Guild's 25.` + `Switch to Raid guild` |
 | `ready`, Raid guild chosen, 25 or fewer verified | `{n} verified members. Guild covers up to 25 for less.` + `Switch to Guild` |
 | `claim` | `You lead {Guild}. Claim it here, then subscribe it.`; button `Claim {Guild}` |
-| `claim` confirm | `Claim {Guild}?`; `Yes, claim it`; `Cancel` (guild round 3: the rules card sits right below, so the question no longer repeats them) |
+| `claim` confirm | `Claim {Guild}? You may attempt one claim every 30 days, hold one claimed guild at a time, and a claim can be contested.`; `Yes, claim it`; `Cancel` (the checkout card has no rules card, so its question carries them; the guild's own claim page asks just `Claim {Guild}?` because its rules card sits right below, guild round 3) |
 | `claim` done | `Claimed. You hold {Guild}.` |
 | `claim_link_bnet` | `You lead {Guild}. Claiming as guild master needs your Battle.net account linked.`; button `Link Battle.net` |
 | `start_claim` | `Nobody holds {Guild}'s claim yet. As an officer you can start one; a second officer or the guild master confirms it.`; button `Start a claim` |
