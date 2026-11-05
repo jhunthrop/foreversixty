@@ -41,6 +41,9 @@ type GuildService interface {
 	BotGuildFacts(ctx context.Context, guildID int64) (guilds.BotGuild, error)
 	// PublicRosterNames is the guild's verified characters with a public page, by name.
 	PublicRosterNames(ctx context.Context, guildID int64, typed string, limit int) ([]string, error)
+	// GuildSpecOf is the character's spec in the guild, the raid page's and roster's rule (a
+	// specs.json key; "" off the roster or unknown).
+	GuildSpecOf(ctx context.Context, guildID int64, characterKey string) (string, error)
 	// CharacterReadinessFacts is the readiness board's word and sync time for one character.
 	CharacterReadinessFacts(ctx context.Context, guildID int64, characterKey string) (guilds.ReadinessFacts, error)
 	// ActiveBuild is the client build the site serves; BuildItem one item of its tables.

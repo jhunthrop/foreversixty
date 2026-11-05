@@ -63,6 +63,7 @@ func (f *fakeGuilds) BotGuildFacts(context.Context, int64) (guilds.BotGuild, err
 func (f *fakeGuilds) PublicRosterNames(context.Context, int64, string, int) ([]string, error) {
 	return nil, nil
 }
+func (f *fakeGuilds) GuildSpecOf(context.Context, int64, string) (string, error) { return "", nil }
 func (f *fakeGuilds) CharacterReadinessFacts(context.Context, int64, string) (guilds.ReadinessFacts, error) {
 	return guilds.ReadinessFacts{}, nil
 }

@@ -83,7 +83,10 @@ func (s *Service) loadChar(ctx context.Context, guildID int64, viewer *int64, op
 	if err != nil || !found {
 		return charData{}, false, err
 	}
-	spec, _ := specByKey(deref(card.GearSpec))
+	spec, err := s.guildSpec(ctx, guildID, card)
+	if err != nil {
+		return charData{}, false, err
+	}
 	build, _ := s.d.Guilds.ActiveBuild()
 	d := charData{card: card, spec: spec, class: strings.ToLower(card.Character.Class),
 		faction: s.characterFaction(card, g.Faction), build: build, ups: s.upgrades(card, spec, g.Faction)}
@@ -264,6 +267,21 @@ func (s *Service) itemFacts(build, class string, id int, name, source, url strin
 		facts.Icon = s.d.PublicBaseURL + "/data/" + build + "/icons/" + it.Icon + ".webp"
 	}
 	return facts
+}
+
+// guildSpec is the character's spec as the guild's pages name it (the raid spec its player
+// picked, else its newest logged fight's), else the character page's gear spec: one spec for
+// the card, its upgrades and the site.
+func (s *Service) guildSpec(ctx context.Context, guildID int64, card rankings.Character) (specs.Spec, error) {
+	key, err := s.d.Guilds.GuildSpecOf(ctx, guildID, card.Character.Key)
+	if err != nil {
+		return specs.Spec{}, fmt.Errorf("discordbot: char spec: %w", err)
+	}
+	if sp, ok := specByKey(key); ok {
+		return sp, nil
+	}
+	sp, _ := specByKey(deref(card.GearSpec))
+	return sp, nil
 }
 
 func specByKey(key string) (specs.Spec, bool) {

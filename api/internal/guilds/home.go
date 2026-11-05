@@ -376,7 +376,8 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 		       case when gm.consent in ('gear', 'gear_bags') then fm.ilvl end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.faction end,
 		       case when gm.consent in ('gear', 'gear_bags') then ae.export end,
-		       `+rosterSimExportSQL+`
+		       `+rosterSimExportSQL+`,
+		       case when gm.consent in ('gear', 'gear_bags') then gc.raid_spec end
 		from guild_characters gc
 		join addon_exports ae on ae.character_key = gc.character_key
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
@@ -395,11 +396,12 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 	defer rows.Close()
 	out := []RosterRow{}
 	for rows.Next() {
-		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer)
+		var raidSpec *string
+		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer, &raidSpec)
 		if err != nil {
 			return nil, err
 		}
-		out = append(out, row)
+		out = append(out, row.withRaidSpec(raidSpec))
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
