@@ -41,7 +41,7 @@ The best Holy priest on Forever is still casting when the boss dies. Mana is the
 
 ## Drills
 
-- drill.core_casts: From fifty-seven, put Inner Focus next to your Prayer of Healing key and press them as a pair. When the mana bar drops, check your Major Mana Potion and Demonic Rune, and Dark Sacrifice if you are Undead, and press each as soon as the bar has room for its full return.
+- drill.core_casts: From fifty-seven, pair Inner Focus with Prayer of Healing. When the mana bar drops, press your Major Mana Potion, Demonic Rune and, if Undead, Dark Sacrifice as soon as the bar has room for each one's full return.
 - drill.uptime: Recast Inner Fire as part of your ready check, and again the moment you are back up after a death.
 - drill.resource: Before the pull, note the mana you should have at the halfway mark. If you are behind it, let Renew and Prayer of Mending carry the tank and save Flash Heal for the real emergency.
 - drill.ranks: Bind the filler rank your level calls for: Heal before forty, Greater Heal rank one from forty, and from fifty-eight Greater Heal rank one for the small holes, with the top rank saved for a hole as deep as it heals.
