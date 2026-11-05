@@ -6,13 +6,17 @@ import { dayWord } from '../dates';
 import type { AttendanceSource } from './attendance-contract';
 import { raidsAttended } from './attendance-copy';
 import { nightsLabel } from './nights';
-import { specName } from './spec-name';
-import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem } from './api';
+import { specClassName } from './spec-name';
+import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem, GuildLootPage } from './api';
 
 export const LOOT_FOOTNOTE =
-  'Candidates are ranked by gain over what they wear now. A drop stays unawarded until an officer awards it.';
-export const NOT_SIMMED_NOTE = 'Gain here is item level. The simulator has not checked these.';
-export const NO_CANDIDATE = 'No one on the roster can use this.';
+  'Candidates are characters who can wear the item at their level. Each is ranked by how much it adds over what they wear now. A drop stays open until an officer awards it.';
+export const TIER_ONE_LABEL = 'Ranked by item level only. Not on their best-in-slot list.';
+export const NOBODY_AT_60 = "Onyxia's drops need level 60. Candidates show here as your raiders reach it.";
+export const NO_CANDIDATES_AT_60 = 'Nobody at 60 can use these drops yet.';
+export const LOOT_LOAD_ERROR = 'Loot did not load.';
+export const EMPTY_SLOT = 'Empty slot';
+export const ON_BIS_LIST = 'On their BiS list';
 export const ALREADY_AWARDED = 'Already awarded';
 export const UNDO_AWARD = 'Undo';
 
@@ -31,13 +35,41 @@ export function bossPickerLabel(selected: GuildLootEncounter | undefined): strin
   return selected.killed ? `${selected.name} · on farm` : `${selected.name} · not killed yet`;
 }
 
-/** Whether any candidate on the page was ranked by item level rather than by a simulation. */
-export function anyNotSimmed(items: readonly GuildLootItem[]): boolean {
-  return items.some((item) => item.candidates.some((candidate) => candidate.not_sim_checked));
+/** The drops the council ranks: a slotted drop with at least one candidate, in the boss's order. */
+export function rankedDrops(items: readonly GuildLootItem[]): GuildLootItem[] {
+  return items.filter((item) => item.kind === 'gear' && item.candidates.length > 0);
 }
 
-/** "Rootbound · +76 item levels over their current Head · 1 of 1 raid nights", the tail of a row; in
- *  raid mode the figure counts raids ("7 of 8 raids"). */
+/** Everything else: quest drops, the bag, the skinned scale and a slotted drop nobody can use. */
+export function unrankedDrops(items: readonly GuildLootItem[]): GuildLootItem[] {
+  return items.filter((item) => item.kind !== 'gear' || item.candidates.length === 0);
+}
+
+/** The collapsed line's words. */
+export function unrankedLine(count: number): string {
+  return `${count} more ${count === 1 ? 'drop' : 'drops'} nobody here ranks for`;
+}
+
+/** What an open collapsed row says about its drop. */
+export function unrankedLabel(item: GuildLootItem): string {
+  switch (item.kind) {
+    case 'quest':
+      return item.quest_label;
+    case 'bag':
+      return 'Bag. Anyone can use it.';
+    case 'skinned':
+      return 'Skinned from Onyxia. Not a drop.';
+    default:
+      return 'Nobody here can use it yet.';
+  }
+}
+
+/** Attendance shows once the guild has a counted raid night: no row with one, no cell at all. */
+export function showsAttendance(items: readonly GuildLootItem[]): boolean {
+  return items.some((item) => item.candidates.some((candidate) => candidate.attendance.nights > 0));
+}
+
+/** "3 of 4 raid nights", the attendance cell; in raid mode the figure counts raids ("7 of 8 raids"). */
 export function attendanceLabel(
   present: number,
   nights: number,
@@ -67,26 +99,18 @@ export function nextUnkilledEncounter(
 }
 
 /**
- * A candidate row's own gain figure (defect 5's own live-fix round): a tier-0 (BiS-
- * matched) candidate carries `gain_dps`, a tier-1 (fallback) one carries `ilvl_delta`
- * instead and `gain_dps: null` -- the contract's own two-tier shape
- * (docs/contracts/2026-10-04-guild-centre-api.md's loot section). Every real candidate on
- * a live roster is tier-1 today (no BiS file in this build names a raid-tier item yet),
- * so this is the common case, not an edge case: GuildLoot.svelte must never call a number
- * method on `gain_dps` directly, the bug that broke the whole tab on real data while the
- * fixture (predating the tier-1 fallback) never once exercised a null `gain_dps`.
+ * A candidate's gain cell. Tier 0 reads the sim's gain in the BiS file's own unit (`+12.4 DPS`, a
+ * healer's `HPS`, a tank's `TPS`), or `On their BiS list` when no figure was measured. Tier 1 reads
+ * the item-level gap (`+14 item levels`). `gain_dps` is null on every tier-1 row, so nothing may
+ * call a number method on it without checking.
  */
 export function candidateGainLabel(candidate: GuildLootCandidate): string {
-  // An empty slot gains nothing to compare: the rider would only print the item's own level.
-  if (candidate.replaces === '') return '';
-  if (candidate.gain_dps !== null) return `+${Math.round(candidate.gain_dps)}${NBSP}DPS`;
-  if (candidate.ilvl_delta !== null) {
-    const delta = candidate.ilvl_delta;
-    const sign = delta >= 0 ? '+' : '';
-    const figure = `${sign}${delta}${NBSP}item${NBSP}level${Math.abs(delta) === 1 ? '' : 's'}`;
-    return figure;
+  if (candidate.tier === 0) {
+    if (candidate.gain_dps === null || candidate.gain_unit === null) return ON_BIS_LIST;
+    return `+${candidate.gain_dps.toFixed(1)}${NBSP}${candidate.gain_unit.toUpperCase()}`;
   }
-  return '—';
+  const delta = candidate.ilvl_delta ?? 0;
+  return `+${delta}${NBSP}item${NBSP}level${delta === 1 ? '' : 's'}`;
 }
 
 export type LootCandidateAction =
@@ -119,26 +143,53 @@ export function itemsWonLabel(won: number | undefined): string {
   return `${won} item${won === 1 ? '' : 's'} won this tier`;
 }
 
-/**
- * One candidate's line, what a loot council reads across: "Replaces Cap of Prophecy ·
- * Restoration · 5 of 8 raid nights", then " · 1 item won this tier" when the guild's award rows
- * give a count. An empty slot reads "Empty slot" in the place of the item. The gain figure is not
- * here: it rides after the line as a small muted rider (`candidateGainLabel`).
- */
-export function candidateLine(candidate: GuildLootCandidate, source: AttendanceSource = 'reports'): string {
-  // An API from before `replaces` sends none: say nothing rather than call every slot empty.
-  const replaces =
-    candidate.replaces === undefined
-      ? ''
-      : candidate.replaces === ''
-        ? 'Empty slot'
-        : `Replaces ${candidate.replaces}`;
-  return [
-    replaces,
-    specName(candidate.spec),
-    attendanceLabel(candidate.attendance.present, candidate.attendance.nights, source),
-    itemsWonLabel(candidate.items_won),
-  ]
+/** Under the name: the spec with its class, then the tier count when the guild has awarded them something. */
+export function candidateSubline(candidate: GuildLootCandidate): string {
+  return [specClassName(candidate.spec, candidate.class), itemsWonLabel(candidate.items_won)]
     .filter((part) => part !== '')
     .join(' · ');
+}
+
+/** One row of the overview's Loot card: the item and who it is for. */
+export interface LootPick {
+  item: GuildLootItem;
+  candidate: GuildLootCandidate;
+}
+
+function outranks(a: GuildLootCandidate, b: GuildLootCandidate): boolean {
+  if (a.tier !== b.tier) return a.tier < b.tier;
+  if (a.tier === 0) return (a.gain_dps ?? -Infinity) > (b.gain_dps ?? -Infinity);
+  return (a.ilvl_delta ?? 0) > (b.ilvl_delta ?? 0);
+}
+
+/** The best open pick on the page: the highest tier-0 gain across every slotted drop, else the
+ *  highest tier-1 row. An awarded drop is not open, and the skinned scale has no candidates. */
+export function topPick(items: readonly GuildLootItem[]): LootPick | null {
+  let best: LootPick | null = null;
+  for (const item of rankedDrops(items)) {
+    if (item.awarded_to !== null) continue;
+    const candidate = item.candidates.find((row) => !row.already_equivalent);
+    if (candidate === undefined) continue;
+    if (best === null || outranks(candidate, best.candidate)) best = { item, candidate };
+  }
+  return best;
+}
+
+/** The overview's Loot line, as words around an item link and a name. */
+export type OverviewLootLine =
+  { kind: 'text'; text: string } | { kind: 'pick'; lead: string; pick: LootPick };
+
+export function overviewLootLine(page: GuildLootPage): OverviewLootLine {
+  const boss = page.encounters.find((encounter) => encounter.encounter_id === page.selected);
+  const killed = boss?.killed === true;
+  const pick = topPick(page.items);
+  if (!killed && page.at_level_cap === 0) {
+    return { kind: 'text', text: "Onyxia's drops need level 60. Nobody here is 60 yet." };
+  }
+  if (pick === null) return { kind: 'text', text: bossPickerLabel(boss) };
+  return {
+    kind: 'pick',
+    lead: killed ? 'Next open drop: ' : 'Onyxia not killed yet. Top pick today: ',
+    pick,
+  };
 }

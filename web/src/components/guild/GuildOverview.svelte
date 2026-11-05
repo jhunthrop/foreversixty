@@ -40,7 +40,10 @@
   import Glyph from '../ui/Glyph.svelte';
   import SettingsRow from '../ui/SettingsRow.svelte';
   import FactLine from './FactLine.svelte';
-  import { bossPickerLabel, nextUnkilledEncounter } from '../../lib/guild/loot-view';
+  import { overviewLootLine, type OverviewLootLine } from '../../lib/guild/loot-view';
+  import { classColorVar } from '../../lib/report/format';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import RaidLootItem from './RaidLootItem.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
 
   /** A report row this card can summarize: the full `GuildHomeReport` shape (member/
@@ -75,7 +78,7 @@
   } = $props();
 
   let readinessSummary = $state<{ name: string; failing: number }[] | null>(null);
-  let lootSummary = $state<string | null>(null);
+  let lootLine = $state<OverviewLootLine | null>(null);
   /** Live defect 2026-10-05: a public visitor has no `home` (401), so `summary` is undefined
    *  and this card read "0 named encounters down" under a band saying 1 boss down. The
    *  progression endpoint is public and already carries the tier figures, so the card reads
@@ -127,13 +130,10 @@
       });
     void fetchGuildLoot(guildId)
       .then((page) => {
-        const next = nextUnkilledEncounter(page.encounters);
-        const current = page.encounters.find((e) => e.encounter_id === page.selected);
-        const pick = page.items[0]?.name;
-        lootSummary = `${current?.name ?? bossPickerLabel(next)}${pick !== undefined ? ` · next pick: ${pick}` : ''}`;
+        lootLine = overviewLootLine(page);
       })
       .catch(() => {
-        lootSummary = null;
+        lootLine = null;
       });
   });
 
@@ -241,7 +241,38 @@
 
     <Card glyph="star" title="Loot" testid="guild-overview-card-loot">
       {#snippet aside()}{@render seeAll('loot')}{/snippet}
-      <p>{lootSummary ?? 'No bosses killed yet this tier.'}</p>
+      {#if lootLine === null}
+        <p>No bosses killed yet this tier.</p>
+      {:else if lootLine.kind === 'text'}
+        <p data-testid="guild-overview-loot-line">{lootLine.text}</p>
+      {:else}
+        {@const { item, candidate } = lootLine.pick}
+        <p class="flex flex-wrap items-center gap-x-1 gap-y-1" data-testid="guild-overview-loot-line">
+          <span>{lootLine.lead}</span>
+          <RaidLootItem
+            award={{
+              item_id: item.item_id,
+              item_name: item.name,
+              quality: item.quality,
+              icon: item.icon,
+              character_key: '',
+              name: '',
+              class: candidate.class,
+              by_name: '',
+              at: '',
+            }}
+            iconSize={16}
+            nameSize="text-[14px]"
+          />
+          <span>for</span>
+          <span class="inline-flex items-center gap-1">
+            <ClassCrestRing characterClass={candidate.class} size={16} />
+            <span class="font-semibold" style={`color:${classColorVar(candidate.class)}`}
+              >{candidate.name}</span
+            >
+          </span>
+        </p>
+      {/if}
     </Card>
   {/if}
 </section>

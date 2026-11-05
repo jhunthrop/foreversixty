@@ -1061,6 +1061,8 @@ data class GuildHomeViewer(
 
 @Serializable
 data class GuildLoot(
+    /** Verified roster characters whose level on file is 60. */
+    @SerialName("at_level_cap") val atLevelCap: Int,
     @SerialName("encounters") val encounters: List<LootEncounter> = emptyList(),
     @SerialName("selected") val selected: Long,
     @SerialName("items") val items: List<LootItem> = emptyList(),
@@ -1453,12 +1455,27 @@ data class LootCandidate(
     @SerialName("class") val className: String,
     @SerialName("spec") val spec: String,
     @SerialName("gain_dps") val gainDps: Double? = null,
+    /** What gain_dps counts; null when gain_dps is. */
+    @SerialName("gain_unit") val gainUnit: String? = null,
+    /** 0 when the item is on the character's BiS list; 1 when ranked by item level only. */
+    @SerialName("tier") val tier: Int,
     @SerialName("not_sim_checked") val notSimChecked: Boolean,
     @SerialName("ilvl_delta") val ilvlDelta: Int? = null,
     @SerialName("attendance") val attendance: GuildAttendance,
     @SerialName("already_equivalent") val alreadyEquivalent: Boolean,
     @SerialName("replaces") val replaces: String,
+    /** The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name. */
+    @SerialName("replaces_item") val replacesItem: LootWornItem? = null,
     @SerialName("items_won") val itemsWon: Int,
+)
+
+@Serializable
+data class LootEligible(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    /** The copy of the drop this character would get. */
+    @SerialName("item_id") val itemId: Int,
 )
 
 @Serializable
@@ -1485,7 +1502,20 @@ data class LootItem(
     @SerialName("name") val name: String,
     @SerialName("icon") val icon: String,
     @SerialName("quality") val quality: Int,
+    /** For logic only; word the slot from inventory_type and item_class/item_subclass. */
     @SerialName("slot") val slot: String,
+    /** The client's Item.InventoryType. */
+    @SerialName("inventory_type") val inventoryType: Int,
+    /** The client's Item.ClassID. */
+    @SerialName("item_class") val itemClass: Int,
+    /** The client's Item.SubclassID. */
+    @SerialName("item_subclass") val itemSubclass: Int,
+    /** gear is a slotted drop the council ranks; skinned is Scale of Onyxia, never a pick. */
+    @SerialName("kind") val kind: String,
+    /** A quest drop's sourced line ("Quest: A Proper String (Hunter)"); empty otherwise. */
+    @SerialName("quest_label") val questLabel: String,
+    /** Who an officer can hand a quest drop or the bag to. Empty for gear and the skinned scale. */
+    @SerialName("eligible") val eligible: List<LootEligible> = emptyList(),
     @SerialName("copies") val copies: Int,
     @SerialName("awarded_to") val awardedTo: LootAward? = null,
     /** Ranked best first. */
@@ -1539,6 +1569,15 @@ data class LootSource(
     @SerialName("source_origin") val sourceOrigin: String? = null,
     @SerialName("source_note") val sourceNote: String? = null,
     @SerialName("reitemised_from") val reitemisedFrom: Map<String, Int>? = null,
+)
+
+/** The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name. */
+@Serializable
+data class LootWornItem(
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("quality") val quality: Int,
 )
 
 /** GET /v1/me's data (Go auth.Me): who you are, your characters, your guilds and what you may use. The apps gate a feature on entitlements only. */

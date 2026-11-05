@@ -948,6 +948,35 @@ test.describe('loot: Award asks first and can be undone', () => {
     return record;
   }
 
+  test('the Sinew award picker holds hunters alone, and the award posts that copy', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/raids*`, (route) => route.fulfill(envelope(buildMockRaids())));
+    await page.route(`**/v1/guilds/${GUILD_ID}/progression`, (route) =>
+      route.fulfill(envelope(buildMockProgression())),
+    );
+    const record = await stubAwards(page);
+    const sinew = buildMockLoot().items.find((i) => i.item_id === 18705);
+    expect(sinew?.eligible.length).toBeGreaterThan(0);
+    expect(sinew?.eligible.every((row) => row.class === 'hunter')).toBe(true);
+    await page.goto(`${GUILD_URL}#loot`);
+    await page.getByTestId('guild-loot-unranked-summary').click();
+    await page.getByTestId('guild-loot-award-18705').click();
+    const confirm = page.getByTestId('guild-loot-award-confirm-18705');
+    await expect(confirm.locator('select option')).toHaveCount(sinew?.eligible.length ?? 0);
+    await page.getByTestId('guild-loot-award-yes-18705').click();
+    await expect.poll(() => (record.posts[0] as { item_id: number } | undefined)?.item_id).toBe(18705);
+  });
+
+  test('the skinned scale is never a pick, and no slot word prints as an enum', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubDepthEndpoints(page);
+    await page.goto(`${GUILD_URL}#loot`);
+    await expect(page.getByTestId('guild-loot-items').getByText('Scale of Onyxia')).toHaveCount(0);
+    await expect(page.getByTestId('guild-loot-items')).not.toContainText(
+      /OFF_HAND|MAIN_HAND|off_hand|main_hand/,
+    );
+  });
+
   test('the officer is asked, can Cancel, awards, sees who got it, and can Undo', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.route(`**/v1/guilds/${GUILD_ID}/raids*`, (route) => route.fulfill(envelope(buildMockRaids())));
@@ -1070,10 +1099,14 @@ test.describe('loot: Award asks first and can be undone', () => {
     const item = buildMockLoot().items.find((i) => i.name === 'Stormrage Cover');
     const first = item?.candidates[0];
     if (item === undefined || first === undefined) throw new Error('fixture lost Stormrage Cover');
-    const line = page.getByTestId(`guild-loot-item-${item.item_id}`).getByTestId('guild-loot-candidate-line');
-    await expect(line.first()).toContainText(`Replaces ${first.replaces} · ${first.spec} · `);
-    await expect(line.first()).toContainText('raid nights');
-    await expect(line.first()).not.toContainText('over their current');
+    const row = page
+      .getByTestId(`guild-loot-item-${item.item_id}`)
+      .getByTestId('guild-loot-candidate')
+      .first();
+    await expect(row.getByTestId('guild-loot-candidate-replaces')).toContainText(`Replaces`);
+    await expect(row.getByTestId('guild-loot-candidate-replaces')).toContainText(first.replaces);
+    await expect(row.getByTestId('guild-loot-candidate-spec')).toContainText(first.spec);
+    await expect(row.getByTestId('guild-loot-candidate-attendance')).toContainText('raid nights');
   });
 
   test('a member sees an awarded item but no Undo and no Award', async ({ page }) => {
@@ -1089,10 +1122,14 @@ test.describe('loot: Award asks first and can be undone', () => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await stubDepthEndpoints(page);
     await page.goto(`${GUILD_URL}#loot`);
-    await expect(page.getByTestId('guild-loot-items').getByText('Head of Onyxia')).toHaveCount(1);
     const crown = buildMockLoot().items.find((i) => i.name === 'Judgement Crown');
     expect(crown?.candidates).toEqual([]);
-    await expect(page.getByTestId(`guild-loot-no-candidate-${crown?.item_id}`)).toBeVisible();
+    await expect(page.getByTestId(`guild-loot-item-${crown?.item_id}`)).toHaveCount(0);
+    await page.getByTestId('guild-loot-unranked-summary').click();
+    await expect(page.getByTestId(`guild-loot-unranked-label-${crown?.item_id}`)).toHaveText(
+      'Nobody here can use it yet.',
+    );
+    await expect(page.getByTestId('guild-loot-unranked').getByText('Head of Onyxia')).toHaveCount(1);
   });
 });
 
@@ -1125,7 +1162,9 @@ test.describe('loot: read-only for a member, awarded state for everyone', () => 
     await expect(page.getByTestId('guild-loot-tab').getByText('Read-only')).toBeVisible();
     const loot = buildMockLoot();
     for (const item of loot.items) {
-      await expect(page.getByTestId(`guild-loot-item-${item.item_id}`)).toBeVisible();
+      const card = page.getByTestId(`guild-loot-item-${item.item_id}`);
+      if (item.kind === 'gear' && item.candidates.length > 0) await expect(card).toBeVisible();
+      else await expect(card).toHaveCount(0);
     }
     await expect(page.locator('[data-testid^="guild-loot-award-"]')).toHaveCount(0);
   });
@@ -1148,6 +1187,10 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     await expect(page.getByTestId('guild-overview-tab')).toBeVisible();
     // The Overview's own Loot summary card prefetches GET .../loot before the tab exists.
     await expect(page.getByTestId('guild-overview-card-loot')).toBeVisible();
+    const lootLine = page.getByTestId('guild-overview-loot-line');
+    await expect(lootLine).toContainText('Next open drop:');
+    await expect(lootLine.locator('[data-testid^="item-hover-"]')).toHaveCount(1);
+    await expect(lootLine).not.toContainText('Scale of Onyxia');
 
     await page.getByTestId('guild-tab-loot').click();
     await expect(page.getByTestId('guild-loot-tab')).toBeVisible();
@@ -1156,9 +1199,9 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     // The API lists a shared name once: 22 drops, 21 rows.
     expect(loot.items).toHaveLength(21);
     for (const item of loot.items) {
-      await expect(page.getByTestId(`guild-loot-item-${item.item_id}`)).toBeVisible();
-      if (item.slot === '') continue; // a quest/reputation/crafting drop, no candidates
+      if (item.kind !== 'gear' || item.candidates.length === 0) continue; // the collapsed line
       const panel = page.getByTestId(`guild-loot-item-${item.item_id}`);
+      await expect(panel).toBeVisible();
       await expect(panel).not.toContainText('NaN');
       for (const candidate of item.candidates) {
         await expect(panel).toContainText(candidate.name);
@@ -1184,7 +1227,8 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     );
     await page.goto(`${GUILD_URL}#loot`);
     await expect(page.getByTestId('guild-loot-error')).toBeVisible();
-    await expect(page.getByTestId('guild-loot-error')).toContainText('the loot ranker fell over');
+    await expect(page.getByTestId('guild-loot-error')).toContainText('Loot did not load.');
+    await expect(page.getByTestId('guild-loot-error').getByRole('button')).toHaveText('Try again');
     await expect(page.getByTestId('guild-loot-missing')).toHaveCount(0);
     await expect(page.getByText(/isn.t live yet/)).toHaveCount(0);
   });

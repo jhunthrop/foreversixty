@@ -22,8 +22,9 @@
     show = 'both',
   }: {
     award: RaidLootAward;
-    /** 28 in the Report, 20 in Your night, 36 in a loot card's head. */
-    iconSize: 36 | 28 | 20;
+    /** 28 in the Report, 20 in Your night, 40 in a loot card's head, 24 in a collapsed drop, 16 in a
+     *  line of text. */
+    iconSize: 40 | 28 | 24 | 20 | 16;
     /** The name's Tailwind text size: `text-[14px]` or `text-[13px]`. */
     nameSize: string;
     /** A card head draws the icon and the name apart (the lead and the title), each with the tooltip. */
@@ -58,13 +59,15 @@
   {classSlug}
   {build}
   model={ownModel}
-  class="gap-2"
+  class={iconSize === 16 ? 'gap-1' : 'gap-2'}
   label={show === 'icon' ? award.item_name : undefined}
 >
   {#if show !== 'name'}
     <span
-      class="rounded-control bg-card-top text-muted inline-flex shrink-0 items-center justify-center overflow-hidden border text-[10px] font-bold"
-      style={`width:${iconSize}px;height:${iconSize}px;border-width:2px;border-color:${rarityBorderColorFor(award.quality)}`}
+      class="{iconSize === 16
+        ? 'rounded-[3px]'
+        : 'rounded-control'} bg-card-top text-muted inline-flex shrink-0 items-center justify-center overflow-hidden border text-[10px] font-bold"
+      style={`width:${iconSize}px;height:${iconSize}px;border-width:${iconSize === 16 ? 1 : 2}px;border-color:${rarityBorderColorFor(award.quality)}`}
       data-testid="raid-loot-icon"
     >
       {#if icon !== null}
