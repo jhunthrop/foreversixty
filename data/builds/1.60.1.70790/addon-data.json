@@ -17717,7 +17717,7 @@
           {
             "spell_id": 1311649,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17738,7 +17738,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17757,7 +17757,7 @@
           {
             "spell_id": 1311649,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17778,7 +17778,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17797,7 +17797,7 @@
           {
             "spell_id": 1311656,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17818,7 +17818,7 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           }
@@ -17844,7 +17844,7 @@
           {
             "spell_id": 1311656,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17865,14 +17865,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 879,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -17905,7 +17905,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17926,14 +17926,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 879,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -17966,7 +17966,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -17987,14 +17987,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18027,7 +18027,7 @@
           {
             "spell_id": 20163,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18055,14 +18055,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18102,7 +18102,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18130,14 +18130,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5614,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18177,7 +18177,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18205,14 +18205,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18252,7 +18252,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18280,14 +18280,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18327,7 +18327,7 @@
           {
             "spell_id": 20419,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18362,14 +18362,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18409,7 +18409,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18444,14 +18444,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18491,7 +18491,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18526,14 +18526,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 5615,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18573,7 +18573,7 @@
           {
             "spell_id": 20421,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18608,14 +18608,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10312,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18655,7 +18655,7 @@
           {
             "spell_id": 20422,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18690,14 +18690,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10312,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18737,7 +18737,7 @@
           {
             "spell_id": 20422,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18772,14 +18772,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10313,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18819,7 +18819,7 @@
           {
             "spell_id": 20423,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18854,14 +18854,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10313,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
@@ -18901,7 +18901,7 @@
           {
             "spell_id": 20423,
             "name": "Seal of Fury",
-            "condition": "Keep it up, and recast it in its last 2 seconds; from level 30, only with Holy Shield's mana left over.",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
             "icon": "spell_holy_retributionaura",
             "race_spell_ids": {}
           },
@@ -18936,14 +18936,14 @@
           {
             "spell_id": 20271,
             "name": "Judgement",
-            "condition": "On cooldown; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_righteousfury",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10314,
             "name": "Exorcism",
-            "condition": "On Undead and Demons only; from level 30, only once Holy Shield's mana is safe.",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
             "icon": "spell_holy_excorcism_02",
             "race_spell_ids": {}
           },
