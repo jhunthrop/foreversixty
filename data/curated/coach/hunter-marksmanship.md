@@ -23,16 +23,16 @@ This is the best Marksmanship Hunter on Forever. Marksmanship's damage is your o
 
 - Hunter's Mark first, before the pull, so the mana is back by the time the boss is pulled.
 - Aspect of the Hawk goes up before the pull.
-- Rapid Fire on the pull, as an auto shot leaves and the shared cooldown is about to come back.
+- Rapid Fire from twenty-six on the pull, as an auto shot leaves. Press it as the shared cooldown is about to come back.
 - Aimed Shot from twenty, every time the cooldown it shares with Multi-Shot comes up. Your auto shots keep firing while you cast it.
-- Sniper Shot whenever it is ready and the shared cooldown is not.
+- Sniper Shot with the raid build from forty, whenever it is ready and the shared cooldown is not.
 - Multi-Shot on its cooldown at eighteen and nineteen. From twenty it is for packs and for moving, and never under a quarter of your mana.
 - Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot.
 - Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away or you are under a quarter of your mana.
-- Feign Death before you reach the tank's threat, not after the boss turns. If it says Resisted, you still have all your threat.
-- Volley is a mana-heavy channel, worth it only on a big pack that lives through it.
-- Freezing Trap is your crowd control, laid before the pull.
-- Explosive Trap under a pack the tank is holding hits everything within ten yards, and at sixty it costs even more than Volley, so save it for the same big packs.
+- Feign Death from thirty, before you reach the tank's threat, not after the boss turns. If it says Resisted, you still have all your threat.
+- Volley from forty is a mana-heavy channel, worth it only on a big pack that lives through it.
+- Freezing Trap from twenty is your crowd control, laid before the pull.
+- Explosive Trap from thirty-four under a pack the tank is holding hits everything within ten yards. At sixty it costs more than Volley, so save it for the same big packs.
 - Tranquilizing Shot removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage.
 - Distracting Shot puts a big lump of threat on a loose add, enough to pull it off a healer and onto you.
 

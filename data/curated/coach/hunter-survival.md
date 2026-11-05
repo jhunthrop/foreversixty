@@ -22,19 +22,19 @@ This is the best Survival Hunter on Forever. Survival is a melee spec in Forever
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
 - Hunter's Mark on the boss first, so the mana is back by the pull. Wear Aspect of the Monkey until thirty, then Aspect of the Beast, and leave it up.
-- Raptor Strike on every swing it is ready, with an older rank on your bar at twenty-six to twenty-nine and at forty-six and forty-seven.
-- Counterattack the moment it lights up after you parry: it cannot be blocked, dodged or parried.
+- Raptor Strike on every swing it is ready, with an older rank on your bar at twenty-six to twenty-nine and at forty-six and forty-seven, and to forty-nine on most Horde characters.
+- Counterattack from thirty-two the moment it lights up after you parry. It cannot be blocked, dodged or parried.
 - Mongoose Bite the moment it lights up after a dodge. From thirty-five, Expose Prey also opens it off your hits on a marked target.
-- Lacerate whenever its bleed has fallen off.
-- Strider Kick on its own short cooldown, ahead of Immolation Trap.
+- Lacerate from thirty whenever its bleed has fallen off.
+- Strider Kick from thirty on its own short cooldown, ahead of Immolation Trap.
 - Immolation Trap on cooldown.
 - Wing Clip only with a Windfury Totem in the group, on a global with nothing else ready. Without the totem it loses damage.
-- Rapid Fire on the pull with your trinkets. Add Elune's Light, Blood Fury or Berserking if your race has one.
-- Disengage trims some threat on a five second cooldown, but it turns off your auto attack, so start swinging again the moment it lands.
-- Feign Death drops all of your threat if it lands. Check the message, because it can be resisted.
-- Deterrence is your emergency button when something turns on you.
-- Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest.
-- Freezing Trap is your crowd control, laid before the pull.
+- Rapid Fire from twenty-six on the pull with your trinkets. Add Elune's Light, Blood Fury or Berserking if your race has one.
+- Disengage from twenty trims some threat on a five second cooldown. It turns off your auto attack, so start swinging again the moment it lands.
+- Feign Death from thirty drops all of your threat if it lands. Check the message, because it can be resisted.
+- Deterrence from twenty-five is your emergency button when something turns on you.
+- Explosive Trap from thirty-four under the pack is your AoE, and Engineering's explosives are the rest.
+- Freezing Trap from twenty is your crowd control, laid before the pull.
 
 **The mistakes to look for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

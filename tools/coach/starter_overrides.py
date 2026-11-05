@@ -498,6 +498,69 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
     },
 }
 
+# Round 26: hunter buttons named with the level they arrive (the generator's own rule).
+GUIDE_LINES["hunter-beast-mastery"].update(
+    {
+        "Rapid Fire": (
+            "Rapid Fire from twenty-six on the pull, as an auto shot leaves. "
+            "Press it as the shared cooldown is about to come back, and from forty with Bestial Wrath."
+        ),
+        "Feign Death": (
+            "Feign Death from thirty, before you reach the tank's threat, not after the boss turns. "
+            "If it says Resisted, you still have all your threat."
+        ),
+        "Volley": "Volley from forty is a mana-heavy channel, worth it only on a big pack that lives through it.",
+        "Freezing Trap": "Freezing Trap from twenty is your crowd control, laid before the pull. Any damage breaks it.",
+        "Explosive Trap": (
+            "Explosive Trap from thirty-four under a pack the tank is holding hits everything within ten yards. "
+            "At sixty it costs more than Volley, so save it for the same big packs."
+        ),
+    }
+)
+GUIDE_LINES["hunter-marksmanship"].update(
+    {
+        "Rapid Fire": (
+            "Rapid Fire from twenty-six on the pull, as an auto shot leaves. "
+            "Press it as the shared cooldown is about to come back."
+        ),
+        "Sniper Shot": "Sniper Shot with the raid build from forty, whenever it is ready and the shared cooldown is not.",
+        "Feign Death": (
+            "Feign Death from thirty, before you reach the tank's threat, not after the boss turns. "
+            "If it says Resisted, you still have all your threat."
+        ),
+        "Volley": "Volley from forty is a mana-heavy channel, worth it only on a big pack that lives through it.",
+        "Freezing Trap": "Freezing Trap from twenty is your crowd control, laid before the pull.",
+        "Explosive Trap": (
+            "Explosive Trap from thirty-four under a pack the tank is holding hits everything within ten yards. "
+            "At sixty it costs more than Volley, so save it for the same big packs."
+        ),
+    }
+)
+GUIDE_LINES["hunter-survival"].update(
+    {
+        "Counterattack": (
+            "Counterattack from thirty-two the moment it lights up after you parry. It cannot be blocked, dodged or parried."
+        ),
+        "Lacerate": "Lacerate from thirty whenever its bleed has fallen off.",
+        "Strider Kick": "Strider Kick from thirty on its own short cooldown, ahead of Immolation Trap.",
+        "Rapid Fire": (
+            "Rapid Fire from twenty-six on the pull with your trinkets. "
+            "Add Elune's Light, Blood Fury or Berserking if your race has one."
+        ),
+        "Disengage": (
+            "Disengage from twenty trims some threat on a five second cooldown. "
+            "It turns off your auto attack, so start swinging again the moment it lands."
+        ),
+        "Feign Death": (
+            "Feign Death from thirty drops all of your threat if it lands. Check the message, because it can be resisted."
+        ),
+        "Deterrence": "Deterrence from twenty-five is your emergency button when something turns on you.",
+        "Explosive Trap": "Explosive Trap from thirty-four under the pack is your AoE, and Engineering's explosives are the rest.",
+        "Freezing Trap": "Freezing Trap from twenty is your crowd control, laid before the pull.",
+    }
+)
+
+
 # The guide's own order statements, which win over the order of first mention. Listed abilities lead.
 GUIDE_ORDER: dict[str, tuple[str, ...]] = {
     # balance.md: the form, the two DoTs, then the Eclipse loop of Wrath and Starfire.

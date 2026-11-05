@@ -36,20 +36,22 @@ SPECS = {
     ),
     # Aimed Shot takes the cooldown it shares with Multi-Shot every time it comes up; Multi-Shot is
     # for packs and moving (round 25), so a ready Multi-Shot is never a lost cast.
+    # Aimed Shot shares its cooldown with Multi-Shot, which F1 does not restart on (round 26).
     "hunter-beast-mastery": dict(
-        core=["Bestial Wrath", "Rapid Fire", "Aimed Shot"],
+        core=["Bestial Wrath", "Rapid Fire"],
         auras=[("Serpent Sting", DOT), ("Aspect of the Hawk", SELF)],
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
     ),
     "hunter-marksmanship": dict(
-        core=["Rapid Fire", "Aimed Shot"],
+        core=["Rapid Fire"],
         auras=[("Aspect of the Hawk", SELF)],
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
     ),
+    # Immolation Trap is 18 s from Survivalist's Discipline at 38; F1 reads the base 30 s (round 26).
     "hunter-survival": dict(
-        core=["Raptor Strike", "Strider Kick", "Immolation Trap"],
+        core=["Raptor Strike", "Strider Kick"],
         auras=[("Lacerate", DOT)],
         downranks=[],
         defensives=["Feign Death", "Deterrence"],

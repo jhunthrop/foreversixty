@@ -10595,7 +10595,7 @@
           {
             "spell_id": 14260,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           }
@@ -10614,7 +10614,7 @@
           {
             "spell_id": 14260,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10640,7 +10640,7 @@
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10680,7 +10680,7 @@
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10720,7 +10720,7 @@
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10760,7 +10760,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10800,7 +10800,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "dwarf": 14261,
@@ -10849,7 +10849,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "dwarf": 14261,
@@ -10898,7 +10898,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "dwarf": 14261,
@@ -10947,7 +10947,7 @@
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10987,7 +10987,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11041,7 +11041,7 @@
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11102,7 +11102,7 @@
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11163,7 +11163,7 @@
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11224,7 +11224,7 @@
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11285,7 +11285,7 @@
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11346,7 +11346,7 @@
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11407,7 +11407,7 @@
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11468,7 +11468,7 @@
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "orc": 14263,
@@ -11534,7 +11534,7 @@
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "orc": 14263,
@@ -11599,7 +11599,7 @@
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11660,7 +11660,7 @@
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11721,7 +11721,7 @@
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11782,7 +11782,7 @@
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11843,7 +11843,7 @@
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
