@@ -120,7 +120,9 @@ function hitReference(hit: number, dualWield: boolean, level: number): HitRefere
 function skillValue(stats: FinalStats, dualWield: boolean): string | undefined {
   const skill = stats.weapon_skill;
   if (skill?.main_hand === undefined) return skill?.ranged === undefined ? undefined : String(skill.ranged);
-  return dualWield && skill.off_hand !== undefined ? `${skill.main_hand} · ${skill.off_hand}` : String(skill.main_hand);
+  return dualWield && skill.off_hand !== undefined
+    ? `${skill.main_hand} · ${skill.off_hand}`
+    : String(skill.main_hand);
 }
 
 function cell(id: string, label: string, value: string | undefined): StatCell[] {
@@ -154,7 +156,12 @@ export function statsBlock(result: SimResult): StatsBlock | null {
     hit:
       hit === undefined
         ? null
-        : { id: 'hit', label: labels.hit, value: percent(hit), reference: hitReference(hit, dualWield, level) },
+        : {
+            id: 'hit',
+            label: labels.hit,
+            value: percent(hit),
+            reference: hitReference(hit, dualWield, level),
+          },
     cells,
   };
 }

@@ -5,14 +5,7 @@ import { navCopy } from './result-copy';
 import type { SimResult } from './types';
 
 export type ResultSectionId =
-  | 'damage'
-  | 'timeline'
-  | 'gear'
-  | 'talents'
-  | 'resource'
-  | 'buffs'
-  | 'rotation'
-  | 'settings';
+  'damage' | 'timeline' | 'gear' | 'talents' | 'resource' | 'buffs' | 'rotation' | 'settings';
 
 export interface ResultSection {
   id: ResultSectionId;

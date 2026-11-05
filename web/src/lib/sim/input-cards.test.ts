@@ -39,7 +39,8 @@ const names: ActionNames = {
 describe('resourceCard', () => {
   const card = resourceCard(full, names)!;
   const source = full.resource_sources![0]!;
-  const sum = (rows: readonly { amount: number }[]): number => rows.reduce((total, row) => total + row.amount, 0);
+  const sum = (rows: readonly { amount: number }[]): number =>
+    rows.reduce((total, row) => total + row.amount, 0);
 
   it('titles by power and fills the three tiles from the summary', () => {
     const summary = full.summary.resources[0]!;
@@ -152,7 +153,9 @@ describe('auraCard', () => {
     const keys = [...player.bars, ...player.upAllFight, ...player.noEffect].map((row) => row.actionKey);
     for (const hidden of ['spell:21919', 'other:rage_gain', 'spell:12292', 'spell:11567/1', 'spell:11585'])
       expect(keys).not.toContain(hidden);
-    const hands = player.bars.filter((row) => row.actionKey?.startsWith('spell:20007')).map((row) => row.name);
+    const hands = player.bars
+      .filter((row) => row.actionKey?.startsWith('spell:20007'))
+      .map((row) => row.name);
     expect(hands.some((name) => name.endsWith('(main hand)'))).toBe(true);
     expect(hands.some((name) => name.endsWith('(off hand)'))).toBe(true);
   });
@@ -167,7 +170,13 @@ describe('auraCard', () => {
     };
     const card = auraCard({
       result: both,
-      buffs: { ...buffs, expose_armor: entry('Expose Armor', { target: true, exclusive_with: { group: 'major_armor', rank: 2 } }) },
+      buffs: {
+        ...buffs,
+        expose_armor: entry('Expose Armor', {
+          target: true,
+          exclusive_with: { group: 'major_armor', rank: 2 },
+        }),
+      },
       weights: fury,
       schools: ['physical'],
       names,
@@ -194,7 +203,13 @@ describe('gear card', () => {
     { id: 856, display: '+7 Strength', name: 'Enchant Bracer - Superior Strength' },
   ] as unknown as EnchantRow[];
   const enchanted = full.request.character.gear.map((slot) =>
-    slot.slot === 'main_hand' ? { ...slot, enchant: 1900 } : slot.slot === 'wrist' ? { ...slot, enchant: 856 } : slot.slot === 'hands' ? { ...slot, enchant: 1 } : slot,
+    slot.slot === 'main_hand'
+      ? { ...slot, enchant: 1900 }
+      : slot.slot === 'wrist'
+        ? { ...slot, enchant: 856 }
+        : slot.slot === 'hands'
+          ? { ...slot, enchant: 1 }
+          : slot,
   );
   const slotsOf = (gear: typeof enchanted) =>
     gearSlots({ gear, classSlug: 'warrior', items: new Map(), failed: true, enchants: enchantNames(rows) });
@@ -289,7 +304,12 @@ function talentFile(): TalentFile {
     class_id: 1,
     class_slug: 'warrior',
     trees: [
-      { id: 1, name: 'A', position: 0, talents: [talent(1, 0, 0, 5), talent(2, 1, 0, 1, 1), talent(3, 1, 1, 3)] },
+      {
+        id: 1,
+        name: 'A',
+        position: 0,
+        talents: [talent(1, 0, 0, 5), talent(2, 1, 0, 1, 1), talent(3, 1, 1, 3)],
+      },
       { id: 2, name: 'B', position: 1, talents: [talent(4, 0, 0, 3)] },
     ],
   } as unknown as TalentFile;
@@ -336,7 +356,12 @@ describe('rotationRows', () => {
   const casts = (key: string) => full.summary.casts.find((row) => row.spell_name === key)!.succeeded;
 
   it('counts casts per fight from the summary, once per spell', () => {
-    expect(rows.priority[1]).toMatchObject({ name: 'Execute', casts: casts('spell:20662'), dimmed: false, note: 'First.' });
+    expect(rows.priority[1]).toMatchObject({
+      name: 'Execute',
+      casts: casts('spell:20662'),
+      dimmed: false,
+      note: 'First.',
+    });
     expect(rows.priority[2]!.casts).toBe(casts('spell:23894'));
     expect(rows.priority[3]!.casts).toBeNull();
   });
@@ -365,7 +390,10 @@ describe('rotationRows', () => {
         ],
         priorityList: [
           { action: { autocastOtherCooldowns: {} } },
-          { notes: 'Hit it.', action: { strictSequence: { actions: [{ castSpell: { spellId: { spellId: 3 } } }] } } },
+          {
+            notes: 'Hit it.',
+            action: { strictSequence: { actions: [{ castSpell: { spellId: { spellId: 3 } } }] } },
+          },
           { action: { castSpell: { spellId: { itemId: 4 } } } },
           { action: { wait: {} } },
         ],

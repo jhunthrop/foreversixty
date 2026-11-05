@@ -39,13 +39,18 @@
   async function talentFile(): Promise<{ file: TalentFile; treeVersion: string }> {
     const saved = props.result.request.data_build;
     if (saved !== undefined && saved !== activeBuild.build) {
-      const file = await loadOptional<TalentFile | null>(dataUrl(saved, `talents/${character.class}.json`), null);
+      const file = await loadOptional<TalentFile | null>(
+        dataUrl(saved, `talents/${character.class}.json`),
+        null,
+      );
       if (file !== null) return { file, treeVersion: saved };
     }
     return { file: await loadTalents(activeBuild.build, character.class), treeVersion: activeBuild.build };
   }
 
-  function tipsOf(index: TalentIndex): Map<string, { name: string; icon: string; maxRank: number; ranks: string[] }> {
+  function tipsOf(
+    index: TalentIndex,
+  ): Map<string, { name: string; icon: string; maxRank: number; ranks: string[] }> {
     return new Map(
       [...index.byId.values()].map((talent) => [
         String(talent.id),
@@ -104,9 +109,13 @@
 >
   <div class="border-line-soft border-t">
     {#if view.kind === 'loading'}
-      <div class="p-5"><Skeleton lines={3} rowHeight="h-12" minHeight="min-h-[440px]" testid="sim-talents-skeleton" /></div>
+      <div class="p-5">
+        <Skeleton lines={3} rowHeight="h-12" minHeight="min-h-[440px]" testid="sim-talents-skeleton" />
+      </div>
     {:else if view.kind === 'failed'}
-      <div class="p-5"><LoadError message={copy.failed} onRetry={() => void load()} testid="sim-talents-error" /></div>
+      <div class="p-5">
+        <LoadError message={copy.failed} onRetry={() => void load()} testid="sim-talents-error" />
+      </div>
     {:else if view.kind === 'unfit'}
       <p class="text-text px-5 py-4 text-[15px]" data-testid="sim-talents-unfit">{copy.doesNotFit}</p>
     {:else}
@@ -124,7 +133,8 @@
   {#if view.kind === 'ready' || view.kind === 'loading'}
     <div class="border-line-soft flex flex-wrap items-center justify-between gap-x-4 border-t px-5 py-1.5">
       <p class="text-muted text-[13px]">
-        <span class="md:hidden">{copy.footPhone}</span><span class="hidden md:inline">{copy.footDesktop}</span>
+        <span class="md:hidden">{copy.footPhone}</span><span class="hidden md:inline">{copy.footDesktop}</span
+        >
       </p>
       <ActionLink href={plannerHref}>{copy.planner}</ActionLink>
     </div>

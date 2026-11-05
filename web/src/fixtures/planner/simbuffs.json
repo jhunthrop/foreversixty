@@ -138,10 +138,7 @@
       "name": "Curse of the Elements",
       "icon": "fixture_item_snakestone_charm",
       "target": true,
-      "school_damage": [
-        "fire",
-        "frost"
-      ]
+      "school_damage": ["fire", "frost"]
     },
     "sunder_armor": {
       "name": "Sunder Armor",
@@ -172,9 +169,7 @@
       "name": "Judgement of the Crusader",
       "icon": "fixture_item_snakestone_charm",
       "target": true,
-      "school_damage": [
-        "holy"
-      ]
+      "school_damage": ["holy"]
     },
     "judgement_of_light": {
       "name": "Judgement of Light",

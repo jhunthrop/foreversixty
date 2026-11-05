@@ -63,7 +63,9 @@
   class="mx-[18px] md:mx-0"
   testid="sim-auras-card"
 >
-  <div class="border-line-soft divide-line-soft grid grid-cols-1 divide-y border-t lg:grid-cols-2 lg:divide-x lg:divide-y-0">
+  <div
+    class="border-line-soft divide-line-soft grid grid-cols-1 divide-y border-t lg:grid-cols-2 lg:divide-x lg:divide-y-0"
+  >
     <AuraTable
       variant="bars"
       kind="BUFF"

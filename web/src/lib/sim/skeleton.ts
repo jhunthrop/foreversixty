@@ -15,7 +15,8 @@ const cardHead = (): string =>
 const abilityRow = (): string =>
   `<li class="border-line-soft flex h-14 items-center gap-3 border-t px-5">${block('h-7 w-7 rounded-[6px]')}${block('h-3 w-40')}<span class="ml-auto"></span>${block('h-3 w-12')}${block('hidden h-2 w-[120px] md:block')}${block('hidden h-3 w-40 md:block')}</li>`;
 
-const fact = (): string => `<div class="flex flex-col gap-2 py-3 md:pr-10">${block('h-3 w-14')}${block('h-3.5 w-16')}</div>`;
+const fact = (): string =>
+  `<div class="flex flex-col gap-2 py-3 md:pr-10">${block('h-3 w-14')}${block('h-3.5 w-16')}</div>`;
 
 /** The band at its ready height on the full fixture: 693 phone, 486 tablet, 262 from 1024. */
 const band = (): string =>
@@ -49,7 +50,10 @@ export const SIM_SAVED_SKELETON_HTML = [
   card(
     `<div class="border-line-soft h-10 border-t"></div><ul class="flex flex-col">${Array.from({ length: 8 }, abilityRow).join('')}</ul><div class="border-line-soft h-11 border-t"></div>`,
   ),
-  card('<div class="border-line-soft border-t p-5"><span class="skeleton-block block h-[168px] w-full"></span></div>', 'xl:h-[596px]'),
+  card(
+    '<div class="border-line-soft border-t p-5"><span class="skeleton-block block h-[168px] w-full"></span></div>',
+    'xl:h-[596px]',
+  ),
   '</div>',
   card('<div class="border-line-soft h-14 border-t"></div>'),
   '</div></div></div>',

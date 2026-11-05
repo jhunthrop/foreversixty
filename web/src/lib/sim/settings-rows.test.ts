@@ -54,9 +54,9 @@ describe('settingsRows', () => {
   });
 
   it('adds only the armor parts the run knows (build ruling R4)', () => {
-    expect(targetLabel({ ...result, target_stats: { level: 63, armor: 3731, armor_after_debuffs: 1471 } })).toBe(
-      'Level 63 boss · 3,731 armor, 1,471 after debuffs',
-    );
+    expect(
+      targetLabel({ ...result, target_stats: { level: 63, armor: 3731, armor_after_debuffs: 1471 } }),
+    ).toBe('Level 63 boss · 3,731 armor, 1,471 after debuffs');
     expect(targetLabel({ ...result, target_stats: { level: 62, armor: 3400 } })).toBe(
       'Level 62 boss · 3,400 armor',
     );
@@ -68,7 +68,9 @@ describe('the chips', () => {
     expect(chipName('main_hand_imbue:elemental_sharpening_stone', BUFFS)).toBe(
       'Elemental Sharpening Stone (main hand)',
     );
-    expect(chipName('off_hand_imbue:dense_sharpening_stone', BUFFS)).toBe('Dense sharpening stone (off hand)');
+    expect(chipName('off_hand_imbue:dense_sharpening_stone', BUFFS)).toBe(
+      'Dense sharpening stone (off hand)',
+    );
     expect(chipName('mana_spring_totem:improved', BUFFS)).toBe('Mana Spring Totem, improved');
   });
 

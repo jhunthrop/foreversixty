@@ -143,6 +143,9 @@
   // --- The view ---
   let phone = $state(BROWSER && window.matchMedia(PHONE_QUERY).matches);
   let rootWidth = $state(0);
+  /** The phone notice's sticky line: the scroller less its 48px label gutter, its 8px padding
+   *  each side and the scrollbar allowance (the card's own width, never the viewport's). */
+  const NOTICE_INSET = 98;
   let closeUp = $state(false);
   let closeWindow = $state<ZoomWindow | null>(null);
   let swings = $state(false);
@@ -506,7 +509,12 @@
     </div>
 
     <div class="relative" bind:clientWidth={rootWidth}>
-      <div class="scroller" class:phone data-testid="timeline-scroller">
+      <div
+        class="scroller"
+        class:phone
+        style:--notice-width={`${Math.max(0, rootWidth - NOTICE_INSET)}px`}
+        data-testid="timeline-scroller"
+      >
         <div class="flex" style:width={phone ? `${LABEL_WIDTH_PHONE + plotWidth}px` : undefined}>
           <div class="labels" style:width="{labelWidth}px" data-testid="timeline-labels">
             {#each drawnStage >= 1 ? rows : [] as row (row.kind === 'lane' ? row.lane.id : `${row.kind}-${row.y}`)}
@@ -904,7 +912,7 @@
   .phone .notice {
     position: sticky;
     left: 48px;
-    width: calc(100vw - 136px);
+    width: var(--notice-width);
     padding: 0 8px;
   }
   .name-row {

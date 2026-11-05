@@ -70,7 +70,10 @@ export const sectionHeadCopy = {
   talents: { label: "THIS RUN'S INPUT", title: 'Talents' },
   resource: { label: 'AVERAGE FIGHT' },
   buffs: { label: 'AVERAGE FIGHT', title: 'Buffs and debuffs' },
-  rotation: { title: 'Rotation', label: (spec: string, level: number) => `${spec.toUpperCase()}, AT ${level}` },
+  rotation: {
+    title: 'Rotation',
+    label: (spec: string, level: number) => `${spec.toUpperCase()}, AT ${level}`,
+  },
   settings: { label: "THIS RUN'S INPUT", title: 'Settings' },
 } as const;
 
@@ -79,7 +82,8 @@ export const warningsCopy = {
   title: 'Worth knowing',
   notes: (count: number) => (count === 1 ? '1 note' : `${count} notes`),
   stale: 'This run used an older engine. A run today may give a different number.',
-  capstone: (spell: string) => `${spell} was never pressed in this run. Check the talents in Open in the sim.`,
+  capstone: (spell: string) =>
+    `${spell} was never pressed in this run. Check the talents in Open in the sim.`,
   missingTalent: (spell: string, spec: string) =>
     `${spell} is in the ${spec} rotation, but these talents do not take it.`,
   /** `length` reads as an adjective ("30 minute"), `every` as a noun ("30 minutes"). */
@@ -136,9 +140,17 @@ export const spreadCopy = {
   bar: (low: string, high: string, runs: string) => `${low} to ${high} DPS: ${runs} runs`,
   image: (runs: string, low: string, high: string, mean: string) =>
     `DPS of each of ${runs} runs, from ${low} to ${high}, most near ${mean}`,
-  rangeCaption: 'This run kept the range, not the shape. The shaded part is one spread either side of the mean.',
+  rangeCaption:
+    'This run kept the range, not the shape. The shaded part is one spread either side of the mean.',
   rangeMean: (mean: string) => `mean ${mean}`,
-  tiles: { mean: 'Mean', error: 'Error', spread: 'Spread', lowest: 'Lowest', highest: 'Highest', runs: 'Runs' },
+  tiles: {
+    mean: 'Mean',
+    error: 'Error',
+    spread: 'Spread',
+    lowest: 'Lowest',
+    highest: 'Highest',
+    runs: 'Runs',
+  },
 } as const;
 
 export const pageErrorCopy = {

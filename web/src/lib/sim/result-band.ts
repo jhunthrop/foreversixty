@@ -64,7 +64,12 @@ export function savedDate(iso: string | undefined): string | null {
   if (iso === undefined || iso === '') return null;
   const when = new Date(iso);
   if (Number.isNaN(when.getTime())) return null;
-  return when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  return when.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 }
 
 /**

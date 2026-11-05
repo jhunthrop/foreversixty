@@ -345,15 +345,7 @@ export interface SampleCast {
 }
 
 export type SampleOutcome =
-  | 'hit'
-  | 'crit'
-  | 'miss'
-  | 'dodge'
-  | 'parry'
-  | 'glance'
-  | 'block'
-  | 'tick'
-  | 'tick_crit';
+  'hit' | 'crit' | 'miss' | 'dodge' | 'parry' | 'glance' | 'block' | 'tick' | 'tick_crit';
 
 /**
  * Engine DistributionMetrics.hist as contiguous bins from `start`; counts sum to

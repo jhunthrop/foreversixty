@@ -69,7 +69,11 @@
     <div class={`${CARD} mx-[18px] md:mx-0`}>
       <CardHead {...head} headingLevel={3} />
       <div class="border-line-soft border-t p-5">
-      <LoadError message={pageErrorCopy.partFailed} onRetry={() => lazy.load()} testid={`sim-section-${id}-error`} />
+        <LoadError
+          message={pageErrorCopy.partFailed}
+          onRetry={() => lazy.load()}
+          testid={`sim-section-${id}-error`}
+        />
       </div>
     </div>
   {:else}

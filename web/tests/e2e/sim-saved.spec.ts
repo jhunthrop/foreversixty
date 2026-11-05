@@ -113,7 +113,8 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-fact-saved')).toHaveText(/4 Nov 2026/);
 
     // A phone's table is two columns, so DPS is its one sort header: a press there flips the order.
-    const header = (column: string) => page.locator('th', { has: page.getByTestId(`ability-sort-${column}`) });
+    const header = (column: string) =>
+      page.locator('th', { has: page.getByTestId(`ability-sort-${column}`) });
     const column = isMobile ? 'dps' : 'crit';
     await page.getByTestId(`ability-sort-${column}`).click();
     await expect(header(column)).toHaveAttribute('aria-sort', isMobile ? 'ascending' : 'descending');
@@ -154,7 +155,9 @@ test.describe('a saved sim from the prerendered fixture', () => {
 
     await page.goto('/sim/simfixtureab');
 
-    await expect(page.getByTestId('ability-row-spell:1680').getByTestId('ability-name')).toHaveText('Whirlwind');
+    await expect(page.getByTestId('ability-row-spell:1680').getByTestId('ability-name')).toHaveText(
+      'Whirlwind',
+    );
     await expect(page.getByTestId('ability-table')).not.toContainText(/\bspell:/);
   });
 

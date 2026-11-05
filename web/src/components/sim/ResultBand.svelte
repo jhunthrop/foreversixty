@@ -85,7 +85,10 @@
               <span class="before:mx-1 before:content-['·']">{piece}</span>
             {/each}
           </p>
-          <p class="text-text mt-1 flex flex-wrap items-center gap-x-1 text-[14px]" data-testid="sim-next-action">
+          <p
+            class="text-text mt-1 flex flex-wrap items-center gap-x-1 text-[14px]"
+            data-testid="sim-next-action"
+          >
             {#if topUpgrade === null}
               {bandCopy.nextStep}
               <ActionLink href={bandCopy.nextStepHref}>{bandCopy.nextStepLink}</ActionLink>

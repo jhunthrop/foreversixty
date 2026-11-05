@@ -532,3 +532,14 @@ def test_every_generated_file_carries_the_icon_and_its_build():
     rows = json.loads(render_json(specs(), icons))
     assert {row["spec"]: row["icon"] for row in rows} == icons
     assert all("form_spell" not in row for row in rows)
+
+
+def test_the_typescript_list_carries_each_capstone_the_json_list_does():
+    """The saved sim's "never pressed" warning reads `capstone_spell` from specs.ts; the
+    two generated lists must agree on it (web/src/lib/sim/spec-label.test.ts)."""
+    _, ts = rendered()
+    with_capstone = [record for record in specs() if record.capstone_spell is not None]
+    assert with_capstone, "no spec carries a capstone_spell"
+    for record in with_capstone:
+        assert f"capstone_spell: {record.capstone_spell}," in ts
+    assert "capstone_spell?: number;" in ts

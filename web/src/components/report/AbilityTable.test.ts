@@ -18,7 +18,8 @@ const table = abilityTable({
 const decorate: AbilityDecorate = (row) => ({
   iconUrl: row.spellId === 20662 ? '/icons/execute.webp' : null,
   rank: row.spellId === 20662 ? 5 : 0,
-  weapon: row.hand === 'main' ? { id: 1, name: 'Ironwood Blade', quality: 4, iconUrl: '/icons/blade.webp' } : null,
+  weapon:
+    row.hand === 'main' ? { id: 1, name: 'Ironwood Blade', quality: 4, iconUrl: '/icons/blade.webp' } : null,
   sources: row.hand === 'extra' ? [{ name: 'Windfury Totem', count: null }] : [],
   swingsBecame: row.hand === 'main' ? 32 : 0,
   tip: row.spellId === 20662,
@@ -29,9 +30,17 @@ const rowHtml = (key: string): string => {
   if (match === null) throw new Error(`no row ${key}`);
   return match[0];
 };
-const text = (html: string): string => html.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+const text = (html: string): string =>
+  html
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ');
 /** The text as a browser lays it out: tags add no space, runs of whitespace collapse. */
-const exact = (html: string): string => html.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ');
+const exact = (html: string): string =>
+  html
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ');
 
 describe('AbilityTable', () => {
   it('draws a spell row with its icon, rank, figures and tooltip key', () => {
@@ -70,7 +79,10 @@ describe('AbilityTable', () => {
     const counted = render(AbilityTable, {
       props: {
         table,
-        decorate: (row) => ({ ...decorate(row), sources: row.hand === 'extra' ? [{ name: 'Windfury Totem', count: 21 }] : [] }),
+        decorate: (row) => ({
+          ...decorate(row),
+          sources: row.hand === 'extra' ? [{ name: 'Windfury Totem', count: 21 }] : [],
+        }),
       },
     }).body;
     expect(exact(counted)).toContain('From Windfury Totem 21');

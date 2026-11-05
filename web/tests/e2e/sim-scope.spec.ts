@@ -12,14 +12,7 @@ import { landingCopy } from '../../src/lib/sim/landing-copy';
 // the same literal viewport tests/e2e/sim-tabs.spec.ts's own phone-width block uses, rather
 // than the --project=mobile device (Pixel 7, 412px) most of this suite's phone coverage
 // runs under.
-const PAGES = [
-  '/sim',
-  '/sim/gear',
-  '/sim/drops',
-  '/sim/talents',
-  '/sim/weights',
-  '/sim/specs',
-];
+const PAGES = ['/sim', '/sim/gear', '/sim/drops', '/sim/talents', '/sim/weights', '/sim/specs'];
 
 test.describe('the DPS-only scope sentence', () => {
   test.use({ viewport: { width: 390, height: 844 } });

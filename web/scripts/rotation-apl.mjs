@@ -173,7 +173,8 @@ export function rotationLinesOf(apl, spec = '<unknown spec>') {
     const step = /** @type {{ action?: Record<string, unknown>, notes?: unknown }} */ (entry);
     const note = typeof step?.notes === 'string' ? step.notes.trim() : '';
     if (note !== '') assertNoEngineeringLeak(note, { spec, stepIndex });
-    if (step?.action !== undefined && 'autocastOtherCooldowns' in step.action) return [{ action: null, note: '' }];
+    if (step?.action !== undefined && 'autocastOtherCooldowns' in step.action)
+      return [{ action: null, note: '' }];
     const action = castKeyOf(step?.action);
     return action === null ? [] : [{ action, note }];
   });

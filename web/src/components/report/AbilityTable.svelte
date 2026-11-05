@@ -131,7 +131,7 @@
           <p class="text-[15px] leading-5 font-semibold">
             {#if extras.tip}
               <span
-                class="text-strong focus-visible:outline-gold relative rounded-[2px] after:absolute after:-inset-y-3 after:inset-x-0 hover:underline focus-visible:outline-2 md:after:hidden"
+                class="text-strong focus-visible:outline-gold relative rounded-[2px] after:absolute after:inset-x-0 after:-inset-y-3 hover:underline focus-visible:outline-2 md:after:hidden"
                 tabindex="0"
                 role="button"
                 data-game-tip={spellTipKey(row.spellId)}
@@ -217,23 +217,26 @@
         <span class="numeric text-text w-12 text-right text-[15px]">{fixedOne(row.share)}%</span>
       </div>
     </td>
-    <td class="numeric text-text hidden py-2.5 pr-3 text-right text-[15px] align-middle md:table-cell">
+    <td class="numeric text-text hidden py-2.5 pr-3 text-right align-middle text-[15px] md:table-cell">
       {#if row.casts === null}<span class="text-muted">{copy.dash}</span>{:else}{grouped(row.casts)}{/if}
     </td>
-    <td class="numeric text-text hidden py-2.5 pr-3 text-right text-[15px] align-middle md:table-cell">
+    <td class="numeric text-text hidden py-2.5 pr-3 text-right align-middle text-[15px] md:table-cell">
       {grouped(row.avgHit)}
     </td>
-    <td class="numeric text-text hidden py-2.5 pr-3 text-right text-[15px] align-middle md:table-cell">
+    <td class="numeric text-text hidden py-2.5 pr-3 text-right align-middle text-[15px] md:table-cell">
       {row.crit === null ? copy.dash : `${fixedOne(row.crit)}%`}
     </td>
     {#if table.hasBiggestHit}
-      <td class="numeric text-text hidden py-2.5 pr-3 text-right text-[15px] align-middle md:table-cell">
-        {#if row.biggestHit > 0}{grouped(row.biggestHit)}{:else}<span class="text-muted">{copy.dash}</span>{/if}
+      <td class="numeric text-text hidden py-2.5 pr-3 text-right align-middle text-[15px] md:table-cell">
+        {#if row.biggestHit > 0}{grouped(row.biggestHit)}{:else}<span class="text-muted">{copy.dash}</span
+          >{/if}
       </td>
     {/if}
     {#if table.hasUptime}
-      <td class="numeric text-text hidden py-2.5 pr-5 text-right text-[15px] align-middle lg:table-cell">
-        {#if row.uptime === null}<span class="text-muted">{copy.dash}</span>{:else}{fixedOne(row.uptime)}%{/if}
+      <td class="numeric text-text hidden py-2.5 pr-5 text-right align-middle text-[15px] lg:table-cell">
+        {#if row.uptime === null}<span class="text-muted">{copy.dash}</span>{:else}{fixedOne(
+            row.uptime,
+          )}%{/if}
       </td>
     {/if}
   </tr>

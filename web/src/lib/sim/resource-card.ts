@@ -72,7 +72,12 @@ function manaLeft(result: SimResult): number | undefined {
   return undefined;
 }
 
-function thirdTile(result: SimResult, title: string, gained: number, wasted: number | undefined): ResourceTile[] {
+function thirdTile(
+  result: SimResult,
+  title: string,
+  gained: number,
+  wasted: number | undefined,
+): ResourceTile[] {
   if (title === MANA) {
     const left = manaLeft(result);
     return left === undefined ? [] : [{ label: copy.endedWith, value: grouped(left) }];

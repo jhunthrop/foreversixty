@@ -60,16 +60,26 @@
   >
     <div class="border-line-soft grid grid-cols-3 gap-2 border-t px-[14px] py-4 md:gap-3 md:p-5">
       {#each card.tiles as tile (tile.label)}
-        <StatTile value={tile.value} label={tile.label} figureClass="max-md:!text-[19px] whitespace-nowrap" testid="resource-tile" />
+        <StatTile
+          value={tile.value}
+          label={tile.label}
+          figureClass="max-md:!text-[19px] whitespace-nowrap"
+          testid="resource-tile"
+        />
       {/each}
     </div>
     {#if card.lists !== null}
-      <div class="border-line-soft divide-line-soft grid grid-cols-1 divide-y border-t md:grid-cols-2 md:divide-x md:divide-y-0">
+      <div
+        class="border-line-soft divide-line-soft grid grid-cols-1 divide-y border-t md:grid-cols-2 md:divide-x md:divide-y-0"
+      >
         {@render list(copy.gainedFrom, card.lists.gainedTotal, card.lists.gained, 'resource-gained')}
         {@render list(copy.spentOn, card.lists.spentTotal, card.lists.spent, 'resource-spent')}
       </div>
     {:else}
-      <p class="text-muted border-line-soft border-t px-5 py-4 text-[14px]" data-testid="resource-needs-newer">
+      <p
+        class="text-muted border-line-soft border-t px-5 py-4 text-[14px]"
+        data-testid="resource-needs-newer"
+      >
         {copy.needsNewerRun(card.title.toLowerCase())}
       </p>
     {/if}

@@ -3,12 +3,21 @@
 import { describe, expect, it } from 'vitest';
 import full from '../../fixtures/sim/result-full.json';
 import older from '../../fixtures/sim/result.json';
-import { bandDescriptor, bandError, bandFacts, bandHeading, buffsFact, savedDate, talentSplit } from './result-band';
+import {
+  bandDescriptor,
+  bandError,
+  bandFacts,
+  bandHeading,
+  buffsFact,
+  savedDate,
+  talentSplit,
+} from './result-band';
 import type { SimResult } from './types';
 
 const result = full as unknown as SimResult;
 const oldResult = older as unknown as SimResult;
-const facts = (from: SimResult) => Object.fromEntries(bandFacts(from, null).map((fact) => [fact.id, fact.value]));
+const facts = (from: SimResult) =>
+  Object.fromEntries(bandFacts(from, null).map((fact) => [fact.id, fact.value]));
 
 describe('the band', () => {
   it('heads with the spec when the name is the ranker placeholder', () => {

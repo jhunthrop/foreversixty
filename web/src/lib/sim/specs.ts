@@ -13,6 +13,9 @@ export interface Spec {
   reference_stat: string;
   /** The closed list of stats /sim/weights offers; reference_stat is always one of them. */
   weight_stats: readonly string[];
+  /** The level 60 rank of the spec's 31-point ability, when the rotation presses one
+   *  (the saved sim's "never pressed" warning); absent for specs without one. */
+  capstone_spell?: number;
   /** The spec's icon from the active client: its tree's TalentTab icon, or its form spell's
    *  (Feral, Feral Bear). A lowercase file name, no extension. The one spec-icon map. */
   icon: string;
@@ -107,6 +110,7 @@ export const SPECS: readonly Spec[] = [
       'intellect',
       'spell_power',
     ],
+    capstone_spell: 19574,
     icon: 'ability_hunter_beasttaming',
   },
   {
@@ -126,6 +130,7 @@ export const SPECS: readonly Spec[] = [
       'intellect',
       'spell_power',
     ],
+    capstone_spell: 1310786,
     icon: 'ability_marksmanship',
   },
   {
@@ -158,6 +163,7 @@ export const SPECS: readonly Spec[] = [
       'spirit',
       'mp5',
     ],
+    capstone_spell: 12042,
     icon: 'spell_holy_magicalsentry',
   },
   {
@@ -179,6 +185,7 @@ export const SPECS: readonly Spec[] = [
       'spirit',
       'mp5',
     ],
+    capstone_spell: 11129,
     icon: 'spell_fire_firebolt02',
   },
   {
@@ -200,6 +207,7 @@ export const SPECS: readonly Spec[] = [
       'spirit',
       'mp5',
     ],
+    capstone_spell: 13033,
     icon: 'spell_frost_frostbolt02',
   },
   {
@@ -299,6 +307,7 @@ export const SPECS: readonly Spec[] = [
       'spirit',
       'mp5',
     ],
+    capstone_spell: 15473,
     icon: 'spell_shadow_shadowwordpain',
   },
   {
@@ -310,6 +319,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 0,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    capstone_spell: 1241584,
     icon: 'ability_rogue_eviscerate',
   },
   {
@@ -321,6 +331,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    capstone_spell: 13750,
     icon: 'ability_backstab',
   },
   {
@@ -332,6 +343,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 2,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    capstone_spell: 1325758,
     icon: 'ability_stealth',
   },
   {
@@ -405,6 +417,7 @@ export const SPECS: readonly Spec[] = [
       'fire_power',
       'spirit',
     ],
+    capstone_spell: 1316697,
     icon: 'spell_shadow_deathcoil',
   },
   {
@@ -447,6 +460,7 @@ export const SPECS: readonly Spec[] = [
       'fire_power',
       'spirit',
     ],
+    capstone_spell: 1293813,
     icon: 'spell_shadow_rainoffire',
   },
   {
@@ -458,6 +472,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 0,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    capstone_spell: 21553,
     icon: 'ability_rogue_eviscerate',
   },
   {
@@ -469,6 +484,7 @@ export const SPECS: readonly Spec[] = [
     tree_index: 1,
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
+    capstone_spell: 23894,
     icon: 'ability_warrior_innerrage',
   },
   {

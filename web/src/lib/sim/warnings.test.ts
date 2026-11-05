@@ -51,7 +51,9 @@ describe('simWarnings', () => {
   it('W2: fires with the Bloodthirst rows removed, whether or not the talents decode', () => {
     const notes = simWarnings({ result: withoutBloodthirst, names, fact, capstone });
     expect(notes[0]).toMatchObject({ id: 'capstone', action: 'sim', actionKey: 'spell:23894' });
-    expect(notes[0]?.text).toBe('Bloodthirst was never pressed in this run. Check the talents in Open in the sim.');
+    expect(notes[0]?.text).toBe(
+      'Bloodthirst was never pressed in this run. Check the talents in Open in the sim.',
+    );
   });
 
   it('W2: a lower rank of the capstone counts as pressed', () => {
@@ -71,9 +73,9 @@ describe('simWarnings', () => {
 
   it('W2: a spec with no capstone, or names not yet here, raises nothing', () => {
     const noCapstone = { ...withoutBloodthirst.request, spec: 'druid-balance' };
-    expect(simWarnings({ result: { ...withoutBloodthirst, request: noCapstone }, names, fact }).map((n) => n.id)).not.toContain(
-      'capstone',
-    );
+    expect(
+      simWarnings({ result: { ...withoutBloodthirst, request: noCapstone }, names, fact }).map((n) => n.id),
+    ).not.toContain('capstone');
     expect(simWarnings({ result: withoutBloodthirst, names: null, fact, capstone })).not.toContainEqual(
       expect.objectContaining({ id: 'capstone' }),
     );

@@ -4,7 +4,13 @@
 // loads are shared through the planner's fetch cache, so every card asking costs one request.
 import activeBuild from '../../data/active-build.json';
 import { withShardNames, type ActionNames } from './action-names';
-import { actionVisuals, loadVisualTables, pendingVisual, type ActionVisuals, type VisualTables } from './action-visuals';
+import {
+  actionVisuals,
+  loadVisualTables,
+  pendingVisual,
+  type ActionVisuals,
+  type VisualTables,
+} from './action-visuals';
 import { NO_SPELL_INFO, loadSpellInfo, type SpellInfo } from './spell-info';
 import type { SimResult } from './types';
 
@@ -23,7 +29,8 @@ export function createCardTables(
   let spells = $state.raw<SpellInfo>(NO_SPELL_INFO);
   let shardNames = $state.raw<ActionNames | null>(null);
 
-  const quietly = (what: string) => (error: unknown) => console.error(`sim result: ${what} did not load`, error);
+  const quietly = (what: string) => (error: unknown) =>
+    console.error(`sim result: ${what} did not load`, error);
   $effect(() => {
     const current = result();
     loadVisualTables(current).then((loaded) => (tables = loaded), quietly('the icons'));

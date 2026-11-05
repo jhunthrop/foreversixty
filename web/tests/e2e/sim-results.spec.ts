@@ -162,9 +162,7 @@ test('the Timeline tab draws one lane, the player rostered from the sample itera
   await expect(page.getByTestId('lane-sim-player')).toContainText('Thrallgar');
 });
 
-test('the Distribution tab shows the spread tiles, and stands in for the missing chart', async ({
-  page,
-}) => {
+test('the Distribution tab shows the spread tiles, and stands in for the missing chart', async ({ page }) => {
   await loadFuryAndRun(page);
 
   await page.getByTestId('sim-tab-distribution').click();

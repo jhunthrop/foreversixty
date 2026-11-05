@@ -4,7 +4,14 @@
 import { describe, expect, it } from 'vitest';
 import full from '../../fixtures/sim/result-full.json';
 import type { SimResult } from '../sim/types';
-import { abilityTable, attemptsOf, DEFAULT_SORT, nextSort, sortAbilityRows, type AbilityRow } from './ability-table';
+import {
+  abilityTable,
+  attemptsOf,
+  DEFAULT_SORT,
+  nextSort,
+  sortAbilityRows,
+  type AbilityRow,
+} from './ability-table';
 
 const result = full as unknown as SimResult;
 const { summary } = result;

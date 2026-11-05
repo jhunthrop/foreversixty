@@ -89,7 +89,9 @@ describe('the resource sources', () => {
 
 describe('every action key resolves to a name and an icon (ruling R1)', () => {
   const spells = readJson<{ id: number; name: string }[]>(`builds/${BUILD}/spells.json`);
-  const engineNames = readJson<{ spells: Record<string, { name: string }> }>('curated/engine-spell-names.json');
+  const engineNames = readJson<{ spells: Record<string, { name: string }> }>(
+    'curated/engine-spell-names.json',
+  );
   const names: ActionNames = {
     spell: {
       ...Object.fromEntries(spells.map((s) => [String(s.id), s.name])),
@@ -108,7 +110,9 @@ describe('every action key resolves to a name and an icon (ruling R1)', () => {
   const hasSpellIcon = (id: string) =>
     id in spellIcons || curatedIcons.spell_ids.includes(Number(id)) || id in curatedIcons.icon_rows;
 
-  const simBuffs = readJson<{ entries: Record<string, { name: string; icon: string }> }>(`builds/${BUILD}/simbuffs.json`);
+  const simBuffs = readJson<{ entries: Record<string, { name: string; icon: string }> }>(
+    `builds/${BUILD}/simbuffs.json`,
+  );
   const weaponSlots = new Set(result.request.character.gear?.map((g) => g.slot));
 
   /** A swing draws the weapon, as the Attack button does; the refund draws the page's glyph. */
@@ -161,8 +165,12 @@ describe('the sample agrees with the summary (section 10 check 8)', () => {
     const attempts = row.hits + summaryMissed + (row.misses?.DODGE ?? 0) + (row.misses?.PARRY ?? 0);
     const sampledAttempts = sampledLanded + sampledMissed + tally(key, ['dodge', 'parry']);
 
-    expect(Math.abs((100 * tally(key, ['crit'])) / sampledLanded - (100 * row.crits) / row.hits)).toBeLessThan(POINTS);
-    expect(Math.abs((100 * sampledMissed) / sampledAttempts - (100 * summaryMissed) / attempts)).toBeLessThan(POINTS);
+    expect(
+      Math.abs((100 * tally(key, ['crit'])) / sampledLanded - (100 * row.crits) / row.hits),
+    ).toBeLessThan(POINTS);
+    expect(Math.abs((100 * sampledMissed) / sampledAttempts - (100 * summaryMissed) / attempts)).toBeLessThan(
+      POINTS,
+    );
   });
 
   it('counts Deep Wounds ticks as ticks, and applications as casts', () => {
@@ -182,7 +190,9 @@ describe('the sample agrees with the summary (section 10 check 8)', () => {
     const track = result.summary.auras.find((a) => a.name === 'spell:12867' && a.type === 'DEBUFF')!;
     expect(track.target_guid).toBe('target-1');
     expect(track.target_name).toBe('Target 1');
-    expect(Math.abs(track.uptime_ms - ability('spell:12867').ticks * TICK_MS)).toBeLessThan(0.02 * track.uptime_ms);
+    expect(Math.abs(track.uptime_ms - ability('spell:12867').ticks * TICK_MS)).toBeLessThan(
+      0.02 * track.uptime_ms,
+    );
   });
 
   it('keeps every sample aura window on the sample run’s own clock', () => {

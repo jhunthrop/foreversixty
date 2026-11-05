@@ -20,12 +20,16 @@ describe('extraAttackLines', () => {
   });
 
   it('reads the fixture: 21.4 swings from the totem', () => {
-    expect(extraAttackLines(result, names, itemName, actionName)).toEqual([{ name: 'Windfury Totem', count: 21 }]);
+    expect(extraAttackLines(result, names, itemName, actionName)).toEqual([
+      { name: 'Windfury Totem', count: 21 },
+    ]);
   });
 
   it('names a proc by its action key', () => {
     const proc: SimResult = { ...result, extra_attack_sources: [{ source: 'spell:15600', count: 5.6 }] };
-    expect(extraAttackLines(proc, names, itemName, actionName)).toEqual([{ name: 'Hand of Justice', count: 6 }]);
+    expect(extraAttackLines(proc, names, itemName, actionName)).toEqual([
+      { name: 'Hand of Justice', count: 6 },
+    ]);
   });
 
   it('with the engine field, carries whole counts', () => {
@@ -50,6 +54,8 @@ describe('extraAttackLines', () => {
     };
     const { extra_attack_sources: _dropped, ...older } = result;
     const worn = { ...older, request: { ...result.request, character } } as SimResult;
-    expect(extraAttackLines(worn, names, itemName, actionName)).toEqual([{ name: 'Hand of Justice', count: null }]);
+    expect(extraAttackLines(worn, names, itemName, actionName)).toEqual([
+      { name: 'Hand of Justice', count: null },
+    ]);
   });
 });

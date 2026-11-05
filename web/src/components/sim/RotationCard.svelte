@@ -40,7 +40,9 @@
   );
 
   const spec = $derived(specDisplayName(result.request.spec));
-  const rows = $derived(lines === null || lines === undefined ? null : rotationRows(result, lines, tables.names));
+  const rows = $derived(
+    lines === null || lines === undefined ? null : rotationRows(result, lines, tables.names),
+  );
   const drifted = $derived(
     lines !== null &&
       lines !== undefined &&
@@ -59,7 +61,9 @@
 
 {#snippet title(name: string, action: string | null)}
   <span class="text-strong text-[15px] font-semibold">{name}</span>
-  {#if rankOf(action) > 0}<span class="text-muted ml-1 text-[13px] whitespace-nowrap">{copy.rank(rankOf(action))}</span>{/if}
+  {#if rankOf(action) > 0}<span class="text-muted ml-1 text-[13px] whitespace-nowrap"
+      >{copy.rank(rankOf(action))}</span
+    >{/if}
 {/snippet}
 
 <Card
@@ -86,7 +90,9 @@
             data-cast={row.cast}
           >
             <span class="text-muted numeric text-[14px] font-semibold whitespace-nowrap">{row.at}</span>
-            <ActionMark action={row.action} {tables} size={28}>{@render title(row.name, row.action)}</ActionMark>
+            <ActionMark action={row.action} {tables} size={28}
+              >{@render title(row.name, row.action)}</ActionMark
+            >
             {#if row.cast !== null}
               <span class="text-muted text-right text-[13px]">{row.cast ? copy.cast : copy.notCast}</span>
             {/if}
@@ -105,7 +111,9 @@
           <span class="text-muted numeric pt-1 text-right text-[14px] font-semibold">{row.number}</span>
           <div class="min-w-0">
             <div class="flex items-start justify-between gap-3">
-              <ActionMark action={row.action} {tables} size={28}>{@render title(row.name, row.action)}</ActionMark>
+              <ActionMark action={row.action} {tables} size={28}
+                >{@render title(row.name, row.action)}</ActionMark
+              >
               {#if row.casts !== null}
                 <span class="text-muted shrink-0 pt-1 text-[13px] md:hidden">
                   {row.dimmed ? copy.notCast : copy.casts(row.casts)}
@@ -113,11 +121,15 @@
               {/if}
             </div>
             {#if row.note !== ''}
-              <p class="text-text mt-1 max-w-[860px] text-[14px] leading-[21px] md:pl-[38px]">{row.note}</p>
+              <p class="text-text mt-1 max-w-[var(--measure-wide)] text-[14px] leading-[21px] md:pl-[38px]">
+                {row.note}
+              </p>
             {/if}
           </div>
           {#if row.casts !== null}
-            <span class={`hidden pt-1 text-right md:block ${row.dimmed ? 'text-muted text-[13px]' : 'text-text numeric text-[14px]'}`}>
+            <span
+              class={`hidden pt-1 text-right md:block ${row.dimmed ? 'text-muted text-[13px]' : 'text-text numeric text-[14px]'}`}
+            >
               {row.dimmed ? copy.notCast : copy.casts(row.casts)}
             </span>
           {/if}

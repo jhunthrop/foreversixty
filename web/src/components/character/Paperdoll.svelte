@@ -207,9 +207,11 @@
           >{@render socketIcon(item.icon)}</span
         >
         <span class="pd-txt"
-          ><span class="pd-name {quality(item)}">{hyphenate(item.name)}</span>{#if data.enchant !== undefined}<span
+          ><span class="pd-name {quality(item)}">{hyphenate(item.name)}</span
+          >{#if data.enchant !== undefined}<span
               class="pd-enchant"
-              data-testid={`paperdoll-enchant-${cell.slot}`}><Glyph name="enchant" size={12} />{data.enchant}</span
+              data-testid={`paperdoll-enchant-${cell.slot}`}
+              ><Glyph name="enchant" size={12} />{data.enchant}</span
             >{/if}</span
         >
       </ItemHover>

@@ -102,7 +102,7 @@
       <nav
         bind:this={strip}
         use:scrollFade
-        class="flex flex-nowrap overflow-x-auto overscroll-x-contain px-[var(--page-inset)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        class="flex [scrollbar-width:none] flex-nowrap overflow-x-auto overscroll-x-contain px-[var(--page-inset)] [&::-webkit-scrollbar]:hidden"
         aria-label={navCopy.label}
         data-testid="sim-section-nav"
       >
@@ -121,7 +121,7 @@
     </div>
     <!-- Positioned, so it moves nothing when it fades in; the band's region already states it. -->
     <div
-      class={`pointer-events-none absolute inset-y-0 right-0 hidden items-baseline gap-1 self-center pt-[13px] transition-opacity duration-[120ms] motion-reduce:transition-none lg:flex md:right-[var(--page-gutter)] ${figureVisible ? 'opacity-100' : 'opacity-0'}`}
+      class={`pointer-events-none absolute inset-y-0 right-0 hidden items-baseline gap-1 self-center pt-[13px] transition-opacity duration-[120ms] motion-reduce:transition-none md:right-[var(--page-gutter)] lg:flex ${figureVisible ? 'opacity-100' : 'opacity-0'}`}
       aria-hidden="true"
       data-testid="sim-section-nav-figure"
     >

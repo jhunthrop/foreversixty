@@ -10,7 +10,14 @@
   import type { PaperdollIdentity } from '../../lib/gear/paperdoll';
   import type { ActionNames } from '../../lib/sim/action-names';
   import { PLACEHOLDER_CHARACTER_NAMES } from '../../lib/sim/character';
-  import { enchantNames, gearMeta, gearSlots, classSpecPath, setLines, statsBlock } from '../../lib/sim/gear-card';
+  import {
+    enchantNames,
+    gearMeta,
+    gearSlots,
+    classSpecPath,
+    setLines,
+    statsBlock,
+  } from '../../lib/sim/gear-card';
   import { loadEnchants } from '../../lib/sim/enchants';
   import { gearCardCopy as copy } from '../../lib/sim/input-cards-copy';
   import { specDisplayName } from '../../lib/sim/spec-label';
@@ -85,7 +92,9 @@
   testid="sim-gear-card"
 >
   {#if !hasGear}
-    <p class="text-muted border-line-soft border-t px-5 py-4 text-[14px]" data-testid="sim-gear-empty">{copy.noGear}</p>
+    <p class="text-muted border-line-soft border-t px-5 py-4 text-[14px]" data-testid="sim-gear-empty">
+      {copy.noGear}
+    </p>
   {:else}
     <div class="border-line-soft flex flex-col gap-4 border-t p-3 md:p-5">
       <Paperdoll
@@ -99,7 +108,7 @@
       />
       {#if stats !== null}
         <section
-          class="border-line-soft rounded-panel mx-auto w-full max-w-[960px] border bg-[#0b0e14] px-4 py-3"
+          class="border-line-soft rounded-panel measure-wide border bg-[#0b0e14] px-4 py-3"
           data-testid="sim-final-stats"
         >
           <h3 class="quiet-label mb-3">{stats.head}</h3>
@@ -133,7 +142,9 @@
         </section>
       {/if}
     </div>
-    <div class="border-line-soft flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t px-5 py-1.5">
+    <div
+      class="border-line-soft flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t px-5 py-1.5"
+    >
       <div class="text-muted min-w-0 py-2 text-[13px]" data-testid="sim-gear-sets">
         {#if lines.length === 0}
           <p>{copy.noSet}</p>
@@ -141,7 +152,7 @@
           {#each lines as line (line.id)}
             <p data-testid="sim-gear-set">
               {line.head}{#each line.bonuses as bonus (bonus.text)}
-                {' · '}<span class={bonus.active ? 'text-rarity-uncommon' : ''}>{bonus.text}</span>
+                · <span class={bonus.active ? 'text-rarity-uncommon' : ''}>{bonus.text}</span>
               {/each}
             </p>
           {/each}

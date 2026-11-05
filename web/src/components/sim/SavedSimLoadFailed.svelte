@@ -10,7 +10,13 @@
 </script>
 
 <div class="pt-[22px] md:pt-8">
-  <Card glyph="alert" label={copy.label} title={copy.title} class="mx-[18px] md:mx-0" testid="sim-saved-error">
+  <Card
+    glyph="alert"
+    label={copy.label}
+    title={copy.title}
+    class="mx-[18px] md:mx-0"
+    testid="sim-saved-error"
+  >
     <p class="text-text text-[15px]">{copy.body}</p>
     <button
       type="button"

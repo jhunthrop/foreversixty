@@ -24,7 +24,14 @@
   import { extraAttackLines } from '../../lib/sim/extra-attacks';
   import { withoutAbsentPets } from '../../lib/sim/pet-rows';
   import { loadPresetSets, raidSetAt } from '../../lib/sim/preset-sets';
-  import { clock, damageCopy, grouped, oneDecimal, sectionHeadCopy, spreadCopy } from '../../lib/sim/result-copy';
+  import {
+    clock,
+    damageCopy,
+    grouped,
+    oneDecimal,
+    sectionHeadCopy,
+    spreadCopy,
+  } from '../../lib/sim/result-copy';
   import { SECTION_RESERVE, resultSections, timelineSkeletonHeight } from '../../lib/sim/result-sections';
   import { resultTip } from '../../lib/sim/result-tips';
   import { summaryActionKeys } from '../../lib/sim/sentence';
@@ -107,7 +114,9 @@
       names,
     }),
   );
-  const damageMeta = $derived(damageCopy.meta(oneDecimal(result.dps.mean), clock(summary.duration_ms / 1000)));
+  const damageMeta = $derived(
+    damageCopy.meta(oneDecimal(result.dps.mean), clock(summary.duration_ms / 1000)),
+  );
   const figure = $derived(oneDecimal(result.dps.mean));
 
   const HEROIC_STRIKE_RANKS: readonly number[] = [78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286];
@@ -277,7 +286,7 @@
       {#if sections.some((section) => section.id === 'resource')}
         <LazySection
           id="resource"
-        head={{ glyph: 'bolt', ...sectionHeadCopy.resource, title: resourceTitle }}
+          head={{ glyph: 'bolt', ...sectionHeadCopy.resource, title: resourceTitle }}
           lazy={resourceLazy}
           ready={resourceLazy.current !== null}
           reserve={SECTION_RESERVE.resource}
@@ -285,13 +294,22 @@
           {#if resourceLazy.current}<resourceLazy.current {result} {names} />{/if}
         </LazySection>
       {/if}
-      <LazySection id="buffs"
-        head={{ glyph: 'spark', ...sectionHeadCopy.buffs }} lazy={aurasLazy} ready={aurasLazy.current !== null} reserve={SECTION_RESERVE.buffs}>
+      <LazySection
+        id="buffs"
+        head={{ glyph: 'spark', ...sectionHeadCopy.buffs }}
+        lazy={aurasLazy}
+        ready={aurasLazy.current !== null}
+        reserve={SECTION_RESERVE.buffs}
+      >
         {#if aurasLazy.current}<aurasLazy.current {result} {names} />{/if}
       </LazySection>
       <LazySection
         id="rotation"
-        head={{ glyph: 'list', title: sectionHeadCopy.rotation.title, label: sectionHeadCopy.rotation.label(specDisplayName(spec), character.level) }}
+        head={{
+          glyph: 'list',
+          title: sectionHeadCopy.rotation.title,
+          label: sectionHeadCopy.rotation.label(specDisplayName(spec), character.level),
+        }}
         lazy={rotationLazy}
         ready={rotationLazy.current !== null}
         reserve={SECTION_RESERVE.rotation}

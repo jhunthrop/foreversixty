@@ -70,10 +70,7 @@
   });
 </script>
 
-<div
-  class="grid grid-cols-1 gap-4 p-5 lg:grid-cols-[7fr_5fr] xl:grid-cols-1"
-  data-testid="sim-distribution"
->
+<div class="grid grid-cols-1 gap-4 p-5 lg:grid-cols-[7fr_5fr] xl:grid-cols-1" data-testid="sim-distribution">
   <div class="flex min-w-0 flex-col gap-3">
     {#if spread !== null}
       <div class="pt-6">

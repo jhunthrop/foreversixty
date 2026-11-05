@@ -77,7 +77,9 @@
   const rows = $derived(settingsRows(result));
   const stale = $derived(isStale(result.engine_version));
   const groups = $derived(
-    settingsChipGroups(result, buffs, weights, damageSchools(result.summary.damage_done), (stem) => dataUrl(build, `icons/${stem}.webp`)),
+    settingsChipGroups(result, buffs, weights, damageSchools(result.summary.damage_done), (stem) =>
+      dataUrl(build, `icons/${stem}.webp`),
+    ),
   );
   const gameCode = $derived(gameCodeForSimResult(result, build, talentIndex, items));
   const fileName = $derived(copy.fileName(simId !== '' ? simId : (result.sim_id ?? 'result')));
@@ -131,7 +133,14 @@
     data-testid="sim-settings-chip"
   >
     {#if entry.icon !== null}
-      <img src={entry.icon} alt="" width="22" height="22" loading="lazy" class="h-[22px] w-[22px] rounded-[4px]" />
+      <img
+        src={entry.icon}
+        alt=""
+        width="22"
+        height="22"
+        loading="lazy"
+        class="h-[22px] w-[22px] rounded-[4px]"
+      />
     {:else}
       <span class="h-[22px] w-[22px] shrink-0 rounded-[4px] bg-white/[.05]"></span>
     {/if}
@@ -141,7 +150,14 @@
   </li>
 {/snippet}
 
-<Card glyph="gear" label={copy.label} title={copy.title} body="none" testid="sim-settings-card" class="mx-[18px] md:mx-0">
+<Card
+  glyph="gear"
+  label={copy.label}
+  title={copy.title}
+  body="none"
+  testid="sim-settings-card"
+  class="mx-[18px] md:mx-0"
+>
   <div class="border-line-soft grid grid-cols-1 border-t lg:grid-cols-2">
     <dl class="border-line-soft flex flex-col px-5 pt-1 pb-4 lg:border-r">
       {#each rows as row (row.id)}
@@ -165,9 +181,13 @@
       {#each groups as group (group.id)}
         {@const all = [...group.chips, ...group.noEffect]}
         {@const shownChips = capped(group.id) ? group.chips.slice(0, PHONE_CHIPS) : group.chips}
-        {@const left = capped(group.id) ? Math.max(0, PHONE_CHIPS - shownChips.length) : group.noEffect.length}
+        {@const left = capped(group.id)
+          ? Math.max(0, PHONE_CHIPS - shownChips.length)
+          : group.noEffect.length}
         <section class="flex flex-col gap-2" data-testid={`sim-settings-group-${group.id}`}>
-          <h3 class="border-line-soft text-muted flex justify-between border-b pb-1.5 text-[13px] font-semibold">
+          <h3
+            class="border-line-soft text-muted flex justify-between border-b pb-1.5 text-[13px] font-semibold"
+          >
             <span>{group.label}</span><span class="numeric">{group.count}</span>
           </h3>
           {#if group.count === 0}

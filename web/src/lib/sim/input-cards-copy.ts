@@ -83,7 +83,8 @@ export const rotationCardCopy = {
   thisRun: (names: string) => `This run: ${names}.`,
   rank: (rank: number) => `Rank ${rank}`,
   prepullAt: (seconds: number) => `-${seconds} s`,
-  foot: (spec: string) => `The ${spec} rotation the engine follows. A line with no cast in this run is dimmed.`,
+  foot: (spec: string) =>
+    `The ${spec} rotation the engine follows. A line with no cast in this run is dimmed.`,
   guide: (spec: string) => `Read the ${spec} guide`,
   noRotation: (spec: string) => `The ${spec} rotation is not on file for this build.`,
 } as const;

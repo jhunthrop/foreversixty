@@ -8,7 +8,13 @@
 //   attempts = hits + MISS + DODGE + PARRY
 //   landed   = hits
 // Crit is crits over landed with glances counted (build ruling R7, the Warcraft Logs convention).
-import { attackHand, parseActionKey, resolveActionName, type ActionNames, type AttackHand } from '../sim/action-names';
+import {
+  attackHand,
+  parseActionKey,
+  resolveActionName,
+  type ActionNames,
+  type AttackHand,
+} from '../sim/action-names';
 import { damageCopy } from '../sim/result-copy';
 import type { Ability, Actor, AuraTrack, CastRow } from './types';
 
@@ -91,7 +97,9 @@ const missCount = (ability: Ability, kind: string): number => ability.misses?.[k
 
 /** Every swing or press the engine rolled: `hits` holds glances and blocks already. */
 export function attemptsOf(ability: Ability): number {
-  return ability.hits + missCount(ability, 'MISS') + missCount(ability, 'DODGE') + missCount(ability, 'PARRY');
+  return (
+    ability.hits + missCount(ability, 'MISS') + missCount(ability, 'DODGE') + missCount(ability, 'PARRY')
+  );
 }
 
 function outcomesOf(ability: Ability, attempts: number): OutcomeShare[] {
@@ -135,7 +143,8 @@ function buildRow(
     avgHit: landed > 0 ? ability.total / landed : 0,
     crit: landed > 0 ? (ability.crits / landed) * 100 : null,
     biggestHit: ability.max,
-    uptime: track !== undefined && durationMs > 0 ? Math.min((track.uptime_ms / durationMs) * 100, 100) : null,
+    uptime:
+      track !== undefined && durationMs > 0 ? Math.min((track.uptime_ms / durationMs) * 100, 100) : null,
     ticks: ability.ticks,
     outcomes: outcomesOf(ability, attempts),
   };
@@ -170,7 +179,10 @@ const SORT_VALUE: Readonly<Record<SortColumn, (row: AbilityRow) => number>> = {
 };
 
 /** Rows in the chosen order; a tie keeps the table's own order, so a sort never reshuffles it. */
-export function sortAbilityRows(rows: readonly AbilityRow[], { column, direction }: AbilitySort): AbilityRow[] {
+export function sortAbilityRows(
+  rows: readonly AbilityRow[],
+  { column, direction }: AbilitySort,
+): AbilityRow[] {
   const value = SORT_VALUE[column];
   const sign = direction === 'desc' ? -1 : 1;
   return rows

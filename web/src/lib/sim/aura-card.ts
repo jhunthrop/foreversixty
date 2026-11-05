@@ -48,7 +48,9 @@ const THRASH = 21919;
 /** Overpower's window lights a button; the client has no such aura (spec 14). */
 const OVERPOWER_RANKS: ReadonlySet<number> = new Set([7384, 7887, 11584, 11585]);
 /** A Heroic Strike's tagged track is the swing queue, drawn on the timeline. */
-const HEROIC_STRIKE_RANKS: ReadonlySet<number> = new Set([78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286]);
+const HEROIC_STRIKE_RANKS: ReadonlySet<number> = new Set([
+  78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286,
+]);
 /** Crusader's proc: `/1` is the main hand, `/2` the off hand (confirmed in the engine). */
 const HOLY_STRENGTH = 20007;
 const HAND_TAGS: Readonly<Record<number, string>> = { 1: copy.mainHand, 2: copy.offHand };
@@ -73,7 +75,11 @@ const baseId = (id: string): string =>
   id.endsWith(IMPROVED_SUFFIX) ? id.slice(0, -IMPROVED_SUFFIX.length) : id;
 
 /** A debuff of an exclusive group that a lower rank in the same request holds off. */
-function isSuppressed(id: string, requested: readonly string[], buffs: Readonly<Record<string, SimBuffRow>>): boolean {
+function isSuppressed(
+  id: string,
+  requested: readonly string[],
+  buffs: Readonly<Record<string, SimBuffRow>>,
+): boolean {
   const own = buffs[baseId(id)]?.exclusive_with;
   if (own === undefined || own === null) return false;
   return requested.some((other) => {

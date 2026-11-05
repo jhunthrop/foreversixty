@@ -9,8 +9,11 @@ import type { SimResult } from './types';
 const FURY = { attack_power: 1, strength: 1.9, agility: 0.7, hit: 32, crit: 18 };
 const MELEE = ['physical'];
 const row = (fields: Partial<BuffEffectRow>): BuffEffectRow => ({ target: false, ...fields });
-const none = (fields: Partial<BuffEffectRow>, schools = MELEE, weights: Record<string, number> = FURY): boolean =>
-  hasNoDamageEffect(row(fields), weights, schools);
+const none = (
+  fields: Partial<BuffEffectRow>,
+  schools = MELEE,
+  weights: Record<string, number> = FURY,
+): boolean => hasNoDamageEffect(row(fields), weights, schools);
 
 describe('hasNoDamageEffect', () => {
   it('files what a Fury warrior gains nothing from', () => {

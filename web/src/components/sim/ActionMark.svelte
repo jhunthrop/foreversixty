@@ -29,7 +29,9 @@
   const parsed = $derived(action === null ? null : parseActionKey(action));
   const icon = $derived(resolveIconUrl(action, tables.visuals, fallbackIcon));
   const tipKey = $derived(
-    parsed?.kind === 'spell' && tables.spells.fact(parsed.id) !== undefined ? `spell:${parsed.id}` : undefined,
+    parsed?.kind === 'spell' && tables.spells.fact(parsed.id) !== undefined
+      ? `spell:${parsed.id}`
+      : undefined,
   );
   const itemId = $derived(parsed?.kind === 'item' ? parsed.id : undefined);
   const openable = $derived(tipKey !== undefined || itemId !== undefined);
@@ -49,7 +51,15 @@
     data-testid="action-icon"
   >
     {#if icon !== null}
-      <img src={icon} alt="" width={size} height={size} loading="lazy" decoding="async" class="h-full w-full" />
+      <img
+        src={icon}
+        alt=""
+        width={size}
+        height={size}
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full"
+      />
     {:else if action === REFUND_KEY}
       <Glyph name="refresh" size={Math.round(size * 0.7)} class="text-muted" />
     {/if}

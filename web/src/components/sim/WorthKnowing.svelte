@@ -29,7 +29,12 @@
   class={`${CARD_QUIET} border-l-ember mx-[18px] overflow-hidden border-l-[3px] md:mx-0`}
   data-testid="sim-worth-knowing"
 >
-  <CardHead glyph="alert" label={warningsCopy.label} title={warningsCopy.title} meta={warningsCopy.notes(notes.length)} />
+  <CardHead
+    glyph="alert"
+    label={warningsCopy.label}
+    title={warningsCopy.title}
+    meta={warningsCopy.notes(notes.length)}
+  />
   <ul class="border-line-soft border-t">
     {#each notes as note (`${note.id}:${note.actionKey ?? ''}`)}
       {@const icon = note.actionKey === undefined ? null : spells.iconUrl(note.actionKey)}
@@ -54,15 +59,12 @@
         {/if}
         <p class="text-text min-w-0 flex-1 text-[15px] leading-[22px]">{note.text}</p>
         {#if note.action === 'planner'}
-          <a
-            class={`${ACTION_LINK} shrink-0 whitespace-nowrap`}
-            href={plannerHref}>{warningsCopy.openInPlanner}<Glyph name="chevron" /></a
+          <a class={`${ACTION_LINK} shrink-0 whitespace-nowrap`} href={plannerHref}
+            >{warningsCopy.openInPlanner}<Glyph name="chevron" /></a
           >
         {:else if note.action === 'sim'}
-          <button
-            type="button"
-            class={`${ACTION_LINK} shrink-0 whitespace-nowrap`}
-            onclick={onrerun}>{warningsCopy.openInSim}<Glyph name="chevron" /></button
+          <button type="button" class={`${ACTION_LINK} shrink-0 whitespace-nowrap`} onclick={onrerun}
+            >{warningsCopy.openInSim}<Glyph name="chevron" /></button
           >
         {/if}
       </li>
