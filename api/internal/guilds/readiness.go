@@ -293,6 +293,9 @@ type ReadinessFacts struct {
 	Word     string
 	SyncedAt *time.Time
 	OnRoster bool
+	// ItemLevel is the roster's and the board's item level (equipped average, else the latest
+	// log's), so /char prints the same number; nil when neither is known.
+	ItemLevel *int
 }
 
 // CharacterReadinessWord is the board's word for one character: Stocked, Short: and its
@@ -318,7 +321,8 @@ func (s *Service) CharacterReadinessFacts(ctx context.Context, guildID int64, ch
 }
 
 func (s *Store) readinessFactsOf(row RosterRow, median *int) ReadinessFacts {
-	facts := ReadinessFacts{Word: readinessWord(s.readinessOf(row, median), row.Consent), OnRoster: true}
+	facts := ReadinessFacts{Word: readinessWord(s.readinessOf(row, median), row.Consent), OnRoster: true,
+		ItemLevel: row.ItemLevel}
 	if !row.LoggedAt.IsZero() {
 		synced := row.LoggedAt
 		facts.SyncedAt = &synced

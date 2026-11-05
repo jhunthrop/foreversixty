@@ -57,7 +57,7 @@ the home, only a verified member reads it.
   "character_key": "us/pvp/windtalon", "name": "Windtalon", "region": "us", "ruleset": "pvp",
   "class": "hunter", "spec": "Marksmanship", "role": "dps",
   "rank": "member", "verified": true, "consent": "gear",
-  "item_level": 70,                     // null without gear consent
+  "item_level": 70,                     // null without gear consent; the equipped average of the export's gear slots rounded to a whole level (the figure readiness and /char print), else the latest log's
   "logged_at": "2026-10-04T21:10:00Z",  // addon_exports.updated_at; replaces logged_recently (keep logged_recently too)
   "logged_recently": true,
   "attendance": { "present": 6, "nights": 8 },   // last 8 non-private, unflagged guild reports someone is present in
@@ -80,8 +80,12 @@ snapshot or the newest one does not carry this character. A snapshot line is mat
 by character name, any case: the snapshot's names carry no realm (a `Name-Realm` line drops
 its realm half), so the guild's realm is the row's. The first line of a name wins. A line that
 matches no row is never added as one; it counts only in `addon_snapshot.members`. `level`,
-`spec` (a spec slug), `gear_gap` and `build` are as that member's addon announced them
-(contract 2's `hello`); the snapshot carries only the members its sender's guild tab had live
+`spec` (a spec slug) and `build` are as that member's addon announced them (contract 2's
+`hello`); `gear_gap` is the
+site's own (amended 2026-11-05, guild round 3): the readiness board's `gear_gap.gain_dps` for the row,
+rounded to whole DPS, measured against the same band (the raid preset at 60) /char lists; `null`
+for a healer or tank band, a leveling character, or a row with no export gear. The addon's own
+announced figure is never shown (it read 38 DPS where the board read no upgrades). The snapshot carries only the members its sender's guild tab had live
 data for, so a member that addon had no data for reads `null`. Those four fields are also `null`
 when the row's member did not give `gear` (or `gear_bags`) consent, the same rule that withholds
 the row's class, spec and item level; `seen_at` and `snapshot_at` stay and `addon` stays non-null.

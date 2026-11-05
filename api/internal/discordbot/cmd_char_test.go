@@ -267,7 +267,7 @@ func TestCharCard(t *testing.T) {
 		head := headOf(t, m)
 		if head.Title != "Zulmara" || head.URL != pressPublic+"/character/"+keyZulmaraLookup || head.Color != 0xaad372 ||
 			head.Thumbnail != pressPublic+"/icons/hd/crests/hunter.webp" ||
-			head.Description != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56.0 · Readiness: Stocked · Synced <t:1700000000:R>" {
+			head.Description != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56 · Readiness: Stocked · Synced <t:1700000000:R>" {
 			t.Fatalf("header = %+v", head)
 		}
 		texts := textsOf(m)
@@ -332,7 +332,7 @@ func TestCharCard(t *testing.T) {
 	t.Run("a viewer outside the guild sees no readiness", func(t *testing.T) {
 		w := newLookupWorld(t)
 		m := w.command(t, "d-stranger", "char", map[string]string{"name": "Zulmara"}).Message
-		if got := headOf(t, m).Description; got != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56.0" {
+		if got := headOf(t, m).Description; got != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56" {
 			t.Fatalf("header = %q", got)
 		}
 	})

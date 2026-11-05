@@ -7,6 +7,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -150,8 +151,8 @@ func (s *Service) charHeader(d charData, withFacts bool) string {
 	}
 	clauses := strings.Split(strings.TrimPrefix(lookupCopy.CharFacts, subtext("")), lineJoin)
 	var kept []string
-	if level, ok := averageItemLevel(d.card.Gear); ok {
-		kept = append(kept, fill(clauses[0], "{x.x}", level))
+	if level, ok := charItemLevel(d); ok {
+		kept = append(kept, fill(clauses[0], "{ilvl}", level))
 	}
 	if d.facts != nil {
 		kept = append(kept, fill(clauses[1], "{word}", d.facts.Word))
@@ -227,29 +228,32 @@ func cardLineWith(card rankings.Character, spec specs.Spec, class string, text f
 	return line
 }
 
-// averageItemLevel is the mean item level of every worn item, one decimal (paperdoll spec §3.5).
-// An empty slot is not equipped, so it is not counted, nor is the empty off hand under a
-// two-hander; the gear list carries no shirt or tabard. When any worn item is unknown to the
-// data (no item level) there is no figure at all: the unknown items are the newest, so a mean
-// of the rest would be wrong in exactly the case that matters. It is the card's own figure, not
-// the guild roster's item_level: the card answers for any public character and reads the same
-// worn items the character page's paperdoll draws, so the two agree.
-func averageItemLevel(gear []rankings.GearSlot) (string, bool) {
-	total, count := 0, 0
-	for _, g := range gear {
-		if g.Worn == nil {
-			continue
-		}
-		if g.Worn.ItemLevel == nil {
-			return "", false
-		}
-		total += *g.Worn.ItemLevel
-		count++
+// charItemLevel is the card's item level, the one number the guild roster and the readiness
+// board show too (guild round 3): for a character on the viewer's guild roster, the guild's own
+// figure (the equipped average, else the latest log's, so a healer whose export carries no gear
+// still reads one); otherwise the card's equipped average, by the same rule and rounding.
+func charItemLevel(d charData) (string, bool) {
+	if d.facts != nil && d.facts.ItemLevel != nil {
+		return fmt.Sprint(*d.facts.ItemLevel), true
 	}
-	if count == 0 {
+	return equippedItemLevel(d.card.Gear)
+}
+
+// equippedItemLevel is upgrades.EquippedItemLevel over the card's worn items: every worn slot
+// counts, an empty slot (the off hand under a two-hander included) does not, and one unknown item
+// hides the figure. The gear list carries no shirt or tabard.
+func equippedItemLevel(gear []rankings.GearSlot) (string, bool) {
+	var levels []*int
+	for _, g := range gear {
+		if g.Worn != nil {
+			levels = append(levels, g.Worn.ItemLevel)
+		}
+	}
+	level, ok := upgrades.EquippedItemLevel(levels)
+	if !ok {
 		return "", false
 	}
-	return fmt.Sprintf("%.1f", float64(total)/float64(count)), true
+	return fmt.Sprint(level), true
 }
 
 // itemFacts is an item as the build's table knows it, with the BiS data's name and source.
