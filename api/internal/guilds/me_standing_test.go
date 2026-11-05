@@ -139,8 +139,7 @@ func TestGuildStanding_NoGuildsAnswersEmpty(t *testing.T) {
 }
 
 // TestGuildStanding_RosterCountMatchesHome: the count equals the home's on_roster for a guild with a waiting account, an invitee with a character, an
-// invitee with none (named by its public name, which the snapshot also names) and two names
-// no account has claimed.
+// invitee with none (named by the stand-in) and two names no account has claimed.
 func TestGuildStanding_RosterCountMatchesHome(t *testing.T) {
 	h := newHTTPHarness(t)
 	h.store.Accounts = h.svc.Accounts
@@ -166,24 +165,15 @@ func TestGuildStanding_RosterCountMatchesHome(t *testing.T) {
 	bare := seedUser(t, h.pool, "std-bare@example.com")
 	seedCharacter(t, h.pool, gid, bare, syntheticKey(bare), "member", true)
 	recomputeMembership(t, h.pool, gid, bare)
-	// A battletag makes the public name one word (user-N would read as Name-Realm).
-	if _, err := h.pool.Exec(ctx, `update users set battletag = 'Bareone#1234' where id = $1`, bare); err != nil {
-		t.Fatal(err)
-	}
-	u, err := h.svc.Accounts.User(ctx, bare)
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	if _, err := h.pool.Exec(ctx, `insert into characters (key, user_id, region, ruleset, name)
 		values ('us/hardcore/stdmaster', $1, 'us', 'hardcore', 'Stdmaster') on conflict do nothing`, master); err != nil {
 		t.Fatal(err)
 	}
-	putSnapshot(t, h, gid, "us/hardcore/stdmaster", fmt.Sprintf(`[
+	putSnapshot(t, h, gid, "us/hardcore/stdmaster", `[
 		{"name":"Stdmaster","level":60,"spec":"hunter-beast-mastery","gear_gap":0,"seen_at":"2026-10-20 18:00"},
-		{"name":%q,"level":60,"spec":"mage-frost","gear_gap":0,"seen_at":"2026-10-20 18:01"},
 		{"name":"Strayhound","level":60,"spec":"warrior-protection","gear_gap":0,"seen_at":"2026-10-20 17:00"},
-		{"name":"Oldmarrow","level":58,"spec":"warrior-arms","gear_gap":0,"seen_at":"2026-10-19 21:00"}]`, u.PublicName()))
+		{"name":"Oldmarrow","level":58,"spec":"warrior-arms","gear_gap":0,"seen_at":"2026-10-19 21:00"}]`)
 
 	h.actor = auth.Actor{UserID: master, Role: "user", Method: "session"}
 	var view HomeView

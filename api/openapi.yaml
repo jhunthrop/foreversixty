@@ -2011,12 +2011,25 @@ components:
         claim:
           type: object
           title: GuildClaimState
-          required: [state, frozen]
+          required: [state, frozen, yours]
           properties:
             state: { type: string }
             frozen: { type: boolean }
             since: { type: string, format: date-time }
-            claimed_by_name: { type: string }
+            yours:
+              type: boolean
+              description: The signed-in account holds this guild's claim.
+            claimed_by:
+              description: >
+                The claim holder's character on this guild's roster; null when no claim is
+                held or the holder has no character on it. Never an account tag.
+              type: [object, "null"]
+              title: GuildClaimHolder
+              required: [name, class, character_key]
+              properties:
+                name: { type: string }
+                class: { type: [string, "null"], x-name: className }
+                character_key: { type: string }
         summary:
           type: object
           title: GuildSummary

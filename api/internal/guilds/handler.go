@@ -299,14 +299,14 @@ func (s *Service) confirmClaim(w http.ResponseWriter, r *http.Request) {
 	case err != nil:
 		s.fail(w, r, "confirm_claim", err, "could not confirm that claim just now")
 	default:
-		u, uerr := s.Accounts.User(r.Context(), claimant)
-		if uerr != nil {
-			s.fail(w, r, "confirm_claim", uerr, "could not confirm that claim just now")
+		holder, herr := s.Store.claimHolderRef(r.Context(), guildID, claimant)
+		if herr != nil {
+			s.fail(w, r, "confirm_claim", herr, "could not confirm that claim just now")
 			return
 		}
 		s.logger().Info("guilds", "op", "claim_confirm", "guild_id", guildID, "confirmer_id", actor.UserID, "claimant_id", claimant)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]any{
-			"status": "confirmed", "claimed_by": map[string]string{"battletag": u.PublicName()},
+			"status": "confirmed", "claimed_by": holder,
 		})
 	}
 }

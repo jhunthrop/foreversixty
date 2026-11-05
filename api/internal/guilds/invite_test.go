@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 )
@@ -180,5 +181,76 @@ func TestPeekInviteNamesTheGuildWithoutJoiningAndRefusesBadTokens(t *testing.T) 
 		if res.StatusCode != http.StatusNotFound {
 			t.Fatalf("peek %q = %d, want 404", bad, res.StatusCode)
 		}
+	}
+}
+
+// peekAs reads the invite preview as actor.
+func peekAs(t *testing.T, h *httpHarness, token string, actor auth.Actor) (members int, joinsAs *JoinsAs) {
+	t.Helper()
+	h.actor = actor
+	var got struct {
+		Members int      `json:"members"`
+		JoinsAs *JoinsAs `json:"joins_as"`
+	}
+	h.data(h.do(http.MethodGet, "/v1/guild-invites/"+token, ""), &got)
+	return got.Members, got.JoinsAs
+}
+
+func seedOwned(t *testing.T, h *httpHarness, userID int64, key, name, class string, level int) {
+	t.Helper()
+	if _, err := h.pool.Exec(context.Background(),
+		`insert into characters (key, region, ruleset, name, class, race, level, user_id)
+		 values ($1, 'us', 'hardcore', $2, $3, 'night-elf', $4, $5)`, key, name, class, level, userID); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestPeekInviteSaysWhichCharacterJoins(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	if _, err := h.pool.Exec(ctx, `update guilds set region = 'us', ruleset = 'hardcore' where id = $1`, gid); err != nil {
+		t.Fatal(err)
+	}
+	token, _, err := h.store.RotateInvite(ctx, gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	verified := seedUser(t, h.pool, "peek-verified@example.com")
+	seedCharacter(t, h.pool, gid, verified, "us/hardcore/peekverified", "member", true)
+	syncMembership(t, h.pool, gid, verified)
+
+	members, joins := peekAs(t, h, token, auth.Actor{})
+	if members != 1 || joins != nil {
+		t.Fatalf("signed out: members = %d, joins_as = %+v; want the count and no character", members, joins)
+	}
+
+	// No characters at all.
+	bare := seedUser(t, h.pool, "peek-bare@example.com")
+	session := func(id int64) auth.Actor { return auth.Actor{UserID: id, Role: "user", Method: "session"} }
+	if _, joins = peekAs(t, h, token, session(bare)); joins != nil {
+		t.Fatalf("no characters: joins_as = %+v, want nil", joins)
+	}
+
+	// Characters, none on the roster: the main with an export, else the newest export.
+	viewer := seedUser(t, h.pool, "peek-viewer@example.com")
+	seedOwned(t, h, viewer, "us/hardcore/peekaaa", "Peekaaa", "mage", 30)
+	seedOwned(t, h, viewer, "us/hardcore/peekbbb", "Peekbbb", "rogue", 20)
+	seedOwned(t, h, viewer, "us/hardcore/peekccc", "Peekccc", "priest", 60)
+	seedExport(t, h.pool, viewer, "us/hardcore/peekbbb", "us", "hardcore", "Peekbbb")
+	_, joins = peekAs(t, h, token, session(viewer))
+	if joins == nil || joins.Name != "Peekbbb" || joins.OnRoster {
+		t.Fatalf("none on roster: joins_as = %+v, want the newest export Peekbbb, off the roster", joins)
+	}
+
+	// The snapshot names two of them: the higher level joins, with its race and class.
+	seedRosterSnapshot(t, h.pool, gid, "us/hardcore/peeksender",
+		`[{"name":"Peekaaa-Realm","level":30,"spec":"mage-frost","gear_gap":0,"build":"","seen_at":"2026-11-04 14:01"},
+		  {"name":"peekccc","level":60,"spec":"priest-holy","gear_gap":0,"build":"","seen_at":"2026-11-04 14:01"}]`,
+		time.Now())
+	_, joins = peekAs(t, h, token, session(viewer))
+	if joins == nil || joins.Name != "Peekccc" || !joins.OnRoster || *joins.Level != 60 ||
+		*joins.Class != "priest" || *joins.Race != "night-elf" {
+		t.Fatalf("on roster: joins_as = %+v, want Peekccc the level 60 Night Elf Priest", joins)
 	}
 }

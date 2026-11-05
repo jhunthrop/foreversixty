@@ -10,7 +10,12 @@
       "state": "claimed",
       "since": "2026-10-04T18:00:00Z",
       "frozen": false,
-      "claimed_by_name": "Kraggor#1187"
+      "yours": false,
+      "claimed_by": {
+        "name": "Kraggor",
+        "class": "warrior",
+        "character_key": "us/pvp/kraggor"
+      }
     },
     "counts": {
       "on_roster": 38,

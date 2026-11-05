@@ -2686,22 +2686,50 @@ public struct GuildAttendance: Codable, Sendable, Equatable {
     }
 }
 
+/// The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag.
+public struct GuildClaimHolder: Codable, Sendable, Equatable {
+    public let name: String
+    public let className: String?
+    public let characterKey: String
+
+    public init(
+        name: String,
+        className: String? = nil,
+        characterKey: String
+    ) {
+        self.name = name
+        self.className = className
+        self.characterKey = characterKey
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case className = "class"
+        case characterKey
+    }
+}
+
 public struct GuildClaimState: Codable, Sendable, Equatable {
     public let state: String
     public let frozen: Bool
     public let since: Date?
-    public let claimedByName: String?
+    /// The signed-in account holds this guild's claim.
+    public let yours: Bool
+    /// The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag.
+    public let claimedBy: GuildClaimHolder?
 
     public init(
         state: String,
         frozen: Bool,
         since: Date? = nil,
-        claimedByName: String? = nil
+        yours: Bool,
+        claimedBy: GuildClaimHolder? = nil
     ) {
         self.state = state
         self.frozen = frozen
         self.since = since
-        self.claimedByName = claimedByName
+        self.yours = yours
+        self.claimedBy = claimedBy
     }
 }
 
