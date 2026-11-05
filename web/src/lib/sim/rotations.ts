@@ -53,3 +53,22 @@ export function rotationDrawerContent(spec: string, notes: RotationNotes | null)
     steps: notes === null ? null : rotationNotesFor(spec, notes),
   };
 }
+
+/** One curated APL for the saved result's Rotation card (scripts/rotation-apl.mjs). */
+export interface RotationLines {
+  prepull: readonly { action: string; at_seconds: number }[];
+  /** `action: null` is the engine's cooldown pass. */
+  priority: readonly { action: string | null; note: string }[];
+  /** The hash a run of this spec stamps today; null when the engine embeds no APL for it. */
+  sha: string | null;
+}
+
+let loadingLines: Promise<Readonly<Record<string, RotationLines>>> | undefined;
+
+/** Every spec's lines, one chunk apart from the notes above, loaded once. */
+export function loadRotationLines(): Promise<Readonly<Record<string, RotationLines>>> {
+  loadingLines ??= import('../../data/generated/rotation-lines.json').then(
+    (module) => module.default as unknown as Readonly<Record<string, RotationLines>>,
+  );
+  return loadingLines;
+}

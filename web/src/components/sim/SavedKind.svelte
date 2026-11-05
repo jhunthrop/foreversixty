@@ -37,7 +37,7 @@
   import CopyForGame from '../CopyForGame.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
-  import RotationCard from './RotationCard.svelte';
+  import LiveRotationCard from './LiveRotationCard.svelte';
 
   let { result, onrerun }: { result: SimResult; onrerun: () => void } = $props();
 
@@ -321,7 +321,7 @@
 {#if drawnStage >= 2}
   <DetailsCard {result} />
 
-  <RotationCard spec={result.request.spec} {fidelity} />
+  <LiveRotationCard spec={result.request.spec} {fidelity} />
 
   <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0">
     <button

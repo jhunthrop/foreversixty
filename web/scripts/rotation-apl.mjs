@@ -22,7 +22,7 @@
 // of reaching the live page; the same check is exercised directly against every curated
 // file in rotation-apl.test.ts.
 
-/** @typedef {{ notes?: unknown }} AplStep */
+/** @typedef {{ notes?: unknown, action?: unknown }} AplStep */
 /** @typedef {{ rotation?: { priorityList?: AplStep[] } }} CuratedApl */
 
 /**
@@ -120,4 +120,62 @@ export function rotationNotesOf(apl, spec = '<unknown spec>') {
     notes.push(note);
   });
   return notes;
+}
+
+/**
+ * The action key of the first spell or item a node casts, walking into a sequence or a condition's
+ * wrapper; null for a step that casts nothing of its own.
+ * @param {unknown} node
+ * @returns {string | null}
+ */
+function castKeyOf(node) {
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const key = castKeyOf(child);
+      if (key !== null) return key;
+    }
+    return null;
+  }
+  if (typeof node !== 'object' || node === null) return null;
+  const record = /** @type {Record<string, unknown>} */ (node);
+  const id = /** @type {Record<string, unknown> | undefined} */ (
+    /** @type {Record<string, unknown> | undefined} */ (record.castSpell)?.spellId
+  );
+  if (typeof id?.spellId === 'number') return `spell:${id.spellId}`;
+  if (typeof id?.itemId === 'number') return `item:${id.itemId}`;
+  for (const [name, child] of Object.entries(record)) {
+    if (name === 'condition') continue;
+    const key = castKeyOf(child);
+    if (key !== null) return key;
+  }
+  return null;
+}
+
+/**
+ * One curated APL as the saved result's Rotation card reads it: the pre-pull casts in time order,
+ * then every priority line that casts something, with its own note, and the engine's cooldown pass
+ * as a line of its own (`action: null`). A step that casts nothing and is not that pass is left
+ * out: a wait or a bookkeeping step is not a line a player follows.
+ * @param {CuratedApl & { rotation?: { prepullActions?: unknown[] } }} apl
+ * @param {string} [spec]
+ * @returns {{ prepull: { action: string, at_seconds: number }[], priority: { action: string | null, note: string }[] }}
+ */
+export function rotationLinesOf(apl, spec = '<unknown spec>') {
+  const prepull = (apl?.rotation?.prepullActions ?? [])
+    .flatMap((entry) => {
+      const step = /** @type {{ action?: unknown, doAtValue?: { const?: { val?: unknown } } }} */ (entry);
+      const action = castKeyOf(step?.action);
+      const seconds = Number.parseFloat(String(step?.doAtValue?.const?.val ?? ''));
+      return action === null || !Number.isFinite(seconds) ? [] : [{ action, at_seconds: Math.abs(seconds) }];
+    })
+    .sort((a, b) => b.at_seconds - a.at_seconds);
+  const priority = (apl?.rotation?.priorityList ?? []).flatMap((entry, stepIndex) => {
+    const step = /** @type {{ action?: Record<string, unknown>, notes?: unknown }} */ (entry);
+    const note = typeof step?.notes === 'string' ? step.notes.trim() : '';
+    if (note !== '') assertNoEngineeringLeak(note, { spec, stepIndex });
+    if (step?.action !== undefined && 'autocastOtherCooldowns' in step.action) return [{ action: null, note: '' }];
+    const action = castKeyOf(step?.action);
+    return action === null ? [] : [{ action, note }];
+  });
+  return { prepull, priority };
 }

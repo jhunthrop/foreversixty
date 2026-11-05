@@ -70,7 +70,10 @@ export interface EnchantRow extends Partial<EnchantRule> {
   spell_id: number;
   /** The item that applies it, where one does; 0 when the enchant has no source item. */
   item_id: number;
+  /** The recipe ("Enchant Gloves - Greater Strength"): pickers read it, a worn item's line never does. */
   name: string;
+  /** The client's own enchant text ("+7 Strength", "Crusader"); absent on an older build. */
+  display?: string;
   icon: string;
   /** Planner slot names. */
   slots: string[];
