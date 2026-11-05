@@ -493,9 +493,9 @@ def test_discipline_names_its_overrides_once() -> None:
     Sacrifice) silently replaced the first. The dead Binding Heal line is gone: the starter's
     own line from the rotation ("under ninety percent yourself") is the guide's gate."""
     # Round 25 adds the shield (the guide says "Shield the tank") and the lines that name the level a
-    # spell arrives (Penance, Prayer of Healing, Inner Focus).
+    # spell arrives (Penance, Prayer of Healing, Inner Focus); round 26 adds Lightwell, trained at forty.
     assert set(ps.GUIDE_LINES["priest-discipline"]) == {
-        "Power Word: Shield", "Penance", "Prayer of Healing", "Inner Focus", "Dark Sacrifice",
+        "Power Word: Shield", "Penance", "Prayer of Healing", "Inner Focus", "Dark Sacrifice", "Lightwell",
     }
     source = (Path(__file__).parent / "starter_overrides.py").read_text()
     # Only GUIDE_LINES is checked: DRILL_LINES names the spec too, for its own drills (round 25).

@@ -81,7 +81,8 @@ SPECS = {
         core=["Shadow Word: Death", "Devouring Plague", "Inner Focus"],
         auras=[("Shadow Word: Pain", DOT), ("Shadowform", SELF)],
         downranks=[],
-        defensives=["Desperate Prayer"],
+        # Desperate Prayer is the Dwarf priest spell (race mask 4): no defensive every priest has.
+        defensives=[],
     ),
     "rogue-assassination": dict(
         core=["Cold Blood"],
@@ -198,14 +199,16 @@ SPECS = {
         efficiency=["Inner Focus"],
         auras=[("Inner Fire", SELF)],
         downranks=["Power Word: Shield", "Prayer of Healing"],
-        defensives=["Desperate Prayer"],
+        # Desperate Prayer is the Dwarf priest spell (race mask 4): no defensive every priest has.
+        defensives=[],
     ),
     "priest-holy": dict(
         core=[],
         efficiency=["Inner Focus"],
         auras=[("Inner Fire", SELF)],
         downranks=["Renew"],
-        defensives=["Desperate Prayer"],
+        # Desperate Prayer is the Dwarf priest spell (race mask 4): no defensive every priest has.
+        defensives=[],
     ),
     "shaman-restoration": dict(
         core=[],

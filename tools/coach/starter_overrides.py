@@ -304,10 +304,12 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Your mana has to keep pace with the fight."
         ),
         "Inner Focus": (
-            "Inner Focus on your most expensive heal, from forty a Greater Heal. "
-            "Its crit leaves the biggest Divine Aegis you can make. It makes the spell free and adds twenty-five percent crit chance."
+            "Inner Focus on a Prayer of Healing from thirty or a Greater Heal from forty. "
+            "It makes the spell free and adds twenty-five percent crit chance. "
+            "A Greater Heal crit leaves the biggest Divine Aegis you can make."
         ),
         "Dark Sacrifice": "Dark Sacrifice if you are Undead, once your mana is down enough.",
+        "Lightwell": "Lightwell from forty, dropped before the pull, and tell the raid it is up.",
     },
     "priest-shadow": {
         # shadow.md: "Keep Shadow Word: Pain up. Keep Devouring Plague up ... Mind Blast on cooldown. Shadow
@@ -630,10 +632,14 @@ DRILL_LINES: dict[str, dict[str, str]] = {
     # discipline.md: Greater Heal top rank on the tank, rank one on everyone else; "When your bar falls
     # behind the fight, stop topping off the party and heal only real holes."
     "priest-discipline": {
-        "ranks": "Before forty, bind the Heal rank your level calls for. From forty, bind Greater Heal rank one for the party's small holes, and keep the top rank for the tank, who takes the big hits.",
+        "ranks": (
+            "Before forty, bind the Heal rank your level calls for. From forty, bind Greater Heal rank one: "
+            "it is the party's small-hole heal, and the tank's filler too until you learn rank four at fifty-eight. "
+            "From then the tank gets the top rank."
+        ),
         "resource": (
-            "Before the pull, note the mana you should have at the halfway mark. If you are behind it, keep Penance "
-            "and the shield on the tank, let the filler wait for a deeper hole, and save Flash Heal for the emergency."
+            "Before the pull, note your halfway mana. If you are behind it, keep Penance on cooldown, "
+            "hold the shield until you are back on pace, let the filler wait and save Flash Heal for the emergency."
         ),
     },
     # restoration.md: Mana Tide under a quarter of your mana; Healing Wave never below rank eight at sixty.
