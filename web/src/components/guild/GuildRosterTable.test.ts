@@ -342,6 +342,29 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(section).not.toContain('guild-roster-remove');
   });
 
+  it('draws a removed character the addon still sees with its class crest and "Holy Paladin" when the class is sent (guild loop round 3)', () => {
+    const members = [
+      {
+        name: 'Ashenveil',
+        state: 'no_account' as const,
+        rank: 'member' as const,
+        class: 'paladin',
+        spec: 'holy',
+      },
+      { name: 'Strayhound', state: 'no_account' as const, rank: 'member' as const, spec: 'protection' },
+    ];
+    const body = officerAsk({ members });
+    const [ashenveil = '', strayhound = ''] = body.split('data-testid="guild-roster-entry" ').slice(1);
+    expect(/data-testid="guild-roster-entry-spec">([^<]*)</.exec(ashenveil)?.[1]).toBe('Holy Paladin');
+    expect(ashenveil).toContain('/crests/paladin.webp');
+    expect(ashenveil).toContain(
+      'style="color:var(--color-class-paladin)" data-testid="guild-roster-entry-name"',
+    );
+    // No class: the neutral ringed crest and the spec word alone, never a guessed class.
+    expect(/data-testid="guild-roster-entry-spec">([^<]*)</.exec(strayhound)?.[1]).toBe('Protection');
+    expect(strayhound.slice(0, strayhound.indexOf('guild-roster-entry-name'))).not.toContain('/crests/');
+  });
+
   it('gives every account row a rank word, Member included', () => {
     const byName = rows(asOfficer);
     const rank = (name: string) =>
