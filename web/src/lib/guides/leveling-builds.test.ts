@@ -110,6 +110,13 @@ describe('ladderTalentString', () => {
   it('reads a build code by tree', () => {
     expect(buildCodeDigits('FS1:1.60.1.70753:warrior:human:0332/0505/005:')).toEqual(['0332', '0505', '005']);
     expect(buildCodeDigits('not a code')).toBeUndefined();
+    // Sim-accuracy round 24: a build that spends nothing in a tree, as sim/leveling reads it
+    // since round 23 (Assassination's raid build ends in an empty Subtlety tree).
+    expect(buildCodeDigits('FS1:1.60.1.70790:rogue:night-elf:00530311251051031/30230302020122/:')).toEqual([
+      '00530311251051031',
+      '30230302020122',
+      '',
+    ]);
     expect([...guideTargets(trees, ['55', '3'])]).toEqual([
       [1, 5],
       [2, 5],

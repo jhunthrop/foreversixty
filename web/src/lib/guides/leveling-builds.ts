@@ -57,7 +57,8 @@ export function loadLadderTrees(build: string, classSlug: string): LadderTalentT
 
 /** The per-tree digit strings of an FS1 build code, or undefined for a code that is not one. */
 export function buildCodeDigits(code: string): [string, string, string] | undefined {
-  const match = /^FS1:[^:]+:[^:]+:[^:]+:([^/]+)\/([^/]+)\/([^:]+):$/.exec(code);
+  // A tree may be empty (sim/leveling's FS1 regexes, round 23): a build spends nothing there.
+  const match = /^FS1:[^:]+:[^:]+:[^:]+:([^/:]*)\/([^/:]*)\/([^/:]*):$/.exec(code);
   return match === null ? undefined : [match[1]!, match[2]!, match[3]!];
 }
 
