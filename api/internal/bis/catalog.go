@@ -9,11 +9,12 @@ package bis
 import (
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 // FileSlugFor turns a roster row's display class ("hunter", already lowercase in every
-// table this package reads it from) and spec name ("Marksmanship") into the BiS file's own
+// table this package reads it from) and spec name ("Marksmanship", or a log's "BeastMastery") into the BiS file's own
 // basename ("hunter-marksmanship") - sim/specs.All, the generated copy of
 // data/curated/specs.json every other lane already imports this same way
 // (api/internal/sims/score.go's own specSlugFor), rather than a second runtime read of the
@@ -25,7 +26,7 @@ func FileSlugFor(classSlug, specName string) (string, bool) {
 	classSlug = strings.ToLower(strings.TrimSpace(classSlug))
 	specName = strings.TrimSpace(specName)
 	for _, s := range specs.All {
-		if s.ClassSlug == classSlug && strings.EqualFold(s.Name, specName) {
+		if s.ClassSlug == classSlug && raidspec.SameName(s.Name, specName) {
 			return s.Spec, true
 		}
 	}

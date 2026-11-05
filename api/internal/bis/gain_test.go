@@ -83,6 +83,10 @@ func TestFileSlugForMatchesTheRealCatalogue(t *testing.T) {
 	if !ok || slug != "hunter-marksmanship" {
 		t.Fatalf("slug = %q ok=%v, want hunter-marksmanship/true", slug, ok)
 	}
+	// A log writes the spec with no space; it is the same file.
+	if slug, ok := FileSlugFor("hunter", "BeastMastery"); !ok || slug != "hunter-beast-mastery" {
+		t.Fatalf("BeastMastery slug = %q ok=%v, want hunter-beast-mastery/true", slug, ok)
+	}
 	if _, ok := FileSlugFor("hunter", "NotASpec"); ok {
 		t.Fatal("ok = true for an unknown spec, want false")
 	}

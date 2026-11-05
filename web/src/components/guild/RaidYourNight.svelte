@@ -11,6 +11,7 @@
   import { SEP, raidCopy } from '../../lib/guild/raid-copy';
   import { ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
   import { classColorVar } from '../../lib/report/format';
+  import { specName } from '../../lib/guild/spec-name';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Figures from './Figures.svelte';
   import RaidLootItem from './RaidLootItem.svelte';
@@ -57,7 +58,7 @@
               <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(row.class)}`}>
                 {row.name}
               </p>
-              <p class="text-muted truncate text-[12px]">{row.spec}</p>
+              <p class="text-muted truncate text-[12px]">{specName(row.spec)}</p>
             </div>
           </div>
           <div class="min-w-0">

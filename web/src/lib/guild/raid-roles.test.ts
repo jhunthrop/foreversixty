@@ -23,6 +23,7 @@ describe('roleForSpec', () => {
 
   it('is case-blind and null for an unknown or empty spec', () => {
     expect(roleForSpec('beast mastery')).toBe('dps');
+    expect(roleForSpec('BeastMastery')).toBe('dps');
     expect(roleForSpec('')).toBeNull();
     expect(roleForSpec('Gladiator')).toBeNull();
   });

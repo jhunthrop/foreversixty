@@ -29,6 +29,7 @@
     type SignupOutcome,
   } from '../../lib/guild/signup-strip';
   import { classColorVar } from '../../lib/report/format';
+  import { specName } from '../../lib/guild/spec-name';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Select from '../ui/Select.svelte';
   import SignupSpec from './SignupSpec.svelte';
@@ -271,7 +272,7 @@
           <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
             {character.name}
           </p>
-          <p class="text-muted truncate text-[12px]">{character.spec}</p>
+          <p class="text-muted truncate text-[12px]">{specName(character.spec)}</p>
         </div>
       </div>
       <div class="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">

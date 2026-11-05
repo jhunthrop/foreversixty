@@ -96,11 +96,18 @@ func Resolve(class, name, role string) (Spec, bool) {
 		return ByKey("druid-feral")
 	}
 	for _, s := range ForClass(class) {
-		if strings.EqualFold(s.Name, name) {
+		if SameName(s.Name, name) {
 			return s, true
 		}
 	}
 	return Spec{}, false
+}
+
+// SameName reports whether two spec names are one spec however they are written: case aside and
+// with the spaces gone, so a log's "BeastMastery" is the catalogue's "Beast Mastery"
+// (rankings/query.go compares board filters the same way).
+func SameName(a, b string) bool {
+	return strings.EqualFold(strings.ReplaceAll(a, " ", ""), strings.ReplaceAll(b, " ", ""))
 }
 
 // MeleeClass reports whether a DPS line with no spec goes to Melee, by class.
