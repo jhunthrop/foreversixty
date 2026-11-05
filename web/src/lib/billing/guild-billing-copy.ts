@@ -44,16 +44,18 @@ type PlanLineFacts = Pick<
 
 const tierName = (tier: GuildTier): string => PLANS[tier].name;
 
+/** The plan line under the card's title, which names the tier: the line never repeats it (guild
+ *  loop round 3, web4, after `Raid guild` over `Guild plan`). */
 function planLine(state: GuildPlanLineState, zone?: string): string {
   switch (state.kind) {
     case 'trial':
-      return `${tierName(state.tier)} · trial · first charge ${zonedDayMonthYear(state.firstCharge, zone)}: ${formatAmount(state.amountCents / CENTS_PER_DOLLAR)}`;
+      return `Trial · first charge ${zonedDayMonthYear(state.firstCharge, zone)}: ${formatAmount(state.amountCents / CENTS_PER_DOLLAR)}`;
     case 'active':
-      return `${tierName(state.tier)} · renews ${zonedDayMonthYear(state.renews, zone)} · ${formatCents(state.amountCents, state.interval)}`;
+      return `Renews ${zonedDayMonthYear(state.renews, zone)} · ${formatCents(state.amountCents, state.interval)}`;
     case 'ending':
-      return `${tierName(state.tier)} · ends ${zonedDayMonthYear(state.ends, zone)}`;
+      return `Ends ${zonedDayMonthYear(state.ends, zone)}`;
     case 'ending-transfer':
-      return `${tierName(state.tier)} · ends ${zonedDayMonthYear(state.ends, zone)} · then billed by ${state.toName}`;
+      return `Ends ${zonedDayMonthYear(state.ends, zone)} · then billed by ${state.toName}`;
     case 'lapsed':
       return `Guild plan ended ${zonedDayMonthYear(state.ended, zone)}.`;
   }
@@ -170,11 +172,13 @@ export const guildBillingCopy = {
 } as const;
 
 /**
- * "Guild plan · renews 31 Dec 2026", "Guild plan · ends 31 Dec 2026", or for a plan an operator
- * granted (no Stripe billing contact) "Guild plan · until 31 Dec 2026". The date is the one that
- * was stored: a Stripe period end is an instant read on the viewer calendar; an operator grant
- * (no billing contact, or the scoped officer tools) is a calendar day the API stores at midnight
- * UTC, so it reads in UTC and is the 31st for a viewer in any zone.
+ * The plan row under the card's title (which names the tier, so the row never repeats it; guild
+ * loop round 3, web4): "Renews 31 Dec 2026", "Ends 31 Dec 2026", for a plan an operator granted
+ * (no Stripe billing contact) "Until 31 Dec 2026", and "Active" with no date. The scoped grant
+ * keeps its own name: "Officer tools · until 31 Dec 2026". The date is the one that was stored: a
+ * Stripe period end is an instant read on the viewer calendar; an operator grant (no billing
+ * contact, or the scoped officer tools) is a calendar day the API stores at midnight UTC, so it
+ * reads in UTC and is the 31st for a viewer in any zone.
  */
 export function guildPlanLine(billing: PlanLineFacts, zone?: string): string {
   const isGrant = billing.scope === 'officer_tools' || billing.billed_by === '';
@@ -185,9 +189,9 @@ export function guildPlanLine(billing: PlanLineFacts, zone?: string): string {
   if (billing.scope === 'officer_tools') {
     return date === '' ? settingsWords.officerTools : `${settingsWords.officerTools} · until ${date}`;
   }
-  if (date === '') return settingsWords.guildPlan;
-  const verb = billing.billed_by === '' ? 'until' : billing.cancel_at_period_end ? 'ends' : 'renews';
-  return `${settingsWords.guildPlan} · ${verb} ${date}`;
+  if (date === '') return settingsWords.planActive;
+  const verb = billing.billed_by === '' ? 'Until' : billing.cancel_at_period_end ? 'Ends' : 'Renews';
+  return `${verb} ${date}`;
 }
 
 /** Who pays: "Billed to you.", "Billed by hunthrop#1894", or "Granted by Forever Sixty." */

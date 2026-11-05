@@ -17,29 +17,30 @@ describe('plan line', () => {
       amountCents: 12000,
       interval: 'yearly',
     });
-    expect(line).toBe('Guild · trial · first charge 11 Dec 2026: $120');
+    expect(line).toBe('Trial · first charge 11 Dec 2026: $120');
     expect(line).toBe(spec('Plan line', 0, { date: '11 Dec 2026', amount: '$120' }));
   });
 
-  it('renews, for both tiers', () => {
+  it('renews, for both tiers, never repeating the tier the card title names (guild loop round 3)', () => {
     const fill = { date: '31 Dec 2026', price: '$150 a year' };
     const active = (tier: 'guild' | 'raid_guild', amountCents: number): string =>
       copy.planLine({ kind: 'active', tier, renews: '2026-12-31', amountCents, interval: 'yearly' });
     expect(active('guild', 15000)).toBe(spec('Plan line', 1, fill));
-    expect(active('raid_guild', 25000)).toBe(spec('Plan line', 2, { ...fill, price: '$250 a year' }));
+    expect(active('raid_guild', 25000)).toBe(spec('Plan line', 1, { ...fill, price: '$250 a year' }));
+    expect(active('raid_guild', 25000)).not.toContain('Raid guild');
   });
 
   it('ends, ends then transfers, and lapsed', () => {
     expect(copy.planLine({ kind: 'ending', tier: 'guild', ends: '2026-12-31' })).toBe(
-      spec('Plan line', 3, { date: '31 Dec 2026' }),
+      spec('Plan line', 2, { date: '31 Dec 2026' }),
     );
     expect(
       copy.planLine({ kind: 'ending-transfer', tier: 'guild', ends: '2026-12-31', toName: 'Aela' }),
-    ).toBe(spec('Plan line', 4, { date: '31 Dec 2026', Name: 'Aela' }));
+    ).toBe(spec('Plan line', 3, { date: '31 Dec 2026', Name: 'Aela' }));
     expect(copy.planLine({ kind: 'lapsed', ended: '2026-12-31' })).toBe(
-      spec('Plan line', 5, { date: '31 Dec 2026' }),
+      spec('Plan line', 4, { date: '31 Dec 2026' }),
     );
-    expect(copy.founderPill).toBe(spec('Plan line', 6));
+    expect(copy.founderPill).toBe(spec('Plan line', 5));
   });
 });
 
@@ -152,12 +153,11 @@ describe('moved plan and billed lines', () => {
   });
 
   it('prints the plan line by who bills and whether it ends', () => {
-    expect(guildPlanLine(billing(), 'UTC')).toBe('Guild plan · renews 31 Dec 2026');
-    expect(guildPlanLine(billing({ cancel_at_period_end: true }), 'UTC')).toBe(
-      'Guild plan · ends 31 Dec 2026',
-    );
-    expect(guildPlanLine(billing({ billed_by: '' }), 'UTC')).toBe('Guild plan · until 31 Dec 2026');
-    expect(guildPlanLine(billing({ current_period_end: null }), 'UTC')).toBe('Guild plan');
+    expect(guildPlanLine(billing(), 'UTC')).toBe('Renews 31 Dec 2026');
+    expect(guildPlanLine(billing({ cancel_at_period_end: true }), 'UTC')).toBe('Ends 31 Dec 2026');
+    expect(guildPlanLine(billing({ billed_by: '' }), 'UTC')).toBe(spec('Plan line', 6, { date: '31 Dec 2026' }));
+    // A dateless grant: the card title names the tier, so the row never reads `Guild plan` again.
+    expect(guildPlanLine(billing({ current_period_end: null, billed_by: '' }), 'UTC')).toBe(spec('Plan line', 7));
     expect(guildPlanLine(billing({ scope: 'officer_tools', billed_by: '' }), 'UTC')).toBe(
       'Officer tools · until 31 Dec 2026',
     );
@@ -168,10 +168,10 @@ describe('moved plan and billed lines', () => {
 
   it('reads a Stripe period end on the viewer calendar and an operator grant as its stored day', () => {
     const periodEnd = billing({ current_period_end: '2027-01-01T05:00:00Z' });
-    expect(guildPlanLine(periodEnd, 'America/Los_Angeles')).toBe('Guild plan · renews 31 Dec 2026');
-    expect(guildPlanLine(periodEnd, 'Pacific/Auckland')).toBe('Guild plan · renews 1 Jan 2027');
+    expect(guildPlanLine(periodEnd, 'America/Los_Angeles')).toBe('Renews 31 Dec 2026');
+    expect(guildPlanLine(periodEnd, 'Pacific/Auckland')).toBe('Renews 1 Jan 2027');
     const grant = billing({ billed_by: '', current_period_end: '2026-12-31T00:00:00Z' });
-    expect(guildPlanLine(grant, 'Pacific/Auckland')).toBe('Guild plan · until 31 Dec 2026');
+    expect(guildPlanLine(grant, 'Pacific/Auckland')).toBe('Until 31 Dec 2026');
   });
 
   it('says who is billed', () => {

@@ -186,11 +186,7 @@ export function accountPlanLine(me: Me, now: Date, zone?: string): AccountPlanLi
  * the words never repeat it.
  */
 export function guildRowPlanLine(plan: GuildBillingView, zone?: string): string {
-  const base = guildPlanLine(plan, zone);
-  const prefix = `${settingsWords.guildPlan} · `;
-  const value = base === settingsWords.guildPlan ? accountPlanCopy.guildRow.active : base;
-  const bare = value.startsWith(prefix) ? value.slice(prefix.length) : value;
-  const sentence = `${bare.charAt(0).toUpperCase()}${bare.slice(1)}`;
+  const sentence = guildPlanLine(plan, zone);
   return plan.you_hold_seat ? `${sentence}${accountPlanCopy.guildRow.youHoldSeat}` : sentence;
 }
 
