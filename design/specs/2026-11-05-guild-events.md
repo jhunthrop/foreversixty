@@ -103,7 +103,7 @@ Labels: the form's h2 and button change from raid words to event words (§5). `P
 - **Planned row**: the breakdown is empty, or `2 late`; the viewer chip reads `In`, `Late` with no role.
 - **Band raid line** on the guild page: `Sunday 8 pm CST, you are In, 12 of 20 signed up.`, never `In as DPS`.
 - **Copy the sign-up list**: no `Classes:` line and no role groups; `In: …`, then `Late`, `Bench`, `Out`.
-- Not this round: the Discord post's role fields and the bot's `Which spec tonight?` still follow raid rules on an event (Go, `notify` and `raids_discord*`); a follow-up.
+- **Discord** (round 3): an event's post has no role fields; under `Signed up` one list grouped `In · {n}`, `Late · {n}`, `Bench · {n}` (each `{Name} · {Class}`, drawn only when someone is in it), then `Out · {n}` by name. The bot never asks `Which spec tonight?` and offers no `Change spec` on an event.
 
 ### 3.6 Discord
 

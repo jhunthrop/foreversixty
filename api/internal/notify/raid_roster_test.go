@@ -251,3 +251,29 @@ func TestRosterStates(t *testing.T) {
 		}
 	}
 }
+
+// A guild event's post lists no role groups and no specs (events spec §3.5): In, Late and Bench
+// by name and class, then Out.
+func TestEventPostIsOnePlainList(t *testing.T) {
+	in := onyxiaThursday()
+	in.NoRoles = true
+	in.Roster = []RosterLine{line("Garrowe", "warrior", "Protection", "tank", "in"), line("Selwyn", "mage", "Frost", "dps", "in"),
+		line("Pip", "priest", "Holy", "healer", "late"), line("Bo", "rogue", "", "dps", "bench"), line("Ash", "mage", "", "", "out")}
+	in.Counts = RaidCounts{In: 2, Late: 1}
+	e := RaidPostEmbed(RaidPost{RaidPosted: in, State: PostOpen, Marks: allMarks()}, fixedFinish)
+	got := map[string]string{}
+	for _, f := range e.Fields {
+		got[f.Name] = f.Value
+	}
+	want := map[string]string{"In · 2": "Garrowe · Warrior\nSelwyn · Mage", "Late · 1": "Pip · Priest", "Bench · 1": "Bo · Rogue", "Out · 1": "Ash"}
+	for name, value := range want {
+		if got[name] != value {
+			t.Errorf("%s = %q, want %q (fields %v)", name, got[name], value, fieldNames(e))
+		}
+	}
+	for _, name := range fieldNames(e) {
+		if strings.HasPrefix(name, "Tanks") || strings.HasPrefix(name, "Healers") || strings.HasPrefix(name, "Melee") || strings.HasPrefix(name, "Ranged") {
+			t.Errorf("an event post has the role field %q", name)
+		}
+	}
+}
