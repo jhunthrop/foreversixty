@@ -96,7 +96,7 @@
         "notes": "Lightning Mastery, trinkets and Blood Fury together: for its 15 seconds Lightning Bolt is half a second faster and Chain Lightning has no cooldown, so stack them inside it. A Troll presses Berserking after Mastery ends, since casting speed cannot push a bolt below the 1.5 second global cooldown."
       },
       {
-        "notes": "Flame Shock whenever it is not on the target: with Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown.",
+        "notes": "Flame Shock whenever it is not on the target: once you have all three points of Call of Flame it ticks for 21 seconds, and nothing else wants the shock cooldown.",
         "action": {
           "condition": {
             "not": {
@@ -119,7 +119,7 @@
         }
       },
       {
-        "notes": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from. It is cheap for its damage and its bolts reach 20 yards, so drop it within 20 yards of the boss; from 26, Magma Totem costs several times its mana and only burns within 8 yards.",
+        "notes": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from. It is cheap for its damage and its bolts reach 20 yards, so drop it within 20 yards of the boss; from 26, Magma Totem costs several times its mana and only burns within 8 yards.",
         "action": {
           "condition": {
             "and": {
@@ -221,7 +221,7 @@
         }
       },
       {
-        "notes": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and the jumps add most of another bolt on top, for the same cast time.",
+        "notes": "Chain Lightning on two or more targets: the first hit is bigger than a Lightning Bolt and each jump still deals 70% of the hit before it, for the same cast time outside Lightning Mastery.",
         "action": {
           "condition": {
             "cmp": {
@@ -291,7 +291,7 @@
         }
       },
       {
-        "notes": "Lightning Bolt for everything else. In a raid cast rank 10 here too: raid buffs carry its mana so close to the end that the bigger bolt is worth it. Without raid buffs a cheaper rank, rank 8 at 60, and while leveling the rank for your level: 3 at 26 and 27, the top rank at 28 and 29, 3 again from 30 to 33, 4 until 38, 5 until 44, 6 until 50, 7 until 56 and 8 from 57.",
+        "notes": "Lightning Bolt for everything else, at 60 rank 10 in a raid and rank 8 without raid buffs. Raid buffs carry rank 10's mana so close to the end that the bigger bolt is worth it. While leveling cast the rank for your level: 3 at 26 and 27, the top rank at 28 and 29, 3 again from 30 to 33, 4 until 38, 5 until 44, 6 until 50, 7 until 56 and 8 from 57.",
         "action": {
           "castSpell": {
             "spellId": {
