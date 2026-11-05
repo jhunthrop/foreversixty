@@ -4,6 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import fullFixture from '../../fixtures/sim/result-full.json';
 import olderFixture from '../../fixtures/sim/result.json';
+import furyApl from '../../../../data/curated/apl/warrior-fury.json';
 import { indexTalents } from '../planner/rules';
 import type { TalentFile } from '../planner/types';
 import { rotationLinesOf } from '../../../scripts/rotation-apl.mjs';
@@ -408,5 +409,69 @@ describe('rotationRows', () => {
       { action: 'spell:3', note: 'Hit it.' },
       { action: 'item:4', note: '' },
     ]);
+  });
+
+  const leveled = {
+    rotation: {
+      priorityList: [
+        { action: { autocastOtherCooldowns: {} } },
+        { notes: 'From 40 it goes first.', action: { castSpell: { spellId: { spellId: 20662 } } } },
+      ],
+    },
+    level_notes: [
+      { from_level: 60, step: 1, notes: 'First.' },
+      { from_level: 50, step: 1, notes: 'Fifty.' },
+    ],
+  } as Parameters<typeof rotationLinesOf>[0];
+
+  it('carries level notes per step, lowest level first, and rejects a bad one', () => {
+    expect(rotationLinesOf(leveled).priority[1]).toEqual({
+      action: 'spell:20662',
+      note: 'From 40 it goes first.',
+      level_notes: [
+        { from_level: 50, note: 'Fifty.' },
+        { from_level: 60, note: 'First.' },
+      ],
+    });
+    const onPass = { ...leveled, level_notes: [{ from_level: 60, step: 0, notes: 'x' }] };
+    expect(() => rotationLinesOf(onPass as typeof leveled)).toThrow(/casts nothing/);
+    const outOfRange = { ...leveled, level_notes: [{ from_level: 60, step: 9, notes: 'x' }] };
+    expect(() => rotationLinesOf(outOfRange as typeof leveled)).toThrow(/level_notes\[0\]/);
+  });
+
+  it('prints the note for the run’s level, and the general note below every level note', () => {
+    const parsed = { ...rotationLinesOf(leveled), sha: null };
+    const at = (level: number) => {
+      const run: SimResult = {
+        ...full,
+        request: { ...full.request, character: { ...full.request.character, level } },
+      };
+      return rotationRows(run, parsed, names).priority[1]!.note;
+    };
+    expect(at(60)).toBe('First.');
+    expect(at(55)).toBe('Fifty.');
+    expect(at(40)).toBe('From 40 it goes first.');
+  });
+
+  it('the curated Fury notes at 60 carry no leveling clause and one Execute wording', () => {
+    const fury = rotationLinesOf(furyApl, 'warrior-fury');
+    const notes = rotationRows(full, { ...fury, sha: null }, names).priority.map((row) => row.note);
+    expect(full.request.character.level).toBe(60);
+    for (const note of notes) {
+      expect(note).not.toMatch(/\b[Ff]rom (36|40)\b|before level|\bat 59\b|below 20%|from 25% down/);
+      expect(note).not.toMatch(/the execute phase/);
+    }
+  });
+
+  it('an older run counts a spell with no cast row from its damage row, as the table does', () => {
+    // result.json: Execute dealt 6 hits and kept no cast row; Bloodthirst has neither.
+    const fury = { ...rotationLinesOf(furyApl, 'warrior-fury'), sha: null };
+    const rows = rotationRows(older, fury, names).priority;
+    expect(rows.find((row) => row.name === 'Execute')).toMatchObject({ casts: 6, dimmed: false });
+    expect(rows.find((row) => row.name === 'Bloodthirst')).toMatchObject({ casts: 0, dimmed: true });
+    // A newer run's second-hand hit (Whirlwind's 462891) is not a second press of Whirlwind.
+    const current = rotationRows(full, fury, { ...names, spell: { ...names.spell, '462891': 'Whirlwind' } });
+    const whirlwind = full.summary.casts.find((row) => row.spell_name === 'spell:1680')!.succeeded;
+    expect(current.priority.find((row) => row.name === 'Whirlwind')?.casts).toBe(Math.round(whirlwind));
   });
 });

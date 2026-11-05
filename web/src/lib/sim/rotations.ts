@@ -57,8 +57,13 @@ export function rotationDrawerContent(spec: string, notes: RotationNotes | null)
 /** One curated APL for the saved result's Rotation card (scripts/rotation-apl.mjs). */
 export interface RotationLines {
   prepull: readonly { action: string; at_seconds: number }[];
-  /** `action: null` is the engine's cooldown pass. */
-  priority: readonly { action: string | null; note: string }[];
+  /** `action: null` is the engine's cooldown pass. `level_notes`, lowest level first, replace
+   *  `note` for a character of that level and up. */
+  priority: readonly {
+    action: string | null;
+    note: string;
+    level_notes?: readonly { from_level: number; note: string }[];
+  }[];
   /** The hash a run of this spec stamps today; null when the engine embeds no APL for it. */
   sha: string | null;
 }

@@ -250,9 +250,10 @@ function rotationNotes(node: unknown, into: Set<string>): Set<string> {
 
 const NOTES_LINE = /^\s*"notes":\s*("(?:[^"\\]|\\.)*")\s*,?\s*$/;
 
-/** The prose violations of the rendered notes (everything under `rotation`) in one APL file. */
+/** The prose violations of the rendered notes (everything under `rotation` and `level_notes`) in one APL file. */
 export function aplViolations(raw: string, file: string): ProseViolation[] {
-  const notes = rotationNotes((JSON.parse(raw) as { rotation?: unknown }).rotation, new Set());
+  const parsed = JSON.parse(raw) as { rotation?: unknown; level_notes?: unknown };
+  const notes = rotationNotes([parsed.rotation, parsed.level_notes], new Set());
   const found: ProseViolation[] = [];
   raw.split(/\r?\n/).forEach((source, index) => {
     const literal = NOTES_LINE.exec(source)?.[1];

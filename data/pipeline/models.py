@@ -1013,6 +1013,22 @@ class PhaseBoundary(BaseModel):
     start: str
 
 
+class AplLevelNote(BaseModel):
+    """A priority step's player note for a character of `from_level` and up.
+
+    The saved sim result's Rotation card reads the one for the run's level
+    (web/scripts/rotation-apl.mjs levelNotesOf), so a level 60 result never
+    reads the step's leveling clauses. Top level, like engineering_notes,
+    because the engine's APLListItem rejects any other key on a step.
+    """
+
+    model_config = {"extra": "forbid"}
+
+    from_level: int
+    step: int
+    notes: str
+
+
 class AplDocument(BaseModel):
     spec: str
     state: str
@@ -1043,6 +1059,8 @@ class AplDocument(BaseModel):
     #: anything else outright. Empty for every spec this lane's cleanup
     #: never touched, which is most of them.
     engineering_notes: dict[str, str] = {}
+    #: Per-level versions of step notes (AplLevelNote).
+    level_notes: list[AplLevelNote] = []
 
 
 class SpellEffectConstant(BaseModel):

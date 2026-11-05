@@ -3,6 +3,7 @@
 // this run's casts. A cast counts by the spell's name, so a line written at one rank finds a run
 // that cast another. Tagged rows and `other:` rows are not button presses: a white swing, a
 // periodic tick and a queue track are skipped.
+import { attemptsOf } from '../report/ability-table';
 import { parseActionKey, resolveActionName, type ActionNames } from './action-names';
 import { rotationCardCopy as copy } from './input-cards-copy';
 import type { RotationLines } from './rotations';
@@ -41,15 +42,39 @@ interface Pressed {
   casts: number;
 }
 
+/** A key the rotation counts as a button press: an untagged spell or item. */
+function pressKey(action: string): string | null {
+  const parsed = parseActionKey(action);
+  if (parsed === null || parsed.kind === 'other' || parsed.kind === 'unknown' || parsed.tag !== 0)
+    return null;
+  return `${parsed.kind}:${parsed.label}`;
+}
+
+/**
+ * Casts per fight by spell name. An older run (no sample) kept no cast row for some spells, and the
+ * damage table counts those from their damage row's attempts; this reads them the same way, so the
+ * two cards agree. Only for a name no cast row counts (a second hand's hit of a spell is not a
+ * second press), and never a periodic row, which is ticks.
+ */
 function pressedInRun(result: SimResult, names: ActionNames | null): Pressed[] {
   const byName = new Map<string, Pressed>();
-  for (const row of result.summary.casts) {
-    const parsed = parseActionKey(row.spell_name);
-    if (parsed === null || parsed.kind === 'other' || parsed.kind === 'unknown' || parsed.tag !== 0) continue;
-    const key = `${parsed.kind}:${parsed.label}`;
+  const add = (key: string, casts: number): void => {
     const name = resolveActionName(key, names);
     const found = byName.get(name);
-    byName.set(name, { key: found?.key ?? key, name, casts: (found?.casts ?? 0) + row.succeeded });
+    byName.set(name, { key: found?.key ?? key, name, casts: (found?.casts ?? 0) + casts });
+  };
+  for (const row of result.summary.casts) {
+    const key = pressKey(row.spell_name);
+    if (key !== null) add(key, row.succeeded);
+  }
+  if (result.sample !== undefined) return [...byName.values()];
+  const counted = new Set(byName.keys());
+  for (const ability of result.summary.damage_done[0]?.abilities ?? []) {
+    const key = pressKey(ability.name);
+    const periodic = ability.ticks > 0 && ability.hits === 0;
+    if (key === null || periodic || counted.has(resolveActionName(key, names))) continue;
+    const attempts = attemptsOf(ability);
+    if (attempts > 0) add(key, attempts);
   }
   return [...byName.values()];
 }
@@ -64,6 +89,12 @@ function castBeforePull(result: SimResult, names: ActionNames | null): ReadonlyS
         return parsed === null ? row.action : resolveActionName(`${parsed.kind}:${parsed.label}`, names);
       }),
   );
+}
+
+/** The line's note for a character of `level`: the highest level version that applies, else the note. */
+function noteAt(line: RotationLines['priority'][number], level: number): string {
+  const fitting = (line.level_notes ?? []).filter((entry) => entry.from_level <= level);
+  return fitting.at(-1)?.note ?? line.note;
 }
 
 export function rotationRows(
@@ -105,7 +136,7 @@ export function rotationRows(
       number: at + 1,
       action: run?.key ?? line.action,
       name,
-      note: line.note,
+      note: noteAt(line, result.request.character.level),
       casts: repeat ? null : Math.round(run?.casts ?? 0),
       dimmed: Math.round(run?.casts ?? 0) === 0,
     };
