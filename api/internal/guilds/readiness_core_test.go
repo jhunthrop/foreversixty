@@ -50,6 +50,20 @@ func TestComputeReadinessGearUpgradeAndEnchantGap(t *testing.T) {
 	}
 }
 
+// An export with no gear list is gear unknown: neither the gear gap nor the enchants are checked,
+// never "all enchanted" (guild round 3).
+func TestComputeReadinessWithoutGearChecksNoGearOrEnchants(t *testing.T) {
+	in := at60("gear")
+	in.Band, in.HasBand = testBand(), true
+	cr := computeReadiness(in)
+	if cr.GearChecked || cr.EnchantsChecked || len(cr.MissingEnchantSlots) != 0 {
+		t.Fatalf("readiness = %+v, want gear and enchants unchecked with no gear on file", cr)
+	}
+	if got := readinessWord(cr, "gear"); got != readinessNotChecked {
+		t.Fatalf("word = %q, want %q", got, readinessNotChecked)
+	}
+}
+
 // A healer's or tank's band measures no DPS: the gap has no unit and never prints one.
 func TestComputeReadinessHealerGapHasNoUnit(t *testing.T) {
 	in := at60("gear")
@@ -153,7 +167,7 @@ func TestFailTextOrderAndNeedsCap(t *testing.T) {
 	fails := cr.failText()
 	want := []string{
 		"3 gear upgrades waiting (+23.8 DPS)",
-		"no enchant: Chest, Boots",
+		"no enchant: Chest, Feet",
 		"consumables short",
 		"1 unspent talent point",
 	}
@@ -203,7 +217,7 @@ func TestComputeReadinessTalentsRead(t *testing.T) {
 // The nudge asks for the fix by the planned raid's day, and only lists it with none planned.
 func TestNudgeTextNamesTheRaidDay(t *testing.T) {
 	cr := CharacterReadiness{ConsumablesState: "short", Level: lvl(60)}
-	if got := nudgeText("Rootbound", cr, "Tuesday"); got != "Rootbound: consumables short. Check before Tuesday." {
+	if got := nudgeText("Rootbound", cr, "Tue 8 Dec"); got != "Rootbound: consumables short. Check before Tue 8 Dec." {
 		t.Fatalf("nudge = %q", got)
 	}
 	if got := nudgeText("Rootbound", cr, ""); got != "Rootbound: consumables short." {
@@ -211,14 +225,14 @@ func TestNudgeTextNamesTheRaidDay(t *testing.T) {
 	}
 }
 
-func TestRaidWeekdayReadsTheGuildZone(t *testing.T) {
-	// 02:00 UTC on Friday 6 Nov 2026 is Thursday evening in Chicago.
-	start := time.Date(2026, 11, 6, 2, 0, 0, 0, time.UTC)
-	if got := raidWeekday(start, "America/Chicago"); got != "Thursday" {
-		t.Fatalf("Chicago weekday = %q, want Thursday", got)
+func TestRaidDayReadsTheGuildZone(t *testing.T) {
+	// 02:00 UTC on Friday 11 Dec 2026 is Thursday 10 Dec in the evening in Chicago.
+	start := time.Date(2026, 12, 11, 2, 0, 0, 0, time.UTC)
+	if got := raidDay(start, "America/Chicago"); got != "Thu 10 Dec" {
+		t.Fatalf("Chicago day = %q, want Thu 10 Dec", got)
 	}
-	if got := raidWeekday(start, ""); got != "Friday" {
-		t.Fatalf("UTC weekday = %q, want Friday", got)
+	if got := raidDay(start, ""); got != "Fri 11 Dec" {
+		t.Fatalf("UTC day = %q, want Fri 11 Dec", got)
 	}
 }
 

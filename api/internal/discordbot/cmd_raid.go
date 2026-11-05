@@ -39,7 +39,7 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 		return s.notSignable(ctx, ask, cands)
 	}
 	now := s.now()
-	next, err := s.d.Guilds.NextRaidFor(ctx, guildID, userID, nil, now)
+	next, err := s.d.Guilds.NextRaidFirstFor(ctx, guildID, userID, now)
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: raid next: %w", err)
 	}
@@ -59,13 +59,17 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 	}
 	msg := PostMessage(postFor(facts, s.postStateOf(facts, movedFrom), movedFrom), facts.RaidURL, facts.NightURL, now)
 	msg.Embeds[0] = s.raidAnswerEmbed(ctx, facts, movedFrom, next.Own, cands)
+	if word, ok := kindWords[next.ZoneKind]; ok && next.ZoneKind != guilds.ZoneRaid {
+		// No raid is planned, so the next night is a run or an event: say which.
+		msg.Content = fill(commandCopy.RaidFallback, "{kind}", word)
+	}
 	msg.Ephemeral = true
 	return Reply{Message: msg}, nil
 }
 
 // ownStateSentence is the viewer's state on the raid, named by the character that signed.
 // A character missing from the candidates is not named (its key is not a name).
-func ownStateSentence(own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) string {
+func ownStateSentence(own *guilds.NextRaidOwn, cands []guilds.SignupCandidate, noRoles bool) string {
 	if own == nil {
 		return commandCopy.RaidUnsigned
 	}
@@ -89,7 +93,7 @@ func ownStateSentence(own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) s
 	if named {
 		template = pair[1]
 	}
-	return fill(template, "{Name}", name, "{Role}", roleWord(own.Role))
+	return fill(roleless(template, noRoles), "{Name}", name, "{Role}", roleWord(own.Role))
 }
 
 // postStateOf is the state the raid's post shows now.
@@ -101,6 +105,6 @@ func (s *Service) postStateOf(facts guilds.RaidPostFacts, movedFrom *time.Time) 
 // state: the /raid answer, and the embed of the /signup card.
 func (s *Service) raidAnswerEmbed(_ context.Context, facts guilds.RaidPostFacts, movedFrom *time.Time, own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) notify.Embed {
 	embed := notify.RaidPostEmbed(postFor(facts, s.postStateOf(facts, movedFrom), movedFrom), s.now())
-	embed.Description = ownStateSentence(own, cands)
+	embed.Description = ownStateSentence(own, cands, facts.Post.NoRoles)
 	return embed
 }

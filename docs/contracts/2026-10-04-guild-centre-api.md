@@ -22,7 +22,7 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
   "viewer": { "role": "officer", "character_key": "us/pvp/obnoxious-yell", "verified": true },
   "claim": { "state": "claimed", "since": "...", "frozen": false, "yours": false, "claimed_by": { "name": "Obnoxious Yell", "class": "warrior", "character_key": "us/pvp/obnoxious-yell" } },
   "summary": {
-    "raiders": 25, "waiting_for_approval": 3, "below_rating_floor": 2,
+    "raiders": 25, "waiting_for_approval": 3, "below_rating_floor": 2,   // raiders are accounts; waiting_for_approval is characters, the Waiting for approval panel's count and counts.waiting (amended 2026-11-05, guild round 3)
     "tier": { "name": "First tier", "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"], "named_encounters": 1, "down": 1, "pulls_total": 27 },   // the Progression tab's own
     "named_encounters_down": 1, "pulls_this_tier": 27,   // restate tier for the apps
     "updated_at": "..."
@@ -57,7 +57,7 @@ the home, only a verified member reads it.
   "character_key": "us/pvp/windtalon", "name": "Windtalon", "region": "us", "ruleset": "pvp",
   "class": "hunter", "spec": "Marksmanship", "role": "dps",
   "rank": "member", "verified": true, "consent": "gear",
-  "item_level": 70,                     // null without gear consent
+  "item_level": 70,                     // null without gear consent; the equipped average of the export's gear slots rounded to a whole level (the figure readiness and /char print), else the latest log's
   "logged_at": "2026-10-04T21:10:00Z",  // addon_exports.updated_at; replaces logged_recently (keep logged_recently too)
   "logged_recently": true,
   "attendance": { "present": 6, "nights": 8 },   // last 8 non-private, unflagged guild reports someone is present in
@@ -80,8 +80,12 @@ snapshot or the newest one does not carry this character. A snapshot line is mat
 by character name, any case: the snapshot's names carry no realm (a `Name-Realm` line drops
 its realm half), so the guild's realm is the row's. The first line of a name wins. A line that
 matches no row is never added as one; it counts only in `addon_snapshot.members`. `level`,
-`spec` (a spec slug), `gear_gap` and `build` are as that member's addon announced them
-(contract 2's `hello`); the snapshot carries only the members its sender's guild tab had live
+`spec` (a spec slug) and `build` are as that member's addon announced them (contract 2's
+`hello`); `gear_gap` is the
+site's own (amended 2026-11-05, guild round 3): the readiness board's `gear_gap.gain_dps` for the row,
+rounded to whole DPS, measured against the same band (the raid preset at 60) /char lists; `null`
+for a healer or tank band, a leveling character, or a row with no export gear. The addon's own
+announced figure is never shown (it read 38 DPS where the board read no upgrades). The snapshot carries only the members its sender's guild tab had live
 data for, so a member that addon had no data for reads `null`. Those four fields are also `null`
 when the row's member did not give `gear` (or `gear_bags`) consent, the same rule that withholds
 the row's class, spec and item level; `seen_at` and `snapshot_at` stay and `addon` stays non-null.
@@ -221,15 +225,23 @@ Table `loot_awards (id bigserial, guild_id, encounter_id, item_id, character_key
 `raid_id` that is not one answers 400 `invalid` ("raid N is not a done Onyxia raid of this
 guild"). Without it the award goes to the raid being played now: the guild's Onyxia raid (any
 status but cancelled) whose match window, an hour before its start to six hours after its end,
-holds the award's time. Otherwise it has no raid until a match attaches it; a previous done raid
-never takes it. One award per drop per raid: re-awarding the same drop in the same raid
-replaces it, and a later raid's award of the same item is a new row.
+holds the award's time. Outside every window (the morning after) it goes to the guild's latest
+matched night whose log killed the item's boss within the last 7 days (`awardNightLookback`):
+the planned Onyxia raid holding that log (`raid_id`), else, for a logged night no planned raid
+holds, that report (`report_id`, `raid_id` null). With no such night it has no raid until a
+match attaches it (amended 2026-11-05, guild round 3: the old rule left a morning-after award on
+no night, so the CSV said "No raid night recorded", the raid page "No loot awarded" and
+/report "0 items"; all three read this one attachment). One award per drop per raid:
+re-awarding the same drop in the same raid replaces it, and a later raid's award of the same
+item is a new row. The Loot tab marks a drop awarded when its award is filed under that same
+night (or, filed under none, was made in the last 12 hours).
 
 Attach on match (Lane G2): an award made with no `raid_id` goes to the guild's raid (not
 cancelled) whose match window holds the award's time, whatever that raid's status; outside every
 window it has no raid. When a raid's log matches (auto or by hand), the guild's raid-less awards
 whose `awarded_at` falls between an hour before the raid's start and six hours after the earlier
-of the log's anchor and the raid's end join that raid, in the match's own transaction. If the raid already holds an award of the same
+of the log's anchor and the raid's end join that raid, in the match's own transaction, and so do
+the raid-less awards filed under that log as a logged night. If the raid already holds an award of the same
 drop, the newer of the two stays on the raid and the older is left with no raid. Clearing the
 match takes back only the awards the match attached (`attached_by_match`); an award filed under
 the raid with `raid_id` is never detached.

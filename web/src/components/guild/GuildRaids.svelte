@@ -93,6 +93,10 @@
 
   const showPlanned = $derived(planned !== undefined && (memberView || officer));
   const readOnly = $derived(officer && !officerTools);
+  /** A gated officer with nothing planned gets no Planned panel: its empty line invites a plan the
+   *  disabled button above cannot make (raids spec 3.1, guild round 3). Rows still planned (a lapsed
+   *  plan) keep the panel, so their sign-ups stay reachable. */
+  const showPlannedPanel = $derived(showPlanned && !(readOnly && (planned?.length ?? 0) === 0));
   const plannedCount = $derived(openRaidCount(planned ?? []));
   const atCap = $derived(plannedCount >= RAID_CAP);
   const planDescribedBy = $derived(readOnly ? GATE_ID : atCap ? CAP_ID : undefined);
@@ -225,7 +229,7 @@
       </div>
     {/if}
   </Card>
-  {#if showPlanned && planned !== undefined}
+  {#if showPlannedPanel && planned !== undefined}
     <GuildPlannedRaids {planned} {officer} {guildPath} now={rowClock.now} {viewerTimezone} />
   {/if}
   <Card

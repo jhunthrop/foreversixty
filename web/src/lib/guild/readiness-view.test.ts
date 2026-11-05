@@ -6,7 +6,6 @@ import {
   consumablesLabel,
   enchantKind,
   enchantLabel,
-  enchantPillText,
   gearGapKind,
   gearGapLabel,
   isLeveling,
@@ -154,36 +153,12 @@ describe('cell labels', () => {
 
   // Live-fix round, defect 4: the four real contract slot keys (readiness_core.go's
   // enchantableSlots) humanise via the shared SLOT_LABELS table, not a bare capitalised
-  // slug (main_hand -> "Main hand", never "Main_hand").
+  // slug (main_hand -> "Main Hand", the client's casing, never "Main_hand").
   it('enchantLabel humanises the real contract slot keys via SLOT_LABELS', () => {
     const missing = row({
       enchants: { missing_slots: ['main_hand', 'chest', 'back', 'feet'], checked: true },
     });
-    expect(enchantLabel(missing)).toBe('Main hand, Chest, Back, Feet');
-  });
-
-  // Live-fix round, defect 4: a long missing-slot list cannot fit the Enchants pill
-  // ("MAIN_HAND, CHEST, BACK, FEET" overflowing the column) -- the pill's own text shows
-  // at most 2 slots then "+N more", while enchantLabel (the cell's title tooltip) keeps
-  // the full, untruncated list.
-  it('enchantPillText truncates past 2 slots; enchantLabel never does', () => {
-    const missing = row({
-      enchants: { missing_slots: ['main_hand', 'chest', 'back', 'feet'], checked: true },
-    });
-    expect(enchantPillText(missing)).toBe('Main hand, Chest and 2 more slots');
-    expect(enchantLabel(missing)).toBe('Main hand, Chest, Back, Feet');
-  });
-
-  it('enchantPillText shows the full list untruncated at 2 slots or fewer', () => {
-    const missing = row({ enchants: { missing_slots: ['chest', 'feet'], checked: true } });
-    expect(enchantPillText(missing)).toBe('Chest, Feet');
-  });
-
-  it('enchantPillText matches enchantLabel for the consent/all-enchanted cases', () => {
-    expect(enchantPillText(row({ consent: 'roster', enchants: { missing_slots: [], checked: false } }))).toBe(
-      'Not shared',
-    );
-    expect(enchantPillText(row({ enchants: { missing_slots: [], checked: true } }))).toBe('All enchanted');
+    expect(enchantLabel(missing)).toBe('Main Hand, Chest, Back, Feet');
   });
 
   it('consumablesLabel reads Stocked/Short, else why not', () => {

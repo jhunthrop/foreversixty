@@ -222,12 +222,14 @@ func upsertMockMembership(ctx context.Context, tx pgx.Tx, guildID, userID int64,
 	return nil
 }
 
-// insertReport writes one raid night's report row.
+// insertReport writes one raid night's report row. log_zone is the zone too: the seed's zone
+// names are the logs' own ("Onyxia's Lair"), the value the raid matcher filters a raid's
+// candidate logs by (guilds.Zone.LogZone); without it the match picker found no Onyxia log.
 func insertReport(ctx context.Context, tx pgx.Tx, guildID, ownerID int64, loggingCharacter string, pr plannedReport) error {
 	if _, err := tx.Exec(ctx,
-		`insert into reports (id, owner_id, guild_id, title, visibility, zone, status, engine_version,
+		`insert into reports (id, owner_id, guild_id, title, visibility, zone, log_zone, status, engine_version,
 		   logging_character, created_at, completed_at)
-		 values ($1, $2, $3, $4, 'guild', $5, 'complete', 'seedguild', $6, $7, $8)`,
+		 values ($1, $2, $3, $4, 'guild', $5, $5, 'complete', 'seedguild', $6, $7, $8)`,
 		pr.ID, ownerID, guildID, pr.Title, pr.Plan.Zone, loggingCharacter,
 		pr.CreatedAt, pr.CompletedAt); err != nil {
 		return fmt.Errorf("seedguild: insert report %s: %w", pr.ID, err)

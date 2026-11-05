@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 )
 
@@ -253,4 +255,84 @@ func TestPeekInviteSaysWhichCharacterJoins(t *testing.T) {
 		*joins.Class != "priest" || *joins.Race != "night-elf" {
 		t.Fatalf("on roster: joins_as = %+v, want Peekccc the level 60 Night Elf Priest", joins)
 	}
+}
+
+// An account whose member-rank character already waits on the roster and then joins by invite is
+// approved at once: the character carries the invite's verification and no placeholder is left.
+func TestAcceptInviteApprovesTheAccountsWaitingCharacter(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool, "Forever")
+	uid := seedUser(t, pool, "waiting@example.com")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/waitsalot", "member", false)
+	acceptAFreshInvite(t, s, gid, uid)
+	if by := inviteVerifiedBy(t, pool, "us/hardcore/waitsalot"); by == nil || *by != "invite" {
+		t.Fatalf("verified_by = %v, want invite", by)
+	}
+	if n := placeholderCount(t, pool, uid); n != 0 {
+		t.Fatalf("placeholder rows = %d, want 0", n)
+	}
+	if rank := verifiedRank(t, pool, gid, uid); rank != "member" {
+		t.Fatalf("guild_members.rank = %q, want member", rank)
+	}
+}
+
+// An officer-rank character is the export's own word and an invite link can be passed on, so it
+// keeps waiting for an officer; the placeholder keeps the account a verified member meanwhile.
+func TestAcceptInviteLeavesAnOfficerRankWaiting(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool, "Forever")
+	uid := seedUser(t, pool, "officer@example.com")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/claimsofficer", "officer", false)
+	acceptAFreshInvite(t, s, gid, uid)
+	if by := inviteVerifiedBy(t, pool, "us/hardcore/claimsofficer"); by != nil {
+		t.Fatalf("verified_by = %q, want nil until an officer approves", *by)
+	}
+	if n := placeholderCount(t, pool, uid); n != 1 {
+		t.Fatalf("placeholder rows = %d, want 1", n)
+	}
+	if rank := verifiedRank(t, pool, gid, uid); rank != "member" {
+		t.Fatalf("guild_members.rank = %q, want member (never officer by invite)", rank)
+	}
+}
+
+func acceptAFreshInvite(t *testing.T, s *Store, gid, uid int64) {
+	t.Helper()
+	token, _, err := s.RotateInvite(context.Background(), gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.AcceptInvite(context.Background(), token, uid); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func inviteVerifiedBy(t *testing.T, pool *pgxpool.Pool, key string) *string {
+	t.Helper()
+	var by *string
+	if err := pool.QueryRow(context.Background(),
+		`select verified_by from guild_characters where character_key = $1`, key).Scan(&by); err != nil {
+		t.Fatal(err)
+	}
+	return by
+}
+
+func placeholderCount(t *testing.T, pool *pgxpool.Pool, uid int64) int {
+	t.Helper()
+	var n int
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from guild_characters where character_key = $1`, syntheticKey(uid)).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	return n
+}
+
+func verifiedRank(t *testing.T, pool *pgxpool.Pool, gid, uid int64) string {
+	t.Helper()
+	var rank string
+	_ = pool.QueryRow(context.Background(),
+		`select rank from guild_members where guild_id = $1 and user_id = $2 and verified_at is not null`,
+		gid, uid).Scan(&rank)
+	return rank
 }

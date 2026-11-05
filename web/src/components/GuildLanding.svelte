@@ -2,7 +2,9 @@
 <!-- The bare `/guild` page: where the header's Guild door lands a visitor with no guild of
      their own (spec 2026-10-15-grouped-header.md section 2). A lookup by name, the top
      guilds, and a line for officers. A signed-in visitor whose current character has a guild
-     is sent on to it once `/v1/me` answers; the lookup is already on screen meanwhile. -->
+     is sent on to it once `/v1/me` answers; the lookup is already on screen meanwhile. One on an
+     alt outside a guild sees every guild of the account's at the top, and the lookup starts on
+     their first guild's region and ruleset (guild round 3). -->
 <script lang="ts">
   import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { onMount } from 'svelte';
@@ -15,6 +17,12 @@
   import PageHead from './ui/PageHead.svelte';
   import Select from './ui/Select.svelte';
   import HomeTopGuilds from './HomeTopGuilds.svelte';
+  import GuildLandingMine from './guild/GuildLandingMine.svelte';
+  import { heldClaimRow, lookupDefaults, myGuildRows, type MyGuildRow } from '../lib/guild/landing-mine';
+  import type { Me } from '../lib/account/api';
+
+  /** The session, when a test hands one in; the page reads its own on mount. */
+  let { me: givenMe = null }: { me?: Me | null } = $props();
 
   const regionOptions = REGIONS.map((option) => ({ value: option, label: option.toUpperCase() }));
   const rulesetOptions = RULESETS.map((option) => ({ value: option.id, label: option.label }));
@@ -23,6 +31,20 @@
   let region = $state<string>(DEFAULT_REGION);
   let ruleset = $state<string>(DEFAULT_RULESET);
   let status = $state('');
+  let mine = $state<MyGuildRow[]>(myGuildRows(givenMe));
+  /** The guild whose claim the account holds: the foot line says so instead of asking. */
+  let held = $state<MyGuildRow | null>(heldClaimRow(givenMe));
+  /** The player changed a select: the session's defaults never overwrite their choice. */
+  let placeTouched = false;
+
+  function applySession(me: Me | null): void {
+    mine = myGuildRows(me);
+    held = heldClaimRow(me);
+    const defaults = lookupDefaults(me);
+    if (defaults === null || placeTouched) return;
+    region = defaults.region;
+    ruleset = defaults.ruleset;
+  }
 
   function onSubmit(event: SubmitEvent): void {
     event.preventDefault();
@@ -38,14 +60,16 @@
   // The current character's guild, when it has one, is this landing's answer (GuildShell follows
   // later choices of character the same way).
   onMount(() => {
-    void import('../lib/character-selector/follow-page-run').then(({ openCurrentGuild }) =>
-      openCurrentGuild(),
-    );
+    void import('../lib/character-selector/follow-page-run')
+      .then(({ openCurrentGuild }) => openCurrentGuild())
+      .then(applySession);
   });
 </script>
 
 <div class="reveal {GUILD_BANDLESS_TOP} flex flex-col gap-[22px] md:gap-8" data-testid="guild-landing">
   <PageHead eyebrow={copy.eyebrow} title={copy.heading} job={copy.lead} />
+
+  <GuildLandingMine rows={mine} />
 
   <Card glyph="search" title={copy.lookupHeading} body="none" testid="guild-lookup-card">
     <form
@@ -82,6 +106,7 @@
           name="region"
           size="compact"
           bind:value={region}
+          onchange={() => (placeTouched = true)}
           options={regionOptions}
         />
       </div>
@@ -92,6 +117,7 @@
           name="ruleset"
           size="compact"
           bind:value={ruleset}
+          onchange={() => (placeTouched = true)}
           options={rulesetOptions}
         />
       </div>
@@ -112,7 +138,7 @@
     <div class="border-line-soft border-t px-5 py-2"><HomeTopGuilds /></div>
     {#snippet foot()}
       <p id="claim" class="text-muted scroll-mt-24 text-[13px]" data-testid="guild-landing-claim">
-        {copy.officerLine}
+        {held === null ? copy.officerLine : copy.holdsClaim(held.name)}
       </p>
     {/snippet}
   </Card>

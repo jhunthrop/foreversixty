@@ -7,6 +7,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -64,8 +65,11 @@ func (s *Service) lookupCaller(ctx context.Context, in Interaction) (guildID int
 // charData is a /char answer's character as the panel and the sheet read it. Readiness and
 // Synced are the guild's own reads: only a verified member of the guild sees them.
 type charData struct {
-	card    rankings.Character
+	card rankings.Character
+	// spec is what the upgrades rank against; named is the spec the card says, empty when the
+	// guild knows none (guildSpec).
 	spec    specs.Spec
+	named   specs.Spec
 	class   string
 	faction string
 	build   string
@@ -83,9 +87,12 @@ func (s *Service) loadChar(ctx context.Context, guildID int64, viewer *int64, op
 	if err != nil || !found {
 		return charData{}, false, err
 	}
-	spec, _ := specByKey(deref(card.GearSpec))
+	named, spec, err := s.guildSpec(ctx, guildID, card)
+	if err != nil {
+		return charData{}, false, err
+	}
 	build, _ := s.d.Guilds.ActiveBuild()
-	d := charData{card: card, spec: spec, class: strings.ToLower(card.Character.Class),
+	d := charData{card: card, spec: spec, named: named, class: strings.ToLower(card.Character.Class),
 		faction: s.characterFaction(card, g.Faction), build: build, ups: s.upgrades(card, spec, g.Faction)}
 	member, err := s.verifiedMember(ctx, guildID, viewer)
 	if err != nil || !member {
@@ -120,13 +127,25 @@ func (s *Service) charPanel(ctx context.Context, d charData) Message {
 		for _, u := range shown {
 			rows = append(rows, panelRow{item: pointerTo(s.upgradeRow(d, u))})
 		}
-		if more := moreText(len(d.ups.items) - len(shown)); more != "" {
+		if more := moreText(upgradeTotal(d) - len(shown)); more != "" {
 			rows = append(rows, panelRow{text: more})
 		}
 	}
 	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(d.card.Character.Key)}
 	body := s.guardedBody(ctx, d.build, head, rows)
 	return Message{ComponentsV2: true, Layout: []Node{charContainer(d.class, body)}, Components: []ActionRow{{link}}}
+}
+
+// upgradeTotal is how many upgrades the character has, the count the panel's "N more" is left
+// from: for a character on the viewer's guild roster whose gear the board read, the board's own
+// count (the "13 gear upgrades waiting" in the header's readiness word), never fewer than the
+// panel lists; else the panel's own list. The panel's DPS list leaves out worn slots whose gain
+// it cannot measure, so its length alone read "13 waiting" over 3 rows and no more line.
+func upgradeTotal(d charData) int {
+	if d.facts != nil && d.facts.GearChecked {
+		return max(d.facts.GearUpgrades, len(d.ups.items))
+	}
+	return len(d.ups.items)
 }
 
 // charContainer is the panel's container in the class colour, or uncoloured for an unknown class.
@@ -141,14 +160,14 @@ func charContainer(class string, body []Node) Node {
 // synced subtext, each clause only when known.
 func (s *Service) charHeader(d charData, withFacts bool) string {
 	lines := []string{heading("[" + memberText(d.card.Character.Name) + "](" + s.characterURL(d.card.Character.Key) + ")"),
-		cardLine(d.card, d.spec, d.class)}
+		cardLine(d.card, d.named, d.class)}
 	if !withFacts {
 		return strings.Join(lines, "\n")
 	}
 	clauses := strings.Split(strings.TrimPrefix(lookupCopy.CharFacts, subtext("")), lineJoin)
 	var kept []string
-	if level, ok := averageItemLevel(d.card.Gear); ok {
-		kept = append(kept, fill(clauses[0], "{x.x}", level))
+	if level, ok := charItemLevel(d); ok {
+		kept = append(kept, fill(clauses[0], "{ilvl}", level))
 	}
 	if d.facts != nil {
 		kept = append(kept, fill(clauses[1], "{word}", d.facts.Word))
@@ -224,29 +243,32 @@ func cardLineWith(card rankings.Character, spec specs.Spec, class string, text f
 	return line
 }
 
-// averageItemLevel is the mean item level of every worn item, one decimal (paperdoll spec §3.5).
-// An empty slot is not equipped, so it is not counted, nor is the empty off hand under a
-// two-hander; the gear list carries no shirt or tabard. When any worn item is unknown to the
-// data (no item level) there is no figure at all: the unknown items are the newest, so a mean
-// of the rest would be wrong in exactly the case that matters. It is the card's own figure, not
-// the guild roster's item_level: the card answers for any public character and reads the same
-// worn items the character page's paperdoll draws, so the two agree.
-func averageItemLevel(gear []rankings.GearSlot) (string, bool) {
-	total, count := 0, 0
-	for _, g := range gear {
-		if g.Worn == nil {
-			continue
-		}
-		if g.Worn.ItemLevel == nil {
-			return "", false
-		}
-		total += *g.Worn.ItemLevel
-		count++
+// charItemLevel is the card's item level, the one number the guild roster and the readiness
+// board show too (guild round 3): for a character on the viewer's guild roster, the guild's own
+// figure (the equipped average, else the latest log's, so a healer whose export carries no gear
+// still reads one); otherwise the card's equipped average, by the same rule and rounding.
+func charItemLevel(d charData) (string, bool) {
+	if d.facts != nil && d.facts.ItemLevel != nil {
+		return fmt.Sprint(*d.facts.ItemLevel), true
 	}
-	if count == 0 {
+	return equippedItemLevel(d.card.Gear)
+}
+
+// equippedItemLevel is upgrades.EquippedItemLevel over the card's worn items: every worn slot
+// counts, an empty slot (the off hand under a two-hander included) does not, and one unknown item
+// hides the figure. The gear list carries no shirt or tabard.
+func equippedItemLevel(gear []rankings.GearSlot) (string, bool) {
+	var levels []*int
+	for _, g := range gear {
+		if g.Worn != nil {
+			levels = append(levels, g.Worn.ItemLevel)
+		}
+	}
+	level, ok := upgrades.EquippedItemLevel(levels)
+	if !ok {
 		return "", false
 	}
-	return fmt.Sprintf("%.1f", float64(total)/float64(count)), true
+	return fmt.Sprint(level), true
 }
 
 // itemFacts is an item as the build's table knows it, with the BiS data's name and source.
@@ -264,6 +286,23 @@ func (s *Service) itemFacts(build, class string, id int, name, source, url strin
 		facts.Icon = s.d.PublicBaseURL + "/data/" + build + "/icons/" + it.Icon + ".webp"
 	}
 	return facts
+}
+
+// guildSpec is the character's spec as the guild's pages name it (the raid spec its player
+// picked, else its newest logged fight's): named is that spec, empty when neither is known, and
+// the card says the bare class then, as the site does (guild round 3: a character with no known
+// spec read "Assassination Rogue" from its gear spec). ranked is the spec its upgrades rank
+// against: named, else the character page's gear spec, the band the site's gear panel reads.
+func (s *Service) guildSpec(ctx context.Context, guildID int64, card rankings.Character) (named, ranked specs.Spec, err error) {
+	key, err := s.d.Guilds.GuildSpecOf(ctx, guildID, card.Character.Key)
+	if err != nil {
+		return specs.Spec{}, specs.Spec{}, fmt.Errorf("discordbot: char spec: %w", err)
+	}
+	if sp, ok := specByKey(key); ok {
+		return sp, sp, nil
+	}
+	ranked, _ = specByKey(deref(card.GearSpec))
+	return specs.Spec{}, ranked, nil
 }
 
 func specByKey(key string) (specs.Spec, bool) {

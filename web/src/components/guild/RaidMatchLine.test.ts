@@ -51,6 +51,10 @@ describe('RaidMatchLine', () => {
     expect(body).toMatch(/class="text-gold font-bold relative after:absolute/);
   });
 
+  it('keeps the word space before the link in the markup itself (guild round 3)', () => {
+    expect(html()).toMatch(/Logged as a raid night\. (<!--[^>]*-->)*<a/);
+  });
+
   it('reads line 2 with the uploader and `matched by time`, no guild time in the same zone', () => {
     expect(text(html())).toContain('Log uploaded Thu 10 Dec, 11:42 pm by Kraggor · matched by time');
     expect(text(html())).not.toContain('guild time');

@@ -126,7 +126,7 @@ var guideCopy = guideStrings{
 	SpecLead:        "The pick signs **{Name}** up as {State} for {Title}, {Date}.",
 	SpecLeadChange:  "The pick changes the spec **{Name}** brings to {Title}, {Date}.",
 	SpecPlaceholder: "Choose a spec",
-	SpecKept:        " {Spec} is kept for {Name}.",
+	SpecKept:        " {Name} signs up as {Spec} from now on.",
 	SpecChange:      "Change spec",
 	SpecStale:       "This card is out of date. Press the button on the raid post again.",
 }

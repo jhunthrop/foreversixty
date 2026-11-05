@@ -98,9 +98,10 @@ func (s *Store) GuildStanding(ctx context.Context, viewerID int64, guildIDs []in
 			Covered:      plan.covered[id.id],
 		}
 		if id.snapshot {
-			// OnRoster already counts the names in game without an account.
+			// Everyone on the guild: the Roster list (names in game without an account
+			// included) and the characters waiting for approval.
 			_, counts := mergeRoster(rows[id.id], invited[id.id], id.members)
-			n := counts.OnRoster
+			n := counts.OnRoster + counts.Waiting
 			st.RosterCount = &n
 		}
 		out[id.id] = st

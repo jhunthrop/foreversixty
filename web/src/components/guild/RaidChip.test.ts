@@ -60,4 +60,9 @@ describe('RaidChip viewer', () => {
     expect(out.text).toBe('Not signed up');
     expect(out.tag).toContain('pill-site');
   });
+
+  it('reads In alone on a guild event, which counts no roles (guild round 3)', () => {
+    expect(chip({ kind: 'viewer', state: 'in', role: null }).text).toBe('In');
+    expect(chip({ kind: 'viewer', state: 'late', role: null }).text).toBe('Late');
+  });
 });

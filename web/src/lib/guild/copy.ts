@@ -13,6 +13,19 @@ export const guildHomeCopy = {
   // thing on screen is server-rendered text that hydration does not change: the page's
   // largest-contentful-paint candidate lands with the HTML instead of waiting for, or
   // being replaced by, the island's scripts (W.16).
+  // A guild address that names no guild the site knows (guild round 3): where it looked, in words.
+  notFound: (where: string): string =>
+    `No guild by that name on ${where}. Check the spelling and the ruleset.`,
+  lookUpAgain: 'Look it up again',
+  /** `Did you mean ` + up to three links `{Guild} ({where})`, joined `, ` and ` or `, + `?`
+   *  (guild loop round 3). */
+  didYouMean: 'Did you mean ',
+  suggestionLink: (name: string, where: string): string => `${name} (${where})`,
+  /** What goes before the suggestion at `index` of `count`: nothing, `, `, or ` or ` before the last. */
+  suggestionJoin: (index: number, count: number): string => {
+    if (index === 0) return '';
+    return index === count - 1 ? ' or ' : ', ';
+  },
   lede: "A guild's progression per boss, pull counts, kill dates and roster bests. Its roster, raid nights and loot sit in the tabs once it has loaded.",
   reportsHeading: "This week's reports",
   // The public block's own reports heading (UX review defect 2, 2026-09-28): distinguishes
@@ -105,15 +118,18 @@ export const guildClaimCopy = {
   // What an officer who may claim reads: what claiming gets them.
   unclaimedForOfficer:
     'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
-  // Claiming asks first, with the rules in one line.
-  claimConfirmLine: (guildName: string): string =>
-    `Claim ${guildName === '' ? 'this guild' : guildName}? You may attempt one claim every 30 days, hold one claimed guild at a time, and a claim can be contested.`,
+  // Claiming asks first; the rules sit in their own card right below, so the question is bare.
+  claimConfirmLine: (guildName: string): string => `Claim ${guildName === '' ? 'this guild' : guildName}?`,
   claimConfirmButton: 'Yes, claim it',
   // After the claim: the page says what the viewer holds and where to go next.
   youHold: (guildName: string): string => `You hold ${guildName === '' ? 'this guild' : guildName}.`,
   nextHeading: 'Next',
   nextRoster: 'Approve your officers and members',
   nextInvite: 'Make an invite link',
+  nextPlan: 'Plan an event',
+  nextDiscord: 'Add the Discord bot',
+  // A guild with no plan: the gate sentence's part 1 for both, no link (the plan lives on the tabs).
+  nextGated: 'Events and the Discord bot are part of the Guild and Raid guild plans.',
   releaseConfirmLine: (guildName: string): string =>
     `Release your claim on ${guildName === '' ? 'this guild' : guildName}? Officers will have to claim it again.`,
   releaseConfirmButton: 'Release',
@@ -169,7 +185,7 @@ export const guildSettingsCopy = {
   officerThreshold: 'Officer rank threshold',
   inviteHeading: 'Invite link',
   inviteHelp: (guildName: string): string =>
-    `Anyone with this link joins ${guildName} as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once.`,
+    `Anyone with this link joins ${guildName} as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once. A character with an officer rank in game still waits for an officer.`,
   membersHeading: 'Members and access',
   recordsHeading: 'Records and crest',
   recordsOnlyHeading: 'Records',
@@ -239,7 +255,7 @@ export const guildJoinCopy = {
   joined: 'You joined the guild.',
   // Spec 2026-10-27 section 9.3, invite joined: the guild's plan, from `/v1/me` `covered`.
   onPlan: (guildName: string, tier: string): string => `${guildName} is on the ${tier} plan.`,
-  noPlanYet: (guildName: string): string => `${guildName} has no plan yet.`,
+  noPlanYet: (guildName: string): string => `${guildName} is on the free plan.`,
   signInButton: 'Sign in with Battle.net to join',
   signInLine: 'Sign in to join this guild.',
   notNow: 'Not now',
@@ -291,11 +307,10 @@ export const guildConsentCopy = {
 } as const;
 
 /** Task L8.3: the Roster tab's "In game" column and the line above the table, from the
- *  guild's newest addon roster snapshot (Task L6.14). The gap is read as DPS: the addon's
- *  hello carries no unit, so the column's hover says it is the addon's own figure. */
+ *  guild's newest addon roster snapshot (Task L6.14). Its gear gap is the readiness board's
+ *  (guild round 3), read as DPS by the chip's own words (`gap`). */
 export const guildRosterAddonCopy = {
   column: 'In game',
-  columnHover: 'Gear gap in DPS, as the addon reports it',
   /** Read before each row's cell, for a screen reader: the rows have no table headers. */
   srLabel: 'In game:',
   notSeen: '—',
@@ -319,6 +334,7 @@ export const guildLandingCopy = {
   eyebrow: 'Guild',
   heading: 'Guilds',
   lookupHeading: 'Open a guild',
+  mineHeading: 'Your guilds',
   namePlaceholder: 'Guild name',
   lead: "Your guild's progress, roster, raid nights and loot, from the logs and the addon.",
   nameLabel: 'Guild name',
@@ -328,6 +344,8 @@ export const guildLandingCopy = {
   emptyName: "Type the guild's name as the game writes it.",
   topHeading: 'Top guilds',
   officerLine: 'Run a guild? Open its page and choose Claim this guild.',
+  /** In the officer line's place for a player who already holds a claim (guild loop round 3). */
+  holdsClaim: (guildName: string): string => `You hold ${possessive(guildName)} claim.`,
 } as const;
 
 /** The roster as everyone the addon saw, with a word beside each (lifecycle review round 4,
@@ -394,6 +412,11 @@ export const guildGateCopy = {
   startTrial: `Start the ${GUILD_TRIAL_DAYS}-day trial`,
   subscribe: 'Subscribe your guild',
   moveToRaidGuild: 'Move to Raid guild',
+  /** A plan Forever Sixty granted (guild round 3): no Move control exists, so the gate asks us. */
+  grantedMove: {
+    text: 'Your plan was granted by Forever Sixty. Ask us on Discord to move it to Raid guild.',
+    link: 'Ask us on Discord',
+  },
   ask: 'Ask ',
   askTail: ' to turn it on.',
   askMaster: 'Ask your guild master to turn it on.',

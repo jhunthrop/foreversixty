@@ -39,17 +39,26 @@ func roleDescription(role string) string {
 	return guideCopy.BisRole[0]
 }
 
-// needsSpec reports a sign-up that asks the spec first: In, Late or Bench, a class with specs,
-// and no spec ever picked for this guild's raids.
-func needsSpec(state string, c guilds.SignupCandidate) bool {
-	return state != guilds.SignupOut && c.RaidSpec == "" && len(raidspec.ForClass(c.Class)) > 0
+// needsSpec reports a sign-up that asks the spec first: In, Late or Bench on a raid or a run (a
+// guild event has no roles, events spec §3.5), a class with specs, and no spec known: none picked
+// for this guild's raids and none its logs name. A known spec signs up as it stands; the player
+// can still press Change spec (amended 2026-11-05).
+func needsSpec(state, kind string, c guilds.SignupCandidate) bool {
+	if kind == guilds.ZoneEvent || state == guilds.SignupOut || c.RaidSpec != "" {
+		return false
+	}
+	if _, known := raidspec.Resolve(c.Class, c.Spec, c.Role); known {
+		return false
+	}
+	return len(raidspec.ForClass(c.Class)) > 0
 }
 
 // changeSpecButtons is `Change spec` under an In, Late or Bench outcome; none for Out, for a
-// class with no specs, or for an id Discord would refuse.
-func changeSpecButtons(state string, raidID int64, c guilds.SignupCandidate) []Component {
+// guild event, for a class with no specs, or for an id Discord would refuse.
+func changeSpecButtons(state, kind string, raidID int64, c guilds.SignupCandidate) []Component {
 	id := cardCustomID(prefixSpec, partSpecChange, strconv.FormatInt(raidID, 10), c.CharacterKey)
-	if state == guilds.SignupOut || len(raidspec.ForClass(c.Class)) == 0 || utf8.RuneCountInString(id) > customIDMax {
+	if state == guilds.SignupOut || kind == guilds.ZoneEvent || len(raidspec.ForClass(c.Class)) == 0 ||
+		utf8.RuneCountInString(id) > customIDMax {
 		return nil
 	}
 	return []Component{{Kind: KindButton, Style: StyleSecondary, Label: guideCopy.SpecChange, CustomID: id}}
@@ -308,6 +317,6 @@ func (s *Service) specChanged(ctx context.Context, in Interaction, p cardPress) 
 		return seat.ask.reply(strings.TrimPrefix(kept, " ")), nil
 	}
 	pairs := append(s.raidPairs(seat.in), "{Role}", roleWord(sp.Role))
-	return seat.ask.reply(alreadySentence(res.State, pairs)+kept,
-		changeSpecButtons(res.State, seat.ask.RaidID, res.Character)...), nil
+	return seat.ask.reply(alreadySentence(res.State, pairs, false)+kept,
+		changeSpecButtons(res.State, guilds.ZoneRaid, seat.ask.RaidID, res.Character)...), nil
 }

@@ -37,12 +37,20 @@ func TestReadinessGate(t *testing.T) {
 			}
 		}
 	}
+	w.og.readyErr = guilds.ErrRaidGuildGranted
+	rep := w.run(t, pressDiscord, "readiness")
+	if rep.Message.Content != segment(15, nil) {
+		t.Errorf("granted: %q, want %q", rep.Message.Content, segment(15, nil))
+	}
+	if b := rep.Message.Components[0][0]; b.Label != segment(16, nil) || b.URL != CommunityDiscordInvite {
+		t.Errorf("granted: button %+v, want %q to the Discord invite", b, segment(16, nil))
+	}
 	w.og.readyErr = nil
 	w.og.readiness = guilds.ReadinessAnswer{}
 	if got := w.run(t, pressDiscord, "readiness").Message.Content; got != commandCopy.RaidNone {
 		t.Fatalf("none planned = %q", got)
 	}
-	rep := w.run(t, strangerDiscord, "readiness")
+	rep = w.run(t, strangerDiscord, "readiness")
 	if rep.Message.Content != segment(8, olympus) || rep.Message.Components[0][0].Label != linkCopy.LinkButton {
 		t.Fatalf("unlinked = %+v", rep.Message)
 	}
@@ -50,7 +58,7 @@ func TestReadinessGate(t *testing.T) {
 	raid := guilds.Raid{ID: 3, Title: "Onyxia's Lair", StartsAt: time.Date(2026, 12, 10, 20, 0, 0, 0, time.UTC)}
 	rows := make([]string, 10)
 	for i := range rows {
-		rows[i] = fmt.Sprintf("Raider%d · Short · Synced 9 days before the raid", i)
+		rows[i] = fmt.Sprintf("Raider%d · Short · Synced 9 days ago", i)
 	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid, Signed: 23, Failing: 12, Rows: rows, More: 2}
 	rep = w.run(t, pressDiscord, "readiness")
@@ -64,7 +72,7 @@ func TestReadinessGate(t *testing.T) {
 	if len(lines) != 11 || lines[0] != rows[0] || lines[10] != segment(5, map[string]string{"n": "2"}) {
 		t.Fatalf("rows = %q", lines)
 	}
-	if b := rep.Message.Components[0][0]; b.Label != segment(6, nil) || hasShare(rep) || !strings.HasSuffix(b.URL, "/readiness") {
+	if b := rep.Message.Components[0][0]; b.Label != segment(6, nil) || hasShare(rep) || !strings.HasSuffix(b.URL, "#readiness") || strings.Contains(b.URL, "/readiness") {
 		t.Fatalf("row = %+v", rep.Message.Components)
 	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid, Signed: 23, Failing: 1, Rows: rows[:1]}

@@ -84,10 +84,10 @@
     type TabFetchStatus,
   } from '../lib/guild/guild-page-decisions';
   import { loadReadinessBoard, type ReadinessBoard } from '../lib/guild/readiness-raid';
-  import { nextRaidDeadline, raidCopy, raidDeadlineStart, showsBandLine } from '../lib/guild/raid-copy';
+  import { needsDeadline, raidCopy, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
-  import { fetchGuild, type GuildPage } from '../lib/rankings/api';
+  import { fetchGuild, RankingsError, type GuildPage } from '../lib/rankings/api';
   import FactLine from './guild/FactLine.svelte';
   import GuildUnverifiedNote from './guild/GuildUnverifiedNote.svelte';
   import GuildClaimRow from './guild/GuildClaimRow.svelte';
@@ -130,6 +130,12 @@
   // The Before raids open card is its own chunk (the GuildShell bundle budget); it starts loading
   // with the viewer's membership, alongside the home fetch it waits on anyway.
   const weekOneLazy = createLazyComponent(() => import('./guild/GuildWeekOneCard.svelte'));
+  // The unknown-guild panel (with its Did you mean search) is its own chunk too: it only draws
+  // after a lookup fails, so the page's first view never pays for it.
+  const notFoundLazy = createLazyComponent(() => import('./guild/GuildNotFound.svelte'));
+  $effect(() => {
+    if (status === 'notfound') notFoundLazy.load();
+  });
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -138,7 +144,7 @@
   );
 
   let data = $state<GuildPage | null>(null);
-  let status = $state<'loading' | 'ready' | 'failed' | 'missing'>('loading');
+  let status = $state<'loading' | 'ready' | 'failed' | 'missing' | 'notfound'>('loading');
   let error = $state('');
   let attempt = $state(0);
 
@@ -158,6 +164,11 @@
       })
       .catch((thrown: unknown) => {
         if (resolved !== requested) return;
+        // A 404 is a wrong name or ruleset, not a failure: a retry cannot help (guild round 3).
+        if (thrown instanceof RankingsError && thrown.status === 404) {
+          status = 'notfound';
+          return;
+        }
         status = 'failed';
         error = thrown instanceof Error ? thrown.message : 'That guild did not load.';
       });
@@ -376,14 +387,15 @@
   let myReadiness = $state<GuildReadinessRow | null>(null);
   const needs = $derived.by(() => {
     const row = myReadiness;
-    return row === null ? null : needsLine(row, nextRaidDeadline(raidDeadlineStart(home?.next_raid)));
+    return row === null ? null : needsLine(row, needsDeadline(home?.standing?.needs_raid, home?.next_raid));
   });
   $effect(() => {
     if (role !== 'member' || home === null || myCharacterKey === null) {
       myReadiness = null;
       return;
     }
-    const key = myCharacterKey;
+    // The needs line is the character the account signed up for that raid, else the header one.
+    const key = home.standing?.needs_raid?.character_key ?? myCharacterKey;
     void fetchGuildReadiness(home.guild.id)
       .then((page) => {
         myReadiness = page.rows.find((row) => row.character_key === key) ?? null;
@@ -394,6 +406,14 @@
   });
 
   /** The Before raids open card's character: the current one, with the spec the logs or the site know. */
+  /** The band shows the In, Late, Bench and Out segments for the next event (RaidBandLine binds
+   *  them to the header character): the Before raids open card then offers no second Sign up. */
+  const bandSignsUp = $derived(
+    showsBandLine(myGuildMembership?.verified === true, role) &&
+      myCharacterKey !== null &&
+      home?.next_raid != null &&
+      bandLineLazy.error === '',
+  );
   const weekOneCharacter = $derived<WeekOneCharacter | null>(
     myRosterRow === null
       ? null
@@ -828,19 +848,23 @@
   }
 </script>
 
-{#if status === 'missing'}
+{#if status === 'missing' || (status === 'notfound' && resolved !== null)}
   <h1 class="sr-only">Guild</h1>
   <!-- Keeps the loading state's box and its lede: this branch replaces the loading state on
-       the client (an address that does not parse never fetches), so the server-rendered
-       lede stays the first paint and a footer that jumps up the page by the skeleton's
-       height (the layout shift the guild Lighthouse row measured) stays put. -->
+       the client, so the server-rendered lede stays the first paint and a footer that jumps up
+       the page by the skeleton's height (the layout shift the guild Lighthouse row measured)
+       stays put. A wrong address and an unknown guild share the box. -->
   <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight} {GUILD_BANDLESS_TOP}">
     <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
-    <p class="text-[14px]" data-testid="guild-missing">
-      That is not a guild address. They look like <code class="font-mono"
-        >/guild/eu/normal/the-last-watch</code
-      >.
-    </p>
+    {#if status === 'notfound' && resolved !== null}
+      {#if notFoundLazy.current}<notFoundLazy.current path={resolved} />{/if}
+    {:else}
+      <p class="text-[14px]" data-testid="guild-missing">
+        That is not a guild address. They look like <code class="font-mono"
+          >/guild/eu/normal/the-last-watch</code
+        >.
+      </p>
+    {/if}
   </div>
 {:else if status === 'loading' || status === 'failed'}
   <h1 class="sr-only">Guild</h1>
@@ -945,6 +969,7 @@
                     nextRaid={home.next_raid ?? null}
                     officer={officerView}
                     {officerTools}
+                    {gateFacts}
                     {guildPath}
                     currentKey={myCharacterKey}
                     ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
@@ -1043,6 +1068,8 @@
               onRetry={() => (homeAttempt += 1)}
               onApprove={approveFromCard}
               onPlan={planFromCard}
+              {bandSignsUp}
+              planGated={!officerTools}
             />
           {/if}
         {/snippet}
@@ -1184,7 +1211,6 @@
           {officerTools}
           {raidGuildTools}
           memberReadOnly={role === 'member'}
-          attendanceSource={attendanceSourceOf(home)}
           ownKeys={[...myCharacterKeys]}
           busyItemId={lootBusyItemId}
           refusal={planRefusal}

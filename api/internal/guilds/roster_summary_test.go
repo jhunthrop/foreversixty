@@ -34,12 +34,15 @@ func TestBelowRatingFloor(t *testing.T) {
 	}
 }
 
-func TestSummaryPeopleCountsAccountsNotCharacters(t *testing.T) {
+func TestSummaryCountsRaidersByAccountAndWaitingByCharacter(t *testing.T) {
+	gear := map[string]int{"chest": 100}
 	row := func(owner int64, verified bool, consent string) RosterRow {
-		return RosterRow{ownerUserID: owner, Verified: verified, Consent: consent}
+		return RosterRow{ownerUserID: owner, Verified: verified, Consent: consent, gear: gear}
 	}
 	roster := []RosterRow{
-		// One account, three characters, all waiting: one person waiting.
+		// Shares gear, but the export carried no gear list: gear unknown, not "with gear".
+		{ownerUserID: 5, Verified: true, Consent: "gear"},
+		// One account, three characters, all waiting: three waiting, as the panel lists them.
 		row(1, false, "gear"), row(1, false, "gear"), row(1, false, "gear"),
 		// A main and an alt with gear on the site: one raider.
 		row(2, true, "gear"), row(2, true, "gear"),
@@ -47,9 +50,9 @@ func TestSummaryPeopleCountsAccountsNotCharacters(t *testing.T) {
 		row(3, true, "roster"),
 		row(4, true, "gear_bags"),
 	}
-	raiders, waiting := summaryPeople(roster)
-	if raiders != 2 || waiting != 1 {
-		t.Fatalf("summaryPeople = %d raiders, %d waiting; want 2 and 1", raiders, waiting)
+	raiders, waiting := summaryCounts(roster)
+	if raiders != 2 || waiting != 3 {
+		t.Fatalf("summaryCounts = %d raiders, %d waiting; want 2 and 3", raiders, waiting)
 	}
 }
 

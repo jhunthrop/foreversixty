@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -136,6 +137,96 @@ func TestExportLoot_AnInvitedMembersAwardReadsAsTheirCharacter(t *testing.T) {
 	rows := f.rows("loot")
 	if len(rows) != 2 || rows[1][5] != "Brightwing" {
 		t.Fatalf("rows = %v, want the award named Brightwing", rows)
+	}
+}
+
+// A logged night no planned raid holds exports the characters its log shows, the rows behind
+// the Raids tab's "N of N present", next to a planned raid's rows, in night order.
+func TestExportAttendance_LoggedNightWithNoPlannedRaid(t *testing.T) {
+	f := newExportFixture(t, "Export Logged Night")
+	raid := f.seedRaid("Onyxia night")
+	f.seedAttendance(raid, "us/hardcore/zed", "Zed", "mage", "present")
+	night := time.Date(2026, 10, 27, 19, 0, 0, 0, time.UTC)
+	seedNight(t, f.h.pool, f.gid, "export-night-1", "Onyxia's Lair", night, []seedFight{
+		{encounterID: 1084, kill: true, duration: 4 * time.Minute, players: []seedPlayer{
+			{key: "us/hardcore/amy", name: "Amy", class: "hunter", spec: "marksmanship", role: "dps"},
+			{key: "us/hardcore/bo", name: "Bo", class: "priest", spec: "holy", role: "healer"},
+		}},
+	})
+	if _, err := f.h.pool.Exec(t.Context(), `update reports set zone = 'Onyxia''s Lair' where id = 'export-night-1'`); err != nil {
+		t.Fatal(err)
+	}
+	rows := f.rows("attendance")
+	want := [][]string{
+		{"date", "raid", "character", "class", "signed", "outcome", "excused", "pulls_present", "pulls_total"},
+		{"2026-10-20", "Onyxia night", "Zed", "mage", "in", "present", "true", "4", "5"},
+		{"2026-10-27", "Onyxia's Lair", "Amy", "hunter", "", "present", "false", "1", "1"},
+		{"2026-10-27", "Onyxia's Lair", "Bo", "priest", "", "present", "false", "1", "1"},
+	}
+	if fmt.Sprint(rows) != fmt.Sprint(want) {
+		t.Fatalf("rows = %v, want %v", rows, want)
+	}
+}
+
+// An award made from a report is dated by that report's night and named by it; one with
+// neither a raid nor a report says so in the raid cell.
+func TestExportLoot_NightFromTheReportElseSaysSo(t *testing.T) {
+	f := newExportFixture(t, "Export Loot Night")
+	night := time.Date(2026, 10, 27, 19, 0, 0, 0, time.UTC)
+	seedNight(t, f.h.pool, f.gid, "export-loot-night", "Onyxia's Lair", night, nil)
+	if _, err := f.h.pool.Exec(t.Context(), `update reports set zone = 'Onyxia''s Lair' where id = 'export-loot-night'`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := f.h.pool.Exec(t.Context(), `
+		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by, awarded_at, report_id)
+		values ($1, 1084, 16963, 'us/hardcore/zed', $2, '2026-10-29 12:00+00', 'export-loot-night'),
+		       ($1, 1084, 17067, 'us/hardcore/zed', $2, '2026-10-30 12:00+00', null)`, f.gid, f.officer); err != nil {
+		t.Fatal(err)
+	}
+	rows := f.rows("loot")
+	if len(rows) != 3 {
+		t.Fatalf("rows = %v, want two awards", rows)
+	}
+	if rows[1][0] != "2026-10-27" || rows[1][1] != "Onyxia's Lair" {
+		t.Fatalf("report award = %v, want the report's night", rows[1])
+	}
+	if rows[2][0] != "2026-10-30" || rows[2][1] != lootNightUnknown {
+		t.Fatalf("raidless award = %v, want the award date and %q", rows[2], lootNightUnknown)
+	}
+}
+
+// A Wednesday 7 pm raid in Chicago is 01:00 UTC Thursday: both CSVs date it Wednesday, in the
+// guild's raid zone, and so does a logged night no planned raid holds.
+func TestExport_DatesInTheGuildsRaidZone(t *testing.T) {
+	f := newExportFixture(t, "Export Zone")
+	if err := f.h.svc.Store.SetGuildRaidTimezone(t.Context(), f.gid, "America/Chicago"); err != nil {
+		t.Fatal(err)
+	}
+	var raid int64
+	if err := f.h.pool.QueryRow(t.Context(), `
+		insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, status, created_by)
+		values ($1, 'onyxia', 'Onyxia night', '2026-12-10 01:00+00', 180, 'done', $2) returning id`,
+		f.gid, f.officer).Scan(&raid); err != nil {
+		t.Fatal(err)
+	}
+	f.seedAttendance(raid, "us/hardcore/zed", "Zed", "mage", "present")
+	if _, err := f.h.pool.Exec(t.Context(), `
+		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by, awarded_at, raid_id)
+		values ($1, 1084, 16963, 'us/hardcore/zed', $2, '2026-12-10 02:00+00', $3)`, f.gid, f.officer, raid); err != nil {
+		t.Fatal(err)
+	}
+	logged := time.Date(2026, 12, 17, 1, 30, 0, 0, time.UTC) // Wed 16 Dec, 7:30 pm in Chicago
+	seedNight(t, f.h.pool, f.gid, "export-zone-night", "Onyxia's Lair", logged, []seedFight{
+		{encounterID: 1084, kill: true, duration: 4 * time.Minute, players: []seedPlayer{
+			{key: "us/hardcore/amy", name: "Amy", class: "hunter", spec: "marksmanship", role: "dps"},
+		}},
+	})
+	att := f.rows("attendance")
+	if len(att) != 3 || att[1][0] != "2026-12-09" || att[2][0] != "2026-12-16" {
+		t.Fatalf("attendance = %v, want the planned night 2026-12-09 and the logged night 2026-12-16", att)
+	}
+	if loot := f.rows("loot"); len(loot) != 2 || loot[1][0] != "2026-12-09" {
+		t.Fatalf("loot = %v, want the award dated 2026-12-09", loot)
 	}
 }
 

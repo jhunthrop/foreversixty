@@ -7,6 +7,8 @@ import { describe, expect, it } from 'vitest';
 import { GuildApiError, type GuildRaidView, type NextRaidView } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { NO_LOG_YET } from '../../test-support/raid-fixtures';
+import { gateFactsFixture, GATE_SETTINGS_HREF } from '../../test-support/gate-facts';
+import type { GateFacts } from '../../lib/guild/plan-gate';
 import RaidBandLine, { nextRaidAfter, nextRaidAfterRefusal, pressFailedLine } from './RaidBandLine.svelte';
 
 const TZ = 'America/Chicago';
@@ -40,6 +42,7 @@ interface Opts {
   nextRaid?: NextRaidView | null;
   officer?: boolean;
   officerTools?: boolean;
+  gateFacts?: GateFacts | null;
   currentKey?: string | null;
   ownCharacters?: { character_key: string; name: string }[];
   viewerTimezone?: string;
@@ -52,6 +55,7 @@ function html(opts: Opts = {}): string {
       nextRaid: opts.nextRaid === undefined ? raid() : opts.nextRaid,
       officer: opts.officer ?? false,
       officerTools: opts.officerTools ?? true,
+      gateFacts: opts.gateFacts ?? null,
       guildPath: '/guild/us/normal/the-last-watch',
       currentKey: opts.currentKey === undefined ? KEY : opts.currentKey,
       ownCharacters: opts.ownCharacters ?? [{ character_key: KEY, name: 'Kraggor' }],
@@ -93,13 +97,13 @@ describe('RaidBandLine sentence', () => {
 
   it('reads the unsigned sentence', () => {
     expect(text(html(), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm CST, you have not signed up yet. 23 of 40 are in.',
+      'Thursday 8 pm CST, you have not signed up yet. 23 of 40 in.',
     );
   });
 
-  it('reads `{n} are in` while unsigned and the size is unknown', () => {
+  it('reads `{n} in` while unsigned and the size is unknown', () => {
     expect(text(html({ nextRaid: raid({ size: null }) }), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm CST, you have not signed up yet. 23 are in.',
+      'Thursday 8 pm CST, you have not signed up yet. 23 in.',
     );
   });
 
@@ -118,7 +122,7 @@ describe('RaidBandLine sentence', () => {
 
   it('keeps the guild clock first and adds the viewer’s own when the offsets differ', () => {
     expect(text(html({ viewerTimezone: 'America/New_York' }), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm CST (9 pm EST your time), you have not signed up yet. 23 of 40 are in.',
+      'Thursday 8 pm CST (9 pm EST your time), you have not signed up yet. 23 of 40 in.',
     );
   });
 });
@@ -210,11 +214,33 @@ describe('RaidBandLine none planned', () => {
     expect(text(body, 'guild-raid-line-none')).toBe('Nothing planned yet. Plan an event');
   });
 
-  it('gives a gated officer the sentence only, no live link', () => {
+  it('gives a gated officer the gate sentence, no live link', () => {
     const body = html({ nextRaid: null, officer: true, officerTools: false });
-    expect(text(body, 'guild-raid-line-none')).toBe('Nothing planned yet.');
+    expect(text(body, 'guild-raid-line-none')).toBe(
+      'Nothing planned yet. Planning raids and events is part of the Guild and Raid guild plans.',
+    );
     expect(body).not.toContain('guild-raid-line-plan');
     expect(body).not.toContain('href="#raids"');
+  });
+
+  it('gives a gated guild master the same trial link as the Raids tab (guild round 3)', () => {
+    const body = html({ nextRaid: null, officer: true, officerTools: false, gateFacts: gateFactsFixture() });
+    expect(text(body, 'guild-raid-line-none')).toBe(
+      'Nothing planned yet. Planning raids and events is part of the Guild and Raid guild plans. Start the 7-day trial.',
+    );
+    expect(body).toContain(`href="${GATE_SETTINGS_HREF}#billing"`);
+  });
+
+  it('gives a gated officer who does not hold the claim the Ask line, no link', () => {
+    const claim = { state: 'claimed' as const, yours: false, claimed_by: null };
+    const body = html({
+      nextRaid: null,
+      officer: true,
+      officerTools: false,
+      gateFacts: gateFactsFixture({ claim, guildMaster: false }),
+    });
+    expect(text(body, 'guild-raid-line-none')).toContain('Ask your guild master to turn it on.');
+    expect(body).not.toContain('#billing');
   });
 });
 
@@ -309,5 +335,12 @@ describe('nextRaidAfterRefusal', () => {
 
   it('leaves the band as it was on any other failure', () => {
     expect(nextRaidAfterRefusal(raid(), new Error('down'))).toBeUndefined();
+  });
+
+  it('says no role on a guild event: `you are In`, never `In as Tank` (guild round 3)', () => {
+    const body = html({
+      nextRaid: raid({ zone_kind: 'event', own: { character_key: KEY, state: 'in', role: 'tank' } }),
+    });
+    expect(text(body, 'guild-raid-line-sentence')).toBe('Thursday 8 pm CST, you are In, 23 of 40 signed up.');
   });
 });

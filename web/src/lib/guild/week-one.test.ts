@@ -139,6 +139,14 @@ describe('the officer step', () => {
     expect(step.action).toEqual({ kind: 'plan', label: 'Plan an event' });
   });
 
+  it('an empty calendar on a guild with no plan names the plan planning needs', () => {
+    const step = weekOneStep(input({ ...officer, planGated: true }));
+    expect(step.text).toBe(
+      'Nothing on the calendar yet. Planning raids and events is part of the Guild and Raid guild plans.',
+    );
+    expect(step.action).toEqual({ kind: 'plan', label: 'Plan an event' });
+  });
+
   it('then the event planned, counting In and Late', () => {
     const step = weekOneStep(input({ ...officer, nextRaid: raid(), raidHref: '/r/7' }));
     expect(step.text).toBe('Deadmines run Saturday 8 pm CST, 3 signed up.');
@@ -180,8 +188,8 @@ describe('the raider step', () => {
 
   it('with no spec yet, the class guide says which spec to level as', () => {
     const step = weekOneStep(input({ character: { name: 'A', class: 'warrior', level: 20, spec: null } }));
-    expect(step.action.kind === 'link' && step.action.href).toMatch(/^\/guides\/warrior\/\w+#leveling$/);
-    expect(step.action.label).toMatch(/^Level as \w+$/);
+    expect(step.action?.kind === 'link' && step.action.href).toMatch(/^\/guides\/warrior\/\w+#leveling$/);
+    expect(step.action?.label).toMatch(/^Level as \w+$/);
   });
 
   it('at 60 reads the gear check and its best in slot', () => {
@@ -218,5 +226,13 @@ describe('progression view', () => {
     expect(firstKillLine({ first_kill_at: '2026-12-16T19:00:00Z' }, now)).toBeNull();
     expect(firstKillLine({ best_kill_ms: 225_000 }, now)).toBeNull();
     expect(firstKillLine({ first_kill_at: null, best_kill_ms: null }, now)).toBeNull();
+  });
+
+  it('points at the band when it already shows the segments, with no second button (guild round 3)', () => {
+    const step = weekOneStep(input({ nextRaid: raid(), raidHref: '/r/7', bandSignsUp: true }));
+    expect(step.text).toBe(
+      'Deadmines run Saturday 8 pm CST. You have not signed up yet. Answer In, Late, Bench or Out at the top of the page.',
+    );
+    expect(step.action).toBeNull();
   });
 });

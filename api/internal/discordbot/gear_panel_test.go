@@ -109,6 +109,7 @@ func newGearWorld(t *testing.T) *gearWorld {
 	dusk.GearSpec, dusk.Character.Level = ref("warrior-fury"), ref(58)
 	w.cards.cards["duskstrider"] = dusk
 	w.lg.readiness[keyZulmara] = guilds.ReadinessFacts{Word: "Ready", SyncedAt: ref(time.Unix(gearSynced, 0)), OnRoster: true}
+	w.lg.specs[keyZulmara], w.lg.specs[keyDuskstrider] = "hunter-beast-mastery", "warrior-fury"
 	return w
 }
 

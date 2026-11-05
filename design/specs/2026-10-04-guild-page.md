@@ -134,7 +134,9 @@ and a `See all` link to the full tab:
 - **This week's raid nights summary**: the three most recent nights, zone/date/kills/wipes
   (**EXISTS**, unchanged from v1).
 - **Progression summary**: named-encounters-down count and the honest Barrow Deeps/Hyjal
-  Summit caveat (**EXISTS + DERIVABLE**, §4.D).
+  Summit caveat (**EXISTS + DERIVABLE**, §4.D). With nothing the viewer can open it reads
+  `No public logs yet.` (progression is not weekly, so never the raid-nights card's `No public
+  reports this week yet.`; amended 2026-11-05, guild loop round 3 web4).
 - **Readiness summary** (member/officer only): the three worst-readiness raiders by name and
   fail count (**DERIVABLE + NEEDS NEW DATA**, §4.E).
 - **Loot summary** (member/officer only): current boss, drop count, next pick
@@ -195,11 +197,16 @@ Attendance, Last seen (the last still a two-bucket `logged_recently` sort pendin
   format).
 - **Main/alt grouping** (**EXISTS** — `guild_characters.user_id`; two characters sharing a
   `user_id` render a small "alt of {main}" tag under the alt's spec line, the main's own row
-  unmarked).
+  unmarked. The main is the character the player marked (`users.main_character_key`, sent as the
+  roster row's `is_main`), else the highest level, then the highest item level, then the name;
+  amended 2026-11-05, guild round 3).
 - **Last log uploaded** (**EXISTS** — `reports.owner_id` joined to this character's account,
   newest `created_at`).
 - Everything v1 already had (crest, class-colour name, rank pill, item level, logged-recently
   pill, consent-gated `GuildRosterHandoff`, officer Approve/Remove) is unchanged.
+- **Row actions from 1024** (amended 2026-11-05, guild round 3): the actions slot is 216 px,
+  `Open in simulator` over `Open in planner`, each one line (`whitespace-nowrap`), beside
+  `Remove`; round 2's 190 px slot broke each link onto two lines. Phone keeps its layout.
 
 **Member's own row is pinned first**, highlighted (`rgba(229,185,85,.06)` background, the
 same wash the design system's own "active" treatments use), labelled "(you)" — new this
@@ -268,7 +275,9 @@ bigger gear gain.
   reusing `web/src/lib/home/upgrades.ts`'s own `UpgradesResult` unchanged (the planner's own
   gain rule, the exact module this spec's own task named) — `gear`/`gear_bags` consent only,
   `roster` consent reads "no gear consent," never a leaked figure.
-- **Enchants** — which of Weapon/Chest/Cloak/Boots carry **no** enchant id. **EXISTS** that a
+- **Enchants** — which of Weapon/Chest/Cloak/Boots carry **no** enchant id (printed everywhere,
+  the bot included, in the client's slot words: Main Hand, Chest, Back, Feet; guild round 3). A
+  character whose export carries no gear list is not checked, never "all enchanted" (guild round 3). **EXISTS** that a
   slot has/has-not an enchant (the FS1 export already carries `item_id:enchant:suffix` per
   slot, confirmed in `addon/ForeverSixty/Codec.lua`/`api/internal/fs1/fs1.go`). **NEEDS NEW
   DATA** to name *which* enchant is missing by name, or to flag a present-but-wrong enchant —

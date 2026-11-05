@@ -26,12 +26,13 @@
     fetchGuildReadiness,
   } from '../../lib/guild/api';
   import {
+    NO_PUBLIC_LOGS,
     NO_PUBLIC_REPORTS,
     bossesDownCountLine,
     bossesDownLine,
     downEncounterNames,
     raidNightDay,
-    rosterCardParts,
+    rosterCardFacts,
   } from '../../lib/guild/overview-view';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import {
@@ -169,8 +170,8 @@
       : [];
   }
 
-  const rosterParts = $derived(
-    rosterCardParts({
+  const rosterFacts = $derived(
+    rosterCardFacts({
       raiders: summary?.raiders ?? 0,
       waiting_for_approval: summary?.waiting_for_approval ?? 0,
       below_rating_floor: summary?.below_rating_floor ?? 0,
@@ -190,13 +191,7 @@
     <Card glyph="user" title="Roster" testid="guild-overview-card-roster">
       {#snippet aside()}{@render seeAll('roster')}{/snippet}
       <p data-testid="guild-overview-roster-facts">
-        <FactLine
-          facts={[
-            rosterParts.raiders,
-            { text: rosterParts.waiting, class: (summary?.waiting_for_approval ?? 0) > 0 ? 'text-gold' : '' },
-            rosterParts.belowFloor,
-          ]}
-        />
+        <FactLine facts={rosterFacts} />
       </p>
     </Card>
   {/if}
@@ -233,7 +228,7 @@
     {#if showCounts}
       <p data-testid="guild-overview-progression-line">{bossesLine}</p>
     {:else}
-      <p class="text-muted">{NO_PUBLIC_REPORTS}</p>
+      <p class="text-muted" data-testid="guild-overview-progression-empty">{NO_PUBLIC_LOGS}</p>
     {/if}
   </Card>
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { raidReport } from '../../test-support/report-fixtures';
-import { awardTooltipModel, lootIconOf, lootInitials } from './loot-icon';
+import { awardTooltipModel, lootIconOf, lootInitials, shippedLootIcon } from './loot-icon';
 
 const award = raidReport().loot[0]!.awards[0]!;
 
@@ -9,6 +9,14 @@ describe('loot icons', () => {
     expect(lootIconOf({ icon: 'inv_misc_head_dragon_01' })).toBe('inv_misc_head_dragon_01');
     expect(lootIconOf({ icon: '' })).toBeNull();
     expect(lootInitials('Head of Onyxia')).toBe('He');
+  });
+
+  it('requests an icon only for an item a class file carries, the ones the build ships', () => {
+    const bag = { icon: 'inv_misc_bag_22' };
+    expect(shippedLootIcon(bag, 'found')).toBe('inv_misc_bag_22');
+    expect(shippedLootIcon(bag, 'none')).toBeNull();
+    expect(shippedLootIcon(bag, 'pending')).toBeNull();
+    expect(shippedLootIcon({ icon: '' }, 'found')).toBeNull();
   });
 
   it('builds a tooltip from the award alone, with no invented facts', () => {
