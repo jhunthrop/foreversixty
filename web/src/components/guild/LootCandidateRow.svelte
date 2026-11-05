@@ -85,7 +85,8 @@
           nameSize="text-[13px]"
         />
       </span>
-    {:else}
+    {:else if candidate.fills_empty_slot !== true}
+      <!-- An empty slot the gain line already names ("Fills an empty slot") leaves this cell blank. -->
       <span class="text-muted">{EMPTY_SLOT}</span>
     {/if}
   </div>

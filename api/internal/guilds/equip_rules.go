@@ -157,7 +157,8 @@ var excludingFamilies = []statFamily{familyPhysical, familyCaster, familyHealer}
 
 // suitsFamily reports whether an item with stats suits one of families (spec §3.2 rule 4, amended
 // 2026-11-05): it carries a stat of the family; else a stat of another excluding family keeps it
-// from them, whatever hit or crit rides along (Eskhandar's Collar, Agility and crit, is not a
+// from them, whatever hit or crit rides along (Eskhandar's Collar in this build is Stamina, dodge
+// and crit; dodge is physical, so it is not a
 // healer's); else, with no family stat at all, hit or crit is for everyone, and so is an item of
 // Stamina, armour, resistances or Defense. A weapon with no family stat and no hit or crit
 // (Deathbringer, Vis'kag the Bloodletter: a chance on hit and nothing else) is for a character who
