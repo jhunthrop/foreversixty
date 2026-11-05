@@ -26,7 +26,11 @@ func (s *Service) loggedNightReply(ctx context.Context, guildID, viewer int64, u
 		return Reply{}, fmt.Errorf("discordbot: logged night guild: %w", err)
 	}
 	link := s.d.PublicBaseURL + "/reports/" + ans.ReportID
-	embeds := []notify.Embed{loggedNightEmbed(ans, link)}
+	note := officerCopy.LoggedNote
+	if ans.PlannedRaid != nil {
+		note = plannedNote(ans.PlannedRaid.Title, s.raidPageURL(ctx, ans.PlannedRaid.ID))
+	}
+	embeds := []notify.Embed{loggedNightEmbed(ans, link, note)}
 	closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	button := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.OpenReport, URL: link}
 	msg := Message{Embeds: embeds, Components: []ActionRow{{button}}}
@@ -35,16 +39,26 @@ func (s *Service) loggedNightReply(ctx context.Context, guildID, viewer int64, u
 	return Reply{Message: msg, Update: update}, nil
 }
 
+// plannedNote is the note for a log a planned raid waits for that night: "{Raid} was planned
+// that night: match the log on the raid page.", the raid page a link when there is one.
+func plannedNote(title, raidURL string) string {
+	page := officerCopy.LoggedPlannedPage
+	if raidURL != "" {
+		page = "[" + page + "](" + raidURL + ")"
+	}
+	return fill(officerCopy.LoggedPlanned, "{Raid}", notify.Collapse(title), "{page}", page)
+}
+
 // loggedNightEmbed is the logged night's head: "Report: Onyxia's Lair · Thursday 10 December",
 // "5 present · 1 kill · 3 wipes · 14 deaths · 2 h 41 min", the note, then the kill order.
-func loggedNightEmbed(ans guilds.LoggedNightAnswer, link string) notify.Embed {
+func loggedNightEmbed(ans guilds.LoggedNightAnswer, link, note string) notify.Embed {
 	name := ans.Zone
 	if name == "" {
 		name = ans.Title
 	}
 	e := notify.Embed{
 		Title: officerCopy.ReportPrefix + raidTitle(name, ans.At, ans.GuildTimezone), URL: link, Color: doneGreen,
-		Description: loggedNightLine(ans) + "\n" + officerCopy.LoggedNote,
+		Description: loggedNightLine(ans) + "\n" + note,
 	}
 	if kills := boundedLines(killLines(ans.KillOrder)); kills != "" {
 		e.Fields = append(e.Fields, notify.EmbedField{Name: officerCopy.KillOrder, Value: kills})

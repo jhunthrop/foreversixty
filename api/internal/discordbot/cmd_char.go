@@ -65,8 +65,11 @@ func (s *Service) lookupCaller(ctx context.Context, in Interaction) (guildID int
 // charData is a /char answer's character as the panel and the sheet read it. Readiness and
 // Synced are the guild's own reads: only a verified member of the guild sees them.
 type charData struct {
-	card    rankings.Character
+	card rankings.Character
+	// spec is what the upgrades rank against; named is the spec the card says, empty when the
+	// guild knows none (guildSpec).
 	spec    specs.Spec
+	named   specs.Spec
 	class   string
 	faction string
 	build   string
@@ -84,12 +87,12 @@ func (s *Service) loadChar(ctx context.Context, guildID int64, viewer *int64, op
 	if err != nil || !found {
 		return charData{}, false, err
 	}
-	spec, err := s.guildSpec(ctx, guildID, card)
+	named, spec, err := s.guildSpec(ctx, guildID, card)
 	if err != nil {
 		return charData{}, false, err
 	}
 	build, _ := s.d.Guilds.ActiveBuild()
-	d := charData{card: card, spec: spec, class: strings.ToLower(card.Character.Class),
+	d := charData{card: card, spec: spec, named: named, class: strings.ToLower(card.Character.Class),
 		faction: s.characterFaction(card, g.Faction), build: build, ups: s.upgrades(card, spec, g.Faction)}
 	member, err := s.verifiedMember(ctx, guildID, viewer)
 	if err != nil || !member {
@@ -124,13 +127,25 @@ func (s *Service) charPanel(ctx context.Context, d charData) Message {
 		for _, u := range shown {
 			rows = append(rows, panelRow{item: pointerTo(s.upgradeRow(d, u))})
 		}
-		if more := moreText(len(d.ups.items) - len(shown)); more != "" {
+		if more := moreText(upgradeTotal(d) - len(shown)); more != "" {
 			rows = append(rows, panelRow{text: more})
 		}
 	}
 	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(d.card.Character.Key)}
 	body := s.guardedBody(ctx, d.build, head, rows)
 	return Message{ComponentsV2: true, Layout: []Node{charContainer(d.class, body)}, Components: []ActionRow{{link}}}
+}
+
+// upgradeTotal is how many upgrades the character has, the count the panel's "N more" is left
+// from: for a character on the viewer's guild roster whose gear the board read, the board's own
+// count (the "13 gear upgrades waiting" in the header's readiness word), never fewer than the
+// panel lists; else the panel's own list. The panel's DPS list leaves out worn slots whose gain
+// it cannot measure, so its length alone read "13 waiting" over 3 rows and no more line.
+func upgradeTotal(d charData) int {
+	if d.facts != nil && d.facts.GearChecked {
+		return max(d.facts.GearUpgrades, len(d.ups.items))
+	}
+	return len(d.ups.items)
 }
 
 // charContainer is the panel's container in the class colour, or uncoloured for an unknown class.
@@ -145,7 +160,7 @@ func charContainer(class string, body []Node) Node {
 // synced subtext, each clause only when known.
 func (s *Service) charHeader(d charData, withFacts bool) string {
 	lines := []string{heading("[" + memberText(d.card.Character.Name) + "](" + s.characterURL(d.card.Character.Key) + ")"),
-		cardLine(d.card, d.spec, d.class)}
+		cardLine(d.card, d.named, d.class)}
 	if !withFacts {
 		return strings.Join(lines, "\n")
 	}
@@ -274,18 +289,20 @@ func (s *Service) itemFacts(build, class string, id int, name, source, url strin
 }
 
 // guildSpec is the character's spec as the guild's pages name it (the raid spec its player
-// picked, else its newest logged fight's), else the character page's gear spec: one spec for
-// the card, its upgrades and the site.
-func (s *Service) guildSpec(ctx context.Context, guildID int64, card rankings.Character) (specs.Spec, error) {
+// picked, else its newest logged fight's): named is that spec, empty when neither is known, and
+// the card says the bare class then, as the site does (guild round 3: a character with no known
+// spec read "Assassination Rogue" from its gear spec). ranked is the spec its upgrades rank
+// against: named, else the character page's gear spec, the band the site's gear panel reads.
+func (s *Service) guildSpec(ctx context.Context, guildID int64, card rankings.Character) (named, ranked specs.Spec, err error) {
 	key, err := s.d.Guilds.GuildSpecOf(ctx, guildID, card.Character.Key)
 	if err != nil {
-		return specs.Spec{}, fmt.Errorf("discordbot: char spec: %w", err)
+		return specs.Spec{}, specs.Spec{}, fmt.Errorf("discordbot: char spec: %w", err)
 	}
 	if sp, ok := specByKey(key); ok {
-		return sp, nil
+		return sp, sp, nil
 	}
-	sp, _ := specByKey(deref(card.GearSpec))
-	return sp, nil
+	ranked, _ = specByKey(deref(card.GearSpec))
+	return specs.Spec{}, ranked, nil
 }
 
 func specByKey(key string) (specs.Spec, bool) {

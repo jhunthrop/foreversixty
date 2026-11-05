@@ -318,8 +318,12 @@ func lootCount(r *guilds.ReportView) int {
 	return n
 }
 
-// lootLine is "6 items." and, when items follow, " The first 6:".
+// lootLine is "6 items." and, when items follow, " The first 6:"; "No loot awarded." (the
+// site's words) for none.
 func lootLine(n int) string {
+	if n <= 0 {
+		return officerCopy.LootNone
+	}
 	template := officerCopy.LootCount
 	if n > 0 && n <= maxLootEmbeds { // every item follows: no "The first" repeating the count
 		template = officerCopy.LootAll

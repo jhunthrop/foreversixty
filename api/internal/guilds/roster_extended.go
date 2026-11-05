@@ -300,8 +300,8 @@ func belowRatingFloor(roster []RosterRow) int {
 }
 
 // summaryCounts are the Overview's two roster figures. Raiders count people: the accounts with a
-// verified character whose owner shows gear (the Overview reads them as "with gear on the
-// site"), a main and two alts being one raider. Waiting counts characters, the unit an officer
+// verified character whose gear is on file (gearOnFile; the Overview reads them as "with gear on
+// the site"), a main and two alts being one raider. Waiting counts characters, the unit an officer
 // approves and the Waiting for approval panel lists (guild round 3: the panel read 4 and the
 // Overview 2 for one account's four characters; the round-1 rule that waiting counts accounts is
 // superseded).
@@ -311,7 +311,7 @@ func summaryCounts(roster []RosterRow) (raiders, waiting int) {
 		switch {
 		case !row.Verified:
 			waiting++
-		case hasGearConsent(row.Consent):
+		case gearOnFile(row.Consent, row.gear):
 			withGear[row.ownerUserID] = true
 		}
 	}
@@ -342,9 +342,10 @@ func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterR
 // standingFor is the member/officer-only "where do I stand" line (design spec §4.A.1):
 // among this viewer's own roster rows, the most representative one (verified over
 // unverified, known class/spec over unknown) ranked by item level against every other
-// verified, gear-consented character of the same class and spec. nil when nothing in the
-// roster can anchor it.
-func standingFor(s *Store, roster []RosterRow, viewerUserID int64) *StandingView {
+// verified, gear-consented character of the same class and spec. signedKey, when the account
+// signed a character up for the needs raid (NeedsRaidView.CharacterKey), anchors it ahead of the
+// rest whenever that row can. nil when nothing in the roster can anchor it.
+func standingFor(s *Store, roster []RosterRow, viewerUserID int64, signedKey string) *StandingView {
 	var self *RosterRow
 	for i := range roster {
 		row := &roster[i]
@@ -352,7 +353,7 @@ func standingFor(s *Store, roster []RosterRow, viewerUserID int64) *StandingView
 			row.className == "" || row.specStr == "" || row.ItemLevel == nil {
 			continue
 		}
-		if self == nil {
+		if self == nil || (signedKey != "" && row.CharacterKey == signedKey) {
 			self = row
 		}
 	}

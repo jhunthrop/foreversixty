@@ -35,10 +35,13 @@ func TestBelowRatingFloor(t *testing.T) {
 }
 
 func TestSummaryCountsRaidersByAccountAndWaitingByCharacter(t *testing.T) {
+	gear := map[string]int{"chest": 100}
 	row := func(owner int64, verified bool, consent string) RosterRow {
-		return RosterRow{ownerUserID: owner, Verified: verified, Consent: consent}
+		return RosterRow{ownerUserID: owner, Verified: verified, Consent: consent, gear: gear}
 	}
 	roster := []RosterRow{
+		// Shares gear, but the export carried no gear list: gear unknown, not "with gear".
+		{ownerUserID: 5, Verified: true, Consent: "gear"},
 		// One account, three characters, all waiting: three waiting, as the panel lists them.
 		row(1, false, "gear"), row(1, false, "gear"), row(1, false, "gear"),
 		// A main and an alt with gear on the site: one raider.

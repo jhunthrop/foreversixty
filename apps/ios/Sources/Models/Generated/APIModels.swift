@@ -3295,13 +3295,17 @@ public struct GuildStandingNeedsRaid: Codable, Sendable, Equatable {
     public let title: String
     /// RFC 3339, UTC
     public let startsAt: Date
+    /// The character the viewer's account signed up for this raid, its best place (In, then Late, then Bench; Out names none): the needs line is that character's. Null when the account has no such sign-up, and the line keeps the viewer's current character. The standing above is anchored to it too when it can be.
+    public let characterKey: String?
 
     public init(
         title: String,
-        startsAt: Date
+        startsAt: Date,
+        characterKey: String? = nil
     ) {
         self.title = title
         self.startsAt = startsAt
+        self.characterKey = characterKey
     }
 }
 

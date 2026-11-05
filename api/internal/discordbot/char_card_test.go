@@ -24,6 +24,7 @@ func linkTwoChars(w *lookupWorld) {
 	dusk.Character.Key, dusk.Character.Name, dusk.Character.Class = keyDuskstrider, "Duskstrider", "warrior"
 	dusk.GearSpec, dusk.Character.Level = ref("warrior-fury"), ref(58)
 	w.cards.cards["duskstrider"] = dusk
+	w.lg.specs[keyDuskstrider] = "warrior-fury"
 }
 
 func rowLabels(row ActionRow) []string {

@@ -273,7 +273,9 @@ bigger gear gain.
   reusing `web/src/lib/home/upgrades.ts`'s own `UpgradesResult` unchanged (the planner's own
   gain rule, the exact module this spec's own task named) — `gear`/`gear_bags` consent only,
   `roster` consent reads "no gear consent," never a leaked figure.
-- **Enchants** — which of Weapon/Chest/Cloak/Boots carry **no** enchant id. **EXISTS** that a
+- **Enchants** — which of Weapon/Chest/Cloak/Boots carry **no** enchant id (printed everywhere,
+  the bot included, in the client's slot words: Main Hand, Chest, Back, Feet; guild round 3). A
+  character whose export carries no gear list is not checked, never "all enchanted" (guild round 3). **EXISTS** that a
   slot has/has-not an enchant (the FS1 export already carries `item_id:enchant:suffix` per
   slot, confirmed in `addon/ForeverSixty/Codec.lua`/`api/internal/fs1/fs1.go`). **NEEDS NEW
   DATA** to name *which* enchant is missing by name, or to flag a present-but-wrong enchant —

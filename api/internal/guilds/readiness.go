@@ -220,9 +220,10 @@ func sortReadinessRows(rows []ReadinessRow) {
 	})
 }
 
-// nudgeDay is the weekday the officer's nudge asks for a fix by: the raid the board is cut to,
-// else the guild's next planned raid, in the guild's raid timezone (UTC when it has none).
-// Empty when no raid is planned.
+// nudgeDay is the date the officer's nudge asks for a fix by ("Thu 10 Dec", the needs line's
+// own date): the raid the board is cut to, else the guild's next planned raid, in the guild's
+// raid timezone (UTC when it has none). Empty when no raid is planned. A bare weekday read
+// "Check before Thursday." for a raid five weeks out (guild round 3).
 func (s *Store) nudgeDay(ctx context.Context, guildID int64, raid *Raid) (string, error) {
 	if raid == nil {
 		next, ok, err := s.NextRaid(ctx, guildID, time.Now())
@@ -235,13 +236,16 @@ func (s *Store) nudgeDay(ctx context.Context, guildID int64, raid *Raid) (string
 	if err != nil {
 		return "", err
 	}
-	return raidWeekday(raid.StartsAt, tz), nil
+	return raidDay(raid.StartsAt, tz), nil
 }
 
-// raidWeekday is start's weekday ("Thursday") in the IANA zone tz, UTC when tz is empty or
-// unknown.
-func raidWeekday(start time.Time, tz string) string {
-	return start.In(zoneOrUTC(tz)).Weekday().String()
+// raidDayLayout is a raid's date as the site's needs line names it (raid-time.ts dateLabel):
+// "Thu 10 Dec".
+const raidDayLayout = "Mon 2 Jan"
+
+// raidDay is start's date ("Thu 10 Dec") in the IANA zone tz, UTC when tz is empty or unknown.
+func raidDay(start time.Time, tz string) string {
+	return start.In(zoneOrUTC(tz)).Format(raidDayLayout)
 }
 
 // zoneOrUTC loads the IANA zone tz, UTC when tz is empty or unknown.
@@ -304,6 +308,11 @@ type ReadinessFacts struct {
 	// ItemLevel is the roster's and the board's item level (equipped average, else the latest
 	// log's), so /char prints the same number; nil when neither is known.
 	ItemLevel *int
+	// GearUpgrades is the board's own gear upgrade count (the "N gear upgrades waiting" the word
+	// can carry), so /char's "N more upgrades" counts the same list; GearChecked is false when
+	// the board read no gear, and GearUpgrades is then 0.
+	GearUpgrades int
+	GearChecked  bool
 }
 
 // CharacterReadinessWord is the board's word for one character: Stocked, Short: and its
@@ -329,8 +338,9 @@ func (s *Service) CharacterReadinessFacts(ctx context.Context, guildID int64, ch
 }
 
 func (s *Store) readinessFactsOf(row RosterRow, median *int) ReadinessFacts {
-	facts := ReadinessFacts{Word: readinessWord(s.readinessOf(row, median), row.Consent), OnRoster: true,
-		ItemLevel: row.ItemLevel}
+	cr := s.readinessOf(row, median)
+	facts := ReadinessFacts{Word: readinessWord(cr, row.Consent), OnRoster: true, ItemLevel: row.ItemLevel,
+		GearChecked: cr.GearChecked, GearUpgrades: cr.GearGap.Upgrades}
 	if !row.LoggedAt.IsZero() {
 		synced := row.LoggedAt
 		facts.SyncedAt = &synced

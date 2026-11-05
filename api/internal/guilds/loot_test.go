@@ -447,7 +447,7 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 	roster := []RosterRow{
 		{
 			CharacterKey: "us/hardcore/fallbackwarrior", Name: "Fallbackwarrior", Verified: true,
-			className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{},
+			className: "warrior", specStr: "Fury", faction: "alliance", gear: shirtOnly(),
 			Level: i(60),
 		},
 	}
