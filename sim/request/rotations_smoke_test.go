@@ -190,7 +190,6 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"rogue-assassination": {
 		"{SpellID: 1241584}": "Mutilate is a talent (sim/rogue/mutilate.go, Forever's tree); this build takes none.",
 		"{SpellID: 14177}":   "Cold Blood is a talent (sim/rogue/talents.go); this build takes none.",
-		"{SpellID: 1329256}": "Blood Splatter is a talent whose passive aura gates the Rupture line (sim/rogue/client_values.go); this build takes none.",
 	},
 	"rogue-combat": {
 		"{SpellID: 13750}": "Adrenaline Rush is a talent (sim/rogue/talents.go); this build takes none.",

@@ -230,3 +230,39 @@ func TestGuideRaidBuildTalentsMissingGuide(t *testing.T) {
 		t.Fatal("missing guide: want an error, got nil")
 	}
 }
+
+// Round 23 (platform): Assassination's raid build spends nothing in Subtlety,
+// so its code ends in an empty tree ('.../30230302020122/:'). The tree groups
+// required a digit, so the raid line never matched and the reader fell back to
+// the leveling build: addon-builds, talent-search -raid, leveling-bis and
+// dps-per-point all read Assassination's leveling build as its raid build.
+func TestGuideBuildLinesKeepAnEmptyTree(t *testing.T) {
+	dir := t.TempDir()
+	guide := "---\nbuild: 'FS1:testbuild:rogue:night-elf:32530200251551031/302303/011:'\n" +
+		"raidBuild: 'FS1:testbuild:rogue:night-elf:00530311251051031/30230302020122/:'\n---\n"
+	if err := writeFile(t, dir+"/web/src/content/guides/rogue/assassination.md", guide); err != nil {
+		t.Fatal(err)
+	}
+	_, trees, err := GuideRaidBuildTalents(dir, "rogue", "assassination")
+	if err != nil {
+		t.Fatalf("GuideRaidBuildTalents: %v", err)
+	}
+	if want := [3]string{"00530311251051031", "30230302020122", ""}; trees != want {
+		t.Errorf("raid trees = %v, want %v", trees, want)
+	}
+
+	levelingOnly := "---\nbuild: 'FS1:testbuild:rogue:night-elf:/302303/:'\n---\n"
+	if err := writeFile(t, dir+"/web/src/content/guides/rogue/combat.md", levelingOnly); err != nil {
+		t.Fatal(err)
+	}
+	if _, trees, err := GuideBuildTalents(dir, "rogue", "combat"); err != nil || trees != [3]string{"", "302303", ""} {
+		t.Errorf("leveling trees = %v (%v), want empty first and third trees", trees, err)
+	}
+}
+
+func TestParseBuildCodeKeepsAnEmptyTree(t *testing.T) {
+	_, trees, err := ParseBuildCode("FS1:1.60.1.70790:rogue:night-elf:00530311251051031/30230302020122/:")
+	if err != nil || trees != [3]string{"00530311251051031", "30230302020122", ""} {
+		t.Fatalf("got %v %v", trees, err)
+	}
+}

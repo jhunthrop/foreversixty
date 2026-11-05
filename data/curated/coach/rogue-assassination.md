@@ -26,11 +26,11 @@ This is the best Assassination Rogue on Forever. Assassination is the Forever ro
 - Cheap Shot is for trash only: bosses are immune to stuns.
 - Shank from twenty-four on cooldown: it cannot miss and pays back more energy than it costs. Venom, from thirty, adds thirty percent to your poison damage for six seconds, on top of Vile Poisons. It also makes your poisons land more often.
 - At four or more combo points, Slice and Dice first if it is down or about to fall off, and a three-point Slice and Dice once it has dropped: even three points keep it up for fifteen seconds or more, over twenty with the raid build's Improved Slice and Dice.
-- Rupture at four or more combo points while Slice and Dice is up and Rupture is not ticking, only with Blood Splatter. It lasts six seconds longer, and its ticks can crit in Forever.
 - Cold Blood from thirty-three, at four or more combo points, right before the Eviscerate.
 - Eviscerate at four or more combo points.
 - Mutilate from forty is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
 - Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.
+- Rupture does not either: with Coup de Grace, Aggression and Flawless Execution, an Eviscerate costs twenty energy and lands more damage at once than a Rupture deals over its whole run.
 - Instant Poison on the main hand and Deadly Poison on the off hand at sixty, with a sharpening stone beside each.
 - Deadly Poison on the main hand and Instant on the off hand from thirty to fifty-nine. At sixty swap them: the off hand then holds Deadly at five stacks on its own.
 - Backstab from behind with a dagger in your main hand is the builder until Mutilate. It hits far harder than Sinister Strike.

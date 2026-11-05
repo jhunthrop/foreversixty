@@ -27,6 +27,16 @@ func TestMageLadderTakesItsCastTalentsEarly(t *testing.T) {
 		{"mage-arcane", "arcane", 0, 20, "140005000100000000-00000000000000000-000000000000000000"},
 		{"mage-arcane", "arcane", 0, 25, "141005211100000000-00000000000000000-000000000000000000"},
 		{"mage-arcane", "arcane", 0, 30, "141005213100300000-00000000000000000-000000000000000000"},
+		// Sim-accuracy round 23: Fire's level 60 build takes Accelerant 5, Missile Barrage
+		// and Arcane Blast; its ladder keeps Ignite, Pyroblast, Heating Up at 30 and
+		// Combustion at 40, spends Accelerant 2 to 4 at 22 to 24 in place of Flame Throwing
+		// and Burning Soul, and Wand Specialization 2 at 44 and 45.
+		{"mage-fire", "fire", 1, 20, "000000000000000000-51400001000000000-000000000000000000"},
+		{"mage-fire", "fire", 1, 24, "000000000000000000-54500001000000000-000000000000000000"},
+		{"mage-fire", "fire", 1, 30, "000000000000000000-54500001230100000-000000000000000000"},
+		{"mage-fire", "fire", 1, 40, "000000000000000000-54500001230133031-000000000000000000"},
+		{"mage-fire", "fire", 1, 45, "200000000000000000-55500201230133031-000000000000000000"},
+		{"mage-fire", "fire", 1, 60, "230105200100000000-55500201230133031-003000000000000000"},
 	}
 	trees, err := LoadTalentTrees(repoRoot, active, "mage")
 	if err != nil {

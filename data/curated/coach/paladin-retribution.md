@@ -30,6 +30,7 @@ This is the best Retribution Paladin on Forever. Retribution is a two-handed Sea
 - Seal of Command once you have Unsealed Wrath, in a dungeon or a raid. Three swings store three Commands and the twist is under way. Twist only while your mana is at least four fifths of the fight left.
 - Holy Strike on cooldown, every ten seconds. It spends the globals Seal upkeep leaves free.
 - Consecration from twenty and last, while the mana left after it still pays for your seal, Judgement and Holy Strike. Do not let your mana fall far behind the fight.
+- Blessing of Wisdom.
 - Holy Wrath from fifty, only against a pack of Undead or Demons: on anything else it does nothing.
 
 **The mistakes to look for, by finding.**

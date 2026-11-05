@@ -32,7 +32,8 @@
     "3": "Scorch filler round (2026-10-07): the Fireball line became a Scorch (rank 7) filler line, with Fireball (rank 11) kept after it for levels below Scorch's 22. The refresh gate (fix round 5's and(auraIsKnown, or(...)) line) is unchanged and still runs ahead of Pyroblast and Fire Blast; it now only matters for the opening stack-up and after a long Pyroblast, because every filler Scorch renews the debuff.",
     "4": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md F-S1): the Scorch filler line is gated on auraIsKnown(400625), Heating Up, which both Fire orders take at 30. Below it Fireball is the filler: on the bare band-20 ladder at levels 22, 25, 28 and 29 (10,000 iterations, seeds 1 and 50001) the Fireball filler beats the Scorch filler by 0.4 to 1.1 percent, because rank 1 and 2 Scorch do about a fifth less damage per mana than Fireball rank 4 and 5 and the band-20 mage runs out of mana. From 30 Heating Up and Improved Scorch turn it round by about 10 percent, so the 60 line is unchanged. The Improved Scorch stack line still casts Scorch at 27 to 29.",
     "5": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md X4): Evocation (12051) trains at 20 and the engine no longer registers it below that level; the ladder level-gates the line through idLearnLevelOverrides (sim/request/ladder.go) and sim/internal/spellranks' singleTierLevelOverrides, so it is not declared inert.",
-    "6": "Sim-accuracy round 22 (design/reviews/2026-11-05-sim-audit-round22/mage.md F1, from the MythicSim comparison): the raid build moved to Accelerant 5/5, Missile Barrage 2/2 and Arcane Blast (Arcane 14, Fire 34, Frost 3; Wand Specialization, Arcane Resilience, Flame Throwing and Arcane Meditation, none of which acts on a boss, pay for it; Burning Soul 2/3 stays). On it Fireball is the filler: the Fireball line, the gap Scorch before Fire Blast and the Arcane Blast line are gated on spellIsKnown(Arcane Blast), which only the raid build takes, and the Scorch filler on its complement. Missiles on Missile Barrage reads the proc. The Improved Scorch refresh moved from 1.5 s to 5 s left because a 3 s Fireball skipped past the old window. Raid 60, frozen BiS, 10,000 iterations: +1.75% Alliance, +2.05% Horde at seeds 1 and 50001."
+    "6": "Sim-accuracy round 22 (design/reviews/2026-11-05-sim-audit-round22/mage.md F1, from the MythicSim comparison): the raid build moved to Accelerant 5/5, Missile Barrage 2/2 and Arcane Blast (Arcane 14, Fire 34, Frost 3; Wand Specialization, Arcane Resilience, Flame Throwing and Arcane Meditation, none of which acts on a boss, pay for it; Burning Soul 2/3 stays). On it Fireball is the filler: the Fireball line, the gap Scorch before Fire Blast and the Arcane Blast line are gated on spellIsKnown(Arcane Blast), which only the raid build takes, and the Scorch filler on its complement. Missiles on Missile Barrage reads the proc. The Improved Scorch refresh moved from 1.5 s to 5 s left because a 3 s Fireball skipped past the old window. Raid 60, frozen BiS, 10,000 iterations: +1.75% Alliance, +2.05% Horde at seeds 1 and 50001.",
+    "7": "Sim-accuracy round 23 (design/reviews/2026-11-05-sim-audit-round23/mage.md F1): the level 60 build moved to the raid build's Fire tree, Missile Barrage and Arcane Blast, with Wand Specialization 2/2 for two Improved Channeling ranks (2301052001000/55500201230133031/003). Arcane Blast lands at 57 on the ladder, so the gated lines (Fireball filler, gap Scorch, Arcane Blast) run at 57 to 60 and the Scorch filler at 30 to 56; at 33 to 55 a Fireball filler loses 6 to 26% to Scorch on the new ladder, at 57 and 60 Scorch loses 4%. Notes 9 and 10 name the levels."
   },
   "sources": [
     {
@@ -379,7 +380,7 @@
         }
       },
       {
-        "notes": "Without Arcane Blast, Scorch is the filler once you have Heating Up, not Fireball. A Fireball takes as long as two Scorches or longer, so you roll twice the crits for Ignite and Heating Up, and every cast keeps your Improved Scorch stacks rolling.",
+        "notes": "From Heating Up at 30 until Arcane Blast at 57, Scorch is the filler, not Fireball. You land about two Scorches in the time of one Fireball, so you roll twice the crits for Ignite and Heating Up, and every cast keeps your Improved Scorch stacks rolling.",
         "action": {
           "condition": {
             "and": {
@@ -415,7 +416,7 @@
         }
       },
       {
-        "notes": "On the raid build Fireball is the filler. Five points of Accelerant make it a 3 second cast, each one has a 20% chance to make your next Arcane Missiles free through Missile Barrage, and with Arcane Blast's spell damage up it does more over a boss than Scorch. Its crits feed Ignite and Heating Up like any other Fire crit.",
+        "notes": "Fireball is the filler once you have Arcane Blast, which the leveling build takes at 57. Five points of Accelerant make it a 3 second cast, each one has a 20% chance to make your next Arcane Missiles free through Missile Barrage, and with Arcane Blast's spell damage up it does more over a boss than Scorch. Its crits feed Ignite and Heating Up like any other Fire crit.",
         "action": {
           "condition": {
             "spellIsKnown": {

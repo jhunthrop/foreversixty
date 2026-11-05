@@ -11,7 +11,8 @@
     "4": "The client rank chain is 400574..1239700 (levels 20/30/40/50/60 per spellranks.json); this file names the top rank and the level rewrite picks the learned one. The engine registers the chain since the accuracy program (engine-caster lane). Rotation-accuracy program correction (2026-09-28): this note previously said the 1239696..1239700 portion covers levels 40..60 -- spellranks.json actually puts rank 2 (1239696) at level 30, not 40; see the top-level notes' inert entry for the level-30 harness gap this produces.",
     "5": "Uses rank 7 (10212), the top trainer rank. Rank 8 (25345) is Tome of Arcane Missiles VIII, an Ahn'Qiraj book (sim-accuracy round 4, casters), which the engine registers only with core.IncludeAQ.",
     "6": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md A5): the two Presence of Mind lines are gated on spellIsKnown(18809), Pyroblast, not on Heating Up. The raid order takes Pyroblast at 54 and Heating Up at 57; at 54 and 56 (bare band 50, raid order, 10,000 iterations, seeds 1 and 50001) the Presence of Mind Pyroblast beats the Presence of Mind Frostbolt by 0.6 to 0.75 percent. The leveling build never takes Pyroblast and keeps the Frostbolt; level 60 is unchanged.",
-    "7": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md X4): Evocation (12051) trains at 20 and the engine no longer registers it below that level; the ladder level-gates the line through idLearnLevelOverrides (sim/request/ladder.go) and sim/internal/spellranks' singleTierLevelOverrides, so it is not declared inert."
+    "7": "Sim-accuracy round 21 (design/reviews/2026-11-05-sim-audit-round21/mage.md X4): Evocation (12051) trains at 20 and the engine no longer registers it below that level; the ladder level-gates the line through idLearnLevelOverrides (sim/request/ladder.go) and sim/internal/spellranks' singleTierLevelOverrides, so it is not declared inert.",
+    "8": "Sim-accuracy round 23 (design/reviews/2026-11-05-sim-audit-round23/mage.md A1, guide-accuracy round 24 sims requested 3): on the raid order Presence of Mind goes to Arcane Wrath (talent at 31, 3.5 s, 6 s cooldown) from 32 until Pyroblast at 54, Frostbolt when it is on cooldown: +0.4 to +0.9% at 32, 40, 48 and 53, bare bands, 10,000 iterations, seeds 1 and 50001, both factions. The leveling order takes no Arcane Wrath, so the row never fires there (45 and 60 unchanged)."
   },
   "expected_idle": [
     {
@@ -105,7 +106,7 @@
         }
       },
       {
-        "notes": "Presence of Mind on cooldown, and with Arcane Power once you have it. Your next spell is instant: spend it on Pyroblast, your longest cast, once the raid build has it at 54, and on Frostbolt before that and with the leveling build. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
+        "notes": "Presence of Mind on cooldown, and with Arcane Power once you have it. Your next spell is instant: spend it on your longest cast, Pyroblast once the raid build has it at 54 and Arcane Wrath before that, and on Frostbolt with the leveling build or while Arcane Wrath is on cooldown. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
         "action": {
           "condition": {
             "cmp": {
@@ -167,7 +168,58 @@
         }
       },
       {
-        "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Pyroblast at 54 on the raid build, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
+        "notes": "Arcane Wrath the moment Presence of Mind is up, on the raid build before Pyroblast at 54, if it is off cooldown. At 3.5 seconds, 3.3 once Accelerant is in, it is your longest cast until then, so the instant saves the most time.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "spellIsKnown": {
+                        "spellId": {
+                          "spellId": 18809,
+                          "rank": 8
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "spellIsKnown": {
+                    "spellId": {
+                      "spellId": 12043
+                    }
+                  }
+                },
+                {
+                  "auraIsActive": {
+                    "auraId": {
+                      "spellId": 12043
+                    }
+                  }
+                },
+                {
+                  "spellIsReady": {
+                    "spellId": {
+                      "spellId": 1326082,
+                      "rank": 4
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 1326082,
+              "rank": 4
+            }
+          }
+        }
+      },
+      {
+        "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, or on the raid build before 54 while Arcane Wrath is on cooldown, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
         "action": {
           "condition": {
             "and": {

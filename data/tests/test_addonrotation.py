@@ -1062,8 +1062,40 @@ def test_fury_berserker_rage_starts_at_36_and_overpower_ends_there():
     ],
 )
 def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, spell, first):
-    """On the active build's spellranks as the talent-level fix writes them (built here, not
-    read: the committed file waits for the data job's regeneration)."""
+    levels = [
+        band.level
+        for band in _active_build_bands(spec)
+        if any(line.name == spell for line in band.lines)
+    ]
+    assert levels, f"{spell} is on no {spec} band"
+    assert min(levels) == first
+
+
+# Sim round 23 shaman: a line whose condition needs a talent known (auraIsKnown or
+# spellIsKnown of the talent's spell, alone or in the condition's top-level and) cannot fire
+# before the build takes that talent, so its card row starts there too. Restoration's
+# Healing Wave right after Nature's Swiftness printed from 10 (Nature's Swiftness at 44), and
+# Enhancement's five-stack Lightning Bolt from 10 (Maelstrom Weapon's first point at 37).
+@pytest.mark.parametrize(
+    ("spec", "note", "first"),
+    [
+        ("shaman-restoration", "Your highest rank of Healing Wave right after Nature's", 44),
+        ("shaman-enhancement", "Lightning Bolt at five Maelstrom Weapon stacks", 37),
+    ],
+)
+def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec, note, first):
+    levels = [
+        band.level
+        for band in _active_build_bands(spec)
+        if any(line.condition.startswith(note) for line in band.lines)
+    ]
+    assert levels, f"{note!r} is on no {spec} band"
+    assert min(levels) == first
+
+
+def _active_build_bands(spec):
+    """`spec`'s card on the active build's spellranks as the talent-level fix writes them
+    (built here, not read: the committed file waits for the data job's regeneration)."""
     from pipeline import spellranks as sr
     from pipeline.addonrotation import (
         _class_slug,
@@ -1088,7 +1120,7 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
         talent_levels,
     ).model_dump(exclude_defaults=True)
     cls = _class_slug(spec)
-    bands = build_rotation(
+    return build_rotation(
         spec,
         data / "curated",
         spellranks,
@@ -1097,9 +1129,6 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
         load_talent_spells(build_dir, cls),
         load_spec_point_levels(build_dir, spec, cls),
     )
-    levels = [band.level for band in bands if any(line.name == spell for line in band.lines)]
-    assert levels, f"{spell} is on no {spec} band"
-    assert min(levels) == first
 
 
 def test_compute_spell_icons_lets_an_engine_id_take_another_rows_icon(tmp_path):
