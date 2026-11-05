@@ -243,7 +243,7 @@
         }
       },
       {
-        "notes": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack. Both points of Improved Fire Blast, by 26, make it a 6 second cooldown. It is your most expensive spell for its damage, but skipping it to save mana costs more damage than the mana buys.",
+        "notes": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack. Both points of Improved Fire Blast, by 26, make it a 6 second cooldown. In raid gear it is your most expensive single-target spell for its damage, but skipping it to save mana costs more damage than the mana buys.",
         "action": {
           "castSpell": {
             "spellId": {

@@ -265,7 +265,9 @@ func (s *Service) readiness(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	actor := auth.ActorFrom(r.Context())
-	member, err := s.Store.IsMember(r.Context(), guildID, actor.UserID)
+	// Verified members only, as home and loot: a character still waiting on an officer reads
+	// nobody's gear or readiness.
+	member, err := s.Store.IsVerifiedMember(r.Context(), guildID, actor.UserID)
 	if err != nil {
 		s.fail(w, r, "readiness", err, "could not load that guild's readiness just now")
 		return

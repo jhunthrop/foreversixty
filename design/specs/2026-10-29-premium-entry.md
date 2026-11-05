@@ -113,7 +113,7 @@ Every existing `/premium` link in a feature gets its anchor. Two change their lo
 
 The sim link replaces `Get premium`. Delete `simCopy.getPremium`. It is not a button: its visible words are its accessible name. States: hover `text-text` and underline; focus-visible 2 px gold outline, 2 px offset; while a browser run is in progress it stays a live link (it starts nothing).
 
-The officer gates (`GuildPlanGate.svelte`) are unchanged: `Subscribe the guild` and `Move to Raid guild` go to that guild's `#billing`, where the checkout already carries `guild_id`. A link to `/premium` there would lose the guild (P6).
+The officer gates (`GuildPlanGate.svelte`) are unchanged: `Subscribe your guild` and `Move to Raid guild` go to that guild's `#billing`, where the checkout already carries `guild_id`. A link to `/premium` there would lose the guild (P6).
 
 ## 8. /premium anchors to add
 

@@ -6,6 +6,7 @@ import type { GuildRosterCounts, GuildRosterEntry, GuildRosterRow } from './api'
 import {
   afterApprove,
   afterRemove,
+  afterRemoveMember,
   approveAllQuestion,
   can,
   countLine,
@@ -175,6 +176,23 @@ describe('afterApprove and afterRemove keep the list and the counts in step', ()
     expect(next.members?.map((m) => m.name)).toEqual(['Bow', 'Ashenveil', 'Strayhound']);
     expect(next.counts).toEqual({ on_roster: 3, in_game_no_account: 1, waiting: 1, not_seen: 0 });
     expect(afterRemove(model, 'us/pvp/bow').counts?.waiting).toBe(2);
+  });
+  it('removing an invited member by account drops them and the not-seen count', () => {
+    const invited = {
+      name: 'Driftwood',
+      state: 'not_seen' as const,
+      rank: 'member' as const,
+      account_key: 'u:9',
+      may_remove: true,
+    };
+    const withInvited = {
+      members: [...model.members, invited],
+      counts: { ...model.counts, on_roster: 5, not_seen: 1 },
+    };
+    const next = afterRemoveMember(withInvited, 'u:9');
+    expect(next.members?.map((m) => m.name)).not.toContain('Driftwood');
+    expect(next.counts).toEqual({ on_roster: 4, in_game_no_account: 1, waiting: 2, not_seen: 0 });
+    expect(afterRemoveMember(withInvited, 'u:404')).toBe(withInvited);
   });
   it('a home without the roster model passes through untouched', () => {
     expect(afterApprove({}, new Set(['x']))).toEqual({});

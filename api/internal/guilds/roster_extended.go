@@ -264,9 +264,18 @@ func (s *Store) lastReportAtByOwner(ctx context.Context, guildID int64) (map[int
 // percentile to mean anything.
 const ratingFloorPercentile = 0.25
 
-// belowRatingFloor counts roster rows whose overall rating sits at or below the guild's own
-// 25th percentile, among every row that has a rating at all (design spec §4.A). Zero or one
-// rated row never has a floor to sit below.
+// ratingFloorMinRated is how many rated characters a guild needs before its 25th percentile
+// says anything: below it, a floor would only ever name whoever happens to be lowest.
+const ratingFloorMinRated = 8
+
+// ratingFloorBand is the overall-rating spread (top minus bottom) at or under which the guild
+// is level: nobody is called below a floor that sits a point or two under everyone else.
+const ratingFloorBand = 5.0
+
+// belowRatingFloor counts roster rows whose overall rating sits strictly below the guild's own
+// 25th percentile, among every row that has a rating at all (design spec §4.A). The web's
+// Below rating floor filter (roster-sort.ts ratingFloor) applies the same rule. Fewer than
+// ratingFloorMinRated rated rows, or a spread within ratingFloorBand, flags nobody.
 func belowRatingFloor(roster []RosterRow) int {
 	var overalls []float64
 	for _, row := range roster {
@@ -274,19 +283,38 @@ func belowRatingFloor(roster []RosterRow) int {
 			overalls = append(overalls, row.Rating.Overall)
 		}
 	}
-	if len(overalls) < 2 {
+	if len(overalls) < ratingFloorMinRated {
 		return 0
 	}
 	sort.Float64s(overalls)
-	idx := int(float64(len(overalls)-1) * ratingFloorPercentile)
-	floor := overalls[idx]
+	if overalls[len(overalls)-1]-overalls[0] <= ratingFloorBand {
+		return 0
+	}
+	floor := overalls[int(float64(len(overalls))*ratingFloorPercentile)]
 	n := 0
-	for _, row := range roster {
-		if row.Rating != nil && row.Rating.Overall <= floor {
+	for _, overall := range overalls {
+		if overall < floor {
 			n++
 		}
 	}
 	return n
+}
+
+// summaryPeople counts people, not characters: raiders are the accounts with a verified
+// character whose owner shows gear (the Overview reads them as "with gear on the site"), and
+// waiting the accounts with a character an officer has not approved yet. A main and two alts
+// are one person either way.
+func summaryPeople(roster []RosterRow) (raiders, waiting int) {
+	withGear, unapproved := map[int64]bool{}, map[int64]bool{}
+	for _, row := range roster {
+		switch {
+		case !row.Verified:
+			unapproved[row.ownerUserID] = true
+		case hasGearConsent(row.Consent):
+			withGear[row.ownerUserID] = true
+		}
+	}
+	return len(withGear), len(unapproved)
 }
 
 // homeSummary assembles the Overview tab's own glance row from the already-enriched roster
@@ -295,21 +323,15 @@ func belowRatingFloor(roster []RosterRow) int {
 // report (presence.NotFlagged).
 func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterRow) (SummaryView, error) {
 	sv := SummaryView{UpdatedAt: time.Now().UTC()}
-	for _, row := range roster {
-		if row.Verified {
-			sv.Raiders++
-		} else {
-			sv.WaitingForApproval++
-		}
-	}
+	sv.Raiders, sv.WaitingForApproval = summaryPeople(roster)
 	sv.BelowRatingFloor = belowRatingFloor(roster)
 
-	if err := s.Pool.QueryRow(ctx, `
-		select count(distinct f.encounter_id) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and f.kill and f.encounter_id is not null and `+presence.NotFlagged("r"), guildID).
-		Scan(&sv.NamedEncountersDown); err != nil {
-		return SummaryView{}, fmt.Errorf("guilds: named encounters down: %w", err)
+	// The home is a verified member's, so it counts as the Progression tab does for them.
+	down, err := s.tierDown(ctx, guildID, countedReports(true))
+	if err != nil {
+		return SummaryView{}, err
 	}
+	sv.NamedEncountersDown = down
 	// pulls_this_tier: every pull this tier counts - the named encounter's pulls and the unnamed
 	// zones' - the same pulls the Progression tab adds up, so the header and that tab agree
 	// (round 8). A trash pack is no pull at all. No raid-tier-start timestamp exists anywhere

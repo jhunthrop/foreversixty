@@ -21,8 +21,8 @@ func TestGuildStanding_IdentityFacts(t *testing.T) {
 		gid, "guilds/1/crest/0123456789abcdef.webp"); err != nil {
 		t.Fatal(err)
 	}
-	// Three accounts on the roster plus two names no account has claimed: on_roster 5,
-	// in_game_no_account 2, so the card reads 7.
+	// Three accounts on the roster plus two names no account has claimed: on_roster 5 (the two
+	// included), so the card reads 5, never 5 + 2.
 	seedRosterSnapshot(t, h.pool, gid, "us/hardcore/Thorgrim", `[
 	  {"name":"Thorgrim-Yell","level":52,"spec":"warrior-arms","gear_gap":3,"build":"","seen_at":"2026-11-04 14:01"},
 	  {"name":"Stranger-Yell","level":60,"spec":"mage-frost","gear_gap":0,"build":"","seen_at":"2026-11-04 14:00"},
@@ -50,8 +50,8 @@ func TestGuildStanding_IdentityFacts(t *testing.T) {
 	if st.Faction == nil || *st.Faction != "horde" {
 		t.Errorf("Faction = %v, want horde", st.Faction)
 	}
-	if st.RosterCount == nil || *st.RosterCount != 7 {
-		t.Errorf("RosterCount = %v, want 7", st.RosterCount)
+	if st.RosterCount == nil || *st.RosterCount != 5 {
+		t.Errorf("RosterCount = %v, want 5", st.RosterCount)
 	}
 }
 
@@ -138,8 +138,7 @@ func TestGuildStanding_NoGuildsAnswersEmpty(t *testing.T) {
 	}
 }
 
-// TestGuildStanding_RosterCountMatchesHome: the count equals the home's on_roster plus
-// in_game_no_account for a guild with a waiting account, an invitee with a character, an
+// TestGuildStanding_RosterCountMatchesHome: the count equals the home's on_roster for a guild with a waiting account, an invitee with a character, an
 // invitee with none (named by its public name, which the snapshot also names) and two names
 // no account has claimed.
 func TestGuildStanding_RosterCountMatchesHome(t *testing.T) {
@@ -189,16 +188,16 @@ func TestGuildStanding_RosterCountMatchesHome(t *testing.T) {
 	h.actor = auth.Actor{UserID: master, Role: "user", Method: "session"}
 	var view HomeView
 	h.data(h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), ""), &view)
-	want := view.Counts.OnRoster + view.Counts.InGameNoAccount
+	want := view.Counts.OnRoster
 
 	got, err := h.store.GuildStanding(ctx, master, []int64{gid})
 	if err != nil {
 		t.Fatal(err)
 	}
 	// The literal pins the count itself: six on the roster (the leader, the waiting account,
-	// two invitees and the two unclaimed names) plus the two in game without an account.
-	if want != 8 {
-		t.Fatalf("home counts %+v sum to %d, want 8", view.Counts, want)
+	// two invitees and the two unclaimed names), the unclaimed names counted once.
+	if want != 6 || view.Counts.InGameNoAccount != 2 {
+		t.Fatalf("home counts %+v, want on_roster 6 with 2 in game without an account", view.Counts)
 	}
 	if got[gid].RosterCount == nil || *got[gid].RosterCount != want {
 		t.Fatalf("RosterCount = %v, want the home's %d (counts %+v)", got[gid].RosterCount, want, view.Counts)
