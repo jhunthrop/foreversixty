@@ -277,3 +277,169 @@ Fix: give the Crit header a tooltip, "Crits out of the hits that landed, as Warc
 7. **Crit definition:** see R7.
 8. **`final_stats`:** see R3. If the engine call is not there by merge, hide the block rather than show dashes.
 9. **Fixture contradictions:** add R5's rage list to lane E's list.
+
+## Build review (2026-11-05): verdict NOT SHIPPABLE
+
+Reviewed rendered captures only: `shots/int/sbs-1440*`, `sbs-390*`, `full-{390,1024,1440,1920,2000}`, `older-{390,1440}`, and every capture in `shots/lane-a`, `lane-b` and `lane-c`. My crops are in `scratchpad/simview/review/`. I checked numbers against `web/src/fixtures/sim/result-full.json`.
+
+**The player's question:** "How much DPS does this setup do, and what produced it?" At 1440 the answer is the first thing on screen. "904.4 DPS ± 0.5 · 0.05% error" sits top right, and Execute, Off hand and Main hand sit above the fold. On phone the first screen shows the figure, the error and Open in the sim. Every number I checked against the fixture is right: 904.4 mean, 49.5 spread, 731 to 1,116, 10,000 runs, attack power 1,775, hit 9.5%, crit on the boss 29.3%, armor 3,731, the histogram bin "910 to 919 DPS: 795 runs", Deep Wounds 59 ticks at 98.9%, and Bloodthirst 22 casts at 664 rage (30 each). Heroic Strike's 381 rage over 32 casts is 12 each, which is right with Improved Heroic Strike 3/3.
+
+**What is good:** the 1440 desktop page reads like a real Fury parse.
+- In Whole fight, Bloodthirst sits on its 6 s cooldown with the dodges drawn hollow.
+- Heroic Strike stops at the Execute wash, and Death Wish and Recklessness go up at 2:10 to 2:12.
+- Rage pools to 100 before Execute and then sits on the floor.
+- Close up's readout and tick tooltip ("2:21.5 · rage after 0", "Next Execute 3.0 s later", "Crit · 2,439 damage") are what I open WCL to find.
+- Round 2's fixes are in:
+  - Frozen Heart of the Mountain is named, with its icon, in place of "Chthonic Power".
+  - Faerie Fire is in the Buffs card.
+  - Curse of the Elements sits under "No effect on your damage".
+  - The Target row reads "3,731 armor, 471 after debuffs".
+  - Haste reads "0%".
+  - Extra attacks has its own row, "From Windfury Totem 21".
+  - The enchanted variant prints "+7 Strength", "+9 Strength", "+4 All Stats", "Minor Speed Increase" and "Crusader".
+
+Two things sink it:
+- **Phone timeline:** it cannot show the pull.
+- **Older-result page:** it calls a warrior's rage "Energy".
+
+Either one gets screenshotted.
+
+### Blockers
+
+**B1. Phone timeline: the sticky lane names hide the first ~20 seconds of every lane, including the whole opener.** (`int/full-390.png`, crop `review/p390-timeline.png`; also `lane-b/A7-390-close.png` and `A8-390-whole-scrolled-end.png`)
+- The name boxes are opaque, so on phone:
+  - The Berserking, Frozen Heart of the Mountain and Mighty Rage Potion bars at 0:00 are invisible. Berserking shows a 4 px stub.
+  - The Bloodthirst, Heroic Strike and Whirlwind ticks at the pull sit under "Bloodthirst", "Heroic Strike" and "Whirlwind".
+  - Every On the target bar seems to start at a different time, because each starts where its label ends: Faerie Fire looks applied before Judgement of the Crusader.
+- Scrolling does not help, because the label stays sticky over whatever is at the left edge. At the end scroll it covers part of Execute, Death Wish and Mighty Rage Potion.
+- Checking the cooldown stack at the pull is the first thing a Fury player does with this panel, and on phone it shows nothing. I flagged this as polish in round 2. It is now a blocker, because the panel draws a false picture.
+
+Fix:
+- Take the name out of the plot. Print it on its own row above the lane (11px, muted, the lane's top edge), or keep the 44px icon column and show the name in a tap tooltip.
+- Nothing may sit opaque over plot content.
+- Recapture A7 and A8 at 390 with the pull visible.
+
+**B2. The older-result page calls a warrior's resource "Energy".** (`int/older-1440.png`, `older-390.png`; crop `review/old-2.png`)
+- "AVERAGE FIGHT · ENERGY", tiles "515 Gained · 509 Spent", foot "Where the energy came from and went needs a newer run.", and the nav item "Energy", all on "Orc Fury Warrior".
+- This is the guild-chat screenshot: "since when do warriors use energy".
+
+Fix:
+- Take the resource name from the class and spec, not from a missing or misread `power_type` on old results. A warrior is always Rage, a rogue Energy, everyone else Mana.
+- Add a test with an old warrior result.
+
+### Must fix
+
+**M1. The Crit header tooltip contradicts the table.**
+- The copy is "Share of landed hits that crit. White swings count glancing blows as landed, which is why they read lower than your crit chance on the boss."
+- On this page they read higher: Main hand 42.6%, Off hand 38.6% and Extra attacks 43.8%, against "Crit on the boss 29.3%".
+
+Fix: "Crits out of the hits that landed, as Warcraft Logs counts them. Misses and dodges are left out, so a row can read above your crit chance on the boss." The definition stays as the coordinator decided; only the explanation changes.
+
+**M2. The hit reference disagrees with the page's own miss rate.**
+- The stats block reads "Hit 9.5%" against "8% specials · 27% dual-wield swings". On that reference a player expects white swings to miss 27 − 9.5 = 17.5%. The Main hand and Extra attacks rows both say "Miss 19.0%".
+- At 300 weapon skill against a level 63 boss, the Classic Era numbers players use are 9% for specials and 28% for dual-wield white swings (the extra 1% is hit suppression). Those match the engine's 19.0% within rounding.
+
+Fix:
+- Draw the reference from the engine's own attack table at the character's weapon skill ("9% specials · 28% dual-wield swings" at 300).
+- Put the tick on the bar at that value.
+- Send the exact figures to the accuracy loop.
+- Do not hard-code 8% and 27%.
+
+**M3. Item tooltips are not the client's tooltip.** (`lane-a/A6-weapon-tooltip-1440.png`, `lane-c/A10-tooltip-*`)
+- Persuader, equipped in the off hand, reads "Main hand" on the left and "One-Handed Weapon" on the right. The client prints the slot ("One-Hand", or "Main Hand" for main-hand-only weapons) on the left and the weapon type ("Sword", "Mace", "Axe") on the right. "One-Handed Weapon" is not a client line. "Main hand" on an off-hand item reads as an illegal equip. Ironwood Blade has the same problem.
+- Persuader's "89 - 167 Damage" and "Speed 2.80" are purple, but Ironwood Blade's are white. The client prints damage and speed in white.
+- Persuader's "Binds when equipped" is purple, but Raider Gauntlets' "Binds when picked up" is white. The client uses white.
+- The enchant is missing from the tooltip. Raider Gauntlets shows "+7 Strength" on the paperdoll but not in its tooltip, and the same goes for Ironwood Blade and "Crusader". The client prints the enchant as a green line under the stats.
+
+Fix: render slot and type, white damage, speed and binding lines, and the enchant's green line, exactly as the client tooltip does.
+
+**M4. The Berserker Rage note claims rage the Rage card never shows.**
+- Rotation line 10 reads "Improved Berserker Rage makes it 10 rage", with 6 casts. That should be about 60 rage.
+- "Gained from" lists Main hand, Off hand, Reckless Swings, Mighty Rage Potion, Bloodrage, Unbridled Wrath, Refund and Anger Management. There is no Berserker Rage.
+- Either the note is wrong for this client (Improved Berserker Rage is a TBC talent, and I cannot find it in the run's Fury tree on the Talents card), or the rage list drops a source.
+
+Fix: the data lane checks the Forever Fury tree. If the talent is absent, the note becomes the 1.12 wording ("Use it on cooldown for the rage from the hits you take, and hold it for the fears on Magmadar, Onyxia and Nefarian") or whatever the tree supports. If it is present, add its gain to "Gained from".
+
+**M5. The Execute note breaks round 1's ruling.**
+- Line 6 reads "First, below 20%: …". §14 item 5 ruled one wording, "in the Execute phase", because Settings says "Last 25% of the fight".
+- Line 12 still reads "never from 25% down". Line 3 and line 4 say "execute phase" in lower case, but the wash says "EXECUTE PHASE".
+
+Fix: every note uses "in the Execute phase", with a capital E as the spell name is written.
+
+**M6. "Battle Shout … raid included" is wrong for Classic.**
+- Line 5 reads "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included."
+- In 1.12 Battle Shout hits party members only.
+
+Fix: "10 rage for the attack power of your party within 20 yards", unless the Forever client tooltip says otherwise. If it does, quote the tooltip.
+
+**M7. Trueshot Aura is under "No effect on your damage".** It appears that way in both Settings and the Buffs card.
+- In 1.12 Trueshot Aura raises the attack power of party members, melee included. A warrior in the hunter's group gets it.
+- If the engine does not apply it as melee attack power, that is an accuracy bug. If it does, the label is wrong. Either way the page states something false.
+
+Fix:
+- Move it to the group that helps your damage.
+- Send it to the accuracy loop with the tooltip.
+
+**M8. The Close up readout leaves out buffs that are on.** (`lane-b/A7-1440-pinned.png`)
+- At 0:16.5 the readout says "On you: Mighty Rage Potion". The lanes underneath show Berserker Rage (0:08 to 0:18) and Flurry (3 charges) both up at that moment.
+- At 2:21.5 it says "Death Wish, Recklessness" while Flurry is up.
+
+Fix: the readout lists every On you lane that is active at the crosshair, cooldowns first, as the spec's example does.
+
+**M9. The older-result page contradicts itself.** (`int/older-1440.png`, crop `review/old-rot.png`)
+- The damage table shows "Execute Rank 5 · 6 casts", but Rotation line 6 reads "Execute Rank 5 · Not cast in this run". The rotation's cast match is missing the run's Execute.
+- Bloodthirst has 0 casts on a Fury warrior ("0/24/0 talents"), yet Worth knowing shows only the Recklessness note. W2 ("Bloodthirst was never pressed in this run.") was ruled independent of talents, so it must show here.
+
+Fix:
+- Match rotation lines to casts by spell family across ranks.
+- Fire W2 on older results.
+- Add both to the A15 captures.
+
+**M10. Dead space between cards.**
+- At 1440 there is about 220px of empty page between Timeline and Gear (`full-1440`, crop `review/f1440-03.png`).
+- The older-result page has 300 to 600px holes between almost every card (`older-1440.png`).
+- It reads as a page that failed to load.
+
+Fix: release each lazy section's reserved height once it renders, or once it is known to be empty or old. Recapture at every width.
+
+**M11. The phone and 1024 full-page captures are cut off.**
+- `int/full-390.png` goes black from just under the Rotation header (about 3,500 CSS px of nothing) to the footer.
+- `int/full-1024.png` cuts the Settings card off mid-row, and `lane-a/A1-full-390.png` is the same.
+- This is probably the screenshot tool's height limit, but I cannot approve phone Rotation and Settings as integrated from these. I have only the pre-integration `lane-c/card-rotation-390.png`.
+
+Fix: recapture in viewport-height slices, or confirm in the browser that the page renders there.
+
+**M12. "Refund" is not a word a player has for it.**
+- "Gained from" lists "Refund 78" with a generic arrows icon.
+- Players know this as the rage you get back when Bloodthirst, Whirlwind or Execute is dodged or missed.
+
+Fix: "Refunded on dodges and misses". Use the icon of the ability that refunded most, or drop the icon. Never use a placeholder glyph in a list where everything else has a game icon.
+
+**M13. The Bloodrage note is garbled and talks about levels on a level 60 result.**
+- The note reads "… back every minute, a quarter more from your first point of Improved Bloodrage at 59 and half again from 60."
+- A player reads "at 59" as a character level and cannot work out what "a quarter more … half again" adds up to.
+- The same leveling language is in "From 36, under 80 rage" (line 10), "from 40 it sits right behind Bloodthirst" (line 8) and "Only before level 36" (line 11).
+
+Fix: on a result, print the note for the run's level in plain figures, for example "Whenever rage is under 80: 15 rage at once with Improved Bloodrage 2/2 and 10 more over 10 seconds, back every minute." Keep the leveling clauses on the guide, not here.
+
+### Polish
+
+1. **Copy for the game:** it has no icon and a thinner style than "Copy JSON" and "Download JSON" beside it. Make the three buttons match.
+2. **Weapon skill:** "300 · 300" does not say which hand is which. Write "Main hand 300 · Off hand 300".
+3. **Cast list:** "Casts: 120 of 120" sits above five rows and a "Show all 120" button, so the count reads as if all 120 are shown. Use "120 casts. Showing the first 5."
+4. **Timeline overview strip:** the small rage strip under the Rage lane in Whole fight has no label and does nothing there. Show it only in Close up, where it is the brush.
+5. **Item level on a partial kit:** the older page shows "ITEM LEVEL 62.0" from 2 of 17 slots. Show "2 items" or hide it under 17.
+6. **Item tooltip header:** "Item Level 65" under the name. The Classic Era client tooltip does not print item level. Keep it muted, or move it to the paperdoll line, which already has it.
+7. **Set line (enchanted variant):** "Set: The Gladiator 3 of 6 · (2) …" runs as one sentence. Print it the client's way: "The Gladiator (3/6)", then one line per bonus, with active bonuses green and the rest grey.
+8. **Pre-integration icon gaps:** the empty boxes in the lane captures (Deep Wounds in `lane-a/A6-*`, Frozen Heart in `lane-b`, Power Word: Fortitude in `lane-a/A16-lazy-failed`) are filled in the integrated build. Keep the merge test that forbids a key without an icon.
+
+### Data I do not believe (for the accuracy loop, not the page)
+
+- **Armor after debuffs, 471.** Sunder Armor ×5 (2,250), Faerie Fire (505) and Curse of Recklessness (640) take 3,395 off 3,731, which leaves 336. 471 means 3,260 was removed. One of the three is short by 135.
+- **Death Wish 18.1% from 1 cast** is about 32.6 s for a 30 s buff. It is the same shape as the Berserking overrun already with the loop.
+- **Moonkin Aura** is grouped as helping a warrior. In 1.12 it is spell crit only. If unified crit in Forever makes it apply to melee, fine, but confirm it from the tooltip.
+- **Flurry 86.5% uptime** at 29.3% crit on the boss is high for three charges. It is plausible with Execute's 52% crit, but worth one check.
+
+### Verdict detail
+
+I would post the 1440 page in guild chat today. Clear B1 and B2 and M1 to M13, recapture phone and older at every width, and send me the new captures. The layout and the numbers are already there.
