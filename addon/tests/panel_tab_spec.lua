@@ -1715,13 +1715,13 @@ describe("PanelTab", function()
 				end
 				assert.are.equal(280, PanelTab.textRoom())
 				-- The launch-day note fits its two lines, so nothing is cut: no pending mark,
-				-- and the 25% mana floor reads whole. The wording is the curated note's, so it
+				-- and the quarter-mana floor reads whole. The wording is the curated note's, so it
 				-- is not pinned beyond its figure.
 				assert.is_true(arcane.conditionLines <= 2)
 				local pending = L.tooltipNamePending
 				assert.are_not.equal(pending, arcane.condition:sub(-#pending))
 				assert.are.equal(arcane.fullCondition, arcane.condition)
-				assert.is_truthy(arcane.condition:find("25%", 1, true))
+				assert.is_truthy(arcane.condition:find("quarter", 1, true))
 				-- The full plain condition is kept for the hover.
 				local raw
 				for _, entry in ipairs(Rotation.model(data, HUNTER, HUNTER_RANKS, 24, true).lines) do
