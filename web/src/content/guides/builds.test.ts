@@ -362,3 +362,28 @@ describe('Fire levels with Burning Soul, not Impact', () => {
     expect(rankOf.get('Burning Soul') ?? 0).toBeGreaterThan(0);
   });
 });
+
+// Sim-accuracy round 22 (mage F1): the Fire raid build fills with a 3 second Fireball, so it
+// takes Accelerant 5/5, Missile Barrage and Arcane Blast. The points come out of talents that
+// do nothing on a boss (Wand Specialization, Arcane Resilience, Flame Throwing, Arcane
+// Meditation); Burning Soul, the Fire threat cut, stays.
+describe('Fire raids with a Fireball build', () => {
+  it('mage/fire raidBuild: Accelerant 5/5, Missile Barrage 2/2, Arcane Blast and Burning Soul', () => {
+    const guide = guides.find((g) => g.id === 'mage/fire');
+    expect(guide, 'mage/fire: no such guide').toBeDefined();
+    const decoded = decodeFS1(guide?.frontmatter.raidBuild as string);
+    if (!decoded.ok) return; // reported by the decode test above
+    const trees = [...talentsFor('mage').trees].sort((a, b) => a.position - b.position);
+    const rankOf = new Map<string, number>();
+    decoded.build.treeRanks.forEach((ranks, treeIndex) => {
+      trees[treeIndex]?.talents.forEach((talent, digitIndex) =>
+        rankOf.set(talent.name, ranks[digitIndex] ?? 0),
+      );
+    });
+    expect(rankOf.get('Accelerant')).toBe(5);
+    expect(rankOf.get('Missile Barrage')).toBe(2);
+    expect(rankOf.get('Arcane Blast')).toBe(1);
+    expect(rankOf.get('Burning Soul') ?? 0).toBeGreaterThan(0);
+    expect(rankOf.get('Wand Specialization') ?? 0).toBe(0);
+  });
+});
