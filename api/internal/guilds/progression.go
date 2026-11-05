@@ -62,6 +62,9 @@ type TierView struct {
 	Raids           []string `json:"raids"`
 	NamedEncounters int      `json:"named_encounters"`
 	Down            int      `json:"down"`
+	// PullsTotal is every pull this tier: the named encounters' and the unnamed zones'. Zero
+	// means the guild has logged nothing in the tier yet (week-one spec §4.1).
+	PullsTotal int `json:"pulls_total"`
 }
 
 // ParseRef identifies one fight_metrics row's own player - distinct from home.go's
@@ -149,6 +152,7 @@ func (s *Store) Progression(ctx context.Context, guildID int64, member bool) (Pr
 		return ProgressionView{}, err
 	}
 	view.Encounters = append(view.Encounters, onyxia)
+	view.Tier.PullsTotal += onyxia.Pulls
 	if view.Tier.Down, err = s.tierDown(ctx, guildID, counted); err != nil {
 		return ProgressionView{}, err
 	}
@@ -159,6 +163,7 @@ func (s *Store) Progression(ctx context.Context, guildID int64, member bool) (Pr
 			return ProgressionView{}, err
 		}
 		view.Unnamed = append(view.Unnamed, uz)
+		view.Tier.PullsTotal += uz.Pulls
 	}
 	return view, nil
 }

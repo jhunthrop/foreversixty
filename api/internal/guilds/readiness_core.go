@@ -23,42 +23,101 @@ var enchantableSlotLabels = map[string]string{
 	"main_hand": "Weapon", "chest": "Chest", "back": "Cloak", "feet": "Boots",
 }
 
+// raidLevel is the level every readiness check is measured for: the gear, enchant,
+// consumable and talent needs of a level-60 raid. A character below it is leveling and is not
+// graded at all (week-one spec §3.5).
+const raidLevel = 60
+
+// firstTalentLevel is the level the first talent point arrives at; one more comes every level
+// after it, up to talentPointsAtLevel60.
+const firstTalentLevel = 10
+
 // talentPointsAtLevel60 is the most a level-60 character can have spent - the "export
-// carries no level section at all" fallback maxTalentPoints uses below, design spec §4.E's
-// own level-60 baseline for that one gap, not (as a previous version of this file wrongly
-// assumed) a figure every character's own unspent-points check should be measured against.
-const talentPointsAtLevel60 = 51
+// carries no level section at all" fallback maxTalentPoints uses below.
+const talentPointsAtLevel60 = raidLevel - firstTalentLevel + 1
+
+// gearUnitDPS is a gear gap's unit for a damage spec, the only unit any BiS file measures a
+// gain in today (healer bands carry stat points, tank bands Forever Score).
+const gearUnitDPS = "dps"
 
 // maxTalentPoints is the most points a character at level could have spent by now: one
-// point every level from 10 through level, never negative - level-9, floored at 0, a level
-// below 10 having no points at all. When the export carries no level section at all, every
-// raider this page concerns is assumed level 60 (talentPointsAtLevel60) - assumedLevel60
-// tells the caller so, since the contract's own nudge_text must say so rather than silently
-// presenting a guess as fact.
-func maxTalentPoints(level int, hasLevel bool) (points int, assumedLevel60 bool) {
-	if !hasLevel {
+// at firstTalentLevel and one more every level after it, up to talentPointsAtLevel60, none
+// below firstTalentLevel. With no level on file the character is assumed level 60
+// (talentPointsAtLevel60) and assumedLevel60 tells the caller so, since the officer's
+// nudge_text must say so rather than present a guess as fact.
+func maxTalentPoints(level *int) (points int, assumedLevel60 bool) {
+	if level == nil {
 		return talentPointsAtLevel60, true
 	}
-	if points = level - 9; points < 0 {
+	points = *level - firstTalentLevel + 1
+	switch {
+	case points < 0:
 		return 0, false
+	case points > talentPointsAtLevel60:
+		return talentPointsAtLevel60, false
 	}
 	return points, false
+}
+
+// leveling reports whether a known level is below raidLevel: such a character is not graded.
+func leveling(level *int) bool { return level != nil && *level < raidLevel }
+
+// readinessInput is everything one character's readiness reads, already loaded: the
+// character's consent, its spec's level-60 BiS band (bis.LoadBand; HasBand false without one),
+// its export's gear, enchants and bags (fs1.Decode; HasBagsSection tells an empty bags section
+// from none), its talent points spent (HasTalents false when the export carried none), its
+// level (nil when neither the export nor the addon roster carries one) and its own and the
+// roster's item levels.
+type readinessInput struct {
+	Consent                    string
+	Band                       bis.Band
+	HasBand                    bool
+	Gear, Enchants             map[string]int
+	Bags                       []int
+	HasBagsSection             bool
+	TalentPointsSpent          int
+	HasTalents                 bool
+	Level                      *int
+	ItemLevel, MedianItemLevel *int
+}
+
+// readinessInputOf is a roster row's readiness input against band and the roster median.
+func readinessInputOf(row RosterRow, band bis.Band, hasBand bool, median *int) readinessInput {
+	return readinessInput{
+		Consent: row.Consent, Band: band, HasBand: hasBand,
+		Gear: row.gear, Enchants: row.enchants, Bags: row.bags, HasBagsSection: row.hasBagsSection,
+		TalentPointsSpent: row.talentPointsSpent, HasTalents: row.hasTalents,
+		Level: row.Level, ItemLevel: row.ItemLevel, MedianItemLevel: median,
+	}
+}
+
+// readinessOf is one roster row's readiness, its band read from the row's own spec.
+func (s *Store) readinessOf(row RosterRow, median *int) CharacterReadiness {
+	band, hasBand := s.loadBandFor(row.className, row.specStr, row.faction)
+	return computeReadiness(readinessInputOf(row, band, hasBand, median))
 }
 
 // CharacterReadiness is one character's full readiness computation, built from
 // already-loaded inputs (computeReadiness, below) - no DB or file access of its own, so it
 // is trivially unit-tested.
 type CharacterReadiness struct {
-	GearChecked         bool
-	GearGap             bis.GearGap
+	// Leveling is true for a character whose known level is below raidLevel: nothing below
+	// is graded and FailingCount is 0 (week-one spec §3.5).
+	Leveling    bool
+	Level       *int
+	GearChecked bool
+	GearGap     bis.GearGap
+	// GearUnit is what GearGap.GainDps counts: gearUnitDPS for a damage band, "" for a healer
+	// or tank band, whose gap is never printed as DPS.
+	GearUnit            string
 	EnchantsChecked     bool
 	MissingEnchantSlots []string
 	// ConsumablesState is "stocked" | "short" | "unknown".
 	ConsumablesState    string
 	TalentPointsUnspent int
 	// TalentLevelAssumed is true exactly when TalentPointsUnspent was computed against
-	// talentPointsAtLevel60 because the export carried no level section at all - the
-	// officer-only nudge_text's own cue to say so rather than present a guess as fact.
+	// talentPointsAtLevel60 because no level was on file - the officer-only nudge_text's own
+	// cue to say so rather than present a guess as fact.
 	TalentLevelAssumed bool
 	// TalentsRead is true when the export carried a talents section at all, so a zero
 	// TalentPointsUnspent is a real zero and not the absence of a reading.
@@ -71,69 +130,74 @@ type CharacterReadiness struct {
 // (readiness's own floor for Gear gap and Enchants, design spec §4.E).
 func hasGearConsent(consent string) bool { return consent == "gear" || consent == "gear_bags" }
 
-// computeReadiness is pure. band/hasBand is the character's spec's BiS level-60 band
-// (bis.LoadBand); gear/enchants come from fs1.Decode of the character's export; bags/
-// hasBagsSection likewise (hasBagsSection distinguishes "the export carries an empty bags=
-// section" is not actually distinguishable from "no bags= section at all" in fs1's own
-// decode - both read as an empty slice - so this parameter is really just "did fs1.Decode
-// succeed at all," passed through for clarity at the call site); talentPointsSpent is the
-// three-tree digit sum fs1.Talents.Points already totals; itemLevel/medianItemLevel are the
-// character's own and the roster's figures.
+// computeReadiness is pure. A leveling character (a known level under raidLevel) gets its
+// level and item level and nothing graded: level-60 raid needs are not a level 52's to chase.
 //
 // The enchant check is deliberately not gated on anything the BiS band names: no BiS file
 // in this repo carries a per-slot recommended enchant (checked against every band in
-// data/builds/<build>/bis/ (Store.BisBuild; last checked on 1.60.1.70630) - none of the seventeen inventory slots an alternatives-
-// bearing file lists ever carries an "enchant" key), matching design spec §9's own "no
-// curated recommended-enchant-per-spec table exists yet" - so this implements the design
-// spec's narrower EXISTS claim instead: whether an enchantable, equipped slot carries any
-// enchant at all, independent of which one. Named as a deviation from the contract's own
-// "while the band's BiS lists an enchant for it" clause in CONTROL_CENTRE.md.
-func computeReadiness(
-	consent string,
-	band bis.Band, hasBand bool,
-	gear map[string]int, enchants map[string]int,
-	bags []int, hasBagsSection bool,
-	talentPointsSpent int, hasTalents bool,
-	level int, hasLevel bool,
-	itemLevel, medianItemLevel *int,
-) CharacterReadiness {
-	var cr CharacterReadiness
-
-	if hasGearConsent(consent) && hasBand {
-		cr.GearChecked = true
-		cr.GearGap = bis.GapFor(band, gear)
+// data/builds/<build>/bis/ (Store.BisBuild; last checked on 1.60.1.70630) - none of the
+// seventeen inventory slots an alternatives-bearing file lists ever carries an "enchant"
+// key), matching design spec §9's own "no curated recommended-enchant-per-spec table exists
+// yet" - so this implements the design spec's narrower EXISTS claim instead: whether an
+// enchantable, equipped slot carries any enchant at all, independent of which one. Named as a
+// deviation from the contract's own "while the band's BiS lists an enchant for it" clause in
+// CONTROL_CENTRE.md.
+func computeReadiness(in readinessInput) CharacterReadiness {
+	cr := CharacterReadiness{Level: in.Level, ItemLevel: in.ItemLevel, ConsumablesState: consumablesUnknown}
+	if leveling(in.Level) {
+		cr.Leveling = true
+		return cr
 	}
 
-	if hasGearConsent(consent) {
-		cr.EnchantsChecked = true
-		for _, slot := range enchantableSlots {
-			if _, hasItem := gear[slot]; !hasItem {
-				continue // nothing equipped there at all - not an enchant gap
-			}
-			if _, enchanted := enchants[slot]; !enchanted {
-				cr.MissingEnchantSlots = append(cr.MissingEnchantSlots, slot)
-			}
+	if hasGearConsent(in.Consent) && in.HasBand {
+		cr.GearChecked = true
+		cr.GearGap = bis.GapFor(in.Band, in.Gear)
+		if in.Band.Role == "" {
+			cr.GearUnit = gearUnitDPS
 		}
 	}
+	if hasGearConsent(in.Consent) {
+		cr.EnchantsChecked = true
+		cr.MissingEnchantSlots = missingEnchants(in.Gear, in.Enchants)
+	}
+	cr.ConsumablesState = consumablesState(in.Consent, in.Bags, in.HasBagsSection)
 
-	cr.ConsumablesState = consumablesState(consent, bags, hasBagsSection)
-
-	if hasTalents {
+	if in.HasTalents {
 		cr.TalentsRead = true
-		maxPoints, assumedLevel60 := maxTalentPoints(level, hasLevel)
-		if unspent := maxPoints - talentPointsSpent; unspent > 0 {
+		maxPoints, assumedLevel60 := maxTalentPoints(in.Level)
+		if unspent := maxPoints - in.TalentPointsSpent; unspent > 0 {
 			cr.TalentPointsUnspent = unspent
 		}
 		cr.TalentLevelAssumed = assumedLevel60
 	}
 
-	cr.ItemLevel = itemLevel
-	if itemLevel != nil && medianItemLevel != nil {
-		delta := *itemLevel - *medianItemLevel
+	if in.ItemLevel != nil && in.MedianItemLevel != nil {
+		delta := *in.ItemLevel - *in.MedianItemLevel
 		cr.ItemLevelDelta = &delta
 	}
 	return cr
 }
+
+// missingEnchants is every enchantable slot with an item equipped and no enchant on it.
+func missingEnchants(gear, enchants map[string]int) []string {
+	var out []string
+	for _, slot := range enchantableSlots {
+		if _, hasItem := gear[slot]; !hasItem {
+			continue // nothing equipped there at all - not an enchant gap
+		}
+		if _, enchanted := enchants[slot]; !enchanted {
+			out = append(out, slot)
+		}
+	}
+	return out
+}
+
+// The consumables states a readiness row reads.
+const (
+	consumablesUnknown = "unknown"
+	consumablesStocked = "stocked"
+	consumablesShort   = "short"
+)
 
 // consumablesState is the bags rule: "unknown" without the bags share, "stocked" with
 // anything in the bags, else "short". The readiness board and the raid report's Before pill
@@ -141,11 +205,11 @@ func computeReadiness(
 func consumablesState(consent string, bags []int, hasBagsSection bool) string {
 	switch {
 	case consent != "gear_bags" || !hasBagsSection:
-		return "unknown"
+		return consumablesUnknown
 	case len(bags) > 0:
-		return "stocked"
+		return consumablesStocked
 	default:
-		return "short"
+		return consumablesShort
 	}
 }
 
@@ -157,6 +221,20 @@ func plural(n int) string {
 	return "s"
 }
 
+// gearFailText is the gear gap as a phrase: the upgrade count, then the DPS it is worth only
+// for a damage spec with a sim-checked gain (an unsimmed upgrade has no number to print, and a
+// healer's or tank's gap is never a DPS figure).
+func (c CharacterReadiness) gearFailText() string {
+	text := fmt.Sprintf("%d gear upgrade%s waiting", c.GearGap.Upgrades, plural(c.GearGap.Upgrades))
+	if c.GearUnit == gearUnitDPS && c.GearGap.GainDps >= minPrintedGain {
+		text += fmt.Sprintf(" (+%.1f DPS)", c.GearGap.GainDps)
+	}
+	return text
+}
+
+// minPrintedGain is the smallest gain that prints as more than +0.0 at one decimal.
+const minPrintedGain = 0.05
+
 // failText renders every failing check as a short phrase, worst-first (gear, then
 // enchants, then consumables, then talent points - design spec §4.A.2's own example
 // sentence order) - the shared wording between the standing line's "needs before next
@@ -165,8 +243,7 @@ func plural(n int) string {
 func (c CharacterReadiness) failText() []string {
 	out := []string{}
 	if c.GearChecked && c.GearGap.Upgrades > 0 {
-		out = append(out, fmt.Sprintf("%d gear upgrade%s waiting (+%.1f DPS)",
-			c.GearGap.Upgrades, plural(c.GearGap.Upgrades), c.GearGap.GainDps))
+		out = append(out, c.gearFailText())
 	}
 	if c.EnchantsChecked && len(c.MissingEnchantSlots) > 0 {
 		labels := make([]string, len(c.MissingEnchantSlots))
@@ -175,7 +252,7 @@ func (c CharacterReadiness) failText() []string {
 		}
 		out = append(out, "no enchant: "+strings.Join(labels, ", "))
 	}
-	if c.ConsumablesState == "short" {
+	if c.ConsumablesState == consumablesShort {
 		out = append(out, "consumables short")
 	}
 	if c.TalentPointsUnspent > 0 {

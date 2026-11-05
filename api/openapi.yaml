@@ -2028,6 +2028,16 @@ components:
             named_encounters_down: { type: integer }
             pulls_this_tier: { type: integer }
             updated_at: { type: string, format: date-time }
+            tier:
+              type: object
+              title: GuildTierCounts
+              description: The Progression tab's tier counts, read the way it reads them for a member. pulls_total 0 means nothing is logged in the tier yet.
+              properties:
+                name: { type: string }
+                raids: { type: array, items: { type: string } }
+                named_encounters: { type: integer }
+                down: { type: integer }
+                pulls_total: { type: integer }
         standing:
           type: object
           title: GuildStanding
@@ -2116,6 +2126,7 @@ components:
         spec_name: { type: string, description: "W3-C16: the full spec name (\"Fury Warrior\"), withheld with spec." }
         spec_icon: { type: string, description: "W3-C16: the spec's talent-tab icon stem, withheld with spec." }
         item_level: { type: integer, description: Withheld without gear consent. }
+        level: { type: [integer, "null"], description: "The export's level, else the addon roster's; null when neither carries one or without gear consent." }
         attendance_30: { $ref: '#/components/schemas/GuildAttendance' }
         best_parse:
           type: object

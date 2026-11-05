@@ -61,7 +61,7 @@ func TestEncountersDownAgreesWithProgression(t *testing.T) {
 	ctx := context.Background()
 	gid := seedGuild(t, h.pool, "Forever")
 
-	agree := func(want int) {
+	agree := func(wantDown, wantPulls int) {
 		t.Helper()
 		sv, err := h.store.homeSummary(ctx, gid, nil)
 		if err != nil {
@@ -71,11 +71,14 @@ func TestEncountersDownAgreesWithProgression(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if sv.NamedEncountersDown != want || prog.Tier.Down != want {
-			t.Fatalf("home %d, progression %d encounters down; want both %d", sv.NamedEncountersDown, prog.Tier.Down, want)
+		if sv.Tier.Down != wantDown || prog.Tier.Down != wantDown || sv.NamedEncountersDown != wantDown {
+			t.Fatalf("home %d (%d), progression %d encounters down; want %d", sv.Tier.Down, sv.NamedEncountersDown, prog.Tier.Down, wantDown)
+		}
+		if sv.Tier.PullsTotal != wantPulls || prog.Tier.PullsTotal != wantPulls || sv.PullsThisTier != wantPulls {
+			t.Fatalf("home %d (%d), progression %d pulls; want %d", sv.Tier.PullsTotal, sv.PullsThisTier, prog.Tier.PullsTotal, wantPulls)
 		}
 	}
-	agree(0)
+	agree(0, 0)
 
 	if _, err := h.pool.Exec(ctx,
 		`insert into reports (id, guild_id, visibility, status, zone, created_at)
@@ -86,12 +89,12 @@ func TestEncountersDownAgreesWithProgression(t *testing.T) {
 		`insert into fights (report_id, fight_index, name, encounter_id, kill) values ('down-night', 0, 'Lucifron', 663, true)`); err != nil {
 		t.Fatal(err)
 	}
-	agree(0)
+	agree(0, 0)
 
 	if _, err := h.pool.Exec(ctx,
 		`insert into fights (report_id, fight_index, name, encounter_id, kill) values ('down-night', 1, 'Onyxia', $1, true)`,
 		encounterOnyxia); err != nil {
 		t.Fatal(err)
 	}
-	agree(1)
+	agree(1, 1)
 }
