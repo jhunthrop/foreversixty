@@ -9,6 +9,7 @@
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { progressionNightDay } from '../../lib/guild/overview-view';
   import { firstKillLine, progressionEmpty } from '../../lib/guild/progression-view';
+  import { bestOutputLabel, outputFigure } from '../../lib/guild/output-figure';
   import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
@@ -38,13 +39,16 @@
    *  behind it (id 0, no name), which reads as a second row of dashes and is not a boss. */
   const encounterBests = $derived(rosterBest.filter((row) => row.encounter_id > 0 && row.encounter !== ''));
 
-  /** The tank, healer and damage bests that exist, in that order. */
-  function bestParses(best: {
+  /** The tank, healer and damage bests that exist, in that order, each with its role. */
+  function bestByRole(best: {
     tank?: GuildParseRef;
     healer?: GuildParseRef;
     dps?: GuildParseRef;
-  }): GuildParseRef[] {
-    return [best.tank, best.healer, best.dps].filter((parse): parse is GuildParseRef => parse !== undefined);
+  }): { role: string; parse: GuildParseRef }[] {
+    return (['tank', 'healer', 'dps'] as const).flatMap((role) => {
+      const parse = best[role];
+      return parse === undefined ? [] : [{ role, parse }];
+    });
   }
 
   const clock = minuteClock(() => fixedNow);
@@ -125,15 +129,16 @@
         <p class="text-[13px]" data-testid="guild-progression-deaths">
           Deaths per pull: {encounter.deaths_per_pull.toFixed(1)} on average.
         </p>
-        {#if bestParses(encounter.best_by_role).length > 0}
+        {#if bestByRole(encounter.best_by_role).length > 0}
+          <!-- Raw output, never called a parse (a percentile to a Classic player): `Best HPS`
+               per role, the figure written as the Raids tab and the roster write it. -->
           <p class="text-[13px]" data-testid="guild-progression-best-parse">
-            Guild best parse:
-            {#each bestParses(encounter.best_by_role) as parse, index (index)}
+            {#each bestByRole(encounter.best_by_role) as { role, parse }, index (role)}
               {#if index > 0}<span class="hidden md:inline" aria-hidden="true">&nbsp;·&nbsp;</span>{/if}
               <span class="block md:inline">
+                <span class="text-muted">{bestOutputLabel(role, parse.metric)}</span>
                 <span style={`color:${classColorVar(parse.class)};font-weight:600`}>{parse.name}</span>
-                {parse.value.toFixed(1)}
-                {parse.metric.toUpperCase()}
+                <span class="numeric">{outputFigure(parse.value)}</span>
               </span>
             {/each}
           </p>

@@ -155,6 +155,13 @@ describe('GuildProgression with pulls', () => {
   it('shows the kill line with both figures', () => {
     expect(text(progressionHtml(buildMockProgression()))).toMatch(/First kill .* · best kill \d+:\d\d/);
   });
+
+  it('labels the role bests as output, never a parse, rounded as the roster writes them', () => {
+    const copy = text(progressionHtml(buildMockProgression()));
+    expect(copy).toContain('Best HPS Lightbrand 302');
+    expect(copy).toContain('Best DPS Pyrewisp 358');
+    expect(copy).not.toMatch(/parse/i);
+  });
 });
 
 function board(rows: GuildReadinessRow[], officer = true, myCharacterKey: string | null = null): string {
