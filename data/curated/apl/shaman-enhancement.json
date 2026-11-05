@@ -120,7 +120,7 @@
         }
       },
       {
-        "notes": "Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free. Cast it right after Stormstrike when you can, so the bolt takes Stormstrike's 20%.",
+        "notes": "Lightning Bolt at five Maelstrom Weapon stacks once you have all five points: it is instant and free then. Cast it right after Stormstrike when you can, so the bolt takes Stormstrike's 20%. With fewer points even five stacks leave the bolt a cast that holds up your next swing, and the swing is worth more.",
         "action": {
           "condition": {
             "and": {
@@ -128,7 +128,8 @@
                 {
                   "auraIsKnown": {
                     "auraId": {
-                      "spellId": 408498
+                      "spellId": 408498,
+                      "tag": 5
                     }
                   }
                 },
@@ -234,7 +235,7 @@
         }
       },
       {
-        "notes": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready. Keep that reserve for your totems, and for Stormstrike once you have it. Below five points your five-stack bolts still cost mana, which is what the bigger reserve pays for; without the talent, and at all five points, a quarter is enough.",
+        "notes": "Earth Shock on cooldown while your mana is above a quarter: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready. Keep that last quarter for your totems, and for Stormstrike once you have it.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -243,60 +244,16 @@
             }
           },
           "condition": {
-            "and": {
-              "vals": [
-                {
-                  "cmp": {
-                    "op": "OpGt",
-                    "lhs": {
-                      "currentManaPercent": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "25%"
-                      }
-                    }
-                  }
-                },
-                {
-                  "or": {
-                    "vals": [
-                      {
-                        "cmp": {
-                          "op": "OpGt",
-                          "lhs": {
-                            "currentManaPercent": {}
-                          },
-                          "rhs": {
-                            "const": {
-                              "val": "50%"
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "not": {
-                          "val": {
-                            "auraIsKnown": {
-                              "auraId": {
-                                "spellId": 408498
-                              }
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "auraIsKnown": {
-                          "auraId": {
-                            "spellId": 408498,
-                            "tag": 5
-                          }
-                        }
-                      }
-                    ]
-                  }
+            "cmp": {
+              "op": "OpGt",
+              "lhs": {
+                "currentManaPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "25%"
                 }
-              ]
+              }
             }
           }
         }
