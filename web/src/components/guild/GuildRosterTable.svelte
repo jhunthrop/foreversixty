@@ -744,7 +744,7 @@
         </div>
       {/if}
       {#if attendanceSource === 'raids' && ordered.length > 0}
-        <p class="text-muted text-[12px]" data-testid="guild-roster-attendance-footnote">
+        <p class="text-muted pb-5 text-[12px]" data-testid="guild-roster-attendance-footnote">
           {attendanceCopy.roster.footnote}
         </p>
       {/if}
