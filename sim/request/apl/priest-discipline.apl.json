@@ -1186,7 +1186,7 @@
           }
         }
       },
-      "notes": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana."
+      "notes": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana."
     },
     {
       "action": {
@@ -1709,7 +1709,7 @@
           }
         }
       },
-      "notes": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%."
+      "notes": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole."
     },
     {
       "action": {
@@ -1843,7 +1843,7 @@
           }
         }
       },
-      "notes": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%."
+      "notes": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too."
     },
     {
       "action": {

@@ -16074,7 +16074,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16093,7 +16093,7 @@
           {
             "spell_id": 647,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16112,7 +16112,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16131,7 +16131,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16199,7 +16199,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16274,7 +16274,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16349,7 +16349,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16424,7 +16424,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16541,7 +16541,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16658,7 +16658,7 @@
           {
             "spell_id": 1026,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16775,7 +16775,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16892,7 +16892,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17009,7 +17009,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17126,7 +17126,7 @@
           {
             "spell_id": 1026,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17243,7 +17243,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17360,7 +17360,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17477,7 +17477,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17594,7 +17594,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17711,7 +17711,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor (from 21).",
+            "condition": "On the tank below 40%, right behind Divine Favor.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -22167,7 +22167,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22195,7 +22195,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22209,7 +22209,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22354,7 +22354,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22382,7 +22382,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22396,7 +22396,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22547,7 +22547,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22575,7 +22575,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22589,7 +22589,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22740,7 +22740,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22768,7 +22768,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22782,7 +22782,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22927,7 +22927,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22955,7 +22955,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -22969,7 +22969,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23114,7 +23114,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23142,7 +23142,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23156,7 +23156,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23301,7 +23301,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23329,7 +23329,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23343,7 +23343,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23493,7 +23493,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23521,7 +23521,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23535,7 +23535,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23685,7 +23685,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23713,7 +23713,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23727,7 +23727,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23878,7 +23878,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23906,7 +23906,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -23920,7 +23920,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -24065,7 +24065,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 on a party member who is missing a third of their health: once you have higher ranks it keeps most of your healing bonus for far less mana.",
+            "condition": "On a party member missing a third of their health, since once you have higher ranks it keeps most of your healing bonus for far less mana.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -24093,7 +24093,7 @@
           {
             "spell_id": 10965,
             "name": "Greater Heal",
-            "condition": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%.",
+            "condition": "When your mana falls behind the fight, only on a tank under 50%, so it waits for a deeper hole.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -24107,7 +24107,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%.",
+            "condition": "When your mana falls behind the fight, only on a party member under 35%, so it waits for a deeper hole too.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
