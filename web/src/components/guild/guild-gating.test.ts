@@ -116,10 +116,13 @@ describe('GuildInviteLink', () => {
     );
   });
 
-  it('no link yet: a primary with no confirm', () => {
+  it('no link yet: a secondary with no confirm, the plan card keeping the one fill', () => {
     const body = link(null);
     expect(text(body)).toContain('Make a link to share in guild chat or Discord.');
     expect(text(body)).toContain('Make the invite link');
+    const make = /<button[^>]*class="([^"]*)"[^>]*data-testid="guild-invite-make"/.exec(body)?.[1] ?? '';
+    expect(make).toContain('bg-white/[.045]');
+    expect(make).not.toContain('linear-gradient');
     expect(body).not.toContain('data-testid="guild-invite-rotate"');
     expect(body).not.toContain('data-testid="guild-invite-url"');
   });

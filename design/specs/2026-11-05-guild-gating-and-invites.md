@@ -82,7 +82,7 @@ Deleted strings: `Award and Nudge are part of the guild plan. ` + `Subscribe the
 - Label `Invite link`, sub `Anyone with this link joins {Guild} as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once.`
 - **Just made, this session.** `RotateInvite` already returns the URL once. After `Make a new link` (or `Make the invite link`) answers, the row shows `CopyLinkField` (read-only, the full URL in mono, `Copy` reading `Copied` for 4 s), focus on `Copy`, and under it 13 px muted `Copy it now. For safety we keep only a fingerprint, so it cannot be shown again after you leave this page.` The URL lives in component state only, never in storage.
 - **A link exists, later visit.** No field. 13 px muted: `Made {12 Nov}. It still works, but it cannot be shown again. Make a new one to copy it.` Then `Make a new link` (`button('secondary','sm')`).
-- **No link yet.** 13 px muted `Make a link to share in guild chat or Discord.`, then `Make the invite link` (`button('primary','sm')`, busy `Making…`). No confirm: nothing breaks.
+- **No link yet.** 13 px muted `Make a link to share in guild chat or Discord.`, then `Make the invite link` (`button('secondary','sm')`, busy `Making…`): the Guild plan card's trial or subscribe button is the page's one fill, and two filled gold buttons on one page read as two first steps (amended 2026-11-05, guild round 2). No confirm: nothing breaks.
 - `Make a new link` (a link exists) opens the confirm in place (the `GuildInviteLink` recipe): `Make a new link? The old one stops working, so anyone you sent it to needs the new one.` with `Make a new link` (`button('primary','sm')`, busy `Making…`) and `Cancel` (ghost). Focus moves to `Cancel`; Escape cancels.
 - Gated? No. Invites are free on every plan.
 - Error: 13 px `--wipe` line under the row, `That did not work. Try again.`
@@ -108,7 +108,7 @@ Capture `only-stranger-invite-1440`: a 480 px card hard left, `Lifecycle Test ·
    - None on the roster, but the account has characters: label `None of your characters is in {Guild} in game yet.`; sub `Officers see {Name} until one of yours shows on the roster.` ({Name} is the `invitedRosterRows` pick: the main with an export, else the newest export.)
    - No characters at all: icon slot the neutral ring; label `You join with your account`; sub `Your characters show once you sync the addon or import from Battle.net.`
 4. **Consent line**, 13 px muted, unchanged words.
-5. **Actions**: `Join {Guild}` (`button('primary','md')`, busy `Joining…`), `Not now` (`button('ghost','md')`).
+5. **Actions**: `Join {Guild}` (`button('primary','md')`, busy `Joining…`), `Not now` (`button('ghost','md')`). The card ends at the actions: room for the error line under them is held only while a join is in flight or after one failed (amended 2026-11-05, guild round 2; round 1 held it at rest and left about 50 px of dead space).
 
 **What verified means**, one 13 px muted line above the consent line: `Joining by this link verifies you at once. No officer has to approve you.`
 

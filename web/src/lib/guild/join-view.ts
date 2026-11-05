@@ -49,3 +49,9 @@ export function joiningRow(joinsAs: InviteJoinsAs | null | undefined, guildName:
     sub: descriptor(joinsAs),
   };
 }
+
+/** The card holds room for the join error line only while a join is in flight or after one failed,
+ *  so a card at rest ends at its buttons (guild round 2: round 1 left about 50 px under them). */
+export function holdsErrorRoom(busy: boolean, error: string): boolean {
+  return busy || error !== '';
+}
