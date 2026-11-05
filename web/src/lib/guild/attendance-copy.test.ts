@@ -138,7 +138,16 @@ describe('night line', () => {
   });
 
   it("says the bot's sentence when nobody signed up beforehand, never 0 of 0 came", () => {
-    const unsigned = { ...NIGHT, signed: 0, came: 0, joined: 5, kills: 0, wipes: 0, deaths: 0, duration_ms: 0 };
+    const unsigned = {
+      ...NIGHT,
+      signed: 0,
+      came: 0,
+      joined: 5,
+      kills: 0,
+      wipes: 0,
+      deaths: 0,
+      duration_ms: 0,
+    };
     expect(nightLine(unsigned)).toBe('5 came, nobody signed up beforehand');
     expect(nightLine(unsigned)).toBe(str('Night line', 2, { n: '5' }));
     expect(nightLine({ ...unsigned, joined: 1 })).toBe('1 came, nobody signed up beforehand');
@@ -230,7 +239,9 @@ describe('report words', () => {
       firstPull: false,
     });
     expect(unnamedLine({ pulls: 7, kills: 5, wipes: 2 })).toBe('5 trash packs');
-    expect(unnamedLine({ pulls: 2, kills: 1, wipes: 1 })).toBe(str('Kill order', 4, { k: '1' }).replace('(s)', ''));
+    expect(unnamedLine({ pulls: 2, kills: 1, wipes: 1 })).toBe(
+      str('Kill order', 4, { k: '1' }).replace('(s)', ''),
+    );
     expect(unnamedLine({ pulls: 2, kills: 0, wipes: 2 })).toBeNull();
   });
 

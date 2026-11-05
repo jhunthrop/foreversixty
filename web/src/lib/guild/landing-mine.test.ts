@@ -62,7 +62,10 @@ describe('the landing for a signed-in player', () => {
 describe('the foot line for a claim holder', () => {
   const HOLDER = {
     ...ME,
-    guilds: [ME.guilds[0], { ...ME.guilds[1], claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: null } }],
+    guilds: [
+      ME.guilds[0],
+      { ...ME.guilds[1], claim: { state: 'claimed', yours: true, pending_yours: false, holder_name: null } },
+    ],
   } as unknown as Me;
 
   it('finds the guild whose claim the account holds', () => {

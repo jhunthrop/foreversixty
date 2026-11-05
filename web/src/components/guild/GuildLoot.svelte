@@ -210,11 +210,7 @@
                   {item.item_id === fullTierOneItem ? TIER_ONE_LABEL : TIER_ONE_SHORT}
                 </p>
               {/if}
-              <LootCandidateRow
-                {candidate}
-                own={ownKeys.includes(candidate.character_key)}
-                {showAttendance}
-              >
+              <LootCandidateRow {candidate} own={ownKeys.includes(candidate.character_key)} {showAttendance}>
                 {#snippet action()}
                   {#if awardState.kind === 'awarded'}
                     <span class="text-muted text-[12px]" data-testid="guild-loot-winner-slot">

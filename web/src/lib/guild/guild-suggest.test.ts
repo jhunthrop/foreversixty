@@ -52,7 +52,13 @@ describe('guildSuggestions with the guild search', () => {
   });
 
   it('names a guild once, never the failed address, and at most three', () => {
-    const rows = [LIFECYCLE, search('Lifecycle'), search('Lifecycle A'), search('Lifecycle B'), search('Lifecycle C')];
+    const rows = [
+      LIFECYCLE,
+      search('Lifecycle'),
+      search('Lifecycle A'),
+      search('Lifecycle B'),
+      search('Lifecycle C'),
+    ];
     const names = guildSuggestions(at('lifecycle'), [LIFECYCLE], rows).map((s) => s.name);
     expect(names).toEqual(['Lifecycle Test', 'Lifecycle A', 'Lifecycle B']);
   });

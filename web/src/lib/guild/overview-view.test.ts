@@ -80,9 +80,8 @@ describe('the cards', () => {
     expect(rosterCardFacts({ raiders: 5, waiting_for_approval: 0, below_rating_floor: 0 })).toEqual([
       { text: '5 raiders with gear on the site' },
     ]);
-    expect(rosterCardFacts({ raiders: 5, waiting_for_approval: 0, below_rating_floor: 2 }).map((f) => f.text)).toEqual([
-      '5 raiders with gear on the site',
-      '2 below the rating floor',
-    ]);
+    expect(
+      rosterCardFacts({ raiders: 5, waiting_for_approval: 0, below_rating_floor: 2 }).map((f) => f.text),
+    ).toEqual(['5 raiders with gear on the site', '2 below the rating floor']);
   });
 });
