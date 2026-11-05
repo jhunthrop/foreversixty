@@ -25442,7 +25442,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25720,7 +25720,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -25998,7 +25998,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26276,7 +26276,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26561,7 +26561,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26846,7 +26846,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27124,7 +27124,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27402,7 +27402,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27680,7 +27680,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27958,7 +27958,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28236,7 +28236,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "Greater Heal rank 1 once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -33320,7 +33320,7 @@
           {
             "spell_id": 408341,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33360,7 +33360,7 @@
           {
             "spell_id": 408341,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33400,7 +33400,7 @@
           {
             "spell_id": 408341,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33440,7 +33440,7 @@
           {
             "spell_id": 408341,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33480,7 +33480,7 @@
           {
             "spell_id": 408342,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33534,7 +33534,7 @@
           {
             "spell_id": 408342,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33588,7 +33588,7 @@
           {
             "spell_id": 408342,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33642,7 +33642,7 @@
           {
             "spell_id": 408342,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33703,7 +33703,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33764,7 +33764,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33825,7 +33825,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33886,7 +33886,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -33947,7 +33947,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34008,7 +34008,7 @@
           {
             "spell_id": 408343,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34069,7 +34069,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34130,7 +34130,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34191,7 +34191,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34252,7 +34252,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34313,7 +34313,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34374,7 +34374,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34435,7 +34435,7 @@
           {
             "spell_id": 408344,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34496,7 +34496,7 @@
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34557,7 +34557,7 @@
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34618,7 +34618,7 @@
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34679,7 +34679,7 @@
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first: Searing Totem until 26, Magma Totem from then on.",
+            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34728,7 +34728,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34768,7 +34768,7 @@
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34808,7 +34808,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34848,7 +34848,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34888,7 +34888,7 @@
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34928,7 +34928,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -34968,7 +34968,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35008,7 +35008,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35048,7 +35048,7 @@
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35088,7 +35088,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35128,7 +35128,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35175,7 +35175,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35229,7 +35229,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35283,7 +35283,7 @@
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35337,7 +35337,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35391,7 +35391,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35445,7 +35445,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35499,7 +35499,7 @@
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -35553,7 +35553,7 @@
           {
             "spell_id": 10414,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes the 20% when no bolt is ready.",
+            "condition": "Earth Shock on cooldown while your mana is above a quarter, or above half from your first point of Maelstrom Weapon until the fifth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
