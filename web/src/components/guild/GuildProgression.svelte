@@ -7,7 +7,7 @@
   import { classColorVar, rowLink } from '../../lib/report/format';
   import { dayWord } from '../../lib/dates';
   import type { GuildParseRef, GuildProgressionPage } from '../../lib/guild/api';
-  import { progressionNightDay } from '../../lib/guild/overview-view';
+  import { downEncounterNames, progressionNightDay } from '../../lib/guild/overview-view';
   import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
@@ -59,7 +59,7 @@
       <div class="text-muted flex justify-between text-[13px]">
         <span>Named encounters down this tier</span>
         <span class="numeric text-[14px]"
-          >{tier.down} · {progression.encounters.map((e) => e.name).join(', ') || '—'}</span
+          >{tier.down} · {downEncounterNames(progression.encounters).join(', ') || '—'}</span
         >
       </div>
       <div class="border-line-soft h-1.5 overflow-hidden rounded-full">

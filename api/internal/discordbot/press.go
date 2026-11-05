@@ -241,11 +241,16 @@ func (s *Service) commitSignup(ctx context.Context, a signupAsk, c guilds.Signup
 
 // signupRefusal is the sentence of a refusal the sign-up service answers.
 func signupRefusal(err error) (string, bool) {
+	var notOfClass *guilds.RoleNotOfClassError
 	switch {
+	case errors.As(err, &notOfClass):
+		return notOfClass.Message(), true
 	case errors.Is(err, guilds.ErrSignupRateLimited):
 		return pressCopy.RateLimited, true
 	case errors.Is(err, guilds.ErrRaidLocked):
 		return pressCopy.Locked, true
+	case errors.Is(err, guilds.ErrRaidEnded):
+		return pressCopy.Ended, true
 	case errors.Is(err, guilds.ErrRaidCancelled):
 		return pressCopy.Cancelled, true
 	}

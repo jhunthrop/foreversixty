@@ -94,9 +94,14 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	if err != nil {
 		return SignupResult{}, err
 	}
-	role := cmd.Role
-	if role == "" {
-		role = char.defaultRole()
+	if cmd.Role != "" {
+		if err := checkClassRole(char.Class, cmd.Role); err != nil {
+			return SignupResult{}, err
+		}
+	}
+	role, err := s.signupRole(ctx, raid.ID, cmd.Role, char)
+	if err != nil {
+		return SignupResult{}, err
 	}
 	result := SignupResult{Character: char.candidate(role, false)}
 	// SignedBy is the character's account, not the actor: R3 groups by it, so an officer's
@@ -129,7 +134,12 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	}
 	s.logger().Info("guilds", "op", "raid_signup", "guild_id", cmd.GuildID, "raid_id", raid.ID,
 		"user_id", char.userID, "actor", cmd.ActorID, "character_key", char.CharacterKey, "as_officer", asOfficer)
-	s.markRaid(ctx, raid.ID)
+	if raid.Status == RaidDone {
+		// An officer's correction to a logged raid: its attendance reads the sign-ups.
+		s.recomputeAttendance(ctx, raid.ID)
+	} else {
+		s.markRaid(ctx, raid.ID)
+	}
 	if cmd.State == SignupOut {
 		s.publishLateChange(ctx, raid, char.CharacterKey, char.Name, time.Now())
 	}
@@ -138,6 +148,23 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	}
 	result.Raid, err = s.signupRaidView(ctx, cmd)
 	return result, err
+}
+
+// signupRole is the role a sign-up takes: the asked one, else the role the character's
+// existing sign-up already holds (a Discord In press keeps the Tank picked on the site), else
+// the character's default.
+func (s *Service) signupRole(ctx context.Context, raidID int64, asked string, char raidRosterChar) (string, error) {
+	if asked != "" {
+		return asked, nil
+	}
+	stored, err := s.Store.signupRole(ctx, raidID, char.CharacterKey)
+	if err != nil {
+		return "", err
+	}
+	if stored != "" {
+		return stored, nil
+	}
+	return char.defaultRole(), nil
 }
 
 // signupTarget runs the first three checks: the actor is a verified member, the raid is the
@@ -183,7 +210,7 @@ func (s *Service) signupStanding(ctx context.Context, actorID int64, raid Raid, 
 	if !char.verified {
 		return false, ErrCharacterNotVerified
 	}
-	if raid.Status != RaidLocked && raid.Status != RaidDone {
+	if raid.Status != RaidLocked && raid.Status != RaidDone && !raid.Ended(time.Now()) {
 		return false, nil
 	}
 	officer, err := s.officerOrLeaderOf(ctx, raid.GuildID, actorID)

@@ -39,7 +39,7 @@ export const billingBlockCopy = {
   pastDueBanner: 'Your last payment failed. Update your card to keep access.',
   guildBilledBy: (name: string): string => `Billed by ${name}`,
   guildNotSubscribed: 'This guild is not on the guild plan yet.',
-  subscribeTheGuild: 'Subscribe the guild',
+  subscribeTheGuild: 'Subscribe your guild',
 };
 
 /** "On · 4 runs this month"; plain "On" when an older /v1/me sent no count. */

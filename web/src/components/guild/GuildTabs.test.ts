@@ -18,4 +18,11 @@ describe('tabAfterHashChange', () => {
     expect(tabAfterHashChange('#settings', tabsForRole('member'), 'raids')).toBe('overview');
     expect(tabAfterHashChange('', OFFICER, 'settings')).toBe('overview');
   });
+
+  it('never opens Readiness without the member home: a member waiting for approval reads as public', () => {
+    // /home and /readiness both answer verified members only, so a waiting member's page has no
+    // home, its role is public, and the roster gate's "waiting for an officer" line stands in.
+    expect(tabsForRole('public')).not.toContain('readiness');
+    expect(tabAfterHashChange('#readiness', tabsForRole('public'), 'overview')).toBe('overview');
+  });
 });

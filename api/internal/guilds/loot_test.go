@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -469,13 +470,16 @@ func TestWornNameNamesTheItemInTheDropsSlot(t *testing.T) {
 // the count is the number of the guild's award rows naming that character, and the name is the item
 // worn in the drop's slot.
 func TestAwardCountsAndTheCandidateLine(t *testing.T) {
-	counts := awardCounts(map[int]*AwardedTo{
-		16963: {CharacterKey: "us/hardcore/a"},
-		16939: {CharacterKey: "us/hardcore/a"},
-		16947: {CharacterKey: "us/hardcore/b"},
+	to := func(key string) *AwardedTo { return &AwardedTo{CharacterKey: key} }
+	// The same helm won two weeks running counts twice.
+	counts := awardCounts([]lootAward{
+		{itemID: 16963, to: to("us/hardcore/a")},
+		{itemID: 16963, to: to("us/hardcore/a")},
+		{itemID: 16939, to: to("us/hardcore/a")},
+		{itemID: 16947, to: to("us/hardcore/b")},
 	})
-	if counts["us/hardcore/a"] != 2 || counts["us/hardcore/b"] != 1 || counts["us/hardcore/c"] != 0 {
-		t.Fatalf("awardCounts = %v, want a:2 b:1 c:0", counts)
+	if counts["us/hardcore/a"] != 3 || counts["us/hardcore/b"] != 1 || counts["us/hardcore/c"] != 0 {
+		t.Fatalf("awardCounts = %v, want a:3 b:1 c:0", counts)
 	}
 	if got := awardCounts(nil); len(got) != 0 {
 		t.Fatalf("awardCounts(nil) = %v, want empty", got)
@@ -489,6 +493,34 @@ func TestAwardCountsAndTheCandidateLine(t *testing.T) {
 	cands := s.lootCandidates(roster, lootItem{ItemID: 16963, Slot: "head"})
 	if len(cands) != 1 || cands[0].Replaces != "Red Winter Hat" {
 		t.Fatalf("candidates = %+v, want one replacing Red Winter Hat", cands)
+	}
+}
+
+// TestTonightsAwardsMarkOnlyTheNightBeingPlayed checks the Loot tab's "awarded" state: the raid
+// being played now, or a raid-less award from tonight, marks the item; last week's raid or a
+// raid-less award from last week leaves it free; the latest award of an item wins.
+func TestTonightsAwardsMarkOnlyTheNightBeingPlayed(t *testing.T) {
+	now := time.Date(2026, 12, 9, 22, 0, 0, 0, time.UTC)
+	lastWeek, tonight := int64(1), int64(2)
+	row := func(item int, raid *int64, ago time.Duration, key string) lootAward {
+		return lootAward{itemID: item, raidID: raid, awardedAt: now.Add(-ago), to: &AwardedTo{CharacterKey: key}}
+	}
+	awards := []lootAward{
+		row(16963, &lastWeek, 7*24*time.Hour, "old"),
+		row(16939, nil, 6*24*time.Hour, "old"),
+		row(16947, &tonight, time.Hour, "first"),
+		row(16947, &tonight, 30*time.Minute, "second"),
+		row(17078, nil, 2*time.Hour, "raidless"),
+	}
+	got := tonightsAwards(awards, &tonight, now)
+	if got[16963] != nil || got[16939] != nil {
+		t.Fatalf("last week's awards still mark their items: %+v %+v", got[16963], got[16939])
+	}
+	if got[16947] == nil || got[16947].CharacterKey != "second" || got[17078] == nil {
+		t.Fatalf("tonight's awards = %+v", got)
+	}
+	if got := tonightsAwards(awards, nil, now); got[16947] != nil || got[17078] == nil {
+		t.Fatalf("with no raid tonight = %+v", got)
 	}
 }
 
@@ -552,12 +584,13 @@ func TestAwardLineNamesTheOfficersCharacter(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	byItem := tonightsAwards(got, nil, time.Now())
 	for item, want := range map[int]string{16963: "Bowmain", 16939: "an officer", 16947: "an officer"} {
-		if got[item] == nil || got[item].ByName != want {
-			t.Fatalf("award of %d: by_name = %+v, want %q", item, got[item], want)
+		if byItem[item] == nil || byItem[item].ByName != want {
+			t.Fatalf("award of %d: by_name = %+v, want %q", item, byItem[item], want)
 		}
 	}
-	for item, a := range got {
+	for item, a := range byItem {
 		if strings.Contains(a.ByName, "#") || strings.HasPrefix(a.ByName, "user-") {
 			t.Fatalf("award of %d names an account (%q), want a character or \"an officer\"", item, a.ByName)
 		}

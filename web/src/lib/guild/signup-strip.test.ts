@@ -52,6 +52,7 @@ describe('failureLine', () => {
   it('names the races, and anything else is the generic failure', () => {
     expect(failureLine('raid_locked')).toEqual({ message: raidCopy.races.locked, race: true });
     expect(failureLine('raid_cancelled')).toEqual({ message: raidCopy.races.cancelled, race: true });
+    expect(failureLine('raid_ended')).toEqual({ message: 'This raid has ended.', race: true });
     expect(failureLine('invalid')).toEqual({ message: raidCopy.stripStatus.failed, race: false });
   });
 });

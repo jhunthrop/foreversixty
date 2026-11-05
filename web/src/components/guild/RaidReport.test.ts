@@ -88,7 +88,7 @@ describe('the header', () => {
     expect(body).toMatch(
       /disabled[^>]*aria-describedby="officer-tools-gate-raids"|aria-describedby="officer-tools-gate-raids"[^>]*disabled/,
     );
-    expect(text(body)).toContain('Subscribe the guild');
+    expect(text(body)).toContain('Subscribe your guild');
     expect(body).not.toMatch(
       /disabled=""[^>]*data-testid="raid-report-copy"|data-testid="raid-report-copy"[^>]*disabled/,
     );

@@ -30,8 +30,8 @@ export interface SpecLead {
 
 export const raidCopy = {
   planButton: 'Plan a raid',
-  gate: 'Planning and running raids are part of the guild plan. Subscribe the guild.',
-  gateLink: 'Subscribe the guild',
+  gate: 'Planning and running raids are part of the guild plan. Subscribe your guild.',
+  gateLink: 'Subscribe your guild',
   cap: 'A guild plans at most 12 raids ahead.',
   subheads: {
     planned: 'Planned',
@@ -93,6 +93,7 @@ export const raidCopy = {
   races: {
     locked: 'This raid was locked while you were signing up.',
     cancelled: 'This raid was cancelled while you were signing up.',
+    ended: 'This raid has ended.',
     officerToolsEnded: "Not saved. This guild's officer tools have ended.",
   },
   poll: 'Live updates paused. Reload to see the latest.',

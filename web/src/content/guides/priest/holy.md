@@ -27,7 +27,7 @@ Holy is the priest who heals everything: Prayer of Mending and Renew on the tank
 
 ### Strengths
 
-- Prayer of Mending is the cheapest healing in the game: five heals for one cast
+- Prayer of Mending is the cheapest healing you can cast all fight: five heals for one cast
 - Prayer of Healing heals any five-player group at once, not only your own
 - Spiritual Guidance and Meditation turn Spirit into both healing and mana
 - Lightwell heals the melee while you heal the tank, and Holy Binding heals you every time you Flash Heal someone else

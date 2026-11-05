@@ -46,8 +46,15 @@ func TestReadinessOnlyShowsVerifiedRowsAndGatesNudgeByRole(t *testing.T) {
 	seedExport(t, h.pool, unverified, "us/hardcore/readinessunverified", "us", "hardcore", "readinessunverified")
 	recomputeMembership(t, h.pool, gid, unverified)
 
-	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+	h.actor = auth.Actor{UserID: unverified, Role: "user", Method: "session"}
 	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/readiness", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("a member waiting for approval reading readiness = %d, want 403", res.StatusCode)
+	}
+
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+	res = h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/readiness", gid), "")
 	var view ReadinessView
 	h.data(res, &view)
 	if len(view.Rows) != 2 {
