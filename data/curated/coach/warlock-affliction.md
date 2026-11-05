@@ -28,7 +28,7 @@ This is the best Affliction Warlock on Forever. Affliction keeps three DoTs and 
 - Amplify Curse before each Bane of Agony whenever it is ready below sixty, and at sixty before the first Agony after your last Doom fires.
 - Bane of Agony whenever no Bane of Doom is on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Siphon Life from thirty whenever it has fallen off.
-- Immolate with about three seconds left, so it lands a moment before the old one ends. The fresh hit is worth the tick you give up.
+- Immolate while you level, with about three seconds left, so it lands a moment before the old one ends. The fresh hit is worth the tick you give up. The raid build sacrifices the Imp and drops it.
 - Wrack from forty with your DoTs up. Before forty, Shadow Bolt fills instead.
 - Life Tap keeps you casting once mana runs low.
 - Curse of Recklessness, Tongues or Weakness only if your raid leader asks. That is only when another warlock holds Curse of the Elements.

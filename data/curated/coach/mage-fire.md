@@ -23,7 +23,7 @@ This is the best Fire Mage on Forever. Fire casts a three second Fireball, keeps
 
 - Mage Armor, Arcane Brilliance and your food buff go up before the pull.
 - Pyroblast only on three stacks of Heating Up, when it is a one and a half second cast.
-- Scorch from thirty on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. Every Scorch also renews your Improved Scorch stacks.
+- Scorch is the filler from thirty with the leveling build. Cast it on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. Every Scorch also renews your Improved Scorch stacks. Below thirty, Fireball is the filler.
 - Arcane Blast whenever its buff has dropped, once, then back to Fire.
 - Fire Blast every time it is off cooldown. It is instant, and from Heating Up at thirty every hit is a stack.
 - Arcane Missiles the moment Missile Barrage procs, while the proc is up.

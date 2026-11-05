@@ -49,7 +49,7 @@ This is the best Discipline Priest on Forever. Discipline heals the tank with Pe
 - drill.core_casts: When the mana bar drops, check your mana cooldowns before the next cast. Press each one as soon as the bar has room for its full return.
 - drill.uptime: Recast your self buff as part of the ready check, and again the moment you are back up after a death.
 - drill.resource: Before the pull, note the mana you should have at the halfway mark. If you are behind it, keep Penance and the shield on the tank, let the filler wait for a deeper hole, and save Flash Heal for the emergency.
-- drill.ranks: Bind Greater Heal rank one for the party's small holes, and keep the top rank for the tank, who takes the big hits.
+- drill.ranks: Before forty, bind the Heal rank your level calls for. From forty, bind Greater Heal rank one for the party's small holes, and keep the top rank for the tank, who takes the big hits.
 - drill.preparation: Before every boss, check a flask, food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, pick a spot in range of the tank and out of anything the boss breathes or cleaves. When damage lands on you, move first and finish the cast after.
 

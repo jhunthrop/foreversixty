@@ -104,6 +104,8 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Feign Death": "Feign Death before you reach the tank's threat, not after the boss turns. If it says Resisted, you still have all your threat.",
     },
     "hunter-survival": {
+        # survival.md: Aspect of the Beast trains at 30; Monkey until then.
+        "Hunter's Mark": "Hunter's Mark on the boss first, so the mana is back by the pull. Wear Aspect of the Monkey until thirty, then Aspect of the Beast, and leave it up.",
         # survival.md: Feign Death "can miss or be resisted".
         "Feign Death": "Feign Death drops all of your threat if it lands. Check the message, because it can be resisted.",
         # survival.md: Counterattack after a parry costs mana (Resourcefulness cuts it, never to nothing);
@@ -130,8 +132,8 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         # affliction.md: Immolate restarted with about three seconds left; one curse per warlock, so the
         # raid leader's curse only when another warlock holds Curse of the Elements.
         "Immolate": (
-            "Immolate with about three seconds left, so it lands a moment before the old one ends. "
-            "The fresh hit is worth the tick you give up."
+            "Immolate while you level, with about three seconds left, so it lands a moment before the old one ends. "
+            "The fresh hit is worth the tick you give up. The raid build sacrifices the Imp and drops it."
         ),
         "Life Tap": "Life Tap keeps you casting once mana runs low.",
         "Curse of Recklessness": (
@@ -143,7 +145,7 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         # Bane of Doom trains at sixty.
         "Bane of Doom": "Bane of Doom at sixty, the moment the last one fires, with a minute or more of the fight left.",
         # demonology.md: the five-step setup; "Your curse slot is then free" after another warlock's Elements.
-        "Demonic Sacrifice": "Demonic Sacrifice on the Imp about a minute before the pull, then summon the Succubus: Demonic Pact keeps the sacrifice.",
+        "Demonic Sacrifice": "Demonic Sacrifice only with the raid build's Demonic Pact, from forty. Sacrifice the Imp about a minute before the pull, then summon the Succubus. Without Pact, never sacrifice: keep the Succubus out.",
         "Soul Link": "Soul Link a couple of seconds before the pull, and again after every resummon.",
         "Curse of Recklessness": (
             "Curse of Recklessness, Tongues or Weakness only if your raid leader asks. "
@@ -213,8 +215,8 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
     "mage-fire": {
         # fire.md: "Everything else is Scorch" from thirty, with Fireball the filler below thirty.
         "Scorch": (
-            "Scorch from thirty on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. "
-            "Every Scorch also renews your Improved Scorch stacks."
+            "Scorch is the filler from thirty with the leveling build. Cast it on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. "
+            "Every Scorch also renews your Improved Scorch stacks. Below thirty, Fireball is the filler."
         ),
     },
     "mage-frost": {
@@ -628,7 +630,7 @@ DRILL_LINES: dict[str, dict[str, str]] = {
     # discipline.md: Greater Heal top rank on the tank, rank one on everyone else; "When your bar falls
     # behind the fight, stop topping off the party and heal only real holes."
     "priest-discipline": {
-        "ranks": "Bind Greater Heal rank one for the party's small holes, and keep the top rank for the tank, who takes the big hits.",
+        "ranks": "Before forty, bind the Heal rank your level calls for. From forty, bind Greater Heal rank one for the party's small holes, and keep the top rank for the tank, who takes the big hits.",
         "resource": (
             "Before the pull, note the mana you should have at the halfway mark. If you are behind it, keep Penance "
             "and the shield on the tank, let the filler wait for a deeper hole, and save Flash Heal for the emergency."

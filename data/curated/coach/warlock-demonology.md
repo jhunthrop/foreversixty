@@ -21,7 +21,7 @@ This is the best Demonology Warlock on Forever. Demonology sacrifices the Imp fo
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Demonic Sacrifice on the Imp about a minute before the pull, then summon the Succubus: Demonic Pact keeps the sacrifice.
+- Demonic Sacrifice only with the raid build's Demonic Pact, from forty. Sacrifice the Imp about a minute before the pull, then summon the Succubus. Without Pact, never sacrifice: keep the Succubus out.
 - Put on Demon Armor, make a Healthstone and Life Tap back to full.
 - Soul Link a couple of seconds before the pull, and again after every resummon.
 - Curse of the Elements when no warlock's is on the target.
