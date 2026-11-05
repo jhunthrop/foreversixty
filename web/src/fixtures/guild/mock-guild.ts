@@ -744,7 +744,8 @@ const DROP_CLIENT_FACTS: Record<number, [number, number, number]> = {
 const QUEST_LABELS: Record<number, string> = {
   18422: 'Quest: Victory for the Alliance / Victory for the Horde',
   18705: 'Quest: A Proper String (Hunter)',
-  21108: 'Quest: The Only Prescription',
+  // The Only Prescription is the Ahn'Qiraj Scepter chain, gated in Forever: no quest name (round 1).
+  21108: 'Quest item',
 };
 
 function dropKind(itemId: number, slot: string): GuildLootPage['items'][number]['kind'] {

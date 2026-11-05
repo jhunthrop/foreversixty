@@ -107,7 +107,7 @@ The officer's `Award` still works on quest drops and the bag: each open row ends
 
 ### 3.6 Quest labels are sourced, never typed from memory
 
-New file `data/curated/loot/onyxia-quest-items.json`: `{item_id, label, quest_ids[], class|null, source}` per row. The lane fills it from classic-db (quest ids and names) and records the check in its report (tenet 8). The API copies it into a Go table the same way `onyxiaLoot` is copied (curated data is not in the API image), with a test pinning the two. A quest name is printed only when the lane verifies it on classic-db; otherwise the row keeps its short label without the name (`Quest: Hunter`, or `Quest item` when even the class is unverified).
+New file `data/curated/loot/onyxia-quest-items.json`: `{item_id, label, quest_ids[], class|null, source}` per row. The lane fills it from classic-db (quest ids and names) and records the check in its report (tenet 8). The API copies it into a Go table the same way `onyxiaLoot` is copied (curated data is not in the API image), with a test pinning the two. A quest name is printed only when the lane verifies it on classic-db; otherwise the row keeps its short label without the name (`Quest: Hunter`, or `Quest item` when even the class is unverified). A quest name is printed only when the quest is also open in Forever today: a row whose quest id sits behind a `data/curated/content-phases.json` gate that is not open carries that gate and reads `Quest item` (Draconic for Dummies: The Only Prescription is the Ahn'Qiraj Scepter chain, gate `aq-war-effort`). A test pins the gates to content-phases.json (amended 2026-11-05, guild round 1).
 
 ### 3.7 Overview loot line (tenet 2)
 

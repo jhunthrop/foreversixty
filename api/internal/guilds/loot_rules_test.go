@@ -416,6 +416,10 @@ func TestQuestLabels(t *testing.T) {
 	if got := questLabel([]int{1}); got != "Quest item" {
 		t.Errorf("unsourced label = %q", got)
 	}
+	// Guild round 1, item 10: The Only Prescription is the Ahn'Qiraj Scepter chain, shut in Forever.
+	if got := questLabel([]int{21108}); got != "Quest item" {
+		t.Errorf("Draconic for Dummies label = %q, want Quest item while its quest is gated", got)
+	}
 }
 
 func TestMatureBlackDragonSinewIsForHuntersAtSixtyAlone(t *testing.T) {
@@ -566,10 +570,12 @@ func TestQuestTableMatchesItsCuratedFile(t *testing.T) {
 	}
 	var file struct {
 		Items []struct {
-			ItemID  int     `json:"item_id"`
-			Quest   string  `json:"quest"`
-			Class   *string `json:"class"`
-			Faction *string `json:"faction"`
+			ItemID   int     `json:"item_id"`
+			Quest    string  `json:"quest"`
+			Class    *string `json:"class"`
+			Faction  *string `json:"faction"`
+			Gate     *string `json:"gate"`
+			QuestIDs []int   `json:"quest_ids"`
 		} `json:"items"`
 	}
 	if err := json.Unmarshal(body, &file); err != nil {
@@ -578,12 +584,68 @@ func TestQuestTableMatchesItsCuratedFile(t *testing.T) {
 	if len(file.Items) != len(onyxiaQuestItems) {
 		t.Fatalf("file has %d rows, table %d", len(file.Items), len(onyxiaQuestItems))
 	}
+	shut := shutQuestGates(t)
 	for _, row := range file.Items {
 		q, ok := questFor(row.ItemID)
-		if !ok || q.Quest != row.Quest || q.Class != orEmpty(row.Class) || q.Faction != orEmpty(row.Faction) {
+		if !ok || q.Quest != row.Quest || q.Class != orEmpty(row.Class) || q.Faction != orEmpty(row.Faction) ||
+			q.Gate != orEmpty(row.Gate) {
 			t.Errorf("item %d: table %+v, file %+v", row.ItemID, q, row)
 		}
+		want := ""
+		for _, id := range row.QuestIDs {
+			if gate, gated := shut[id]; gated {
+				want = gate
+			}
+		}
+		if q.Gate != want {
+			t.Errorf("item %d (%s): gate %q, content-phases.json says %q", row.ItemID, row.Quest, q.Gate, want)
+		}
 	}
+}
+
+// shutQuestGates is every quest id content-phases.json holds behind a gate that is not open today
+// (its phase after launch in phases.json, or "later"), mapped to the gate's key.
+func shutQuestGates(t *testing.T) map[int]string {
+	t.Helper()
+	curated := filepath.Join(repoDataDirForTrees(t), "..", "curated")
+	var phases []struct {
+		Name string `json:"name"`
+	}
+	var content struct {
+		Gates []struct {
+			Key    string `json:"key"`
+			Phase  string `json:"phase"`
+			Quests []struct {
+				ID int `json:"id"`
+			} `json:"quests"`
+		} `json:"gates"`
+	}
+	for path, into := range map[string]any{"phases.json": &phases, "content-phases.json": &content} {
+		body, err := os.ReadFile(filepath.Join(curated, path))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := json.Unmarshal(body, into); err != nil {
+			t.Fatal(err)
+		}
+	}
+	open := map[string]bool{}
+	for _, p := range phases {
+		open[p.Name] = true
+		if p.Name == "launch" {
+			break
+		}
+	}
+	out := map[int]string{}
+	for _, g := range content.Gates {
+		if open[g.Phase] {
+			continue
+		}
+		for _, q := range g.Quests {
+			out[q.ID] = g.Key
+		}
+	}
+	return out
 }
 
 func orEmpty(s *string) string {

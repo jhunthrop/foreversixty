@@ -24,21 +24,24 @@ const itemClassContainer = 1
 // scaleOfOnyxia is skinned from Onyxia's corpse, not dropped.
 const scaleOfOnyxia = 15410
 
-// lootQuest is one quest item: the quest that takes it, and who that quest is for ("" for anyone).
+// lootQuest is one quest item: the quest that takes it, who that quest is for ("" for anyone), and
+// the content-phases gate that keeps the quest shut in Forever today ("" when it is open now).
 // Copied from data/curated/raids/onyxia-quest-items.json, which records each classic-db source;
-// loot_quests_test.go pins the two.
+// loot_rules_test.go pins the two, and the gates to data/curated/content-phases.json.
 type lootQuest struct {
 	ItemID  int
 	Quest   string
 	Class   string
 	Faction string
+	Gate    string
 }
 
 var onyxiaQuestItems = []lootQuest{
-	{18422, "Victory for the Horde", "", "horde"},
-	{18423, "Victory for the Alliance", "", "alliance"},
-	{18705, "A Proper String", "hunter", ""},
-	{21108, "The Only Prescription", "", ""},
+	{18422, "Victory for the Horde", "", "horde", ""},
+	{18423, "Victory for the Alliance", "", "alliance", ""},
+	{18705, "A Proper String", "hunter", "", ""},
+	// The Ahn'Qiraj Scepter chain: shut until the war effort opens.
+	{21108, "The Only Prescription", "", "", "aq-war-effort"},
 }
 
 // questFor is itemID's quest row.
@@ -67,12 +70,13 @@ func lootKind(item lootItem) string {
 
 // questLabel is the collapsed line's words for the quest items listed under one name ("Quest:
 // Victory for the Alliance / Victory for the Horde", "Quest: A Proper String (Hunter)"); "Quest
-// item" when no sourced quest names any of them.
+// item" when no sourced quest open in Forever today names any of them. A gated quest is never
+// named: a player cannot take it yet.
 func questLabel(itemIDs []int) string {
 	var names []string
 	class := ""
 	for _, id := range itemIDs {
-		if q, ok := questFor(id); ok {
+		if q, ok := questFor(id); ok && q.Gate == "" {
 			names = append(names, q.Quest)
 			class = q.Class
 		}

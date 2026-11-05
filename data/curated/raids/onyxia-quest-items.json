@@ -1,5 +1,5 @@
 {
-  "description": "Onyxia's drops that a quest takes, for the guild Loot tab's collapsed line (design/specs/2026-11-05-guild-loot.md §3.6). Every quest id and name is read from cmangos/classic-db commit ec4f596146be6467ea93c57397858e329e2db852 (Full_DB/ClassicDB_1_12_1_z2815.sql.gz), the dump pipeline.classic_quest_levels pins. class is the quest's RequiredClasses as a class slug, faction its RequiredRaces side; null when the quest has none. api/internal/guilds/loot_quests.go copies this table and a test pins the two.",
+  "description": "Onyxia's drops that a quest takes, for the guild Loot tab's collapsed line (design/specs/2026-11-05-guild-loot.md §3.6). Every quest id and name is read from cmangos/classic-db commit ec4f596146be6467ea93c57397858e329e2db852 (Full_DB/ClassicDB_1_12_1_z2815.sql.gz), the dump pipeline.classic_quest_levels pins. class is the quest's RequiredClasses as a class slug, faction its RequiredRaces side; null when the quest has none. gate is the data/curated/content-phases.json gate that holds one of its quest_ids while that gate is not open (its phase after launch, or later); null when the quest is open now. A gated quest's name is never printed: the item reads Quest item. api/internal/guilds/loot_quests.go copies this table and a test pins the two.",
   "items": [
     {
       "item_id": 18422,
@@ -7,6 +7,7 @@
       "quest_ids": [7490],
       "class": null,
       "faction": "horde",
+      "gate": null,
       "source": "classic-db item_template 18422 startquest 7490; quest_template 7490 'Victory for the Horde', ReqItemId 18422, RequiredRaces 178 (Horde), MinLevel 60"
     },
     {
@@ -15,6 +16,7 @@
       "quest_ids": [7495],
       "class": null,
       "faction": "alliance",
+      "gate": null,
       "source": "classic-db item_template 18423 startquest 7495; quest_template 7495 'Victory for the Alliance', ReqItemId 18423, RequiredRaces 77 (Alliance)"
     },
     {
@@ -23,6 +25,7 @@
       "quest_ids": [7635],
       "class": "hunter",
       "faction": null,
+      "gate": null,
       "source": "classic-db item_template 18705 AllowableClass 4 (hunter); quest_template 7635 'A Proper String', ReqItemId 18705, RequiredClasses 4 (hunter), MinLevel 60, rewards 18724"
     },
     {
@@ -31,6 +34,7 @@
       "quest_ids": [8620],
       "class": null,
       "faction": null,
+      "gate": "aq-war-effort",
       "source": "classic-db spell_template 25719 'Bind Draconic For Dummies' takes chapters 21103 to 21110 (21108 among them) and makes 21111 'Draconic For Dummies: Volume II'; quest_template 8620 'The Only Prescription' takes 21111, MinLevel 60"
     }
   ]

@@ -197,7 +197,8 @@ describe('GuildLoot', () => {
       const markup = text(html(true));
       expect(markup).toContain('Quest: Victory for the Alliance / Victory for the Horde');
       expect(markup).toContain('Quest: A Proper String (Hunter)');
-      expect(markup).toContain('Quest: The Only Prescription');
+      expect(markup).not.toContain('The Only Prescription');
+      expect(markup).toContain('Quest item');
       expect(markup).toContain('Bag. Anyone can use it.');
       expect(markup).toContain('Skinned from Onyxia. Not a drop.');
       expect(markup).toContain('Nobody here can use it yet.');
