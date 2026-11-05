@@ -1,5 +1,13 @@
 # Forever Sixty
 
+## 2.0.28
+
+- New best in slot lists for every damage and tank spec, ranked on the launch client with the latest sim fixes. Your upgrade order and the pieces the list points you at change.
+- Level 60 raid lists now wear the permanent enchants a fresh 60 can buy, including the Merchant's Favor spell power enchants.
+- Dungeon and quest staples are back in the running: Hand of Justice, Burst of Knowledge, Felstriker, Mark of Fordring and many more.
+- Each list is ranked as the race and talents its guide recommends.
+- Healer lists update in a later release.
+
 ## 2.0.27
 
 - Built for client 1.60.1.70790, the build on the live realms: the item, talent and spell tables the addon ships match it. Nothing else changed.

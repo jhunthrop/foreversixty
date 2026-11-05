@@ -66,11 +66,13 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
 var knownStaleBISFiles = map[string]string{
-	"druid-restoration":  "ranks in the second shard (2.0.29); its file predates the guide",
-	"paladin-holy":       "ranks in the second shard (2.0.29); its file predates the guide",
-	"priest-discipline":  "ranks in the second shard (2.0.29); its file predates the guide",
-	"priest-holy":        "ranks in the second shard (2.0.29); its file predates the guide",
-	"shaman-restoration": "ranks in the second shard (2.0.29); its file predates the guide",
+	"mage-fire":           "ranked on r22 before round 23 moved its raid build; the last shard re-ranks it",
+	"rogue-assassination": "ranked on r22 before round 23 moved its raid build; the last shard re-ranks it",
+	"druid-restoration":   "ranks in a healer shard after 2.0.28; its file predates the guide",
+	"paladin-holy":        "ranks in a healer shard after 2.0.28; its file predates the guide",
+	"priest-discipline":   "ranks in a healer shard after 2.0.28; its file predates the guide",
+	"priest-holy":         "ranks in a healer shard after 2.0.28; its file predates the guide",
+	"shaman-restoration":  "ranks in a healer shard after 2.0.28; its file predates the guide",
 }
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files
