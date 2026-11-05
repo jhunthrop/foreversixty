@@ -64,6 +64,7 @@ Retribution bare band 50 at level 53: Dwarf 195.28/195.26 to 196.88/196.85 (+0.8
 
 - Shipped: retribution.md opener (two paragraphs now), the Consecration paragraph and the Levels 20-59 Consecration line; card row 2's note (curated, request and fork copies). `_prose.test.ts` passes.
 - T1 (follow-up): retribution.md strengths and weaknesses bullets, opener, priority step 4, "The Seal twist" paragraph (renamed from "The raid twist", whose inline talent link broke the bold) and a new common mistake; card notes 2, 6, 8, 9. **wow-player on the rendered page: SHIP**, no MUSTs; SHOULDs 1, 3, 4, 5, 6 and 7 applied, 2 in part (the pace now reads 80% at the pull, 40% halfway, 20% with a quarter left; no trash rule was added because none was measured).
+- Rendered-card review (integrator, on the regenerated card): rows now carry the pace in the sentence the card prints (Seal of Righteousness release and Consecration, four fifths of the fight left), Seal of Command's opener says "in a dungeon or a raid", and Consecration names rank 4 at 60 without raid buffs. Regenerate addon-data and Data.lua to show them.
 - **wow-player on the rendered page** (first pass, dev build of this branch, `$R/paladin/cap`, 1440 and 390): **SHIP**, no MUSTs; SHOULDs 1-5 applied in f84045998 (when to leave Command, "each with its normal chance to fire", the race clause, "by then"); 6 (split the opener) applied too. The rotation card renders nightly addon-data, so row 2's new note shows after the regen.
 
 ## Still open
