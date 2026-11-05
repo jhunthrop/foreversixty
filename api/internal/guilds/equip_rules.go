@@ -146,30 +146,56 @@ func familiesFor(class, spec, role string) []statFamily {
 	return classFamilies[class]
 }
 
+// excludingFamilies are the families whose stats keep an item to their own specs (spec §3.2 rule 4:
+// physical, caster, healer). The tank family's own extras (Defense, dodge, parry, block) are not in
+// them: a tank reads as physical plus Defense, so Defense draws a tank in without shutting anyone
+// else out. Ring of Binding (armour, resistances, Defense) is open to every class.
+var excludingFamilies = []statFamily{familyPhysical, familyCaster, familyHealer}
+
 // suitsFamily reports whether an item with stats suits one of families: it carries a stat of the
-// family or hit or crit, or carries no family stat at all (Stamina, armour and resistances only).
+// family or hit or crit, or carries no family stat at all (Stamina, armour, resistances, Defense).
 // A weapon with no family stat (Deathbringer, Vis'kag the Bloodletter: a chance on hit and nothing
-// else) is a physical weapon: its damage is the point.
-func suitsFamily(stats map[string]int, isWeapon bool, families []statFamily) bool {
+// else) is for a character who fights in melee with it (meleeWeaponUser): its damage is the point,
+// and a ranged hunter, a caster or a healer never swings it.
+func suitsFamily(stats map[string]int, isWeapon bool, families []statFamily, meleeWeaponUser bool) bool {
 	if hasAny(stats, sharedStats) {
 		return true
 	}
-	carriesFamilyStat := false
-	for _, family := range []statFamily{familyPhysical, familyCaster, familyHealer, familyTank} {
-		if hasAny(stats, familyStats[family]) {
-			carriesFamilyStat = true
-			break
-		}
-	}
 	for _, family := range families {
-		switch {
-		case carriesFamilyStat && hasAny(stats, familyStats[family]):
-			return true
-		case !carriesFamilyStat && (!isWeapon || family == familyPhysical || family == familyTank):
+		if hasAny(stats, familyStats[family]) {
 			return true
 		}
 	}
-	return false
+	for _, family := range excludingFamilies {
+		if hasAny(stats, familyStats[family]) {
+			return false
+		}
+	}
+	return !isWeapon || meleeWeaponUser
+}
+
+// meleeClasses fight in melee in every spec.
+var meleeClasses = map[string]bool{"warrior": true, "rogue": true}
+
+// meleeSpecs are the other specs that fight in melee with the weapon in hand ("class/spec", lower
+// case). Survival hunters fight in melee in Forever; Beast Mastery and Marksmanship stay ranged.
+// Feral druids are left out: in a form the weapon's damage does not count.
+var meleeSpecs = map[string]bool{
+	"hunter/survival": true, "shaman/enhancement": true,
+	"paladin/retribution": true, "paladin/protection": true,
+}
+
+// fightsInMeleeWith reports whether a character swings the weapon it wears: a warrior or rogue, a
+// melee spec, or a logged tank that is not a druid. An unknown spec of a mixed class is not
+// assumed melee.
+func fightsInMeleeWith(class, spec, role string) bool {
+	if meleeClasses[class] {
+		return true
+	}
+	if role == "tank" && class != "druid" {
+		return true
+	}
+	return meleeSpecs[class+"/"+strings.ToLower(spec)]
 }
 
 func hasAny(stats map[string]int, keys []string) bool {

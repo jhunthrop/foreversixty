@@ -96,9 +96,62 @@ func TestDeathbringerListsPhysicalSpecsThatCanWieldIt(t *testing.T) {
 		}
 	}
 	for _, name := range []string{"paladin-holy", "priest-holy", "priest-discipline", "priest-shadow",
-		"rogue-combat", "mage-fire", "shaman-restoration", "shaman-elemental", "druid-feral"} {
+		"rogue-combat", "mage-fire", "shaman-restoration", "shaman-elemental", "druid-feral",
+		"hunter-beast mastery", "hunter-marksmanship"} {
 		if names[name] {
 			t.Errorf("Deathbringer lists %s", name)
+		}
+	}
+}
+
+// Guild round 1, item 7: a stat-less melee weapon is for those who swing it. Beast Mastery and
+// Marksmanship hunters fight at range; Survival hunters fight in melee in Forever.
+func TestAStatlessWeaponIsForMeleeOnly(t *testing.T) {
+	s := realTreesStore(t)
+	for _, itemID := range []int{17068, 17075} {
+		item := onyxiaRow(t, itemID)
+		names := namesOf(s.lootCandidates(everySpec(), item))
+		for _, name := range []string{"hunter-beast mastery", "hunter-marksmanship"} {
+			if names[name] {
+				t.Errorf("%s lists ranged %s", item.Name, name)
+			}
+		}
+		if !names["hunter-survival"] {
+			t.Errorf("%s does not list hunter-survival: %v", item.Name, names)
+		}
+		ranged := []RosterRow{
+			candidate("Bow", "hunter", "Beast Mastery", 60),
+			candidate("Aim", "hunter", "Marksmanship", 60),
+			candidate("Fire", "mage", "Fire", 60),
+		}
+		if cands := s.lootCandidates(ranged, item); len(cands) != 0 {
+			t.Errorf("%s with no melee user on the roster = %+v, want none (the collapsed line)", item.Name, cands)
+		}
+	}
+}
+
+func TestFightsInMeleeWith(t *testing.T) {
+	cases := []struct {
+		class, spec, role string
+		want              bool
+	}{
+		{"rogue", "", "", true},
+		{"warrior", "Fury", "dps", true},
+		{"hunter", "Survival", "dps", true},
+		{"hunter", "Beast Mastery", "dps", false},
+		{"hunter", "Marksmanship", "", false},
+		{"hunter", "", "", false},
+		{"paladin", "Protection", "tank", true},
+		{"paladin", "", "tank", true},
+		{"paladin", "Holy", "healer", false},
+		{"shaman", "Enhancement", "dps", true},
+		{"shaman", "Elemental", "dps", false},
+		{"druid", "Feral", "tank", false},
+		{"mage", "Fire", "dps", false},
+	}
+	for _, c := range cases {
+		if got := fightsInMeleeWith(c.class, c.spec, c.role); got != c.want {
+			t.Errorf("fightsInMeleeWith(%s, %q, %q) = %v, want %v", c.class, c.spec, c.role, got, c.want)
 		}
 	}
 }
@@ -106,7 +159,7 @@ func TestDeathbringerListsPhysicalSpecsThatCanWieldIt(t *testing.T) {
 func TestViskagNeverListsACaster(t *testing.T) {
 	s := realTreesStore(t)
 	names := namesOf(s.lootCandidates(everySpec(), onyxiaRow(t, 17075)))
-	for _, name := range []string{"rogue-combat", "warrior-fury", "hunter-beast mastery", "paladin-retribution"} {
+	for _, name := range []string{"rogue-combat", "warrior-fury", "hunter-survival", "paladin-retribution"} {
 		if !names[name] {
 			t.Errorf("Vis'kag does not list %s: %v", name, names)
 		}
@@ -267,27 +320,59 @@ func TestSuitsFamily(t *testing.T) {
 		stats    map[string]int
 		weapon   bool
 		families []statFamily
+		melee    bool
 		want     bool
 	}{
-		{"strength for physical", map[string]int{"strength": 5}, false, phys, true},
-		{"strength not for a caster", map[string]int{"strength": 5}, false, caster, false},
-		{"intellect for a healer", map[string]int{"intellect": 5}, false, healer, true},
-		{"intellect not for physical", map[string]int{"intellect": 5}, false, phys, false},
-		{"mp5 for a healer", map[string]int{"mp5": 5}, false, healer, true},
-		{"mp5 not for a caster", map[string]int{"mp5": 5}, false, caster, false},
-		{"hit for everyone", map[string]int{"hit": 1}, false, caster, true},
-		{"crit for everyone", map[string]int{"crit": 1, "stamina": 5}, false, healer, true},
-		{"stamina only for anyone", map[string]int{"stamina": 5, "frost_res": 5}, false, caster, true},
-		{"no stats weapon is physical", nil, true, phys, true},
-		{"no stats weapon is a tank's", nil, true, tank, true},
-		{"no stats weapon not a caster's", nil, true, caster, false},
-		{"defense is a tank's", map[string]int{"defense": 4, "fire_res": 10}, false, tank, true},
-		{"defense not a caster's", map[string]int{"defense": 4, "fire_res": 10}, false, caster, false},
+		{"strength for physical", map[string]int{"strength": 5}, false, phys, false, true},
+		{"strength not for a caster", map[string]int{"strength": 5}, false, caster, false, false},
+		{"intellect for a healer", map[string]int{"intellect": 5}, false, healer, false, true},
+		{"intellect not for physical", map[string]int{"intellect": 5}, false, phys, false, false},
+		{"mp5 for a healer", map[string]int{"mp5": 5}, false, healer, false, true},
+		{"mp5 not for a caster", map[string]int{"mp5": 5}, false, caster, false, false},
+		{"hit for everyone", map[string]int{"hit": 1}, false, caster, false, true},
+		{"crit for everyone", map[string]int{"crit": 1, "stamina": 5}, false, healer, false, true},
+		{"stamina only for anyone", map[string]int{"stamina": 5, "frost_res": 5}, false, caster, false, true},
+		{"no stats weapon for a melee user", nil, true, phys, true, true},
+		{"no stats weapon not for a ranged physical spec", nil, true, phys, false, false},
+		{"no stats weapon for a melee tank", nil, true, tank, true, true},
+		{"no stats weapon not a caster's", nil, true, caster, false, false},
+		{"defense is a tank's", map[string]int{"defense": 4, "fire_res": 10}, false, tank, false, true},
+		// Spec §3.2 rule 4: Defense draws a tank in but is no family stat; armour, resistances and
+		// Defense alone (Ring of Binding) are open to everyone.
+		{"defense ring for a caster too", map[string]int{"defense": 4, "fire_res": 10}, false, caster, false, true},
+		{"defense ring for a healer too", map[string]int{"defense": 4, "fire_res": 10}, false, healer, false, true},
+		{"defense and strength not a caster's", map[string]int{"defense": 4, "strength": 5}, false, caster, false, false},
+		{"defense-only weapon not a caster's", map[string]int{"defense": 4}, true, caster, false, false},
 	}
 	for _, c := range cases {
-		if got := suitsFamily(c.stats, c.weapon, c.families); got != c.want {
+		if got := suitsFamily(c.stats, c.weapon, c.families, c.melee); got != c.want {
 			t.Errorf("%s: suitsFamily = %v, want %v", c.name, got, c.want)
 		}
+	}
+}
+
+// Guild round 1, item 2: Ring of Binding (armour, five resistances, Defense) drew no card. It is
+// open to every level-60 class: a ring needs no skill, and it carries no family stat.
+func TestRingOfBindingIsOpenToEveryClassAtSixty(t *testing.T) {
+	s := realTreesStore(t)
+	ring := onyxiaRow(t, 18813)
+	cands := s.lootCandidates(everySpec(), ring)
+	if len(cands) != len(specFamilies) {
+		t.Errorf("Ring of Binding lists %d of %d specs: %v", len(cands), len(specFamilies), namesOf(cands))
+	}
+	for class := range classMaskBit {
+		if !classesOf(cands)[class] {
+			t.Errorf("Ring of Binding does not list a %s", class)
+		}
+	}
+	roster := []RosterRow{
+		candidate("Bow Jackzon", "hunter", "Beast Mastery", 60),
+		candidate("Pipsqueak", "priest", "Holy", 60),
+		candidate("Cindergale", "mage", "Frost", 18),
+	}
+	names := namesOf(s.lootCandidates(roster, ring))
+	if !names["Bow Jackzon"] || !names["Pipsqueak"] || names["Cindergale"] || len(names) != 2 {
+		t.Errorf("Ring of Binding candidates = %v, want Bow Jackzon and Pipsqueak", names)
 	}
 }
 

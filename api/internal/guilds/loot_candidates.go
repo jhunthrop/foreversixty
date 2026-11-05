@@ -92,7 +92,9 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem) []LootCandidat
 			out = append(out, cand)
 			continue
 		}
-		if !suitsFamily(stats, isWeapon, familiesFor(row.className, row.specStr, roleOf(row))) {
+		role := roleOf(row)
+		families := familiesFor(row.className, row.specStr, role)
+		if !suitsFamily(stats, isWeapon, families, fightsInMeleeWith(row.className, row.specStr, role)) {
 			continue
 		}
 		if delta, slot, ok := s.fallbackMatch(row, item, slots); ok {
