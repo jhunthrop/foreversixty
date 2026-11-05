@@ -380,7 +380,7 @@
   // --- The legend ---
   const damageToken = $derived(model?.casts.find((lane) => lane.schoolToken !== null)?.schoolToken ?? null);
   const hasCooldown = $derived(model?.casts.some((lane) => lane.schoolToken === null) ?? false);
-  /** The same meta the loading head printed (SavedRun), so nothing pops in on load. */
+  /** The same meta the loading head printed (RunReport), so nothing pops in on load. */
   const meta = $derived(timelineHeadMeta(result));
 </script>
 

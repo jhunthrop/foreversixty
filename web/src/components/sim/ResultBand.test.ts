@@ -41,4 +41,27 @@ describe('ResultBand', () => {
     expect(old).toContain('sim-fact-runs');
     expect(old).not.toContain('d5c7088');
   });
+
+  describe('live, after a run on /sim', () => {
+    const liveBody = (lane: 'browser' | 'server'): string =>
+      render(ResultBand, { props: { result: { ...(full as unknown as SimResult), lane }, live: true } }).body;
+
+    it('is not the page h1 and carries no actions: the run control and save panel are above', () => {
+      const body = liveBody('browser');
+      expect(body).not.toMatch(/<h1\b/);
+      expect(body).toMatch(/<h2[^>]*data-testid="sim-saved-title"/);
+      expect(body).not.toContain('Open in the sim');
+      expect(body).not.toContain('Copy link');
+      expect(body).toContain('Next: find the upgrade that adds the most.');
+    });
+
+    it('keeps the run control test ids free and names the lane it ran on', () => {
+      const body = liveBody('server');
+      expect(body).not.toContain('data-testid="sim-dps"');
+      expect(body).not.toContain('data-testid="sim-error"');
+      expect(/data-testid="sim-report-dps"[^>]*>([^<]*)</.exec(body)?.[1]).toBe('904.4');
+      expect(body).toContain('RUN ON OUR SERVERS');
+      expect(liveBody('browser')).toContain('RUN IN YOUR BROWSER');
+    });
+  });
 });

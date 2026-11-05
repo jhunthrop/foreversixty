@@ -1,5 +1,5 @@
 // web/src/lib/sim/skeleton.ts
-// A saved sim (/sim/<id>) while it loads: the shape of SavedRun.svelte at its ready heights, in
+// A saved sim (/sim/<id>) while it loads: the shape of RunReport.svelte at its ready heights, in
 // placeholder blocks (spec 2026-11-04-sim-results 4.2), the same pattern report/skeleton.ts uses
 // and for the same reason -- one string, used twice (the page shell before the island boots, via
 // set:html, and SimView.svelte between mounting and the saved result's first byte, via {@html}),

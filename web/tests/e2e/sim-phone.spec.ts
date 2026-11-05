@@ -162,7 +162,7 @@ async function loadFury(page: Page): Promise<void> {
 
 async function runFury(page: Page): Promise<void> {
   await loadFury(page);
-  await expect(page.getByTestId('sim-results')).toBeVisible();
+  await expect(page.getByTestId('sim-live-report')).toBeVisible();
 }
 
 test('nothing scrolls sideways and every target clears 44px on an empty /sim', async ({ page }) => {
@@ -260,36 +260,17 @@ test('a loaded character reaches the run button and the DPS figure in one scroll
   await expect(page.getByTestId('sim-dps')).toBeInViewport();
 });
 
-test('after a run, every result tab clears the width and the tab strip scrolls rather than wraps', async ({
-  page,
-}) => {
+test('after a run, the report clears the width and every target clears 44px', async ({ page }) => {
   await runFury(page);
+  await expect(page.getByTestId('sim-damage-card')).toBeVisible();
 
-  const tabs = await page.locator('[role="tab"]').all();
-  expect(tabs.length, 'no result tabs found').toBeGreaterThan(0);
-  for (const tab of tabs) {
-    await tab.click();
-    await noHorizontalScroll(page);
-    await targetsAreBigEnough(page);
-  }
+  await noHorizontalScroll(page);
+  await targetsAreBigEnough(page);
+  await sectionsKeepGutter(page);
 
-  // The strip itself scrolls sideways to reach a tab past the fold -- it does not wrap and
-  // it does not widen the page.
-  const distribution = page.getByTestId('sim-tab-distribution');
-  await distribution.scrollIntoViewIfNeeded();
-  await expect(distribution).toBeInViewport();
-
-  const strip = await page.evaluate(() => {
-    const tablist = document.querySelector('[role="tablist"]');
-    return { scrollWidth: tablist?.scrollWidth ?? 0, clientWidth: tablist?.clientWidth ?? 0 };
-  });
-  expect(strip.scrollWidth, 'tab strip does not scroll').toBeGreaterThan(strip.clientWidth);
-  // The strip scrolls; the page must not, re-checked once more here after the strip's own
-  // scroll interaction above. Fix round 1: before noHorizontalScroll compared against the
-  // fixed viewport width, this same overflow (the strip's own -mx-[18px] bleed, pushing
-  // the page 18px past the viewport on each side) passed every per-tab check silently,
-  // because comparing scrollWidth against the live window.innerWidth lets Chromium's
-  // mobile shrink-to-fit quirk widen both together.
+  // The deeper cards load as they near the viewport; the page still never scrolls sideways.
+  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('sim-settings-card')).toBeVisible({ timeout: 10_000 });
   await noHorizontalScroll(page);
 });
 

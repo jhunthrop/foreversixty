@@ -1,9 +1,13 @@
-<!-- web/src/components/sim/SavedRun.svelte -->
-<!-- A saved `run` result on one scrolling page (spec 2026-11-04-sim-results): the band and its
+<!-- web/src/components/sim/RunReport.svelte -->
+<!-- One `run` result on one scrolling page (spec 2026-11-04-sim-results): the band and its
      answer, the sticky section nav, Worth knowing, Damage by ability beside the DPS spread, then
      each deeper card in its own chunk, mounted as it nears the viewport with a skeleton holding
      its ready height. Every file it reads is optional: a row without its icon or name still
-     reads, nothing here can stop the figure from drawing. -->
+     reads, nothing here can stop the figure from drawing.
+
+     The one report for a saved run (/sim/<id>, SavedSim.svelte) and a finished run on /sim
+     (SimView.svelte, `live`). Live, the page's own run control, title and save panel are the
+     actions, so the band carries none and its heading is not the page's h1. -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import activeBuild from '../../data/active-build.json';
@@ -42,6 +46,7 @@
   import { NO_SPELL_INFO, loadSpellInfo, type SpellInfo } from '../../lib/sim/spell-info';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { simWarnings } from '../../lib/sim/warnings';
+  import type { LastUpgrade } from '../../lib/sim/last-upgrade';
   import { yieldToMain } from '../../lib/yield';
   import AbilityTable, { type AbilityDecoration, type AbilityWeapon } from '../report/AbilityTable.svelte';
   import Card from '../ui/Card.svelte';
@@ -51,7 +56,22 @@
   import SectionNav from './SectionNav.svelte';
   import WorthKnowing from './WorthKnowing.svelte';
 
-  let { result, onrerun, simId = '' }: { result: SimResult; onrerun: () => void; simId?: string } = $props();
+  let {
+    result,
+    onrerun,
+    simId = '',
+    live = false,
+    topUpgrade = null,
+  }: {
+    result: SimResult;
+    /** Saved: "Open in the sim". Live: absent, the run control above is the way to run again. */
+    onrerun?: () => void;
+    simId?: string;
+    /** A finished run on /sim rather than a saved one. */
+    live?: boolean;
+    /** A Top Gear upgrade on record for this character, for the band's next step. */
+    topUpgrade?: LastUpgrade | null;
+  } = $props();
 
   const build = activeBuild.build;
   // svelte-ignore state_referenced_locally
@@ -76,8 +96,10 @@
     load().catch((error: unknown) => console.error(`sim result: ${what} did not load`, error));
   }
 
-  // svelte-ignore state_referenced_locally
-  const { spec, character } = result.request;
+  // A live page runs the same character again into this component, so these follow the result;
+  // another character or class clears the result first, which remounts it.
+  const spec = $derived(result.request.spec);
+  const character = $derived(result.request.character);
 
   onMount(() => {
     loadQuietly('the action names', async () => {
@@ -95,12 +117,13 @@
     loadQuietly('the buff table', async () => {
       buffNames = await loadBuffNames(build);
     });
+    const { spec: specKey, character: who } = result.request;
     loadQuietly('the preset table', async () => {
       await loadPresetSets();
-      raidBuffs = raidSetAt(spec, character.level)?.buffs ?? [];
+      raidBuffs = raidSetAt(specKey, who.level)?.buffs ?? [];
     });
     loadQuietly('the fidelity row', async () => {
-      fidelity = mergeSpecRows(await fetchSpecs()).find((row) => row.spec === spec) ?? null;
+      fidelity = mergeSpecRows(await fetchSpecs()).find((row) => row.spec === specKey) ?? null;
     });
   });
 
@@ -213,8 +236,8 @@
   };
 </script>
 
-<div class="sim-result flex flex-col" data-testid="sim-saved-run">
-  <ResultBand {result} {onrerun} {raidBuffs} bind:figureElement />
+<div class="sim-result flex flex-col" data-testid={live ? 'sim-live-report' : 'sim-saved-run'}>
+  <ResultBand {result} {onrerun} {raidBuffs} {topUpgrade} {live} bind:figureElement />
   <SectionNav {sections} {figure} figureVisible={figureGone} drawn={drawnRest} />
 
   <div class="flex flex-col gap-[22px] pt-[22px] md:gap-8 md:pt-8">

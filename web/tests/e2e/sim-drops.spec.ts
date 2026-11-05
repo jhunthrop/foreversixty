@@ -320,7 +320,7 @@ test('a real Droptimizer upgrade names the next action on a later plain sim', as
     await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   }
   await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-results')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 10_000 });
 
   await expect(page.getByTestId('sim-next-action')).toContainText('Upgrade: ');
 });
