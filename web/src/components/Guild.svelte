@@ -394,6 +394,14 @@
   });
 
   /** The Before raids open card's character: the current one, with the spec the logs or the site know. */
+  /** The band shows the In, Late, Bench and Out segments for the next event (RaidBandLine binds
+   *  them to the header character): the Before raids open card then offers no second Sign up. */
+  const bandSignsUp = $derived(
+    showsBandLine(myGuildMembership?.verified === true, role) &&
+      myCharacterKey !== null &&
+      home?.next_raid != null &&
+      bandLineLazy.error === '',
+  );
   const weekOneCharacter = $derived<WeekOneCharacter | null>(
     myRosterRow === null
       ? null
@@ -1043,6 +1051,7 @@
               onRetry={() => (homeAttempt += 1)}
               onApprove={approveFromCard}
               onPlan={planFromCard}
+              {bandSignsUp}
             />
           {/if}
         {/snippet}

@@ -1,7 +1,8 @@
 <!-- web/src/components/guild/GuildWeekOneCard.svelte -->
 <!-- The Before raids open card (design/specs/2026-11-05-guild-week-one.md §3.1): the first card on
      Overview while nothing is logged in the tier. The guild's level spread, when the raids open,
-     who has which profession, and the viewer's one next step. Below 768 the next step leads the
+     who has which profession, and the viewer's one next step (a quiet line, no button, when the
+     band above already holds the sign-up segments for the next event). Below 768 the next step leads the
      card and professions close it, so the primary button sits above the 640 px fold. The words and branches are
      lib/guild/week-one.ts; `loading` and `error` hold its height so the page does not shift. -->
 <script lang="ts">
@@ -41,6 +42,7 @@
     onRetry,
     onApprove,
     onPlan,
+    bandSignsUp = false,
     fixedNow,
   }: {
     status: 'loading' | 'error' | 'ready';
@@ -56,6 +58,8 @@
     onRetry: () => void;
     onApprove: () => void;
     onPlan: () => void;
+    /** The guild band shows the sign-up segments for `nextRaid`: the raider's step is a quiet line. */
+    bandSignsUp?: boolean;
     fixedNow?: Date;
   } = $props();
 
@@ -65,7 +69,7 @@
   const spread = $derived(levelSpread(entries));
   const professions = $derived(professionFacts(rows));
   const step = $derived(
-    weekOneStep({ officer, waiting, nextRaid, raidHref, character, now: clock.now, locale }),
+    weekOneStep({ officer, waiting, nextRaid, raidHref, character, now: clock.now, locale, bandSignsUp }),
   );
   const tiles = $derived([
     { value: spread.at60, label: 'AT 60', gold: spread.at60 > 0 },
@@ -147,7 +151,10 @@
         class="border-line-soft flex flex-wrap items-center justify-between gap-4 max-md:order-first max-md:flex-col max-md:items-stretch max-md:border-b max-md:pb-4 md:border-t md:pt-4"
         data-testid="guild-week-one-step"
       >
-        <p class="text-[15px]" data-testid="guild-week-one-sentence">
+        <p
+          class={step.action === null ? 'text-muted text-[14px]' : 'text-[15px]'}
+          data-testid="guild-week-one-sentence"
+        >
           {#if step.name !== null && character !== null}<span
               class="font-semibold"
               style={`color:${classColorVar(character.class)}`}>{step.name}</span
@@ -158,7 +165,7 @@
             <ActionLink href={inviteHref} data-testid="guild-week-one-invite">{weekOneCopy.invite}</ActionLink
             >
           {/if}
-          {@render primary(step.action)}
+          {#if step.action !== null}{@render primary(step.action)}{/if}
         </div>
       </div>
     </div>

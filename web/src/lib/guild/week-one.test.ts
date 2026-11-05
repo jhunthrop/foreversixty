@@ -219,4 +219,12 @@ describe('progression view', () => {
     expect(firstKillLine({ best_kill_ms: 225_000 }, now)).toBeNull();
     expect(firstKillLine({ first_kill_at: null, best_kill_ms: null }, now)).toBeNull();
   });
+
+  it('points at the band when it already shows the segments, with no second button (guild round 3)', () => {
+    const step = weekOneStep(input({ nextRaid: raid(), raidHref: '/r/7', bandSignsUp: true }));
+    expect(step.text).toBe(
+      'Deadmines run Saturday 8 pm CST. You have not signed up yet. Answer In, Late, Bench or Out at the top of the page.',
+    );
+    expect(step.action).toBeNull();
+  });
 });

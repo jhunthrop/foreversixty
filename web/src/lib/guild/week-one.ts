@@ -35,6 +35,7 @@ export const weekOneCopy = {
   error: "The guild's levels did not load.",
   professions: 'Professions',
   invite: 'Copy the invite link',
+  answerAbove: 'Answer In, Late, Bench or Out at the top of the page.',
 } as const;
 
 /** The tier's raids open on this date, written the way every player knows it: "Wed 9 Dec". */
@@ -129,7 +130,8 @@ export interface WeekOneStep {
   /** The current character, drawn in its class colour ahead of `text`; null for a sentence not about it. */
   name: string | null;
   text: string;
-  action: WeekOneAction;
+  /** Null when the band already holds the control for this step: the card's step is a quiet line. */
+  action: WeekOneAction | null;
   /** Officers only: the invite link, as an ActionLink. */
   invite: boolean;
 }
@@ -154,6 +156,9 @@ export interface WeekOneInput {
   now: Date;
   locale: string;
   viewerTz?: string;
+  /** The guild band shows the In, Late, Bench and Out segments for `nextRaid`, so the card does not
+   *  offer a second Sign up (guild round 3). */
+  bandSignsUp?: boolean;
 }
 
 /** The catalogue key of a character's spec ("hunter-beast-mastery"), from a slug or any spelling
@@ -255,9 +260,14 @@ function raiderStep(input: WeekOneInput): WeekOneStep {
     };
   }
   if (nextRaid !== null && raidHref !== null && nextRaid.own === null) {
+    const unsigned = `${nextRaid.title} ${raidWhen(nextRaid, input)}. You have not signed up yet.`;
+    // The band's In, Late, Bench and Out sit at the top of the page: the card points there.
+    if (input.bandSignsUp === true) {
+      return { name: null, text: `${unsigned} ${weekOneCopy.answerAbove}`, action: null, invite: false };
+    }
     return {
       name: null,
-      text: `${nextRaid.title} ${raidWhen(nextRaid, input)}. You have not signed up yet.`,
+      text: unsigned,
       action: { kind: 'link', href: raidHref, label: 'Sign up' },
       invite: false,
     };
