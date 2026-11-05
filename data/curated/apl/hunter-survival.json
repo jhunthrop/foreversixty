@@ -50,7 +50,7 @@
         }
       },
       {
-        "notes": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it. It opens Mongoose Bite only on a marked target, so mark the boss before the pull. One mark per target is enough: if another hunter's mark is already up, leave it.",
+        "notes": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it. It opens Mongoose Bite only on a marked target, so mark the boss before the pull. One mark per target is enough: if another hunter's mark is already up, leave it.",
         "action": {
           "condition": {
             "not": {

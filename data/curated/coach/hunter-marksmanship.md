@@ -28,7 +28,7 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship's
 - Sniper Shot whenever it is ready and the shared cooldown is not.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot.
-- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away.
+- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away or you are under a quarter of your mana.
 - Claw: Level with a cat and train it the top ranks of Claw, Bite and Growl as you go.
 - Growl: If you raid with the leveling build instead, turn off Growl and send the cat to the boss's back.
 - Feign Death: Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.

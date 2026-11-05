@@ -9606,14 +9606,14 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9632,14 +9632,14 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9665,14 +9665,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9705,14 +9705,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9745,14 +9745,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9792,14 +9792,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9839,14 +9839,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9886,14 +9886,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9933,14 +9933,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9980,14 +9980,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10027,14 +10027,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10081,14 +10081,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10135,14 +10135,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10189,14 +10189,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10243,14 +10243,14 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10297,14 +10297,14 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14286,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10351,14 +10351,14 @@
           {
             "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14286,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10405,14 +10405,14 @@
           {
             "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10433,14 +10433,14 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10459,14 +10459,14 @@
           {
             "spell_id": 13549,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10492,14 +10492,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10532,14 +10532,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10572,14 +10572,14 @@
           {
             "spell_id": 13550,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10619,14 +10619,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10666,14 +10666,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10713,14 +10713,14 @@
           {
             "spell_id": 13551,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10760,14 +10760,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10807,14 +10807,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10854,14 +10854,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10908,14 +10908,14 @@
           {
             "spell_id": 13552,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10962,14 +10962,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11016,14 +11016,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11070,14 +11070,14 @@
           {
             "spell_id": 13553,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11124,14 +11124,14 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11178,14 +11178,14 @@
           {
             "spell_id": 13554,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14286,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11232,14 +11232,14 @@
           {
             "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14286,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11286,14 +11286,14 @@
           {
             "spell_id": 13555,
             "name": "Serpent Sting",
-            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back.",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away.",
+            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -11307,7 +11307,7 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11326,7 +11326,7 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11352,7 +11352,7 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11392,7 +11392,7 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11432,7 +11432,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11472,7 +11472,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11512,7 +11512,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11561,7 +11561,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11610,7 +11610,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11659,7 +11659,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11699,7 +11699,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11760,7 +11760,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11821,7 +11821,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11882,7 +11882,7 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -11943,7 +11943,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12004,7 +12004,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12065,7 +12065,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12126,7 +12126,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12187,7 +12187,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12253,7 +12253,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12318,7 +12318,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12379,7 +12379,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12440,7 +12440,7 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12501,7 +12501,7 @@
           {
             "spell_id": 14325,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -12562,7 +12562,7 @@
           {
             "spell_id": 14325,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked: from 35, Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
@@ -41667,7 +41667,7 @@
           {
             "spell_id": 1293817,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -41735,7 +41735,7 @@
           {
             "spell_id": 1293817,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -41803,7 +41803,7 @@
           {
             "spell_id": 1293817,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -41871,7 +41871,7 @@
           {
             "spell_id": 1293817,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -41939,7 +41939,7 @@
           {
             "spell_id": 1293818,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42007,7 +42007,7 @@
           {
             "spell_id": 1293818,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42075,7 +42075,7 @@
           {
             "spell_id": 1293818,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42143,7 +42143,7 @@
           {
             "spell_id": 1293818,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42211,7 +42211,7 @@
           {
             "spell_id": 17962,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42286,7 +42286,7 @@
           {
             "spell_id": 17962,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42361,7 +42361,7 @@
           {
             "spell_id": 17962,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42436,7 +42436,7 @@
           {
             "spell_id": 17962,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42511,7 +42511,7 @@
           {
             "spell_id": 17962,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42586,7 +42586,7 @@
           {
             "spell_id": 18930,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42661,7 +42661,7 @@
           {
             "spell_id": 18930,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42736,7 +42736,7 @@
           {
             "spell_id": 18930,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42811,7 +42811,7 @@
           {
             "spell_id": 18931,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42886,7 +42886,7 @@
           {
             "spell_id": 18931,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -42961,7 +42961,7 @@
           {
             "spell_id": 18931,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -43043,7 +43043,7 @@
           {
             "spell_id": 18932,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },

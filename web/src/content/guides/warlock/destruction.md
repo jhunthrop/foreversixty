@@ -73,7 +73,7 @@ Priority after that:
 1. Corruption whenever it has fallen off. It is instant and ticks for 18 seconds off one global.
 2. Bane of Doom the moment the last one fires. In the last minute of the fight a new Doom would never land, so use Bane of Agony instead.
 3. Immolate when about 3 seconds are left on it. It lands a moment before the old one ends, so it never drops.
-4. Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.
+4. Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.
 5. Shadowburn on cooldown, at any boss health.
 6. Incinerate.
 
