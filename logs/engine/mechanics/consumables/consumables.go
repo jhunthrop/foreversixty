@@ -76,8 +76,11 @@ type RoleCatalogue struct {
 }
 
 // IsComplete reports whether the category's list is complete. An unknown
-// or unlisted category is not.
-func (rc RoleCatalogue) IsComplete(category string) bool { return rc.Complete[category] }
+// or unlisted category is not, and neither is one the player is not
+// expected to carry (Expects): it can earn credit, never prove absence.
+func (rc RoleCatalogue) IsComplete(category string) bool {
+	return rc.Expects(category) && rc.Complete[category]
+}
 
 // Entries is the category's listed entries, nil for an unknown category.
 func (rc RoleCatalogue) Entries(category string) []Entry {

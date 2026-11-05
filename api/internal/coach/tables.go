@@ -182,24 +182,12 @@ func (f *FileTables) TablesFor(ctx context.Context, row summary.RosterRow, encou
 	t := Tables{Rules: rules, Spells: class.spells, Trainable: class.trainable, RankChoices: choices, WorstActions: worst}
 	t.Rotation, t.RotationOK = sims.RotationFor(build, slug, int(row.Level))
 	cat := consumables.Load()
-	t.Consumables = consumablesFor(cat, row, slug)
+	t.Consumables, _ = cat.ForPlayer(row.Role, slug, row.Level)
 	t.RaidBuffs = cat.RaidBuffs
 	if m, ok := mechanics.Load(encounterID); ok {
 		t.Mechanics = &m
 	}
 	return t, nil
-}
-
-// consumablesFor is Tables.Consumables: the row's role catalogue, narrowed to the
-// categories the spec's raid preset carries at the row's level (a feral cat brings no
-// flask, nobody below 50 can drink one). With no level or no preset for the spec the role
-// alone decides.
-func consumablesFor(cat consumables.Catalogue, row summary.RosterRow, slug string) consumables.RoleCatalogue {
-	rc, _ := cat.For(row.Role)
-	if expects, ok := consumables.PresetExpects(slug, row.Level); ok {
-		return rc.Expect(expects)
-	}
-	return rc
 }
 
 // rankChoicesAt is Tables.RankChoices: for each trainable family, the ranks the spec's

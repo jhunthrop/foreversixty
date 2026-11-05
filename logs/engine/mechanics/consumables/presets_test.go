@@ -60,3 +60,39 @@ func TestMissedAtPull_ACategoryNotExpectedIsNeverMissing(t *testing.T) {
 		t.Fatal("Expects: the narrowed food, and every category without a narrowing")
 	}
 }
+
+func TestForPlayer_NarrowsTheRoleToTheSpecPresetAtLevel(t *testing.T) {
+	rc, ok := Load().ForPlayer("dps", "druid-feral", 60)
+	if !ok {
+		t.Fatal("the dps role has a catalogue")
+	}
+	if rc.Expects(CategoryFlask) || rc.IsComplete(CategoryFlask) {
+		t.Fatal("a feral cat's preset carries no flask at 60: never expected, never proven absent")
+	}
+	if !rc.Expects(CategoryCombatPotion) || !rc.Expects(CategoryFood) {
+		t.Fatal("the feral cat's preset carries a potion and food at 60")
+	}
+	if !rc.Expects(CategoryWorldBuffs) || !rc.IsComplete(CategoryWorldBuffs) {
+		t.Fatal("no preset carries world buffs, so the narrowing leaves them to the role")
+	}
+	fire, _ := Load().ForPlayer("dps", "mage-fire", 60)
+	if !fire.Expects(CategoryFlask) || !fire.IsComplete(CategoryFlask) {
+		t.Fatal("a Fire mage's preset carries a flask at 60")
+	}
+}
+
+func TestForPlayer_NoLevelOrNoPresetKeepsTheRole(t *testing.T) {
+	role, _ := Load().For("dps")
+	for _, c := range []struct {
+		spec  string
+		level int64
+	}{{"druid-feral", 0}, {"monk-windwalker", 60}, {"", 60}} {
+		rc, ok := Load().ForPlayer("dps", c.spec, c.level)
+		if !ok || !rc.Expects(CategoryFlask) || rc.IsComplete(CategoryFlask) != role.IsComplete(CategoryFlask) {
+			t.Errorf("%q at %d: want the role's own expectation", c.spec, c.level)
+		}
+	}
+	if _, ok := Load().ForPlayer("nobody", "druid-feral", 60); ok {
+		t.Error("an unknown role has no catalogue")
+	}
+}

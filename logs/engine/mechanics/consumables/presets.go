@@ -72,8 +72,24 @@ func PresetExpects(spec string, level int64) (map[string]bool, bool) {
 	return out, true
 }
 
-// Expect is rc narrowed to the given categories: Expects is false for every other, so
-// MissedAtPull never calls one missing. rc itself is unchanged.
+// ForPlayer is role's catalogue narrowed to the categories spec's raid preset carries at
+// level (PresetExpects): the one expectation the coach's pull check and the Forever Score's
+// Preparation share. With no level or no preset for spec the role alone decides. false
+// when the role has no catalogue.
+func (c Catalogue) ForPlayer(role, spec string, level int64) (RoleCatalogue, bool) {
+	rc, ok := c.For(role)
+	if !ok {
+		return rc, false
+	}
+	if expects, ok := PresetExpects(spec, level); ok {
+		return rc.Expect(expects), true
+	}
+	return rc, true
+}
+
+// Expect is rc narrowed to the given categories: Expects is false for every other preset
+// category, so MissedAtPull never calls one missing and IsComplete never lets one prove
+// absence. world_buffs, which no preset carries, stays the role's. rc itself is unchanged.
 func (rc RoleCatalogue) Expect(categories map[string]bool) RoleCatalogue {
 	rc.expected = maps.Clone(categories)
 	if rc.expected == nil {
@@ -83,7 +99,7 @@ func (rc RoleCatalogue) Expect(categories map[string]bool) RoleCatalogue {
 }
 
 // Expects reports whether the player is expected to carry the category: every category
-// when rc was never narrowed by Expect, else the ones Expect named.
+// when rc was never narrowed by Expect, else world_buffs and the ones Expect named.
 func (rc RoleCatalogue) Expects(category string) bool {
-	return rc.expected == nil || rc.expected[category]
+	return rc.expected == nil || category == CategoryWorldBuffs || rc.expected[category]
 }
