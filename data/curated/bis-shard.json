@@ -1,28 +1,8 @@
 {
   "specs": [
-    "druid-balance",
-    "druid-feral",
-    "druid-feral-bear",
-    "hunter-beast-mastery",
-    "hunter-marksmanship",
-    "hunter-survival",
-    "mage-arcane",
-    "mage-fire",
-    "mage-frost",
-    "paladin-protection",
-    "paladin-retribution",
-    "priest-shadow",
-    "rogue-assassination",
-    "rogue-combat",
-    "rogue-subtlety",
-    "shaman-elemental",
-    "shaman-enhancement",
-    "warlock-affliction",
-    "warlock-demonology",
-    "warlock-destruction",
-    "warrior-arms",
-    "warrior-fury",
-    "warrior-protection"
+    "druid-restoration",
+    "priest-discipline",
+    "priest-holy"
   ],
-  "reason": "2.0.28: damage and tank specs; the five healers rank in the next run (2.0.29). bis.yml's 300-minute job no longer fits all 28 specs."
+  "reason": "Healer shard 2 of 3 after 2.0.28: each healer can take up to 80 minutes, so five do not fit one ranking step. Shaman and paladin healers rank next, then the damage and tank specs again on round 23."
 }
