@@ -62,6 +62,8 @@ export const GLYPHS = {
   spark: '<path d="M12 3v5M12 16v5M3 12h5M16 12h5M5.600 5.600l3.200 3.200M15.200 15.200l3.200 3.200M18.400 5.600l-3.200 3.200M8.800 15.200l-3.200 3.200"/>',
   gear: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.600 5.600l2.100 2.100M16.300 16.300l2.100 2.100M18.400 5.600l-2.100 2.100M7.700 16.300l-2.100 2.100"/>',
   copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4V4h11v1"/>',
+  // The saved sim's timeline card (spec 2026-11-04-sim-results 3.7).
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.500V12l3 2"/>',
 } as const;
 
 export type GlyphName = keyof typeof GLYPHS;

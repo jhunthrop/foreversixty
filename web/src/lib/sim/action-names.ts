@@ -242,6 +242,36 @@ async function shardNames(
   return found;
 }
 
+/** The names among `keys` that `names` lacks, from the shards; null when nothing is missing or the build has none. */
+async function missingFromShards(
+  names: ActionNames,
+  keys: Iterable<string>,
+): Promise<{ spell: Record<string, string>; item: Record<string, string> } | null> {
+  const { shards } = names;
+  if (shards === undefined) return null;
+  const keyList = [...keys];
+  const spellIds = unnamedIds(names, keyList, 'spell');
+  const itemIds = unnamedIds(names, keyList, 'item');
+  if (spellIds.length === 0 && itemIds.length === 0) return null;
+  const [spell, item] = await Promise.all([
+    shardNames(shards, 'spell', spellIds),
+    shardNames(shards, 'item', itemIds),
+  ]);
+  return { spell, item };
+}
+
+/**
+ * `withShardNames` for a mount that must stay cheap: the found names sit over `names` on a prototype
+ * chain instead of a copy of both whole tables. Lookups read the same; nothing enumerates the result.
+ */
+export async function withShardOverlay(names: ActionNames, keys: Iterable<string>): Promise<ActionNames> {
+  const found = await missingFromShards(names, keys);
+  if (found === null) return names;
+  const over = (table: Record<string, string>, extra: Record<string, string>): Record<string, string> =>
+    Object.assign(Object.create(table) as Record<string, string>, extra);
+  return { ...names, spell: over(names.spell, found.spell), item: over(names.item, found.item) };
+}
+
 /**
  * `names` with every spell and item among `keys` it could not name read from the build's
  * sharded client tables (round 7, owner ruling 2: an item proc, the wand's Shoot or a set
@@ -250,15 +280,7 @@ async function shardNames(
  * own names win, and `ownSpell` is unchanged.
  */
 export async function withShardNames(names: ActionNames, keys: Iterable<string>): Promise<ActionNames> {
-  const { shards } = names;
-  if (shards === undefined) return names;
-  const keyList = [...keys];
-  const spellIds = unnamedIds(names, keyList, 'spell');
-  const itemIds = unnamedIds(names, keyList, 'item');
-  if (spellIds.length === 0 && itemIds.length === 0) return names;
-  const [spell, item] = await Promise.all([
-    shardNames(shards, 'spell', spellIds),
-    shardNames(shards, 'item', itemIds),
-  ]);
-  return { ...names, spell: { ...spell, ...names.spell }, item: { ...item, ...names.item } };
+  const found = await missingFromShards(names, keys);
+  if (found === null) return names;
+  return { ...names, spell: { ...found.spell, ...names.spell }, item: { ...found.item, ...names.item } };
 }
