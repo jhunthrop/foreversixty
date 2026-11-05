@@ -23,7 +23,14 @@ describe('parseSimState', () => {
       req: '',
       mode: 'sim',
       fight: '',
+      run: false,
     });
+  });
+
+  it('reads run=1 as start-on-load, and anything else as not', () => {
+    expect(parseSimState('?code=FS1%3Ax&run=1').run).toBe(true);
+    expect(parseSimState('?run=true').run).toBe(false);
+    expect(simSearch(withSimState(defaultSimState(), { code: 'FS1:x', run: true }))).toBe('?code=FS1%3Ax&run=1');
   });
 
   it('reads every parameter the page writes', () => {
@@ -38,6 +45,7 @@ describe('parseSimState', () => {
       req: '',
       mode: 'compare',
       fight: 'fixture2abcd:3',
+      run: false,
     });
   });
 
