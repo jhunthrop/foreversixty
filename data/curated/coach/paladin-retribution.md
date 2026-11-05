@@ -26,8 +26,8 @@ This is the best Retribution Paladin on Forever. Retribution is a two-handed Sea
 - Judgement on cooldown. It is off the global cooldown, so press it the moment it is ready.
 - Exorcism from twenty, on cooldown, against Undead and Demons only.
 - Hammer of Wrath from forty-four, below twenty percent target health, at its highest rank.
-- Seal of Righteousness at the top rank you have trained, straight after the opening Crusader Judgement. Recast it in its last second.
-- Seal of Command once you have Unsealed Wrath, in a dungeon or a raid. Three swings store three Commands and the twist is under way.
+- Seal of Righteousness while leveling, at the top rank you have trained, straight after the opening Crusader Judgement. Recast it in its last second. With Unsealed Wrath it is your Seal whenever your mana falls behind the fight.
+- Seal of Command once you have Unsealed Wrath, in a dungeon or a raid. Three swings store three Commands and the twist is under way. Twist only while your mana is at least four fifths of the fight left.
 - Holy Strike on cooldown, every ten seconds. It spends the globals Seal upkeep leaves free.
 - Consecration from twenty and last, while the mana left after it still pays for your seal, Judgement and Holy Strike. Do not let your mana fall far behind the fight.
 - Holy Wrath from fifty, only against a pack of Undead or Demons: on anything else it does nothing.

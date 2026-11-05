@@ -27,13 +27,13 @@ This is the best Protection Paladin on Forever. Protection tanks with a shield a
 - Holy Strike on cooldown, twenty mana at sixty. From forty Shieldsworn brings it back every six seconds, and each one keeps up your Iron Creed damage reduction.
 - Hammer of the Righteous on cooldown from forty, once Holy Shield's mana is safe. It hits your target and up to three enemies next to it.
 - Swift Judgement from twenty-nine whenever it is ready, unless a tank swap is coming: then hold it for the swap.
-- Pull with Judgement: under Seal of Fury it taunts, so the boss comes straight to you.
-- Exorcism on Undead and Demons.
-- Consecration only above half mana, to spend mana you will not need.
-- Greater Blessing of Kings on yourself at sixty, Blessing of Kings before then. With a hunter's Heart of the Lion in the raid, take Might instead.
+- Judgement to pull: under Seal of Fury it taunts, so the boss comes straight to you. After that, Judgement on cooldown, and from thirty only while Holy Shield's mana is safe.
+- Exorcism from twenty, on Undead and Demons.
+- Consecration from twenty, only above half mana, to spend mana you will not need.
+- Greater Blessing of Kings on yourself at sixty, Blessing of Kings from twenty before then. With a hunter's Heart of the Lion in the raid, take Might instead.
 - Keep Devotion Aura on.
-- Templar's Bulwark first, at about a third of your health: a full health bar of absorb for eight seconds.
-- Divine Shield and Divine Protection come after Templar's Bulwark, once Forbearance is gone.
+- Templar's Bulwark from twenty, first, at about a third of your health. It absorbs a full health bar for eight seconds.
+- Divine Shield from thirty-four and Divine Protection come after Templar's Bulwark, once Forbearance is gone.
 - Lay on Hands heals you to full on a twenty minute cooldown, but it takes every point of your mana with it.
 
 **The mistakes to look for, by finding.**
@@ -56,7 +56,7 @@ This is the best Protection Paladin on Forever. Protection tanks with a shield a
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
 - drill.preparation: Before every boss, check a flask, food, a combat potion and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
-- drill.death: Put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade.
+- drill.death: From twenty, put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
 ## Voice

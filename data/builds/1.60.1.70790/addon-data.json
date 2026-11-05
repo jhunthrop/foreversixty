@@ -16074,7 +16074,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16093,7 +16093,7 @@
           {
             "spell_id": 647,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16112,7 +16112,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16131,7 +16131,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16199,7 +16199,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16274,7 +16274,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16349,7 +16349,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16424,7 +16424,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16541,7 +16541,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16658,7 +16658,7 @@
           {
             "spell_id": 1026,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16775,7 +16775,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16892,7 +16892,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17009,7 +17009,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17126,7 +17126,7 @@
           {
             "spell_id": 1026,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17243,7 +17243,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17360,7 +17360,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17477,7 +17477,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17594,7 +17594,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17711,7 +17711,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -26326,7 +26326,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26604,7 +26604,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -26882,7 +26882,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27160,7 +27160,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27445,7 +27445,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27730,7 +27730,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28008,7 +28008,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28286,7 +28286,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28564,7 +28564,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28842,7 +28842,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -29120,7 +29120,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },

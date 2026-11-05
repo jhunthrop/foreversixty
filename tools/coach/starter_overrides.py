@@ -232,9 +232,19 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Oath of Light": "Oath of Light from twenty-five, sworn on the tank a second or two before the pull.",
         "Divine Favor": "Divine Favor from twenty-one, then Holy Light, when the tank drops below forty percent.",
         "Holy Shock": "Holy Shock from thirty-two, only while your mana is keeping pace with the fight.",
+        "Holy Light": (
+            "Holy Light on the tank below seventy percent, and from thirty-two Holy Shock on anyone below seventy percent. "
+            "Only with mana to spare: keep your mana no more than five points under the fight left."
+        ),
+        "Concentration Aura": "Concentration Aura from twenty-two if nobody else in your group runs it.",
+        "Voice of Truth": (
+            "Voice of Truth from twenty makes you immune to silences and interrupts for six seconds, every three minutes. "
+            "Save it for the caster pack or boss that would lock you out."
+        ),
         "Flash of Light": (
             "Flash of Light from twenty is your staple, on the tank below ninety percent. "
-            "Everyone else gets it below eighty percent. When your mana falls behind the fight, heal with it alone until you catch up."
+            "Everyone else gets it below eighty percent. When your mana falls behind the fight, heal with it alone until you catch up. "
+            "At sixty in a raid that is rank five on everyone; without raid buffs, rank four on the party."
         ),
         "Light's Vigil": (
             "Light's Vigil from forty, only for a fight where your whole party takes big damage at once. "
@@ -257,19 +267,26 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Holy Strike on cooldown, twenty mana at sixty. "
             "From forty Shieldsworn brings it back every six seconds, and each one keeps up your Iron Creed damage reduction."
         ),
-        "Consecration": "Consecration only above half mana, to spend mana you will not need.",
+        "Consecration": "Consecration from twenty, only above half mana, to spend mana you will not need.",
+        "Exorcism": "Exorcism from twenty, on Undead and Demons.",
+        "Templar's Bulwark": "Templar's Bulwark from twenty, first, at about a third of your health. It absorbs a full health bar for eight seconds.",
+        "Judgement": (
+            "Judgement to pull: under Seal of Fury it taunts, so the boss comes straight to you. "
+            "After that, Judgement on cooldown, and from thirty only while Holy Shield's mana is safe."
+        ),
         "Greater Blessing of Kings": (
-            "Greater Blessing of Kings on yourself at sixty, Blessing of Kings before then. "
+            "Greater Blessing of Kings on yourself at sixty, Blessing of Kings from twenty before then. "
             "With a hunter's Heart of the Lion in the raid, take Might instead."
         ),
         "Swift Judgement": "Swift Judgement from twenty-nine whenever it is ready, unless a tank swap is coming: then hold it for the swap.",
-        "Divine Shield": "Divine Shield and Divine Protection come after Templar's Bulwark, once Forbearance is gone.",
+        "Divine Shield": "Divine Shield from thirty-four and Divine Protection come after Templar's Bulwark, once Forbearance is gone.",
     },
     "paladin-retribution": {
         # retribution.md: with Unsealed Wrath, Seal of Command is the main Seal for the twist.
         "Seal of Command": (
             "Seal of Command once you have Unsealed Wrath, in a dungeon or a raid. "
-            "Three swings store three Commands and the twist is under way."
+            "Three swings store three Commands and the twist is under way. "
+            "Twist only while your mana is at least four fifths of the fight left."
         ),
         # retribution.md: "Judgement on cooldown. It is off the global cooldown"; Seal of the Crusader up
         # before the pull, Seal of Righteousness straight after its Judgement; Exorcism and Consecration
@@ -280,8 +297,8 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Skip it if another paladin's Crusader Judgement is up."
         ),
         "Seal of Righteousness": (
-            "Seal of Righteousness at the top rank you have trained, straight after the opening Crusader Judgement. "
-            "Recast it in its last second."
+            "Seal of Righteousness while leveling, at the top rank you have trained, straight after the opening Crusader Judgement. "
+            "Recast it in its last second. With Unsealed Wrath it is your Seal whenever your mana falls behind the fight."
         ),
         "Exorcism": "Exorcism from twenty, on cooldown, against Undead and Demons only.",
         "Hammer of Wrath": "Hammer of Wrath from forty-four, below twenty percent target health, at its highest rank.",
@@ -574,6 +591,8 @@ EXCLUDED: dict[str, frozenset[str]] = {
     "hunter-marksmanship": frozenset({"Aspect of the Falcon"}),
     # feral.md: Pounce is for trash; on a boss, Ravage.
     "druid-feral": frozenset({"Pounce"}),
+    # holy.md: the paladin's own blessing goes on the raid, never a rotation button.
+    "paladin-holy": frozenset({"Blessing of Wisdom"}),
     # survival.md: "From 30 to 59 Beast is the only melee aspect you have".
     "hunter-survival": frozenset({"Aspect of the Falcon"}),
     # arcane.md: "the build has no spare point for Ice Block".
@@ -614,8 +633,8 @@ DRILL_LINES: dict[str, dict[str, str]] = {
     # "if it is behind, heal with Flash of Light alone".
     "paladin-holy": {
         "ranks": (
-            "Bind the ranks you use: at sixty, Flash of Light rank five on the tank, rank four on everyone else, "
-            "and Holy Light at its top rank. Rank one is a trap at sixty."
+            "Bind the ranks you use: at sixty, Flash of Light rank five on the tank, and in a raid on everyone else too; "
+            "without raid buffs, rank four on the party. Holy Light at its top rank. Rank one is a trap at sixty."
         ),
         "resource": (
             "Before the pull, note the mana you should have at the halfway mark. If you are behind it, heal with "
@@ -625,7 +644,7 @@ DRILL_LINES: dict[str, dict[str, str]] = {
     # protection.md: "Templar's Bulwark first, at about a third of your health"; Forbearance.
     "paladin-protection": {
         "death": (
-            "Put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health "
+            "From twenty, put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health "
             "falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade."
         ),
     },

@@ -154,12 +154,12 @@ SPECS = {
         downranks=[],
         defensives=["Barkskin", "Frenzied Regeneration"],
     ),
+    # Hammer of the Righteous and Judgement are held for Holy Shield's mana reserve (protection.md),
+    # which F1 cannot see, so a ready one is not a lost cast (round 26).
     "paladin-protection": dict(
         core=[
             "Holy Shield",
             "Holy Strike",
-            "Hammer of the Righteous",
-            "Judgement",
         ],
         # Swift Judgement is held for a tank swap (protection.md): a ready one is no lost cast.
         auras=[("Holy Shield", DEF)],
