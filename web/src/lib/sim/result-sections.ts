@@ -45,16 +45,18 @@ export function resultSections(result: SimResult): ResultSection[] {
 }
 
 /**
- * Each lazy card's ready height, phone then from 768 (measured off the approved mocks; lanes B
- * and C report their measured heights and the integrator reconciles these). Literal classes,
- * because Tailwind reads them from this file.
+ * Each lazy card's ready height, phone then from 768, measured on the real-engine fixture
+ * (`simfullfixt1`) by lanes B and C at 390 and 1024/1440/1920/2000 (2026-11-05); the md value
+ * is the tallest of the desktop widths (Buffs and Rotation are 32 to 42 px taller at 1024 than
+ * at 1440). Literal classes, because Tailwind reads them from this file. Settings is lane A's own
+ * measure.
  */
 export const SECTION_RESERVE = {
-  gear: 'min-h-[1719px] md:min-h-[889px]',
-  talents: 'min-h-[661px] md:min-h-[593px]',
-  resource: 'min-h-[711px] md:min-h-[448px]',
-  buffs: 'min-h-[894px] md:min-h-[626px]',
-  rotation: 'min-h-[1800px] md:min-h-[1177px]',
+  gear: 'min-h-[1193px] md:min-h-[1086px]',
+  talents: 'min-h-[687px] md:min-h-[582px]',
+  resource: 'min-h-[824px] md:min-h-[561px]',
+  buffs: 'min-h-[1231px] md:min-h-[775px]',
+  rotation: 'min-h-[2005px] md:min-h-[1395px]',
   settings: 'min-h-[1250px] md:min-h-[703px]',
 } as const;
 
