@@ -117,7 +117,7 @@
         }
       },
       {
-        "notes": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 1.5 seconds or less left. The debuff only boosts your own Fire damage, so every Fire mage keeps their own stacks, and a Scorch that misses adds none. From 30 your filler Scorches refresh it anyway, so a refresh of its own matters only after a move or a target swap; below 30 Fireball fills and this line keeps the stacks up.",
+        "notes": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 1.5 seconds or less left. The debuff only boosts your own Fire damage, so every Fire mage keeps their own stacks, and a Scorch that misses adds none. From 30 your filler Scorches refresh it anyway, so a refresh of its own matters only after a move or a target swap; below 30 Fireball fills, so this Scorch is what keeps the stacks up.",
         "action": {
           "condition": {
             "and": {
