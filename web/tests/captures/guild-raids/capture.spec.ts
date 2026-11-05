@@ -481,7 +481,7 @@ atWidths('15 focus and hover', PAIR, async (page, width) => {
   const strip = raid.getByTestId('raid-signup-strip');
   const officer = 'Kraggor';
   await focusShot(raid, raid.getByTestId(`${stripId('segments', officer)}-in`), strip, 'segment', width);
-  await focusShot(raid, raid.getByTestId(stripId('role', officer)), strip, 'role', width);
+  await focusShot(raid, raid.getByTestId(stripId('spec', officer)), strip, 'spec', width);
   await focusShot(raid, raid.getByTestId(stripId('note', officer)), strip, 'note', width);
   await focusShot(
     raid,
