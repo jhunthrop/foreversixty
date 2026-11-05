@@ -276,6 +276,11 @@
       ],
       "weapons": [
         {
+          "subclass": 0,
+          "skill": "Axes",
+          "level": 1
+        },
+        {
           "subclass": 2,
           "skill": "Bows",
           "level": 1
@@ -516,12 +521,6 @@
     }
   },
   "dropped": [
-    {
-      "class": "rogue",
-      "subclass": 0,
-      "skill": "Axes",
-      "why": "The client mask carries it, but no trainer teaches it (sim audit round 8, K1)."
-    },
     {
       "class": "druid",
       "subclass": 6,

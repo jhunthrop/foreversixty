@@ -121,13 +121,16 @@ def test_shamans_train_fists_and_never_dual_wield(raw: Path) -> None:
 
 def test_the_untaught_client_bits_are_dropped_and_listed(raw: Path) -> None:
     doc = build_equip_skills("1.60.1.1", raw)
-    assert "Axes" not in _skills(doc, "rogue", "weapons")
     assert "Polearms" not in _skills(doc, "druid", "weapons")
     assert _skills(doc, "hunter", "weapons")["Polearms"] == 20
-    assert {(d["class"], d["skill"]) for d in doc["dropped"]} == {
-        ("rogue", "Axes"),
-        ("druid", "Polearms"),
-    }
+    assert {(d["class"], d["skill"]) for d in doc["dropped"]} == {("druid", "Polearms")}
+
+
+def test_rogues_keep_one_hand_axes(raw: Path) -> None:
+    # Guild round 1, item 8: the client mask grants it and Hack and Slash (13960) reads Axe/Sword.
+    doc = build_equip_skills("1.60.1.1", raw)
+    assert _skills(doc, "rogue", "weapons")["Axes"] == 1
+    assert "Two-Handed Axes" not in _skills(doc, "rogue", "weapons")
 
 
 def test_a_renumbered_skill_line_fails_loudly(raw: Path) -> None:
@@ -159,7 +162,9 @@ def test_the_committed_live_file_holds_the_classic_facts() -> None:
     def weapons(slug: str) -> set[str]:
         return set(_skills(doc, slug, "weapons"))
 
-    assert "Axes" not in weapons("rogue")
+    # Forever rogues use one-hand axes (client mask, Hack and Slash); never a two-hander.
+    assert "Axes" in weapons("rogue")
+    assert "Polearms" not in weapons("druid")
     assert not {"Two-Handed Axes", "Two-Handed Maces", "Two-Handed Swords", "Polearms",
                 "Staves"} & weapons("rogue")  # fmt: skip
     assert "Swords" not in weapons("priest")

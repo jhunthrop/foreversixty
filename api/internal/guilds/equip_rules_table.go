@@ -88,6 +88,7 @@ var equipSkills = map[string]equipClass{
 			2: 1, // Leather
 		},
 		weapons: map[int]int{
+			0:  1, // Axes
 			2:  1, // Bows
 			3:  1, // Guns
 			4:  1, // Maces

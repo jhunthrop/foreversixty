@@ -89,14 +89,14 @@ func TestAncientCornerstoneGrimoireNeverListsAHunterWarriorOrRogue(t *testing.T)
 func TestDeathbringerListsPhysicalSpecsThatCanWieldIt(t *testing.T) {
 	s := realTreesStore(t)
 	names := namesOf(s.lootCandidates(everySpec(), onyxiaRow(t, 17068)))
-	for _, name := range []string{"warrior-fury", "warrior-arms", "warrior-protection", "hunter-survival",
+	for _, name := range []string{"warrior-fury", "warrior-arms", "warrior-protection", "hunter-survival", "rogue-combat",
 		"paladin-retribution", "paladin-protection", "shaman-enhancement"} {
 		if !names[name] {
 			t.Errorf("Deathbringer does not list %s: %v", name, names)
 		}
 	}
 	for _, name := range []string{"paladin-holy", "priest-holy", "priest-discipline", "priest-shadow",
-		"rogue-combat", "mage-fire", "shaman-restoration", "shaman-elemental", "druid-feral",
+		"mage-fire", "shaman-restoration", "shaman-elemental", "druid-feral",
 		"hunter-beast mastery", "hunter-marksmanship"} {
 		if names[name] {
 			t.Errorf("Deathbringer lists %s", name)
@@ -614,7 +614,8 @@ func TestEquipRulesTableMatchesItsGenerator(t *testing.T) {
 }
 
 // TestEquipRulesHoldTheClassicFacts sanity-checks the generated table against the Classic facts the
-// loot spec lists (§3.2 rule 3). Shamans training fists is Forever's own change.
+// loot spec lists (§3.2 rule 3). Shamans training fists and rogues keeping one-hand axes (the client
+// mask, and Hack and Slash reading Axe/Sword; guild round 1, item 8) are Forever's own.
 func TestEquipRulesHoldTheClassicFacts(t *testing.T) {
 	const axe, twoHandAxe, mace, twoHandMace, polearm, sword, twoHandSword, staff, fist, dagger = 0, 1, 4, 5, 6, 7, 8, 10, 13, 15
 	const mail, plate = 3, 4
@@ -623,7 +624,7 @@ func TestEquipRulesHoldTheClassicFacts(t *testing.T) {
 		table func(equipClass) map[int]int
 		sub   int
 	}{
-		{"rogue", weapons, axe}, {"rogue", weapons, twoHandAxe}, {"rogue", weapons, twoHandMace},
+		{"druid", weapons, polearm}, {"rogue", weapons, twoHandAxe}, {"rogue", weapons, twoHandMace},
 		{"rogue", weapons, twoHandSword}, {"rogue", weapons, polearm}, {"rogue", weapons, staff},
 		{"priest", weapons, sword}, {"hunter", weapons, mace},
 		{"paladin", weapons, dagger}, {"paladin", weapons, fist}, {"paladin", weapons, staff},
@@ -645,6 +646,9 @@ func TestEquipRulesHoldTheClassicFacts(t *testing.T) {
 	}
 	if _, ok := equipSkills["shaman"].weapons[fist]; !ok {
 		t.Error("a Forever shaman trains fist weapons")
+	}
+	if _, ok := equipSkills["rogue"].weapons[axe]; !ok {
+		t.Error("a Forever rogue uses one-hand axes")
 	}
 }
 

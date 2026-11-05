@@ -18,11 +18,16 @@ character as a candidate for a drop only when the character can equip it
   for hunters and shamans, plate at 40 for warriors and paladins, Dual Wield at 10 for
   rogues and 20 for warriors and hunters. A class with no row learns it at level 1.
 
-Two client bits are dropped, the same two `pipeline.proficiency.VESTIGIAL_CLIENT_BITS`
-drops for the gear pickers: rogues in one-hand axes and druids in polearms. The
-client's masks carry both, but no trainer teaches either (sim audit round 8, K1, from
-the Classic weapon masters' trainer data). The file lists them under `dropped` so the
-next build's data can be checked against the same evidence.
+One client bit is dropped: druids in polearms. The client's mask carries it, but no
+trainer teaches it (sim audit round 8, K1, from the Classic weapon masters' trainer
+data). The file lists it under `dropped` so the next build's data can be checked
+against the same evidence.
+
+Rogues keep one-hand axes here (guild round 1, item 8), unlike
+`pipeline.proficiency.VESTIGIAL_CLIENT_BITS`, which still drops them for the gear
+pickers and sims: the client's Axes mask grants rogues the skill, and Forever's own
+rogue talent Hack and Slash (spell 13960, `talents/rogue.json`) reads "Axe/Sword".
+The two tables disagree on purpose until the BiS loop settles proficiency.py.
 """
 
 from __future__ import annotations
@@ -35,7 +40,6 @@ from pipeline.csvio import read_csv
 from pipeline.proficiency import (
     CLASS_MASK_BIT,
     CLASS_SLUG_BY_ID,
-    VESTIGIAL_CLIENT_BITS,
     WEAPON_SKILL_LINE,
     WEAPON_SKILL_LINE_NAME,
 )
@@ -61,6 +65,10 @@ ARMOR_SKILL_LINE_NAME: dict[int, str] = {
 
 DUAL_WIELD_SKILL_LINE = 118
 DUAL_WIELD_NAME = "Dual Wield"
+
+#: (ChrClasses.ID, weapon Item.SubclassID) bits the client's masks carry that no trainer
+#: teaches: druid polearms. Rogue one-hand axes stay (see the module docstring).
+UNTAUGHT_CLIENT_BITS: frozenset[tuple[int, int]] = frozenset({(11, 6)})
 
 #: SkillLineAbility.AcquireMethod of a Season of Discovery rune: not learnable in Forever.
 RUNE_ACQUIRE_METHOD = 3
@@ -151,7 +159,7 @@ def build_equip_skills(build: str, raw: Path) -> dict[str, object]:
                 class_id,
                 masks,
                 levels,
-                set(VESTIGIAL_CLIENT_BITS),
+                set(UNTAUGHT_CLIENT_BITS),
             ),
             "dual_wield_level": (
                 max(levels.get((DUAL_WIELD_SKILL_LINE, class_id), 1), 1) if dual else None
@@ -164,7 +172,7 @@ def build_equip_skills(build: str, raw: Path) -> dict[str, object]:
             "skill": WEAPON_SKILL_LINE_NAME[WEAPON_SKILL_LINE[subclass_id]],
             "why": "The client mask carries it, but no trainer teaches it (sim audit round 8, K1).",
         }
-        for class_id, subclass_id in sorted(VESTIGIAL_CLIENT_BITS)
+        for class_id, subclass_id in sorted(UNTAUGHT_CLIENT_BITS)
         if masks.get(WEAPON_SKILL_LINE[subclass_id], 0) & CLASS_MASK_BIT[class_id]
     ]
     return {
