@@ -58,7 +58,7 @@ export const aurasCardCopy = {
   meta: 'Uptime, then times applied',
   onYou: 'On you',
   onTarget: 'On the target',
-  comeAndGo: (count: number) => `${count} that come and go`,
+  comeAndGo: (count: number) => (count === 1 ? '1 that comes and goes' : `${count} that come and go`),
   upAllFight: 'Up all fight',
   noEffect: 'No effect on your damage',
   stacks: (count: number) => `× ${count}`,

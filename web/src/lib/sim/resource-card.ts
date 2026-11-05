@@ -2,8 +2,8 @@
 // The Resource card's figures (spec 2026-11-04-sim-results 3.10): the three tiles from the
 // summary, the two lists from `resource_sources`. Every figure is the engine's average per fight;
 // none is recomputed beyond a share and a rounding.
-import { resolveActionName, type ActionNames } from './action-names';
-import { grouped, oneDecimal } from './result-copy';
+import { attackHand, parseActionKey, resolveActionName, type ActionNames } from './action-names';
+import { damageCopy, grouped, oneDecimal } from './result-copy';
 import { resourceCardCopy as copy } from './input-cards-copy';
 import { resourceLabel } from './result-sections';
 import type { ResourceSourceRow, SimResult } from './types';
@@ -41,12 +41,19 @@ export function resourceAmount(value: number): string {
   return value < WHOLE_FROM ? oneDecimal(value) : grouped(value);
 }
 
+/** A white swing reads as the damage table names it (spec section 6): "Main hand". */
+function sourceName(action: string, names: ActionNames | null): string {
+  const parsed = parseActionKey(action);
+  const hand = parsed?.kind === 'other' && parsed.label === 'attack' ? attackHand(parsed.tag) : null;
+  return hand === null ? resolveActionName(action, names) : damageCopy.hands[hand];
+}
+
 function rowsOf(rows: readonly ResourceSourceRow[], names: ActionNames | null): ResourceRow[] {
   const sorted = [...rows].sort((a, b) => b.amount - a.amount);
   const top = sorted[0]?.amount ?? 0;
   return sorted.map((row) => ({
     action: row.action,
-    name: resolveActionName(row.action, names),
+    name: sourceName(row.action, names),
     amount: resourceAmount(row.amount),
     barPct: top === 0 ? 0 : (row.amount / top) * 100,
     lost: (row.wasted ?? 0) >= LOST_FLOOR ? copy.lost(oneDecimal(row.wasted ?? 0)) : null,

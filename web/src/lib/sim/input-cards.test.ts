@@ -59,6 +59,7 @@ describe('resourceCard', () => {
   it('sorts by amount, scales bars to the top row and writes the overflow', () => {
     const rows = card.lists!.gained;
     expect(rows[0]!.action).toBe('other:attack/1');
+    expect(rows[0]!.name).toBe('Main hand');
     expect(rows[0]!.barPct).toBe(100);
     expect(rows[0]!.lost).toBe('−17.2 lost');
     expect(rows.find((row) => row.action === 'other:refund')).toMatchObject({ name: 'Refund', lost: null });

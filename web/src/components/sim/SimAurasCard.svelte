@@ -5,7 +5,7 @@
   import activeBuild from '../../data/active-build.json';
   import { loadWeights } from '../../lib/planner/load';
   import type { ActionNames } from '../../lib/sim/action-names';
-  import { auraCard, type AuraEntry } from '../../lib/sim/aura-card';
+  import { auraCard } from '../../lib/sim/aura-card';
   import { damageSchools, type SpecWeights } from '../../lib/sim/buff-effect';
   import { CATALOGUE } from '../../lib/sim/buffs';
   import { createCardTables } from '../../lib/sim/card-tables.svelte';
@@ -14,7 +14,6 @@
   import type { SimResult } from '../../lib/sim/types';
   import AuraTable from '../report/AuraTable.svelte';
   import Card from '../ui/Card.svelte';
-  import ActionMark from './ActionMark.svelte';
 
   let { result, names }: { result: SimResult; names: ActionNames | null } = $props();
 
@@ -55,10 +54,6 @@
   );
 </script>
 
-{#snippet mark(entry: AuraEntry, size: number)}
-  <ActionMark action={entry.actionKey} {tables} {size} fallbackIcon={entry.buffIcon}>{entry.name}</ActionMark>
-{/snippet}
-
 <Card
   glyph="spark"
   label={copy.label}
@@ -76,7 +71,7 @@
       durationMs={result.summary.duration_ms}
       bars={card.player}
       heading={copy.onYou}
-      {mark}
+      {tables}
     />
     <AuraTable
       variant="bars"
@@ -85,7 +80,7 @@
       durationMs={result.summary.duration_ms}
       bars={card.target}
       heading={copy.onTarget}
-      {mark}
+      {tables}
       note={card.targetFromRequest ? copy.targetNeedsNewerRun : undefined}
     />
   </div>

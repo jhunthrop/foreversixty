@@ -3,27 +3,31 @@
      2026-11-04-sim-results 3.10). Uptime bars for what comes and goes, then an icon-and-name row for
      what stayed up, then what did nothing for this spec, quiet. -->
 <script lang="ts">
-  import type { Snippet } from 'svelte';
   import type { AuraColumn, AuraEntry } from '../../lib/sim/aura-card';
+  import type { CardTables } from '../../lib/sim/card-tables.svelte';
   import { aurasCardCopy as copy } from '../../lib/sim/input-cards-copy';
   import { oneDecimal } from '../../lib/sim/result-copy';
+  import ActionMark from '../sim/ActionMark.svelte';
 
   let {
     column,
     heading,
     side,
-    mark,
+    tables,
     note,
   }: {
     column: AuraColumn;
     heading: string;
     side: 'player' | 'target';
-    /** The row's icon and name: the caller owns how an action draws. */
-    mark: Snippet<[AuraEntry, number]>;
+    tables: CardTables;
     /** A line under the heading (an older run's target column). */
     note?: string;
   } = $props();
 </script>
+
+{#snippet mark(entry: AuraEntry, size: number)}
+  <ActionMark action={entry.actionKey} {tables} {size} fallbackIcon={entry.buffIcon}>{entry.name}</ActionMark>
+{/snippet}
 
 {#snippet inline(entry: AuraEntry)}
   <li class="flex items-center gap-1.5 text-[14px]" data-testid="aura-inline">
