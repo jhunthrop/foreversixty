@@ -36,12 +36,45 @@ func TestSignupMovesTheOtherOwnCharacter(t *testing.T) {
 	if a.Moved == nil || *a.Moved != "Kraggor" {
 		t.Fatalf("moved = %v, want Kraggor", a.Moved)
 	}
+	stored, err := w.h.store.RaidSignups(t.Context(), raid.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
 	states := map[string]string{}
-	for _, s := range a.Raid.Signups {
+	for _, s := range stored {
 		states[s.CharacterKey] = s.State
 	}
 	if states[memberKeyA] != SignupBench || states[memberKeyB] != SignupIn {
 		t.Fatalf("states = %v", states)
+	}
+	// The roster lists the player once, on the character they bring: switching is no Bench.
+	if len(a.Raid.Signups) != 1 || a.Raid.Signups[0].CharacterKey != memberKeyB || a.Raid.Counts.Bench != 0 {
+		t.Fatalf("roster = %+v counts = %+v", a.Raid.Signups, a.Raid.Counts)
+	}
+}
+
+// Switching characters back and forth never grows the Bench, and an account that answered with
+// one character does not list its alts as not signed.
+func TestRaidViewIsOnePlayerPerAccount(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	var v RaidView
+	for _, key := range []string{memberKeyA, memberKeyB, memberKeyA, memberKeyB} {
+		v = w.signup(t, raid.ID, key, `{"state":"in"}`).Raid
+	}
+	if v.Counts.In != 1 || v.Counts.Bench != 0 || len(v.Signups) != 1 {
+		t.Fatalf("counts = %+v signups = %+v", v.Counts, v.Signups)
+	}
+	w.as(w.member2)
+	v = w.signup(t, raid.ID, member2Key, `{"state":"out"}`).Raid
+	for _, c := range v.NotSigned {
+		if c.CharacterKey == memberKeyA || c.CharacterKey == memberKeyB {
+			t.Fatalf("an answered account's alt is listed as not signed: %+v", v.NotSigned)
+		}
+	}
+	if len(v.NotSigned) != 1 || v.NotSigned[0].CharacterKey != officerKey {
+		t.Fatalf("not_signed = %+v", v.NotSigned)
 	}
 }
 
@@ -146,6 +179,12 @@ func TestRaidViewShape(t *testing.T) {
 	w.signup(t, raid.ID, memberKeyA, `{"state":"bench","role":"tank"}`)
 	v := w.signup(t, raid.ID, memberKeyB, `{"state":"late"}`).Raid
 
+	w.as(w.officer)
+	w.signup(t, raid.ID, officerKey, `{"state":"bench","role":"tank"}`)
+	w.as(w.member)
+	v = w.getRaid(t, raid.ID)
+
+	// The member is one player, Late on Sunderfel: their benched Kraggor is no second body.
 	want := RaidCounts{In: 1, Late: 1, Bench: 1, Out: 0, Tanks: 0, Healers: 1, DPS: 0}
 	if v.Counts != want {
 		t.Fatalf("counts = %+v, want %+v", v.Counts, want)
@@ -154,7 +193,7 @@ func TestRaidViewShape(t *testing.T) {
 	for _, s := range v.Signups {
 		order = append(order, s.Name)
 	}
-	if strings.Join(order, ",") != "Kraggor,Mirelle,Sunderfel" {
+	if strings.Join(order, ",") != "Thornhide,Mirelle,Sunderfel" {
 		t.Fatalf("signup order = %v (tank, healer, dps)", order)
 	}
 	for _, s := range v.Signups {
@@ -168,8 +207,8 @@ func TestRaidViewShape(t *testing.T) {
 			t.Fatalf("note = %q", s.Note)
 		}
 	}
-	if len(v.NotSigned) != 1 || v.NotSigned[0].CharacterKey != officerKey || v.NotSigned[0].Name != "Thornhide" {
-		t.Fatalf("not_signed = %+v (verified roster rows only)", v.NotSigned)
+	if len(v.NotSigned) != 0 {
+		t.Fatalf("not_signed = %+v, want none: every account answered", v.NotSigned)
 	}
 	chars := map[string]ViewerCharacter{}
 	for _, c := range v.Viewer.Characters {
