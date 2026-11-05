@@ -116,7 +116,9 @@ describe("Rules.canEquip weapons", function()
 		assert.are.equal("ok", (Rules.canEquip("SHAMAN", 60, WEAPON, MACE1, "INVTYPE_WEAPON")))
 	end)
 
-	it("trains a rogue in maces, daggers, swords and fists, and lets it dual wield", function()
+	it("trains a rogue in one-handed axes, maces, daggers, swords and fists, and lets it dual wield", function()
+		assert.are.equal("ok", (Rules.canEquip("ROGUE", 20, WEAPON, AXE1, "INVTYPE_WEAPON")))
+		assert.are.equal("ok", (Rules.canEquip("ROGUE", 20, WEAPON, AXE1, "INVTYPE_WEAPON", "off_hand")))
 		assert.are.equal("ok", (Rules.canEquip("ROGUE", 20, WEAPON, MACE1, "INVTYPE_WEAPON")))
 		assert.are.equal("ok", (Rules.canEquip("ROGUE", 20, WEAPON, MACE1, "INVTYPE_WEAPON", "off_hand")))
 		assert.are.equal("ok", (Rules.canEquip("ROGUE", 20, WEAPON, DAGGER, "INVTYPE_WEAPONOFFHAND")))
@@ -124,9 +126,9 @@ describe("Rules.canEquip weapons", function()
 		assert.are.equal("ok", (Rules.canEquip("ROGUE", 20, WEAPON, FIST, "INVTYPE_WEAPON")))
 	end)
 
-	it("keeps a rogue out of two-handers and axes", function()
+	it("keeps a rogue out of two-handers", function()
 		assert.are.equal("never", (Rules.canEquip("ROGUE", 60, WEAPON, MACE2, "INVTYPE_2HWEAPON")))
-		assert.are.equal("never", (Rules.canEquip("ROGUE", 60, WEAPON, AXE1, "INVTYPE_WEAPON")))
+		assert.are.equal("never", (Rules.canEquip("ROGUE", 60, WEAPON, AXE2, "INVTYPE_2HWEAPON")))
 	end)
 
 	it("reads the client's English weapon names when no ids are given", function()
@@ -194,7 +196,7 @@ describe("Rules tables", function()
 			dagger = true, shield = true, offhand = true, dualWield = false,
 		}, Rules.WEAPONS.SHAMAN)
 		assert.are.same({
-			dagger = true, sword1 = true, mace1 = true, fist = true, dualWield = true,
+			dagger = true, sword1 = true, axe1 = true, mace1 = true, fist = true, dualWield = true,
 		}, Rules.WEAPONS.ROGUE)
 	end)
 
