@@ -151,12 +151,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 12873}": "Improved Scorch's debuff aura only exists once sim/mage/talents.go's " +
 			"applyImprovedScorch wires it up (Talents.ImprovedScorch != 0) or the raid debuff toggle " +
 			"is on; this build takes neither, so core.GetAPLAura finds no such aura on the current " +
-			"target and warns. Every auraIsActive/auraNumStacks/auraRemainingTime reference to it " +
-			"resolves to a nil APLValue, which the Scorch line's `or` condition (newValueOr filters " +
-			"nil operands the same way newValueAnd does) collapses to nil when every operand is nil, " +
-			"and APLAction.IsReady reads a nil condition as always true -- so Scorch recasts every " +
-			"global under this one build, the same shape as the hunters' zero-SwingSpeed auto-shot " +
-			"loop: a real artifact of this bare build, not a defect in the gate.",
+			"target and warns. Since round 22 every auraIsActive/auraNumStacks/auraRemainingTime " +
+			"reference to an unknown aura reads inactive, 0 stacks and 0 remaining (core " +
+			"unknownAuraValue), so the Scorch line's gate holds instead of collapsing to no " +
+			"condition; the warning stays because the aura is still absent on this bare build.",
 	},
 	"druid-restoration": {
 		"{SpellID: 17116}":   "Nature's Swiftness is a talent (sim/druid/talents.go); this build takes none.",

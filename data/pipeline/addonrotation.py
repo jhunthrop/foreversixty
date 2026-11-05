@@ -41,7 +41,7 @@ from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
 from pipeline.models import AddonRotationBand, AddonRotationLine
 from pipeline.spelltext import SpellText, load_spell_text
-from pipeline.talent_levels import tier_level
+from pipeline.talent_levels import floor_pairs, load_spec_point_levels, tier_level
 
 #: sim/request/ladder.go's own `ladderLevels`. See the module docstring.
 LEVEL_BANDS = [10, 20, 30, 38, 40, 50, 60]
@@ -479,18 +479,26 @@ def build_rotation(
     icon_of: Callable[[int], str] | None = None,
     trainable_ids: frozenset[int] = frozenset(),
     talent_spells: Mapping[str, list[tuple[int, int]]] = MappingProxyType({}),
+    point_levels: Mapping[int, int] = MappingProxyType({}),
 ) -> list[AddonRotationBand]:
     """One spec's rotation table: a band at every LEVEL_BANDS rung and at
     every level between where a line changes (`_band_levels`).
     `trainable_ids` is the class's trainer-learned ids (`load_trainable_ids`),
-    `talent_spells` its talents' own spells (`load_talent_spells`)."""
+    `talent_spells` its talents' own spells (`load_talent_spells`), and
+    `point_levels` the level the spec's published build takes each talent's
+    spell (`load_spec_point_levels`): a talent's row starts there."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
     if not apl_path.exists():
         raise AddonRotationError(f"missing {apl_path}")
     curated = json.loads(apl_path.read_text(encoding="utf-8"))
     casts = _cast_lines(curated.get("rotation", {}))
 
-    families = _family_ranks(spellranks, _class_slug(spec), trainable_ids, talent_spells)
+    families = {
+        name: floor_pairs(pairs, point_levels)
+        for name, pairs in _family_ranks(
+            spellranks, _class_slug(spec), trainable_ids, talent_spells
+        ).items()
+    }
     id_to_family = _id_to_family(families)
     rank_of = _rank_of(spellranks, _class_slug(spec))
     choices = load_rank_choices(curated_dir, spec)
@@ -823,6 +831,7 @@ def build_rotations(
             icon_of,
             load_trainable_ids(root / build, _class_slug(spec)),
             load_talent_spells(root / build, _class_slug(spec)),
+            load_spec_point_levels(root / build, spec, _class_slug(spec)),
         )
         for spec in specs
     }
