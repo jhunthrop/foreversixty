@@ -11,6 +11,11 @@ describe('nightsLabel', () => {
     expect(nightsLabel(0, 3)).toBe('0 of 3 raid nights');
   });
 
+  it('reads No raid nights yet with no eligible night, never 0 of 0', () => {
+    expect(nightsLabel(0, 0)).toBe('No raid nights yet');
+    expect(attendanceLabel(0, 0)).toBe('No raid nights yet');
+  });
+
   it('is plural for 7 of 8', () => {
     expect(nightsLabel(7, 8)).toBe('7 of 8 raid nights');
   });

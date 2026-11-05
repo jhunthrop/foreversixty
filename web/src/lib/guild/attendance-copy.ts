@@ -12,7 +12,7 @@ import type {
   RaidRef,
   RaidUnnamed,
 } from './attendance-contract';
-import { nightsLabel } from './nights';
+import { NO_RAID_NIGHTS, nightsLabel } from './nights';
 import { SEP } from './raid-copy';
 import { DEFAULT_LOCALE, clockText, dateLabel, stampParts } from './raid-time';
 
@@ -155,7 +155,7 @@ export const attendanceCopy = {
     excused: 'Excused',
   },
   roster: {
-    noRaids: 'No raids yet',
+    noNights: NO_RAID_NIGHTS,
     footnote: `Raid nights each raider came to, of those they signed up for or came to, over this guild's last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged raids.`,
   },
   readiness: {
@@ -385,23 +385,30 @@ export const cameAsOutcome = (alt: string): string => `Came as ${alt}`;
 export const pullsRatio = (present: number, total: number): string => `${present}/${total}`;
 
 /** The roster chip, the bot's own (api guilds attendanceChip): `7 of 8 raid nights · 26 of the
- *  last 30`, or `1 of 1 raid night` alone while the longer window adds nothing. */
+ *  last 30`, or `1 of 1 raid night` alone while the longer window adds nothing; `No raid nights
+ *  yet` with no eligible night in either window. */
 export function rosterChip(
   last8: { present: number; nights: number },
   last30: { present: number; nights: number } | undefined,
 ): string {
+  if (last8.nights === 0 && last30 !== undefined && last30.nights > 0) {
+    // Nothing in the short window but older nights in the long one: the long ratio alone, true.
+    return raidsAttended(last30.present, last30.nights);
+  }
   const head = raidsAttended(last8.present, last8.nights);
   if (last30 === undefined || last30.nights <= last8.nights) return head;
   return `${head}${SEP}${last30.present} of the last ${last30.nights}`;
 }
 
 /** The one attendance figure on the site and in the bot (guild loop round 3): `7 of 8 raid
- *  nights`, `1 of 1 raid night`. */
+ *  nights`, `1 of 1 raid night`, `0 of 1 raid night`, and `No raid nights yet` with no eligible
+ *  night. */
 export const raidsAttended = nightsLabel;
 
-/** `came 7 of 8 raid nights`, the clause the guild line appends after its separator. */
+/** `came 7 of 8 raid nights`, the clause the guild line appends after its separator; `No raid
+ *  nights yet` with no eligible night (never `came 0 of 0`). */
 export const cameGuildClause = (present: number, nights: number): string =>
-  `came ${raidsAttended(present, nights)}`;
+  nights === 0 ? NO_RAID_NIGHTS : `came ${raidsAttended(present, nights)}`;
 export const cameGuildLine = (present: number, nights: number): string =>
   `${SEP}${cameGuildClause(present, nights)}`;
 

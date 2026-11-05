@@ -44,9 +44,14 @@ describe('rosterStatChips in raid mode', () => {
     expect(chips).toContain('3 of 3 raid nights');
   });
 
-  it('says No raids yet for a 0 of 0 chip', () => {
+  it('says No raid nights yet for a 0 of 0 chip in either mode', () => {
     const chips = rosterStatChips(raidRow({ present: 0, nights: 0 }, { present: 0, nights: 0 }), 'raids');
-    expect(chips).toContain('No raids yet');
+    expect(chips).toContain('No raid nights yet');
+    expect(rosterStatChips(raidRow({ present: 0, nights: 0 }), 'reports')).toContain('No raid nights yet');
+  });
+
+  it('reads the real ratio for a member who missed the one eligible night', () => {
+    expect(rosterStatChips(raidRow({ present: 0, nights: 1 }), 'raids')).toContain('0 of 1 raid night');
   });
 
   it('reads the same words in report mode', () => {

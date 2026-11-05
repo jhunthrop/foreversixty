@@ -6,23 +6,21 @@
 import { guildRosterAddonCopy } from './copy';
 import type { GuildRosterEntry, GuildRosterRow } from './api';
 import type { AttendanceSource } from './attendance-contract';
-import { attendanceCopy, rosterChip } from './attendance-copy';
+import { rosterChip } from './attendance-copy';
 import { outputFigure, topOutputLabel } from './output-figure';
 import { addonGapLabel, addonIdentity, addonSeen, addonSpecName } from './roster-addon';
 import { specClassName, specName } from './spec-name';
 import { classDisplayName } from '../sim/spec-label';
 
 /** One row's attendance chip, the bot's words in both modes: `7 of 8 raid nights`, and in raid mode
- *  ` · 26 of the last 30` when the longer window holds more, or `No raids yet` for a character with
- *  none. */
+ *  ` · 26 of the last 30` when the longer window holds more; `No raid nights yet` with no eligible
+ *  night in either mode (`raidsAttended`). */
 function attendanceChip(
   row: GuildRosterRow,
   last8: NonNullable<GuildRosterRow['attendance']>,
   source: AttendanceSource,
 ): string {
-  if (source !== 'raids') return rosterChip(last8, undefined);
-  if (last8.nights === 0) return attendanceCopy.roster.noRaids;
-  return rosterChip(last8, row.attendance_30);
+  return rosterChip(last8, source === 'raids' ? row.attendance_30 : undefined);
 }
 
 /** "Item level 68", "5 of 8 raid nights", "Top DPS 238", "Rating 65": every figure with its unit

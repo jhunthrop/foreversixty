@@ -122,6 +122,7 @@ describe('constants, verbatim from spec 6.1', () => {
     expect(c.attendance.notInLog).toBe(str('Attendance', 8));
     expect(c.attendance.excused).toBe(str('Attendance', 11));
     expect(c.roster.footnote).toBe(str('Roster', 1));
+    expect(c.roster.noNights).toBe(str('Roster', 4));
     expect(c.readiness.noExport).toBe(str('Readiness', 3));
     expect(c.readiness.nobodySigned).toBe(str('Readiness', 4));
     expect(c.consumables.state.unknown).toBe(str('Consumables', 4));
@@ -277,6 +278,16 @@ describe('attendance, roster and readiness', () => {
     expect(raidsAttended(7, 8)).toBe('7 of 8 raid nights');
     expect(raidsAttended(1, 1)).toBe('1 of 1 raid night');
     expect(cameGuildLine(7, 8)).toBe(' · came 7 of 8 raid nights');
+  });
+
+  it('one zero rule: no eligible night reads No raid nights yet, any night the real ratio', () => {
+    expect(raidsAttended(0, 0)).toBe('No raid nights yet');
+    expect(raidsAttended(0, 1)).toBe('0 of 1 raid night');
+    expect(rosterChip({ present: 0, nights: 0 }, { present: 0, nights: 0 })).toBe('No raid nights yet');
+    expect(rosterChip({ present: 0, nights: 0 }, undefined)).toBe('No raid nights yet');
+    expect(rosterChip({ present: 0, nights: 0 }, { present: 3, nights: 5 })).toBe('3 of 5 raid nights');
+    expect(cameGuildLine(0, 0)).toBe(' · No raid nights yet');
+    expect(cameGuildLine(0, 1)).toBe(' · came 0 of 1 raid night');
   });
 
   it('readiness lines', () => {
