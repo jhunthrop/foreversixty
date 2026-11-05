@@ -89,7 +89,5 @@ export function fixtureGuildPaths(): { params: { path: string } }[] {
 export const FIXTURE_SIM_ID = 'simfixtureab';
 
 export function fixtureSimPaths(): { params: { id: string } }[] {
-  return process.env.FOREVER_DATA === 'fixture'
-    ? [{ params: { id: FIXTURE_SIM_ID } }, { params: { id: 'simfullfixt1' } }]
-    : [];
+  return process.env.FOREVER_DATA === 'fixture' ? [{ params: { id: FIXTURE_SIM_ID } }] : [];
 }

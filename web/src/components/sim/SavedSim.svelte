@@ -247,22 +247,6 @@
   const simResultsLazy = createLazyComponent(() => import('./SimResults.svelte'));
   const savedCombosLazy = createLazyComponent(() => import('./SavedCombos.svelte'));
   const savedWeightsLazy = createLazyComponent(() => import('./SavedWeights.svelte'));
-  const timelineLazy = createLazyComponent(() => import('./SimTimeline.svelte'));
-  const tipsLazy = createLazyComponent(() => import('../guides/GuideTooltips.svelte'));
-  let timelineShown = $state(true);
-  if (kind === 'run') {
-    const deferred = typeof location !== 'undefined' && location.search.includes('defer');
-    if (deferred) {
-      timelineShown = false;
-      (window as unknown as { __mountTimeline: () => void }).__mountTimeline = () => {
-        timelineLazy.load();
-        timelineShown = true;
-      };
-    } else {
-      timelineLazy.load();
-    }
-    tipsLazy.load();
-  }
 
   if (kind === 'weights') savedWeightsLazy.load();
   else if (kind !== 'run') savedCombosLazy.load();
@@ -379,16 +363,6 @@
   />
 {:else}
   {@render lazyFallback(simResultsLazy)}
-{/if}
-
-{#if kind === 'run' && timelineShown && timelineLazy.current}
-  <timelineLazy.current {result} names={actionNames} />
-{/if}
-{#if tipsLazy.current}
-  <tipsLazy.current
-    build={activeBuild.build}
-    bundleUrl={`/data/${activeBuild.build}/guide-tips/${result.request.character.class}/${result.request.spec.split('-')[1]}.json`}
-  />
 {/if}
 
 {#if drawnStage >= 2}
