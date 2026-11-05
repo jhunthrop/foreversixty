@@ -21,8 +21,11 @@ type Input struct {
 
 // Tables is the data the checks read beside the fight.
 type Tables struct {
-	Rules     SpecRules                  // data/curated/coach/<spec>.json; zero value = no file
-	Spells    map[int64]SpellConst       // the class's spellconst for the fight's build
+	Rules  SpecRules            // data/curated/coach/<spec>.json; zero value = no file
+	Spells map[int64]SpellConst // the class's spellconst for the fight's build
+	// BaseMana is the class's base mana at the row's level (the build's levels.json), what a
+	// cost given as a percent of base mana is read against; 0 is unknown.
+	BaseMana  int64
 	Trainable map[string][]TrainableRank // family -> ranks with the level each is learned
 	// RankChoices is family -> the ranks data/curated/rank-choices.json has the spec's
 	// rotation cast at the player's level (a mana-bound band's downrank); F5 never calls
@@ -42,7 +45,8 @@ type Tables struct {
 // SpellConst is one spell's constants. CooldownMS is the larger of spellconst's
 // cooldown_ms and category_cooldown_ms (Bloodthirst's 6 s is a category cooldown in
 // 1.60.1.70630). Cost is spellconst's cost, in the same tenths the log's rage series
-// uses. CostKnown is false when the data states the cost only as a share of the bar.
+// uses. CostKnown is false when the data states the cost only as a share of the bar:
+// CostPct, the percent of base mana it costs (Judgement's 6), which CostAt reads.
 type SpellConst struct {
 	Name       string
 	Rank       int
@@ -51,6 +55,21 @@ type SpellConst struct {
 	Cost       int64
 	CostType   int64
 	CostKnown  bool
+	CostPct    float64
+}
+
+// CostAt is the spell's cost for a player with baseMana: the flat cost when the data
+// states one, else CostPct of baseMana for a mana spell (rounded down, as the client
+// does). false when neither is known: no flat cost and no base mana (0) to read a percent
+// against.
+func (sc SpellConst) CostAt(baseMana int64) (int64, bool) {
+	if sc.CostKnown {
+		return sc.Cost, true
+	}
+	if sc.CostPct > 0 && sc.CostType == PowerMana && baseMana > 0 {
+		return int64(sc.CostPct * float64(baseMana) / 100), true
+	}
+	return 0, false
 }
 
 // TrainableRank is one rank of a trainable family and the level it is learned at.

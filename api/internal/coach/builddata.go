@@ -32,7 +32,8 @@ type spellConstFile struct {
 
 // ParseSpellConst reads one class's spellconst file into Tables.Spells. The cooldown is
 // the larger of cooldown_ms and category_cooldown_ms; the cost is known when the file
-// states it as a flat amount (a cost given only as a share of the bar is not).
+// states it as a flat amount (a cost given only as a share of the bar is not, and keeps
+// that share in CostPct).
 func ParseSpellConst(data []byte) (map[int64]SpellConst, error) {
 	var f spellConstFile
 	if err := json.Unmarshal(data, &f); err != nil {
@@ -44,7 +45,8 @@ func ParseSpellConst(data []byte) (map[int64]SpellConst, error) {
 		if err != nil {
 			return nil, fmt.Errorf("coach spellconst: spell key %q: %w", key, err)
 		}
-		c := SpellConst{Name: s.Name, Rank: s.Rank, CooldownMS: max(s.CooldownMS, s.CategoryCooldownMS), GCDMS: s.GCDMS, CostType: s.CostType}
+		c := SpellConst{Name: s.Name, Rank: s.Rank, CooldownMS: max(s.CooldownMS, s.CategoryCooldownMS), GCDMS: s.GCDMS,
+			CostType: s.CostType, CostPct: s.CostPct}
 		if s.Cost != nil && (*s.Cost > 0 || s.CostPct == 0) {
 			c.Cost, c.CostKnown = *s.Cost, true
 		}
@@ -77,6 +79,31 @@ func ParseTrainables(data []byte) (map[string][]TrainableRank, error) {
 		for _, r := range t.Ranks {
 			out[t.Name] = append(out[t.Name], TrainableRank{ID: r.ID, Rank: r.Rank, Level: r.Level})
 		}
+	}
+	return out, nil
+}
+
+// levelsFile is the shape of data/builds/<build>/levels.json, the fields the coach reads:
+// each class's base mana by level (the client's BaseMP game table).
+type levelsFile struct {
+	Classes map[string]struct {
+		Levels []struct {
+			Level int64 `json:"level"`
+			Mana  int64 `json:"mana"`
+		} `json:"levels"`
+	} `json:"classes"`
+}
+
+// ParseBaseMana is class's base mana by level in a levels.json file; a class the file
+// does not list is an empty map.
+func ParseBaseMana(data []byte, class string) (map[int64]int64, error) {
+	var f levelsFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return nil, fmt.Errorf("coach levels: %w", err)
+	}
+	out := map[int64]int64{}
+	for _, l := range f.Classes[class].Levels {
+		out[l.Level] = l.Mana
 	}
 	return out, nil
 }
