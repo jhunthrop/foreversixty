@@ -102,7 +102,9 @@ describe('the band', () => {
     expect(markup('raid-when', 'raid-count').trim()).toBe(
       'Thursday 10 December · 8:00 pm to 11:00 pm\u00a0CST · 9:00 pm EST your time · in 2 days 8 h',
     );
-    expect(markup('raid-count', 'guild-tabs')).toContain('23 of 40 signed up · 3 tanks');
+    expect(markup('raid-count', 'guild-tabs').replace(/\u00a0/g, ' ')).toContain(
+      '23 of 40 signed up · 3 tanks',
+    );
     expect(markup('raid-title', 'raid-when').trim()).toBe("Ony farm · Onyxia's Lair");
   });
 
