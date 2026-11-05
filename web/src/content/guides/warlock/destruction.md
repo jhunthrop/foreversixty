@@ -25,7 +25,7 @@ sources:
 
 ## Overview
 
-Destruction keeps Immolate on the boss, fires Conflagrate and Shadowburn on cooldown to hold both halves of Shadow and Flame, and casts Incinerate in between.
+Destruction keeps Immolate on the boss, fires Conflagrate and Shadowburn on cooldown, since with Shadow and Flame full Conflagrate keeps your Immolate and Shadowburn hands its shard back, and casts Incinerate in between.
 
 ### Strengths
 
