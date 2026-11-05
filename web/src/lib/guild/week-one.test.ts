@@ -141,7 +141,7 @@ describe('the officer step', () => {
 
   it('then the event planned, counting In and Late', () => {
     const step = weekOneStep(input({ ...officer, nextRaid: raid(), raidHref: '/r/7' }));
-    expect(step.text).toBe('Deadmines run Saturday 8 pm, 3 signed up.');
+    expect(step.text).toBe('Deadmines run Saturday 8 pm CST, 3 signed up.');
     expect(step.action).toEqual({ kind: 'link', href: '/r/7', label: 'Open the sign-ups' });
   });
 });
@@ -156,7 +156,7 @@ describe('the raider step', () => {
 
   it('an event planned and not signed up asks for the sign-up', () => {
     const step = weekOneStep(input({ nextRaid: raid(), raidHref: '/r/7' }));
-    expect(step.text).toBe('Deadmines run Saturday 8 pm. You have not signed up yet.');
+    expect(step.text).toBe('Deadmines run Saturday 8 pm CST. You have not signed up yet.');
     expect(step.action).toEqual({ kind: 'link', href: '/r/7', label: 'Sign up' });
   });
 

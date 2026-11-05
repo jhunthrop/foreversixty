@@ -2,7 +2,15 @@
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidViewerCharacter } from './api';
 import { raidCopy } from './raid-copy';
-import { NOTE_MAX, failureLine, initialRole, noteCounter, orderedCharacters } from './signup-strip';
+import {
+  NOTE_MAX,
+  defaultPick,
+  failureLine,
+  noteCounter,
+  orderedCharacters,
+  pressWaitsForSpec,
+  roleOfPick,
+} from './signup-strip';
 
 function character(name: string, extra: Partial<GuildRaidViewerCharacter> = {}): GuildRaidViewerCharacter {
   return {
@@ -32,11 +40,30 @@ describe('orderedCharacters', () => {
   });
 });
 
-describe('initialRole', () => {
-  it('keeps a signed-up role and prefills an unsigned one from the spec', () => {
-    expect(initialRole(character('Ana', { state: 'in', role: 'tank', spec: 'Fury' }))).toBe('tank');
-    expect(initialRole(character('Bo', { spec: 'Holy', role: 'dps' }))).toBe('healer');
-    expect(initialRole(character('Cy', { spec: 'Unknown', role: 'tank' }))).toBe('tank');
+describe('defaultPick (raid comp spec 3.2)', () => {
+  it('starts on the saved raid spec, else the default spec, else nothing', () => {
+    expect(
+      defaultPick(character('Ana', { raid_spec: 'warrior-arms', default_spec: 'warrior-arms' }))?.label,
+    ).toBe('Arms · DPS');
+    expect(defaultPick(character('Bo', { raid_spec: null, default_spec: 'warrior-protection' }))?.label).toBe(
+      'Protection · Tank',
+    );
+    expect(defaultPick(character('Cy', { raid_spec: null, default_spec: null }))).toBeNull();
+  });
+
+  it('keeps an off-tank on its tank pair', () => {
+    const offTank = character('Brokk', { state: 'in', role: 'tank', raid_spec: 'warrior-fury' });
+    expect(defaultPick(offTank)?.label).toBe('Fury · Tank');
+    expect(roleOfPick(defaultPick(offTank), offTank)).toBe('tank');
+  });
+
+  it('holds In, Late and Bench without a pick, never Out', () => {
+    const pick = defaultPick(character('Ana', { raid_spec: 'warrior-arms' }));
+    expect(pressWaitsForSpec('in', null)).toBe(true);
+    expect(pressWaitsForSpec('bench', null)).toBe(true);
+    expect(pressWaitsForSpec('out', null)).toBe(false);
+    expect(pressWaitsForSpec('late', pick)).toBe(false);
+    expect(roleOfPick(null, character('Cy', { role: 'tank' }))).toBe('tank');
   });
 });
 

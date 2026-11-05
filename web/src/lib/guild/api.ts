@@ -831,6 +831,8 @@ export interface GuildRaidsPage {
 export type GuildRaidStatus = 'planned' | 'locked' | 'done' | 'cancelled';
 export type GuildSignupState = 'in' | 'late' | 'bench' | 'out';
 export type GuildRaidRole = 'tank' | 'healer' | 'dps';
+/** The roster group a sign-up fights in (the API's `raidspec.Group`, the Discord post's groups). */
+export type GuildRaidGroup = 'tank' | 'healer' | 'melee' | 'ranged';
 
 export interface GuildRaidCounts {
   in: number;
@@ -839,10 +841,24 @@ export interface GuildRaidCounts {
   out: number;
   tanks: number;
   healers: number;
+  /** Melee plus ranged; kept for the readiness page. */
   dps: number;
+  /** In rows by group (absent from an API that predates them, which reads 0). */
+  melee?: number;
+  ranged?: number;
+  /** In plus Late by class slug, one key per class the guild plays (zeros included). */
+  classes?: Readonly<Record<string, number>>;
 }
 
-export interface GuildRaidSignup {
+/** A row's place in the roster and its catalogue spec (raid comp spec 4.1). Absent from an API
+ *  that predates them: such a row reads its role's group, DPS as ranged, and its class alone. */
+export interface GuildRaidRowComp {
+  group?: GuildRaidGroup;
+  /** The `specs.json` key of the row's spec, `null` when it does not resolve. */
+  spec_key?: string | null;
+}
+
+export interface GuildRaidSignup extends GuildRaidRowComp {
   character_key: string;
   name: string;
   class: string;
@@ -854,7 +870,7 @@ export interface GuildRaidSignup {
   own: boolean;
 }
 
-export interface GuildRaidNotSigned {
+export interface GuildRaidNotSigned extends GuildRaidRowComp {
   character_key: string;
   name: string;
   class: string;
@@ -873,6 +889,10 @@ export interface GuildRaidViewerCharacter {
   /** The character's saved raid spec in this guild (a slug from the spec catalogue, e.g.
    *  `paladin-holy`), `null` while unset. Absent from an API that predates it, which reads unset. */
   raid_spec?: string | null;
+  /** The `specs.json` key of `spec`, `null` when it does not resolve. */
+  spec_key?: string | null;
+  /** The spec the picker starts on: `raid_spec`, else `spec_key`, else `null`. */
+  default_spec?: string | null;
 }
 
 export interface GuildRaidView extends RaidAttendanceFields {
@@ -963,7 +983,7 @@ export interface NextRaidView {
   status?: 'planned' | 'locked';
   size: number | null;
   guild_timezone: string | null;
-  counts: Pick<GuildRaidCounts, 'in' | 'late' | 'tanks' | 'healers' | 'dps'>;
+  counts: Pick<GuildRaidCounts, 'in' | 'late' | 'tanks' | 'healers' | 'dps' | 'melee' | 'ranged'>;
   /** The current character's sign-up; `null` while unsigned. `note` travels with it. */
   own: { character_key: string; state: GuildSignupState; role: GuildRaidRole; note?: string } | null;
 }
