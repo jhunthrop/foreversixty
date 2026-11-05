@@ -32,14 +32,6 @@
       ],
       "talent": false,
       "verified": "1.60.1.70790/spellconst/hunter.json#20904"
-    },
-    {
-      "family": "Multi-Shot",
-      "spell_ids": [
-        2643
-      ],
-      "talent": false,
-      "verified": "1.60.1.70790/spellconst/hunter.json#2643"
     }
   ],
   "auras": [

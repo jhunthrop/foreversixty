@@ -24,7 +24,7 @@
         "title": "Bloodthirst: 9 casts lost",
         "why": "Bloodthirst is the button the Fury rotation is built around, and 9 casts went unused while you had the rage, longest at 1:12–1:25. At 2:44–2:58 you sat on a full bar instead, so that one gap cost you two Bloodthirsts.",
         "drill": "drill.core_casts",
-        "drillText": "On a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.",
+        "drillText": "From forty, on a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.",
         "anchors": ["a1", "a2", "a3", "a5"],
         "links": [
           {

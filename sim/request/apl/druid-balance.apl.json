@@ -158,7 +158,7 @@
       }
     },
     {
-      "notes": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked. Each Wrath banks two charges, each taking time off one Starfire: 0.17 seconds a charge with one point, half a second with all three. With one point the quicker Starfires do not pay for the Wrath's cast; the loop still wins because the Wrath costs a fraction of a Starfire's mana.",
+      "notes": "From 35 on the leveling order and 39 on the raid order, whenever no Eclipse charge is banked. Each Wrath banks two charges, each taking time off one Starfire: 0.17 seconds a charge with one point, half a second with all three. With one point the quicker Starfires do not pay for the Wrath's cast; from Moonkin Form at 40 the loop still wins, because the Wrath costs a fraction of a Starfire's mana.",
       "action": {
         "condition": {
           "and": {

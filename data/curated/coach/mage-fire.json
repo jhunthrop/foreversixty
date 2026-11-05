@@ -33,27 +33,6 @@
     }
   ],
   "downranks": [],
-  "defensives": [
-    {
-      "family": "Ice Block",
-      "spell_ids": [
-        11958
-      ],
-      "talent": true,
-      "verified": "1.60.1.70790/spellconst/mage.json#11958"
-    },
-    {
-      "family": "Ice Barrier",
-      "spell_ids": [
-        11426,
-        13031,
-        13032,
-        1213278,
-        13033
-      ],
-      "talent": true,
-      "verified": "1.60.1.70790/spellconst/mage.json#13033"
-    }
-  ],
+  "defensives": [],
   "efficiency": []
 }
