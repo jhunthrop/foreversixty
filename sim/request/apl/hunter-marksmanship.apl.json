@@ -96,7 +96,7 @@
       }
     },
     {
-      "notes": "Rapid Fire on the pull, as an auto shot leaves and Multi-Shot is about to come back. The haste starts on a fresh shot and the first Multi-Shot lands inside it. While you level, Rapid Killing has it back every three minutes, so press it on every hard pull; in the raid build it is a five minute cooldown and a boss fight gets one, so put your trinkets and racial on the same press.",
+      "notes": "Rapid Fire on the pull, as an auto shot leaves and Multi-Shot is about to come back. The haste starts on a fresh shot and the first Multi-Shot lands inside it. On the leveling build, Rapid Killing has it back every three minutes, so press it on every hard pull; in the raid build it is a five minute cooldown and a boss fight gets one, so put your trinkets and racial on the same press.",
       "action": {
         "condition": {
           "and": {
@@ -171,7 +171,7 @@
       }
     },
     {
-      "notes": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot. It is instant, so it never delays your next shot.",
+      "notes": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot, and on cooldown before Aimed Shot arrives at 20. It is instant, so it never delays your next shot.",
       "action": {
         "castSpell": {
           "spellId": {

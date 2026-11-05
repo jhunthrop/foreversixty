@@ -106,7 +106,7 @@
       }
     },
     {
-      "notes": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath. The haste starts on a fresh shot and the first Multi-Shot lands inside it. It is a five minute cooldown, four once the level 60 build's point in Rapid Killing is in at 57, so a boss fight gets one: put your trinkets and racial on the same press.",
+      "notes": "Rapid Fire on the pull as an auto shot leaves and Multi-Shot is about to come back, and from 40 with Bestial Wrath. The haste starts on a fresh shot and the first Multi-Shot lands inside it. It is a five minute cooldown, four once the level 60 build's point in Rapid Killing is in at 57, so a normal boss fight gets one: put your trinkets and racial on the same press.",
       "action": {
         "condition": {
           "and": {
@@ -181,7 +181,7 @@
       }
     },
     {
-      "notes": "Multi-Shot on cooldown, and from 20 on the shared cooldown only when Aimed Shot's cast would hold an auto shot. It is instant, so it never delays your next shot.",
+      "notes": "Multi-Shot on the shared cooldown when Aimed Shot's cast would hold an auto shot, and on cooldown before Aimed Shot arrives at 20. It is instant, so it never delays your next shot.",
       "action": {
         "castSpell": {
           "spellId": {
