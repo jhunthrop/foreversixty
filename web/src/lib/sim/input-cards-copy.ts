@@ -49,6 +49,8 @@ export const resourceCardCopy = {
   endedWith: 'Ended with',
   gainedFrom: 'Gained from',
   spentOn: 'Spent on',
+  /** The engine's rage refund: 80% of a special's cost back when it misses, is dodged or parried. */
+  refunded: 'Refunded on a miss, dodge or parry',
   lost: (amount: string) => `−${amount} lost`,
   capValue: (amount: string, percent: string) => `${amount} · ${percent}%`,
   needsNewerRun: (resource: string) => `Where the ${resource} came from and went needs a newer run.`,

@@ -5,6 +5,7 @@
 import { attackHand, parseActionKey, resolveActionName, type ActionNames } from './action-names';
 import { damageCopy, grouped, navCopy, oneDecimal } from './result-copy';
 import { resourceCardCopy as copy } from './input-cards-copy';
+import { REFUND_KEY } from './action-mark';
 import { primaryPowerTrack, type PrimaryPower } from './primary-power';
 import type { ResourceSourceRow, SimResult } from './types';
 
@@ -42,6 +43,7 @@ export function resourceAmount(value: number): string {
 
 /** A white swing reads as the damage table names it (spec section 6): "Main hand". */
 function sourceName(action: string, names: ActionNames | null): string {
+  if (action === REFUND_KEY) return copy.refunded;
   const parsed = parseActionKey(action);
   const hand = parsed?.kind === 'other' && parsed.label === 'attack' ? attackHand(parsed.tag) : null;
   return hand === null ? resolveActionName(action, names) : damageCopy.hands[hand];

@@ -64,7 +64,10 @@ describe('resourceCard', () => {
     expect(rows[0]!.name).toBe('Main hand');
     expect(rows[0]!.barPct).toBe(100);
     expect(rows[0]!.lost).toBe('−17.2 lost');
-    expect(rows.find((row) => row.action === 'other:refund')).toMatchObject({ name: 'Refund', lost: null });
+    expect(rows.find((row) => row.action === 'other:refund')).toMatchObject({
+      name: 'Refunded on a miss, dodge or parry',
+      lost: null,
+    });
     expect(rows.find((row) => row.action === 'spell:2687')?.name).toBe('Bloodrage');
     expect(card.lists!.spent.some((row) => row.action === 'spell:2687')).toBe(false);
   });
