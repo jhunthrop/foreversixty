@@ -1186,37 +1186,14 @@
                   }
                 },
                 {
-                  "not": {
-                    "val": {
-                      "and": {
-                        "vals": [
-                          {
-                            "cmp": {
-                              "op": "OpGe",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "40"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "cmp": {
-                              "op": "OpLt",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "60"
-                                }
-                              }
-                            }
-                          }
-                        ]
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
                       }
                     }
                   }
@@ -1225,7 +1202,7 @@
             }
           }
         },
-        "notes": "Lesser Heal when Greater Heal rank 1 is out of reach: a small top-up for little mana. Skip it from 40 to 59, where it has lost your healing bonus and costs regeneration you need."
+        "notes": "Lesser Heal is the party's small top-up for little mana before 40. From 40 on, leave it off your bars for good: by your late forties it has lost your healing bonus, and every cast costs regeneration you need."
       },
       {
         "action": {
@@ -1347,37 +1324,14 @@
                   }
                 },
                 {
-                  "not": {
-                    "val": {
-                      "and": {
-                        "vals": [
-                          {
-                            "cmp": {
-                              "op": "OpGe",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "40"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "cmp": {
-                              "op": "OpLt",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "60"
-                                }
-                              }
-                            }
-                          }
-                        ]
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
                       }
                     }
                   }
@@ -1507,37 +1461,14 @@
                   }
                 },
                 {
-                  "not": {
-                    "val": {
-                      "and": {
-                        "vals": [
-                          {
-                            "cmp": {
-                              "op": "OpGe",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "40"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "cmp": {
-                              "op": "OpLt",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "60"
-                                }
-                              }
-                            }
-                          }
-                        ]
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
                       }
                     }
                   }
@@ -1667,37 +1598,14 @@
                   }
                 },
                 {
-                  "not": {
-                    "val": {
-                      "and": {
-                        "vals": [
-                          {
-                            "cmp": {
-                              "op": "OpGe",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "40"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "cmp": {
-                              "op": "OpLt",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "60"
-                                }
-                              }
-                            }
-                          }
-                        ]
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
                       }
                     }
                   }
@@ -1738,7 +1646,7 @@
             }
           }
         },
-        "notes": "Greater Heal at the top rank as the tank's filler at 60: he takes the big hits, so the big heal goes on him."
+        "notes": "Greater Heal waits for a deeper hole once your mana falls behind the fight: a tank under 50%."
       },
       {
         "action": {
@@ -1820,7 +1728,8 @@
               }
             }
           }
-        }
+        },
+        "notes": "Greater Heal rank 1 waits for a deeper hole too once your mana falls behind the fight: a party member under 35%."
       },
       {
         "action": {
@@ -1856,37 +1765,14 @@
                   }
                 },
                 {
-                  "not": {
-                    "val": {
-                      "and": {
-                        "vals": [
-                          {
-                            "cmp": {
-                              "op": "OpGe",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "40"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "cmp": {
-                              "op": "OpLt",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "60"
-                                }
-                              }
-                            }
-                          }
-                        ]
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
                       }
                     }
                   }
@@ -1962,37 +1848,14 @@
                   }
                 },
                 {
-                  "not": {
-                    "val": {
-                      "and": {
-                        "vals": [
-                          {
-                            "cmp": {
-                              "op": "OpGe",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "40"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "cmp": {
-                              "op": "OpLt",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "60"
-                                }
-                              }
-                            }
-                          }
-                        ]
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
                       }
                     }
                   }
@@ -2068,37 +1931,14 @@
                   }
                 },
                 {
-                  "not": {
-                    "val": {
-                      "and": {
-                        "vals": [
-                          {
-                            "cmp": {
-                              "op": "OpGe",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "40"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "cmp": {
-                              "op": "OpLt",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "60"
-                                }
-                              }
-                            }
-                          }
-                        ]
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
                       }
                     }
                   }
@@ -2174,37 +2014,14 @@
                   }
                 },
                 {
-                  "not": {
-                    "val": {
-                      "and": {
-                        "vals": [
-                          {
-                            "cmp": {
-                              "op": "OpGe",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "40"
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "cmp": {
-                              "op": "OpLt",
-                              "lhs": {
-                                "currentLevel": {}
-                              },
-                              "rhs": {
-                                "const": {
-                                  "val": "60"
-                                }
-                              }
-                            }
-                          }
-                        ]
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "40"
                       }
                     }
                   }

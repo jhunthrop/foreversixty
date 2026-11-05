@@ -1,7 +1,13 @@
 // web/src/lib/bis/slot-display-labels.test.ts
 import { describe, expect, it } from 'vitest';
 import { SLOT_LABELS } from '../planner/types';
-import { SLOT_DISPLAY_LABELS, isRelicSlot, slotDisplayLabel, slotLabelForClass } from './slot-display-labels';
+import {
+  SLOT_DISPLAY_LABELS,
+  isRelicSlot,
+  relicNoun,
+  slotDisplayLabel,
+  slotLabelForClass,
+} from './slot-display-labels';
 
 describe('SLOT_DISPLAY_LABELS', () => {
   it('collapses both ring sockets and both trinket sockets to one word each', () => {
@@ -40,5 +46,15 @@ describe('the relic slot', () => {
     expect(slotLabelForClass('finger1', 'paladin')).toBe('Finger 1');
     expect(slotDisplayLabel('head', 'druid')).toBe('Head');
     expect(slotDisplayLabel('not_a_slot', 'druid')).toBe('not_a_slot');
+  });
+});
+
+describe('relicNoun', () => {
+  it('names each relic class its own relic, and any other class a plain relic (round 20)', () => {
+    expect(relicNoun('paladin')).toBe('libram');
+    expect(relicNoun('druid')).toBe('idol');
+    expect(relicNoun('shaman')).toBe('totem');
+    expect(relicNoun('hunter')).toBe('relic');
+    expect(relicNoun(undefined)).toBe('relic');
   });
 });

@@ -36,7 +36,7 @@ import type {
 import type { ItemTooltipModel } from '../items/tooltip';
 import { expertiseCapLine, weightsForGainedStats, type ExpertiseCapLine } from './expertise-cap';
 import { hitCapLine, type HitCapLine } from './hit-cap';
-import { slotDisplayLabel } from './slot-display-labels';
+import { relicNoun, slotDisplayLabel } from './slot-display-labels';
 import {
   rateUnitFor,
   slotScoreUnitFor,
@@ -239,7 +239,7 @@ function emptyReasonLabel(
     case 'no_dps_value':
       return bisCopy.emptyReasonNoDpsValue(unit);
     case 'effect_not_modelled':
-      return bisCopy.emptyReasonEffectNotModelled;
+      return bisCopy.emptyReasonEffectNotModelled(relicNoun(classOfFile(file)));
     default:
       return bisCopy.noKnownSourceForSlot;
   }

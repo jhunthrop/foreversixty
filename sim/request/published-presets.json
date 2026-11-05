@@ -35,6 +35,14 @@
           "gift_of_the_wild"
         ],
         "consumes": []
+      },
+      {
+        "from_level": 6,
+        "buffs": [
+          "gift_of_the_wild",
+          "thorns"
+        ],
+        "consumes": []
       }
     ],
     "druid-restoration": [
@@ -201,6 +209,14 @@
         "consumes": [
           "main_hand_imbue:deadly_poison",
           "off_hand_imbue:instant_poison"
+        ]
+      },
+      {
+        "from_level": 60,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:deadly_poison"
         ]
       }
     ],

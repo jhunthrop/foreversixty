@@ -98,7 +98,7 @@ Death Mark is your only damage cooldown and it comes back every 10 seconds, so t
 
 ## Stat priority
 
-Hit counts until your attacks stop missing, and adds nothing past that. Your white swings with two weapons miss far more often than Hemorrhage, Ghostly Strike and your finishers, so they keep wanting hit after your specials have stopped missing. Agility gives attack power and crit together. Crit is better than it looks: your Rupture and Garrote ticks crit, and Death Mark's cap rises with your crit chance. Strength and attack power add straight damage to every hit. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
+Hit counts until your attacks stop missing, and adds nothing past that. Your white swings with two weapons miss far more often than Hemorrhage, Ghostly Strike and your finishers, so they keep wanting hit after your specials have stopped missing. Agility gives attack power and crit together. Crit is better than it looks: your Rupture and Garrote ticks crit, and Death Mark's cap rises with your crit chance. Strength and attack power add straight damage to every hit, and in Forever to every poison hit and tick as well. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -106,7 +106,7 @@ Subtlety does not need daggers at 60. Hemorrhage and Ghostly Strike hit harder w
 
 ## Enchants and consumables
 
-Deadly Poison and a stone on the main hand, Instant Poison and a stone on the off hand: Forever lets them sit together. A shaman's Windfury Totem stacks with both.
+Deadly Poison and a stone on the main hand, Instant Poison and a stone on the off hand: Forever lets them sit together. Both poisons scale with your attack power in Forever, so they keep pace with your gear. A shaman's Windfury Totem stacks with both.
 
 ## Races
 

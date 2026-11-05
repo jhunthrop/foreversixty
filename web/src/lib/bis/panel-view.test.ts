@@ -937,8 +937,12 @@ describe('bandInfosFor: empty_reason copy', () => {
       band({ slots: [{ ...missingSlot('ranged'), empty_reason: 'effect_not_modelled' } as BisSlot] }),
     ]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    // The fixture is a hunter, so the slot keeps the plain word; a relic class names its own.
     expect(infos[0].rows.find((r) => r.slot === 'ranged')?.emptyCopy).toBe(
-      "Relic effects aren't simulated yet",
+      'No relic at this level has an effect we can measure yet, so none is ranked. Wear any relic that boosts a spell you cast.',
+    );
+    expect(bisCopy.emptyReasonEffectNotModelled('totem')).toBe(
+      'No totem at this level has an effect we can measure yet, so none is ranked. Wear any totem that boosts a spell you cast.',
     );
   });
 

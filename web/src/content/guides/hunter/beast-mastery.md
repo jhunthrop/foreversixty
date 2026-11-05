@@ -58,7 +58,7 @@ Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial 
 
 - A dead or idle pet is a large part of your damage gone
 - The pet takes no stat buffs from other players in Forever, only your own Heart of the Lion, so your gear is what makes it stronger
-- Mana runs out on long fights if you spend Arcane Shots freely
+- Mana runs out on long fights if you keep firing Multi-Shot on every cooldown
 
 ### In a raid
 
@@ -88,7 +88,7 @@ Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of 
 
 As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
-From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which outhits Multi-Shot. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot while you have mana.
+From there, work the shared six second cooldown of Aimed Shot and Multi-Shot. Multi-Shot on cooldown is fine while your mana is healthy. Aimed Shot on that cooldown is a small extra for a Beast Mastery hunter: if the cooldown comes up right after an auto shot fires, cast Aimed Shot, which outhits Multi-Shot. Otherwise take Multi-Shot, so the cast never holds your auto. Refresh Serpent Sting when it is about to drop, and fill the gaps with Arcane Shot. Both carry your ranged attack power in Forever: every Arcane Shot adds 15% of it and every sting tick 5%, so they grow with your gear the way your auto shots do.
 
 Auto Shot does more damage than any button you press, so protect it:
 
@@ -96,7 +96,7 @@ Auto Shot does more damage than any button you press, so protect it:
 - Fire your instants right after an auto shot leaves, so they never push the next one back.
 - Stay outside 8 yards. Inside it you cannot shoot at all.
 
-When mana gets low, drop Arcane Shot first, then Multi-Shot, and let Aimed Shot take the shared cooldown only when its cast fits after an auto shot. Serpent Sting is the last shot you give up: it does more damage for its mana than anything else you fire. Drink a Major Mana Potion before you need it, not at 5%.
+When mana gets low, hold Multi-Shot first: it is the worst damage for its mana you fire, so under a quarter of your mana let the shared cooldown wait for an Aimed Shot that fits right after an auto shot. Keep Arcane Shot going, and keep Serpent Sting rolling to the end: with the attack power they carry, the sting is the best damage for its mana you have and Arcane Shot is next. Drink a Major Mana Potion before you need it, not at 5%.
 
 **The pet.** A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage. Train it the top ranks of Claw, Bite and Growl as you level, then turn off Growl in raids (right-click it on the pet bar) or it will pull the boss off your tank. Send it to the boss's back so it is not parried or cleaved. Other players' stat buffs do not reach your pet in Forever, so your own gear is what makes it stronger. If it is taking raid damage, a Mend Pet between pulls is cheaper than a Revive Pet in the middle of one.
 
@@ -110,7 +110,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you, and past the cap it adds nothing. Agility is attack power and crit together. Crit is better than it looks because the pet copies all of your crit chance. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
+The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because a missed auto shot is the most expensive thing that can happen to you, and past the cap it adds nothing. Agility is attack power and crit together. Crit is better than it looks because the pet copies all of your crit chance. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 

@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/shaman/restoration.md
   - data/curated/apl/shaman-restoration.json
-  - data/builds/1.60.1.70755/spellconst/shaman.json
+  - data/builds/1.60.1.70790/spellconst/shaman.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

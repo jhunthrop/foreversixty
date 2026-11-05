@@ -100,13 +100,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-01000000000000000 | main_hand:263407 | 16.1 | 7 | other:attack/1=61.0, spell:25740=52.0, spell:20271=18.6, spell:679=18.5, spell:20280=17.6 | {SpellID: 1310735}, {SpellID: 20920}, {SpellID: 21183} |
-| 20 | 00000000000000000-00000000000000000-05231000000000000 | main_hand:6953 | 35.6 | 8 | other:attack/1=57.3, spell:25739=46.0, spell:20271=20.2, spell:20281=19.2, spell:1866=17.8 | {SpellID: 1310735}, {SpellID: 20188}, {SpellID: 20375} |
-| 30 | 00000000000000000-00000000000000000-05233301001300000 | main_hand:13045 | 57.5 | 8 | other:attack/1=63.1, spell:25738=53.7, other:mana_gain=22.9, spell:20271=22.9, spell:20282=21.9 | {SpellID: 1310735}, {SpellID: 20300} |
-| 38 | 00000000000000000-00000000000000000-05233301001301340 | main_hand:870 | 94.7 | 8 | other:attack/1=50.9, spell:25737=43.6, other:mana_gain=22.9, spell:20271=22.9, spell:20283=21.9 | {SpellID: 1310735}, {SpellID: 20301} |
-| 40 | 01000000000000000-00000000000000000-05233301001301350 | main_hand:1982 | 96.0 | 8 | other:attack/1=52.4, spell:25737=44.7, other:mana_gain=22.8, spell:20271=22.8, spell:20283=21.8 | {SpellID: 1310735}, {SpellID: 20301} |
-| 50 | 05024000000000000-00000000000000000-05233301001301350 | main_hand:2915 | 122.6 | 9 | other:attack/1=79.4, spell:25735=66.0, other:mana_gain=21.1, spell:20271=21.1, spell:20285=20.1 | {SpellID: 1310735}, {SpellID: 20302} |
-| 60 | 05025000200000000-50200000000000000-05233301001301350 | main_hand:22798 | 200.3 | 9 | other:attack/1=48.3, spell:25735=40.6, other:mana_gain=21.0, spell:20271=21.0, spell:20285=20.0 | {SpellID: 1310735} |
+| 10 | 00000000000000000-00000000000000000-01000000000000000 | main_hand:263407 | 16.2 | 7 | other:attack/1=61.0, spell:25740=52.0, spell:20271=18.6, spell:679=18.5, spell:20280=17.6 | {SpellID: 1310735}, {SpellID: 20920}, {SpellID: 21183} |
+| 20 | 00000000000000000-00000000000000000-05231000000000000 | main_hand:6953 | 35.7 | 8 | other:attack/1=57.3, spell:25739=46.0, spell:20271=20.2, spell:20281=19.2, spell:1866=17.8 | {SpellID: 1310735}, {SpellID: 20188}, {SpellID: 20375} |
+| 30 | 00000000000000000-00000000000000000-05233301001300000 | main_hand:13045 | 57.7 | 8 | other:attack/1=63.1, spell:25738=53.7, other:mana_gain=22.9, spell:20271=22.9, spell:20282=21.9 | {SpellID: 1310735}, {SpellID: 20300} |
+| 38 | 00000000000000000-00000000000000000-05233301001301340 | main_hand:870 | 95.0 | 8 | other:attack/1=50.9, spell:25737=43.6, other:mana_gain=22.9, spell:20271=22.9, spell:20283=21.9 | {SpellID: 1310735}, {SpellID: 20301} |
+| 40 | 01000000000000000-00000000000000000-05233301001301350 | main_hand:1982 | 96.3 | 8 | other:attack/1=52.4, spell:25737=44.7, other:mana_gain=22.8, spell:20271=22.8, spell:20283=21.8 | {SpellID: 1310735}, {SpellID: 20301} |
+| 50 | 05024000000000000-00000000000000000-05233301001301350 | main_hand:2915 | 123.2 | 9 | other:attack/1=79.4, spell:25735=66.0, other:mana_gain=21.1, spell:20271=21.1, spell:20285=20.1 | {SpellID: 1310735}, {SpellID: 20302} |
+| 60 | 05025000200000000-50200000000000000-05233301001301350 | main_hand:22798 | 206.7 | 9 | other:attack/1=48.3, spell:25713=39.8, other:mana_gain=20.5, spell:20271=20.5, spell:20286=19.5 | {SpellID: 1310735} |
 
 ## Learned but unused (informational)
 
@@ -156,7 +156,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Holy Wrath (spell 10318)
 - Judgement of Command (spell 20966)
 - Judgement of Fury (spell 20414)
-- Judgement of Righteousness (spell 20286)
 
 ## Violations found in this run
 

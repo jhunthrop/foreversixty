@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/mage/arcane.md
   - data/curated/apl/mage-arcane.json
-  - data/builds/1.60.1.70755/spellconst/mage.json
+  - data/builds/1.60.1.70790/spellconst/mage.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -22,7 +22,7 @@ This is the Arcane Mage as the site's guide describes it. Arcane stacks Arcane B
 
 - Mage Armor, Arcane Brilliance and your food buff go up before the pull.
 - Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant.
-- Fire Blast every time it is ready: every hit is a Heating Up stack, a crit adds another, and Improved Fire Blast makes it a six second cooldown.
+- Fire Blast every time it is ready with the raid build, once Heating Up is in: every hit is a stack, a crit adds another, and Improved Fire Blast makes it a six second cooldown.
 - Fireball fills in a raid once you stop blasting.
 - Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.

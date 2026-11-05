@@ -89,6 +89,20 @@ describe('guideHitCapLine', () => {
     );
   });
 
+  // Round 20: at 390px the Enhancement headline wrapped to three lines, so the cap and the
+  // breakdown come apart for the page to set the breakdown on a muted second line.
+  it('gives the cap and the breakdown apart, with the breakdown absent when there is none', () => {
+    const enhancement = guideHitCapLine({ baseline: 10, specials: 0, spell: 6 });
+    expect(enhancement?.cap).toBe('Hit cap: reached (weapon attacks), 16% (spells)');
+    expect(enhancement?.detail).toBe('10% hit from BiS gear and buffs, 6% still to find for spells');
+    const bare = guideHitCapLine({ kind: 'spell', baseline: 0, spell: 16 });
+    expect(bare?.cap).toBe('Hit cap: 16%');
+    expect(bare?.detail).toBeUndefined();
+    const expertise = guideExpertiseCapLine({ baseline: 2, dodge: 4.5 }, [WEAPON_EXPERTISE]);
+    expect(expertise?.cap).toBe('Expertise cap: 6.5% (dodge)');
+    expect(expertise?.detail).toBe('2% from Weapon Expertise');
+  });
+
   it('reads every source as one figure when the talents add up to more than the baseline', () => {
     expect(guideHitCapLine({ baseline: 2, specials: 7 }, [SUPPRESSION])?.text).toBe(
       'Hit cap: 9% · 2% hit from BiS gear, buffs and talents, 7% still to find',

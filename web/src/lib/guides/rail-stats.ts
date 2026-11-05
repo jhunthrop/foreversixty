@@ -102,8 +102,11 @@ function rowFor({ label, weight }: MatchedRow, top: number | undefined, haste: H
   const base = perPercent === undefined ? { label } : { label, perPercent };
   const reading = bandReadingOf(weight, haste.onItems);
   if (reading === 'not-on-items' && weight !== undefined) {
-    // Still carries its per-1% figure, for the note under the table that says what it is worth.
-    return { ...base, reading, value: valueOf(weight, perPercent, top, haste.scaleFactor) };
+    // Still carries its per-1% figure, for the note under the table that says what it is worth;
+    // a weight inside its error has no figure worth printing.
+    const value =
+      readingOf(weight) === 'value' ? valueOf(weight, perPercent, top, haste.scaleFactor) : undefined;
+    return { ...base, reading, value };
   }
   if (reading !== 'value' || weight === undefined) return { ...base, reading, value: undefined };
   const value = valueOf(weight, perPercent, top, haste.scaleFactor);

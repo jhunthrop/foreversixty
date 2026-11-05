@@ -12,8 +12,20 @@ import { guidesCopy } from './copy';
 import type { TalentHit, TalentHitScope } from './talent-hit';
 
 export interface GuideHitCapLine {
+  /** The whole line, cap and breakdown joined: "Hit cap: 16% · 6% from Precision, 10% still to find". */
   text: string;
   title: string;
+  /** The cap alone: "Hit cap: 16%", "Hit cap: reached (weapon attacks), 16% (spells)". */
+  cap: string;
+  /** The breakdown after the cap, when there is one: "6% from Precision, 10% still to find". The
+   *  page sets it on its own muted line, so a long melee-and-spells cap no longer wraps to three
+   *  lines at phone width (round 20). */
+  detail: string | undefined;
+}
+
+/** The two parts and their join, so `text` can never disagree with `cap` and `detail`. */
+function capLine(cap: string, detail: string | undefined, title: string): GuideHitCapLine {
+  return { text: guidesCopy.capWithDetail(cap, detail), title, cap, detail };
 }
 
 // The band publishes how far its best-in-slot character is FROM each cap (`to_cap`, floored at 0)
@@ -131,13 +143,11 @@ function spellHitLine(hitToCap: BisSpellHitToCap, talents: readonly TalentHit[])
     ),
     ...(school === undefined ? [] : schoolParts(school.hit - hitToCap.baseline, school.names, talents)),
   ];
-  return {
-    text: guidesCopy.hitToCap(
-      capText(hitToCap.baseline, hitToCap.spell),
-      splitText(sources, stillToFind(toFind)),
-    ),
-    title: bisCopy.spellHitToCapTitle,
-  };
+  return capLine(
+    guidesCopy.hitToCap(capText(hitToCap.baseline, hitToCap.spell)),
+    splitText(sources, stillToFind(toFind)),
+    bisCopy.spellHitToCapTitle,
+  );
 }
 
 /** `talents`: the weights character's own (`talentHitsOf` over the band's talents). */
@@ -158,16 +168,13 @@ export function guideHitCapLine(
     meleeStillToFind(hitToCap),
   );
   const caps = meleeCaps(hitToCap);
-  return {
-    text:
-      caps.length === 1
-        ? guidesCopy.hitToCap(caps[0].cap, split)
-        : guidesCopy.hitToCapEach(
-            caps.map(({ cap, label }) => guidesCopy.capLabelled(cap, label)).join(', '),
-            split,
-          ),
-    title: hitToCap.spell === undefined ? bisCopy.hitToCapTitle : bisCopy.hitToCapWithSpellsTitle,
-  };
+  return capLine(
+    caps.length === 1
+      ? guidesCopy.hitToCap(caps[0].cap)
+      : guidesCopy.hitToCapEach(caps.map(({ cap, label }) => guidesCopy.capLabelled(cap, label)).join(', ')),
+    split,
+    hitToCap.spell === undefined ? bisCopy.hitToCapTitle : bisCopy.hitToCapWithSpellsTitle,
+  );
 }
 
 /** The guide's expertise line ("Expertise cap: 6.5% (dodge)"); the BiS rail keeps its own wording. */
@@ -178,21 +185,21 @@ export function guideExpertiseCapLine(
   if (expertiseToCap === null || expertiseToCap === undefined) return undefined;
   if (!expertiseIsGained(expertiseToCap)) return undefined;
   const { baseline, dodge, parry } = expertiseToCap;
-  return {
-    text: guidesCopy.expertiseCap(
+  return capLine(
+    guidesCopy.expertiseCap(
       capText(baseline, dodge),
       parry === undefined ? undefined : capText(baseline, parry),
-      splitText(
-        baselineParts(
-          baseline,
-          inScope(talents, EXPERTISE_BASELINE),
-          'expertise',
-          EXPERTISE_GEAR_SOURCES,
-          EXPERTISE_ALL_SOURCES,
-        ),
-        undefined,
-      ),
     ),
-    title: bisCopy.expertiseToCapTitle,
-  };
+    splitText(
+      baselineParts(
+        baseline,
+        inScope(talents, EXPERTISE_BASELINE),
+        'expertise',
+        EXPERTISE_GEAR_SOURCES,
+        EXPERTISE_ALL_SOURCES,
+      ),
+      undefined,
+    ),
+    bisCopy.expertiseToCapTitle,
+  );
 }

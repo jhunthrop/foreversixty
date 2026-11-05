@@ -326,7 +326,12 @@ export const bisCopy = {
    *  text (spec's "unknown -> the last"), never a fabricated reason. */
   emptyReasonNoDpsValue: (unit: RateUnit = 'DPS'): string =>
     `Nothing sourced at this level helps your ${unit}`,
-  emptyReasonEffectNotModelled: "Relic effects aren't simulated yet",
+  /** `effect_not_modelled`: every relic at this level sells only an engraved effect the engine
+   *  has no model for, so the ranker left the slot open. Relics with modelled effects do rank
+   *  (the relic near tie), so this never says relics as a whole are unsimulated; and a relic
+   *  has no stats to lose, so the player is told what to wear meanwhile. */
+  emptyReasonEffectNotModelled: (noun = 'relic'): string =>
+    `No ${noun} at this level has an effect we can measure yet, so none is ranked. Wear any ${noun} that boosts a spell you cast.`,
 
   // --- "The list" rebuild (bis rebuild spec, 2026-09-30) -----------------------------------
   headerEyebrow: 'Best in slot · leveling',

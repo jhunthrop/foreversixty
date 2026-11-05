@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/marksmanship.md
   - data/curated/apl/hunter-marksmanship.json
-  - data/builds/1.60.1.70755/spellconst/hunter.json
+  - data/builds/1.60.1.70790/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -27,8 +27,8 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship's
 - Rapid Fire on the pull, as an auto shot leaves and Multi-Shot is about to come back.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Sniper Shot when the shared cooldown is down and an auto shot has just left.
-- Keep Serpent Sting rolling and refresh it only as it runs out.
-- On a movement phase, fire Arcane Shot and Multi-Shot on the run and plant your feet the moment you can.
+- Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot.
+- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away.
 - Claw: Level with a cat and train it the top ranks of Claw, Bite and Growl as you go.
 - Growl: If you raid with the leveling build instead, turn off Growl and send the cat to the boss's back.
 - Feign Death: Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.

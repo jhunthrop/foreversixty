@@ -260,6 +260,33 @@ func TestRound18MarksmanshipAimedShotRankOneFrom52(t *testing.T) {
 	}
 }
 
+// Round 20 (priest lane, guide round 17 R17-6): Devouring Plague at 28 and 29, where rank 2
+// (19276, learned at 28) is the newest. On the ladder leveling build at that level (Mind Flay
+// from 28), 10000 iterations, seeds 1 and 50001: a Gnome gains +0.2% / +0.6% with rank 1
+// (2944) and a Troll +0.3% / +0.2%, both seeds, beyond the 0.03 DPS error; an Undead loses
+// 0.6% with it, and a Human, Dwarf or Night Elf ties (within 0.1 DPS), so they keep the
+// default rank 2. The row starts at 28 for those two races only.
+func TestRound20DevouringPlagueRankOneAt28ForGnomeAndTroll(t *testing.T) {
+	for _, c := range []struct {
+		name, race string
+		level      int
+		want, not  int32
+	}{
+		{"Gnome Devouring Plague at 28", "gnome", 28, 2944, 19276},
+		{"Gnome Devouring Plague at 29", "gnome", 29, 2944, 19276},
+		{"Troll Devouring Plague at 28", "troll", 28, 2944, 19276},
+		{"Troll Devouring Plague at 29", "troll", 29, 2944, 19276},
+		{"Human Devouring Plague at 28 is the top rank", "human", 28, 19276, 2944},
+		{"Undead Devouring Plague at 29 is the top rank", "undead", 29, 19276, 2944},
+		{"Gnome Devouring Plague at 30 is rank 1 as before", "gnome", 30, 2944, 19276},
+	} {
+		ids := rotationIDs(t, "priest-shadow", "priest", c.level, specRankChoices("priest-shadow", BarePreset, c.race))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
+
 // Round 19 (hunter lane): at 46 and 47 Survival queues Raptor Strike rank 5.
 // Immolation Trap rank 4 arrives at 46 and runs the mana dry; rank 5's lower
 // cost buys back traps and gains beyond error at seeds 1 and 50001 (Horde

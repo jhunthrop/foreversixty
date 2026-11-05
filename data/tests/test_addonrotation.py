@@ -989,3 +989,33 @@ def test_a_line_scoped_to_a_level_range_is_in_those_bands_only(tmp_path):
     assert 2687 in [line.spell_id for line in bands[40]]
     assert 2687 in [line.spell_id for line in bands[50]]
     assert 2687 not in [line.spell_id for line in bands[60]]
+
+
+def test_fury_death_wish_card_line_carries_the_whole_rule():
+    """The card shows a note's first sentence only, so the Fury Death Wish rule (pull when
+    a second one fits, otherwise the execute phase or the last 30 seconds) must sit in one
+    sentence; round 19 found the card cut it to the pull clause alone."""
+    fury = json.loads(Path("curated/apl/warrior-fury.json").read_text(encoding="utf-8"))
+    death_wish = next(
+        entry
+        for entry in fury["rotation"]["priorityList"]
+        if entry["action"].get("castSpell", {}).get("spellId", {}).get("spellId") == 12328
+    )
+    line = _one_line(death_wish["notes"])
+    assert "second one" in line
+    assert "execute phase" in line
+    assert "last 30 seconds" in line
+
+
+def test_fury_berserker_rage_starts_at_36_and_overpower_ends_there():
+    """Guide-accuracy round 19 (WARRIOR-R19-1): a Fury warrior fights in Battle Stance until
+    Whirlwind at 36, and Berserker Rage is a Berserker Stance button, so its card row starts
+    at 36; Overpower, a Battle Stance button, leaves the card there."""
+    rotations = build_rotations(Path("builds"), BUILD)
+    fury = {band.level: {line.name for line in band.lines} for band in rotations["warrior-fury"]}
+    for level in (30, 32):
+        assert "Berserker Rage" not in fury[level], level
+        assert "Overpower" in fury[level], level
+    for level in (36, 40, 60):
+        assert "Berserker Rage" in fury[level], level
+        assert "Overpower" not in fury[level], level

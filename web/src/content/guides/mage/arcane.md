@@ -4,7 +4,7 @@ classSlug: mage
 spec: arcane
 role: dps
 build: 'FS1:1.60.1.70790:mage:gnome:141005213100301531/4/05350003:'
-raidBuild: 'FS1:1.60.1.70790:mage:gnome:131205213100211531/525000012001/003:'
+raidBuild: 'FS1:1.60.1.70790:mage:gnome:131205203100311531/525000012001/003:'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Hit, Intellect, Arcane power, Critical strike, Spell haste, Spell penetration]
 description: 'Arcane Mage in Forever: the Arcane Blast loop, the opener, Arcane Power windows, mana over a boss fight, talents, stats and leveling.'
@@ -52,7 +52,7 @@ Arcane stacks Arcane Blast for spell damage, fires free Missiles on Missile Barr
 - **Arcane Blast** (1 point): the spec. Each cast gives you 12% of your Intellect as spell damage and raises the next Blast's cost by 100%, up to 4 stacks for 18 seconds from the first Blast.
 - **Missile Barrage** (2 points): Arcane Blast procs it 40% of the time, and Arcane Wrath, Fireball and Frostbolt 20%. The proc makes your next Arcane Missiles free, halves its channel and fires a missile every half second.
 - **Arcane Concentration** (5 points): 10% of your damage spells make the next one free, and that includes a 4-stack Arcane Blast.
-- **Arcane Meditation** (3 points, 2 in the raid build): half your mana regeneration keeps running while you cast, a third at two ranks. With Mage Armor on top, all of it runs at three ranks and most of it at two.
+- **Arcane Meditation** (3 points): half your mana regeneration keeps running while you cast. With Mage Armor on top, all of it runs, and on a boss that regeneration is what pays for the fourth and fifth Blast.
 - **Presence of Mind** (1 point): your next spell under 10 seconds is instant. In a raid spend it on Pyroblast, your longest cast; with the leveling build, spend it on Frostbolt. Never spend it on a 1.5 second Arcane Blast that the global cooldown already caps.
 - **Arcane Power** (1 point): 30% more spell damage for 15 seconds at 30% more mana per cast, on a 3 minute cooldown.
 - **Arcane Mind** and **Arcane Instability** (8 points): 10% Intellect, which Arcane Blast turns into spell damage, and Arcane Mind also doubles the bonus on your Arcane crits. Arcane Instability adds 3% damage and 3% crit.
@@ -63,7 +63,7 @@ Arcane stacks Arcane Blast for spell damage, fires free Missiles on Missile Barr
 
 The leveling build spends 31 points in Arcane for Arcane Power, then goes to Frost for the filler: **Frost Channeling** (3 points: 15% cheaper Frostbolts and 30% less threat from them), all five ranks of Ice Shards, and four ranks of **Incineration** in Fire for Arcane Blast crit. Improved Channeling stays at four ranks so mobs hitting you do not push back every Blast, and one point of Arcane Geometry adds 3 yards to Arcane Blast and Missiles, so you can blast from a little further out.
 
-The raid build puts 32 points in Arcane and takes its second tree from Fire. Both ranks of **Arcane Subtlety** cut 30% of the threat from your Arcane spells, which is what lets you press Arcane Power early in a pull. They and Arcane Wrath take a rank of Arcane Meditation, a rank of Improved Channeling and a 32nd Arcane point. Bosses do not push back your casts the way packs of mobs do, so that lost rank of Improved Channeling costs nothing. Sixteen go into Fire: five ranks of Incineration for Fire Blast and Arcane Blast crit, two of **Accelerant** to take 0.2 seconds off Fireball and Arcane Wrath, then Ignite, Pyroblast, Improved Fire Blast and Heating Up. Precision's three points are all it keeps in Frost.
+The raid build puts 32 points in Arcane and takes its second tree from Fire. Both ranks of **Arcane Subtlety** cut 30% of the threat from your Arcane spells, which is what lets you press Arcane Power early in a pull. They and Arcane Wrath are paid for by a rank of Improved Channeling, the point of Arcane Geometry and one point brought over from Frost, which makes 32 in Arcane. Bosses do not push back your casts the way packs of mobs do, and a boss you already reach from 30 yards needs no extra range, so neither of those two costs you anything. All three ranks of Arcane Meditation stay in, since a raid fight is paid for in mana. Sixteen go into Fire: five ranks of Incineration for Fire Blast and Arcane Blast crit, two of **Accelerant** to take 0.2 seconds off Fireball and Arcane Wrath, then Ignite, Pyroblast, Improved Fire Blast and Heating Up. Precision's three points are all it keeps in Frost.
 
 Neither build takes Fire's Impact: its stun does nothing to a boss. [Open the planner](/planner?class=mage) to change the build.
 
@@ -95,7 +95,7 @@ Arcane casts spells of two schools, Arcane and Fire in a raid and Arcane and Fro
 
 ## Races
 
-**Gnome** is the best Alliance Arcane mage: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Arcane Power on the pull and again the moment it is back. **Human** is close behind with 1% crit and 10% Spirit, and Arcane Meditation and Mage Armor keep most of that Spirit's regeneration running while you cast. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Orc** is next: Blood Fury adds 10% spell power for 15 seconds every 2 minutes, so press it with Arcane Power on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Arcane Power. **Skyborne** is a paid unlock and only Alliance for mages. Played without Read Leyline (50% more health and mana regeneration for 15 seconds, 2 minute cooldown), Wind Blessed's 2% haste alone does less damage than a Gnome or a Human.
+**Gnome** is the best Alliance Arcane mage: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. Press it with Arcane Power on the pull and again the moment it is back. **Human** is close behind with 1% crit and 10% Spirit, and Arcane Meditation and Mage Armor keep all of that Spirit's regeneration running while you cast. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Orc** is next: Blood Fury adds 10% spell power for 15 seconds every 2 minutes, so press it with Arcane Power on the pull and on cooldown after that. **Troll** Berserking adds 10% cast speed for 15 seconds every 3 minutes and lines up with every Arcane Power. **Skyborne** is a paid unlock and only Alliance for mages. Played without Read Leyline (50% more health and mana regeneration for 15 seconds, 2 minute cooldown), Wind Blessed's 2% haste alone does less damage than a Gnome or a Human.
 
 ## Professions
 

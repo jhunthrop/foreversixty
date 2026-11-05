@@ -145,6 +145,20 @@ describe('railStatRows', () => {
     expect(rows[1]!.value).toBeCloseTo(8.1, 5);
     expect(railStatValueText(rows[1]!)).toBe('Not on any item');
   });
+
+  it('reads haste inside its error as Not on any item too when no item carries it, with no figure', () => {
+    const weights: BisStatWeight[] = [
+      { stat: 'spell_power', weight: 1, error: 0.01, scale_factor: 1, dps_per_point: 0.5 },
+      { stat: 'spell_haste', weight: 2.1, error: 0.6, insignificant: true, scale_factor: 3.2 },
+    ];
+    const rows = railStatRows(['Spell power', 'Spell haste'], weights, 'mage-arcane', {
+      scaleFactor: 3.2,
+      onItems: false,
+    });
+    expect(rows[1]!.reading).toBe('not-on-items');
+    expect(rows[1]!.value).toBeUndefined();
+    expect(railStatValueText(rows[1]!)).toBe('Not on any item');
+  });
   it('carries the rating per 1% on a rating stat, so the unit line can name it (real Arcane band 60)', () => {
     const file = loadBisFile('mage-arcane', '1.60.1.70755');
     if (file === null) throw new Error('mage-arcane BiS file missing');

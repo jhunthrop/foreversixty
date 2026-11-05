@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/mage/frost.md
   - data/curated/apl/mage-frost.json
-  - data/builds/1.60.1.70755/spellconst/mage.json
+  - data/builds/1.60.1.70790/spellconst/mage.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -22,7 +22,7 @@ This is the Frost Mage as the site's guide describes it. Frost casts Frostbolt b
 
 - Mage Armor, Arcane Brilliance and your food buff go up before the pull.
 - Ice Barrier whenever the shield is down.
-- Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage.
+- Frostbolt is the filler, and you never stop casting it to wait on a proc.
 - Ice Lance while Fingers of Frost is up and its eight second cooldown is ready.
 - Save Cold Snap for a second Ice Block or for an Ice Barrier that broke early on a fight that hits you.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.

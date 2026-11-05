@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/subtlety.md
   - data/curated/apl/rogue-subtlety.json
-  - data/builds/1.60.1.70755/spellconst/rogue.json
+  - data/builds/1.60.1.70790/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -22,7 +22,7 @@ This is the Subtlety Rogue as the site's guide describes it. Subtlety is the ble
 
 - Open with Garrote once the tank has the boss: Initiative makes it a fourth combo point, and a bleed does not care that the boss has no Sunders on it yet.
 - Ambush needs a dagger in the main hand, so with a sword it is off your bar.
-- Ghostly Strike on cooldown at four combo points or fewer. It hits harder than Hemorrhage for ten more energy and gives a combo point.
+- Ghostly Strike on cooldown at four combo points or fewer. It hits harder than Hemorrhage for a little more energy and gives a combo point.
 - On trash that will die fast, open with Cheap Shot, which Initiative makes three combo points and which holds the mob still for four seconds, then Eviscerate.
 - Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.
 - Death Mark is your only damage cooldown and it comes back every ten seconds, so there is nothing to hold.

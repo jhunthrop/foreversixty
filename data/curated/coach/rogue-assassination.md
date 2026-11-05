@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/rogue/assassination.md
   - data/curated/apl/rogue-assassination.json
-  - data/builds/1.60.1.70755/spellconst/rogue.json
+  - data/builds/1.60.1.70790/spellconst/rogue.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -30,7 +30,9 @@ This is the Assassination Rogue as the site's guide describes it. Assassination 
 - Eviscerate at four or more combo points.
 - Mutilate is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
 - Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors.
-- Deadly Poison on the main hand, Instant Poison on the off hand, with a sharpening stone beside each in Forever.
+- Instant Poison on the main hand and Deadly Poison on the off hand at sixty, with a sharpening stone beside each.
+- Deadly Poison: Your off hand lands more than enough hits to hold Deadly Poison at five stacks, and every extra proc on the main hand is worth more as an Instant hit.
+- Backstab from behind with a dagger in your main hand is the builder until Mutilate. It hits far harder than Sinister Strike.
 - Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns longer per combo point, up to six seconds at five: use it on casters and on whatever is hitting your healer.
 - Kick, Gouge and Blind handle the rest.
 - Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.

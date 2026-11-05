@@ -26,8 +26,15 @@ import "strings"
 //     most of that, and the main hand is the stronger Deadly hand for
 //     Assassination and Combat at every band and for Subtlety below 60
 //     (at 60 Subtlety's mirror is 0.9 percent ahead; one rule is kept).
-//     Windfury Totem is a raid-buff aura, not an imbue, so a rogue's
-//     poisons never compete with it.
+//     Since the poisons scale with attack power (sim-accuracy round 20,
+//     Blizzard's 3 November 2026 notes: 0.01 on Instant, 0.009 a tick on
+//     Deadly), an Assassination rogue at 60 carries Instant on the main
+//     hand and Deadly on the off hand: +1.5 to +1.7% on the raid set and
+//     +1.8% on the bare set, a tie at 40 and 50 and a loss at 30, where
+//     Backstab builds. Combat keeps Deadly in the main hand (+0.8% over
+//     the mirror) and Subtlety ties its mirror. Windfury Totem is a
+//     raid-buff aura, not an imbue, so a rogue's poisons never compete
+//     with it.
 //   - Shaman-enhancement: ONE weapon imbue, on the main hand only -
 //     Rockbiter Weapon from level 1 (its earliest rank is learnable at
 //     level 1, well before Windfury Weapon exists), replaced by
@@ -49,6 +56,9 @@ func KitConsumes(spec string, level int) []string {
 		if level < 20 {
 			return nil
 		}
+		if spec == "rogue-assassination" && level >= assassinationInstantMainHandLevel {
+			return []string{"main_hand_imbue:instant_poison", "off_hand_imbue:deadly_poison"}
+		}
 		if level >= deadlyPoisonLevel {
 			return []string{"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison"}
 		}
@@ -66,6 +76,10 @@ func KitConsumes(spec string, level int) []string {
 // deadlyPoisonLevel is the level Deadly Poison's first rank is learned.
 const deadlyPoisonLevel = 30
 
+// assassinationInstantMainHandLevel is the level from which an Assassination
+// rogue carries Instant Poison on the main hand and Deadly on the off hand.
+const assassinationInstantMainHandLevel = 60
+
 // Buff lines of the self-buff kit, in the request vocabulary
 // (sim/request/buffs.go).
 const (
@@ -76,6 +90,7 @@ const (
 	devotionAuraBuff     = "devotion_aura"
 	huntersMarkBuff      = "hunters_mark"
 	heartOfTheLionBuff   = "heart_of_the_lion"
+	thornsBuff           = "thorns"
 )
 
 // blessingOfMightLevel is the level Blessing of Might's first rank is
@@ -85,6 +100,10 @@ const blessingOfMightLevel = 4
 // blessingOfWisdomLevel is the level Blessing of Wisdom's first rank is
 // learned (client spell 19742).
 const blessingOfWisdomLevel = 14
+
+// thornsLevel is the level Thorns' first rank is learned (client spell
+// 467).
+const thornsLevel = 6
 
 // huntersMarkLevel is the level Hunter's Mark's first rank is learned
 // (client spell 1130).
@@ -112,6 +131,13 @@ const huntersMarkLevel = 6
 //     such talent (it became a baseline passive, of a rank the client
 //     tables do not state) and neither the Feral nor the Balance build
 //     can take it, so every druid spec carries the plain buff.
+//
+//   - druid-feral-bear, from level 6 (Thorns' first rank, client spell
+//     467): Thorns. A bear buffs it on himself before he shifts and it
+//     lasts 10 minutes; every melee hit he takes deals Nature damage
+//     back, which is threat. The engine models it as a reactive raid
+//     buff (core.ThornsRanks), so without the entry no bear fight had it
+//     (sim-accuracy round 20, druid B4: +0.7 to +0.8% threat at 60).
 //
 //   - Retribution and Protection, from level 4 (Blessing of Might's first
 //     rank): Blessing of Might. Forever's Holy tree has no Improved
@@ -151,6 +177,8 @@ func KitBuffs(spec string, level int) []string {
 	switch {
 	case isClassSpec(spec, "mage"):
 		return []string{arcaneBrillianceBuff}
+	case spec == "druid-feral-bear" && level >= thornsLevel:
+		return []string{giftOfTheWildBuff, thornsBuff}
 	case isClassSpec(spec, "druid"):
 		return []string{giftOfTheWildBuff}
 	case spec == "paladin-protection":

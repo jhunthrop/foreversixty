@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/paladin/retribution.md
   - data/curated/apl/paladin-retribution.json
-  - data/builds/1.60.1.70755/spellconst/paladin.json
+  - data/builds/1.60.1.70790/spellconst/paladin.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -21,7 +21,7 @@ This is the Retribution Paladin as the site's guide describes it. Retribution is
 **The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
 
 - Put a Blessing of Might on yourself if nobody has given you one.
-- If no other paladin has Judgement of the Crusader on the target, put up Seal of the Crusader about a second and a half before the pull, Judge it on your first swing, then put up your damage Seal.
+- Judgement never consumes your Seal in Forever, so there is nothing to put back up after it.
 - Holy Strike on its own ten-second cooldown, whenever it is up. It spends the globals Judgement and seal upkeep leave idle.
 - Exorcism on cooldown, against Undead and Demons only.
 - Hammer of Wrath below twenty percent target health, at its highest rank.
