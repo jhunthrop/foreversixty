@@ -3,6 +3,21 @@
   "prepullActions": [
     {
       "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 14325,
+            "rank": 4
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-20s"
+        }
+      }
+    },
+    {
+      "action": {
         "move": {
           "rangeFromTarget": {
             "const": {
@@ -29,21 +44,6 @@
       "doAtValue": {
         "const": {
           "val": "-10s"
-        }
-      }
-    },
-    {
-      "action": {
-        "castSpell": {
-          "spellId": {
-            "spellId": 14325,
-            "rank": 4
-          }
-        }
-      },
-      "doAtValue": {
-        "const": {
-          "val": "-6s"
         }
       }
     },

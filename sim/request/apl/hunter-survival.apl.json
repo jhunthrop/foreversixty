@@ -7,6 +7,32 @@
       }
     },
     {
+      "notes": "Hunter's Mark whenever the target is not marked. From 35, Expose Prey opens Mongoose Bite only on a marked target, so mark the boss before the pull. One mark per target is enough: if another hunter's mark is already up, leave it.",
+      "action": {
+        "condition": {
+          "not": {
+            "val": {
+              "auraIsActive": {
+                "auraId": {
+                  "spellId": 14325,
+                  "rank": 4
+                },
+                "sourceUnit": {
+                  "type": "CurrentTarget"
+                }
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 14325,
+            "rank": 4
+          }
+        }
+      }
+    },
+    {
       "notes": "Raptor Strike queued on every swing it is ready. It replaces your next white hit rather than costing a global, so keep it queued; once Resourcefulness is in at 33 and 34 it costs 60% less, so never hold it back for mana after that.",
       "action": {
         "castSpell": {
@@ -125,6 +151,21 @@
     }
   ],
   "prepullActions": [
+    {
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 14325,
+            "rank": 4
+          }
+        }
+      },
+      "doAtValue": {
+        "const": {
+          "val": "-20s"
+        }
+      }
+    },
     {
       "action": {
         "castSpell": {
