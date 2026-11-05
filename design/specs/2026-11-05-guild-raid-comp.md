@@ -50,9 +50,9 @@ Tokens as the raids spec §3: `--color-raised`, `--color-line`, `--color-line-so
 - `ClassCrestRing` 20 px, 6 px gap, the class name 13 px 600 in class colour, 4 px gap, the count `numeric` 13 px 700 `--strong`. Item height 24 px; it is not interactive.
 - Each item carries its specs: `title` `Holy 3, Discipline 1, Shadow 1` (catalogue names, most first, then catalogue order; an unresolved spec counts as `Unknown 1`), and the same words in its accessible name: `Priest 5: Holy 3, Discipline 1, Shadow 1`. The `title` is a desktop extra; touch and screen readers get the accessible name. Off-tanks list as `Fury (tank) 1`.
 - Counts are In plus Late rows (the band's `signed up` figure), so the row adds up to it. Bench and Out never count.
-- Which classes show: every class present in this raid's `signups` or `not_signed` (the guild's verified raiders). A class with 0 In or Late shows its crest at 45% opacity, name and `0` in `--muted`. A class nobody in the guild plays is left out, so faction rules never need encoding.
+- Which classes show: only the classes with someone In or Late, on raids, dungeon runs and guild events alike (one rule). A class at 0 is left out, never a greyed `Paladin 0` (amended 2026-11-05, guild round 3: a benched paladin read as a 0 beside the class row's real counts). Bench stays in the roster's Bench group; the class row draws no bench tail. Guild events draw no class row at all (§3.6).
 - Phone (< 768): the class name is dropped; each item is the 20 px crest and the count, and the `li` carries the full accessible name above (`Warrior 5: Protection 3, Fury 2`). At 360 the nine items fit two rows (item about 44 px wide, 7 per 324 px row).
-- With nobody In or Late, the line still draws every class at 0. With an empty guild roster (no `signups`, no `not_signed`), line 6 is absent.
+- With nobody In or Late, line 6 is absent (amended 2026-11-05, guild round 3).
 - Cancelled or started: the counts read `--muted`, crests at 45%.
 
 **Class order, one everywhere.** Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Druid: the order `web/src/lib/guild/raid-roster.ts` `CLASS_ORDER` already uses. The class row, every roster group, the copied list and the Discord post all use it. The build changes `raidspec.ClassOrder` in `api/internal/raidspec/raidspec.go` from today's alphabetical slice (whose comment wrongly calls it the game's order) to this order, fixes that comment, and updates `TestMeleeFollowsTheSpecThenTheClass` (it pins `ClassRank("druid") == 0`; Warrior becomes 0). The Discord roster goldens that change order are regenerated in the same commit.
@@ -137,7 +137,7 @@ Line 2 becomes `23 of 40: 3 tanks, 7 healers, 7 melee, 5 ranged, 1 late (healer)
 |---|---|---|---|---|---|---|---|---|
 | Spec select | chosen spec, icon and `Holy · Healer`; or `Choose a spec` muted | border `--line-warm-strong` | 2 px gold ring | native picker open | locked, ended, cancelled, done: 50% and not-allowed, described by the state line | row `aria-busy`, the pick shown | placeholder | `--wipe` border plus `Pick a spec first.`; a refused save reverts to the last saved spec and reads `That did not save. Try again.` |
 | Segments | unchanged | unchanged | unchanged | unchanged | unchanged | unchanged | none checked | unchanged, plus the no-spec hold above |
-| Class row item | crest, name, count | none (not interactive) | none | none | n/a | `Skeleton` 24 px tall, the reserve's width | every guild class at 0, muted | absent with the band's `LoadError` |
+| Class row item | crest, name, count | none (not interactive) | none | none | n/a | `Skeleton` 24 px tall, the reserve's width | absent (nobody In or Late) | absent with the band's `LoadError` |
 | Roster group | rows | row hover unchanged | unchanged | unchanged | n/a | `min-h` unchanged | `No melee yet.` | tab `LoadError` |
 
 Touch and keyboard: the spec select is a native select (phone picker, arrow keys). Every control 44 px on phone. Tab order in a strip row: segments, spec, note. The class row is not a tab stop.
@@ -149,7 +149,7 @@ Touch and keyboard: the spec select is a native select (phone picker, arrow keys
 
 **Sizes.**
 - 40-man raid (Onyxia's Lair): `23 of 40`, bar, the full class row.
-- Dungeon run of 5 (The Deadmines): `2 of 5 signed up · 1 tank · 0 healers · 1 melee · 0 ranged`; the class row shows the guild's classes, most at 0. Four roster groups, same layout; empty groups read their empty line.
+- Dungeon run of 5 (The Deadmines): `2 of 5 signed up · 1 tank · 0 healers · 1 melee · 0 ranged`; the class row shows only the two signed-up classes (amended 2026-11-05, guild round 3). Four roster groups, same layout; empty groups read their empty line.
 - Guild event of 20: `0 of 20 signed up · 0 tanks · 0 healers · 0 melee · 0 ranged`. Same layout. An event with no limit: `12 signed up`, no bar.
 
 ## 6. Hierarchy

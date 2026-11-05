@@ -243,12 +243,14 @@ function classCounts(raid: Pick<GuildRaidView, 'counts' | 'signups' | 'not_signe
   return out;
 }
 
-/** The band's class row (spec 3.1 line 6): every class the guild plays, in the game's order, with
- *  its In plus Late count and specs; empty with no guild roster at all. */
+/** The band's class row (spec 3.1 line 6): the classes with someone In or Late, in the game's
+ *  order, with that count and their specs. A class with nobody counted is left out, on raids,
+ *  runs and events alike (guild round 3: a benched paladin read as a greyed `Paladin 0`);
+ *  empty when nobody is In or Late. */
 export function classRow(raid: Pick<GuildRaidView, 'counts' | 'signups' | 'not_signed'>): ClassRowItem[] {
   const counts = classCounts(raid);
   return Object.keys(counts)
-    .filter((slug) => slug !== '')
+    .filter((slug) => slug !== '' && (counts[slug] ?? 0) > 0)
     .sort((a, b) => classRank(a) - classRank(b))
     .map((slug) => {
       const rows = raid.signups.filter(

@@ -1,9 +1,9 @@
 <!-- web/src/components/guild/RaidClassRow.svelte -->
-<!-- The band's class row (raid comp spec 3.1 line 6): every class the guild plays in the game's
-     order, its crest, name and In plus Late count. Not interactive and not a tab stop: each item's
+<!-- The band's class row (raid comp spec 3.1 line 6): every class with someone In or Late, in the
+     game's order, its crest, name and that count. Not interactive and not a tab stop: each item's
      specs are its `title` for a pointer and its accessible name for touch and screen readers. Below
-     768 the class name drops, crest and count stay. A class at 0, or every class once the raid is
-     cancelled or under way, reads muted with the crest at 45%. Absent with no guild roster. -->
+     768 the class name drops, crest and count stay. Every class once the raid is cancelled or under
+     way reads muted with the crest at 45%. Absent with nobody In or Late. -->
 <script lang="ts">
   import { compCopy } from '../../lib/guild/raid-copy';
   import type { ClassRowItem } from '../../lib/guild/raid-comp';
@@ -29,7 +29,7 @@
     data-testid="raid-class-row"
   >
     {#each items as item (item.classSlug)}
-      {@const muted = quiet || item.count === 0}
+      {@const muted = quiet}
       <li
         class="flex h-6 items-center"
         title={item.specs === '' ? undefined : item.specs}
