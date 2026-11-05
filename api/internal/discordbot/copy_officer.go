@@ -93,11 +93,11 @@ var nightCopy = struct {
 	CameUnsigned:  "{n} came, nobody signed up beforehand",
 	NobodySigned:  "Nobody signed up beforehand",
 	NothingShared: "Nobody shared their bags before the raid",
-	FirstPull:   "first pull",
-	After:       "after {wipes}",
-	NotKilled:   "Not killed",
-	ShortBefore: "{n} short before the raid",
-	NoFlask:     "{n} with no flask in the log",
+	FirstPull:     "first pull",
+	After:         "after {wipes}",
+	NotKilled:     "Not killed",
+	ShortBefore:   "{n} short before the raid",
+	NoFlask:       "{n} with no flask in the log",
 }
 
 // outcomeWords are the attendance outcomes in G2's words (never "no-show").
