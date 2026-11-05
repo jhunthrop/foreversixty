@@ -82,12 +82,15 @@ RESOURCE_DRILL = {
     "energy": "Watch the energy bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.",
     "mana": "Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.",
 }
-# Ranks: the guides keep a cheaper rank on purpose at some levels (round 25), so the drill never
-# asks for the top rank on every button.
+# Ranks: the guides keep a cheaper mana rank on purpose at some levels (round 25), so the drill never
+# asks for the top rank on every button. Energy and rage ranks all cost the same (round 26), so
+# those specs get no cheaper-rank sentence.
 RANKS_DRILL = (
     "Visit your trainer every time you level, then check each button on the priority list against the rank "
-    "your level calls for. Sometimes the right one is a lower, cheaper rank."
+    "your level calls for."
 )
+CHEAPER_RANK = " Sometimes the right one is a lower, cheaper rank."
+FLAT_COST_RESOURCES = frozenset({"energy", "rage"})
 HEALER_RESOURCE_DRILL = (
     "Before the pull, note the mana you should have at the halfway mark. If you are behind it, "
     "heal only the real holes and let the small ones wait."
@@ -102,7 +105,6 @@ DRILLS = {
         "core_casts": "On a dummy, press the first button of the priority list the moment it is ready, before any filler. Read the list top to bottom and check it again after every cooldown.",
         "uptime": "Put the timers of your buffs and debuffs where you can see them. Recast each when its line says, never earlier, and again the moment you are back up after a death or a phase change.",
         "idle": "On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.",
-        "ranks": RANKS_DRILL,
         "death": "Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.",
         "adherence": "On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.",
     },
@@ -110,7 +112,6 @@ DRILLS = {
         "core_casts": "On a dummy with a friend hitting you, press the first button of the priority list the moment it is ready. Fillers wait their turn.",
         "uptime": "Watch the debuffs on the boss and the buff on you. Refresh each where its line says, before it drops: a stacking debuff that falls off takes its stacks with it.",
         "idle": "When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.",
-        "ranks": RANKS_DRILL,
         "death": "Put your emergency cooldown on a key you can hit without looking, and press it on a dummy pull the moment your health falls past half.",
         "adherence": "On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.",
     },
@@ -202,8 +203,16 @@ def resource_drill(slug: str, role: str) -> str:
         raise SystemExit(f"no resource for {slug!r}: add it to starter_kit.RESOURCE") from None
 
 
+def ranks_drill(slug: str) -> str:
+    if RESOURCE.get(slug) in FLAT_COST_RESOURCES:
+        return RANKS_DRILL
+    return RANKS_DRILL + CHEAPER_RANK
+
+
 def drills(slug: str, role: str, catalogue: dict[str, Any]) -> list[tuple[str, str]]:
     table = dict(DRILLS[role])
+    if role != "healer":
+        table["ranks"] = ranks_drill(slug)
     table["resource"] = resource_drill(slug, role)
     table["preparation"] = preparation_drill(slug, role, catalogue)
     if role == "healer":

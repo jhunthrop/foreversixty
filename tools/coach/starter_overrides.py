@@ -16,6 +16,13 @@ from starter_text import short_sentences
 
 Entry = tuple[str, str]
 
+# Shared by the rogue specs: Kidney Shot trains at thirty, rank two at fifty; Feint at sixteen.
+ROGUE_KIDNEY_SHOT = (
+    "Kidney Shot trains at thirty. It costs twenty-five energy, sits on a twenty second cooldown and stuns "
+    "a second longer per combo point. Five seconds at five, six once rank two trains at fifty."
+)
+ROGUE_FEINT = "Feint from sixteen on cooldown on bosses where you sit near the tank's threat."
+
 # ability -> line. A listed ability is added when the generator left it out. A line that names a
 # spell, talent or rank the player gains during leveling says from when (round 25: the coach reads a
 # boss pull at whatever level the log records, dungeon bosses from the low teens included).
@@ -448,25 +455,28 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Deadly Poison on the main hand and Instant on the off hand from thirty to fifty-nine. "
             "At sixty swap them: the off hand then holds Deadly at five stacks on its own."
         ),
-        "Kidney Shot": (
-            "Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per "
-            "combo point. Five seconds at five, six once rank two trains at fifty. Use it on casters and on "
-            "whatever is hitting your healer."
+        "Kidney Shot": ROGUE_KIDNEY_SHOT + " Use it on casters and on whatever is hitting your healer.",
+        # Trainer levels (round 26): Shank twenty-four, Venom thirty, Blind thirty-four, Feint sixteen.
+        "Shank": (
+            "Shank from twenty-four on cooldown: it cannot miss and pays back more energy than it costs. "
+            "Venom, from thirty, adds thirty percent to your poison damage for six seconds, on top of Vile Poisons. "
+            "It also makes your poisons land more often."
         ),
+        "Kick": "Kick, Gouge and, from thirty-four, Blind handle the rest.",
+        "Feint": ROGUE_FEINT,
     },
     "rogue-combat": {
         # combat.md: Flash of Steel full only on the raid build at sixty; Adrenaline Rush (forty), Blade
-        # Flurry (thirty-three); Kidney Shot rank two at fifty.
+        # Flurry (thirty-three); Kidney Shot rank two at fifty; Shank twenty-four, Kick twelve, Feint sixteen.
         "Shank": (
-            "Shank on cooldown, right behind any damage racial and your trinket. "
+            "Shank from twenty-four on cooldown, right behind any damage racial and your trinket. "
             "It is an off-hand stab for five energy that cannot miss and pays back more than it costs."
         ),
         "Adrenaline Rush": "Adrenaline Rush from forty on cooldown, with your damage racial if your race has one, a trinket and a potion.",
         "Blade Flurry": "Blade Flurry from thirty-three, at any energy, for its twenty-five.",
-        "Kidney Shot": (
-            "Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per "
-            "combo point. Five seconds at five, six once rank two trains at fifty."
-        ),
+        "Kidney Shot": ROGUE_KIDNEY_SHOT,
+        "Kick": "Kick from twelve stops a cast for twenty-five energy.",
+        "Feint": "Feint from sixteen on cooldown on any boss where you sit near the tank's threat.",
     },
     "rogue-subtlety": {
         # subtlety.md: Garrote after every Ghostly Strike (twenty-six); Rupture at four or more whenever it
@@ -483,23 +493,33 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "It comes back every ten seconds, so a mark now beats a bigger one later."
         ),
         "Slice and Dice": "Slice and Dice at three or more combo points while Rupture ticks, when it is down or nearly down.",
-        "Cheap Shot": "Cheap Shot opens on trash that will die fast, three combo points once Initiative is full, then Eviscerate.",
+        # Trainer and talent levels (round 26): Shank twenty-four, Cheap Shot twenty-six, Preparation
+        # thirty-four, Blind thirty-four, Feint sixteen; Hemorrhage at four points or fewer (sim round 22).
+        "Shank": (
+            "Shank from twenty-four on cooldown at three combo points or fewer, or under fifty energy. "
+            "It is an off-hand stab that cannot miss and pays back more energy than it costs."
+        ),
+        "Cheap Shot": "Cheap Shot from twenty-six opens on trash that will die fast, three combo points once Initiative is full, then Eviscerate.",
+        "Preparation": "Preparation from thirty-four finishes every other rogue cooldown, once every ten minutes.",
+        "Kick": (
+            "Kick, Gouge and, from thirty-four, Blind handle the rest; "
+            "with Elusiveness, Blind comes back every three and a half minutes."
+        ),
+        "Feint": ROGUE_FEINT,
         "Backstab": (
             "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage at thirty. "
             "Sinister Strike only when you cannot get behind or hold no dagger."
         ),
         "Hemorrhage": (
-            "Hemorrhage from thirty builds. "
-            "It waits a moment when Ghostly Strike is about to come back, unless you are close to full energy."
+            "Hemorrhage from thirty builds, at four combo points or fewer: at five the point is wasted. "
+            "It waits a moment when Ghostly Strike is about to come back, unless you are close to full energy. "
+            "After a Ghostly Strike, it waits until the Garrote is in."
         ),
         "Premeditation": (
-            "Premeditation a couple of seconds before the pull for two combo points. "
+            "Premeditation from twenty, a couple of seconds before the pull, for two combo points. "
             "Press it again every two minutes in the fight whenever you have three or fewer. Spend them inside twenty seconds."
         ),
-        "Kidney Shot": (
-            "Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per "
-            "combo point. Five seconds at five, six once rank two trains at fifty."
-        ),
+        "Kidney Shot": ROGUE_KIDNEY_SHOT,
     },
     "shaman-elemental": {
         # elemental.md and the card: Mana Spring (twenty-six) a few seconds before the pull, skipped when a
