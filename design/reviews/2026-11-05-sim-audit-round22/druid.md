@@ -82,6 +82,17 @@ Lane `druid`:
   - Feral Charge (Cat) range and the shapeshift-override visuals.
   - Quest fixes.
 
+## Follow-up: guide-accuracy round 24 sims (after merging int/r22 bd4b48d42 / d89555ac6)
+
+Both sims run on this branch (crit-aura, Rip/Bite and Cat Form fixes in), horde unless noted, 10,000 iterations, seeds 1 and 50001, frozen BiS. Talents at each level come from the shipped order in `addon-builds.json` (`$R/druid/order.py`).
+
+| # | question | result | decision |
+|---|---|---|---|
+| G1 | **Balance raid order, Eclipse Wrath row (row [5]) on against off, levels 39 to 41.** Raid order: Eclipse 1 at 39 and 40, 2 at 41; Moonkin Form at 40. | Level 39 (band 30 gear): identical, on or off (alliance 87.8, horde 86.9), both seeds. Level 40: 160.6 to 161.7 alliance, 158.2 to 159.3 horde (+0.7%). Level 41: 162.2 to 164.8 alliance, 159.7 to 162.3 horde (+1.6%). Both seeds agree to 0.1. | Aligned: the row stays. It does nothing at 39, where the mana line already casts Wrath nearly every global. It gains from 40, more with the second point at 41. The card note's "the loop still wins" holds on the raid order from 40. |
+| G2 | **Bear pack fight, Swipe first (above Primal Bite) against the shipped order (Swipe last, 2+ targets, 40 rage), threat on all targets.** Variants: B = Swipe first with the 40 rage gate; C = Swipe first, no rage gate; D = Swipe first only on 3+ targets, shipped row kept for 2. New spec-breakdown `-targets` flag (S d7bcab9e6, test `TestTargetsFlagSetsThePackSize`). | B against shipped:<br>- **Raid 60:** 2 targets -0.9/-1.0%; 3 targets 2279.9 to 2467.4 (+8.2%); 4 targets +8.3/+8.5%.<br>- **Bare 30:** -5.3% (2 targets), -3.0% (3), -3.1% (4).<br>- **Bare 50:** -13.6%, -5.2%, -4.7%.<br>C (no rage gate) is about the same as B on 3+ targets and worse on 2.<br>D against shipped, 3 and 4 targets: bare 55 +3.8/+4.0%; bare 59 +0.4/+0.7%; bare 60 -4.3/-3.7%. | **No card change: no gate holds level by level.** Swipe first wins in a raid at 60 on three or more (+8%). It wins at 55 to 59, once Swipe rank 5 is trained at 54. It loses on two targets everywhere, and loses on every leveling band below 54. It also loses at bare 60, where Primal Bite rank 3 and the bear's lower rage income without raid buffs win. The APL has no raid-or-bare condition, and the published fight is single-target, so the card keeps Swipe last. The guide line is wrong as written: see "For the guide lane". |
+
+The platform lane's talent-level fix (S b4a82d5ad) moves the Balance Insect Swarm, Feral Shifting Power and Restoration Nature's Swiftness and Swiftmend rows at the regen. None of those five notes states a level (read on this branch), so none needs new text.
+
 ## Before/after
 
 Raid 60, guide builds, frozen BiS, 10,000 iterations. "Before" is `$R/before.tsv` (r21 landed). "After" is this branch merged with int/r22, which includes the platform lane's Rend and Tear option (feral about +0.85%, bear about +0.5%, by the platform lane's figure). Seed 1 is absolute; both seeds give the relative change.
@@ -132,6 +143,9 @@ The full table is in `$R/druid/after.tsv`.
 - **Platform:** caster Faerie Fire (9907, tag 0) still registers at every level as rank 4. No card casts it. Whether to register it by rank from 18 is a platform tidy-up. `BloomSpellCoeff` and `LifebloomSpellCoeff` are unread convention fills. The generator could emit the client's 0 for triggered heals, so no later ability file reads 0.2143 by mistake (`sim/core/spellconst/spellconst_test.go:106` pins today's fill, so this is a core decision).
 
 ## For the guide lane
+
+- **feral-bear.md:83 "Swipe moves to the top on a pack"** (guide round 24 sim request; G2). True only in a raid at 60 on three or more targets (+8% threat), and marginally at 55 to 59. It is false on two targets and on leveling bands below 54 (-3 to -14%). Suggested: "In a raid at 60, on three or more targets, Swipe goes to the top; on two targets, and while leveling, keep it below Maul, Lacerate and Primal Bite." Bear card [8], "on a pack of three it is your main threat", holds at raid 60 only.
+- **Balance card [5] raid-order clause** (G1): the loop gains from 40 (+0.7%) and 41 (+1.6%) and ties at 39. "The loop still wins" can stay for 40 and up.
 
 - **X1:**
   - balance.md:49 and :63 ("Moonkin Form's 3% crit aura") could add "it does not stack with Leader of the Pack".
