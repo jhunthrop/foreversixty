@@ -75,7 +75,8 @@ const reportSummaryColumns = `r.id, r.title, r.zone, r.status, r.visibility, r.c
 	        r.logging_character,
 	        (select c.name from characters c where c.key = r.logging_character),
 	        greatest(r.created_at, coalesce((select max(f.uploaded_at) from fights f where f.report_id = r.id), r.created_at)),
-	        r.heartbeat_at`
+	        r.heartbeat_at,
+	        (select to_timestamp(min(f.start_ms) / 1000.0) from fights f where f.report_id = r.id)`
 
 // scanSummaries reads every row of a query built on
 // reportSummaryColumns, in the column order it lists.
@@ -87,7 +88,7 @@ func scanSummaries(rows pgx.Rows) ([]Summary, error) {
 		var key, name *string
 		var last time.Time
 		if err := rows.Scan(&s.ID, &s.Title, &s.Zone, &s.Status, &s.Visibility,
-			&s.CreatedAt, &s.FightCount, &s.KillCount, &s.BossCount, &key, &name, &last, &s.HeartbeatAt); err != nil {
+			&s.CreatedAt, &s.FightCount, &s.KillCount, &s.BossCount, &key, &name, &last, &s.HeartbeatAt, &s.StartedAt); err != nil {
 			return nil, fmt.Errorf("reports: scan summary: %w", err)
 		}
 		s.LastUploadAt = &last

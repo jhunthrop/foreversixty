@@ -806,6 +806,13 @@ func TestTheOwnReportsListIsPagedAndCounted(t *testing.T) {
 	if page.Rows[1].ID != first || page.Rows[1].FightCount != 0 || page.Rows[1].KillCount != 0 {
 		t.Fatalf("oldest = %+v", page.Rows[1])
 	}
+	// started_at is the first fight's start, the night played; null before any fight.
+	if s := newest.StartedAt; s == nil || time.Since(*s) > time.Minute || time.Since(*s) < -time.Minute {
+		t.Fatalf("started_at = %v, want the first fight's start", s)
+	}
+	if page.Rows[1].StartedAt != nil {
+		t.Fatalf("a report with no fight has started_at %v", page.Rows[1].StartedAt)
+	}
 
 	res = h.do(http.MethodGet, "/v1/reports?mine=1&page=2", "", nil)
 	h.data(res, &page)

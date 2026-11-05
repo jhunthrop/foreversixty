@@ -1103,6 +1103,7 @@ data class GuildMember(
 data class GuildMemberCounts(
     @SerialName("on_roster") val onRoster: Int,
     @SerialName("in_game_no_account") val inGameNoAccount: Int,
+    /** People (accounts) with a character waiting for approval, the unit summary.waiting_for_approval counts; members[] stays per character. */
     @SerialName("waiting") val waiting: Int,
     @SerialName("not_seen") val notSeen: Int,
 )
@@ -1180,6 +1181,8 @@ data class GuildRosterRow(
     @SerialName("last_report_at") val lastReportAt: String? = null,
     @SerialName("may_remove") val mayRemove: Boolean,
     @SerialName("may_approve") val mayApprove: Boolean,
+    /** The character its account marked as main; the roster names an alt's main by it. */
+    @SerialName("is_main") val isMain: Boolean,
     /** The character's sim input is its FS1 export (gear consent only): the Roster tab's Open in simulator / planner slot has links to offer. */
     @SerialName("sim_export") val simExport: Boolean,
     @SerialName("addon") val addon: GuildRosterAddon? = null,
@@ -1488,6 +1491,8 @@ data class LootCandidate(
     @SerialName("ilvl_delta") val ilvlDelta: Int? = null,
     @SerialName("attendance") val attendance: GuildAttendance,
     @SerialName("already_equivalent") val alreadyEquivalent: Boolean,
+    /** The drop goes in a slot the character has nothing in; it ranks below a real upgrade in its tier */
+    @SerialName("fills_empty_slot") val fillsEmptySlot: Boolean,
     @SerialName("replaces") val replaces: String,
     /** The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name. */
     @SerialName("replaces_item") val replacesItem: LootWornItem? = null,
@@ -2370,6 +2375,8 @@ data class ReportRow(
     @SerialName("logging_character") val loggingCharacter: LoggingCharacter? = null,
     @SerialName("last_upload_at") val lastUploadAt: String? = null,
     @SerialName("heartbeat_at") val heartbeatAt: String? = null,
+    /** The log's first fight */
+    @SerialName("started_at") val startedAt: String? = null,
 )
 
 @Serializable

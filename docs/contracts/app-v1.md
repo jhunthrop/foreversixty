@@ -293,7 +293,7 @@ guild_timezone, counts, own }`), `attendance_source` (`raids|reports`).
 
 A roster row is `{ character_key, region, ruleset, name, rank, verified, consent, logged_at,
 logged_recently, attendance { present, nights }, account_key, supporter, last_report_at, may_remove,
-may_approve, addon }` plus omitted `class`, `spec`, `role`, `item_level` (withheld without gear
+may_approve, is_main, addon }` (`is_main` the account's marked main) plus omitted `class`, `spec`, `role`, `item_level` (withheld without gear
 consent), `attendance_30`, `best_parse`, `rating`, `professions`. Draw Remove and Approve exactly
 when `may_remove` and `may_approve`.
 
@@ -465,7 +465,7 @@ The roster is the `roster[]` of the home read; there is no separate roster endpo
 Your reports, newest first. Auth session. Caching private. `mine=1` required, optional `page`.
 Answer `{ rows[], total, page, per_page }` (100 a page). A row is `{ id, title, zone, status,
 visibility, created_at, fight_count, kill_count, boss_count, logging_character, last_upload_at,
-heartbeat_at }`; `status` is `live|processing|complete|failed`, `visibility`
+heartbeat_at, started_at }` (`started_at` the log's first fight, the night it was played, null before any fight); `status` is `live|processing|complete|failed`, `visibility`
 `public|unlisted|guild|private`, `logging_character` is `{ key, name }` or null, `last_upload_at`
 and `heartbeat_at` are nullable (a live report with a recent heartbeat is "Live"). `title` may be
 `""`; show the zone. Fixtures `reports.list`, `reports.list.empty`. Errors: 400 `invalid`
