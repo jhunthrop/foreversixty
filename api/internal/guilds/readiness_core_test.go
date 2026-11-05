@@ -241,6 +241,25 @@ func TestSortReadinessRowsPutsLevelingLast(t *testing.T) {
 	}
 }
 
+// The bot's gear words: a healer's or tank's gap is the count alone, and a figure needs a gain.
+func TestGearGapWordsPrintAFigureOnlyWithAUnitAndAGain(t *testing.T) {
+	dps := gearUnitDPS
+	cases := []struct {
+		gap  GearGapView
+		want string
+	}{
+		{GearGapView{Upgrades: 4, GainDps: 31}, "4 upgrades"},
+		{GearGapView{Upgrades: 2, NotSimChecked: 2, Unit: &dps}, "2 upgrades · not simmed yet"},
+		{GearGapView{Upgrades: 1, Unit: &dps}, "1 upgrade"},
+		{GearGapView{Upgrades: 3, GainDps: 24, Unit: &dps}, "3 upgrades · +24 DPS"},
+	}
+	for _, c := range cases {
+		if got := gearGapWords(c.gap); got != c.want {
+			t.Errorf("gearGapWords(%+v) = %q, want %q", c.gap, got, c.want)
+		}
+	}
+}
+
 // The median is the level-60 raiders': a leveling character's item level is left out.
 func TestMedianItemLevelSkipsLevelingRows(t *testing.T) {
 	roster := []RosterRow{

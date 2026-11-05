@@ -138,6 +138,8 @@
   const NUDGE_BTN =
     'inline-flex h-8 items-center justify-center rounded-control border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] text-strong uppercase disabled:opacity-50 disabled:cursor-default';
   const CHIP = 'flex flex-col gap-0.5 text-[12px] text-text';
+  /** Fits the 1024 px content width, where the board's grid starts: the name and gear gap columns give. */
+  const BOARD_COLUMNS = 'minmax(120px,170px) minmax(120px,170px) 120px 100px 100px 140px 90px 84px';
 
   /** The pill treatment per cell kind (Enchants/Consumables/Talent points): `consent`
    *  reads as plain muted text (never a coloured pill -- there is nothing to flag), `ok`
@@ -256,8 +258,8 @@
   {/if}
 
   {#if ordered.length > 0}<div
-      class="hidden gap-2 px-1 pb-1 md:grid"
-      style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
+      class="hidden gap-2 px-1 pb-1 lg:grid"
+      style:grid-template-columns={BOARD_COLUMNS}
       data-testid="guild-readiness-header"
     >
       <span class="quiet-label">Raider</span>
@@ -300,8 +302,8 @@
       <div class={`border-line-soft border-b ${ROW_RULE} ${ownRowBand(pinned, 1)}`}>
         <!-- Desktop grid -->
         <div
-          class="hidden items-center gap-2 py-2 md:grid"
-          style="grid-template-columns:170px 170px 120px 120px 110px 100px 130px 90px"
+          class="hidden items-center gap-2 py-2 lg:grid"
+          style:grid-template-columns={BOARD_COLUMNS}
           data-testid={`guild-readiness-row-${row.character_key}`}
         >
           {@render raiderName(row, pinned)}
@@ -334,7 +336,8 @@
               <span class="text-muted text-[12px]">{talentPointsLabel(row)}</span>
             {/if}
             <span class="flex flex-col" data-testid="guild-readiness-item-level">
-              <span class="numeric text-[14px] {row.item_level === null ? 'text-muted' : 'text-text'}"
+              <span
+                class={row.item_level === null ? 'text-muted text-[12px]' : 'numeric text-text text-[14px]'}
                 >{itemLevelLabel(row)}</span
               >
               {#if medianCaption(row) !== ''}<span class="text-[12px] {medianClass(row)}"
@@ -359,12 +362,12 @@
           {/if}
         </div>
 
-        <!-- Phone stacked card: its own Tailwind `md:hidden` (not a scoped <style> block --
+        <!-- Phone stacked card: its own Tailwind `lg:hidden` (not a scoped <style> block --
            see this component's own header comment) is the only thing controlling display
            at this breakpoint, so there is no cascade-order risk of it fighting the desktop
-           grid's `hidden md:grid` above. -->
+           grid's `hidden lg:grid` above. -->
         <div
-          class="flex flex-col gap-2.5 py-2.5 md:hidden"
+          class="flex flex-col gap-2.5 py-2.5 lg:hidden"
           data-testid={`guild-readiness-row-${row.character_key}`}
         >
           <div class="flex items-center justify-between gap-2">

@@ -263,8 +263,8 @@
             {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
             {#snippet control()}
               <span class="text-text text-[13px]">
-                {worst?.text ?? READINESS_READY}{#if (worst?.more ?? 0) > 0}<span class="text-muted">
-                    · +{worst?.more} more</span
+                {worst?.text ?? READINESS_READY}{#if (worst?.more ?? 0) > 0}<span class="text-muted"
+                    >{` · +${worst?.more} more`}</span
                   >{/if}
               </span>
             {/snippet}
