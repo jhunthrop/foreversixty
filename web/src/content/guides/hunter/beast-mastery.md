@@ -84,7 +84,7 @@ The raid build moves one point out of Efficiency and the point in Rapid Killing 
 
 ## Rotation and priority
 
-Before the pull, put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
+Before the pull, mark the boss with Hunter's Mark first, so the mana is back by the pull (one hunter's mark per target is enough, they do not stack), then put up Aspect of the Hawk and leave it up all fight. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Set the pet to passive while you walk in. Time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway. Send the pet in once the tank has the boss.
 
 As the pet connects, press Bestial Wrath, Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. That is your burst for the fight. Bestial Wrath comes back at two minutes, so use it again then; Rapid Fire's five minute cooldown gives you one in a normal boss fight.
 
@@ -140,7 +140,9 @@ Enchanting is the profession your best in slot list asks for. Frozen Heart of th
 
 ### Levels 1 to 19
 
-Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12. Multi-Shot comes at 18.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12.
+
+Multi-Shot comes at 18. It is the worst damage for its mana you fire, so once you are under a quarter of your mana, hold it. Until 34, keep Serpent Sting rolling and Arcane Shot firing on cooldown instead of waiting for Multi-Shot to come back; from 34, let rank 1 Aimed Shot take that slot instead.
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 

@@ -263,10 +263,72 @@
         "authored": 14266,
         "bands": [
           {
+            "from_level": 26,
+            "to_level": 26,
+            "rank": 2,
+            "races": ["orc", "tauren", "troll", "windshaper-skyborne"],
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+          },
+          {
+            "from_level": 26,
+            "to_level": 26,
+            "rank": 3,
+            "races": ["human", "dwarf", "night-elf", "high-order-skyborne"],
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+          },
+          {
+            "from_level": 27,
+            "to_level": 27,
+            "rank": 2,
+            "races": ["tauren", "troll", "windshaper-skyborne"],
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+          },
+          {
+            "from_level": 27,
+            "to_level": 27,
+            "rank": 3,
+            "races": ["human", "orc", "dwarf", "night-elf", "high-order-skyborne"],
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+          },
+          {
+            "from_level": 28,
+            "to_level": 28,
+            "rank": 2,
+            "races": ["tauren"],
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+          },
+          {
+            "from_level": 28,
+            "to_level": 28,
+            "rank": 3,
+            "races": ["human", "orc", "dwarf", "night-elf", "troll", "high-order-skyborne", "windshaper-skyborne"],
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+          },
+          {
+            "from_level": 29,
+            "to_level": 29,
+            "rank": 3,
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+          },
+          {
             "from_level": 46,
             "to_level": 47,
             "rank": 5,
-            "note": "Rank 5 (learned at 32) at 46-47: Immolation Trap rank 4 arrives at 46 and runs the mana dry, and rank 5's lower cost buys back traps. From 48 rank 7 wins (round 19 hunter, per-level sweep)."
+            "note": "Rank 5 (learned at 32) at 46-47: Immolation Trap rank 4 arrives at 46 and runs the mana dry, and rank 5's lower cost buys back traps. From 48 rank 7 wins (round 19 hunter, per-level sweep). Sim-accuracy round 21, level by level at 40-49 (spec-breakdown -level, bare band 40, 10,000 iterations, seeds 1 and 50001, all eight hunter races; a gain counts at 0.1% or more at both seeds). Rank 5 still beats rank 6 at 46 and 47 for a Dwarf, an Orc, a Tauren, a Troll and both Skyborne, and ties it for a Human and a Night Elf; rank 4 ties rank 5. At 40 to 45 the lower ranks are within 0.2% of rank 6 for every race, so the top rank stands there."
+          },
+          {
+            "from_level": 48,
+            "to_level": 49,
+            "rank": 5,
+            "races": ["orc", "tauren", "troll"],
+            "note": "Sim-accuracy round 21, level by level at 40-49 (spec-breakdown -level, bare band 40, 10,000 iterations, seeds 1 and 50001, all eight hunter races; a gain counts at 0.1% or more at both seeds). An Orc, a Tauren and a Troll still run short of mana at 48 and 49: rank 5 beats rank 7 by 0.15 to 0.4% (rank 4 ties it), where for the Alliance races rank 7 wins by 0.15 to 0.5%."
+          },
+          {
+            "from_level": 48,
+            "to_level": 48,
+            "rank": 5,
+            "races": ["windshaper-skyborne"],
+            "note": "Sim-accuracy round 21, level by level at 40-49 (spec-breakdown -level, bare band 40, 10,000 iterations, seeds 1 and 50001, all eight hunter races; a gain counts at 0.1% or more at both seeds). A Windshaper Skyborne gains 0.15% with rank 5 at 48 and ties rank 7 at 49."
           }
         ]
       }

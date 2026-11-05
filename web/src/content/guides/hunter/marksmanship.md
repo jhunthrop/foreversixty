@@ -89,7 +89,7 @@ In a raid the pet does less than Lone Wolf. Forever's pets copy only a tenth of 
 
 ## Rotation and priority
 
-Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Track the boss's type for Improved Tracking if Track covers it. Mark the boss with Hunter's Mark (one hunter's mark per target is enough, they do not stack), then time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
+Before the pull in a raid, dismiss your pet: Lone Wolf only works with no pet out. Mark the boss with Hunter's Mark first, so the mana is back by the pull (one hunter's mark per target is enough, they do not stack), then put up Aspect of the Hawk and leave it up. Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect. Track the boss's type for Improved Tracking if Track covers it. Time Aimed Shot so it lands just after the tank's first hit. Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
 
 On the pull, press Rapid Fire with your trinkets and your racial (Elune's Light, Berserking or Blood Fury), just as an auto shot leaves and Multi-Shot is ready, so the whole window is shots. Rapid Fire's five minute cooldown gives you one in a normal boss fight; do not save it.
 
@@ -146,7 +146,9 @@ Enchanting is the profession your best in slot list asks for. The Heart of the M
 
 ### Levels 1 to 19
 
-Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12. Multi-Shot comes at 18.
+Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. Raptor Strike and Auto Shot carry the first levels. Train Serpent Sting and Aspect of the Monkey at 4, Arcane Shot and Hunter's Mark at 6, Concussive Shot at 8, Aspect of the Hawk at 10, which replaces Monkey for good, and Wing Clip at 12.
+
+Multi-Shot comes at 18. It is the worst damage for its mana you fire, so once you are under a quarter of your mana, hold it. Until 34, keep Serpent Sting rolling and Arcane Shot firing on cooldown instead of waiting for Multi-Shot to come back; from 34, let rank 1 Aimed Shot take that slot instead.
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 
