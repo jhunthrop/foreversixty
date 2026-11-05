@@ -218,7 +218,8 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 		t.Fatalf("re-armed reminder not sent: %+v", reminders)
 	}
 
-	// Cancel withdraws the sent reminder; a cancelled or locked raid never posts or reminds.
+	// Cancel withdraws the sent reminder; a cancelled raid never posts or reminds, and a raid
+	// locked before its post time is posted but never reminded.
 	m2 := notify.ReminderRef{Via: notify.ReminderViaWebhook, MessageID: "m2"}
 	if err := w.h.svc.Store.MarkScheduleReminded(ctx, soon.ID, m2, now); err != nil {
 		t.Fatal(err)
@@ -235,10 +236,12 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 	w.run(t, newStart.Add(-23*time.Hour))
 	w.run(t, locked.StartsAt.Add(-23*time.Hour))
 	posted, reminders, _, _ := events.snapshot()
-	for _, id := range []int64{cancelled.ID, locked.ID} {
-		if sentFor(posted, id) != 0 || sentFor(reminders, id) != 0 {
-			t.Fatalf("raid %d posted or reminded while cancelled or locked", id)
-		}
+	if sentFor(posted, cancelled.ID) != 0 || sentFor(reminders, cancelled.ID) != 0 {
+		t.Fatalf("raid %d posted or reminded while cancelled", cancelled.ID)
+	}
+	if sentFor(posted, locked.ID) != 1 || sentFor(reminders, locked.ID) != 0 {
+		t.Fatalf("locked raid %d: posted %d, reminded %d; want posted once, never reminded",
+			locked.ID, sentFor(posted, locked.ID), sentFor(reminders, locked.ID))
 	}
 	if sentFor(reminders, soon.ID) != 1 {
 		t.Fatalf("cancelled raid reminded again: %+v", reminders)

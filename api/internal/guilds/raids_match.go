@@ -68,15 +68,22 @@ type logAnchor struct {
 	at      time.Time
 }
 
-// reportAnchor reads a report's guild, log zone and anchor time (completed_at on the live
-// path, created_at on an upload). ok is false when the report cannot be matched at all: it is
+// logAnchorSQL is the SQL for when the night of the reports row aliased alias was played: its
+// first fight's start (fights.start_ms, epoch milliseconds), else completed_at on the live path,
+// else created_at on an upload. A log uploaded the next morning still lands on last night's raid.
+func logAnchorSQL(alias string) string {
+	return "coalesce((select to_timestamp(min(af.start_ms) / 1000.0) from fights af where af.report_id = " +
+		alias + ".id), " + alias + ".completed_at, " + alias + ".created_at)"
+}
+
+// reportAnchor reads a report's guild, log zone and anchor time (logAnchorSQL). ok is false when the report cannot be matched at all: it is
 // unknown, has no guild or zone yet, or is not evidence (private or flagged).
 func (s *Store) reportAnchor(ctx context.Context, reportID string) (logAnchor, bool, error) {
 	var a logAnchor
 	var guildID *int64
 	var zone *string
 	err := s.Pool.QueryRow(ctx, `
-		select `+matchGuildOf("r")+`, r.log_zone, coalesce(r.completed_at, r.created_at)
+		select `+matchGuildOf("r")+`, r.log_zone, `+logAnchorSQL("r")+`
 		from reports r where r.id = $1 and `+presence.EvidenceReport("r"), reportID).Scan(&guildID, &zone, &a.at)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return logAnchor{}, false, nil

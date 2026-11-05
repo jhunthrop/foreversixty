@@ -62,3 +62,31 @@ func TestTheNightsSummaryTellsEachRaiderTheirOwnNight(t *testing.T) {
 		t.Fatalf("no loot line: %q", e.Body)
 	}
 }
+
+func TestTheNightsSummaryOffersTheCoachToAHolder(t *testing.T) {
+	w, _ := eventsWorld(t)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	w.signup(t, raid.ID, memberKeyA, `{"state":"in"}`)
+	exec := func(q string, args ...any) {
+		if _, err := w.h.pool.Exec(context.Background(), q, args...); err != nil {
+			t.Fatal(err)
+		}
+	}
+	exec(`insert into reports (id, owner_id, title, visibility, status) values ('rep-c', $1, 'Ony', 'guild', 'complete')`, w.officer)
+	summary := func() map[string]string {
+		got := w.h.svc.summaryEvents(context.Background(), raid.ID, "rep-c")
+		if len(got) != 1 {
+			t.Fatalf("summaries %+v", got)
+		}
+		return got[0].Data
+	}
+	if summary()["coach_ready"] != "false" {
+		t.Fatal("an officer-views grant is no log coach")
+	}
+	// The coach is personal Premium, asked the way the coach asks it.
+	exec(`insert into entitlements (user_id, plan, source, status) values ($1, 'premium', 'grant', 'active')`, w.member)
+	if summary()["coach_ready"] != "true" {
+		t.Fatal("a Premium member holds the coach")
+	}
+}

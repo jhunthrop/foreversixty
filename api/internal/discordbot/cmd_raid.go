@@ -33,8 +33,10 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 	if err != nil {
 		return Reply{}, fmt.Errorf("discordbot: raid candidates: %w", err)
 	}
-	if len(cands) == 0 { // a non-member learns nothing of the calendar (R1)
-		return s.notMember(ctx, ask)
+	if len(verifiedOf(cands)) == 0 {
+		// Only a verified member sees the calendar, as on the site (R1): a non-member or an
+		// account whose characters still wait for approval is told so instead.
+		return s.notSignable(ctx, ask, cands)
 	}
 	now := s.now()
 	next, err := s.d.Guilds.NextRaidFor(ctx, guildID, userID, nil, now)
