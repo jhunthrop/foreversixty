@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/paladin/protection.md
   - data/curated/apl/paladin-protection.json
-  - data/builds/1.60.1.70755/spellconst/paladin.json
+  - data/builds/1.60.1.70790/spellconst/paladin.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

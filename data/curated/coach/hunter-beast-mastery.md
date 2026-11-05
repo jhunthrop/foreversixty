@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/hunter/beast-mastery.md
   - data/curated/apl/hunter-beast-mastery.json
-  - data/builds/1.60.1.70755/spellconst/hunter.json
+  - data/builds/1.60.1.70790/spellconst/hunter.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -26,7 +26,7 @@ This is the Beast Mastery Hunter as the site's guide describes it. Beast Mastery
 - Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and Multi-Shot is about to come back.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
 - Serpent Sting when it is about to drop.
-- When mana gets low, drop Arcane Shot first, then Serpent Sting, and keep Aimed Shot and Multi-Shot going.
+- Arcane Shot to fill a gap, and from eighteen only when Multi-Shot is more than a global away.
 - Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect.
 - Hunter's Mark whenever the target is not marked.
 - A cat is the safe raid pet: Claw and Bite on a fast attacker, steady damage with nothing to manage.

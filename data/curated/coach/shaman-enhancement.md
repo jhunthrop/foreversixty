@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/shaman/enhancement.md
   - data/curated/apl/shaman-enhancement.json
-  - data/builds/1.60.1.70755/spellconst/shaman.json
+  - data/builds/1.60.1.70790/spellconst/shaman.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -27,7 +27,7 @@ This is the Enhancement Shaman as the site's guide describes it. Enhancement is 
 - Totemic Call: If the boss moves away from them, follow it and press Totemic Call. It relocates your active totems to your location.
 - Rage of the Farseer, trinkets, Blood Fury and your potion go together on the pull and again on cooldown.
 - Stormstrike on cooldown. It is your hardest hit, and it makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
-- Lightning Bolt at five Maelstrom Weapon stacks: it is instant and free then.
+- Lightning Bolt at five Maelstrom Weapon stacks: with all five points it is instant and free.
 - Searing Totem when it is down, unless the boss is about to die.
 - Fire Nova on a Clearcasting proc. It is free then, and in melee your Searing Totem stands within its ten yards of the boss.
 - Earth Shock last, and only while mana is above half.

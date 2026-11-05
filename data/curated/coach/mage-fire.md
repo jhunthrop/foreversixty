@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/mage/fire.md
   - data/curated/apl/mage-fire.json
-  - data/builds/1.60.1.70755/spellconst/mage.json
+  - data/builds/1.60.1.70790/spellconst/mage.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -23,7 +23,7 @@ This is the Fire Mage as the site's guide describes it. Fire spams Scorch, keeps
 - Mage Armor, Arcane Brilliance and your food buff go up before the pull.
 - Pyroblast only on three stacks of Heating Up, when it is a one and a half second cast.
 - Scorch on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. Every Scorch also renews the Improved Scorch debuff.
-- Fire Blast every time it is off cooldown, since every hit is a Heating Up stack.
+- Fire Blast every time it is off cooldown. It is instant, and from Heating Up at thirty every hit is a stack.
 - Combustion once the boss carries five Improved Scorch stacks, with your on-use trinkets and your racial.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
 - Fireball only before you train Scorch at level twenty-two, when it is the only filler you have.

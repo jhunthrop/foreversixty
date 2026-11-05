@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/druid/balance.md
   - data/curated/apl/druid-balance.json
-  - data/builds/1.60.1.70755/spellconst/druid.json
+  - data/builds/1.60.1.70790/spellconst/druid.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28

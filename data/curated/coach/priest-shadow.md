@@ -6,7 +6,7 @@ version: starter edition
 sources:
   - web/src/content/guides/priest/shadow.md
   - data/curated/apl/priest-shadow.json
-  - data/builds/1.60.1.70755/spellconst/priest.json
+  - data/builds/1.60.1.70790/spellconst/priest.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
