@@ -493,11 +493,20 @@ list below is what the script does and what to check when it stops.
   client's `ItemSparse` (shipped or hotfix-merged) nor wowhead's Forever gear-planner
   scrape name at all — Hand of Justice, Devilsaur Eye and about 1,500 more on build
   1.60.1.70009 — with `stats_source`/`required_level_source: "classic-db"` and
-  `client_unconfirmed: true` on every such row (`pipeline/classicdb_items.py`). That flag
-  means the row is real vanilla itemization the Forever client has not (yet) shipped
-  itself, not a guess; the beta box's hotfix cache promotes it to ordinary client stats
-  (`client_unconfirmed` clears) the next time the client sees the item and the hotfix
-  cache is refreshed and re-merged.
+  `client_unconfirmed: true` on the rows the client's own tables do not back
+  (`pipeline/classicdb_items.py`). The beta box's hotfix cache promotes a row to ordinary
+  client stats the next time the client sees the item and the hotfix cache is refreshed
+  and re-merged.
+  - **What clears the flag** (client_unconfirmed lane, 2026-11-05,
+    `pipeline/client_evidence.py`): the client's `Item` table states the row's class,
+    subclass and inventory type, its item effects name no spell classic-db's row lacks,
+    and every 1.12 proc or use spell is still among them. On 1.60.1.70790 that clears
+    1,250 of 1,354; the rest are Forever reworks (84), another kind of item (15) or not in
+    the `Item` table (5). A cleared row keeps `stats_source: "classic-db"`: the item is in
+    Forever, but its numbers are still 1.12's, and about one in six such rows differs once
+    Forever's own numbers are known. So the ranker holds it to the doubt margin
+    (`sim/cmd/leveling-bis/confirmed.go`) and the site keeps its "1.12 stats" tag. See
+    `design/reviews/2026-11-05-client-unconfirmed.md`.
   - **Effect text and structured stats come from classic-db's own `spell_template`
     first** (classicdb-fidelity lane, 2026-09-30), not the Forever client's `Spell.csv`:
     1.12 spell ids are not stable across clients (Devilsaur Eye's own spell 24352,
