@@ -86,7 +86,10 @@ func TestRepositionPutsRankedTalentsOnTheEnginesOwnIndex(t *testing.T) {
 			treeIndex: 0,
 			wantField: map[int]string{
 				104766: "elemental_fury",     // active idx14, engine idx7 - the direct swap this lane's brief names.
-				104765: "elemental_alacrity", // active idx7, engine idx14 - the other half of the same swap.
+				104771: "elemental_alacrity", // tier 1 col 2: the node id the client gives Elemental Alacrity since 1.60.1.70707.
+				104765: "elemental_warding",  // tier 2 col 1. The two used to share a rank in the guide build, so a
+				// fixture that named 104765 "elemental_alacrity" passed by coincidence until round 20 moved
+				// Elemental Warding to 2 points (Elemental Alacrity stays at 3).
 			},
 		},
 	}
