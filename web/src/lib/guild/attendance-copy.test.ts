@@ -27,7 +27,7 @@ import {
   rosterChip,
   showingParts,
   stampLabel,
-  syncedBefore,
+  syncedAgo,
   unnamedLine,
   uploadedLine,
   usedChips,
@@ -261,7 +261,7 @@ describe('attendance, roster and readiness', () => {
     expect(`${p.lead}${p.title}${p.tail}`).toBe(
       "Showing the 23 signed In or Late for Onyxia's Lair, Thu 10 Dec, 8:00 pm.",
     );
-    expect(syncedBefore(9)).toBe('Synced 9 days before the raid');
-    expect(syncedBefore(1)).toBe('Synced 1 day before the raid');
+    expect(syncedAgo(9)).toBe('Synced 9 days ago');
+    expect(syncedAgo(1)).toBe('Synced 1 day ago');
   });
 });

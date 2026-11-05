@@ -158,7 +158,7 @@ describe('GuildReadiness next-raid filter', () => {
     const copy = text(markup.replace(/<\/a>/g, '')).replace(/&#39;/g, "'");
     expect(copy).toContain('Next raid \u00b7 Thu 10 Dec');
     expect(copy).toContain("Showing the 2 signed In or Late for Onyxia's Lair, Thu 10 Dec, 8:00 pm.");
-    expect(copy).toContain('Synced 9 days before the raid');
+    expect(copy).toMatch(/Synced \d+ days? ago/);
     expect(copy).toContain('No export yet');
   });
 

@@ -305,7 +305,7 @@ export const guildConsentCopy = {
  *  hello carries no unit, so the column's hover says it is the addon's own figure. */
 export const guildRosterAddonCopy = {
   column: 'In game',
-  columnHover: 'Gear gap in DPS, as the addon reports it',
+  columnHover: 'Gear gap in DPS: what the best-in-slot list would add, from the readiness board',
   /** Read before each row's cell, for a screen reader: the rows have no table headers. */
   srLabel: 'In game:',
   notSeen: '—',

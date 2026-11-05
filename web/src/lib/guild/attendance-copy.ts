@@ -404,5 +404,5 @@ export function showingParts(
   return { lead: `Showing the ${n} signed In or Late for `, title, tail: `, ${when}.` };
 }
 
-export const syncedBefore = (days: number): string =>
-  `Synced ${days} ${days === 1 ? 'day' : 'days'} before the raid`;
+/** A stale export's age, judged against now (the readiness board's cutoff is 7 days, guild round 3). */
+export const syncedAgo = (days: number): string => `Synced ${days} ${days === 1 ? 'day' : 'days'} ago`;

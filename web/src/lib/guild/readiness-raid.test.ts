@@ -67,9 +67,11 @@ describe('syncCell', () => {
     expect(syncCell(row({ no_export: true }), RAID)).toEqual({ kind: 'no_export', text: 'No export yet' });
   });
 
-  it('names how many days before the raid a stale sync was', () => {
+  it('names how long ago a stale sync was, judged against now, never the raid date', () => {
     const stale = row({ no_export: false, synced_before_cutoff: true, logged_at: '2026-12-01T20:00:00Z' });
-    expect(syncCell(stale, RAID)).toEqual({ kind: 'stale', text: 'Synced 9 days before the raid' });
+    const now = Date.parse('2026-12-10T21:00:00Z');
+    expect(syncCell(stale, RAID, now)).toEqual({ kind: 'stale', text: 'Synced 9 days ago' });
+    expect(syncCell(stale, null, now)).toEqual({ kind: 'stale', text: 'Synced 9 days ago' });
   });
 
   it('leaves a fresh sync and the plain board to the day word', () => {

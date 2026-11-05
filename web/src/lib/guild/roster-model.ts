@@ -106,20 +106,25 @@ export interface RosterModel {
 
 /**
  * The members and counts once the characters in `keys` are approved: each waiting entry for one
- * becomes approved. The waiting count is people (accounts) while the list is characters, so the
- * count only drops here when nobody is left waiting; otherwise it holds until the home is read
- * again (the caller refreshes at once), never undercounting an account with several characters.
- * A home without the roster model passes through untouched.
+ * becomes approved, joins the roster count and leaves the waiting count (both count characters,
+ * guild round 3: `on_roster` is what the Roster list shows, waiting characters left out), so the
+ * count line and the list agree in the same frame. A home without the roster model passes through.
  */
 export function afterApprove(model: RosterModel, keys: ReadonlySet<string>): RosterModel {
   if (model.members === undefined || model.counts === undefined) return model;
-  const members = model.members.map((entry) =>
-    entry.state === 'waiting' && entry.character_key !== undefined && keys.has(entry.character_key)
-      ? { ...entry, state: 'approved' as const }
-      : entry,
-  );
-  const stillWaiting = members.some((entry) => entry.state === 'waiting');
-  return { members, counts: { ...model.counts, waiting: stillWaiting ? model.counts.waiting : 0 } };
+  let changed = 0;
+  const members = model.members.map((entry) => {
+    if (entry.state !== 'waiting' || entry.character_key === undefined || !keys.has(entry.character_key)) {
+      return entry;
+    }
+    changed += 1;
+    return { ...entry, state: 'approved' as const };
+  });
+  const { on_roster, waiting } = model.counts;
+  return {
+    members,
+    counts: { ...model.counts, on_roster: on_roster + changed, waiting: Math.max(0, waiting - changed) },
+  };
 }
 
 /**
@@ -146,7 +151,8 @@ function withoutEntry(model: RosterModel, matches: (entry: GuildRosterEntry) => 
     members: model.members.filter((entry) => entry !== gone),
     counts: {
       ...model.counts,
-      on_roster: Math.max(0, model.counts.on_roster - 1),
+      // A waiting character was never in the roster count (guild round 3).
+      on_roster: gone.state === 'waiting' ? model.counts.on_roster : Math.max(0, model.counts.on_roster - 1),
       waiting: less(model.counts.waiting, 'waiting'),
       not_seen: less(model.counts.not_seen, 'not_seen'),
     },

@@ -157,7 +157,7 @@
   const ENCHANT_PILL_STYLE =
     'height:auto;min-height:22px;white-space:normal;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:left;';
 
-  // The stale pill's text (`Synced 9 days before the raid`) is longer than the 130px Synced column:
+  // The stale pill's text (`Synced 9 days ago`) is longer than the 130px Synced column:
   // it drops .pill's fixed 22px height and wraps instead of clipping.
   /** A signed character with no export has no gear to read (UX 16): Gear gap to Item level read a dash. */
   const NO_EXPORT_CELLS = ['Gear gap', 'Enchants', 'Consumables', 'Talent points', 'Item level'] as const;

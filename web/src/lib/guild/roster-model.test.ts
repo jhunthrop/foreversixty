@@ -162,22 +162,26 @@ describe('afterApprove and afterRemove keep the list and the counts in step', ()
       { ...WAITING, name: 'Cindergale', character_key: 'us/pvp/cindergale', rank: 'member' as const },
       NO_ACCOUNT,
     ],
-    counts: { on_roster: 4, in_game_no_account: 1, waiting: 2, not_seen: 0 },
+    // Both counts are characters; on the roster is what the list shows, waiting ones left out.
+    counts: { on_roster: 2, in_game_no_account: 1, waiting: 2, not_seen: 0 },
   };
-  it('approving turns the waiting entries into approved; the people count holds until none is left', () => {
+  it('approving moves each approved character from waiting onto the roster count', () => {
     const next = afterApprove(model, new Set(['us/pvp/ashenveil']));
     expect(next.members?.map((m) => m.state)).toEqual(['approved', 'approved', 'waiting', 'no_account']);
-    // Waiting counts accounts and the list is characters, so one approval cannot say how many
-    // people are left: the count holds for the refresh that follows.
-    expect(next.counts).toEqual(model.counts);
+    expect(next.counts).toEqual({ on_roster: 3, in_game_no_account: 1, waiting: 1, not_seen: 0 });
     const all = afterApprove(model, new Set(['us/pvp/ashenveil', 'us/pvp/cindergale']));
-    expect(all.counts?.waiting).toBe(0);
+    expect(all.counts).toEqual({ on_roster: 4, in_game_no_account: 1, waiting: 0, not_seen: 0 });
   });
-  it('removing takes the entry off the list and the roster count, and the waiting count if it waited', () => {
+  it('removing a waiting character lowers waiting only; removing a roster row lowers the roster count', () => {
     const next = afterRemove(model, 'us/pvp/cindergale');
     expect(next.members?.map((m) => m.name)).toEqual(['Bow', 'Ashenveil', 'Strayhound']);
-    expect(next.counts).toEqual({ on_roster: 3, in_game_no_account: 1, waiting: 1, not_seen: 0 });
-    expect(afterRemove(model, 'us/pvp/bow').counts?.waiting).toBe(2);
+    expect(next.counts).toEqual({ on_roster: 2, in_game_no_account: 1, waiting: 1, not_seen: 0 });
+    expect(afterRemove(model, 'us/pvp/bow').counts).toEqual({
+      on_roster: 1,
+      in_game_no_account: 1,
+      waiting: 2,
+      not_seen: 0,
+    });
   });
   it('removing an invited member by account drops them and the not-seen count', () => {
     const invited = {
