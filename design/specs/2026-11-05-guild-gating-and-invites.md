@@ -60,6 +60,7 @@ Replaces the band's bare gold `Claim this guild` link (capture `pre-gm-overview-
 | Claim holder, no plan, trial unused | link `Start the 7-day trial` | settings `#billing` |
 | Claim holder, no plan, trial used or lapsed | link `Subscribe your guild` | settings `#billing` |
 | Claim holder on Guild, a Raid guild feature | link `Move to Raid guild` | settings `?upgrade=1#billing` (the Move confirm opens) |
+| Claim holder on a Guild plan Forever Sixty granted (no billing contact), a Raid guild feature | `Your plan was granted by Forever Sixty. ` + link `Ask us on Discord` + ` to move it to Raid guild.` (amended 2026-11-05, guild loop round 3: settings has no Move control on a grant, so the Move link led nowhere) | the community Discord invite, new tab |
 | Officer, someone else holds the claim | `Ask ` + crest 16 px + `{GM character}` (class colour) + ` to turn it on.` The crest sits 4 px from `Ask` and 4 px from the name (amended 2026-11-05, guild round 2: round 1 drew it flush against `Ask`). | none |
 | Guild unclaimed, viewer is GM | link `Claim the guild first` | claim page |
 | Guild unclaimed, viewer is an officer | `Your guild master claims the guild first.` | none |

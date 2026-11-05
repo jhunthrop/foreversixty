@@ -7,6 +7,8 @@ import { describe, expect, it } from 'vitest';
 import { GuildApiError, type GuildRaidView, type NextRaidView } from '../../lib/guild/api';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { NO_LOG_YET } from '../../test-support/raid-fixtures';
+import { gateFactsFixture, GATE_SETTINGS_HREF } from '../../test-support/gate-facts';
+import type { GateFacts } from '../../lib/guild/plan-gate';
 import RaidBandLine, { nextRaidAfter, nextRaidAfterRefusal, pressFailedLine } from './RaidBandLine.svelte';
 
 const TZ = 'America/Chicago';
@@ -40,6 +42,7 @@ interface Opts {
   nextRaid?: NextRaidView | null;
   officer?: boolean;
   officerTools?: boolean;
+  gateFacts?: GateFacts | null;
   currentKey?: string | null;
   ownCharacters?: { character_key: string; name: string }[];
   viewerTimezone?: string;
@@ -52,6 +55,7 @@ function html(opts: Opts = {}): string {
       nextRaid: opts.nextRaid === undefined ? raid() : opts.nextRaid,
       officer: opts.officer ?? false,
       officerTools: opts.officerTools ?? true,
+      gateFacts: opts.gateFacts ?? null,
       guildPath: '/guild/us/normal/the-last-watch',
       currentKey: opts.currentKey === undefined ? KEY : opts.currentKey,
       ownCharacters: opts.ownCharacters ?? [{ character_key: KEY, name: 'Kraggor' }],
@@ -217,6 +221,26 @@ describe('RaidBandLine none planned', () => {
     );
     expect(body).not.toContain('guild-raid-line-plan');
     expect(body).not.toContain('href="#raids"');
+  });
+
+  it('gives a gated guild master the same trial link as the Raids tab (guild round 3)', () => {
+    const body = html({ nextRaid: null, officer: true, officerTools: false, gateFacts: gateFactsFixture() });
+    expect(text(body, 'guild-raid-line-none')).toBe(
+      'Nothing planned yet. Planning raids and events is part of the Guild and Raid guild plans. Start the 7-day trial.',
+    );
+    expect(body).toContain(`href="${GATE_SETTINGS_HREF}#billing"`);
+  });
+
+  it('gives a gated officer who does not hold the claim the Ask line, no link', () => {
+    const claim = { state: 'claimed' as const, yours: false, claimed_by: null };
+    const body = html({
+      nextRaid: null,
+      officer: true,
+      officerTools: false,
+      gateFacts: gateFactsFixture({ claim, guildMaster: false }),
+    });
+    expect(text(body, 'guild-raid-line-none')).toContain('Ask your guild master to turn it on.');
+    expect(body).not.toContain('#billing');
   });
 });
 

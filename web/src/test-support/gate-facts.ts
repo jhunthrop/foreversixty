@@ -17,6 +17,7 @@ export function gateFactsFixture(over: Partial<GateFacts> = {}): GateFacts {
     trialUsed: false,
     lapsed: false,
     guildTier: false,
+    granted: false,
     settingsHref: GATE_SETTINGS_HREF,
     claimHref: GATE_CLAIM_HREF,
     ...over,

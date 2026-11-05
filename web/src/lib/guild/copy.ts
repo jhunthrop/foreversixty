@@ -402,6 +402,11 @@ export const guildGateCopy = {
   startTrial: `Start the ${GUILD_TRIAL_DAYS}-day trial`,
   subscribe: 'Subscribe your guild',
   moveToRaidGuild: 'Move to Raid guild',
+  /** A plan Forever Sixty granted (guild round 3): no Move control exists, so the gate asks us. */
+  grantedMove: {
+    text: 'Your plan was granted by Forever Sixty. Ask us on Discord to move it to Raid guild.',
+    link: 'Ask us on Discord',
+  },
   ask: 'Ask ',
   askTail: ' to turn it on.',
   askMaster: 'Ask your guild master to turn it on.',

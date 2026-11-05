@@ -963,6 +963,7 @@
                     nextRaid={home.next_raid ?? null}
                     officer={officerView}
                     {officerTools}
+                    {gateFacts}
                     {guildPath}
                     currentKey={myCharacterKey}
                     ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
