@@ -60,9 +60,9 @@ type ReadinessRow struct {
 	ItemLevelDelta      *int            `json:"item_level_delta"`
 	LoggedAt            time.Time       `json:"logged_at"`
 	Failing             int             `json:"failing"`
-	// SyncedBeforeCutoff and NoExport are the raid-filtered read's: whether the export was
-	// synced within READINESS_FRESH_DAYS of the raid (null on the unfiltered read and on a
-	// no_export row), and a signed character with no export at all.
+	// SyncedBeforeCutoff and NoExport are the raid-filtered read's: true when the export was
+	// synced before the raid's cutoff_at, more than READINESS_FRESH_DAYS ago (stale; null on the
+	// unfiltered read and on a no_export row), and a signed character with no export at all.
 	SyncedBeforeCutoff *bool   `json:"synced_before_cutoff"`
 	NoExport           bool    `json:"no_export"`
 	NudgeText          *string `json:"nudge_text,omitempty"`

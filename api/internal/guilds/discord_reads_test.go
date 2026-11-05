@@ -127,7 +127,7 @@ func TestExtractedReadsMatchTheRoutes(t *testing.T) {
 			len(got.Rows) != failing || got.More != 0 {
 			t.Fatalf("readiness = %+v %v (board %d rows, %d failing)", got, err, len(board.Rows), failing)
 		}
-		want := map[string]bool{"Kraggor · Synced 10 days before the raid": true, "Mirelle · No export yet": true}
+		want := map[string]bool{"Kraggor · Synced 10 days ago": true, "Mirelle · No export yet": true}
 		for _, line := range got.Rows {
 			if !want[line] {
 				t.Fatalf("row %q, want one of %v", line, want)
@@ -170,7 +170,7 @@ func TestReadinessListsTenRowsThenTheRest(t *testing.T) {
 		rows = append(rows, ReadinessRow{Name: "Raider", Failing: 1, Consumables: ConsumablesView{State: "short"}})
 	}
 	rows = append(rows, ReadinessRow{Name: "Ready"})
-	got := readinessAnswerOf(Raid{ID: 1}, ReadinessView{Rows: rows})
+	got := readinessAnswerOf(Raid{ID: 1}, ReadinessView{Rows: rows}, time.Now())
 	if got.Signed != 13 || got.Failing != 12 || len(got.Rows) != 10 || got.More != 2 || got.Rows[0] != "Raider · Short" {
 		t.Fatalf("answer = %+v", got)
 	}
