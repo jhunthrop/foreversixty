@@ -30,7 +30,7 @@
       "feet": {"id": 1887, "why": "Enchant Boots - Greater Agility, +7 Agility"},
       "main_hand": {"id": 1900, "why": "Crusader"},
       "off_hand": {"id": 1900, "why": "Crusader"},
-      "two_hand": {"id": 1900, "why": "Crusader; no two-hand stat enchant past +9 damage is a Phase 1 recipe"}
+      "two_hand": {"id": 1900, "why": "Crusader; no two-hand stat recipe has a confirmed source"}
     },
     "agility": {
       "head": {"id": 1508, "why": "Lesser Arcanum of Voracity, +8 Agility"},
@@ -50,7 +50,7 @@
       "neck": {"id": 904, "why": "Enchant Necklace - Agility, +5 Agility"},
       "back": {"id": 7667, "why": "Enchant Cloak - Agility, +5 Agility"},
       "chest": {"id": 1891, "why": "Enchant Chest - Greater Stats, +4 to every stat"},
-      "wrist": {"id": 1883, "why": "Enchant Bracer - Greater Intellect, +7 Intellect; Strength does nothing for a hunter"},
+      "wrist": {"id": 1883, "why": "Enchant Bracer - Greater Intellect, +7 Intellect; a ranged hunter gets nothing from Strength"},
       "hands": {"id": 8206, "why": "Enchant Gloves - Greater Agility, +10 Agility in Forever"},
       "legs": {"id": 1508, "why": "Lesser Arcanum of Voracity, +8 Agility"},
       "feet": {"id": 1887, "why": "Enchant Boots - Greater Agility, +7 Agility"},
@@ -70,13 +70,13 @@
     }
   },
   "specs": {
-    "druid-balance": {"profile": "caster", "slots": {"hands": {"id": 8213, "why": "Enchant Gloves - Natural Power, +20 Nature damage for Wrath and Starfire's nature half"}}},
+    "druid-balance": {"profile": "caster", "slots": {"hands": {"id": 7647, "why": "Enchant Gloves - Arcane Power, +20 Arcane damage for Starfire; measured ahead of Natural Power and the kit"}}},
     "druid-feral": {"profile": "agility", "slots": {"main_hand": null, "off_hand": null, "two_hand": null}},
     "druid-feral-bear": {"profile": "tank", "slots": {"neck": {"id": 904, "why": "Enchant Necklace - Agility, +5 Agility"}, "hands": {"id": 8206, "why": "Enchant Gloves - Greater Agility, +10 Agility"}, "main_hand": null, "two_hand": null}},
     "druid-restoration": {"profile": "healer"},
     "hunter-beast-mastery": {"profile": "hunter"},
     "hunter-marksmanship": {"profile": "hunter"},
-    "hunter-survival": {"profile": "agility", "slots": {"wrist": {"id": 1883, "why": "Enchant Bracer - Greater Intellect, +7 Intellect; Strength does nothing for a hunter"}, "ranged": {"id": 664, "why": "Sniper Scope, +7 ranged damage"}}},
+    "hunter-survival": {"profile": "agility", "slots": {"ranged": {"id": 664, "why": "Sniper Scope, +7 ranged damage"}}},
     "mage-arcane": {"profile": "caster", "slots": {"hands": {"id": 7647, "why": "Enchant Gloves - Arcane Power, +20 Arcane damage"}}},
     "mage-fire": {"profile": "caster"},
     "mage-frost": {"profile": "caster"},
