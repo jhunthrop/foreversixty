@@ -180,7 +180,12 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 		return LootView{}, err
 	}
 	roster = append(roster, invited...)
-	awards, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)
+	all, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)
+	if err != nil {
+		return LootView{}, err
+	}
+	now := time.Now()
+	nightRaid, err := s.resolveAwardRaid(ctx, guildID, nil, now)
 	if err != nil {
 		return LootView{}, err
 	}
@@ -191,13 +196,14 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 	for _, row := range invited {
 		invitedName[row.awardKey] = row.Name
 	}
-	for _, a := range awards {
-		if name, ok := invitedName[a.CharacterKey]; ok && a.Name == "" {
-			a.Name = name
+	for _, a := range all {
+		if name, ok := invitedName[a.to.CharacterKey]; ok && a.to.Name == "" {
+			a.to.Name = name
 		}
 	}
 
-	wonBy := awardCounts(awards)
+	awards := tonightsAwards(all, nightRaid, now)
+	wonBy := awardCounts(all)
 
 	for _, item := range onyxiaLoot {
 		// Two of the table's items can share a name (the Alliance and Horde "Head of Onyxia" quest
@@ -442,11 +448,26 @@ func deltaOrZero(d *int) int {
 	return *d
 }
 
-// lootAwards reads every current award for guildID's encounterID, keyed by item id, with
-// the claimant's and the awarding officer's own names resolved.
-func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) (map[int]*AwardedTo, error) {
+// lootAward is one award row as the Loot tab reads it: the item, the raid it was filed under
+// (nil for none yet) and when, with the line the page shows.
+type lootAward struct {
+	itemID    int
+	raidID    *int64
+	awardedAt time.Time
+	to        *AwardedTo
+}
+
+// raidlessAwardNight is how long an award filed under no raid still marks its item awarded on
+// the Loot tab: one raid night (the longest raid's match window, an hour before to six after a
+// four-hour raid, is eleven hours).
+const raidlessAwardNight = 12 * time.Hour
+
+// lootAwards reads every award row for guildID's encounterID, oldest first, with the claimant's
+// and the awarding officer's own names resolved. Every row is kept: the tier's count reads them
+// all, and tonightsAwards picks the ones that mark an item awarded now.
+func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) ([]lootAward, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select la.item_id, la.id, la.character_key, coalesce(ae.name, ''), la.awarded_at, la.awarded_by
+		select la.item_id, la.raid_id, la.id, la.character_key, coalesce(ae.name, ''), la.awarded_at, la.awarded_by
 		from loot_awards la left join addon_exports ae on ae.character_key = la.character_key
 		where la.guild_id = $1 and la.encounter_id = $2
 		order by la.awarded_at, la.id`, guildID, encounterID)
@@ -454,22 +475,40 @@ func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) (map
 		return nil, fmt.Errorf("guilds: loot awards: %w", err)
 	}
 	defer rows.Close()
-	out := map[int]*AwardedTo{}
+	var out []lootAward
 	for rows.Next() {
-		var itemID int
+		var row lootAward
 		var awardedBy *int64
-		var a AwardedTo
-		var awardedAt time.Time
-		if err := rows.Scan(&itemID, &a.AwardID, &a.CharacterKey, &a.Name, &awardedAt, &awardedBy); err != nil {
+		a := &AwardedTo{}
+		if err := rows.Scan(&row.itemID, &row.raidID, &a.AwardID, &a.CharacterKey, &a.Name, &row.awardedAt, &awardedBy); err != nil {
 			return nil, fmt.Errorf("guilds: loot awards: %w", err)
 		}
-		a.At = awardedAt.UTC().Format(time.RFC3339)
+		a.At = row.awardedAt.UTC().Format(time.RFC3339)
 		if awardedBy != nil && s.Accounts != nil {
 			a.ByName = s.awarderName(ctx, guildID, *awardedBy)
 		}
-		out[itemID] = &a
+		row.to = a
+		out = append(out, row)
 	}
 	return out, rows.Err()
+}
+
+// tonightsAwards is each item's award on the night being played, keyed by item id: an award
+// filed under nightRaid (the raid whose match window holds now, nil when none), or one filed
+// under no raid within the last raidlessAwardNight. Last week's award leaves the item free to
+// award again; the latest award of an item wins.
+func tonightsAwards(awards []lootAward, nightRaid *int64, now time.Time) map[int]*AwardedTo {
+	out := map[int]*AwardedTo{}
+	for _, a := range awards {
+		tonight := a.raidID == nil && now.Sub(a.awardedAt) <= raidlessAwardNight
+		if a.raidID != nil && nightRaid != nil {
+			tonight = *a.raidID == *nightRaid
+		}
+		if tonight {
+			out[a.itemID] = a.to
+		}
+	}
+	return out
 }
 
 // anOfficer is what an award line says when it cannot name the officer's character.
@@ -739,13 +778,14 @@ func (s *Service) deleteLootAward(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// awardCounts is how many of the tier's drops each character has been awarded in this guild. An
-// award row names one encounter (Onyxia, the only one an award can name), so every row is the
-// current tier and the count needs no table of its own.
-func awardCounts(awards map[int]*AwardedTo) map[string]int {
+// awardCounts is how many of the tier's drops each character has been awarded in this guild,
+// every award row counted (two weeks of the same helm are two items). An award row names one
+// encounter (Onyxia, the only one an award can name), so every row is the current tier and the
+// count needs no table of its own.
+func awardCounts(awards []lootAward) map[string]int {
 	out := make(map[string]int, len(awards))
 	for _, a := range awards {
-		out[a.CharacterKey]++
+		out[a.to.CharacterKey]++
 	}
 	return out
 }
