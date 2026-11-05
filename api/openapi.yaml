@@ -828,7 +828,7 @@ components:
           title: SimRequestSource
           type: object
           properties:
-            kind: { type: string, enum: [armory, addon, build, fight, manual] }
+            kind: { type: string, enum: [armory, addon, blizzard, build, fight, manual] }
             ref: { type: string }
             captured_at: { type: string, format: date-time }
         character:

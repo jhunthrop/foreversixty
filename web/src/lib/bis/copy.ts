@@ -320,7 +320,7 @@ export const bisCopy = {
    *  provenance -- the data field name (`client_unconfirmed`) and every testid keep their
    *  names unchanged; only the two player-facing strings change. */
   clientUnconfirmedTag: '1.12 stats',
-  clientUnconfirmedTitle: "Stats from the original 1.12 tables; not yet seen in Forever's client",
+  clientUnconfirmedTitle: "Stats from the original 1.12 tables; Forever's own numbers not seen yet",
   /** `empty_reason` copy, one line per value the ranker publishes -- `no_sourced_item` and
    *  any value this page does not recognise both fall back to `noKnownSourceForSlot`'s own
    *  text (spec's "unknown -> the last"), never a fabricated reason. */

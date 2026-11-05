@@ -15,8 +15,12 @@ const retributionConsecrationID = 20924
 // rank choice. With no guard at all, though, Consecration drains the pool
 // and the seal lapses (bare 20 to 50 spend 75 to 115 s of the fight out of
 // mana). So the line keeps the core buttons affordable and spends the pool
-// on the fight's pace: never a flat mana percentage.
-func TestRetributionConsecrationSpendsThePoolOnThePace(t *testing.T) {
+// on the fight's pace: never a flat mana percentage. Sim-accuracy round 23:
+// the pace became a mana budget (the pool plus what the paladin regains over
+// the fight's remaining time against the Judgements still to come), which
+// reads raid mana and bare mana alike: raid 60 ties, bare 60 and every level
+// from 20 gain.
+func TestRetributionConsecrationSpendsThePoolOnTheBudget(t *testing.T) {
 	raw, err := aplFS.ReadFile("apl/paladin-retribution.apl.json")
 	if err != nil {
 		t.Fatal(err)
@@ -47,22 +51,22 @@ func TestRetributionConsecrationSpendsThePoolOnThePace(t *testing.T) {
 		if err := json.Unmarshal(e.Action.Condition, &cond); err != nil {
 			t.Fatalf("Consecration's condition: %v", err)
 		}
-		var flat, pace, reserve bool
+		var flat, budget, reserve bool
 		walkManaComparisons(cond, func(cmp map[string]any) {
 			lhs, _ := cmp["lhs"].(map[string]any)
 			rhs, _ := cmp["rhs"].(map[string]any)
 			if _, ok := lhs["currentManaPercent"]; ok {
 				_, isConst := rhs["const"]
 				flat = flat || isConst
-				pace = pace || containsKey(rhs, "remainingTimePercent")
 			}
+			budget = budget || (containsKey(lhs, "manaIncomePerSecond") && containsKey(lhs, "remainingTime") && containsKey(rhs, "remainingTime"))
 			reserve = reserve || (containsKey(lhs, "currentMana") && containsKey(rhs, "spellCurrentCost"))
 		})
 		if flat {
 			t.Error("Consecration is rationed by a flat mana percentage")
 		}
-		if !pace {
-			t.Error("Consecration does not compare the pool with the fight's remaining time")
+		if !budget {
+			t.Error("Consecration does not weigh the pool and its regen against the fight's remaining time")
 		}
 		if !reserve {
 			t.Error("Consecration does not keep the seal, Judgement and Holy Strike affordable")
@@ -110,13 +114,14 @@ func containsKey(node any, key string) bool {
 	return false
 }
 
-// Re-measured on the paced line (round 10): rank 1 still wins from 30 to 59,
-// with the gate taken away as well, where Retribution then runs dry, except
-// at 44 to 49, where round 16 wave 2's per-level sweep found rank 2 ahead on
-// the MaxLevel + 12 rule (+0.3 to +1.4%, seeds 1 and 50001), and at 54 to
-// 59, where round 19's per-level sweep found rank 4 ahead (Undead +0.6 to
-// +2.2%, Human level at 54 and 55 and +0.25 to +1.1% from 56); at 60 the
-// bare fight runs dry and casts rank 4, the raid fight keeps rank 5.
+// Re-measured on the mana budget (sim-accuracy round 23, 10,000 iterations,
+// seeds 1 and 50001, Human, Dwarf and Undead, every level from 40 to 59): the
+// budget leaves more mana for Consecration, which moves the cheap ranks. Rank 1
+// wins at 30 to 46 and at 50 to 53 for every race; rank 2 holds at 47 to 49
+// for Human and Dwarf; from 54 the races split (Human rank 1 at 54 and 55 and
+// rank 3 at 57; Dwarf rank 3 at 54 to 56 and rank 1 at 58 and 59; Undead
+// rank 1 at 47 and rank 3 at 54 to 58); at 60 the bare fight casts rank 4,
+// the raid fight keeps rank 5.
 func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	for _, c := range []struct {
 		preset string
@@ -125,10 +130,12 @@ func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	}{
 		{BarePreset, 30, 26573},
 		{BarePreset, 43, 26573},
-		{BarePreset, 45, 20116},
+		{BarePreset, 45, 26573},
+		{BarePreset, 48, 20116},
 		{BarePreset, 50, 26573},
 		{BarePreset, 53, 26573},
-		{BarePreset, 54, 20923},
+		{BarePreset, 54, 26573},
+		{BarePreset, 57, 20922},
 		{BarePreset, 59, 20923},
 		{BarePreset, 60, 20923},
 		{RaidPreset, 60, retributionConsecrationID},
@@ -140,24 +147,24 @@ func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	}
 }
 
-// Sim-accuracy round 21 (guide-accuracy round 18, sims requested 1): ranks 1
-// to 4 at 50 to 53, on the paced line and with both of its conditions taken
-// away. Rank 1 wins at 50 to 52 for every race and wins by more without the
-// pacing (rank 4 then spends 80 to 87 s of the fight out of mana). At 53 the
-// races split: Human keeps rank 1 (+0.2% over ranks 3 and 4), while Dwarf
-// (+0.8%) and Undead (+0.2 to +0.4%) gain with the top rank learned.
-func TestRetributionConsecrationRankAtFiftyThreeFollowsTheRace(t *testing.T) {
+// Sim-accuracy round 23: the races split where a keyed row beats the default
+// beyond error at both seeds (rank-choices.json notes carry the numbers).
+func TestRetributionConsecrationRankFollowsTheRace(t *testing.T) {
 	for _, c := range []struct {
 		race  string
 		level int
 		want  int32
 	}{
-		{"human", 52, 26573},
-		{"dwarf", 52, 26573},
-		{"undead", 52, 26573},
 		{"human", 53, 26573},
-		{"dwarf", 53, 20923},
-		{"undead", 53, 20923},
+		{"dwarf", 53, 26573},
+		{"undead", 53, 26573},
+		{"undead", 47, 26573},
+		{"dwarf", 47, 20116},
+		{"undead", 48, 20922},
+		{"dwarf", 55, 20922},
+		{"undead", 56, 20922},
+		{"dwarf", 58, 26573},
+		{"human", 58, 20923},
 	} {
 		ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", BarePreset, c.race))
 		if !ids[c.want] {

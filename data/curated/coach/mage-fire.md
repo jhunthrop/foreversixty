@@ -27,7 +27,7 @@ This is the best Fire Mage on Forever. Fire casts a three second Fireball, keeps
 - Arcane Blast whenever its buff has dropped, once, then back to Fire.
 - Fire Blast every time it is off cooldown. It is instant, and from Heating Up at thirty every hit is a stack.
 - Arcane Missiles the moment Missile Barrage procs, while the proc is up.
-- On the raid build Fireball is the filler.
+- Fireball is the filler once you have Arcane Blast, which the leveling build takes at fifty-seven.
 - Combustion once the boss carries five Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
 - Flamestrike is a three second cast that burns the ground for eight seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range.

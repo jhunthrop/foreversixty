@@ -22,10 +22,19 @@ function isSlot(slot: string): slot is Slot {
   return (SLOTS as readonly string[]).includes(slot);
 }
 
-/** The band's picks in the planner's slots; an empty slot (no pick) is left out. */
+/** The band's picks and their enchants in the planner's slots, so the simulator measures the
+ *  set the band published; an empty slot (no pick) is left out. */
 function bandGearSlots(band: BisBand): FS1GearSlot[] {
   return band.slots.flatMap((row) =>
-    isSlot(row.slot) && row.item_id > 0 ? [{ slot: row.slot, itemId: row.item_id }] : [],
+    isSlot(row.slot) && row.item_id > 0
+      ? [
+          {
+            slot: row.slot,
+            itemId: row.item_id,
+            ...(row.enchant_id ? { enchant: row.enchant_id } : {}),
+          },
+        ]
+      : [],
   );
 }
 

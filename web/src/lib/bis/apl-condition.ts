@@ -5,7 +5,7 @@
 // one of them, so the words have to come from the condition tree itself.
 //
 // Only the shapes the lists use today are read (health and mana comparisons, the mana
-// pace, "not already on the target"); a step with any other clause reads as `null` and
+// pace, the mana budget, "not already on the target"); a step with any other clause reads as `null` and
 // keeps its note alone rather than a half-translated sentence.
 
 /** The fake raid the healer lists are written against: player 5 is the tank, 1-4 the party. */
@@ -80,7 +80,29 @@ function manaPaceAtom(node: Node): Atom | null {
   };
 }
 
+/** `currentMana + manaIncomePerSecond x remainingTime`: the mana a caster can still spend
+ *  before the fight ends, read against what the rotation has left to cast. */
+function isManaBudget(node: unknown): boolean {
+  if (!isNode(node) || !isNode(node.math) || node.math.op !== 'OpAdd') return false;
+  const { lhs, rhs } = node.math;
+  if (!isNode(lhs) || !isNode(lhs.currentMana) || !isNode(rhs) || !isNode(rhs.math)) return false;
+  const income = rhs.math;
+  return (
+    income.op === 'OpMul' &&
+    isNode(income.lhs) &&
+    isNode(income.lhs.manaIncomePerSecond) &&
+    isNode(income.rhs) &&
+    isNode(income.rhs.remainingTime)
+  );
+}
+
+const MANA_BUDGET_ATOM: Atom = {
+  who: null,
+  predicate: 'your mana and what you regain before the fight ends cover what is left to cast',
+};
+
 function comparisonAtom(node: Node): Atom | null {
+  if (node.op === 'OpGe' && isManaBudget(node.lhs)) return MANA_BUDGET_ATOM;
   const word = COMPARISON_WORDS[String(node.op)];
   if (word === undefined || !isNode(node.lhs)) return null;
   const bound = constantOf(node.rhs);

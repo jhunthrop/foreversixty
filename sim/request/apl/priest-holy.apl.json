@@ -143,7 +143,7 @@
           }
         }
       },
-      "notes": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters."
+      "notes": "Flash Heal on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters."
     },
     {
       "action": {
@@ -176,7 +176,7 @@
           }
         }
       },
-      "notes": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana."
+      "notes": "Flash Heal on a party member under 30%: when someone is about to die, the speed matters more than the mana."
     },
     {
       "action": {

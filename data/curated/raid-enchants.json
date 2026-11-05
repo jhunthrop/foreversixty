@@ -1,0 +1,102 @@
+{
+  "notes": "The permanent enchants each spec wears in the BiS ranker's raid pass at level 60 (sim/cmd/leveling-bis/enchants.go): what a fresh level 60 can buy or have made in Phase 1, with no raid, Zul'Gurub, Dire Maul, Ahn'Qiraj or Naxxramas recipe. Ids are the active build's enchants.json effect ids. A profile is a role's slot plan; a spec names one and may override slots. Slot keys: the armor slots by planner name, ranged, main_hand and off_hand for a one-handed weapon, two_hand for a two-hander in the main hand, shield for a shield in the off hand. A held-in-off-hand item and rings and trinkets take none. Evidence per enchant: design/reviews/2026-11-04-raid-enchants.md.",
+  "profiles": {
+    "caster": {
+      "head": {"id": 1509, "why": "Lesser Arcanum of Voracity, +8 Intellect; the arcanum is the only head enchant a fresh 60 gets"},
+      "neck": {"id": 8218, "why": "Enchant Necklace - Spell Power, +6 spell power"},
+      "chest": {"id": 1891, "why": "Enchant Chest - Greater Stats, +4 to every stat"},
+      "wrist": {"id": 7665, "why": "Enchant Bracer - Greater Spellpower, +16 spell power"},
+      "hands": {"id": 8492, "why": "Mystic Rugged Armor Kit, +6 spell power; no Phase 1 glove enchant for this school"},
+      "legs": {"id": 8492, "why": "Mystic Rugged Armor Kit, +6 spell power, ahead of +8 Intellect for damage"},
+      "feet": {"id": 8492, "why": "Mystic Rugged Armor Kit, +6 spell power; no boot enchant gives spell power"},
+      "two_hand": {"id": 7662, "why": "Enchant 2H Weapon - Spellblasting, +65 spell power"}
+    },
+    "healer": {
+      "head": {"id": 1509, "why": "Lesser Arcanum of Voracity, +8 Intellect"},
+      "neck": {"id": 8219, "why": "Enchant Necklace - Healing Power, +11 healing"},
+      "chest": {"id": 1891, "why": "Enchant Chest - Greater Stats, +4 to every stat"},
+      "wrist": {"id": 1901, "why": "Enchant Bracer - Superior Intellect, +9 Intellect; the healing bracer is an Argent Dawn recipe gated later"},
+      "legs": {"id": 1509, "why": "Lesser Arcanum of Voracity, +8 Intellect"},
+      "two_hand": {"id": 8212, "why": "Enchant 2H Weapon - Mighty Healing Power, +100 healing"}
+    },
+    "strength": {
+      "head": {"id": 1506, "why": "Lesser Arcanum of Voracity, +8 Strength"},
+      "neck": {"id": 856, "why": "Enchant Necklace - Strength, +5 Strength"},
+      "back": {"id": 7667, "why": "Enchant Cloak - Agility, +5 Agility"},
+      "chest": {"id": 1891, "why": "Enchant Chest - Greater Stats, +4 to every stat"},
+      "wrist": {"id": 1885, "why": "Enchant Bracer - Superior Strength, +9 Strength"},
+      "hands": {"id": 2563, "why": "Enchant Gloves - Superior Strength, +15 Strength"},
+      "legs": {"id": 1506, "why": "Lesser Arcanum of Voracity, +8 Strength"},
+      "feet": {"id": 1887, "why": "Enchant Boots - Greater Agility, +7 Agility"},
+      "main_hand": {"id": 1900, "why": "Crusader"},
+      "off_hand": {"id": 1900, "why": "Crusader"},
+      "two_hand": {"id": 1900, "why": "Crusader; no two-hand stat recipe has a confirmed source"}
+    },
+    "agility": {
+      "head": {"id": 1508, "why": "Lesser Arcanum of Voracity, +8 Agility"},
+      "neck": {"id": 904, "why": "Enchant Necklace - Agility, +5 Agility"},
+      "back": {"id": 7667, "why": "Enchant Cloak - Agility, +5 Agility"},
+      "chest": {"id": 1891, "why": "Enchant Chest - Greater Stats, +4 to every stat"},
+      "wrist": {"id": 1885, "why": "Enchant Bracer - Superior Strength, +9 Strength; no Phase 1 agility bracer source is confirmed"},
+      "hands": {"id": 8206, "why": "Enchant Gloves - Greater Agility, +10 Agility in Forever"},
+      "legs": {"id": 1508, "why": "Lesser Arcanum of Voracity, +8 Agility"},
+      "feet": {"id": 1887, "why": "Enchant Boots - Greater Agility, +7 Agility"},
+      "main_hand": {"id": 1900, "why": "Crusader"},
+      "off_hand": {"id": 1900, "why": "Crusader"},
+      "two_hand": {"id": 1900, "why": "Crusader"}
+    },
+    "hunter": {
+      "head": {"id": 1508, "why": "Lesser Arcanum of Voracity, +8 Agility"},
+      "neck": {"id": 904, "why": "Enchant Necklace - Agility, +5 Agility"},
+      "back": {"id": 7667, "why": "Enchant Cloak - Agility, +5 Agility"},
+      "chest": {"id": 1891, "why": "Enchant Chest - Greater Stats, +4 to every stat"},
+      "wrist": {"id": 1883, "why": "Enchant Bracer - Greater Intellect, +7 Intellect; a ranged hunter gets nothing from Strength"},
+      "hands": {"id": 8206, "why": "Enchant Gloves - Greater Agility, +10 Agility in Forever"},
+      "legs": {"id": 1508, "why": "Lesser Arcanum of Voracity, +8 Agility"},
+      "feet": {"id": 1887, "why": "Enchant Boots - Greater Agility, +7 Agility"},
+      "ranged": {"id": 664, "why": "Sniper Scope, +7 ranged damage"}
+    },
+    "tank": {
+      "head": {"id": 1507, "why": "Lesser Arcanum of Voracity, +8 Stamina"},
+      "neck": {"id": 856, "why": "Enchant Necklace - Strength, +5 Strength"},
+      "back": {"id": 1889, "why": "Enchant Cloak - Superior Defense, +70 armor"},
+      "chest": {"id": 1891, "why": "Enchant Chest - Greater Stats, +4 to every stat"},
+      "wrist": {"id": 1886, "why": "Enchant Bracer - Superior Stamina, +9 Stamina"},
+      "hands": {"id": 2563, "why": "Enchant Gloves - Superior Strength, +15 Strength"},
+      "legs": {"id": 1507, "why": "Lesser Arcanum of Voracity, +8 Stamina"},
+      "feet": {"id": 929, "why": "Enchant Boots - Greater Stamina, +7 Stamina"},
+      "main_hand": {"id": 1900, "why": "Crusader"},
+      "shield": {"id": 1886, "why": "Enchant Shield - Greater Stamina, +9 Stamina in Forever"}
+    }
+  },
+  "specs": {
+    "druid-balance": {"profile": "caster", "slots": {"hands": {"id": 7647, "why": "Enchant Gloves - Arcane Power, +20 Arcane damage for Starfire; measured ahead of Natural Power and the kit"}}},
+    "druid-feral": {"profile": "agility", "slots": {"main_hand": null, "off_hand": null, "two_hand": null}},
+    "druid-feral-bear": {"profile": "tank", "slots": {"neck": {"id": 904, "why": "Enchant Necklace - Agility, +5 Agility"}, "hands": {"id": 8206, "why": "Enchant Gloves - Greater Agility, +10 Agility"}, "main_hand": null, "two_hand": null}},
+    "druid-restoration": {"profile": "healer"},
+    "hunter-beast-mastery": {"profile": "hunter"},
+    "hunter-marksmanship": {"profile": "hunter"},
+    "hunter-survival": {"profile": "agility", "slots": {"ranged": {"id": 664, "why": "Sniper Scope, +7 ranged damage"}}},
+    "mage-arcane": {"profile": "caster", "slots": {"hands": {"id": 7647, "why": "Enchant Gloves - Arcane Power, +20 Arcane damage"}}},
+    "mage-fire": {"profile": "caster"},
+    "mage-frost": {"profile": "caster"},
+    "paladin-holy": {"profile": "healer"},
+    "paladin-protection": {"profile": "tank"},
+    "paladin-retribution": {"profile": "strength"},
+    "priest-discipline": {"profile": "healer"},
+    "priest-holy": {"profile": "healer"},
+    "priest-shadow": {"profile": "caster"},
+    "rogue-assassination": {"profile": "agility"},
+    "rogue-combat": {"profile": "agility"},
+    "rogue-subtlety": {"profile": "agility"},
+    "shaman-elemental": {"profile": "caster", "slots": {"hands": {"id": 8213, "why": "Enchant Gloves - Natural Power, +20 Nature damage for Lightning Bolt and Chain Lightning"}}},
+    "shaman-enhancement": {"profile": "strength"},
+    "shaman-restoration": {"profile": "healer"},
+    "warlock-affliction": {"profile": "caster"},
+    "warlock-demonology": {"profile": "caster"},
+    "warlock-destruction": {"profile": "caster"},
+    "warrior-arms": {"profile": "strength"},
+    "warrior-fury": {"profile": "strength"},
+    "warrior-protection": {"profile": "tank"}
+  }
+}

@@ -519,3 +519,15 @@ def test_no_banned_item_has_an_open_way_in_the_active_build():
     leaks = _open_ways(gated, set(banned))
     assert not leaks, {item_id: banned[item_id] for item_id in sorted(leaks)}
     assert set(missing) <= AWAITING_THE_NEXT_DATA_RUN, missing
+
+
+def test_pix_xizzix_opens_with_the_reals_and_the_other_traders_stay_gated():
+    """Client_unconfirmed lane, 2026-11-05: her stock sells for Tarnished
+    Undermine Reals, which Blizzard brought back as Forever's dungeon
+    currency. The other four traders' currency is still unknown."""
+    index = load_content_phases(CURATED).index()
+    assert 227853 not in index.npcs
+    for trader in (265574, 265575, 265576, 265577):
+        assert index.npcs[trader].opens == "later"
+    gate = {gate.key: gate for gate in load_content_phases(CURATED).gates}["undermine-reals"]
+    assert (gate.phase, gate.date, gate.confidence) == ("launch", "2026-11-04", "inferred")

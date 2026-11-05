@@ -1,0 +1,28 @@
+{
+  "specs": [
+    "druid-balance",
+    "druid-feral",
+    "druid-feral-bear",
+    "hunter-beast-mastery",
+    "hunter-marksmanship",
+    "hunter-survival",
+    "mage-arcane",
+    "mage-fire",
+    "mage-frost",
+    "paladin-protection",
+    "paladin-retribution",
+    "priest-shadow",
+    "rogue-assassination",
+    "rogue-combat",
+    "rogue-subtlety",
+    "shaman-elemental",
+    "shaman-enhancement",
+    "warlock-affliction",
+    "warlock-demonology",
+    "warlock-destruction",
+    "warrior-arms",
+    "warrior-fury",
+    "warrior-protection"
+  ],
+  "reason": "2.0.28: damage and tank specs; the five healers rank in the next run (2.0.29). bis.yml's 300-minute job no longer fits all 28 specs."
+}

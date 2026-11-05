@@ -222,6 +222,8 @@ func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed in
 // already carries its own consumes or buffs keeps them. A spec ranked
 // under a preset (specInfo.Applied) carries the preset's buffs, debuffs
 // and consumables with the kit on top (request.ResolvedPreset.Layer).
+// The raid pass wears its permanent enchants too (enchants.go), so every
+// verify, measure and weight request sims the enchanted set.
 func withKit(spec specInfo, ch api.CharacterSpec) api.CharacterSpec {
 	kitConsumes := leveling.KitConsumes(spec.Spec, ch.Level)
 	kitBuffs := leveling.KitBuffs(spec.Spec, ch.Level)
@@ -234,7 +236,7 @@ func withKit(spec specInfo, ch api.CharacterSpec) api.CharacterSpec {
 	if ch.Buffs == nil {
 		ch.Buffs = kitBuffs
 	}
-	return ch
+	return withRaidEnchants(spec, ch)
 }
 
 // plainRequest builds an ordinary DPS-run SimRequest for ch, at

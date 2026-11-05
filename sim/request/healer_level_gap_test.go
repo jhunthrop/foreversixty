@@ -246,11 +246,13 @@ var powerWordShieldRanks = map[int]int{1: 17, 2: 592, 3: 600, 4: 3747, 5: 6065, 
 // gain also ignores all damage absorption effects, so Power Word: Shield will
 // no longer decrease Rage gained"), and under the level-gap rule rank 4 keeps
 // 5% of its bonus at 60: rank 10 is +1.0 to +1.4% at raid 60, both seeds, and
-// no bare band loses.
+// no bare band loses. Round 23: a Human keeps rank 5 at 40 (+0.3%, its first
+// level on band-40 gear), the one level here where a race row holds the older
+// rank (rank_choices_priest_r23_test.go).
 func TestDisciplineShieldsAtTheTopRank(t *testing.T) {
 	shield := linesCasting(t, "priest-discipline", 3747, 10901)
 	assertRanks(t, shield, "priest-discipline", "priest", "human", powerWordShieldRanks, []rankCase{
-		{20, BarePreset, 3}, {30, BarePreset, 5}, {40, BarePreset, 6}, {45, BarePreset, 7}, {50, BarePreset, 8},
+		{20, BarePreset, 3}, {30, BarePreset, 5}, {40, BarePreset, 5}, {41, BarePreset, 6}, {45, BarePreset, 7}, {50, BarePreset, 8},
 		{60, BarePreset, 10}, {60, RaidPreset, 10},
 	})
 }
