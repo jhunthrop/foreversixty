@@ -30,8 +30,8 @@ const (
 // rosterLevel is the character's level: the export's own, else the guild roster snapshot's; false
 // when neither says.
 func rosterLevel(row RosterRow) (int, bool) {
-	if row.hasLevel && row.level > 0 {
-		return row.level, true
+	if row.Level != nil && *row.Level > 0 {
+		return *row.Level, true
 	}
 	if row.Addon != nil && row.Addon.Level != nil && *row.Addon.Level > 0 {
 		return *row.Addon.Level, true

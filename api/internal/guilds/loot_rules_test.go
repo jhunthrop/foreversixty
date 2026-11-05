@@ -29,7 +29,7 @@ func candidate(name, class, spec string, level int) RosterRow {
 	return RosterRow{
 		CharacterKey: "us/hardcore/" + name, Name: name, Verified: true,
 		Class: &class, className: class, Spec: &spec, specStr: spec,
-		level: level, hasLevel: true, gear: map[string]int{},
+		Level: i(level), gear: map[string]int{},
 	}
 }
 
@@ -132,7 +132,7 @@ func TestALevel58IsOnNoOnyxiaItem(t *testing.T) {
 func TestAnUnknownLevelIsNotACandidate(t *testing.T) {
 	s := realTreesStore(t)
 	row := candidate("Warrior", "warrior", "Fury", 0)
-	row.hasLevel = false
+	row.Level = nil
 	if cands := s.lootCandidates([]RosterRow{row}, onyxiaRow(t, 16963)); len(cands) != 0 {
 		t.Fatalf("an unknown level is listed: %+v", cands)
 	}
@@ -141,7 +141,7 @@ func TestAnUnknownLevelIsNotACandidate(t *testing.T) {
 func TestTheRosterSnapshotLevelStandsInForAMissingExportLevel(t *testing.T) {
 	s := realTreesStore(t)
 	row := candidate("Warrior", "warrior", "Fury", 0)
-	row.hasLevel = false
+	row.Level = nil
 	level := 60
 	row.Addon = &AddonMemberView{Level: &level}
 	if cands := s.lootCandidates([]RosterRow{row}, onyxiaRow(t, 16963)); len(cands) != 1 {

@@ -448,7 +448,7 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 		{
 			CharacterKey: "us/hardcore/fallbackwarrior", Name: "Fallbackwarrior", Verified: true,
 			className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{},
-			level: 60, hasLevel: true,
+			Level: i(60),
 		},
 	}
 	cands := s.lootCandidates(roster, onyxiaRow(t, 16963))
@@ -515,7 +515,7 @@ func TestAwardCountsAndTheCandidateLine(t *testing.T) {
 	roster := []RosterRow{{
 		CharacterKey: "us/hardcore/wearer", Name: "Wearer", Verified: true,
 		className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{"head": 21524},
-		level: 60, hasLevel: true,
+		Level: i(60),
 	}}
 	cands := s.lootCandidates(roster, onyxiaRow(t, 16963))
 	if len(cands) != 1 || cands[0].Replaces != "Red Winter Hat" {

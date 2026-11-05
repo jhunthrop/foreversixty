@@ -50,8 +50,6 @@
   import SettingsRow from '../ui/SettingsRow.svelte';
   import FactLine from './FactLine.svelte';
   import { overviewLootLine, type OverviewLootLine } from '../../lib/guild/loot-view';
-  import { classColorVar } from '../../lib/report/format';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import RaidLootItem from './RaidLootItem.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
 
