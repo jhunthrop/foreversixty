@@ -52,8 +52,18 @@ func loggedNightEmbed(ans guilds.LoggedNightAnswer, link string) notify.Embed {
 	return e
 }
 
-// loggedNightLine is the night line with "{n} present" where a planned raid's says who came.
+// loggedNightLine is the night line with "{n} present" where a planned raid's says who came,
+// then the boss kills, the trash packs (pulls with no named encounter, never counted as kills:
+// the Overview's words) and the rest of the tally.
 func loggedNightLine(ans guilds.LoggedNightAnswer) string {
 	parts := []string{fill(officerCopy.LoggedPresent, "{n}", strconv.Itoa(ans.Present))}
-	return strings.Join(append(parts, tallyClauses(ans.Kills, ans.Wipes, ans.Deaths, ans.DurationMS)...), lineJoin)
+	tally := tallyClauses(ans.Kills, ans.Wipes, ans.Deaths, ans.DurationMS)
+	if ans.TrashPacks > 0 {
+		at := 0
+		if ans.Kills > 0 {
+			at = 1
+		}
+		tally = append(tally[:at], append([]string{units(ans.TrashPacks, "trash pack")}, tally[at:]...)...)
+	}
+	return strings.Join(append(parts, tally...), lineJoin)
 }

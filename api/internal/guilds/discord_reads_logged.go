@@ -20,8 +20,11 @@ type LoggedNightAnswer struct {
 	// At is when the report was made, the date the Raids tab shows.
 	At time.Time
 	// Present is how many characters the log shows (the tab's "N of N present").
-	Present              int
+	Present int
+	// Kills and Wipes are boss pulls only (a named encounter); TrashPacks the trash packs
+	// cleared, the pulls with no named encounter, as the Raids tab and the Overview say them.
 	Kills, Wipes, Deaths int
+	TrashPacks           int
 	DurationMS           int64
 	KillOrder            []KillOrderView
 	Unnamed              *UnnamedView
@@ -60,11 +63,29 @@ func (s *Service) LatestLoggedNight(ctx context.Context, guildID, viewerID int64
 	}
 	ans := LoggedNightAnswer{
 		ReportID: row.ID, Zone: row.Zone, Title: row.Title, At: row.CreatedAt, Present: row.Raiders,
-		Kills: row.KillCount, Wipes: row.WipeCount, Deaths: row.Deaths, DurationMS: row.DurationMS,
-		KillOrder: kills, Unnamed: unnamed, Public: public,
+		Deaths: row.Deaths, DurationMS: row.DurationMS, KillOrder: kills, Unnamed: unnamed, Public: public,
 	}
+	ans.Kills, ans.Wipes, ans.TrashPacks = bossTally(fights)
 	if zone != "" {
 		ans.GuildTimezone = &zone
 	}
 	return ans, true, nil
+}
+
+// bossTally counts a night's boss kills and wipes (pulls of a named encounter) and the trash packs
+// it cleared (kills with none). A wiped trash pack counts nowhere: it is not a wipe on the night.
+func bossTally(fights []reportFight) (kills, wipes, trash int) {
+	for _, f := range fights {
+		switch {
+		case f.encounterID == nil || *f.encounterID <= 0:
+			if f.kill {
+				trash++
+			}
+		case f.kill:
+			kills++
+		default:
+			wipes++
+		}
+	}
+	return kills, wipes, trash
 }

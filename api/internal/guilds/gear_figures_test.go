@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
@@ -44,18 +46,22 @@ func TestReadinessMeasuresAgainstTheSitesBand(t *testing.T) {
 	}
 }
 
-// The roster's item level is the equipped average from the export's gear, rounded, the figure
-// /char prints; with no gear the row keeps the log's.
+// The roster's item level is the equipped average from the export's gear, rounded, read from the
+// export's own build as the card reads it; with no gear, or an unknown item, the row keeps the
+// log's.
 func TestRosterItemLevelIsTheEquippedAverage(t *testing.T) {
 	s := realTreesStore(t)
-	// Helm of Wrath (76) and an empty rest: the mean of the one worn item.
-	if got, ok := s.equippedItemLevel(RosterRow{className: "warrior", gear: map[string]int{"head": 16963}}); !ok || got != 76 {
-		t.Fatalf("equipped item level = %d %v, want 76", got, ok)
+	build := s.BisBuild()
+	item := func(b, class string, id int) (trees.Item, bool) { return s.ItemIn(b, class, id) }
+	helm := fs1.Decoded{DataBuild: build, ClassSlug: "warrior", Gear: map[string]int{"head": 16963}}
+	if got, ok := equippedItemLevel(helm, item); !ok || got != 76 {
+		t.Fatalf("equipped item level = %d %v, want 76 (Helm of Wrath alone)", got, ok)
 	}
-	if _, ok := s.equippedItemLevel(RosterRow{className: "warrior"}); ok {
+	if _, ok := equippedItemLevel(fs1.Decoded{DataBuild: build, ClassSlug: "warrior"}, item); ok {
 		t.Fatal("no gear read an item level")
 	}
-	if _, ok := s.equippedItemLevel(RosterRow{className: "warrior", gear: map[string]int{"head": 16963, "chest": 999999999}}); ok {
+	unknown := fs1.Decoded{DataBuild: build, ClassSlug: "warrior", Gear: map[string]int{"head": 16963, "chest": 999999999}}
+	if _, ok := equippedItemLevel(unknown, item); ok {
 		t.Fatal("an unknown item still gave a figure")
 	}
 }

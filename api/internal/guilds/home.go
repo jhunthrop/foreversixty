@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
@@ -482,26 +483,31 @@ func (s *Store) scanRosterRow(rows pgx.Rows, g Guild, actorID int64, moderator, 
 					row.faction = f
 				}
 			}
+			if level, ok := equippedItemLevel(decoded, sims.GearItem); ok {
+				row.ItemLevel = &level
+			}
 		}
-	}
-	if level, ok := s.equippedItemLevel(row); ok {
-		row.ItemLevel = &level
 	}
 	return row, nil
 }
 
-// equippedItemLevel is the row's one item-level figure (upgrades.EquippedItemLevel, the number
-// /char shows too) over the export's equipped gear slots; ok is false with no export gear, or an
-// item the build's table lacks, and the row keeps its latest log's item level.
-func (s *Store) equippedItemLevel(row RosterRow) (int, bool) {
+// itemLookup is an item in a build's per-class table: sims.GearItem, the table the character
+// card reads its worn item levels from.
+type itemLookup func(build, classSlug string, itemID int) (trees.Item, bool)
+
+// equippedItemLevel is an export's one item-level figure (upgrades.EquippedItemLevel, the number
+// /char shows too) over its equipped gear slots, each item read from the export's own data build
+// as the card reads it; ok is false with no gear, or an item that build lacks, and the row keeps
+// its latest log's item level.
+func equippedItemLevel(decoded fs1.Decoded, item itemLookup) (int, bool) {
 	var levels []*int
 	for _, slot := range upgrades.Slots {
-		id, worn := row.gear[slot.Key]
+		id, worn := decoded.Gear[slot.Key]
 		if !worn || id <= 0 {
 			continue
 		}
 		var level *int
-		if it, found := s.buildItemFor(row.className, id); found {
+		if it, found := item(decoded.DataBuild, decoded.ClassSlug, id); found {
 			level = &it.ItemLevel
 		}
 		levels = append(levels, level)
