@@ -191,7 +191,7 @@ Touch and keyboard parity: every control is 44 px tall on phone; nothing is hove
 | Segments | `In`, `Late`, `Bench`, `Out` |
 | Band line | `{when}, you are In as {Role}, {n} of {size} signed up.`; `…you are Late as {Role}…`; `…you are on the Bench…`; `…you are Out…`; unsigned `{when}, you have not signed up yet. {n} of {size} are in.` (unknown size `{n} are in.`) (amended 2026-10-27, review round); unknown size `{n} signed up`; two or more own characters `you are In on {Name} as {Role}`; link `{Zone} →` |
 | `{when}` | `Tonight 8 pm`, `Tomorrow 8 pm`, `Thursday 8 pm` (within 6 days), `Thu 17 Dec, 8 pm`; then ` (9 pm guild time)` when the offsets differ; `8:30 pm` off the hour; 24-hour where the locale is |
-| Band line, none planned | member `No raid planned yet.`; officer `No raid planned yet.` and the link `Plan a raid` (to `#raids`) |
+| Band line, none planned | member `Nothing planned yet.`; officer `Nothing planned yet.` and the link `Plan an event` (to `#raids`); an officer whose plan gates planning gets the sentence only, no link (amended 2026-11-05, guild round 1) |
 | Needs line | `What the guild needs from you before {Weekday}: …`; none planned `before the next raid` |
 | Countdown | `in 2 days`, `in 1 day 4 h`, `in 5 h 20 min`, `in 12 min`, `starting now`, `started 20 min ago`, `ended 2 h ago`; updates each minute |
 | Count | `{n} of {size} signed up`, `{n}/{size}`, `{t} tanks · {h} healers · {d} DPS · {l} late` (`1 tank`, `1 healer`; the late clause only when late > 0, so the parts add up to the count) (amended 2026-10-27, review round) |

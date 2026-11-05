@@ -944,6 +944,7 @@
                     guildId={home.guild.id}
                     nextRaid={home.next_raid ?? null}
                     officer={officerView}
+                    {officerTools}
                     {guildPath}
                     currentKey={myCharacterKey}
                     ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
@@ -960,7 +961,7 @@
                     class="text-gold text-[13px] font-bold"
                     data-testid="guild-raid-line-link">{home.next_raid.zone_name} →</a
                   >
-                {:else if bandLineLazy.error !== '' && officerView}
+                {:else if bandLineLazy.error !== '' && officerView && officerTools}
                   <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
                     >{raidCopy.bandNone.planLink}</a
                   >

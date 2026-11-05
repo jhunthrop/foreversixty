@@ -60,9 +60,9 @@ export const raidCopy = {
     officer: 'Nothing planned yet. Post a dungeon run or a guild event and the guild can sign up.',
   },
   bandNone: {
-    member: 'No raid planned yet.',
-    officer: 'No raid planned yet.',
-    planLink: 'Plan a raid',
+    member: 'Nothing planned yet.',
+    officer: 'Nothing planned yet.',
+    planLink: 'Plan an event',
   },
   placeholders: {
     note: 'Note for the officers (optional)',

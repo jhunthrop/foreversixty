@@ -70,6 +70,7 @@
     guildId,
     nextRaid,
     officer,
+    officerTools = true,
     guildPath,
     currentKey,
     ownCharacters,
@@ -83,6 +84,8 @@
     guildId: number;
     nextRaid: NextRaidView | null;
     officer: boolean;
+    /** False when the guild's plan gates officer tools: the none-planned line drops its link. */
+    officerTools?: boolean;
     guildPath: string;
     /** The header character, when it is in this guild; no segments without one. */
     currentKey: string | null;
@@ -208,7 +211,7 @@
 {#if nextRaid === null}
   <p class="text-[14px]" data-testid="guild-raid-line-none">
     {officer ? raidCopy.bandNone.officer : raidCopy.bandNone.member}
-    {#if officer}
+    {#if officer && officerTools}
       <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
         >{raidCopy.bandNone.planLink}</a
       >
