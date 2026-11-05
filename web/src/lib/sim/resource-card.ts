@@ -3,9 +3,9 @@
 // summary, the two lists from `resource_sources`. Every figure is the engine's average per fight;
 // none is recomputed beyond a share and a rounding.
 import { attackHand, parseActionKey, resolveActionName, type ActionNames } from './action-names';
-import { damageCopy, grouped, oneDecimal } from './result-copy';
+import { damageCopy, grouped, navCopy, oneDecimal } from './result-copy';
 import { resourceCardCopy as copy } from './input-cards-copy';
-import { resourceLabel } from './result-sections';
+import { primaryPowerTrack, type PrimaryPower } from './primary-power';
 import type { ResourceSourceRow, SimResult } from './types';
 
 export interface ResourceRow {
@@ -34,7 +34,6 @@ export interface ResourceCard {
 const WHOLE_FROM = 10;
 /** Under this an overflow rounds to 0.0 and says nothing. */
 const LOST_FLOOR = 0.05;
-const MANA = 'Mana';
 
 /** Whole numbers with separators; one decimal under 10. */
 export function resourceAmount(value: number): string {
@@ -74,11 +73,11 @@ function manaLeft(result: SimResult): number | undefined {
 
 function thirdTile(
   result: SimResult,
-  title: string,
+  power: PrimaryPower,
   gained: number,
   wasted: number | undefined,
 ): ResourceTile[] {
-  if (title === MANA) {
+  if (power === 'mana') {
     const left = manaLeft(result);
     return left === undefined ? [] : [{ label: copy.endedWith, value: grouped(left) }];
   }
@@ -90,16 +89,17 @@ function thirdTile(
 
 /** Null when the run reports no resource at all. */
 export function resourceCard(result: SimResult, names: ActionNames | null): ResourceCard | null {
-  const resource = result.summary.resources[0];
-  if (resource === undefined) return null;
-  const title = resourceLabel(resource.power_type);
-  const sources = result.resource_sources?.find((row) => row.resource === title.toLowerCase());
+  const found = primaryPowerTrack(result);
+  if (found === null) return null;
+  const { power, track: resource } = found;
+  const title = navCopy.resource[power];
+  const sources = result.resource_sources?.find((row) => row.resource === power);
   return {
     title,
     tiles: [
       { label: copy.gained, value: grouped(resource.gained) },
       { label: copy.spent, value: grouped(resource.spent) },
-      ...thirdTile(result, title, resource.gained, resource.wasted),
+      ...thirdTile(result, power, resource.gained, resource.wasted),
     ],
     lists:
       sources === undefined

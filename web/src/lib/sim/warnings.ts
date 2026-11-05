@@ -2,9 +2,9 @@
 // Worth knowing (spec 2026-11-04-sim-results 3.5): the notes that qualify a saved run's number,
 // computed only from data the result already has. At most three, in the spec's priority order;
 // none, and the card does not render. No note is dismissible, because each one is true.
-import type { ResourceTrack } from '../report/types';
 import { parseActionKey, resolveActionName, type ActionNames } from './action-names';
 import { formatMargin } from './estimate';
+import { primaryPowerTrack, type PrimaryPower } from './primary-power';
 import { grouped, warningsCopy } from './result-copy';
 import { specDisplayName, specRow } from './spec-label';
 import type { SimSpellFact } from './spell-info';
@@ -130,21 +130,23 @@ function longCooldownWarnings({ result, names, fact }: WarningInput): SimWarning
   });
 }
 
-/** The engine's power types that have a cap worth naming: 1 rage, 3 energy. */
-const CAPPED_POWER: Readonly<Record<number, { word: string; advice: string }>> = {
-  1: { word: 'rage', advice: warningsCopy.atCapRage },
-  3: { word: 'energy', advice: warningsCopy.atCapEnergy },
+/** The powers with a cap worth naming. */
+const CAPPED_POWER: Readonly<Partial<Record<PrimaryPower, string>>> = {
+  rage: warningsCopy.atCapRage,
+  energy: warningsCopy.atCapEnergy,
 };
 
-function atCapWarning(track: ResourceTrack | undefined): SimWarning | null {
-  if (track === undefined) return null;
-  const capped = CAPPED_POWER[track.power_type];
+function atCapWarning(result: SimResult): SimWarning | null {
+  const found = primaryPowerTrack(result);
+  if (found === null) return null;
+  const { power, track } = found;
+  const advice = CAPPED_POWER[power];
   const wasted = track.wasted ?? 0;
-  if (capped === undefined || track.gained <= 0 || wasted / track.gained < AT_CAP_SHARE) return null;
+  if (advice === undefined || track.gained <= 0 || wasted / track.gained < AT_CAP_SHARE) return null;
   const percent = ((wasted / track.gained) * 100).toFixed(1);
   return {
     id: 'at-cap',
-    text: `${warningsCopy.atCap(grouped(wasted), capped.word, percent)} ${capped.advice}`,
+    text: `${warningsCopy.atCap(grouped(wasted), power, percent)} ${advice}`,
   };
 }
 
@@ -163,7 +165,7 @@ export function simWarnings(input: WarningInput): SimWarning[] {
     capstone,
     missingTalentWarning(input, capstone),
     ...longCooldownWarnings(input),
-    atCapWarning(result.summary.resources[0]),
+    atCapWarning(result),
     wideErrorWarning(result),
   ]
     .filter((note): note is SimWarning => note !== null)
