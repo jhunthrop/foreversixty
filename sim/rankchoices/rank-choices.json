@@ -727,6 +727,23 @@
             "preset": "bare"
           }
         ]
+      },
+      {
+        "spell": "Hammer of Wrath",
+        "authored": 24239,
+        "bands": [
+          {
+            "from_level": 52,
+            "to_level": 52,
+            "rank": 1,
+            "note": "Sim-accuracy round 24: rank sweep at the two levels after each new rank and on to 60 (spec-breakdown -level -rank 24239=r, bare band, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-05-sim-audit-round24/paladin.md R1). Rank 1 beats rank 2 by 0.2 to 0.35% at 52 (all four runs) and by 0.34 to 0.39% Alliance at 56 (Horde ties); at 53 to 55 and 57 to 59 it ties or loses, and at 60 rank 3 beats rank 2 by 0.2 to 0.5%."
+          },
+          {
+            "from_level": 56,
+            "to_level": 56,
+            "rank": 1
+          }
+        ]
       }
     ],
     "priest-discipline": [
