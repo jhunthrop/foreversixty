@@ -2,6 +2,8 @@
 // Every visible string the guild home, claim, settings, join and account-consent views
 // use, in the site's own honest-copy voice: no exclamation marks, never a nag inside a
 // tool. Wording quoted directly from the spec is marked as such below.
+import { GUILD_TRIAL_DAYS } from '../billing/plans';
+import { counted } from '../plural';
 import { uiCopy } from '../ui/copy';
 import { possessive } from '../possessive';
 
@@ -42,10 +44,20 @@ export const guildHomeCopy = {
   approve: 'Approve',
   remove: 'Remove',
   settingsLink: 'Guild settings',
-  claimLink: 'Claim this guild',
-  // Shown in the same header slot as claimLink, but only once an officer/leader claim is
-  // already pending confirmation (UX review defect 1, 2026-09-28).
-  confirmClaimLink: 'Confirm the claim',
+  // The band's claim row (spec 2026-11-05 §3.1).
+  claimRow: {
+    guildMaster: (guildName: string): string =>
+      `You lead ${guildName} in game. Claim it here to approve members and share the invite link.`,
+    claimButton: (guildName: string): string => `Claim ${guildName}`,
+    officer: (guildName: string): string =>
+      `Nobody has claimed ${guildName} here yet. Your guild master claims it.`,
+    copyLink: 'Copy the claim link for your guild master',
+    copied: 'Copied',
+    pending: (guildName: string): string => `A claim on ${guildName} is waiting for a second officer.`,
+    open: 'Open the claim',
+  },
+  claimedBy: 'Claimed by',
+  claimedByMaster: 'Claimed by the guild master',
   // A plain, unverified member has no claim standing at all -- this replaces the claim
   // link for them in that same slot, rather than leaving it silently absent.
   notVerifiedNote: 'You are not verified yet. An officer can approve you from the roster.',
@@ -106,8 +118,9 @@ export const guildClaimCopy = {
     `Release your claim on ${guildName === '' ? 'this guild' : guildName}? Officers will have to claim it again.`,
   releaseConfirmButton: 'Release',
   cancel: 'Cancel',
-  claimedBySomeoneElse: (battletag: string, since?: string): string =>
-    since === undefined ? `Claimed by ${battletag}.` : `Claimed by ${battletag} since ${since}.`,
+  claimedBySomeoneElse: (name: string, since?: string): string =>
+    since === undefined ? `Claimed by ${name}.` : `Claimed by ${name} since ${since}.`,
+  theGuildMaster: 'the guild master',
   // `expiresAt` is only known in the same session the viewer just triggered the pending
   // claim (the POST .../claim response) -- a pending claim loaded later from settings
   // carries no expiry, hence the optional form rather than a second, separate string.
@@ -155,18 +168,24 @@ export const guildSettingsCopy = {
   defaultVisibility: 'Default report visibility',
   officerThreshold: 'Officer rank threshold',
   inviteHeading: 'Invite link',
-  inviteHelp: 'Anyone with this link can join as a member.',
+  inviteHelp: (guildName: string): string =>
+    `Anyone with this link joins ${guildName} as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once.`,
   membersHeading: 'Members and access',
   recordsHeading: 'Records and crest',
   recordsOnlyHeading: 'Records',
-  rotateButton: 'Rotate invite link',
-  // The invite link: rotate asks first, then the full URL with a Copy button. The API keeps
-  // only a hash of the token, so the link can be shown once and never again; the page
-  // says so instead of offering a "show current link" it cannot honour.
-  rotateConfirmLine: 'Rotate the invite link? The old link stops working.',
-  rotateConfirmButton: 'Rotate',
+  // The invite link (spec 2026-11-05 §3.3). The API keeps only a fingerprint of the token, so the
+  // link can be shown only right after it is made; the row says so instead of offering a "show
+  // current link" it cannot honour.
+  newLinkButton: 'Make a new link',
+  firstLinkButton: 'Make the invite link',
+  making: 'Making…',
+  noLinkYet: 'Make a link to share in guild chat or Discord.',
+  inviteFailed: 'That did not work. Try again.',
+  rotateConfirmLine:
+    'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
   rotateCancel: 'Cancel',
-  tokenShownOnce: 'Shown once. Copy it now.',
+  tokenShownOnce:
+    'Copy it now. For safety we keep only a fingerprint, so it cannot be shown again after you leave this page.',
   linkLabel: 'Invite link',
   copyButton: uiCopy.copyLink,
   copied: uiCopy.copiedLink,
@@ -175,7 +194,7 @@ export const guildSettingsCopy = {
   inviteShareTitle: 'Join our guild on Forever Sixty',
   inviteShareText: 'Use this link to join our guild on Forever Sixty.',
   currentLinkMade: (date: string): string =>
-    `Current link made ${date}. It cannot be shown again; rotate it for a new one.`,
+    `Made ${date}. It still works, but it cannot be shown again. Make a new one to copy it.`,
   saved: 'Saved.',
   // Shown when a save or rotate action itself fails (as opposed to the initial load).
   actionFailed: 'That did not save; try again.',
@@ -203,7 +222,16 @@ export const guildCrestCopy = {
 
 export const guildJoinCopy = {
   failed: 'That invite link did not work.',
-  invitedYou: (guildName: string, realm: string): string => `${guildName} · ${realm} invited you.`,
+  guildLine: (realm: string, members: number | undefined): string =>
+    members === undefined ? realm : `${realm} · ${counted(members, 'member')} on Forever Sixty`,
+  invited: (guildName: string): string => `You are invited to join ${guildName}.`,
+  joinAs: (name: string): string => `You join as ${name}`,
+  level: (level: number): string => `Level ${level}`,
+  noneOnRoster: (guildName: string): string => `None of your characters is in ${guildName} in game yet.`,
+  noneOnRosterSub: (name: string): string => `Officers see ${name} until one of yours shows on the roster.`,
+  joinWithAccount: 'You join with your account',
+  joinWithAccountSub: 'Your characters show once you sync the addon or import from Battle.net.',
+  verifiedAtOnce: 'Joining by this link verifies you at once. No officer has to approve you.',
   consequence:
     'Joining puts your characters on its roster and shares your gear with its officers; you can change that on your account.',
   joinButton: (guildName: string): string => `Join ${guildName}`,
@@ -356,11 +384,21 @@ export const guildRosterModelCopy = {
  *  and its link are separate so the link can be an anchor; together they read
  *  "Award and Nudge are part of the guild plan. Subscribe your guild." */
 export const guildGateCopy = {
-  sentence: 'Award and Nudge are part of the guild plan. ',
-  link: 'Subscribe your guild',
-  /** A Guild-tier guild (officer tools on, no Raid guild): launch pricing spec §3.2.8. */
-  raidGuildSentence: 'Loot council and the readiness board are part of Raid guild. ',
-  raidGuildLink: 'Move to Raid guild',
+  // Spec 2026-11-05 §3.2, part 1 by feature; part 2 by viewer (lib/guild/plan-gate.ts).
+  lead: {
+    raids: 'Planning raids and events is part of the Guild and Raid guild plans.',
+    discord: 'Posting to Discord is part of the Guild and Raid guild plans.',
+    loot: 'Awarding loot is part of Raid guild.',
+    readiness: 'Nudge is part of Raid guild.',
+  },
+  startTrial: `Start the ${GUILD_TRIAL_DAYS}-day trial`,
+  subscribe: 'Subscribe your guild',
+  moveToRaidGuild: 'Move to Raid guild',
+  ask: 'Ask ',
+  askTail: ' to turn it on.',
+  askMaster: 'Ask your guild master to turn it on.',
+  claimFirst: 'Claim the guild first',
+  masterClaimsFirst: 'Your guild master claims the guild first.',
   awardRefused: "Not awarded. This guild's officer tools have ended.",
   undoRefused: "Not undone. This guild's officer tools have ended.",
   readOnly: 'Read-only',

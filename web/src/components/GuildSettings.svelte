@@ -7,7 +7,7 @@
 <script lang="ts">
   import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { guildClaimHref, type CharacterPath } from '../lib/characters';
-  import { fetchMeFresh, refetchMe, type Me } from '../lib/account/api';
+  import { fetchMeFresh, refetchMe, type Me, type MeGuild } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
   import {
     GuildApiError,
@@ -19,13 +19,15 @@
   } from '../lib/guild/api';
   import { guildSettingsCopy } from '../lib/guild/copy';
   import { can } from '../lib/guild/roster-model';
-  import { claimedByLine, settingsWords } from '../lib/guild/settings-view';
+  import { settingsWords } from '../lib/guild/settings-view';
+  import { gateFactsFrom } from '../lib/guild/plan-gate';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildDiscordReserve } from '../lib/guild/discord-state';
   import { createLazyComponent } from '../lib/report/lazy-component.svelte';
   import { fetchGuild } from '../lib/rankings/api';
   import type { Snippet } from 'svelte';
   import GuildBillingSection from './guild/GuildBillingSection.svelte';
+  import GuildClaimedBy from './guild/GuildClaimedBy.svelte';
   import GuildInviteLink from './guild/GuildInviteLink.svelte';
   import GuildRecords from './guild/billing/GuildRecords.svelte';
   import GuildStatus from './GuildStatus.svelte';
@@ -66,6 +68,8 @@
   let guildId = $state<number | null>(null);
   /** Whether this account may release the claim (the `release` word on its /v1/me guild entry). */
   let mayRelease = $state(false);
+  /** This account's /v1/me guild entry: its rank and whether the trial is open, for the gate. */
+  let myEntry = $state<MeGuild | null>(null);
   let guildName = $state('');
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
@@ -105,6 +109,7 @@
 
   function applyBilling(me: Me | null): void {
     const entry = me?.guilds.find((g) => g.id === guildId);
+    myEntry = entry ?? null;
     mayRelease = entry === undefined ? false : can(entry.can, 'release');
   }
 
@@ -178,13 +183,25 @@
   $effect(() => {
     if (settings?.discord !== undefined) discordLazy.load();
   });
+
+  /** Only Discord is gated here, a feature of both plans: the plan flags do not change its link. */
+  const gateFacts = $derived(
+    gateFactsFrom({
+      claim: settings?.claim ?? null,
+      membership: myEntry,
+      officerTools: false,
+      raidGuildTools: false,
+      settingsHref: '',
+      claimHref: guildClaimHref(path.region, path.ruleset, guildName),
+    }),
+  );
 </script>
 
 {#snippet notes()}
   {#if settings !== null}
-    {#if claimedByLine(settings.claim, settings.claimed_by) !== null}
+    {#if settings.claim.state === 'claimed'}
       <p class="text-[13px]" data-testid="guild-settings-claim-state">
-        {claimedByLine(settings.claim, settings.claimed_by)}{#if mayRelease}&#32; ·
+        <GuildClaimedBy holder={settings.claimed_by} />{#if mayRelease}&#32; ·
           <a
             class="underline"
             href={guildClaimHref(path.region, path.ruleset, guildName)}
@@ -202,23 +219,17 @@
 
 {#snippet membersCard(current: GuildSettingsData)}
   <Card glyph="lock" title={guildSettingsCopy.membersHeading} body="rows" testid="guild-settings-members">
-    <SettingsRow label={guildSettingsCopy.defaultVisibility} sub={settingsWords.visibilityHelp} controlBelow>
-      {#snippet control()}
-        <div class="w-40">
-          <Select
-            id="guild-visibility"
-            size="compact"
-            label={guildSettingsCopy.defaultVisibility}
-            options={VISIBILITY_OPTIONS}
-            value={current.default_visibility}
-            onchange={(event) =>
-              onSave('default_visibility', (event.currentTarget as HTMLSelectElement).value)}
-            disabled={busy || frozen}
-            testid="guild-visibility-select"
-          />
-        </div>
-      {/snippet}
-    </SettingsRow>
+    {#if guildId !== null}
+      <GuildInviteLink
+        {guildId}
+        {guildName}
+        rotatedAt={current.invite.rotated_at}
+        disabled={busy || frozen}
+        onRotated={(rotatedAt) => {
+          if (settings !== null) settings = { ...settings, invite: { rotated_at: rotatedAt } };
+        }}
+      />
+    {/if}
     <SettingsRow label={settingsWords.officerRank} sub={settingsWords.officerRankHelp} controlBelow>
       {#snippet control(labelId)}
         <div class="flex items-center gap-3">
@@ -254,17 +265,23 @@
         {/if}
       {/snippet}
     </SettingsRow>
-    {#if guildId !== null}
-      <GuildInviteLink
-        row
-        {guildId}
-        rotatedAt={current.invite.rotated_at}
-        disabled={busy || frozen}
-        onRotated={(rotatedAt) => {
-          if (settings !== null) settings = { ...settings, invite: { rotated_at: rotatedAt } };
-        }}
-      />
-    {/if}
+    <SettingsRow label={guildSettingsCopy.defaultVisibility} sub={settingsWords.visibilityHelp} controlBelow>
+      {#snippet control()}
+        <div class="w-40">
+          <Select
+            id="guild-visibility"
+            size="compact"
+            label={guildSettingsCopy.defaultVisibility}
+            options={VISIBILITY_OPTIONS}
+            value={current.default_visibility}
+            onchange={(event) =>
+              onSave('default_visibility', (event.currentTarget as HTMLSelectElement).value)}
+            disabled={busy || frozen}
+            testid="guild-visibility-select"
+          />
+        </div>
+      {/snippet}
+    </SettingsRow>
   </Card>
 {/snippet}
 
@@ -318,6 +335,7 @@
               discord={settings.discord}
               {frozen}
               {officerTools}
+              {gateFacts}
               {onPlanRefused}
               onDiscord={(discord) => {
                 if (settings !== null) settings = { ...settings, discord };

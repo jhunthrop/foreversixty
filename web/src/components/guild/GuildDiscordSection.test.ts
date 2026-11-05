@@ -1,6 +1,7 @@
 // web/src/components/guild/GuildDiscordSection.test.ts
 // One static render per raids spec §3.8 state (vitest hands components Svelte's server entry, so
 // the clicks, the returns and focus are Playwright's: tests/e2e/guild-settings-discord.spec.ts).
+import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { notificationsCopy } from '../../lib/account/notifications-copy';
@@ -41,7 +42,15 @@ interface Options {
 
 function html(discord: GuildSettingsDiscord, { frozen = false, officerTools = true }: Options = {}): string {
   return render(GuildDiscordSection, {
-    props: { guildId: GUILD, discord, frozen, officerTools, onDiscord: () => {}, onSettings: () => {} },
+    props: {
+      guildId: GUILD,
+      discord,
+      frozen,
+      officerTools,
+      gateFacts: gateFactsFixture({ settingsHref: '' }),
+      onDiscord: () => {},
+      onSettings: () => {},
+    },
   }).body.replace(/<!--[\s\S]*?-->/g, '');
 }
 
@@ -135,8 +144,8 @@ describe('GuildDiscordSection', () => {
   it('officer-read-only, not connected: the gate sentence, a connect link with no href', () => {
     const body = html(NOT_CONNECTED, { officerTools: false });
     expect(body).toContain('id="officer-tools-gate-discord"');
-    expect(text(body)).toContain('Planning and running raids are part of the guild plan.');
-    expect(body).toMatch(/<a[^>]*href="#billing"[^>]*>Subscribe your guild<\/a>/);
+    expect(text(body)).toContain('Posting to Discord is part of the Guild and Raid guild plans.');
+    expect(body).toMatch(/<a[^>]*href="#billing"[^>]*>Start the 7-day trial<\/a>/);
     const link = tag(body, 'discord-connect');
     expect(link).not.toContain('href=');
     expect(link).toContain('aria-disabled="true"');

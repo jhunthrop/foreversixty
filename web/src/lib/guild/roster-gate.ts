@@ -27,18 +27,9 @@ export function rosterGateState({ signedIn, member }: RosterGateInput): RosterGa
   return member ? 'unverified' : 'stranger';
 }
 
-/** "Run this guild? Claim it.": the muted line for a signed-in viewer who is not a verified officer. */
-export const claimEntryCopy = { question: 'Run this guild?', action: 'Claim it.' } as const;
-
-/** What the band says about claiming, for this viewer (lifecycle review round 4, N10 / UX 10). */
-export type ClaimEntry =
-  | { kind: 'none' }
-  /** "Run this guild? Claim it." with the link to the claim page. */
-  | { kind: 'claim' }
-  /** `Get the guild claimed`, linking to the claim page: a member of an unclaimed guild cannot claim it. */
-  | { kind: 'getClaimed' }
-  /** A muted line and no link. */
-  | { kind: 'note'; text: string };
+/** What the band says about claiming beyond the claim row, for this viewer: a verified member of a
+ *  claimed guild reads who holds it, muted; everyone else nothing (the row, or the settings link). */
+export type ClaimEntry = { kind: 'none' } | { kind: 'claimedBy' };
 
 export interface ClaimEntryInput {
   signedIn: boolean;
@@ -48,30 +39,10 @@ export interface ClaimEntryInput {
   membership: { rank: string } | null;
   /** The guild's claim state; null while the viewer cannot read it (no member home). */
   claimState: 'unclaimed' | 'pending' | 'claimed' | 'contested' | null;
-  claimedBy: string | null;
 }
 
-export const claimEntryNotes = {
-  claimedBy: (battletag: string): string => `Claimed by ${battletag}`,
-  getClaimed: 'Get the guild claimed',
-} as const;
-
-/**
- * "Run this guild? Claim it." is for someone whose in-game rank is an officer rank, in a guild
- * nobody has claimed. A verified member of a claimed guild reads who holds it, muted; of an
- * unclaimed one, a link to get it claimed; a stranger reads nothing; a verified officer has
- * the settings link instead.
- */
 export function claimEntryFor(input: ClaimEntryInput): ClaimEntry {
-  const { signedIn, canManage, membership, claimState, claimedBy } = input;
+  const { signedIn, canManage, membership, claimState } = input;
   if (!signedIn || canManage || membership === null) return { kind: 'none' };
-  const officerRank = membership.rank === 'officer' || membership.rank === 'leader';
-  if (claimState === null) return officerRank ? { kind: 'claim' } : { kind: 'none' };
-  if (claimState === 'unclaimed') {
-    return { kind: officerRank ? 'claim' : 'getClaimed' };
-  }
-  if ((claimState === 'claimed' || claimState === 'contested') && claimedBy !== null) {
-    return { kind: 'note', text: claimEntryNotes.claimedBy(claimedBy) };
-  }
-  return { kind: 'none' };
+  return claimState === 'claimed' || claimState === 'contested' ? { kind: 'claimedBy' } : { kind: 'none' };
 }

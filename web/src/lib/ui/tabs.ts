@@ -21,7 +21,7 @@ export const TAB_STRIP = {
   /** The wrapper that carries data-fade-start / data-fade-end (lib/scroll-fade.ts). */
   wrapper: 'group relative',
   strip:
-    'flex flex-nowrap overflow-x-auto overscroll-x-contain [scrollbar-width:none] ' +
+    'flex flex-nowrap overflow-x-auto overscroll-x-contain [scroll-padding-inline:48px] [scrollbar-width:none] ' +
     'shadow-[inset_0_-1px_0_var(--color-line-soft)] [&::-webkit-scrollbar]:hidden',
   tab:
     'inline-flex min-h-11 shrink-0 items-center border-b-2 px-3 text-[12px] font-bold tracking-[0.06em] ' +
@@ -81,10 +81,13 @@ export function tabStripFadeTestids(testid: string | undefined): { start: string
   return { start: `${base}-fade-start`, end: `${base}-fade-end` };
 }
 
-/** Scrolls a strip sideways so the current tab is in view, never moving the page. */
+/** How much of the previous tab shows beside the current one on a strip that scrolls: enough to
+ *  read as "there is more this way", never a stub (spec 2026-11-05 §3.6). */
+export const TAB_PEEK_PX = 48;
+
+/** Scrolls a strip sideways to where the current tab's predecessor shows `TAB_PEEK_PX`, never moving
+ *  the page. The browser clamps at both ends: the first tab rests at 0, and a strip that fits does
+ *  not move. */
 export function scrollTabIntoView(strip: HTMLElement, tab: HTMLElement): void {
-  const left = tab.offsetLeft;
-  const right = left + tab.offsetWidth;
-  if (left < strip.scrollLeft) strip.scrollLeft = left;
-  else if (right > strip.scrollLeft + strip.clientWidth) strip.scrollLeft = right - strip.clientWidth;
+  strip.scrollLeft = tab.previousElementSibling === null ? 0 : Math.max(0, tab.offsetLeft - TAB_PEEK_PX);
 }

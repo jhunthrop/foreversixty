@@ -819,7 +819,7 @@ test.describe('settings: billing and release belong to the guild master', () => 
         envelope({
           default_visibility: 'guild',
           officer_max_rank_index: 2,
-          claimed_by: { battletag: 'Fixture#1234' },
+          claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
           claim_pending: null,
           claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
           invite: { rotated_at: null },
@@ -1362,7 +1362,7 @@ test('visiting a different guild sharing region/ruleset shows no role-line from 
 // (unchanged v1 mechanism, now living above the tab strip, Guild.svelte) and the roster
 // tab's approve/remove mutations.
 test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', () => {
-  test('an officer of an unclaimed guild sees "Claim this guild"', async ({ page }) => {
+  test('the guild master of an unclaimed guild sees the claim row', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
       route.fulfill(
@@ -1370,11 +1370,14 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       ),
     );
     await page.goto(GUILD_URL);
-    await expect(page.getByTestId('guild-claim-link')).toHaveText('Claim this guild');
+    await expect(page.getByTestId('guild-claim-row-sentence')).toContainText(
+      'Claim it here to approve members',
+    );
+    await expect(page.getByTestId('guild-claim-link')).toHaveText(`Claim ${buildMockGuildPage().guild.name}`);
     await expect(page.getByTestId('guild-settings-link')).toHaveCount(0);
   });
 
-  test('an officer of a guild with a pending claim sees "Confirm the claim"', async ({ page }) => {
+  test('an officer of a guild with a pending claim sees "Open the claim"', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
       route.fulfill(
@@ -1382,14 +1385,13 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       ),
     );
     await page.goto(GUILD_URL);
-    await expect(page.getByTestId('guild-confirm-claim-link')).toHaveText('Confirm the claim');
+    await expect(page.getByTestId('guild-confirm-claim-link')).toContainText('Open the claim');
   });
 
   // Fix round 1, item 2: "Contest this claim" moved out of the header band entirely and
   // into the Settings tab, under the claim block -- and it never reaches the account that
-  // already holds the claim. This officer's own battletag ('Fixture#1234', meFixture's
-  // default) does not match `claim.claimed_by_name` ('Kraggor', buildMockHome's own
-  // fixture value), so they read as "a verified officer of a different account."
+  // already holds the claim. buildMockHome's own `claim.yours` is false, so this officer reads
+  // as "a verified officer of a different account."
   test('"Contest this claim" never renders in the header, only in Settings for a non-claimant officer', async ({
     page,
   }) => {
@@ -1399,7 +1401,12 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       homeCalls += 1;
       const claim =
         homeCalls === 1
-          ? { state: 'claimed' as const, frozen: false, claimed_by_name: 'Kraggor' }
+          ? {
+              state: 'claimed' as const,
+              frozen: false,
+              yours: false,
+              claimed_by: { name: 'Kraggor', class: 'warrior', character_key: 'us/pvp/kraggor' },
+            }
           : { state: 'contested' as const, since: '2026-12-01T00:00:00Z', frozen: true };
       return route.fulfill(envelope({ ...buildMockHome(VIEWER_OFFICER), claim }));
     });
@@ -1421,9 +1428,12 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
   test('the claimant’s own account sees no Contest control anywhere, not even in Settings', async ({
     page,
   }) => {
-    // This officer's own battletag matches buildMockHome's own `claimed_by_name`
-    // ('Kraggor') -- they are the account that holds the claim.
-    await stubCore(page, VIEWER_OFFICER, 'leader', 'Kraggor');
+    // `claim.yours`: this officer's account holds the claim.
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) => {
+      const home = buildMockHome(VIEWER_OFFICER);
+      return route.fulfill(envelope({ ...home, claim: { ...home.claim, yours: true } }));
+    });
     await page.goto(`${GUILD_URL}#settings`);
     await expect(page.getByTestId('guild-settings-claim-contest')).toHaveCount(0);
     await expect(page.getByTestId('guild-home-contest-button')).toHaveCount(0);

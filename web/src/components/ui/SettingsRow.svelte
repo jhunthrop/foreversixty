@@ -21,6 +21,8 @@
     value,
     muted = false,
     glyph,
+    icon,
+    labelColor,
     tone = 'gold',
     href,
     external = false,
@@ -42,6 +44,10 @@
     /** The value is a quiet state (off, not shipped): `--muted` and no chevron. */
     muted?: boolean;
     glyph?: GlyphName;
+    /** Drawn in the icon slot instead of a tile (a character's crest). */
+    icon?: Snippet;
+    /** The label's colour when it names a character (a class colour). */
+    labelColor?: string;
     tone?: TileTone;
     href?: string;
     /** A link that opens another tab: `target=_blank` with `rel=noopener`. */
@@ -91,11 +97,16 @@
   class="{ROW} {interactive ? ROW_INTERACTIVE : ''}"
   style:padding-left={nested ? (glyph === undefined ? '70px' : '46px') : undefined}
 >
-  {#if glyph !== undefined}<IconTile {glyph} size={32} {tone} />{/if}
+  {#if icon !== undefined}{@render icon()}{:else if glyph !== undefined}<IconTile
+      {glyph}
+      size={32}
+      {tone}
+    />{/if}
   <span class="flex min-w-0 flex-1 flex-col">
     <span
       id={labelId}
       class="{ROW_LABEL} {disabled ? 'text-muted' : 'text-strong'}"
+      style:color={labelColor}
       data-testid={testid === undefined ? undefined : `${testid}-label`}>{label}</span
     >
     {#if sub !== undefined}<span class={ROW_SUB} data-testid="settings-row-sub">{sub}</span>{/if}

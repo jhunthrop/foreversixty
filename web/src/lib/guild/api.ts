@@ -59,6 +59,13 @@ export interface GuildSummary {
 
 export type ClaimState = 'unclaimed' | 'pending' | 'claimed' | 'contested';
 
+/** A claim holder or pending claimant, the way the game names them. */
+export interface ClaimHolder {
+  name: string;
+  class: string | null;
+  character_key: string;
+}
+
 /**
  * GET .../home and GET .../settings both expose this (2026-09-21 security amendment).
  * `frozen` is exactly `state === 'contested'`: two earlier, narrower freeze rules (a
@@ -73,11 +80,11 @@ export interface ClaimStateView {
   state: ClaimState;
   since?: string;
   frozen: boolean;
-  /** Control-centre contract addition (2026-10-04): who holds a `claimed` guild, for the
-   *  officer tools strip's "Claimed · by {name}" line. Absent on an unclaimed/pending/
-   *  contested guild, and absent until every caller of this type is updated -- never
-   *  rendered as a blank "by" when missing. */
-  claimed_by_name?: string;
+  /** The signed-in account holds this claim. Filled by home and settings. */
+  yours?: boolean;
+  /** Who holds the claim, by their character on this guild's roster; never an account tag.
+   *  Null when no claim is held or the holder has no character on it. */
+  claimed_by?: ClaimHolder | null;
 }
 
 /** `GET .../home`'s `viewer` (control-centre contract, 2026-10-04): the server's own answer
@@ -133,12 +140,8 @@ export interface GuildHomeStanding {
   needs_before_next_raid: string[];
 }
 
-export interface MemberRef {
-  battletag: string;
-}
-
 export interface ClaimPendingView {
-  by: MemberRef;
+  by: ClaimHolder | null;
   expires_at: string;
 }
 
@@ -343,7 +346,7 @@ export type GuildCapability = 'approve' | 'remove' | 'settings' | 'award' | 'bil
 export interface GuildSettingsData {
   default_visibility: GuildVisibility;
   officer_max_rank_index: number;
-  claimed_by: MemberRef | null;
+  claimed_by: ClaimHolder | null;
   claim_pending: ClaimPendingView | null;
   claim: ClaimStateView;
   invite: { rotated_at: string | null };
@@ -417,7 +420,7 @@ export interface ClaimResult {
 }
 export interface ClaimConfirmResult {
   status: 'confirmed';
-  claimed_by: { battletag: string };
+  claimed_by: ClaimHolder | null;
 }
 export interface ClaimReleaseResult {
   status: 'released';
@@ -431,6 +434,19 @@ export interface InviteRotateResult {
  *  and without a session, so the invite page can name the guild to a signed-out visitor too. */
 export interface InvitePeekResult {
   guild: GuildSummary;
+  /** Verified accounts in the guild. */
+  members?: number;
+  /** A signed-in viewer's character for this guild; null with none (and always, signed out). */
+  joins_as?: InviteJoinsAs | null;
+}
+/** Which of the viewer's characters would join: on the guild's roster, or the one officers see
+ *  until one of theirs shows on it. */
+export interface InviteJoinsAs {
+  name: string;
+  class: string | null;
+  race: string | null;
+  level: number | null;
+  on_roster: boolean;
 }
 export interface InviteAcceptResult {
   guild: GuildSummary;

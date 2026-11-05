@@ -43,6 +43,7 @@
   import GuildDiscordAdd from './GuildDiscordAdd.svelte';
   import GuildDiscordBot from './GuildDiscordBot.svelte';
   import GuildDiscordChannel from './GuildDiscordChannel.svelte';
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import GuildPlanGate from './GuildPlanGate.svelte';
 
   /** How long `Removed.` stays (account spec 4.3); a `stays` line holds until the next press. */
@@ -54,6 +55,7 @@
     discord,
     frozen,
     officerTools,
+    gateFacts,
     onDiscord,
     onSettings,
     onPlanRefused = () => {},
@@ -64,6 +66,8 @@
     /** From the guild page (`home.viewer.officer_tools`); left out on the standalone settings
      *  route, where the section reads the guild's `/home` itself. */
     officerTools?: boolean;
+    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
+    gateFacts: GateFacts;
     /** The channel after a test or a remove, applied to the page's settings in place. */
     onDiscord: (next: GuildSettingsDiscord) => void;
     /** A fresh settings read (the `connected` return's). */
@@ -97,9 +101,6 @@
   const readOnly = $derived(!frozen && (planEnded || !tools));
   const gateId = $derived(readOnly ? GATE_ID : undefined);
   const connectHref = $derived(guildDiscordConnectUrl(guildId));
-  const gateLead = $derived(
-    guildDiscordCopy.gate.slice(0, guildDiscordCopy.gate.indexOf(guildDiscordCopy.gateLink)),
-  );
   const returns = new GuildDiscordReturns({
     guildId: () => guildId,
     discord: () => discord,
@@ -253,7 +254,7 @@
       >{/if}
   {/snippet}
   <div class="border-line-soft flex flex-col gap-3 border-t px-5 py-4">
-    {#if readOnly}<GuildPlanGate tab="discord" settingsHref="#billing" sentence={gateLead} />{/if}
+    {#if readOnly}<GuildPlanGate tab="discord" facts={gateFacts} />{/if}
     {#snippet addParts(variant: 'nothing' | 'offer')}
       <GuildDiscordAdd
         {variant}

@@ -69,7 +69,7 @@ test('a signed-in visitor sees the guild that invited them, joins, and is sent t
   await page.goto(`/guild/invite/${INVITE_TOKEN}`);
   await expect(page.getByTestId('guild-join-card')).toBeVisible();
   await expect(page.getByTestId('guild-join-name')).toHaveText('Lifecycle Test');
-  await expect(page.getByTestId('guild-join-invited')).toHaveText('Lifecycle Test · PvP US invited you.');
+  await expect(page.getByTestId('guild-join-invited')).toHaveText('You are invited to join Lifecycle Test.');
   await expect(page.getByTestId('guild-join-consequence')).toHaveText(
     'Joining puts your characters on its roster and shares your gear with its officers; you can change that on your account.',
   );
@@ -148,7 +148,7 @@ test('a signed-out visitor sees the same card with a sign-in button, not a join 
   await signedOut(page);
   await page.route(`**/v1/guild-invites/${INVITE_TOKEN}`, (route) => route.fulfill(envelope(PEEK)));
   await page.goto(`/guild/invite/${INVITE_TOKEN}`);
-  await expect(page.getByTestId('guild-join-invited')).toHaveText('Lifecycle Test · PvP US invited you.');
+  await expect(page.getByTestId('guild-join-invited')).toHaveText('You are invited to join Lifecycle Test.');
   await expect(page.getByTestId('guild-join-consequence')).toBeVisible();
   await expect(page.getByTestId('guild-join-signin')).toHaveText('Sign in with Battle.net to join');
   // Signing in brings them back to this same invite.

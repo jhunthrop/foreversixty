@@ -19,6 +19,7 @@
   import { syncCell } from '../../lib/guild/readiness-raid';
   import EmptyState from '../ui/EmptyState.svelte';
   import { guildGateCopy } from '../../lib/guild/copy';
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import {
     consumablesKind,
     consumablesLabel,
@@ -45,7 +46,7 @@
     officerTools,
     raidGuildTools,
     myCharacterKey,
-    settingsHref,
+    gateFacts,
     raid = null,
     nextRaidOnly = false,
     onToggleNextRaid = () => {},
@@ -61,7 +62,8 @@
     raidGuildTools: boolean;
     myCharacterKey: string | null;
     /** Where the plan sentence's link goes: the guild's settings tab. */
-    settingsHref: string;
+    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
+    gateFacts: GateFacts;
     /** The next planned or locked raid's filtered board header; null shows no toggle. */
     raid?: ReadinessRaid | null;
     /** The toggle's state, held by the page so it survives a re-read. */
@@ -196,7 +198,7 @@
     <h2 class="section-title">Readiness</h2>
     {#if officerReadOnly}<span class="text-muted text-[12px]">{guildGateCopy.readOnly}</span>{/if}
   </div>
-  {#if officerReadOnly}<GuildPlanGate tab="readiness" {settingsHref} raidGuild={officerTools} />{/if}
+  {#if officerReadOnly}<GuildPlanGate tab="readiness" facts={gateFacts} />{/if}
 
   {#if raid !== null && showing !== null}
     <div class="flex flex-col gap-2">
