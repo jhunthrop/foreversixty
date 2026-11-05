@@ -123,7 +123,7 @@ func healMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 			fmt.Fprintf(&b, "| %s | %.2f |\n", s.name, final.GetStats()[s.stat])
 		}
 	}
-	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| effective HPS | %.1f +/- %.2f |\n| raw HPS | %.1f |\n| mana lasts (s) | %.1f |\n",
+	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| effective HPS | %.2f +/- %.2f |\n| raw HPS | %.1f |\n| mana lasts (s) | %.1f |\n",
 		p.GetEffectiveHps().GetAvg(), meanError(p.GetEffectiveHps(), iters), p.GetHps().GetAvg(), p.GetTto().GetAvg())
 
 	income, spend := splitManaFlows(p, names, iters)

@@ -160,7 +160,7 @@ func tankMarkdown(req api.SimRequest, computed *proto.ComputeStatsResult, res *p
 		fmt.Fprintf(&b, "| block value multiplier | %.2f |\n| block value per strength | %.3f |\n",
 			pseudo(proto.PseudoStat_PseudoStatBlockValueMultiplier), pseudo(proto.PseudoStat_PseudoStatBlockValuePerStrength))
 	}
-	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| damage taken /s | %.1f |\n| TMI | %.1f |\n| chance of death | %.1f%% |\n| threat /s | %.1f +/- %.2f |\n| own damage /s | %.1f |\n",
+	fmt.Fprintf(&b, "\n| Metric | Value |\n|---|---|\n| damage taken /s | %.1f |\n| TMI | %.1f |\n| chance of death | %.1f%% |\n| threat /s | %.2f +/- %.2f |\n| own damage /s | %.1f |\n",
 		p.GetDtps().GetAvg(), p.GetTmi().GetAvg(), 100*p.GetChanceOfDeath(), p.GetThreat().GetAvg(), meanError(p.GetThreat(), iters), p.GetDps().GetAvg())
 
 	swing := bossSwings(res, iters)
