@@ -237,13 +237,17 @@ func (s *Store) nudgeDay(ctx context.Context, guildID int64, raid *Raid) (string
 // raidWeekday is start's weekday ("Thursday") in the IANA zone tz, UTC when tz is empty or
 // unknown.
 func raidWeekday(start time.Time, tz string) string {
-	loc := time.UTC
+	return start.In(zoneOrUTC(tz)).Weekday().String()
+}
+
+// zoneOrUTC loads the IANA zone tz, UTC when tz is empty or unknown.
+func zoneOrUTC(tz string) *time.Location {
 	if tz != "" {
 		if l, err := time.LoadLocation(tz); err == nil {
-			loc = l
+			return l
 		}
 	}
-	return start.In(loc).Weekday().String()
+	return time.UTC
 }
 
 // nudgeText is the officer-only clipboard message (design spec §4.E): the character's own

@@ -195,6 +195,41 @@ func TestExportLoot_NightFromTheReportElseSaysSo(t *testing.T) {
 	}
 }
 
+// A Wednesday 7 pm raid in Chicago is 01:00 UTC Thursday: both CSVs date it Wednesday, in the
+// guild's raid zone, and so does a logged night no planned raid holds.
+func TestExport_DatesInTheGuildsRaidZone(t *testing.T) {
+	f := newExportFixture(t, "Export Zone")
+	if err := f.h.svc.Store.SetGuildRaidTimezone(t.Context(), f.gid, "America/Chicago"); err != nil {
+		t.Fatal(err)
+	}
+	var raid int64
+	if err := f.h.pool.QueryRow(t.Context(), `
+		insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, status, created_by)
+		values ($1, 'onyxia', 'Onyxia night', '2026-12-10 01:00+00', 180, 'done', $2) returning id`,
+		f.gid, f.officer).Scan(&raid); err != nil {
+		t.Fatal(err)
+	}
+	f.seedAttendance(raid, "us/hardcore/zed", "Zed", "mage", "present")
+	if _, err := f.h.pool.Exec(t.Context(), `
+		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by, awarded_at, raid_id)
+		values ($1, 1084, 16963, 'us/hardcore/zed', $2, '2026-12-10 02:00+00', $3)`, f.gid, f.officer, raid); err != nil {
+		t.Fatal(err)
+	}
+	logged := time.Date(2026, 12, 17, 1, 30, 0, 0, time.UTC) // Wed 16 Dec, 7:30 pm in Chicago
+	seedNight(t, f.h.pool, f.gid, "export-zone-night", "Onyxia's Lair", logged, []seedFight{
+		{encounterID: 1084, kill: true, duration: 4 * time.Minute, players: []seedPlayer{
+			{key: "us/hardcore/amy", name: "Amy", class: "hunter", spec: "marksmanship", role: "dps"},
+		}},
+	})
+	att := f.rows("attendance")
+	if len(att) != 3 || att[1][0] != "2026-12-09" || att[2][0] != "2026-12-16" {
+		t.Fatalf("attendance = %v, want the planned night 2026-12-09 and the logged night 2026-12-16", att)
+	}
+	if loot := f.rows("loot"); len(loot) != 2 || loot[1][0] != "2026-12-09" {
+		t.Fatalf("loot = %v, want the award dated 2026-12-09", loot)
+	}
+}
+
 func TestExport_LapsedGuildStillExports(t *testing.T) {
 	f := newExportFixture(t, "Export Lapsed") // no entitlement row at all
 	for _, kind := range []string{"attendance", "loot"} {

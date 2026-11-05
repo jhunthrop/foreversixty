@@ -32,11 +32,15 @@ type loggedNight struct {
 }
 
 func (s *Store) streamAttendance(ctx context.Context, guildID int64, emit func([]string) error) error {
-	planned, err := s.plannedAttendanceRows(ctx, guildID)
+	loc, err := s.exportLocation(ctx, guildID)
 	if err != nil {
 		return err
 	}
-	logged, err := s.loggedNightRows(ctx, guildID)
+	planned, err := s.plannedAttendanceRows(ctx, guildID, loc)
+	if err != nil {
+		return err
+	}
+	logged, err := s.loggedNightRows(ctx, guildID, loc)
 	if err != nil {
 		return err
 	}
@@ -63,7 +67,7 @@ func attendanceRowBefore(a, b attendanceExportRow) bool {
 }
 
 // plannedAttendanceRows is every planned raid's attendance rows.
-func (s *Store) plannedAttendanceRows(ctx context.Context, guildID int64) ([]attendanceExportRow, error) {
+func (s *Store) plannedAttendanceRows(ctx context.Context, guildID int64, loc *time.Location) ([]attendanceExportRow, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select r.starts_at, r.title, a.name, a.character_key, a.class, coalesce(a.signed, ''), a.outcome, a.excused,
 		       a.pulls_present, a.pulls_total
@@ -85,14 +89,14 @@ func (s *Store) plannedAttendanceRows(ctx context.Context, guildID int64) ([]att
 			return nil, fmt.Errorf("guilds: export attendance: %w", err)
 		}
 		out = append(out, attendanceExportRow{at: startsAt, name: name, key: key,
-			cells: exportAttendanceCells(startsAt, title, name, class, signed, kind, excused, present, total)})
+			cells: exportAttendanceCells(startsAt.In(loc), title, name, class, signed, kind, excused, present, total)})
 	}
 	return out, rows.Err()
 }
 
 // loggedNightRows is, for each logged night no planned raid's rows cover, one present row per
 // character its log shows (the presence rules: a private or flagged log shows nobody).
-func (s *Store) loggedNightRows(ctx context.Context, guildID int64) ([]attendanceExportRow, error) {
+func (s *Store) loggedNightRows(ctx context.Context, guildID int64, loc *time.Location) ([]attendanceExportRow, error) {
 	nights, err := s.loggedNights(ctx, guildID)
 	if err != nil {
 		return nil, err
@@ -116,7 +120,7 @@ func (s *Store) loggedNightRows(ctx context.Context, guildID int64) ([]attendanc
 				name = key
 			}
 			out = append(out, attendanceExportRow{at: n.at, name: name, key: key,
-				cells: exportAttendanceCells(n.at, n.label, name, p.Class, "", exportOutcomePresent, false, p.PullsPresent, total)})
+				cells: exportAttendanceCells(n.at.In(loc), n.label, name, p.Class, "", exportOutcomePresent, false, p.PullsPresent, total)})
 		}
 	}
 	return out, nil
@@ -147,8 +151,9 @@ func (s *Store) loggedNights(ctx context.Context, guildID int64) ([]loggedNight,
 	return out, rows.Err()
 }
 
-// exportAttendanceCells is one attendance CSV row, formula-safe.
+// exportAttendanceCells is one attendance CSV row, formula-safe; at is already in the guild's
+// zone (exportLocation).
 func exportAttendanceCells(at time.Time, raid, name, class, signed, outcome string, excused bool, present, total int) []string {
-	return safeRow(at.UTC().Format(exportDateLayout), raid, name, class, signed, outcome,
+	return safeRow(at.Format(exportDateLayout), raid, name, class, signed, outcome,
 		strconv.FormatBool(excused), strconv.Itoa(present), strconv.Itoa(total))
 }
