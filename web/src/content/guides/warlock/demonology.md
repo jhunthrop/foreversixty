@@ -15,8 +15,8 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever client spell data (wago.tools, build 70755)'
-    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70755
+  - label: 'Forever client spell data (wago.tools, build 70790)'
+    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70790
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
