@@ -124,7 +124,7 @@ Tailoring makes some of the best early caster gear, and Enchanting puts spell po
 
 Wrath is yours from level 1, with new ranks at 6 and 14. Moonfire trains at 4, Entangling Roots at 8 to hold a second mob, Nature's Grasp at 10 and Faerie Fire at 18.
 
-Until Starfire at 20 the fight is simple: from 4, Moonfire the mob, then Wrath until it dies, and drink when the bar runs low. Never stand idle with Moonfire ticking and mana to spare; that is a Wrath you did not cast.
+Until Starfire at 20 the fight is simple: from 4, Moonfire the mob, then Wrath until it dies, and drink when the bar runs low. Never stand idle with Moonfire ticking and mana to spare; that is a Wrath you did not cast. On a long fight your mana runs out first, so the cheap old ranks do more than the new ones: Wrath rank 1 at 10 to 12 and rank 2 from 13 to 18, and Moonfire rank 2 at 16, then rank 1 from 17 to 19. Wrath rank 3 earns its cost at 19.
 
 Improved Wrath takes your points from 10 to 14: Wrath 0.5 sec faster for half the mana. Genesis at 15 and 16 adds 4% to Moonfire's ticks and Rejuvenation, and Moonglow from 17 to 19 makes damage spells 25% cheaper.
 
@@ -134,7 +134,7 @@ Druids cannot use wands, so swap the starter weapon for the first quest staff wi
 
 ### Levels 20 to 60
 
-Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, Moonfire every pull and Wrath until the mob dies. Mana runs out before mobs do in your 20s and 30s, so the newest rank is not always the best: Moonfire rank 2 does more for its mana through 28, rank 3 from 29 through 35 and rank 4 from 36 through 39; Wrath rank 3 holds at 22 and 23, then rank 4 from 24 all the way through 39; Insect Swarm, your talent at 27, stays at rank 1 through 38.
+Balance levels fine with Wrath and Moonfire, and Moonkin Form at 40 makes it smooth. Feral is faster: Cat Form kills without drinking, and Bear Form survives the bad pulls. If you level as Balance, Moonfire every pull and Wrath until the mob dies. Mana runs out before mobs do in your 20s and 30s, so the newest rank is not always the best: Moonfire rank 2 does more for its mana through 28, rank 3 from 29 through 34 and rank 4 from 35 through 39; Wrath rank 3 holds at 22 and 23, then rank 4 from 24 all the way through 39; Insect Swarm, your talent at 27, stays at rank 1 through 38.
 
 In your forties and fifties two old ranks still edge out the new ones for their mana: Wrath rank 6 from 46 to 48 and Insect Swarm rank 3 from 54 to 58. Everywhere else, cast the newest rank. Until 35, Starfire is for the opener on a mob that is not yet on you.
 

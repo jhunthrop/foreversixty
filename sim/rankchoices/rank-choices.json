@@ -7,6 +7,18 @@
         "authored": 9835,
         "bands": [
           {
+            "from_level": 16,
+            "to_level": 16,
+            "rank": 2,
+            "note": "Sim-accuracy round 24 (rank sweep below 20): judged level by level jointly with the Wrath rows (spec-breakdown -level on band-20 gear, 10,000 iterations, seeds 1 and 50001, night elf and tauren). With Wrath rank 2, Moonfire rank 2 beats the rank 3 learned at 16 and rank 1; the pair gains 25 to 26% over the top ranks."
+          },
+          {
+            "from_level": 17,
+            "to_level": 19,
+            "rank": 1,
+            "note": "Sim-accuracy round 24 (rank sweep below 20, judged as the row above): rank 1 beats rank 3 by 5.6 to 7.6% at 17 to 19 and beats rank 2 at 17 and 19. At 18 a night elf gains 0.3% more with rank 2 and a tauren 0.5% more with rank 1; one row keeps every race on rank 1."
+          },
+          {
             "from_level": 20,
             "to_level": 28,
             "rank": 2,
@@ -14,15 +26,15 @@
           },
           {
             "from_level": 29,
-            "to_level": 35,
+            "to_level": 34,
             "rank": 3,
-            "note": "Sim-accuracy round 20: rank 3 beats rank 2 by 0.3% (night elf) and 0.4% (tauren) at 29, seeds 1 and 50001, on the breakdown's full-precision DPS; round 16 wave 2 had the row start at 30."
+            "note": "Sim-accuracy round 20: rank 3 beats rank 2 by 0.3% (night elf) and 0.4% (tauren) at 29, seeds 1 and 50001, on the breakdown's full-precision DPS; round 16 wave 2 had the row start at 30. Sim-accuracy round 24: rank 4 wins at 35 (next row), so this row ends at 34; at 33 and 34 rank 3 still beats rank 4 by 0.1 to 1.1%."
           },
           {
-            "from_level": 36,
+            "from_level": 35,
             "to_level": 39,
             "rank": 4,
-            "note": "Sim-accuracy round 16 wave 2: judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001). Rank 4 beats rank 3 by 1.3 to 3.6% from 36."
+            "note": "Sim-accuracy round 16 wave 2: judged level by level (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001). Rank 4 beats rank 3 by 1.3 to 3.6% from 36. Sim-accuracy round 24 (the first levels after each new rank): rank 4 also beats rank 3 at 35, by 0.5 to 0.6% (night elf) and 0.3% (tauren) at both seeds, so the row starts at 35."
           }
         ]
       },
@@ -30,6 +42,18 @@
         "spell": "Wrath",
         "authored": 9912,
         "bands": [
+          {
+            "from_level": 10,
+            "to_level": 12,
+            "rank": 1,
+            "note": "Sim-accuracy round 24 (rank sweep below 20): judged level by level jointly with the Moonfire rows (spec-breakdown -level on band-20 gear, 10,000 iterations, seeds 1 and 50001, night elf and tauren). The fight runs out of mana and rank 1 costs half as much: it beats rank 2 by 22 to 24% at 10, 16 to 18% at 11 and 3 to 4% at 12. Rank 2 wins at 13."
+          },
+          {
+            "from_level": 14,
+            "to_level": 18,
+            "rank": 2,
+            "note": "Sim-accuracy round 24 (rank sweep below 20, judged as the row above): rank 2 beats the rank 3 learned at 14 by 25 to 29% at 14, 23 to 25% at 15, 21 to 22% at 16, 9 to 16% at 17 and 3 to 7% at 18; rank 3 wins from 19."
+          },
           {
             "from_level": 22,
             "to_level": 23,
@@ -68,11 +92,56 @@
         ]
       }
     ],
+    "druid-feral": [
+      {
+        "spell": "Moonfire",
+        "authored": 9835,
+        "bands": [
+          {
+            "from_level": 10,
+            "to_level": 13,
+            "rank": 1,
+            "note": "Sim-accuracy round 24 (rank sweep below 20): the caster lines before Cat Form, judged level by level jointly with the Wrath row (spec-breakdown -level on band-20 gear, 10,000 iterations, seeds 1 and 50001, night elf and tauren). The fight runs out of mana: with Wrath rank 1, Moonfire rank 1 adds 1.8 to 3.1% more over rank 2, the pair 8.6 to 11.6% over the top ranks. They tie at 14 and 15."
+          },
+          {
+            "from_level": 16,
+            "to_level": 19,
+            "rank": 2,
+            "note": "Sim-accuracy round 24 (judged as the row above): Moonfire rank 2 beats the rank 3 learned at 16 by 3.9 to 4.7% at 16, 6.7 to 7.9% at 17, 12.0 to 13.7% at 18 and 9.9 to 11.8% at 19. At 16 rank 1 is level with it for a night elf and 0.7% behind for a tauren."
+          }
+        ]
+      },
+      {
+        "spell": "Wrath",
+        "authored": 9912,
+        "bands": [
+          {
+            "from_level": 10,
+            "to_level": 13,
+            "rank": 1,
+            "note": "Sim-accuracy round 24 (judged as the Moonfire rows): Wrath rank 1 beats rank 2 by 6.4 to 8.9% at 10 to 13 on its own. From 14 the rank 3 learned there wins, by 7.7 to 24% over the lower ranks."
+          }
+        ]
+      }
+    ],
     "druid-restoration": [
       {
         "spell": "Rejuvenation",
         "authored": 9841,
         "bands": [
+          {
+            "from_level": 13,
+            "to_level": 16,
+            "rank": 1,
+            "races": ["night-elf", "high-order-skyborne"],
+            "note": "Sim-accuracy round 24 (rank sweep below 20): the four heals judged together on a joint grid, level by level (band-20 gear and heal profile, 10,000 iterations, night elf and tauren; each row confirmed at seed 50001 too, where putting it back loses 0.4 to 20%). A night elf heals 1.2 to 3.9% more with rank 1 on the tank at 13 to 16, with Healing Touch rank 2 from 14; a tauren's best mix keeps the newest rank on the tank and moves the party line instead, so a tauren casts the default rule here."
+          },
+          {
+            "from_level": 17,
+            "to_level": 19,
+            "rank": 1,
+            "note": "Sim-accuracy round 24 (rank sweep below 20): the four heals judged together on a joint grid, level by level (band-20 gear and heal profile, 10,000 iterations, night elf and tauren; each row confirmed at seed 50001 too, where putting it back loses 0.4 to 20%). Rank 1 on the tank, with Healing Touch rank 1 and, from 18, Regrowth rank 1: the set heals 7 to 18% more than the old card for both races. Rank 2 from 20 (next row)."
+          },
           {
             "from_level": 20,
             "to_level": 28,
@@ -130,10 +199,17 @@
         "authored": 8910,
         "bands": [
           {
-            "from_level": 10,
+            "from_level": 13,
+            "to_level": 16,
+            "rank": 1,
+            "races": ["night-elf", "high-order-skyborne"],
+            "note": "Sim-accuracy round 24 (rank sweep below 20): the four heals judged together on a joint grid, level by level (band-20 gear and heal profile, 10,000 iterations, night elf and tauren; each row confirmed at seed 50001 too, where putting it back loses 0.4 to 20%). Below 17 the newest rank (no row) wins on the party, by 0.6 to 1.4% (night elf) and 13 to 16% (tauren) at 10 to 12, and for a tauren to 16 (rank 3 at 16: +22%). From 13 a night elf heals more with rank 1 on the party (rank 2 ties at 13, loses 1.2 to 3.4% at 14 and 15, rank 3 loses 3.7% at 16) and moves the tank line to rank 1 instead (row there). Other races cast the default rule here."
+          },
+          {
+            "from_level": 17,
             "to_level": 26,
             "rank": 1,
-            "note": "Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): on every bare fight rank 1 still wins: the fight runs out of mana, so the cheapest Rejuvenation heals most even with little or no bonus (bare 60 +6%). Sim-accuracy round 20: re-judged at 20 to 39 (10,000 iterations, seeds 1 and 50001, night elf and tauren); rank 1 holds to 26 (a tauren loses 0.4% with rank 2 there) and again from 30 (rank 2 -1.2%)."
+            "note": "Sim-accuracy round 24: below 17 see the row above; from 17 rank 1 wins for both races again. Sim-accuracy round 15 wave 2 (level-gap rule, core.LevelPenalty): on every bare fight rank 1 still wins: the fight runs out of mana, so the cheapest Rejuvenation heals most even with little or no bonus (bare 60 +6%). Sim-accuracy round 20: re-judged at 20 to 39 (10,000 iterations, seeds 1 and 50001, night elf and tauren); rank 1 holds to 26 (a tauren loses 0.4% with rank 2 there) and again from 30 (rank 2 -1.2%)."
           },
           {
             "from_level": 27,
@@ -175,6 +251,18 @@
         ],
         "bands": [
           {
+            "from_level": 14,
+            "to_level": 16,
+            "rank": 2,
+            "note": "Sim-accuracy round 24 (rank sweep below 20): the four heals judged together on a joint grid, level by level (band-20 gear and heal profile, 10,000 iterations, night elf and tauren; each row confirmed at seed 50001 too, where putting it back loses 0.4 to 20%). Healing Touch rank 2 on the tank beats the rank 3 learned at 14 for both races' best mixes (with the tank and party rows here); at 16 a night elf is a tenth of a point better with rank 1."
+          },
+          {
+            "from_level": 17,
+            "to_level": 19,
+            "rank": 1,
+            "note": "Sim-accuracy round 24 (rank sweep below 20): the four heals judged together on a joint grid, level by level (band-20 gear and heal profile, 10,000 iterations, night elf and tauren; each row confirmed at seed 50001 too, where putting it back loses 0.4 to 20%). Rank 1 heals the hole for the least mana: with the tank's Rejuvenation rank 1 it adds 2 to 4% over rank 3. Rank 2 at 20 (next row)."
+          },
+          {
             "from_level": 20,
             "to_level": 20,
             "rank": 2,
@@ -186,6 +274,13 @@
             "rank": 2,
             "races": ["tauren"],
             "note": "Sim-accuracy round 20: a tauren keeps rank 2 to 23 (+1.1% at 21, +0.8% at 22, +0.3 to 0.4% at 23 over the top rank); a night elf ties or loses with it from 21 and casts the top rank (no row)."
+          },
+          {
+            "from_level": 26,
+            "to_level": 28,
+            "rank": 4,
+            "races": ["tauren"],
+            "note": "Sim-accuracy round 24 (the first levels after each new rank): rank 5 arrives at 26, and a tauren heals more with rank 4 there: +0.2% at 26 and +0.4 to 0.5% at 27 and 28, both seeds (10,000 iterations); +0.1% at 29, so the row ends at 28. A night elf ties, or gains a single tenth of a point, and casts the top rank (no row)."
           },
           {
             "from_level": 30,
@@ -210,6 +305,18 @@
             "to_level": 49,
             "rank": 6,
             "note": "Sim-accuracy round 19: judged again level by level (10,000 iterations, seeds 1 and 50001, night elf and tauren); rank rows take no 1% bar. Rank 6 beats the top rank by 0.7 to 0.9% at 46 to 49 (rank 5 ties it at 46); the top rank wins from 50."
+          }
+        ]
+      },
+      {
+        "spell": "Regrowth",
+        "authored": 9858,
+        "bands": [
+          {
+            "from_level": 18,
+            "to_level": 19,
+            "rank": 1,
+            "note": "Sim-accuracy round 24 (rank sweep below 20): the four heals judged together on a joint grid, level by level (band-20 gear and heal profile, 10,000 iterations, night elf and tauren; each row confirmed at seed 50001 too, where putting it back loses 0.4 to 20%). Regrowth rank 1 beats the rank 2 learned at 18 by 3.7 to 4.7% on its own and adds about 3% to the 17 to 19 set. Rank 2 from 20."
           }
         ]
       }
