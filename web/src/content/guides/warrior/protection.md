@@ -48,6 +48,7 @@ Protection is the shield tank: Defensive Stance all fight, Shield Slam and Reven
 
 ### Strengths
 
+- Defensive Stance adds 80% to all the threat you generate, and Defiance multiplies that again with a shield on
 - Revenge is huge threat for almost no rage, and Shield Slam carries a very high amount of threat
 - Shield Block is off the global cooldown and up most of the fight
 - Every block, dodge and parry pays rage back through Shield Specialization and Master of Defense
@@ -68,7 +69,7 @@ Protection is the shield tank: Defensive Stance all fight, Shield Slam and Reven
 
 - **Shield Slam** (1 point): a shield hit that adds your block value to its damage, with a very high amount of threat. Your biggest button.
 - **Bastion** (5 points): 10% more damage while a shield is equipped, which is 10% more threat from everything that hits.
-- **Defiance** (3 points): 15% more threat in Defensive Stance while a shield is equipped, on top of the stance's own bonus.
+- **Defiance** (3 points): 15% more threat in Defensive Stance while a shield is equipped, on top of the stance's own 80%, so the two together come to a little over double.
 - **Shield Specialization** (5 points): 5% more block chance, and every block gives you 5 rage.
 - **Master of Defense** (2 points): 5 rage on every dodge and parry with a shield on. With Shield Specialization, a tank that is being hit is never short of rage.
 - **Anticipation** (5 points): 20 Defense Skill, so fewer hits land and fewer crit.
