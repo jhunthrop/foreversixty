@@ -95,7 +95,7 @@
             }
           }
         },
-        "notes": "Prayer of Mending on the tank every time it is ready: five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight. It heals whoever holds it on their next hit or direct heal, and the tank is hit and healed the most. It is not held back by the mana pace the costlier heals follow: it is the last heal to give up when mana runs short."
+        "notes": "Prayer of Mending on the tank every time it is ready: up to five heals for one cast on a 10 second cooldown, the cheapest healing you can cast all fight. It heals whoever holds it on their next hit or direct heal, and the tank is hit and healed the most. It is not held back by the mana pace the costlier heals follow: it is the last heal to give up when mana runs short."
       },
       {
         "action": {
@@ -159,7 +159,7 @@
             }
           }
         },
-        "notes": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it is your dearest heal, so spend it where the size matters."
+        "notes": "Flash Heal at the top rank on a tank who is really low or on anyone about to die: it heals less for its mana than your slower heals, so spend it where the speed matters."
       },
       {
         "action": {
@@ -192,7 +192,7 @@
             }
           }
         },
-        "notes": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the size matters more than the mana."
+        "notes": "Flash Heal at the top rank on a party member under 30%: when someone is about to die, the speed matters more than the mana."
       },
       {
         "action": {
@@ -1550,7 +1550,7 @@
             }
           }
         },
-        "notes": "Heal is your filler before you learn Greater Heal at 40. A new rank costs more mana than its extra healing is worth at first, so keep rank 2 at 28 and rank 3 from 34 to 37. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
+        "notes": "Heal rank 1 is your filler until 33 at most levels: it keeps your whole healing bonus until then and heals the most for its mana. Rank 2 or 3 takes over at 28 and 32 for most races, at 27 for a Human, Gnome or Night Elf, and at 30 and 31 for an Undead or Troll. Rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 and to 38 as an Undead; a Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39. From 40 Greater Heal is your main heal; fall back to Heal rank 4 only when you are short of mana for Greater Heal rank 1, since rank 4 is cheaper but keeps only about half your bonus at 60."
       },
       {
         "action": {

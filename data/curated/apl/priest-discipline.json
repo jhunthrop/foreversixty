@@ -1063,7 +1063,86 @@
             }
           }
         },
-        "notes": "Heal on the tank until you learn Greater Heal at 40: it is your biggest heal until then."
+        "notes": "Heal on the tank until you learn Greater Heal at 40: rank 1 through 35, then rank 3. Rank 1 keeps your whole healing bonus until 33 and heals the most for its mana, and rank 4 costs more mana than its extra healing is worth."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 2053,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentManaPercent": {}
+                          },
+                          "rhs": {
+                            "math": {
+                              "op": "OpMul",
+                              "lhs": {
+                                "remainingTimePercent": {}
+                              },
+                              "rhs": {
+                                "const": {
+                                  "val": "0.9"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 5
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.8"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "16"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Lesser Heal rank 3 on the tank until you learn Heal at 16: your shield and Renew alone will not keep him up."
       },
       {
         "action": {
@@ -1689,6 +1768,57 @@
                           "spellId": 2060,
                           "rank": 1
                         }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 2053,
+              "rank": 3
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentLevel": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "16"
                       }
                     }
                   }

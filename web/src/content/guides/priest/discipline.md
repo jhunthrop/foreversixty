@@ -65,7 +65,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Penance on cooldown.** On the tank whenever he is missing health, on a party member who drops low when the tank is fine. It is the heal you never let sit.
 
-**The shield is a switch.** Shield the tank at the top rank whenever Weakened Soul is off him. In Forever a shield no longer costs a warrior any rage, so there is nothing to hold back: it soaks the next hit, and the Weakened Soul it leaves is what Renewed Hope needs. Your next heals on him gain 8% crit chance, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner.
+**The shield is a switch.** Shield the tank at the top rank when he is hurt, Weakened Soul is off him and your mana is keeping pace with the fight. In Forever a shield no longer costs a warrior any rage, so rage is no reason to hold it back: it soaks the next hit, and the Weakened Soul it leaves is what Renewed Hope needs. Your next heals on him gain 8% crit chance, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner.
 
 **Renew** stays on the tank at rank 7 or higher.
 
@@ -85,7 +85,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every shield, Penance and heal. Intellect deepens your bar, and Mental Strength adds 10% to it. Critical strike pays twice for Discipline: every direct heal that crits also leaves a Divine Aegis shield on the target. Spirit is mana, and Meditation keeps half of its regeneration running while you cast. Spell power with no healing on it does nothing for a heal.
+The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every shield, Penance and heal, though a rank learned far below your level keeps less of it, or none. Intellect deepens your bar, and Mental Strength adds 10% to it. Critical strike pays twice for Discipline: every direct heal that crits also leaves a Divine Aegis shield on the target. Spirit is mana, and Meditation keeps half of its regeneration running while you cast. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
@@ -113,7 +113,7 @@ Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes h
 
 ### Levels 1 to 19
 
-Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18.
+Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18. Healing a group from 10, before you learn Heal at 16, put Lesser Heal rank 3 on the tank as well as on the party: your shield and Renew alone will not keep him up.
 
 Twin Disciplines takes your points from 10 to 14: 5% more damage and healing on your instants, which at this level means Shadow Word: Pain and Renew. Mental Strength takes 15 to 19 for 10% more Intellect, a bigger mana bar between drinks.
 
@@ -121,4 +121,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, keep rank 7: rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56, take Renew rank 9 for your last dungeons; at 60 rank 7 is the tank's Renew again. Heal is the tank's filler until you learn Greater Heal at 40; when rank 4 arrives at 34, keep casting rank 3 until you learn Greater Heal at 40, since rank 4 costs more mana than its extra healing is worth. From then, Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: it keeps your whole healing bonus until then, and the bigger ranks spend mana on healing a dungeon tank rarely needs. From 40 on, leave Lesser Heal off your bars for good: Greater Heal rank 1 takes its place, by your late forties Lesser Heal has lost your healing bonus anyway, and every cast costs mana regeneration you need for the next Greater Heal.
+From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, keep rank 7: rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56, take Renew rank 9 for your last dungeons; at 60 rank 7 is the tank's Renew again. Heal is the tank's filler until you learn Greater Heal at 40. Keep it at rank 1 through 35: rank 1 keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so the bigger ranks only cost you mana. From 36 cast rank 3, since rank 4 costs more mana than its extra healing is worth. From then, Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: it keeps your whole healing bonus until then, and the bigger ranks spend mana on healing a dungeon tank rarely needs. From 40 on, leave Lesser Heal off your bars for good: Greater Heal rank 1 takes its place, by your late forties Lesser Heal has lost your healing bonus anyway, and every cast costs mana regeneration you need for the next Greater Heal.
