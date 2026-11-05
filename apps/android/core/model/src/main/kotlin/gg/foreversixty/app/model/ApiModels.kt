@@ -1101,9 +1101,10 @@ data class GuildMember(
 
 @Serializable
 data class GuildMemberCounts(
+    /** Guild round 3: the entries the Roster list shows (approved characters, invited members, names in game without an account), never the waiting characters; everyone is on_roster + waiting. */
     @SerialName("on_roster") val onRoster: Int,
     @SerialName("in_game_no_account") val inGameNoAccount: Int,
-    /** People (accounts) with a character waiting for approval, the unit summary.waiting_for_approval counts; members[] stays per character. */
+    /** Characters waiting for approval (guild round 3; the round-1 accounts rule is superseded), the Waiting for approval panel's rows and summary.waiting_for_approval. */
     @SerialName("waiting") val waiting: Int,
     @SerialName("not_seen") val notSeen: Int,
 )
