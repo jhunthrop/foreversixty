@@ -7,9 +7,8 @@
 // same reason sim-sources.spec.ts and sim-specs.spec.ts read their own fixtures this way.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { curatedRotationNotes } from './support/rotation-notes';
 import { expect, test } from './support/test';
-import { plannerHrefForSpec } from '../../src/lib/sim/character';
-import { simCopy } from '../../src/lib/sim/copy';
 import type { CharacterSpec } from '../../src/lib/sim/types';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
@@ -71,64 +70,68 @@ const SHELL_HTML = `<!doctype html>
 </main></body></html>`;
 
 test.describe('a saved sim from the prerendered fixture', () => {
-  test('renders read-only, with the results and no gear grid claim it cannot make', async ({ page }) => {
+  test('renders read-only: the band, the nav and every section on one page, no tabs', async ({ page }) => {
     await page.goto('/sim/simfixtureab');
 
     // Read from the fixture rather than a literal (fixture values drift as the engine
-    // golden is refreshed; the plan's own "1,131" is stale against the checked-in file).
-    const figure = Math.round(fixtureResult.dps.mean).toLocaleString('en-US');
+    // golden is refreshed).
+    const figure = fixtureResult.dps.mean.toLocaleString('en-US', {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    });
     await expect(page.getByTestId('sim-dps')).toHaveText(figure);
-    await expect(page.getByTestId('sim-saved-encounter')).toHaveText('raid-buffed, 3:00, single target');
-
-    await expect(page.getByTestId('sim-results')).toBeVisible();
-    await expect(page.getByTestId('sim-tab-damage')).toHaveAttribute('aria-selected', 'true');
-
-    // Fix round 1: the header no longer states iterations/processing time/lane a second
-    // time (they used to duplicate the details card below it) -- the card is now the one
-    // place these live, so this is where the saved page's own figures are pinned down.
-    await expect(page.getByTestId('sim-details-card')).toBeVisible();
-    await expect(page.getByTestId('sim-details-iterations')).toHaveText(
+    await expect(page.getByTestId('sim-fact-fight')).toContainText('3:00');
+    await expect(page.getByTestId('sim-fact-runs')).toContainText(
       fixtureResult.iterations_run.toLocaleString('en-US'),
     );
-    await expect(page.getByTestId('sim-details-processing')).toHaveText(
-      `${(fixtureResult.duration_ms / 1000).toFixed(1)} s`,
-    );
-    await expect(page.getByTestId('sim-details-lane')).toHaveText(
-      fixtureResult.lane === 'server' ? simCopy.detailsLaneServer : simCopy.detailsLaneBrowser,
-    );
-    await expect(page.getByTestId('sim-details-engine')).toHaveAttribute('href', '/sim/specs');
 
-    // The fixture's stored request carries real gear entries, so `gearKnown` is true and
-    // the strip renders the grid rather than `simCopy.savedNoGear` -- the inverse of a
-    // request with no gear at all, exercised below against a stubbed id.
-    await expect(page.getByTestId('paperdoll-slot-head')).toBeVisible();
-    await expect(page.getByTestId('sim-no-gear')).toHaveCount(0);
-
-    // Controller addendum (Task 17's review, MEDIUM): the strip's "Change source" button
-    // was rendering live and focusable on this read-only page but wired to a no-op. There
-    // is nothing to change a source into here, so CharacterStrip's `readonly` prop hides it
-    // rather than leaving a button that does nothing for a player to find.
+    await expect(page.getByTestId('sim-section-nav')).toBeVisible();
+    await expect(page.getByTestId('sim-damage-card')).toBeVisible();
+    await expect(page.getByTestId('sim-tab-damage')).toHaveCount(0);
     await expect(page.getByTestId('sim-change-source')).toHaveCount(0);
+
+    // An older result: the range strip stands in for the bins, and says so.
+    await expect(page.getByTestId('sim-spread-range')).toBeVisible();
+    await expect(page.getByTestId('sim-spread-plot')).toHaveCount(0);
+
+    // The card below the fold mounts as it nears the viewport.
+    await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+    await expect(page.getByTestId('sim-settings-runs')).toContainText(
+      fixtureResult.iterations_run.toLocaleString('en-US'),
+    );
+    await expect(page.getByTestId('sim-saved-copy-for-game')).toBeVisible();
+    await expect(page.getByTestId('sim-copy-json')).toBeVisible();
   });
 
-  // Defect fix: SavedSim.svelte used to hand CharacterStrip a `character` with
-  // `point_order: []`, which fell through to the strip's own `plannerHrefFor` -- built for
-  // the live /sim page, where `point_order` is the truth -- and that function can only
-  // encode zeroed talents from an empty order (`toCharacterSpec`'s own
-  // `talentsString(index, [])`). A saved sim's own stored request already carries the true,
-  // final talents string (result.json's fixture: `-5530515-`, a real Fury Warrior build,
-  // not `----`), so the fix reaches it directly through `plannerHrefForSpec` instead of
-  // reconstructing anything through a point order the page never had.
-  test('"Open in planner" carries the saved sim’s own talents, not zeroed', async ({ page }) => {
-    await page.goto('/sim/simfixtureab');
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+  test('the full fixture draws the real bins, Worth knowing and the current section', async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto('/sim/simfullfixt1');
+    await expect(page.getByTestId('sim-spread-plot')).toBeVisible();
+    await expect(page.getByTestId('sim-spread-bar').first()).toBeVisible();
+    await expect(page.getByTestId('sim-spread-caption')).toContainText('Two runs in three');
+    await expect(page.getByTestId('sim-fact-saved')).toHaveText(/4 Nov 2026/);
 
-    const expectedHref = plannerHrefForSpec(fixtureResult.request.character, activeBuild.build);
-    // The fixture's own talents string is non-empty, so a correct link's code cannot be the
-    // all-zero shape defect B produced (":0/0/0:").
-    expect(fixtureResult.request.character.talents.replace(/-/g, '')).not.toBe('');
-    expect(expectedHref).not.toContain(':0/0/0:');
-    await expect(page.getByTestId('sim-open-planner')).toHaveAttribute('href', expectedHref);
+    // A phone's table is two columns, so DPS is its one sort header: a press there flips the order.
+    const header = (column: string) =>
+      page.locator('th', { has: page.getByTestId(`ability-sort-${column}`) });
+    const column = isMobile ? 'dps' : 'crit';
+    await page.getByTestId(`ability-sort-${column}`).click();
+    await expect(header(column)).toHaveAttribute('aria-sort', isMobile ? 'ascending' : 'descending');
+    await page.getByTestId(`ability-sort-${column}`).click();
+    await expect(header(column)).toHaveAttribute('aria-sort', isMobile ? 'descending' : 'ascending');
+
+    // Scrolling by hand moves the current link too, not only a click on it.
+    await page.locator('#timeline').scrollIntoViewIfNeeded();
+    await page.evaluate(() => document.getElementById('timeline')?.scrollIntoView());
+    await expect(page.locator('[data-section="timeline"]')).toHaveAttribute('aria-current', 'location');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page.locator('[data-section="damage"]')).toHaveAttribute('aria-current', 'location');
+
+    await page.locator('[data-section="settings"]').click();
+    await expect(page.locator('[data-section="settings"]')).toHaveAttribute('aria-current', 'location');
+    await expect(page.locator('#settings h2')).toBeFocused();
   });
 
   // D48 (dps-minmaxer review round 2, BLOCKER): a saved run loaded cold used to hardcode
@@ -153,17 +156,10 @@ test.describe('a saved sim from the prerendered fixture', () => {
 
     await page.goto('/sim/simfixtureab');
 
-    // Same second ability and buff sim-results.spec.ts's live-run sentence test names, at
-    // the same 78%/19% figures -- both read off src/fixtures/sim/result.json's summary.
-    // Battle Shout is up the whole fight, which is not a finding, so the line skips it.
-    // The top ability is the fixture's own auto-attack row, which reads as prose
-    // ("main-hand white hits") regardless of the name table.
-    const sentence = page.getByTestId('sim-sentence');
-    await expect(sentence).toHaveText(
-      'main-hand white hits and Whirlwind are 78% of your damage; Bloodrage is up 19% of the fight.',
+    await expect(page.getByTestId('ability-row-spell:1680').getByTestId('ability-name')).toHaveText(
+      'Whirlwind',
     );
-    await expect(sentence).not.toContainText('Battle Shout');
-    await expect(sentence).not.toContainText(/\bspell:/);
+    await expect(page.getByTestId('ability-table')).not.toContainText(/\bspell:/);
   });
 
   // H4 (final whole-branch review): the fixture's saved sim is addon-sourced with an empty
@@ -171,7 +167,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
   // the shape that used to land on a dead `/sim?source=addon` with no character and no
   // message. The fix adopts the saved request's own request.character through /sim's
   // existing ?code= bootstrap instead, so a character is on screen after the click.
-  test('Run this yourself opens /sim with the saved request’s own character, not a dead ref', async ({
+  test('Open in the sim opens /sim with the saved request’s own character, not a dead ref', async ({
     page,
   }) => {
     await page.goto('/sim/simfixtureab');
@@ -184,14 +180,6 @@ test.describe('a saved sim from the prerendered fixture', () => {
   });
 });
 
-// Task 13: the rotation card. The prerendered fixture's own client-side fetch of /v1/specs
-// has to be stubbed, the same way sim-specs.spec.ts stubs it, or the fidelity note has
-// nothing to render off of -- the card would show with no note and the second assertion
-// below would be checking an element that never appears.
-//
-// Task 6: "what it does" no longer links straight to /sim/specs#<spec> -- it opens the
-// rotation drawer in place, and the fidelity link moves inside that drawer. Clicking it
-// open is this test's own proof the trigger is a Disclosure now, not a navigating anchor.
 // A saved sim is somebody else's result opened cold: no character is "loaded" here, and the
 // chip's empty line ("No character loaded...") sat directly above a full result. The casts
 // tab also carried the log viewer's note about other players' rows, which a one-player
@@ -203,87 +191,75 @@ test('a saved sim opened cold says nothing about a missing character or other pl
   await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
 
-  await page.getByTestId('sim-tab-casts').click();
-  const note = page.getByTestId('cast-time-note');
-  await expect(note).toBeVisible();
-  await expect(note).not.toContainText('other players');
+  await expect(page.getByTestId('sim-result-band')).toBeVisible();
+  await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
+  await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
 });
 
-test('a saved sim names the rotation it used, opens its drawer, and carries its fidelity', async ({
+/** The spec list's answer for warrior-fury, in one fidelity state. */
+function fidelityRoute(state: 'validated' | 'in_progress') {
+  return envelope({
+    specs: [
+      {
+        spec: 'warrior-fury',
+        state,
+        median_gap: state === 'validated' ? 0.02 : 0.08,
+        parses: state === 'validated' ? 50 : 12,
+        worst_actions: [],
+        engine_version: activeBuild.build,
+        updated_at: '2026-01-01',
+      },
+    ],
+  });
+}
+
+// Spec 2026-11-04-sim-results 3.11: the saved page's Rotation card is an always-open list (no
+// drawer). It names the rotation the run used with the run's spec and level, prints each line's
+// note in place and links the spec's guide. Under its head it carries the spec's fidelity note
+// when the sim has not validated the spec (tenet 8). The prerendered fixture's own client-side
+// fetch of /v1/specs is stubbed, as sim-specs.spec.ts stubs it, so the note has a row to read.
+test('a saved sim names the rotation it used, prints its notes in place, and carries its fidelity', async ({
   page,
 }) => {
-  await page.route('**/v1/specs', (route) =>
-    route.fulfill(
-      envelope({
-        specs: [
-          {
-            spec: 'warrior-fury',
-            state: 'in_progress',
-            median_gap: 0.08,
-            parses: 12,
-            worst_actions: [],
-            engine_version: activeBuild.build,
-            updated_at: '2026-01-01',
-          },
-        ],
-      }),
-    ),
-  );
-
+  await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('in_progress')));
   await page.goto('/sim/simfixtureab');
-  const card = page.getByTestId('sim-rotation-card');
+  await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
+  const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
-  const url = page.url();
+  await expect(card).toContainText('FURY, AT 60');
+  await expect(card).toContainText('Then, from the top at every decision');
 
-  // The trigger opens the drawer in place -- no navigation.
-  await card.getByTestId('sim-rotation-card-link').click();
-  const panel = card.getByTestId('sim-rotation-card-drawer-panel');
-  await expect(panel).toBeVisible();
+  const notes = curatedRotationNotes('warrior-fury');
+  await expect(card.getByTestId('rotation-line').first()).toBeVisible();
+  // Bloodthirst's note has no level version, so the run reads the curated note itself.
+  const bloodthirst = notes.find((note) => note.startsWith('On cooldown: the button'));
+  expect(bloodthirst).toBeDefined();
+  await expect(card).toContainText(bloodthirst!);
+
+  const url = page.url();
+  const guide = card.getByRole('link', { name: 'Read the Fury guide' });
+  await expect(guide).toHaveAttribute('href', '/guides/warrior/fury');
   expect(page.url()).toBe(url);
 
-  // The fidelity link moved inside the drawer, and opens a new tab rather than this one.
-  const fidelityLink = panel.getByTestId('sim-rotation-drawer-fidelity-link');
-  await expect(fidelityLink).toHaveAttribute('href', '/sim/specs#warrior-fury');
-  await expect(fidelityLink).toHaveAttribute('target', '_blank');
-
-  // The fixture's warrior-fury row is not validated, so the note is there; a validated
-  // spec renders the card without one.
-  await expect(card.getByTestId('sim-rotation-card-note')).toBeVisible();
+  // The fixture's warrior-fury row is not validated, so the note is there, pill linking the spec list.
+  const note = card.getByTestId('sim-rotation-card-note');
+  await expect(note).toBeVisible();
+  await expect(note.getByRole('link')).toHaveAttribute('href', '/sim/specs');
 });
 
-// Fix round 1, Finding 3: the card's defining behaviour -- a validated spec renders no
-// note at all, rather than a green "all is well" line -- had no coverage. Dropping the
+// A validated spec renders no note at all, rather than a green "all is well" line: dropping the
 // `!== 'validated'` clause in needsFidelityNote would break nothing without this.
 test('a saved sim for a validated spec carries the rotation card with no fidelity note', async ({ page }) => {
-  await page.route('**/v1/specs', (route) =>
-    route.fulfill(
-      envelope({
-        specs: [
-          {
-            spec: 'warrior-fury',
-            state: 'validated',
-            median_gap: 0.02,
-            parses: 50,
-            worst_actions: [],
-            engine_version: activeBuild.build,
-            updated_at: '2026-01-01',
-          },
-        ],
-      }),
-    ),
-  );
-
+  await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('validated')));
   await page.goto('/sim/simfixtureab');
-  const card = page.getByTestId('sim-rotation-card');
+  await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
+  const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
-  await card.getByTestId('sim-rotation-card-link').click();
-  await expect(
-    card.getByTestId('sim-rotation-card-drawer-panel').getByTestId('sim-rotation-drawer-fidelity-link'),
-  ).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  await expect(card.getByTestId('rotation-line').first()).toBeVisible();
   await expect(card.getByTestId('sim-rotation-card-note')).toHaveCount(0);
 });
 
-test('a saved sim whose stored request has no gear shows the line, not the grid', async ({ page }) => {
+test('a saved sim whose stored request has no gear drops the nav link', async ({ page }) => {
   const id = 'simnogearabc';
   const noGearResult = {
     ...fixtureResult,
@@ -297,7 +273,8 @@ test('a saved sim whose stored request has no gear shows the line, not the grid'
 
   await page.goto(`/sim/${id}`);
 
-  await expect(page.getByTestId('sim-no-gear')).toBeVisible();
+  await expect(page.getByTestId('sim-section-nav')).toBeVisible();
+  await expect(page.locator('[data-section="gear"]')).toHaveCount(0);
   await expect(page.getByTestId('paperdoll-slot-head')).toHaveCount(0);
 });
 
@@ -386,11 +363,11 @@ test('a saved sim shows the loading skeleton until the fetch resolves, then the 
   await page.goto(`/sim/${id}`);
 
   await expect(page.getByTestId('sim-saved-skeleton')).toBeVisible();
-  await expect(page.getByTestId('sim-saved-header')).toHaveCount(0);
+  await expect(page.getByTestId('sim-result-band')).toHaveCount(0);
 
   release?.();
 
-  await expect(page.getByTestId('sim-saved-header')).toBeVisible();
+  await expect(page.getByTestId('sim-result-band')).toBeVisible();
   await expect(page.getByTestId('sim-saved-skeleton')).toHaveCount(0);
 });
 
@@ -419,7 +396,7 @@ test('a failed saved-sim fetch offers a retry that re-fires the same request', a
   await expect(page.getByTestId('sim-saved-error')).not.toBeVisible();
 });
 
-test('a stale engine version shows the pill and the sentence, and is never re-run automatically', async ({
+test('a stale engine version raises the note and the tag, and is never re-run automatically', async ({
   page,
 }) => {
   const id = 'simstaleabcd';
@@ -435,10 +412,11 @@ test('a stale engine version shows the pill and the sentence, and is never re-ru
 
   await page.goto(`/sim/${id}`);
 
-  await expect(page.getByTestId('sim-stale-pill')).toHaveText('Engine 6a1c2d9');
-  await expect(page.getByTestId('sim-stale')).toBeVisible();
+  await expect(page.getByTestId('sim-note-stale')).toBeVisible();
+  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('sim-stale-tag')).toBeVisible();
 
-  // No auto re-run: the remedy is the "Run this yourself" link, never a second fetch fired
+  // No auto re-run: the remedy is the "Open in the sim" link, never a second fetch fired
   // on its own.
   await page.waitForTimeout(500);
   expect(calls).toBe(1);

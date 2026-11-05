@@ -30,7 +30,7 @@ Hunter is a pure damage class in Forever. All three specs deal damage, and they 
 ## What changed from 1.12
 
 - **Pets are reworked.** A pet copies 10% of your attack power and all of your crit, and it takes no stat buffs from other players; your own Heart of the Lion still reaches it. Your gear is what makes it hit.
-- **Aimed Shot is a trained spell** with a 2 second cast, and it shares one 6 second cooldown with Multi-Shot. Aimed Shot outhits Multi-Shot, so it takes that cooldown whenever the cast fits between two auto shots, and Multi-Shot takes it when an auto is about to fire.
+- **Aimed Shot is a trained spell** with a 2 second cast, and it shares one 6 second cooldown with Multi-Shot. Aimed Shot outhits Multi-Shot, and in Forever your auto shots keep firing while you cast it, so it takes that cooldown every time it comes up; Multi-Shot is for packs and for when you have to move.
 - **Heart of the Lion** is a hunter spell from level 1: 10% more stats and extra attack power (280 melee and ranged at 60) for everyone near you, and another 10% stats for you.
 - **Aspect of the Beast** gives melee attack power, which makes it the Survival aspect. Aspect of the Hawk stays the ranged one.
 - **Trueshot Aura** is ranged attack power only, 100 at 60 for your party and raid.

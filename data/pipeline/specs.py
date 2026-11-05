@@ -231,7 +231,8 @@ def render_ts(specs: list[SpecRecord], icons: dict[str, str], build: str) -> str
         f"    tree_index: {s.tree_index},\n"
         f"    reference_stat: '{s.reference_stat}',\n"
         f"    weight_stats: {weight_stats_literal(s.weight_stats)},\n"
-        f"    icon: '{icons[s.spec]}',\n"
+        + (f"    capstone_spell: {s.capstone_spell},\n" if s.capstone_spell is not None else "")
+        + f"    icon: '{icons[s.spec]}',\n"
         f"  }},"
         for s in specs
     )
@@ -250,6 +251,9 @@ export interface Spec {{
   reference_stat: string;
   /** The closed list of stats /sim/weights offers; reference_stat is always one of them. */
   weight_stats: readonly string[];
+  /** The level 60 rank of the spec's 31-point ability, when the rotation presses one
+   *  (the saved sim's "never pressed" warning); absent for specs without one. */
+  capstone_spell?: number;
   /** The spec's icon from the active client: its tree's TalentTab icon, or its form spell's
    *  (Feral, Feral Bear). A lowercase file name, no extension. The one spec-icon map. */
   icon: string;
@@ -272,7 +276,10 @@ export const SPEC_BY_KEY: Readonly<Record<string, Spec>> = Object.fromEntries(
 
 def render_json(specs: list[SpecRecord], icons: dict[str, str]) -> str:
     """curated/specs.json's own row shape with the resolved icon, one row a line."""
-    rows = [{**spec.model_dump(exclude={"form_spell"}), "icon": icons[spec.spec]} for spec in specs]
+    rows = [
+        {**spec.model_dump(exclude={"form_spell"}, exclude_none=True), "icon": icons[spec.spec]}
+        for spec in specs
+    ]
     return "[\n" + ",\n".join(f"  {json.dumps(row)}" for row in rows) + "\n]\n"
 
 

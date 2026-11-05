@@ -185,11 +185,12 @@ func (s *Service) save(w http.ResponseWriter, r *http.Request) {
 // reason (this file's own doc comment on Store.Get).
 type GetOutput struct {
 	simapi.SimResult
-	Title string `json:"title,omitempty"`
+	Title     string    `json:"title,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitzero"`
 }
 
 func (s *Service) get(w http.ResponseWriter, r *http.Request) {
-	res, title, err := s.Store.Get(r.Context(), r.PathValue("id"))
+	stored, err := s.Store.GetRow(r.Context(), r.PathValue("id"))
 	switch {
 	case errors.Is(err, ErrNotFound):
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such sim", nil)
@@ -197,7 +198,7 @@ func (s *Service) get(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "get", err, "could not read that sim just now")
 	default:
 		httpx.CachePublic(w, publicObjectMaxAge, publicObjectStale)
-		httpx.WriteOK(w, r, http.StatusOK, GetOutput{SimResult: res, Title: title})
+		httpx.WriteOK(w, r, http.StatusOK, GetOutput{SimResult: stored.Result, Title: stored.Title, CreatedAt: stored.CreatedAt})
 	}
 }
 

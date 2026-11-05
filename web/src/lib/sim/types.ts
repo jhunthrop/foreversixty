@@ -181,6 +181,8 @@ export interface SimRequest {
    * It changes no buff or consumable; those are `character.buffs` and `consumes`.
    */
   preset?: RequestPreset;
+  /** The talent and item build the request was made against, e.g. "1.60.1.70790" (spec 2026-11-04 11.3). */
+  data_build?: string;
 }
 
 /** sim/request BarePreset and RaidPreset. */
@@ -331,6 +333,80 @@ export interface SampleCast {
   target?: string;
   /** rage, energy, mana, combo_points … after the cast. */
   resources?: Record<string, number>;
+  /**
+   * How the event landed (spec 2026-11-04-sim-results 11.2). Absent on older results, and on a
+   * cast that dealt no damage of its own: a buff, a queued Heroic Strike, a Deep Wounds
+   * application. `tick` and `tick_crit` rows are periodic ticks, not casts, so a count of
+   * casts skips them and a count of ticks reads only them.
+   */
+  outcome?: SampleOutcome;
+  /** Damage of this event, whole number; absent for a non-damage cast. */
+  amount?: number;
+}
+
+export type SampleOutcome =
+  'hit' | 'crit' | 'miss' | 'dodge' | 'parry' | 'glance' | 'block' | 'tick' | 'tick_crit';
+
+/**
+ * Engine DistributionMetrics.hist as contiguous bins from `start`; counts sum to
+ * iterations_run. The engine bins at 10 DPS, wider on a run past 200 bins, so read `bin_dps`.
+ */
+export interface DpsHistogram {
+  start: number;
+  bin_dps: number;
+  counts: number[];
+}
+
+export interface ResourceSourceRow {
+  /** An action key in the summary's own grammar (`spell:2687`, `other:attack/1`, `item:13442`). */
+  action: string;
+  /** Average per fight. */
+  amount: number;
+  /** Gained past the cap, average per fight; gains only. */
+  wasted?: number;
+}
+
+export interface ResourceSources {
+  /** rage | energy | mana | focus */
+  resource: string;
+  gained: ResourceSourceRow[];
+  spent: ResourceSourceRow[];
+}
+
+/** One aura's on/off windows inside the sample run. */
+export interface SampleAura {
+  action: string;
+  on: 'player' | 'target';
+  /** [start_ms, end_ms] pairs. */
+  segments: [number, number][];
+  /** [at_ms, stacks] change points for a stacking aura. */
+  stacks?: [number, number][];
+}
+
+/** The character with every buff and consumable and no cooldown or proc, percent points. */
+export interface FinalStats {
+  /** Ranged attack power for a spec that fights at range. */
+  attack_power?: number;
+  melee_hit_pct?: number;
+  melee_crit_pct_vs_target?: number;
+  melee_haste_pct?: number;
+  weapon_skill?: { main_hand?: number; off_hand?: number; ranged?: number };
+  spell_power?: number;
+  spell_hit_pct?: number;
+  spell_crit_pct?: number;
+}
+
+export interface TargetStats {
+  level: number;
+  armor?: number;
+  armor_after_debuffs?: number;
+}
+
+export interface ExtraAttackSource {
+  /** A buff id from simbuffs (`windfury_totem`), otherwise the proc's action key (`spell:15600`). */
+  source: string;
+  /** Average per fight; the sources share out the extra swings the summary reports. */
+  count: number;
 }
 
 export interface SimResult {
@@ -371,6 +447,19 @@ export interface SimResult {
   healing?: HealingResult;
   /** A tank's figures and score; present only when the request set `role_metrics` for a tank. */
   tank?: TankResult;
+  // Spec 2026-11-04-sim-results 11.2: all optional, absent on results saved before them.
+  dps_histogram?: DpsHistogram;
+  resource_sources?: ResourceSources[];
+  /** The sample run's own length; the timeline axis ends here. */
+  sample_duration_ms?: number;
+  sample_auras?: SampleAura[];
+  final_stats?: FinalStats;
+  target_stats?: TargetStats;
+  extra_attack_sources?: ExtraAttackSource[];
+  /** First 12 hex of sha256 over the curated rotation JSON the run used. */
+  rotation_sha?: string;
+  /** When the sim was saved; a sibling like `title` on GET /v1/sims/{id}. */
+  created_at?: string;
 }
 
 /** sim/api `HealingResult`: what a healer did against the heal profile's fake raid. */

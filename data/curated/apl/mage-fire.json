@@ -45,7 +45,7 @@
         }
       },
       {
-        "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a boss: spend your gem, a Major Mana Potion and a Demonic Rune first. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
+        "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a fight: spend your mana gem from 28 and a mana potion first, and at 60 a Demonic Rune too. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
         "action": {
           "condition": {
             "and": {
@@ -87,7 +87,7 @@
         }
       },
       {
-        "notes": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial. Every Fire hit then adds 10% crit until three non-periodic crits land, and each Scorch or Fire Blast crit is an Ignite and a Heating Up stack. Give a fresh tank a few seconds of threat first.",
+        "notes": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one. Every Fire hit then adds 10% crit until three non-periodic crits land, and each Scorch or Fire Blast crit is an Ignite and a Heating Up stack. Give a fresh tank a few seconds of threat first.",
         "action": {
           "condition": {
             "cmp": {
@@ -117,7 +117,7 @@
         }
       },
       {
-        "notes": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 1.5 seconds or less left. The debuff only boosts your own Fire damage, so every Fire mage keeps their own stacks, and a Scorch that misses adds none. Filler Scorches refresh it anyway, so a refresh of its own matters only after a move or a target swap.",
+        "notes": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 1.5 seconds or less left. The debuff only boosts your own Fire damage, so every Fire mage keeps their own stacks, and a Scorch that misses adds none. From 30 your filler Scorches refresh it anyway, so a refresh of its own matters only after a move or a target swap; below 30 Fireball fills, so this Scorch is what keeps the stacks up.",
         "action": {
           "condition": {
             "and": {

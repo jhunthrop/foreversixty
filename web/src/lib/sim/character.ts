@@ -91,6 +91,16 @@ export const MAX_LEVEL = 60;
 /** The label a request carries for a build that names no character; a saved sim maps it back to no name. */
 export const NAMELESS_REQUEST_NAME = 'Build';
 
+/**
+ * Names a request carries that no player chose: the label above, the engine's own default and
+ * the ranker's. A saved result headed by one of these reads its spec instead.
+ */
+export const PLACEHOLDER_CHARACTER_NAMES: ReadonlySet<string> = new Set([
+  NAMELESS_REQUEST_NAME,
+  'Sim',
+  'breakdown',
+]);
+
 /** `<region>/<ruleset>/<slug>`: the key a stored character's source carries. */
 const CHARACTER_KEY = /^[a-z0-9-]+\/[a-z0-9-]+\/[^/\s]+$/;
 

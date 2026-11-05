@@ -8,6 +8,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import bulkFixture from '../../fixtures/sim/bulk-result.json';
+import fullFixture from '../../fixtures/sim/result-full.json';
 import runFixture from '../../fixtures/sim/result.json';
 import weightsFixture from '../../fixtures/sim/weights-result.json';
 import itemsJson from '../../fixtures/planner/items/warrior.json';
@@ -21,6 +22,7 @@ import type { SimResult } from '../../lib/sim/types';
 import SavedSim from './SavedSim.svelte';
 
 const runResult = runFixture as unknown as SimResult;
+const fullResult = fullFixture as unknown as SimResult;
 const bulkResult = bulkFixture as unknown as SimResult;
 const weightsResult = weightsFixture as unknown as SimResult;
 const items: ReadonlyMap<number, Item> = new Map(
@@ -34,9 +36,50 @@ function decodedGear(code: string): { slot: string; itemId: number }[] {
   return decoded.build.gear.map(({ slot, itemId }) => ({ slot, itemId }));
 }
 
+describe('SavedSim: which view a kind gets', () => {
+  it('a run gets the one-page result, its sections and its nav', () => {
+    const { body } = render(SavedSim, { props: { result: fullResult, onrerun: () => {} } });
+    expect(body).toContain('sim-result-band');
+    expect(body).toContain('sim-section-nav');
+    expect(body).toContain('sim-damage-card');
+    expect(body).not.toContain('sim-tab-damage');
+    for (const id of ['timeline', 'gear', 'talents', 'resource', 'buffs', 'rotation', 'settings']) {
+      expect(body).toContain(`id="${id}"`);
+    }
+  });
+
+  it('an older run falls back without a broken section: no bins, no Saved', () => {
+    const { body } = render(SavedSim, { props: { result: runResult, onrerun: () => {} } });
+    expect(body).toContain('sim-spread-range');
+    expect(body).toContain('This run kept the range, not the shape.');
+    expect(body).not.toContain('sim-spread-plot');
+    expect(body).not.toContain('sim-fact-saved');
+  });
+
+  it('a run with no sample and no gear drops those nav links', () => {
+    const request = {
+      ...fullResult.request,
+      character: { ...fullResult.request.character, gear: [] },
+    };
+    const { body } = render(SavedSim, {
+      props: { result: { ...fullResult, sample: undefined, request }, onrerun: () => {} },
+    });
+    expect(body).not.toContain('data-section="timeline"');
+    expect(body).not.toContain('data-section="gear"');
+    expect(body).toContain('data-section="talents"');
+  });
+
+  it('a bulk result keeps its own view', () => {
+    const { body } = render(SavedSim, { props: { result: bulkResult, onrerun: () => {} } });
+    expect(body).toContain('sim-saved-header');
+    expect(body).not.toContain('sim-result-band');
+  });
+});
+
 describe('SavedSim: Copy for the game', () => {
   it('renders the button disabled while the talent layout has not loaded', () => {
-    const { body } = render(SavedSim, { props: { result: runResult, onrerun: () => {} } });
+    // A bulk result's page (SavedKind): a run's Settings card is its own chunk, not in this render.
+    const { body } = render(SavedSim, { props: { result: bulkResult, onrerun: () => {} } });
     const match = /<button[^>]*data-testid="sim-saved-copy-for-game"[^>]*>[\s\S]*?<\/button>/.exec(body);
     if (match === null) throw new Error('copy-for-game button not found');
     expect(match[0]).toContain(addonCopy.copyForGame);

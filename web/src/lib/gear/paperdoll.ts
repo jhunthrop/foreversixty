@@ -46,6 +46,8 @@ export interface PaperdollSlot {
   upgrade?: PaperdollUpgrade;
   /** The report's "Item level 66 · Enchanted". */
   detail?: string;
+  /** The client's enchant text ("+7 Strength"), the green line under the name. */
+  enchant?: string;
 }
 
 export interface PaperdollIdentity {

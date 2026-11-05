@@ -35,6 +35,11 @@ export function simIdFor(element: HTMLElement, pathname: string): string {
   return simIdFrom(pathname);
 }
 
+/** The mount element's min-height classes, at every breakpoint. */
+export function shellReservations(element: HTMLElement): string[] {
+  return [...element.classList].filter((name) => /(^|:)min-h-\[/.test(name));
+}
+
 function boot(): void {
   const target = document.getElementById(MOUNT_ID);
   if (target === null) return;
@@ -45,16 +50,12 @@ function boot(): void {
   // The shell's no-JS paragraph lives inside the mount element; Svelte 5 appends rather
   // than replaces, so it has to go before the mount or it stays under the island.
   target.replaceChildren();
-  // Spec 2026-09-25 §3.6: sim.astro's min-h-[…]/md:min-h-[…] is the pre-hydration shell's
-  // own CLS reservation (measured against the static hero-card LCP element it renders
-  // before hydration) -- it has no reason to keep applying once SimView has mounted and
-  // governs its own height, and left in place it floors the page at that height forever.
-  // 2026-09-26 layout pass: bumped to the re-measured 1408px/819px figures (sim.astro's own
-  // comment has the numbers) -- fixing, in passing, a stale mismatch this call already had
-  // (a prior desktop re-measure moved sim.astro's own class from 607 to 620px without this
-  // literal following it, so `md:min-h-[607px]` never actually matched anything in the
-  // classList and desktop's reservation was never removed).
-  target.classList.remove('min-h-[1408px]', 'md:min-h-[819px]');
+  // The shells' min-h classes (sim.astro, sim/[id].astro) are the pre-hydration CLS reservation
+  // (spec 2026-09-25 §3.6, spec 2026-11-04-sim-results 4.2): once SimView mounts it governs its
+  // own height, and a reservation left in place floors the page there forever, which on a short
+  // saved result is a hole above the footer. Every min-h class goes, whatever its figure, so a
+  // re-measure in either page never needs this line to follow it.
+  target.classList.remove(...shellReservations(target));
   mount(SimView, { target, props });
 }
 

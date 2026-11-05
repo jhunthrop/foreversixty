@@ -76,7 +76,7 @@
   {/if}
   <div class={compact ? CARD_HEAD.titleBlockCompact : CARD_HEAD.titleBlock}>
     {#if label !== undefined && !compact}
-      <span class={CARD_HEAD.label}>{label}</span>
+      <span class={CARD_HEAD.label} data-card-label>{label}</span>
     {/if}
     <div class={CARD_HEAD.titleRow}>
       {#if headingLevel === 3}

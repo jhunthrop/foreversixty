@@ -671,8 +671,12 @@ def compute_spell_icons(
     # Evocation): `curated/extra-spell-icons.json` lists their ids so they get an icon too.
     extra_path = curated_dir / "extra-spell-icons.json"
     if extra_path.exists():
-        for spell_id in json.loads(extra_path.read_text(encoding="utf-8"))["spell_ids"]:
+        extra = json.loads(extra_path.read_text(encoding="utf-8"))
+        for spell_id in extra["spell_ids"]:
             icons.setdefault(spell_id, _resolve_icon(spell_id, icon_of))
+        # An engine id the client's tables do not carry takes its own spell's other rank.
+        for spell_id, client_row in extra.get("icon_rows", {}).items():
+            icons[int(spell_id)] = _resolve_icon(client_row, icon_of)
     # Spells the log coach names (its rule files' core casts, auras, downranks, defensives):
     # the review's titles and chips show each one's icon, every rank.
     coach_ids = coach_spell_ids(curated_dir) | coach_persona_spell_ids(curated_dir, spellranks)

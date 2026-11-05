@@ -7,9 +7,10 @@
 //
 // Client-exact where the published row says enough, and silent where it does not:
 //
-//   * `typeLabel` names a weapon's handedness ("Two-Handed Weapon") and a shield from
-//     `two_hand` and `armor`, and an armour piece's material ("Plate") from the row's
-//     `armor_type` when the build publishes it. Nothing is guessed from a name or an icon.
+//   * the slot line reads as the client's: a weapon's inventory type on the left ("One-Hand",
+//     "Main Hand", "Two-Hand"), its weapon type on the right ("Sword", "Mace") from the row's
+//     class and subclass; a shield and an armour piece's material ("Plate") on the right from
+//     `armor` and `armor_type`. Nothing is guessed from a name or an icon.
 //   * `bindLabel` is the client's binding line ("Binds when picked up") from `bonding`, only
 //     when the row states it.
 //   * a flat stat prints "+<value> <label>"; a rating-family stat an on-equip spell states as a
@@ -83,8 +84,6 @@ function slotLabelFor(slot: string): string {
   return ALIAS_SLOT_LABELS[slot] ?? humanise(slot);
 }
 
-const WEAPON_SLOTS: ReadonlySet<string> = new Set(['main_hand', 'off_hand', 'ranged']);
-
 /** The client's inventory type for a relic (libram, totem, idol): its tooltip reads "Relic". */
 const RELIC_INVENTORY_TYPE = 28;
 
@@ -95,14 +94,62 @@ function isRelicItem(item: Item): boolean {
   return item.inventory_type === RELIC_INVENTORY_TYPE;
 }
 
+/** The client's weapon class (ItemClass 2). */
+const WEAPON_CLASS = 2;
+
+/**
+ * The slot line's left for a weapon, shield or held item, by inventory type: GlobalStrings'
+ * INVTYPE_WEAPON "One-Hand", INVTYPE_2HWEAPON "Two-Hand", INVTYPE_WEAPONMAINHAND "Main Hand",
+ * INVTYPE_WEAPONOFFHAND and INVTYPE_SHIELD "Off Hand", INVTYPE_HOLDABLE "Held In Off-hand",
+ * INVTYPE_RANGED and INVTYPE_RANGEDRIGHT "Ranged", INVTYPE_THROWN "Thrown" (1.60.1.70790). The
+ * client prints where the item can go, never the slot a character happens to wear it in.
+ */
+/** INVTYPE_2HWEAPON: the slot line of anything that takes both hands. */
+export const TWO_HAND_LABEL = 'Two-Hand';
+
+const INVENTORY_TYPE_LABELS: Readonly<Record<number, string>> = {
+  13: 'One-Hand',
+  14: 'Off Hand',
+  15: 'Ranged',
+  17: TWO_HAND_LABEL,
+  21: 'Main Hand',
+  22: 'Off Hand',
+  23: 'Held In Off-hand',
+  25: 'Thrown',
+  26: 'Ranged',
+};
+
+/** The slot line's right for a weapon: ItemSubClass.DisplayName_lang for class 2 (1.60.1.70790). */
+const WEAPON_SUBCLASS_LABELS: Readonly<Record<number, string>> = {
+  0: 'Axe',
+  1: 'Axe',
+  2: 'Bow',
+  3: 'Gun',
+  4: 'Mace',
+  5: 'Mace',
+  6: 'Polearm',
+  7: 'Sword',
+  8: 'Sword',
+  10: 'Staff',
+  13: 'Fist Weapon',
+  14: 'Miscellaneous',
+  15: 'Dagger',
+  16: 'Thrown',
+  18: 'Crossbow',
+  19: 'Wand',
+  20: 'Fishing Pole',
+};
+
+function slotLineLeft(item: Item): string {
+  if (isRelicItem(item)) return RELIC_SLOT_LABEL;
+  const byType = INVENTORY_TYPE_LABELS[item.inventory_type ?? -1];
+  if (byType !== undefined) return byType;
+  return item.two_hand === true ? TWO_HAND_LABEL : slotLabelFor(item.slot);
+}
+
 function typeLabelFor(item: Item): string | undefined {
   if (isRelicItem(item)) return RELIC_KIND_LABELS[item.subclass_id ?? -1];
-  const isWeapon = WEAPON_SLOTS.has(item.slot) && (item.damage_max ?? 0) > 0;
-  if (isWeapon) {
-    if (item.two_hand === true) return 'Two-Handed Weapon';
-    if (item.slot === 'ranged') return 'Ranged Weapon';
-    return 'One-Handed Weapon';
-  }
+  if (item.class_id === WEAPON_CLASS) return WEAPON_SUBCLASS_LABELS[item.subclass_id ?? -1];
   if (item.slot === 'off_hand' && item.armor > 0) return 'Shield';
   return item.armor_type == null ? undefined : ARMOR_LABELS[item.armor_type];
 }
@@ -265,7 +312,7 @@ export function itemTooltipModel(row: Item, sources: ItemTooltipSources): ItemTo
     name: row.name,
     quality: row.quality,
     icon: row.icon,
-    slotLabel: isRelicItem(row) ? RELIC_SLOT_LABEL : slotLabelFor(row.slot),
+    slotLabel: slotLineLeft(row),
     typeLabel: typeLabelFor(row),
     bindLabel: bindLabelFor(row),
     itemLevel: row.item_level,

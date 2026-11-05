@@ -6,10 +6,13 @@
     "slots": ["head", "legs"],
     "item_types": ["normal"],
     "classes": [],
-    "stats": { "strength": 8 },
+    "stats": {
+      "strength": 8
+    },
     "phase": 0,
     "spell_id": 23545,
-    "item_id": 0
+    "item_id": 0,
+    "display": "+8 Strength"
   },
   {
     "id": 1900,
@@ -21,7 +24,8 @@
     "stats": {},
     "phase": 0,
     "spell_id": 20034,
-    "item_id": 0
+    "item_id": 0,
+    "display": "Crusader"
   },
   {
     "id": 2564,
@@ -30,9 +34,13 @@
     "slots": ["chest"],
     "item_types": ["kit"],
     "classes": [],
-    "stats": { "strength": 4, "agility": 4 },
+    "stats": {
+      "strength": 4,
+      "agility": 4
+    },
     "phase": 5,
     "spell_id": 25086,
-    "item_id": 16252
+    "item_id": 16252,
+    "display": "+4 All Stats"
   }
 ]

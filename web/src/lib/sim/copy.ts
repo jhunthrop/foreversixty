@@ -382,11 +382,6 @@ export const simCopy = {
     'The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". The other 8 specs, healers and tanks, are not simulated yet.',
   tryAgain: 'Try again',
 
-  distMean: 'Mean DPS',
-  distStdDev: 'Standard deviation',
-  distLowest: 'Lowest iteration',
-  distHighest: 'Highest iteration',
-  distIterations: 'Iterations',
   tabDamage: 'Damage',
   /** The Damage tab's row for a build that names no character (a pasted export, a planner build). */
   namelessActor: 'You',
