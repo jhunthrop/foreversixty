@@ -61,7 +61,7 @@ No new control and no new token (tenet 10).
 | Viewer state | Sentence | Primary button | Secondary `ActionLink` |
 |---|---|---|---|
 | Officer, someone waiting for approval | `{n} waiting for approval. Approve them so they can sign up.` | `Approve {n}` (opens Roster tab, focus on `Approve all`) | `Copy the invite link` (Settings `#invite`) |
-| Officer, no event planned | `Nothing on the calendar yet. Post a dungeon run or a guild event.` | `Plan an event` (Raids tab, form open, spec D) | `Copy the invite link` |
+| Officer, no event planned | `Nothing on the calendar yet. Post a dungeon run or a guild event.`; when the guild's plan gates planning, `Nothing on the calendar yet. Planning raids and events is part of the Guild and Raid guild plans.` (amended 2026-11-05, guild round 3; the Raids tab's gate carries the plan link) | `Plan an event` (Raids tab, form open, spec D) | `Copy the invite link` |
 | Officer, an event planned | `{Title} {when}, {n} signed up.`; at 0 `{Title} {when}. Nobody signed up yet.` (amended 2026-11-05, guild round 2: never `0 signed up`) | `Open the sign-ups` (the raid page) | `Copy the invite link` |
 | Raider, viewer's character has no export | `Sync the addon or import from Battle.net so the guild sees your level and gear.` | `Import your character` (`/setup`) | none |
 | Raider, an event planned, viewer not signed up | `{Title} {when}. You have not signed up yet.` | `Sign up` (the raid page) | none |

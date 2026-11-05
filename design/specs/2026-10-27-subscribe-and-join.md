@@ -393,7 +393,7 @@ Touch: every control is at least 44 px tall at 360. Keyboard: tab order follows 
 ### 6.2 Claim page (`GuildClaim.svelte`) changes
 
 - **With `plan`**: a 14 px `--text` line under the heading, on a 2 px `--gold` left rule, padding-left 14 (§9.3), only while the viewer does not hold the claim (gate fix, row 16: "Claim the guild first" is never shown to the player who just claimed it).
-- **After a confirmed claim with `plan`**: the `Next` list gains, first, the §5.3 `ready` button (`Start the 7-day trial` or `Subscribe · {price}`) as the page's one fill. `Approve your officers and members` and `Make an invite link` follow, as today, 12 px apart (the button's failure line is drawn only after a failed click).
+- **After a confirmed claim with `plan`**: the `Next` list gains, first, the §5.3 `ready` button (`Start the 7-day trial` or `Subscribe · {price}`) as the page's one fill. `Approve your officers and members`, `Make an invite link`, `Plan an event` (to the guild's `#raids`) and `Add the Discord bot` (to Settings `#discord`) follow, 12 px apart (the button's failure line is drawn only after a failed click). A guild with no plan gets one 13 px `--muted` line under the row, `Events and the Discord bot are part of the Guild and Raid guild plans.`, the gate sentence's part 1 with no link (guild round 3).
 - **Signed in, no character of theirs in the guild**: `notAMember` gains the inline link `Get set up`, with `next` set to this claim URL. `/setup` accepts `next` (validated by `safeNextPath`) and, after a save, shows `Back to {Guild}'s claim` as its one primary.
 - **A member viewer**: `memberCannotClaim` is replaced by the §9.3 sentence and a `CopyLinkField` holding the claim URL with the same `plan` it was opened with (sr-only label, max 640 px, full-width buttons below 768; §5.5).
 - **Signed out**: today's `signInLine`; the sign-in keeps `next`.
@@ -489,7 +489,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | `ready`, Guild chosen, over 25 verified | `{n} verified members, more than Guild's 25.` + `Switch to Raid guild` |
 | `ready`, Raid guild chosen, 25 or fewer verified | `{n} verified members. Guild covers up to 25 for less.` + `Switch to Guild` |
 | `claim` | `You lead {Guild}. Claim it here, then subscribe it.`; button `Claim {Guild}` |
-| `claim` confirm | `Claim {Guild}? You may attempt one claim every 30 days, hold one claimed guild at a time, and a claim can be contested.`; `Yes, claim it`; `Cancel` |
+| `claim` confirm | `Claim {Guild}?`; `Yes, claim it`; `Cancel` (guild round 3: the rules card sits right below, so the question no longer repeats them) |
 | `claim` done | `Claimed. You hold {Guild}.` |
 | `claim_link_bnet` | `You lead {Guild}. Claiming as guild master needs your Battle.net account linked.`; button `Link Battle.net` |
 | `start_claim` | `Nobody holds {Guild}'s claim yet. As an officer you can start one; a second officer or the guild master confirms it.`; button `Start a claim` |
@@ -559,7 +559,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | Guild page claim slot, member of an unclaimed guild | `Get the guild claimed` |
 | Settings, not the claim holder, no plan | today's sentence + `Send them this link.` |
 | Account guild row | `Not verified`; `{Guild} has no plan.`; `See the next step` |
-| Invite joined | `{Guild} is on the {Tier} plan.`; `{Guild} has no plan yet.` |
+| Invite joined | `{Guild} is on the {Tier} plan.`; `{Guild} is on the free plan.` |
 
 ## 10. Hierarchy
 

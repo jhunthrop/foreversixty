@@ -11,6 +11,7 @@ import { countdown, NOBODY_SIGNED_UP, whenPhrase } from './raid-copy';
 import { dateLabel } from './raid-time';
 import { RAID_LEVEL } from './readiness-view';
 import { sameSpecName } from './spec-name';
+import { guildGateCopy } from './copy';
 
 /** Characters under this are bank alts and fresh rolls, not raiders: the spread leaves them out. */
 const LOWEST_COUNTED_LEVEL = 10;
@@ -159,6 +160,8 @@ export interface WeekOneInput {
   /** The guild band shows the In, Late, Bench and Out segments for `nextRaid`, so the card does not
    *  offer a second Sign up (guild round 3). */
   bandSignsUp?: boolean;
+  /** The guild's plan gates planning: the empty-calendar sentence says so (guild round 3). */
+  planGated?: boolean;
 }
 
 /** The catalogue key of a character's spec ("hunter-beast-mastery"), from a slug or any spelling
@@ -206,7 +209,10 @@ function officerStep(input: WeekOneInput): WeekOneStep {
   if (nextRaid === null || raidHref === null) {
     return {
       name: null,
-      text: 'Nothing on the calendar yet. Post a dungeon run or a guild event.',
+      text:
+        input.planGated === true
+          ? `Nothing on the calendar yet. ${guildGateCopy.lead.raids}`
+          : 'Nothing on the calendar yet. Post a dungeon run or a guild event.',
       action: { kind: 'plan', label: 'Plan an event' },
       invite: true,
     };

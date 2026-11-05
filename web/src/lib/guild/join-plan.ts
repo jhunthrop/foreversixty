@@ -4,10 +4,13 @@ import type { GuildCoveredView } from '../billing/contract';
 import { PLANS } from '../billing/plans';
 import { guildJoinCopy } from './copy';
 
-/** `{Guild} is on the {Tier} plan.` or `{Guild} has no plan yet.`; a lapsed plan is no plan. */
+/** A guild has a plan while something covers it; a lapsed plan is no plan. */
+export function guildHasPlan(covered: GuildCoveredView | null | undefined): covered is GuildCoveredView {
+  return covered !== null && covered !== undefined && covered.state !== 'lapsed';
+}
+
+/** `{Guild} is on the {Tier} plan.` or `{Guild} is on the free plan.`; a lapsed plan is no plan. */
 export function joinedPlanLine(guildName: string, covered: GuildCoveredView | null | undefined): string {
-  if (covered === null || covered === undefined || covered.state === 'lapsed') {
-    return guildJoinCopy.noPlanYet(guildName);
-  }
+  if (!guildHasPlan(covered)) return guildJoinCopy.noPlanYet(guildName);
   return guildJoinCopy.onPlan(guildName, PLANS[covered.tier].name);
 }

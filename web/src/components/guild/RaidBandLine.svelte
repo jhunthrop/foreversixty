@@ -59,6 +59,7 @@
   import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
   import { bandLineParts, kindCountsRoles, kindOf, whenPhrase } from '../../lib/guild/raid-copy';
   import { putSignup } from '../../lib/guild/raids-api';
+  import { guildGateCopy } from '../../lib/guild/copy';
   import SignupSegments from './SignupSegments.svelte';
 
   interface OwnCharacter {
@@ -212,7 +213,10 @@
 {#if nextRaid === null}
   <p class="text-[14px]" data-testid="guild-raid-line-none">
     {officer ? raidCopy.bandNone.officer : raidCopy.bandNone.member}
-    {#if officer && officerTools}
+    {#if officer && !officerTools}
+      <!-- The gate sentence's part 1 only: the plan's live link sits on the Raids tab. -->
+      {guildGateCopy.lead.raids}
+    {:else if officer}
       <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
         >{raidCopy.bandNone.planLink}</a
       >

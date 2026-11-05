@@ -210,9 +210,11 @@ describe('RaidBandLine none planned', () => {
     expect(text(body, 'guild-raid-line-none')).toBe('Nothing planned yet. Plan an event');
   });
 
-  it('gives a gated officer the sentence only, no live link', () => {
+  it('gives a gated officer the gate sentence, no live link', () => {
     const body = html({ nextRaid: null, officer: true, officerTools: false });
-    expect(text(body, 'guild-raid-line-none')).toBe('Nothing planned yet.');
+    expect(text(body, 'guild-raid-line-none')).toBe(
+      'Nothing planned yet. Planning raids and events is part of the Guild and Raid guild plans.',
+    );
     expect(body).not.toContain('guild-raid-line-plan');
     expect(body).not.toContain('href="#raids"');
   });

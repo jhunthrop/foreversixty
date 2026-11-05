@@ -105,15 +105,18 @@ export const guildClaimCopy = {
   // What an officer who may claim reads: what claiming gets them.
   unclaimedForOfficer:
     'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
-  // Claiming asks first, with the rules in one line.
-  claimConfirmLine: (guildName: string): string =>
-    `Claim ${guildName === '' ? 'this guild' : guildName}? You may attempt one claim every 30 days, hold one claimed guild at a time, and a claim can be contested.`,
+  // Claiming asks first; the rules sit in their own card right below, so the question is bare.
+  claimConfirmLine: (guildName: string): string => `Claim ${guildName === '' ? 'this guild' : guildName}?`,
   claimConfirmButton: 'Yes, claim it',
   // After the claim: the page says what the viewer holds and where to go next.
   youHold: (guildName: string): string => `You hold ${guildName === '' ? 'this guild' : guildName}.`,
   nextHeading: 'Next',
   nextRoster: 'Approve your officers and members',
   nextInvite: 'Make an invite link',
+  nextPlan: 'Plan an event',
+  nextDiscord: 'Add the Discord bot',
+  // A guild with no plan: the gate sentence's part 1 for both, no link (the plan lives on the tabs).
+  nextGated: 'Events and the Discord bot are part of the Guild and Raid guild plans.',
   releaseConfirmLine: (guildName: string): string =>
     `Release your claim on ${guildName === '' ? 'this guild' : guildName}? Officers will have to claim it again.`,
   releaseConfirmButton: 'Release',
@@ -239,7 +242,7 @@ export const guildJoinCopy = {
   joined: 'You joined the guild.',
   // Spec 2026-10-27 section 9.3, invite joined: the guild's plan, from `/v1/me` `covered`.
   onPlan: (guildName: string, tier: string): string => `${guildName} is on the ${tier} plan.`,
-  noPlanYet: (guildName: string): string => `${guildName} has no plan yet.`,
+  noPlanYet: (guildName: string): string => `${guildName} is on the free plan.`,
   signInButton: 'Sign in with Battle.net to join',
   signInLine: 'Sign in to join this guild.',
   notNow: 'Not now',

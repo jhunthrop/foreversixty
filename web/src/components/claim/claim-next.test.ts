@@ -33,6 +33,8 @@ describe('Next steps', () => {
       'guild-claim-next-subscribe',
       'guild-claim-next-roster',
       'guild-claim-next-invite',
+      'guild-claim-next-plan',
+      'guild-claim-next-discord',
     ]);
     expect(primaries(body)).toBe(1);
     expect(body.indexOf(PRIMARY_BUTTON_FIXED)).toBeLessThan(body.indexOf('guild-claim-next-roster'));
@@ -40,9 +42,28 @@ describe('Next steps', () => {
 
   it('keeps the roster link as the primary when there is nothing to subscribe', () => {
     const { body } = render(ClaimNextSteps, { props: { ...BASE, subscribe: null } });
-    expect(testIds(body)).toEqual(['guild-claim-next-roster', 'guild-claim-next-invite']);
+    expect(testIds(body)).toEqual([
+      'guild-claim-next-roster',
+      'guild-claim-next-invite',
+      'guild-claim-next-plan',
+      'guild-claim-next-discord',
+    ]);
     expect(primaries(body)).toBe(1);
     expect(body.indexOf(PRIMARY_BUTTON_FIXED)).toBeLessThan(body.indexOf('guild-claim-next-roster'));
+  });
+
+  it('points Plan an event at the raids tab and the bot at the Discord settings', () => {
+    const { body } = render(ClaimNextSteps, { props: { ...BASE, subscribe: null } });
+    expect(body).toContain(`href="${BASE.guildBase}#raids"`);
+    expect(body).toContain(`href="${BASE.settingsBase}#discord"`);
+    expect(body).not.toContain('guild-claim-next-gated');
+  });
+
+  it('says events and the bot need a plan when the guild has none, with no link', () => {
+    const { body } = render(ClaimNextSteps, { props: { ...BASE, subscribe: null, gated: true } });
+    expect(body).toContain('Events and the Discord bot are part of the Guild and Raid guild plans.');
+    const gated = body.slice(body.indexOf('guild-claim-next-gated'));
+    expect(gated.slice(0, gated.indexOf('</p>'))).not.toContain('<a');
   });
 });
 

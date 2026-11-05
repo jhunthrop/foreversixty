@@ -112,8 +112,8 @@ describe('joinedPlanLine', () => {
 
   it('names the tier, or says no plan yet', () => {
     expect(joinedPlanLine(G, covered({}))).toBe(`${G} is on the Raid guild plan.`);
-    expect(joinedPlanLine(G, null)).toBe(`${G} has no plan yet.`);
-    expect(joinedPlanLine(G, covered({ state: 'lapsed' }))).toBe(`${G} has no plan yet.`);
+    expect(joinedPlanLine(G, null)).toBe(`${G} is on the free plan.`);
+    expect(joinedPlanLine(G, covered({ state: 'lapsed' }))).toBe(`${G} is on the free plan.`);
   });
 });
 
@@ -183,11 +183,11 @@ describe('chooser preselect', () => {
 describe('GuildJoinedBlock', () => {
   it('shows the joined sentence, the plan line and Open the guild, with no join button', () => {
     const body = render(GuildJoinedBlock, {
-      props: { planLine: `${G} has no plan yet.`, openHref: '/guild/us/pvp/olympus-xxvii' },
+      props: { planLine: `${G} is on the free plan.`, openHref: '/guild/us/pvp/olympus-xxvii' },
     }).body;
     expect(body).toContain('role="status"');
     expect(body).toContain(guildJoinCopy.joined);
-    expect(body).toContain(`${G} has no plan yet.`);
+    expect(body).toContain(`${G} is on the free plan.`);
     expect(body).toContain('href="/guild/us/pvp/olympus-xxvii"');
     expect(body).toContain(guildJoinCopy.openGuild);
     expect(body).not.toContain('guild-join-button');

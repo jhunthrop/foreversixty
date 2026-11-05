@@ -43,6 +43,7 @@
     onApprove,
     onPlan,
     bandSignsUp = false,
+    planGated = false,
     fixedNow,
   }: {
     status: 'loading' | 'error' | 'ready';
@@ -60,6 +61,8 @@
     onPlan: () => void;
     /** The guild band shows the sign-up segments for `nextRaid`: the raider's step is a quiet line. */
     bandSignsUp?: boolean;
+    /** The guild's plan gates planning: the officer's empty-calendar sentence names the plan. */
+    planGated?: boolean;
     fixedNow?: Date;
   } = $props();
 
@@ -69,7 +72,17 @@
   const spread = $derived(levelSpread(entries));
   const professions = $derived(professionFacts(rows));
   const step = $derived(
-    weekOneStep({ officer, waiting, nextRaid, raidHref, character, now: clock.now, locale, bandSignsUp }),
+    weekOneStep({
+      officer,
+      waiting,
+      nextRaid,
+      raidHref,
+      character,
+      now: clock.now,
+      locale,
+      bandSignsUp,
+      planGated,
+    }),
   );
   const tiles = $derived([
     { value: spread.at60, label: 'AT 60', gold: spread.at60 > 0 },

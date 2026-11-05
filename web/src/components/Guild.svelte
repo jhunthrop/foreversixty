@@ -1052,6 +1052,7 @@
               onApprove={approveFromCard}
               onPlan={planFromCard}
               {bandSignsUp}
+              planGated={!officerTools}
             />
           {/if}
         {/snippet}
