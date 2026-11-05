@@ -18,8 +18,15 @@ import (
 //   - an Elemental shaman never swings a weapon, so Elemental Devastation ("your chance to
 //     get a Critical Strike with melee attacks") does nothing for it; Trial by Fire (Fire
 //     Nova and Magma Totem, which the rotation casts on two or more targets) is the toll
-//     point that does something (sim-accuracy round 20).
+//     point that does something (sim-accuracy round 20);
+//   - a rogue on a boss never casts Expose Armor (it does not stack with Sunder Armor),
+//     Kidney Shot (bosses are immune to stuns) or Riposte (the boss never attacks the
+//     rogue), never dodges or resists for Setup, and no rogue opens with Ambush (every
+//     pull is a Garrote), so Improved Expose Armor, Improved Kidney Shot, Riposte, Setup
+//     and Improved Ambush do nothing for any rogue spec (sim-accuracy round 20, which
+//     found no rogue build spending a point on them).
 func TestGuideBuildsSpendNothingOnDeadTalents(t *testing.T) {
+	rogueDead := []string{"Improved Expose Armor", "Improved Kidney Shot", "Riposte", "Setup", "Improved Ambush"}
 	cases := []struct {
 		class string
 		spec  string
@@ -28,6 +35,9 @@ func TestGuideBuildsSpendNothingOnDeadTalents(t *testing.T) {
 		{"druid", "feral", []string{"Nature's Focus", "Subtlety"}},
 		{"druid", "restoration", []string{"Improved Moonfire"}},
 		{"shaman", "elemental", []string{"Elemental Devastation"}},
+		{"rogue", "assassination", rogueDead},
+		{"rogue", "combat", rogueDead},
+		{"rogue", "subtlety", rogueDead},
 	}
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)
