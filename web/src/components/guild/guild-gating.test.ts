@@ -35,6 +35,8 @@ describe('GuildPlanGate', () => {
     expect(body).toContain('/crests/druid');
     expect(body).toContain('color: var(--color-class-druid)');
     expect(body).not.toContain('<a ');
+    // 4 px each side of the crest: a margin before it (no text space) and the 4 px gap after it.
+    expect(body).toMatch(/Ask<span class="ml-1 inline-flex[^"]*gap-1[^>]*>(<!---->)? </);
   });
 
   it('asks by role when the holder has no character on the roster', () => {
