@@ -520,3 +520,16 @@ Sims routed to the sim lane: Marksmanship raid 60 auto shot share after round 20
 
 Verdict: NOT zero, so round 22 is needed. Druid was clean.
 Rendered review: wow-player SHIP for all eight changed classes after two musts, applied in the reviewers' words (Consecration paced on mana, not "always afford to skip"; Searing Totem's Magma Totem comparison only from 26). Every changed prose line was read in a screenshot (16 captures); later note sentences, which render in the sim drawer, were read as text with the word diffs.
+
+## Round 22 (client 1.60.1.70790, 2026-11-05, launch state)
+
+Built on main 987d08a7c (guide round 21 landed; sim round 21 had not landed), engine pin d5c708834, three auditors at a time, audited against data/builds/1.60.1.70790 with round 20's note sweep and round 21's sweep of every superlative, comparison and quoted cost, plus a check that no note names a spell on bands before it is trained.
+
+Audit CONFIRMED by class: paladin 4, druid 3, shaman 3, hunter 2, rogue 2 (plus 1 likely, taken), warrior 1, mage 1, warlock 1, priest 0. Total 17. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18, 8, 4, 14, 28, 40, 29, 20, 17. Round 21's fixes held apart from two of its own lines (the Restoration Chain Heal costs lost their "about"; the Fire Blast note's "most expensive single-target spell" missed Frostfire Bolt). Five of the 17 are card notes, twelve are page prose. The shapes: a spell or talent named in a leveling paragraph before the level the player gets it (Death Coil 42, Repentance 31, Lacerate 30, Feral Charge 25, Insect Swarm 27, Vanish 22), later note clauses comparing to a spell or rank before it is trained (Multi-Shot before 18, Hemorrhage before 30, Chain Heal ranks 2 and 3 before 46 and 54), a "cheap" or "far less than your best" list that included the top itself, superlatives true only among one spell's ranks or beaten at 60 (Consecration per mana, Shield Slam "biggest hit" beside Revenge), "every heal" claims a talent covers only in part (Oath of Light, healing power and Bloom), and Adrenaline Rush's "free" Backstabs.
+
+Fixes: each line above now gives its level or names the spells it is true against; the notes are regenerated into addon-data.json and Data.lua for 1.60.1.70790 (note text only).
+
+Sims routed: none new. Engine questions: Revenge rank 6 is a trainer rank at 60 in the client while the engine and card treat it as a book rank; the engine models only the level-gap spell-power penalty, not the extra cut for ranks below 20; the generated BloomSpellCoeff is a 0.2143 fill where the client says 0 (unused by the Bloom code). Earlier routed items stand.
+
+Verdict: NOT zero, so round 23 is needed. Priest was clean.
+Rendered review: wow-player SHIP for all eight changed classes after one must, applied in the reviewer's words (Subtlety's Ghostly Strike note: no more energy than Sinister Strike once Efficient Strikes lands at 56 and 57). Every changed prose line was read in a screenshot (15 captures); later note sentences were read as text with the word diffs.
