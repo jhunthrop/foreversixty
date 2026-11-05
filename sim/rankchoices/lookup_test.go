@@ -16,8 +16,8 @@ func TestChosenRanksReadsTheCuratedRowsAtALevel(t *testing.T) {
 	}{
 		{"paladin-retribution", "Consecration", 35, []int{1}},
 		{"paladin-retribution", "Consecration", 53, []int{1}},
-		// Round 19: from 54 Retribution casts the top rank learned (no row).
-		{"paladin-retribution", "Consecration", 59, nil},
+		// Round 23: Dwarf casts rank 1 at 58 and 59; the other races the top rank learned.
+		{"paladin-retribution", "Consecration", 59, []int{1}},
 		{"paladin-retribution", "Consecration", 25, nil},
 		{"druid-balance", "Moonfire", 30, []int{3}},
 		// A row naming a preset still counts for a log, which does not say which preset.
