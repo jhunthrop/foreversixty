@@ -28,6 +28,25 @@ describe('collapseRuns', () => {
     expect(rows[0].condition).toBe('The filler. Cast on the tank below 80%, then a party member below 65%.');
   });
 
+  // Round 22 rendered review (Holy paladin, Holy priest): two consecutive steps of one spell
+  // and rank with different notes are two rules ("on the tank below 40%" and "with mana to
+  // spare, below 70% as well"); merged, the card printed only the first, and the next row's
+  // "with the same mana to spare" pointed at a row that was gone.
+  it('keeps consecutive steps of one spell and rank whose notes differ as separate rows', () => {
+    const rows = collapseRuns([
+      step('Holy Light', 8, 'On the tank below 40%.'),
+      step('Holy Light', 8, 'With mana to spare, on the tank below 70% as well.'),
+      step('Holy Light', 8, ''),
+      step('Holy Shock', 4, 'On anyone below 70%, with the same mana to spare.'),
+    ]);
+    expect(rows.map((row) => row.condition.split('.')[0])).toEqual([
+      'On the tank below 40%',
+      'With mana to spare, on the tank below 70% as well',
+      'On anyone below 70%, with the same mana to spare',
+    ]);
+    expect(rows.map((row) => row.steps)).toEqual([1, 2, 1]);
+  });
+
   it('keeps a spell that returns later with its own note, and a different rank, as separate rows', () => {
     const rows = collapseRuns([
       step('Heal', 1, 'On the tank.'),
@@ -52,7 +71,8 @@ describe('collapseRuns', () => {
       gates.every((gate) => !gate.positive);
     const rows = collapseRuns([raid, leveling], withoutHeatingUp);
     expect(rows.map((row) => row.condition)).toEqual(['Frostbolt as the filler.']);
-    expect(collapseRuns([raid, leveling]).map((row) => row.steps)).toEqual([2]);
+    // With every step kept (the BiS panel), the two notes are two rows (round 22).
+    expect(collapseRuns([raid, leveling]).map((row) => row.steps)).toEqual([1, 1]);
   });
 
   // Round 19 (wow-player MUST on Discipline): the APL writes one step per party member and a
