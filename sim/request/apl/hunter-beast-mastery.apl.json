@@ -155,7 +155,7 @@
       }
     },
     {
-      "notes": "Aimed Shot when the shared cooldown comes up right after an auto shot fires. For Beast Mastery it is only a small extra over Multi-Shot, and Multi-Shot on every cooldown is fine. If you are partway to your next auto shot, take Multi-Shot and keep the auto rolling.",
+      "notes": "Aimed Shot when the shared cooldown comes up right after an auto shot fires. For Beast Mastery it is only a small extra over Multi-Shot, so Multi-Shot on that cooldown is fine while you are above a quarter of your mana. If you are partway to your next auto shot, take Multi-Shot and keep the auto rolling.",
       "action": {
         "condition": {
           "cmp": {
@@ -205,7 +205,7 @@
       }
     },
     {
-      "notes": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back. Refreshing any earlier throws away a tick. Every tick carries 5% of your ranged attack power on top of its own damage, so it is the best damage for its mana you fire: keep it rolling for the whole fight. When both are ready, Multi-Shot goes first: a late Multi-Shot pushes back the shared cooldown, while a late sting costs only a moment of its damage.",
+      "notes": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while Multi-Shot is about to come back. Refreshing any earlier throws away a tick. Every tick carries 5% of your ranged attack power on top of its own damage, so it does more for its mana than Arcane Shot or Multi-Shot: keep it rolling for the whole fight. When both are ready, Multi-Shot goes first: a late Multi-Shot pushes back the shared cooldown, while a late sting costs only a moment of its damage.",
       "action": {
         "condition": {
           "and": {
@@ -258,7 +258,7 @@
       }
     },
     {
-      "notes": "Arcane Shot to fill a gap, and from 18 only when Multi-Shot is more than a global away. It is instant and never holds an auto shot, and every hit carries 15% of your ranged attack power, so it is second only to Serpent Sting for damage per mana: keep it going even when the mana runs low.",
+      "notes": "Arcane Shot to fill a gap, and from 18 only when Multi-Shot is more than a global away. It is instant and never holds an auto shot, and every hit carries 15% of your ranged attack power, so it does far more for its mana than Multi-Shot: keep it going even when the mana runs low.",
       "action": {
         "condition": {
           "cmp": {
