@@ -648,6 +648,10 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	}
 	markRemovable(invited, g, userID, moderator, verifiedOfficer)
 	describeRosterRows(roster)
+	snapshotLines, err = s.withExportClasses(ctx, g, snapshotLines)
+	if err != nil {
+		return HomeView{}, err
+	}
 	members, counts := mergeRoster(roster, invited, snapshotLines)
 	describeMembers(members, roster)
 	claim, err := s.withClaimHolder(ctx, claimState(g, time.Now()), g, userID)
