@@ -345,6 +345,33 @@ func TestCharCard(t *testing.T) {
 			t.Fatalf("tank = %q", texts)
 		}
 	})
+	t.Run("healers rank by the BiS list and item level, never DPS", func(t *testing.T) {
+		w := newLookupWorld(t)
+		c := zulmaraCard()
+		c.Character.Class, c.GearSpec = "priest", ref("priest-holy")
+		w.cards.cards["zulmara"] = c
+		slot := func(name string, pick int) map[string]any {
+			return map[string]any{"slot": name, "item_id": pick, "item_name": "Pick " + name,
+				"alternatives": []map[string]any{{"item_id": 999, "item_name": "Other", "dps_delta": -37.0}}}
+		}
+		writeBis(t, w.lg.dir, "priest-holy", []map[string]any{{"band": 60, "faction": "alliance", "preset": "raid", "slots": []map[string]any{
+			slot("head", 100), slot("feet", 201), slot("wrist", 180), slot("trinket2", 105),
+		}}})
+		texts := textsOf(w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message)
+		if !strings.HasSuffix(texts[1], "\n"+panelCopy.UpgradesByLevel) {
+			t.Fatalf("lead = %q", texts[1])
+		}
+		// The empty trinket first, then the head 6 item levels up, then the wrist pick the build
+		// gives no item level for; the feet already wear the pick.
+		for i, want := range []string{"Trinket 2 · " + panelCopy.LevelEmpty, "Head · +6 item levels", "Wrist · " + panelCopy.LevelOnList} {
+			if !strings.Contains(texts[i+2], want) {
+				t.Fatalf("upgrade %d = %q, want %q", i, texts[i+2], want)
+			}
+		}
+		if joined := strings.Join(texts, "\n"); strings.Contains(joined, "DPS gained") || strings.Contains(joined, "+37") {
+			t.Fatalf("a healer list mentions DPS: %q", joined)
+		}
+	})
 	t.Run("no gear shared", func(t *testing.T) {
 		w := newLookupWorld(t)
 		c := zulmaraCard()

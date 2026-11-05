@@ -50,8 +50,11 @@ var panelCopy = struct {
 	BisTie, BisOnly                               string
 	Replaces, ReplacesNoLevel                     string
 	UpgradesTitle, UpgradesByDPS, UpgradesByScore string
-	UpgradesMore, UpgradesMoreOne, UpgradesNone   string
-	TileAlt, TileAltNoQuality, CrestAlt           string
+	// UpgradesByLevel heads a healer's or tank's list, never ranked by DPS; LevelGain,
+	// LevelGainOne, LevelEmpty and LevelOnList are its rows' gain words.
+	UpgradesByLevel, LevelGain, LevelGainOne, LevelEmpty, LevelOnList string
+	UpgradesMore, UpgradesMoreOne, UpgradesNone                       string
+	TileAlt, TileAltNoQuality, CrestAlt                               string
 	// SheetRange is the /bis sheet's range under its level: the Phase 1 raid, level 60 bare,
 	// and the levels of a lower band.
 	SheetRangeRaid, SheetRangeBare, SheetRangeLevels string
@@ -74,6 +77,11 @@ var panelCopy = struct {
 	UpgradesTitle:     "**Top upgrades** · {band label}",
 	UpgradesByDPS:     "-# By DPS gained, against the guide build.",
 	UpgradesByScore:   "-# By Forever Score gained, against the guide build.",
+	UpgradesByLevel:   "-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.",
+	LevelGain:         "+{n} item levels",
+	LevelGainOne:      "+1 item level",
+	LevelEmpty:        "Fills an empty slot",
+	LevelOnList:       "On the BiS list",
 	UpgradesMore:      "-# {n} more upgrades on the character page.",
 	UpgradesMoreOne:   "-# 1 more upgrade on the character page.",
 	UpgradesNone:      "Every slot already wears the guide's pick for {band label}.",
