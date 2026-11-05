@@ -9771,7 +9771,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9818,7 +9818,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9865,7 +9865,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9912,7 +9912,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -9959,7 +9959,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10006,7 +10006,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10060,7 +10060,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10114,7 +10114,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10168,7 +10168,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10222,7 +10222,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10276,7 +10276,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10330,7 +10330,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -10384,7 +10384,7 @@
           {
             "spell_id": 3045,
             "name": "Rapid Fire",
-            "condition": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back.",
+            "condition": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath.",
             "icon": "ability_hunter_runningshot",
             "race_spell_ids": {}
           },
@@ -12625,7 +12625,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12693,7 +12693,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12761,7 +12761,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12829,7 +12829,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12897,7 +12897,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -12972,7 +12972,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13068,7 +13068,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13164,7 +13164,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13260,7 +13260,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13363,7 +13363,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13466,7 +13466,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13569,7 +13569,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13672,7 +13672,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13775,7 +13775,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13878,7 +13878,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -13981,7 +13981,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14084,7 +14084,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14187,7 +14187,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14290,7 +14290,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14393,7 +14393,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14496,7 +14496,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14599,7 +14599,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14702,7 +14702,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -14805,7 +14805,7 @@
           {
             "spell_id": 12042,
             "name": "Arcane Power",
-            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your racial.",
+            "condition": "Arcane Power on cooldown, together with Presence of Mind, your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
@@ -15301,7 +15301,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15355,7 +15355,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15409,7 +15409,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15463,7 +15463,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15517,7 +15517,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15571,7 +15571,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15625,7 +15625,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15679,7 +15679,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -15733,7 +15733,7 @@
           {
             "spell_id": 11129,
             "name": "Combustion",
-            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your racial.",
+            "condition": "Combustion once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one.",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
@@ -34287,7 +34287,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34320,7 +34320,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34360,7 +34360,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34400,7 +34400,7 @@
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34440,7 +34440,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34480,7 +34480,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34527,7 +34527,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34581,7 +34581,7 @@
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34635,7 +34635,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34689,7 +34689,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34750,7 +34750,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34811,7 +34811,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34872,7 +34872,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34933,7 +34933,7 @@
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -34994,7 +34994,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35055,7 +35055,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35116,7 +35116,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35177,7 +35177,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35238,7 +35238,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35299,7 +35299,7 @@
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35360,7 +35360,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35421,7 +35421,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35482,7 +35482,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35543,7 +35543,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35604,7 +35604,7 @@
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -35665,7 +35665,7 @@
           {
             "spell_id": 10438,
             "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem Fire Nova can burst from.",
+            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26, since until then it is the only Fire totem that does damage for Fire Nova to burst from.",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
@@ -38998,7 +38998,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39052,7 +39052,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39106,7 +39106,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39160,7 +39160,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39214,7 +39214,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39275,7 +39275,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39336,7 +39336,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39397,7 +39397,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39458,7 +39458,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39526,7 +39526,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39594,7 +39594,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39662,7 +39662,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39730,7 +39730,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39798,7 +39798,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39866,7 +39866,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39934,7 +39934,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40002,7 +40002,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -40077,7 +40077,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony, whenever it is off cooldown.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
