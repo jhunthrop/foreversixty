@@ -560,3 +560,22 @@ Sims routed: Fire Improved Scorch stacking at 27 to 29 on short fights (MAGE-R24
 
 Verdict: NOT zero, so round 25 is needed.
 Rendered review: wow-player SHIP for all nine changed classes after five musts, applied in the reviewers' words (Eclipse loop without "the card"; Searing Totem with Fire Nova from 12; Rapid Fire with damage racials only; Survival Raptor Strike ranks by race at 26 to 27 and 48 to 49, Windshaper Skyborne included). Every changed prose line was read in a screenshot (15 captures); later note sentences were read as text with the word diffs.
+
+## Round 25 (client 1.60.1.70790, 2026-11-05, launch state)
+
+Built on main 438f8ba15 (guide round 24 and guild r1 landed), engine pin 170a59c39, at most two auditors at a time, audited against data/builds/1.60.1.70790. Two scope changes this round: the coach files (data/curated/coach, the personas the in-app log coach speaks as, and each spec's core list in data/pipeline/coachrules.py) were audited with the same rules as the guide pages, and every push now runs a note-revert check after merging main (a card note that a merge returns to older text fails the push unless the sim round changed it on purpose).
+
+Audit CONFIRMED, guide pages and cards (the trend column): mage 1, warlock 2, druid 1, warrior 1 (plus 1 likely, taken); hunter, priest, paladin, rogue and shaman 0. Total 5. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18, 8, 4, 14, 28, 40, 29, 20, 17, 22, 27, 5.
+
+Audit CONFIRMED, coach (its own column, first audit): hunter 13, mage 6 (plus 1 likely), priest 16, warlock 10, druid 16, paladin 14 (plus 2 likely), rogue 12, shaman 16 (plus 1 likely), warrior 15. Total 118, all fixed.
+
+Guide fixes: Frost's potion line follows its consumables table; the Affliction Amplify Curse note names the first Agony after the last Doom, not the final one; the Destruction summary gives the real reason Conflagrate and Shadowburn go on cooldown (and fits the 200 character card line); the one-point Eclipse loop is scoped to Moonkin Form at 40; the Arms and Protection consumables prose matches their tables; the shaman cooldown lines name any damage racial, not Blood Fury alone.
+
+Coach fixes: the generator's shared roots were fixed once, not per spec. The starter template no longer talks about the site or the file. The drills no longer teach the top rank everywhere, a recast with 3 seconds left, a mid-rank filler, the cheapest heal or half-mana cooldowns, and a spec whose guide differs gets its own drill. Consumables come from each spec's raid preset. "No X" clauses rule a spell out only when they mean it. "Only with N targets" no longer drops the spell. Short names resolve, pet spells are not the player's buttons, and a spec can exclude a spell its guide says not to press. Then the per-spec overrides and orders. The hand-written personas (Holy priest, Fury and Protection warrior) were fixed by hand. The rule files drop core abilities the guides hold back (Soul Fire, Swift Judgement, Nature's Swiftness and others) and the Protection warrior Demoralizing Shout aura. The coach's F1 check (api/internal/coach/f1_core_casts.go) no longer judges a never-cast trainer spell below the level it is learned (Hammer of the Righteous at 30 to 39, Fury's Whirlwind below 36), with a test that failed first. tools/coach/test_persona_starter.py, red on main since before this round, is green, and the Last Stand coach fixture follows sim round 22's trainer data.
+
+Merged with sim round 22 before the push: the generated starters were re-run with persona_starter.py --all on the merged tree, never hand-merged. The note-revert check flagged one Fury note, which is sim round 22's new level-60-only level_notes reusing older text on purpose (accepted).
+
+Routed: the Assassination raid order in addon-builds.json, which equals the leveling order after sim round 22's regen (sim round 23, with a guard test); the Protection warrior Demoralizing Shout uptime check while a druid's Roar holds the slot (coach code, f2_uptime.go). Optional sims and earlier engine questions stand.
+
+Verdict: the guide pages are near zero (5); the coach had 118 on its first audit. Round 26 is needed for both.
+Rendered review: wow-player read every changed page line in screenshots (5 captures) and every changed coach file in full. It returned SHIP for druid and paladin and ten musts across hunter, mage, priest, warlock, rogue, shaman and warrior, all applied in the reviewers' words. Build mode was on, so the musts were not re-reviewed.
