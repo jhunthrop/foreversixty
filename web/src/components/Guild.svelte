@@ -88,7 +88,6 @@
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, RankingsError, type GuildPage } from '../lib/rankings/api';
-  import GuildNotFound from './guild/GuildNotFound.svelte';
   import FactLine from './guild/FactLine.svelte';
   import GuildUnverifiedNote from './guild/GuildUnverifiedNote.svelte';
   import GuildClaimRow from './guild/GuildClaimRow.svelte';
@@ -131,6 +130,12 @@
   // The Before raids open card is its own chunk (the GuildShell bundle budget); it starts loading
   // with the viewer's membership, alongside the home fetch it waits on anyway.
   const weekOneLazy = createLazyComponent(() => import('./guild/GuildWeekOneCard.svelte'));
+  // The unknown-guild panel (with its Did you mean search) is its own chunk too: it only draws
+  // after a lookup fails, so the page's first view never pays for it.
+  const notFoundLazy = createLazyComponent(() => import('./guild/GuildNotFound.svelte'));
+  $effect(() => {
+    if (status === 'notfound') notFoundLazy.load();
+  });
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -851,7 +856,7 @@
   <div class="flex flex-col gap-3 {GUILD_LOADING.home.minHeight} {GUILD_BANDLESS_TOP}">
     <p class="text-muted text-[14px]" data-testid="guild-lede">{guildHomeCopy.lede}</p>
     {#if status === 'notfound' && resolved !== null}
-      <GuildNotFound path={resolved} />
+      {#if notFoundLazy.current}<notFoundLazy.current path={resolved} />{/if}
     {:else}
       <p class="text-[14px]" data-testid="guild-missing">
         That is not a guild address. They look like <code class="font-mono"
