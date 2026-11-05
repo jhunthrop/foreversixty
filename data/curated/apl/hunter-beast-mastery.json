@@ -129,7 +129,7 @@
         }
       },
       {
-        "notes": "Rapid Fire on the pull with Bestial Wrath, as an auto shot leaves and the shared cooldown is about to come back. The haste starts on a fresh shot and the first Aimed Shot lands inside it. It is a five minute cooldown, so a boss fight gets one: put your trinkets and racial on the same press.",
+        "notes": "Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from 40 with Bestial Wrath. The haste starts on a fresh shot and the first Aimed Shot lands inside it. It is a five minute cooldown, four once the level 60 build's point in Rapid Killing is in at 57, so a normal boss fight gets one: put your trinkets and racial on the same press.",
         "action": {
           "condition": {
             "and": {
@@ -213,7 +213,7 @@
         }
       },
       {
-        "notes": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana. Refreshing any earlier throws away a tick. Every tick carries 5% of your ranged attack power on top of its own damage, so it does more for its mana than Arcane Shot, and from 18 more than Multi-Shot too: keep it rolling for the whole fight. From 18, when both are ready, the shared cooldown goes first: a late Aimed Shot pushes it back, while a late sting costs only a moment of its damage.",
+        "notes": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana. Refreshing any earlier throws away a tick. Every tick carries 5% of your ranged attack power on top of its own damage, so it does more for its mana than Arcane Shot, and from 18 more than Multi-Shot too: keep it rolling for the whole fight. From 18, when both are ready and your mana is above a quarter, the shared cooldown goes first: a late Multi-Shot, or from 20 a late Aimed Shot, pushes it back, while a late sting costs only a moment of its damage.",
         "action": {
           "condition": {
             "and": {

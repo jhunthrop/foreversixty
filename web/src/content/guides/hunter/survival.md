@@ -141,7 +141,7 @@ Survival levels in melee. Keep a pet out while you level: Lone Wolf is the last 
 
 Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up, and from 30 keep Lacerate on anything that will live long enough to bleed. Wing Clip a runner. Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up. Throw Immolation Trap under anything that will live long enough to burn. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
-At 26 Immolation Trap rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep Raptor Strike rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. If you still run dry over a chain of pulls, rank 2 is better again at 26 and 27. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.
+At 26 Immolation Trap rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep Raptor Strike rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc at 26, a Troll at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.
 
 Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.
 

@@ -119,7 +119,7 @@
         }
       },
       {
-        "notes": "Rapid Fire on the pull, as an auto shot leaves and the shared cooldown is about to come back. The haste starts on a fresh shot and the first Aimed Shot lands inside it. It is a five minute cooldown, so a boss fight gets one: put your trinkets and racial on the same press.",
+        "notes": "Rapid Fire on the pull, as an auto shot leaves and the shared cooldown is about to come back. The haste starts on a fresh shot and the first Aimed Shot lands inside it. It is a five minute cooldown in the raid build, so a boss fight gets one: put your trinkets and racial on the same press. On the leveling build Rapid Killing has it back every three minutes, so press it on every hard pull.",
         "action": {
           "condition": {
             "and": {
@@ -168,7 +168,7 @@
         }
       },
       {
-        "notes": "Aimed Shot whenever the cooldown it shares with Multi-Shot is up. Your auto shots keep firing while you cast it, so there is no auto shot to wait for, and with Barrage it outhits Multi-Shot.",
+        "notes": "Aimed Shot whenever the cooldown it shares with Multi-Shot is up. Your auto shots keep firing while you cast it, so there is no auto shot to wait for, and it outhits Multi-Shot.",
         "action": {
           "castSpell": {
             "spellId": {
