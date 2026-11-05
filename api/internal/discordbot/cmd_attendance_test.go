@@ -16,12 +16,12 @@ func TestAttendanceRules(t *testing.T) {
 	}
 	at := func(d int) time.Time { return time.Date(2026, 12, d, 2, 0, 0, 0, time.UTC) } // the evening before, in Chicago
 	w.og.records = []guilds.AttendanceRecord{
-		{Name: "Zulmara", Class: "hunter", Chip: "Came 7 of 8 · 26 of 30 raids", Last: []guilds.AttendanceLine{
+		{Name: "Zulmara", Class: "hunter", Chip: "7 of 8 raid nights · 26 of the last 30", Last: []guilds.AttendanceLine{
 			{StartsAt: at(11), Outcome: guilds.OutcomePresent},
 			{StartsAt: at(4), Outcome: guilds.OutcomeLate, Excused: true},
 			{StartsAt: time.Date(2026, 11, 29, 2, 0, 0, 0, time.UTC), Outcome: guilds.OutcomeNoShow},
 		}},
-		{Name: "Duskstrider", Class: "rogue", Chip: "Came 1 of 1 raids", Last: []guilds.AttendanceLine{
+		{Name: "Duskstrider", Class: "rogue", Chip: "1 of 1 raid night", Last: []guilds.AttendanceLine{
 			{StartsAt: at(11), Outcome: guilds.OutcomePresent, CameAs: "Zulmara"}}},
 	}
 	rep := w.run(t, pressDiscord, "attendance")
@@ -31,7 +31,7 @@ func TestAttendanceRules(t *testing.T) {
 	}
 	main := rep.Message.Embeds[0]
 	if main.Title != segment(0, map[string]string{"Name": "Zulmara"}) || main.Color != classColorOf("hunter") ||
-		main.Description != "Came 7 of 8 · 26 of 30 raids" || main.Fields[0].Name != segment(1, nil) {
+		main.Description != "7 of 8 raid nights · 26 of the last 30" || main.Fields[0].Name != segment(1, nil) {
 		t.Fatalf("main = %+v", main)
 	}
 	if got := main.Fields[0].Value; got != "Thu 10 Dec Present\nThu 3 Dec Late, excused\nSat 28 Nov Not in the log" ||

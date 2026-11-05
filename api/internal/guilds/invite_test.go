@@ -254,3 +254,37 @@ func TestPeekInviteSaysWhichCharacterJoins(t *testing.T) {
 		t.Fatalf("on roster: joins_as = %+v, want Peekccc the level 60 Night Elf Priest", joins)
 	}
 }
+
+// An account whose character already waits on the roster and then joins by invite is approved
+// at once: the character carries the invite's verification and no placeholder is left.
+func TestAcceptInviteApprovesTheAccountsWaitingCharacter(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	uid := seedUser(t, pool, "waiting@example.com")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/waitsalot", "officer", false)
+	token, _, err := s.RotateInvite(ctx, gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.AcceptInvite(ctx, token, uid); err != nil {
+		t.Fatal(err)
+	}
+	var verifiedBy *string
+	pool.QueryRow(ctx, `select verified_by from guild_characters where character_key = 'us/hardcore/waitsalot'`).Scan(&verifiedBy)
+	if verifiedBy == nil || *verifiedBy != "invite" {
+		t.Fatalf("verified_by = %v, want invite", verifiedBy)
+	}
+	var placeholders int
+	pool.QueryRow(ctx, `select count(*) from guild_characters where character_key = $1`, syntheticKey(uid)).Scan(&placeholders)
+	if placeholders != 0 {
+		t.Fatalf("placeholder rows = %d, want 0", placeholders)
+	}
+	var rank string
+	pool.QueryRow(ctx, `select rank from guild_members where guild_id = $1 and user_id = $2 and verified_at is not null`,
+		gid, uid).Scan(&rank)
+	if rank != "officer" {
+		t.Fatalf("guild_members.rank = %q, want officer", rank)
+	}
+}

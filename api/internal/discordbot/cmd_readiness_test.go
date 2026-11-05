@@ -50,7 +50,7 @@ func TestReadinessGate(t *testing.T) {
 	raid := guilds.Raid{ID: 3, Title: "Onyxia's Lair", StartsAt: time.Date(2026, 12, 10, 20, 0, 0, 0, time.UTC)}
 	rows := make([]string, 10)
 	for i := range rows {
-		rows[i] = fmt.Sprintf("Raider%d · Short · Synced 9 days before the raid", i)
+		rows[i] = fmt.Sprintf("Raider%d · Short · Synced 9 days ago", i)
 	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid, Signed: 23, Failing: 12, Rows: rows, More: 2}
 	rep = w.run(t, pressDiscord, "readiness")

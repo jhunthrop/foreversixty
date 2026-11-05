@@ -316,8 +316,9 @@ func (s *Service) outcome(ctx context.Context, a signupAsk, res guilds.SignupRes
 	raid := []string{"{Name}", memberText(res.Character.Name), "{Role}", roleWord(res.Character.Role),
 		"{Title}", memberText(res.Raid.Title), "{Date}", raidDay(res.Raid)}
 	change := changeSpecButtons(a.State, res.Raid.ZoneKind, a.RaidID, res.Character)
+	noRoles := res.Raid.ZoneKind == guilds.ZoneEvent
 	if res.Unchanged {
-		return a.reply(alreadySentence(a.State, raid), change...)
+		return a.reply(alreadySentence(a.State, raid, noRoles), change...)
 	}
 	moved := ""
 	if res.Moved != nil {
@@ -325,13 +326,13 @@ func (s *Service) outcome(ctx context.Context, a signupAsk, res guilds.SignupRes
 	}
 	switch a.State {
 	case guilds.SignupIn:
-		lead := fill(pressCopy.InSaved, raid...)
+		lead := fill(roleless(pressCopy.InSaved, noRoles), raid...)
 		if moved != "" {
 			return a.reply(lead+moved, change...)
 		}
 		return a.reply(lead+countClause(res.Raid), change...)
 	case guilds.SignupLate:
-		text := fill(pressCopy.LateSaved, raid...) + moved
+		text := fill(roleless(pressCopy.LateSaved, noRoles), raid...) + moved
 		return a.reply(text, append(change, linkButton(pressCopy.NoteButton, s.noteURL(ctx, a.RaidID)))...)
 	case guilds.SignupBench:
 		return a.reply(fill(pressCopy.BenchSaved, raid...), change...)
@@ -351,14 +352,25 @@ func raidDay(v guilds.RaidView) string {
 
 // alreadySentence is a press of the state the character already has; raid is the outcome's
 // marker pairs.
-func alreadySentence(state string, raid []string) string {
+func alreadySentence(state string, raid []string, noRoles bool) string {
 	switch state {
 	case guilds.SignupBench:
 		return fill(pressCopy.AlreadyBench, raid...)
 	case guilds.SignupOut:
 		return fill(pressCopy.AlreadyOut, raid...)
 	}
-	return fill(pressCopy.Already, append(raid, "{State}", stateWord(state))...)
+	return fill(roleless(pressCopy.Already, noRoles), append(raid, "{State}", stateWord(state))...)
+}
+
+// roleAs is the role clause of a sign-up sentence; roleless drops it for a guild event, which
+// has no roles anywhere (events spec §3.5): "Ashenveil is In for Guild event, Thu 10 Dec."
+const roleAs = " as {Role}"
+
+func roleless(template string, noRoles bool) string {
+	if !noRoles {
+		return template
+	}
+	return strings.Replace(template, roleAs, "", 1)
 }
 
 // countClause is " 23 of 40 signed up." (In plus Late), or " 23 signed up." for a raid of

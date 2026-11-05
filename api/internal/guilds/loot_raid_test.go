@@ -48,13 +48,14 @@ func TestAnAwardNamesADoneRaid(t *testing.T) {
 	if len(got) != 2 || got[0] != prev.ID || got[1] != night.ID {
 		t.Fatalf("last week's award was overwritten: %v", got)
 	}
-	// Both nights are over: the drop is free to award tonight, and both awards still count.
+	// Both nights are over: the latest kill night's award marks the drop (an officer handing out
+	// the morning after sees what is already given), and both awards still count.
 	view, err := w.h.store.Loot(t.Context(), w.gid)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if item := view.Items[0]; item.ItemID != onyxiaLoot[0].ItemID || item.AwardedTo != nil {
-		t.Fatalf("a past night's award still marks the drop: %+v", item.AwardedTo)
+	if item := view.Items[0]; item.ItemID != onyxiaLoot[0].ItemID || item.AwardedTo == nil {
+		t.Fatalf("the latest night's award does not mark the drop: %+v", item.AwardedTo)
 	}
 	all, err := w.h.store.lootAwards(t.Context(), w.gid, onyxiaEncounterID)
 	if err != nil {
@@ -104,16 +105,80 @@ func TestAnAwardDefaultsToTheRaidBeingPlayedNow(t *testing.T) {
 	}
 }
 
-// A done raid whose window has passed takes no default award.
-func TestAnAwardAfterTheWindowHasNoRaid(t *testing.T) {
-	w, _, _ := reportNight(t)
+// An award made after the raid's window (the morning after) goes to the latest matched raid that
+// killed the boss this week, never an older one, so the CSV, the raid page and /report all show
+// it (round 3 e2e, item 3).
+func TestAnAwardAfterTheWindowGoesToTheLatestKillNight(t *testing.T) {
+	w, night, _ := reportNight(t)
+	w.as(w.officer)
+	if res := w.postAward(nil, officerKey); res.StatusCode != http.StatusOK {
+		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
+	}
+	if got := w.awardRaids(t); len(got) != 1 || got[0] != night.ID {
+		t.Fatalf("default raid = %v, want the latest kill night %d", got, night.ID)
+	}
+	bosses, err := w.h.store.reportLoot(t.Context(), raidViewContext{guildID: w.gid}, night.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := countReportLoot(bosses); n != 1 {
+		t.Fatalf("raid page loot = %d items, want the morning-after award", n)
+	}
+	loot, err := w.h.store.Loot(t.Context(), w.gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if loot.Items[0].AwardedTo == nil {
+		t.Fatal("the Loot tab shows the drop just awarded as free")
+	}
+}
+
+// A logged night with no planned raid takes the award by its report, and the loot CSV dates it
+// by that night instead of "No raid night recorded".
+func TestAnAwardAfterALoggedNightFilesUnderItsReport(t *testing.T) {
+	w := newRaidWorld(t, true)
+	w.oneFightNight(t, "logged", onyLogZone, time.Now().UTC().Add(-14*time.Hour))
+	w.as(w.officer)
+	if res := w.postAward(nil, officerKey); res.StatusCode != http.StatusOK {
+		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
+	}
+	var raidID *int64
+	var reportID *string
+	if err := w.h.pool.QueryRow(t.Context(),
+		`select raid_id, report_id from loot_awards where guild_id = $1`, w.gid).Scan(&raidID, &reportID); err != nil {
+		t.Fatal(err)
+	}
+	if raidID != nil || reportID == nil || *reportID != "logged" {
+		t.Fatalf("award night = raid %v report %v, want the logged report", raidID, reportID)
+	}
+	var rows [][]string
+	if err := w.h.store.streamLoot(t.Context(), w.gid, func(r []string) error { rows = append(rows, r); return nil }); err != nil {
+		t.Fatal(err)
+	}
+	if len(rows) != 1 || rows[0][1] == lootNightUnknown {
+		t.Fatalf("CSV rows = %v, want the award dated by its logged night", rows)
+	}
+}
+
+// A kill older than the lookback takes no award: the drop is from a past reset.
+func TestAnAwardAfterAnOldKillHasNoNight(t *testing.T) {
+	w := newRaidWorld(t, true)
+	w.oneFightNight(t, "old", onyLogZone, time.Now().UTC().Add(-awardNightLookback-time.Hour))
 	w.as(w.officer)
 	if res := w.postAward(nil, officerKey); res.StatusCode != http.StatusOK {
 		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
 	}
 	if got := w.awardRaids(t); len(got) != 1 || got[0] != -1 {
-		t.Fatalf("default raid = %v, want none (the night's window has ended)", got)
+		t.Fatalf("default raid = %v, want none", got)
 	}
+}
+
+func countReportLoot(bosses []ReportLootBoss) int {
+	n := 0
+	for _, b := range bosses {
+		n += len(b.Awards)
+	}
+	return n
 }
 
 func TestAnAwardWithNoRecentRaidHasNone(t *testing.T) {

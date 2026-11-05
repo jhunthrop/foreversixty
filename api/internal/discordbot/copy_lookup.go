@@ -22,7 +22,7 @@ var lookupCopy = struct {
 	Share, Shared, NoLongerPublic string
 }{
 	CharLine:       "Level {n} {Spec} {Class} · {Guild}",
-	CharFacts:      "-# Item level {x.x} · Readiness: {word} · Synced <t:{unix}:R>",
+	CharFacts:      "-# Item level {ilvl} · Readiness: {word} · Synced <t:{unix}:R>",
 	NoGear:         "No gear shared yet. Upgrades show once the character is synced.",
 	CharacterPage:  "Character page",
 	BisOpen:        "Open on Forever Sixty",

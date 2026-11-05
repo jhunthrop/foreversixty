@@ -330,7 +330,7 @@ func TestTheCharSheetCellsCarryTheGold(t *testing.T) {
 		cells[c.Slot] = c
 	}
 	if model.Kind != sheet.KindChar || model.Title != "Zulmara" || model.Kicker != "Level 60 Beast Mastery Hunter · Olympus XXVII" ||
-		model.Subtitle != "63.5" || model.Footer != "Gold: gain over what is worn, level 60 Phase 1 raid" || !model.TwoHand {
+		model.Subtitle != "63" || model.Footer != "Gold: gain over what is worn, level 60 Phase 1 raid" || !model.TwoHand {
 		t.Fatalf("sheet = %+v", model)
 	}
 	for slot, want := range map[string]string{"ranged": "+23.1 DPS", "head": panelCopy.NotModelled, "trinket2": sheet.CopyNotModelled, "neck": ""} {

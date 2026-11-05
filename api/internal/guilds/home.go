@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"strings"
 	"time"
@@ -18,6 +19,8 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
 // HomeReportsPerPage is the page size of the guild home's "this week's
@@ -480,9 +483,36 @@ func (s *Store) scanRosterRow(rows pgx.Rows, g Guild, actorID int64, moderator, 
 					row.faction = f
 				}
 			}
+			if level, ok := equippedItemLevel(decoded, sims.GearItem); ok {
+				row.ItemLevel = &level
+			}
 		}
 	}
 	return row, nil
+}
+
+// itemLookup is an item in a build's per-class table: sims.GearItem, the table the character
+// card reads its worn item levels from.
+type itemLookup func(build, classSlug string, itemID int) (trees.Item, bool)
+
+// equippedItemLevel is an export's one item-level figure (upgrades.EquippedItemLevel, the number
+// /char shows too) over its equipped gear slots, each item read from the export's own data build
+// as the card reads it; ok is false with no gear, or an item that build lacks, and the row keeps
+// its latest log's item level.
+func equippedItemLevel(decoded fs1.Decoded, item itemLookup) (int, bool) {
+	var levels []*int
+	for _, slot := range upgrades.Slots {
+		id, worn := decoded.Gear[slot.Key]
+		if !worn || id <= 0 {
+			continue
+		}
+		var level *int
+		if it, found := item(decoded.DataBuild, decoded.ClassSlug, id); found {
+			level = &it.ItemLevel
+		}
+		levels = append(levels, level)
+	}
+	return upgrades.EquippedItemLevel(levels)
 }
 
 // snapshotMember is one stored member line of guild_roster_snapshots.members, as
@@ -535,11 +565,12 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 		}
 		line := &AddonMemberView{SeenAt: m.SeenAt, SnapshotAt: snap.ReceivedAt}
 		if hasGearConsent(roster[i].Consent) {
-			level, spec, gap := m.Level, m.Spec, m.GearGap
-			line.Level, line.Spec, line.GearGap = &level, &spec, &gap
+			level, spec := m.Level, m.Spec
+			line.Level, line.Spec = &level, &spec
 			if roster[i].Level == nil && m.Level > 0 {
 				roster[i].Level = &level
 			}
+			line.GearGap = s.rosterGearGap(roster[i])
 			if m.Build != "" {
 				build := m.Build
 				line.Build = &build
@@ -548,6 +579,21 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 		roster[i].Addon = line
 	}
 	return &snap, members, nil
+}
+
+// rosterGearGap is the roster's "Gear gap N DPS": the readiness board's own gap
+// (computeReadiness over the same band and export gear; /char lists the same band's slots) in
+// whole DPS, rounded as the board rounds it. The addon's own announced figure is never shown:
+// it measured against the addon's data, not the site's, and read 38 DPS where the board said
+// no upgrades (guild round 3). Nil when the board has no DPS figure for the row: no export gear
+// or band, a healer's or tank's band, or a leveling character.
+func (s *Store) rosterGearGap(row RosterRow) *int {
+	cr := s.readinessOf(row, nil)
+	if !cr.GearChecked || cr.GearUnit != gearUnitDPS || len(row.gear) == 0 {
+		return nil
+	}
+	gap := int(math.Round(cr.GearGap.GainDps))
+	return &gap
 }
 
 // accountKeyFor is the contract's own "same value for a main and its alts" grouping key.
@@ -602,6 +648,10 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	}
 	markRemovable(invited, g, userID, moderator, verifiedOfficer)
 	describeRosterRows(roster)
+	snapshotLines, err = s.withExportClasses(ctx, g, snapshotLines)
+	if err != nil {
+		return HomeView{}, err
+	}
 	members, counts := mergeRoster(roster, invited, snapshotLines)
 	describeMembers(members, roster)
 	claim, err := s.withClaimHolder(ctx, claimState(g, time.Now()), g, userID)

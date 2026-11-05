@@ -317,6 +317,6 @@ func (s *Service) specChanged(ctx context.Context, in Interaction, p cardPress) 
 		return seat.ask.reply(strings.TrimPrefix(kept, " ")), nil
 	}
 	pairs := append(s.raidPairs(seat.in), "{Role}", roleWord(sp.Role))
-	return seat.ask.reply(alreadySentence(res.State, pairs)+kept,
+	return seat.ask.reply(alreadySentence(res.State, pairs, false)+kept,
 		changeSpecButtons(res.State, guilds.ZoneRaid, seat.ask.RaidID, res.Character)...), nil
 }

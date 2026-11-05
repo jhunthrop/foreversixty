@@ -60,9 +60,9 @@ type ReadinessRow struct {
 	ItemLevelDelta      *int            `json:"item_level_delta"`
 	LoggedAt            time.Time       `json:"logged_at"`
 	Failing             int             `json:"failing"`
-	// SyncedBeforeCutoff and NoExport are the raid-filtered read's: whether the export was
-	// synced within READINESS_FRESH_DAYS of the raid (null on the unfiltered read and on a
-	// no_export row), and a signed character with no export at all.
+	// SyncedBeforeCutoff and NoExport are the raid-filtered read's: true when the export was
+	// synced before the raid's cutoff_at, more than READINESS_FRESH_DAYS ago (stale; null on the
+	// unfiltered read and on a no_export row), and a signed character with no export at all.
 	SyncedBeforeCutoff *bool   `json:"synced_before_cutoff"`
 	NoExport           bool    `json:"no_export"`
 	NudgeText          *string `json:"nudge_text,omitempty"`
@@ -293,6 +293,9 @@ type ReadinessFacts struct {
 	Word     string
 	SyncedAt *time.Time
 	OnRoster bool
+	// ItemLevel is the roster's and the board's item level (equipped average, else the latest
+	// log's), so /char prints the same number; nil when neither is known.
+	ItemLevel *int
 }
 
 // CharacterReadinessWord is the board's word for one character: Stocked, Short: and its
@@ -318,7 +321,8 @@ func (s *Service) CharacterReadinessFacts(ctx context.Context, guildID int64, ch
 }
 
 func (s *Store) readinessFactsOf(row RosterRow, median *int) ReadinessFacts {
-	facts := ReadinessFacts{Word: readinessWord(s.readinessOf(row, median), row.Consent), OnRoster: true}
+	facts := ReadinessFacts{Word: readinessWord(s.readinessOf(row, median), row.Consent), OnRoster: true,
+		ItemLevel: row.ItemLevel}
 	if !row.LoggedAt.IsZero() {
 		synced := row.LoggedAt
 		facts.SyncedAt = &synced

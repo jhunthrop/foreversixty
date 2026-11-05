@@ -44,6 +44,16 @@ func TestSignupCommand(t *testing.T) {
 			t.Fatalf("signed raid %d, want the next one %d", got, w.raidID)
 		}
 	})
+	t.Run("a guild event names no role", func(t *testing.T) {
+		w := newPressWorld(t)
+		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+		w.addRaid(t, w.gid, time.Now().Add(96*time.Hour))
+		w.exec(t, `update guild_raids set zone = 'event:guild', title = 'Guild meeting'`)
+		rep := w.signupCmd(t, opt(optStatus, "in"))
+		if !strings.HasPrefix(rep.Message.Content, "Zulmara is In for Guild meeting, "+w.day()+".") {
+			t.Fatalf("reply = %q, want no role for a guild event (events spec §3.5)", rep.Message.Content)
+		}
+	})
 	t.Run("none planned", func(t *testing.T) {
 		w := newPressWorld(t)
 		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)

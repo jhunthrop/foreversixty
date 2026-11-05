@@ -113,6 +113,8 @@ Capture `only-stranger-invite-1440`: a 480 px card hard left, `Lifecycle Test ·
 
 **What verified means**, one 13 px muted line above the consent line: `Joining by this link verifies you at once. No officer has to approve you.`
 
+**The promise holds after the addon syncs** (amended 2026-11-05, guild round 3). The invite verifies the account, not one row: when a character of an invite-verified account syncs into the guild (addon export), or the account already has characters on the guild's roster when it joins, every such unapproved character takes the invite's verification (`verified_by = 'invite'`) and the account's placeholder row (`account:{id}`) is dropped, in the same transaction (`guilds.AdoptInviteVerification`). An invited member never comes back `Waiting for approval`, and a character whose export carries an officer rank comes back an officer, as a `logs` verification does.
+
 **States.** Signed out: rows 1 and 2, then `Sign in to join this guild.` and the existing sign-in button as the primary. Already in: rows 1 and 3 with `You are already in {Guild}.` and `Open the guild` (primary). Invalid link: row 1 absent, `EmptyState` `This invite link no longer works. Ask a guild officer for a new one.` Loading: the card at its ready height (320 px desktop, 380 phone) with `Skeleton` rows. Joined: today's joined block with the plan line.
 
 ### 3.5 Roster rows with no account (UX-10)
@@ -124,6 +126,10 @@ Capture `claimed-gm-roster-1440`: an empty circle, `Arms in game`.
 - Descriptor: `{Spec} {Class}` (`Arms Warrior`, `Protection Paladin`); class unknown: the spec alone (`Protection`). The words `in game` are dropped from every roster descriptor; the `No account yet` state says it.
 - `No account yet` is a `Tag` (tone `muted`), not loose text.
 - Right side unchanged: `Level 58 · seen just now`.
+
+### 3.5a Roster counts are characters (amended 2026-11-05, guild round 3)
+
+The e2e walk read `Waiting for approval 4` on the panel, `2 waiting for approval` on the Overview and `8 on the roster` over a list of 4. Every roster count is now characters, because the list and every approval are per character; the round-1 rule that waiting counts accounts is superseded. `counts.waiting` and the Overview's `summary.waiting_for_approval` are the characters an officer has not approved (the panel's rows). `counts.on_roster` is the Roster list itself: approved characters, invited members and names in game without an account, never the waiting characters the panel above it lists. So the count line reads `4 on the roster · 2 in game without an account · 4 waiting for approval`, the first figure matching the rows under it. `raiders` stays accounts. The `/v1/me` guild card's `roster_count` (everyone on the guild) is `on_roster + waiting`. Web: approving a waiting character moves it onto the list (`on_roster` up one, `waiting` down one); declining one takes it off `waiting` only.
 
 ### 3.6 Phone tab strip (UX-17)
 

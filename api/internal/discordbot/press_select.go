@@ -28,7 +28,7 @@ func (s *Service) characterSelect(ctx context.Context, a signupAsk, raid guilds.
 		}
 		selectable++
 		if len(options) < maxSelectOptions {
-			options = append(options, characterOption(c))
+			options = append(options, characterOption(c, raid.NoRoles()))
 		}
 	}
 	if len(options) == 0 {
@@ -48,16 +48,23 @@ func (s *Service) characterSelect(ctx context.Context, a signupAsk, raid guilds.
 
 // characterOption is one select entry: the name, and "{Spec} {Class} · {Role}" with
 // " · your main" on the main, each inside Discord's 100.
-func characterOption(c guilds.SignupCandidate) SelectOption {
+func characterOption(c guilds.SignupCandidate, noRoles bool) SelectOption {
 	return SelectOption{
-		Label: truncateRunes(c.Name, maxOptionRunes), Value: c.CharacterKey, Description: optionDescription(c),
+		Label: truncateRunes(c.Name, maxOptionRunes), Value: c.CharacterKey, Description: optionDescription(c, noRoles),
 	}
 }
 
+// optionRole is the role part of a select option; a guild event's options leave it out.
+const optionRole = " · {Role}"
+
 // optionDescription cuts the spec, never the role or the main mark, to stay inside 100.
-func optionDescription(c guilds.SignupCandidate) string {
+func optionDescription(c guilds.SignupCandidate, noRoles bool) string {
+	template := pressCopy.OptionDescription
+	if noRoles {
+		template = strings.Replace(template, optionRole, "", 1)
+	}
 	build := func(spec string) string {
-		text := strings.TrimSpace(fill(pressCopy.OptionDescription,
+		text := strings.TrimSpace(fill(template,
 			"{Spec}", spec, "{Class}", classWord(c.Class), "{Role}", roleWord(c.Role)))
 		if c.Main {
 			text += pressCopy.OptionMain

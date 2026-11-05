@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
@@ -55,16 +56,18 @@ type RosterEntry struct {
 	MayRemove  bool   `json:"may_remove,omitempty"`
 }
 
-// RosterCounts are the numbers the count line above the roster reads: everyone on it, and
-// how many of them are in game without an account, waiting for approval, or not seen in
-// game yet. The approved are the rest.
+// RosterCounts are the numbers the count line above the roster reads, all of them characters
+// (guild round 3; the round-1 rule that waiting counts accounts is superseded). OnRoster is
+// every entry the Roster list shows: approved characters, invited members and names in game
+// without an account, never the waiting characters, which the Waiting for approval panel lists
+// instead. InGameNoAccount and NotSeen are among OnRoster; Waiting is the panel's count, the
+// figure the Overview's waiting_for_approval reads too (summaryCounts). Everyone on the guild
+// is OnRoster + Waiting.
 type RosterCounts struct {
 	OnRoster        int `json:"on_roster"`
 	InGameNoAccount int `json:"in_game_no_account"`
-	// Waiting counts people, the accounts with a character waiting for approval, the unit
-	// the Overview's waiting_for_approval counts (summaryPeople); the entries stay per character.
-	Waiting int `json:"waiting"`
-	NotSeen int `json:"not_seen"`
+	Waiting         int `json:"waiting"`
+	NotSeen         int `json:"not_seen"`
 }
 
 // invitedMember is an account that joined by invite link: a verified synthetic row and no
@@ -119,7 +122,7 @@ func mergeRoster(rows []RosterRow, invited []invitedMember, snapshot []snapshotM
 	named := make(map[string]bool, len(rows)+len(invited)+len(order))
 	entries := make([]RosterEntry, 0, len(rows)+len(invited)+len(order))
 	var counts RosterCounts
-	_, counts.Waiting = summaryPeople(rows)
+	_, counts.Waiting = summaryCounts(rows)
 	for _, row := range rows {
 		named[strings.ToLower(row.Name)] = true
 		e := RosterEntry{Name: row.Name, CharacterKey: row.CharacterKey, State: EntryApproved, Rank: row.Rank, Class: row.Class}
@@ -164,8 +167,56 @@ func mergeRoster(rows []RosterRow, invited []invitedMember, snapshot []snapshotM
 		entries = append(entries, e)
 		counts.InGameNoAccount++
 	}
-	counts.OnRoster = len(entries)
+	counts.OnRoster = len(entries) - counts.Waiting
 	return entries, counts
+}
+
+// withExportClasses fills the class of each snapshot line that names none the roster can place
+// (no class, and a spec two classes play: "Holy", "Protection") from that character's newest
+// export in the guild's region and ruleset, when one exists: a removed character, or a member
+// whose addon sent no class, keeps the crest and "Holy Paladin" instead of a bare "Holy". The
+// lines are copied, never changed in place.
+func (s *Store) withExportClasses(ctx context.Context, g Guild, lines []snapshotMember) ([]snapshotMember, error) {
+	var names []string
+	for _, m := range lines {
+		if snapshotClass(m) == nil {
+			name, _ := character.SplitUnit(m.Name)
+			names = append(names, strings.ToLower(name))
+		}
+	}
+	if len(names) == 0 {
+		return lines, nil
+	}
+	rows, err := s.Pool.Query(ctx, `
+		select distinct on (lower(name)) lower(name), export from addon_exports
+		where region = $1 and ruleset = $2 and lower(name) = any($3)
+		order by lower(name), updated_at desc`, g.Region, g.Ruleset, names)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: snapshot export classes: %w", err)
+	}
+	defer rows.Close()
+	classes := map[string]string{}
+	for rows.Next() {
+		var name, export string
+		if err := rows.Scan(&name, &export); err != nil {
+			return nil, fmt.Errorf("guilds: snapshot export classes: %w", err)
+		}
+		if decoded, ok := fs1.Decode(export); ok && decoded.ClassSlug != "" {
+			classes[name] = decoded.ClassSlug
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("guilds: snapshot export classes: %w", err)
+	}
+	out := make([]snapshotMember, len(lines))
+	for i, m := range lines {
+		name, _ := character.SplitUnit(m.Name)
+		if class, ok := classes[strings.ToLower(name)]; ok && snapshotClass(m) == nil {
+			m.Class = class
+		}
+		out[i] = m
+	}
+	return out, nil
 }
 
 // snapshotFacts is a snapshot line as an entry carries it: the level and the spec slug (nil

@@ -83,15 +83,21 @@ var officerCopy = struct {
 // "1. Onyxia 1:42 after 3 wipes".
 var nightCopy = struct {
 	Came, FirstPull, After, NotKilled string
-	// ShortBefore and NoFlask are the Consumables clauses.
-	ShortBefore, NoFlask string
+	// CameUnsigned and NobodySigned open the line when nobody signed up beforehand.
+	CameUnsigned, NobodySigned string
+	// ShortBefore and NoFlask are the Consumables clauses; NothingShared stands for both when
+	// nobody shared their bags and the log has no buffs to read.
+	ShortBefore, NoFlask, NothingShared string
 }{
-	Came:        "{came} of {signed} came",
-	FirstPull:   "first pull",
-	After:       "after {wipes}",
-	NotKilled:   "Not killed",
-	ShortBefore: "{n} short before the raid",
-	NoFlask:     "{n} with no flask in the log",
+	Came:          "{came} of {signed} came",
+	CameUnsigned:  "{n} came, nobody signed up beforehand",
+	NobodySigned:  "Nobody signed up beforehand",
+	NothingShared: "Nobody shared their bags before the raid",
+	FirstPull:     "first pull",
+	After:         "after {wipes}",
+	NotKilled:     "Not killed",
+	ShortBefore:   "{n} short before the raid",
+	NoFlask:       "{n} with no flask in the log",
 }
 
 // outcomeWords are the attendance outcomes in G2's words (never "no-show").

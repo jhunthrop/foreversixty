@@ -49,7 +49,7 @@ func (s *Service) NextRaidReadiness(ctx context.Context, guildID, viewerID int64
 	if err != nil {
 		return ReadinessAnswer{}, fmt.Errorf("guilds: bot readiness: %w", err)
 	}
-	return readinessAnswerOf(raid, view), nil
+	return readinessAnswerOf(raid, view, now), nil
 }
 
 // RaidReadiness is the readiness of the named raid of the guild, behind the same gate and
@@ -67,7 +67,7 @@ func (s *Service) RaidReadiness(ctx context.Context, guildID, viewerID, raidID i
 	if err != nil {
 		return ReadinessAnswer{}, fmt.Errorf("guilds: bot raid readiness: %w", err)
 	}
-	return readinessAnswerOf(raid, view), nil
+	return readinessAnswerOf(raid, view, time.Now()), nil
 }
 
 // readinessGate is the officer routes' gate (officerGateFor), then the Raid guild tools.
@@ -88,7 +88,7 @@ func (s *Service) readinessGate(ctx context.Context, guildID, viewerID int64) er
 	return nil
 }
 
-func readinessAnswerOf(raid Raid, view ReadinessView) ReadinessAnswer {
+func readinessAnswerOf(raid Raid, view ReadinessView, now time.Time) ReadinessAnswer {
 	out := ReadinessAnswer{Raid: &raid, Signed: len(view.Rows), Rows: []string{}}
 	for _, row := range view.Rows {
 		if row.Failing == 0 && !row.NoExport {
@@ -96,7 +96,7 @@ func readinessAnswerOf(raid Raid, view ReadinessView) ReadinessAnswer {
 		}
 		out.Failing++
 		if len(out.Rows) < readinessRowsShown {
-			out.Rows = append(out.Rows, readinessLine(row, raid.StartsAt))
+			out.Rows = append(out.Rows, readinessLine(row, now))
 			continue
 		}
 		out.More++
@@ -106,7 +106,7 @@ func readinessAnswerOf(raid Raid, view ReadinessView) ReadinessAnswer {
 
 // readinessLine is one failing row in the board's own cell words: the name, then each failing
 // check (gear gap, enchants, consumables, talent points, a stale sync), or No export yet.
-func readinessLine(row ReadinessRow, raidStart time.Time) string {
+func readinessLine(row ReadinessRow, now time.Time) string {
 	parts := []string{row.Name}
 	if row.NoExport {
 		return strings.Join(append(parts, "No export yet"), readinessLineJoin)
@@ -127,9 +127,9 @@ func readinessLine(row ReadinessRow, raidStart time.Time) string {
 	if n := row.TalentPointsUnspent; n > 0 {
 		parts = append(parts, fmt.Sprintf("%d unspent talent point%s", n, plural(n)))
 	}
-	if row.SyncedBeforeCutoff != nil && !*row.SyncedBeforeCutoff {
-		days := int(raidStart.Sub(row.LoggedAt).Hours() / hoursPerDay)
-		parts = append(parts, fmt.Sprintf("Synced %d day%s before the raid", days, plural(days)))
+	if row.SyncedBeforeCutoff != nil && *row.SyncedBeforeCutoff {
+		days := daysSince(now, row.LoggedAt)
+		parts = append(parts, fmt.Sprintf("Synced %d day%s ago", days, plural(days)))
 	}
 	return strings.Join(parts, readinessLineJoin)
 }

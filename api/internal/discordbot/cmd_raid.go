@@ -69,7 +69,7 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 
 // ownStateSentence is the viewer's state on the raid, named by the character that signed.
 // A character missing from the candidates is not named (its key is not a name).
-func ownStateSentence(own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) string {
+func ownStateSentence(own *guilds.NextRaidOwn, cands []guilds.SignupCandidate, noRoles bool) string {
 	if own == nil {
 		return commandCopy.RaidUnsigned
 	}
@@ -93,7 +93,7 @@ func ownStateSentence(own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) s
 	if named {
 		template = pair[1]
 	}
-	return fill(template, "{Name}", name, "{Role}", roleWord(own.Role))
+	return fill(roleless(template, noRoles), "{Name}", name, "{Role}", roleWord(own.Role))
 }
 
 // postStateOf is the state the raid's post shows now.
@@ -105,6 +105,6 @@ func (s *Service) postStateOf(facts guilds.RaidPostFacts, movedFrom *time.Time) 
 // state: the /raid answer, and the embed of the /signup card.
 func (s *Service) raidAnswerEmbed(_ context.Context, facts guilds.RaidPostFacts, movedFrom *time.Time, own *guilds.NextRaidOwn, cands []guilds.SignupCandidate) notify.Embed {
 	embed := notify.RaidPostEmbed(postFor(facts, s.postStateOf(facts, movedFrom), movedFrom), s.now())
-	embed.Description = ownStateSentence(own, cands)
+	embed.Description = ownStateSentence(own, cands, facts.Post.NoRoles)
 	return embed
 }

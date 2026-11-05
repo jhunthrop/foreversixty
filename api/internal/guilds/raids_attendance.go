@@ -111,8 +111,8 @@ func fillLogFigures(ctx context.Context, q dbQuerier, reportID string, present m
 	}
 	rows, err := q.Query(ctx, `
 		select m.player_key, max(m.player_name), max(coalesce(m.class, '')), max(coalesce(m.spec, '')),
-		       count(distinct m.fight_index),
-		       ((min(f.start_ms) - (select min(start_ms) from fights where report_id = $1 and encounter_id is not null)) / 1000)::int
+		       count(distinct m.fight_index) filter (where `+encounterPull("f")+`),
+		       ((min(f.start_ms) - (select min(start_ms) from fights f where report_id = $1 and `+encounterPull("f")+`)) / 1000)::int
 		from fight_metrics m
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
 		join reports r on r.id = m.report_id
@@ -140,10 +140,17 @@ func fillLogFigures(ctx context.Context, q dbQuerier, reportID string, present m
 	return nil
 }
 
+// encounterPull is the SQL test for a boss pull on fights alias a: a named encounter
+// (encounter_id > 0). Both sides of "pulls present of pulls total" count only these, so a
+// raider in every trash pack never reads "4 of 2".
+func encounterPull(a string) string {
+	return "coalesce(" + a + ".encounter_id, 0) > 0"
+}
+
 func encounterPulls(ctx context.Context, q dbQuerier, reportID string) (int, error) {
 	var n int
 	if err := q.QueryRow(ctx,
-		`select count(*) from fights where report_id = $1 and encounter_id is not null`, reportID).Scan(&n); err != nil {
+		`select count(*) from fights f where report_id = $1 and `+encounterPull("f"), reportID).Scan(&n); err != nil {
 		return 0, fmt.Errorf("guilds: attendance pulls: %w", err)
 	}
 	return n, nil

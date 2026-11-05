@@ -147,6 +147,11 @@ func TestApplyLifecycleThenRemoveRoundTrips(t *testing.T) {
 	if n := count(`select count(*) from reports where status = 'complete' and owner_id = (select id from users where battletag = 'hunthrop#1894')`); n != 1 {
 		t.Errorf("%d complete reports owned by the guild master, want 1", n)
 	}
+	// The match picker filters a raid's logs by log_zone; a seeded night without one never
+	// shows up for the Onyxia raid (guild round 3, item 13).
+	if n := count(`select count(*) from reports where log_zone = 'Onyxia''s Lair'`); n != 1 {
+		t.Errorf("%d seeded reports with the Onyxia log zone, want 1", n)
+	}
 	if n := count(`select count(*) from fights where kill and encounter_id is not null`); n != 1 {
 		t.Errorf("%d boss kills, want 1", n)
 	}
