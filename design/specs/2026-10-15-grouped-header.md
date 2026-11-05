@@ -42,7 +42,11 @@ current character has no guild sees a `Your guilds` card above the lookup listin
 the right, and the lookup's region and ruleset start on the first of those guilds. A lookup that
 names no guild lands on `No guild by that name on {REGION} {Ruleset}. Check the spelling and the
 ruleset.` with the inline link `Look it up again` to `/guild`, never the API's message and a
-retry. The API has no guild search, so the name field suggests nothing as you type.) The Guild door itself carries `data-guild-tab="overview"`, so
+retry. Under it, when one of the account's guilds (`/v1/me` `guilds`) or the Top guilds board
+(`/v1/rankings/guilds?kind=progress`) has a name that starts with, else contains, the typed words
+(three letters or more, the typed region and ruleset first): `Did you mean ` + the inline link
+`{Guild} ({REGION} {Ruleset})` + `?` (amended 2026-11-05, guild loop round 3: "lifecycle" missed
+"Lifecycle Test"). The API has no guild search, so the name field suggests nothing as you type.) The Guild door itself carries `data-guild-tab="overview"`, so
 the session rewrite below points it at the member's guild too. When the session
 resolves with a verified guild (`Me.guilds[0]`), the header fills the first row's title with the
 guild's name and rewrites the four hrefs to `guildHref(region, ruleset, name)` plus the tab

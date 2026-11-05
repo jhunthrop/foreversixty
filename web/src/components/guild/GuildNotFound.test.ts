@@ -16,6 +16,27 @@ describe('GuildNotFound', () => {
     expect(body).not.toContain('Try again');
   });
 
+  it('offers a guild it knows whose name starts with what was typed (guild loop round 3)', () => {
+    const { body } = render(GuildNotFound, {
+      props: {
+        path: { region: 'us', ruleset: 'pvp', slug: 'lifecycle' },
+        candidates: [{ name: 'Lifecycle Test', region: 'us', ruleset: 'pvp' }],
+      },
+    });
+    const line = body.slice(body.indexOf('data-testid="guild-not-found-suggestion"'));
+    expect(line.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, '')).toMatch(
+      /^[^>]*>\s*Did you mean Lifecycle Test \(US PvP\)\?/,
+    );
+    expect(line).toContain('href="/guild/us/pvp/lifecycle-test"');
+  });
+
+  it('offers nothing when no known guild is close', () => {
+    const { body } = render(GuildNotFound, {
+      props: { path: { region: 'us', ruleset: 'pvp', slug: 'zzz' }, candidates: [] },
+    });
+    expect(body).not.toContain('guild-not-found-suggestion');
+  });
+
   it('writes the ruleset as the game does', () => {
     const { body } = render(GuildNotFound, {
       props: { path: { region: 'eu', ruleset: 'pvp', slug: 'x' } },
