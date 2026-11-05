@@ -26,6 +26,9 @@ const signupFailMessage = "could not save that sign-up just now"
 // signupNotYoursMessage is the forbidden body for a member answering for another's character.
 const signupNotYoursMessage = "You can only sign up your own characters."
 
+// raidEndedMessage is the refusal for a sign-up to a raid past its end, the bot's own sentence.
+const raidEndedMessage = "This raid has ended."
+
 // signupAnswerView is the PUT's answer: the raid as it now stands and the character R3 moved
 // to bench, null when none.
 type signupAnswerView struct {
@@ -134,6 +137,8 @@ func (s *Service) writeSignupErr(w http.ResponseWriter, r *http.Request, err err
 		httpx.WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
 	case errors.Is(err, ErrRaidLocked):
 		httpx.WriteError(w, r, http.StatusConflict, "raid_locked", "sign-ups for this raid are locked", nil)
+	case errors.Is(err, ErrRaidEnded):
+		httpx.WriteError(w, r, http.StatusConflict, "raid_ended", raidEndedMessage, nil)
 	case errors.Is(err, ErrSpecNotOfClass):
 		writeInvalid(w, r, map[string]string{"spec": "Choose a spec of that character's class."})
 	case errors.Is(err, ErrRaidCancelled):

@@ -1,6 +1,7 @@
 package guilds
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -225,6 +226,24 @@ func TestSignupRateLimitIsPerAccount(t *testing.T) {
 
 // TestOfficerOwnSignupOnALockedRaid: an officer with the plan still answers for their own
 // character on a locked raid, unless the claim is contested (officer powers frozen).
+// A raid past its end with no log yet refuses a member's PUT as the site and the bot do; an
+// officer still corrects it, for their own character and for a member's.
+func TestSignupAfterTheRaidEnded(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.raidAt(t, raidZoneOny, pastStart())
+	w.as(w.member)
+	e := expectError(t, w.putSignup(raid.ID, memberKeyA, `{"state":"in"}`), http.StatusConflict, "raid_ended")
+	if e.Message != "This raid has ended." {
+		t.Fatalf("message = %q", e.Message)
+	}
+	if _, err := w.svcSignUp(w.cmd(raid.ID, w.member, memberKeyA, SignupIn)); !errors.Is(err, ErrRaidEnded) {
+		t.Fatalf("bot sign-up err = %v, want ErrRaidEnded", err)
+	}
+	w.as(w.officer)
+	w.signup(t, raid.ID, officerKey, `{"state":"in"}`)
+	w.signup(t, raid.ID, memberKeyA, `{"state":"in"}`)
+}
+
 func TestOfficerOwnSignupOnALockedRaid(t *testing.T) {
 	w := newRaidWorld(t, true)
 	raid := w.createRaid(t)

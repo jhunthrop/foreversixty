@@ -24,6 +24,7 @@ export const SAVED_LINE_MS = 4000;
 const RACE_LINES: Readonly<Record<string, string>> = {
   raid_locked: raidCopy.races.locked,
   raid_cancelled: raidCopy.races.cancelled,
+  raid_ended: raidCopy.races.ended,
 };
 
 /** What one sign-up save sends. */

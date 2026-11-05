@@ -246,6 +246,8 @@ func signupRefusal(err error) (string, bool) {
 		return pressCopy.RateLimited, true
 	case errors.Is(err, guilds.ErrRaidLocked):
 		return pressCopy.Locked, true
+	case errors.Is(err, guilds.ErrRaidEnded):
+		return pressCopy.Ended, true
 	case errors.Is(err, guilds.ErrRaidCancelled):
 		return pressCopy.Cancelled, true
 	}

@@ -205,7 +205,7 @@ func (s *Service) signupStanding(ctx context.Context, actorID int64, raid Raid, 
 	if !char.verified {
 		return false, ErrCharacterNotVerified
 	}
-	if raid.Status != RaidLocked && raid.Status != RaidDone {
+	if raid.Status != RaidLocked && raid.Status != RaidDone && !raid.Ended(time.Now()) {
 		return false, nil
 	}
 	officer, err := s.officerOrLeaderOf(ctx, raid.GuildID, actorID)

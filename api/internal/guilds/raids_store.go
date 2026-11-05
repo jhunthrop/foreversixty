@@ -31,6 +31,8 @@ var (
 	ErrRaidCap       = errors.New("guilds: raid cap reached")
 	ErrRaidLocked    = errors.New("guilds: raid is locked")
 	ErrRaidCancelled = errors.New("guilds: raid is cancelled")
+	// ErrRaidEnded is a member's sign-up to a raid past its end that no log has closed yet.
+	ErrRaidEnded = errors.New("guilds: raid has ended")
 	// ErrRaidStatus is a status move or an edit the raid's current status does not allow.
 	ErrRaidStatus = errors.New("guilds: raid status does not allow that")
 )
