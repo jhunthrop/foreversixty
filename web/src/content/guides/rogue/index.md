@@ -27,7 +27,7 @@ Rogue is still energy, combo points and stealth, but Forever puts Combat and Ass
 - **Poisons and stones stack.** A sharpening stone sits on a weapon beside a poison. Deadly Poison on the main hand and Instant Poison on the off hand is right for Combat and Subtlety, and for Assassination until 60, where it swaps them.
 - **Redirect** is trained at level 1: it takes your combo points off one target and gives them to the next enemy you hit within 15 seconds.
 - **Poised** comes at 18: at full energy out of combat, your next ability costs less. Open from full energy.
-- **Shank** comes at 24 (rank 2 at 44): an off-hand stab for 5 energy that cannot miss, gives 25 energy back at rank 2 and sits on a 10 second cooldown. Every tree presses it on cooldown (a Subtlety rogue finishes first when Boot Knife would overflow the bar), and each has a talent that builds on it: Venom for Assassination, Flash of Steel for Combat, Boot Knife for Subtlety.
+- **Shank** comes at 24 (rank 2 at 44): an off-hand stab for 5 energy that cannot miss, gives 25 energy back at rank 2 and sits on a 10 second cooldown. Every tree presses it on cooldown (a Subtlety rogue with 50 energy or more finishes first when Boot Knife would overflow its combo points), and each has a talent that builds on it: Venom for Assassination, Flash of Steel for Combat, Boot Knife for Subtlety.
 - **No weapon-skill racials.** Human gets 1% crit instead of sword skill, and the races that win for a rogue are Undead, Night Elf and Gnome.
 
 ## Races
