@@ -69,7 +69,7 @@ func TestCharUpgradeWords(t *testing.T) {
 	if moreText(1) != "-# 1 more upgrade on the character page." || moreText(4) != "-# 4 more upgrades on the character page." || moreText(0) != "" {
 		t.Fatalf("more = %q %q", moreText(1), moreText(4))
 	}
-	geared := upgradesText(gearZulmara(), upgradeList{byDPS: true, band: "level 60 Phase 1 raid"})
+	geared := upgradesText(gearZulmara(), upgradeList{rank: rankDPS, band: "level 60 Phase 1 raid"})
 	if geared != "**Top upgrades** · level 60 Phase 1 raid\nEvery slot already wears the guide's pick for level 60 Phase 1 raid." {
 		t.Fatalf("no upgrade = %q", geared)
 	}

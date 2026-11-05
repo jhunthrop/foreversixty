@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	// readinessTab is the guild page's Readiness tab.
-	readinessTab = "/readiness"
+	// readinessTab is the guild page's Readiness tab, by fragment like rosterTab.
+	readinessTab = "#readiness"
 	// goldColor is #e5b955, a neutral answer.
 	goldColor = 15055189
 	// readinessLineMax bounds one failing row; the guilds read keeps the rows inside a field.

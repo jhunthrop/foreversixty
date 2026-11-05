@@ -164,6 +164,13 @@ type LootCandidate struct {
 	// GainUnit is what GainDps counts: "dps", "hps" (a healer band) or "tps" (a tank band); null
 	// when GainDps is.
 	GainUnit *string `json:"gain_unit"`
+	// FillsEmptySlot is true when the drop goes in a slot the character has nothing in: the page
+	// says "fills an empty slot", never the drop's whole item level as a gain. Within a tier it
+	// ranks below a real upgrade over a worn item (spec §3.2, amended 2026-11-05).
+	FillsEmptySlot bool `json:"fills_empty_slot"`
+
+	// tankFirst is a tank on a drop with Defense: it ranks ahead of the rest of its tier.
+	tankFirst bool
 }
 
 // LootWornItem is the item a candidate wears in the drop's slot.

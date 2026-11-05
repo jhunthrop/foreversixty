@@ -144,7 +144,42 @@ func (s *Service) signupFlow(ctx context.Context, a signupAsk) (Reply, error) {
 	if len(verified) == 1 {
 		return s.signUp(ctx, a, verified[0])
 	}
+	if a.State == guilds.SignupOut {
+		c, ok, err := s.onlySignedUp(ctx, a, verified)
+		if err != nil {
+			return Reply{}, err
+		}
+		if ok {
+			return s.signUp(ctx, a, c)
+		}
+	}
 	return s.characterSelect(ctx, a, raid, verified), nil
+}
+
+// onlySignedUp is the one of verified signed up In, Late or Bench for the raid: an Out press then
+// means that character, with no select (bot spec §3.3.2, amended 2026-11-05). ok is false when
+// none or several are.
+func (s *Service) onlySignedUp(ctx context.Context, a signupAsk, verified []guilds.SignupCandidate) (guilds.SignupCandidate, bool, error) {
+	view, found, err := s.d.Guilds.MemberRaidView(ctx, a.GuildID, a.UserID, a.RaidID)
+	if err != nil || !found {
+		return guilds.SignupCandidate{}, false, err
+	}
+	signed := map[string]bool{}
+	for _, sg := range view.Signups {
+		if sg.State != guilds.SignupOut {
+			signed[sg.CharacterKey] = true
+		}
+	}
+	var only []guilds.SignupCandidate
+	for _, c := range verified {
+		if signed[c.CharacterKey] {
+			only = append(only, c)
+		}
+	}
+	if len(only) != 1 {
+		return guilds.SignupCandidate{}, false, nil
+	}
+	return only[0], true, nil
 }
 
 // raidRefusal is the sentence of a raid nobody can sign up for from Discord: cancelled, ended
@@ -210,8 +245,26 @@ func (s *Service) notMember(ctx context.Context, a signupAsk) (Reply, error) {
 
 // signUp signs c up, unless the state asks for a spec the character has never picked: then it
 // answers "Which spec tonight?" instead (spec 2026-10-28 §P.10.2).
+// raidKind is the kind of the asked raid's zone (raid, dungeon or event); "" when the raid is
+// not the guild's, which the sign-up then refuses on its own.
+func (s *Service) raidKind(ctx context.Context, a signupAsk) (string, error) {
+	raid, found, err := s.d.Guilds.GetRaid(ctx, a.GuildID, a.RaidID)
+	if err != nil {
+		return "", fmt.Errorf("discordbot: signup raid: %w", err)
+	}
+	if !found {
+		return "", nil
+	}
+	z, _ := guilds.ZoneByKey(raid.Zone)
+	return z.Kind, nil
+}
+
 func (s *Service) signUp(ctx context.Context, a signupAsk, c guilds.SignupCandidate) (Reply, error) {
-	if needsSpec(a.State, c) {
+	kind, err := s.raidKind(ctx, a)
+	if err != nil {
+		return Reply{}, err
+	}
+	if needsSpec(a.State, kind, c) {
 		return s.specAsk(ctx, a, c)
 	}
 	rep, _, err := s.commitSignup(ctx, a, c, "")
@@ -262,7 +315,7 @@ func signupRefusal(err error) (string, bool) {
 func (s *Service) outcome(ctx context.Context, a signupAsk, res guilds.SignupResult) Reply {
 	raid := []string{"{Name}", memberText(res.Character.Name), "{Role}", roleWord(res.Character.Role),
 		"{Title}", memberText(res.Raid.Title), "{Date}", raidDay(res.Raid)}
-	change := changeSpecButtons(a.State, a.RaidID, res.Character)
+	change := changeSpecButtons(a.State, res.Raid.ZoneKind, a.RaidID, res.Character)
 	if res.Unchanged {
 		return a.reply(alreadySentence(a.State, raid), change...)
 	}

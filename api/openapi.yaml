@@ -2106,7 +2106,9 @@ components:
           properties:
             on_roster: { type: integer }
             in_game_no_account: { type: integer }
-            waiting: { type: integer }
+            waiting:
+              type: integer
+              description: People (accounts) with a character waiting for approval, the unit summary.waiting_for_approval counts; members[] stays per character.
             not_seen: { type: integer }
         addon_snapshot: { $ref: '#/components/schemas/GuildAddonSnapshot' }
         next_raid: { $ref: '#/components/schemas/RaidLine' }
@@ -2114,7 +2116,7 @@ components:
     GuildRosterRow:
       type: object
       description: One roster row. Draw Remove and Approve exactly when may_remove and may_approve.
-      required: [character_key, region, ruleset, name, rank, verified, consent, logged_at, logged_recently, attendance, account_key, supporter, last_report_at, may_remove, may_approve, sim_export, addon]
+      required: [character_key, region, ruleset, name, rank, verified, consent, logged_at, logged_recently, attendance, account_key, supporter, last_report_at, may_remove, may_approve, is_main, sim_export, addon]
       properties:
         character_key: { type: string }
         region: { type: string }
@@ -2131,6 +2133,7 @@ components:
         last_report_at: { type: [string, "null"], format: date-time }
         may_remove: { type: boolean }
         may_approve: { type: boolean }
+        is_main: { type: boolean, description: The character its account marked as main; the roster names an alt's main by it. }
         sim_export: { type: boolean, description: "The character's sim input is its FS1 export (gear consent only): the Roster tab's Open in simulator / planner slot has links to offer." }
         addon: { $ref: '#/components/schemas/GuildRosterAddon' }
         class: { type: string, x-name: className }
@@ -2708,7 +2711,7 @@ components:
                 items:
                   type: object
                   title: LootCandidate
-                  required: [character_key, name, class, spec, gain_dps, gain_unit, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, replaces_item, items_won, tier]
+                  required: [character_key, name, class, spec, gain_dps, gain_unit, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, replaces_item, items_won, tier, fills_empty_slot]
                   properties:
                     character_key: { type: string }
                     name: { type: string }
@@ -2721,6 +2724,7 @@ components:
                     ilvl_delta: { type: [integer, "null"] }
                     attendance: { $ref: '#/components/schemas/GuildAttendance' }
                     already_equivalent: { type: boolean }
+                    fills_empty_slot: { type: boolean, description: The drop goes in a slot the character has nothing in; it ranks below a real upgrade in its tier, and the page says it fills an empty slot rather than quoting the drop's item level as a gain. }
                     replaces: { type: string }
                     replaces_item:
                       type: [object, "null"]
@@ -2744,7 +2748,7 @@ components:
           items:
             type: object
             title: ReportRow
-            required: [id, title, zone, status, visibility, created_at, fight_count, kill_count, boss_count, logging_character, last_upload_at, heartbeat_at]
+            required: [id, title, zone, status, visibility, created_at, fight_count, kill_count, boss_count, logging_character, last_upload_at, heartbeat_at, started_at]
             properties:
               id: { type: string }
               title: { type: string, description: 'May be ""; show the zone.' }
@@ -2758,6 +2762,7 @@ components:
               logging_character: { oneOf: [{ $ref: '#/components/schemas/LoggingCharacter' }, { type: "null" }] }
               last_upload_at: { type: [string, "null"], format: date-time }
               heartbeat_at: { type: [string, "null"], format: date-time }
+              started_at: { type: [string, "null"], format: date-time, description: The log's first fight, the night it was played; null before any fight arrives. }
         total: { type: integer }
         page: { type: integer }
         per_page: { type: integer }

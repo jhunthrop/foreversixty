@@ -41,7 +41,7 @@ func TestAttendanceRules(t *testing.T) {
 	if got := rep.Message.Embeds[1].Fields[0].Value; got != "Thu 10 Dec Came as Zulmara" {
 		t.Fatalf("alt = %q", got)
 	}
-	if b := rep.Message.Components[0][0]; b.Label != segment(2, nil) || !strings.HasSuffix(b.URL, "/roster") {
+	if b := rep.Message.Components[0][0]; b.Label != segment(2, nil) || !strings.HasSuffix(b.URL, "#roster") || strings.Contains(b.URL, "/roster") {
 		t.Fatalf("row = %+v", rep.Message.Components)
 	}
 	olympus := map[string]string{"Guild": "Olympus XXVII"}

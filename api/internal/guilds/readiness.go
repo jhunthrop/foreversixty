@@ -277,6 +277,10 @@ const (
 	readinessStocked   = "Stocked"
 	readinessShort     = "Short: "
 	readinessNotShared = "Not shared"
+	// readinessReady and readinessNotChecked are the board's READINESS_READY (something read,
+	// nothing failing: passesEveryCheck) and NOT_CHECKED_YET (shared, nothing read yet).
+	readinessReady      = "Ready"
+	readinessNotChecked = "Not checked yet"
 	// readinessLeveling is a leveling character's word: its level, and that checks start at 60.
 	readinessLeveling = "Level %d, checks start at %d"
 	// readinessShortMax is how many failing checks follow "Short: ".
@@ -314,7 +318,7 @@ func (s *Service) CharacterReadinessFacts(ctx context.Context, guildID int64, ch
 }
 
 func (s *Store) readinessFactsOf(row RosterRow, median *int) ReadinessFacts {
-	facts := ReadinessFacts{Word: readinessWord(s.readinessOf(row, median)), OnRoster: true}
+	facts := ReadinessFacts{Word: readinessWord(s.readinessOf(row, median), row.Consent), OnRoster: true}
 	if !row.LoggedAt.IsZero() {
 		synced := row.LoggedAt
 		facts.SyncedAt = &synced
@@ -322,15 +326,23 @@ func (s *Store) readinessFactsOf(row RosterRow, median *int) ReadinessFacts {
 	return facts
 }
 
-func readinessWord(cr CharacterReadiness) string {
+// readinessWord is the board's word for one row, the site's rule (readiness-view.ts
+// passesEveryCheck): leveling, else the failing checks, else Stocked or Ready when anything was
+// read, else Not shared for a roster-only consent and Not checked yet for one that shares.
+func readinessWord(cr CharacterReadiness, consent string) string {
 	if cr.Leveling {
 		return fmt.Sprintf(readinessLeveling, *cr.Level, raidLevel)
 	}
 	if fails := cr.Needs(readinessShortMax); len(fails) > 0 {
 		return readinessShort + strings.Join(fails, ", ")
 	}
-	if cr.ConsumablesState == consumablesStocked {
+	switch {
+	case cr.ConsumablesState == consumablesStocked:
 		return readinessStocked
+	case cr.GearChecked || cr.EnchantsChecked || cr.TalentsRead || cr.ConsumablesState != consumablesUnknown:
+		return readinessReady
+	case hasGearConsent(consent):
+		return readinessNotChecked
 	}
 	return readinessNotShared
 }

@@ -53,6 +53,9 @@ func (s *Service) reportReply(ctx context.Context, in Interaction, guildID, view
 	if err != nil {
 		return Reply{}, err
 	}
+	if !found && strings.TrimSpace(raw) == "" {
+		return s.loggedNightReply(ctx, guildID, viewer, update)
+	}
 	if !found {
 		return pressReply(officerCopy.ReportNone, update), nil
 	}
@@ -168,18 +171,25 @@ func nightLine(n guilds.NightView) string {
 	if n.Joined > 0 {
 		parts = append(parts, fmt.Sprintf("%d joined", n.Joined))
 	}
+	return strings.Join(append(parts, tallyClauses(n.Kills, n.Wipes, n.Deaths, n.DurationMS)...), lineJoin)
+}
+
+// tallyClauses are a night line's "1 kill", "3 wipes", "14 deaths" and "2 h 41 min", a zero
+// clause left out.
+func tallyClauses(kills, wipes, deaths int, durationMS int64) []string {
+	var parts []string
 	for _, c := range []struct {
 		n    int
 		unit string
-	}{{n.Kills, "kill"}, {n.Wipes, "wipe"}, {n.Deaths, "death"}} {
+	}{{kills, "kill"}, {wipes, "wipe"}, {deaths, "death"}} {
 		if c.n > 0 {
 			parts = append(parts, units(c.n, c.unit))
 		}
 	}
-	if n.DurationMS > 0 {
-		parts = append(parts, nightDuration(n.DurationMS))
+	if durationMS > 0 {
+		parts = append(parts, nightDuration(durationMS))
 	}
-	return strings.Join(parts, lineJoin)
+	return parts
 }
 
 func units(n int, singular string) string {

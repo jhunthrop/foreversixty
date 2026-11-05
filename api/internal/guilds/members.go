@@ -61,8 +61,10 @@ type RosterEntry struct {
 type RosterCounts struct {
 	OnRoster        int `json:"on_roster"`
 	InGameNoAccount int `json:"in_game_no_account"`
-	Waiting         int `json:"waiting"`
-	NotSeen         int `json:"not_seen"`
+	// Waiting counts people, the accounts with a character waiting for approval, the unit
+	// the Overview's waiting_for_approval counts (summaryPeople); the entries stay per character.
+	Waiting int `json:"waiting"`
+	NotSeen int `json:"not_seen"`
 }
 
 // invitedMember is an account that joined by invite link: a verified synthetic row and no
@@ -117,12 +119,12 @@ func mergeRoster(rows []RosterRow, invited []invitedMember, snapshot []snapshotM
 	named := make(map[string]bool, len(rows)+len(invited)+len(order))
 	entries := make([]RosterEntry, 0, len(rows)+len(invited)+len(order))
 	var counts RosterCounts
+	_, counts.Waiting = summaryPeople(rows)
 	for _, row := range rows {
 		named[strings.ToLower(row.Name)] = true
 		e := RosterEntry{Name: row.Name, CharacterKey: row.CharacterKey, State: EntryApproved, Rank: row.Rank, Class: row.Class}
 		if !row.Verified {
 			e.State = EntryWaiting
-			counts.Waiting++
 		}
 		if row.Addon != nil {
 			e.Level, e.Spec, e.SeenAt = row.Addon.Level, row.Addon.Spec, row.Addon.SeenAt

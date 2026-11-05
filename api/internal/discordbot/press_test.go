@@ -41,7 +41,7 @@ func (f *fakeGuilds) GetRaid(context.Context, int64, int64) (guilds.Raid, bool, 
 	return guilds.Raid{}, false, nil
 }
 
-func (f *fakeGuilds) NextRaidFor(context.Context, int64, int64, *string, time.Time) (*guilds.NextRaidView, error) {
+func (f *fakeGuilds) NextRaidFirstFor(context.Context, int64, int64, time.Time) (*guilds.NextRaidView, error) {
 	return nil, nil
 }
 

@@ -64,7 +64,7 @@ func TestReadinessGate(t *testing.T) {
 	if len(lines) != 11 || lines[0] != rows[0] || lines[10] != segment(5, map[string]string{"n": "2"}) {
 		t.Fatalf("rows = %q", lines)
 	}
-	if b := rep.Message.Components[0][0]; b.Label != segment(6, nil) || hasShare(rep) || !strings.HasSuffix(b.URL, "/readiness") {
+	if b := rep.Message.Components[0][0]; b.Label != segment(6, nil) || hasShare(rep) || !strings.HasSuffix(b.URL, "#readiness") || strings.Contains(b.URL, "/readiness") {
 		t.Fatalf("row = %+v", rep.Message.Components)
 	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid, Signed: 23, Failing: 1, Rows: rows[:1]}

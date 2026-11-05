@@ -43,6 +43,20 @@ func TestMergeRosterTable(t *testing.T) {
 			counts: RosterCounts{OnRoster: 2, Waiting: 1},
 		},
 		{
+			name: "waiting counts people: two characters of one account are one waiting",
+			rows: []RosterRow{
+				{Name: "Alt", CharacterKey: "us/pvp/alt", Rank: "member", ownerUserID: 7},
+				{Name: "Main", CharacterKey: "us/pvp/main", Rank: "member", ownerUserID: 7},
+				{Name: "Other", CharacterKey: "us/pvp/other", Rank: "member", ownerUserID: 8},
+			},
+			want: []RosterEntry{
+				{Name: "Alt", CharacterKey: "us/pvp/alt", State: EntryWaiting, Rank: "member"},
+				{Name: "Main", CharacterKey: "us/pvp/main", State: EntryWaiting, Rank: "member"},
+				{Name: "Other", CharacterKey: "us/pvp/other", State: EntryWaiting, Rank: "member"},
+			},
+			counts: RosterCounts{OnRoster: 3, Waiting: 2},
+		},
+		{
 			name:     "a snapshot name with no account is in game without one, by name, rank member",
 			rows:     []RosterRow{approved("Bow", "us/pvp/bow", "leader")},
 			snapshot: []snapshotMember{line("Bow"), line("Strayhound"), line("Oldmarrow-Realm")},

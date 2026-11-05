@@ -173,6 +173,9 @@ type RosterRow struct {
 	// row is not already verified - the Roster tab's own Approve control (contract's
 	// own field, mirroring MayRemove's convention).
 	MayApprove bool `json:"may_approve"`
+	// IsMain is true for the character its account marked as main (users.main_character_key):
+	// the Roster tab's "alt of" label names that one.
+	IsMain bool `json:"is_main"`
 	// SimExport is true when the character's sim input is its FS1 export (sims.ExportIsInputSQL),
 	// so the Roster tab's Open in simulator / planner slot has links to offer; false below gear
 	// consent. The web decides from it at first paint whether the row holds that slot at all.
@@ -376,10 +379,13 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 		       case when gm.consent in ('gear', 'gear_bags') then fm.ilvl end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.faction end,
 		       case when gm.consent in ('gear', 'gear_bags') then ae.export end,
-		       `+rosterSimExportSQL+`
+		       `+rosterSimExportSQL+`,
+		       case when gm.consent in ('gear', 'gear_bags') then gc.raid_spec end,
+		       coalesce(u.main_character_key = gc.character_key, false)
 		from guild_characters gc
 		join addon_exports ae on ae.character_key = gc.character_key
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
+		left join users u on u.id = gc.user_id
 		left join lateral (
 		  select m.class, m.spec, m.role, m.ilvl, m.faction
 		  from fight_metrics m join reports r on r.id = m.report_id
@@ -395,11 +401,14 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 	defer rows.Close()
 	out := []RosterRow{}
 	for rows.Next() {
-		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer)
+		var raidSpec *string
+		var isMain bool
+		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer, &raidSpec, &isMain)
 		if err != nil {
 			return nil, err
 		}
-		out = append(out, row)
+		row.IsMain = isMain
+		out = append(out, row.withRaidSpec(raidSpec))
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

@@ -2954,6 +2954,7 @@ public struct GuildMember: Codable, Sendable, Equatable {
 public struct GuildMemberCounts: Codable, Sendable, Equatable {
     public let onRoster: Int
     public let inGameNoAccount: Int
+    /// People (accounts) with a character waiting for approval, the unit summary.waiting_for_approval counts; members[] stays per character.
     public let waiting: Int
     public let notSeen: Int
 
@@ -3121,6 +3122,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let lastReportAt: Date?
     public let mayRemove: Bool
     public let mayApprove: Bool
+    /// The character its account marked as main; the roster names an alt's main by it.
+    public let isMain: Bool
     /// The character's sim input is its FS1 export (gear consent only): the Roster tab's Open in simulator / planner slot has links to offer.
     public let simExport: Bool
     public let addon: GuildRosterAddon?
@@ -3156,6 +3159,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         lastReportAt: Date? = nil,
         mayRemove: Bool,
         mayApprove: Bool,
+        isMain: Bool,
         simExport: Bool,
         addon: GuildRosterAddon? = nil,
         className: String? = nil,
@@ -3185,6 +3189,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         self.lastReportAt = lastReportAt
         self.mayRemove = mayRemove
         self.mayApprove = mayApprove
+        self.isMain = isMain
         self.simExport = simExport
         self.addon = addon
         self.className = className
@@ -3216,6 +3221,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         case lastReportAt
         case mayRemove
         case mayApprove
+        case isMain
         case simExport
         case addon
         case className = "class"
@@ -3977,6 +3983,8 @@ public struct LootCandidate: Codable, Sendable, Equatable {
     public let ilvlDelta: Int?
     public let attendance: GuildAttendance
     public let alreadyEquivalent: Bool
+    /// The drop goes in a slot the character has nothing in; it ranks below a real upgrade in its tier
+    public let fillsEmptySlot: Bool
     public let replaces: String
     /// The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name.
     public let replacesItem: LootWornItem?
@@ -3994,6 +4002,7 @@ public struct LootCandidate: Codable, Sendable, Equatable {
         ilvlDelta: Int? = nil,
         attendance: GuildAttendance,
         alreadyEquivalent: Bool,
+        fillsEmptySlot: Bool,
         replaces: String,
         replacesItem: LootWornItem? = nil,
         itemsWon: Int
@@ -4009,6 +4018,7 @@ public struct LootCandidate: Codable, Sendable, Equatable {
         self.ilvlDelta = ilvlDelta
         self.attendance = attendance
         self.alreadyEquivalent = alreadyEquivalent
+        self.fillsEmptySlot = fillsEmptySlot
         self.replaces = replaces
         self.replacesItem = replacesItem
         self.itemsWon = itemsWon
@@ -4026,6 +4036,7 @@ public struct LootCandidate: Codable, Sendable, Equatable {
         case ilvlDelta
         case attendance
         case alreadyEquivalent
+        case fillsEmptySlot
         case replaces
         case replacesItem
         case itemsWon
@@ -6412,6 +6423,8 @@ public struct ReportRow: Codable, Sendable, Equatable {
     public let loggingCharacter: LoggingCharacter?
     public let lastUploadAt: Date?
     public let heartbeatAt: Date?
+    /// The log's first fight
+    public let startedAt: Date?
 
     public init(
         id: String,
@@ -6425,7 +6438,8 @@ public struct ReportRow: Codable, Sendable, Equatable {
         bossCount: Int,
         loggingCharacter: LoggingCharacter? = nil,
         lastUploadAt: Date? = nil,
-        heartbeatAt: Date? = nil
+        heartbeatAt: Date? = nil,
+        startedAt: Date? = nil
     ) {
         self.id = id
         self.title = title
@@ -6439,6 +6453,7 @@ public struct ReportRow: Codable, Sendable, Equatable {
         self.loggingCharacter = loggingCharacter
         self.lastUploadAt = lastUploadAt
         self.heartbeatAt = heartbeatAt
+        self.startedAt = startedAt
     }
 }
 

@@ -95,9 +95,12 @@ const (
 )
 
 // familyStats is each family's stats, keyed as items/<class>.json's stats are. Hit and crit are
-// in none of them: every family values both (sharedStats).
+// in none of them: they count for everyone only on an item with no family stat (sharedStats).
 var familyStats = map[statFamily][]string{
-	familyPhysical: {"strength", "agility", "attack_power", "ranged_attack_power", "feral_attack_power"},
+	// Dodge, parry and block are physical too: a rogue or a tank wants them, a caster or healer
+	// never does (Eskhandar's Collar: Stamina, dodge and crit).
+	familyPhysical: {"strength", "agility", "attack_power", "ranged_attack_power", "feral_attack_power",
+		"dodge", "parry", "block", "block_value"},
 	familyCaster: {"intellect", "spell_power", "arcane_power", "fire_power", "frost_power",
 		"holy_power", "nature_power", "shadow_power", "spell_penetration"},
 	familyHealer: {"intellect", "spirit", "healing", "mp5"},
@@ -147,20 +150,20 @@ func familiesFor(class, spec, role string) []statFamily {
 }
 
 // excludingFamilies are the families whose stats keep an item to their own specs (spec §3.2 rule 4:
-// physical, caster, healer). The tank family's own extras (Defense, dodge, parry, block) are not in
+// physical, caster, healer). The tank family's own extra, Defense, is not in
 // them: a tank reads as physical plus Defense, so Defense draws a tank in without shutting anyone
 // else out. Ring of Binding (armour, resistances, Defense) is open to every class.
 var excludingFamilies = []statFamily{familyPhysical, familyCaster, familyHealer}
 
-// suitsFamily reports whether an item with stats suits one of families: it carries a stat of the
-// family or hit or crit, or carries no family stat at all (Stamina, armour, resistances, Defense).
-// A weapon with no family stat (Deathbringer, Vis'kag the Bloodletter: a chance on hit and nothing
-// else) is for a character who fights in melee with it (meleeWeaponUser): its damage is the point,
-// and a ranged hunter, a caster or a healer never swings it.
+// suitsFamily reports whether an item with stats suits one of families (spec §3.2 rule 4, amended
+// 2026-11-05): it carries a stat of the family; else a stat of another excluding family keeps it
+// from them, whatever hit or crit rides along (Eskhandar's Collar, Agility and crit, is not a
+// healer's); else, with no family stat at all, hit or crit is for everyone, and so is an item of
+// Stamina, armour, resistances or Defense. A weapon with no family stat and no hit or crit
+// (Deathbringer, Vis'kag the Bloodletter: a chance on hit and nothing else) is for a character who
+// fights in melee with it (meleeWeaponUser): its damage is the point, and a ranged hunter, a
+// caster or a healer never swings it.
 func suitsFamily(stats map[string]int, isWeapon bool, families []statFamily, meleeWeaponUser bool) bool {
-	if hasAny(stats, sharedStats) {
-		return true
-	}
 	for _, family := range families {
 		if hasAny(stats, familyStats[family]) {
 			return true
@@ -171,8 +174,14 @@ func suitsFamily(stats map[string]int, isWeapon bool, families []statFamily, mel
 			return false
 		}
 	}
+	if hasAny(stats, sharedStats) {
+		return true
+	}
 	return !isWeapon || meleeWeaponUser
 }
+
+// tankStats are the stats only a tank is after: an item with one ranks tanks first (spec §3.2).
+var tankStats = []string{"defense"}
 
 // meleeClasses fight in melee in every spec.
 var meleeClasses = map[string]bool{"warrior": true, "rogue": true}

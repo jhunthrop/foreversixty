@@ -14,8 +14,24 @@ import (
 // maxUpgrades is how many upgrade rows the /char panel lists (spec 2026-10-29 §A.5.3).
 const maxUpgrades = 5
 
-// tankRole is the spec role whose upgrades are ranked by score, not DPS.
-const tankRole = "tank"
+// tankRole and healerRole are the spec roles whose upgrades are never ranked by DPS: they rank
+// by the BiS list and item level (levelUpgrades).
+const (
+	tankRole   = "tank"
+	healerRole = "healer"
+)
+
+// upgradeRank is the unit an upgrade list is ranked and worded in.
+type upgradeRank int
+
+const (
+	// rankScore is Forever Score points from the gear panel's gaps.
+	rankScore upgradeRank = iota
+	// rankDPS is the band's measured DPS gain, a damage spec's list.
+	rankDPS
+	// rankLevel is item levels toward the BiS list, a healer's or tank's list.
+	rankLevel
+)
 
 // The list's groups (upgrades.Group): empty slots, then measured gains, then unmodelled picks.
 const (
@@ -37,11 +53,11 @@ type upgrade struct {
 	worn                     *rankings.GearWorn
 }
 
-// upgradeList is the character's upgrades in the panel's order, whether they read in DPS,
-// and the band they are against.
+// upgradeList is the character's upgrades in the panel's order, the unit they rank by, and
+// the band they are against.
 type upgradeList struct {
 	items []upgrade
-	byDPS bool
+	rank  upgradeRank
 	band  string
 }
 
@@ -54,17 +70,20 @@ func (l upgradeList) bySlot() map[string]upgrade {
 	return out
 }
 
-// upgrades are the character's upgrades. A non-tank spec reads in DPS against the band /bis
+// upgrades are the character's upgrades. A damage spec reads in DPS against the band /bis
 // defaults to for this character (phaseOfBand of its level band: the Phase 1 raid at 60),
 // each the band's own measured gain of its pick over the worn item, so an item shows the same
-// gain here as in /bis. A tank, or a character the band measured no gain for, reads in Forever
-// Score points from the gear panel's own gaps against its band.
+// gain here as in /bis. A healer or tank is never ranked by DPS: it reads in item levels toward
+// that band's BiS list. A character the band has nothing for reads in Forever Score points from
+// the gear panel's own gaps against its band.
 func (s *Service) upgrades(card rankings.Character, spec specs.Spec, guildFaction string) upgradeList {
 	faction := s.characterFaction(card, guildFaction)
-	if spec.Role != tankRole {
-		if list, ok := s.dpsUpgrades(card, spec, faction); ok {
-			return list
-		}
+	ranker := s.dpsUpgrades
+	if spec.Role == tankRole || spec.Role == healerRole {
+		ranker = s.levelUpgrades
+	}
+	if list, ok := ranker(card, spec, faction); ok {
+		return list
 	}
 	return s.scoreUpgrades(card, spec, faction)
 }
@@ -114,7 +133,7 @@ func (s *Service) dpsUpgrades(card rankings.Character, spec specs.Spec, faction 
 	if len(items) == 0 {
 		return upgradeList{}, false
 	}
-	return upgradeList{items: ordered(items), byDPS: true, band: bandLabels[phaseOfBand(level)]}, true
+	return upgradeList{items: ordered(items), rank: rankDPS, band: bandLabels[phaseOfBand(level)]}, true
 }
 
 // dpsUpgrade is one slot's upgrade over w (nil: the slot is empty); ok is false when the pick
@@ -243,10 +262,15 @@ func upgradesText(card rankings.Character, list upgradeList) string {
 		return title + "\n" + lookupCopy.NoGear
 	case len(list.items) == 0 && list.band != "":
 		return title + "\n" + fill(panelCopy.UpgradesNone, "{band label}", list.band)
-	case !list.byDPS:
-		return title + "\n" + panelCopy.UpgradesByScore
 	}
-	return title + "\n" + panelCopy.UpgradesByDPS
+	return title + "\n" + rankLines[list.rank]
+}
+
+// rankLines say what each list is ranked by, under its title.
+var rankLines = map[upgradeRank]string{
+	rankScore: panelCopy.UpgradesByScore,
+	rankDPS:   panelCopy.UpgradesByDPS,
+	rankLevel: panelCopy.UpgradesByLevel,
 }
 
 // moreText is "-# {n} more upgrades on the character page.", "" when none are left.

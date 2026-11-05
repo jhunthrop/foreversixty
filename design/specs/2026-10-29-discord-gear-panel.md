@@ -201,7 +201,7 @@ Ephemeral, flags 32832.
       ```
       The accessory is the crest. Each line-3 clause appears only when known. Readiness and Synced appear only for a verified member.
    2. **Separator**.
-   3. **Text Display**: `**Top upgrades** · {band label}`, then `-# By DPS gained, against the guide build.` (tank: `-# By Forever Score gained, against the guide build.`).
+   3. **Text Display**: `**Top upgrades** · {band label}`, then `-# By DPS gained, against the guide build.` A healer or tank is never ranked by DPS (amended 2026-11-05, guild round 3): `-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.`, the rows ranked by the BiS list of the same band: empty slots (`Fills an empty slot`), then picks above what is worn by the most item levels (`+12 item levels`, `+1 item level`), then the list's other picks in frame order (`On the BiS list`). With no band for the spec, any spec reads `-# By Forever Score gained, against the guide build.`
    4. **Up to five upgrade rows** (§A.3; `maxUpgrades` = 5), ordered:
       1. Empty slots that have a pick, in frame order, each with its real gain or `Gain not modelled yet` (§A.3).
       2. Measured gains, largest first.
@@ -452,6 +452,7 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `char.upgrades.title` | `**Top upgrades** · {band label}` |
 | `char.upgrades.byDPS` | `-# By DPS gained, against the guide build.` |
 | `char.upgrades.byScore` | `-# By Forever Score gained, against the guide build.` |
+| `char.upgrades.byLevel` | `-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.`; rows `Fills an empty slot`, `+{n} item levels` (`+1 item level`), `On the BiS list` |
 | `char.upgrades.more` | `-# {n} more upgrades on the character page.`; for one `-# 1 more upgrade on the character page.` |
 | `char.upgrades.none` | `Every slot already wears the guide's pick for {band label}.` |
 | `char.noGear` | `No gear shared yet. Upgrades show once the character is synced.` (unchanged) |
