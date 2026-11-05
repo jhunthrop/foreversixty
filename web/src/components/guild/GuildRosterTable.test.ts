@@ -541,3 +541,15 @@ describe('GuildRosterTable: Remove on a member who joined by invite link', () =>
     expect(ask(['remove'], { ...invited, may_remove: false })).not.toContain('guild-roster-entry-remove');
   });
 });
+
+describe('GuildRosterTable: professions read as the client names them', () => {
+  it('turns the export slugs into First Aid and Leatherworking', () => {
+    const home = buildMockHome(VIEWER_MEMBER);
+    const roster = home.roster.map((r, i) =>
+      i === 0 ? { ...r, professions: ['leatherworking', 'first-aid'] } : r,
+    );
+    const html = render(GuildRosterTable, { props: { ...props(home), roster } }).body;
+    expect(text(html)).toContain('Leatherworking / First Aid');
+    expect(html).not.toContain('first-aid');
+  });
+});

@@ -29,6 +29,7 @@
   import type { AttendanceSource } from '../../lib/guild/attendance-contract';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
+  import { professionName } from '../../lib/guild/professions';
   import { addonSnapshotLine } from '../../lib/guild/roster-addon';
   import { rosterHoldsHandoff } from '../../lib/guild/roster-links';
   import {
@@ -622,7 +623,8 @@
                 {#if row.professions !== undefined && row.professions.length > 0}
                   <span
                     class="text-muted block truncate text-[12px] lg:pl-[84px]"
-                    data-testid="guild-roster-professions">{row.professions.join(' / ')}</span
+                    data-testid="guild-roster-professions"
+                    >{row.professions.map(professionName).join(' / ')}</span
                   >
                 {/if}
               </div>
