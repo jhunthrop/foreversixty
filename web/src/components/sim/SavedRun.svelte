@@ -276,7 +276,7 @@
         ready={rotationLazy.current !== null}
         reserve={SECTION_RESERVE.rotation}
       >
-        {#if rotationLazy.current}<rotationLazy.current {spec} {fidelity} />{/if}
+        {#if rotationLazy.current}<rotationLazy.current {result} {names} />{/if}
       </LazySection>
       <LazySection
         id="settings"
