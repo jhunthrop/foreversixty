@@ -619,14 +619,30 @@
         "authored": 20924,
         "bands": [
           {
+            "from_level": 30,
+            "to_level": 31,
+            "rank": 1,
+            "note": "Sim-accuracy round 24: re-judged level by level on the net-rate Consecration line (pool plus income less spend over 60 s, times the fight's remaining time, covers the cast; or below 35% health), spec-breakdown -tank -level -rank 20924=r, 10,000 iterations, seeds 1 and 50001, Dwarf and Undead (design/reviews/2026-11-05-sim-audit-round24/paladin.md P1). Rank 1 beats rank 2 by 0.3 to 0.7% at 30 (Dwarf +0.4 to +0.6% at 31, Undead level); from 32 rank 2 ties or wins. Ranks 2 and 3 lose 0.3 to 0.8% at 40 to 46 and tie at 47 and 48; rank 3 beats rank 1 by 0.3 to 0.4% at 49. Ranks 3 and 4 lose 0.2 to 0.7% at 50 to 55 and tie at 56 and 57; rank 4 beats rank 1 by 0.2 to 0.8% at 58 and 0.5 to 0.8% at 59. Bare 60 keeps rank 1 (rank 4 -0.4 to -0.6%, rank 5 level)."
+          },
+          {
             "from_level": 40,
-            "to_level": 49,
+            "to_level": 48,
             "rank": 1
           },
           {
+            "from_level": 49,
+            "to_level": 49,
+            "rank": 3
+          },
+          {
             "from_level": 50,
-            "to_level": 59,
+            "to_level": 57,
             "rank": 1
+          },
+          {
+            "from_level": 58,
+            "to_level": 59,
+            "rank": 4
           },
           {
             "from_level": 60,
