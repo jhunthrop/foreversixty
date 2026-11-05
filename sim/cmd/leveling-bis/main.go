@@ -295,6 +295,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	if err != nil {
 		return fmt.Errorf("resolving the %s preset for %s: %w", presetRaid, spec, err)
 	}
+	if specInfo.RaidEnchants, err = loadRaidEnchants(repoRoot, specInfo); err != nil {
+		return err
+	}
 	guide, err := loadGuideRaces(repoRoot, buildDir, specInfo.ClassSlug, specInfo.SpecSlug)
 	if err != nil {
 		return err
@@ -666,6 +669,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				report.Preset = pass.name
 				report.UnconfirmedWithinErrorHeld = heldUnconfirmed
 				report.KeptAlternative = kept
+				report.Slots = withEnchantIDs(specInfo, report.Slots)
 				// "No primary stat ever published as 'not significant'"
 				// (this lane's brief, item 3) - clears Insignificant on
 				// exactly the anchor row, on an otherwise-trustworthy band

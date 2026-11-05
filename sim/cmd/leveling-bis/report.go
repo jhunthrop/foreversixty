@@ -64,6 +64,9 @@ type slotRow struct {
 	ItemName   string `json:"item_name,omitempty"`
 	Source     string `json:"source,omitempty"`
 	SourceKind string `json:"source_kind,omitempty"`
+	// EnchantID is the permanent enchant the item wears on the raid pass
+	// (enchants.go), absent elsewhere.
+	EnchantID int `json:"enchant_id,omitempty"`
 	// Chance is the pick's drop chance at Source as a fraction (0.14 is
 	// 14 percent): loot.json's own percent (itemSource.Chance) / 100, for
 	// the addon's tooltip (task L1.2, contract 1 in docs/contracts/

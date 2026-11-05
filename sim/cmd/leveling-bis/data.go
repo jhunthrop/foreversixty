@@ -1325,6 +1325,9 @@ type specInfo struct {
 	// top of the class kit - nil for the bare pass. It is not part of
 	// data/curated/specs.json.
 	Applied *request.ResolvedPreset `json:"-"`
+	// RaidEnchants is the spec's data/curated/raid-enchants.json plan,
+	// worn on the raid pass only (enchants.go).
+	RaidEnchants enchantPlan `json:"-"`
 }
 
 func loadAllSpecs(repoRoot string) ([]specInfo, error) {
