@@ -112,6 +112,8 @@ Capture `only-stranger-invite-1440`: a 480 px card hard left, `Lifecycle Test ·
 
 **What verified means**, one 13 px muted line above the consent line: `Joining by this link verifies you at once. No officer has to approve you.`
 
+**The promise holds after the addon syncs** (amended 2026-11-05, guild round 3). The invite verifies the account, not one row: when a character of an invite-verified account syncs into the guild (addon export), or the account already has characters on the guild's roster when it joins, every such unapproved character takes the invite's verification (`verified_by = 'invite'`) and the account's placeholder row (`account:{id}`) is dropped, in the same transaction (`guilds.AdoptInviteVerification`). An invited member never comes back `Waiting for approval`, and a character whose export carries an officer rank comes back an officer, as a `logs` verification does.
+
 **States.** Signed out: rows 1 and 2, then `Sign in to join this guild.` and the existing sign-in button as the primary. Already in: rows 1 and 3 with `You are already in {Guild}.` and `Open the guild` (primary). Invalid link: row 1 absent, `EmptyState` `This invite link no longer works. Ask a guild officer for a new one.` Loading: the card at its ready height (320 px desktop, 380 phone) with `Skeleton` rows. Joined: today's joined block with the plan line.
 
 ### 3.5 Roster rows with no account (UX-10)

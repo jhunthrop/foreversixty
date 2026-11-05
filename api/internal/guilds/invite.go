@@ -112,6 +112,9 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 		g.ID, key, userID); err != nil {
 		return InviteAccept{}, fmt.Errorf("guilds: accept invite: %w", err)
 	}
+	if err := AdoptInviteVerification(ctx, tx, g.ID, userID); err != nil {
+		return InviteAccept{}, err
+	}
 	if err := RecomputeMembership(ctx, tx, g.ID, &userID); err != nil {
 		return InviteAccept{}, err
 	}
@@ -122,6 +125,33 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 		return InviteAccept{}, fmt.Errorf("guilds: accept invite: commit: %w", err)
 	}
 	return InviteAccept{GuildID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Rank: "member"}, nil
+}
+
+// AdoptInviteVerification moves an invite's verification from userID's placeholder row
+// (syntheticKey) in guildID onto the account's own character rows there, then drops the
+// placeholder, within tx. It runs whenever either side lands: an invited account whose
+// character syncs into the guild, and an account with characters already on the roster that
+// joins by invite. The join page promises "No officer has to approve you", so a character of an
+// invite-verified account never reads "Waiting for approval", whatever its rank (the same as a
+// 'logs' verification, the rank is the character's own export's). With no real character row
+// in the guild, or no verified placeholder, nothing changes. Callers recompute membership after.
+func AdoptInviteVerification(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
+	if _, err := tx.Exec(ctx, `
+		with placeholder as (
+		  delete from guild_characters p
+		  where p.guild_id = $1 and p.character_key = $2 and p.verified_at is not null
+		    and exists (select 1 from guild_characters c
+		                where c.guild_id = $1 and c.user_id = $3 and c.character_key not like 'account:%')
+		  returning p.verified_at
+		)
+		update guild_characters gc set verified_at = placeholder.verified_at, verified_by = 'invite'
+		from placeholder
+		where gc.guild_id = $1 and gc.user_id = $3 and gc.character_key not like 'account:%'
+		  and gc.verified_at is null`,
+		guildID, syntheticKey(userID), userID); err != nil {
+		return fmt.Errorf("guilds: adopt invite verification for user %d in guild %d: %w", userID, guildID, err)
+	}
+	return nil
 }
 
 // InvitePeek is what PeekInvite answers with: the guild a token opens and how many verified
