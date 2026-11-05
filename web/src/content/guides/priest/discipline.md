@@ -85,7 +85,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every shield, Penance and heal, short of a rank far below your level. Intellect deepens your bar, and Mental Strength adds 10% to it. Critical strike pays twice for Discipline: every direct heal that crits also leaves a Divine Aegis shield on the target. Spirit is mana, and Meditation keeps half of its regeneration running while you cast. Spell power with no healing on it does nothing for a heal.
+The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every shield, Penance and heal, though a rank learned far below your level keeps less of it, or none. Intellect deepens your bar, and Mental Strength adds 10% to it. Critical strike pays twice for Discipline: every direct heal that crits also leaves a Divine Aegis shield on the target. Spirit is mana, and Meditation keeps half of its regeneration running while you cast. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 

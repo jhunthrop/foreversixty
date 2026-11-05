@@ -23,7 +23,7 @@ Rogue is still energy, combo points and stealth, but Forever puts Combat and Ass
 
 ## What changed from 1.12
 
-- **Daggers for Combat and Assassination.** Backstab and Ambush need a dagger in the main hand, Mutilate needs one in each hand, and Hack and Slash gives daggers crit. Hemorrhage and Ghostly Strike pay a bigger weapon percentage with a dagger too, but a slower weapon's bigger hits make up for it and Subtlety's damage leans on bleeds, Shank and Death Mark, so it takes the best weapons it can find, dagger or not. One-handed axes are new for rogues.
+- **Daggers for Combat and Assassination.** Backstab and Ambush need a dagger in the main hand, Mutilate needs one in each hand, and Hack and Slash gives daggers crit. Hemorrhage and Ghostly Strike pay a bigger weapon percentage with a dagger too, but a slow sword's bigger hits make up for it, and Subtlety's damage leans on bleeds, Shank and Death Mark, so it takes the best weapons it can find, dagger or not. One-handed axes are new for rogues.
 - **Poisons and stones stack.** A sharpening stone sits on a weapon beside a poison. Deadly Poison on the main hand and Instant Poison on the off hand is right for Combat and Subtlety, and for Assassination until 60, where it swaps them.
 - **Redirect** is trained at level 1: it takes your combo points off one target and gives them to the next enemy you hit within 15 seconds.
 - **Poised** comes at 18: at full energy out of combat, your next ability costs less. Open from full energy.
