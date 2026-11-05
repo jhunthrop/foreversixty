@@ -7,7 +7,7 @@
       }
     },
     {
-      "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a boss: spend your gem, a Major Mana Potion and a Demonic Rune first. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
+      "notes": "Evocation when you are nearly dry and more than 30 seconds of the fight remain. It is an 8 second channel at +1500% mana regeneration on an 8 minute cooldown, so it comes once a fight: spend your mana gem from 28 and your mana potions first, and at 60 a Major Mana Potion and a Demonic Rune too. Inside the last 30 seconds the mana comes back too late to spend, so keep casting.",
       "action": {
         "condition": {
           "and": {
@@ -72,7 +72,7 @@
       }
     },
     {
-      "notes": "Presence of Mind on cooldown, with Arcane Power. Your next spell is instant: spend it on Pyroblast, your longest cast, or on Frostbolt with the leveling build. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
+      "notes": "Presence of Mind on cooldown, and with Arcane Power once you have it. Your next spell is instant: spend it on Pyroblast, your longest cast, once the raid build has Heating Up, and on Frostbolt before that and with the leveling build. Never spend it on an Arcane Blast that the global cooldown already caps at 1.5 seconds.",
       "action": {
         "condition": {
           "cmp": {
@@ -133,7 +133,7 @@
       }
     },
     {
-      "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
+      "notes": "Frostbolt the moment Presence of Mind is up with the leveling build, or before Heating Up on the raid build, so the cast goes out instant. Presence of Mind on a 1.5 second Arcane Blast saves nothing, since the global cooldown already holds you that long.",
       "action": {
         "condition": {
           "and": {
@@ -175,7 +175,7 @@
       }
     },
     {
-      "notes": "Arcane Missiles the moment Missile Barrage lights up. The proc makes it free, halves the channel and fires a missile every half second. Arcane Blast procs it 40% of the time, and Arcane Wrath, Fireball and Frostbolt 20%, so this is a big share of your damage. Rank 7 is the top trainer rank; rank 8 is a book from Ahn'Qiraj.",
+      "notes": "Arcane Missiles the moment Missile Barrage lights up. The proc makes it free, halves the channel and fires a missile every half second. With both ranks Arcane Blast procs it 40% of the time and Arcane Wrath, Fireball and Frostbolt 20%, half that with the first, so this is a big share of your damage. Rank 7 is the top trainer rank; rank 8 is a book from Ahn'Qiraj.",
       "action": {
         "condition": {
           "and": {
@@ -206,7 +206,7 @@
       }
     },
     {
-      "notes": "Arcane Missiles until you have both ranks of Missile Barrage, at 20 to 22: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt. From 23 Missiles waits for the free proc and Blast takes over.",
+      "notes": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast or Frostbolt. Once both are in, Missiles waits for the free proc and Blast takes over.",
       "action": {
         "condition": {
           "not": {
@@ -416,7 +416,7 @@
       }
     },
     {
-      "notes": "Frostbolt as the filler once you stop blasting on the way to 60. The stacks' spell damage still applies to it, it procs Missile Barrage 20% of the time, and it costs a fraction of a stacked Blast. When the stacks fall off, the next Blast starts a cheap new set.",
+      "notes": "Frostbolt as the filler once you stop blasting on the way to 60. The stacks' spell damage still applies to it and it costs a fraction of a stacked Blast, and once both ranks of Missile Barrage are in it procs a free Missiles 20% of the time. When the stacks fall off, the next Blast starts a cheap new set.",
       "action": {
         "condition": {
           "not": {
