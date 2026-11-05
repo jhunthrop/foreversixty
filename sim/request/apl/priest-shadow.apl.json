@@ -229,7 +229,7 @@
       }
     },
     {
-      "notes": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, so keep Vampiric Embrace up to heal it back.",
+      "notes": "On cooldown, ahead of Mind Flay: each cast that does not kill costs you 30% of your health, and once you have Vampiric Embrace keep it up to heal that back.",
       "action": {
         "castSpell": {
           "spellId": {
