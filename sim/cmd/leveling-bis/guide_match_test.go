@@ -65,7 +65,13 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // each with the reason. It exists only while a split ranking lands one
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
-var knownStaleBISFiles = map[string]string{}
+var knownStaleBISFiles = map[string]string{
+	"druid-restoration":  "ranks in the second shard (2.0.29); its file predates the guide",
+	"paladin-holy":       "ranks in the second shard (2.0.29); its file predates the guide",
+	"priest-discipline":  "ranks in the second shard (2.0.29); its file predates the guide",
+	"priest-holy":        "ranks in the second shard (2.0.29); its file predates the guide",
+	"shaman-restoration": "ranks in the second shard (2.0.29); its file predates the guide",
+}
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files
 // wear the races and talents their guides name. Not gated like
