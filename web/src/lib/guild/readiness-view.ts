@@ -158,7 +158,13 @@ export function enchantPillText(row: GuildReadinessRow): string {
   const labels = row.enchants.missing_slots.map(enchantSlotLabel);
   if (labels.length <= ENCHANT_PILL_MAX_SLOTS) return labels.join(', ');
   const shown = labels.slice(0, ENCHANT_PILL_MAX_SLOTS).join(', ');
-  return `${shown} +${labels.length - ENCHANT_PILL_MAX_SLOTS} more`;
+  return `${shown}${moreSlots(labels.length - ENCHANT_PILL_MAX_SLOTS)}`;
+}
+
+/** The slots past the named ones, in words: ` and 2 more slots`, never `+2`, which reads as an
+ *  enchant's own `+2` (guild round 2). Empty at 0. */
+export function moreSlots(rest: number): string {
+  return rest > 0 ? ` and ${counted(rest, 'more slot', 'more slots')}` : '';
 }
 
 /** Spec §4.E's Consumables cell -- `gear_bags` consent only, stricter than Gear gap/
@@ -210,7 +216,7 @@ function clientSlotName(slot: string): string {
     .join(' ');
 }
 
-/** How many slots the Overview's enchant line names before `+{n}`. */
+/** How many slots the Overview's enchant line names before `and {n} more slots`. */
 const WORST_CHECK_SLOTS = 2;
 
 /** The Overview's row: the worst failing check in words, and how many more fail (week-one spec
@@ -222,7 +228,7 @@ export function worstCheck(row: GuildReadinessRow): { text: string; more: number
   if (missing.length > 0) {
     const named = missing.slice(0, WORST_CHECK_SLOTS).map(clientSlotName).join(', ');
     const rest = missing.length - WORST_CHECK_SLOTS;
-    return { text: `No enchant: ${named}${rest > 0 ? ` +${rest}` : ''}`, more };
+    return { text: `No enchant: ${named}${moreSlots(rest)}`, more };
   }
   if (row.talent_points_unspent > 0) {
     return { text: `${counted(row.talent_points_unspent, 'talent point')} unspent`, more };

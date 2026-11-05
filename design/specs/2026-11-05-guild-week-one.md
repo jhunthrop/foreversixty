@@ -62,7 +62,7 @@ No new control and no new token (tenet 10).
 |---|---|---|---|
 | Officer, someone waiting for approval | `{n} waiting for approval. Approve them so they can sign up.` | `Approve {n}` (opens Roster tab, focus on `Approve all`) | `Copy the invite link` (Settings `#invite`) |
 | Officer, no event planned | `Nothing on the calendar yet. Post a dungeon run or a guild event.` | `Plan an event` (Raids tab, form open, spec D) | `Copy the invite link` |
-| Officer, an event planned | `{Title} {when}, {n} signed up.` | `Open the sign-ups` (the raid page) | `Copy the invite link` |
+| Officer, an event planned | `{Title} {when}, {n} signed up.`; at 0 `{Title} {when}. Nobody signed up yet.` (amended 2026-11-05, guild round 2: never `0 signed up`) | `Open the sign-ups` (the raid page) | `Copy the invite link` |
 | Raider, viewer's character has no export | `Sync the addon or import from Battle.net so the guild sees your level and gear.` | `Import your character` (`/setup`) | none |
 | Raider, an event planned, viewer not signed up | `{Title} {when}. You have not signed up yet.` | `Sign up` (the raid page) | none |
 | Raider, signed up or nothing planned | `{Name} is level {L}, {n} levels to 60.` (at 60: `{Name} is level 60. Check your gear before {Wed 9 Dec}.`) | `Level as {Spec}` (guide `#leveling`); at 60 `Open your best in slot` (`/bis/{class}/{spec}`) | none |
@@ -96,7 +96,7 @@ No new control and no new token (tenet 10).
 
 | Worst check | Value (13 px) |
 |---|---|
-| Enchants | `No enchant: Main Hand, Chest +2` (the client's slot casing) |
+| Enchants | `No enchant: Main Hand, Chest and 2 more slots` (the client's slot casing; `and 1 more slot` singular; never `+2`, which reads as an enchant's own bonus; amended 2026-11-05, guild round 2). The Readiness tab's Enchants pill uses the same words: `Main hand, Chest and 2 more slots`. |
 | Talents | `{n} talent points unspent` |
 | Consumables | `Bags short on consumables` |
 | Gear gap | `{n} upgrades waiting` |
@@ -166,7 +166,7 @@ One source: `GET /v1/guilds/{id}/progression` (§4.1). Header line under the h2,
 | Professions | label `Professions`; `{Profession}: {Name} {skill}, {Name}`; `+{n}` |
 | Next step, officer | `{n} waiting for approval. Approve them so they can sign up.` / `Approve {n}` |
 | Next step, officer | `Nothing on the calendar yet. Post a dungeon run or a guild event.` / `Plan an event` |
-| Next step, officer | `{Title} {when}, {n} signed up.` / `Open the sign-ups` |
+| Next step, officer | `{Title} {when}, {n} signed up.` (at 0: `{Title} {when}. Nobody signed up yet.`) / `Open the sign-ups` |
 | Next step, raider | `Sync the addon or import from Battle.net so the guild sees your level and gear.` / `Import your character` |
 | Next step, raider | `{Title} {when}. You have not signed up yet.` / `Sign up` |
 | Next step, raider | `{Name} is level {L}, {n} levels to 60.` / `Level as {Spec}` |
@@ -178,7 +178,7 @@ One source: `GET /v1/guilds/{id}/progression` (§4.1). Header line under the h2,
 | Needs line, clear | `{Name} passes every readiness check.` |
 | Needs line, leveling (the band's only viewer line under 60) | `{Name} is level {L}. Rank and readiness checks start at 60.` |
 | Overview progression | `No boss down this tier yet.` / `{n} of {named} named bosses down: {names}.` |
-| Overview readiness | `No enchant: {slots}` (e.g. `Main Hand, Chest`), `{n} talent points unspent`, `Bags short on consumables`, `{n} upgrades waiting`, ` · +{k} more`, `Readiness starts when someone reaches 60.` |
+| Overview readiness | `No enchant: {slots}` (e.g. `Main Hand, Chest`), ` and {n} more slots` (` and 1 more slot`), `{n} talent points unspent`, `Bags short on consumables`, `{n} upgrades waiting`, ` · +{k} more`, `Readiness starts when someone reaches 60.` |
 | Progression header | `Named bosses down this tier` / `{down} of {named}` |
 | Progression empty, before | `Barrow Deeps, Hyjal Summit and Onyxia's Lair open {Wed 9 Dec}. Progression starts with your first logged pull.` / `How to log a raid` |
 | Progression empty, open | `No pulls logged yet. Upload your first raid night and it shows here.` / `Upload a log` |
