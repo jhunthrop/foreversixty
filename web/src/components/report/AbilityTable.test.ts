@@ -60,7 +60,7 @@ describe('AbilityTable', () => {
     const wounds = text(rowHtml('spell:12867'));
     expect(wounds).toContain('59 ticks');
     expect(wounds).toContain('tick crit 37.3%');
-    expect(wounds).toContain('100.0%');
+    expect(wounds).toContain('98.9%');
   });
 
   it('never draws a broken image: a row with no icon keeps the empty box', () => {

@@ -69,14 +69,12 @@ export function timelineSkeletonHeight(result: SimResult): number {
   const CAST_FOOT = 52;
   const CAST_ROW = 40;
   const COLLAPSED_ROWS = 5;
-  const sample = result.sample ?? [];
+  // A periodic tick is not a cast: the ticks' lanes are off until the switch asks for them.
+  const sample = (result.sample ?? []).filter((row) => row.outcome !== 'tick' && row.outcome !== 'tick_crit');
   const castLanes = new Set(
     sample
       .map((row) => row.action)
       .filter((key) => !key.startsWith('other:'))
-      .filter((key) => !result.summary.damage_done.some((actor) =>
-        actor.abilities.some((ability) => ability.name === key && ability.ticks > 0 && ability.hits === 0),
-      ))
       .map((key) => key.split('/')[0]),
   ).size;
   const playerAuras = new Set(

@@ -59,7 +59,21 @@ describe('abilityTable on the Fury fixture', () => {
     expect(wounds.ticks).toBe(59);
     expect(Math.round(wounds.avgHit)).toBe(141);
     expect(wounds.crit?.toFixed(1)).toBe('37.3');
-    expect(wounds.uptime?.toFixed(1)).toBe('100.0');
+    // The real run's own debuff track: 177,931 ms of 179,920 ms.
+    expect(wounds.uptime).toBeCloseTo((177931 / 179920) * 100, 6);
+  });
+
+  it('keeps the two Whirlwind rows apart: the client names both plain Whirlwind', () => {
+    const named = abilityTable({
+      actors: summary.damage_done,
+      casts: summary.casts,
+      auras: summary.auras,
+      durationMs: summary.duration_ms,
+      names: { spell: { '1680': 'Whirlwind', '462891': 'Whirlwind' }, item: {} },
+    });
+    const name = (key: string) => named.rows.find((entry) => entry.key === key)?.name;
+    expect(name('spell:1680')).toBe('Whirlwind');
+    expect(name('spell:462891')).toBe('Whirlwind (off hand)');
   });
 
   it('counts a glance as landed, never as a second attempt', () => {

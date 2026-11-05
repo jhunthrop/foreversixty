@@ -34,6 +34,8 @@ export interface WarningInput {
   names: ActionNames | null;
   /** The client's facts for a spell id; undefined until the bundle loads or for an unknown spell. */
   fact: (spellId: number) => SimSpellFact | undefined;
+  /** The capstone's spell id; omitted, the spec list's. */
+  capstone?: number;
   /** W3's input: null while the talents are not known to fit today's trees, so W3 is not evaluated. */
   talentGaps?: readonly TalentGap[] | null;
 }
@@ -47,38 +49,33 @@ const WIDE_ERROR_SHARE = 0.005;
 const CAPSTONE_LEVEL = 40;
 
 /**
- * Every rank of a spec's capstone, so a fight at any level finds it. Used with `capstone_spell`
- * from the spec list once the data lane publishes it (spec 11.4); a spec listed in neither has
- * no capstone the rotation is expected to press, so it raises no note.
+ * The spec's capstone as the spec list publishes it (`capstone_spell`, the level 60 rank's id; spec
+ * 11.4). A spec with none has no capstone its rotation is expected to press, so it raises no note.
  */
-const CAPSTONE_RANKS: Readonly<Record<string, readonly number[]>> = {
-  'warrior-fury': [23881, 23892, 23893, 23894],
-  'warrior-arms': [12294, 21551, 21552, 21553],
-};
-
-/** The capstone's spell ids for a spec: its known ranks plus the spec list's own id. */
-export function capstoneSpellIds(spec: string): readonly number[] {
-  const row = specRow(spec) as { capstone_spell?: number } | null;
-  const published = row?.capstone_spell;
-  const ranks = CAPSTONE_RANKS[spec] ?? [];
-  return published === undefined || ranks.includes(published) ? ranks : [published, ...ranks];
-}
-
-/** Casts per fight by action key, from the summary's own rows. */
-function castsByKey(result: SimResult): Map<string, number> {
-  return new Map(result.summary.casts.map((row) => [row.spell_name, row.succeeded]));
+export function capstoneSpellOf(spec: string): number | undefined {
+  return (specRow(spec) as { capstone_spell?: number } | null)?.capstone_spell;
 }
 
 function staleWarning(result: SimResult): SimWarning | null {
   return isStale(result.engine_version) ? { id: 'stale', text: warningsCopy.stale, action: 'sim' } : null;
 }
 
-function capstoneWarning({ result, names }: WarningInput): SimWarning | null {
-  const ids = capstoneSpellIds(result.request.spec);
-  if (ids.length === 0 || result.request.character.level < CAPSTONE_LEVEL) return null;
-  const casts = castsByKey(result);
-  if (ids.some((id) => (casts.get(`spell:${id}`) ?? 0) > 0)) return null;
-  const actionKey = `spell:${ids[ids.length - 1]}`;
+/** Whether any rank of the capstone was cast: ranks share a name, the published id is one of them. */
+function capstoneCast(result: SimResult, spellId: number, names: ActionNames): boolean {
+  const name = names.spell[String(spellId)];
+  return result.summary.casts.some((row) => {
+    const parsed = parseActionKey(row.spell_name);
+    if (parsed?.kind !== 'spell' || row.succeeded <= 0) return false;
+    return parsed.id === spellId || (name !== undefined && names.spell[parsed.label] === name);
+  });
+}
+
+/** W2. It waits for the names: until then a lower rank could not be told from no cast at all. */
+function capstoneWarning({ result, names, capstone }: WarningInput): SimWarning | null {
+  const spellId = capstone === undefined ? capstoneSpellOf(result.request.spec) : capstone;
+  if (spellId === undefined || names === null || result.request.character.level < CAPSTONE_LEVEL) return null;
+  if (capstoneCast(result, spellId, names)) return null;
+  const actionKey = `spell:${spellId}`;
   return {
     id: 'capstone',
     text: warningsCopy.capstone(resolveActionName(actionKey, names)),

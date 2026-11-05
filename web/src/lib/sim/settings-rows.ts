@@ -3,6 +3,7 @@
 // buff, debuff and consumable chips with the rule that files a buff under "No effect on your
 // damage". Pure, so the figures are pinned by a test.
 import { raceRows } from '../planner/reference';
+import { hasNoDamageEffect, type BuffEffectRow, type SpecWeights } from './buff-effect';
 import { IMPROVED_SUFFIX } from './buff-id';
 import { CATALOGUE } from './buffs';
 import { durationLabel } from './encounter';
@@ -11,22 +12,13 @@ import { settingsCopy } from './settings-copy';
 import { humanise } from './humanise';
 import type { SimResult } from './types';
 
-/** A simbuffs.json row, with the data lane's additive fields (spec 11.4). */
-export interface SettingsBuffRow {
+/** A simbuffs.json row: its name and icon, and the data lane's effect fields (spec 11.4). */
+export interface SettingsBuffRow extends BuffEffectRow {
   name: string;
   icon: string;
-  /** True for anything that lands on the target. */
-  target?: boolean;
-  /** The buff's stat block. Absent on a build the data lane has not regenerated. */
-  stats?: Readonly<Record<string, number>>;
-  /** The ids of the stronger debuffs that replace this one when both are up. */
-  exclusive_with?: readonly string[];
 }
 
 export type SettingsBuffs = Readonly<Record<string, SettingsBuffRow>>;
-
-/** A stat's weight for the spec; a stat the table does not list weighs nothing. */
-export type SpecWeights = Readonly<Record<string, number>>;
 
 export interface SettingsRow {
   id: 'fight' | 'target' | 'execute' | 'race' | 'runs' | 'apm';
@@ -129,30 +121,19 @@ function landsOnTarget(id: string, buffs: SettingsBuffs): boolean {
   return buffs[base]?.target ?? DEBUFF_IDS.has(base);
 }
 
-/** Stats that change damage through the target or the swing, whatever the spec's weights say. */
-const ALWAYS_COUNTS: ReadonlySet<string> = new Set([
-  'armor',
-  'armor_penetration',
-  'damage_taken_pct',
-  'attack_speed',
-  'melee_haste',
-]);
-
-/**
- * True when a buff cannot change this spec's damage: every stat it grants has a 0 scale factor.
- * A buff the file gives no stats for is never filed here: the page does not know.
- */
-export function hasNoDamageEffect(id: string, buffs: SettingsBuffs, weights: SpecWeights): boolean {
-  const stats = buffs[baseId(id)]?.stats;
-  if (stats === undefined) return false;
-  const names = Object.keys(stats);
-  if (names.length === 0) return false;
-  return names.every((stat) => !ALWAYS_COUNTS.has(stat) && (weights[stat] ?? 0) === 0);
+/** The debuff that holds over this one: another on the list, same group, lower rank. */
+function replacedBy(id: string, list: readonly string[], buffs: SettingsBuffs): string | undefined {
+  const own = buffs[baseId(id)]?.exclusive_with;
+  if (own === undefined || own === null) return undefined;
+  return list.find((other) => {
+    const theirs = buffs[baseId(other)]?.exclusive_with;
+    return theirs?.group === own.group && theirs.rank < own.rank;
+  });
 }
 
 function toChip(id: string, list: readonly string[], buffs: SettingsBuffs, buildUrl: IconUrl): SettingsChip {
   const base = baseId(id);
-  const winner = buffs[base]?.exclusive_with?.find((other) => list.map(baseId).includes(other));
+  const winner = replacedBy(id, list, buffs);
   const icon = buffs[base]?.icon;
   return {
     id,
@@ -169,10 +150,11 @@ function groupOf(
   ids: readonly string[],
   buffs: SettingsBuffs,
   weights: SpecWeights,
+  schools: readonly string[],
   iconUrl: IconUrl,
 ): SettingsChipGroup {
   const chips = ids.map((buff) => toChip(buff, ids, buffs, iconUrl));
-  const quiet = (chip: SettingsChip): boolean => hasNoDamageEffect(chip.id, buffs, weights);
+  const quiet = (chip: SettingsChip): boolean => hasNoDamageEffect(buffs[baseId(chip.id)], weights, schools);
   return {
     id,
     label: settingsCopy.groups[id],
@@ -187,14 +169,15 @@ export function settingsChipGroups(
   result: SimResult,
   buffs: SettingsBuffs,
   weights: SpecWeights,
+  schools: readonly string[],
   iconUrl: IconUrl,
 ): SettingsChipGroup[] {
   const { buffs: requested, consumes } = result.request.character;
   const onTarget = requested.filter((id) => landsOnTarget(id, buffs));
   const onPlayer = requested.filter((id) => !landsOnTarget(id, buffs));
   return [
-    groupOf('player', onPlayer, buffs, weights, iconUrl),
-    groupOf('target', onTarget, buffs, weights, iconUrl),
-    groupOf('consumables', consumes, buffs, weights, iconUrl),
+    groupOf('player', onPlayer, buffs, weights, schools, iconUrl),
+    groupOf('target', onTarget, buffs, weights, schools, iconUrl),
+    groupOf('consumables', consumes, buffs, weights, schools, iconUrl),
   ];
 }

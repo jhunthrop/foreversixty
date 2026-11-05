@@ -78,6 +78,15 @@ export interface AbilityTable {
   hasUptime: boolean;
 }
 
+/** Engine rows that are one hand of an ability the client names once, so two rows would read alike. */
+const OFF_HAND_SPELLS: ReadonlySet<number> = new Set([462891]);
+
+function rowName(key: string, spellId: number, hand: AttackHand | null, names: ActionNames | null): string {
+  if (hand !== null) return damageCopy.hands[hand];
+  const name = resolveActionName(key, names);
+  return OFF_HAND_SPELLS.has(spellId) ? `${name} ${damageCopy.offHandSuffix}` : name;
+}
+
 const missCount = (ability: Ability, kind: string): number => ability.misses?.[kind] ?? 0;
 
 /** Every swing or press the engine rolled: `hits` holds glances and blocks already. */
@@ -112,7 +121,7 @@ function buildRow(
   return {
     key: ability.name,
     spellId,
-    name: hand === null ? resolveActionName(ability.name, names) : damageCopy.hands[hand],
+    name: rowName(ability.name, spellId, hand, names),
     hand,
     periodic,
     pet,

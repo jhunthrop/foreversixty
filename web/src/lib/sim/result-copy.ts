@@ -125,6 +125,7 @@ export const damageCopy = {
   dash: '–',
   /** The swing rows' own names (spec section 6). */
   hands: { main: 'Main hand', off: 'Off hand', extra: 'Extra attacks' },
+  offHandSuffix: '(off hand)',
 } as const;
 
 export const spreadCopy = {

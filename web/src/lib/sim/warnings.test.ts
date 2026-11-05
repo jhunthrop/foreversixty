@@ -6,7 +6,7 @@ import type { GameTipModel } from '../tooltips/game-tip';
 import type { ActionNames } from './action-names';
 import type { SimSpellFact } from './spell-info';
 import type { SimResult } from './types';
-import { capstoneSpellIds, cooldownWords, MAX_WARNINGS, simWarnings } from './warnings';
+import { capstoneSpellOf, cooldownWords, MAX_WARNINGS, simWarnings } from './warnings';
 
 const result = full as unknown as SimResult;
 const names: ActionNames = {
@@ -17,7 +17,10 @@ const tip: GameTipModel = { name: '', lines: [], description: '' };
 const COOLDOWNS: Readonly<Record<number, number>> = { 1719: 1_800_000, 12328: 180_000, 18499: 30_000 };
 const fact = (id: number): SimSpellFact | undefined =>
   COOLDOWNS[id] === undefined ? undefined : { name: '', rank: 0, cooldown_ms: COOLDOWNS[id], tip };
-const ids = (from: SimResult) => simWarnings({ result: from, names, fact }).map((note) => note.id);
+// The Fury capstone, as data/curated/specs.json publishes it. Passed in, because the generated
+// spec list carries the field only after the integrator's one regeneration.
+const capstone = 23894;
+const ids = (from: SimResult) => simWarnings({ result: from, names, fact, capstone }).map((note) => note.id);
 
 const withoutBloodthirst: SimResult = {
   ...result,
@@ -46,9 +49,35 @@ describe('simWarnings', () => {
   });
 
   it('W2: fires with the Bloodthirst rows removed, whether or not the talents decode', () => {
-    const notes = simWarnings({ result: withoutBloodthirst, names, fact });
+    const notes = simWarnings({ result: withoutBloodthirst, names, fact, capstone });
     expect(notes[0]).toMatchObject({ id: 'capstone', action: 'sim', actionKey: 'spell:23894' });
     expect(notes[0]?.text).toBe('Bloodthirst was never pressed in this run. Check the talents in Open in the sim.');
+  });
+
+  it('W2: a lower rank of the capstone counts as pressed', () => {
+    const lowerRank: SimResult = {
+      ...result,
+      summary: {
+        ...result.summary,
+        casts: result.summary.casts.map((row) =>
+          row.spell_name === 'spell:23894' ? { ...row, spell_name: 'spell:23893' } : row,
+        ),
+      },
+    };
+    const ranked: ActionNames = { ...names, spell: { ...names.spell, '23893': 'Bloodthirst' } };
+    const found = simWarnings({ result: lowerRank, names: ranked, fact, capstone });
+    expect(found.map((note) => note.id)).not.toContain('capstone');
+  });
+
+  it('W2: a spec with no capstone, or names not yet here, raises nothing', () => {
+    const noCapstone = { ...withoutBloodthirst.request, spec: 'druid-balance' };
+    expect(simWarnings({ result: { ...withoutBloodthirst, request: noCapstone }, names, fact }).map((n) => n.id)).not.toContain(
+      'capstone',
+    );
+    expect(simWarnings({ result: withoutBloodthirst, names: null, fact, capstone })).not.toContainEqual(
+      expect.objectContaining({ id: 'capstone' }),
+    );
+    expect(capstoneSpellOf('druid-balance')).toBeUndefined();
   });
 
   it('W2: stays quiet below the level a capstone can be held', () => {
@@ -74,7 +103,7 @@ describe('simWarnings', () => {
     const note = simWarnings({ result, names, fact, talentGaps: gaps })[0];
     expect(note).toMatchObject({ id: 'missing-talent', action: 'planner' });
     expect(note?.text).toBe('Reckless Swings is in the Fury rotation, but these talents do not take it.');
-    const without = simWarnings({ result: withoutBloodthirst, names, fact, talentGaps: gaps });
+    const without = simWarnings({ result: withoutBloodthirst, names, fact, capstone, talentGaps: gaps });
     expect(without.map((entry) => entry.id)).not.toContain('missing-talent');
     expect(simWarnings({ result, names, fact, talentGaps: null }).map((entry) => entry.id)).toEqual([
       'long-cooldown',
@@ -114,14 +143,6 @@ describe('simWarnings', () => {
     };
     expect(ids(all)).toEqual(['stale', 'capstone', 'long-cooldown']);
     expect(ids(all)).toHaveLength(MAX_WARNINGS);
-  });
-});
-
-describe('capstoneSpellIds', () => {
-  it('pins Fury and Arms to every rank, and names no capstone for a spec it does not know', () => {
-    expect(capstoneSpellIds('warrior-fury')).toEqual([23881, 23892, 23893, 23894]);
-    expect(capstoneSpellIds('warrior-arms')).toEqual([12294, 21551, 21552, 21553]);
-    expect(capstoneSpellIds('mage-arcane')).toEqual([]);
   });
 });
 

@@ -1,6 +1,6 @@
 // web/src/lib/sim/spread.ts
-// The DPS spread (spec 2026-11-04-sim-results 3.6): the engine's own 1 DPS bins grouped into at
-// most 40 bars, and the 16th and 84th percentiles read off the real counts. Nothing here draws a
+// The DPS spread (spec 2026-11-04-sim-results 3.6): the engine's own bins (read `bin_dps`, it
+// varies) grouped into at most 40 bars, and the 16th and 84th percentiles read off the real counts. Nothing here draws a
 // shape the run did not produce.
 import type { DpsHistogram } from './types';
 
@@ -27,19 +27,21 @@ export interface Spread {
   high: number;
 }
 
-/** The DPS below which `share` of the runs fall, from the raw bins. */
+/** The DPS below which `share` of the runs fall, interpolated inside the bin it lands in. */
 export function percentileOf(histogram: DpsHistogram, share: number): number {
   const total = histogram.counts.reduce((sum, count) => sum + count, 0);
   const wanted = total * share;
   let seen = 0;
   for (const [index, count] of histogram.counts.entries()) {
+    if (count > 0 && seen + count >= wanted) {
+      return histogram.start + (index + (wanted - seen) / count) * histogram.bin_dps;
+    }
     seen += count;
-    if (seen >= wanted) return histogram.start + index * histogram.bin_dps;
   }
-  return histogram.start + (histogram.counts.length - 1) * histogram.bin_dps;
+  return histogram.start + histogram.counts.length * histogram.bin_dps;
 }
 
-/** The bins grouped into `ceil(bins / 40)` DPS buckets. Null when there is nothing to draw. */
+/** The bins grouped into `ceil(bins / 40)`-bin bars. Null when there is nothing to draw. */
 export function spreadOf(histogram: DpsHistogram | undefined): Spread | null {
   if (histogram === undefined || histogram.counts.length === 0) return null;
   const total = histogram.counts.reduce((sum, count) => sum + count, 0);

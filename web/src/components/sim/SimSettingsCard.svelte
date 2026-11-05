@@ -10,6 +10,7 @@
   import { loadItems, loadTalents, loadWeights, dataUrl } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import type { Item } from '../../lib/planner/types';
+  import { damageSchools, type SpecWeights } from '../../lib/sim/buff-effect';
   import { loadBuffNames } from '../../lib/sim/buff-names';
   import { gameCodeForSimResult } from '../../lib/sim/game-code';
   import { bandCopy } from '../../lib/sim/result-copy';
@@ -19,7 +20,6 @@
     settingsRows,
     type SettingsBuffs,
     type SettingsChip,
-    type SpecWeights,
   } from '../../lib/sim/settings-rows';
   import type { SimResult } from '../../lib/sim/types';
   import { isStale } from '../../lib/sim/version';
@@ -77,7 +77,7 @@
   const rows = $derived(settingsRows(result));
   const stale = $derived(isStale(result.engine_version));
   const groups = $derived(
-    settingsChipGroups(result, buffs, weights, (stem) => dataUrl(build, `icons/${stem}.webp`)),
+    settingsChipGroups(result, buffs, weights, damageSchools(result.summary.damage_done), (stem) => dataUrl(build, `icons/${stem}.webp`)),
   );
   const gameCode = $derived(gameCodeForSimResult(result, build, talentIndex, items));
   const fileName = $derived(copy.fileName(simId !== '' ? simId : (result.sim_id ?? 'result')));

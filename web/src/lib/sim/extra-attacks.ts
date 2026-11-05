@@ -16,13 +16,17 @@ export interface ExtraAttackSourceLine {
 }
 
 const ITEM_SOURCE = /^item:(\d+)$/;
+/** A source that is a proc's action key rather than a simbuffs id. */
+const SPELL_SOURCE = /^spell:\d+/;
 
 export function extraAttackLines(
   result: SimResult,
   buffNames: BuffNames | null,
   itemName: (itemId: number) => string | undefined,
+  actionName: (key: string) => string,
 ): ExtraAttackSourceLine[] {
   const named = (source: string): string | undefined => {
+    if (SPELL_SOURCE.test(source)) return actionName(source);
     const item = ITEM_SOURCE.exec(source);
     return item === null ? buffLabel(source, buffNames) : itemName(Number(item[1]));
   };

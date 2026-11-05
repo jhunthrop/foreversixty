@@ -14,6 +14,7 @@
   import {
     loadActionNames,
     parseActionKey,
+    resolveActionName,
     withShardNames,
     type ActionNames,
   } from '../../lib/sim/action-names';
@@ -134,7 +135,14 @@
     };
   }
 
-  const extraSources = $derived(extraAttackLines(result, buffNames, (id) => items.get(id)?.name));
+  const extraSources = $derived(
+    extraAttackLines(
+      result,
+      buffNames,
+      (id) => items.get(id)?.name,
+      (key) => resolveActionName(key, names),
+    ),
+  );
 
   function decorate(row: AbilityRow): AbilityDecoration {
     const fact = row.spellId === 0 ? undefined : spells.fact(row.spellId);
