@@ -541,6 +541,13 @@
             "to_level": 49,
             "rank": 2,
             "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 2 beats rank 1 at 47 to 49 (rank 1 keeps 40 to 50% of its bonus there)."
+          },
+          {
+            "from_level": 60,
+            "to_level": 60,
+            "rank": 5,
+            "preset": "raid",
+            "note": "Sim-accuracy round 22: at raid 60 the party lines heal more at rank 5 than at the authored rank 4, +0.09 to +0.23% effective HPS at seeds 1 and 50001 on both factions (five seeds, all positive; the pre-crit-change binary agrees). Bare 60 never casts the party lines, so it keeps rank 4 (design/reviews/2026-11-05-sim-audit-round22/paladin.md H1)."
           }
         ]
       },
