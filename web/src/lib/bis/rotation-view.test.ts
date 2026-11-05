@@ -169,3 +169,28 @@ describe('every published rotation entry lines up with its curated steps', () =>
     }
   });
 });
+
+// Sim round 22 platform (guide-accuracy round 24 HUNTER-R24-6, S4b): a published line can carry
+// a rank per race (`race_spell_ids`, round 21's race-keyed rank rows), which only the addon
+// read. The Play It panel showed the base row beside prose that gives the race's: Survival's
+// band 40 (top 49) prints Raptor Strike rank 7 where a Troll, Orc or Tauren keeps rank 5.
+describe('rotationLinesFor with a race-keyed rank row', () => {
+  const RACE_ROWS_BUILD = '1.60.1.70790';
+  const entry = rotationEntryFor(loadRotations(RACE_ROWS_BUILD, 'hunter-survival') ?? [], 49)!;
+  const raptor = (race?: string) =>
+    rotationLinesFor(entry, RACE_ROWS_BUILD, 'hunter', 'hunter-survival', 49, undefined, race).find(
+      (row) => row.name === 'Raptor Strike',
+    );
+
+  it("shows the published race's rank where the line keys one", () => {
+    const base = entry.lines.find((line) => line.name === 'Raptor Strike')!;
+    expect(base.race_spell_ids?.troll).toBeDefined();
+    expect(raptor('troll')?.spellId).toBe(base.race_spell_ids!.troll);
+    expect(raptor('troll')?.rank).toBe(5);
+  });
+
+  it('keeps the base row for a race the line does not key, or with no race', () => {
+    expect(raptor('human')?.rank).toBe(7);
+    expect(raptor()?.rank).toBe(7);
+  });
+});
