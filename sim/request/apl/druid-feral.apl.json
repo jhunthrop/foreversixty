@@ -149,7 +149,7 @@
       }
     },
     {
-      "notes": "At 5 combo points when Rip is off the boss or has under 2 seconds left. A new Rip throws away the ticks the old one had left, so let it run almost to the end. Rip comes first, and from 37 it is also the bleed that keeps Rend and Tear on.",
+      "notes": "At 5 combo points when Rip is off the boss or has under 2 seconds left. A new Rip throws away the ticks the old one had left, so let it run almost to the end. Rip comes first, and once you have Rend and Tear (37 leveling, 36 raid order) it is also the bleed that keeps it on.",
       "action": {
         "condition": {
           "and": {
@@ -245,7 +245,7 @@
       }
     },
     {
-      "notes": "Your builder from level 20, always from behind the target. Shred hits harder than Claw at every rank, but until Shredding Attacks is full at 22 it costs 8 to 14 more energy, and Claw does more for the energy.",
+      "notes": "Your builder from level 22, always from behind the target. Shred hits harder than Claw at every rank, but until Shredding Attacks is full at 22 it costs 8 to 14 more energy, and Claw does more for the energy.",
       "action": {
         "condition": {
           "spellIsKnown": {
