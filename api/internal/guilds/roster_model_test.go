@@ -486,11 +486,13 @@ func TestLootListsEachDropOnce(t *testing.T) {
 	if !reflect.DeepEqual(dupes, map[string]int{"Head of Onyxia": 2}) {
 		t.Fatalf("names the table repeats = %v, want only Head of Onyxia twice", dupes)
 	}
-	items := []LootItemView{{Name: "A"}, {Name: "Head of Onyxia"}}
-	if i := indexOfLootName(items, "Head of Onyxia"); i != 1 {
-		t.Errorf("indexOfLootName = %d, want 1", i)
+	groups := lootGroups(onyxiaLoot)
+	if len(groups) != len(onyxiaLoot)-1 {
+		t.Errorf("lootGroups = %d groups, want %d", len(groups), len(onyxiaLoot)-1)
 	}
-	if i := indexOfLootName(items, "Nope"); i != -1 {
-		t.Errorf("indexOfLootName(missing) = %d, want -1", i)
+	for _, group := range groups {
+		if group[0].Name == "Head of Onyxia" && len(group) != 2 {
+			t.Errorf("Head of Onyxia group = %+v, want both copies", group)
+		}
 	}
 }

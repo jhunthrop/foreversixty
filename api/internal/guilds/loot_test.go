@@ -115,6 +115,29 @@ func TestLootListsOnyxiasRealTwentyTwoItems(t *testing.T) {
 	if scaleOfOnyxia == nil || scaleOfOnyxia.Slot != "" || len(scaleOfOnyxia.Candidates) != 0 {
 		t.Fatalf("Scale of Onyxia = %+v, want no slot and no candidates", scaleOfOnyxia)
 	}
+	if scaleOfOnyxia.Kind != lootKindSkinned || helmOfWrath.Kind != lootKindGear {
+		t.Fatalf("kinds = %s/%s, want skinned/gear", scaleOfOnyxia.Kind, helmOfWrath.Kind)
+	}
+	// The seeded level-60 hunter is on the hunter helm, off the warrior helm; the reader, with no
+	// export of a level, is not at the cap.
+	if len(helmOfWrath.Candidates) != 0 {
+		t.Fatalf("Helm of Wrath candidates = %+v, want none: nobody here is a warrior", helmOfWrath.Candidates)
+	}
+	if view.AtLevelCap != 1 {
+		t.Fatalf("at_level_cap = %d, want 1", view.AtLevelCap)
+	}
+	for _, it := range view.Items {
+		switch it.ItemID {
+		case 16939:
+			if len(it.Candidates) != 1 || it.InventoryType != 1 || it.ItemClass != 4 || it.ItemSubclass != 3 {
+				t.Fatalf("Dragonstalker's Helm = %+v, want the hunter and the client's slot facts", it)
+			}
+		case 18705:
+			if it.QuestLabel != "Quest: A Proper String (Hunter)" || len(it.Eligible) != 1 {
+				t.Fatalf("Sinew = %+v, want its label and the hunter", it)
+			}
+		}
+	}
 }
 
 func f64(v float64) *float64 { return &v }
@@ -143,10 +166,10 @@ func TestCandidateSortWithinTier0ByGainDps(t *testing.T) {
 // ilvl_delta desc, then attendance.
 func TestCandidateSortTier0AlwaysAheadOfTier1AndTier1ByIlvlDelta(t *testing.T) {
 	cands := []LootCandidate{
-		{CharacterKey: "fallback-high-delta", tier: 1, IlvlDelta: i(20), Attendance: Attendance{Present: 1}},
-		{CharacterKey: "bis-tiny-gain", tier: 0, GainDps: f64(0.1), Attendance: Attendance{Present: 1}},
-		{CharacterKey: "fallback-low-delta", tier: 1, IlvlDelta: i(5), Attendance: Attendance{Present: 8}},
-		{CharacterKey: "fallback-tie-attendance", tier: 1, IlvlDelta: i(5), Attendance: Attendance{Present: 2}},
+		{CharacterKey: "fallback-high-delta", Tier: 1, IlvlDelta: i(20), Attendance: Attendance{Present: 1}},
+		{CharacterKey: "bis-tiny-gain", Tier: 0, GainDps: f64(0.1), Attendance: Attendance{Present: 1}},
+		{CharacterKey: "fallback-low-delta", Tier: 1, IlvlDelta: i(5), Attendance: Attendance{Present: 8}},
+		{CharacterKey: "fallback-tie-attendance", Tier: 1, IlvlDelta: i(5), Attendance: Attendance{Present: 2}},
 	}
 	sortLootCandidates(cands)
 	want := []string{"bis-tiny-gain", "fallback-high-delta", "fallback-low-delta", "fallback-tie-attendance"}
@@ -392,11 +415,12 @@ func TestBuildItemForResolvesARealOnyxiaDropByClass(t *testing.T) {
 // higher item level than the drop does not.
 func TestFallbackMatchQualifiesARealUpgradeAndRefusesADowngrade(t *testing.T) {
 	s := realTreesStore(t)
-	helmOfWrath := lootItem{ItemID: 16963, Slot: "head"}
+	helmOfWrath := onyxiaRow(t, 16963)
+	head := []string{"head"}
 
 	empty := RosterRow{className: "warrior", gear: map[string]int{}}
-	delta, ok := s.fallbackMatch(empty, helmOfWrath)
-	if !ok || delta != 76 {
+	delta, slot, ok := s.fallbackMatch(empty, helmOfWrath, head)
+	if !ok || delta != 76 || slot != "head" {
 		t.Fatalf("fallbackMatch (empty slot) = %d/%v, want 76/true", delta, ok)
 	}
 
@@ -407,13 +431,8 @@ func TestFallbackMatchQualifiesARealUpgradeAndRefusesADowngrade(t *testing.T) {
 	// client item levels do not vary by class) still qualifies for the real upgrade.
 	// To test a refusal, wear the drop item itself: no item outranks itself.
 	wearingTheDrop := RosterRow{className: "warrior", gear: map[string]int{"head": 16963}}
-	if _, ok := s.fallbackMatch(wearingTheDrop, helmOfWrath); ok {
+	if _, _, ok := s.fallbackMatch(wearingTheDrop, helmOfWrath, head); ok {
 		t.Fatal("fallbackMatch qualified a character already wearing the exact drop, want false")
-	}
-
-	noClassAccess := RosterRow{className: "not-a-real-class", gear: map[string]int{}}
-	if _, ok := s.fallbackMatch(noClassAccess, helmOfWrath); ok {
-		t.Fatal("fallbackMatch qualified an unresolvable class, want false")
 	}
 }
 
@@ -428,10 +447,10 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 		{
 			CharacterKey: "us/hardcore/fallbackwarrior", Name: "Fallbackwarrior", Verified: true,
 			className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{},
+			level: 60, hasLevel: true,
 		},
 	}
-	helmOfWrath := lootItem{ItemID: 16963, Slot: "head"}
-	cands := s.lootCandidates(roster, helmOfWrath)
+	cands := s.lootCandidates(roster, onyxiaRow(t, 16963))
 	if len(cands) != 1 {
 		t.Fatalf("candidates = %+v, want exactly 1", cands)
 	}
@@ -445,24 +464,30 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 	if c.IlvlDelta == nil || *c.IlvlDelta != 76 {
 		t.Errorf("ilvlDelta = %v, want 76", c.IlvlDelta)
 	}
-	if c.tier != 1 {
-		t.Errorf("tier = %d, want 1", c.tier)
+	if c.Tier != 1 {
+		t.Errorf("tier = %d, want 1", c.Tier)
 	}
 }
 
-// TestWornNameNamesTheItemInTheDropsSlot checks the "Replaces ..." name: the item the row wears
-// in the slot, empty for an empty slot or one the class table cannot name.
-func TestWornNameNamesTheItemInTheDropsSlot(t *testing.T) {
+// TestFillReplacesNamesTheItemInTheSlot checks the "Replaces ..." name and link: the item the row
+// wears in the slot, empty for an empty slot or one the class table cannot name.
+func TestFillReplacesNamesTheItemInTheSlot(t *testing.T) {
 	s := realTreesStore(t)
 	wearing := RosterRow{className: "warrior", gear: map[string]int{"head": 21524}}
-	if got := s.wornName(wearing, "head"); got != "Red Winter Hat" {
-		t.Errorf("wornName(head) = %q, want Red Winter Hat", got)
+	var cand LootCandidate
+	s.fillReplaces(&cand, wearing, "head")
+	if cand.Replaces != "Red Winter Hat" || cand.ReplacesItem == nil || cand.ReplacesItem.ItemID != 21524 {
+		t.Errorf("fillReplaces(head) = %+v, want Red Winter Hat with its item", cand)
 	}
-	if got := s.wornName(wearing, "back"); got != "" {
-		t.Errorf("wornName(empty slot) = %q, want empty", got)
+	var empty LootCandidate
+	s.fillReplaces(&empty, wearing, "back")
+	if empty.Replaces != "" || empty.ReplacesItem != nil {
+		t.Errorf("fillReplaces(empty slot) = %+v, want nothing", empty)
 	}
-	if got := s.wornName(RosterRow{className: "warrior", gear: map[string]int{"head": 1}}, "head"); got != "" {
-		t.Errorf("wornName(unknown item) = %q, want empty", got)
+	var unknown LootCandidate
+	s.fillReplaces(&unknown, RosterRow{className: "warrior", gear: map[string]int{"head": 1}}, "head")
+	if unknown.Replaces != "" || unknown.ReplacesItem != nil {
+		t.Errorf("fillReplaces(unknown item) = %+v, want nothing", unknown)
 	}
 }
 
@@ -489,8 +514,9 @@ func TestAwardCountsAndTheCandidateLine(t *testing.T) {
 	roster := []RosterRow{{
 		CharacterKey: "us/hardcore/wearer", Name: "Wearer", Verified: true,
 		className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{"head": 21524},
+		level: 60, hasLevel: true,
 	}}
-	cands := s.lootCandidates(roster, lootItem{ItemID: 16963, Slot: "head"})
+	cands := s.lootCandidates(roster, onyxiaRow(t, 16963))
 	if len(cands) != 1 || cands[0].Replaces != "Red Winter Hat" {
 		t.Fatalf("candidates = %+v, want one replacing Red Winter Hat", cands)
 	}
