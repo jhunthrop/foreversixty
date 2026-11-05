@@ -30,7 +30,7 @@ Holy heals the tank: Oath of Light on them, cheap Flash of Lights on top, and Di
 
 ### Strengths
 
-- Oath of Light adds a flat amount to every Holy Light, Flash of Light and Holy Shock close to your level on the tank, so a Flash of Light a rank or two below your top one heals for most of what the top rank does and gets more healing out of every point of mana
+- Oath of Light adds a flat amount to every Holy Light, Flash of Light and Holy Shock you cast on the tank, as long as the rank is close to your level, so a Flash of Light a rank or two below your top one heals for most of what the top rank does and gets more healing out of every point of mana
 - Holy Shock is an instant heal for movement and emergencies, and Divine Favor guarantees a crit when it counts
 - Illumination refunds half the cost of every critical heal
 - Spiritual Focus and Concentration Aura keep your casts going while you take damage

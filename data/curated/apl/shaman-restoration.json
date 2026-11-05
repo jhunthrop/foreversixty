@@ -263,7 +263,7 @@
             }
           }
         },
-        "notes": "Riptide on the tank when the tank is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick. No single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
+        "notes": "Riptide on the tank when it is hurt and your last Riptide has run out: it is ready again at 12 seconds but heals for 15, so an early recast loses its last tick. No single-target heal gives more healing for its mana, and Chain Heal cast on a target with your Riptide heals it 25% more."
       },
       {
         "action": {
