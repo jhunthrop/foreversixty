@@ -96,6 +96,8 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// hidden-standing pattern as moderationClaims below): the handler
 	// itself answers 404 for a non-moderator.
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/reopen", s.reopenClaimCooldown)
+	// Public, like the guild page itself: the router's per-client limit is its rate limit.
+	mux.HandleFunc("GET /v1/guilds/search", s.searchGuilds)
 	mux.HandleFunc("GET /v1/guilds/{id}/settings", auth.RequireSession(s.getSettings))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/settings", auth.RequireSession(s.patchSettings))
 	mux.HandleFunc("POST /v1/guilds/{id}/invite/rotate", auth.RequireSession(s.rotateInvite))

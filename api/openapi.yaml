@@ -1833,6 +1833,22 @@ components:
               class: { type: [string, "null"], x-name: className }
               level: { type: [integer, "null"] }
               spec: { type: [string, "null"], description: Always null today. }
+    GuildSearch:
+      type: object
+      required: [rows]
+      properties:
+        rows:
+          type: array
+          maxItems: 5
+          items:
+            type: object
+            title: GuildSearchRow
+            required: [name, region, ruleset, path]
+            properties:
+              name: { type: string }
+              region: { type: string }
+              ruleset: { type: string }
+              path: { type: string, description: "The guild page's site path, /guild/{region}/{ruleset}/{slug}" }
     SimInput:
       type: object
       description: >-
@@ -5774,6 +5790,36 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '404':
           description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/search:
+    get:
+      operationId: searchGuilds
+      summary: Guilds whose name contains the typed text (the guild lookup's "Did you mean")
+      description: >-
+        Public, rate-limited like the other public guild reads (the router's per-client
+        limit). q is trimmed and must then be 3 to 40 characters, else 400. A case-insensitive
+        contains match on the guild's name over every guild that has a page (any guild the
+        site knows); the text matches literally (% and _ are not wildcards). region and ruleset
+        narrow it when given. At most 5 rows: names that start with the text first, then by
+        name. Each row is { name, region, ruleset, path }, path the guild page's site path
+        (/guild/{region}/{ruleset}/{slug}, the site's guildHref slug). rows is never null.
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 3, maxLength: 40 }, description: "Trimmed first; 3 to 40 characters." }
+        - { name: region, in: query, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: query, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+      responses:
+        '200':
+          description: "Matching guilds"
+          x-fixtures: [guild.search]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildSearch' } } }
+        '400':
+          description: "bad_request: q under 3 or over 40 characters once trimmed, or an unknown region or ruleset"
+          x-fixtures: [guild.search.error-bad-request]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:

@@ -46,7 +46,7 @@ retry. Under it, when one of the account's guilds (`/v1/me` `guilds`) or the Top
 (`/v1/rankings/guilds?kind=progress`) has a name that starts with, else contains, the typed words
 (three letters or more, the typed region and ruleset first): `Did you mean ` + the inline link
 `{Guild} ({REGION} {Ruleset})` + `?` (amended 2026-11-05, guild loop round 3: "lifecycle" missed
-"Lifecycle Test"). The API has no guild search, so the name field suggests nothing as you type.) The Guild door itself carries `data-guild-tab="overview"`, so
+"Lifecycle Test"). For a stranger, whose `/v1/me` names no guild, the suggestions come from `GET /v1/guilds/search?q=&region=&ruleset=` (guild round 3 API3: public, q trimmed and 3 to 40 characters, a case-insensitive contains match over every guild with a page, names that start with the text first, then by name, at most 5 rows of `{name, region, ruleset, path}` with `path` the guild page's site path). The name field still suggests nothing as you type.) The Guild door itself carries `data-guild-tab="overview"`, so
 the session rewrite below points it at the member's guild too. When the session
 resolves with a verified guild (`Me.guilds[0]`), the header fills the first row's title with the
 guild's name and rewrites the four hrefs to `guildHref(region, ruleset, name)` plus the tab

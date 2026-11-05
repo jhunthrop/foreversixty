@@ -153,6 +153,15 @@ export interface GuildNeedsRaid {
   starts_at: string;
 }
 
+/** One row of `GET /v1/guilds/search` (`data.rows`, at most 5): a stranger's "Did you mean". */
+export interface GuildSearchRow {
+  name: string;
+  region: string;
+  ruleset: string;
+  /** The guild page's site path, `/guild/{region}/{ruleset}/{slug}`. */
+  path: string;
+}
+
 export interface ClaimPendingView {
   by: ClaimHolder | null;
   expires_at: string;
