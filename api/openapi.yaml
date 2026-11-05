@@ -2055,7 +2055,7 @@ components:
           type: object
           title: GuildStanding
           description: Omitted when it cannot be derived.
-          required: [spec, class, same_spec_count, rank_by_item_level, item_level, needs_before_next_raid]
+          required: [spec, class, same_spec_count, rank_by_item_level, item_level, needs_before_next_raid, needs_raid]
           properties:
             spec: { type: string }
             class: { type: string, x-name: className }
@@ -2063,6 +2063,17 @@ components:
             rank_by_item_level: { type: integer }
             item_level: { type: integer }
             needs_before_next_raid: { type: array, items: { type: string } }
+            needs_raid:
+              title: GuildStandingNeedsRaid
+              type: [object, "null"]
+              description: >-
+                The raid needs_before_next_raid is before: the next planned raid of kind raid,
+                the one Readiness and /raid name first (never a dungeon run or guild event the
+                band may show); null when none is planned.
+              required: [title, starts_at]
+              properties:
+                title: { type: string }
+                starts_at: { type: string, format: date-time, description: "RFC 3339, UTC" }
         reports:
           type: array
           description: The last 7 days.

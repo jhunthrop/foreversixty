@@ -272,6 +272,25 @@ type StandingView struct {
 	RankByItemLevel     int      `json:"rank_by_item_level"`
 	ItemLevel           int      `json:"item_level"`
 	NeedsBeforeNextRaid []string `json:"needs_before_next_raid"`
+	// NeedsRaid is the raid needs_before_next_raid is before: the next planned raid of kind
+	// raid (Store.NextRaid, the one Readiness's chip, the nudge and /raid name first), never a
+	// dungeon run or guild event the band may show; null when none is planned.
+	NeedsRaid *NeedsRaidView `json:"needs_raid"`
+}
+
+// NeedsRaidView names the raid the standing line's needs are before.
+type NeedsRaidView struct {
+	Title    string    `json:"title"`
+	StartsAt time.Time `json:"starts_at"`
+}
+
+// needsRaid is the standing line's raid at now (NeedsRaidView), nil when none is planned.
+func (s *Store) needsRaid(ctx context.Context, guildID int64, now time.Time) (*NeedsRaidView, error) {
+	raid, ok, err := s.NextRaid(ctx, guildID, now)
+	if err != nil || !ok {
+		return nil, err
+	}
+	return &NeedsRaidView{Title: raid.Title, StartsAt: raid.StartsAt.UTC()}, nil
 }
 
 type HomeView struct {
@@ -708,6 +727,11 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		Reports:  reports, Roster: roster, Pending: pending,
 		AddonSnapshot: addonSnapshot, Members: members, Counts: counts,
 		AttendanceSource: source,
+	}
+	if view.Standing != nil {
+		if view.Standing.NeedsRaid, err = s.needsRaid(ctx, guildID, time.Now()); err != nil {
+			return HomeView{}, err
+		}
 	}
 	if len(reports) == HomeReportsPerPage {
 		last := reports[len(reports)-1]

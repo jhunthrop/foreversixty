@@ -140,6 +140,17 @@ export interface GuildHomeStanding {
    *  directly, never re-deriving its own phrasing from the Readiness endpoint (spec §8: no
    *  new round trip from Overview). */
   needs_before_next_raid: string[];
+  /** The raid those needs are before: the next planned raid of kind raid (the one Readiness
+   *  and /raid name first, never a dungeon run or event the band shows); null when none.
+   *  Optional only for fixtures written before guild round 3; the API always sends it. */
+  needs_raid?: GuildNeedsRaid | null;
+}
+
+/** `standing.needs_raid`: the raid the standing line's needs are before. */
+export interface GuildNeedsRaid {
+  title: string;
+  /** RFC 3339, UTC; show it in `next_raid.guild_timezone`. */
+  starts_at: string;
 }
 
 export interface ClaimPendingView {
