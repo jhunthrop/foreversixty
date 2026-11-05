@@ -6,6 +6,11 @@ export function focusOnMount(node: HTMLElement): void {
   node.focus();
 }
 
+/** `focusOnMount` when `on`: a control that takes focus only when the page came here for it. */
+export function focusOnMountIf(node: HTMLElement, on: boolean): void {
+  if (on) node.focus();
+}
+
 /** Selects a textarea's text when it mounts: the copy fallback, so the officer can press copy. */
 export function selectOnMount(node: HTMLTextAreaElement): void {
   node.focus();

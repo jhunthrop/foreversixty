@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -47,6 +48,30 @@ func TestEncodeEraKilozHasTheRightHeadAndGear(t *testing.T) {
 	}
 	if len(report.SkippedSlots) != 2 {
 		t.Fatalf("SkippedSlots = %v, want exactly SHIRT and TABARD", report.SkippedSlots)
+	}
+}
+
+// A Battle.net character's level rides on the export, so readers never take it for a 60.
+func TestEncodeWritesTheProfileLevel(t *testing.T) {
+	in := loadEraKilozInputs(t)
+	in.Profile.Level = 52
+	code, _, err := Encode(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoded, ok := fs1.Decode(code)
+	if !ok || !decoded.HasLevel || decoded.Level != 52 {
+		t.Fatalf("decoded %+v ok=%v from %q, want level 52", decoded, ok, code)
+	}
+	if decoded.Gear["head"] != 21329 {
+		t.Fatalf("head = %d, want 21329: the level section must not bleed into the gear", decoded.Gear["head"])
+	}
+	for _, bad := range []int{0, 61} {
+		in.Profile.Level = bad
+		code, _, err := Encode(in)
+		if err != nil || strings.Contains(code, "|level=") {
+			t.Fatalf("level %d wrote %q err %v, want no level section", bad, code, err)
+		}
 	}
 }
 

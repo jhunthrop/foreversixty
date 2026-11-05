@@ -68,6 +68,25 @@ func TestAutoMatchTiesTheLogToItsRaid(t *testing.T) {
 	}
 }
 
+// A log uploaded the morning after is anchored on its first pull, not on the upload.
+func TestAutoMatchAnchorsOnTheFirstPullNotTheUpload(t *testing.T) {
+	w := newRaidWorld(t, false)
+	start := pastStart()
+	raid := w.raidAt(t, raidZoneOny, start)
+	w.oneFightNight(t, "late-upload", onyLogZone, start.Add(30*time.Minute))
+	w.exec(t, `update reports set created_at = created_at + interval '14 hours' where id = 'late-upload'`)
+	got, ok, err := w.h.store.AutoMatch(t.Context(), "late-upload")
+	if err != nil || !ok || got.ID != raid.ID {
+		t.Fatalf("matched %+v %v %v, want raid %d", got, ok, err, raid.ID)
+	}
+	// With no fights the upload time is all there is: fourteen hours late misses the window.
+	w.raidAt(t, raidZoneOny, start.Add(-7*24*time.Hour))
+	seedNight(t, w.h.pool, w.gid, "no-fights", onyLogZone, start.Add(-7*24*time.Hour+14*time.Hour), nil)
+	if _, ok, err := w.h.store.AutoMatch(t.Context(), "no-fights"); err != nil || ok {
+		t.Fatalf("a fightless log fourteen hours late matched: %v %v", ok, err)
+	}
+}
+
 func TestAutoMatchPicksOnlyTheNearestOfTwoOverlappingWindows(t *testing.T) {
 	w := newRaidWorld(t, false)
 	start := pastStart()

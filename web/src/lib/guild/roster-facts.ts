@@ -46,11 +46,6 @@ export function gearSetLabel(build: string): string {
   return `Gear set: ${named}`;
 }
 
-/** "Survival in game": the spec the addon's snapshot carries. */
-export function inGameSpecLabel(spec: string): string {
-  return `${spec} in game`;
-}
-
 /** "Survival on the site": the spec the site's own record carries. */
 export function siteSpecLabel(spec: string): string {
   return `${spec} on the site`;
@@ -61,8 +56,8 @@ export function siteSpecLabel(spec: string): string {
  * snapshot and the site's record can name two specs for one character (a respec the site has not
  * seen, or an export the addon has not re-sent), and a line that names one without saying whose
  * reads as a bug:
- *  - the snapshot carries a spec and the site agrees (or has none): "Beast Mastery Hunter in game";
- *  - they disagree: "Beast Mastery Hunter in game · Survival on the site";
+ *  - the snapshot carries a spec and the site agrees (or has none): "Beast Mastery Hunter";
+ *  - they disagree: "Beast Mastery Hunter · Survival on the site";
  *  - the snapshot carries none: the site's, "Survival Hunter on the site".
  * `addonSpec` is the snapshot's slug; `siteSpec` the site's spec as it writes it. Empty when neither.
  */
@@ -77,9 +72,9 @@ export function rosterSpecLine(input: {
       ? ''
       : specName(addonSpecName(input.addonSpec));
   if (game === '') return site === '' ? '' : siteSpecLabel(specClassName(site, input.className));
-  const inGame = inGameSpecLabel(specClassName(game, input.className));
-  if (site === '' || site.toLowerCase() === game.toLowerCase()) return inGame;
-  return `${inGame} · ${siteSpecLabel(site)}`;
+  const named = specClassName(game, input.className);
+  if (site === '' || site.toLowerCase() === game.toLowerCase()) return named;
+  return `${named} · ${siteSpecLabel(site)}`;
 }
 
 export type InGameFactKey = 'level' | 'gap' | 'build' | 'seen';

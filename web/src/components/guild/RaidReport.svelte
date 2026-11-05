@@ -16,6 +16,7 @@
   import { splitAtLink } from '../../lib/guild/raid-form';
   import { ReportCopy } from '../../lib/guild/report-copy.svelte';
   import { reportUrlOf } from '../../lib/guild/report-view';
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import RaidConsumables from './RaidConsumables.svelte';
   import RaidDeaths from './RaidDeaths.svelte';
@@ -24,7 +25,6 @@
   import RaidMoves from './RaidMoves.svelte';
 
   const COPY_FALLBACK_ROWS = 8;
-  const gateLead = splitAtLink(raidCopy.gate, raidCopy.gateLink).before;
   const connectParts = splitAtLink(raidCopy.form.connectDiscord, raidCopy.form.connectDiscordLink);
 
   let {
@@ -38,6 +38,7 @@
     officer,
     officerTools,
     gateId,
+    gateFacts,
     posting,
     postLine,
     onPost,
@@ -59,6 +60,8 @@
     /** False in officer-read-only: Post is disabled, the gate sentence shows, Copy stays live. */
     officerTools: boolean;
     gateId: string;
+    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
+    gateFacts: GateFacts;
     posting: boolean;
     postLine: string | null;
     onPost: () => void;
@@ -135,13 +138,7 @@
     {/if}
   </div>
   {#if officer && !officerTools}
-    <GuildPlanGate
-      tab="raids"
-      {settingsHref}
-      sentence={gateLead}
-      id={gateId}
-      testid="guild-raids-plan-gate-report"
-    />
+    <GuildPlanGate tab="raids" facts={gateFacts} id={gateId} testid="guild-raids-plan-gate-report" />
   {/if}
   {#if postLine !== null}
     <p class="text-wipe text-[13px]" role="alert" data-testid="raid-report-post-error">{postLine}</p>

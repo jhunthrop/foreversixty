@@ -51,7 +51,7 @@
   <div class="flex flex-col items-start">
     <DiscordConnectLink
       label={guildBotCopy.add}
-      class={button('primary')}
+      class={button(gated ? 'secondary' : 'primary')}
       testid="bot-add"
       href={installHref}
       {busy}

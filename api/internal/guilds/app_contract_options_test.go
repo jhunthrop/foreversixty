@@ -4,7 +4,7 @@ package guilds
 // each as absent. They are listed once here so the contract tests share one source.
 
 var homeOptional = []string{
-	"data.guild.crest_url", "data.viewer.character_key", "data.claim.since", "data.claim.claimed_by_name",
+	"data.guild.crest_url", "data.viewer.character_key", "data.claim.since", "data.claim.claimed_by",
 	"data.standing", "data.next_cursor", "data.next_raid",
 	"data.roster[].class", "data.roster[].spec", "data.roster[].role", "data.roster[].spec_name", "data.roster[].spec_icon", "data.roster[].item_level",
 	"data.roster[].attendance_30", "data.roster[].best_parse", "data.roster[].rating",

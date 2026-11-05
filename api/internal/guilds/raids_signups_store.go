@@ -132,7 +132,10 @@ func lockOwnSignups(ctx context.Context, tx pgx.Tx, raidID, userID int64) error 
 
 func checkRaidOpen(ctx context.Context, tx pgx.Tx, sg Signup) error {
 	var status string
-	err := tx.QueryRow(ctx, `select status from guild_raids where id = $1 for share`, sg.RaidID).Scan(&status)
+	var ended bool
+	err := tx.QueryRow(ctx,
+		`select status, now() > starts_at + make_interval(mins => duration_minutes) from guild_raids where id = $1 for share`,
+		sg.RaidID).Scan(&status, &ended)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return ErrNotFound
 	}
@@ -142,9 +145,14 @@ func checkRaidOpen(ctx context.Context, tx pgx.Tx, sg Signup) error {
 	switch {
 	case status == RaidCancelled:
 		return ErrRaidCancelled
-	case (status == RaidLocked || status == RaidDone) && !sg.AsOfficer:
+	case sg.AsOfficer:
+		return nil
+	case status == RaidLocked || status == RaidDone:
 		// A done raid is logged; like a locked one, only an officer corrects it.
 		return ErrRaidLocked
+	case ended:
+		// Past its end with no log yet: the site and the bot refuse it, so the API does too.
+		return ErrRaidEnded
 	}
 	return nil
 }

@@ -69,9 +69,17 @@ func TestScheduleDueWindows(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	// A raid locked before its post time is still posted; a cancelled one never is.
 	due := claimed(t, w.st, now)
-	if len(due) != 1 || due[0].RaidID != unposted || due[0].Kind != duePost {
-		t.Fatalf("due = %+v, want one post for raid %d", due, unposted)
+	gotIDs := map[int64]bool{}
+	for _, d := range due {
+		if d.Kind != duePost {
+			t.Fatalf("due = %+v, want posts only", due)
+		}
+		gotIDs[d.RaidID] = true
+	}
+	if len(due) != 2 || !gotIDs[unposted] || !gotIDs[locked] {
+		t.Fatalf("due = %+v, want posts for raids %d and %d", due, unposted, locked)
 	}
 	if again := claimed(t, w.st, now); len(again) != 0 {
 		t.Fatalf("a leased row was claimed again: %+v", again)
@@ -82,12 +90,14 @@ func TestScheduleDueWindows(t *testing.T) {
 	reminded := w.raid(t, start, "planned")
 	quiet := w.raid(t, start, "planned")
 	fresh := w.raid(t, start, "planned")
+	lockedPosted := w.raid(t, start, "locked") // a locked raid takes no reminder
 	for _, c := range []struct {
 		id       int64
 		remind   bool
 		postedAt time.Time
 	}{
 		{reminded, true, start.Add(-72 * time.Hour)},
+		{lockedPosted, true, start.Add(-72 * time.Hour)},
 		{quiet, false, start.Add(-72 * time.Hour)},
 		{fresh, true, start.Add(-30 * time.Hour)},
 	} {

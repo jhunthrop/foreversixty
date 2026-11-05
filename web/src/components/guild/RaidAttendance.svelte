@@ -13,6 +13,7 @@
   import { BAR_FILL, BAR_TRACK, ROW_DIVIDER } from '../../lib/guild/raid-report-styles';
   import { ownRowBand } from '../../lib/ui/row';
   import { classColorVar } from '../../lib/report/format';
+  import { specName } from '../../lib/guild/spec-name';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Figures from './Figures.svelte';
   import RaidChip from './RaidChip.svelte';
@@ -51,7 +52,7 @@
         style={`color:${classColorVar(row.class)}`}
         title={row.name}>{row.name}</span
       >
-      <span class="text-muted block truncate text-[12px]">{row.spec}</span>
+      <span class="text-muted block truncate text-[12px]">{specName(row.spec)}</span>
     </span>
   </span>
 {/snippet}

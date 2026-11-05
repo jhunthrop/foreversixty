@@ -44,12 +44,12 @@ Code read for this spec: `web/src/components/CheckoutLauncher.svelte`, `web/src/
 |---|---|---|
 | E1 | `/premium` Guild or Raid guild card button | `/premium/checkout?plan={guild or raid_guild}&interval={…}`, the guild step (§5) |
 | E2 | `/premium` Premium card button | `/premium/checkout?plan=premium&interval={…}`: Stripe, or "you already have it" (§4.2) |
-| E3 | Guild page gate sentences (`Subscribe the guild`, `Move to Raid guild`) | Officers: settings `#billing` as today. Members and unverified viewers: the checkout guild step with `guild_id`, which shows their step (§5.6) |
+| E3 | Guild page gate sentences (`Subscribe your guild`, `Move to Raid guild`) | Officers: settings `#billing` as today. Members and unverified viewers: the checkout guild step with `guild_id`, which shows their step (§5.6) |
 | E4 | Guild page claim slot and the unverified note | `/guild/{r}/{rs}/{slug}/claim` (§6.2) |
 | E5 | Guild settings `#billing`, an officer who does not hold the claim | The hand-off line with a copy link for the claim holder (§6.4) |
 | E6 | Account page, guild row with no plan | `See the next step`, to the checkout guild step scrolled to that guild's card (§6.5) |
 | E7 | Account page Plan panel | `See plans`, `Manage billing`, `Billing history` or nothing, by source (§4.3) |
-| E8 | Discord bot replies with `Subscribe the guild` or `Move to Raid guild` | The checkout guild step with `plan=raid_guild&interval=yearly&guild_id={id}` (§6.6) |
+| E8 | Discord bot replies with `Subscribe your guild` or `Move to Raid guild` | The checkout guild step with `plan=raid_guild&interval=yearly&guild_id={id}` (§6.6) |
 | E9 | An officer's invite link `/guild/invite/{token}` | Join, verified at once (today's flow); the joined state gains the guild's plan line (§6.3) |
 | E10 | The hand-off link a member copies on the checkout step | The guild's claim page, or the claim holder's settings `#billing`, with `?plan&interval`; it ends in Checkout for the person who can pay (§6.1, §6.2) |
 
@@ -414,7 +414,7 @@ After the guild name: `Not verified`, 13 px muted, when the account has no verif
 
 ### 6.6 Discord bot
 
-Every bot `Subscribe the guild` and `Move to Raid guild` link (discord-bot spec, `/readiness` and the read-only rows) points to `https://foreversixty.gg/premium/checkout?plan=raid_guild&interval=yearly&guild_id={id}`. The checkout step resolves for whoever opens it (§5.6). The bot's sentences are unchanged.
+Every bot `Subscribe your guild` and `Move to Raid guild` link (discord-bot spec, `/readiness` and the read-only rows) points to `https://foreversixty.gg/premium/checkout?plan=raid_guild&interval=yearly&guild_id={id}`. The checkout step resolves for whoever opens it (§5.6). The bot's sentences are unchanged.
 
 ### 6.7 The paths, step by step
 

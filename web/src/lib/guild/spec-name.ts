@@ -14,6 +14,16 @@ export function specName(spec: string): string {
     .join(' ');
 }
 
+/** A spec word folded for comparison: any case, spaces gone, so `BeastMastery` is `Beast Mastery`. */
+export function specLookupKey(spec: string): string {
+  return spec.toLowerCase().replace(/\s+/g, '');
+}
+
+/** Whether two spec words name one spec however they were written ("BeastMastery", "Beast Mastery"). */
+export function sameSpecName(a: string, b: string): boolean {
+  return specLookupKey(a) === specLookupKey(b);
+}
+
 /**
  * A spec with its class, as the character panel says it: "Holy Priest", "Restoration Druid". The
  * class may be a slug ("priest") or a name; with no spec it is the class alone, with no class the

@@ -142,7 +142,8 @@ test.describe('the guild page', () => {
     await expect(page.getByTestId('guild-roster-tab')).toBeVisible();
     await expect(page.getByTestId('guild-roster-rows').locator('.guild-roster-row').first()).toBeVisible();
     await expect(page.getByTestId('guild-roster-gate')).toHaveCount(0);
-    await expect(page.getByTestId('guild-claim-note')).toHaveText('Claimed by Kraggor');
+    await expect(page.getByTestId('guild-claim-note')).toHaveText(/Claimed by\s+Kraggor/);
+    await expect(page.locator('body')).not.toContainText(/#[0-9]{4}/);
     await expect(page.getByTestId('guild-claim-entry')).toHaveCount(0);
   });
 

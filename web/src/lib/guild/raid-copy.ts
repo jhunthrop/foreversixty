@@ -2,7 +2,15 @@
 // Every string of design/specs/2026-10-26-guild-raids.md 6.1, in one module: constants where the
 // words are fixed, functions where the data fills them. No number is typed into prose; raid-copy.test.ts
 // reads the spec table itself, so a drift in either file fails.
-import type { GuildRaidRole, GuildRaidSignup, GuildRaidView, GuildSignupState, GuildViewerRole } from './api';
+import type {
+  GuildRaidRole,
+  GuildRaidSignup,
+  GuildRaidView,
+  GuildSignupState,
+  GuildViewerRole,
+  GuildZoneKind,
+  NextRaidView,
+} from './api';
 import {
   DEFAULT_LOCALE,
   clockText,
@@ -29,9 +37,7 @@ export interface SpecLead {
 }
 
 export const raidCopy = {
-  planButton: 'Plan a raid',
-  gate: 'Planning and running raids are part of the guild plan. Subscribe the guild.',
-  gateLink: 'Subscribe the guild',
+  planButton: 'Plan an event',
   cap: 'A guild plans at most 12 raids ahead.',
   subheads: {
     planned: 'Planned',
@@ -50,15 +56,19 @@ export const raidCopy = {
   segments: { in: 'In', late: 'Late', bench: 'Bench', out: 'Out' },
   roleLabels: { tank: 'Tank', healer: 'Healer', dps: 'DPS' } satisfies Record<GuildRaidRole, string>,
   emptyPlanned: {
-    member: 'No raid planned yet. Officers plan raids here.',
-    officer: 'No raid planned yet. Plan one and the guild can sign up.',
+    member: 'Nothing planned yet. Officers post dungeon runs, events and raids here.',
+    officer: 'Nothing planned yet. Post a dungeon run or a guild event and the guild can sign up.',
   },
   bandNone: {
-    member: 'No raid planned yet.',
-    officer: 'No raid planned yet.',
-    planLink: 'Plan a raid',
+    member: 'Nothing planned yet.',
+    officer: 'Nothing planned yet.',
+    planLink: 'Plan an event',
   },
-  placeholders: { note: 'Note for the officers (optional)', chooseRaid: 'Choose a raid' },
+  placeholders: {
+    note: 'Note for the officers (optional)',
+    chooseWhat: 'Choose a dungeon, event or raid',
+    eventTitle: 'What is it? (a PvP premade, a quest group)',
+  },
   stripStatus: {
     saved: 'Saved.',
     failed: 'That did not save. Try again.',
@@ -88,7 +98,6 @@ export const raidCopy = {
   waitingCharacter: 'Waiting for approval. You can sign it up once an officer approves it.',
   raidStates: {
     locked: 'Sign-ups are locked. An officer can still change yours.',
-    cancelled: 'This raid was cancelled.',
   },
   races: {
     locked: 'This raid was locked while you were signing up.',
@@ -105,19 +114,23 @@ export const raidCopy = {
     unlock: 'Unlock sign-ups',
     copy: 'Copy the sign-up list',
     copied: 'Copied',
-    cancel: 'Cancel raid',
     failed: 'That did not save; try again.',
   },
   cancelConfirm: {
-    question: 'Cancel this raid? Members see it as cancelled.',
     postToDiscord: 'Post the cancellation to Discord',
-    confirm: 'Cancel the raid',
     confirming: 'Cancelling…',
     keep: 'Keep it',
   },
   copyFailed: 'Could not copy. Select the list and copy it.',
   form: {
-    raid: 'Raid',
+    what: 'What',
+    groupSize: 'Group size',
+    noLimit: 'No limit',
+    groups: { event: 'Guild event', dungeons: 'Dungeons', raids: 'Raids' },
+    needsKey: 'Needs a key: ',
+    /** A key with a keyless way in: `Key to the City opens the service entrance.` */
+    keyOpens: (door: string): string => ` opens ${door}.`,
+    opens: (raid: string, day: string): string => `${raid} opens ${day}.`,
     title: 'Title',
     date: 'Date',
     time: 'Time',
@@ -141,7 +154,7 @@ export const raidCopy = {
     remindNeedsPost: 'Turn on Post to Discord to send a reminder.',
     posted: (channel: string): string => `Posted to ${channel}. The post updates itself.`,
     reminded: 'Reminder sent.',
-    submitCreate: 'Post the raid',
+    submitCreate: 'Post the event',
     submitCreating: 'Posting…',
     submitEdit: 'Save changes',
     submitEditing: 'Saving…',
@@ -153,16 +166,14 @@ export const raidCopy = {
     connectDiscord: 'Connect a Discord channel in Settings to post raids there.',
     connectDiscordLink: 'Settings',
     errors: {
-      raid: 'Choose a raid.',
+      what: 'Choose a dungeon, event or raid.',
+      eventTitle: 'Give the event a title.',
+      opens: (raid: string, day: string): string => `${raid} opens ${day}. Pick that day or later.`,
       date: 'Pick a date.',
       time: 'Pick a time after now.',
       cap: 'A guild plans at most 12 raids ahead.',
       failed: 'That did not save. Try again.',
     },
-  },
-  notesEmpty: {
-    member: 'No notes for this raid.',
-    officer: 'No notes yet. Edit the raid to add some.',
   },
   emptyRole: { tank: 'No tanks yet.', healer: 'No healers yet.', dps: 'No DPS yet.' } satisfies Record<
     GuildRaidRole,
@@ -190,6 +201,40 @@ export const raidCopy = {
   changelog:
     "Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up in one tap, from the raid page or the guild page.",
 } as const;
+
+/** What each kind of night is called in a sentence (guild events spec 3.5). */
+const KIND_WORDS: Record<GuildZoneKind, string> = { raid: 'raid', dungeon: 'run', event: 'event' };
+const KIND_EYEBROWS: Record<GuildZoneKind, string> = { raid: 'Raid', dungeon: 'Dungeon', event: 'Event' };
+
+/** The zone kind a view carries; a view from before kinds is a raid. */
+export function kindOf(view: { zone_kind?: GuildZoneKind }): GuildZoneKind {
+  return view.zone_kind ?? 'raid';
+}
+
+/** The page's eyebrow, set uppercase by its `label` class: `RAID`, `DUNGEON`, `EVENT`. */
+export const eyebrowOf = (kind: GuildZoneKind): string => KIND_EYEBROWS[kind];
+/** `Cancel raid`, `Cancel run`, `Cancel event`. */
+export const cancelActionOf = (kind: GuildZoneKind): string => `Cancel ${KIND_WORDS[kind]}`;
+/** `This raid has ended.`, `This run has ended.`, `This event has ended.` */
+export const endedLineOf = (kind: GuildZoneKind): string => `This ${KIND_WORDS[kind]} has ended.`;
+/** `This raid was cancelled.`, `This run was cancelled.`, `This event was cancelled.` */
+export const cancelledLineOf = (kind: GuildZoneKind): string => `This ${KIND_WORDS[kind]} was cancelled.`;
+/** The cancel confirm's question. */
+export const cancelQuestionOf = (kind: GuildZoneKind): string =>
+  `Cancel this ${KIND_WORDS[kind]}? Members see it as cancelled.`;
+/** The cancel confirm's button. */
+export const cancelConfirmOf = (kind: GuildZoneKind): string => `Cancel the ${KIND_WORDS[kind]}`;
+/** The notes panel with nothing in it: `No notes for this run.` / `No notes yet. Edit the event to add some.` */
+export const notesEmptyOf = (kind: GuildZoneKind, officer: boolean): string =>
+  officer
+    ? `No notes yet. Edit the ${KIND_WORDS[kind]} to add some.`
+    : `No notes for this ${KIND_WORDS[kind]}.`;
+
+/** The needs line reads raids only (guild events spec 3.4): a dungeon run or an event at the head of
+ *  the band leaves it at `before the next raid`. */
+export function raidDeadlineStart(next: NextRaidView | null | undefined): string | undefined {
+  return next != null && kindOf(next) === 'raid' ? next.starts_at : undefined;
+}
 
 const SIGNED_UP_STATE_WORDS: Record<GuildSignupState, string> = {
   in: raidCopy.segments.in,

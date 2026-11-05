@@ -5,6 +5,7 @@
 package raidspec
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/sim/specs"
@@ -96,11 +97,43 @@ func Resolve(class, name, role string) (Spec, bool) {
 		return ByKey("druid-feral")
 	}
 	for _, s := range ForClass(class) {
-		if strings.EqualFold(s.Name, name) {
+		if SameName(s.Name, name) {
 			return s, true
 		}
 	}
 	return Spec{}, false
+}
+
+// ClassRoles is the roles the class's specs play, in tank, healer, DPS order: a warrior tanks
+// or deals damage, a priest heals or deals damage. nil for an unknown class.
+func ClassRoles(class string) []string {
+	specs := ForClass(class)
+	if len(specs) == 0 {
+		return nil
+	}
+	var out []string
+	for _, role := range []string{RoleTank, RoleHealer, RoleDPS} {
+		for _, s := range specs {
+			if s.Role == role {
+				out = append(out, role)
+				break
+			}
+		}
+	}
+	return out
+}
+
+// Plays reports whether the class can sign up as role. An unknown class is not judged.
+func Plays(class, role string) bool {
+	roles := ClassRoles(class)
+	return roles == nil || slices.Contains(roles, role)
+}
+
+// SameName reports whether two spec names are one spec however they are written: case aside and
+// with the spaces gone, so a log's "BeastMastery" is the catalogue's "Beast Mastery"
+// (rankings/query.go compares board filters the same way).
+func SameName(a, b string) bool {
+	return strings.EqualFold(strings.ReplaceAll(a, " ", ""), strings.ReplaceAll(b, " ", ""))
 }
 
 // MeleeClass reports whether a DPS line with no spec goes to Melee, by class.

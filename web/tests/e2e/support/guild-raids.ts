@@ -28,6 +28,8 @@ import type {
   GuildRaidView,
   GuildRaidsPage,
   GuildSignupState,
+  GuildKeyItem,
+  GuildZoneKind,
   GuildZoneView,
   NextRaidView,
 } from '../../../src/lib/guild/api';
@@ -47,10 +49,49 @@ export const HYJAL_ID = 9;
 /** The id the stub gives the first raid an officer plans. */
 export const FIRST_NEW_ID = 100;
 
+/** The day the first raid tier opens (data/curated/phases.json `raids-1`). */
+const RAIDS_OPEN = '2026-12-09T00:00:00Z';
+const RAID_ZONE = {
+  kind: 'raid',
+  opens: RAIDS_OPEN,
+  min_level: null,
+  max_level: null,
+  key_item: null,
+} as const;
+const EVENT_ZONE = {
+  kind: 'event',
+  name: 'Guild event',
+  opens: null,
+  min_level: null,
+  max_level: null,
+  key_item: null,
+} as const;
+const DUNGEON_ZONE = { kind: 'dungeon', opens: null, key_item: null } as const;
+
 export const ZONES: GuildZoneView[] = [
-  { key: 'raid:barrow-deeps', name: 'Barrow Deeps', size: null },
-  { key: 'raid:hyjal-summit', name: 'Hyjal Summit', size: null },
-  { key: 'raid:onyxias-lair', name: "Onyxia's Lair", size: 40 },
+  {
+    ...DUNGEON_ZONE,
+    key: 'dungeon:the-deadmines',
+    name: 'The Deadmines',
+    size: 5,
+    min_level: 17,
+    max_level: 26,
+  },
+  {
+    ...DUNGEON_ZONE,
+    key: 'dungeon:upper-blackrock-spire',
+    name: 'Upper Blackrock Spire',
+    size: 10,
+    min_level: 59,
+    max_level: 60,
+    key_item: { id: 12344, name: 'Seal of Ascension', quality: 3 },
+  },
+  { ...EVENT_ZONE, key: 'event:guild', size: null },
+  { ...EVENT_ZONE, key: 'event:guild-5', size: 5 },
+  { ...EVENT_ZONE, key: 'event:guild-10', size: 10 },
+  { ...RAID_ZONE, key: 'raid:barrow-deeps', name: 'Barrow Deeps', size: null },
+  { ...RAID_ZONE, key: 'raid:hyjal-summit', name: 'Hyjal Summit', size: null },
+  { ...RAID_ZONE, key: 'raid:onyxias-lair', name: "Onyxia's Lair", size: 40 },
 ];
 
 /** Who is looking: a verified member with an alt, the officer, or one of R1's three outsiders. */
@@ -94,6 +135,8 @@ export interface StoredRaid {
   duration_minutes: number;
   status: GuildRaidStatus;
   size: number | null;
+  zone_kind?: GuildZoneKind;
+  key_item?: GuildKeyItem | null;
   notes_html: string;
   notes: string;
   signups: StoredSignup[];
@@ -478,6 +521,8 @@ export class RaidStub {
         id: this.nextId++,
         zone: zone.key,
         zone_name: zone.name,
+        zone_kind: zone.kind,
+        key_item: zone.key_item,
         title: body.title === '' ? zone.name : body.title,
         starts_at: startsAt,
         duration_minutes: body.duration_minutes,

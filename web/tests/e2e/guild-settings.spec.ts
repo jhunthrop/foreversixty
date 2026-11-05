@@ -26,7 +26,7 @@ test('a verified officer sees settings and can rotate the invite link', async ({
       envelope({
         default_visibility: 'guild',
         officer_max_rank_index: 1,
-        claimed_by: { battletag: 'Fixture#1234' },
+        claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
         claim_pending: null,
         claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
         invite: { rotated_at: null },
@@ -45,25 +45,83 @@ test('a verified officer sees settings and can rotate the invite link', async ({
 
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   await expect(page.getByTestId('guild-settings')).toBeVisible();
-  await expect(page.getByText('Anyone with this link can join as a member.')).toBeVisible();
+  await expect(page.getByText('as a verified member: no officer has to approve them')).toBeVisible();
 
-  // Rotating asks first: the old link stops working.
-  await page.getByTestId('guild-invite-rotate').click();
-  await expect(page.getByTestId('guild-invite-rotate-confirm')).toContainText(
-    'Rotate the invite link? The old link stops working.',
+  // A first link needs no confirm: nothing breaks.
+  await expect(page.getByTestId('guild-invite-none')).toHaveText(
+    'Make a link to share in guild chat or Discord.',
   );
-  await page.getByTestId('guild-invite-rotate-confirm-button').click();
+  await page.getByTestId('guild-invite-make').click();
   // The full URL on this site, in a field, with a Copy button that reads "Copied" after a click.
   await expect(page.getByTestId('guild-invite-url')).toHaveValue(
     new RegExp('^https?://[^/]+/guild/invite/newtoken1$'),
   );
-  await expect(page.getByTestId('guild-invite-token')).toContainText('Shown once. Copy it now.');
+  await expect(page.getByTestId('guild-invite-copy')).toBeFocused();
+  await expect(page.getByTestId('guild-invite-shown-once')).toContainText('Copy it now.');
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.getByTestId('guild-invite-copy').click();
   await expect(page.getByTestId('guild-invite-copy')).toHaveText('Copied');
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('/guild/invite/newtoken1');
-  await expect(page.getByTestId('guild-invite-copy')).toHaveText('Copy link', { timeout: 4000 });
-  await expect(page.getByTestId('guild-invite-made')).toContainText('Current link made 21 Sep.');
+  await expect(page.getByTestId('guild-invite-copy')).toHaveText('Copy link', { timeout: 6000 });
+});
+
+test('a later visit has no URL in the page, and a new link asks first', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(
+      envelope({
+        default_visibility: 'guild',
+        officer_max_rank_index: 1,
+        claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
+        claim_pending: null,
+        claim: { state: 'claimed', since: '2026-09-21T00:00:00Z', frozen: false, yours: true },
+        invite: { rotated_at: '2026-09-12T00:00:00Z' },
+      }),
+    ),
+  );
+  await page.route('**/v1/guilds/501/invite/rotate', (route) =>
+    route.fulfill(
+      envelope({ token: 'newtoken2', url: '/guild/invite/newtoken2', rotated_at: '2026-09-21T00:00:00Z' }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/settings');
+  await expect(page.getByTestId('guild-invite-made')).toHaveText(
+    'Made 12 Sep. It still works, but it cannot be shown again. Make a new one to copy it.',
+  );
+  await expect(page.getByTestId('guild-invite-url')).toHaveCount(0);
+  expect(await page.content()).not.toContain('/guild/invite/');
+
+  await page.getByTestId('guild-invite-rotate').click();
+  await expect(page.getByTestId('guild-invite-rotate-confirm')).toContainText(
+    'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
+  );
+  await expect(page.getByTestId('guild-invite-rotate-cancel')).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('guild-invite-rotate-confirm')).toHaveCount(0);
+  await expect(page.getByTestId('guild-invite-rotate')).toBeFocused();
+
+  await page.getByTestId('guild-invite-rotate').click();
+  await page.getByTestId('guild-invite-rotate-confirm-button').click();
+  await expect(page.getByTestId('guild-invite-url')).toHaveValue(/\/guild\/invite\/newtoken2$/);
+});
+
+test('the claim line names the holder by character, never an account tag', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(
+      envelope({
+        default_visibility: 'guild',
+        officer_max_rank_index: 1,
+        claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
+        claim_pending: null,
+        claim: { state: 'claimed', since: '2026-09-21T00:00:00Z', frozen: false },
+        invite: { rotated_at: null },
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/settings');
+  await expect(page.getByTestId('guild-claimed-by')).toHaveText(/Claimed by\s+Thornhide/);
+  await expect(page.locator('body')).not.toContainText(/#[0-9]{4}/);
 });
 
 test('a non-officer sees the honest forbidden line, never a bare 403', async ({ page }) => {
@@ -91,7 +149,7 @@ test('a contested claim disables officer controls and shows the frozen notice', 
       envelope({
         default_visibility: 'guild',
         officer_max_rank_index: 1,
-        claimed_by: { battletag: 'Fixture#1234' },
+        claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
         claim_pending: null,
         claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: true },
         invite: { rotated_at: null },
@@ -113,7 +171,7 @@ test('the officer rank has a Save control and says "Saved." once it took', async
   const settings = {
     default_visibility: 'guild',
     officer_max_rank_index: 1,
-    claimed_by: { battletag: 'Fixture#1234' },
+    claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
     claim_pending: null,
     claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
     invite: { rotated_at: null },
@@ -129,7 +187,7 @@ test('the officer rank has a Save control and says "Saved." once it took', async
   });
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   // The label has no trailing colon, and Save stays off until the number changes.
-  await expect(page.getByText('Officers are guild ranks at or above', { exact: true })).toBeVisible();
+  await expect(page.getByText('Officer ranks', { exact: true })).toBeVisible();
   const save = page.getByTestId('guild-officer-threshold-save');
   await expect(save).toBeDisabled();
   await page.getByTestId('guild-officer-threshold-input').fill('2');

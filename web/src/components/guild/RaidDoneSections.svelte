@@ -4,6 +4,7 @@
      match but the raid view then carries no night, report or attendance: nothing renders and nothing
      says why (the spec has no copy for it). -->
 <script lang="ts">
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import type { GuildRaidView } from '../../lib/guild/api';
   import type { NightActions } from '../../lib/guild/night-actions.svelte';
   import RaidAttendance from './RaidAttendance.svelte';
@@ -18,6 +19,7 @@
     officer,
     officerTools,
     gateId,
+    gateFacts,
     viewerTimezone,
     locale,
   }: {
@@ -29,6 +31,7 @@
     officer: boolean;
     officerTools: boolean;
     gateId: string;
+    gateFacts: GateFacts;
     viewerTimezone: string;
     locale: string;
   } = $props();
@@ -51,6 +54,7 @@
     {officer}
     {officerTools}
     {gateId}
+    {gateFacts}
     posting={actions.posting}
     postLine={actions.postLine}
     onPost={() => void actions.post()}

@@ -353,7 +353,7 @@ ForeverSixtyDB.outbox = {
   format = 1,
   export = { character = "Obnoxious-Yell", code = "FS1:...", saved_at = "2026-11-04 14:02" },
   sim_request = { character = ..., spec = "warrior-arms", requested_at = ..., gear_code = "FS1:..." } | nil,
-  roster_snapshot = { guild = "OLYMPUS XXVII", members = { { name=..., level=20, spec="warrior-arms", gear_gap=14, build="Arms leveling", seen_at=... }, ... } } | nil,
+  roster_snapshot = { guild = "OLYMPUS XXVII", members = { { name=..., level=20, spec="warrior-arms", gear_gap=14, build="Arms leveling", seen_at=..., class="WARRIOR" }, ... } } | nil,
 }
 ```
 
@@ -370,9 +370,10 @@ Notes for the reader:
 - `roster_snapshot.members[*]` mirrors the `hello` fields of contract 2 plus `name` and
   `seen_at`; `build` is the member's build name as that member's addon announced it, and
   `gear_gap` is the same integer. The member fields are exactly `name`, `level`, `spec`,
-  `gear_gap`, `build` and `seen_at`; there is no `scoreDate` here, because the site holds the
-  score itself. `seen_at` is `YYYY-MM-DD HH:MM` local. A snapshot carries only
-  the members the guild tab has live data for.
+  `gear_gap`, `build`, `seen_at` and `class`; there is no `scoreDate` here, because the site
+  holds the score itself. `seen_at` is `YYYY-MM-DD HH:MM` local. `class` is the classFilename
+  from `GetGuildRosterInfo` ("WARRIOR"), absent for a name the client's guild roster does not
+  hold yet. A snapshot carries only the members the guild tab has live data for.
 
 ---
 

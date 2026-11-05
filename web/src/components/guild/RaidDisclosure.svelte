@@ -9,6 +9,7 @@
     heading,
     headingId,
     count = null,
+    headingClass = 'section-title',
     testid,
     children,
   }: {
@@ -16,6 +17,8 @@
     headingId: string;
     /** `14/40` beside the Sign-ups heading. */
     count?: string | null;
+    /** The heading's look; a section title unless the disclosure is one quiet line. */
+    headingClass?: string;
     testid: string;
     children: Snippet;
   } = $props();
@@ -26,7 +29,7 @@
     class="focus-visible:outline-gold flex min-h-11 cursor-pointer list-none items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 [&::-webkit-details-marker]:hidden"
     data-testid={`${testid}-summary`}
   >
-    <h2 id={headingId} class="section-title">{heading}</h2>
+    <h2 id={headingId} class={headingClass}>{heading}</h2>
     {#if count !== null}<span class="text-muted numeric text-[13px]">{count}</span>{/if}
     <svg
       class="text-muted size-4 shrink-0 transition-transform group-open:rotate-180"

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { claimEntryFor, claimEntryNotes, rosterGateCopy, rosterGateState } from './roster-gate';
+import { claimEntryFor, rosterGateCopy, rosterGateState } from './roster-gate';
 
 describe('rosterGateState', () => {
   it('is a visitor when signed out, whatever else is true', () => {
@@ -30,36 +30,17 @@ describe('claimEntryFor', () => {
     canManage: false,
     membership: { rank: 'member' },
     claimState: 'claimed' as const,
-    claimedBy: 'hunthrop#1894',
   };
 
-  it('tells a member of a claimed guild who holds it, muted, never "Run this guild?"', () => {
-    expect(claimEntryFor(base)).toEqual({ kind: 'note', text: 'Claimed by hunthrop#1894' });
-    expect(claimEntryFor({ ...base, claimState: 'contested' })).toEqual({
-      kind: 'note',
-      text: 'Claimed by hunthrop#1894',
-    });
+  it('tells a member of a claimed guild who holds it', () => {
+    expect(claimEntryFor(base)).toEqual({ kind: 'claimedBy' });
+    expect(claimEntryFor({ ...base, claimState: 'contested' })).toEqual({ kind: 'claimedBy' });
   });
 
-  it('says nothing to a member when the claimant is not named', () => {
-    expect(claimEntryFor({ ...base, claimedBy: null })).toEqual({ kind: 'none' });
-  });
-
-  it('gives a member of an unclaimed guild the Get the guild claimed link', () => {
-    expect(claimEntryFor({ ...base, claimState: 'unclaimed' })).toEqual({ kind: 'getClaimed' });
-    expect(claimEntryNotes.getClaimed).toBe('Get the guild claimed');
-  });
-
-  it('offers "Claim it" only to an officer rank in an unclaimed guild', () => {
-    expect(claimEntryFor({ ...base, claimState: 'unclaimed', membership: { rank: 'officer' } })).toEqual({
-      kind: 'claim',
-    });
-    // An officer rank the site cannot read the claim for yet (not verified) is offered the page,
-    // which states the claim itself.
-    expect(claimEntryFor({ ...base, claimState: null, membership: { rank: 'leader' } })).toEqual({
-      kind: 'claim',
-    });
-    expect(claimEntryFor({ ...base, claimState: null })).toEqual({ kind: 'none' });
+  it('leaves an unclaimed or pending guild to the claim row and the Before raids open card', () => {
+    for (const claimState of ['unclaimed', 'pending', null] as const) {
+      expect(claimEntryFor({ ...base, claimState })).toEqual({ kind: 'none' });
+    }
   });
 
   it('says nothing to a stranger, a signed-out visitor or a verified officer', () => {

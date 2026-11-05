@@ -38,10 +38,26 @@ export function progressionNightDay(date: string, now: Date = new Date()): strin
   return date.length > 10 ? nightDate(new Date(date), now) : nightDateOnly(date, now);
 }
 
-/** "1 encounter down this tier: Onyxia." / "No encounter down this tier yet." */
-export function encountersDownLine(names: readonly string[]): string {
-  if (names.length === 0) return 'No encounter down this tier yet.';
-  return `${counted(names.length, 'encounter')} down this tier: ${names.join(', ')}.`;
+/** The named encounters the guild has killed, in the progression read's order: the names every
+ *  "down this tier" line lists, so an encounter only pulled is never named as down. */
+export function downEncounterNames(encounters: readonly { name: string; kills: number }[]): string[] {
+  return encounters.filter((encounter) => encounter.kills > 0).map((encounter) => encounter.name);
+}
+
+/** "1 of 1 named bosses down: Onyxia." / "No boss down this tier yet." */
+export function bossesDownLine(names: readonly string[], named: number): string {
+  if (names.length === 0) return 'No boss down this tier yet.';
+  return `${names.length} of ${named} named bosses down: ${names.join(', ')}.`;
+}
+
+/** The same line before the progression read names the bosses: the home's own count. */
+export function bossesDownCountLine(down: number, named: number): string {
+  return down === 0 ? 'No boss down this tier yet.' : `${down} of ${named} named bosses down.`;
+}
+
+/** The Before raids open card shows while nothing is logged in the tier. */
+export function showsWeekOne(role: GuildViewerRole, tier: { pulls_total: number } | undefined): boolean {
+  return role !== 'public' && (tier === undefined || tier.pulls_total === 0);
 }
 
 /** "1 raider · 4 waiting for approval · 0 below the rating floor". */
@@ -55,11 +71,6 @@ export function rosterCardParts(summary: {
     waiting: `${summary.waiting_for_approval} waiting for approval`,
     belowFloor: `${summary.below_rating_floor} below the rating floor`,
   };
-}
-
-/** "1 check failing", "3 checks failing". */
-export function checksFailingLine(failing: number): string {
-  return `${counted(failing, 'check')} failing`;
 }
 
 export const NO_PUBLIC_REPORTS = 'No public reports this week yet.';

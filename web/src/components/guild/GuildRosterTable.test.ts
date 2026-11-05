@@ -111,11 +111,12 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(text(zulmara)).toContain(
       'Level 60 · Gear gap 12 DPS · Gear set: Survival (raid) · seen 6 minutes ago',
     );
-    expect(text(zulmara)).toContain('Survival Hunter in game · Marksmanship on the site');
-    // Kraggor: the addon agrees with the site's Protection, so the line says only "in game".
+    expect(text(zulmara)).toContain('Survival Hunter · Marksmanship on the site');
+    // Kraggor: the addon agrees with the site's Protection, so the line names it alone.
     const kraggor = text(byName.get('Kraggor') ?? '');
     expect(kraggor).toContain('Level 60 · Gear gap 4 DPS · Gear set: Protection (raid) · seen 8 minutes ago');
-    expect(kraggor).toContain('Protection Warrior in game');
+    expect(kraggor).toContain('Protection Warrior');
+    expect(kraggor).not.toContain(' in game');
     expect(kraggor).not.toContain('on the site');
     expect(kraggor).not.toContain('(addon)');
     expect(withSnapshot).not.toContain('(addon)');
@@ -125,11 +126,9 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     const html = render(GuildRosterTable, {
       props: { ...props(buildMockHome(VIEWER_MEMBER)), mySiteSpec: 'Beast Mastery' },
     }).body;
-    expect(text(rows(html).get('Zulmara') ?? '')).toContain(
-      'Survival Hunter in game · Beast Mastery on the site',
-    );
+    expect(text(rows(html).get('Zulmara') ?? '')).toContain('Survival Hunter · Beast Mastery on the site');
     // Other rows still read the roster's own spec.
-    expect(text(rows(html).get('Kraggor') ?? '')).toContain('Protection Warrior in game');
+    expect(text(rows(html).get('Kraggor') ?? '')).toContain('Protection Warrior');
   });
 
   it('the seen time hovers "Seen at HH:MM on the member\'s clock"', () => {
@@ -513,5 +512,43 @@ describe('GuildRosterTable attendance source', () => {
     const body = text(render(GuildRosterTable, { props: props(raidHome) }).body);
     expect(body).toContain('7 of 8 nights');
     expect(body).not.toContain('Came: raids attended');
+  });
+});
+
+describe('GuildRosterTable: Remove on a member who joined by invite link', () => {
+  const home = buildMockHome(VIEWER_OFFICER);
+  const invited = {
+    name: 'Driftwood',
+    state: 'not_seen' as const,
+    rank: 'member' as const,
+    class: 'rogue',
+    account_key: 'u:9',
+    may_remove: true,
+  };
+  const ask = (can: string[], entry = invited) =>
+    render(GuildRosterTable, {
+      props: { ...props(home), members: [...(home.members ?? []), entry], can },
+    }).body;
+
+  it('offers Remove on the invited entry where the API says may_remove and the account may remove', () => {
+    const html = ask(['remove']);
+    expect(html).toContain('data-testid="guild-roster-entry-remove"');
+    expect(html).toContain('aria-label="Remove Driftwood"');
+  });
+  it('never offers it without the remove capability or without may_remove', () => {
+    expect(ask([])).not.toContain('guild-roster-entry-remove');
+    expect(ask(['remove'], { ...invited, may_remove: false })).not.toContain('guild-roster-entry-remove');
+  });
+});
+
+describe('GuildRosterTable: professions read as the client names them', () => {
+  it('turns the export slugs into First Aid and Leatherworking', () => {
+    const home = buildMockHome(VIEWER_MEMBER);
+    const roster = home.roster.map((r, i) =>
+      i === 0 ? { ...r, professions: ['leatherworking', 'first-aid'] } : r,
+    );
+    const html = render(GuildRosterTable, { props: { ...props(home), roster } }).body;
+    expect(text(html)).toContain('Leatherworking / First Aid');
+    expect(html).not.toContain('first-aid');
   });
 });

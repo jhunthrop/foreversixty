@@ -41,7 +41,7 @@ func TestTransfer_SendWithdrawDecline(t *testing.T) {
 	}
 	read, _ := h.readBilling(t, gid, leader)
 	tr := read.Transfer
-	if tr == nil || tr.State != transferOffered || tr.ToYou || tr.ToName != fmt.Sprintf("user-%d", officer) ||
+	if tr == nil || tr.State != transferOffered || tr.ToYou || tr.ToName != memberStandIn ||
 		!tr.Founder || tr.Interval == nil || *tr.Interval != "monthly" || tr.AmountCents == nil || *tr.AmountCents != 1200 {
 		t.Fatalf("transfer = %+v", tr)
 	}
@@ -93,7 +93,7 @@ func TestTransfer_ReceiverSeesToYou(t *testing.T) {
 	officer := h.member(t, gid, "officer", "officer")
 	h.expectNoContent(t, billingPath(gid, "/transfer"), leader, map[string]any{"to_user_id": officer})
 	read, raw := h.readBilling(t, gid, officer)
-	if read.Transfer == nil || !read.Transfer.ToYou || read.Transfer.FromName != fmt.Sprintf("user-%d", leader) {
+	if read.Transfer == nil || !read.Transfer.ToYou || read.Transfer.FromName != memberStandIn {
 		t.Fatalf("transfer = %+v", read.Transfer)
 	}
 	if string(raw["can"]) != "[]" || string(raw["transfer_candidates"]) != "[]" {

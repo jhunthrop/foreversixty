@@ -134,13 +134,20 @@ func readinessLine(row ReadinessRow, raidStart time.Time) string {
 	return strings.Join(parts, readinessLineJoin)
 }
 
-// gearGapWords is the board's Gear gap cell (web readiness-view.ts gearGapLabel) for a gap.
+// gearGapWords is the board's Gear gap cell (web readiness-view.ts gearGapLabel) for a gap: a
+// healer's or tank's gap (no unit) is the upgrade count alone, and a DPS figure prints only
+// when something was sim-checked.
 func gearGapWords(g GearGapView) string {
 	upgrades := fmt.Sprintf("%d upgrade%s", g.Upgrades, plural(g.Upgrades))
+	if g.Unit == nil {
+		return upgrades
+	}
 	gain := int(g.GainDps + 0.5)
 	switch {
 	case gain <= 0 && g.NotSimChecked > 0:
 		return upgrades + readinessLineJoin + "not simmed yet"
+	case gain <= 0:
+		return upgrades
 	case g.NotSimChecked > 0:
 		return fmt.Sprintf("%s · +%d DPS · %d not simmed yet", upgrades, gain, g.NotSimChecked)
 	default:

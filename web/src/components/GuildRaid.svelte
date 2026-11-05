@@ -8,12 +8,13 @@
   import { minuteClock } from '../lib/guild/minute-clock.svelte';
   import { viewerLocale } from '../lib/guild/raid-time';
   import { untrack } from 'svelte';
-  import { guildHref, guildSettingsHref } from '../lib/characters';
+  import { guildClaimHref, guildHref, guildSettingsHref } from '../lib/characters';
+  import { gateFactsFrom } from '../lib/guild/plan-gate';
   import { attendanceCopy } from '../lib/guild/attendance-copy';
   import { guildClaimCopy } from '../lib/guild/copy';
   import { focusOnMount } from '../lib/guild/focus-now';
   import { browserStorage } from '../lib/guild/reserve-keys';
-  import { SEP, raidCopy } from '../lib/guild/raid-copy';
+  import { SEP, eyebrowOf, kindOf, notesEmptyOf, raidCopy } from '../lib/guild/raid-copy';
   import {
     raidCount,
     raidPageFlags,
@@ -46,6 +47,7 @@
   import RaidOfficerRow from './guild/RaidOfficerRow.svelte';
   import RaidRoster from './guild/RaidRoster.svelte';
   import RaidSignupStrip from './guild/RaidSignupStrip.svelte';
+  import ZoneKeyNote from './guild/ZoneKeyNote.svelte';
   import RaidYourNight from './guild/RaidYourNight.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -85,6 +87,17 @@
    *  back link and tabs already point at the guild page. */
   const guildPath = $derived(guildHref(path.guild.region, path.guild.ruleset, guildName || path.guild.slug));
   const settingsHref = $derived(guildSettingsHref(path.guild.region, path.guild.ruleset, guildName));
+  /** Raids are a feature of both plans: the plan flags do not change the gate's link. */
+  const gateFacts = $derived(
+    gateFactsFrom({
+      claim: c.claim,
+      membership: c.membership,
+      officerTools: false,
+      raidGuildTools: false,
+      settingsHref,
+      claimHref: guildClaimHref(path.guild.region, path.guild.ruleset, guildName),
+    }),
+  );
   const officer = $derived(c.role === 'officer');
   const reserveRows = stripReserveRows(browserStorage());
   /** The raid was last drawn `done` (its Your night rows, else null): the loading page holds the
@@ -134,7 +147,9 @@
 
 {#snippet raidEyebrow()}
   <span class="label text-gold flex items-center gap-2.5">
-    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raidCopy.page.eyebrow}
+    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raid === null
+      ? raidCopy.page.eyebrow
+      : eyebrowOf(kindOf(raid))}
   </span>
 {/snippet}
 
@@ -270,6 +285,9 @@
                 >{SEP}{/if}<Figures text={when.countdown} class={goldText} /></span
             >
           </p>
+          {#if raid.key_item != null}
+            <div class="md:col-span-2"><ZoneKeyNote item={raid.key_item} testid="raid-key" /></div>
+          {/if}
           <div class="flex flex-col gap-2 md:col-span-2" data-testid="raid-count">
             {#if raid.night === null}
               <p class="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -315,7 +333,7 @@
                 busy={c.busy}
                 line={c.line}
                 gateId={GATE_ID}
-                {settingsHref}
+                {gateFacts}
                 {guildTimezone}
                 onEdit={() => c.openEdit()}
                 onStatus={runStatus}
@@ -360,6 +378,7 @@
         {officer}
         officerTools={c.officerTools}
         gateId={GATE_ID}
+        {gateFacts}
         {viewerTimezone}
         {locale}
       />
@@ -368,7 +387,7 @@
     {#snippet notesBody()}
       {#if raid.notes_html.trim() === ''}
         <p class="text-muted text-[14px]" data-testid="raid-notes-empty">
-          {officer ? raidCopy.notesEmpty.officer : raidCopy.notesEmpty.member}
+          {notesEmptyOf(kindOf(raid), officer)}
         </p>
       {:else}
         <div

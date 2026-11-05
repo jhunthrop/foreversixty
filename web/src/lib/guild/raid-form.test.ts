@@ -3,7 +3,7 @@
 // guild's last planned raid, the 6.1 field errors, the repeat helper under the cap, and the
 // payload in UTC from the guild's wall clock.
 import { describe, expect, it } from 'vitest';
-import type { GuildRaidDiscord, GuildRaidDiscordPost, GuildRaidView } from './api';
+import type { GuildRaidDiscord, GuildRaidDiscordPost, GuildRaidView, GuildZoneView } from './api';
 import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import { raidCopy } from './raid-copy';
 import {
@@ -36,7 +36,7 @@ const NOW = new Date('2026-12-02T18:00:00Z');
 function raid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
   return {
     id: 7,
-    zone: 'onyxias-lair',
+    zone: 'raid:onyxias-lair',
     zone_name: "Onyxia's Lair",
     title: "Onyxia's Lair",
     // Thu 26 Nov 2026, 20:30 Chicago.
@@ -65,7 +65,7 @@ function raid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
 
 function values(extra: Partial<RaidFormValues> = {}): RaidFormValues {
   return {
-    zone: 'onyxias-lair',
+    zone: 'raid:onyxias-lair',
     title: '',
     date: '2026-12-03',
     time: '20:00',
@@ -111,6 +111,7 @@ describe('lastPlannedRaid and openRaidCount', () => {
       raid({ status: 'done' }),
     ];
     expect(openRaidCount(list)).toBe(2);
+    expect(openRaidCount([raid({ zone: 'dungeon:the-deadmines' }), raid({ zone: 'event:guild' })])).toBe(0);
   });
 });
 
@@ -132,7 +133,7 @@ describe('createDefaults', () => {
       discord: CONNECTED,
     });
     expect(d).toMatchObject({
-      zone: 'onyxias-lair',
+      zone: 'raid:onyxias-lair',
       date: '2026-12-03',
       time: '20:30',
       duration: 150,
@@ -182,7 +183,12 @@ describe('createDefaults', () => {
 describe('editDefaults', () => {
   it('reads the raid back on the guild wall clock', () => {
     const d = editDefaults(raid({ title: 'Ony farm' }), CHICAGO);
-    expect(d).toMatchObject({ zone: 'onyxias-lair', title: 'Ony farm', date: '2026-11-26', time: '20:30' });
+    expect(d).toMatchObject({
+      zone: 'raid:onyxias-lair',
+      title: 'Ony farm',
+      date: '2026-11-26',
+      time: '20:30',
+    });
   });
 
   it('leaves the title empty when it is the zone name', () => {
@@ -195,6 +201,17 @@ describe('editDefaults', () => {
   });
 });
 
+const ZONE_ONY: GuildZoneView = {
+  key: 'raid:onyxias-lair',
+  name: "Onyxia's Lair",
+  kind: 'raid',
+  size: 40,
+  opens: null,
+  min_level: null,
+  max_level: null,
+  key_item: null,
+};
+
 describe('validateRaidForm', () => {
   const ctx = { now: NOW, plannedCount: 0, mode: 'create' as const };
 
@@ -204,7 +221,7 @@ describe('validateRaidForm', () => {
 
   it('says the 6.1 lines under each field', () => {
     expect(validateRaidForm(values({ zone: '', date: '' }), ctx)).toEqual({
-      zone: raidCopy.form.errors.raid,
+      zone: raidCopy.form.errors.what,
       date: raidCopy.form.errors.date,
     });
     expect(validateRaidForm(values({ date: '2026-12-01' }), ctx)).toEqual({
@@ -221,6 +238,35 @@ describe('validateRaidForm', () => {
       form: raidCopy.form.errors.cap,
     });
     expect(validateRaidForm(values({ repeat: true }), { ...ctx, plannedCount: 8 })).toEqual({});
+  });
+
+  it('asks a guild event for a title', () => {
+    const event = {
+      ...ZONE_ONY,
+      key: 'event:guild-10',
+      name: 'Guild event',
+      kind: 'event' as const,
+      opens: null,
+    };
+    expect(validateRaidForm(values({ zone: event.key }), { ...ctx, zone: event })).toEqual({
+      title: raidCopy.form.errors.eventTitle,
+    });
+    expect(validateRaidForm(values({ zone: event.key, title: 'PvP' }), { ...ctx, zone: event })).toEqual({});
+  });
+
+  it('refuses a raid dated before it opens, with the raid and the day', () => {
+    const early = { ...ctx, zone: { ...ZONE_ONY, opens: '2026-12-30T00:00:00Z' } };
+    expect(validateRaidForm(values(), early).date).toBe(
+      "Onyxia's Lair opens Wed 30 Dec. Pick that day or later.",
+    );
+    const on = values({ date: '2026-12-30' });
+    expect(validateRaidForm(on, early)).toEqual({});
+  });
+
+  it('holds a dungeon run and a guild event to no cap', () => {
+    const atCap = { ...ctx, plannedCount: RAID_CAP };
+    expect(validateRaidForm(values({ zone: 'dungeon:the-deadmines' }), atCap)).toEqual({});
+    expect(validateRaidForm(values({ zone: 'event:guild', title: 'x' }), atCap)).toEqual({});
   });
 
   it('lets an edit keep a start already in the past', () => {
@@ -265,7 +311,7 @@ describe('raidPayload', () => {
     expect(
       raidPayload(values({ title: '  Ony  ', repeat: true, postToDiscord: true }), 'create', true),
     ).toEqual({
-      zone: 'onyxias-lair',
+      zone: 'raid:onyxias-lair',
       title: 'Ony',
       starts_at: '2026-12-04T02:00:00.000Z',
       duration_minutes: 180,

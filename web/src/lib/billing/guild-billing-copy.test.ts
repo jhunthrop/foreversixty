@@ -62,6 +62,7 @@ describe('chooser and size line', () => {
     expect(copy.chooser.tierLine('guild')).toBe(spec('Chooser', 2));
     expect(copy.chooser.tierLine('raid_guild')).toBe(spec('Chooser', 3));
     expect(copy.chooser.verifiedToday(28)).toBe(spec('Chooser', 4, { n: '28' }));
+    expect(copy.chooser.verifiedToday(1)).toBe('1 verified member today.');
     expect(copy.chooser.startTrial).toBe(spec('Chooser', 5));
     expect(copy.chooser.subscribe('guild', 'yearly', true)).toBe(
       spec('Chooser', 6, { price: '$120 a year' }),

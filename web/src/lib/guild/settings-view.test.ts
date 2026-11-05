@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
 import type { GuildBillingView } from '../account/api';
-import { canManageBilling, claimedByLine, officerToolsExplanation, settingsWords } from './settings-view';
+import { canManageBilling, officerToolsExplanation, settingsWords } from './settings-view';
 
 function billing(overrides: Partial<GuildBillingView> = {}): GuildBillingView {
   return {
@@ -16,23 +16,6 @@ function billing(overrides: Partial<GuildBillingView> = {}): GuildBillingView {
     ...overrides,
   };
 }
-
-describe('claimedByLine', () => {
-  it('names the claimant, from the settings answer first', () => {
-    expect(claimedByLine({ state: 'claimed', frozen: false }, { battletag: 'hunthrop#1894' })).toBe(
-      'Claimed by hunthrop#1894',
-    );
-    expect(claimedByLine({ state: 'claimed', frozen: false, claimed_by_name: 'hunthrop#1894' }, null)).toBe(
-      'Claimed by hunthrop#1894',
-    );
-  });
-
-  it('says nothing of a guild nobody holds', () => {
-    expect(claimedByLine({ state: 'unclaimed', frozen: false }, null)).toBeNull();
-    expect(claimedByLine({ state: 'pending', frozen: false }, null)).toBeNull();
-    expect(claimedByLine({ state: 'contested', frozen: true }, { battletag: 'hunthrop#1894' })).toBeNull();
-  });
-});
 
 describe('the Manage billing rule', () => {
   it('offers Manage billing only to the billing contact of a plan that has a Stripe customer', () => {

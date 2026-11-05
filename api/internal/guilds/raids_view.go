@@ -89,9 +89,13 @@ type RaidDiscordPost struct {
 
 // RaidView is GET /v1/guilds/{id}/raids/{raid} and each row of the planned list.
 type RaidView struct {
-	ID              int64     `json:"id"`
-	Zone            string    `json:"zone"`
-	ZoneName        string    `json:"zone_name"`
+	ID       int64  `json:"id"`
+	Zone     string `json:"zone"`
+	ZoneName string `json:"zone_name"`
+	// ZoneKind is raid, dungeon or event: the page's words follow it (guild events spec §3.5).
+	ZoneKind string `json:"zone_kind"`
+	// KeyItem is the key the run's door asks for, null when none.
+	KeyItem         *KeyItem  `json:"key_item"`
 	Title           string    `json:"title"`
 	StartsAt        time.Time `json:"starts_at"`
 	DurationMinutes int       `json:"duration_minutes"`
@@ -120,11 +124,16 @@ type RaidView struct {
 	Report *ReportView `json:"report"`
 }
 
-// ZoneView is one schedulable zone as the form lists it.
+// ZoneView is one schedulable zone as the form lists it (guild events spec §3.1).
 type ZoneView struct {
-	Key  string `json:"key"`
-	Name string `json:"name"`
-	Size *int   `json:"size"`
+	Key      string     `json:"key"`
+	Name     string     `json:"name"`
+	Kind     string     `json:"kind"`
+	Size     *int       `json:"size"`
+	Opens    *time.Time `json:"opens"`
+	MinLevel *int       `json:"min_level"`
+	MaxLevel *int       `json:"max_level"`
+	KeyItem  *KeyItem   `json:"key_item"`
 }
 
 // PlannedSection is the members-only half of GET /v1/guilds/{id}/raids. RaidsPage embeds it
@@ -160,6 +169,7 @@ type NextRaidView struct {
 	ID       int64     `json:"id"`
 	Zone     string    `json:"zone"`
 	ZoneName string    `json:"zone_name"`
+	ZoneKind string    `json:"zone_kind"`
 	Title    string    `json:"title"`
 	StartsAt time.Time `json:"starts_at"`
 	// Status is planned or locked (the band shows the next open raid; a locked one is inert).
@@ -175,7 +185,10 @@ func zoneViews() []ZoneView {
 	zones := Zones()
 	out := make([]ZoneView, len(zones))
 	for i, z := range zones {
-		out[i] = ZoneView{Key: z.Key, Name: z.Name, Size: z.Size}
+		out[i] = ZoneView{
+			Key: z.Key, Name: z.Name, Kind: z.Kind, Size: z.Size, Opens: z.Opens,
+			MinLevel: z.MinLevel, MaxLevel: z.MaxLevel, KeyItem: z.KeyItem,
+		}
 	}
 	return out
 }
@@ -214,15 +227,21 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 		return RaidView{}, err
 	}
 	v := RaidView{
-		ID: r.ID, Zone: r.Zone, ZoneName: zone.Name, Title: r.Title, StartsAt: r.StartsAt.UTC(),
+		ID: r.ID, Zone: r.Zone, ZoneName: zone.Name, ZoneKind: zone.Kind, KeyItem: zone.KeyItem,
+		Title: r.Title, StartsAt: r.StartsAt.UTC(),
 		DurationMinutes: r.DurationMinutes, Status: r.Status, Size: zone.Size, GuildTimezone: vc.timezone,
-		NotesHTML: notesHTML, Notes: r.Notes, Counts: countSignups(signups),
-		Signups: make([]SignupView, 0, len(signups)), NotSigned: []RaidCharacter{},
+		NotesHTML: notesHTML, Notes: r.Notes, Signups: []SignupView{}, NotSigned: []RaidCharacter{},
 		Viewer: RaidViewer{Characters: []ViewerCharacter{}},
 	}
 	byKey := make(map[string]Signup, len(signups))
+	answered := make(map[int64]bool, len(signups))
 	for _, sg := range signups {
 		byKey[sg.CharacterKey] = sg
+		answered[sg.SignedBy] = true
+	}
+	shown := onePerAccount(signups)
+	v.Counts = countSignups(shown)
+	for _, sg := range shown {
 		v.Signups = append(v.Signups, SignupView{
 			CharacterKey: sg.CharacterKey, Name: sg.Name, Class: sg.Class, Spec: sg.Spec,
 			Role: sg.Role, State: sg.State, Note: sg.Note, Own: vc.owns(sg),
@@ -231,7 +250,8 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 	sortSignups(v.Signups)
 	for _, c := range vc.roster {
 		sg, signed := byKey[c.CharacterKey]
-		if c.verified && !signed {
+		// An account that has answered with any character is not waiting on an answer.
+		if c.verified && !answered[c.userID] {
 			v.NotSigned = append(v.NotSigned, c.RaidCharacter)
 		}
 		if c.userID == vc.viewerID {
@@ -243,6 +263,29 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 		return v.Viewer.Characters[i].Name < v.Viewer.Characters[j].Name
 	})
 	return v, nil
+}
+
+// placeRank orders an account's places: In over Late over Bench over Out (accountPlaces' order).
+var placeRank = map[string]int{SignupIn: 0, SignupLate: 1, SignupBench: 2, SignupOut: 3}
+
+// onePerAccount is each account's best sign-up, in signups' order: a player who switched from
+// their main to an alt (R3 benched the main) is one In, not an In and a Bench. Ties keep the
+// first row.
+func onePerAccount(signups []Signup) []Signup {
+	best := make(map[int64]int, len(signups))
+	for i, sg := range signups {
+		j, seen := best[sg.SignedBy]
+		if !seen || placeRank[sg.State] < placeRank[signups[j].State] {
+			best[sg.SignedBy] = i
+		}
+	}
+	out := make([]Signup, 0, len(best))
+	for i, sg := range signups {
+		if best[sg.SignedBy] == i {
+			out = append(out, sg)
+		}
+	}
+	return out
 }
 
 func viewerCharacter(c raidRosterChar, sg Signup, signed bool) ViewerCharacter {
@@ -266,7 +309,11 @@ func zoneOf(key string) Zone {
 	if z, ok := ZoneByKey(key); ok {
 		return z
 	}
-	return Zone{Key: key, Name: key}
+	kind := ""
+	if strings.HasPrefix(key, raidKeyPrefix) {
+		kind = ZoneRaid
+	}
+	return Zone{Key: key, Name: key, Kind: kind}
 }
 
 func countSignups(signups []Signup) RaidCounts {
@@ -354,11 +401,12 @@ func roleForSpec(spec string) string {
 	}
 }
 
-// NextRaidFor is the band line for viewerID: the guild's next raid, nil when none. Own is
+// NextRaidFor is the band line for viewerID: the guild's next raid, dungeon run or guild event
+// (guild events spec §3.4), nil when none. Own is
 // the sign-up of headerKey (the home's viewer character) when it has one, else the viewer's
 // first own sign-up, else nil.
 func (s *Store) NextRaidFor(ctx context.Context, guildID, viewerID int64, headerKey *string, now time.Time) (*NextRaidView, error) {
-	raid, ok, err := s.NextRaid(ctx, guildID, now)
+	raid, ok, err := s.NextPlanned(ctx, guildID, now)
 	if err != nil || !ok {
 		return nil, err
 	}
@@ -373,8 +421,8 @@ func (s *Store) NextRaidFor(ctx context.Context, guildID, viewerID int64, header
 	zone := zoneOf(raid.Zone)
 	c := countSignups(signups)
 	return &NextRaidView{
-		ID: raid.ID, Zone: raid.Zone, ZoneName: zone.Name, Title: raid.Title, StartsAt: raid.StartsAt.UTC(),
-		Status: raid.Status, Size: zone.Size, GuildTimezone: vc.timezone,
+		ID: raid.ID, Zone: raid.Zone, ZoneName: zone.Name, ZoneKind: zone.Kind, Title: raid.Title,
+		StartsAt: raid.StartsAt.UTC(), Status: raid.Status, Size: zone.Size, GuildTimezone: vc.timezone,
 		Counts: NextRaidCounts{In: c.In, Late: c.Late, Tanks: c.Tanks, Healers: c.Healers, DPS: c.DPS},
 		Own:    ownSignup(signups, vc, headerKey),
 	}, nil

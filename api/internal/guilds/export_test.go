@@ -118,6 +118,27 @@ func TestExportLoot_RowsResolveNames(t *testing.T) {
 	}
 }
 
+func TestExportLoot_AnInvitedMembersAwardReadsAsTheirCharacter(t *testing.T) {
+	f := newExportFixture(t, "Export Invited")
+	uid := seedUser(t, f.h.pool, "export-invited@example.com")
+	key := syntheticKey(uid)
+	seedCharacter(t, f.h.pool, f.gid, uid, key, "member", true)
+	if _, err := f.h.pool.Exec(t.Context(), `
+		insert into characters (key, user_id, region, ruleset, name, class)
+		values ('us/hardcore/brightwing', $1, 'us', 'hardcore', 'Brightwing', 'priest')`, uid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := f.h.pool.Exec(t.Context(), `
+		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by, awarded_at)
+		values ($1, 1084, 16963, $2, $3, '2026-10-20 21:00+00')`, f.gid, key, f.officer); err != nil {
+		t.Fatal(err)
+	}
+	rows := f.rows("loot")
+	if len(rows) != 2 || rows[1][5] != "Brightwing" {
+		t.Fatalf("rows = %v, want the award named Brightwing", rows)
+	}
+}
+
 func TestExport_LapsedGuildStillExports(t *testing.T) {
 	f := newExportFixture(t, "Export Lapsed") // no entitlement row at all
 	for _, kind := range []string{"attendance", "loot"} {

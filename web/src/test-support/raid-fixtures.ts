@@ -39,7 +39,7 @@ export function viewerCharacter(extra: Partial<GuildRaidViewerCharacter> = {}): 
 export function plannedRaid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
   return {
     id: 7,
-    zone: 'onyxias-lair',
+    zone: 'raid:onyxias-lair',
     zone_name: "Onyxia's Lair",
     title: "Onyxia's Lair",
     starts_at: '2026-12-11T02:00:00Z',

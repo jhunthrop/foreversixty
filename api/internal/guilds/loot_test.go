@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -114,6 +115,30 @@ func TestLootListsOnyxiasRealTwentyTwoItems(t *testing.T) {
 	if scaleOfOnyxia == nil || scaleOfOnyxia.Slot != "" || len(scaleOfOnyxia.Candidates) != 0 {
 		t.Fatalf("Scale of Onyxia = %+v, want no slot and no candidates", scaleOfOnyxia)
 	}
+	if scaleOfOnyxia.Kind != lootKindSkinned || helmOfWrath.Kind != lootKindGear {
+		t.Fatalf("kinds = %s/%s, want skinned/gear", scaleOfOnyxia.Kind, helmOfWrath.Kind)
+	}
+	// The seeded level-60 hunter is off the warrior helm; the reader, with no export of a level, is
+	// not at the cap. Who is on which item is the real-data tests' job (loot_rules_test.go): this
+	// harness loads no item tables.
+	if len(helmOfWrath.Candidates) != 0 {
+		t.Fatalf("Helm of Wrath candidates = %+v, want none: nobody here is a warrior", helmOfWrath.Candidates)
+	}
+	if view.AtLevelCap != 1 {
+		t.Fatalf("at_level_cap = %d, want 1", view.AtLevelCap)
+	}
+	for _, it := range view.Items {
+		switch it.ItemID {
+		case 16939:
+			if it.InventoryType != 1 || it.ItemClass != 4 || it.ItemSubclass != 3 {
+				t.Fatalf("Dragonstalker's Helm = %+v, want the client's slot facts", it)
+			}
+		case 18705:
+			if it.QuestLabel != "Quest: A Proper String (Hunter)" || len(it.Eligible) != 1 {
+				t.Fatalf("Sinew = %+v, want its label and the hunter", it)
+			}
+		}
+	}
 }
 
 func f64(v float64) *float64 { return &v }
@@ -142,10 +167,10 @@ func TestCandidateSortWithinTier0ByGainDps(t *testing.T) {
 // ilvl_delta desc, then attendance.
 func TestCandidateSortTier0AlwaysAheadOfTier1AndTier1ByIlvlDelta(t *testing.T) {
 	cands := []LootCandidate{
-		{CharacterKey: "fallback-high-delta", tier: 1, IlvlDelta: i(20), Attendance: Attendance{Present: 1}},
-		{CharacterKey: "bis-tiny-gain", tier: 0, GainDps: f64(0.1), Attendance: Attendance{Present: 1}},
-		{CharacterKey: "fallback-low-delta", tier: 1, IlvlDelta: i(5), Attendance: Attendance{Present: 8}},
-		{CharacterKey: "fallback-tie-attendance", tier: 1, IlvlDelta: i(5), Attendance: Attendance{Present: 2}},
+		{CharacterKey: "fallback-high-delta", Tier: 1, IlvlDelta: i(20), Attendance: Attendance{Present: 1}},
+		{CharacterKey: "bis-tiny-gain", Tier: 0, GainDps: f64(0.1), Attendance: Attendance{Present: 1}},
+		{CharacterKey: "fallback-low-delta", Tier: 1, IlvlDelta: i(5), Attendance: Attendance{Present: 8}},
+		{CharacterKey: "fallback-tie-attendance", Tier: 1, IlvlDelta: i(5), Attendance: Attendance{Present: 2}},
 	}
 	sortLootCandidates(cands)
 	want := []string{"bis-tiny-gain", "fallback-high-delta", "fallback-low-delta", "fallback-tie-attendance"}
@@ -391,11 +416,12 @@ func TestBuildItemForResolvesARealOnyxiaDropByClass(t *testing.T) {
 // higher item level than the drop does not.
 func TestFallbackMatchQualifiesARealUpgradeAndRefusesADowngrade(t *testing.T) {
 	s := realTreesStore(t)
-	helmOfWrath := lootItem{ItemID: 16963, Slot: "head"}
+	helmOfWrath := onyxiaRow(t, 16963)
+	head := []string{"head"}
 
 	empty := RosterRow{className: "warrior", gear: map[string]int{}}
-	delta, ok := s.fallbackMatch(empty, helmOfWrath)
-	if !ok || delta != 76 {
+	delta, slot, ok := s.fallbackMatch(empty, helmOfWrath, head)
+	if !ok || delta != 76 || slot != "head" {
 		t.Fatalf("fallbackMatch (empty slot) = %d/%v, want 76/true", delta, ok)
 	}
 
@@ -406,13 +432,8 @@ func TestFallbackMatchQualifiesARealUpgradeAndRefusesADowngrade(t *testing.T) {
 	// client item levels do not vary by class) still qualifies for the real upgrade.
 	// To test a refusal, wear the drop item itself: no item outranks itself.
 	wearingTheDrop := RosterRow{className: "warrior", gear: map[string]int{"head": 16963}}
-	if _, ok := s.fallbackMatch(wearingTheDrop, helmOfWrath); ok {
+	if _, _, ok := s.fallbackMatch(wearingTheDrop, helmOfWrath, head); ok {
 		t.Fatal("fallbackMatch qualified a character already wearing the exact drop, want false")
-	}
-
-	noClassAccess := RosterRow{className: "not-a-real-class", gear: map[string]int{}}
-	if _, ok := s.fallbackMatch(noClassAccess, helmOfWrath); ok {
-		t.Fatal("fallbackMatch qualified an unresolvable class, want false")
 	}
 }
 
@@ -427,10 +448,10 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 		{
 			CharacterKey: "us/hardcore/fallbackwarrior", Name: "Fallbackwarrior", Verified: true,
 			className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{},
+			Level: i(60),
 		},
 	}
-	helmOfWrath := lootItem{ItemID: 16963, Slot: "head"}
-	cands := s.lootCandidates(roster, helmOfWrath)
+	cands := s.lootCandidates(roster, onyxiaRow(t, 16963))
 	if len(cands) != 1 {
 		t.Fatalf("candidates = %+v, want exactly 1", cands)
 	}
@@ -444,24 +465,30 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 	if c.IlvlDelta == nil || *c.IlvlDelta != 76 {
 		t.Errorf("ilvlDelta = %v, want 76", c.IlvlDelta)
 	}
-	if c.tier != 1 {
-		t.Errorf("tier = %d, want 1", c.tier)
+	if c.Tier != 1 {
+		t.Errorf("tier = %d, want 1", c.Tier)
 	}
 }
 
-// TestWornNameNamesTheItemInTheDropsSlot checks the "Replaces ..." name: the item the row wears
-// in the slot, empty for an empty slot or one the class table cannot name.
-func TestWornNameNamesTheItemInTheDropsSlot(t *testing.T) {
+// TestFillReplacesNamesTheItemInTheSlot checks the "Replaces ..." name and link: the item the row
+// wears in the slot, empty for an empty slot or one the class table cannot name.
+func TestFillReplacesNamesTheItemInTheSlot(t *testing.T) {
 	s := realTreesStore(t)
 	wearing := RosterRow{className: "warrior", gear: map[string]int{"head": 21524}}
-	if got := s.wornName(wearing, "head"); got != "Red Winter Hat" {
-		t.Errorf("wornName(head) = %q, want Red Winter Hat", got)
+	var cand LootCandidate
+	s.fillReplaces(&cand, wearing, "head")
+	if cand.Replaces != "Red Winter Hat" || cand.ReplacesItem == nil || cand.ReplacesItem.ItemID != 21524 {
+		t.Errorf("fillReplaces(head) = %+v, want Red Winter Hat with its item", cand)
 	}
-	if got := s.wornName(wearing, "back"); got != "" {
-		t.Errorf("wornName(empty slot) = %q, want empty", got)
+	var empty LootCandidate
+	s.fillReplaces(&empty, wearing, "back")
+	if empty.Replaces != "" || empty.ReplacesItem != nil {
+		t.Errorf("fillReplaces(empty slot) = %+v, want nothing", empty)
 	}
-	if got := s.wornName(RosterRow{className: "warrior", gear: map[string]int{"head": 1}}, "head"); got != "" {
-		t.Errorf("wornName(unknown item) = %q, want empty", got)
+	var unknown LootCandidate
+	s.fillReplaces(&unknown, RosterRow{className: "warrior", gear: map[string]int{"head": 1}}, "head")
+	if unknown.Replaces != "" || unknown.ReplacesItem != nil {
+		t.Errorf("fillReplaces(unknown item) = %+v, want nothing", unknown)
 	}
 }
 
@@ -469,13 +496,16 @@ func TestWornNameNamesTheItemInTheDropsSlot(t *testing.T) {
 // the count is the number of the guild's award rows naming that character, and the name is the item
 // worn in the drop's slot.
 func TestAwardCountsAndTheCandidateLine(t *testing.T) {
-	counts := awardCounts(map[int]*AwardedTo{
-		16963: {CharacterKey: "us/hardcore/a"},
-		16939: {CharacterKey: "us/hardcore/a"},
-		16947: {CharacterKey: "us/hardcore/b"},
+	to := func(key string) *AwardedTo { return &AwardedTo{CharacterKey: key} }
+	// The same helm won two weeks running counts twice.
+	counts := awardCounts([]lootAward{
+		{itemID: 16963, to: to("us/hardcore/a")},
+		{itemID: 16963, to: to("us/hardcore/a")},
+		{itemID: 16939, to: to("us/hardcore/a")},
+		{itemID: 16947, to: to("us/hardcore/b")},
 	})
-	if counts["us/hardcore/a"] != 2 || counts["us/hardcore/b"] != 1 || counts["us/hardcore/c"] != 0 {
-		t.Fatalf("awardCounts = %v, want a:2 b:1 c:0", counts)
+	if counts["us/hardcore/a"] != 3 || counts["us/hardcore/b"] != 1 || counts["us/hardcore/c"] != 0 {
+		t.Fatalf("awardCounts = %v, want a:3 b:1 c:0", counts)
 	}
 	if got := awardCounts(nil); len(got) != 0 {
 		t.Fatalf("awardCounts(nil) = %v, want empty", got)
@@ -485,10 +515,39 @@ func TestAwardCountsAndTheCandidateLine(t *testing.T) {
 	roster := []RosterRow{{
 		CharacterKey: "us/hardcore/wearer", Name: "Wearer", Verified: true,
 		className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{"head": 21524},
+		Level: i(60),
 	}}
-	cands := s.lootCandidates(roster, lootItem{ItemID: 16963, Slot: "head"})
+	cands := s.lootCandidates(roster, onyxiaRow(t, 16963))
 	if len(cands) != 1 || cands[0].Replaces != "Red Winter Hat" {
 		t.Fatalf("candidates = %+v, want one replacing Red Winter Hat", cands)
+	}
+}
+
+// TestTonightsAwardsMarkOnlyTheNightBeingPlayed checks the Loot tab's "awarded" state: the raid
+// being played now, or a raid-less award from tonight, marks the item; last week's raid or a
+// raid-less award from last week leaves it free; the latest award of an item wins.
+func TestTonightsAwardsMarkOnlyTheNightBeingPlayed(t *testing.T) {
+	now := time.Date(2026, 12, 9, 22, 0, 0, 0, time.UTC)
+	lastWeek, tonight := int64(1), int64(2)
+	row := func(item int, raid *int64, ago time.Duration, key string) lootAward {
+		return lootAward{itemID: item, raidID: raid, awardedAt: now.Add(-ago), to: &AwardedTo{CharacterKey: key}}
+	}
+	awards := []lootAward{
+		row(16963, &lastWeek, 7*24*time.Hour, "old"),
+		row(16939, nil, 6*24*time.Hour, "old"),
+		row(16947, &tonight, time.Hour, "first"),
+		row(16947, &tonight, 30*time.Minute, "second"),
+		row(17078, nil, 2*time.Hour, "raidless"),
+	}
+	got := tonightsAwards(awards, &tonight, now)
+	if got[16963] != nil || got[16939] != nil {
+		t.Fatalf("last week's awards still mark their items: %+v %+v", got[16963], got[16939])
+	}
+	if got[16947] == nil || got[16947].CharacterKey != "second" || got[17078] == nil {
+		t.Fatalf("tonight's awards = %+v", got)
+	}
+	if got := tonightsAwards(awards, nil, now); got[16947] != nil || got[17078] == nil {
+		t.Fatalf("with no raid tonight = %+v", got)
 	}
 }
 
@@ -552,12 +611,13 @@ func TestAwardLineNamesTheOfficersCharacter(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	byItem := tonightsAwards(got, nil, time.Now())
 	for item, want := range map[int]string{16963: "Bowmain", 16939: "an officer", 16947: "an officer"} {
-		if got[item] == nil || got[item].ByName != want {
-			t.Fatalf("award of %d: by_name = %+v, want %q", item, got[item], want)
+		if byItem[item] == nil || byItem[item].ByName != want {
+			t.Fatalf("award of %d: by_name = %+v, want %q", item, byItem[item], want)
 		}
 	}
-	for item, a := range got {
+	for item, a := range byItem {
 		if strings.Contains(a.ByName, "#") || strings.HasPrefix(a.ByName, "user-") {
 			t.Fatalf("award of %d names an account (%q), want a character or \"an officer\"", item, a.ByName)
 		}

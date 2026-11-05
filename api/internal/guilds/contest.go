@@ -50,12 +50,11 @@ type ClaimStateView struct {
 	State  string     `json:"state"`
 	Since  *time.Time `json:"since,omitempty"`
 	Frozen bool       `json:"frozen"`
-	// ClaimedByName is the claimant's own battletag (contract
-	// docs/contracts/2026-10-04-guild-centre-api.md's home endpoint). claimState itself
-	// stays pure (no DB access) - this is filled in afterward, by whichever caller wants
-	// it, from the same s.Accounts.User lookup settings.go's own ClaimedBy field already
-	// uses. nil whenever State is not "claimed".
-	ClaimedByName *string `json:"claimed_by_name,omitempty"`
+	// Yours says the viewer's account holds the claim, and ClaimedBy names the holder by their
+	// character on this guild's roster (never an account tag; nil with none on it). claimState
+	// stays pure (no DB access): withClaimHolder fills both for a caller that has a viewer.
+	Yours     bool            `json:"yours"`
+	ClaimedBy *ClaimHolderRef `json:"claimed_by"`
 }
 
 // claimState derives the four-phase claim state a guild is in as of

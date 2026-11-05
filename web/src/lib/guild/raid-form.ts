@@ -3,12 +3,14 @@
 // guild's last planned raid, the 6.1 field errors, the repeat helper under the cap, and the payload.
 // The form takes the guild's wall clock; `wallClockToInstant` turns it into the stored UTC instant.
 import type { FilterOption } from '../rankings/options';
-import type { GuildRaidDiscord, GuildRaidDiscordPost, GuildRaidView } from './api';
+import type { GuildRaidDiscord, GuildRaidDiscordPost, GuildRaidView, GuildZoneView } from './api';
 import { forYouLine, raidCopy } from './raid-copy';
 import { instantToWallClock, nextWeekday, wallClockToInstant } from './raid-time';
 import type { RaidInput } from './raids-api';
+import { isRaidKey, opensDateOf, opensDayOf, zoneIsOpenOn } from './zone-catalogue';
 
-/** The most planned or locked raids a guild holds at once (api `RaidCap`). */
+/** The most planned or locked raids a guild holds at once (api `RaidCap`); dungeon runs and
+ *  guild events do not count (guild events spec 3.2). */
 export const RAID_CAP = 12;
 /** R7: the repeat box plans the next 3 weeks, four raids in all. */
 export const REPEAT_WEEKS = 3;
@@ -23,7 +25,7 @@ const DEFAULT_DURATION = 180;
 const FIRST_RAID_TIME = '20:00';
 
 export type RaidFormMode = 'create' | 'edit';
-export type RaidFormField = 'zone' | 'date' | 'time';
+export type RaidFormField = 'zone' | 'title' | 'date' | 'time';
 /** A line under a field, or `form` for the line under the actions. */
 export type RaidFormErrors = Partial<Record<RaidFormField | 'form', string>>;
 
@@ -73,9 +75,11 @@ export function lastPlannedRaid(planned: readonly GuildRaidView[]): GuildRaidVie
     );
 }
 
-/** The raids the cap counts: planned and locked. */
+/** The raids the cap counts: planned and locked, of kind raid. */
 export function openRaidCount(planned: readonly GuildRaidView[]): number {
-  return planned.filter((raid) => raid.status === 'planned' || raid.status === 'locked').length;
+  return planned.filter(
+    (raid) => isRaidKey(raid.zone) && (raid.status === 'planned' || raid.status === 'locked'),
+  ).length;
 }
 
 export interface CreateDefaultsArgs {
@@ -147,6 +151,8 @@ export interface ValidateContext {
   mode: RaidFormMode;
   /** The stored start on an edit, which may stay in the past. */
   keepStartsAt?: string;
+  /** The chosen zone's facts: an event's title rule, a raid's open day; `null` until chosen. */
+  zone?: GuildZoneView | null;
 }
 
 /** The raid's start instant on the guild's clock; `null` until a date is picked. */
@@ -169,12 +175,18 @@ function timeError(values: RaidFormValues, ctx: ValidateContext): string | null 
 /** The 6.1 form errors, keyed by the field they sit under; `{}` when the form can be sent. */
 export function validateRaidForm(values: RaidFormValues, ctx: ValidateContext): RaidFormErrors {
   const errors: RaidFormErrors = {};
-  if (values.zone === '') errors.zone = raidCopy.form.errors.raid;
+  const zone = ctx.zone ?? null;
+  if (values.zone === '') errors.zone = raidCopy.form.errors.what;
+  if (zone?.kind === 'event' && values.title.trim() === '') errors.title = raidCopy.form.errors.eventTitle;
   if (values.date === '') errors.date = raidCopy.form.errors.date;
+  else if (zone !== null && !zoneIsOpenOn(zone, values.date)) {
+    errors.date = raidCopy.form.errors.opens(zone.name, opensDayOf(zone) ?? '');
+  }
   const time = timeError(values, ctx);
   if (time !== null) errors.time = time;
   const adding = values.repeat ? REPEAT_TOTAL : 1;
-  if (ctx.mode === 'create' && ctx.plannedCount + adding > RAID_CAP) errors.form = raidCopy.form.errors.cap;
+  const held = isRaidKey(values.zone) && ctx.plannedCount + adding > RAID_CAP;
+  if (ctx.mode === 'create' && held) errors.form = raidCopy.form.errors.cap;
   return errors;
 }
 
@@ -327,6 +339,13 @@ export function notesCounter(length: number): string | null {
 }
 
 const SERVER_FIELDS: Readonly<Record<string, RaidFormField>> = { zone: 'zone', starts_at: 'time' };
+
+/** The date `min` and helper line while a raid's open day is ahead of the clock; `null` otherwise. */
+export function opensHint(zone: GuildZoneView | null, now: Date): { min: string; line: string } | null {
+  const min = zone === null ? null : opensDateOf(zone);
+  if (zone === null || min === null || Date.parse(zone.opens ?? '') <= now.getTime()) return null;
+  return { min, line: raidCopy.form.opens(zone.name, opensDayOf(zone) ?? '') };
+}
 
 /** A 422's field name as the form field whose 6.1 line it shows; `null` for the line under the actions. */
 export function serverFieldFor(apiField: string): RaidFormField | null {

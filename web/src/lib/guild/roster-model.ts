@@ -128,15 +128,27 @@ export function afterApprove(model: RosterModel, keys: ReadonlySet<string>): Ros
  * read of the home says whether the addon still names it (as "no account yet").
  */
 export function afterRemove(model: RosterModel, key: string): RosterModel {
+  return withoutEntry(model, (entry) => entry.character_key === key);
+}
+
+/** The same once an invited member (no character row) is removed by `account_key`. */
+export function afterRemoveMember(model: RosterModel, accountKey: string): RosterModel {
+  return withoutEntry(model, (entry) => entry.account_key === accountKey);
+}
+
+function withoutEntry(model: RosterModel, matches: (entry: GuildRosterEntry) => boolean): RosterModel {
   if (model.members === undefined || model.counts === undefined) return model;
-  const gone = model.members.find((entry) => entry.character_key === key);
+  const gone = model.members.find(matches);
   if (gone === undefined) return model;
+  const less = (n: number, state: GuildRosterEntry['state']): number =>
+    Math.max(0, n - (gone.state === state ? 1 : 0));
   return {
     members: model.members.filter((entry) => entry !== gone),
     counts: {
       ...model.counts,
       on_roster: Math.max(0, model.counts.on_roster - 1),
-      waiting: Math.max(0, model.counts.waiting - (gone.state === 'waiting' ? 1 : 0)),
+      waiting: less(model.counts.waiting, 'waiting'),
+      not_seen: less(model.counts.not_seen, 'not_seen'),
     },
   };
 }

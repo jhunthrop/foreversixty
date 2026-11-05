@@ -39,6 +39,7 @@ function raid(overrides: Partial<NextRaidView> = {}): NextRaidView {
 interface Opts {
   nextRaid?: NextRaidView | null;
   officer?: boolean;
+  officerTools?: boolean;
   currentKey?: string | null;
   ownCharacters?: { character_key: string; name: string }[];
   viewerTimezone?: string;
@@ -50,6 +51,7 @@ function html(opts: Opts = {}): string {
       guildId: 2,
       nextRaid: opts.nextRaid === undefined ? raid() : opts.nextRaid,
       officer: opts.officer ?? false,
+      officerTools: opts.officerTools ?? true,
       guildPath: '/guild/us/normal/the-last-watch',
       currentKey: opts.currentKey === undefined ? KEY : opts.currentKey,
       ownCharacters: opts.ownCharacters ?? [{ character_key: KEY, name: 'Kraggor' }],
@@ -195,12 +197,24 @@ describe('RaidBandLine none planned', () => {
     expect(body).not.toContain('#raids');
   });
 
-  it('gives an officer the Plan a raid link to #raids', () => {
+  it('gives an officer the Plan an event link to #raids', () => {
     const body = html({ nextRaid: null, officer: true });
     expect(text(body, 'guild-raid-line-none')).toBe(
       `${raidCopy.bandNone.officer} ${raidCopy.bandNone.planLink}`,
     );
     expect(body).toContain('href="#raids"');
+  });
+
+  it('reads Nothing planned yet with the Plan an event link', () => {
+    const body = html({ nextRaid: null, officer: true });
+    expect(text(body, 'guild-raid-line-none')).toBe('Nothing planned yet. Plan an event');
+  });
+
+  it('gives a gated officer the sentence only, no live link', () => {
+    const body = html({ nextRaid: null, officer: true, officerTools: false });
+    expect(text(body, 'guild-raid-line-none')).toBe('Nothing planned yet.');
+    expect(body).not.toContain('guild-raid-line-plan');
+    expect(body).not.toContain('href="#raids"');
   });
 });
 

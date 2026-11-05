@@ -102,6 +102,9 @@ type RosterMember struct {
 	GearGap int    `json:"gear_gap"`
 	Build   string `json:"build"`
 	SeenAt  string `json:"seen_at"`
+	// Class is the client's classFilename from GetGuildRosterInfo ("WARRIOR"); absent from an
+	// older addon and for a name the guild roster did not hold.
+	Class string `json:"class,omitempty"`
 }
 
 // OutboxResult says what became of each part of the outbox. A part the
@@ -226,7 +229,7 @@ func (m RosterMember) valid() bool {
 	if m.Level < 1 || m.Level > simapi.MaxLevel {
 		return false
 	}
-	if !plainText(m.Spec) || !plainText(m.Build) {
+	if !plainText(m.Spec) || !plainText(m.Build) || !plainText(m.Class) {
 		return false
 	}
 	_, err := time.Parse(sims.RequestedAtLayout, m.SeenAt)

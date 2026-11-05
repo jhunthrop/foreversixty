@@ -114,7 +114,7 @@
   <div class="flex flex-col">
     <div class="flex flex-wrap items-center gap-3">
       <button
-        class="{button('primary')} {dimmed}"
+        class="{button(gated ? 'secondary' : 'primary')} {dimmed}"
         disabled={off || gated}
         aria-describedby={gateId}
         onclick={onChange}

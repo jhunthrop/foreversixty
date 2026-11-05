@@ -68,6 +68,10 @@ func (failingEntitlements) CanForGuild(context.Context, int64, int64, entitlemen
 	return false, "", errors.New("entitlements down")
 }
 
+func (failingEntitlements) Can(context.Context, int64, entitlements.Feature) (bool, entitlements.Reason, error) {
+	return false, "", errors.New("entitlements down")
+}
+
 func TestHomeViewerOfficerToolsFalseWhenEntitlementsFail(t *testing.T) {
 	h := newHTTPHarness(t)
 	h.svc.Entitlements = failingEntitlements{}

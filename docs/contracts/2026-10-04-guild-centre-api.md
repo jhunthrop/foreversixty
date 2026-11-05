@@ -20,10 +20,11 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
 {
   "guild": { "id": 2, "name": "OLYMPUS XXVII", "region": "us", "ruleset": "pvp", "faction": "alliance" },
   "viewer": { "role": "officer", "character_key": "us/pvp/obnoxious-yell", "verified": true },
-  "claim": { "state": "claimed", "since": "...", "frozen": false, "claimed_by_name": "Obnoxious Yell" },
+  "claim": { "state": "claimed", "since": "...", "frozen": false, "yours": false, "claimed_by": { "name": "Obnoxious Yell", "class": "warrior", "character_key": "us/pvp/obnoxious-yell" } },
   "summary": {
     "raiders": 25, "waiting_for_approval": 3, "below_rating_floor": 2,
-    "named_encounters_down": 1, "pulls_this_tier": 27,
+    "tier": { "name": "First tier", "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"], "named_encounters": 1, "down": 1, "pulls_total": 27 },   // the Progression tab's own
+    "named_encounters_down": 1, "pulls_this_tier": 27,   // restate tier for the apps
     "updated_at": "..."
   },
   "standing": {                       // member and officer only; null when not derivable
@@ -135,7 +136,7 @@ flagged or trash-only night lists nobody; `fights[].players` stays the count of 
 ## GET /v1/guilds/{id}/progression
 
 ```json
-{ "tier": { "name": "First tier", "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"], "named_encounters": 1, "down": 1 },
+{ "tier": { "name": "First tier", "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"], "named_encounters": 1, "down": 1, "pulls_total": 27 },
   "encounters": [ {
     "encounter_id": 1084, "name": "Onyxia", "zone": "Onyxia's Lair",
     "first_kill_at": "...", "pulls": 12, "kills": 2, "best_kill_ms": 380000,
@@ -164,7 +165,8 @@ reads `presence.EvidenceReport` for every viewer.
 { "median_item_level": 63, "generated_at": "...",
   "rows": [ {
     "character_key": "...", "name": "...", "class": "...", "spec": "...", "consent": "gear",
-    "gear_gap": { "upgrades": 5, "gain_dps": 48.0, "not_sim_checked": 1 },   // null without gear consent
+    "level": 60,   // export, else the addon roster; null with neither. Under 60: gear_gap null, enchants unchecked, consumables unknown, failing 0, item_level_delta null, no nudge_text
+    "gear_gap": { "upgrades": 5, "gain_dps": 48.0, "not_sim_checked": 1, "unit": "dps" },   // null without gear consent; unit null for a healer or tank (no figure prints)
     "enchants": { "missing_slots": ["chest"], "checked": true },             // checked=false without gear consent
     "consumables": { "state": "stocked" | "short" | "unknown" },             // unknown without gear_bags consent
     "talent_points_unspent": 1,

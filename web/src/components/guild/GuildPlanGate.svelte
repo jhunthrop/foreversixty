@@ -1,31 +1,32 @@
 <!-- web/src/components/guild/GuildPlanGate.svelte -->
-<!-- Officer tools gate spec §3.2: the one sentence a tab shows in officer-read-only, above its
-     content. Its id is what each disabled Award, Undo and Nudge names in aria-describedby. The
+<!-- The gate sentence (spec 2026-11-05 §3.2): officers and the guild master only, above the gated
+     control. Part 1 names the plan the feature is part of, part 2 what this viewer can do about it
+     (lib/guild/plan-gate.ts). Its id is what each disabled control names in aria-describedby. The
      link is the inline-link recipe (DESIGN-SYSTEM.md, Accent). It never wraps; below md a 44px
      ::after centred on the link (an inline box is only its font's height, about 16px, so a
      fixed height, not 12px insets, is what reaches 44px) is its hit area on a phone,
-     while the focus ring stays on the link and hugs the text. A tab with its own sentence (the
-     Raids tab, raids spec 6.1) passes the words before the link as `sentence`. -->
+     while the focus ring stays on the link and hugs the text. -->
 <script lang="ts">
+  import { classColorVar } from '../../lib/report/format';
   import { guildGateCopy } from '../../lib/guild/copy';
+  import { INLINE_LINK } from '../../lib/guild/field-styles';
+  import { gateAction, type GateFacts, type GateFeature } from '../../lib/guild/plan-gate';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
 
   let {
     tab,
-    settingsHref,
-    raidGuild = false,
-    sentence = raidGuild ? guildGateCopy.raidGuildSentence : guildGateCopy.sentence,
+    facts,
     id = undefined,
     testid = undefined,
   }: {
-    tab: 'loot' | 'readiness' | 'raids' | 'discord';
-    settingsHref: string;
-    /** A Guild-tier guild: the Raid guild sentence, linking to the settings tab's `#billing`. */
-    raidGuild?: boolean;
-    sentence?: string;
+    tab: GateFeature;
+    facts: GateFacts;
     /** The element id the disabled controls name; `null` for a second copy on one page. */
     id?: string | null;
     testid?: string;
   } = $props();
+
+  const action = $derived(gateAction(tab, facts));
 </script>
 
 <p
@@ -33,9 +34,16 @@
   class="text-text text-[13px] leading-5"
   data-testid={testid ?? `guild-${tab}-plan-gate`}
 >
-  {sentence}<a
-    class="text-gold hover:text-gold-hover active:text-gold-hover focus-visible:outline-gold relative whitespace-nowrap underline after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 md:after:hidden"
-    href={raidGuild ? `${settingsHref}#billing` : settingsHref}
-    >{raidGuild ? guildGateCopy.raidGuildLink : guildGateCopy.link}</a
-  >.
+  {guildGateCopy.lead[tab]}
+  {#if action.kind === 'link'}<a class={INLINE_LINK} href={action.href}>{action.label}</a
+    >.{:else if action.kind === 'note'}{action.text}{:else if action.holder === null}{guildGateCopy.askMaster}{:else}{guildGateCopy.ask}<span
+      class="inline-flex items-baseline gap-1 font-semibold whitespace-nowrap"
+      style:color={classColorVar(action.holder.class ?? undefined)}
+      data-testid="guild-gate-holder"
+      ><ClassCrestRing
+        characterClass={action.holder.class ?? ''}
+        size={16}
+        class="size-4 self-center"
+      />{action.holder.name}</span
+    >{guildGateCopy.askTail}{/if}
 </p>

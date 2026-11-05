@@ -88,6 +88,8 @@ type Service struct {
 	// Moved is told when a patch sets a report's guild, so a match the report held in another
 	// guild is released. Nil tells nobody.
 	Moved GuildMoved
+	// Visibility is told when a patch changes a report's visibility. Nil tells nobody.
+	Visibility VisibilityChanged
 	// Objects reads report.json and the fight summaries back out of the bucket, for the app's
 	// reads (appreads.go). Nil answers those reads 503.
 	Objects Objects
@@ -531,6 +533,9 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 	if p.GuildID != nil {
 		s.guildSet(r, updated)
 	}
+	if updated.Visibility != rep.Visibility {
+		s.visibilitySet(r, updated.ID)
+	}
 	view, err := s.view(r.Context(), updated)
 	if err != nil {
 		s.fail(w, r, "patch", err, "could not change that report just now")
@@ -553,6 +558,16 @@ func (s *Service) guildSet(r *http.Request, rep Report) {
 		if rep.Status == StatusComplete {
 			callCompleted(ctx, s.Completed, rep.ID)
 		}
+	})
+}
+
+// visibilitySet runs, detached, the visibility hook for a report whose visibility a patch changed.
+func (s *Service) visibilitySet(r *http.Request, reportID string) {
+	if s.Visibility == nil {
+		return
+	}
+	s.completions.run(r.Context(), s.Log, reportID, func(ctx context.Context) {
+		s.Visibility.ReportVisibilityChanged(ctx, reportID)
 	})
 }
 

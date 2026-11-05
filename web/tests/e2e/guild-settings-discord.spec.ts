@@ -182,7 +182,7 @@ test.describe('connected', () => {
 });
 
 test.describe('officer-read-only', () => {
-  test('not connected: connect has aria-disabled and no href; Subscribe the guild scrolls to Billing', async ({
+  test('not connected: connect has aria-disabled and no href; Subscribe your guild scrolls to Billing', async ({
     page,
   }) => {
     await page.setViewportSize(PHONE);
@@ -196,7 +196,7 @@ test.describe('officer-read-only', () => {
     await expect(page.getByTestId('guild-settings-billing')).toBeInViewport();
   });
 
-  test('on the guild page Settings tab, Subscribe the guild scrolls to Billing and the tab stays', async ({
+  test('on the guild page Settings tab, Subscribe your guild scrolls to Billing and the tab stays', async ({
     page,
   }) => {
     await stubGuildRaids(page, { viewer: 'officer', officerTools: false });

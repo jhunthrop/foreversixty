@@ -9,11 +9,11 @@
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
-  import { copyList, raidCopy } from '../../lib/guild/raid-copy';
-  import { splitAtLink } from '../../lib/guild/raid-form';
+  import { cancelActionOf, copyList, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
   import { RAID_BUTTON as BUTTON } from '../../lib/guild/raid-buttons';
   import type { RaidStatusAction } from '../../lib/guild/raids-api';
+  import type { GateFacts } from '../../lib/guild/plan-gate';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import RaidCancelConfirm from './RaidCancelConfirm.svelte';
 
@@ -25,7 +25,7 @@
     busy = null,
     line = null,
     gateId,
-    settingsHref,
+    gateFacts,
     guildTimezone,
     onEdit,
     onStatus,
@@ -38,7 +38,8 @@
     busy?: RaidStatusAction | null;
     line?: OfficerLine | null;
     gateId: string;
-    settingsHref: string;
+    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
+    gateFacts: GateFacts;
     /** The copied list reads in guild time. */
     guildTimezone: string;
     onEdit: () => void;
@@ -57,7 +58,6 @@
   let copiedTimer: ReturnType<typeof setTimeout> | undefined;
   let cancelButton = $state<HTMLButtonElement | null>(null);
 
-  const gateLead = splitAtLink(raidCopy.gate, raidCopy.gateLink).before;
   /** A cancelled or done raid takes no edit, lock or cancel. */
   const closed = $derived(raid.status === 'cancelled' || raid.status === 'done');
   const lockAction = $derived<RaidStatusAction>(raid.status === 'locked' ? 'unlock' : 'lock');
@@ -109,6 +109,7 @@
 <div class="flex flex-col gap-2" data-testid="raid-officer-row">
   {#if confirming}
     <RaidCancelConfirm
+      kind={kindOf(raid)}
       {postCancel}
       busy={busy === 'cancel'}
       onPostChange={(post) => (postCancel = post)}
@@ -145,13 +146,13 @@
           disabled={writesDisabled}
           aria-describedby={describedBy}
           onclick={openConfirm}
-          data-testid="raid-officer-cancel">{raidCopy.officerRow.cancel}</button
+          data-testid="raid-officer-cancel">{cancelActionOf(kindOf(raid))}</button
         >
       {/if}
     </div>
   {/if}
   {#if readOnly}
-    <div class="md:text-right"><GuildPlanGate tab="raids" {settingsHref} sentence={gateLead} /></div>
+    <div class="md:text-right"><GuildPlanGate tab="raids" facts={gateFacts} /></div>
   {/if}
   {#if statusLine !== null}
     {#key statusLine}

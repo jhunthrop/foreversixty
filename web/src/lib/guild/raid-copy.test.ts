@@ -5,19 +5,26 @@ import type { GuildRaidView } from './api';
 import {
   bandLine,
   bandLineParts,
+  cancelActionOf,
+  cancelConfirmOf,
+  cancelledLineOf,
+  cancelQuestionOf,
   copyList,
+  countdown,
   countLine,
   countRatio,
-  countdown,
+  endedLineOf,
+  eyebrowOf,
   guildTimeLabel,
   needsBefore,
   nextRaidDeadline,
+  notesEmptyOf,
   raidCopy,
   roleBreakdown,
   roleBreakdownParts,
   SEP,
-  showsBandLine,
   showAll,
+  showsBandLine,
   whenPhrase,
 } from './raid-copy';
 
@@ -31,18 +38,23 @@ const cell = (label: string): string[] => specCell(SPEC, HEADING, label);
 const str = (label: string, index = 0, fill: Record<string, string> = {}): string =>
   specString(SPEC, HEADING, label, index, fill);
 
+const SPEC3 = new URL('../../../../design/specs/2026-11-05-guild-events.md', import.meta.url);
+const HEADING3 = '## 5. Copy, verbatim';
+const cell3 = (label: string): string[] => specCell(SPEC3, HEADING3, label);
+const str3 = (label: string, index = 0, fill: Record<string, string> = {}): string =>
+  specString(SPEC3, HEADING3, label, index, fill);
+
 const CHICAGO = 'America/Chicago';
 const NEW_YORK = 'America/New_York';
 // Wednesday 9 Dec 2026, 10:00 am Chicago.
 const NOW = new Date('2026-12-09T16:00:00Z');
 const at = (isoUtc: string): Date => new Date(isoUtc);
 
+const KINDS = ['raid', 'dungeon', 'event'] as const;
+
 describe('raidCopy constants, verbatim from spec 6.1', () => {
-  it('names the tab button, gate and cap', () => {
-    expect(raidCopy.planButton).toBe(str('Tab button'));
-    expect(raidCopy.gate).toBe(str('Gate sentence'));
-    expect(raidCopy.gate).toContain(raidCopy.gateLink);
-    expect(specCell(SPEC, HEADING, 'Gate sentence')).toContain(raidCopy.gateLink);
+  it('names the tab button and cap', () => {
+    expect(raidCopy.planButton).toBe(str3('Tab button'));
     expect(raidCopy.cap).toBe(str('Cap'));
   });
 
@@ -67,7 +79,10 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
   it('has the segments, placeholders and strip status', () => {
     const g = raidCopy.segments;
     expect([g.in, g.late, g.bench, g.out]).toEqual(cell('Segments'));
-    expect([raidCopy.placeholders.note, raidCopy.placeholders.chooseRaid]).toEqual(cell('Placeholders'));
+    expect(raidCopy.placeholders.note).toBe(str('Placeholders', 0));
+    expect([raidCopy.placeholders.chooseWhat, raidCopy.placeholders.eventTitle]).toEqual(
+      cell3('Placeholders'),
+    );
     expect(raidCopy.stripStatus.saved).toBe(str('Strip status', 0));
     expect(raidCopy.stripStatus.failed).toBe(str('Strip status', 1));
     expect(raidCopy.stripStatus.movedToBench('Lightbrand')).toBe(
@@ -78,13 +93,15 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
   });
 
   it('has the empty states', () => {
-    expect(raidCopy.emptyPlanned.member).toBe(str('Empty Planned', 0));
-    expect(raidCopy.emptyPlanned.officer).toBe(str('Empty Planned', 1));
+    expect(raidCopy.emptyPlanned.member).toBe(str3('Empty Planned', 0));
+    expect(raidCopy.emptyPlanned.officer).toBe(str3('Empty Planned', 1));
     expect(raidCopy.bandNone.member).toBe(str('Band line, none planned', 0));
     expect(raidCopy.bandNone.officer).toBe(str('Band line, none planned', 1));
     expect(raidCopy.bandNone.planLink).toBe(str('Band line, none planned', 2));
-    expect(raidCopy.notesEmpty.member).toBe(str('Notes empty', 0));
-    expect(raidCopy.notesEmpty.officer).toBe(str('Notes empty', 1));
+    expect(notesEmptyOf('raid', false)).toBe(str('Notes empty', 0));
+    expect(notesEmptyOf('raid', true)).toBe(str('Notes empty', 1));
+    expect(notesEmptyOf('dungeon', true)).toBe('No notes yet. Edit the run to add some.');
+    expect(notesEmptyOf('event', false)).toBe('No notes for this event.');
     const e = raidCopy.emptyRole;
     expect([e.tank, e.healer, e.dps]).toEqual(cell('Empty role'));
   });
@@ -92,8 +109,10 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
   it('has the raid states, races and poll line', () => {
     const r = raidCopy.raidStates;
     // The ended, done and open-night lines moved to the attendance copy (its spec 3.1).
-    const [locked, , cancelled] = cell('Raid states');
-    expect([r.locked, r.cancelled]).toEqual([locked, cancelled]);
+    const [locked] = cell('Raid states');
+    expect(r.locked).toBe(locked);
+    expect(KINDS.map(cancelledLineOf)).toEqual(cell3('Cancelled'));
+    expect(KINDS.map(endedLineOf)).toEqual(cell3('Ended'));
     const c = raidCopy.races;
     expect([c.locked, c.cancelled, c.officerToolsEnded]).toEqual(cell('Races'));
     expect(raidCopy.poll).toBe(str('Poll'));
@@ -101,18 +120,47 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
 
   it('has the officer row and the cancel confirm', () => {
     const o = raidCopy.officerRow;
-    expect([o.edit, o.lock, o.locking, o.unlock, o.copy, o.copied, o.cancel, o.failed]).toEqual(
+    expect([o.edit, o.lock, o.locking, o.unlock, o.copy, o.copied, 'Cancel raid', o.failed]).toEqual(
       cell('Officer row'),
     );
+    expect(KINDS.map(cancelActionOf)).toEqual(cell3('Officer row'));
     const k = raidCopy.cancelConfirm;
-    expect([k.question, k.postToDiscord, k.confirm, k.confirming, k.keep]).toEqual(cell('Cancel confirm'));
+    const [, postToDiscord, , confirming, keep] = cell('Cancel confirm');
+    expect([k.postToDiscord, k.confirming, k.keep]).toEqual([postToDiscord, confirming, keep]);
+    // The spec's template holds pipes, which split a table cell, so it is read as quoted text.
+    const question = 'Cancel this {raid|run|event}? Members see it as cancelled.';
+    const confirm = 'Cancel the {raid|run|event}';
+    const spec = readFileSync(SPEC3, 'utf8');
+    expect(spec).toContain(`\`${question}\``);
+    expect(spec).toContain(`\`${confirm}\``);
+    const words = { raid: 'raid', dungeon: 'run', event: 'event' } as const;
+    for (const kind of KINDS) {
+      expect(cancelQuestionOf(kind)).toBe(question.replace('{raid|run|event}', words[kind]));
+      expect(cancelConfirmOf(kind)).toBe(confirm.replace('{raid|run|event}', words[kind]));
+    }
+    expect(KINDS.map((kind) => eyebrowOf(kind).toUpperCase())).toEqual(cell3('Eyebrow'));
     expect(raidCopy.copyFailed).toBe(str('Copy failed'));
   });
 
   it('has the form labels, helpers and errors', () => {
     const f = raidCopy.form;
-    expect([
-      f.raid,
+    expect(f.what).toBe(str3('Form label', 0));
+    expect(f.groupSize).toBe(str3('Form label', 1));
+    expect(f.noLimit).toBe(str3('Form label', 2));
+    expect([f.groups.event, f.groups.dungeons, f.groups.raids]).toEqual(cell3('Groups'));
+    expect(f.opens("Onyxia's Lair", 'Wed 9 Dec')).toBe(
+      str3('Helper', 0, { Raid: "Onyxia's Lair", 'Wed 9 Dec': 'Wed 9 Dec' }),
+    );
+    expect(f.submitCreate).toBe(str3('Submit', 0));
+    expect(f.submitCreating).toBe(str3('Submit', 1));
+    expect(f.submitEdit).toBe(str3('Submit', 2));
+    expect(f.submitEditing).toBe(str3('Submit', 3));
+    const [, ...oldLabels] = cell('Form labels');
+    expect(
+      oldLabels.filter(
+        (label) => label !== 'Post the raid' && !label.endsWith('…') && label !== 'Save changes',
+      ),
+    ).toEqual([
       f.title,
       f.date,
       f.time,
@@ -122,12 +170,8 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
       f.repeat,
       f.postToDiscord,
       f.postToDiscordIfMoved,
-      f.submitCreate,
-      f.submitCreating,
-      f.submitEdit,
-      f.submitEditing,
       f.cancel,
-    ]).toEqual(cell('Form labels'));
+    ]);
     expect(f.forYou('Thu 10 Dec, 9:00 pm')).toBe(str('Form helpers', 0));
     expect(f.forYouSame).toBe(str('Form helpers', 1));
     expect(f.markdownHelper).toBe(str('Form helpers', 2));
@@ -135,7 +179,13 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
     expect(f.connectDiscord).toBe(str('Form helpers', 4));
     expect(f.connectDiscordLink).toBe('Settings');
     const e = f.errors;
-    expect([e.raid, e.date, e.time, e.cap, e.failed]).toEqual(cell('Form errors'));
+    const [, ...oldErrors] = cell('Form errors');
+    expect([e.date, e.time, e.cap, e.failed]).toEqual(oldErrors);
+    expect(e.what).toBe(str3('Errors', 0));
+    expect(e.eventTitle).toBe(str3('Errors', 1));
+    expect(e.opens("Onyxia's Lair", 'Wed 9 Dec')).toBe(
+      str3('Errors', 2, { Raid: "Onyxia's Lair", 'Wed 9 Dec': 'Wed 9 Dec' }),
+    );
   });
 
   it('form strings match P.7', () => {

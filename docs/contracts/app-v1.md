@@ -283,7 +283,7 @@ for a non-member or an unverified one (`guild.home.error-forbidden`), 404.
 
 `data`: `guild` (`{ id, region, ruleset, name, faction, crest_url }`, the last two nullable),
 `viewer` (`{ role, verified, officer_tools, raid_guild_tools, verify: { has_approver } }` plus
-omitted `character_key`), `claim` (`{ state, frozen }` plus omitted `since`, `claimed_by_name`),
+omitted `character_key`), `claim` (`{ state, frozen, yours, claimed_by }` plus omitted `since`; `claimed_by` is `{ name, class, character_key }` or null, the holder's character on the roster, never an account tag),
 `summary`, `standing` (omitted when it cannot be derived), `reports[]` (the last 7 days;
 `next_cursor` omitted), `roster[]` and `pending[]` (roster rows; `pending` is `[]` for a
 non-officer), `members[]` and `counts` (the roster as a person counts it, with each member's

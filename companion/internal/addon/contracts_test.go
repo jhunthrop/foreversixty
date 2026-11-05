@@ -346,6 +346,7 @@ func TestOutboxV1FixtureGolden(t *testing.T) {
 				GearGap int    `json:"gear_gap"`
 				Build   string `json:"build"`
 				SeenAt  string `json:"seen_at"`
+				Class   string `json:"class"`
 			} `json:"members"`
 		} `json:"roster_snapshot"`
 	}

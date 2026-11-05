@@ -51,7 +51,7 @@ type GuildStanding struct {
 	Slug         string
 	CrestURL     *string
 	Faction      *string // "alliance" | "horde" | nil
-	RosterCount  *int    // counts.on_roster + counts.in_game_no_account; nil without a snapshot
+	RosterCount  *int    // the home's counts.on_roster (everyone on it, no-account names included); nil without a snapshot
 	Claim        *GuildClaimView
 	Verify       *GuildVerifyView
 	Covered      *GuildCoveredView
