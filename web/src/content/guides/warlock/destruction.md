@@ -3,8 +3,8 @@ title: Destruction Warlock in Forever
 classSlug: warlock
 spec: destruction
 role: dps
-build: 'FS1:1.60.1.70755:warlock:human:25522/0/2053235103101351:'
-raidBuild: 'FS1:1.60.1.70755:warlock:human:25500000033/0/0050355103101351:'
+build: 'FS1:1.60.1.70790:warlock:human:25522/0/2053235103101351:'
+raidBuild: 'FS1:1.60.1.70790:warlock:human:25500000033/0/0050355103101351:'
 recommendedRaces: [human, orc]
 statPriority:
   [Spell power, Hit, Fire power, Critical strike, Shadow power, Intellect, Spell haste, Spell penetration]
