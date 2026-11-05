@@ -1,0 +1,112 @@
+# Round 21, lane hunter: Beast Mastery, Marksmanship, Survival (melee)
+
+Client 1.60.1.70790 (its hotfix push carries no rows). Site wt/r21-hunter from int/r21 (9b5ceb3ca, with the platform lane); fork lane/r21-hunter from int/r21 (3d1bac5f9).
+Method: spec-breakdown through `$R/sim.sh`, guide builds (`$R/rt`), `-bis-dir $R/bis-frozen`; 3000 iterations to explore, 10000 at seeds 1 and 50001 for every reported number. Rank rows judged level by level with `-level N -rank id=rank` on every hunter race.
+
+**Result: 5 CONFIRMED-BUGs: 4 fixed (all `old`), 1 open (G1, `R20`, from the guide lane's round 20).** The seed (no Hunter's Mark on the Survival card) is fixed, and fixing it exposed an engine bug: the engine held a pre-pull Hunter's Mark to the pull as if it were a damaging shot, so a Survival card that marked before the pull lost 0.4% at raid 60, and Beast Mastery and Marksmanship lost their pre-pull mark under Aimed Shot's cast and recast it in the fight. Two Survival Raptor Strike rank rows were missing (26-29 for every race, 48-49 for the Horde races). Raid 60 does not move; bare bands move up to +1.0% (Marksmanship 40).
+
+## Seed items
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| H1 | **The Survival card showed no Hunter's Mark** (round 20 rendered-card MUST). The page says Expose Prey needs a mark on the boss; the engine marked the target through the leveling kit (`sim/leveling/kit.go:190`) and the raid preset, so no number was wrong, but the card a player reads never told him to mark. Now the opener marks 20 s before the pull and the priority list carries Beast Mastery's mark line, with a note in the guide voice ("From 35, Expose Prey opens Mongoose Bite only on a marked target, so mark the boss before the pull"). The rendered card shows it (capture below). Beast Mastery and Marksmanship already carried both lines. | `data/curated/apl/hunter-survival.json`; round 20 integration.md "Rendered cards" | CONFIRMED-BUG (card) | old (predates round 20; round 20's reviewer found it) | S c31e5cbe4 |
+| H2 | **The engine held a pre-pull Hunter's Mark to the pull.** `huntersmark.go` gave the mark `ProcMaskSpellDamage`; `core.prepullLandingHold` (fork c880120ea, 31 October) holds any pre-pull cast with a direct-damage mask so it lands at 0. The mark cast at -6 s therefore went off at 0.00 (debug log: `[0.00] Casting {SpellID: 14325}`), spent the opening global and pushed Raptor Strike, Lacerate and the cooldowns 1.5 s back: Survival 876.6/877.9 -> 874.2/874.4 (Horde, -0.3/-0.4%) once its card marked before the pull. For Beast Mastery and Marksmanship the held mark failed under Aimed Shot's pre-pull cast, so in a bare fight the priority line recast it in combat. The mark deals no damage (client 14325: effect 6 aura 68 and aura 127, amount 143, no damage effect). Test first: `TestPrepullHuntersMarkIsCastBeforeThePull` (red: cast at `[0.00]`, want `-6.00`); fix: `ProcMaskEmpty`. | `sim/hunter/huntersmark.go`, `huntersmark_prepull_test.go`; `sim/core/apl.go:308` | CONFIRMED-BUG | old (c880120ea, 31 October; no round saw it because the Survival card never marked before the pull and the BM/MM raid fights carry the raid preset's mark) | E fdc82f78b |
+| H3 | **The mark goes up 20 s before the pull on all three cards**, ahead of the aspect, so its 60 mana is back by the pull (at -6 s the five-second rule left a mana-short leveling hunter 45-60 mana down at the pull). Survival bare 40 at -6 s lost 0.5% (OOM 10.9 -> 15.7 s); at -20 s it is level with no mark at all. Marksmanship bare 40: -6 s 207.5, -20 s 208.3. The three raid pull paragraphs now say mark first, then the aspect; Survival's adds the two-minute recast (client duration 120000 ms). | `$R/hunter/rot/`, bare runs in the before/after table | Rotation (part of H1/H2) | - | S c31e5cbe4, E fdc82f78b |
+| H4 | Round 20's open items, live logs: none exist. Checked 03:34 UTC 5 November: `api.foreversixty.gg/v1/reports/recent` lists only `z2opt2x2gs5u` (20 October); foreverlogs `reports/public` (with and without `phase=2`) is empty and `reports/1`, `2815`, `2900`, `3000` answer "Report not found"; Warcraft Logs v1 `/v1/zones` on classic (57, max 1534), fresh (21, max 1538), vanilla (29, max 2510) and www (66, max 510) list no Forever zone. The hawk's swing, Heart of the Lion on the pet and Immolation Trap's 2% stay OPEN with the logs round 20 named. | platform/logs.md and own re-check | OPEN | - | - |
+
+## Beast Mastery
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| B1 | Aimed Shot rank rows (rank 1 at 28-59, bare 60) re-judged level by level after round 20's attack power share (round 20 M2 asserted they "gain if anything" without measuring). Horde, 3000 it: rank 1 beats the top rank by 1.4% (28) to 4.9% (46), 0.5-0.7% at 52-58; ranks 2-4 lose to rank 1 at 40, 46, 52, 58. | `$R/hunter/aimed-explore.tsv`, `aimed-mid.tsv` | Aligned | - | - |
+| B2 | Round 20's low-mana order (Multi-Shot held under a quarter mana, Arcane Shot free), measured at 60 only, re-checked on the bare bands against the round 19 order: Beast Mastery +1.5% (20), +1.1% (30), +0.7% (40), +3.6% (50), +2.1% (60); Marksmanship +2.1%, +0.9%, +1.8%, +3.1%, +2.4%. The order holds everywhere. | `$R/hunter/b3-bare.tsv` | Aligned | - | - |
+| B3 | Improved Arcane Shot (1.5 s off a 6 s cooldown) against round 20's stronger Arcane Shot: in place of Mortal Shots' four points 859.7 against 893.6 (-3.8%). No build change. | spec-breakdown, raid 60, Horde | Aligned | - | - |
+| B4 | Hunter's Mark: 120 s, 60 mana, rank 4 143 ranged attack power (client 14325); the mark line and its 20 s opener as H2/H3. Dead points: re-read, none (round 20 B4 list; Survivalist is the gate to Surefooted, round 15 M3). | spellconst/hunter.json | Aligned | - | - |
+
+## Marksmanship
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| M1 | Aimed Shot rank 1 rows (28-49, 52-59, bare 60) hold: +1.3% (28) to +6.1% (37), 0-0.7% at 52-58 (55 a tie; 50-51 stays out, round 20 M2). Rank 3 at 52 ties rank 1. | `$R/hunter/aimed-explore.tsv`, `aimed-mid.tsv` | Aligned | - | - |
+| M2 | Improved Arcane Shot in place of Deadly Aspects: 873.6 against 934.2 (-6.5%). | spec-breakdown | Aligned | - | - |
+
+## Survival (melee)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| S1 | **Raptor Strike rank rows missing at 26-29.** Immolation Trap rank 2 arrives at 26 and the band-20 hunter runs dry (57 s of 180 out of mana at 26 on rank 4). Level by level, 10000 it, seeds 1 and 50001, all eight races: rank 3 beats rank 4 by 0.5-1.7% at 26-29 for every race (Human 29 by 0.15%); the Horde races gain more again with rank 2 (Orc 26 +0.9%; Tauren 26-28, Troll 26-27, Windshaper 26-27, +0.3 to +0.9% over rank 3), while rank 2 loses for the Alliance races. The top rank wins at 20-25 and from 30. The breakdown confirms 14260 and 14261 are cast. Round 19's sweep started at 34; the round 19 landed engine shows the same at 27 (rank 4 63.2, rank 3 64.0, rank 2 64.2). Rows keyed by race where the best rank differs; guide prose in survival.md "Levels 20 to 60". | `$R/hunter/raptor-2429.tsv`, `raptor-race.tsv` | CONFIRMED-BUG (rank) | old (no round swept 24-33) | S 7b3cec608 |
+| S2 | **Horde Raptor Strike at 48-49.** An Orc, a Tauren and a Troll keep rank 5 at 48 and 49 (+0.15 to +0.4% over rank 7 at both seeds; rank 4 ties); a Windshaper at 48 (+0.15%); the Alliance races' rank 7 wins by 0.15-0.5%. The 46-47 rank 5 row holds for every race (rank 4 ties); 40-45 is within 0.2% for every race, so no row. Round 19 judged a Night Elf and a Tauren and wrote "from 48 rank 7 wins"; the round 19 engine already had Tauren 48 at 189.6 (rank 7) against 190.1 (rank 5). | `$R/hunter/raptor-4049-all.tsv` | CONFIRMED-BUG (rank) | old (round 19 looked at 40-49 and missed the Horde side) | S 7b3cec608 |
+| S3 | The mark on the card (H1) moves nothing at raid 60 (the raid preset's mark was always there) and nothing on the bare bands (the kit's mark), after H2. | before/after | Aligned | - | - |
+| S4 | Points re-read against the 70790 tree: Survivalist's three points are the tier-2 gate (Improved Tracking 5 + Savage Strikes 2 + 3); the tier-0/1 alternatives (Deflection, Entrapment, Improved Wing Clip) do nothing against a boss that does not swing at you. Deadly Aspects' melee half under Beast, Predator's Edge, Lacerating Strikes, Resourcefulness (30/60% and the crit regen) match the talent text. Quick Shots and Quick Strikes are modeled (`aspects.go:100`). | talents/hunter.json | Aligned | - | - |
+
+## Guide-accuracy round 20 leads (integrator, late)
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| G1 | **BM and MM stall below a quarter mana when Multi-Shot is held.** Multi-Shot's mana gate keeps it ready, so Serpent Sting (needs Multi-Shot 0.5 s or more from ready) and Arcane Shot (more than 1.5 s away) never fire; at 18-19 nothing else is on the card (Aimed Shot trains at 20), so the hunter casts nothing until the mana is back above 25%. From 20 Aimed Shot spends the shared cooldown. Confirmed by reading the conditions against `spellTimeToReady`; spec-breakdown cannot run level 18 (no band 10 entry), so the stall itself is unmeasured. The obvious fix (each gate also passes at 25% mana or less) measured mixed, Horde bare, 3000 it: BM +5.4% (20), +4.4% (24), +1.8% (30), +2.5% (50) but -0.2% (40) and -0.5% (60); MM +4.1%, +2.6%, +0.3%, +2.3%, -0.6% (40), -0.6% (60): from 40 the starved mana is worth more in rank 1 Aimed Shot than in a sting. Not shipped: a level-scoped condition needs `spellIsKnown` below the trainer level, which the platform lane is fixing in core this round. | `$R/hunter/low18.tsv`, `$R/hunter/rot/*-or.json` | CONFIRMED-BUG (APL, at 18-19; old, from round 20's B3 which measured at 60 only) | R20 3ea76a4c0 | - (open, below) |
+| G2 | Damage per mana, rank 1 Aimed Shot against Serpent Sting on Marksmanship at 58 and bare 60 (guide R20-3): not run this round. | - | OPEN | - | - |
+
+## Cross-cutting
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| X1 | Round 20's attack power share (`attack_power_scaling.go`) multiplies with the spell's damage multipliers (Lone Wolf, Improved Stings) like any other part of the hit. Round 20 H4 wrote the October fit as "base x Lone Wolf + 3% RAP", but in report 2705 both Huntscar and Salami had their pets out (173 and 347 pet damage events), so the 1.2 there is not Lone Wolf, and the ranged attack power read off Multi-Shot minus Auto Shot carries the same multiplier; the beta data cannot tell the two forms apart. | `$SP/r21/hunter/tools/lw.py` on `$SP/r16/hunter/fl` | OPEN (a live Lone Wolf log with a known sheet attack power) | - | - |
+| X2 | No hotfix rows in the 70790 push (`hotfix-push.json` search totals all 0). | data/builds/1.60.1.70790 | Aligned | - | - |
+| X3 | `go test ./sim/hunter/` with `GOWORK=off`: three tests panic on missing item ids (1728, 2098: `TestHunterPetDoesNotInheritTheSharpeningStone`, `TestForeverRangedHitItemsReachRangedAttacksOnly`, `TestForeverScopesReachRangedAttacksOnly`) on the base engine too; every other hunter test passes with the fix. | test runs | Aligned (environment) | - | - |
+
+## Before/after
+
+Raid 60, guide builds, frozen BiS, 10000 iterations, seed 1 / seed 50001, against `$R/before.tsv`:
+
+| spec | faction | seed 1 | seed 50001 |
+|---|---|---|---|
+| Beast Mastery | alliance | 895.0 -> 894.6 (-0.04%) | 894.1 -> 894.6 (+0.06%) |
+| Beast Mastery | horde | 893.0 -> 893.5 (+0.06%) | 893.2 -> 892.9 (-0.03%) |
+| Marksmanship | alliance | 934.2 -> 934.4 (+0.02%) | 935.1 -> 935.3 (+0.02%) |
+| Marksmanship | horde | 934.4 -> 934.3 (-0.01%) | 934.4 -> 933.6 (-0.09%) |
+| Survival | alliance | 877.0 -> 876.7 (-0.03%) | 875.5 -> 876.1 (+0.07%) |
+| Survival | horde | 876.6 -> 876.5 (-0.01%) | 877.9 -> 877.1 (-0.09%) |
+
+All within error. Bare bands (published entry, Horde, 10000 it; before = `$R/sb-before`):
+
+| spec | band | seed 1 | seed 50001 |
+|---|---|---|---|
+| Beast Mastery | 20 / 40 / 60 | 81.0 -> 81.2 (+0.25%) / 203.6 -> 204.3 (+0.34%) / 413.0 -> 414.1 (+0.27%) | 81.0 -> 81.2 / 203.8 -> 204.5 / 413.2 -> 414.0 |
+| Marksmanship | 20 / 40 / 60 | 83.0 -> 83.2 (+0.24%) / 206.2 -> 208.2 (+0.97%) / 404.9 -> 406.4 (+0.37%) | 83.0 -> 83.1 / 206.4 -> 208.3 / 405.1 -> 406.3 |
+| Survival | 20 / 40 / 60 | 55.4 -> 55.4 / 171.2 -> 171.3 / 380.0 -> 380.0 | 55.5 -> 55.5 / 171.2 -> 171.1 / 380.0 -> 380.1 |
+
+The Survival rank rows sit at 26-29 and 48-49, so no published band number (taken at 20 and 40) moves; they move the leveling card and the addon.
+
+No commit moves DPS for a spec outside the hunter class: the engine change is `sim/hunter/huntersmark.go` (the shared `prepullLandingHold` is untouched), the site changes are hunter APLs, hunter rank rows, hunter guides and a hunter test.
+
+## Files to regenerate
+
+- addon-data / Data.lua: the Survival card (Hunter's Mark lines and note), the three openers (mark at 20 s), the Survival rank rows (raceSpellId lines at 26-29, 48-49). Coach starters for the three hunters.
+- apl-sync copies: synced by hand (fork E fdc82f78b, `sim/request/apl`); `make apl-check` passes. `sim/rankchoices/rank-choices.json` synced with `make rank-choices-sync`.
+- Ladder goldens (`sim/request TestRotationLadder`) for the hunter checkpoints: bare bands move (BM/MM every band; Survival at 26-29 and 48-49).
+- Fork: no golden.
+
+## Measure at refresh
+
+- The Survival rank rows: the Horde/Alliance split at 26-28 and 48-49 follows the faction's band gear (every Horde race, Tauren included, behaves alike); re-judge both on the re-ranked band 20 and band 40 gear.
+- Round 20's list stands (hunter picks and weights on the attack power share; race orders; the tier order).
+
+## For other lanes
+
+- **Platform:** `core.prepullLandingHold` keys on `ProcMaskDirect`; any other class's pre-pull debuff or buff registered with a damage mask (a curse, a sunder, a judgement) is held to 0 the same way. Worth one grep for pre-pull lines that cast a non-damaging spell with `ProcMaskSpellDamage`.
+
+## For the guide lane
+
+- The Survival card's priority section does not repeat Hunter's Mark (the opener shows it); the page says to remark on long fights.
+
+## Guide text
+
+Done in this lane: beast-mastery.md and marksmanship.md (raid pull paragraph: mark first, then the aspect), survival.md (raid pull paragraph, the 26-29 paragraph, the 48 sentence), the Survival mark note. `_prose.test.ts` passes (18). wow-player on the rendered pages (astro dev on this branch, 1440; `$R/hunter/shots/`): **SHIP WITH FIXES**, no MUST. Applied: "so its mana" -> "so the mana" on all three pages. Not applied, with reason: the card's priority section does not repeat a spell the opener shows, so the mark line renders in the opener only (the page carries the remark rule); "open with Hunter's Mark" in the leveling paragraph is right for trash too (the 20 s lead is a boss-pull line on the raid card); the Wing Clip row was clipped only by the dev toolbar; "at 46 the new Immolation Trap rank" is right for Forever (trainables: Immolation Trap 16/26/36/46/56, guide round 19), the reviewer quoted Classic's levels.
+
+## Still open
+
+- G1: the BM/MM low-mana stall at 18-19 (and the shorter one from 20). Once the platform's `spellIsKnown` level fix lands, gate the extra branch on Aimed Shot being unknown, or re-judge the plain branch band by band (it wins at 20-30 and 50, loses at 40 and 60); the Serpent Sting and Arcane Shot notes then need a clause for it. G2 for the guide lane's R20-3.
+
+- Round 20's H1 (hawk swing), H3 (Heart of the Lion on the pet), H2's Focused Fire snapshot, H4 (Ranged Weapon Specialization on the sting), H5 (Lacerating Strikes), Immolation Trap's 2% (single source): no live log at 03:34 UTC.
+- X1: whether Forever's damage multipliers reach the attack power share (a live Lone Wolf log).
+- Pending owner, not reopened: Arcane Shot with spell power, level-60 book ranks, Heart of the Lion 280/276.
