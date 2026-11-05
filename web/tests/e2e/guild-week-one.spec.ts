@@ -66,13 +66,16 @@ function meFor(name: string, officer: boolean) {
 /** The mock home as a guild with nothing logged, its viewer at `level`. */
 function zeroLogHome(viewer: string, level: number): GuildHome {
   const home = buildMockHome(viewer);
+  const { summary, members } = home;
+  if (summary === undefined || members === undefined)
+    throw new Error('the mock home carries a summary and members');
   const levels = [level, 60, 52, 41, 23, 8];
   return {
     ...home,
     standing: undefined,
     summary: {
-      ...home.summary,
-      tier: { ...home.summary.tier, down: 0, pulls_total: 0 },
+      ...summary,
+      tier: { ...summary.tier, down: 0, pulls_total: 0 },
       named_encounters_down: 0,
       pulls_this_tier: 0,
       waiting_for_approval: 0,
@@ -82,7 +85,7 @@ function zeroLogHome(viewer: string, level: number): GuildHome {
       level: row.name === viewer ? level : levels[1 + (row.name.length % 5)],
       professions: row.name === viewer ? ['alchemy', 'cooking'] : row.professions,
     })),
-    members: home.members.map((entry) => ({
+    members: members.map((entry) => ({
       ...entry,
       level: entry.name === viewer ? level : levels[1 + (entry.name.length % 5)],
     })),

@@ -8,6 +8,7 @@ import type { GuildProgressionPage, GuildReadinessRow, GuildRosterEntry } from '
 import GuildProgression from './GuildProgression.svelte';
 import GuildReadiness from './GuildReadiness.svelte';
 import GuildWeekOneCard from './GuildWeekOneCard.svelte';
+import { gateFactsFixture } from '../../test-support/gate-facts';
 
 const NOW = new Date('2026-11-05T00:00:00Z');
 const noop = (): void => {};
@@ -140,7 +141,14 @@ describe('GuildProgression with pulls', () => {
 
 function board(rows: GuildReadinessRow[], officer = true, myCharacterKey: string | null = null): string {
   return render(GuildReadiness, {
-    props: { rows, officer, officerTools: true, raidGuildTools: true, myCharacterKey, settingsHref: '/s' },
+    props: {
+      rows,
+      officer,
+      officerTools: true,
+      raidGuildTools: true,
+      myCharacterKey,
+      gateFacts: gateFactsFixture(),
+    },
   }).body;
 }
 
