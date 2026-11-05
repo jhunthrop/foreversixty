@@ -313,20 +313,30 @@ def _rank_choice_id(
     return (same_band or ids or [None])[0]
 
 
-#: The preset a band below 60 is published under (sim/request PublishedPreset).
+#: The presets a band is published under (sim/request PublishedPreset): the bare
+#: preset below RAID_PRESET_LEVEL, the raid preset from it.
 BARE_PRESET = "bare"
+RAID_PRESET = "raid"
+RAID_PRESET_LEVEL = 60
+
+
+def published_preset(level: int) -> str:
+    """The preset `level` is published under (sim/request PublishedPreset)."""
+    return RAID_PRESET if level >= RAID_PRESET_LEVEL else BARE_PRESET
 
 
 def _band_ranks(choices: dict, spell_id: int, level: int, line: int) -> dict[str | None, int]:
     """The ranks data/curated/rank-choices.json picks for the list's
     `spell_id` at `level` (one spec's rows), keyed by each race slug a row
-    names (None for a row of every race); empty outside every row. A band
-    below 60 is the bare preset's, so a row for the raid preset only never
-    applies here, and a row scoped to lines applies only on those priority-list
-    entries. sim/request refuses two rows that meet one race."""
+    names (None for a row of every race); empty outside every row. A row for
+    one preset applies only at the levels published under it (`published_preset`:
+    the raid preset at 60, round 22's Holy paladin Flash of Light rank 5), a row
+    naming no preset at every level, and a row scoped to lines only on those
+    priority-list entries. sim/request refuses two rows that meet one race."""
+    preset = published_preset(level)
     ranks: dict[str | None, int] = {}
     for row in choices.get(spell_id, []):
-        if row.get("preset", BARE_PRESET) != BARE_PRESET:
+        if row.get("preset", preset) != preset:
             continue
         if row["lines"] is not None and line not in row["lines"]:
             continue
@@ -546,13 +556,10 @@ def _line_at(context: _SpecContext, cast: dict, level: int) -> AddonRotationLine
     if resolved is None:
         return None
     name, resolved_id = resolved
-    # A per-band rank choice (sim/request rankResolver) wins below 60;
-    # a race's own row wins for that race.
-    ranks = (
-        _band_ranks(context.choices, cast["spell_id"], level, cast["line"])
-        if level < MAX_LEVEL
-        else {}
-    )
+    # A per-band rank choice (sim/request rankResolver) wins at every level,
+    # 60 included under the raid preset (`_band_ranks`); a race's own row wins
+    # for that race.
+    ranks = _band_ranks(context.choices, cast["spell_id"], level, cast["line"])
     class_slug = _class_slug(context.spec)
     pick = _RankPick(context.spellranks, class_slug, name, cast["spell_id"], level)
     resolved_id = pick.id_of(ranks.get(None), resolved_id)

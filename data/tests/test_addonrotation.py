@@ -547,6 +547,34 @@ def test_a_band_casts_the_rank_choice_the_curated_table_names(tmp_path):
     assert [line.spell_id for line in bands[60]] == [10929]
 
 
+def test_level_sixty_casts_the_raid_presets_rank_row(tmp_path):
+    """Round 22 (Holy paladin card): level 60 is published under the raid preset
+    (sim/request PublishedPreset), so a row for the raid preset applies at 60 and a
+    row for the bare preset does not. The addon and the card read the base row
+    instead: party Flash of Light printed rank 4 where the raid sim casts rank 5."""
+    _write_apl(tmp_path, "priest-holy", [_cast(10929, rank=9, notes="Renew.")])
+    (tmp_path / "rank-choices.json").write_text(
+        json.dumps(
+            {
+                "specs": {
+                    "priest-holy": [
+                        {
+                            "spell": "Renew",
+                            "authored": 10929,
+                            "bands": [
+                                {"from_level": 60, "to_level": 60, "rank": 3, "preset": "raid"},
+                                {"from_level": 60, "to_level": 60, "rank": 2, "preset": "bare"},
+                            ],
+                        }
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert [line.spell_id for line in _healer_bands("priest-holy", tmp_path)[60]] == [6075]
+
+
 def test_a_rank_row_or_a_rank_learned_mid_band_starts_its_own_band(tmp_path):
     """Round 16 (shaman lane): rank rows start at any level now (Lightning Bolt
     rank 4 at 34-38, rank 5 at 39-44), and a rank is learned at any level. The
