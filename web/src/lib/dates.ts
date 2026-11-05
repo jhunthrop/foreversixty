@@ -107,6 +107,29 @@ export function dayWord(d: Date, now: Date = new Date()): string {
   return dayWordFor({ y: d.getFullYear(), m: d.getMonth(), d: d.getDate() }, now);
 }
 
+/** Inside this many days a sync reads as words (`3 days ago`); past it, the date. */
+const SYNCED_WORDS_DAYS = 7;
+/** Past this many days the date carries its year: a late-December sync read in January stays short. */
+const SYNCED_YEAR_DAYS = 182;
+
+/**
+ * The readiness board's Last synced word, one format for every row (guild loop round 3: `today`
+ * beside `27 Oct` beside a weekday): `today`, `yesterday`, `3 days ago` up to 7 days, then
+ * `27 Oct` (`27 Oct 2025` once it is over six months old, so the pill stays one short line). Days are the viewer's calendar days. An
+ * unreadable date renders as nothing.
+ */
+export function syncedWord(d: Date, now: Date = new Date()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  const age =
+    dayNumber(now.getFullYear(), now.getMonth(), now.getDate()) -
+    dayNumber(d.getFullYear(), d.getMonth(), d.getDate());
+  if (age <= 0) return 'today';
+  if (age === 1) return 'yesterday';
+  if (age <= SYNCED_WORDS_DAYS) return `${age} days ago`;
+  const base = `${d.getDate()} ${SHORT_MONTHS[d.getMonth()]}`;
+  return age <= SYNCED_YEAR_DAYS ? base : `${base} ${d.getFullYear()}`;
+}
+
 /**
  * The same word for a date-only value ("2026-10-20"): a calendar date has no zone, so it is read
  * as written (never through `new Date`, which would move it by the viewer's offset) and only then

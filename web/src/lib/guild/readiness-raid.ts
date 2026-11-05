@@ -2,7 +2,8 @@
 // The Readiness tab's next-raid filter (attendance spec 3.7): the board read twice (the guild's, then
 // the next raid's In and Late sign-ups), which one the toggle shows, and what the Last synced cell says.
 import { fetchGuildReadiness, type GuildReadinessPage, type GuildReadinessRow } from './api';
-import { attendanceCopy, syncedAgo } from './attendance-copy';
+import { syncedWord } from '../dates';
+import { attendanceCopy, syncedLine } from './attendance-copy';
 import type { ReadinessRaid } from './attendance-contract';
 
 export interface ReadinessBoard {
@@ -40,8 +41,6 @@ export function readinessRows(board: ReadinessBoard, nextRaidOnly: boolean): Gui
 export type SyncCell =
   { kind: 'no_export'; text: string } | { kind: 'stale'; text: string } | { kind: 'day' };
 
-const DAY_MS = 86_400_000;
-
 /** The Last synced cell: no export, a stale export (the API's cutoff, 7 days before now, never the
  *  raid's date: guild round 3), or the day word. `raid` is kept for the call sites' shape. */
 export function syncCell(
@@ -51,8 +50,7 @@ export function syncCell(
 ): SyncCell {
   if (row.no_export) return { kind: 'no_export', text: attendanceCopy.readiness.noExport };
   if (row.synced_before_cutoff === true) {
-    const days = Math.max(0, Math.floor((now - new Date(row.logged_at).getTime()) / DAY_MS));
-    return { kind: 'stale', text: syncedAgo(days) };
+    return { kind: 'stale', text: syncedLine(syncedWord(new Date(row.logged_at), new Date(now))) };
   }
   return { kind: 'day' };
 }

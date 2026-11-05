@@ -417,5 +417,6 @@ export function showingParts(
   return { lead: `Showing the ${n} signed In or Late for `, title, tail: `, ${when}.` };
 }
 
-/** A stale export's age, judged against now (the readiness board's cutoff is 7 days, guild round 3). */
-export const syncedAgo = (days: number): string => `Synced ${days} ${days === 1 ? 'day' : 'days'} ago`;
+/** `Synced 27 Oct`: a stale export (the readiness board's cutoff is 7 days, guild round 3), its
+ *  day in the Last synced column's one format (`syncedWord`). */
+export const syncedLine = (when: string): string => `Synced ${when}`;

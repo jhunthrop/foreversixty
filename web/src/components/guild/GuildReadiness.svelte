@@ -7,11 +7,17 @@
      the h2 and every Nudge stays on screen, disabled. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import { dayWord } from '../../lib/dates';
+  import { syncedWord } from '../../lib/dates';
   import { classColorVar } from '../../lib/report/format';
   import type { GuildReadinessRow } from '../../lib/guild/api';
   import type { ReadinessRaid } from '../../lib/guild/attendance-contract';
-  import { attendanceCopy, nextRaidToggle, showingParts, stampLabel } from '../../lib/guild/attendance-copy';
+  import {
+    attendanceCopy,
+    nextRaidToggle,
+    showingParts,
+    stampLabel,
+    syncedLine,
+  } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
   import { PILL_WARN } from '../../lib/guild/pill-styles';
   import { PHONE_HIT_AREA } from '../../lib/guild/field-styles';
@@ -141,7 +147,8 @@
     'inline-flex h-8 items-center justify-center rounded-control border border-[#3a3326] bg-none px-3 text-[11px] font-bold tracking-[0.06em] text-strong uppercase disabled:opacity-50 disabled:cursor-default';
   const CHIP = 'flex flex-col gap-0.5 text-[12px] text-text';
   /** Fits the 1024 px content width, where the board's grid starts: the name and gear gap columns give. */
-  const BOARD_COLUMNS = 'minmax(120px,170px) minmax(120px,170px) 120px 100px 100px 140px 90px 84px';
+  // Last synced is 128px: the stale pill (`Synced 27 Oct`) stays on one line (guild loop round 3).
+  const BOARD_COLUMNS = 'minmax(120px,170px) minmax(120px,170px) 120px 100px 100px 140px 128px 84px';
 
   /** The pill treatment per cell kind (Enchants/Consumables/Talent points): `consent`
    *  reads as plain muted text (never a coloured pill -- there is nothing to flag), `ok`
@@ -157,8 +164,6 @@
   const ENCHANT_PILL_STYLE =
     'height:auto;min-height:22px;white-space:normal;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:left;';
 
-  // The stale pill's text (`Synced 9 days ago`) is longer than the 130px Synced column:
-  // it drops .pill's fixed 22px height and wraps instead of clipping.
   /** A signed character with no export has no gear to read (UX 16): Gear gap to Item level read a dash. */
   const NO_EXPORT_CELLS = ['Gear gap', 'Enchants', 'Consumables', 'Talent points', 'Item level'] as const;
   const DASH = '—';
@@ -166,7 +171,7 @@
   /** What `sortReadinessWorstFirst` sorts by (WP B). */
   const SORT_NOTE = 'Sorted by the most checks to fix, then the biggest gear gap.';
   const NUDGE_NOTE = ' Nudge copies a message you can paste to them.';
-  const STALE_PILL = 'h-auto min-h-[22px] whitespace-normal py-0.5 text-left leading-[1.3]';
+  const STALE_PILL = 'whitespace-nowrap';
 
   function pillClass(kind: ReadinessCellKind, warnIsGold = false): string {
     if (kind === 'consent') return '';
@@ -179,9 +184,9 @@
     return isWithheldWord(gearGapLabel(row)) ? 'text-muted' : 'text-text';
   }
 
-  /** The day the row's export last synced, as a word in the viewer's zone. */
+  /** The day the row's export last synced, in the column's one format (`3 days ago`, `27 Oct`). */
   function syncedDay(row: GuildReadinessRow): string {
-    return dayWord(new Date(row.logged_at));
+    return syncedWord(new Date(row.logged_at));
   }
 
   /** The median caption's colour: above green, below red, at the median muted (week-one spec §3.5). */
@@ -377,7 +382,7 @@
         >
           <div class="flex items-center justify-between gap-2">
             {@render raiderName(row, pinned)}
-            {@render syncedCell(row, 'text-[11px]', `Synced ${syncedDay(row)}`)}
+            {@render syncedCell(row, 'text-[11px]', syncedLine(syncedDay(row)))}
           </div>
           {#if leveling}
             <p class="text-text text-[14px]" data-testid="guild-readiness-leveling">
