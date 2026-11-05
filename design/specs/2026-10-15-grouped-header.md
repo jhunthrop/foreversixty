@@ -44,9 +44,14 @@ names no guild lands on `No guild by that name on {REGION} {Ruleset}. Check the 
 ruleset.` with the inline link `Look it up again` to `/guild`, never the API's message and a
 retry. Under it, when one of the account's guilds (`/v1/me` `guilds`) or the Top guilds board
 (`/v1/rankings/guilds?kind=progress`) has a name that starts with, else contains, the typed words
-(three letters or more, the typed region and ruleset first): `Did you mean ` + the inline link
-`{Guild} ({REGION} {Ruleset})` + `?` (amended 2026-11-05, guild loop round 3: "lifecycle" missed
-"Lifecycle Test"). The API has no guild search, so the name field suggests nothing as you type.) The Guild door itself carries `data-guild-tab="overview"`, so
+(three letters or more, the typed region and ruleset first), then `GET /v1/guilds/search?q=&region=`
+(public, at most 5 rows; asked only from three typed letters, its failure silent), up to 3 names:
+`Did you mean ` + the inline links `{Guild} ({REGION} {Ruleset})`, joined `, ` and ` or `, + `?`
+(amended 2026-11-05, guild loop round 3: "lifecycle" missed "Lifecycle Test"; the search reaches
+a stranger, who has no guilds of their own and may find the guild on no board). The name field
+still suggests nothing as you type.) A player who holds a guild's claim (`/v1/me` `guilds[].claim.yours`)
+reads `You hold {Guild}'s claim.` in the landing's `Run a guild? Open its page and choose Claim this
+guild.` place (amended 2026-11-05, guild loop round 3). The Guild door itself carries `data-guild-tab="overview"`, so
 the session rewrite below points it at the member's guild too. When the session
 resolves with a verified guild (`Me.guilds[0]`), the header fills the first row's title with the
 guild's name and rewrites the four hrefs to `guildHref(region, ruleset, name)` plus the tab

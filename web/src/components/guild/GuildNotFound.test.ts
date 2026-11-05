@@ -30,9 +30,30 @@ describe('GuildNotFound', () => {
     expect(line).toContain('href="/guild/us/pvp/lifecycle-test"');
   });
 
+  it("offers a stranger the guild search's rows, up to three, joined with commas and or", () => {
+    const { body } = render(GuildNotFound, {
+      props: {
+        path: { region: 'us', ruleset: 'normal', slug: 'lifecyle-tset' },
+        candidates: [],
+        searched: [
+          { name: 'Lifecycle Test', region: 'us', ruleset: 'pvp' },
+          { name: 'Lifecycle Testers', region: 'us', ruleset: 'normal' },
+          { name: 'Lifecycle Tests', region: 'us', ruleset: 'hardcore' },
+          { name: 'Lifecycle Fourth', region: 'us', ruleset: 'rp' },
+        ],
+      },
+    });
+    const line = body.slice(body.indexOf('data-testid="guild-not-found-suggestion"'));
+    expect(line.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, '')).toMatch(
+      /^[^>]*>\s*Did you mean Lifecycle Test \(US PvP\), Lifecycle Testers \(US Normal\) or Lifecycle Tests \(US Hardcore\)\?/,
+    );
+    expect(line).toContain('href="/guild/us/normal/lifecycle-testers"');
+    expect(line).not.toContain('Lifecycle Fourth');
+  });
+
   it('offers nothing when no known guild is close', () => {
     const { body } = render(GuildNotFound, {
-      props: { path: { region: 'us', ruleset: 'pvp', slug: 'zzz' }, candidates: [] },
+      props: { path: { region: 'us', ruleset: 'pvp', slug: 'zzz' }, candidates: [], searched: [] },
     });
     expect(body).not.toContain('guild-not-found-suggestion');
   });

@@ -17,9 +17,15 @@ export const guildHomeCopy = {
   notFound: (where: string): string =>
     `No guild by that name on ${where}. Check the spelling and the ruleset.`,
   lookUpAgain: 'Look it up again',
-  /** `Did you mean ` + link `{Guild} ({where})` + `?` (guild loop round 3). */
+  /** `Did you mean ` + up to three links `{Guild} ({where})`, joined `, ` and ` or `, + `?`
+   *  (guild loop round 3). */
   didYouMean: 'Did you mean ',
   suggestionLink: (name: string, where: string): string => `${name} (${where})`,
+  /** What goes before the suggestion at `index` of `count`: nothing, `, `, or ` or ` before the last. */
+  suggestionJoin: (index: number, count: number): string => {
+    if (index === 0) return '';
+    return index === count - 1 ? ' or ' : ', ';
+  },
   lede: "A guild's progression per boss, pull counts, kill dates and roster bests. Its roster, raid nights and loot sit in the tabs once it has loaded.",
   reportsHeading: "This week's reports",
   // The public block's own reports heading (UX review defect 2, 2026-09-28): distinguishes
