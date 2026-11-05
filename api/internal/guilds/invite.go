@@ -131,23 +131,27 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 // (syntheticKey) in guildID onto the account's own character rows there, then drops the
 // placeholder, within tx. It runs whenever either side lands: an invited account whose
 // character syncs into the guild, and an account with characters already on the roster that
-// joins by invite. The join page promises "No officer has to approve you", so a character of an
-// invite-verified account never reads "Waiting for approval", whatever its rank (the same as a
-// 'logs' verification, the rank is the character's own export's). With no real character row
-// in the guild, or no verified placeholder, nothing changes. Callers recompute membership after.
+// joins by invite. The join page promises "No officer has to approve you", so a member-rank
+// character of an invite-verified account never reads "Waiting for approval". An officer or
+// leader rank is the character's own export's word, and an invite link can be passed on, so such
+// a character still waits for an officer (Approve all names it: "including 1 officer"); the
+// placeholder then stays, keeping the account verified as a member. With no member-rank
+// character in the guild, or no verified placeholder, nothing changes. Callers recompute
+// membership after.
 func AdoptInviteVerification(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
 	if _, err := tx.Exec(ctx, `
 		with placeholder as (
 		  delete from guild_characters p
 		  where p.guild_id = $1 and p.character_key = $2 and p.verified_at is not null
 		    and exists (select 1 from guild_characters c
-		                where c.guild_id = $1 and c.user_id = $3 and c.character_key not like 'account:%')
+		                where c.guild_id = $1 and c.user_id = $3 and c.character_key not like 'account:%'
+		                  and c.rank not in ('officer', 'leader'))
 		  returning p.verified_at
 		)
 		update guild_characters gc set verified_at = placeholder.verified_at, verified_by = 'invite'
 		from placeholder
 		where gc.guild_id = $1 and gc.user_id = $3 and gc.character_key not like 'account:%'
-		  and gc.verified_at is null`,
+		  and gc.verified_at is null and gc.rank not in ('officer', 'leader')`,
 		guildID, syntheticKey(userID), userID); err != nil {
 		return fmt.Errorf("guilds: adopt invite verification for user %d in guild %d: %w", userID, guildID, err)
 	}
