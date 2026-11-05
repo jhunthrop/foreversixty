@@ -16,6 +16,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
+	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	"github.com/jhunthrop/foreversixty/sim/specs"
@@ -73,15 +74,67 @@ func TestCharUpgradeWords(t *testing.T) {
 	if geared != "**Top upgrades** · level 60 Phase 1 raid\nEvery slot already wears the guide's pick for level 60 Phase 1 raid." {
 		t.Fatalf("no upgrade = %q", geared)
 	}
-	// Ordered: empty slots in frame order, measured largest first, unmodelled in frame order.
+	// Ordered as the label reads: measured largest first (an empty slot by its own gain), then
+	// every pick with no figure, an empty one included, in frame order.
 	items := ordered([]upgrade{{slot: "head", group: groupUnmodelled, value: 11}, {slot: "chest", group: groupMeasured, value: 11},
 		{slot: "wrist", group: groupMeasured, value: 4.7}, {slot: "feet", group: groupUnmodelled, value: 7.6},
-		{slot: "trinket2", group: groupEmpty}, {slot: "ranged", group: groupMeasured, value: 23.1}})
+		{slot: "finger1", group: groupMeasured, value: 2.9},
+		{slot: "trinket2", group: groupUnmodelled}, {slot: "ranged", group: groupMeasured, value: 23.1}})
 	var got []string
 	for _, u := range items {
 		got = append(got, u.slot)
 	}
-	if strings.Join(got, ",") != "trinket2,ranged,chest,wrist,head,feet" {
+	if strings.Join(got, ",") != "ranged,chest,wrist,finger1,head,feet,trinket2" {
+		t.Fatalf("order = %v", got)
+	}
+}
+
+// An empty slot with no figure ("Gain not modelled yet") never ranks above a measured +2.9 DPS;
+// one with a figure ranks by it.
+func TestAnEmptySlotRanksByItsGain(t *testing.T) {
+	per := 0.14
+	band := bis.Band{ReferenceDpsPerPoint: &per}
+	score := 96.0
+	small := 20.7 // +2.9 DPS
+	measured, _ := dpsUpgrade(band, bis.Slot{Slot: "head", ItemID: 1, Score: &score}, nil)
+	unknown, _ := dpsUpgrade(band, bis.Slot{Slot: "trinket2", ItemID: 2}, nil)
+	worn, _ := dpsUpgrade(band, bis.Slot{Slot: "finger1", ItemID: 3, Score: &small}, nil)
+	var got []string
+	for _, u := range ordered([]upgrade{measured, unknown, worn}) {
+		got = append(got, u.slot+" "+u.gain)
+	}
+	if want := "head +13.4 DPS,finger1 +2.9 DPS,trinket2 " + panelCopy.NotModelled; strings.Join(got, ",") != want {
+		t.Fatalf("order = %q, want %q", strings.Join(got, ","), want)
+	}
+}
+
+// A healer's list ranks by item levels gained: an empty slot by its pick's item level, a worn
+// slot by the gap, and a pick no higher than the worn item last.
+func TestALevelListRanksByItemLevelsGained(t *testing.T) {
+	levels := map[int]int{1: 66, 2: 70, 3: 60, 4: 63, 50: 62, 51: 66}
+	itemLevel := func(id int) int { return levels[id] }
+	var items []upgrade
+	for _, c := range []struct {
+		sl   bis.Slot
+		worn *rankings.GearWorn
+	}{
+		{bis.Slot{Slot: "head", ItemID: 1}, &rankings.GearWorn{ID: 50}},  // +4
+		{bis.Slot{Slot: "chest", ItemID: 2}, &rankings.GearWorn{ID: 50}}, // +8
+		{bis.Slot{Slot: "legs", ItemID: 3}, &rankings.GearWorn{ID: 51}},  // on the list
+		{bis.Slot{Slot: "feet", ItemID: 4}, nil},                         // fills: 63
+		{bis.Slot{Slot: "trinket1", ItemID: 99}, nil},                    // fills, level unknown
+	} {
+		u, ok := levelUpgrade(c.sl, c.worn, itemLevel)
+		if !ok {
+			t.Fatalf("%s: not an upgrade", c.sl.Slot)
+		}
+		items = append(items, u)
+	}
+	var got []string
+	for _, u := range ordered(items) {
+		got = append(got, u.slot)
+	}
+	if strings.Join(got, ",") != "feet,chest,head,legs,trinket1" {
 		t.Fatalf("order = %v", got)
 	}
 }
@@ -91,7 +144,7 @@ func TestAnEmptySlotShowsItsRealGain(t *testing.T) {
 	band := bis.Band{ReferenceDpsPerPoint: &per}
 	score := 96.0
 	head := bis.Slot{Slot: "head", ItemID: 1, Score: &score}
-	if u, ok := dpsUpgrade(band, head, nil); !ok || u.gain != "+13.4 DPS" || u.group != groupEmpty {
+	if u, ok := dpsUpgrade(band, head, nil); !ok || u.gain != "+13.4 DPS" || u.group != groupMeasured {
 		t.Fatalf("empty head = %+v", u)
 	}
 	for name, sl := range map[string]bis.Slot{

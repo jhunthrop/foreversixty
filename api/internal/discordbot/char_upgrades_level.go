@@ -12,8 +12,8 @@ import (
 
 // levelUpgrades is a healer's or tank's list (gear panel spec §A.5.3, amended 2026-11-05): the
 // band /bis defaults to, each slot whose worn item is not the band's pick, ranked by the BiS
-// list and item level, never DPS. Empty slots come first, then picks above what is worn by the
-// most item levels, then the list's other picks in frame order. ok is false when the band is
+// list and item level, never DPS. Picks rank by item levels gained, most first (an empty slot
+// by its pick's whole item level), then the list's other picks in frame order. ok is false when the band is
 // unknown or every slot wears its pick.
 func (s *Service) levelUpgrades(card rankings.Character, spec specs.Spec, faction string) (upgradeList, bool) {
 	level, ok := upgrades.LevelBand(card.Character.Level)
@@ -51,11 +51,16 @@ func (s *Service) levelUpgrades(card rankings.Character, spec specs.Spec, factio
 }
 
 // levelUpgrade is one slot's pick over w (nil: the slot is empty) in item levels; ok is false
-// when the pick is what is worn. A pick no higher than the worn item is still the list's pick.
+// when the pick is what is worn. A pick no higher than the worn item is still the list's pick,
+// ranked last. An empty slot gains the pick's whole item level, so it ranks by that; with the
+// level unknown it ranks last too.
 func levelUpgrade(sl bis.Slot, w *rankings.GearWorn, itemLevel func(int) int) (upgrade, bool) {
 	u := upgrade{slot: sl.Slot, id: sl.ItemID, name: sl.ItemName, kind: sl.SourceKind, source: sl.Source, worn: w}
 	if w == nil {
-		u.group, u.gain = groupEmpty, panelCopy.LevelEmpty
+		u.group, u.gain = groupUnmodelled, panelCopy.LevelEmpty
+		if pick := itemLevel(sl.ItemID); pick > 0 {
+			u.group, u.value = groupMeasured, float64(pick)
+		}
 		return u, true
 	}
 	if w.ID == sl.ItemID {

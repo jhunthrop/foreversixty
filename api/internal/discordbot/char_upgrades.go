@@ -11,8 +11,9 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
-// maxUpgrades is how many upgrade rows the /char panel lists (spec 2026-10-29 §A.5.3).
-const maxUpgrades = 5
+// maxUpgrades is how many upgrade rows the /char panel lists for every role: the command's
+// "top 3 upgrades" (spec 2026-10-29 §A.5.3, amended guild round 3).
+const maxUpgrades = 3
 
 // tankRole and healerRole are the spec roles whose upgrades are never ranked by DPS: they rank
 // by the BiS list and item level (levelUpgrades).
@@ -33,9 +34,9 @@ const (
 	rankLevel
 )
 
-// The list's groups (upgrades.Group): empty slots, then measured gains, then unmodelled picks.
+// The list's groups (upgrades.Group): measured gains, then picks with no figure. The bot puts an
+// empty slot in whichever its gain says, never upgrades.GroupEmpty (ordered).
 const (
-	groupEmpty      = upgrades.GroupEmpty
 	groupMeasured   = upgrades.GroupMeasured
 	groupUnmodelled = upgrades.GroupUnmodelled
 )
@@ -142,9 +143,9 @@ func (s *Service) dpsUpgrades(card rankings.Character, spec specs.Spec, faction 
 func dpsUpgrade(band bis.Band, sl bis.Slot, w *rankings.GearWorn) (upgrade, bool) {
 	u := upgrade{slot: sl.Slot, id: sl.ItemID, name: sl.ItemName, kind: sl.SourceKind, source: sl.Source, worn: w}
 	if w == nil {
-		u.group, u.gain = groupEmpty, panelCopy.NotModelled
+		u.group, u.gain = groupUnmodelled, panelCopy.NotModelled
 		if v, measured := emptyGain(band, sl); measured {
-			u.gain, u.value = signedDPS(v), v
+			u.group, u.gain, u.value = groupMeasured, signedDPS(v), v
 		}
 		return u, true
 	}
@@ -176,8 +177,11 @@ func emptyGain(band bis.Band, sl bis.Slot) (float64, bool) {
 	return *v.Gain, *v.Gain >= minShownGain
 }
 
-// ordered is the panel's order (upgrades.Order): empty slots in frame order, then measured
-// gains largest first, then unmodelled picks in frame order. items arrive in frame order.
+// ordered is the panel's order (upgrades.Order), the way its label reads: measured gains
+// largest first, an empty slot among them by its own gain, then picks with no figure in frame
+// order. The bot never puts a row in upgrades.GroupEmpty, so an empty slot whose gain is
+// unknown waits with the unmodelled rows rather than heading the list. items arrive in frame
+// order.
 func ordered(items []upgrade) []upgrade {
 	return upgrades.Order(items, func(u upgrade) (upgrades.Group, float64) { return u.group, u.value })
 }
@@ -196,12 +200,8 @@ func (s *Service) scoreUpgrades(card rankings.Character, spec specs.Spec, factio
 	}
 	var items []upgrade
 	for _, g := range upgradeSlots(card.Gear) {
-		u := upgrade{slot: g.Slot, id: g.Pick.ID, name: g.Pick.Name, kind: kinds[g.Pick.ID], source: g.Pick.Source,
-			gain: signedPoints(*g.Gap), value: *g.Gap, group: groupMeasured, worn: g.Worn}
-		if g.Worn == nil {
-			u.group = groupEmpty
-		}
-		items = append(items, u)
+		items = append(items, upgrade{slot: g.Slot, id: g.Pick.ID, name: g.Pick.Name, kind: kinds[g.Pick.ID], source: g.Pick.Source,
+			gain: signedPoints(*g.Gap), value: *g.Gap, group: groupMeasured, worn: g.Worn})
 	}
 	list.items = ordered(items)
 	return list

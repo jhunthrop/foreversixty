@@ -201,18 +201,17 @@ Ephemeral, flags 32832.
       ```
       The accessory is the crest. Each line-3 clause appears only when known. Readiness and Synced appear only for a verified member.
    2. **Separator**.
-   3. **Text Display**: `**Top upgrades** · {band label}`, then `-# By DPS gained, against the guide build.` A healer or tank is never ranked by DPS (amended 2026-11-05, guild round 3): `-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.`, the rows ranked by the BiS list of the same band: empty slots (`Fills an empty slot`), then picks above what is worn by the most item levels (`+12 item levels`, `+1 item level`), then the list's other picks in frame order (`On the BiS list`). With no band for the spec, any spec reads `-# By Forever Score gained, against the guide build.`
-   4. **Up to five upgrade rows** (§A.3; `maxUpgrades` = 5), ordered:
-      1. Empty slots that have a pick, in frame order, each with its real gain or `Gain not modelled yet` (§A.3).
-      2. Measured gains, largest first.
-      3. Picks whose gain is not modelled (`Gain not modelled yet`), in frame order.
+   3. **Text Display**: `**Top upgrades** · {band label}`, then `-# By DPS gained, against the guide build.` A healer or tank is never ranked by DPS (amended 2026-11-05, guild round 3): `-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.`, the rows ranked by item levels gained toward the BiS list of the same band, most first (amended again in guild round 3 API3): an empty slot (`Fills an empty slot`) by its pick's whole item level, a worn slot by the gap (`+12 item levels`, `+1 item level`), then the list's other picks in frame order (`On the BiS list`), an empty slot whose pick's level is unknown among them. With no band for the spec, any spec reads `-# By Forever Score gained, against the guide build.`
+   4. **Three upgrade rows for every role** (§A.3; `maxUpgrades` = 3, the command's "top 3 upgrades"; amended 2026-11-05, guild round 3 API3, was five), ordered the way the label reads:
+      1. Measured gains, largest first. An empty slot with a real gain ranks among them by that gain.
+      2. Picks with no figure (`Gain not modelled yet`, or `On the BiS list` on a level list), in frame order, an empty slot whose gain is unknown included. A `Gain not modelled yet` row never ranks above a measured one.
 
-      Zulmara's list: Trinket 2 (empty, `Gain not modelled yet`: Molten Heart of the Mountain is sim-decided, no score), Ranged +23.1, Chest +11.0, Legs +9.3, Wrist +4.7, then four more.
-   5. When more exist: `-# {n} more upgrades on the character page.` (`-# 1 more upgrade on the character page.`).
+      Zulmara's list: Ranged +23.1, Chest +11.0, Legs +9.3, then six more (Wrist +4.7 first; Trinket 2, empty and `Gain not modelled yet` because Molten Heart of the Mountain is sim-decided, last).
+   5. When more exist, for every role: `-# {n} more upgrades on the character page.` (`-# 1 more upgrade on the character page.`).
 2. **Action row 1**: `Share in channel`, `Someone else`, `Character page` (Link).
 3. **Action row 2**, with two or more verified characters: `Another of your characters`.
 
-An empty slot whose band names a pick is kept even though `VerdictFor` gives no `GainDps`. A test pins Zulmara's empty Trinket 2 first.
+An empty slot whose band names a pick is kept even though `VerdictFor` gives no `GainDps`. A test pins Zulmara's empty Trinket 2 after every measured gain.
 
 The `/bis` panel's lead keeps saying each gain is over the next best item; the `/char` sheet's gold legend says its figures are the gain over what is worn (ruling B6).
 
