@@ -2,7 +2,7 @@
 
 Lane paladin. Site wt/r22-paladin from int/r22 (e3b8ce0d3: platform, items, druid, hunter and warrior merged, with the druid lane's crit-aura change), fork lane/r22-paladin from int/r22 (3c44b0559, no paladin commit). Client 1.60.1.70790; no new client data since round 21 (no commit touches the paladin talents, trainables, spellconst or hotfix-push.json). Every sim ran through `$R/sim.sh`, frozen BiS (`$R/bis-frozen`), guide raid builds (`$R/rt`) at 60, the band's published build below 60, Holy with `-heal`, Protection with `-tank`. Baseline is this branch before any change (`$R/paladin/sb-base`, `$R/paladin/base.tsv`), not `$R/before.tsv`. Lane files: `$R/paladin/` (run.sh, runb.sh, variant rotations, *.tsv, notes/, cap/).
 
-**Result: 1 CONFIRMED-BUG, fixed (`old`).** Holy's party Flash of Light should be rank 5 at raid 60. Two mana-pacing findings (Retribution's twist and Consecration pace, Protection's half-mana Consecration gate) are measured and OPEN: the best threshold differs between the raid and bare presets and between leveling levels, and no APL value can tell those apart. They need a platform value (see "For other lanes").
+**Result: 2 CONFIRMED-BUGs, fixed (`old`).** Holy's party Flash of Light should be rank 5 at raid 60, and (follow-up H3) Holy Light rank 1 should be the rank at 18 and 19. Two mana-pacing findings (Retribution's twist and Consecration pace, Protection's half-mana Consecration gate) are measured and OPEN: the best threshold differs between the raid and bare presets and between leveling levels, and no APL value can tell those apart. They need a platform value (see "For other lanes").
 
 ## Seeds and leads
 
@@ -17,6 +17,7 @@ Lane paladin. Site wt/r22-paladin from int/r22 (e3b8ce0d3: platform, items, drui
 | # | finding | evidence and source | confirmed? | origin | fix sha |
 |---|---|---|---|---|---|
 | H1 | **The party Flash of Light (everyone else below 80%) should be rank 5 at raid 60.** What was wrong: the card cast rank 4 on the party at every preset. At raid 60, rank 5 heals more: 700.6/701.4 to 701.6/702.0 effective HPS alliance and 683.0/683.1 to 684.6/683.9 horde (seeds 1/50001, 10,000 iterations). Three more alliance seeds give +0.1, +1.0 and +1.7 against a seed-to-seed spread of about 0.5, so the gain is real and small (+0.1 to +0.2%). The round 21 binary (`$R/sb-before`) shows the same gain (727.1 to 728.1, 727.7 to 728.8), so the crit change did not cause it; round 20 judged only the tank row at raid 60. Bare 60 never casts the party lines (identical numbers), so the authored rank 4 stays there and below 60. **Fix:** a raid-only row (rank-choices.json, 19941 at 60, rank 5) and its embedded copy; holy.md priority step 5 and the card note say rank 5 in a raid, rank 4 without raid buffs and from 50. Test first: `TestHolyPartyFlashOfLightIsRankFiveInARaid` (red: lines 12 to 16 cast 19941; green). | `$R/paladin/holy-party5.tsv`, `holy-party5-bare.tsv`, `holy-after.tsv` | CONFIRMED-BUG (rank row, gain beyond error at both seeds and factions) | old (round 20 H1 re-judged the Holy rows at 43 to 60 and kept the party row; raid 60 was checked on the tank row only) | S c05f93f85 |
+| H3 | **Follow-up (integrator, from the priest lane): ranks learned below 20.** The Holy header's rank rule (2026-10-08 healer audit) skipped every rank learned below 20, assuming Era's sub-20 cut, which Forever does not have for heals (platform P1). Only Holy Light has such ranks (635 at 1, 639 at 6, 647 at 14; Flash of Light starts at 20, Holy Shock at 30). Re-judged level by level at 10 to 49, each of ranks 1 to 3 forced (`-level N -rank 10329=r`, the 17-level low-rank penalty, the band's own build and gear; below 20 the band-20 entry with a level-legal talent string), 3,000 iterations to explore, 10,000 at seeds 1 and 50001 on both factions where one won. **What was wrong:** at 18 and 19 the card cast rank 3; rank 1 heals more over the fight: 18: 32.7/32.6 to 36.3/36.3 alliance (+11.0/+11.4%), 32.6/32.6 to 36.6/36.5 horde (+12.3/+12.0%); 19: 34.9/34.9 to 40.2/40.2 (+15.2%), 34.8/34.8 to 40.3/40.3 (+15.8%); rank 2 is in between. At 17 rank 3 still wins (rank 1 -7.6/-12.1%). The existing rows hold: rank 1 at 20 to 24 and rank 2 at 25 to 29 are the best of ranks 1 to 3; at 30 to 49 no rank below 20 wins (rank 3 ties the default at most, within 0.1%). **Fix:** a row 18 to 19 rank 1 (rank-choices.json and its embedded copy); the paced Holy Light card note and holy.md's Levels 1 to 19 paragraph tell you to bind rank 1 from 18 (rank 2 from 25 to 29). Test first: `TestHolyLightIsRankOneAtEighteenAndNineteen` (red: 647 at 18 and 19; green). Retribution and Protection: no row used the rule (Protection already takes Holy Strike rank 1, learned at 6, at 40 to 42; their other ranked spells, Consecration and Holy Shield, start at 20 or later). | `$R/paladin/hlsub20.tsv`, `hl1819.tsv` | CONFIRMED-BUG (rank row, both seeds and factions) | old (the 2026-10-08 rule; round 16's sweep started at 20); integrator handoff | S (this commit) |
 | H2 | Fresh look at the raid-60 heal fight: Holy Light 33.5 casts, tank Flash of Light 125.4, Holy Shock 4.1 (51.5% crit with Boundless Light on the party), Divine Favor 2.9 (the tank below 40%), Oath of Light once; Illumination returns half the base cost on 40 crits a fight; mana lasts 178 of 300 s on the profile. Oath, Divine Favor, Illumination, Holy Power, Boundless Light, Healing Light and Light's Vigil (never cast by the card) as round 20 H4 and round 21 N2 have them; no paladin row changed in 70790. | `-heal` breakdown | Aligned | - | - |
 
 ## Protection
@@ -46,12 +47,12 @@ Raid 60, frozen BiS, guide raid builds, 10,000 iterations, seeds 1 / 50001, agai
 - Holy: 700.6/701.4 to 701.6/702.0 alliance (+0.14/+0.09%), 683.0/683.1 to 684.6/683.9 horde (+0.23/+0.12%) (H1).
 - Protection: 1125.6/1125.8 and 1123.8/1123.3, unchanged.
 - Retribution: 772.9/772.5 and 779.8/779.8, unchanged.
-Bare presets and every band below 60: unchanged.
+Holy band 20 at 18 and 19 (H3): +11 to +16%, as above. Every other bare level: unchanged.
 
 ## Files to regenerate
 
-- addon-data, then Data.lua (addonrotation): Holy's raid-60 party Flash of Light rows show rank 5, and their card note's new last clause.
-- sim/request ladder golden testdata/ladder/paladin-holy.golden.md only if it carries a raid-60 row (TestRotationLadder).
+- addon-data, then Data.lua (addonrotation): Holy's raid-60 party Flash of Light rows show rank 5, and their card note's new last clause; Holy Light rank 1 at 18 and 19 (H3) and the paced Holy Light row's new note sentence.
+- sim/request ladder golden testdata/ladder/paladin-holy.golden.md if it carries a raid-60 row or levels 18 and 19 (TestRotationLadder).
 - Fork: nothing.
 
 ## Measure at refresh
@@ -67,12 +68,18 @@ Bare presets and every band below 60: unchanged.
 
 ## For the guide lane
 
-- Shipped: holy.md priority step 5 (Flash of Light rank 5 on the party in a raid, rank 4 without raid buffs and from 50) and the party row's card note. `_prose.test.ts` passes. The rendered card shows rank 4 until addon-data is regenerated.
+- Shipped: holy.md Levels 1 to 19 (Holy Light rank 1 from 18, H3); holy.md priority step 5 (Flash of Light rank 5 on the party in a raid, rank 4 without raid buffs and from 50) and the party row's card note. `_prose.test.ts` passes. The rendered card shows rank 4 until addon-data is regenerated.
 - wow-player on the rendered page: SHIP (see "Review").
 
 ## Review
 
 wow-player on the rendered Holy page (dev build of this branch, 1440 and 390, `$R/paladin/cap`): **SHIP**, no MUSTs. SHOULDs applied: step 5 names the buffs (Blessing of Wisdom, Mana Spring, the raid's Intellect buffs) and says rank 4 stays best from 50 "even once you have rank 5" (rank 4 from 50 is the measured leveling rank: rows give ranks 1 and 2 below 50). Not applied, for the guide lane: the overview's "cheap Flash of Lights" (holy.md:29) could read plain "Flash of Light"; steps 4 and 5 repeat the without-raid-buffs caveat. The card's party row shows rank 4 until addon-data is regenerated; check it flips to rank 5.
+
+## Review (follow-up H3)
+
+wow-player on the rendered Levels 1 to 19 paragraph (1440 and 390, `$R/paladin/cap/lev-*.png`): first pass SHIP WITH FIXES (MUSTs: say it wins per mana over a fight, not per cast, and keep rank 3 for the big hit; say rank 3 is right until 17). Both applied plus the Flash of Light and "Holy Light (Rank 1)" SHOULDs; second pass **SHIP**. Its last SHOULD (what happens at 30) applied as "From 30 your newest rank takes over." The Holy header's rank rule no longer says "never one learned below level 20".
+
+Integrator note: `TestHolyFillsWithGreaterHealAheadOfHeal` (priest-holy, healer_level_gap_test.go) fails on this merged branch; this lane's diff touches only paladin rows, so it comes from int/r22.
 
 ## Still open
 

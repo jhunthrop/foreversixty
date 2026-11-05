@@ -170,7 +170,7 @@
           }
         }
       },
-      "notes": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana)."
+      "notes": "With mana to spare, on the tank below 70% as well: only while your mana percent is no more than 5 points under the percent of the fight left (halfway through, above 45% mana). While you level, Holy Light rank 1 from 18 to 24 and rank 2 from 25 to 29 keep all of your healing power for a fraction of the top rank's mana."
     },
     {
       "action": {

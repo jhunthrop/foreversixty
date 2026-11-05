@@ -69,3 +69,25 @@ func TestHolyPartyFlashOfLightIsRankFiveInARaid(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 22 (follow-up): Forever has no sub-20 cut on heals, so
+// Holy Light's ranks learned below 20 were re-judged level by level. Rank 1
+// (635) beats the top rank learned by 11 to 16% at 18 and 19, both seeds and
+// factions; at 17 rank 3 (647) still wins, so 17 keeps the default.
+func TestHolyLightIsRankOneAtEighteenAndNineteen(t *testing.T) {
+	const holyLightLine = 3
+	for _, c := range []struct {
+		level int
+		want  int32
+	}{
+		{17, 647},
+		{18, 635},
+		{19, 635},
+		{20, 635},
+	} {
+		casts := holyLineCasts(t, BarePreset, c.level)
+		if casts[holyLightLine] != c.want {
+			t.Errorf("level %d: Holy Light line casts %d, want %d", c.level, casts[holyLightLine], c.want)
+		}
+	}
+}
