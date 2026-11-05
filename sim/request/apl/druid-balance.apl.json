@@ -158,7 +158,7 @@
       }
     },
     {
-      "notes": "With no Eclipse charge banked. Each Wrath banks two charges that make the next two Starfires half a second faster, so one Wrath and two quick Starfires beat three plain ones.",
+      "notes": "From 35, whenever no Eclipse charge is banked. Each Wrath banks two charges, each taking time off one Starfire: 0.17 seconds a charge with the single point you level with, half a second with all three, and even the single point makes one Wrath and two quicker Starfires beat three plain ones.",
       "action": {
         "condition": {
           "and": {
@@ -193,34 +193,52 @@
       }
     },
     {
-      "notes": "While your mana is behind the fight and Innervate is on cooldown. With Improved Wrath it costs a fraction of a Starfire's mana for half the cast, so you keep casting instead of running dry.",
+      "notes": "Before Starfire at 20 it is your filler; from 20 only while your mana is behind the fight, and from 40 only while Innervate is on cooldown. With Improved Wrath it is quick and cheap, and once Starfire arrives it costs a fraction of a Starfire's mana for half the cast, so you keep casting instead of running dry.",
       "action": {
         "condition": {
-          "not": {
-            "val": {
-              "or": {
-                "vals": [
-                  {
-                    "cmp": {
-                      "op": "OpGt",
-                      "lhs": {
-                        "currentManaPercent": {}
-                      },
-                      "rhs": {
-                        "remainingTimePercent": {}
-                      }
-                    }
-                  },
-                  {
-                    "spellIsReady": {
+          "or": {
+            "vals": [
+              {
+                "not": {
+                  "val": {
+                    "spellIsKnown": {
                       "spellId": {
-                        "spellId": 29166
+                        "spellId": 9876,
+                        "rank": 6
                       }
                     }
                   }
-                ]
+                }
+              },
+              {
+                "not": {
+                  "val": {
+                    "or": {
+                      "vals": [
+                        {
+                          "cmp": {
+                            "op": "OpGt",
+                            "lhs": {
+                              "currentManaPercent": {}
+                            },
+                            "rhs": {
+                              "remainingTimePercent": {}
+                            }
+                          }
+                        },
+                        {
+                          "spellIsReady": {
+                            "spellId": {
+                              "spellId": 29166
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
               }
-            }
+            ]
           }
         },
         "castSpell": {
