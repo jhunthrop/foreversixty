@@ -83,6 +83,15 @@ describe('raidWhen', () => {
     expect(when.yourTime).toBe('9:00 pm EST your time');
   });
 
+  it('reads a raid that runs to midnight as `to midnight`, never 12:00 am (guild loop round 3)', () => {
+    const late = plannedRaid({ starts_at: '2026-12-11T03:00:00Z', duration_minutes: 180 });
+    expect(raidWhen(late, NOW, CHICAGO, 'en-US').start).toBe('9:00 pm');
+    expect(raidWhen(late, NOW, CHICAGO, 'en-US').end).toBe('midnight\u00a0CST');
+    expect(raidWhen(late, NOW, CHICAGO, 'en-US-u-hc-h23').end).toBe('midnight\u00a0CST');
+    const past = plannedRaid({ starts_at: '2026-12-11T03:00:00Z', duration_minutes: 210 });
+    expect(raidWhen(past, NOW, CHICAGO, 'en-US').end).toBe('12:30 am\u00a0CST');
+  });
+
   it('names the viewer’s weekday when their date is another', () => {
     expect(raidWhen(plannedRaid(), NOW, 'Europe/London', 'en-US').yourTime).toBe('Fri 2:00 am GMT your time');
   });

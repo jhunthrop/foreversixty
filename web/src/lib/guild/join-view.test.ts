@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { guildJoinCopy } from './copy';
-import { holdsErrorRoom, joiningRow, showsInvitedLine } from './join-view';
+import type { InvitePeekResult } from './api';
+import { holdsErrorRoom, joiningRow, previewAfterJoin, showsInvitedLine } from './join-view';
 
 describe('showsInvitedLine', () => {
   it('shows the invite only while it can be taken', () => {
@@ -69,5 +70,23 @@ describe('the join card words', () => {
     expect(guildJoinCopy.verifiedAtOnce).toBe(
       'Joining by this link verifies you at once. No officer has to approve you.',
     );
+  });
+});
+
+describe('previewAfterJoin', () => {
+  const before = { guild: { id: 7, name: 'Lifecycle Test' }, members: 1 } as unknown as InvitePeekResult;
+
+  it('reads the count again after a join, so the card counts the joiner', async () => {
+    const after = await previewAfterJoin(before, () => Promise.resolve({ ...before, members: 2 }));
+    expect(after.members).toBe(2);
+    expect(after.guild).toBe(before.guild);
+    expect(guildJoinCopy.guildLine('PvP US', after.members)).toBe('PvP US · 2 members on Forever Sixty');
+    expect(before.members).toBe(1);
+  });
+
+  it('drops the count rather than show a stale one when the read fails', async () => {
+    const after = await previewAfterJoin(before, () => Promise.reject(new Error('down')));
+    expect(after.members).toBeUndefined();
+    expect(guildJoinCopy.guildLine('PvP US', after.members)).toBe('PvP US');
   });
 });

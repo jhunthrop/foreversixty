@@ -102,7 +102,7 @@ Capture `only-stranger-invite-1440`: a 480 px card hard left, `Lifecycle Test ·
 
 **Layout.** One `card-surface` card on the form measure (`measure-form`, 480 px), centred in the 1344 px column, 32 px from the header (18 px gutter on phone, full width). Top to bottom, 16 px gaps:
 
-1. **Guild row**: `FactionCrest` 44 px, the guild name in `heading-plan` (24 px, the heading face, its own case), then 13 px muted `{Realm} · {n} members on Forever Sixty`.
+1. **Guild row**: `FactionCrest` 44 px, the guild name in `heading-plan` (24 px, the heading face, its own case), then 13 px muted `{Realm} · {n} members on Forever Sixty`. After a join the count is read again so it includes the joiner; if that read fails the line drops the count (amended 2026-11-05, guild loop round 3 web4, which found 1 member under You joined the guild).
 2. **Invite line**, 15 px `--text`: `You are invited to join {Guild}.` Only while the invite can be taken: never to a member already in the guild, and gone from the card once the join goes through (amended 2026-11-05, guild loop round 3). The inviter is not named until §4.1 lands (no column records who made the link). Then it becomes `ClassCrestRing` 24 px + `{Inviter}` in class colour 600 + ` invited you to join.`
 3. **Joining as**, a `SettingsRow` (div, not a link): icon slot `ClassCrestRing` 32 px; label `You join as {Name}` in class colour; sub `Level {52} {Night Elf} {Rogue}` (each part only when known).
    - First choice: the account's character that is on this guild's roster (the guild's addon snapshot or a roster row names it). Several: the highest level.

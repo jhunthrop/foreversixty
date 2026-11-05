@@ -3,7 +3,7 @@
 // Pure, so the three states are pinned without a page.
 import { specName } from './spec-name';
 import { guildJoinCopy } from './copy';
-import type { InviteJoinsAs } from './api';
+import type { InviteJoinsAs, InvitePeekResult } from './api';
 
 export interface JoiningRow {
   /** The crest's class; '' draws the component's neutral ring. */
@@ -61,4 +61,19 @@ export function holdsErrorRoom(busy: boolean, error: string): boolean {
  *  still said it above `Open the guild`). */
 export function showsInvitedLine(alreadyIn: boolean, joined: boolean): boolean {
   return !alreadyIn && !joined;
+}
+
+/** The preview after a join: read again, so the card's `N members on Forever Sixty` counts the
+ *  joiner (guild loop round 3 found `1 member` under `You joined the guild.`). A failed read keeps
+ *  the guild and drops the count rather than show a stale one. */
+export async function previewAfterJoin(
+  before: InvitePeekResult,
+  reread: () => Promise<InvitePeekResult>,
+): Promise<InvitePeekResult> {
+  try {
+    const fresh = await reread();
+    return { ...before, members: fresh.members };
+  } catch {
+    return { ...before, members: undefined };
+  }
 }

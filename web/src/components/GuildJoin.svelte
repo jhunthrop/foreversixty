@@ -19,7 +19,7 @@
   } from '../lib/guild/api';
   import { guildJoinCopy } from '../lib/guild/copy';
   import { joinedPlanLineFor } from '../lib/guild/join-plan';
-  import { holdsErrorRoom, joiningRow, showsInvitedLine } from '../lib/guild/join-view';
+  import { holdsErrorRoom, joiningRow, previewAfterJoin, showsInvitedLine } from '../lib/guild/join-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { classColorVar } from '../lib/report/format';
@@ -99,7 +99,13 @@
     try {
       joined = await acceptInvite(token);
       busy = false;
-      planLine = await readPlanLine(joined.guild.id, joined.guild.name);
+      const before = peek;
+      const [line, after] = await Promise.all([
+        readPlanLine(joined.guild.id, joined.guild.name),
+        before === null ? Promise.resolve(null) : previewAfterJoin(before, () => peekInvite(token)),
+      ]);
+      planLine = line;
+      if (after !== null) peek = after;
     } catch (thrown) {
       error = thrown instanceof GuildApiError ? thrown.message : guildJoinCopy.failed;
       busy = false;

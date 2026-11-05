@@ -403,8 +403,9 @@ describe('bandLine', () => {
     expect(bandLine({ ...base, state: null })).toBe(
       str('Band line', 4, { when: 'Tonight 8 pm', n: '23', size: '40' }),
     );
-    expect(bandLine({ ...base, state: null })).toBe(
-      'Tonight 8 pm, you have not signed up yet. 23 of 40 are in.',
+    expect(bandLine({ ...base, state: null })).toBe('Tonight 8 pm, you have not signed up yet. 23 of 40 in.');
+    expect(bandLine({ ...base, n: 1, size: 5, state: null })).toBe(
+      'Tonight 8 pm, you have not signed up yet. 1 of 5 in.',
     );
   });
 

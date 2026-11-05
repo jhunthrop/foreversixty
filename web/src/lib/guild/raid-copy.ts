@@ -317,9 +317,10 @@ export const compCopy = {
   yourTime: (clock: string): string => `${clock} your time`,
 } as const;
 
-/** `23 of 40 are in`; `23 are in` while the size is unknown: the unsigned band line's count. */
+/** `23 of 40 in`; `23 in` while the size is unknown: the unsigned band line's count. No verb, so
+ *  `1 of 5 in` never reads `1 of 5 are in` (guild loop round 3). */
 function inLine(n: number, size: number | null): string {
-  return size === null ? `${n} are in` : `${n} of ${size} are in`;
+  return size === null ? `${n} in` : `${n} of ${size} in`;
 }
 
 export function showAll(n: number): string {
