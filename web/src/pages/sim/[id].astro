@@ -7,6 +7,7 @@ import Base from '../../layouts/Base.astro';
 import { VIEW_GAP } from '../../lib/current-character-layout';
 import { FIXTURE_SIM_ID, fixtureSimPaths } from '../../lib/report/shell-paths';
 import fixtureResult from '../../fixtures/sim/result.json';
+import fullFixtureResult from '../../fixtures/sim/result-full.json';
 import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
 import ScopeNote from '../../components/sim/ScopeNote.astro';
 import SimTabs from '../../components/sim/SimTabs.astro';
@@ -17,7 +18,12 @@ export function getStaticPaths() {
 }
 
 const { id } = Astro.params;
-const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined;
+const inline =
+  id === FIXTURE_SIM_ID
+    ? JSON.stringify(fixtureResult)
+    : id === 'simfullfixt1'
+      ? JSON.stringify(fullFixtureResult)
+      : undefined;
 ---
 
 <Base
