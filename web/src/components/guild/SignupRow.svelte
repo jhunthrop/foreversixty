@@ -8,10 +8,12 @@
      them when the save is refused; the caller applies a successful save's raid before resolving. -->
 <script lang="ts">
   import { tick } from 'svelte';
+  import { MediaQuery } from 'svelte/reactivity';
   import type { GuildRaidViewerCharacter, GuildSignupState, GuildZoneKind } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
-  import { pickOf, specClassLine, specPicks, whoLine } from '../../lib/guild/raid-comp';
+  import { pickOf, specClassLine, specOptions, specPicks, whoLine } from '../../lib/guild/raid-comp';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import { RAID_WIDE_QUERY } from '../../lib/guild/raid-layout';
   import { specIconSrc } from '../../lib/guild/raid-spec';
   import { createSerialSave } from '../../lib/guild/serial-save';
   import {
@@ -38,6 +40,7 @@
     disabled,
     describedBy,
     notice,
+    seenAs = null,
     kind = 'raid',
     onClearNotice,
     onSave,
@@ -50,6 +53,8 @@
     describedBy?: string;
     /** A line the strip sets on this row: `{Name} moved to Bench.` */
     notice: string | null;
+    /** When this answered character is not its account's roster row: `Officers see Quillfeather (Late).` */
+    seenAs?: string | null;
     /** What the night is, for the ended line of a refused save. */
     kind?: GuildZoneKind;
     onClearNotice: () => void;
@@ -78,14 +83,10 @@
   const key = $derived(character.character_key);
   const specId = $derived(`signup-spec-${key}`);
   const statusId = $derived(`signup-status-${key}`);
-  const picks = $derived(specPicks(character.class));
-  const options = $derived(
-    picks.map((pick) => ({
-      value: pick.value,
-      label: pick.label,
-      icon: { kind: 'spec' as const, src: specIconSrc(pick.spec) },
-    })),
-  );
+  /** From 768 the select's face reads `Restoration · Healer`; below, the spec alone and the Who
+   *  line carries the role (raid comp spec 3.2). The server renders the desktop face. */
+  const wide = new MediaQuery(RAID_WIDE_QUERY, true);
+  const options = $derived(specOptions(specPicks(character.class), !wide.current, specIconSrc));
   const shownState = $derived(pendingState === undefined ? character.state : pendingState);
   const shownPick = $derived(
     pickChoice === null ? defaultPick(character) : pickOf(character.class, pickChoice),
@@ -95,7 +96,7 @@
   const who = $derived(
     shownPick === null
       ? specClassLine(character.class, character.spec_key)
-      : whoLine(character.class, shownPick.spec.spec, shownPick.role),
+      : whoLine(character.class, shownPick.spec.spec, shownPick.role, !wide.current),
   );
   const asking = $derived(askedState !== null);
 
@@ -328,6 +329,8 @@
           <p class="text-text" role="status">{raidCopy.stripStatus.saved}</p>
         {:else if notice !== null}
           <p class="text-text" role="status">{notice}</p>
+        {:else if seenAs !== null}
+          <p class="text-muted" data-testid={`signup-seen-as-${key}`}>{seenAs}</p>
         {/if}
       {/key}
     </div>

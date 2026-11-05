@@ -127,7 +127,7 @@
     class="rounded-control flex min-h-11 break-inside-avoid gap-3 {ownRowBand(
       entry.own,
       2,
-    )} md:min-h-9 {entry.note === '' ? 'items-center' : 'items-start py-1.5'}"
+    )} md:min-h-9 {entry.note === '' && entry.also === null ? 'items-center' : 'items-start py-1.5'}"
     aria-busy={busy}
     data-testid="raid-roster-row"
   >
@@ -142,6 +142,12 @@
         {entry.name}
       </p>
       <p class="text-muted block truncate text-[12px] leading-4" title={specLine}>{specLine}</p>
+      <!-- One row per account: its other answered characters, so a benched alt is never hidden. -->
+      {#if entry.also !== null}
+        <p class="text-muted text-[12px] leading-4 break-words" data-testid="raid-roster-also">
+          {entry.also}
+        </p>
+      {/if}
       {#if entry.note !== ''}<p class="text-text text-[12px] break-words">{entry.note}</p>{/if}
       {#if line?.control === `roster:${entry.character_key}`}
         <p

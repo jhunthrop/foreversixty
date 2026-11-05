@@ -16,6 +16,7 @@ import {
   rowGroup,
   signupListText,
   specClassLine,
+  specOptions,
   specPicks,
   whoLine,
 } from './raid-comp';
@@ -78,6 +79,30 @@ describe('specClassLine and whoLine', () => {
     expect(whoLine('warrior', 'warrior-fury', 'tank')).toBe(str('Who line', 3));
     expect(whoLine('warrior', 'warrior-fury', 'dps')).toBe('Fury Warrior');
     expect(whoLine('warrior', 'warrior-protection', 'tank')).toBe('Protection Warrior');
+  });
+
+  it('always carries the role below 768, where the select face drops it', () => {
+    expect(whoLine('druid', 'druid-restoration', 'healer', true)).toBe(str('Who line', 5));
+    expect(whoLine('mage', 'mage-fire', 'dps', true)).toBe(str('Who line', 6));
+    expect(whoLine('warrior', 'warrior-fury', 'tank', true)).toBe('Fury Warrior · Tank');
+    expect(whoLine('paladin', null, 'healer', true)).toBe('Paladin');
+  });
+});
+
+describe('specOptions (spec 3.2)', () => {
+  const icon = (spec: { spec: string }): string => `/icons/${spec.spec}.webp`;
+
+  it('keeps `Restoration · Healer` in the list at every width, the face the spec alone below 768', () => {
+    const wide = specOptions(specPicks('druid'), false, icon);
+    const phone = specOptions(specPicks('druid'), true, icon);
+    expect(wide.map((o) => o.label)).toEqual(phone.map((o) => o.label));
+    expect(phone.find((o) => o.value === 'druid-restoration')).toMatchObject({
+      label: 'Restoration · Healer',
+      faceLabel: 'Restoration',
+      icon: { kind: 'spec', src: '/icons/druid-restoration.webp' },
+    });
+    expect(wide.every((o) => o.faceLabel === undefined)).toBe(true);
+    expect(specOptions(specPicks('hunter'), true, icon).map((o) => o.faceLabel)).toContain('Beast Mastery');
   });
 });
 

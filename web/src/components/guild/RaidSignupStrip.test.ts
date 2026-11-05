@@ -232,4 +232,43 @@ describe('RaidSignupStrip', () => {
   it('disables the spec picker with the row when the raid is locked', () => {
     expect(select(html({ locked: true }), KRAGGOR.character_key)).toMatch(/^<select[^>]*disabled/);
   });
+
+  it('renders the desktop face on the server: `Protection · Tank`, the Who line without the role', () => {
+    const markup = html();
+    expect(markup).toMatch(/class="sel-label[^"]*"[^>]*>Protection · Tank</);
+    expect(who(markup, KRAGGOR.character_key)).toBe('Protection Warrior');
+  });
+
+  it('says which character the officers see on the account’s other answered character', () => {
+    const benched = { ...MENDA, state: 'bench' as const, role: 'healer' as const };
+    const view = raid(
+      [KRAGGOR, benched],
+      [
+        {
+          character_key: KRAGGOR.character_key,
+          name: 'Kraggor',
+          class: 'warrior',
+          spec: 'Protection',
+          role: 'tank',
+          state: 'late',
+          note: '',
+          own: true,
+          also: [
+            {
+              character_key: MENDA.character_key,
+              name: 'Menda',
+              class: 'priest',
+              spec: 'Holy',
+              spec_key: 'priest-holy',
+              state: 'bench',
+            },
+          ],
+        },
+      ],
+    );
+    const markup = html({ view });
+    expect(markup).toContain(`data-testid="signup-seen-as-${MENDA.character_key}"`);
+    expect(text(markup)).toContain('Officers see Kraggor (Late).');
+    expect(markup).not.toContain(`data-testid="signup-seen-as-${KRAGGOR.character_key}"`);
+  });
 });

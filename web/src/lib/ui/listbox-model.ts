@@ -17,6 +17,8 @@ export interface OptionIcon {
 export interface SelectOption {
   value: string;
   label: string;
+  /** The closed field's text when it differs from the list row's (a phone face with less room). */
+  faceLabel?: string;
   group?: string;
   description?: string;
   /** Right-aligned muted figure, for example `×8` or a DPS. */

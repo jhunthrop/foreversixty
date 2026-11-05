@@ -105,6 +105,7 @@ describe('officer actions', () => {
       state: null,
       note: 'late',
       own: false,
+      also: null,
     };
     await expect(c.setRosterState(row, 'bench')).resolves.toBe(true);
     expect(putSignup).toHaveBeenCalledWith(2, '7', 'us/pvp/mira', {
@@ -127,6 +128,7 @@ describe('officer actions', () => {
       state: null,
       note: '',
       own: false,
+      also: null,
     };
     const failing = await started(
       deps({ loadMe: officerMe, loadHome: officerHome, putSignup: () => Promise.reject(new Error('x')) }),

@@ -65,9 +65,9 @@ One control picks the spec, and the spec sets the role. `SignupSpec.svelte` and 
 
 | Part | Desktop (≥ 768): grid `minmax(180px,1fr) auto 220px minmax(200px,1.4fr)`, gap 16, row 68 px | Phone (< 768) |
 |---|---|---|
-| Who | `ClassCrestRing` 32; the name, Cinzel 14 class colour; under it 12 px muted the spec and class, `Holy Paladin` (`specClassName`, from the chosen spec) | line 1 left |
+| Who | `ClassCrestRing` 32; the name, Cinzel 14 class colour; under it 12 px muted the spec and class, `Holy Paladin` (`specClassName`, from the chosen spec) | line 1 left; the sub-line always carries the role, because the spec face drops it: `Restoration Druid · Healer`, `Fire Mage · DPS` (amended 2026-11-05, guild round 2 fix) |
 | State | `SignupSegments`, unchanged | line 2, four 25% segments |
-| Spec | `Select size="compact"` 44 px, label visually hidden, `aria-label` `Spec for Quillfeather`. One option per spec of the class, catalogue order, each with its spec icon (the `icon` option, 20 px) and the label `Holy · Healer`, `Protection · Tank`, `Retribution · DPS`. Druid lists `Balance · DPS`, `Feral · DPS`, `Feral Bear · Tank`, `Restoration · Healer`. Warrior lists `Arms · DPS`, `Arms · Tank`, `Fury · DPS`, `Fury · Tank`, `Protection · Tank` (§3.2.1). The face shows the icon and `Holy · Healer`. | line 1 right, 176 px |
+| Spec | `Select size="compact"` 44 px, label visually hidden, `aria-label` `Spec for Quillfeather`. One option per spec of the class, catalogue order, each with its spec icon (the `icon` option, 20 px) and the label `Holy · Healer`, `Protection · Tank`, `Retribution · DPS`. Druid lists `Balance · DPS`, `Feral · DPS`, `Feral Bear · Tank`, `Restoration · Healer`. Warrior lists `Arms · DPS`, `Arms · Tank`, `Fury · DPS`, `Fury · Tank`, `Protection · Tank` (§3.2.1). The face shows the icon and `Holy · Healer`. | line 1 right, 176 px. The face shows the icon and the spec name only (`Restoration`, `Beast Mastery`), so it never truncates and loses the role; the native option list keeps `Restoration · Healer` (amended 2026-11-05, guild round 2 fix: the 390 captures cut `Restoration ...` and `Beast Maste...`). From 768 nothing changes. |
 | Note | unchanged | line 3, full width |
 | Status line | 20 px reserved, unchanged | same |
 
@@ -119,6 +119,7 @@ Late, Bench, Out, Not signed up: unchanged layout. The member's `Not signed up` 
 - `ViewerCharacter` gains `default_spec`: `raid_spec` if set, else `Resolve(class, spec, role)`'s key, else null.
 - `counts` gains `melee`, `ranged` (In rows, like `tanks`) and `classes`: `{warrior: 8, priest: 5, ...}`, In plus Late, one key per class present in `signups` or `not_signed` (zeros included). `dps` stays in the payload for the readiness page and old clients.
 - `home.next_raid.counts` gains `melee` and `ranged`.
+- `SignupView` gains `also`: `[{character_key, name, class, spec, spec_key, state}]`, the account's other answered characters, best place first, `[]` when none (raids spec §3.7; added 2026-11-05, guild round 2 fix).
 
 ### 4.2 Copy the sign-up list (raids spec §4)
 
@@ -164,11 +165,14 @@ Touch and keyboard: the spec select is a native select (phone picker, arrow keys
 | Spec select | label (hidden) `Spec for {Name}`; placeholder `Choose a spec`; option `{Spec} · {Role}` (`Holy · Healer`, `Feral Bear · Tank`, `Fury · Tank`) |
 | No-spec hold | `Pick a spec first.` |
 | Strip status | `Saved.`; `That did not save. Try again.`; `{Name} moved to Bench.` |
-| Who line | `{Spec} {Class}` (`Holy Paladin`, `Beast Mastery Hunter`); off-tank `Fury Warrior · Tank`; unresolved `{Class}` |
+| Who line | `{Spec} {Class}` (`Holy Paladin`, `Beast Mastery Hunter`); off-tank `Fury Warrior · Tank`; unresolved `{Class}`; below 768 always with the role: `Restoration Druid · Healer`, `Fire Mage · DPS` |
+| Spec select face below 768 | `{Spec}` (`Restoration`, `Beast Mastery`); the list keeps `{Spec} · {Role}` |
+| Strip, not the roster row | `Officers see {Name} ({State}).` (`Officers see Quillfeather (Late).`), muted, in the row's status line when the character answered but is not its account's roster row (raids spec §3.7) |
+| Roster Also line | `Also: {Name} · {Spec} {Class} · {State}`, several joined by `, ` (`Also: Rootbound · Restoration Druid · Bench`) |
 | Roster heads | `Tanks`, `Healers`, `Melee`, `Ranged`, `Late`, `Bench`, `Out`, `Not signed up` |
 | Empty groups | `No tanks yet.`, `No healers yet.`, `No melee yet.`, `No ranged yet.` |
 | Late row sub-line | `{Spec} {Class} · {Role}` |
-| Count clauses | `{n} tank`/`tanks`, `{n} healer`/`healers`, `{n} melee`, `{n} ranged`, `{n} late`; with tank or healer late players `{n} late ({t} tank, {h} healer)`, a single part alone without its number when it is all of them (`1 late (healer)`) |
+| Count clauses | `{n} tank`/`tanks`, `{n} healer`/`healers`, `{n} melee`, `{n} ranged`, `{n} late`; with tank or healer late players `{n} late ({t} tank, {h} healer)`, a single part alone without its number when it is all of them (`1 late (healer)`). On the page each clause is glued with no-break spaces, so the line wraps only between clauses (amended 2026-11-05, guild round 2 fix); the copied list keeps plain spaces |
 | Class row | list `aria-label` `Classes signed up`; item accessible name `{Class} {n}: {Spec} {n}, …`; item `title` `{Spec} {n}, …`; off-tank part `{Spec} (tank) {n}` |
 | When, guild first | `{Weekday} {d} {Month} · {start} to {end} {ZONE}`; secondary `{start} {ZONE} your time`, or `{Ddd} {start} {ZONE} your time` on another date |
 | Planned row | `{start} {ZONE}`; `{start} {ZONE} your time` |
@@ -184,7 +188,7 @@ Changelog: `Sign-ups now show spec and class, a class count for buffs, and Melee
 ## 8. Phone and desktop
 
 **Never collapses:** the guild time and its zone; every count; the spec and class on every row; every group head; the status line.
-**Collapses:** below 768 the class row drops class names (crest and count stay), the roster stacks to one column, the strip row stacks to three lines. 768 to 1279: the roster is two columns. At 2000 everything stays in the centred 1344 px column.
+**Collapses:** below 768 the class row drops class names (crest and count stay), the roster stacks to one column, the strip row stacks to three lines, and the spec select's face drops the role, which moves to the Who line. 768 to 1279: the roster is two columns. At 2000 everything stays in the centred 1344 px column.
 
 Height caps: band line 6 at most 30 px desktop and 56 px at 360; strip row 68 px desktop, at most 180 px phone; roster row unchanged.
 

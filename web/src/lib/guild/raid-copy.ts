@@ -70,7 +70,12 @@ export const raidCopy = {
     failed: 'That did not save. Try again.',
     movedToBench: (name: string): string => `${name} moved to Bench.`,
     left: (n: number): string => `${n} left`,
+    /** On an answered character that is not the account's roster row: `Officers see Quillfeather (Late).` */
+    officersSee: (name: string, state: string): string => `Officers see ${name} (${state}).`,
   },
+  /** The roster row's line naming its account's other answered characters (raids spec 3.7):
+   *  `Also: Rootbound · Restoration Druid · Bench`, several joined by `, `. */
+  also: (parts: readonly string[]): string => `Also: ${parts.join(', ')}`,
   /** The strip's one spec picker (raid comp spec 3.2, 7). */
   spec: {
     /** The select's visually hidden label. */

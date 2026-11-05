@@ -228,6 +228,37 @@ describe('RaidRoster', () => {
     expect(select).not.toContain('aria-describedby');
   });
 
+  it('names an account’s other answered characters under its one row, counting nowhere', () => {
+    const raid = plannedRaid({
+      signups: [
+        signup('Quillfeather', {
+          class: 'priest',
+          spec: 'Holy',
+          spec_key: 'priest-holy',
+          role: 'healer',
+          state: 'late',
+          also: [
+            {
+              character_key: 'us/pvp/rootbound',
+              name: 'Rootbound',
+              class: 'druid',
+              spec: 'Restoration',
+              spec_key: 'druid-restoration',
+              state: 'bench',
+            },
+          ],
+        }),
+      ],
+      not_signed: [],
+    });
+    const body = html({ raid, officer: true });
+    expect(/data-testid="raid-roster-also">([^<]*)</.exec(body)?.[1]).toBe(
+      'Also: Rootbound · Restoration Druid · Bench',
+    );
+    expect(body).not.toContain('data-testid="raid-roster-bench"');
+    expect(body).not.toContain('raid-roster-select-Rootbound');
+  });
+
   it('puts a plan refusal under its row and a failure under the roster', () => {
     const refusal = html({
       officer: true,

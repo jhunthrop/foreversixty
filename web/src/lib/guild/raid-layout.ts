@@ -58,3 +58,7 @@ export const GUILD_BANDLESS_TOP = 'md:pt-7';
 /** A guild view is at least one screen tall from its first paint, so the footer starts below the
  *  fold and never jumps when the view under it grows (phone content starts at 72 px, desktop at 81). */
 export const GUILD_VIEW_MIN = 'min-h-[calc(100svh-72px)] md:min-h-[calc(100svh-81px)]';
+
+/** The `md` breakpoint as a media query (Svelte's MediaQuery form): from here the sign-up row's
+ *  spec select shows the role on its face (raid comp spec 3.2). */
+export const RAID_WIDE_QUERY = 'min-width: 768px';

@@ -2,8 +2,15 @@
 // The Sign-ups roster's groups (raids spec 3.7, raid comp spec 3.3): In rows under Tanks, Healers,
 // Melee and Ranged by the API's `group`, then Late, Bench, Out and Not signed up. Within an In
 // group: class in the game's order, then name; Late, Bench and Out lead with the role.
-import type { GuildRaidGroup, GuildRaidRole, GuildRaidView, GuildSignupState } from './api';
-import { classThenName, rowGroup } from './raid-comp';
+import type {
+  GuildRaidAlsoSignup,
+  GuildRaidGroup,
+  GuildRaidRole,
+  GuildRaidView,
+  GuildSignupState,
+} from './api';
+import { classThenName, rowGroup, specClassLine } from './raid-comp';
+import { SEP, raidCopy } from './raid-copy';
 import { roleForSpec } from './raid-roles';
 
 const ROLE_ORDER: readonly GuildRaidRole[] = ['tank', 'healer', 'dps'];
@@ -23,6 +30,24 @@ export interface RosterRow {
   note: string;
   /** The viewer's own character (the row's wash). */
   own: boolean;
+  /** The muted line naming the account's other answered characters, `null` when it has none. */
+  also: string | null;
+}
+
+/** `Also: Rootbound · Restoration Druid · Bench`: the account's other answered characters, best
+ *  place first as the API lists them; `null` when there are none (raids spec 3.7). */
+export function alsoLine(also: readonly GuildRaidAlsoSignup[]): string | null {
+  if (also.length === 0) return null;
+  return raidCopy.also(
+    also.map((a) => [a.name, specClassLine(a.class, a.spec_key), raidCopy.segments[a.state]].join(SEP)),
+  );
+}
+
+/** On the viewer's answered character that is not its account's roster row: `Officers see
+ *  Quillfeather (Late).`, naming the row the officers read; else `null`. */
+export function officersSeeLine(raid: Pick<GuildRaidView, 'signups'>, characterKey: string): string | null {
+  const row = raid.signups.find((s) => s.own && (s.also ?? []).some((a) => a.character_key === characterKey));
+  return row === undefined ? null : raidCopy.stripStatus.officersSee(row.name, raidCopy.segments[row.state]);
 }
 
 export interface RosterGroups {
@@ -60,6 +85,7 @@ export function rosterGroups(raid: GuildRaidView): RosterGroups {
     ...s,
     group: rowGroup(s),
     spec_key: s.spec_key ?? null,
+    also: alsoLine(s.also ?? []),
   }));
   const ownKeys = new Set(raid.viewer.characters.map((c) => c.character_key));
   const notSigned = raid.not_signed
@@ -73,6 +99,7 @@ export function rosterGroups(raid: GuildRaidView): RosterGroups {
         state: null,
         note: '',
         own: ownKeys.has(m.character_key),
+        also: null,
       };
     })
     .sort(rosterOrder);

@@ -870,6 +870,19 @@ export interface GuildRaidSignup extends GuildRaidRowComp {
   note: string;
   /** The viewer's own character. */
   own: boolean;
+  /** The account's other answered characters, best place first: the row is the account's best
+   *  place, these ride its Also line and count nowhere (raids spec 3.7). Absent from an older API. */
+  also?: GuildRaidAlsoSignup[];
+}
+
+/** Another answered character of a sign-up row's account. */
+export interface GuildRaidAlsoSignup {
+  character_key: string;
+  name: string;
+  class: string;
+  spec: string;
+  spec_key: string | null;
+  state: GuildSignupState;
 }
 
 export interface GuildRaidNotSigned extends GuildRaidRowComp {

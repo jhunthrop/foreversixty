@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import { plannedRaid, viewerCharacter } from '../../test-support/raid-fixtures';
 import type { GuildRaidNotSigned, GuildRaidSignup } from './api';
-import { rosterGroups } from './raid-roster';
+import { alsoLine, officersSeeLine, rosterGroups } from './raid-roster';
 
 function signup(name: string, extra: Partial<GuildRaidSignup> = {}): GuildRaidSignup {
   return {
@@ -81,5 +81,49 @@ describe('rosterGroups', () => {
       ['Bear', 'tank', null, false],
       ['Mira', 'dps', null, true],
     ]);
+  });
+});
+
+describe('one row per account (raids spec 3.7)', () => {
+  const ROOTBOUND = {
+    character_key: 'us/pvp/rootbound',
+    name: 'Rootbound',
+    class: 'druid',
+    spec: 'Restoration',
+    spec_key: 'druid-restoration',
+    state: 'bench' as const,
+  };
+  const QUILL = signup('Quillfeather', {
+    class: 'priest',
+    spec: 'Holy',
+    spec_key: 'priest-holy',
+    role: 'healer',
+    state: 'late',
+    own: true,
+    also: [ROOTBOUND],
+  });
+
+  it('names the account’s other answered characters under its row', () => {
+    expect(alsoLine([ROOTBOUND])).toBe('Also: Rootbound · Restoration Druid · Bench');
+    expect(
+      alsoLine([
+        ROOTBOUND,
+        { ...ROOTBOUND, name: 'Brew', class: 'mage', spec_key: 'mage-fire', state: 'out' },
+      ]),
+    ).toBe('Also: Rootbound · Restoration Druid · Bench, Brew · Fire Mage · Out');
+    expect(alsoLine([])).toBeNull();
+    const groups = rosterGroups(plannedRaid({ signups: [QUILL, signup('Bolt')], not_signed: [] }));
+    expect(groups.late.map((row) => [row.name, row.also])).toEqual([
+      ['Quillfeather', 'Also: Rootbound · Restoration Druid · Bench'],
+    ]);
+    expect(groups.bench).toEqual([]);
+    expect(groups.groups.ranged.map((row) => row.also)).toEqual([null]);
+  });
+
+  it('tells the member which character the officers see, on the other one only', () => {
+    const raid = plannedRaid({ signups: [QUILL] });
+    expect(officersSeeLine(raid, 'us/pvp/rootbound')).toBe('Officers see Quillfeather (Late).');
+    expect(officersSeeLine(raid, 'us/pvp/quillfeather')).toBeNull();
+    expect(officersSeeLine(raid, 'us/pvp/nobody')).toBeNull();
   });
 });

@@ -214,12 +214,14 @@ round, member review's own ask generalised from "tell me where I stand" (the hea
 count. Click expands in place (no navigation) to:
 - The present roster for that night (crests, a plain count — **DERIVABLE**, `fights.players`
   for that report).
-- The night's top output (**EXISTS**, `fight_metrics`), labelled `Top HPS` or `Top DPS`, never
-  `parse` (a percentile to a Classic player). It is the best boss-kill figure of the night by the
-  role's own metric, never a trash pack's, rounded and grouped as the roster's `Best HPS 465` and
-  Progression's `Best HPS` write it, so one kill reads one number on all three
+- The night's top output (**EXISTS**, `fight_metrics`), healing then damage:
+  `Top HPS Rootbound 449 · Top DPS Bow Jackzon 272` (the API's `top_hps` from healers and
+  `top_dps` from the DPS role; either left out when the night has none), never `parse` (a
+  percentile to a Classic player). Each is the best boss-kill figure of the night by the role's own
+  metric, never a trash pack's, rounded and grouped as the roster's `Top HPS 465` and
+  Progression's `Top HPS` write it, so one kill reads one word and one number on all three
   (`api/internal/guilds/parse_source.go`, `web/src/lib/guild/output-figure.ts`; amended
-  2026-11-05, guild round 2, WP-13).
+  2026-11-05, guild round 2, WP-13 and the fix round: one wording, `Top`, everywhere).
 - The fight list, pull by pull, with duration and kill/wipe (**EXISTS** — `fights.duration_ms`/
   `kill`). Boss pulls are numbered per boss (`Onyxia · pull 2`); a trash pack (a named fight
   that is not one of the tier's bosses, such as Onyxian Whelp) reads its name, its duration and a
@@ -245,7 +247,7 @@ count. Click expands in place (no navigation) to:
   (tenet 8).
 - **Per-boss depth, Onyxia** (the only nameable boss): pulls-to-kill trend across both raid
   nights she has been attempted, best kill time, a deaths-per-pull average (**EXISTS** —
-  `fights.duration_ms`/`kill`/`deaths`), guild best output per role (`Best tank DPS`, `Best HPS`, `Best DPS`, never `parse`; amended 2026-11-05, guild round 2) with a link to the fight
+  `fights.duration_ms`/`kill`/`deaths`), guild best output per role (`Top tank DPS`, `Top HPS`, `Top DPS`, never `parse`; amended 2026-11-05, guild round 2 and its fix round) with a link to the fight
   (**EXISTS** — `fight_metrics`). **Top death causes** (*which* spell/mechanic, not just how
   many) is **NEEDS NEW DATA** — `fight_metrics.deaths` is a count; no column names a cause,
   named exactly in §9.

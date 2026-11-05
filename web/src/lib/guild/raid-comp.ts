@@ -11,6 +11,7 @@ import type {
   GuildRaidSignup,
   GuildRaidView,
 } from './api';
+import type { SelectOption } from '../ui/listbox-model';
 import { SEP, compCopy, copyList, raidCopy } from './raid-copy';
 import { specName } from './spec-name';
 
@@ -62,10 +63,19 @@ function offTanks(spec: Spec | null, role: GuildRaidRole): boolean {
   return spec !== null && role === 'tank' && spec.role !== 'tank';
 }
 
-/** The strip's Who line: `Holy Paladin`, and `Fury Warrior · Tank` for an off-tank pick. */
-export function whoLine(classSlug: string, specKey: string | null | undefined, role: GuildRaidRole): string {
+/** The strip's Who line: `Holy Paladin`, and `Fury Warrior · Tank` for an off-tank pick. Below
+ *  768 the spec select's face drops the role, so the line always carries it (`withRole`):
+ *  `Restoration Druid · Healer`, `Fire Mage · DPS`. */
+export function whoLine(
+  classSlug: string,
+  specKey: string | null | undefined,
+  role: GuildRaidRole,
+  withRole = false,
+): string {
   const line = specClassLine(classSlug, specKey);
-  return offTanks(catalogueSpec(classSlug, specKey), role) ? `${line} · ${raidCopy.roleLabels.tank}` : line;
+  const spec = catalogueSpec(classSlug, specKey);
+  const showsRole = spec !== null && (withRole || offTanks(spec, role));
+  return showsRole ? `${line}${SEP}${raidCopy.roleLabels[role]}` : line;
 }
 
 /** The row's roster group: the API's; a row from an API that predates it reads its role's
@@ -105,6 +115,22 @@ function picksOf(spec: Spec): SpecPick[] {
 /** The class's picks in catalogue order, an off-tank pair after its DPS one (spec 3.2). */
 export function specPicks(classSlug: string): SpecPick[] {
   return SPECS.filter((spec) => spec.class_slug === classSlug.toLowerCase()).flatMap(picksOf);
+}
+
+/** The spec select's options: each pick with its icon, labelled `Holy · Healer` in the list. On a
+ *  phone (`compact`) the closed field shows the spec name alone, so `Restoration` and `Beast
+ *  Mastery` fit its 176 px; the Who line carries the role there instead (raid comp spec 3.2). */
+export function specOptions(
+  picks: readonly SpecPick[],
+  compact: boolean,
+  iconOf: (spec: Spec) => string,
+): SelectOption[] {
+  return picks.map((pick) => ({
+    value: pick.value,
+    label: pick.label,
+    ...(compact ? { faceLabel: pick.spec.name } : {}),
+    icon: { kind: 'spec' as const, src: iconOf(pick.spec) },
+  }));
 }
 
 /** The pick with this value, else `null` (a forged value is refused, never sent). */

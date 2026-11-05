@@ -7,6 +7,7 @@
   import type { GuildRaidView } from '../../lib/guild/api';
   import { cancelledLineOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
+  import { officersSeeLine } from '../../lib/guild/raid-roster';
   import { orderedCharacters, type SignupChoice, type SignupHandler } from '../../lib/guild/signup-strip';
   import SignupRow from './SignupRow.svelte';
 
@@ -73,6 +74,7 @@
           disabled={rowsDisabled}
           {describedBy}
           notice={notices[character.character_key] ?? null}
+          seenAs={officersSeeLine(raid, character.character_key)}
           kind={kindOf(raid)}
           onClearNotice={() => setNotice(character.character_key, null)}
           onSave={(choice) => save(character.character_key, choice)}
