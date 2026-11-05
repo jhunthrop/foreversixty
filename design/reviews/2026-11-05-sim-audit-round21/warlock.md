@@ -25,6 +25,7 @@ Specs: Affliction, Demonology, Destruction. Client 1.60.1.70790 with its live ho
 
 | # | finding | evidence and source | confirmed? | origin | fix sha |
 |---|---|---|---|---|---|
+| D2 | **Demonology filler, Shadow Bolt against Searing Pain** (guide-accuracy round 20 WARLOCK-R20-4). Leveling order at each level, bare band gear, 10,000 iterations, seeds 1 / 50001, both factions; the card as shipped against Shadow Bolt replaced by Searing Pain at its learned rank (cast under its own id: 5676 at 18, 17921 at 42). Searing Pain loses at every level asked and every rank-up level beside it: 18 -9.6 / -8.7% (horde / alliance), 19 -9.1 / -8.6%, 20 -8.1 / -7.7%, 21 -7.6 / -7.3%, 26 -7.6 / -7.0%, 27 -7.4 / -6.8%, 34 -1.8 / -1.3%, 35 -2.2 / -1.8%, 42 -4.8 / -4.4%, 43 -4.8 / -4.2%, 50 -3.8 / -2.8%, 51 -3.5 / -2.7%, 58 -5.1 / -3.9%, 59 -6.0 / -4.7% (seeds agree within 0.2). Searing Pain wins more per second on base damage at the rank-up levels, but it costs more mana per point of damage, and the crit-free leveling build has nothing that favours it; neither filler runs out of mana before 50 (1 to 2 s out of mana at 50 to 59 for both). The card's "It beats Searing Pain" holds at every level, so the card stays. Levels 18 and 19 have no published bare band-10 entry, so they ran on the band-20 gear (a scratch binary that only widens `-level`'s band check; not committed): both fillers on the same gear. The note takes guide round 20's R20-1 wording (Master Demonologist with the Succubus out; the sacrifice's 15% only with Pact in the raid build). | `out/demo-sp-10k.tsv`, `out/demo-sp-screen.txt`; guide r20 WARLOCK-R20-4 | Aligned | - | S (note wording only, see heads) |
 | D1 | Raid 60 reproduces `before.tsv` (734.1 / 735.1 alliance, 724.3 / 724.0 horde). No hotfix row touches a Demonology spell or talent; the card (prepull sacrifice gated on Demonic Pact, Decimation Soul Fire only in the leveling build) is unchanged from round 20's audit (D1 to D4). | `out/after60.tsv`; layered tables | Aligned | - | - |
 
 ## Destruction
@@ -35,6 +36,10 @@ Specs: Affliction, Demonology, Destruction. Client 1.60.1.70790 with its live ho
 | X2 | Raid 60 reproduces `before.tsv` (795.3 / 794.1 alliance, 792.2 / 792.6 horde): at 60 the raid build has Shadow and Flame, so the new Conflagrate row is the old one. | `out/after60.tsv` | Aligned | - | - |
 | X3 | Soul Fire for Destruction at 60 (never cast by the card): a pre-pull Soul Fire is +0.2% at 3,000 iterations and would land on the boss before the tank, and Soul Fire on cooldown in the rotation is -1.2%. The card stays without it. | rotation variants `rot/destro-sfpre.json`, `destro-sfcd.json` | Aligned | - | - |
 | X4 | Bane of Havoc in the raid build does nothing on one target but is Incinerate's prerequisite (round 14 X3); it stays. | round 14 X3 | Aligned | - | - |
+
+## Follow-up after the first merge (integrator, guide-accuracy round 20)
+
+The lane merged int/r21 (spellIsKnown now honours RequiredLevel) and took guide round 20's warlock wording where it touches the same lines, so the two landings do not fight: the Demonology Shadow Bolt note (R20-1), the Destruction Immolate note (R20-3: "never runs out ... until Shadow and Flame is full, recast it whenever Conflagrate eats it", which agrees with the held Conflagrate), affliction.md's Wrack sentence (R20-2) and the 70790 source links. D2 above answers R20-4: no card change.
 
 ## Logs
 

@@ -14,8 +14,8 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Forever client spell data (wago.tools, build 70755)'
-    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70755
+  - label: 'Forever client spell data (wago.tools, build 70790)'
+    url: https://wago.tools/db2/SpellEffect?build=1.60.1.70790
     kind: datamined
   - label: 'Forever Sixty, stat weights'
     url: https://foreversixty.gg/sim/weights
@@ -112,4 +112,4 @@ Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Grea
 
 ### Levels 20 to 60
 
-Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. From 29, press Amplify Curse before every Bane of Agony as soon as it is ready; it costs no global, and until Bane of Doom at 60 there is nothing to hold it for. Drain Life or Wrack while the DoTs run: with three of your effects on the target, Soul Siphon adds 36%, and Wrack costs far less mana than the Shadow Bolts it replaces. Wand the mob down when the DoTs are enough. Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards. Soul Harvest's mana regeneration then lets you drink less. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit.
+Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. From 29, press Amplify Curse before every Bane of Agony as soon as it is ready; it costs no global, and until Bane of Doom at 60 there is nothing to hold it for. Drain Life while the DoTs run, and from 40 channel Wrack instead: once Soul Siphon is full at 38, three of your effects on the target add 36% to both, and Wrack costs far less mana than the Shadow Bolts it replaces. Wand the mob down when the DoTs are enough. Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards. Soul Harvest's mana regeneration then lets you drink less. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit.
