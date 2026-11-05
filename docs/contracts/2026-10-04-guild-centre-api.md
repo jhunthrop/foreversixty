@@ -22,7 +22,7 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
   "viewer": { "role": "officer", "character_key": "us/pvp/obnoxious-yell", "verified": true },
   "claim": { "state": "claimed", "since": "...", "frozen": false, "yours": false, "claimed_by": { "name": "Obnoxious Yell", "class": "warrior", "character_key": "us/pvp/obnoxious-yell" } },
   "summary": {
-    "raiders": 25, "waiting_for_approval": 3, "below_rating_floor": 2,
+    "raiders": 25, "waiting_for_approval": 3, "below_rating_floor": 2,   // raiders are accounts; waiting_for_approval is characters, the Waiting for approval panel's count and counts.waiting (amended 2026-11-05, guild round 3)
     "tier": { "name": "First tier", "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"], "named_encounters": 1, "down": 1, "pulls_total": 27 },   // the Progression tab's own
     "named_encounters_down": 1, "pulls_this_tier": 27,   // restate tier for the apps
     "updated_at": "..."

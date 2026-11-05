@@ -126,6 +126,10 @@ Capture `claimed-gm-roster-1440`: an empty circle, `Arms in game`.
 - `No account yet` is a `Tag` (tone `muted`), not loose text.
 - Right side unchanged: `Level 58 · seen just now`.
 
+### 3.5a Roster counts are characters (amended 2026-11-05, guild round 3)
+
+The e2e walk read `Waiting for approval 4` on the panel, `2 waiting for approval` on the Overview and `8 on the roster` over a list of 4. Every roster count is now characters, because the list and every approval are per character; the round-1 rule that waiting counts accounts is superseded. `counts.waiting` and the Overview's `summary.waiting_for_approval` are the characters an officer has not approved (the panel's rows). `counts.on_roster` is the Roster list itself: approved characters, invited members and names in game without an account, never the waiting characters the panel above it lists. So the count line reads `4 on the roster · 2 in game without an account · 4 waiting for approval`, the first figure matching the rows under it. `raiders` stays accounts. The `/v1/me` guild card's `roster_count` (everyone on the guild) is `on_roster + waiting`. Web: approving a waiting character moves it onto the list (`on_roster` up one, `waiting` down one); declining one takes it off `waiting` only.
+
 ### 3.6 Phone tab strip (UX-17)
 
 `TabStrip.svelte` already scrolls with 24 px edge fades. At 390 the Readiness tab loads with a 6 px sliver of `Overview` at the left (`free-member-readiness-390`): a stub, not a hint.

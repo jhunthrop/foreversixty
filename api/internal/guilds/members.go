@@ -55,16 +55,18 @@ type RosterEntry struct {
 	MayRemove  bool   `json:"may_remove,omitempty"`
 }
 
-// RosterCounts are the numbers the count line above the roster reads: everyone on it, and
-// how many of them are in game without an account, waiting for approval, or not seen in
-// game yet. The approved are the rest.
+// RosterCounts are the numbers the count line above the roster reads, all of them characters
+// (guild round 3; the round-1 rule that waiting counts accounts is superseded). OnRoster is
+// every entry the Roster list shows: approved characters, invited members and names in game
+// without an account, never the waiting characters, which the Waiting for approval panel lists
+// instead. InGameNoAccount and NotSeen are among OnRoster; Waiting is the panel's count, the
+// figure the Overview's waiting_for_approval reads too (summaryCounts). Everyone on the guild
+// is OnRoster + Waiting.
 type RosterCounts struct {
 	OnRoster        int `json:"on_roster"`
 	InGameNoAccount int `json:"in_game_no_account"`
-	// Waiting counts people, the accounts with a character waiting for approval, the unit
-	// the Overview's waiting_for_approval counts (summaryPeople); the entries stay per character.
-	Waiting int `json:"waiting"`
-	NotSeen int `json:"not_seen"`
+	Waiting         int `json:"waiting"`
+	NotSeen         int `json:"not_seen"`
 }
 
 // invitedMember is an account that joined by invite link: a verified synthetic row and no
@@ -119,7 +121,7 @@ func mergeRoster(rows []RosterRow, invited []invitedMember, snapshot []snapshotM
 	named := make(map[string]bool, len(rows)+len(invited)+len(order))
 	entries := make([]RosterEntry, 0, len(rows)+len(invited)+len(order))
 	var counts RosterCounts
-	_, counts.Waiting = summaryPeople(rows)
+	_, counts.Waiting = summaryCounts(rows)
 	for _, row := range rows {
 		named[strings.ToLower(row.Name)] = true
 		e := RosterEntry{Name: row.Name, CharacterKey: row.CharacterKey, State: EntryApproved, Rank: row.Rank, Class: row.Class}
@@ -164,7 +166,7 @@ func mergeRoster(rows []RosterRow, invited []invitedMember, snapshot []snapshotM
 		entries = append(entries, e)
 		counts.InGameNoAccount++
 	}
-	counts.OnRoster = len(entries)
+	counts.OnRoster = len(entries) - counts.Waiting
 	return entries, counts
 }
 

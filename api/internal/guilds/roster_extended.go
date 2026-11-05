@@ -299,21 +299,23 @@ func belowRatingFloor(roster []RosterRow) int {
 	return n
 }
 
-// summaryPeople counts people, not characters: raiders are the accounts with a verified
-// character whose owner shows gear (the Overview reads them as "with gear on the site"), and
-// waiting the accounts with a character an officer has not approved yet. A main and two alts
-// are one person either way.
-func summaryPeople(roster []RosterRow) (raiders, waiting int) {
-	withGear, unapproved := map[int64]bool{}, map[int64]bool{}
+// summaryCounts are the Overview's two roster figures. Raiders count people: the accounts with a
+// verified character whose owner shows gear (the Overview reads them as "with gear on the
+// site"), a main and two alts being one raider. Waiting counts characters, the unit an officer
+// approves and the Waiting for approval panel lists (guild round 3: the panel read 4 and the
+// Overview 2 for one account's four characters; the round-1 rule that waiting counts accounts is
+// superseded).
+func summaryCounts(roster []RosterRow) (raiders, waiting int) {
+	withGear := map[int64]bool{}
 	for _, row := range roster {
 		switch {
 		case !row.Verified:
-			unapproved[row.ownerUserID] = true
+			waiting++
 		case hasGearConsent(row.Consent):
 			withGear[row.ownerUserID] = true
 		}
 	}
-	return len(withGear), len(unapproved)
+	return len(withGear), waiting
 }
 
 // homeSummary assembles the Overview tab's own glance row from the already-enriched roster
@@ -325,7 +327,7 @@ func summaryPeople(roster []RosterRow) (raiders, waiting int) {
 // CONTROL_CENTRE.md.
 func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterRow) (SummaryView, error) {
 	sv := SummaryView{UpdatedAt: time.Now().UTC()}
-	sv.Raiders, sv.WaitingForApproval = summaryPeople(roster)
+	sv.Raiders, sv.WaitingForApproval = summaryCounts(roster)
 	sv.BelowRatingFloor = belowRatingFloor(roster)
 
 	progression, err := s.Progression(ctx, guildID, true)
