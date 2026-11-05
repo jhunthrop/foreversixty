@@ -135,7 +135,7 @@
             }
           }
         },
-        "notes": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Hemorrhage for a little more energy (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes) and gives a combo point."
+        "notes": "Ghostly Strike on cooldown at four combo points or fewer: it hits harder than Sinister Strike for less energy, and from 30 harder than Hemorrhage for a little more (40 against Hemorrhage's 35, or 30 with both points of Efficient Strikes), and gives a combo point."
       },
       {
         "action": {
