@@ -50,8 +50,7 @@ Protection is the shield tank: Defensive Stance all fight, Shield Slam and Reven
 
 - Revenge is huge threat for almost no rage, and Shield Slam carries a very high amount of threat
 - Defensive Stance raises all your threat by 80%, and Defiance stacks another 15% on top with a shield on
-- Shield Block is off the global cooldown and up most of the fight
-- Every block, dodge and parry pays rage back through Shield Specialization and Master of Defense
+- Shield Block is off the global cooldown and up most of the fight, and every block, dodge and parry pays rage back through Shield Specialization and Master of Defense
 - Last Stand and Shield Wall give the healers time when a fight goes wrong
 
 ### Weaknesses
