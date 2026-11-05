@@ -15,6 +15,29 @@ const (
 	eventsPath    = "../../../data/curated/raids/events.json"
 )
 
+// The package's raid tests post raids a few days from the real clock, and until 9 December
+// every raid zone refuses that. They are about everything but the open-day rule, so the rule is
+// lifted for the package; withOpenDays puts it back for the tests that are about it. The slices
+// these files pin (raidZones, eventZones) are never touched.
+func init() { curatedZones = withoutOpens(curatedZones) }
+
+func withoutOpens(zones []Zone) []Zone {
+	out := make([]Zone, len(zones))
+	for i, z := range zones {
+		z.Opens = nil
+		out[i] = z
+	}
+	return out
+}
+
+// withOpenDays restores the real open days for one test.
+func withOpenDays(t *testing.T) {
+	t.Helper()
+	lifted := curatedZones
+	curatedZones = append(append([]Zone{}, eventZones...), raidZones...)
+	t.Cleanup(func() { curatedZones = lifted })
+}
+
 func readJSON(t *testing.T, path string, into any) {
 	t.Helper()
 	raw, err := os.ReadFile(path)
@@ -115,6 +138,7 @@ func TestZoneByKey(t *testing.T) {
 }
 
 func TestZoneOpenedByReadsTheGuildCalendar(t *testing.T) {
+	withOpenDays(t)
 	ony, _ := ZoneByKey("raid:onyxias-lair")
 	chicago, err := time.LoadLocation("America/Chicago")
 	if err != nil {

@@ -27,6 +27,10 @@ const (
 	maxRaidAhead       = 366 * 24 * time.Hour
 	raidStartsAtInPast = "Pick a time after now."
 	raidStartsAtTooFar = "Pick a date within the next year."
+	// raidZoneMissing is the What select's error (guild events spec §5).
+	raidZoneMissing = "Choose a dungeon, event or raid."
+	// zoneOpensDay is how the open day reads in the date error: `Wed 9 Dec`.
+	zoneOpensDay       = "Mon 2 Jan"
 	controlCharMessage = "Remove the control characters."
 )
 
@@ -61,7 +65,7 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 	plan := raidPlan{repeat: req.RepeatWeeks}
 	zone, ok := ZoneByKey(req.Zone)
 	if !ok {
-		fields["zone"] = "Pick a raid."
+		fields["zone"] = raidZoneMissing
 	}
 	title, titleClean := cleanText(strings.TrimSpace(req.Title))
 	if !titleClean {
@@ -90,6 +94,9 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 	if msg == "" && !repeatWithinReach(startsAt, req.RepeatWeeks, now, keepStart) {
 		msg = raidStartsAtTooFar
 	}
+	if msg == "" && ok && err == nil && !zone.OpenedBy(startsAt, loc) {
+		msg = zoneOpensMessage(zone)
+	}
 	if msg != "" {
 		fields["starts_at"] = msg
 	}
@@ -105,6 +112,12 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 		Notes: req.Notes, PostDefault: ticked(req.PostToDiscord),
 	}
 	return plan, nil
+}
+
+// zoneOpensMessage is the date error for a raid posted before it opens (guild events spec
+// §3.2): `Onyxia's Lair opens Wed 9 Dec. Pick that day or later.`
+func zoneOpensMessage(z Zone) string {
+	return fmt.Sprintf("%s opens %s. Pick that day or later.", z.Name, z.Opens.UTC().Format(zoneOpensDay))
 }
 
 // loadTimezone loads an IANA zone name; an empty name is refused, never read as UTC.
