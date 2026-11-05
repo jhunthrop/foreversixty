@@ -24,8 +24,15 @@ import (
 //     (owner ruling) and casts no shot or sting, so the Marksmanship tree's ranged-only
 //     talents do nothing for it. The three hunter builds spend nothing there (sim-accuracy
 //     round 20, every point re-read against the 70755 talent text).
+//   - a rogue on a boss never casts Expose Armor (it does not stack with Sunder Armor),
+//     Kidney Shot (bosses are immune to stuns) or Riposte (the boss never attacks the
+//     rogue), never dodges or resists for Setup, and no rogue opens with Ambush (every
+//     pull is a Garrote), so Improved Expose Armor, Improved Kidney Shot, Riposte, Setup
+//     and Improved Ambush do nothing for any rogue spec (sim-accuracy round 20, which
+//     found no rogue build spending a point on them).
 func TestGuideBuildsSpendNothingOnDeadTalents(t *testing.T) {
 	rangedHunterDead := []string{"Savage Strikes", "Predator's Edge", "Expose Prey", "Counterattack", "Strider Kick", "Lacerating Strikes"}
+	rogueDead := []string{"Improved Expose Armor", "Improved Kidney Shot", "Riposte", "Setup", "Improved Ambush"}
 	cases := []struct {
 		class string
 		spec  string
@@ -37,6 +44,9 @@ func TestGuideBuildsSpendNothingOnDeadTalents(t *testing.T) {
 		{"hunter", "beast-mastery", rangedHunterDead},
 		{"hunter", "marksmanship", rangedHunterDead},
 		{"hunter", "survival", []string{"Ranged Weapon Specialization", "Mortal Shots", "Barrage", "Improved Stings", "Sniper Shot"}},
+		{"rogue", "assassination", rogueDead},
+		{"rogue", "combat", rogueDead},
+		{"rogue", "subtlety", rogueDead},
 	}
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)

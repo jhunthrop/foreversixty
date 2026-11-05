@@ -97,7 +97,7 @@ Blade Flurry hits anything next to your target. Never turn it on next to a Sappe
 
 ## Stat priority
 
-Hit counts until your attacks stop missing, and adds nothing past that: a missed Backstab is a wasted global and a lost combo point, Precision only gets you part of the way, and your white swings with two weapons miss far more often than your specials. Agility gives attack power and crit together. Strength and attack power add straight damage to every swing. A crit makes one hit bigger, and Lethality makes your Backstab crits bigger still, but Combat has no Seal Fate, so a crit never adds a combo point, and no bleed of yours runs all fight for a crit to tick on. Haste is rare on gear and good when you find it. The table above gives the order for your gear.
+Hit counts until your attacks stop missing, and adds nothing past that: a missed Backstab is a wasted global and a lost combo point, Precision only gets you part of the way, and your white swings with two weapons miss far more often than your specials. Agility gives attack power and crit together. Strength and attack power add straight damage to every swing, and in Forever to every poison hit and tick as well. A crit makes one hit bigger, and Lethality makes your Backstab crits bigger still, but Combat has no Seal Fate, so a crit never adds a combo point, and no bleed of yours runs all fight for a crit to tick on. Haste is rare on gear and good when you find it. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -105,7 +105,7 @@ Combat wants **daggers at 60**. Hack and Slash gives daggers crit, and Backstab,
 
 ## Enchants and consumables
 
-Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **Deadly Poison** on the main hand, **Instant Poison** on the off hand, and a stone on each hand. Deadly Poison on the main hand stacks fast off your Backstabs and stays up; Instant Poison goes on the off hand. Two Instants lose to that pair, and so does the same pair the other way round. A shaman's Windfury Totem is an aura on you, not a weapon enchant, so it stacks with poisons and stones.
+Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **Deadly Poison** on the main hand, **Instant Poison** on the off hand, and a stone on each hand. Deadly Poison on the main hand stacks fast off your Backstabs and stays up; Instant Poison goes on the off hand. Two Instants lose to that pair, and so does the same pair the other way round. Both poisons scale with your attack power in Forever, so they keep pace with your gear. A shaman's Windfury Totem is an aura on you, not a weapon enchant, so it stacks with poisons and stones.
 
 ## Races
 

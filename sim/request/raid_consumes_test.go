@@ -133,8 +133,15 @@ func TestRaidConsumesGiveRoguesTheirPoisons(t *testing.T) {
 	for spec, rows := range all {
 		got[spec] = ConsumesAtLevel(rows, api.MaxLevel)
 	}
-	for _, spec := range []string{"rogue-assassination", "rogue-combat", "rogue-subtlety"} {
-		for _, id := range []string{"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison", "conjured_rogue_thistle_tea"} {
+	// Assassination carries Instant on the main hand at 60 since Forever's
+	// poisons scale with attack power (sim-accuracy round 20).
+	poisons := map[string][]string{
+		"rogue-assassination": {"main_hand_imbue:instant_poison", "off_hand_imbue:deadly_poison"},
+		"rogue-combat":        {"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison"},
+		"rogue-subtlety":      {"main_hand_imbue:deadly_poison", "off_hand_imbue:instant_poison"},
+	}
+	for spec, want := range poisons {
+		for _, id := range append(slices.Clone(want), "conjured_rogue_thistle_tea") {
 			if !slices.Contains(got[spec], id) {
 				t.Errorf("%s: %v has no %s", spec, got[spec], id)
 			}
