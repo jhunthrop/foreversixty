@@ -11,7 +11,7 @@
       "kind": "site"
     }
   ],
-  "notes": "The thirteen sim request ids the engine spells differently from the client, so no name join reaches them. Each names the client row it means; the icon is that row's, read off the build. Four Atiesh ids share one item (22589) and differ only in which class's proc they name, which is why their display names are written out. `curse_of_elements` is the client's 'Curse of the Elements'; `elixir_of_firepower` is 'Elixir of Fire Power' (6373) and `elixir_of_ogres_strength` is 'Elixir of Ogre Strength' (3391), both without the engine's spelling; Delete an entry the day the join reaches it. The five Forever healer consumables (Greater Mageblood Elixir, Cleric's and Greater Cleric's Elixir, Elixir of Sages, Sage's Tea) are named here because the fork carries them with a placeholder icon; each points at its client item row so the icon is the client's. Baked Salmon (13935) and Poached Sunscale Salmon (13932), round 9's raid foods, are named here because the fork's same-named spell rows carry the Seal of Kings placeholder; each points at its client item row. `windfury` is the second half of the four weapon-imbue ids `main_hand_imbue:windfury` and its kin: the engine's WeaponImbue Windfury, the Windfury Totem's own weapon effect, which no client row spells 'Windfury'; it takes Windfury Totem rank 1 (spell 8512). Every other weapon imbue joins on its oil, stone, poison or shaman weapon name.",
+  "notes": "The thirteen sim request ids the engine spells differently from the client, so no name join reaches them. Each names the client row it means; the icon is that row's, read off the build. Four Atiesh ids share one item (22589) and differ only in which class's proc they name, which is why their display names are written out. `curse_of_elements` is the client's 'Curse of the Elements'; `elixir_of_firepower` is 'Elixir of Fire Power' (6373) and `elixir_of_ogres_strength` is 'Elixir of Ogre Strength' (3391), both without the engine's spelling; Delete an entry the day the join reaches it. The five Forever healer consumables (Greater Mageblood Elixir, Cleric's and Greater Cleric's Elixir, Elixir of Sages, Sage's Tea) are named here because the fork carries them with a placeholder icon; each points at its client item row so the icon is the client's. Baked Salmon (13935) and Poached Sunscale Salmon (13932), round 9's raid foods, are named here because the fork's same-named spell rows carry the Seal of Kings placeholder; each points at its client item row. `windfury` is the second half of the four weapon-imbue ids `main_hand_imbue:windfury` and its kin: the engine's WeaponImbue Windfury, the Windfury Totem's own weapon effect, which no client row spells 'Windfury'; it takes Windfury Totem rank 1 (spell 8512). Every other weapon imbue joins on its oil, stone, poison or shaman weapon name. `effects` is what each buff does for the saved result page's 'No effect on your damage' rule. `stats` are measured: each id alone on a level 60 warrior sheet, against the same sheet with no buffs, through the engine's ComputeStats and sample sheet (armor, resistances, health and agility's crit left out, since no damage weight reads them). Exceptions set by hand from the engine file, as a marker the rule reads rather than a figure anyone prints: battle_shout (the warrior sheet already carries its own), windfury_totem (WindfuryBuffBonusAP, on a swing), hunters_mark (ranged tables only), power_infusions, innervates, mana_tide_totems (cooldowns). `school_damage` is the schools an aura raises (sim/core/debuffs.go). `exclusive_with`: Sunder Armor and Expose Armor share MajorArmorReduction at 2250 each, and on a tie the engine keeps the one already up, which is Sunder (0.8 s against 3 s), so Sunder holds rank 1.",
   "entries": {
     "atiesh_druid": {
       "item_id": 22589,
@@ -96,6 +96,260 @@
     "windfury": {
       "spell_id": 8512,
       "name": "Windfury Totem"
+    }
+  },
+  "effects": {
+    "arcane_brilliance": {
+      "stats": {
+        "intellect": 31
+      }
+    },
+    "atiesh_druid": {
+      "stats": {
+        "mp5": 11
+      }
+    },
+    "atiesh_mage": {
+      "stats": {
+        "spell_crit": 2
+      }
+    },
+    "atiesh_priest": {
+      "stats": {
+        "healing_power": 62,
+        "spell_damage": 19
+      }
+    },
+    "atiesh_warlock": {
+      "stats": {
+        "spell_power": 33,
+        "healing_power": 33
+      }
+    },
+    "battle_shout": {
+      "stats": {
+        "attack_power": 112
+      }
+    },
+    "battle_squawk": {
+      "stats": {
+        "melee_haste": 5.0
+      }
+    },
+    "blessing_of_kings": {
+      "stats": {
+        "strength": 29.8,
+        "agility": 17.9,
+        "stamina": 23.2,
+        "intellect": 2.6,
+        "spirit": 4.9,
+        "attack_power": 59.6
+      }
+    },
+    "blessing_of_might": {
+      "stats": {
+        "attack_power": 112
+      }
+    },
+    "blessing_of_wisdom": {
+      "stats": {
+        "mp5": 36
+      }
+    },
+    "blood_pact": {
+      "stats": {
+        "stamina": 54
+      }
+    },
+    "crystal_yield": {
+      "stats": {
+        "target_armor": -200
+      }
+    },
+    "curse_of_elements": {
+      "school_damage": [
+        "fire",
+        "frost"
+      ]
+    },
+    "curse_of_recklessness": {
+      "stats": {
+        "target_armor": -505
+      }
+    },
+    "curse_of_shadow": {
+      "school_damage": [
+        "shadow",
+        "arcane"
+      ]
+    },
+    "divine_spirit": {
+      "stats": {
+        "spirit": 40
+      }
+    },
+    "expose_armor": {
+      "stats": {
+        "target_armor": -2250
+      },
+      "exclusive_with": {
+        "group": "major_armor",
+        "rank": 2
+      }
+    },
+    "faerie_fire": {
+      "stats": {
+        "target_armor": -505
+      }
+    },
+    "flametongue_totem": {
+      "melee_effect": true
+    },
+    "gift_of_arthas": {
+      "school_damage": [
+        "physical"
+      ]
+    },
+    "gift_of_the_wild": {
+      "stats": {
+        "strength": 16,
+        "agility": 16,
+        "stamina": 16,
+        "intellect": 16,
+        "spirit": 16,
+        "attack_power": 32
+      }
+    },
+    "grace_of_air_totem": {
+      "stats": {
+        "agility": 77
+      }
+    },
+    "heart_of_the_lion": {
+      "stats": {
+        "strength": 29.8,
+        "agility": 17.9,
+        "stamina": 23.2,
+        "intellect": 2.6,
+        "spirit": 4.9,
+        "attack_power": 339.6,
+        "ranged_attack_power": 280
+      }
+    },
+    "hunters_mark": {
+      "stats": {
+        "ranged_attack_power": 110
+      }
+    },
+    "improved_scorch": {
+      "school_damage": [
+        "fire"
+      ]
+    },
+    "improved_shadow_bolt": {
+      "school_damage": [
+        "shadow"
+      ]
+    },
+    "innervates": {
+      "stats": {
+        "mp5": 1
+      }
+    },
+    "judgement_of_the_crusader": {
+      "school_damage": [
+        "holy"
+      ]
+    },
+    "leader_of_the_pack": {
+      "stats": {
+        "crit": 3
+      }
+    },
+    "mana_spring_totem": {
+      "stats": {
+        "mp5": 25
+      }
+    },
+    "mana_tide_totems": {
+      "stats": {
+        "mp5": 1
+      }
+    },
+    "moonkin_aura": {
+      "stats": {
+        "crit": 3
+      }
+    },
+    "power_infusions": {
+      "stats": {
+        "spell_power": 1
+      }
+    },
+    "power_word_fortitude": {
+      "stats": {
+        "stamina": 70
+      }
+    },
+    "sanctity_aura": {
+      "school_damage": [
+        "holy"
+      ]
+    },
+    "scroll_of_intellect": {
+      "stats": {
+        "intellect": 16
+      }
+    },
+    "scroll_of_spirit": {
+      "stats": {
+        "spirit": 15
+      }
+    },
+    "scroll_of_stamina": {
+      "stats": {
+        "stamina": 16
+      }
+    },
+    "shadow_weaving": {
+      "school_damage": [
+        "shadow"
+      ]
+    },
+    "stormstrike": {
+      "school_damage": [
+        "nature"
+      ]
+    },
+    "strength_of_earth_totem": {
+      "stats": {
+        "strength": 42,
+        "attack_power": 84
+      }
+    },
+    "sunder_armor": {
+      "stats": {
+        "target_armor": -2250
+      },
+      "exclusive_with": {
+        "group": "major_armor",
+        "rank": 1
+      }
+    },
+    "trueshot_aura": {
+      "stats": {
+        "ranged_attack_power": 100
+      }
+    },
+    "windfury_totem": {
+      "stats": {
+        "attack_power": 246
+      }
+    },
+    "winters_chill": {
+      "school_damage": [
+        "frost"
+      ]
     }
   }
 }

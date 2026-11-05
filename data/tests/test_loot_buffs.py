@@ -238,3 +238,37 @@ def test_a_temp_placeholder_loses_to_real_art_and_stands_only_alone():
     entries = build_simbuffs(["lonely", "mana_potion"], [spells, items], {}, lambda *_: "").entries
     assert entries["mana_potion"].icon == "inv_potion_76"
     assert entries["lonely"].icon == "temp"
+
+
+def test_with_effects_marks_the_side_and_joins_the_curated_effect():
+    from pipeline.loot.buffs import debuff_ids, with_effects
+    from pipeline.models import SimBuffEffect, SimBuffEntry, SimBuffExclusive, SimBuffsFile
+
+    ids_md = "| `sunder_armor` | Debuffs |\n| `blessing_of_might` | IndividualBuffs |\n"
+    on_target = debuff_ids(ids_md)
+    assert on_target == {"sunder_armor"}
+
+    joined = with_effects(
+        SimBuffsFile(
+            entries={
+                "sunder_armor": SimBuffEntry(name="Sunder Armor", icon="a"),
+                "blessing_of_might": SimBuffEntry(name="Blessing of Might", icon="b"),
+                "thorns": SimBuffEntry(name="Thorns", icon="c"),
+            }
+        ),
+        {
+            "sunder_armor": SimBuffEffect(
+                stats={"target_armor": -2250},
+                exclusive_with=SimBuffExclusive(group="major_armor", rank=1),
+            ),
+            "blessing_of_might": SimBuffEffect(stats={"attack_power": 112}),
+        },
+        on_target,
+    ).entries
+
+    assert joined["sunder_armor"].target is True
+    assert joined["sunder_armor"].exclusive_with.group == "major_armor"
+    assert joined["sunder_armor"].name == "Sunder Armor"
+    assert joined["blessing_of_might"].target is False
+    assert joined["blessing_of_might"].stats == {"attack_power": 112}
+    assert joined["thorns"].stats == {}

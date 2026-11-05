@@ -179,14 +179,25 @@ def with_equip_restrictions(
     return out
 
 
+def enchant_display_names(rows: Iterable[Mapping[str, str]]) -> dict[int, str]:
+    """`SpellItemEnchantment.Name_lang` by id: the enchant's own text, the line the
+    game prints on the item ("+7 Strength"), not the recipe's name."""
+    return {int(row["ID"]): row["Name_lang"] for row in rows}
+
+
 def build_enchants(
-    fork: ForkDatabase, restrictions: Mapping[int, EquipRestriction]
+    fork: ForkDatabase,
+    restrictions: Mapping[int, EquipRestriction],
+    display_names: Mapping[int, str] | None = None,
 ) -> list[EnchantRecord]:
-    """`restrictions` is `equip_restrictions` over the build's SpellEquippedItems."""
+    """`restrictions` is `equip_restrictions` over the build's SpellEquippedItems;
+    `display_names` is `enchant_display_names` over its SpellItemEnchantment."""
+    displays = display_names or {}
     records = [
         EnchantRecord(
             id=int(row["effectId"]),
             name=row["name"],
+            display=displays.get(int(row["effectId"]), ""),
             icon=_enchant_icon(fork, row),
             slots=sorted(
                 {

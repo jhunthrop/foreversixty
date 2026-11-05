@@ -333,7 +333,12 @@ export interface SampleCast {
   target?: string;
   /** rage, energy, mana, combo_points … after the cast. */
   resources?: Record<string, number>;
-  /** How the event landed (spec 2026-11-04-sim-results 11.2). Absent on older results. */
+  /**
+   * How the event landed (spec 2026-11-04-sim-results 11.2). Absent on older results, and on a
+   * cast that dealt no damage of its own: a buff, a queued Heroic Strike, a Deep Wounds
+   * application. `tick` and `tick_crit` rows are periodic ticks, not casts, so a count of
+   * casts skips them and a count of ticks reads only them.
+   */
   outcome?: SampleOutcome;
   /** Damage of this event, whole number; absent for a non-damage cast. */
   amount?: number;
@@ -350,7 +355,10 @@ export type SampleOutcome =
   | 'tick'
   | 'tick_crit';
 
-/** Engine DistributionMetrics.hist as contiguous bins from `start`; counts sum to iterations_run. */
+/**
+ * Engine DistributionMetrics.hist as contiguous bins from `start`; counts sum to
+ * iterations_run. The engine bins at 10 DPS, wider on a run past 200 bins, so read `bin_dps`.
+ */
 export interface DpsHistogram {
   start: number;
   bin_dps: number;
@@ -383,7 +391,9 @@ export interface SampleAura {
   stacks?: [number, number][];
 }
 
+/** The character with every buff and consumable and no cooldown or proc, percent points. */
 export interface FinalStats {
+  /** Ranged attack power for a spec that fights at range. */
   attack_power?: number;
   melee_hit_pct?: number;
   melee_crit_pct_vs_target?: number;
@@ -401,9 +411,9 @@ export interface TargetStats {
 }
 
 export interface ExtraAttackSource {
-  /** A buff id from simbuffs or `item:<id>`. */
+  /** A buff id from simbuffs (`windfury_totem`), otherwise the proc's action key (`spell:15600`). */
   source: string;
-  /** Average per fight. */
+  /** Average per fight; the sources share out the extra swings the summary reports. */
   count: number;
 }
 

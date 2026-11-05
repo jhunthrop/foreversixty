@@ -66,7 +66,31 @@ func WithDetail(out api.SimResult, res *proto.RaidSimResult) (api.SimResult, err
 	out.SampleAuras = sampled
 	out.FinalStats, out.TargetStats = sheetStats(sample.GetSheet(), out.Request.Spec)
 	out.Summary.Auras = detailAuras(out.Summary.Auras, res.GetEncounterMetrics().GetTargets(), sampled)
+	out.Summary.DamageDone = withoutBookkeepingRows(out.Summary.DamageDone)
 	return out, nil
+}
+
+// withoutBookkeepingRows takes the engine's resource pseudo-actions (the rage
+// gain ticks, which travel through the action metrics) out of the damage table.
+// They dealt nothing and no player pressed them. isPlayerCast already keeps them
+// off the casts and the sample; Summarize keeps them for its goldens' sake.
+func withoutBookkeepingRows(actors []summary.Actor) []summary.Actor {
+	out := make([]summary.Actor, len(actors))
+	for i, actor := range actors {
+		actor.Abilities = slices.DeleteFunc(slices.Clone(actor.Abilities), func(ab summary.Ability) bool {
+			return ab.Total == 0 && strings.HasPrefix(ab.Name, otherActionKeyPrefix) && !isSwingKey(ab.Name)
+		})
+		out[i] = actor
+	}
+	return out
+}
+
+const otherActionKeyPrefix = "other:"
+
+// isSwingKey says a key is a white swing or a shot, which a row keeps even when
+// it dealt nothing: a fight's misses are still a fight's.
+func isSwingKey(key string) bool {
+	return strings.HasPrefix(key, "other:attack") || strings.HasPrefix(key, "other:shoot")
 }
 
 // sampleOutcome is a sample row's outcome word. A landed result with no damage

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -250,5 +251,21 @@ func TestWithDetailLeavesItsArgumentAlone(t *testing.T) {
 	}
 	if out.FinalStats != nil || out.TargetStats != nil {
 		t.Errorf("no sample means no sheet, and the page hides the block: %+v %+v", out.FinalStats, out.TargetStats)
+	}
+}
+
+func TestDamageTableLosesTheEnginesBookkeepingRows(t *testing.T) {
+	in := []summary.Actor{{Abilities: []summary.Ability{
+		{Name: "other:rage_gain"},
+		{Name: "other:attack/3"},
+		{Name: "spell:12867", Total: 10},
+		{Name: "spell:7"},
+	}}}
+	got := withoutBookkeepingRows(in)[0].Abilities
+	if len(got) != 3 || got[0].Name != "other:attack/3" {
+		t.Errorf("rows = %+v", got)
+	}
+	if len(in[0].Abilities) != 4 {
+		t.Error("the argument changed")
 	}
 }
