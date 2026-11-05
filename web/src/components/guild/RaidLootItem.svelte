@@ -22,8 +22,9 @@
     show = 'both',
   }: {
     award: RaidLootAward;
-    /** 28 in the Report, 20 in Your night, 36 in a loot card's head. */
-    iconSize: 36 | 28 | 20;
+    /** 28 in the Report, 20 in Your night, 40 in a loot card's head, 24 in a collapsed drop, 16 in a
+     *  line of text. */
+    iconSize: 40 | 28 | 24 | 20 | 16;
     /** The name's Tailwind text size: `text-[14px]` or `text-[13px]`. */
     nameSize: string;
     /** A card head draws the icon and the name apart (the lead and the title), each with the tooltip. */
@@ -58,7 +59,7 @@
   {classSlug}
   {build}
   model={ownModel}
-  class="gap-2"
+  class={iconSize === 16 ? 'gap-1' : 'gap-2'}
   label={show === 'icon' ? award.item_name : undefined}
 >
   {#if show !== 'name'}

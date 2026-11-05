@@ -696,6 +696,46 @@ export function buildMockReadiness(): GuildReadinessPage {
   return { median_item_level: MEDIAN_ILVL, generated_at: '2026-12-22T21:40:00Z', rows };
 }
 
+// DROP_CLIENT_FACTS is api/internal/guilds/loot.go's client columns for each drop:
+// [inventory_type, item_class, item_subclass].
+const DROP_CLIENT_FACTS: Record<number, [number, number, number]> = {
+  15410: [0, 7, 6],
+  16900: [1, 4, 2],
+  16908: [1, 4, 2],
+  16914: [1, 4, 1],
+  16921: [1, 4, 1],
+  16929: [1, 4, 1],
+  16939: [1, 4, 3],
+  16947: [1, 4, 3],
+  16955: [1, 4, 4],
+  16963: [1, 4, 4],
+  17064: [12, 4, 0],
+  17067: [23, 4, 0],
+  17068: [13, 2, 0],
+  17075: [13, 2, 7],
+  17078: [16, 4, 1],
+  17966: [18, 1, 0],
+  18205: [2, 4, 0],
+  18422: [0, 12, 0],
+  18423: [0, 12, 0],
+  18705: [0, 12, 0],
+  18813: [11, 4, 0],
+  21108: [0, 15, 0],
+};
+
+// The API's sourced line for each quest drop (loot_quests.go).
+const QUEST_LABELS: Record<number, string> = {
+  18422: 'Quest: Victory for the Alliance / Victory for the Horde',
+  18705: 'Quest: A Proper String (Hunter)',
+  21108: 'Quest: The Only Prescription',
+};
+
+function dropKind(itemId: number, slot: string): GuildLootPage['items'][number]['kind'] {
+  if (itemId === 15410) return 'skinned';
+  if (slot !== '') return 'gear';
+  return itemId === 17966 ? 'bag' : 'quest';
+}
+
 // ilvlDeltaFor is this fixture's own stand-in for the contract's tier-1 `ilvl_delta`
 // (item item level minus worn item level in that slot, or the item's own item level when
 // the slot is empty) -- this fixture has no per-slot worn-gear model, so every candidate
@@ -749,13 +789,35 @@ export function buildMockLoot(): GuildLootPage {
         class: r.class ?? '',
         spec: r.spec ?? '',
         gain_dps: null,
+        gain_unit: null,
+        tier: 1 as const,
         not_sim_checked: true,
         ilvl_delta: ilvlDeltaFor(r.name, name),
         attendance: attendanceFor(r.name),
         already_equivalent: false,
         replaces: wornNameFor(r.name, slot),
+        replaces_item: {
+          item_id: itemId + 100000,
+          name: wornNameFor(r.name, slot),
+          icon: '',
+          quality: 3,
+        },
         items_won: 0,
       }));
+    const kind = dropKind(itemId, slot);
+    const [inventoryType, itemClass, itemSubclass] = DROP_CLIENT_FACTS[itemId];
+    const forQuestOrBag = kind === 'quest' || kind === 'bag';
+    const questClass = itemId === 18705 ? 'hunter' : null;
+    const handTo = forQuestOrBag
+      ? roster
+          .filter((r) => r.verified && (questClass === null || r.class === questClass))
+          .map((r) => ({
+            character_key: r.character_key,
+            name: r.name,
+            class: r.class ?? '',
+            item_id: itemId,
+          }))
+      : [];
     const isAwarded = itemId === 16963 && candidates.length > 0; // Helm of Wrath -- this fixture's own long-standing awarded item
     items.push({
       item_id: itemId,
@@ -763,6 +825,12 @@ export function buildMockLoot(): GuildLootPage {
       icon,
       quality,
       slot,
+      inventory_type: inventoryType,
+      item_class: itemClass,
+      item_subclass: itemSubclass,
+      kind,
+      quest_label: QUEST_LABELS[itemId] ?? '',
+      eligible: handTo,
       copies: 1,
       awarded_to: isAwarded
         ? {
@@ -776,10 +844,20 @@ export function buildMockLoot(): GuildLootPage {
       candidates,
     });
   }
-  // What each character has won this tier, counted from the awards on the page, as the API counts them.  const won = new Map<string, number>();  for (const item of items) {    if (item.awarded_to !== null) {      won.set(item.awarded_to.character_key, (won.get(item.awarded_to.character_key) ?? 0) + 1);    }  }  for (const item of items) {    for (const candidate of item.candidates) candidate.items_won = won.get(candidate.character_key) ?? 0;  }
+  // What each character has won this tier, counted from the awards on the page, as the API counts them.
+  const won = new Map<string, number>();
+  for (const item of items) {
+    if (item.awarded_to !== null) {
+      won.set(item.awarded_to.character_key, (won.get(item.awarded_to.character_key) ?? 0) + 1);
+    }
+  }
+  for (const item of items) {
+    for (const candidate of item.candidates) candidate.items_won = won.get(candidate.character_key) ?? 0;
+  }
   return {
     encounters: [{ encounter_id: ONYXIA_ENCOUNTER_ID, name: 'Onyxia', zone: "Onyxia's Lair", killed: true }],
     selected: ONYXIA_ENCOUNTER_ID,
     items,
+    at_level_cap: roster.filter((r) => r.verified).length,
   };
 }

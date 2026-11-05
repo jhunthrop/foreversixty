@@ -1081,13 +1081,15 @@ export interface GuildLootCandidate {
   name: string;
   class: string;
   spec: string;
-  /** `null` for a tier-1 (fallback) candidate — contract's own loot section, 2026-10-04
-   *  addition: no BiS file in this build names any raid-tier item yet, so every real
-   *  candidate on a live roster is tier-1 today, and this is null for every one of them.
-   *  A caller must branch on this before formatting a DPS figure, never call a number
-   *  method on it directly (defect 5's own live-fix round: `candidate.gain_dps.toFixed(0)`
-   *  threw for every real candidate and broke the whole Loot tab). */
+  /** `null` for a tier-1 (item level) candidate, and for a tier-0 one the sim never measured. A
+   *  caller must branch on this before formatting a figure, never call a number method on it
+   *  directly (defect 5's own live-fix round: `candidate.gain_dps.toFixed(0)` threw for every real
+   *  candidate and broke the whole Loot tab). */
   gain_dps: number | null;
+  /** What `gain_dps` counts; `null` when it is. */
+  gain_unit: 'dps' | 'hps' | 'tps' | null;
+  /** 0: the item is on the character's BiS list. 1: ranked by item level only. */
+  tier: 0 | 1;
   not_sim_checked: boolean;
   /** Tier-1 only (contract's loot section): the item's own item level minus what the
    *  candidate wears in that slot (or the item's own item level when the slot is empty).
@@ -1095,10 +1097,27 @@ export interface GuildLootCandidate {
   ilvl_delta: number | null;
   attendance: GuildRosterAttendance;
   already_equivalent: boolean;
-  /** The item they wear now in the drop's slot; absent or empty when the slot is empty. */
-  replaces?: string;
-  /** Awards this character has had in this guild this tier; absent reads as none. */
-  items_won?: number;
+  /** The item they wear now in the drop's slot; empty when the slot is empty. */
+  replaces: string;
+  /** The same item for the shared item link; `null` for an empty slot. */
+  replaces_item: GuildLootWornItem | null;
+  /** Awards this character has had in this guild this tier. */
+  items_won: number;
+}
+
+export interface GuildLootWornItem {
+  item_id: number;
+  name: string;
+  icon: string;
+  quality: number;
+}
+
+/** Who an officer can hand a quest drop or the bag to, and the copy of the drop they would get. */
+export interface GuildLootEligible {
+  character_key: string;
+  name: string;
+  class: string;
+  item_id: number;
 }
 
 export interface GuildLootAwardedTo {
@@ -1115,18 +1134,28 @@ export interface GuildLootItem {
   name: string;
   icon: string;
   quality: number;
+  /** Logic only, never printed: the words come from `slotLine` over the three client fields. */
   slot: string;
+  inventory_type: number;
+  item_class: number;
+  item_subclass: number;
+  /** `gear`: a slotted drop the council ranks. `skinned`: Scale of Onyxia, never a pick. */
+  kind: 'gear' | 'quest' | 'bag' | 'skinned';
+  /** A quest drop's sourced line; empty otherwise. */
+  quest_label: string;
+  eligible: GuildLootEligible[];
   awarded_to: GuildLootAwardedTo | null;
   candidates: GuildLootCandidate[];
-  /** How many of the table's drops this row stands for (two items can share a name); absent
-   *  on a response from before it, read as 1. */
-  copies?: number;
+  /** How many of the table's drops this row stands for (two items can share a name). */
+  copies: number;
 }
 
 export interface GuildLootPage {
   encounters: GuildLootEncounter[];
   selected: number | null;
   items: GuildLootItem[];
+  /** Verified roster characters whose level on file is 60. */
+  at_level_cap: number;
 }
 
 function guildLootKey(guildId: number, encounterId: number | undefined, apiBase: string): string {

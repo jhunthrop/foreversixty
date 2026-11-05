@@ -97,6 +97,8 @@
   } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
+  import LoadError from './ui/LoadError.svelte';
+  import { LOOT_LOAD_ERROR } from '../lib/guild/loot-view';
   import PageHead from './ui/PageHead.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
@@ -704,14 +706,15 @@
     return true;
   }
 
-  async function onAward(item: GuildLootItem, charKey: string): Promise<void> {
+  /** `itemId` names the copy of the drop when it is not the row's own (a side's Head of Onyxia). */
+  async function onAward(item: GuildLootItem, charKey: string, itemId = item.item_id): Promise<void> {
     if (guildId === null || loot === null || loot.selected === null) return;
     lootBusyItemId = item.item_id;
     lootError = '';
     try {
       await awardLoot(guildId, {
         encounter_id: loot.selected,
-        item_id: item.item_id,
+        item_id: itemId,
         character_key: charKey,
       });
       loot = await fetchGuildLoot(guildId, loot.selected);
@@ -1087,6 +1090,8 @@
     {:else if activeTab === 'loot'}
       {#if lootStatus === 'loading' || (lootStatus === 'ready' && !lootLazy.current)}
         <Skeleton lines={5} minHeight="min-h-[240px]" testid="guild-loot-skeleton" />
+        <Skeleton lines={3} minHeight="min-h-[168px]" testid="guild-loot-item-skeleton" />
+        <Skeleton lines={3} minHeight="min-h-[168px]" testid="guild-loot-item-skeleton" />
         {@render lazyFallback(lootLazy)}
       {:else if lootStatus === 'missing'}
         <EmptyState
@@ -1098,7 +1103,14 @@
              live yet" copy above -- its own message, rendered without waiting on the lazy
              GuildLoot.svelte chunk (which a slow connection may not have finished loading
              yet when the fetch itself has already failed). -->
-        <p class="text-[13px]" role="alert" data-testid="guild-loot-error">{lootError}</p>
+        <LoadError
+          message={LOOT_LOAD_ERROR}
+          testid="guild-loot-error"
+          onRetry={() => {
+            lootError = '';
+            lootStatus = 'idle';
+          }}
+        />
       {:else if lootLazy.current}
         <lootLazy.current
           loot={lootStatus === 'ready' ? loot : null}
@@ -1107,10 +1119,11 @@
           {raidGuildTools}
           memberReadOnly={role === 'member'}
           attendanceSource={attendanceSourceOf(home)}
+          ownKeys={[...myCharacterKeys]}
           busyItemId={lootBusyItemId}
           refusal={planRefusal}
           {settingsHref}
-          onAward={(item, charKey) => void onAward(item, charKey)}
+          onAward={(item, charKey, itemId) => void onAward(item, charKey, itemId)}
           onUndo={(item) => void onUndo(item)}
           onBoss={(encounterId) => void onBoss(encounterId)}
         />
