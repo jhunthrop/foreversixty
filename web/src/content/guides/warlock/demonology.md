@@ -81,7 +81,7 @@ Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it 
 
 Recast Corruption when it falls off and never clip it. Start Immolate's cast with about 3 seconds left on the old one. Everything else is Shadow Bolt.
 
-Below 35% your button does not change. Every Shadow Bolt now hits 6% harder, and it also gives you 10 seconds of Decimation, which makes Soul Fire a 2.4 second cast on a 6 second cooldown that costs no shard. Skip it anyway at 60. Soul Fire is Fire, and your Imp sacrifice, Master Demonologist and Improved Shadow Bolt all raise Shadow, so on raid gear it does less than the Shadow Bolt it replaces. Shadow Bolt to the end. If you play this build from 56 to 59, cast those Soul Fires once you have rank 2: on leveling gear they still edge out Shadow Bolt. Outside Decimation Soul Fire is a 4 second cast that costs a shard; never cast it in a raid.
+Below 35% your button does not change. Every Shadow Bolt now hits 6% harder, and it also gives you 10 seconds of Decimation, which makes Soul Fire a 2.4 second cast on a 6 second cooldown that costs no shard. If you play this build from 56 to 59, cast those Soul Fires once you have rank 2: on leveling gear they still edge out Shadow Bolt. At 60, skip it. Soul Fire is Fire, and your Imp sacrifice, Master Demonologist and Improved Shadow Bolt all raise Shadow, so on raid gear it does less than the Shadow Bolt it replaces. Shadow Bolt to the end. Outside Decimation Soul Fire is a 4 second cast that costs a shard; never cast it in a raid.
 
 Searing Pain also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses. Keep it off your bars in raids.
 
