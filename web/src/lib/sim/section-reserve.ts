@@ -9,7 +9,7 @@
 // `simfixtureab`, at 390 for phone and 1440 for wide); the timeline's rows come from the very lane
 // rules the card draws with (lib/sim/timeline-lanes.ts), so its reserve is its ready height.
 import { COLLAPSED_CAST_ROWS, plotHeightOf, timelineShape } from './timeline-lanes';
-import type { SimResult } from './types';
+import type { SimResult, SpecFidelity } from './types';
 
 /** A card's reserved height under 768 px and from 768 px. */
 export interface SectionReserve {
@@ -133,6 +133,14 @@ function settingsHeight(result: SimResult, phone: boolean): number {
 /** Cards whose height comes from data the main chunk does not have (the trees, the rotation file). */
 const TALENTS: SectionReserve = { phone: 687, wide: 582 };
 const ROTATION: SectionReserve = { phone: 2005, wide: 1353 };
+/** The fidelity note under the Rotation card's head (FidelityNote.svelte), measured on the
+ *  in-progress capture: one wrapped line on a phone, one line wide. Validated specs carry none. */
+const FIDELITY_NOTE: SectionReserve = { phone: 70, wide: 50 };
+
+function rotationReserve(fidelity: Pick<SpecFidelity, 'state'> | null): SectionReserve {
+  if (fidelity === null || fidelity.state === 'validated') return ROTATION;
+  return { phone: ROTATION.phone + FIDELITY_NOTE.phone, wide: ROTATION.wide + FIDELITY_NOTE.wide };
+}
 
 function both(
   height: (result: SimResult, phone: boolean) => number | null,
@@ -143,15 +151,19 @@ function both(
   return phone === null || wide === null ? null : { phone: Math.round(phone), wide: Math.round(wide) };
 }
 
-/** Every lazy card's reserve for this result; null where the card is one line (no fight, no kit). */
-export function sectionReserves(result: SimResult): Record<LazySectionId, SectionReserve | null> {
+/** Every lazy card's reserve for this result; null where the card is one line (no fight, no kit).
+ *  `fidelity` is the spec's row once it has loaded: an unvalidated spec's Rotation card is taller. */
+export function sectionReserves(
+  result: SimResult,
+  fidelity: Pick<SpecFidelity, 'state'> | null = null,
+): Record<LazySectionId, SectionReserve | null> {
   return {
     timeline: both(timelineHeight, result),
     gear: both(gearHeight, result),
     talents: TALENTS,
     resource: both(resourceHeight, result),
     buffs: both(buffsHeight, result),
-    rotation: ROTATION,
+    rotation: rotationReserve(fidelity),
     settings: both(settingsHeight, result),
   };
 }

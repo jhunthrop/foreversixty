@@ -29,6 +29,16 @@ describe('sectionReserves', () => {
     expect(Math.abs(reserve.wide - measured.wide)).toBeLessThanOrEqual(4);
   });
 
+  it('grows the Rotation card by the fidelity note only for a spec the sim has not validated', () => {
+    const plain = sectionReserves(full).rotation!;
+    expect(sectionReserves(full, { state: 'validated' }).rotation).toEqual(plain);
+    for (const state of ['in_progress', 'unsupported'] as const) {
+      const noted = sectionReserves(full, { state }).rotation!;
+      expect(noted.phone - plain.phone).toBe(70);
+      expect(noted.wide - plain.wide).toBe(50);
+    }
+  });
+
   it('holds nothing for a timeline with no fight or a run with no kit', () => {
     const bare = {
       ...full,

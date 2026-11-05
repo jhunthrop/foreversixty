@@ -67,7 +67,7 @@
   const summary = $derived(withoutAbsentPets(result.summary));
   const sections = $derived(resultSections(result));
   const resourceTitle = $derived(sections.find((section) => section.id === 'resource')?.label ?? '');
-  const reserves = $derived(sectionReserves(result));
+  const reserves = $derived(sectionReserves(result, fidelity));
 
   // One load each, for this component's one unchanging result. Each failure leaves the page
   // standing on its fallback: unnamed rows, empty icon boxes, no weapon names.
