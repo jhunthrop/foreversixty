@@ -9,15 +9,36 @@ import "testing"
 // the off hand beats two Instants (Combat 551.0 against 530.0 in the raid
 // preset at 60, 10 percent at bands 30 to 50) and beats the mirror
 // arrangement (544.5), except Subtlety at 60 where the mirror is 0.9
-// percent ahead and is not taken, to keep one rule.
+// percent ahead and is not taken, to keep one rule. Assassination at 60 is
+// the one exception since the poisons scale with attack power
+// (TestKitConsumesAssassinationCarriesInstantInTheMainHandAtSixty).
 func TestKitConsumesRogueCarriesDeadlyInTheMainHandFromThirty(t *testing.T) {
 	for _, spec := range []string{"rogue-assassination", "rogue-combat", "rogue-subtlety"} {
-		for _, level := range []int{30, 45, 60} {
+		for _, level := range []int{30, 45, 59, 60} {
+			if spec == "rogue-assassination" && level == 60 {
+				continue
+			}
 			got := KitConsumes(spec, level)
 			if len(got) != 2 || got[0] != "main_hand_imbue:deadly_poison" || got[1] != "off_hand_imbue:instant_poison" {
 				t.Errorf("%s at %d = %v, want Deadly Poison main hand and Instant Poison off hand", spec, level, got)
 			}
 		}
+	}
+}
+
+// TestKitConsumesAssassinationCarriesInstantInTheMainHandAtSixty: with
+// Forever's attack-power coefficients on the poisons (sim-accuracy round
+// 20), an Assassination rogue at 60 lands more Instant Poison hits with it
+// on the main hand, and Deadly Poison holds five stacks from the off hand
+// alone: +1.5 to +1.7% on the raid set and +1.8% on the bare set at 60,
+// against a tie at 40 and 50 and a loss at 30, where Backstab builds.
+func TestKitConsumesAssassinationCarriesInstantInTheMainHandAtSixty(t *testing.T) {
+	got := KitConsumes("rogue-assassination", 60)
+	if len(got) != 2 || got[0] != "main_hand_imbue:instant_poison" || got[1] != "off_hand_imbue:deadly_poison" {
+		t.Fatalf("rogue-assassination at 60 = %v, want Instant Poison main hand and Deadly Poison off hand", got)
+	}
+	if got := KitConsumes("rogue-assassination", 59); got[0] != "main_hand_imbue:deadly_poison" {
+		t.Fatalf("rogue-assassination at 59 = %v, want Deadly Poison still on the main hand", got)
 	}
 }
 

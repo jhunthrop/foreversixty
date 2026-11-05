@@ -85,7 +85,7 @@ Mutilate costs 60, so you will often sit on four points waiting for energy. That
 
 ### Poisons
 
-**Deadly Poison** on the main hand, **Instant Poison** on the off hand, with a sharpening stone beside each in Forever. Mutilate's bonus needs a poison sitting on the target, and Deadly Poison is the one that stays there, so never run two Instants. Check both coats before every boss pull and re-apply any that is close to running out; a Mutilate into an unpoisoned boss is a weak one.
+**Instant Poison** on the main hand and **Deadly Poison** on the off hand at 60, with a sharpening stone beside each. Both poisons scale with your attack power in Forever: every Instant Poison hit and every Deadly Poison tick grows as your attack power does. Your off hand lands more than enough hits to hold Deadly Poison at five stacks, and every extra proc on the main hand is worth more as an Instant hit. Mutilate's bonus needs a poison sitting on the target, and Deadly Poison is the one that stays there, so never run two Instants. Below 60, keep Deadly on the main hand and Instant on the off hand: at 30 to 39 Backstab stacks Deadly faster, and from 40 to 59, with Mutilate, the two ways round come out even. Swap them at 60. Check both coats before every boss pull and re-apply any that is close to running out; a Mutilate into an unpoisoned boss is a weak one.
 
 ### Trash, threat and survival
 
@@ -96,15 +96,15 @@ Mutilate costs 60, so you will often sit on four points waiting for energy. That
 
 ## Stat priority
 
-Hit counts until your attacks stop missing, and adds nothing past that: a missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Agility gives attack power and crit together. Crit counts for more in this tree than for most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger. Strength and attack power add straight damage to every hit. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
+Hit counts until your attacks stop missing, and adds nothing past that: a missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Agility gives attack power and crit together. Crit counts for more in this tree than for most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger. Strength and attack power add straight damage to every hit, and in Forever to every poison hit and tick as well. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
 
 ## Best in slot
 
-Two daggers, always. The main-hand dagger matters most: it carries Deadly Poison, your full-weight white hits and the bigger half of every Mutilate, because the off-hand strike only gets half of its dagger's weapon damage. The flat bonus still lands in full on both hands, so a good off-hand dagger is a real upgrade, just never ahead of the main hand.
+Two daggers, always. The main-hand dagger matters most: it carries Instant Poison at 60, your full-weight white hits and the bigger half of every Mutilate, because the off-hand strike only gets half of its dagger's weapon damage. The flat bonus still lands in full on both hands, so a good off-hand dagger is a real upgrade, just never ahead of the main hand.
 
 ## Enchants and consumables
 
-Poisons and stones go on together in Forever: Deadly Poison and a stone on the main hand, Instant Poison and a stone on the off hand. A shaman's Windfury Totem is an aura on you, so it stacks with both.
+Poisons and stones go on together in Forever: at 60, Instant Poison and a stone on the main hand, Deadly Poison and a stone on the off hand. A shaman's Windfury Totem is an aura on you, so it stacks with both.
 
 ## Races
 
@@ -130,4 +130,4 @@ Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the m
 
 From 20 to 40, Sinister Strike is your everyday builder on mobs that face you, with Gouge into Backstab whenever you can get behind. In a group, where the tank holds the mob and you stand at its back with a dagger in hand, Backstab is your builder until Mutilate.
 
-Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Relentless Strikes comes late, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.
+Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Put Deadly on the main hand and Instant on the off hand until 60, where they swap. Relentless Strikes comes late, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and Vanish get you out of the bad ones.

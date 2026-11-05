@@ -3957,6 +3957,46 @@
           "juju_might",
           "main_hand_stone:elemental_sharpening_stone"
         ]
+      },
+      {
+        "from_level": 60,
+        "buffs": [
+          "arcane_brilliance",
+          "gift_of_the_wild",
+          "power_word_fortitude",
+          "divine_spirit",
+          "blessing_of_might",
+          "blessing_of_wisdom",
+          "battle_shout",
+          "trueshot_aura",
+          "heart_of_the_lion",
+          "leader_of_the_pack",
+          "moonkin_aura",
+          "strength_of_earth_totem",
+          "windfury_totem",
+          "mana_spring_totem:improved",
+          "curse_of_elements",
+          "sunder_armor",
+          "faerie_fire",
+          "judgement_of_wisdom",
+          "judgement_of_the_crusader",
+          "judgement_of_light",
+          "hunters_mark",
+          "curse_of_recklessness"
+        ],
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:deadly_poison",
+          "ground_scorpok_assay",
+          "conjured_rogue_thistle_tea",
+          "food_poached_sunscale_salmon",
+          "major_frenzy_potion",
+          "off_hand_stone:dense_sharpening_stone",
+          "elixir_of_the_mongoose",
+          "juju_power",
+          "juju_might",
+          "main_hand_stone:elemental_sharpening_stone"
+        ]
       }
     ],
     "rogue-combat": [

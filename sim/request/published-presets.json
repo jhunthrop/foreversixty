@@ -202,6 +202,14 @@
           "main_hand_imbue:deadly_poison",
           "off_hand_imbue:instant_poison"
         ]
+      },
+      {
+        "from_level": 60,
+        "buffs": [],
+        "consumes": [
+          "main_hand_imbue:instant_poison",
+          "off_hand_imbue:deadly_poison"
+        ]
       }
     ],
     "rogue-combat": [
