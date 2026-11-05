@@ -102,7 +102,7 @@ The table above gives the order for your gear; this is why each stat counts. Eve
 
 ## Enchants and consumables
 
-Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take Elixir of the Mongoose, R.O.I.D.S., Winterfall Firewater and Smoked Desert Dumplings: crit, Strength and attack power all stack with the raid's buffs.
+Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take Elixir of the Mongoose, R.O.I.D.S., Juju Power, Juju Might and Smoked Desert Dumplings: crit, Strength and attack power all stack with the raid's buffs.
 
 ## Races
 

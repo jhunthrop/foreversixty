@@ -106,7 +106,7 @@ The table above gives the order for your gear; this is why each stat counts. Def
 
 ## Enchants and consumables
 
-Mighty Rage Potion is threat at the pull. Pre-pull, eat and drink for the health bar; a tank that dies holds no threat.
+Mighty Rage Potion is threat at the pull. Pre-pull, the rum and Elixir of Fortitude are your health bar, and the dumplings' Strength is threat and block value; a tank that dies holds no threat.
 
 ## Races
 
