@@ -2,7 +2,7 @@
 // The Loot tab rendered with svelte/server (initial state, no effects): who sees Award and Undo,
 // the awarded line said once, the game's slot words, the two tiers, attendance hidden with no
 // counted night, and the drops nobody ranks collapsed to one line. The ask-first confirm and the undo are clicked through in guild-centre.spec.ts.
-import { GATE_SETTINGS_HREF, gateFactsFixture } from '../../test-support/gate-facts';
+import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { buildMockLoot } from '../../fixtures/guild/mock-guild';

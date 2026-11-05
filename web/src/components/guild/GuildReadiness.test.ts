@@ -2,7 +2,7 @@
 // The Readiness tab rendered with svelte/server: officer-read-only (officer tools off) shows the
 // plan sentence once and the Read-only label, and keeps every Nudge on screen but disabled; a
 // member sees none of it.
-import { GATE_SETTINGS_HREF, gateFactsFixture } from '../../test-support/gate-facts';
+import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { buildMockReadiness } from '../../fixtures/guild/mock-guild';

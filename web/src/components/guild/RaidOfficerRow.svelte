@@ -10,7 +10,6 @@
   import type { GuildRaidView } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { cancelActionOf, copyList, kindOf, raidCopy } from '../../lib/guild/raid-copy';
-  import { splitAtLink } from '../../lib/guild/raid-form';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
   import { RAID_BUTTON as BUTTON } from '../../lib/guild/raid-buttons';
   import type { RaidStatusAction } from '../../lib/guild/raids-api';

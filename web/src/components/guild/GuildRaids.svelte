@@ -193,7 +193,7 @@
           type="button"
           bind:this={planButton}
           class={button(readOnly ? 'secondary' : 'primary', 'md')}
-          disabled={readOnly || atCap}
+          disabled={readOnly}
           aria-describedby={planDescribedBy}
           onclick={() => (formOpen = true)}
           data-testid="guild-raids-plan">{raidCopy.planButton}</button

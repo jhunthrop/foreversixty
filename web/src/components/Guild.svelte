@@ -269,10 +269,6 @@
       myGuildMembership.verified &&
       (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
   );
-  const isOfficerOrLeader = $derived(
-    myGuildMembership !== null &&
-      (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
-  );
 
   /** What the band says about claiming: the "Run this guild? Claim it." prompt only for an officer
    *  rank in an unclaimed guild, who holds a claimed guild for its members, nothing for a stranger. */

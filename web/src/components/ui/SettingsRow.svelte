@@ -25,7 +25,6 @@
     labelColor,
     tone = 'gold',
     lead,
-    labelColor,
     href,
     external = false,
     onclick,
@@ -53,8 +52,6 @@
     tone?: TileTone;
     /** The icon slot for something other than a glyph tile (a 24 px class crest). */
     lead?: Snippet;
-    /** The label's colour, as a CSS value (a class colour); default `text-strong`. */
-    labelColor?: string;
     href?: string;
     /** A link that opens another tab: `target=_blank` with `rel=noopener`. */
     external?: boolean;

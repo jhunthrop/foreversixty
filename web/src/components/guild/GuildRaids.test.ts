@@ -2,7 +2,7 @@
 // The Raids tab rendered with svelte/server (raids spec 3.1, 4, R1): Plan an event for officers
 // only, the read-only gate and the cap line, Planned with its first four rows and Show all, the
 // empty lines, Raid nights under it, and nothing planned for a visitor.
-import { GATE_SETTINGS_HREF, gateFactsFixture } from '../../test-support/gate-facts';
+import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidRow, GuildRaidView } from '../../lib/guild/api';

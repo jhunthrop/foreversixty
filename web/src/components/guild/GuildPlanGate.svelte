@@ -34,8 +34,8 @@
   class="text-text text-[13px] leading-5"
   data-testid={testid ?? `guild-${tab}-plan-gate`}
 >
-  {guildGateCopy.lead[tab]}{' '}{#if action.kind === 'link'}<a class={INLINE_LINK} href={action.href}
-      >{action.label}</a
+  {guildGateCopy.lead[tab]}
+  {#if action.kind === 'link'}<a class={INLINE_LINK} href={action.href}>{action.label}</a
     >.{:else if action.kind === 'note'}{action.text}{:else if action.holder === null}{guildGateCopy.askMaster}{:else}{guildGateCopy.ask}<span
       class="inline-flex items-baseline gap-1 font-semibold whitespace-nowrap"
       style:color={classColorVar(action.holder.class ?? undefined)}
