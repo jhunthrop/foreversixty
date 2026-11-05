@@ -34,3 +34,34 @@ func TestRound23ShadowPainAndPlagueRankRows(t *testing.T) {
 		}
 	}
 }
+
+// Round 23 (priest lane): the newest Mind Blast and Shadow Word: Death were
+// cast the level they arrived. Rank 4 Mind Blast beats rank 5 at 34 (and
+// for some races at 35 and 36); Shadow Word: Death rank 2 beats rank 3 at 48
+// and 49 for every race, as it already did from 50, and rank 1 beats rank 2
+// at 40 for a Dwarf, Human or Night Elf.
+func TestRound23ShadowMindBlastAndDeathRankRows(t *testing.T) {
+	const mb4, mb5 = 8104, 8105
+	const swd1, swd2, swd3 = 1309595, 1309633, 1309635
+	for _, c := range []struct {
+		name, race string
+		level      int
+		want, not  int32
+	}{
+		{"Mind Blast at 34", "human", 34, mb4, mb5},
+		{"Mind Blast Undead at 35", "undead", 35, mb4, mb5},
+		{"Mind Blast Human at 35 is the top rank", "human", 35, mb5, mb4},
+		{"Mind Blast Night Elf at 36", "night-elf", 36, mb4, mb5},
+		{"Death Human at 40", "human", 40, swd1, swd2},
+		{"Death Gnome at 40 is the top rank", "gnome", 40, swd2, swd1},
+		{"Death Night Elf at 41", "night-elf", 41, swd1, swd2},
+		{"Death Gnome at 43", "gnome", 43, swd1, swd2},
+		{"Death at 48", "troll", 48, swd2, swd3},
+		{"Death at 49", "dwarf", 49, swd2, swd3},
+	} {
+		ids := rotationIDs(t, "priest-shadow", "priest", c.level, specRankChoices("priest-shadow", BarePreset, c.race))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s (%s): want %d cast and %d not", c.name, c.race, c.want, c.not)
+		}
+	}
+}
