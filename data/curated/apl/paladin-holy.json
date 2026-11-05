@@ -132,7 +132,7 @@
             }
           }
         },
-        "notes": "On the tank below 40%, right behind Divine Favor. Rank 8 is your top rank: the trainer stops there, and the rank 9 book has no known source in Forever yet. Holy Light is the only heal that outheals a tank by itself."
+        "notes": "On the tank below 40%, right behind Divine Favor (from 21). At 60 rank 8 is your top rank: the trainer stops there, and the rank 9 book has no known source in Forever yet. Holy Light is the only heal that outheals a tank by itself."
       },
       {
         "action": {
@@ -252,7 +252,7 @@
             }
           }
         },
-        "notes": "On anyone below 70%, with the same mana to spare. On anyone but your Oath target, Boundless Light adds 30% crit, which Illumination turns back into mana."
+        "notes": "On anyone below 70%, with the same mana to spare. From 34, on anyone but your Oath target, Boundless Light adds 30% crit, which Illumination turns back into mana."
       },
       {
         "action": {
@@ -581,7 +581,7 @@
             }
           }
         },
-        "notes": "On the tank below 90%: your staple. Oath of Light adds the same flat amount to every rank close to your level that you cast on the tank. Without raid buffs, rank 4 does the same job for less mana."
+        "notes": "On the tank below 90%: your staple. From 25, Oath of Light adds the same flat amount to every rank close to your level that you cast on the tank. At 60 without raid buffs, rank 4 does the same job as rank 5 for less mana."
       },
       {
         "action": {
@@ -614,7 +614,7 @@
             }
           }
         },
-        "notes": "On everyone else below 80%, yourself included. Without the Oath bonus, rank 4 is the best balance of heal size and mana."
+        "notes": "On everyone else below 80%, yourself included. Without the Oath bonus a small rank is the best balance of heal size and mana: rank 1 for most of your leveling, rank 4 from 50."
       },
       {
         "action": {

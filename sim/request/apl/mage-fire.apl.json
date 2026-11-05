@@ -218,7 +218,7 @@
       }
     },
     {
-      "notes": "From Heating Up at 30, Scorch is the filler, not Fireball. You land more than two Scorches in the time of one Fireball, so you roll over twice the crits for Heating Up and Ignite, and every cast refreshes your 5 Improved Scorch stacks so you never spend a cast just to keep them up.",
+      "notes": "From Heating Up at 30, Scorch is the filler, not Fireball. You land two Scorches in the time of one Fireball, so you roll twice the crits for Ignite and Heating Up, and every cast keeps your Improved Scorch stacks rolling.",
       "action": {
         "condition": {
           "auraIsKnown": {

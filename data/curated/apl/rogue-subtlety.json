@@ -92,7 +92,7 @@
         }
       },
       {
-        "notes": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, adds two combo points, so at four or five you finish first.",
+        "notes": "Shank on cooldown at three combo points or fewer: an off-hand stab that cannot miss, pays back more energy than it costs and, with Boot Knife, can add two combo points, on every Shank once Boot Knife is 5/5 at 39, so at four or five you finish first.",
         "action": {
           "castSpell": {
             "spellId": {

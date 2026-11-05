@@ -53,7 +53,7 @@ The raid build goes 36/10/5: down Assassination to Mutilate, with Seal Fate, Ven
 
 - **Mutilate** (1 point): strikes with both daggers for 90% weapon damage plus 79 each at the top rank (the off-hand strike takes the usual half weapon damage, the flat 79 does not), 20% more against a poisoned target, for two combo points. It sits below Venom in the tree.
 - **Seal Fate** (3 points): every crit from a builder adds a combo point. Mutilate can only trigger it once a cast, even when both hands crit.
-- **Venom** (1 point): every Shank adds 30% to your poison damage, on top of Vile Poisons, and 20 percentage points to each poison's chance to land for 6 seconds, so Instant Poison procs on half your off-hand hits. It is a passive on Shank, with no finisher or global of its own, and Mutilate needs it.
+- **Venom** (1 point): every Shank adds 30% to your poison damage, on top of Vile Poisons, and 20 percentage points to each poison's chance to land for 6 seconds, so Instant Poison procs on half your main-hand hits at 60. It is a passive on Shank, with no finisher or global of its own, and Mutilate needs it.
 - **Relentless Strikes** (5 points): every finisher has a 20% chance per combo point to give 25 energy back, so a four-point Eviscerate refunds it four times in five. This is what lets a 60 energy builder keep up.
 - **Cold Blood** (1 point): your next Mutilate or Eviscerate is a guaranteed crit, on a 3 minute cooldown. Save it for an Eviscerate at four or more points.
 - **Lethality** (2 points): Mutilate crits deal 220% instead of 200%, and with Malice and Puncturing Wounds you crit a lot.
@@ -75,7 +75,7 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket: 5 energy for 25 back, it cannot miss, and with Venom, for the next 6 seconds your poisons get another 30% on top of Vile Poisons and Instant Poison lands on half your off-hand hits. At four or more combo points, Slice and Dice first if it is down or about to fall off. In the raid build, Rupture next whenever it is not ticking: Blood Splatter makes it last 6 seconds longer, and its ticks can crit in Forever. Otherwise press Cold Blood if it is ready and Eviscerate straight after. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
+**Shank** on cooldown, right behind your racial and trinket: 5 energy for 25 back, it cannot miss, and with Venom, for the next 6 seconds your poisons get another 30% on top of Vile Poisons and Instant Poison lands on half your main-hand hits at 60. At four or more combo points, Slice and Dice first if it is down or about to fall off. In the raid build, Rupture next whenever it is not ticking: Blood Splatter makes it last 6 seconds longer, and its ticks can crit in Forever. Otherwise press Cold Blood if it is ready and Eviscerate straight after. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
 
 Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, and Ruthlessness often leaves you one after a finisher, so two Mutilates usually put you on four or five: waiting for exactly five wastes a Mutilate. Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors. Without Blood Splatter, in the level 60 build, skip Rupture too.
 

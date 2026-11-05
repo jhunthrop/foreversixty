@@ -81,7 +81,7 @@
             }
           }
         },
-        "notes": "Below 35% health, as the first panic button. A shield worth your whole health bar for 8 seconds; it puts Forbearance on you, which locks out the other two for a while."
+        "notes": "Below 35% health, as the first panic button. A shield worth your whole health bar for 8 seconds; it puts Forbearance on you, which locks out Divine Protection, and Divine Shield from 34, for a while."
       },
       {
         "action": {
@@ -105,7 +105,7 @@
             }
           }
         },
-        "notes": "Below 25% health, once Forbearance from Templar's Bulwark has gone. Twelve seconds immune, at half damage dealt."
+        "notes": "Below 25% health, once Forbearance from Templar's Bulwark has gone. Ten seconds immune, twelve from rank 2 at 50, at half damage dealt."
       },
       {
         "action": {
@@ -211,7 +211,7 @@
             }
           }
         },
-        "notes": "Keep it up, and recast it in its last 2 seconds only with Holy Shield's mana left over. Judgement does not consume it, so this is one cast every 30 seconds."
+        "notes": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over. Judgement does not consume it, so this is one cast every 30 seconds."
       },
       {
         "action": {
@@ -233,7 +233,7 @@
             }
           }
         },
-        "notes": "On cooldown. Twenty mana for strong threat; with Iron Creed it also cuts your damage taken for 6 seconds, and Shieldsworn brings it back every 6 seconds."
+        "notes": "On cooldown. Strong threat for little mana, twenty at 60; with Iron Creed it also cuts your damage taken for 6 seconds, and from 40 Shieldsworn brings it back every 6 seconds."
       },
       {
         "action": {
@@ -319,7 +319,7 @@
             }
           }
         },
-        "notes": "On cooldown, once Holy Shield's mana is safe. Off the global cooldown for 6% of base mana, and under Seal of Fury it is your taunt."
+        "notes": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe. Off the global cooldown for 6% of base mana, and under Seal of Fury it is your taunt."
       },
       {
         "action": {
@@ -373,7 +373,7 @@
             }
           }
         },
-        "notes": "On Undead and Demons only, once Holy Shield's mana is safe. It cannot be cast on anything else."
+        "notes": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe. It cannot be cast on anything else."
       },
       {
         "action": {
@@ -432,7 +432,7 @@
             }
           }
         },
-        "notes": "Last, and only above half mana. It makes far less threat per mana than Hammer of the Righteous, so it spends the mana you will not need."
+        "notes": "Last, and only above half mana: it spends the mana you will not need for your strikes and, from 30, Holy Shield. From 40 Hammer of the Righteous makes far more threat for its mana."
       }
     ]
   },
