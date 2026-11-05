@@ -180,3 +180,74 @@ The Fury rotation note for Berserker Rage says "Improved Berserker Rage makes it
 4. Deviation 4: Refund row label and IconTile.
 5. Re-take A1-390 (segmented), A3-1440, A5 (W5), A14 lazy, A16 lazy, and attach A11b, A11c, A12 phone Show all and A18.
 6. Polish 5 to 8 when convenient.
+
+## Round 2 (land/simview at 2a93bf7b6)
+
+### Verdict: SHIP WITH FIXES
+
+The blocker is fixed. Every round 1 must-fix is fixed or answered. Two small must-fixes remain, both one-line data or text changes. Once they are in, ship without another review round; the integrator checks them on the captures.
+
+Reviewed: `int2/sbs-{1440,390}` and their small versions, the stitched full pages for both fixtures at 390, 1024, 1440, 1920 and 2000, and `fix-layout/` and `fix-page/`.
+
+### Round 1 items
+
+1. **Blocker, lazy reservations: fixed.**
+   - The gap under the timeline is gone at 1440.
+   - The older run has no holes between cards at 1440 or 390.
+   - A failed timeline is a 158px error card with Gear directly under it (`lazy-failed-{390,1440}`).
+   - The loading head is the real head: clock glyph and "The median run · 2:53 long".
+   - The new `sim-saved-layout.spec.ts` keeps it fixed.
+   - CLS on the older fixture is 0.0186 at 1440. That is inside the 0.05 budget.
+2. **Must fix, Execute wording: fixed.**
+   - Every note says "in the Execute phase".
+   - Heroic Strike reads "never in the Execute phase: hold that rage for Execute".
+   - Overpower now reads "Never at 60: Overpower needs Battle Stance, and Fury fights in Berserker Stance."
+   - Settings and the notes now state one window.
+3. **Must fix, Deep Wounds bar: withdrawn.** An off-hand crit at 0:00.01 applies it, and a fixture test pins that. My reading of the Close up capture was wrong.
+4. **Must fix, Refund row: fixed.** It reads "Refunded on a miss, dodge or parry" in a 24px IconTile.
+5. **Polish, first screen at 1440 x 900: still open.** Main hand still starts at about 885px. It stays polish.
+6. **Polish, timeline placeholder head: fixed.**
+7. **Polish, Talents meta: fixed.** It reads "17 / 32 / 2".
+8. **Polish, target lanes: taken.** Raid auras that are up all fight are left out of the timeline lanes, and On the target now shows Deep Wounds alone. This departs from §7's "any lane of the timeline never collapses". I accept it because those auras are listed in the Buffs card with their uptimes. The spec owner amends §3.7 and §7 to say so.
+9. **Captures:** the stitched full pages and the lazy captures resolve every item, except the two named below.
+
+### Coordinator changes accepted, spec copy to follow
+
+- **R7 Crit tooltip, reworded:** "Crits out of the hits that landed, glancing blows included. Misses, dodges and parries are left out, so a row can read above or below your crit chance on the boss." It is accurate and clearer than the §15 text. §6 and §15 R7 take the new wording.
+- **The Hit cell shows the run's measured misses** ("Missed in this run: 0% of specials · 13.9% of white swings") instead of the 220px bar to 27% and the reference line. Both figures agree with the table (white rows 19.0%, 8.5% and 19.0%; no special shows a miss). §3.8 and §6 take the new line.
+- **The IN PROGRESS fidelity note on the saved Rotation card** reads as one quiet line with a muted Tag. It is in the right place. §3.11 takes it.
+
+### Remaining must fix
+
+**R2-1. Blood Fury has no icon (older run, `int2/full-simfixtureab-*`).** MUST FIX
+- **Spec:** R1 says no icon exemptions at merge, and an action key with no icon never draws an empty box.
+- **Shipped:** Buffs, On you, "Blood Fury 16.7% 2×" has no icon at all; the name sits where the icon should be. The cast record has the same gap. The full fixture is clean, but the older fixture is the A15 acceptance page.
+- **Fix:**
+  - Add the orc racial Blood Fury to `data/curated/extra-spell-icons.json`: the cast id and the aura id the old result carries. Take the icon from the client's SpellIcon table.
+  - Extend the §11.4 name-and-icon test to iterate `web/src/fixtures/sim/result.json` as well as `result-full.json`.
+
+**R2-2. The item tooltip prints the enchant as "Strength +7".** MUST FIX
+- **Spec:** §3.8 and R6 say the enchant text is the client's own `SpellItemEnchantment` name, "+7 Strength". The paperdoll line under the item already prints "+7 Strength".
+- **Shipped:** in `tooltip-hands-panel-1440`, the green line inside the Raider Gauntlets tooltip reads "Strength +7". The card and its own tooltip disagree, and the tooltip is not what the client prints. "Crusader" on Persuader is right.
+- **Fix:** the tooltip's enchant line reads `enchants.json` `display`, the same field as the paperdoll line, for every enchant. Add a unit test that the tooltip and the paperdoll line render the same string for 1887 (+7 Strength) and Crusader.
+
+### A11c and A18
+
+- **A11c, the suppressed-debuff chip: does not block.** The raid preset has no exclusive pair, so no shipped page can show the state today. It is a fixture variant owed with the first preset that carries one. Add it to the follow-up list.
+- **A18, Lighthouse: blocks the push, not this verdict.** §8's budgets on `/sim/simfixtureab.html` at 360px (performance ≥ 0.90, accessibility ≥ 0.95, SEO ≥ 0.95, TBT ≤ 200 ms, CLS ≤ 0.05) are a gate the integrator runs before pushing, per the shared-layout rule. The island is 78.4 KB gzipped against the 90 KB budget, and CLS is measured inside budget, so I expect it green. If it is red, that is a must-fix for the lane that owns the failing metric.
+
+### Checklist delta from round 1
+
+- [x] A1 at 390 (stitched).
+- [x] A14 lazy skeleton.
+- [x] A15 older result: no holes; fallbacks verbatim. Blood Fury icon is open (R2-1).
+- [x] A16 lazy failure.
+- [x] §10.4 for the full fixture. Open for the older fixture (R2-1).
+- [x] §10.8 Deep Wounds (withdrawn).
+- [x] Rotation wording.
+- [x] No empty space after hydration.
+- [ ] A3 at 1440 x 900: third row cut (polish).
+- [ ] A5 with W5 shown: not re-taken. Polish; the cap behaviour is right.
+- [ ] A11c: deferred, see above.
+- [ ] A18: integrator gate.
+- [ ] R6 tooltip text (R2-2).

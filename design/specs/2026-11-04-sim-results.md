@@ -937,3 +937,14 @@ Spec status: SHIPPED for build on 2026-11-04 with these fixes folded in. Lanes b
 - **R5 rage (lane E):** `resource_sources` comes from the engine's per-action ResourceMetrics; a self-damage rage source (Bloodrage, a health cost) is a gain, never a spend; a fixture test covers it.
 - **R6 enchants (lane C):** an enchanted fixture variant (test-made) proves the enchant line ("+7 Strength", "Crusader") at 1440 and 390 in the acceptance captures.
 - **R7 crit (lane A):** crit % is crits over landed hits counting glances (the Warcraft Logs convention). The Crit header carries a tooltip: "Crits out of the hits that landed, glancing blows included. Misses, dodges and parries are left out, so a row can read above or below your crit chance on the boss." (Tooltip text revised 2026-11-05 after the build review, wow-player M1: white rows read above the boss crit chance on the real run.)
+
+## 16. Build amendments (2026-11-05, accepted in the ux-designer build review round 2)
+
+These supersede the sections they name.
+
+- **Enchant text (§3.8, R6):** the line is the client's own `SpellItemEnchantment` name, which in this client reads "Strength +7", "Agility +7", "All Stats +4" and "Crusader". The "+7 Strength" examples above were written from memory and are wrong. The paperdoll line and the item tooltip's green line print the same string.
+- **Crit header (R7, §6):** "Crits out of the hits that landed, glancing blows included. Misses, dodges and parries are left out, so a row can read above or below your crit chance on the boss."
+- **Hit cell (§3.8):** no fixed caps. It reads the run's own measured misses: "Missed in this run: <specials>% of specials · <white>% of white swings", counted as the damage table counts them.
+- **Fidelity note (§3.11):** an in-progress or unsupported spec's saved Rotation card carries the shared fidelity note (pill and sentence, linking /sim/specs) under its head; a validated spec carries none. Tenet 8.
+- **Timeline lanes (§3.7, §7):** an aura on you or on the target that is up from the pull to the end draws no lane; the Buffs card lists it. Every other lane is drawn, on every width.
+- **Rotation notes (§3.11):** a curated APL may carry top-level `level_notes` (`from_level`, `step`, `notes`); the saved card prints the note for the run's level.

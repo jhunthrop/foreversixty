@@ -1,5 +1,5 @@
 {
-  "notes": "Spell ids the guide pages name (their Cooldowns lists, the class trainer's long-cooldown spells at their top rank by level 60) that no curated APL cast resolves to, so spellicons.json would otherwise carry no icon for them. 12051 Evocation; 5209 Challenging Roar, 9821 Dash, 20748 Rebirth; 10278 Blessing of Protection, 1310897 Voice of Truth; 1277640 Contingency Plan, 1277378 Divine Grace, 2651 Elune's Grace, 6346 Fear Ward, 19275 Feedback; 2094 Blind, 11305 Sprint; 1161 Challenging Shout, 5246 Intimidating Shout, 20230 Retaliation. web/src/lib/guides/rotation-lists.test.ts holds every guide's cooldown list to an icon. The saved result page draws every action a sim run reports, so the ids a run shows and no rotation casts are here too: 12319 Flurry, 20554 Berserking, 462891 Whirlwind's off-hand strike, 20906 Trueshot Aura, 10610 Windfury Totem, 409583 Heart of the Lion, 12296 Anger Management, 12322 Unbridled Wrath, 20346 Judgement of Light, 20355 Judgement of Wisdom, and 1249110 Chthonic Power, whose client icon is its trinket's (Frozen Heart of the Mountain, 249469). `icon_rows` is for an engine id the client carries no row for: it takes the named client row's icon (11722 Curse of the Elements from 11723, 12867 Deep Wounds from 12162).",
+  "notes": "Spell ids the guide pages name (their Cooldowns lists, the class trainer's long-cooldown spells at their top rank by level 60) that no curated APL cast resolves to, so spellicons.json would otherwise carry no icon for them. 12051 Evocation; 5209 Challenging Roar, 9821 Dash, 20748 Rebirth; 10278 Blessing of Protection, 1310897 Voice of Truth; 1277640 Contingency Plan, 1277378 Divine Grace, 2651 Elune's Grace, 6346 Fear Ward, 19275 Feedback; 2094 Blind, 11305 Sprint; 1161 Challenging Shout, 5246 Intimidating Shout, 20230 Retaliation. web/src/lib/guides/rotation-lists.test.ts holds every guide's cooldown list to an icon. The saved result page draws every action a sim run reports, so the ids a run shows and no rotation casts are here too: 12319 Flurry, 20554 Berserking, 462891 Whirlwind's off-hand strike, 20906 Trueshot Aura, 10610 Windfury Totem, 409583 Heart of the Lion, 12296 Anger Management, 12322 Unbridled Wrath, 20346 Judgement of Light, 20355 Judgement of Wisdom, 20572 Blood Fury (the orc racial an older saved run carries), and 1249110 Chthonic Power, whose client icon is its trinket's (Frozen Heart of the Mountain, 249469). `icon_rows` is for an engine id the client carries no row for: it takes the named client row's icon (11722 Curse of the Elements from 11723, 12867 Deep Wounds from 12162).",
   "spell_ids": [
     12051,
     5209,
@@ -27,7 +27,8 @@
     12322,
     20346,
     20355,
-    1249110
+    1249110,
+    20572
   ],
   "icon_rows": {
     "11722": 11723,

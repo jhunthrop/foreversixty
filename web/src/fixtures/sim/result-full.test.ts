@@ -10,6 +10,7 @@ import { repoRoot } from '../../lib/data/build-files';
 import type { SampleOutcome, SimResult } from '../../lib/sim/types';
 import activeBuild from '../../data/active-build.json';
 import fixture from './result-full.json';
+import olderFixture from './result.json';
 
 const result = fixture as unknown as SimResult;
 const DATA = path.join(repoRoot(), 'data');
@@ -23,15 +24,15 @@ const ability = (key: string) => {
   return row;
 };
 
-/** Every action key a section of the page draws. */
-function actionKeys(): string[] {
+/** Every action key a section of the page draws for `run`. */
+function actionKeys(run: SimResult = result): string[] {
   const keys = new Set<string>();
-  for (const row of result.sample ?? []) keys.add(row.action);
-  for (const aura of result.sample_auras ?? []) keys.add(aura.action);
-  for (const aura of result.summary.auras) keys.add(aura.name);
-  for (const row of abilities) keys.add(row.name);
-  for (const row of result.summary.casts) keys.add(row.spell_name);
-  for (const resource of result.resource_sources ?? []) {
+  for (const row of run.sample ?? []) keys.add(row.action);
+  for (const aura of run.sample_auras ?? []) keys.add(aura.action);
+  for (const aura of run.summary.auras) keys.add(aura.name);
+  for (const row of run.summary.damage_done[0]?.abilities ?? []) keys.add(row.name);
+  for (const row of run.summary.casts) keys.add(row.spell_name);
+  for (const resource of run.resource_sources ?? []) {
     for (const row of [...resource.gained, ...resource.spent]) keys.add(row.action);
   }
   return [...keys].sort();
@@ -136,6 +137,14 @@ describe('every action key resolves to a name and an icon (ruling R1)', () => {
     } else {
       expect(nonSpellIcon[key], `no icon for ${key}`).toBe(true);
     }
+  });
+
+  // An older saved run (no new fields) still draws its spells: none of them is an empty box.
+  const olderSpells = actionKeys(olderFixture as unknown as SimResult)
+    .map(spellLabel)
+    .filter((id): id is string => id !== undefined);
+  it.each(olderSpells)("the older run's spell %s has an icon", (id) => {
+    expect(hasSpellIcon(id), `no icon for spell:${id}`).toBe(true);
   });
 
   it('never draws the engine extra attack counter it files under Thrash', () => {
