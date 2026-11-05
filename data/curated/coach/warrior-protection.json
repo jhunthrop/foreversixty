@@ -33,20 +33,6 @@
       "verified": "1.60.1.70790/spellconst/warrior.json#2565"
     },
     {
-      "spell_id": 11556,
-      "spell_ids": [
-        1160,
-        6190,
-        11554,
-        11555,
-        27579,
-        11556
-      ],
-      "name": "Demoralizing Shout",
-      "kind": "defensive",
-      "verified": "1.60.1.70790/spellconst/warrior.json#11556"
-    },
-    {
       "spell_id": 11581,
       "spell_ids": [
         6343,

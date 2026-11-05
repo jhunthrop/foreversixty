@@ -7,6 +7,7 @@ sources:
   - web/src/content/guides/warrior/arms.md
   - data/curated/apl/warrior-arms.json
   - data/builds/1.60.1.70790/spellconst/warrior.json
+  - sim/request/raid-consumes.json
   - logs/engine/mechanics/consumables/catalogue.json
   - data/curated/specs.json
 reviewed: wow-player, 2026-10-28
@@ -14,49 +15,49 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the Arms Warrior as the site's guide describes it. Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and a full bar of rage spent on one huge Execute. The best players' habits for this spec are not written down here yet. This file says what the guide says and leaves the rest for a later full write.
+This is the best Arms Warrior on Forever. Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and a full bar of rage spent on one huge Execute.
 
 ## What they know
 
-**The priority, in words.** These are the buttons the guide's rotation names, in the order it gives them. Where the guide or the rotation data gives a reason, it follows the name.
+**The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
 - Bloodrage whenever Rage drops below eighty, since Rage limits everything else here.
 - Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you. Then press Bloodrage as your first swing lands.
-- Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target.
-- Press Overpower the moment it lights up, even ahead of Mortal Strike. It is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later.
-- Mortal Strike goes on cooldown otherwise, and Reckless Swings right behind it in the raid build: for eight seconds your white swings bring five more rage each, which is two or three swings with a slow two-hander.
-- Only with Improved Slam, and between Mortal Strikes from forty: the talent keeps your swing timer running through the cast.
-- Spearing Strike.
-- Heroic Strike only when you are about to cap at ninety or more: below that, keep the rage for Mortal Strike, Overpower and Execute, which lose damage every time they wait for it.
-- Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Without the totem it loses damage.
-- At twenty percent, Execute in Battle Stance first. It spends your whole bar, so that first Execute is your biggest hit of the fight.
-- Then swap to Berserker Stance and press Recklessness.
-- Sweeping Strikes in Battle Stance, swap to Berserker Stance, Whirlwind.
+- Rend kept ticking: the bleed ignores armor. Once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.
+- Overpower the moment it lights up, even ahead of Mortal Strike from forty. A dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in.
+- Mortal Strike on cooldown from forty, and from fifty-seven in the raid build Reckless Swings right behind it.
+- Slam only with Improved Slam, between Mortal Strikes from forty: the talent keeps your swing timer running through the cast.
+- Spearing Strike in the raid build, on any free global in Battle Stance. It stops at the execute swap.
+- Heroic Strike only when you are about to cap at ninety or more. Below that, keep the rage for Overpower from twelve, Execute from twenty-four and Mortal Strike from forty.
+- Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Never from twenty-five percent down: that rage is the first Execute.
+- Execute from twenty-four, at twenty percent, in Battle Stance first. It spends your whole bar, so that first Execute is your biggest hit of the fight.
+- Recklessness from fifty: once that first Execute has emptied the bar, swap to Berserker Stance and press it. Before fifty, stay in Battle Stance.
+- Sweeping Strikes only with two or more targets, from thirty-six. Press it in Battle Stance, then Berserker Stance and Whirlwind, and back for Overpower and Rend.
 - Whirlwind hits up to four targets and every Sweeping Strikes charge copies a hit onto a second one.
 - Use Cleave instead of Heroic Strike when two mobs are in front of you.
 
-**The mistakes the coach looks for, by finding.**
+**The mistakes to look for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
-- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off the target.
+- Key buff and debuff uptime: a buff, debuff or damage over time left to fall off when its line says to keep it up.
 - Dead time: time with no button pressed while the boss was alive and in reach.
 - Resource waste: the main resource bar left to cap or to run dry.
-- Ranks: a spell left at an old rank because the trainer visit was skipped.
-- Pull preparation: a missing flask, food, weapon enchant and combat potion.
+- Ranks: a spell at an older rank than your level calls for, because the trainer visit was skipped.
+- Pull preparation: a missing food, weapon enchant and combat potion.
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** For this spec the catalogue looks for a flask (Flask of the Titans); food (Smoked Desert Dumplings); a weapon enchant (Elemental Sharpening Stone); a combat potion (Mighty Rage Potion), the potion up to its use limit in a fight. The world buffs it lists are Rallying Cry of the Dragonslayer, Warchief's Blessing, Songflower Serenade and Spirit of Zandalar. They are listed as facts, never held against anyone.
+**Consumables and world buffs.** Before a boss you want food (Smoked Desert Dumplings); a weapon enchant (Elemental Sharpening Stone); a combat potion (Mighty Rage Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
 - drill.core_casts: On a dummy, press the first button of the priority list the moment it is ready, before any filler. Read the list top to bottom and check it again after every cooldown.
-- drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each with 3 seconds left, and again the moment you are back up after a death or a phase change.
+- drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each when its line says, never earlier, and again the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the rage bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
-- drill.ranks: Visit your trainer every time you level and read your spellbook after: every button on the priority list should show its top rank.
-- drill.preparation: Before every boss, check a flask, food, a weapon enchant and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
+- drill.preparation: Before every boss, check food, a weapon enchant and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
-- drill.adherence: On a dummy, play only the buttons on the priority list for 3 minutes. Anything else on your bars waits.
+- drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
 ## Voice
 

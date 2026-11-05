@@ -38944,7 +38944,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39005,7 +39005,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39073,7 +39073,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39141,7 +39141,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39209,7 +39209,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39277,7 +39277,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39352,7 +39352,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39427,7 +39427,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39502,7 +39502,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39577,7 +39577,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39652,7 +39652,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39727,7 +39727,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39802,7 +39802,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39877,7 +39877,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },
@@ -39959,7 +39959,7 @@
           {
             "spell_id": 18288,
             "name": "Amplify Curse",
-            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 only before the final Agony, once your last Doom has fired.",
+            "condition": "Amplify Curse before each Bane of Agony whenever it is ready below 60, and at 60 before the first Agony after your last Doom fires.",
             "icon": "spell_shadow_contagion",
             "race_spell_ids": {}
           },

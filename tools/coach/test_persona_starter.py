@@ -163,11 +163,19 @@ def test_survival_hunter_is_a_melee_priority(tmp_path: Path) -> None:
 
 
 def test_consumables_follow_the_spec_not_the_role(tmp_path: Path) -> None:
+    # Round 25: the flask, potion and weapon enchant come from the spec's raid preset, as the food
+    # does. Frost opens on a Major Spellblasting Potion, not the mana potion its resource suggested;
+    # a rogue brings no flask and drinks a Major Frenzy Potion.
     mage = know("mage-frost", tmp_path)
-    assert "Flask of Supreme Power" in mage and "Brilliant Wizard Oil" in mage and "Major Mana Potion" in mage
+    assert "Flask of Supreme Power" in mage and "Brilliant Wizard Oil" in mage and "Major Spellblasting Potion" in mage
+    assert "Mana Potion" not in mage
     assert "Mighty Rage" not in mage and "Grilled Squid" not in mage and "Sharpening" not in mage
+    assert "Major Mana Potion" in know("mage-arcane", tmp_path)
     rogue = know("rogue-combat", tmp_path)
-    assert "Wizard Oil" not in rogue and "Sharpening" not in rogue and "Potion" not in rogue
+    assert "Wizard Oil" not in rogue and "Flask" not in rogue and "Major Frenzy Potion" in rogue
+    cat = know("druid-feral", tmp_path)
+    assert "Flask" not in cat and "Elemental Sharpening Stone" in cat and "Major Frenzy Potion" in cat
+    assert "Major Frenzy Potion" in know("hunter-survival", tmp_path)
     assert "Chromatic" not in know("paladin-protection", tmp_path)
     assert "Sharpening" in know("warrior-arms", tmp_path)
 
@@ -355,8 +363,10 @@ def test_order_follows_the_guide() -> None:
     assert "Tiger's Fury" not in feral
     assert feral.index("Shifting Power") < feral.index("Rip") < feral.index("Shred")
     beast = priority_names("hunter-beast-mastery")
-    # Forever's Multi-Shot and Aimed Shot share a cooldown, so Aimed Shot is only the opener.
-    assert beast.index("Aimed Shot") < beast.index("Bestial Wrath") < beast.index("Multi-Shot") < beast.index("Arcane Shot")
+    # Forever's Multi-Shot and Aimed Shot share a cooldown. Round 25: the guide and the card now cast
+    # Aimed Shot every time that cooldown comes up and keep Multi-Shot for packs and moving, so Aimed
+    # Shot is no longer "only the opener" and follows the burst (beast-mastery.md).
+    assert beast.index("Bestial Wrath") < beast.index("Aimed Shot") < beast.index("Multi-Shot") < beast.index("Arcane Shot")
 
 
 def test_healer_resource_drill_is_true_for_every_healer(tmp_path: Path) -> None:
@@ -414,12 +424,16 @@ def test_totem_conditional_abilities_carry_their_condition() -> None:
 
 def test_guide_order_statements_win() -> None:
     elemental = priority_names("shaman-elemental")
-    assert elemental[:2] == ["Mana Spring Totem", "Searing Totem"]
+    # Round 25: elemental.md and the card put the cooldowns and Flame Shock ("ahead of everything but
+    # your cooldowns") right behind Mana Spring, ahead of Searing Totem.
+    assert elemental[:3] == ["Mana Spring Totem", "Lightning Mastery", "Flame Shock"]
     shadow = priority_names("priest-shadow")
     assert shadow.index("Mind Blast") < shadow.index("Mind Flay")
     prot = priority_names("paladin-protection")
     assert prot.index("Holy Shield") < prot.index("Judgement") < prot.index("Consecration")
-    assert priority_names("druid-feral")[0] == "Shifting Power"
+    # Round 25: feral.md and the card open with Ravage; Shifting Power still sits ahead of the finishers.
+    feral = priority_names("druid-feral")
+    assert feral[0] == "Ravage" and feral.index("Shifting Power") < feral.index("Rip")
 
 
 def test_no_bare_line_repeats_a_named_ability() -> None:
@@ -478,6 +492,12 @@ def test_discipline_names_its_overrides_once() -> None:
     """Round 14: GUIDE_LINES named "priest-discipline" twice, so the second entry (Dark
     Sacrifice) silently replaced the first. The dead Binding Heal line is gone: the starter's
     own line from the rotation ("under ninety percent yourself") is the guide's gate."""
-    assert set(ps.GUIDE_LINES["priest-discipline"]) == {"Dark Sacrifice"}
+    # Round 25 adds the shield (the guide says "Shield the tank") and the lines that name the level a
+    # spell arrives (Penance, Prayer of Healing, Inner Focus).
+    assert set(ps.GUIDE_LINES["priest-discipline"]) == {
+        "Power Word: Shield", "Penance", "Prayer of Healing", "Inner Focus", "Dark Sacrifice",
+    }
     source = (Path(__file__).parent / "starter_overrides.py").read_text()
-    assert source.count('"priest-discipline": {') == 1
+    # Only GUIDE_LINES is checked: DRILL_LINES names the spec too, for its own drills (round 25).
+    guide_lines = source[source.index("GUIDE_LINES:") : source.index("GUIDE_ORDER:")]
+    assert guide_lines.count('"priest-discipline": {') == 1
