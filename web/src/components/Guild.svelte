@@ -12,7 +12,6 @@
      role-based line") -- so they are visible on every tab, not just Overview. -->
 <script lang="ts">
   import { fetchMeFresh, type Me } from '../lib/account/api';
-  import { lookupAddonExport } from '../lib/addon-export';
   import {
     characterSlug,
     guildClaimHref,
@@ -35,6 +34,7 @@
     fetchGuildLoot,
     fetchGuildProgression,
     fetchGuildRaids,
+    fetchGuildReadiness,
     removeCharacter,
     removeMember,
     GuildApiError,
@@ -44,6 +44,7 @@
     type GuildProgressionPage,
     type GuildRaidsPage,
     type GuildRosterEntry,
+    type GuildReadinessRow,
     type GuildRosterRow,
     type GuildViewerRole,
   } from '../lib/guild/api';
@@ -66,11 +67,13 @@
   import { GUILD_BANDLESS_TOP, PLANNED_RESERVE } from '../lib/guild/raid-layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
-  import { showBandCounts, updatedLine } from '../lib/guild/overview-view';
+  import { showBandCounts, showsWeekOne, updatedLine } from '../lib/guild/overview-view';
   import { claimEntryCopy, claimEntryFor, claimEntryNotes, rosterGateState } from '../lib/guild/roster-gate';
-  import { rosterPlannerHref } from '../lib/guild/roster-links';
   import { afterApprove, afterRemove, afterRemoveMember } from '../lib/guild/roster-model';
-  import { needsBeforeSentence, standingSentence } from '../lib/guild/standing';
+  import { levelingStandingLine, needsLine, standingSentence } from '../lib/guild/standing';
+  import { RAID_LEVEL } from '../lib/guild/readiness-view';
+  import type { WeekOneCharacter } from '../lib/guild/week-one';
+  import { classSlugFromName } from '../lib/report/tree-sizes';
   import { createRefreshingRead } from '../lib/guild/refreshing-read';
   import {
     attendanceSourceOf,
@@ -89,6 +92,7 @@
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import GuildOverview from './guild/GuildOverview.svelte';
+  import GuildWeekOneCard from './guild/GuildWeekOneCard.svelte';
   import GuildTabs, {
     tabAfterHashChange,
     tabFromHash,
@@ -160,6 +164,7 @@
 
   let home = $state<GuildHome | null>(null);
   let homeStatus = $state<'idle' | 'loading' | 'ready'>('idle');
+  let homeAttempt = $state(0);
   /** True once /v1/me has answered (signed in or not), so the public sign-in prompt never
    *  flashes for a member during the first render. */
   let meResolved = $state(false);
@@ -189,6 +194,7 @@
   $effect(() => {
     const requested = resolved;
     if (requested === null) return;
+    void homeAttempt; // Try again on the Before raids open card asks again.
     homeStatus = 'loading';
     // Painted from the cache at once, then asked again: a join, a grant or an approval since
     // the last visit replaces the answer through `apply` (`onFresh`) without a reload.
@@ -336,26 +342,53 @@
       myBattletag === home.claim.claimed_by_name,
   );
 
-  /** Fix round 1, item 3: the standing line's "Gear in the planner" link, built the exact
-   *  same way `GuildRosterHandoff.svelte` builds it per roster row -- one lookup, for the
-   *  viewer's own character only, never a second mechanism (tenet 10). `requestedKey`
-   *  guards against a stale resolution landing after `myRosterRow` has already moved on to
-   *  a different character (the same guard `GuildRosterHandoff` itself uses via its own
-   *  `result.path !== requested` check, adapted here since this lookup is keyed by
-   *  character rather than by path identity). */
-  let viewerPlannerHref = $state<string | null>(null);
+  /** The current character's level from its roster row: the standing and needs lines read it. */
+  const myLevel = $derived(myRosterRow?.level ?? null);
+
+  /** The viewer's own row on the /readiness response the board renders (week-one spec §3.2.3), so
+   *  the needs line and the board can never disagree. A member's read, once per page: the answer
+   *  is the same cached one the Readiness and Overview tabs read. */
+  let myReadiness = $state<GuildReadinessRow | null>(null);
+  const needs = $derived.by(() => {
+    const row = myReadiness;
+    return row === null ? null : needsLine(row, nextRaidDeadline(home?.next_raid?.starts_at));
+  });
   $effect(() => {
-    const row = myRosterRow;
-    if (row === null || row.consent === 'roster') {
-      viewerPlannerHref = null;
+    if (role !== 'member' || home === null || myCharacterKey === null) {
+      myReadiness = null;
       return;
     }
-    const requestedKey = row.character_key;
-    void lookupAddonExport(rowPath(row)).then((result) => {
-      if (myRosterRow?.character_key !== requestedKey) return;
-      viewerPlannerHref = result.code !== null ? rosterPlannerHref(result.code) : null;
-    });
+    const key = myCharacterKey;
+    void fetchGuildReadiness(home.guild.id)
+      .then((page) => {
+        myReadiness = page.rows.find((row) => row.character_key === key) ?? null;
+      })
+      .catch(() => {
+        myReadiness = null;
+      });
   });
+
+  /** The Before raids open card's character: the current one, with the spec the logs or the site know. */
+  const weekOneCharacter = $derived<WeekOneCharacter | null>(
+    myRosterRow === null
+      ? null
+      : {
+          name: myRosterRow.name,
+          class: classSlugFromName(myRosterRow.class ?? ''),
+          level: myLevel,
+          spec:
+            myRosterRow.spec ?? (myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)),
+        },
+  );
+  /** The card reads the home: it loads with it, and only a verified member's failure is an error. */
+  const weekOneStatus = $derived<'loading' | 'error' | 'ready'>(
+    home !== null ? 'ready' : homeStatus === 'loading' ? 'loading' : 'error',
+  );
+  const showWeekOne = $derived(
+    home === null
+      ? meResolved && myGuildMembership?.verified === true
+      : showsWeekOne(role, home.summary?.tier),
+  );
 
   /** After a roster action: the mutation dropped the cached home, so this reads the guild's
    *  own answer (roster, pending list, waiting count) rather than trusting the local edit.
@@ -503,10 +536,10 @@
    *  nothing about bosses and pulls beside a tab reading "No public reports this week yet". */
   const showCounts = $derived(showBandCounts(role, data?.reports.length ?? 0));
   const killed = $derived(
-    home?.summary?.named_encounters_down ?? (data?.progression ?? []).filter((row) => row.kills > 0).length,
+    home?.summary?.tier?.down ?? (data?.progression ?? []).filter((row) => row.kills > 0).length,
   );
   const pulls = $derived(
-    home?.summary?.pulls_this_tier ??
+    home?.summary?.tier?.pulls_total ??
       (data?.progression ?? []).reduce((total, row) => total + row.pull_count, 0),
   );
 
@@ -535,9 +568,26 @@
     return () => window.removeEventListener('hashchange', onHashChange);
   });
 
+  /** The card's two tab buttons: the tab opens ready for the job they name. A tab chosen any other
+   *  way opens as it always does. */
+  let focusApproveAll = $state(false);
+  let openPlanForm = $state(false);
+
   function selectTab(tab: GuildTabId): void {
     activeTab = tab;
+    focusApproveAll = false;
+    openPlanForm = false;
     if (typeof window !== 'undefined') window.history.replaceState(null, '', `#${tab}`);
+  }
+
+  function approveFromCard(): void {
+    selectTab('roster');
+    focusApproveAll = true;
+  }
+
+  function planFromCard(): void {
+    selectTab('raids');
+    openPlanForm = true;
   }
 
   /** Starts the chunk fetch for whichever tab is now active -- `load()` is itself a no-op
@@ -860,26 +910,23 @@
                    separate from the claim/settings row below it (unchanged v1 mechanism),
                    rather than the two fighting over the same slot. -->
             <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
-              {#if home.standing !== null && home.standing !== undefined}
-                {@const sentence = standingSentence(home.standing)}
-                <p class="flex flex-wrap items-center gap-3 text-[14px] font-semibold">
-                  <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
-                         gloss read as a second spec beside the header chip's. -->
-                  {#if sentence !== ''}
-                    <span style={`color:${classColorVar(home.standing.class)}`}>
-                      {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{sentence}
-                    </span>
-                  {/if}
-                  {#if viewerPlannerHref !== null}
-                    <a
-                      href={viewerPlannerHref}
-                      class="text-[13px] font-bold"
-                      data-testid="guild-standing-planner-link"
-                    >
-                      Gear in the planner
-                    </a>
-                  {/if}
+              {#if myRosterRow !== null && myLevel !== null && myLevel < RAID_LEVEL}
+                <p class="text-text text-[14px]" data-testid="guild-standing-leveling">
+                  {levelingStandingLine(myRosterRow.name, myLevel)}
                 </p>
+              {:else if home.standing !== null && home.standing !== undefined}
+                {@const sentence = standingSentence(home.standing)}
+                <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
+                       gloss read as a second spec beside the header chip's. -->
+                {#if sentence !== ''}
+                  <p
+                    class="text-[14px] font-semibold"
+                    style={`color:${classColorVar(home.standing.class)}`}
+                    data-testid="guild-standing-rank"
+                  >
+                    {myRosterRow !== null ? `${myRosterRow.name} · ` : ''}{sentence}
+                  </p>
+                {/if}
               {/if}
               <!-- Raids spec 3.4: the next raid's line, for verified viewers only (R1), between
                      the standing line and the needs line. Its chunk loads alongside /home; the box
@@ -919,18 +966,14 @@
                   ></div>
                 {/if}
               {/if}
-              {#if role === 'member' && home.standing !== null && home.standing !== undefined}
-                <!-- Guild spec 4.A.2: the fails read --text (a to-do list, not a failure); every check
-                       passing reads green. -->
+              {#if role === 'member' && needs !== null}
+                <!-- Week-one spec 3.2: the viewer's own line. The fails read --text (a to-do list, not a
+                       failure); every check passing reads green; a leveling character is never green. -->
                 <p
-                  class="text-[13px] {home.standing.needs_before_next_raid.length === 0 ? '' : 'text-text'}"
-                  style={home.standing.needs_before_next_raid.length === 0 ? 'color:#7bff5c' : undefined}
+                  class="text-[13px] {needs.kind === 'clear' ? 'text-kill' : 'text-text'}"
                   data-testid="guild-overview-needs"
                 >
-                  {needsBeforeSentence(
-                    home.standing.needs_before_next_raid,
-                    nextRaidDeadline(home.next_raid?.starts_at),
-                  )}
+                  {needs.text}
                 </p>
               {/if}
             </div>
@@ -980,7 +1023,26 @@
         summary={home?.summary}
         {showCounts}
         onSelectTab={selectTab}
-      />
+      >
+        {#snippet lead()}
+          {#if showWeekOne}
+            <GuildWeekOneCard
+              status={weekOneStatus}
+              officer={officerView}
+              waiting={home?.summary?.waiting_for_approval ?? 0}
+              entries={home?.members ?? []}
+              rows={home?.roster ?? []}
+              character={weekOneCharacter}
+              nextRaid={home?.next_raid ?? null}
+              raidHref={home?.next_raid == null ? null : guildRaidHref(guildPath, home.next_raid.id)}
+              inviteHref={settingsHref === '' ? '' : `${settingsHref}#invite`}
+              onRetry={() => (homeAttempt += 1)}
+              onApprove={approveFromCard}
+              onPlan={planFromCard}
+            />
+          {/if}
+        {/snippet}
+      </GuildOverview>
     {:else if activeTab === 'roster' && home !== null}
       {#if rosterLazy.current}
         <rosterLazy.current
@@ -1003,6 +1065,7 @@
           addonSnapshot={home.addon_snapshot ?? null}
           mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
           attendanceSource={attendanceSourceOf(home)}
+          {focusApproveAll}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />
@@ -1041,6 +1104,7 @@
           {guildPath}
           onPlanned={() => (guildId === null ? Promise.resolve() : loadRaids(guildId))}
           onPlanRefused={() => (officerToolsEnded = true)}
+          openForm={openPlanForm}
         />
       {/if}
     {:else if activeTab === 'progression'}

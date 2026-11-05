@@ -1,7 +1,7 @@
 // web/src/lib/guild/standing.test.ts
 import { describe, expect, it } from 'vitest';
-import { everyCheckPassesLine, needsBeforeSentence, standingSentence } from './standing';
-import type { GuildHomeStanding } from './api';
+import { levelingStandingLine, needsLine, standingSentence } from './standing';
+import type { GuildHomeStanding, GuildReadinessRow } from './api';
 
 function standing(overrides: Partial<GuildHomeStanding> = {}): GuildHomeStanding {
   return {
@@ -37,30 +37,70 @@ describe('standingSentence', () => {
   });
 });
 
-describe('needsBeforeSentence', () => {
-  it('joins fails with "; " and the exact template', () => {
-    expect(needsBeforeSentence(['Enchant chest', 'Spend 1 talent point'], 'before Thursday')).toBe(
-      'What the guild needs from you before Thursday: Enchant chest; Spend 1 talent point.',
+function readinessRow(overrides: Partial<GuildReadinessRow> = {}): GuildReadinessRow {
+  return {
+    character_key: 'us/pvp/rootbound',
+    name: 'Rootbound',
+    class: 'druid',
+    spec: 'Balance',
+    consent: 'gear_bags',
+    level: 60,
+    gear_gap: { upgrades: 0, gain_dps: 0, not_sim_checked: 0, unit: 'dps' },
+    enchants: { missing_slots: [], checked: true },
+    consumables: { state: 'stocked' },
+    talent_points_unspent: 0,
+    talent_points_read: true,
+    item_level: 60,
+    item_level_delta: 0,
+    logged_at: '2026-11-05T00:00:00Z',
+    failing: 0,
+    no_export: false,
+    synced_before_cutoff: null,
+    ...overrides,
+  };
+}
+
+describe('needsLine', () => {
+  it('names the character and its fails, from the row the board renders', () => {
+    const row = readinessRow({ talent_points_unspent: 2, failing: 1 });
+    expect(needsLine(row, 'before Thursday')).toEqual({
+      kind: 'needs',
+      text: 'What Rootbound needs before Thursday: 2 unspent talent points.',
+    });
+    expect(needsLine(row, 'before the next raid')?.text).toBe(
+      'What Rootbound needs before the next raid: 2 unspent talent points.',
     );
   });
 
-  it('reads the next raid deadline it is given', () => {
-    expect(needsBeforeSentence(['Enchant chest'], 'before the next raid')).toBe(
-      'What the guild needs from you before the next raid: Enchant chest.',
-    );
+  it('every check passing is the character, never a guild-wide claim', () => {
+    expect(needsLine(readinessRow(), 'before Thursday')).toEqual({
+      kind: 'clear',
+      text: 'Rootbound passes every readiness check.',
+    });
   });
 
-  it('reads the exact all-clear line when every check passes', () => {
-    expect(needsBeforeSentence([], 'before Thursday')).toBe(
-      'Every readiness check passes. Nothing needed before Thursday.',
-    );
-    expect(everyCheckPassesLine('before the next raid')).toBe(
-      'Every readiness check passes. Nothing needed before the next raid.',
-    );
+  it('a leveling character is told when checks start, never green', () => {
+    expect(needsLine(readinessRow({ level: 52 }), 'before Thursday')).toEqual({
+      kind: 'leveling',
+      text: 'Rootbound is level 52. Readiness checks start at 60.',
+    });
   });
 
-  it('treats undefined/null the same as empty, never throwing', () => {
-    expect(needsBeforeSentence(undefined, 'before Thursday')).toBe(everyCheckPassesLine('before Thursday'));
-    expect(needsBeforeSentence(null, 'before Thursday')).toBe(everyCheckPassesLine('before Thursday'));
+  it('says nothing for a row with nothing read', () => {
+    const unread = readinessRow({
+      gear_gap: null,
+      enchants: { missing_slots: [], checked: false },
+      consumables: { state: 'unknown' },
+      talent_points_read: false,
+    });
+    expect(needsLine(unread, 'before Thursday')).toBeNull();
+  });
+});
+
+describe('levelingStandingLine', () => {
+  it('says when the guild rank starts', () => {
+    expect(levelingStandingLine('Rootbound', 52)).toBe(
+      'Rootbound is level 52. Your guild rank by item level starts at 60.',
+    );
   });
 });

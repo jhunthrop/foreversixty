@@ -113,6 +113,8 @@ export interface GuildHomeSummary {
   raiders: number;
   waiting_for_approval: number;
   below_rating_floor: number;
+  /** The Progression tab's own tier counts: the band and the Overview print these. */
+  tier: GuildProgressionTier;
   named_encounters_down: number;
   pulls_this_tier: number;
   updated_at: string;
@@ -212,6 +214,8 @@ export interface GuildRosterRow {
   logged_at?: string;
   /** Present only at gear/gear_bags consent (spec section 3.2's fail-closed query rule). */
   item_level?: number;
+  /** The export's level, else the addon roster's; null with neither or below gear consent. */
+  level?: number | null;
   consent: GuildConsent;
   attendance?: GuildRosterAttendance;
   /** Raid mode only: the same figure over the guild's last 30 logged raids. */
@@ -318,7 +322,7 @@ export interface GuildRosterEntry {
   state: GuildEntryState;
   rank: GuildRank;
   class?: string;
-  /** The snapshot's level; absent when the member withholds it. */
+  /** The export's level, else the snapshot's; absent when the member withholds it. */
   level?: number;
   /** The snapshot's spec slug (`warrior-arms`); absent when withheld. */
   spec?: string;
@@ -961,10 +965,12 @@ export interface GuildProgressionEncounter {
   encounter_id: number;
   name: string;
   zone: string;
-  first_kill_at: string | null;
+  /** Omitted by the API with no kill; read with `typeof`, never `!== null`. */
+  first_kill_at?: string | null;
   pulls: number;
   kills: number;
-  best_kill_ms: number | null;
+  /** Omitted by the API with no kill; read with `typeof`, never `!== null`. */
+  best_kill_ms?: number | null;
   pulls_by_night: GuildProgressionPullsByNight[];
   deaths_per_pull: number;
   best_by_role: { tank?: GuildParseRef; healer?: GuildParseRef; dps?: GuildParseRef };
@@ -981,6 +987,8 @@ export interface GuildProgressionTier {
   raids: string[];
   named_encounters: number;
   down: number;
+  /** Every pull this tier, named and unnamed. Zero: nothing is logged in the tier yet. */
+  pulls_total: number;
 }
 
 export interface GuildProgressionPage {
@@ -1008,6 +1016,9 @@ export interface GuildReadinessGearGap {
   upgrades: number | null;
   gain_dps: number | null;
   not_sim_checked: number;
+  /** What `gain_dps` counts: `dps` for a damage spec; null for a healer or tank, whose gap prints
+   *  no figure. */
+  unit: 'dps' | 'hps' | 'tps' | null;
 }
 
 export interface GuildReadinessEnchants {
@@ -1025,6 +1036,8 @@ export interface GuildReadinessRow extends ReadinessRaidRowFields {
   class: string;
   spec: string;
   consent: GuildConsent;
+  /** Export level, else the addon roster's; null with neither. Under 60 nothing is graded. */
+  level: number | null;
   gear_gap: GuildReadinessGearGap | null;
   enchants: GuildReadinessEnchants;
   consumables: GuildReadinessConsumables;

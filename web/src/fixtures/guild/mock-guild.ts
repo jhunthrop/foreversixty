@@ -457,6 +457,13 @@ export function buildMockHome(
       raiders: roster.length,
       waiting_for_approval: pending.length,
       below_rating_floor: belowFloor,
+      tier: {
+        name: 'First tier',
+        raids: ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"],
+        named_encounters: 1,
+        down: 1,
+        pulls_total: NIGHTS.reduce((sum, n) => sum + n[3], 0),
+      },
       named_encounters_down: 1,
       pulls_this_tier: NIGHTS.reduce((sum, n) => sum + n[3], 0),
       updated_at: '2026-12-22T21:40:00Z',
@@ -610,6 +617,7 @@ export function buildMockProgression(): GuildProgressionPage {
       raids: ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"],
       named_encounters: 1,
       down: 1,
+      pulls_total: NIGHTS.reduce((sum, n) => sum + n[3], 0),
     },
     encounters: [
       {
@@ -674,7 +682,10 @@ export function buildMockReadiness(): GuildReadinessPage {
         class: r.class ?? '',
         spec: r.spec ?? '',
         consent: r.consent,
-        gear_gap: hasGear ? { upgrades: gap.upgrades, gain_dps: gap.gain, not_sim_checked: 0 } : null,
+        level: 60,
+        gear_gap: hasGear
+          ? { upgrades: gap.upgrades, gain_dps: gap.gain, not_sim_checked: 0, unit: 'dps' as const }
+          : null,
         enchants: { missing_slots: missing, checked: hasGear },
         consumables: {
           state: hasBags
@@ -690,7 +701,7 @@ export function buildMockReadiness(): GuildReadinessPage {
         failing: fails.length,
         no_export: false,
         synced_before_cutoff: null,
-        nudge_text: `${r.name}: ${fails.length === 0 ? 'every readiness check passes.' : `${fails.join(', ')} -- check before Thursday.`}`,
+        nudge_text: `${r.name}: ${fails.length === 0 ? 'every readiness check passes.' : `${fails.join('; ')}.`}`,
       };
     });
   return { median_item_level: MEDIAN_ILVL, generated_at: '2026-12-22T21:40:00Z', rows };
