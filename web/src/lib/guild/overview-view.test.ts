@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   bandCountsLine,
   checksFailingLine,
+  downEncounterNames,
   encountersDownLine,
   progressionNightDay,
   raidNightDay,
@@ -54,6 +55,14 @@ describe('the cards', () => {
       '2 encounters down this tier: Onyxia, Molten Core.',
     );
     expect(encountersDownLine([])).toBe('No encounter down this tier yet.');
+  });
+
+  it('names only the encounters killed: one pulled and never downed reads as none down', () => {
+    expect(downEncounterNames([{ name: 'Onyxia', kills: 0 }])).toEqual([]);
+    expect(encountersDownLine(downEncounterNames([{ name: 'Onyxia', kills: 0 }]))).toBe(
+      'No encounter down this tier yet.',
+    );
+    expect(downEncounterNames([{ name: 'Onyxia', kills: 2 }])).toEqual(['Onyxia']);
   });
 
   it('counts raiders and checks with the plural helper', () => {
