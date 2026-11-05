@@ -69,6 +69,10 @@ type RoleCatalogue struct {
 	WeaponEnchant []Entry         `json:"weapon_enchant"`
 	WorldBuffs    []Entry         `json:"world_buffs"`
 	CombatPotion  PotionGroup     `json:"combat_potion"`
+
+	// expected narrows the categories a player is expected to carry (Expect); nil is
+	// every category, the role's own expectation.
+	expected map[string]bool
 }
 
 // IsComplete reports whether the category's list is complete. An unknown

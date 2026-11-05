@@ -17,13 +17,15 @@ type Pull struct {
 // Has reports whether any entry of the category was up on the player at the pull.
 func (p Pull) Has(category string) bool { return len(p.Present[category]) > 0 }
 
-// MissedAtPull is whether the pull proves the category absent: the log has
-// the player's character sheet, rc's list for the category is complete, and
-// nothing on it was read (no entry up; for combat_potion, no use either).
-// An incomplete list can prove presence, never absence, and no sheet proves
-// nothing: unknown is never missing. Every "missing" reader asks this.
+// MissedAtPull is whether the pull proves the category absent: the player is
+// expected to carry it (Expects), the log has the player's character sheet,
+// rc's list for the category is complete, and nothing on it was read (no
+// entry up; for combat_potion, no use either). An incomplete list can prove
+// presence, never absence, no sheet proves nothing, and a category the
+// player's preset leaves out is never owed: none of them is missing. Every
+// "missing" reader asks this.
 func (rc RoleCatalogue) MissedAtPull(p Pull, category string) bool {
-	if !p.Known || !rc.IsComplete(category) || p.Has(category) {
+	if !rc.Expects(category) || !p.Known || !rc.IsComplete(category) || p.Has(category) {
 		return false
 	}
 	return category != CategoryCombatPotion || p.PotionUses == 0
