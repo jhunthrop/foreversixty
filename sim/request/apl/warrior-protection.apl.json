@@ -117,7 +117,7 @@
       }
     },
     {
-      "notes": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, half again with Improved Bloodrage.",
+      "notes": "Once before the pull, then whenever rage is under 60: 10 rage at once and 10 more over 10 seconds, a quarter more with your first point of Improved Bloodrage at 10 and half again from 11.",
       "action": {
         "condition": {
           "cmp": {
