@@ -219,6 +219,9 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 	// own fight still reads exactly 100%, and one at 61% still reads 61%.
 	rescaleToDuration(out.Summary.Auras, partZeroDurationMS, out.Summary.DurationMS)
 	out.Request.Iterations = total
+	out.DPSHistogram = poolHistograms(parts)
+	out.ResourceSources = poolResourceSources(parts, total)
+	out.ExtraAttackSources = poolExtraAttacks(parts, total)
 	return out, nil
 }
 

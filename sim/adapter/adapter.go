@@ -854,9 +854,11 @@ func Sample(res *proto.RaidSimResult) []api.SampleCast {
 		}
 		_, action := ActionName(c.GetActionId())
 		row := api.SampleCast{
-			AtMS:   c.GetAtMs(),
-			Action: action,
-			Target: c.GetTarget(),
+			AtMS:    c.GetAtMs(),
+			Action:  action,
+			Target:  c.GetTarget(),
+			Outcome: sampleOutcome(c),
+			Amount:  int64(math.Round(c.GetAmount())),
 		}
 		if len(c.GetResources()) > 0 {
 			row.Resources = make(map[string]int, len(c.GetResources()))

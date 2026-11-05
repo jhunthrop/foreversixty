@@ -613,6 +613,124 @@ type SimResult struct {
 	// Tank is a tank's figures and score against the curated boss,
 	// present only when the request set RoleMetrics for a tank spec.
 	Tank *TankResult `json:"tank,omitempty"`
+
+	// The saved result page's detail (spec 2026-11-04-sim-results 11.2).
+	// A run with a detail fills them through adapter.WithDetail; a weights
+	// or bulk result carries none, and a result stored before them reads
+	// them as absent.
+
+	// DPSHistogram is the run's DPS distribution: contiguous bins, counts
+	// summing to IterationsRun.
+	DPSHistogram *DPSHistogram `json:"dps_histogram,omitempty"`
+	// ResourceSources says where each resource came from and went, per
+	// action, average per fight.
+	ResourceSources []ResourceSources `json:"resource_sources,omitempty"`
+	// SampleDurationMS is the sample run's own length, which is not the
+	// mean fight's: the timeline's axis ends here.
+	SampleDurationMS int64 `json:"sample_duration_ms,omitempty"`
+	// SampleAuras is every aura's on and off windows inside the sample run,
+	// on the player and on the target.
+	SampleAuras []SampleAura `json:"sample_auras,omitempty"`
+	// FinalStats is the character as the fight starts, against the target.
+	FinalStats *FinalStats `json:"final_stats,omitempty"`
+	// TargetStats is the target as the engine fought it.
+	TargetStats *TargetStats `json:"target_stats,omitempty"`
+	// ExtraAttackSources says where the extra swings came from, average per
+	// fight.
+	ExtraAttackSources []ExtraAttackSource `json:"extra_attack_sources,omitempty"`
+	// RotationSHA names the APL the run used: the first 12 hex of the sha256
+	// of the spec's embedded rotation (sim/request.RotationSHA).
+	RotationSHA string `json:"rotation_sha,omitempty"`
+}
+
+// WithoutDetail is the result with a single run's detail taken away, for a
+// result that is not about one run (a ladder's).
+func (r SimResult) WithoutDetail() SimResult {
+	r.DPSHistogram = nil
+	r.ResourceSources = nil
+	r.SampleDurationMS = 0
+	r.SampleAuras = nil
+	r.FinalStats = nil
+	r.TargetStats = nil
+	r.ExtraAttackSources = nil
+	r.RotationSHA = ""
+	return r
+}
+
+// DPSHistogram is the engine's DistributionMetrics.hist as contiguous bins:
+// Counts[i] iterations rounded to a DPS of Start + i*BinDPS.
+type DPSHistogram struct {
+	Start  int   `json:"start"`
+	BinDPS int   `json:"bin_dps"`
+	Counts []int `json:"counts"`
+}
+
+// ResourceSources is one resource's per-action gains and spends.
+type ResourceSources struct {
+	// Resource is rage, energy, mana or focus.
+	Resource string              `json:"resource"`
+	Gained   []ResourceSourceRow `json:"gained"`
+	Spent    []ResourceSourceRow `json:"spent"`
+}
+
+// ResourceSourceRow is one action's share, average per fight, one decimal.
+type ResourceSourceRow struct {
+	// Action is the summary's action key.
+	Action string `json:"action"`
+	// Amount is what actually landed in the bar, or left it.
+	Amount float64 `json:"amount"`
+	// Wasted is what a gain would have put past the cap.
+	Wasted float64 `json:"wasted,omitempty"`
+}
+
+// SampleAura is one aura's windows inside the sample run.
+type SampleAura struct {
+	Action string `json:"action"`
+	// On is "player" or "target".
+	On string `json:"on"`
+	// Segments are [start_ms, end_ms] pairs.
+	Segments [][2]int64 `json:"segments"`
+	// Stacks are [at_ms, stacks] change points, for an aura that stacks.
+	Stacks [][2]int64 `json:"stacks,omitempty"`
+}
+
+// FinalStats is the character with every buff and consumable and no cooldown
+// or proc. Percentages are percent points, one decimal. The melee block is
+// always present, so "no haste" reads 0 rather than absent; the spell block
+// only for a class that casts.
+type FinalStats struct {
+	// AttackPower is ranged attack power for a spec that fights at range.
+	AttackPower          int          `json:"attack_power"`
+	MeleeHitPct          float64      `json:"melee_hit_pct"`
+	MeleeCritPctVsTarget float64      `json:"melee_crit_pct_vs_target"`
+	MeleeHastePct        float64      `json:"melee_haste_pct"`
+	WeaponSkill          *WeaponSkill `json:"weapon_skill,omitempty"`
+	SpellPower           *int         `json:"spell_power,omitempty"`
+	SpellHitPct          *float64     `json:"spell_hit_pct,omitempty"`
+	SpellCritPct         *float64     `json:"spell_crit_pct,omitempty"`
+}
+
+// WeaponSkill is the skill each hand rolls with; an empty hand is absent.
+type WeaponSkill struct {
+	MainHand int `json:"main_hand,omitempty"`
+	OffHand  int `json:"off_hand,omitempty"`
+	Ranged   int `json:"ranged,omitempty"`
+}
+
+// TargetStats is the target as the engine fought it.
+type TargetStats struct {
+	Level int `json:"level"`
+	Armor int `json:"armor"`
+	// ArmorAfterDebuffs is its armor once the request's debuffs are up.
+	ArmorAfterDebuffs int `json:"armor_after_debuffs"`
+}
+
+// ExtraAttackSource is one source's extra swings, average per fight.
+type ExtraAttackSource struct {
+	// Source is a simbuffs id where the source is a buff the request names
+	// (windfury_totem), otherwise the action key of the proc.
+	Source string  `json:"source"`
+	Count  float64 `json:"count"`
 }
 
 // HealingResult is what a healer did against the heal profile's fake raid.
@@ -724,6 +842,15 @@ type SampleCast struct {
 	// Resources are what the player held AFTER the cast: rage, energy,
 	// mana, combo_points.
 	Resources map[string]int `json:"resources,omitempty"`
+	// Outcome is how this event landed: hit, crit, miss, dodge, parry,
+	// glance, block, tick or tick_crit. A row whose Outcome is tick or
+	// tick_crit is a periodic tick, not a cast. Absent for a cast that dealt
+	// no damage of its own (a buff, a queued Heroic Strike, a Deep Wounds
+	// application), and on a result saved before the field.
+	Outcome string `json:"outcome,omitempty"`
+	// Amount is the damage of this event, a whole number; absent when it
+	// dealt none.
+	Amount int64 `json:"amount,omitempty"`
 }
 
 // Progress is what the browser's simRun progress callback carries:
