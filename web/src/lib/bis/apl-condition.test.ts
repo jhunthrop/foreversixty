@@ -57,6 +57,35 @@ describe('stepWords', () => {
     });
   });
 
+  it('reads the mana budget: mana on hand plus income over the time left', () => {
+    const budget = {
+      cmp: {
+        op: 'OpGe',
+        lhs: {
+          math: {
+            op: 'OpAdd',
+            lhs: { currentMana: {} },
+            rhs: {
+              math: {
+                op: 'OpMul',
+                lhs: { manaIncomePerSecond: { windowSeconds: 10 } },
+                rhs: { remainingTime: {} },
+              },
+            },
+          },
+        },
+        rhs: { math: { op: 'OpMul', lhs: { spellCurrentCost: {} }, rhs: { const: { val: '6' } } } },
+      },
+    };
+    expect(stepWords({ condition: budget })).toEqual({
+      subject: null,
+      qualifiers: ['your mana and what you regain before the fight ends cover what is left to cast'],
+    });
+    // The same terms in another order or under another comparison are not the budget.
+    const flipped = { cmp: { ...budget.cmp, op: 'OpLt' } };
+    expect(stepWords({ condition: flipped })).toBeNull();
+  });
+
   it('has no target phrase and no qualifiers for an unconditional self-cast', () => {
     expect(stepWords({})).toEqual({ subject: null, qualifiers: [] });
   });

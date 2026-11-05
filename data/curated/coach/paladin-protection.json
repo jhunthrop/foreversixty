@@ -43,14 +43,6 @@
       ],
       "talent": false,
       "verified": "1.60.1.70790/spellconst/paladin.json#20271"
-    },
-    {
-      "family": "Swift Judgement",
-      "spell_ids": [
-        1310994
-      ],
-      "talent": true,
-      "verified": "1.60.1.70790/spellconst/paladin.json#1310994"
     }
   ],
   "auras": [

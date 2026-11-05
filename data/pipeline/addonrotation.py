@@ -271,6 +271,36 @@ def _level_allows(condition: object, level: int) -> bool:
     return _level_truth(condition, level) is not False
 
 
+#: The APL values that ask whether a spell or aura is known, and the key naming its id.
+_KNOWN_VALUES = {"auraIsKnown": "auraId", "spellIsKnown": "spellId"}
+
+
+def _required_known_ids(condition: object) -> list[int]:
+    """The spell ids `condition` needs known: an auraIsKnown or spellIsKnown that is the
+    whole condition or one of its top-level and's terms (a negated or or-ed one gates nothing)."""
+    if not isinstance(condition, dict):
+        return []
+    group = condition.get("and")
+    terms = group.get("vals", []) if isinstance(group, dict) else [condition]
+    ids: list[int] = []
+    for term in terms:
+        for value, id_key in _KNOWN_VALUES.items():
+            node = term.get(value) if isinstance(term, dict) else None
+            spell_id = node.get(id_key, {}).get("spellId") if isinstance(node, dict) else None
+            if isinstance(spell_id, int):
+                ids.append(spell_id)
+    return ids
+
+
+def _talents_allow(condition: object, level: int, point_levels: Mapping[int, int]) -> bool:
+    """False while `condition` needs a talent's spell known that the published build has not
+    taken by `level` (round 23: Restoration's Healing Wave after Nature's Swiftness printed
+    from 10, the talent comes at 44)."""
+    return all(
+        level >= point_levels.get(spell_id, level) for spell_id in _required_known_ids(condition)
+    )
+
+
 def apl_cast_spell_ids(rotation: object) -> set[int]:
     """Every spell id a curated rotation casts, anywhere in it: the pre-pull
     actions (the guide's opener: a warlock's Summon Imp, a druid's Prowl) as
@@ -496,7 +526,8 @@ def build_rotation(
     `trainable_ids` is the class's trainer-learned ids (`load_trainable_ids`),
     `talent_spells` its talents' own spells (`load_talent_spells`), and
     `point_levels` the level the spec's published build takes each talent's
-    spell (`load_spec_point_levels`): a talent's row starts there."""
+    spell (`load_spec_point_levels`): a talent's row starts there, and so does a row whose
+    condition needs that talent known (`_talents_allow`)."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
     if not apl_path.exists():
         raise AddonRotationError(f"missing {apl_path}")
@@ -520,6 +551,7 @@ def build_rotation(
             line
             for cast in casts
             if _level_allows(cast.get("condition"), level)
+            and _talents_allow(cast.get("condition"), level, point_levels)
             and (line := _line_at(context, cast, level)) is not None
         ]
         if level in LEVEL_BANDS or not bands or lines != bands[-1].lines:

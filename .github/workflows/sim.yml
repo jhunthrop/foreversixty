@@ -2,9 +2,9 @@ name: sim
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-compress.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-compress.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/content/guides/**', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-compress.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'tools/wasm-compress.sh', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/content/guides/**', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:

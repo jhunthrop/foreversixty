@@ -86,11 +86,12 @@ func LoadTalentTrees(repoRoot, build, class string) ([]TalentTree, error) {
 
 // guideBuildRe pulls the FS1 build code out of a guide's frontmatter:
 // build: 'FS1:<build>:<class>:<race>:<tree1>/<tree2>/<tree3>:'
-var guideBuildRe = regexp.MustCompile(`build:\s*'FS1:([^:]+):([^:]+):([^:]+):([^/]+)/([^/]+)/([^:]+):'`)
+var guideBuildRe = regexp.MustCompile(`build:\s*'FS1:([^:]+):([^:]+):([^:]+):([^/]*)/([^/]*)/([^:]*):'`)
 
 // buildCodeRe is guideBuildRe's code on its own, as the search tools take
-// it on a command line.
-var buildCodeRe = regexp.MustCompile(`^FS1:([^:]+):([^:]+):([^:]+):([^/]+)/([^/]+)/([^:]+):$`)
+// it on a command line. A tree may be empty: a build that spends nothing in a
+// tree ends in '/:' (Assassination's raid build, 31/20/0).
+var buildCodeRe = regexp.MustCompile(`^FS1:([^:]+):([^:]+):([^:]+):([^/]*)/([^/]*)/([^:]*):$`)
 
 // ParseBuildCode splits one FS1 build code into the client build it names
 // and the three trees' digit strings.
@@ -105,7 +106,7 @@ func ParseBuildCode(code string) (build string, trees [3]string, err error) {
 // raidBuildRe pulls the raid build's FS1 code out of a guide's frontmatter:
 // raidBuild: 'FS1:...'. It is anchored to the line start so it never
 // matches the leveling build's own `build:` line, and vice versa.
-var raidBuildRe = regexp.MustCompile(`(?m)^raidBuild:\s*'FS1:([^:]+):([^:]+):([^:]+):([^/]+)/([^/]+)/([^:]+):'`)
+var raidBuildRe = regexp.MustCompile(`(?m)^raidBuild:\s*'FS1:([^:]+):([^:]+):([^:]+):([^/]*)/([^/]*)/([^:]*):'`)
 
 // GuideBuildTalents reads a spec's guide and returns the client build its
 // FS1 code names and the three trees' digit strings, in the code's own

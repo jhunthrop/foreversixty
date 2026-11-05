@@ -478,7 +478,7 @@ var warriorTrainable = map[string][]TrainableRank{
 	"Revenge":      {{6572, 1, 14}, {6574, 2, 24}, {7379, 3, 34}, {11600, 4, 44}, {11601, 5, 54}, {25288, 6, 60}},
 	"Shield Slam":  {{23922, 1, 40}, {23923, 2, 48}, {23924, 3, 54}, {23925, 4, 60}},
 	"Shield Wall":  {{871, 0, 28}},
-	"Last Stand":   {{12975, 0, 1}},
+	"Last Stand":   {{12975, 0, 20}},
 }
 
 var priestTrainable = map[string][]TrainableRank{

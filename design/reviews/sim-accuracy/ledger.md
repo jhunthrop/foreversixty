@@ -26,6 +26,7 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 20 | 2026-11-04 to 2026-11-05 | design/reviews/2026-11-04-sim-audit-round20/ (one lane per class, platform, integration) | 31 fixed; hunter attack power shares from Blizzard's 3 Nov notes (BM +14.5%, MM +16.6%); 70790 activated on the way | d5c708834 | no |
 | 21 | 2026-11-05 | design/reviews/2026-11-05-sim-audit-round21/ (one lane per class, platform, items, integration) | 41 fixed: 32 old, 7 new-data, 1 R20, 1 R21; Bear Form 115% and Defensive Stance 80% threat (+45%, +38%), Auto Shot through casts (MM +5.8%); Blizzard's notes read line by line against the engine | 170a59c39 | no |
 | 22 | 2026-11-05 | design/reviews/2026-11-05-sim-audit-round22/ (platform, items, one lane per class, integration) | 33 fixed: 27 old, 1 new-data, 1 70753, 2 R20, 1 R21, 1 R22; Leader of the Pack and Moonkin Aura exclusive (3% raid crit, every spec about -2.5%), talent spells at their tier level, rogue one-hand axes, Fire/Affliction/Assassination raid builds; weapon damage ranges match the client | bff826207 | no |
+| 23 | 2026-11-05 | design/reviews/2026-11-05-sim-audit-round23/ (platform, items, one lane per class, integration) | 19 fixed: 16 old, 3 R22; priest rank rows right after a new rank, Assassination raid build parse (landed alone first), demon gear crit, Robe of the Archmage and Ankh cooldowns, manaIncomePerSecond and the Retribution Consecration budget; raid crit exclusivity sourced to Blizzard's 3 Nov notes | 3b4d6b054 | no |
 
 ## Loop structure
 

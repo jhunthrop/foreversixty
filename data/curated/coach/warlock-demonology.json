@@ -3,15 +3,6 @@
   "build": "1.60.1.70790",
   "core": [
     {
-      "family": "Soul Fire",
-      "spell_ids": [
-        6353,
-        17924
-      ],
-      "talent": false,
-      "verified": "1.60.1.70790/spellconst/warlock.json#17924"
-    },
-    {
       "family": "Bane of Doom",
       "spell_ids": [
         603

@@ -72,7 +72,7 @@ If a boss lets you stand within 10 yards, more points in Winter's Chill and Impr
 
 **Cooldowns.** Frost has no damage cooldown. Use your on-use trinkets and your racial on the pull and again whenever they come back: Berserking on a Troll, Blood Fury on an Orc, Eureka! on a Gnome. Save Cold Snap for a second Ice Block or for an Ice Barrier that broke early on a fight that hits you.
 
-**Mana in a 3 minute fight.** A geared Frost mage rarely needs Evocation in a raid. Use a Mana Ruby when you are 1,200 mana down and the Citrine two minutes later. Mana gems and Demonic Runes share one 2 minute cooldown, and the Robe of the Archmage has its own 5 minute one, but using any of the three locks the other two out for a minute. If you do run dry, Evocation is once a fight, near empty with more than 30 seconds left. Drink before pulls so you start each one full. The one rank-1 Frostbolt worth keeping on your bars is for slowing a runner or an add for a few mana.
+**Mana in a 3 minute fight.** A geared Frost mage rarely needs Evocation in a raid. Use a Mana Ruby when you are 1,200 mana down and the Citrine two minutes later. Mana gems and Demonic Runes share one 2 minute cooldown. The Robe of the Archmage is on its own 5 minute cooldown and shares nothing with them: use it whenever you are 625 mana down. If you do run dry, Evocation is once a fight, near empty with more than 30 seconds left. Drink before pulls so you start each one full. The one rank-1 Frostbolt worth keeping on your bars is for slowing a runner or an add for a few mana.
 
 **AoE.** Blizzard from range on packs the tank holds; it channels for 8 seconds and costs about 1,200 mana even with Frost Channeling, so it is for big pulls. On a pack that comes to you, Frost Nova, step back out of their reach, then Cone of Cold and Arcane Explosion while they are rooted, and Blink out when the root breaks. Frostbite's freezes let your Ice Lance and Frostbolt shatter trash too.
 
@@ -92,7 +92,7 @@ The table above gives the order for your gear; this is why each stat counts. Hit
 
 ## Enchants and consumables
 
-Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell power on gear and an Elixir of Frost Power are close to full value. A Major Mana Potion is enough for most bosses.
+Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell power on gear and an Elixir of Frost Power are close to full value. Frost rarely needs a mana potion, so the potion timer goes to a Major Spellblasting Potion on the pull.
 
 ## Races
 

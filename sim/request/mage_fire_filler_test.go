@@ -33,7 +33,7 @@ const (
 //
 // Round 22 mage (F1): the raid build takes Accelerant 5/5, Missile Barrage
 // and Arcane Blast, and on it Fireball is the filler. The Scorch filler is
-// the leveling build's alone (Heating Up known, Arcane Blast not).
+// the leveling path from 30 to 56 (Heating Up known, Arcane Blast not).
 func TestFireScorchFillerWaitsForHeatingUp(t *testing.T) {
 	rot := fireRotation(t)
 	scorchFiller, belowThirty := -1, -1

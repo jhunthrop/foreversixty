@@ -56,15 +56,24 @@ RULED_OUT_SUBJECT = re.compile(
     r"cannot learn|cannot be learned|does not cast|has no use for|stays off)\b",
     re.IGNORECASE,
 )
-# Rule-outs that name the ability right after the phrase.
+# Rule-outs that name the ability right after the phrase. They count only where the phrase opens its
+# clause or the part after a comma ("You have no Ice Block", "but there is no Invisibility"), or
+# continues one that did ("and no Invisibility"). Inside a consequence ("until it comes back you
+# have no Holy Shield"), after a noun ("a mark with no Rupture under it") or after a level scope
+# ("On the way to 60 there is no Arcane Wrath") the phrase rules nothing out for the spec (round 25).
 RULED_OUT_NEXT = re.compile(r"\b(?:there is no|with no|you have no|and no|leave)\s+(?=(.*)$)", re.IGNORECASE)
+RULE_OUT_OPENS = re.compile(r"(?:^|,)\s*(?:(?:but|and|so|yet)\s+)?$", re.IGNORECASE)
+CONTINUED = re.compile(r"^and no\b", re.IGNORECASE)
+# A talent the build has no point for is ruled out wherever the phrase sits.
+NO_POINT_FOR = re.compile(r"\bno spare point for\s+(?=(.*)$)", re.IGNORECASE)
 # Rule-outs that cover every ability after the phrase in the sentence.
 RULED_OUT_ALL_AFTER = re.compile(r"\bleft out on purpose:?\s+(.*)$", re.IGNORECASE)
 REPLACES = re.compile(r"\breplac(?:es|ing)\s+(\w+)", re.IGNORECASE)
 # Group or talent conditions: an ability named outside the condition itself is conditional. Mana to
-# spare is pacing, not a condition.
+# spare is pacing, and a target count ("only with two or more targets") is when to press it, not a
+# condition that drops the button (round 25, Swipe).
 CONDITION = re.compile(
-    r"\b(only in a raid|only with(?! (?:spare )?mana\b)|with an? [\w' ]+? totem in the group|"
+    r"\b(only in a raid|only with(?! (?:spare )?mana\b)(?! (?:\w+ or more |\w+ )targets?\b)|with an? [\w' ]+? totem in the group|"
     r"without the [\w' ]+? talent)\b",
     re.IGNORECASE,
 )
@@ -120,7 +129,15 @@ def ruled_out_in(clause: str, pattern: re.Pattern[str], names: set[str]) -> set[
     subject = RULED_OUT_SUBJECT.search(clause)
     if subject:
         out.update(filter(None, [ruled_subject(clause[: subject.start()], pattern)]))
+    opened = False
     for following in RULED_OUT_NEXT.finditer(clause):
+        opened = bool(RULE_OUT_OPENS.search(clause[: following.start()])) or (
+            opened and bool(CONTINUED.match(following[0]))
+        )
+        named_next = pattern.match(following[1])
+        if opened and named_next:
+            out.add(named_next[1])
+    for following in NO_POINT_FOR.finditer(clause):
         named_next = pattern.match(following[1])
         if named_next:
             out.add(named_next[1])

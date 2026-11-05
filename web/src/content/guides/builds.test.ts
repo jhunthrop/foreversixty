@@ -387,3 +387,28 @@ describe('Fire raids with a Fireball build', () => {
     expect(rankOf.get('Wand Specialization') ?? 0).toBe(0);
   });
 });
+
+// Sim-accuracy round 23 (mage): the level 60 build takes the raid build's Fire tree and
+// Missile Barrage and Arcane Blast too (+2.3 to +3.8% at bare 60), with Wand Specialization
+// in place of two Improved Channeling ranks, because a leveling mage wands while it drinks.
+describe('Fire levels into the Fireball build', () => {
+  it('mage/fire build: Accelerant 5/5, Missile Barrage 2/2, Arcane Blast, Burning Soul 2 and Wand Specialization 2', () => {
+    const guide = guides.find((g) => g.id === 'mage/fire');
+    expect(guide, 'mage/fire: no such guide').toBeDefined();
+    const decoded = decodeFS1(guide?.frontmatter.build as string);
+    if (!decoded.ok) return; // reported by the decode test above
+    const trees = [...talentsFor('mage').trees].sort((a, b) => a.position - b.position);
+    const rankOf = new Map<string, number>();
+    decoded.build.treeRanks.forEach((ranks, treeIndex) => {
+      trees[treeIndex]?.talents.forEach((talent, digitIndex) =>
+        rankOf.set(talent.name, ranks[digitIndex] ?? 0),
+      );
+    });
+    expect(rankOf.get('Accelerant')).toBe(5);
+    expect(rankOf.get('Missile Barrage')).toBe(2);
+    expect(rankOf.get('Arcane Blast')).toBe(1);
+    expect(rankOf.get('Burning Soul')).toBe(2);
+    expect(rankOf.get('Wand Specialization')).toBe(2);
+    expect(rankOf.get('Flame Throwing') ?? 0).toBe(0);
+  });
+});

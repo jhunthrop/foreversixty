@@ -14,14 +14,5 @@
       "verified": "1.60.1.70790/spellconst/druid.json#22812"
     }
   ],
-  "efficiency": [
-    {
-      "family": "Nature's Swiftness",
-      "spell_ids": [
-        17116
-      ],
-      "talent": true,
-      "verified": "1.60.1.70790/spellconst/druid.json#17116"
-    }
-  ]
+  "efficiency": []
 }
