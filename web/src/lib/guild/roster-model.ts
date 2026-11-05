@@ -106,20 +106,20 @@ export interface RosterModel {
 
 /**
  * The members and counts once the characters in `keys` are approved: each waiting entry for one
- * becomes approved and the waiting count drops with it, so the count line and the list agree in
- * the same frame. A home without the roster model passes through untouched.
+ * becomes approved. The waiting count is people (accounts) while the list is characters, so the
+ * count only drops here when nobody is left waiting; otherwise it holds until the home is read
+ * again (the caller refreshes at once), never undercounting an account with several characters.
+ * A home without the roster model passes through untouched.
  */
 export function afterApprove(model: RosterModel, keys: ReadonlySet<string>): RosterModel {
   if (model.members === undefined || model.counts === undefined) return model;
-  let changed = 0;
-  const members = model.members.map((entry) => {
-    if (entry.state !== 'waiting' || entry.character_key === undefined || !keys.has(entry.character_key)) {
-      return entry;
-    }
-    changed += 1;
-    return { ...entry, state: 'approved' as const };
-  });
-  return { members, counts: { ...model.counts, waiting: Math.max(0, model.counts.waiting - changed) } };
+  const members = model.members.map((entry) =>
+    entry.state === 'waiting' && entry.character_key !== undefined && keys.has(entry.character_key)
+      ? { ...entry, state: 'approved' as const }
+      : entry,
+  );
+  const stillWaiting = members.some((entry) => entry.state === 'waiting');
+  return { members, counts: { ...model.counts, waiting: stillWaiting ? model.counts.waiting : 0 } };
 }
 
 /**

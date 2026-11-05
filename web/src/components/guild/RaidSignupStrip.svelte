@@ -52,10 +52,21 @@
   function save(key: string, choice: SignupChoice): ReturnType<SignupHandler> {
     return onSignup(key, choice.state, choice.role, choice.note, choice.spec);
   }
+
+  // The Discord post's "Add a note" button links to #signup; the strip renders after the raid
+  // loads, so the browser's own jump to the hash has already happened by then.
+  let stripEl = $state<HTMLElement | null>(null);
+  $effect(() => {
+    if (stripEl !== null && typeof location !== 'undefined' && location.hash === '#signup') {
+      stripEl.scrollIntoView({ block: 'start' });
+    }
+  });
 </script>
 
 <section
-  class="bg-raised border-line rounded-panel border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5"
+  id="signup"
+  bind:this={stripEl}
+  class="bg-raised border-line rounded-panel scroll-mt-24 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5"
   aria-labelledby="raid-signup-heading"
   data-testid="raid-signup-strip"
 >

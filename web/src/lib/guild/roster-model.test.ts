@@ -164,10 +164,12 @@ describe('afterApprove and afterRemove keep the list and the counts in step', ()
     ],
     counts: { on_roster: 4, in_game_no_account: 1, waiting: 2, not_seen: 0 },
   };
-  it('approving turns the waiting entries into approved and drops the waiting count with them', () => {
+  it('approving turns the waiting entries into approved; the people count holds until none is left', () => {
     const next = afterApprove(model, new Set(['us/pvp/ashenveil']));
     expect(next.members?.map((m) => m.state)).toEqual(['approved', 'approved', 'waiting', 'no_account']);
-    expect(next.counts).toEqual({ on_roster: 4, in_game_no_account: 1, waiting: 1, not_seen: 0 });
+    // Waiting counts accounts and the list is characters, so one approval cannot say how many
+    // people are left: the count holds for the refresh that follows.
+    expect(next.counts).toEqual(model.counts);
     const all = afterApprove(model, new Set(['us/pvp/ashenveil', 'us/pvp/cindergale']));
     expect(all.counts?.waiting).toBe(0);
   });
