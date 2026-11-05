@@ -48,7 +48,7 @@
     {
       "from_level": 60,
       "step": 11,
-      "notes": "Only above 60 rage, and never from 25% down: hold that rage for Execute. It is queued on your next swing and costs no global cooldown."
+      "notes": "Only above 60 rage, and never once the boss is under a quarter of its health: hold that rage for Execute. It is queued on your next swing and costs no global cooldown."
     }
   ],
   "rotation": {
