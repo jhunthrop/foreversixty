@@ -4,10 +4,10 @@ classSlug: mage
 spec: fire
 role: dps
 build: 'FS1:1.60.1.70790:mage:human:2520150000002/51520101230133031/003:'
-raidBuild: 'FS1:1.60.1.70790:mage:human:2530050000002/50520201230133031/003:'
+raidBuild: 'FS1:1.60.1.70790:mage:human:0501052001000/55500201230133031/003:'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]
-description: 'Fire Mage in Forever: the pre-pull Pyroblast, Scorch spam, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
+description: 'Fire Mage in Forever: the pre-pull Pyroblast, the 3 second Fireball, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.'
 updated: 2026-11-04
 confidence: inferred
 sources:
@@ -27,12 +27,12 @@ sources:
 
 ## Overview
 
-Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites.
+Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites.
 
 ### Strengths
 
-- Scorch is 150 mana for a 1.5 second cast, so you land two for every Fireball
-- Every Scorch and Fire Blast crit pays twice, once through Ignite and once through Heating Up
+- Five points of Accelerant make Fireball a 3 second cast, and every one is a chance at a free, fast Arcane Missiles
+- Every Fireball, Scorch and Fire Blast crit pays twice, once through Ignite and once through Heating Up
 - Fire Power rewards you for every burn you keep on the boss
 - Fire Blast is instant and a 3-stack Pyroblast is short enough to cast between steps, so you keep doing damage through movement
 
@@ -58,40 +58,43 @@ Fire spams Scorch, keeps its own Improved Scorch stacks up, turns crits into fas
 - **Master of Elements** (3 points): every Fire crit refunds 30% of the spell's base cost. It is the steady trickle that makes the gems and potions last.
 - **Improved Fire Blast** (2 points): Fire Blast every 6 seconds instead of 8, and 15 yards more range. With Heating Up, that is a Pyroblast stack every 6 seconds.
 - **Combustion** (1 point): each Fire hit adds 10% Fire crit until three non-periodic crits land, on a 3 minute cooldown.
+- **Accelerant** (5 points): Fireball becomes a 3 second cast, which is what makes it your filler.
+- **Missile Barrage** (2 points): every Fireball has a 20% chance, and Arcane Blast 40%, to make your next Arcane Missiles free and twice as fast.
+- **Arcane Blast** (1 point): each cast adds 12% of your Intellect as spell damage to every spell for 18 seconds.
 
-Fire takes exactly 31 points to Combustion and skips Blast Wave and Improved Flamestrike, which are AoE only. Combustion asks for 30 points above it, and the damage talents plus two ranks of **Flame Throwing** (6 more yards on every Fire spell) come to 28, so two more points are the toll to reach it.
+Combustion asks for 30 points above it. The Fire damage talents above it come to 26, and five ranks of **Accelerant** make it 31. Fire skips Blast Wave and Improved Flamestrike, which are AoE only, and Flame Throwing: 6 more yards are worth less to a raid caster than a faster Fireball. Two ranks of **Burning Soul** stay for the threat: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back.
 
-The other 20 points buy mana and hit. Seventeen in Arcane reach **Arcane Concentration** (5 points, a free spell 10% of the time) and two ranks of **Arcane Meditation** (a third of your mana regeneration keeps running while you cast). With Mage Armor on top, most of your regeneration runs through the whole fight. Three go into **Precision** in Frost for 6% hit.
+The other 17 points buy hit and a little Arcane. Three go into **Precision** in Frost for 6% hit. Fourteen in Arcane take **Improved Channeling**, which opens the tree and keeps your Missiles from being pushed back, **Arcane Concentration** (a free spell 10% of the time), **Missile Barrage**, **Arcane Blast** and a point of Arcane Subtlety. Wand Specialization and Arcane Resilience do nothing on a boss, and Arcane Meditation's regeneration is worth less than Missile Barrage and Arcane Blast, so all three are left out.
 
-The leveling build pays that toll with a point in **Burning Soul**, a 23% chance to keep a cast from being pushed back and 10% less Fire threat, and a point in Accelerant, which speeds up Fireball, your filler below 30. The raid build pays it with two ranks of **Burning Soul** instead: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back. It also moves the point of Magic Absorption into a third rank of Arcane Resilience. [Open the planner](/planner?class=mage) to change the build.
+The leveling build is different: it pays the toll to Combustion with **Flame Throwing**, a point in **Burning Soul**, a 23% chance to keep a cast from being pushed back and 10% less Fire threat, and a point in Accelerant, which speeds up Fireball, your filler below 30. From 30 it fills with Scorch. Respec into the raid build when you start raiding. [Open the planner](/planner?class=mage) to change the build.
 
 ## Rotation and priority
 
-**Opener.** Mage Armor, Arcane Brilliance and your food buff go up before the pull. Conjure a Mana Ruby and a Mana Citrine and drink back to full. Start Pyroblast 6 seconds before the pull so it lands just after the tank's first hit: the full cast happens while nothing else is going on, and its burn starts your Fire Power count. Then Scorch to 5 stacks. Fire Blast whenever it is ready.
+**Opener.** Mage Armor, Arcane Brilliance and your food buff go up before the pull. Conjure a Mana Ruby and a Mana Citrine and drink back to full. Start Pyroblast 6 seconds before the pull so it lands just after the tank's first hit: the full cast happens while nothing else is going on, and its burn starts your Fire Power count. Then Scorch to 5 stacks, and from there Fire Blast whenever it is ready, unless 3 Heating Up stacks have a Pyroblast waiting. Put up Arcane Blast once the stacks are on.
 
-**The loop.** Keep 5 Improved Scorch stacks rolling: every filler Scorch refreshes them, so you only think about the refresh after a movement break or a target swap. Fire Blast every time it is off cooldown. Pyroblast only on 3 stacks of Heating Up. Everything else is Scorch. A Pyroblast at the full 6 seconds, or on 1 or 2 stacks, loses to Scorch, and Fireball as a filler loses to Scorch even while your mana is full.
+**The loop.** Keep 5 Improved Scorch stacks rolling: refresh them with one Scorch when 5 seconds or less are left, because a 3 second Fireball can carry you past a later refresh. Pyroblast only on 3 stacks of Heating Up. Fire Blast every time it is off cooldown. Arcane Missiles the moment Missile Barrage procs. Arcane Blast once whenever its buff has dropped: 12% of your Intellect as spell damage for 18 seconds is worth a 1.5 second cast, but a second Blast on top doubles its cost, so let the buff fall off first. Everything else is Fireball, except when Fire Blast comes back in less than a Scorch's cast: then cast Scorch, so the Fire Blast and its Heating Up stack are not held behind a Fireball. A Pyroblast at the full 6 seconds, or on 1 or 2 stacks, loses to a Fireball.
 
-**Combustion.** Press it once the boss carries 5 stacks, together with your on-use trinkets and your racial: Eureka! on a Gnome, Blood Fury on an Orc, Berserking on a Troll. A fresh tank needs a few seconds before you do. Combustion lasts until three crits land, and every Scorch or Fire Blast crit in it is an Ignite and a Heating Up stack, so the window usually ends in a 1.5 second Pyroblast.
+**Combustion.** Press it once the boss carries 5 stacks, together with your on-use trinkets and your racial: Eureka! on a Gnome, Blood Fury on an Orc, Berserking on a Troll. A fresh tank needs a few seconds before you do. Combustion lasts until three crits land, and every Fireball, Scorch or Fire Blast crit in it is an Ignite and a Heating Up stack, so the window usually ends in a 1.5 second Pyroblast.
 
 **Ignite and threat.** Ignite's damage is your damage and your threat. Fire mages pull more than anyone else in the first twenty seconds, mostly off a Combustion window that crits three times in a row. You have no Ice Block and no Invisibility, so the only fix is not to pull: watch your threat, hold Combustion on a fresh tank, and stop casting for a global if you are close. Burning Soul takes some off the top.
 
-**Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down, a Major Mana Potion the next time you are well down, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: every hit is a Heating Up stack, and the mana you would save is worth less than the Pyroblasts you would lose. Scorch stays your filler when you are short too: you land two of them in the time of one Fireball, and each is a roll for Heating Up and Ignite.
+**Mana in a 3 minute fight.** Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down, a Major Mana Potion the next time you are well down, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The Robe of the Archmage has its own 5 minute cooldown, but using any of the three locks the other two out for a minute. Evocation is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep Fire Blast on cooldown even when you are short: every hit is a Heating Up stack, and the mana you would save is worth less than the Pyroblasts you would lose. Fireball stays your filler when you are short too: Master of Elements hands back 30% of its cost on every crit, and the Missile Barrage procs it buys are free.
 
 **AoE.** Flamestrike is a 3 second cast that burns the ground for 8 seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range. Flamestrike costs 990 mana, so two of them on a big pull eat a third of your bar before the Arcane Explosions start. Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
 
 **Execute and movement.** Fire has no execute. On the move, keep Fire Blast on cooldown and save a Pyroblast on 3 Heating Up stacks for the next stop. Scorch's stacks last 30 seconds, so a short movement phase does not drop them.
 
-Frostfire Bolt is not a Fire filler. It costs more than Scorch, takes twice as long and its burn mixes Frost and Fire, which Fire Power does not count.
+Frostfire Bolt is not a Fire filler. It hits for much less than Fireball, and its burn mixes Frost and Fire, which Fire Power does not count.
 
 ## Stat priority
 
-The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: every missed Scorch is a missed stack, a missed Ignite and a missed Heating Up chance. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power and Fire power are the same stat to you, because everything you cast on a boss is Fire. Crit feeds Ignite, Heating Up and Master of Elements at once, and Critical Mass and Combustion stack more of it on top of your gear. Intellect is your mana bar and adds spell crit, which Fire turns into Ignite and Heating Up. Fire drinks a Major Mana Potion on every boss, so a deeper bar keeps you casting to the end.
+The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: every missed Fireball or Scorch is a missed Ignite and a missed Heating Up chance, and a missed Scorch is a missed stack too. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Fire power is nearly as good as spell power to you: everything you cast on a boss is Fire except Arcane Blast and the Missile Barrage Missiles. Crit feeds Ignite, Heating Up and Master of Elements at once, and Critical Mass and Combustion stack more of it on top of your gear. Intellect is your mana bar and adds spell crit, which Fire turns into Ignite and Heating Up. Fire drinks a Major Mana Potion on every boss, so a deeper bar keeps you casting to the end.
 
 ## Best in slot
 
 ## Enchants and consumables
 
-Fire casts only Fire spells on a boss, so any Fire-only spell power on gear is full value for you. Greater Arcane Elixir is your elixir. Bring Major Mana Potions and Demonic Runes to every boss; you will use both.
+Nearly everything Fire casts on a boss is Fire, so Fire-only spell power on gear is close to full value for you; only Arcane Blast and the Missile Barrage Missiles miss out. Greater Arcane Elixir is your elixir. Bring Major Mana Potions and Demonic Runes to every boss; you will use both.
 
 ## Races
 
