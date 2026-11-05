@@ -354,10 +354,12 @@ func (s *Store) signupState(ctx context.Context, raidID int64, characterKey stri
 	return state, nil
 }
 
-// signupRole is a character's stored sign-up role on a raid; "" when it has none.
+// signupRole is a character's stored In, Late or Bench sign-up role on a raid; "" when it has
+// none. An Out row's role is not kept: a spec change leaves it as it was (respecSignup).
 func (s *Store) signupRole(ctx context.Context, raidID int64, characterKey string) (string, error) {
 	var role string
-	err := s.Pool.QueryRow(ctx, `select role from guild_raid_signups where raid_id = $1 and character_key = $2`,
+	err := s.Pool.QueryRow(ctx, `select role from guild_raid_signups
+		where raid_id = $1 and character_key = $2 and state in ('in', 'late', 'bench')`,
 		raidID, characterKey).Scan(&role)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return "", nil
