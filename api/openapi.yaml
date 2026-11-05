@@ -2106,7 +2106,9 @@ components:
           properties:
             on_roster: { type: integer }
             in_game_no_account: { type: integer }
-            waiting: { type: integer }
+            waiting:
+              type: integer
+              description: People (accounts) with a character waiting for approval, the unit summary.waiting_for_approval counts; members[] stays per character.
             not_seen: { type: integer }
         addon_snapshot: { $ref: '#/components/schemas/GuildAddonSnapshot' }
         next_raid: { $ref: '#/components/schemas/RaidLine' }
