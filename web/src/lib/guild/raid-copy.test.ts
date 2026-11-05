@@ -294,6 +294,8 @@ describe('counts', () => {
     expect(countLine(23, 40)).toBe(str('Count', 0, { n: '23', size: '40' }));
     expect(countRatio(23, 40)).toBe(str('Count', 1, { n: '23', size: '40' }));
     expect(countLine(23, null)).toBe('23 signed up');
+    expect(countLine(0, null)).toBe('Nobody signed up yet');
+    expect(countLine(0, 40)).toBe('Nobody signed up yet');
   });
 
   it('breaks the roles down, singular at one, late only when there is one', () => {
@@ -392,6 +394,10 @@ describe('bandLineParts', () => {
       word: 'Late',
       tail: ' on Late as Tank, 23 of 40 signed up.',
     });
+  });
+
+  it('says nobody rather than 0 signed up', () => {
+    expect(bandLineParts({ ...base, n: 0, state: 'out' }).tail).toBe(', nobody signed up yet.');
   });
 
   it('has no state word while unsigned', () => {

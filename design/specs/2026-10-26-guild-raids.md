@@ -194,7 +194,7 @@ Touch and keyboard parity: every control is 44 px tall on phone; nothing is hove
 | Band line, none planned | member `Nothing planned yet.`; officer `Nothing planned yet.` and the link `Plan an event` (to `#raids`); an officer whose plan gates planning gets the sentence only, no link (amended 2026-11-05, guild round 1) |
 | Needs line | `What the guild needs from you before {Weekday}: …`; none planned `before the next raid` |
 | Countdown | `in 2 days`, `in 1 day 4 h`, `in 5 h 20 min`, `in 12 min`, `starting now`, `started 20 min ago`, `ended 2 h ago`; updates each minute |
-| Count | `{n} of {size} signed up`, `{n}/{size}`, `{t} tanks · {h} healers · {d} DPS · {l} late` (`1 tank`, `1 healer`; the late clause only when late > 0, so the parts add up to the count) (amended 2026-10-27, review round) |
+| Count | `{n} of {size} signed up`, `{n}/{size}`; at 0 the line (never the `0/{size}` ratio) reads `Nobody signed up yet`, and the band's clause `nobody signed up yet` (amended 2026-11-05, guild round 2: never `0 signed up`); `{t} tanks · {h} healers · {d} DPS · {l} late` (`1 tank`, `1 healer`; the late clause only when late > 0, so the parts add up to the count) (amended 2026-10-27, review round) |
 | Guild time | `8:00 pm CST guild time` |
 | Placeholders | `Note for the officers (optional)`, `Choose a raid` |
 | Strip status | `Saved.`, `That did not save. Try again.`, `{Name} moved to Bench.`, `{n} left` |
