@@ -27,6 +27,8 @@
   } = $props();
 
   const action = $derived(gateAction(tab, facts));
+  /** "Ask"'s word space, drawn inside the holder's flex box so it takes no width (guild round 2). */
+  const WORD_SPACE = ' ';
 </script>
 
 <p
@@ -41,7 +43,7 @@
       style:color={classColorVar(action.holder.class ?? undefined)}
       data-testid="guild-gate-holder"
       ><!-- The word space lives inside the flex box, which draws no whitespace-only run: the text
-           still reads "Ask Thornhide" while the crest sits exactly 4 px (ml-1) from "Ask". -->{' '}<ClassCrestRing
+           still reads "Ask Thornhide" while the crest sits exactly 4 px (ml-1) from "Ask". -->{WORD_SPACE}<ClassCrestRing
         characterClass={action.holder.class ?? ''}
         size={16}
         class="size-4 self-center"
