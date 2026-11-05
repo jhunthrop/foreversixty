@@ -11,12 +11,14 @@ import type {
   GuildSignupState,
   GuildViewerRole,
   GuildZoneKind,
+  NeedsRaid,
   NextRaidView,
 } from './api';
 import {
   DEFAULT_LOCALE,
   clockText,
   dateLabel,
+  instantToWallClock,
   offsetsDiffer,
   wallClockToInstant,
   zoneAbbreviation,
@@ -27,6 +29,9 @@ const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 /** A day further out than this is written as a date, not a weekday (spec 6.1 `{when}`). */
 const WEEKDAY_WINDOW_DAYS = 6;
+/** A start on the guild's own day reads `Today` before this hour of the guild's clock and
+ *  `Tonight` from it (guild loop round 3: a 6:49 am start read `Tonight`). */
+export const TONIGHT_FROM_HOUR = 17;
 /** The middle dot between a line's parts. Svelte trims a literal's edge spaces, so pages write it
  *  as an expression (`{SEP}`). */
 export const SEP = ' · ';
@@ -246,7 +251,7 @@ export const notesEmptyOf = (kind: GuildZoneKind, officer: boolean): string =>
     : `No notes for this ${KIND_WORDS[kind]}.`;
 
 /** The needs line reads raids only (guild events spec 3.4): a dungeon run or an event at the head of
- *  the band leaves it at `before the next raid`. */
+ *  the band leaves it at `before the next raid`, unless the API names the raid (`needsDeadline`). */
 export function raidDeadlineStart(next: NextRaidView | null | undefined): string | undefined {
   return next != null && kindOf(next) === 'raid' ? next.starts_at : undefined;
 }
@@ -339,6 +344,20 @@ export function nextRaidDeadline(
   );
 }
 
+/** The needs line's deadline (guild loop round 3): with the raid named by the API, `before
+ *  Onyxia's Lair, Thu 10 Dec` on the guild's calendar, so a dungeon run at the head of the band no
+ *  longer leaves it at `before the next raid`; without one, `nextRaidDeadline` as before. */
+export function needsDeadline(
+  needsRaid: NeedsRaid | null | undefined,
+  next: NextRaidView | null | undefined,
+  locale: string = DEFAULT_LOCALE,
+  viewerTz: string = browserZone(),
+): string {
+  if (needsRaid == null) return nextRaidDeadline(raidDeadlineStart(next), locale, viewerTz);
+  const tz = next?.guild_timezone ?? viewerTz;
+  return `before ${needsRaid.title}, ${dateLabel(new Date(needsRaid.starts_at), tz, locale)}`;
+}
+
 /** `8:00 pm CST`: a clock with its zone abbreviation (`8 pm CST` when minutes are optional). */
 export function zonedClock(
   at: Date,
@@ -396,7 +415,14 @@ function browserZone(): string {
   return new Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
-/** The band's `{when}` in the guild's clock first (raid comp spec 3.4): `Tonight 8 pm CST`,
+/** `Today` before 5 pm on the guild's clock, `Tonight` from it. */
+function sameDayWord(startsAt: Date, guildTz: string): string {
+  const hour = Number(instantToWallClock(startsAt, guildTz).time.slice(0, 2));
+  return hour < TONIGHT_FROM_HOUR ? 'Today' : 'Tonight';
+}
+
+/** The band's `{when}` in the guild's clock first (raid comp spec 3.4): `Tonight 8 pm CST`
+ *  (`Today 10 am CST` before 5 pm),
  *  `Thursday 8 pm CST`, `Thu 17 Dec, 8 pm CST`, then ` (9 pm EST your time)` when the viewer's
  *  offset differs. */
 export function whenPhrase(
@@ -409,7 +435,7 @@ export function whenPhrase(
   const time = zonedClock(startsAt, guildTz, locale, false);
   const days = calendarDayDiff(now, startsAt, guildTz);
   let phrase: string;
-  if (days === 0) phrase = `Tonight ${time}`;
+  if (days === 0) phrase = `${sameDayWord(startsAt, guildTz)} ${time}`;
   else if (days === 1) phrase = `Tomorrow ${time}`;
   else if (days > 1 && days <= WEEKDAY_WINDOW_DAYS) {
     const weekday = new Intl.DateTimeFormat(locale, { timeZone: guildTz, weekday: 'long' }).format(startsAt);

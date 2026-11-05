@@ -84,7 +84,7 @@
     type TabFetchStatus,
   } from '../lib/guild/guild-page-decisions';
   import { loadReadinessBoard, type ReadinessBoard } from '../lib/guild/readiness-raid';
-  import { nextRaidDeadline, raidCopy, raidDeadlineStart, showsBandLine } from '../lib/guild/raid-copy';
+  import { needsDeadline, raidCopy, showsBandLine } from '../lib/guild/raid-copy';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { classColorVar } from '../lib/report/format';
   import { fetchGuild, RankingsError, type GuildPage } from '../lib/rankings/api';
@@ -387,7 +387,7 @@
   let myReadiness = $state<GuildReadinessRow | null>(null);
   const needs = $derived.by(() => {
     const row = myReadiness;
-    return row === null ? null : needsLine(row, nextRaidDeadline(raidDeadlineStart(home?.next_raid)));
+    return row === null ? null : needsLine(row, needsDeadline(home?.standing?.needs_raid, home?.next_raid));
   });
   $effect(() => {
     if (role !== 'member' || home === null || myCharacterKey === null) {

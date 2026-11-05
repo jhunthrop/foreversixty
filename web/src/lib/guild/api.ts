@@ -127,6 +127,12 @@ export interface GuildHomeSummary {
   updated_at: string;
 }
 
+/** The raid the needs line means (`standing.needs_raid`, guild loop round 3). */
+export interface NeedsRaid {
+  title: string;
+  starts_at: string;
+}
+
 /** `GET .../home`'s `standing` -- member and officer only; `null` when the viewer has no
  *  ranked peers to compare against (never a fabricated rank of 1 of 1). */
 export interface GuildHomeStanding {
@@ -140,6 +146,9 @@ export interface GuildHomeStanding {
    *  directly, never re-deriving its own phrasing from the Readiness endpoint (spec §8: no
    *  new round trip from Overview). */
   needs_before_next_raid: string[];
+  /** The raid those needs are for, raid-first like Readiness and /raid (guild loop round 3): the
+   *  needs line reads `before {Title}, {Thu 10 Dec}` with it. Absent on an older API. */
+  needs_raid?: NeedsRaid | null;
 }
 
 export interface ClaimPendingView {
