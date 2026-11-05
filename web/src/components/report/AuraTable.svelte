@@ -15,7 +15,6 @@
   import type { AuraTrack } from '../../lib/report/types';
   import type { AuraColumn } from '../../lib/sim/aura-card';
   import type { CardTables } from '../../lib/sim/card-tables.svelte';
-  import AuraBars from './AuraBars.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -135,7 +134,10 @@
 </script>
 
 {#if variant === 'bars' && bars !== undefined && tables !== undefined}
-  <AuraBars column={bars} {heading} side={kind === 'BUFF' ? 'player' : 'target'} {tables} {note} />
+  <!-- Its own chunk: the logs report's island never carries the saved sim's bars. -->
+  {#await import('./AuraBars.svelte') then { default: AuraBars }}
+    <AuraBars column={bars} {heading} side={kind === 'BUFF' ? 'player' : 'target'} {tables} {note} />
+  {/await}
 {:else if rows.length === 0}
   <p class="text-muted text-[14px]" data-testid="table-empty">
     {emptyMessage ?? `No ${kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.`}
