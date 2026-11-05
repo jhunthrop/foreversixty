@@ -13,6 +13,9 @@ import (
 func (f *fakeGuilds) ReportFor(context.Context, int64, int64, *int64) (guilds.ReportAnswer, bool, error) {
 	return guilds.ReportAnswer{}, false, nil
 }
+func (f *fakeGuilds) LatestLoggedNight(context.Context, int64, int64) (guilds.LoggedNightAnswer, bool, error) {
+	return guilds.LoggedNightAnswer{}, false, nil
+}
 func (f *fakeGuilds) DoneRaids(context.Context, int64, bool, int) ([]guilds.Raid, error) {
 	return nil, nil
 }
@@ -42,7 +45,7 @@ func TestOfficerCopyMatchesTheSpec(t *testing.T) {
 		got, want []string
 	}{
 		{"report", cell("`/report`"), []string{c.ReportPrefix + "{Title} · {Weekday} {d} {Month}", c.KillOrder, c.MostDeaths,
-			c.Consumables, c.Loot, c.LootAll, c.LootCount, c.LootFirst, c.LootTo, c.OpenReport, c.ReportNone, c.ReportUnlinked}},
+			c.Consumables, c.Loot, c.LootAll, c.LootCount, c.LootFirst, c.LootTo, c.OpenReport, c.ReportNone, c.ReportUnlinked, c.LoggedPresent, c.LoggedNote}},
 		{"attendance", cell("`/attendance`"), []string{c.AttendanceTitle, c.LastRaids, c.Roster, c.OfficersOnly, c.NoMember,
 			c.NoRaids, c.AttendanceUnlinked, c.AttendanceMembers}},
 		{"readiness", cell("`/readiness`"), []string{c.ReadinessTitle + "{Title} · {Weekday} {d} {Month}", c.ReadinessLead,

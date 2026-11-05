@@ -17,6 +17,9 @@ var officerCopy = struct {
 	OpenReport string
 	// ReportNone and ReportUnlinked answer no report and an unlinked viewer.
 	ReportNone, ReportUnlinked string
+	// LoggedPresent opens a logged night's line and LoggedNote follows it: a night no planned
+	// raid holds, the /report fallback.
+	LoggedPresent, LoggedNote string
 	// AttendanceTitle heads a record; LastRaids its field; Roster its link button.
 	AttendanceTitle, LastRaids, Roster string
 	// OfficersOnly, NoMember, NoRaids and AttendanceUnlinked are /attendance's answers;
@@ -46,7 +49,9 @@ var officerCopy = struct {
 	LootFirst:             " The first {k}:",
 	LootTo:                "to {Name} · {Boss}",
 	OpenReport:            "Open the report",
-	ReportNone:            "No raid logged yet. A raid shows here once its log is matched.",
+	ReportNone:            "No raid logged yet.",
+	LoggedPresent:         "{n} present",
+	LoggedNote:            "Logged with no planned raid, so no sign-ups or loot to show.",
 	ReportUnlinked:        "Link your Discord account to see your guild's raids.",
 	AttendanceTitle:       "{Name} · attendance",
 	LastRaids:             "Last 5 raids",
