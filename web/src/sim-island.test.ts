@@ -6,7 +6,7 @@
 // dropping the pre-hydration shell's min-h reservation once the island takes over the
 // element's own height.
 import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
-import { readInlineResult, simIdFor } from './sim-island';
+import { readInlineResult, shellReservations, simIdFor } from './sim-island';
 import fixtureResult from './fixtures/sim/result.json';
 
 // boot() self-invokes at module load and is not exported, so driving it means importing a
@@ -74,6 +74,14 @@ describe('readInlineResult', () => {
   it('is null when there is none, and null rather than a throw when it is malformed', () => {
     expect(readInlineResult(mountElement())).toBeNull();
     expect(readInlineResult(mountElement({ 'data-sim-result': '{oops' }))).toBeNull();
+  });
+});
+
+describe('shellReservations', () => {
+  it('finds every min-h class at every breakpoint and nothing else', () => {
+    const element = mountElement();
+    element.className = 'flex min-h-[9509px] md:min-h-[5652px] gap-4';
+    expect(shellReservations(element)).toEqual(['min-h-[9509px]', 'md:min-h-[5652px]']);
   });
 });
 
