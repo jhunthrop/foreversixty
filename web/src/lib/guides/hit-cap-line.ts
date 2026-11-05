@@ -186,7 +186,10 @@ export function guideExpertiseCapLine(
   if (!expertiseIsGained(expertiseToCap)) return undefined;
   const { baseline, dodge, parry } = expertiseToCap;
   return capLine(
-    guidesCopy.expertiseCap(capText(baseline, dodge), parry === undefined ? undefined : capText(baseline, parry)),
+    guidesCopy.expertiseCap(
+      capText(baseline, dodge),
+      parry === undefined ? undefined : capText(baseline, parry),
+    ),
     splitText(
       baselineParts(
         baseline,
