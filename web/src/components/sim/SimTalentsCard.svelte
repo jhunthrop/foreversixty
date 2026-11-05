@@ -132,6 +132,10 @@
 </Card>
 
 <style>
+  /* Phone tabs read "Fury 32" (spec 3.9): the spec icons leave no room for three names at 360 px. */
+  .sim-trees :global([role='tab'] img) {
+    display: none;
+  }
   /* The saved run's cells (spec 3.9): 40 px from tablet up, a taken talent lit, an untaken one
      greyed with no badge. The planner's and the guides' own cells are untouched. */
   @media (min-width: 768px) {
