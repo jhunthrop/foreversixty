@@ -114,7 +114,7 @@ export const damageCopy = {
     uptime: 'Uptime',
   },
   critTip:
-    'Share of landed hits that crit. White swings count glancing blows as landed, which is why they read lower than your crit chance on the boss.',
+    'Crits out of the hits that landed, glancing blows included. Misses, dodges and parries are left out, so a row can read above or below your crit chance on the boss.',
   rank: (rank: number) => `Rank ${rank}`,
   outcome: { MISS: 'Miss', DODGE: 'Dodge', PARRY: 'Parry', GLANCING: 'Glance', BLOCK: 'Block' },
   ticks: (count: string, crit: string) => [`${count} ticks`, `tick crit ${crit}%`] as const,
