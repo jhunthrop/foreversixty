@@ -121,7 +121,7 @@
       }
     },
     {
-      "notes": "On cooldown. Judgement is off the global cooldown, costs 6% of base mana and never consumes your Seal, and from 22 Sanctified Judgement hands back 60% of the judged Seal's cost.",
+      "notes": "On cooldown. Judgement is off the global cooldown, costs 6% of base mana less Benediction's discount and never consumes your Seal, and from 22 Sanctified Judgement hands back 60% of the judged Seal's cost.",
       "action": {
         "condition": {
           "spellCanCast": {
@@ -494,7 +494,7 @@
       }
     },
     {
-      "notes": "On cooldown. A cheap Holy weapon strike, twenty mana at 60, and with Sacred Arbiter it refreshes every Judgement on the target.",
+      "notes": "On cooldown. A cheap Holy weapon strike, 18 mana at 60 with Benediction, and with Sacred Arbiter it refreshes every Judgement on the target.",
       "action": {
         "condition": {
           "spellCanCast": {
