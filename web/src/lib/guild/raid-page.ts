@@ -3,8 +3,8 @@
 // when the page polls, which state it is in, the band's when and count lines, and the strip's
 // loading reserve kept in localStorage.
 import type { GuildRaidView } from './api';
-import { SEP, countLine, countRatio, countdown, yourTimeLine } from './raid-copy';
-import { raidBreakdownParts } from './raid-comp';
+import { countLine, countRatio, countdown, yourTimeLine } from './raid-copy';
+import { raidBreakdownLine } from './raid-comp';
 import { clockText, zoneAbbreviation } from './raid-time';
 import { chipStatus, raidEndsAt, type RaidChipStatus } from './planned-row';
 import { RAID_DONE_KEY_PREFIX, RAID_ROWS_KEY } from './reserve-keys';
@@ -108,7 +108,7 @@ export function raidCount(raid: GuildRaidView): RaidCount {
     line: countLine(n, size),
     ratio: countRatio(n, size),
     // Nobody signed up: no role breakdown after the line (guild round 2).
-    breakdown: n === 0 ? '' : raidBreakdownParts(raid).join(SEP),
+    breakdown: n === 0 ? '' : raidBreakdownLine(raid),
     fill: size === null || size <= 0 ? null : Math.min(100, Math.round((n / size) * 100)),
   };
 }

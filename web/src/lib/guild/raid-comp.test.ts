@@ -11,6 +11,7 @@ import {
   compBreakdownParts,
   pickFor,
   pickOf,
+  raidBreakdownLine,
   raidBreakdownParts,
   rowGroup,
   signupListText,
@@ -142,6 +143,15 @@ describe('the count clauses', () => {
       ],
     };
     expect(raidBreakdownParts(raid).at(-1)).toBe('2 late (1 tank, 1 healer)');
+  });
+
+  it('glues each shown clause with no-break spaces, so it wraps only between clauses', () => {
+    const raid = {
+      counts: { in: 1, late: 1, bench: 0, out: 0, tanks: 0, healers: 1, dps: 0, melee: 0, ranged: 0 },
+      signups: [signup('Mendara', 'priest', 'priest-holy', 'healer', 'late', 'healer')],
+    };
+    const line = raidBreakdownLine(raid);
+    expect(line.split(' · ')).toEqual(['0 tanks', '1 healer', '0 melee', '0 ranged', '1 late (healer)']);
   });
 
   it('reads a row with no group by its role, DPS as ranged', () => {

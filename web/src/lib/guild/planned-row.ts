@@ -3,8 +3,8 @@
 // and numbers it draws, so PlannedRaidRow.svelte only lays them out. Times read in the viewer's zone;
 // the guild-time label shows only when the offsets differ.
 import type { GuildRaidRole, GuildRaidStatus, GuildRaidView, GuildSignupState } from './api';
-import { countdown, countLine, countRatio, SEP, yourTimeLine, zonedClock, zoneLineOf } from './raid-copy';
-import { raidBreakdownParts } from './raid-comp';
+import { countdown, countLine, countRatio, yourTimeLine, zonedClock, zoneLineOf } from './raid-copy';
+import { raidBreakdownLine } from './raid-comp';
 
 const MINUTE_MS = 60_000;
 const STATE_ORDER: readonly GuildSignupState[] = ['in', 'late', 'bench', 'out'];
@@ -102,7 +102,7 @@ export function plannedRowView(
     yourTime: yourTimeLine(startsAt, guildTz, viewerTz, locale),
     countdown: countdown(startsAt, raidEndsAt(raid), now),
     count: raid.size === null ? countLine(n, null) : countRatio(n, raid.size),
-    breakdown: raidBreakdownParts(raid).join(SEP),
+    breakdown: raidBreakdownLine(raid),
     fill: raid.size === null || raid.size <= 0 ? null : Math.min(100, Math.round((n / raid.size) * 100)),
     status: status === 'planned' ? null : status,
     viewer: raid.status === 'cancelled' ? null : viewerAnswer(raid),

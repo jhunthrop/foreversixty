@@ -11,7 +11,7 @@ import type {
   GuildRaidSignup,
   GuildRaidView,
 } from './api';
-import { compCopy, copyList, raidCopy } from './raid-copy';
+import { SEP, compCopy, copyList, raidCopy } from './raid-copy';
 import { specName } from './spec-name';
 
 /** The game's class order (Warrior to Druid): the class row, every roster group, the copied list
@@ -154,6 +154,16 @@ export function compBreakdownParts(
 /** A raid view's breakdown clauses. */
 export function raidBreakdownParts(raid: Pick<GuildRaidView, 'counts' | 'signups'>): string[] {
   return compBreakdownParts(raid.counts, lateRoles(raid.signups));
+}
+
+const NO_BREAK_SPACE = ' ';
+
+/** The breakdown as the page shows it: each clause glued with no-break spaces, so a line wraps
+ *  only between clauses and `1 late (healer)` never splits (the copied list keeps plain spaces). */
+export function raidBreakdownLine(raid: Pick<GuildRaidView, 'counts' | 'signups'>): string {
+  return raidBreakdownParts(raid)
+    .map((clause) => clause.replaceAll(' ', NO_BREAK_SPACE))
+    .join(SEP);
 }
 
 /** One class of the class row. */

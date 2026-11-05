@@ -93,7 +93,8 @@ describe('raidCount', () => {
     expect(raidCount(plannedRaid())).toEqual({
       line: '23 of 40 signed up',
       ratio: '23/40',
-      breakdown: '3 tanks · 7 healers · 7 melee · 6 ranged · 2 late',
+      // Each clause glued with no-break spaces: the line wraps only between clauses.
+      breakdown: '3\u00a0tanks · 7\u00a0healers · 7\u00a0melee · 6\u00a0ranged · 2\u00a0late',
       fill: 57,
     });
   });
