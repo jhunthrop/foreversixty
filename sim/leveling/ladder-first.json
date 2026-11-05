@@ -79,10 +79,58 @@
       ]
     },
     "mage-fire": {
-      "reason": "The rotation casts Pyroblast (the 10-point row, learned at 20). A level 20 mage's 11 points hold it, but the plain walk spends the last one on Ignite's fifth rank. Taking Pyroblast as soon as it fits gains about 2% at band 20, beyond error at seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); the other bands do not change.",
+      "reason": "The level 60 build carries Accelerant 5/5 and Burning Soul 2/3 (sim-accuracy round 23, from the raid build's +2.3% at bare 60), and the plain walk spends Accelerant's first-row ranks at 16 to 19, ahead of Ignite, which puts Pyroblast at 20 but Heating Up at 33 and Combustion at 43 (band 30 about -13%, 40 about -6%). This list keeps the old order for everything the rotation casts: Incineration 5, Accelerant 1, Ignite 4, Pyroblast at 20 (sim-accuracy round 13: about +2% at band 20 over Ignite's fifth rank), Ignite 5, then Accelerant 2 to 4 at 22 to 24 in place of Flame Throwing and Burning Soul (a faster Fireball, your filler below 30), Improved Fire Blast, Improved Scorch, Heating Up at 30, Master of Elements, Critical Mass, Fire Power and Combustion at 40; Accelerant 5 and Burning Soul 2 follow at 41 to 43. Against the old ladder at 10,000 iterations, seeds 1 and 50001, both factions: +0.7 to +1.0% at 22, +1.4 to +2.7% at 24 and 25, +0.8 to +1.0% at 27, +1.4 to +1.6% at 50, +1.5 to +1.8% at 57, +2.3 to +3.8% at 60; 10, 20, 30, 35, 38, 40, 45 and 55 unchanged. Levels 41 to 43 lose 0.2 to 0.6% (Wand Specialization moves from 41 and 42 to 44 and 45: the walk spends the own tree first); no checkpoint loses.",
       "first": [
         {
+          "talent": "Incineration",
+          "rank": 5
+        },
+        {
+          "talent": "Accelerant",
+          "rank": 1
+        },
+        {
+          "talent": "Ignite",
+          "rank": 4
+        },
+        {
           "talent": "Pyroblast",
+          "rank": 1
+        },
+        {
+          "talent": "Ignite",
+          "rank": 5
+        },
+        {
+          "talent": "Accelerant",
+          "rank": 4
+        },
+        {
+          "talent": "Improved Fire Blast",
+          "rank": 2
+        },
+        {
+          "talent": "Improved Scorch",
+          "rank": 3
+        },
+        {
+          "talent": "Heating Up",
+          "rank": 1
+        },
+        {
+          "talent": "Master of Elements",
+          "rank": 3
+        },
+        {
+          "talent": "Critical Mass",
+          "rank": 3
+        },
+        {
+          "talent": "Fire Power",
+          "rank": 3
+        },
+        {
+          "talent": "Combustion",
           "rank": 1
         }
       ]

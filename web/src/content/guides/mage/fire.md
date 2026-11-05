@@ -3,7 +3,7 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70790:mage:human:2520150000002/51520101230133031/003:'
+build: 'FS1:1.60.1.70790:mage:human:2301052001000/55500201230133031/003:'
 raidBuild: 'FS1:1.60.1.70790:mage:human:0501052001000/55500201230133031/003:'
 recommendedRaces: [human, undead]
 statPriority: [Hit, Spell power, Fire power, Critical strike, Intellect, Spell haste, Spell penetration]
@@ -66,7 +66,7 @@ Combustion asks for 30 points above it. The Fire damage talents above it come to
 
 The other 17 points buy hit and a little Arcane. Three go into **Precision** in Frost for 6% hit. Fourteen in Arcane take **Improved Channeling**, which opens the tree and keeps your Missiles from being pushed back, **Arcane Concentration** (a free spell 10% of the time), **Missile Barrage**, **Arcane Blast** and a point of Arcane Subtlety. Wand Specialization and Arcane Resilience do nothing on a boss, and Arcane Meditation's regeneration is worth less than Missile Barrage and Arcane Blast, so all three are left out.
 
-The level 60 build is different: it pays the toll to Combustion with **Flame Throwing**, a point in **Burning Soul**, a 23% chance to keep a cast from being pushed back and 10% less Fire threat, and a point in Accelerant, which speeds up Fireball, your filler below 30. From 30 it fills with Scorch. Respec into the raid build when you start raiding. [Open the planner](/planner?class=mage) to change the build.
+The level 60 build is the raid build with one change for the open world: **Wand Specialization** takes two of Improved Channeling's points, because a leveling mage finishes mobs with the wand while the mana comes back, and 25% more wand damage is worth more there than pushback protection on Arcane Missiles. It spends its points in a different order on the way up, set out under Leveling. Swap those two points back into Improved Channeling when you start raiding. [Open the planner](/planner?class=mage) to change the build.
 
 ## Rotation and priority
 
@@ -116,4 +116,6 @@ Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater
 
 ### Levels 20 to 60
 
-Fireball stays your nuke through the 20s, with Fire Blast on cooldown: at the ranks you have in the 20s Fireball does more damage for its mana than Scorch, and mana is what runs out first. Improved Scorch's first point at 27 lands a stack only one Scorch in three, so at 27 build the stacks only on a mob or elite that lives a minute or more. From 28, with two points, Scorch to 5 stacks first on anything that lives 20 seconds. From 30, with Heating Up in, Scorch and Fire Blast take over on single targets, every few crits turn into a fast Pyroblast, and the Burning Soul point from 24 keeps a mob's hits from pushing back every cast. Open on a mob with Pyroblast from range, Fireball (Scorch from 30) as it closes, and finish it with Fire Blast. Keep Frost Nova and Blink for anything that reaches you, and Frostbolt for kiting: none of your Fire spells slow until Frostfire Bolt at 40, and Frostbolt is still the cheaper slow after that. Flamestrike into Arcane Explosion clears packs once you have the Stamina for it. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
+Pyroblast comes at 20 and Ignite's last point at 21, then three more points of Accelerant at 22 to 24 make Fireball a 3.1 second cast. Fireball stays your nuke through the 20s, with Fire Blast on cooldown: at the ranks you have in the 20s Fireball does more damage for its mana than Scorch, and mana is what runs out first. Improved Scorch's first point at 27 lands a stack only one Scorch in three, so at 27 build the stacks only on a mob or elite that lives a minute or more. From 28, with two points, Scorch to 5 stacks first on anything that lives 20 seconds. From 30, with Heating Up in, Scorch and Fire Blast take over on single targets and every few crits turn into a fast Pyroblast. Open on a mob with Pyroblast from range, Fireball (Scorch from 30) as it closes, and finish it with Fire Blast. Keep Frost Nova and Blink for anything that reaches you, and Frostbolt for kiting: none of your Fire spells slow until Frostfire Bolt at 40, and Frostbolt is still the cheaper slow after that. Flamestrike into Arcane Explosion clears packs once you have the Stamina for it. Train Mage Armor at 34 and wear it for the mana; switch to Ice Armor when you are taking melee hits in the open world.
+
+After Combustion at 40, Accelerant's last point and two points of **Burning Soul** at 42 and 43 keep a mob's hits from pushing back half your Fire casts. **Wand Specialization** at 44 and 45 adds a quarter to the wand you finish mobs with, then Improved Channeling, a point of Arcane Subtlety, Arcane Concentration from 50 and Missile Barrage at 55 and 56. **Arcane Blast** at 57 changes the loop: Fireball is the filler again, as in a raid, with the Arcane Blast buff kept up and every Missile Barrage proc spent on a fast Arcane Missiles. Precision takes the last three points for 6% hit.
