@@ -1,7 +1,8 @@
 <!-- web/src/components/sim/RotationCard.svelte -->
 <!-- What the engine was told to press, in words (spec 2026-11-04-sim-results 3.11): always open, the
      curated APL's own notes, this run's casts per fight beside each line, and a line the run never
-     cast dimmed. The live /sim page keeps LiveRotationCard and its drawer. -->
+     cast dimmed, and under the head the spec's fidelity when the sim has not validated it. The live
+     /sim page keeps LiveRotationCard and its drawer. -->
 <script lang="ts">
   import type { ActionNames } from '../../lib/sim/action-names';
   import { createCardTables } from '../../lib/sim/card-tables.svelte';
@@ -10,13 +11,23 @@
   import { rotationActionKeys, rotationRows } from '../../lib/sim/rotation-card';
   import { loadRotationLines, type RotationLines } from '../../lib/sim/rotations';
   import { specDisplayName } from '../../lib/sim/spec-label';
-  import type { SimResult } from '../../lib/sim/types';
+  import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { isStale } from '../../lib/sim/version';
   import ActionLink from '../ui/ActionLink.svelte';
   import Card from '../ui/Card.svelte';
   import ActionMark from './ActionMark.svelte';
+  import FidelityNote from './FidelityNote.svelte';
 
-  let { result, names }: { result: SimResult; names: ActionNames | null } = $props();
+  let {
+    result,
+    names,
+    fidelity = null,
+  }: {
+    result: SimResult;
+    names: ActionNames | null;
+    /** The spec list's row; a spec the sim has not validated says so under the head (tenet 8). */
+    fidelity?: SpecFidelity | null;
+  } = $props();
 
   let lines = $state.raw<RotationLines | null | undefined>(undefined);
   $effect(() => {
@@ -75,6 +86,7 @@
   class="mx-[18px] md:mx-0"
   testid="sim-rotation-saved-card"
 >
+  <FidelityNote {fidelity} class="border-line-soft border-t px-5 py-3" testid="sim-rotation-card-note" />
   {#if rows === null}
     {#if lines === null}
       <p class="text-muted border-line-soft border-t px-5 py-4 text-[14px]">{copy.noRotation(spec)}</p>

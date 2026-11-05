@@ -196,12 +196,32 @@ test('a saved sim opened cold says nothing about a missing character or other pl
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
 });
 
-// Spec 2026-11-04-sim-results 3.11: the saved page's Rotation card is an always-open list, not
-// the old disclosure. It names the rotation the run used with the run's spec and level, prints each
-// line's note in place (the old drawer's job) and links the spec's guide. The old card's fidelity
-// note is not on the rebuilt card; whether it returns is an open spec question (fix round
-// 2026-11-05), so this test pins only what the spec asks for.
-test('a saved sim names the rotation it used and prints its notes in place', async ({ page }) => {
+/** The spec list's answer for warrior-fury, in one fidelity state. */
+function fidelityRoute(state: 'validated' | 'in_progress') {
+  return envelope({
+    specs: [
+      {
+        spec: 'warrior-fury',
+        state,
+        median_gap: state === 'validated' ? 0.02 : 0.08,
+        parses: state === 'validated' ? 50 : 12,
+        worst_actions: [],
+        engine_version: activeBuild.build,
+        updated_at: '2026-01-01',
+      },
+    ],
+  });
+}
+
+// Spec 2026-11-04-sim-results 3.11: the saved page's Rotation card is an always-open list (no
+// drawer). It names the rotation the run used with the run's spec and level, prints each line's
+// note in place and links the spec's guide. Under its head it carries the spec's fidelity note
+// when the sim has not validated the spec (tenet 8). The prerendered fixture's own client-side
+// fetch of /v1/specs is stubbed, as sim-specs.spec.ts stubs it, so the note has a row to read.
+test('a saved sim names the rotation it used, prints its notes in place, and carries its fidelity', async ({
+  page,
+}) => {
+  await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('in_progress')));
   await page.goto('/sim/simfixtureab');
   await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
   const card = page.getByTestId('sim-rotation-saved-card');
@@ -210,8 +230,7 @@ test('a saved sim names the rotation it used and prints its notes in place', asy
   await expect(card).toContainText('Then, from the top at every decision');
 
   const notes = curatedRotationNotes('warrior-fury');
-  const lines = card.getByTestId('rotation-line');
-  await expect(lines.first()).toBeVisible();
+  await expect(card.getByTestId('rotation-line').first()).toBeVisible();
   // Bloodthirst's note has no level version, so the run reads the curated note itself.
   const bloodthirst = notes.find((note) => note.startsWith('On cooldown: the button'));
   expect(bloodthirst).toBeDefined();
@@ -221,6 +240,23 @@ test('a saved sim names the rotation it used and prints its notes in place', asy
   const guide = card.getByRole('link', { name: 'Read the Fury guide' });
   await expect(guide).toHaveAttribute('href', '/guides/warrior/fury');
   expect(page.url()).toBe(url);
+
+  // The fixture's warrior-fury row is not validated, so the note is there, pill linking the spec list.
+  const note = card.getByTestId('sim-rotation-card-note');
+  await expect(note).toBeVisible();
+  await expect(note.getByRole('link')).toHaveAttribute('href', '/sim/specs');
+});
+
+// A validated spec renders no note at all, rather than a green "all is well" line: dropping the
+// `!== 'validated'` clause in needsFidelityNote would break nothing without this.
+test('a saved sim for a validated spec carries the rotation card with no fidelity note', async ({ page }) => {
+  await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('validated')));
+  await page.goto('/sim/simfixtureab');
+  await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
+  const card = page.getByTestId('sim-rotation-saved-card');
+  await expect(card).toBeVisible();
+  await expect(card.getByTestId('rotation-line').first()).toBeVisible();
+  await expect(card.getByTestId('sim-rotation-card-note')).toHaveCount(0);
 });
 
 test('a saved sim whose stored request has no gear drops the nav link', async ({ page }) => {
