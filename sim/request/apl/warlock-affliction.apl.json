@@ -106,7 +106,7 @@
       }
     },
     {
-      "notes": "Amplify Curse just before the Bane of Agony that covers the last minute. It makes that Agony 50% stronger and costs no global.",
+      "notes": "Amplify Curse just before each Bane of Agony it is ready for. At 60, keep it for the Agony that covers the last minute, once Doom has fired. It makes that Agony 50% stronger and costs no global.",
       "action": {
         "condition": {
           "and": {
@@ -135,16 +135,33 @@
                 }
               },
               {
-                "cmp": {
-                  "op": "OpLt",
-                  "lhs": {
-                    "remainingTime": {}
-                  },
-                  "rhs": {
-                    "const": {
-                      "val": "60s"
+                "or": {
+                  "vals": [
+                    {
+                      "not": {
+                        "val": {
+                          "spellIsKnown": {
+                            "spellId": {
+                              "spellId": 603
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpLt",
+                        "lhs": {
+                          "remainingTime": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "60s"
+                          }
+                        }
+                      }
                     }
-                  }
+                  ]
                 }
               }
             ]
