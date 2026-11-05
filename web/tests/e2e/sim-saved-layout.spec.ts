@@ -49,6 +49,9 @@ async function routeTimelineChunk(page: Page, decide: () => Promise<'serve' | 'f
   });
 }
 
+// A chunk still being fetched through the route when a test ends must not fail it.
+test.afterEach(({ page }) => page.unrouteAll({ behavior: 'ignoreErrors' }));
+
 for (const id of FIXTURES) {
   for (const width of WIDTHS) {
     test(`${id} at ${width}: every lazy section is its card's height after load`, async ({ page }) => {
