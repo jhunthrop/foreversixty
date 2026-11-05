@@ -63,6 +63,17 @@ export const navCopy = {
   resource: { rage: 'Rage', energy: 'Energy', mana: 'Mana' },
 } as const;
 
+/** The lazy cards' heads while their chunks load (spec section 6). */
+export const sectionHeadCopy = {
+  timeline: { label: 'ONE FIGHT', title: 'Timeline' },
+  gear: { label: "THIS RUN'S INPUT", title: 'Gear' },
+  talents: { label: "THIS RUN'S INPUT", title: 'Talents' },
+  resource: { label: 'AVERAGE FIGHT' },
+  buffs: { label: 'AVERAGE FIGHT', title: 'Buffs and debuffs' },
+  rotation: { title: 'Rotation', label: (spec: string, level: number) => `${spec.toUpperCase()}, AT ${level}` },
+  settings: { label: "THIS RUN'S INPUT", title: 'Settings' },
+} as const;
+
 export const warningsCopy = {
   label: 'THIS RUN',
   title: 'Worth knowing',

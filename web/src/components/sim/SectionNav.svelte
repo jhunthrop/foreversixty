@@ -49,6 +49,26 @@
     if (strip !== undefined && link !== null && link !== undefined) scrollTabIntoView(strip, link);
   });
 
+  /** How long a jump waits for a lazy card's real heading before giving up on moving focus. */
+  const HEADING_WAIT_MS = 5000;
+
+  /** Moves focus to the card's h2, waiting for it when the card's chunk is still loading. */
+  function focusHeading(card: HTMLElement): void {
+    const focus = (): boolean => {
+      const heading = card.querySelector<HTMLElement>('h2');
+      if (heading === null) return false;
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+      return true;
+    };
+    if (focus()) return;
+    const watcher = new MutationObserver(() => {
+      if (focus()) watcher.disconnect();
+    });
+    watcher.observe(card, { childList: true, subtree: true });
+    setTimeout(() => watcher.disconnect(), HEADING_WAIT_MS);
+  }
+
   function jump(event: MouseEvent, id: string): void {
     const card = document.getElementById(id);
     if (card === null) return;
@@ -57,11 +77,7 @@
     const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     card.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
     history.replaceState(null, '', `#${id}`);
-    const heading = card.querySelector<HTMLElement>('h2');
-    if (heading !== null) {
-      heading.tabIndex = -1;
-      heading.focus({ preventScroll: true });
-    }
+    focusHeading(card);
   }
 </script>
 

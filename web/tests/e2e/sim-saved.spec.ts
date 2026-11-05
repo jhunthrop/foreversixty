@@ -102,23 +102,23 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-copy-json')).toBeVisible();
   });
 
-  test('the full fixture draws the real bins, Worth knowing and the current section', async ({ page }) => {
+  test('the full fixture draws the real bins, Worth knowing and the current section', async ({
+    page,
+    isMobile,
+  }) => {
     await page.goto('/sim/simfullfixt1');
     await expect(page.getByTestId('sim-spread-plot')).toBeVisible();
     await expect(page.getByTestId('sim-spread-bar').first()).toBeVisible();
     await expect(page.getByTestId('sim-spread-caption')).toContainText('Two runs in three');
     await expect(page.getByTestId('sim-fact-saved')).toHaveText(/4 Nov 2026/);
 
-    await page.getByTestId('ability-sort-crit').click();
-    await expect(page.locator('th', { has: page.getByTestId('ability-sort-crit') })).toHaveAttribute(
-      'aria-sort',
-      'descending',
-    );
-    await page.getByTestId('ability-sort-crit').click();
-    await expect(page.locator('th', { has: page.getByTestId('ability-sort-crit') })).toHaveAttribute(
-      'aria-sort',
-      'ascending',
-    );
+    // A phone's table is two columns, so DPS is its one sort header: a press there flips the order.
+    const header = (column: string) => page.locator('th', { has: page.getByTestId(`ability-sort-${column}`) });
+    const column = isMobile ? 'dps' : 'crit';
+    await page.getByTestId(`ability-sort-${column}`).click();
+    await expect(header(column)).toHaveAttribute('aria-sort', isMobile ? 'ascending' : 'descending');
+    await page.getByTestId(`ability-sort-${column}`).click();
+    await expect(header(column)).toHaveAttribute('aria-sort', isMobile ? 'descending' : 'ascending');
 
     await page.locator('[data-section="settings"]').click();
     await expect(page.locator('[data-section="settings"]')).toHaveAttribute('aria-current', 'location');

@@ -23,10 +23,11 @@
   import { extraAttackLines } from '../../lib/sim/extra-attacks';
   import { withoutAbsentPets } from '../../lib/sim/pet-rows';
   import { loadPresetSets, raidSetAt } from '../../lib/sim/preset-sets';
-  import { damageCopy, grouped, oneDecimal, clock, spreadCopy } from '../../lib/sim/result-copy';
+  import { clock, damageCopy, grouped, oneDecimal, sectionHeadCopy, spreadCopy } from '../../lib/sim/result-copy';
   import { SECTION_RESERVE, resultSections, timelineSkeletonHeight } from '../../lib/sim/result-sections';
   import { resultTip } from '../../lib/sim/result-tips';
   import { summaryActionKeys } from '../../lib/sim/sentence';
+  import { specDisplayName } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { NO_SPELL_INFO, loadSpellInfo, type SpellInfo } from '../../lib/sim/spell-info';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
@@ -55,6 +56,7 @@
 
   const summary = $derived(withoutAbsentPets(result.summary));
   const sections = $derived(resultSections(result));
+  const resourceTitle = $derived(sections.find((section) => section.id === 'resource')?.label ?? '');
   const hasSample = $derived((result.sample?.length ?? 0) > 0);
   const hasGear = $derived(result.request.character.gear.length > 0);
 
@@ -235,6 +237,7 @@
            the link, so these two carry no reservation then. -->
       <LazySection
         id="timeline"
+        head={{ glyph: 'chart', ...sectionHeadCopy.timeline }}
         lazy={timelineLazy}
         ready={timelineLazy.current !== null}
         style={hasSample ? `min-height: ${timelineSkeletonHeight(result)}px` : undefined}
@@ -243,6 +246,7 @@
       </LazySection>
       <LazySection
         id="gear"
+        head={{ glyph: 'guild', ...sectionHeadCopy.gear }}
         lazy={gearLazy}
         ready={gearLazy.current !== null}
         reserve={hasGear ? SECTION_RESERVE.gear : ''}
@@ -251,6 +255,7 @@
       </LazySection>
       <LazySection
         id="talents"
+        head={{ glyph: 'tree', ...sectionHeadCopy.talents }}
         lazy={talentsLazy}
         ready={talentsLazy.current !== null}
         reserve={SECTION_RESERVE.talents}
@@ -260,6 +265,7 @@
       {#if sections.some((section) => section.id === 'resource')}
         <LazySection
           id="resource"
+        head={{ glyph: 'bolt', ...sectionHeadCopy.resource, title: resourceTitle }}
           lazy={resourceLazy}
           ready={resourceLazy.current !== null}
           reserve={SECTION_RESERVE.resource}
@@ -267,11 +273,13 @@
           {#if resourceLazy.current}<resourceLazy.current {result} {names} />{/if}
         </LazySection>
       {/if}
-      <LazySection id="buffs" lazy={aurasLazy} ready={aurasLazy.current !== null} reserve={SECTION_RESERVE.buffs}>
+      <LazySection id="buffs"
+        head={{ glyph: 'spark', ...sectionHeadCopy.buffs }} lazy={aurasLazy} ready={aurasLazy.current !== null} reserve={SECTION_RESERVE.buffs}>
         {#if aurasLazy.current}<aurasLazy.current {result} {names} />{/if}
       </LazySection>
       <LazySection
         id="rotation"
+        head={{ glyph: 'list', title: sectionHeadCopy.rotation.title, label: sectionHeadCopy.rotation.label(specDisplayName(spec), character.level) }}
         lazy={rotationLazy}
         ready={rotationLazy.current !== null}
         reserve={SECTION_RESERVE.rotation}
@@ -280,6 +288,7 @@
       </LazySection>
       <LazySection
         id="settings"
+        head={{ glyph: 'gear', ...sectionHeadCopy.settings }}
         lazy={settingsLazy}
         ready={settingsLazy.current !== null}
         reserve={SECTION_RESERVE.settings}

@@ -110,7 +110,7 @@ async function targetsAreBigEnough(page: Page): Promise<void> {
 async function sectionsKeepGutter(page: Page): Promise<void> {
   const { width } = page.viewportSize() ?? { width: 0 };
   const edges = await page.evaluate(() =>
-    [...document.querySelectorAll('#sim .rounded-panel')]
+    [...document.querySelectorAll('#sim .rounded-panel, #sim .card-surface, #sim .card-surface-quiet')]
       .filter((element) => {
         const box = element.getBoundingClientRect();
         return box.width > 0 && box.height > 0;

@@ -8,11 +8,14 @@
   import type { LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { pageErrorCopy } from '../../lib/sim/result-copy';
   import { CARD } from '../../lib/ui/card';
+  import type { GlyphName } from '../../lib/ui/glyphs';
+  import CardHead from '../ui/CardHead.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
 
   let {
     id,
+    head,
     lazy,
     reserve = '',
     style = undefined,
@@ -21,6 +24,9 @@
   }: {
     /** The nav anchor. */
     id: string;
+    /** The card's head while its chunk loads. An h3 until the real card's h2 arrives, so a nav
+     *  jump's focus lands on the heading that stays. */
+    head: { glyph: GlyphName; label: string; title: string };
     lazy: LazyLoadState;
     /** Tailwind min-height classes: the card's ready height at each width. */
     reserve?: string;
@@ -60,12 +66,18 @@
   {#if ready}
     <div class="reveal">{@render children()}</div>
   {:else if lazy.error !== ''}
-    <div class={`${CARD} mx-[18px] p-5 md:mx-0`}>
+    <div class={`${CARD} mx-[18px] md:mx-0`}>
+      <CardHead {...head} headingLevel={3} />
+      <div class="border-line-soft border-t p-5">
       <LoadError message={pageErrorCopy.partFailed} onRetry={() => lazy.load()} testid={`sim-section-${id}-error`} />
+      </div>
     </div>
   {:else}
-    <div class={`${CARD} mx-[18px] h-full p-5 md:mx-0`}>
-      <Skeleton lines={4} testid={`sim-section-${id}-skeleton`} />
+    <div class={`${CARD} mx-[18px] md:mx-0`} style:min-height="inherit">
+      <CardHead {...head} headingLevel={3} />
+      <div class="border-line-soft border-t p-5">
+        <Skeleton lines={4} testid={`sim-section-${id}-skeleton`} />
+      </div>
     </div>
   {/if}
 </section>
