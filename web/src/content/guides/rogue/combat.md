@@ -51,7 +51,7 @@ Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from be
 
 The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab. The level 60 build is the one you level and run dungeons with: 14/34/3: Improved Gouge and Remorseless Attacks in place of Lethality and two points of Improved Slice and Dice, Master of Deception in place of Opportunity, a third point of Ruthlessness, and a point of Efficient Strikes plus the fifth points of Hack and Slash and Lightning Reflexes in place of the fifth Flash of Steel and both points of Composure. That pays off on trash and on the way up, not on a boss. Respec to the raid build for the raid.
 
-- **Adrenaline Rush** (1 point): double energy regeneration for 15 seconds on a 5 minute cooldown. Every Backstab you fit into it is a free one.
+- **Adrenaline Rush** (1 point): double energy regeneration for 15 seconds on a 5 minute cooldown: 150 extra energy, two and a half Backstabs' worth.
 - **Blade Flurry** (1 point): 20% attack speed for 15 seconds, and every melee hit also strikes a second nearby enemy. Two-target fights are where Combat beats the other trees.
 - **Hack and Slash** (5 points, 4 in the raid build): Forever folds the old weapon specializations into one talent. At five points daggers and fists get 5% crit, swords and axes a 5% chance at an extra attack, maces ignore 15% of armor.
 - **Flash of Steel** (5 points, 4 in the level 60 build): Shank gives 15 more energy and comes back 2 seconds sooner. At five points that is 40 energy for 5 every 8 seconds, the best energy in the tree.
@@ -74,7 +74,7 @@ Every rogue picks up **Poised** at 18: at full energy out of combat, your next a
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
+**Shank** on cooldown, right behind any damage racial and your trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
 
 ### Energy
 
@@ -84,7 +84,7 @@ Backstab costs 60 and you are energy-limited all fight, so you spend the moment 
 
 ### Cooldowns and adds
 
-On a single target, Adrenaline Rush goes a few seconds into the pull with Blade Flurry, your racial, a trinket and a potion. On a 3 minute kill you get two Blade Flurries and one Adrenaline Rush, so do not hold them. If a fight brings adds in the first minute, hold Blade Flurry for them and keep Adrenaline Rush with it.
+On a single target, Adrenaline Rush goes a few seconds into the pull with Blade Flurry, any damage racial, a trinket and a potion. On a 3 minute kill you get two Blade Flurries and one Adrenaline Rush, so do not hold them. If a fight brings adds in the first minute, hold Blade Flurry for them and keep Adrenaline Rush with it.
 
 Blade Flurry hits anything next to your target. Never turn it on next to a Sapped, Polymorphed, Shackled or Feared mob: one cleave breaks it and the pull goes wrong. Cancel the buff if you have to.
 
@@ -129,4 +129,4 @@ Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger wi
 
 ### Levels 20 to 60
 
-Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword, which is what your best in slot table lists. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and Vanish get you out of the pulls that go wrong.
+Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword, which is what your best in slot table lists. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong.

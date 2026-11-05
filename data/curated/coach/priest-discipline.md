@@ -29,7 +29,7 @@ This is the Discipline Priest as the site's guide describes it. Discipline heals
 - Flash Heal at the top rank on a tank who is really low: the fast heal, and the dear one.
 - Prayer of Healing when three or more in a group are hurt.
 - Inner Focus on a Greater Heal or a Prayer of Healing. It makes the spell free and adds twenty-five percent crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
-- Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every twelve seconds, your best heal per mana.
+- Penance on cooldown, on whoever is hurt: three heals one second apart for one cast every twelve seconds, cheap for all it heals.
 - Dark Sacrifice if you are Undead, once your mana is down enough.
 
 **The mistakes the coach looks for, by finding.**

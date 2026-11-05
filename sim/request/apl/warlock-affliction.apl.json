@@ -106,7 +106,7 @@
       }
     },
     {
-      "notes": "Amplify Curse just before the Bane of Agony that covers the last minute. It makes that Agony 50% stronger and costs no global.",
+      "notes": "Amplify Curse before each Bane of Agony, whenever it is off cooldown. At 60, keep it for the fight's final Agony, once your last Doom has fired. It makes that Agony 50% stronger and costs no global.",
       "action": {
         "condition": {
           "and": {
@@ -135,16 +135,33 @@
                 }
               },
               {
-                "cmp": {
-                  "op": "OpLt",
-                  "lhs": {
-                    "remainingTime": {}
-                  },
-                  "rhs": {
-                    "const": {
-                      "val": "60s"
+                "or": {
+                  "vals": [
+                    {
+                      "not": {
+                        "val": {
+                          "spellIsKnown": {
+                            "spellId": {
+                              "spellId": 603
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpLt",
+                        "lhs": {
+                          "remainingTime": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "60s"
+                          }
+                        }
+                      }
                     }
-                  }
+                  ]
                 }
               }
             ]
@@ -250,7 +267,7 @@
       }
     },
     {
-      "notes": "Wrack with your DoTs up. With Soul Siphon it out-damages Shadow Bolt for a fraction of the mana, and your other Shadow DoTs take 10% more while it runs.",
+      "notes": "Wrack with your DoTs up. With Soul Siphon it out-damages Shadow Bolt for a fraction of the mana, and your Corruption and Bane of Agony take 10% more while it runs.",
       "action": {
         "castSpell": {
           "spellId": {

@@ -211,7 +211,7 @@
         }
       },
       {
-        "notes": "On cooldown: your biggest hit, and it grows with your block value.",
+        "notes": "On cooldown: a hard hit with a very high amount of threat, and it grows with your block value.",
         "action": {
           "castSpell": {
             "spellId": {

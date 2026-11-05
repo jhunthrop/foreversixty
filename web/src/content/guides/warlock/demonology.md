@@ -107,7 +107,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes, so save it for the last 35%, when every Shadow Bolt hits 6% harder, and Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the last 35% if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is close behind Orc: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Press it with your trinkets, and again for the last 35% if it is back, when every Shadow Bolt hits 6% harder. Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the last 35% if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is close behind Orc: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds.
 
 ## Professions
 
@@ -121,7 +121,7 @@ Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker c
 
 Your points at 10 and 11 go into Improved Health Funnel: 40% more health moved, 30% cheaper, no threat, and usable at any demon health. It wakes up at 12 with Health Funnel and keeps the Voidwalker standing through bad pulls. Demonic Embrace follows from 12 to 14 for 9% more Stamina, then Unholy Power from 15 to 19 for 10% more pet damage.
 
-Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 cost no mana, and from 13 the wand out-damages your bolts. An enchanter makes both, or check the Auction House. Cloth quest rewards with Intellect and Stamina beat anything a vendor sells.
+Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 cost no mana, and from 13 the Greater wand out-damages your bolts. An enchanter makes both, or check the Auction House. Cloth quest rewards with Intellect and Stamina beat anything a vendor sells.
 
 ### Levels 20 to 60
 

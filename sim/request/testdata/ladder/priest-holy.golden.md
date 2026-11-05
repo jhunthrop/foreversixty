@@ -100,10 +100,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-10000000000000000-00000000000000000 | main_hand:263937 | 4.1 | 1 | spell:139=21.0 | - |
+| 10 | 000000000000000000-10000000000000000-00000000000000000 | main_hand:263937 | 16.4 | 2 | spell:2053=21.2, spell:139=19.0 | - |
 | 20 | 000000000000000000-33500000000000000-00000000000000000 | main_hand:890 | 17.2 | 4 | spell:139=15.6, spell:2061=10.9, spell:2054=7.4, other:mana_gain=2.9, spell:1277324=0.6 | - |
 | 30 | 000000000000000000-33505003020000000-00000000000000000 | main_hand:249392 | 33.1 | 5 | spell:139=16.3, spell:9472=11.7, spell:6063=7.3, other:mana_gain=4.5, spell:596=1.0 | - |
-| 38 | 000000000000000000-33505003030121030-00000000000000000 | main_hand:873 | 59.7 | 5 | other:mana_gain=34.1, spell:6075=15.7, spell:6064=8.2, spell:9474=7.9, spell:596=1.9 | - |
+| 38 | 000000000000000000-33505003030121030-00000000000000000 | main_hand:873 | 59.3 | 5 | other:mana_gain=34.4, spell:6075=15.4, spell:6063=9.5, spell:9474=8.0, spell:596=1.9 | - |
 | 40 | 000000000000000000-33505003030121131-00000000000000000 | main_hand:873 | 87.3 | 8 | other:mana_gain=40.3, spell:401859=17.6, spell:6076=14.8, spell:2060=4.7, spell:1277326=1.0 | - |
 | 50 | 005002000000000000-33505003030121431-00000000000000000 | main_hand:812 | 151.7 | 8 | other:mana_gain=39.1, spell:1240826=15.4, spell:6077=14.1, spell:2060=6.7, spell:10916=1.0 | - |
 | 60 | 005005031030000000-33505003030121431-00000000000000000 | main_hand:19355 | 202.9 | 10 | other:mana_gain=45.4, spell:10927=16.8, spell:1240827=9.8, spell:6064=8.7, spell:10917=5.7 | - |
@@ -190,4 +190,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- priest-holy level=20 kind=zero_casts spell="Lesser Heal" id=2053 authored=2053
+- priest-holy level=30 kind=zero_casts spell="Lesser Heal" id=2053 authored=2053
+- priest-holy level=38 kind=zero_casts spell="Lesser Heal" id=2053 authored=2053
+- priest-holy level=40 kind=zero_casts spell="Lesser Heal" id=2053 authored=2053
+- priest-holy level=50 kind=zero_casts spell="Lesser Heal" id=2053 authored=2053
+- priest-holy level=60 kind=zero_casts spell="Lesser Heal" id=2053 authored=2053

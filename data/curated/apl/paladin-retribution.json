@@ -1,7 +1,7 @@
 {
   "spec": "paladin-retribution",
   "state": "written",
-  "notes": "Vanilla Retribution at 60 has few buttons: keep a seal up, Judgement it off cooldown, Holy Strike it off cooldown, autoattack, and swap to Hammer of Wrath in the execute window. This rotation used to seal-twist every swing (swap Seal of Righteousness <-> Seal of Command right before each melee hit), ported directly from wowsims-forever's basic_ret.apl.json. Measured against this engine's own mechanics (2026-09-28 rotation-accuracy audit) that twist is a DPS loss here, not a gain, for three reasons specific to this fork: (1) sim/paladin/soc.go and sor.go's applySeal deactivates whichever seal is active before activating the new one -- the two auras are strictly mutually exclusive, so there is no overlap window for a swing to benefit from both, unlike the historical 1.12 latency exploit the technique is named for; (2) sim/paladin/judgement.go's castSpecificJudgement calls matchingSeal.Deactivate(sim) on every Judgement cast, and sim/request/request.go hardcodes PrimarySeal to Seal of Righteousness for every paladin request, so the very next decision after any Judgement always recasts Seal of Righteousness regardless of which seal the twist had up at that instant -- Judgement's damage is not actually being steered onto Seal of Command's judgement by twisting here; (3) Twist of Light, the talent that once removed the old exploit's timing risk, is gone in client 1.60.1.70707; its replacement capstone, Unsealed Wrath, stores a copy of the active Seal on each landed swing (3 stacks, 15 s) and rolls the stored Seal once a stack when a swing lands under a different Seal. The engine models it (sim/paladin/unsealed_wrath.go), and a Seal of Righteousness <-> Seal of Command swap at three stacks was measured on the 70707 guide gear (talent-search conditions, seed 7, 2000 iterations): about +1% on the raid preset when the swap only takes free global cooldowns, and a 12 to 18% loss on the bare preset, where every swap's mana runs the paladin dry. That measurement predates the raid build's Unsealed Wrath; the twist that build does use is described at the end of these notes. Each seal recast costs a full GCD and 200+ mana at 60 (Seal of Righteousness rank 8 is 200, Seal of Command rank 5 is 210); swinging every ~2-3s pays that mana and GCD for no measurable benefit. Removing the twist and adding Holy Strike (below) as a filler on the freed GCDs was measured directly: forever-sim, level 60, band-60 BiS gear (data/builds/1.60.1.70009/bis/paladin-retribution.json), no buffs/consumes, 3000 iterations, patchwerk single-target -- twist-every-swing (the old rotation) 153.8 DPS; no twist, no Holy Strike 165.6 DPS; no twist plus Holy Strike (this rotation) 190.0 DPS, +23.5% over the old rotation. Consecration (baseline in Forever, sim/paladin/consecration.go, ranks from level 20) is the last filler on the list; its own line below says how it is paced against the mana pool. Hammer of Wrath (24239) is a rank the vanilla client never had at this level (rank 3, level 60) -- checked against this build's own spellconst, not remembered from live Classic. Rotation-accuracy program, unused-ability pass (2026-09-28): Holy Wrath (2812/10318, learnable at 50) is left out of this priority list -- sim/paladin/holy_wrath.go's ApplyEffects loops the encounter's targets and only deals damage to target.MobType == Demon || Undead (the same restriction Exorcism's ExtraCastCondition enforces above), so against this ladder's default Humanoid target, or any Humanoid boss, it is a full GCD and 645-805 mana spent on zero damage. Judgement of Command (20425/20966) and Judgement of Fury (also on the class's own learned-ability list at every level) are not separate castable buttons at all: sim/paladin/judgement.go's generic Judgement (20271) resolves to whichever of these the active seal implies, and this rotation's seal never leaves Seal of Righteousness (see the seal-twist paragraph above) -- so they show as permanently unused by name only, with no line for this file to add or gate. Sim audit round 2 (2026-11-01): Unsealed Wrath twist. With the capstone, three swings store three copies of Seal of Righteousness; one swing under Seal of Command releases them (three Righteousness hits) and stores one Command copy, and switching straight back releases that copy's normal Seal of Command chance. Store-three-then-flip-for-one-swing beat a three-and-three alternation (+0.9%) and Seal of Command as the only seal (-2.7%); with the raid build taking Unsealed Wrath for its Reverence point (Benediction 4 measured higher but leaves Retribution's tier 1 short of 5 points) it measured about +1.3% in the raid run (seeds 1 and 50001, 10000 iterations), with no time out of mana. The two lines only fire while Unsealed Wrath has stacks, so a build without the talent never twists; the 30% mana gate keeps the bare-preset loss away from a raid build that runs low. Both lines open with auraIsKnown(Unsealed Wrath): an aura the build never registers leaves auraNumStacks unresolved, and an unresolved value drops out of an and, which would twist a build without the talent. Opener (guide rewrite, 2026-11-02): the pre-pull Seal is the one the fight keeps. With Unsealed Wrath it is Seal of Command, the raid build's main Seal, instead of Seal of Righteousness that the twist line then had to replace; without the talent it stays Seal of Righteousness. Measured on fork int/r11 with the published entries, 10,000 iterations, seeds 1 and 50001: raid 690.2 / 689.7 to 692.9 / 692.6 DPS (+0.4%), bare 244.7 / 244.7 unchanged. Both casts are castSpell, gated on auraIsKnown, so the guide's opener list names them.",
+  "notes": "Vanilla Retribution at 60 has few buttons: keep a seal up, Judgement it off cooldown, Holy Strike it off cooldown, autoattack, and swap to Hammer of Wrath in the execute window. This rotation used to seal-twist every swing (swap Seal of Righteousness <-> Seal of Command right before each melee hit), ported directly from wowsims-forever's basic_ret.apl.json. Measured against this engine's own mechanics (2026-09-28 rotation-accuracy audit) that twist is a DPS loss here, not a gain, for three reasons specific to this fork: (1) sim/paladin/soc.go and sor.go's applySeal deactivates whichever seal is active before activating the new one -- the two auras are strictly mutually exclusive, so there is no overlap window for a swing to benefit from both, unlike the historical 1.12 latency exploit the technique is named for; (2) sim/paladin/judgement.go's castSpecificJudgement calls matchingSeal.Deactivate(sim) on every Judgement cast, and sim/request/request.go hardcodes PrimarySeal to Seal of Righteousness for every paladin request, so the very next decision after any Judgement always recasts Seal of Righteousness regardless of which seal the twist had up at that instant -- Judgement's damage is not actually being steered onto Seal of Command's judgement by twisting here; (3) Twist of Light, the talent that once removed the old exploit's timing risk, is gone in client 1.60.1.70707; its replacement capstone, Unsealed Wrath, stores a copy of the active Seal on each landed swing (3 stacks, 15 s) and rolls the stored Seal once a stack when a swing lands under a different Seal. The engine models it (sim/paladin/unsealed_wrath.go), and a Seal of Righteousness <-> Seal of Command swap at three stacks was measured on the 70707 guide gear (talent-search conditions, seed 7, 2000 iterations): about +1% on the raid preset when the swap only takes free global cooldowns, and a 12 to 18% loss on the bare preset, where every swap's mana runs the paladin dry. That measurement predates the raid build's Unsealed Wrath; the twist that build does use is described at the end of these notes. Each seal recast costs a full GCD and 200+ mana at 60 (Seal of Righteousness rank 8 is 200, Seal of Command rank 5 is 210); swinging every ~2-3s pays that mana and GCD for no measurable benefit. Removing the twist and adding Holy Strike (below) as a filler on the freed GCDs was measured directly: forever-sim, level 60, band-60 BiS gear (data/builds/1.60.1.70009/bis/paladin-retribution.json), no buffs/consumes, 3000 iterations, patchwerk single-target -- twist-every-swing (the old rotation) 153.8 DPS; no twist, no Holy Strike 165.6 DPS; no twist plus Holy Strike (this rotation) 190.0 DPS, +23.5% over the old rotation. Consecration (baseline in Forever, sim/paladin/consecration.go, ranks from level 20) is the last filler on the list; its own line below says how it is paced against the mana pool. Hammer of Wrath (24239) is a rank the vanilla client never had at this level (rank 3, level 60) -- checked against this build's own spellconst, not remembered from live Classic. Rotation-accuracy program, unused-ability pass (2026-09-28): Holy Wrath (2812/10318, learnable at 50) is left out of this priority list -- sim/paladin/holy_wrath.go's ApplyEffects loops the encounter's targets and only deals damage to target.MobType == Demon || Undead (the same restriction Exorcism's ExtraCastCondition enforces above), so against this ladder's default Humanoid target, or any Humanoid boss, it is a full GCD and 645-805 mana spent on zero damage. Judgement of Command (20425/20966) and Judgement of Fury (also on the class's own learned-ability list at every level) are not separate castable buttons at all: sim/paladin/judgement.go's generic Judgement (20271) resolves to whichever of these the active seal implies, and this rotation's seal never leaves Seal of Righteousness (see the seal-twist paragraph above) -- so they show as permanently unused by name only, with no line for this file to add or gate. Sim audit round 2 (2026-11-01): Unsealed Wrath twist. With the capstone, three swings store three copies of Seal of Righteousness; one swing under Seal of Command releases them (three Righteousness hits) and stores one Command copy, and switching straight back releases that copy's normal Seal of Command chance. Store-three-then-flip-for-one-swing beat a three-and-three alternation (+0.9%) and Seal of Command as the only seal (-2.7%); with the raid build taking Unsealed Wrath for its Reverence point (Benediction 4 measured higher but leaves Retribution's tier 1 short of 5 points) it measured about +1.3% in the raid run (seeds 1 and 50001, 10000 iterations), with no time out of mana. The two lines only fire while Unsealed Wrath has stacks, so a build without the talent never twists; the 30% mana gate keeps the bare-preset loss away from a raid build that runs low. Both lines open with auraIsKnown(Unsealed Wrath): an aura the build never registers leaves auraNumStacks unresolved, and an unresolved value drops out of an and, which would twist a build without the talent. Opener (guide rewrite, 2026-11-02): the pre-pull Seal is the one the fight keeps. With Unsealed Wrath it is Seal of Command, the raid build's main Seal, instead of Seal of Righteousness that the twist line then had to replace; without the talent it stays Seal of Righteousness. Measured on fork int/r11 with the published entries, 10,000 iterations, seeds 1 and 50001: raid 690.2 / 689.7 to 692.9 / 692.6 DPS (+0.4%), bare 244.7 / 244.7 unchanged. Both casts are castSpell, gated on auraIsKnown, so the guide's opener list names them. Sim-accuracy round 21: the twist lines dropped their 1200 attack power gate, a stand-in for raid buffs that misfired under other buff sets (without Heart of the Lion and Trueshot Aura the raid build stopped twisting and lost 15%), and their flat 30% mana gate became the Consecration pace (mana percent at least 0.8 of the fight's remaining percent): raid 60 +0.3%, bare 60 +0.5 to +1.8%, no Blessing of Might or Battle Shout a tie, no Heart of the Lion or Trueshot Aura +15% (seeds 1 and 50001, both factions).",
   "expected_idle": [
     {
       "id": 10314,
@@ -174,7 +174,7 @@
         }
       },
       {
-        "notes": "With Unsealed Wrath, straight after the opening Crusader Judgement. On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then go straight to Seal of Command: three swings store three Commands and the twist is under way. Your swings keep the debuff up, so the target takes more Holy damage for the whole fight.",
+        "notes": "With Unsealed Wrath, straight after the opening Crusader Judgement, in a dungeon or a raid. On a boss with no Crusader debuff on it, cast Seal of the Crusader before the pull, Judge it on your first swing, then go straight to Seal of Command: three swings store three Commands and the twist is under way. Your swings keep the debuff up, so the target takes more Holy damage for the whole fight.",
         "action": {
           "condition": {
             "and": {
@@ -277,7 +277,7 @@
         }
       },
       {
-        "notes": "With Unsealed Wrath, once three swings have stored Seal of Command. Switch to Seal of Righteousness for one swing, and that swing releases all three stored Commands. Only above 30% mana and with raid buffs on you (1200 attack power or more): every Seal costs a global and its mana, 180 to 190 at 60, and with less attack power Seal of Command does less than Seal of Righteousness.",
+        "notes": "With Unsealed Wrath, once three swings have stored Seal of Command, while your mana percent is at least four fifths of the fight left. Switch to Seal of Righteousness for one swing, and that swing releases all three stored Commands. It is the same pace as Consecration: every Seal costs a global and its mana, 180 to 190 at 60.",
         "action": {
           "condition": {
             "and": {
@@ -316,26 +316,21 @@
                 },
                 {
                   "cmp": {
-                    "op": "OpGt",
+                    "op": "OpGe",
                     "lhs": {
                       "currentManaPercent": {}
                     },
                     "rhs": {
-                      "const": {
-                        "val": "30%"
-                      }
-                    }
-                  }
-                },
-                {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentAttackPower": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "1200"
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.8"
+                          }
+                        }
                       }
                     }
                   }
@@ -399,26 +394,21 @@
                 },
                 {
                   "cmp": {
-                    "op": "OpGt",
+                    "op": "OpGe",
                     "lhs": {
                       "currentManaPercent": {}
                     },
                     "rhs": {
-                      "const": {
-                        "val": "30%"
-                      }
-                    }
-                  }
-                },
-                {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentAttackPower": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "1200"
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.8"
+                          }
+                        }
                       }
                     }
                   }
@@ -435,7 +425,7 @@
         }
       },
       {
-        "notes": "Keep Seal of Command up with Unsealed Wrath, raid buffs and more than 30% mana. Recast it in its last second.",
+        "notes": "Keep Seal of Command up with Unsealed Wrath while your mana keeps pace with the fight. Recast it in its last second.",
         "action": {
           "condition": {
             "and": {
@@ -457,13 +447,21 @@
                 },
                 {
                   "cmp": {
-                    "op": "OpGt",
+                    "op": "OpGe",
                     "lhs": {
                       "currentManaPercent": {}
                     },
                     "rhs": {
-                      "const": {
-                        "val": "30%"
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0.8"
+                          }
+                        }
                       }
                     }
                   }
@@ -480,19 +478,6 @@
                       }
                     }
                   }
-                },
-                {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentAttackPower": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "1200"
-                      }
-                    }
-                  }
                 }
               ]
             }
@@ -506,7 +491,7 @@
         }
       },
       {
-        "notes": "Otherwise keep Seal of Righteousness up at the top rank you have trained, and recast it in its last second. That is every fight without Unsealed Wrath or raid buffs, and any time you drop under 30% mana.",
+        "notes": "Otherwise keep Seal of Righteousness up at the top rank you have trained, and recast it in its last second. That is every fight without Unsealed Wrath, and any time your mana falls behind the fight.",
         "action": {
           "condition": {
             "cmp": {
@@ -549,7 +534,7 @@
         }
       },
       {
-        "notes": "Last, while the mana left after it still pays for a Seal, a Judgement and a Holy Strike, and your mana percent is at least four fifths of the percent of the fight left (halfway through, 40% mana or more). Spam it and your Seal lapses before the execute; hold it too long and you end the fight with mana unspent.",
+        "notes": "Last, while your mana percent is at least four fifths of the fight left and covers a Seal, Judgement and Holy Strike (rank 4 at 60 without raid buffs). The mana left after it must still pay for those three, and halfway through a fight the pace means 40% mana or more. Spam it and your Seal lapses before the execute; hold it too long and you end the fight with mana unspent.",
         "action": {
           "castSpell": {
             "spellId": {

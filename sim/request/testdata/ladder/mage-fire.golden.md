@@ -100,7 +100,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-10000000000000000-000000000000000000 | main_hand:284287 ranged:286750 | 10.0 | 4 | spell:5019=64.2, spell:2136=18.9, spell:143=17.8, spell:12051=1.0 | {SpellID: 11129}, {SpellID: 12873} |
+| 10 | 000000000000000000-10000000000000000-000000000000000000 | main_hand:284287 ranged:286750 | 9.6 | 3 | spell:5019=78.7, spell:2136=19.6, spell:143=8.9 | {SpellID: 11129}, {SpellID: 12873} |
 | 20 | 000000000000000000-51400001000000000-000000000000000000 | main_hand:6505 ranged:5243 | 25.1 | 5 | spell:5019=60.6, spell:2137=17.6, spell:3140=15.0, spell:11366=1.0, spell:12051=1.0 | {SpellID: 11129}, {SpellID: 12873}, {SpellID: 400625} |
 | 30 | 000000000000000000-51520101230100000-000000000000000000 | main_hand:249392 ranged:5213 | 43.0 | 5 | spell:5019=64.0, spell:2948=45.8, spell:2138=10.2, spell:12522=4.9, item:5514=1.0 | {SpellID: 11129} |
 | 38 | 000000000000000000-51520101230133020-000000000000000000 | main_hand:873 ranged:13064 | 73.4 | 5 | spell:2948=63.7, spell:5019=23.4, spell:2138=18.5, other:mana_gain=17.2, spell:12523=9.1 | {SpellID: 11129} |

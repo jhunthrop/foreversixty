@@ -113,7 +113,7 @@ func TestHolyFillsWithGreaterHealAheadOfHeal(t *testing.T) {
 	heal := linesCasting(t, "priest-holy", 2054, 6064)
 	greater := linesCasting(t, "priest-holy", 10965)
 	assertRanks(t, heal, "priest-holy", "priest", "troll", healRanks, []rankCase{
-		{16, BarePreset, 1}, {22, BarePreset, 2}, {28, BarePreset, 3}, {34, BarePreset, 4}, {50, BarePreset, 4},
+		{16, BarePreset, 1}, {22, BarePreset, 2}, {28, BarePreset, 3}, {34, BarePreset, 3}, {38, BarePreset, 3}, {39, BarePreset, 4}, {50, BarePreset, 4},
 		{60, BarePreset, 4}, {60, RaidPreset, 4},
 	})
 	assertRanks(t, greater, "priest-holy", "priest", "troll", greaterHealRanks, []rankCase{

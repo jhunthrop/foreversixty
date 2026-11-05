@@ -12,8 +12,9 @@ beforeAll(async () => {
   notes = await loadRotationNotes();
 });
 
-const FROSTBOLT_NOTE =
-  'Frostbolt is the filler, and every cast can roll Fingers of Frost or Missile Barrage. Never stop casting to wait for a proc.';
+// The guide rounds reword the notes; the filler is pinned by its opening words, the wand note in full.
+const FROSTBOLT_NOTE_START = 'Frostbolt is the filler';
+const isFrostboltNote = (note: string) => note.startsWith(FROSTBOLT_NOTE_START);
 const WAND_NOTE =
   "Shoot only when you are out of mana and waiting on a gem, a rune or Evocation. A wand shot holds you for the wand's full speed, so never weave it between spells.";
 
@@ -22,7 +23,7 @@ describe('rotationNotesFor', () => {
   // rotation gains steps as the model improves (data contracts are floors).
   it("carries mage-frost's curated step notes, the Frostbolt filler before the wand", () => {
     const frost = rotationNotesFor('mage-frost', notes);
-    const filler = frost.indexOf(FROSTBOLT_NOTE);
+    const filler = frost.findIndex(isFrostboltNote);
     expect(filler).toBeGreaterThanOrEqual(0);
     expect(frost.indexOf(WAND_NOTE)).toBeGreaterThan(filler);
   });
@@ -47,7 +48,7 @@ describe('rotationDrawerContent', () => {
     const content = rotationDrawerContent('mage-frost', notes);
     expect(content.intro).toContain('Frost');
     expect(content.steps).toEqual(rotationNotesFor('mage-frost', notes));
-    expect(content.steps).toContain(FROSTBOLT_NOTE);
+    expect(content.steps?.some(isFrostboltNote)).toBe(true);
   });
 
   it('carries an empty step list, not an error, for an unknown spec', () => {

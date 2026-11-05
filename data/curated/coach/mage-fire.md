@@ -26,7 +26,7 @@ This is the Fire Mage as the site's guide describes it. Fire spams Scorch, keeps
 - Fire Blast every time it is off cooldown. It is instant, and from Heating Up at thirty every hit is a stack.
 - Combustion once the boss carries five Improved Scorch stacks, with your on-use trinkets and your racial.
 - Evocation when you are nearly dry and more than thirty seconds of the fight remain.
-- Fireball only before you train Scorch at level twenty-two, when it is the only filler you have.
+- Below thirty, Fireball is the filler.
 - Flamestrike is a three second cast that burns the ground for eight seconds, so cast it where the tank is going to stand, then follow with Arcane Explosion in the pack or a Blizzard from range.
 - Frost Nova: Let the tank get a few seconds of threat first, and Frost Nova and Blink out if the pack turns on you.
 

@@ -88,7 +88,7 @@ When you cast Healing Touch to fill a hole, a lower rank often heals more for yo
 
 ## Stat priority
 
-The table above gives the order for your gear. A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power is every heal, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
+The table above gives the order for your gear. A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power is every heal except Bloom and a rank far below your level, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
 
 ## Best in slot
 

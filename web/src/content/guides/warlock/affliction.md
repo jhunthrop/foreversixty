@@ -29,7 +29,7 @@ Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps wi
 ### Strengths
 
 - Corruption, both banes and Siphon Life are instant, so you keep doing damage while you move
-- Every DoT tick can crit, and Pandemic doubles the bonus on those crits
+- Every DoT tick can crit, and Pandemic doubles the bonus on all of them but Immolate's burn
 - Siphon Life gives you a small, steady heal on top of your damage
 
 ### Weaknesses
@@ -54,7 +54,7 @@ The leveling build is a real Affliction tree: Soul Siphon and Wrack make the dra
 - **Malevolence** (2 points leveling, 5 in a raid): 1% crit a point on your Shadow spells, DoT ticks and Wrack included, and Pandemic doubles the bonus on those. The leveling build takes two points at 34 and 35 instead of Nightfall. Between 34 and 39, while Shadow Bolt is still your filler, they are about level with Nightfall; from 40 they pull ahead. Wrack replaces Shadow Bolt then, and a Nightfall bolt is instant but still costs full mana, while Wrack does more for less.
 - **Shadow Mastery** (5 points): 10% more Shadow damage on everything you cast.
 - **Siphon Life** (1 point): a 30 second DoT that heals you, and one more Affliction effect for Soul Siphon.
-- **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your other Shadow DoTs. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. With three of your effects on the boss it out-damages Shadow Bolt for a fraction of the mana, so both builds take it and it is your filler from 40.
+- **Soul Siphon** and **Wrack** (4 points): Wrack is a 6 second channel that deals Shadow damage every second and makes the target take 10% more from your Corruption and Bane of Agony; Siphon Life and Bane of Doom get nothing from it. Soul Siphon adds 12% to Wrack and the drains for each of your Affliction effects on the target, up to 36%. With three of your effects on the boss it out-damages Shadow Bolt for a fraction of the mana, so both builds take it and it is your filler from 40.
 
 The raid build drops Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), along with Improved Health Funnel and Improved Voidwalker. It takes the last three points of Malevolence and both points of Improved Bane of Agony, for 10% more damage on the Agony that covers the last minute, and keeps Grim Reach for range. All five points of Malevolence give your Shadow spells 5% crit, DoT ticks and Wrack included. In Destruction, Bane makes Immolate a 1.5 second cast and four points of Aftermath add 40% to its first hit. Its Demonology points are Unholy Power for your Succubus and Demonic Aegis for Demon Armor.
 
@@ -68,7 +68,7 @@ Bane of Doom is your bane on a boss. It hits once, for a big chunk, when its min
 
 Never clip a DoT. A recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end. Recast Corruption and Siphon Life when they fall off. Immolate is the one exception: start its cast with about 3 seconds left. It lands a moment before the old one ends, and the fresh direct hit is worth the tick you give up.
 
-Wrack is your filler. Once Corruption, your bane and Siphon Life are up, Soul Siphon adds 36% to it, and while it channels your other Shadow DoTs take 10% more. It does more than Shadow Bolt for a fraction of the mana, so channel it whenever nothing needs refreshing.
+Wrack is your filler. Once Corruption, your bane and Siphon Life are up, Soul Siphon adds 36% to it, and while it channels your Corruption and Bane of Agony take 10% more. It does more than Shadow Bolt for a fraction of the mana, so channel it whenever nothing needs refreshing.
 
 Life Tap when you drop below about 10% mana, and Life Tap whenever you have to move with nothing to refresh. Each tap converts its base amount plus your Spirit, and Improved Life Tap adds 20% on top. Drink your Major Mana Potion and Demonic Rune on cooldown once you are low enough that none of it is wasted. The health comes from your healers and your Healthstone.
 
@@ -82,7 +82,7 @@ Adds and AoE: put Corruption and Agony on each of two or three adds that live 15
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Spell power feeds every spell you cast, and Shadow power feeds nearly all of them, since almost everything Affliction casts is Shadow. Crit is good for Affliction because DoT ticks crit too, and Pandemic doubles the bonus on them. Intellect is mana, plus a little crit: about 1% for every 60 points. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces. The table above gives the order for your gear.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Spell power feeds every spell you cast, and Shadow power feeds nearly all of them, since almost everything Affliction casts is Shadow. Crit is good for Affliction because DoT ticks crit too, and Pandemic doubles the bonus on all but Immolate's. Intellect is mana, plus a little crit: about 1% for every 60 points. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces. The table above gives the order for your gear.
 
 ## Best in slot
 
@@ -112,4 +112,4 @@ Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Grea
 
 ### Levels 20 to 60
 
-Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. Drain Life while the DoTs run, and from 40 channel Wrack instead: once Soul Siphon is full at 38, three of your effects on the target add 36% to both, and Wrack costs far less mana than the Shadow Bolts it replaces. Wand the mob down when the DoTs are enough. Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards; from 24, Soul Harvest turns each of those kills into mana regeneration, so you drink less. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit.
+Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. From 29, press Amplify Curse before every Bane of Agony as soon as it is ready; it costs no global, and until Bane of Doom at 60 there is nothing to hold it for. Drain Life while the DoTs run, and from 40 channel Wrack instead: once Soul Siphon is full at 38, three of your effects on the target add 36% to both, and Wrack costs far less mana than the Shadow Bolts it replaces. Wand the mob down when the DoTs are enough. Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards; from 24, Soul Harvest turns each of those kills into mana regeneration, so you drink less. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit.

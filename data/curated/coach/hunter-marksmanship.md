@@ -22,13 +22,13 @@ This is the Marksmanship Hunter as the site's guide describes it. Marksmanship's
 
 - Aspect of the Hawk goes up before the pull.
 - Aimed Shot only as the opener, cast before the pull so it lands as the fight opens.
-- Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect.
 - Hunter's Mark whenever the target is not marked.
-- Rapid Fire on the pull, as an auto shot leaves and Multi-Shot is about to come back.
+- Aspect of the Falcon gives the same ranged attack power plus melee attack power you will not use, and under Falcon Deadly Aspects only procs from melee swings, never from your auto shots, so Hawk is the ranged aspect.
+- Rapid Fire on the pull, as an auto shot leaves and the shared cooldown is about to come back.
+- Sniper Shot whenever it is ready and the shared cooldown is not.
 - Multi-Shot every time the cooldown it shares with Aimed Shot comes up.
-- Sniper Shot when the shared cooldown is down and an auto shot has just left.
 - Keep Serpent Sting rolling and refresh it only as it runs out, and fill the gaps with Arcane Shot.
-- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away.
+- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away or you are under a quarter of your mana.
 - Claw: Level with a cat and train it the top ranks of Claw, Bite and Growl as you go.
 - Growl: If you raid with the leveling build instead, turn off Growl and send the cat to the boss's back.
 - Feign Death: Started any earlier, it is the first threat on the boss and the boss comes for you; on a fresh tank, give him a second or two more, and keep Feign Death ready if the boss turns anyway.
