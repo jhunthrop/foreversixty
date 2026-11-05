@@ -1092,9 +1092,44 @@
         "authored": 10894,
         "bands": [
           {
+            "from_level": 26,
+            "to_level": 27,
+            "rank": 3,
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). Rank 4 arrives at 26 and the list cast it; rank 3 beats it for every race at 26 (+3.0% to +6.4%) and 27 (+2.7% to +5.4%)."
+          },
+          {
+            "from_level": 28,
+            "to_level": 28,
+            "rank": 2,
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). At 28 Mind Flay arrives and band-20 gear runs dry for over half the fight; the cheap rank 2 keeps Pain up (7.9 casts against rank 4's 2.2 for a Dwarf) and beats rank 4 by +3.5% to +5.2% for every race, and rank 3 for every race but an Undead, who ties."
+          },
+          {
+            "from_level": 29,
+            "to_level": 29,
+            "rank": 2,
+            "races": [
+              "dwarf",
+              "gnome",
+              "night-elf",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). At 29 rank 2 beats rank 3 for a Dwarf (+2.3%), Gnome (+2.0%), Night Elf (+3.0%) and Troll (+0.5% to +0.7%)."
+          },
+          {
+            "from_level": 29,
+            "to_level": 29,
+            "rank": 3,
+            "races": [
+              "human",
+              "undead"
+            ],
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). At 29 a Human (+0.4%) and an Undead (+2.5%) deal more with rank 3 than with rank 2, and both beat rank 4."
+          },
+          {
             "from_level": 30,
             "to_level": 39,
-            "rank": 3
+            "rank": 3,
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). Rank 3 (learned at 18) beats ranks 2, 4 and 5 for every race at 30 to 39 (+3.6% to +5.6% over rank 4 at 30, +0.4% to +1.4% over rank 5 at 39); its bonus is whole to 35 and 80% at 39."
           }
         ]
       },
@@ -1145,14 +1180,78 @@
             "rank": 1,
             "races": [
               "gnome",
+              "night-elf",
               "troll"
             ],
-            "note": "Sim-accuracy round 20 (guide round 17 R17-6): the levels where rank 2 (learned at 28) is the newest, judged on the ladder leveling build at 28 and 29 (Mind Flay from 28), spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001, error 0.03 DPS. Rank 1 beats rank 2 for a Gnome (+0.2% at 28, +0.6% at 29) and a Troll (+0.3%, +0.2%) at both seeds; an Undead loses 0.6% with it and a Human, Dwarf or Night Elf ties within 0.1 DPS, so they cast the top rank. Rank 1 costs less, and at 28 the fight runs dry for over half its length."
+            "note": "Sim-accuracy round 20 (guide round 17 R17-6): the levels where rank 2 (learned at 28) is the newest, judged on the ladder leveling build at 28 and 29 (Mind Flay from 28), spec-breakdown -level, frozen BiS, 10,000 iterations, seeds 1 and 50001, error 0.03 DPS. Rank 1 beats rank 2 for a Gnome (+0.2% at 28, +0.6% at 29) and a Troll (+0.3%, +0.2%) at both seeds; an Undead loses 0.6% with it and a Human, Dwarf or Night Elf ties within 0.1 DPS, so they cast the top rank. Rank 1 costs less, and at 28 the fight runs dry for over half its length. Round 23, with Shadow Word: Pain at rank 2 from 28: a Gnome (+0.5%) and a Night Elf (+0.5% at 28, +0.7% at 29) gain with rank 1 at both levels; a Troll ties."
+          },
+          {
+            "from_level": 29,
+            "to_level": 29,
+            "rank": 1,
+            "races": [
+              "dwarf"
+            ],
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). With Shadow Word: Pain at rank 2, a Dwarf gains +0.4% with Devouring Plague rank 1 at 29 (+0.1 DPS at 28, under the bar)."
           },
           {
             "from_level": 30,
+            "to_level": 35,
+            "rank": 1,
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). Rank 1 beats rank 2 for every race at 30, 33 and 35 (up to +1.3%), or ties."
+          },
+          {
+            "from_level": 36,
+            "to_level": 36,
+            "rank": 1,
+            "races": [
+              "dwarf",
+              "gnome",
+              "night-elf",
+              "undead",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). At 36 rank 1 holds or ties for every race but a Human (Gnome +1.5%, Undead +1.6% over rank 2)."
+          },
+          {
+            "from_level": 36,
+            "to_level": 36,
+            "rank": 2,
+            "races": [
+              "human"
+            ],
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). A Human gains +0.3% with rank 2 at 36; rank 3, learned at 36, is behind both."
+          },
+          {
+            "from_level": 37,
             "to_level": 39,
-            "rank": 1
+            "rank": 1,
+            "races": [
+              "human",
+              "dwarf",
+              "gnome",
+              "night-elf",
+              "undead"
+            ],
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). Rank 1 holds at 37 to 39 (its bonus is 95% at 38 and 90% at 39), ahead of ranks 2 and 3 or level with them."
+          },
+          {
+            "from_level": 37,
+            "to_level": 37,
+            "rank": 2,
+            "races": [
+              "troll"
+            ],
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). A Troll gains +0.6% with rank 2 at 37."
+          },
+          {
+            "from_level": 38,
+            "to_level": 39,
+            "rank": 1,
+            "races": [
+              "troll"
+            ],
+            "note": "Sim-accuracy round 23, level by level on the ladder leveling build at each level (spec-breakdown -level, band-floor frozen BiS, 10,000 iterations, seeds 1 and 50001; output here is deterministic to 0.1 DPS, so a row is taken on 0.2 DPS or more at both seeds, a race key only where the keyed rows differ by that much). A Troll keeps rank 1 at 38 and 39 (rank 2 ties at 38)."
           },
           {
             "from_level": 40,
