@@ -221,12 +221,13 @@ func (s *Service) summaryFor(ctx context.Context, facts RaidPostFacts, uid int64
 	return e
 }
 
-// holdsCoach is whether the account holds the log coach in this guild; a failed ask is false.
+// holdsCoach is whether the account holds the log coach, the personal check the coach itself
+// makes (a guild seat counts there); a failed ask is false.
 func (s *Service) holdsCoach(ctx context.Context, guildID, uid int64) bool {
 	if s.Entitlements == nil {
 		return false
 	}
-	ok, _, err := s.Entitlements.CanForGuild(ctx, guildID, uid, entitlements.FeatureLogCoach)
+	ok, _, err := s.Entitlements.Can(ctx, uid, entitlements.FeatureLogCoach)
 	if err != nil {
 		s.logger().Warn("guilds", "op", "event_raid_summary_coach", "guild_id", guildID, "err", err)
 		return false
