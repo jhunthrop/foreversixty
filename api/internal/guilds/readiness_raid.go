@@ -89,22 +89,18 @@ func (sc *readinessScope) view() *ReadinessRaid {
 		return nil
 	}
 	start := sc.raid.StartsAt.UTC()
-	return &ReadinessRaid{ID: sc.raid.ID, Title: sc.raid.Title, StartsAt: start, CutoffAt: sc.cutoff().UTC()}
+	return &ReadinessRaid{ID: sc.raid.ID, Title: sc.raid.Title, StartsAt: start, CutoffAt: freshCutoff(sc.now).UTC()}
 }
 
-// cutoff is the moment an export must be synced after to be fresh: now minus readinessFreshDays.
-func (sc *readinessScope) cutoff() time.Time { return sc.now.AddDate(0, 0, -readinessFreshDays) }
+// freshCutoff is the moment an export must be synced after to be fresh: now minus
+// readinessFreshDays.
+func freshCutoff(now time.Time) time.Time { return now.AddDate(0, 0, -readinessFreshDays) }
 
-// stale reports whether an export synced at loggedAt is older than the fresh window.
-func (sc *readinessScope) stale(loggedAt time.Time) bool { return loggedAt.Before(sc.cutoff()) }
-
-// apply judges the row's export against the raid: a stale one adds a failing check, except on
-// a leveling row, which is never graded.
-func (sc *readinessScope) apply(rr *ReadinessRow) {
-	if sc == nil {
-		return
-	}
-	stale := sc.stale(rr.LoggedAt)
+// markFreshness judges the row's export against now, on the filtered and the unfiltered board
+// alike (the spec judges freshness against now, never the raid): a stale one is marked
+// synced_before_cutoff and adds a failing check, except on a leveling row, which is never graded.
+func markFreshness(rr *ReadinessRow, now time.Time) {
+	stale := rr.LoggedAt.Before(freshCutoff(now))
 	rr.SyncedBeforeCutoff = &stale
 	if stale && !leveling(rr.Level) {
 		rr.Failing++
@@ -112,11 +108,11 @@ func (sc *readinessScope) apply(rr *ReadinessRow) {
 }
 
 // staleFailure is the failure an officer's nudge gains for a stale export: none, or one phrase.
-func (sc *readinessScope) staleFailure(rr ReadinessRow) []string {
-	if sc == nil || rr.SyncedBeforeCutoff == nil || !*rr.SyncedBeforeCutoff {
+func staleFailure(rr ReadinessRow, now time.Time) []string {
+	if rr.SyncedBeforeCutoff == nil || !*rr.SyncedBeforeCutoff {
 		return nil
 	}
-	days := daysSince(sc.now, rr.LoggedAt)
+	days := daysSince(now, rr.LoggedAt)
 	return []string{fmt.Sprintf("last sync was %d day%s ago", days, plural(days))}
 }
 
