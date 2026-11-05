@@ -526,3 +526,12 @@ func TestBossLevelIsThreeAboveThePlayer(t *testing.T) {
 		t.Errorf("BossLevel = %d, want %d", BossLevel, MaxLevel+3)
 	}
 }
+
+// A Battle.net import reaches the sim with its stored source word; the
+// closed set must accept it (5 Nov 2026: "source.kind must be one of
+// [armory addon build fight manual], got \"blizzard\"").
+func TestSourcesAcceptBlizzardImports(t *testing.T) {
+	if !slices.Contains(Sources, SourceBlizzard) {
+		t.Fatalf("Sources %v has no %q", Sources, SourceBlizzard)
+	}
+}

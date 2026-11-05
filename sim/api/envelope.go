@@ -25,19 +25,21 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
-// The five character sources.
+// The six character sources. SourceBlizzard is a Battle.net profile import
+// (the API stores it as addon_exports.source = 'blizzard').
 const (
-	SourceArmory = "armory"
-	SourceAddon  = "addon"
-	SourceBuild  = "build"
-	SourceFight  = "fight"
-	SourceManual = "manual"
+	SourceArmory   = "armory"
+	SourceAddon    = "addon"
+	SourceBuild    = "build"
+	SourceFight    = "fight"
+	SourceManual   = "manual"
+	SourceBlizzard = "blizzard"
 )
 
 // Sources is the closed set Validate checks CharacterSource.Kind
 // against. Declaring the constants without ever comparing to them let a
 // typo through as a stored row nothing could ever join on.
-var Sources = []string{SourceArmory, SourceAddon, SourceBuild, SourceFight, SourceManual}
+var Sources = []string{SourceArmory, SourceAddon, SourceBlizzard, SourceBuild, SourceFight, SourceManual}
 
 // The encounter profiles the contract names.
 //
