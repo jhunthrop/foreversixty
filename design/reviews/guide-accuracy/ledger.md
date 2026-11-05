@@ -467,3 +467,21 @@ Sims routed to the sim lane: Consecration ranks 1 to 4 at 50 to 53 without the p
 
 Verdict: NOT zero, so round 19 is needed. Druid audits at zero; seven classes have clean page prose.
 Rendered review: wow-player SHIP for all eight changed classes, every tile of every page read.
+
+## Round 19 (client 1.60.1.70790, 2026-11-05, launch state)
+
+Built on main 6beb919c2 (guide round 18 and the 1.60.1.70790 activation), engine pin abb4e6b8e, three auditors at a time, audited against data/builds/1.60.1.70790 (talents, items, racials and numbers identical to 70755 apart from two Sulfuras rings no guide names).
+
+Audit CONFIRMED by class: paladin 11, mage 8, druid 7, hunter 3, priest 3, shaman 3 (plus 1 likely, taken), warrior 2, rogue 2, warlock 1 (plus 1 likely, taken). Total 40. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18, 8, 4, 14, 28, 40. Every confirmed item but two (priest holy.md, the likely shaman restoration.md line) is a card note. The rise is round 18's every-level rule carried into each note's later sentences on the classes round 18 read only by first sentence (paladin, druid, mage), plus level 60 numbers quoted on bands where a lower rank renders (Mana Spring, Holy Strike, Divine Shield, Seal mana, Ferocity, Improved Fire Blast, Fingers of Frost, Missile Barrage).
+
+Fixes:
+
+- **Card notes, every class:** each note now credits Improved Berserker Rage and Berserker Stance (36), Improved Bloodrage's two ranks, Bestial Wrath, Rapid Killing, Aimed Shot, Eclipse (and its one-point value), Innervate, Starfire, Rend and Tear, Ferocity, Lacerate, Primal Bite, Bloom, Heating Up, Improved Scorch, Missile Barrage's ranks on both orders, Presence of Mind targets, Fingers of Frost, Improved Fire Blast, the mana gem and Major Mana Potion, Mutilate, Seal Fate, Boot Knife, Holy Shield, Divine Favor, Oath of Light, Sanctified Judgement, Shieldsworn, Divine Shield, Hammer of the Righteous, Vampiric Embrace, higher Greater Heal ranks, Magma Totem, Stormstrike, Conflagrate and Incinerate only from the level the player has them, and states values by rank where the rows cast lower ranks.
+- **Priest:** Holy's leveling line teaches the Renew downranking the card casts instead of a Heal rank 2 line the card contradicts.
+- **Shaman:** Restoration keeps the top rank for Nature's Swiftness from 44.
+- **Warlock:** the four client-data source links name build 70790.
+- addon-data.json and Data.lua regenerated for 1.60.1.70790 (note text only).
+
+Sims routed to the sim lane (round 20 integrator): Fire Scorch against Fireball as the filler at 22 to 30 (decides fire.md:116, MAGE-R19-9); Destruction Conflagrate on cooldown against holding until Immolate has 4 seconds or less at 34 to 43 (decides destruction.md:128 or the card, WARLOCK-R19-3); Balance leveling build's Eclipse Wrath on and off at 36, 40 and 50; Affliction Amplify Curse saved for the last minute against before each Bane of Agony below 60; Subtlety Shank gate without Boot Knife at 24 to 32 (optional); Holy paladin emergency Holy Light rank at 47 to 59 (optional); Holy priest Heal rank 2 against 3 at 28 to 33 (optional); Consecration ranks 1 to 4 at 50 to 53 (carried). Sim findings: the Balance card has nothing to cast at 10 to 16 when mana is ahead and Moonfire is ticking; the Elemental card drops no Fire totem below 26 on two or more targets; the engine does not track Soul Shards (Destruction Shadowburn at 30 to 43).
+
+Verdict: NOT zero, so round 20 is needed. Page prose was clean on seven of nine classes.
