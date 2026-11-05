@@ -38,6 +38,9 @@ var officerCopy = struct {
 	// RaidGuild and MoveToRaidGuild (Task 14's addition) answer a Guild-tier guild: the board is
 	// part of Raid guild (launch pricing §3.2.8, the site's GuildPlanGate sentence).
 	RaidGuild, MoveToRaidGuild string
+	// GrantedMove and AskUsOnDiscord answer a Guild plan Forever Sixty granted: no Move to
+	// buy, so it asks us (the site's guildGateCopy.grantedMove, word for word).
+	GrantedMove, AskUsOnDiscord string
 }{
 	ReportPrefix:          "Report: ",
 	KillOrder:             "Kill order",
@@ -76,7 +79,13 @@ var officerCopy = struct {
 	Frozen:                "This guild's claim is contested. Officer actions are frozen until a moderator resolves it.",
 	RaidGuild:             "The readiness board is part of the Raid guild plan. An officer can move the guild to the Raid guild plan.",
 	MoveToRaidGuild:       "Move to Raid guild",
+	GrantedMove:           "Your plan was granted by Forever Sixty. Ask us on Discord to move it to Raid guild.",
+	AskUsOnDiscord:        "Ask us on Discord",
 }
+
+// CommunityDiscordInvite is the Forever Sixty Discord invite, web/src/data/links.json's
+// discordInvite (a test holds the two equal).
+const CommunityDiscordInvite = "https://discord.gg/NZhBtPwvHt"
 
 // nightCopy is the raid page's night and kill-order words (G2, attendance-copy.ts): the night
 // line "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min" and a kill row

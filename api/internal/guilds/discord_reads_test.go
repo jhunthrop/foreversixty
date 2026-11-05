@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
 func jsonOf(t *testing.T, v any) string {
@@ -161,6 +163,31 @@ func TestReadinessGateRunsOnEveryCall(t *testing.T) {
 	got, err := w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now().Add(30*24*time.Hour))
 	if err != nil || got.Raid != nil {
 		t.Fatalf("none planned = %+v %v", got, err)
+	}
+}
+
+// A Guild-tier plan Forever Sixty granted (whole, no Stripe subscription) refuses with
+// ErrRaidGuildGranted, still an ErrRaidGuildRequired; a paid Guild plan keeps the plain one.
+func TestReadinessGateNamesAGrantedPlan(t *testing.T) {
+	w, _ := readinessRaidWorld(t)
+	ctx := t.Context()
+	w.h.svc.Store.Plans = &entitlements.Store{Pool: w.h.pool}
+	w.dropPlan(t)
+	if _, err := w.h.pool.Exec(ctx, `insert into entitlements (guild_id, tier, plan, source, status, current_period_end)
+		values ($1, 'guild', 'guild', 'grant', 'active', now() + interval '30 days')`, w.gid); err != nil {
+		t.Fatal(err)
+	}
+	_, err := w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now())
+	if !errors.Is(err, ErrRaidGuildGranted) || !errors.Is(err, ErrRaidGuildRequired) {
+		t.Fatalf("granted guild tier = %v, want ErrRaidGuildGranted", err)
+	}
+	if _, err := w.h.pool.Exec(ctx, `update entitlements set source = 'stripe', stripe_subscription_id = 'sub_granted_test'
+		where guild_id = $1`, w.gid); err != nil {
+		t.Fatal(err)
+	}
+	_, err = w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now())
+	if !errors.Is(err, ErrRaidGuildRequired) || errors.Is(err, ErrRaidGuildGranted) {
+		t.Fatalf("paid guild tier = %v, want the plain ErrRaidGuildRequired", err)
 	}
 }
 

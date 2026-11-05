@@ -37,12 +37,20 @@ func TestReadinessGate(t *testing.T) {
 			}
 		}
 	}
+	w.og.readyErr = guilds.ErrRaidGuildGranted
+	rep := w.run(t, pressDiscord, "readiness")
+	if rep.Message.Content != segment(15, nil) {
+		t.Errorf("granted: %q, want %q", rep.Message.Content, segment(15, nil))
+	}
+	if b := rep.Message.Components[0][0]; b.Label != segment(16, nil) || b.URL != CommunityDiscordInvite {
+		t.Errorf("granted: button %+v, want %q to the Discord invite", b, segment(16, nil))
+	}
 	w.og.readyErr = nil
 	w.og.readiness = guilds.ReadinessAnswer{}
 	if got := w.run(t, pressDiscord, "readiness").Message.Content; got != commandCopy.RaidNone {
 		t.Fatalf("none planned = %q", got)
 	}
-	rep := w.run(t, strangerDiscord, "readiness")
+	rep = w.run(t, strangerDiscord, "readiness")
 	if rep.Message.Content != segment(8, olympus) || rep.Message.Components[0][0].Label != linkCopy.LinkButton {
 		t.Fatalf("unlinked = %+v", rep.Message)
 	}
