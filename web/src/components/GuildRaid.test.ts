@@ -100,28 +100,81 @@ describe('the band', () => {
         .replace(/<!--[\s\S]*?-->/g, '')
         .replace(/<[^>]+>/g, '');
     expect(markup('raid-when', 'raid-count').trim()).toBe(
-      'Thursday 10 December · 9:00 pm to 12:00 am · 8:00 pm CST guild time · in 2 days 8 h',
+      'Thursday 10 December · 8:00 pm to 11:00 pm\u00a0CST · 9:00 pm EST your time · in 2 days 8 h',
     );
     expect(markup('raid-count', 'guild-tabs')).toContain('23 of 40 signed up · 3 tanks');
     expect(markup('raid-title', 'raid-when').trim()).toBe("Ony farm · Onyxia's Lair");
   });
 
-  it('reads the when line with the countdown, and guild time only when the offsets differ', () => {
+  it('reads the when line in the guild clock and zone, the viewer’s own time only when the offsets differ', () => {
     const chicago = text(between(html(), 'raid-when', 'raid-count'));
-    expect(chicago).toBe('Thursday 10 December · 8:00 pm to 11:00 pm · in 2 days 8 h');
+    expect(chicago).toBe('Thursday 10 December · 8:00 pm to 11:00 pm CST · in 2 days 8 h');
     const newYork = text(between(html({}, NEW_YORK), 'raid-when', 'raid-count'));
     expect(newYork).toBe(
-      'Thursday 10 December · 9:00 pm to 12:00 am · 8:00 pm CST guild time · in 2 days 8 h',
+      'Thursday 10 December · 8:00 pm to 11:00 pm CST · 9:00 pm EST your time · in 2 days 8 h',
     );
   });
 
   it('reads the count line with the bar, and no bar while the size is unknown', () => {
     const body = html();
     expect(text(between(body, 'raid-count', 'guild-tabs'))).toBe(
-      '23 of 40 signed up · 3 tanks · 7 healers · 13 DPS · 2 late',
+      '23 of 40 signed up · 3 tanks · 7 healers · 7 melee · 6 ranged · 2 late',
     );
     expect(body).toContain('width: 57%');
     expect(ready(plannedRaid({ size: null }))).not.toContain('bg-gold absolute');
+  });
+
+  it('draws the class row under the count line: game order, names from md, specs in title and name', () => {
+    const raid = plannedRaid({
+      counts: { ...plannedRaid().counts, classes: { druid: 1, warrior: 2, mage: 0 } },
+      signups: [
+        {
+          character_key: 'us/pvp/kraggor',
+          name: 'Kraggor',
+          class: 'warrior',
+          spec: 'Protection',
+          spec_key: 'warrior-protection',
+          group: 'tank',
+          role: 'tank',
+          state: 'in',
+          note: '',
+          own: false,
+        },
+        {
+          character_key: 'us/pvp/brokk',
+          name: 'Brokk',
+          class: 'warrior',
+          spec: 'Fury',
+          spec_key: 'warrior-fury',
+          group: 'tank',
+          role: 'tank',
+          state: 'late',
+          note: '',
+          own: false,
+        },
+        {
+          character_key: 'us/pvp/moon',
+          name: 'Moon',
+          class: 'druid',
+          spec: 'Balance',
+          spec_key: 'druid-balance',
+          group: 'ranged',
+          role: 'dps',
+          state: 'in',
+          note: '',
+          own: false,
+        },
+      ],
+    });
+    const row = between(ready(raid), 'raid-class-row', 'guild-tabs');
+    expect(ready(raid)).toContain('aria-label="Classes signed up"');
+    expect(row.indexOf('raid-class-warrior')).toBeLessThan(row.indexOf('raid-class-mage'));
+    expect(row.indexOf('raid-class-mage')).toBeLessThan(row.indexOf('raid-class-druid'));
+    expect(row).toContain('title="Fury (tank) 1, Protection 1"');
+    expect(row).toContain('<span class="sr-only">Warrior 2: Fury (tank) 1, Protection 1</span>');
+    expect(row).toContain('<span class="sr-only">Mage 0</span>');
+    expect(row).toMatch(/hidden text-\[13px\] font-semibold md:inline/);
+    expect(row).toMatch(/opacity-45/);
   });
 
   it('marks a raid still ahead in gold, and a cancelled or started one muted', () => {

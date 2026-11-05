@@ -110,8 +110,11 @@ func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
 		GuildName: g.Name, Title: v.Title, StartsAt: v.StartsAt,
 		RaidID:  v.ID,
 		RaidURL: strings.TrimRight(s.PublicBaseURL, "/") + RaidPagePath(GuildPagePath(g), v.ID),
-		Counts:  notify.RaidCounts(v.Counts),
-		Roster:  rosterLines(v.Signups),
+		Counts: notify.RaidCounts{
+			In: v.Counts.In, Late: v.Counts.Late, Bench: v.Counts.Bench, Out: v.Counts.Out,
+			Tanks: v.Counts.Tanks, Healers: v.Counts.Healers, DPS: v.Counts.DPS,
+		},
+		Roster: rosterLines(v.Signups),
 	}
 	if v.GuildTimezone != nil {
 		in.Timezone = *v.GuildTimezone

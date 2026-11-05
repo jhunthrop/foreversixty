@@ -34,12 +34,14 @@
     GUILD_BANDLESS_TOP,
   } from '../lib/guild/raid-layout';
   import { raidQuiet } from '../lib/guild/planned-row';
+  import { classRow } from '../lib/guild/raid-comp';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
   import FactionCrest from './character/FactionCrest.svelte';
   import RaidDoneBand from './guild/RaidDoneBand.svelte';
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
   import GuildTabs from './guild/GuildTabs.svelte';
   import RaidChip from './guild/RaidChip.svelte';
+  import RaidClassRow from './guild/RaidClassRow.svelte';
   import Figures from './guild/Figures.svelte';
   import RaidDisclosure from './guild/RaidDisclosure.svelte';
   import RaidDoneSections from './guild/RaidDoneSections.svelte';
@@ -109,6 +111,7 @@
   const flags = $derived(raid === null ? null : raidPageFlags(raid, now));
   const when = $derived(raid === null ? null : raidWhen(raid, now, viewerTimezone, locale));
   const count = $derived(raid === null ? null : raidCount(raid));
+  const classItems = $derived(raid === null ? [] : classRow(raid));
   const guildTimezone = $derived(raid?.guild_timezone ?? viewerTimezone);
   /** No gold on a cancelled raid or one already under way (spec 3.2 lines 4–5). */
   const quiet = $derived(raid !== null && raidQuiet(raid, now));
@@ -283,7 +286,7 @@
               ></span
             ><span class={pastLines ? 'inline' : 'block md:inline'}
               ><span class={pastLines ? 'inline' : 'hidden md:inline'}>{SEP}</span
-              >{#if when.guildTime !== null}<span class="text-muted whitespace-nowrap">{when.guildTime}</span
+              >{#if when.yourTime !== null}<span class="text-muted whitespace-nowrap">{when.yourTime}</span
                 >{SEP}{/if}<Figures text={when.countdown} class={goldText} /></span
             >
           </p>
@@ -308,6 +311,7 @@
                     >{/if}</span
                 >
               </p>
+              <RaidClassRow items={classItems} {quiet} />
             {/if}
             {#if c.pollPaused}
               <p class="text-muted text-[13px]" data-testid="raid-poll-paused">{raidCopy.poll}</p>

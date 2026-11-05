@@ -12,6 +12,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
@@ -272,7 +273,7 @@ func sortDeaths(out []ReportDeathView) {
 		if a, b := out[i].OnWipes+out[i].OnKills, out[j].OnWipes+out[j].OnKills; a != b {
 			return a > b
 		}
-		if a, b := rank(classOrder, out[i].Class), rank(classOrder, out[j].Class); a != b {
+		if a, b := raidspec.ClassRank(out[i].Class), raidspec.ClassRank(out[j].Class); a != b {
 			return a < b
 		}
 		return out[i].Name < out[j].Name

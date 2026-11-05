@@ -1,8 +1,9 @@
 // web/src/components/guild/RaidSignupStrip.test.ts
 // The viewer's sign-up strip rendered with svelte/server (initial state, no effects): one row per
-// character, the current one first; the waiting row; the role select and note prefilled; the note
-// counter from 120 characters; the locked and ended lines above disabled rows; the cancelled
-// strip. Saving, the Saved. line and the race lines are clicked through in the raid e2e.
+// character, the current one first; the waiting row; the one spec picker (raid comp spec 3.2) and
+// the note prefilled; the note counter from 120 characters; the locked and ended lines above
+// disabled rows; the cancelled strip. Saving, the Saved. line, the no-spec hold and the race lines
+// are clicked through in the raid e2e.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidSignup, GuildRaidView, GuildRaidViewerCharacter } from '../../lib/guild/api';
@@ -52,8 +53,19 @@ function raid(characters: GuildRaidViewerCharacter[], signups: GuildRaidSignup[]
   };
 }
 
-const KRAGGOR = character('Kraggor', { state: 'in', role: 'tank', spec: 'Protection' });
-const MENDA = character('Menda', { class: 'priest', spec: 'Holy' });
+const KRAGGOR = character('Kraggor', {
+  state: 'in',
+  role: 'tank',
+  spec: 'Protection',
+  raid_spec: 'warrior-protection',
+  default_spec: 'warrior-protection',
+});
+const MENDA = character('Menda', {
+  class: 'priest',
+  spec: 'Holy',
+  raid_spec: null,
+  default_spec: 'priest-holy',
+});
 const WAITING = character('Grimtotem', { class: 'shaman', spec: 'Enhancement', verified: false });
 
 interface StripProps {
@@ -85,6 +97,19 @@ function text(markup: string): string {
     .trim();
 }
 
+/** The native spec select of a row. */
+function select(markup: string, key: string): string {
+  return (
+    markup.match(new RegExp(`<select[^>]*data-testid="signup-spec-${key}"[^>]*>[\\s\\S]*?</select>`))?.[0] ??
+    ''
+  );
+}
+
+/** The Who line under a row's name. */
+function who(markup: string, key: string): string {
+  return markup.match(new RegExp(`data-testid="signup-who-${key}">([^<]*)<`))?.[1] ?? '';
+}
+
 /** The row testids in document order. */
 function rowOrder(markup: string): string[] {
   return [...markup.matchAll(/data-testid="signup-row-([^"]+)"/g)].map((m) => m[1]);
@@ -97,36 +122,57 @@ describe('RaidSignupStrip', () => {
     expect(rowOrder(markup)).toEqual([MENDA.character_key, KRAGGOR.character_key, WAITING.character_key]);
   });
 
-  it('gives each verified row its segments, role select and note', () => {
+  it('gives each verified row its segments, one spec picker and the note', () => {
     const markup = html();
     expect(markup).toContain('aria-label="Kraggor\'s sign-up"');
     expect(markup).toContain('aria-label="Menda\'s sign-up"');
     expect(markup).toContain(`placeholder="${raidCopy.placeholders.note}"`);
     expect(markup).toContain('maxlength="140"');
-    expect(markup).toContain('aria-label="Role"');
+    expect(markup).toContain(`aria-label="${raidCopy.spec.label('Kraggor')}"`);
+    expect(markup).not.toContain('aria-label="Role"');
+    expect(markup).not.toContain('signup-role-');
   });
 
-  it('prefills the role: the signed-up role, else the spec role', () => {
-    const markup = html();
-    const select = (key: string): string =>
-      markup.match(
-        new RegExp(`<select[^>]*data-testid="signup-role-${key}"[^>]*>[\\s\\S]*?</select>`),
-      )?.[0] ?? '';
-    expect(select(KRAGGOR.character_key)).toMatch(/<option value="tank"[^>]*selected/);
-    expect(select(MENDA.character_key)).toMatch(/<option value="healer"[^>]*selected/);
+  it('starts on the saved spec, else the default spec, else the placeholder', () => {
+    const NONE = character('Nobody', { raid_spec: null, default_spec: null });
+    const markup = html({ view: raid([KRAGGOR, MENDA, NONE]) });
+    expect(select(markup, KRAGGOR.character_key)).toMatch(/<option value="warrior-protection"[^>]*selected/);
+    expect(select(markup, MENDA.character_key)).toMatch(/<option value="priest-holy"[^>]*selected/);
+    expect(select(markup, NONE.character_key)).not.toMatch(/<option value="[^"]+"[^>]*selected/);
+    expect(text(markup)).toContain(raidCopy.spec.placeholder);
   });
 
-  it("offers only the roles the character's class plays", () => {
-    const markup = html();
-    const options = (key: string): string[] => {
-      const select =
-        markup.match(
-          new RegExp(`<select[^>]*data-testid="signup-role-${key}"[^>]*>[\\s\\S]*?</select>`),
-        )?.[0] ?? '';
-      return [...select.matchAll(/<option value="(\w+)"/g)].map((m) => m[1] ?? '');
-    };
-    expect(options(KRAGGOR.character_key)).toEqual(['tank', 'dps']);
-    expect(options(MENDA.character_key)).toEqual(['healer', 'dps']);
+  it('reads the spec and class under the name, the class alone with no spec', () => {
+    const NONE = character('Nobody', { raid_spec: null, default_spec: null });
+    const markup = html({ view: raid([KRAGGOR, MENDA, NONE]) });
+    expect(text(who(markup, KRAGGOR.character_key))).toBe('Protection Warrior');
+    expect(text(who(markup, MENDA.character_key))).toBe('Holy Priest');
+    expect(text(who(markup, NONE.character_key))).toBe('Warrior');
+  });
+
+  it('offers one pair per spec, Arms and Fury adding a tank pair, and starts an off-tank on it', () => {
+    const offTank = character('Brokk', { state: 'in', role: 'tank', raid_spec: 'warrior-fury' });
+    const markup = html({ view: raid([offTank]) });
+    const options = [
+      ...select(markup, offTank.character_key).matchAll(/<option value="([^"]*)"[^>]*>([^<]*)</g),
+    ]
+      .map((m) => [m[1], m[2]])
+      .filter(([value]) => value !== '');
+    expect(options).toEqual([
+      ['warrior-arms', 'Arms · DPS'],
+      ['warrior-arms:tank', 'Arms · Tank'],
+      ['warrior-fury', 'Fury · DPS'],
+      ['warrior-fury:tank', 'Fury · Tank'],
+      ['warrior-protection', 'Protection · Tank'],
+    ]);
+    expect(select(markup, offTank.character_key)).toMatch(/<option value="warrior-fury:tank"[^>]*selected/);
+    expect(text(who(markup, offTank.character_key))).toBe('Fury Warrior · Tank');
+  });
+
+  it('keeps no empty spec block under any row (the 150 px reserve is gone)', () => {
+    const markup = html({ view: raid([character('Aurelith', { class: 'paladin' }), MENDA]) });
+    expect(markup).not.toContain('signup-spec-reserve-');
+    expect(text(markup)).not.toContain('Which spec tonight?');
   });
 
   it('mutes a character waiting for approval, with the sentence and no controls', () => {
@@ -134,7 +180,7 @@ describe('RaidSignupStrip', () => {
     const row = markup.split(`data-testid="signup-row-${WAITING.character_key}"`)[1] ?? '';
     expect(text(row)).toContain(raidCopy.waitingCharacter);
     expect(row).not.toContain("Grimtotem's sign-up");
-    expect(markup).not.toContain(`signup-role-${WAITING.character_key}`);
+    expect(markup).not.toContain(`signup-spec-${WAITING.character_key}`);
     expect(markup).not.toContain(`signup-note-${WAITING.character_key}`);
   });
 
@@ -183,64 +229,7 @@ describe('RaidSignupStrip', () => {
     expect(rowOrder(markup)).toEqual([]);
   });
 
-  describe('spec ask', () => {
-    const specSelect = (markup: string, key: string): string =>
-      markup.match(
-        new RegExp(`<select[^>]*data-testid="signup-spec-${key}"[^>]*>[\\s\\S]*?</select>`),
-      )?.[0] ?? '';
-    const PALADIN = character('Aurelith', { class: 'paladin', spec: 'Holy', state: 'in', role: 'healer' });
-
-    it('asks In, Late and Bench rows with no saved spec, naming the class specs in full', () => {
-      const markup = html({ view: raid([PALADIN]) });
-      const select = specSelect(markup, PALADIN.character_key);
-      expect(text(markup)).toContain(raidCopy.spec.title);
-      expect(select).toContain(`>${raidCopy.spec.placeholder}<`);
-      expect(['Holy', 'Protection', 'Retribution'].every((name) => select.includes(`>${name}<`))).toBe(true);
-      expect(markup).toContain('signup-spec-us-forever-aurelith-label');
-    });
-
-    it('shows a saved spec chosen, under the Change spec label, with its icon', () => {
-      const saved = { ...PALADIN, raid_spec: 'paladin-retribution' };
-      const markup = html({ view: raid([saved]) });
-      expect(specSelect(markup, saved.character_key)).toMatch(
-        /<option value="paladin-retribution"[^>]*selected/,
-      );
-      expect(text(markup)).toContain(raidCopy.spec.change);
-      expect(text(markup)).not.toContain(raidCopy.spec.title);
-      expect(markup).toMatch(/<img[^>]*data-testid="signup-spec-us-forever-aurelith-icon"/);
-    });
-
-    it('does not ask an unsigned row or an Out row, and reserves the block on the unsigned one', () => {
-      const unsigned = html({ view: raid([character('Aurelith', { class: 'paladin' })]) });
-      expect(unsigned).not.toContain('<select data-testid="signup-spec-');
-      expect(unsigned).not.toMatch(/<select[^>]*signup-spec-/);
-      expect(unsigned).toContain('signup-spec-reserve-us-forever-aurelith');
-      const out = html({ view: raid([{ ...PALADIN, state: 'out' }]) });
-      expect(out).not.toMatch(/<select[^>]*signup-spec-/);
-      expect(out).not.toContain('signup-spec-reserve-');
-    });
-
-    it('reserves no spec block on a run or event page, so the card fits its row', () => {
-      const unsigned = [character('Aurelith', { class: 'paladin' })];
-      for (const zone_kind of ['dungeon', 'event'] as const) {
-        const markup = html({ view: { ...raid(unsigned), zone_kind } });
-        expect(markup).not.toContain('signup-spec-reserve-');
-      }
-    });
-
-    it('collapses a saved spec into the toggle, closed', () => {
-      const markup = html({ view: raid([{ ...PALADIN, raid_spec: 'paladin-retribution' }]) });
-      expect(markup).toMatch(
-        /<button[^>]*aria-expanded="false"[^>]*data-testid="signup-spec-us-forever-aurelith-toggle"/,
-      );
-      expect(text(markup)).toContain(`Retribution · ${raidCopy.spec.change}`);
-      expect(markup).toMatch(/<div id="signup-spec-us-forever-aurelith-panel" hidden/);
-    });
-
-    it('disables the select with the row when the raid is locked', () => {
-      expect(specSelect(html({ view: raid([PALADIN]), locked: true }), PALADIN.character_key)).toMatch(
-        /^<select[^>]*disabled/,
-      );
-    });
+  it('disables the spec picker with the row when the raid is locked', () => {
+    expect(select(html({ locked: true }), KRAGGOR.character_key)).toMatch(/^<select[^>]*disabled/);
   });
 });

@@ -48,7 +48,7 @@ export function plannedRaid(extra: Partial<GuildRaidView> = {}): GuildRaidView {
     size: 40,
     guild_timezone: CHICAGO,
     notes_html: '',
-    counts: { in: 21, late: 2, bench: 1, out: 3, tanks: 3, healers: 7, dps: 13 },
+    counts: { in: 21, late: 2, bench: 1, out: 3, tanks: 3, healers: 7, dps: 13, melee: 7, ranged: 6 },
     signups: [],
     not_signed: [],
     viewer: { characters: [viewerCharacter()] },

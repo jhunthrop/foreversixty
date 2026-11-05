@@ -15,6 +15,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
 
@@ -80,13 +81,18 @@ func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
 	spec := RaidSpecCommand{GuildID: guildID, ActorID: actorID, RaidID: raid.ID, CharacterKey: key, Spec: req.Spec}
 	if req.Spec != "" {
 		// The spec is checked first and saved only once the sign-up stands, so a refused sign-up
-		// (a locked or cancelled raid) changes nothing; the sign-up takes the spec's role.
-		_, sp, err := s.raidSpecTarget(r.Context(), spec)
+		// (a locked or cancelled raid) changes nothing. The sign-up takes the spec's role, or the
+		// asked one when the spec signs as it: a Fury or Arms warrior off-tanks (spec 2026-11-05
+		// §3.2.1). A role the class never plays stays asked, so signUp refuses it on role.
+		char, sp, err := s.raidSpecTarget(r.Context(), spec)
 		if err != nil {
 			s.writeSignupErr(w, r, err)
 			return
 		}
-		cmd.Role = sp.Role
+		if cmd.Role == "" || raidspec.Plays(char.Class, cmd.Role) {
+			cmd.Role = sp.SignupRole(cmd.Role)
+		}
+		spec.Role = cmd.Role
 	}
 	res, err := s.signUp(r.Context(), cmd, false)
 	if err != nil {

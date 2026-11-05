@@ -81,10 +81,10 @@ function text(markup: string, testid: string): string {
 
 describe('RaidBandLine sentence', () => {
   it.each([
-    ['in', 'tank', 'Thursday 8 pm, you are In as Tank, 23 of 40 signed up.', 'In'],
-    ['late', 'healer', 'Thursday 8 pm, you are Late as Healer, 23 of 40 signed up.', 'Late'],
-    ['bench', 'dps', 'Thursday 8 pm, you are on the Bench, 23 of 40 signed up.', 'Bench'],
-    ['out', 'dps', 'Thursday 8 pm, you are Out, 23 of 40 signed up.', 'Out'],
+    ['in', 'tank', 'Thursday 8 pm CST, you are In as Tank, 23 of 40 signed up.', 'In'],
+    ['late', 'healer', 'Thursday 8 pm CST, you are Late as Healer, 23 of 40 signed up.', 'Late'],
+    ['bench', 'dps', 'Thursday 8 pm CST, you are on the Bench, 23 of 40 signed up.', 'Bench'],
+    ['out', 'dps', 'Thursday 8 pm CST, you are Out, 23 of 40 signed up.', 'Out'],
   ] as const)('%s reads the spec sentence with the state word strong', (state, role, sentence, word) => {
     const body = html({ nextRaid: raid({ own: { character_key: KEY, state, role } }) });
     expect(text(body, 'guild-raid-line-sentence')).toBe(sentence);
@@ -93,13 +93,13 @@ describe('RaidBandLine sentence', () => {
 
   it('reads the unsigned sentence', () => {
     expect(text(html(), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm, you have not signed up yet. 23 of 40 are in.',
+      'Thursday 8 pm CST, you have not signed up yet. 23 of 40 are in.',
     );
   });
 
   it('reads `{n} are in` while unsigned and the size is unknown', () => {
     expect(text(html({ nextRaid: raid({ size: null }) }), 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm, you have not signed up yet. 23 are in.',
+      'Thursday 8 pm CST, you have not signed up yet. 23 are in.',
     );
   });
 
@@ -112,13 +112,13 @@ describe('RaidBandLine sentence', () => {
       ],
     });
     expect(text(body, 'guild-raid-line-sentence')).toBe(
-      'Thursday 8 pm, you are In on Sunderfel as Healer, 23 of 40 signed up.',
+      'Thursday 8 pm CST, you are In on Sunderfel as Healer, 23 of 40 signed up.',
     );
   });
 
-  it('adds the guild clock when the offsets differ', () => {
+  it('keeps the guild clock first and adds the viewer’s own when the offsets differ', () => {
     expect(text(html({ viewerTimezone: 'America/New_York' }), 'guild-raid-line-sentence')).toBe(
-      'Thursday 9 pm (8 pm guild time), you have not signed up yet. 23 of 40 are in.',
+      'Thursday 8 pm CST (9 pm EST your time), you have not signed up yet. 23 of 40 are in.',
     );
   });
 });

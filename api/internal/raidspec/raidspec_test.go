@@ -122,7 +122,54 @@ func TestMeleeFollowsTheSpecThenTheClass(t *testing.T) {
 	if !MeleeClass("rogue") || MeleeClass("mage") {
 		t.Error("class fallback")
 	}
-	if ClassRank("druid") != 0 || ClassRank("") != len(ClassOrder) {
+}
+
+// The game's order: Warrior first, Druid last (spec 2026-11-05 §3.1).
+func TestClassRankFollowsTheGamesOrder(t *testing.T) {
+	want := []string{"warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid"}
+	if !slices.Equal(ClassOrder, want) {
+		t.Fatalf("ClassOrder %v", ClassOrder)
+	}
+	if ClassRank("Warrior") != 0 || ClassRank("druid") != 8 || ClassRank("") != len(ClassOrder) {
 		t.Error("class rank")
+	}
+}
+
+// Arms and Fury warriors also sign as tank; no other spec gets a second role (§3.2.1).
+func TestOnlyArmsAndFuryOffTank(t *testing.T) {
+	for _, s := range All() {
+		roles := s.Roles()
+		off := s.Key == "warrior-arms" || s.Key == "warrior-fury"
+		if want := map[bool]int{true: 2, false: 1}[off]; len(roles) != want || roles[0] != s.Role {
+			t.Errorf("%s roles %v", s.Key, roles)
+		}
+	}
+	fury, _ := ByKey("warrior-fury")
+	holy, _ := ByKey("priest-holy")
+	if fury.SignupRole(RoleTank) != RoleTank || fury.SignupRole(RoleHealer) != RoleDPS || holy.SignupRole(RoleDPS) != RoleHealer {
+		t.Error("SignupRole")
+	}
+}
+
+func TestGroupReadsTheRoleThenTheSpecThenTheClass(t *testing.T) {
+	cases := []struct{ class, spec, role, want string }{
+		{"hunter", "Survival", "dps", GroupMelee},
+		{"hunter", "Marksmanship", "dps", GroupRanged},
+		{"druid", "Feral", "dps", GroupMelee},
+		{"druid", "Feral Bear", "tank", GroupTank},
+		{"shaman", "Enhancement", "dps", GroupMelee},
+		{"shaman", "Elemental", "dps", GroupRanged},
+		{"paladin", "Protection", "tank", GroupTank},
+		{"warrior", "Fury", "tank", GroupTank},
+		{"priest", "Holy", "healer", GroupHealer},
+		{"rogue", "", "dps", GroupMelee},
+		{"paladin", "", "dps", GroupMelee},
+		{"hunter", "", "dps", GroupRanged},
+		{"druid", "", "dps", GroupRanged},
+	}
+	for _, c := range cases {
+		if got := Group(c.class, c.spec, c.role); got != c.want {
+			t.Errorf("Group(%q,%q,%q) = %q, want %q", c.class, c.spec, c.role, got, c.want)
+		}
 	}
 }

@@ -20,9 +20,11 @@ var ErrSpecNotOfClass = errors.New("guilds: that spec is not one of the characte
 
 // RaidSpecCommand saves Spec (a specs.json key) as the character's raid spec. A non-zero RaidID
 // also moves the character's In, Late or Bench row for that raid to the spec, never its state.
+// Role is the row's role for that move, "" for the spec's own: a Fury warrior off-tanking keeps
+// tank (spec 2026-11-05 §3.2.1).
 type RaidSpecCommand struct {
 	GuildID, ActorID, RaidID int64
-	CharacterKey, Spec       string
+	CharacterKey, Spec, Role string
 }
 
 // RaidSpecResult is the character with its new spec and role, and the state its row for the
@@ -51,7 +53,11 @@ func (s *Service) SaveRaidSpec(ctx context.Context, cmd RaidSpecCommand) (RaidSp
 	if cmd.RaidID == 0 {
 		return res, nil
 	}
-	if res.State, err = s.Store.respecSignup(ctx, cmd.RaidID, char); err != nil {
+	role := char.defaultRole()
+	if cmd.Role != "" {
+		role = cmd.Role
+	}
+	if res.State, err = s.Store.respecSignup(ctx, cmd.RaidID, char, role); err != nil {
 		return RaidSpecResult{}, err
 	}
 	if isRespecState(res.State) {
@@ -89,14 +95,14 @@ func isRespecState(state string) bool {
 
 // respecSignup moves the character's In, Late or Bench row for the raid to its spec and role
 // and returns the row's state ("" with no row); an Out row is left as it is.
-func (s *Store) respecSignup(ctx context.Context, raidID int64, char raidRosterChar) (string, error) {
+func (s *Store) respecSignup(ctx context.Context, raidID int64, char raidRosterChar, role string) (string, error) {
 	var state string
 	err := s.Pool.QueryRow(ctx, `
 		update guild_raid_signups set
 		  spec = case when state in ('in', 'late', 'bench') then $3 else spec end,
 		  role = case when state in ('in', 'late', 'bench') then $4 else role end
 		where raid_id = $1 and character_key = $2
-		returning state`, raidID, char.CharacterKey, char.Spec, char.defaultRole()).Scan(&state)
+		returning state`, raidID, char.CharacterKey, char.Spec, role).Scan(&state)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return "", nil
 	}
