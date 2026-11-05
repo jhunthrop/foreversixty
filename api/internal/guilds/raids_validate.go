@@ -30,7 +30,7 @@ const (
 	// raidZoneMissing is the What select's error (guild events spec §5).
 	raidZoneMissing = "Choose a dungeon, event or raid."
 	// zoneOpensDay is how the open day reads in the date error: `Wed 9 Dec`.
-	zoneOpensDay       = "Mon 2 Jan"
+	zoneOpensDay       = raidDayLayout
 	controlCharMessage = "Remove the control characters."
 )
 

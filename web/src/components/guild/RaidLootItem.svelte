@@ -1,12 +1,19 @@
 <!-- web/src/components/guild/RaidLootItem.svelte -->
 <!-- One awarded item (attendance spec 3.3, 3.4): the shared ItemHover, with the icon at the caller's
      size and the quality-coloured name. The icon comes with the award (the API's loot table, the
-     client's own art); an item with none, or one whose file fails, shows the /bis neutral tile with
-     the name's letters, never the red question mark. The tooltip opens for every item: an item
-     outside every class file gets the award's own facts. -->
+     client's own art); an item with none, one no class file carries (the build ships no icon for
+     it), or one whose file fails, shows the /bis neutral tile with the name's letters, never the red
+     question mark or a 404. With no class to read (a drop nobody here is eligible for) no class file
+     is fetched at all. The tooltip opens for every item: an item outside every class file gets the
+     award's own facts. -->
 <script lang="ts">
   import type { RaidLootAward } from '../../lib/guild/attendance-contract';
-  import { awardTooltipModel, lootIconOf, lootInitials } from '../../lib/guild/loot-icon';
+  import {
+    awardTooltipModel,
+    lootInitials,
+    shippedLootIcon,
+    type ClassFileRow,
+  } from '../../lib/guild/loot-icon';
   import { fetchItemTooltipModel } from '../../lib/items/lookup';
   import type { ItemTooltipModel } from '../../lib/items/tooltip';
   import { dataUrl } from '../../lib/planner/load';
@@ -35,19 +42,30 @@
   const classSlug = $derived(classSlugFromName(award.class));
   /** Set when the icon file fails: the tile shows the name's letters instead. */
   let broken = $state(false);
-  const icon = $derived(broken ? null : lootIconOf(award));
+  /** Whether the class file carries the item: only then does the build ship its icon. */
+  let classRow = $state<ClassFileRow>('pending');
+  const icon = $derived(broken ? null : shippedLootIcon(award, classRow));
   /** Set when the class file has no row for the item (a quest item such as Head of Onyxia). */
   let ownModel = $state<ItemTooltipModel | undefined>(undefined);
 
   $effect(() => {
     let live = true;
+    const none = (): void => {
+      if (!live) return;
+      classRow = 'none';
+      ownModel = { ...awardTooltipModel(award), icon: '' };
+    };
+    if (classSlug === '') {
+      none();
+      return;
+    }
+    classRow = 'pending';
     fetchItemTooltipModel(build, classSlug, award.item_id)
       .then((model) => {
-        if (live && model === null) ownModel = awardTooltipModel(award);
+        if (model === null) none();
+        else if (live) classRow = 'found';
       })
-      .catch(() => {
-        if (live) ownModel = awardTooltipModel(award);
-      });
+      .catch(none);
     return () => {
       live = false;
     };
@@ -79,7 +97,7 @@
           class="h-full w-full object-cover"
           onerror={() => (broken = true)}
         />
-      {:else}
+      {:else if classRow !== 'pending' || broken}
         <span aria-hidden="true" data-testid="raid-loot-initials">{lootInitials(award.item_name)}</span>
       {/if}
     </span>

@@ -28,13 +28,13 @@
     });
   });
 
-  const LINK = 'inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0';
+  const LINK = 'inline-flex min-h-11 items-center text-[13px] font-semibold whitespace-nowrap md:min-h-0';
   /** Looked up, and there is no export: nothing to offer, so the slot takes no room. */
   const empty = $derived(status === 'ready' && code === null);
 </script>
 
 <!-- `stacked` (the Roster tab's fixed actions slot): the two links sit one above the other from
-     lg up, so the group is narrow enough never to wrap or push the Remove button. With no export
+     lg up, each on one line (never `Open in` over `simulator`), in the 216 px slot beside Remove. With no export
      the slot is `data-state="empty"` and hidden, so a phone row keeps no blank 44 px line; the
      row's own wrapper hides with it (GuildRosterTable's `has-[[data-state=empty]]:hidden`). -->
 <div
@@ -44,7 +44,7 @@
   hidden={empty}
 >
   {#if status === 'loading'}
-    <span class="invisible text-[13px]" aria-hidden="true">{guildHomeCopy.openSim}</span>
+    <span class="invisible text-[13px] whitespace-nowrap" aria-hidden="true">{guildHomeCopy.openSim}</span>
   {:else if code !== null}
     <a class={LINK} href={rosterSimHref(code)} data-testid="guild-roster-open-sim">
       {guildHomeCopy.openSim}

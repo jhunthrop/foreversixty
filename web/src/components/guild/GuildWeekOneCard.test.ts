@@ -11,6 +11,17 @@ import GuildWeekOneCard from './GuildWeekOneCard.svelte';
 import { gateFactsFixture } from '../../test-support/gate-facts';
 
 const NOW = new Date('2026-11-05T00:00:00Z');
+const QUIET_RAID = {
+  id: 7,
+  zone: 'deadmines',
+  zone_name: 'The Deadmines',
+  title: 'Deadmines run',
+  starts_at: '2026-11-08T02:00:00Z',
+  size: 5,
+  guild_timezone: 'America/Chicago',
+  counts: { in: 2, late: 1, tanks: 1, healers: 1, dps: 1 },
+  own: null,
+};
 const noop = (): void => {};
 
 function text(markup: string): string {
@@ -248,5 +259,16 @@ describe('GuildReadiness for leveling characters and healers', () => {
     expect(text(officerBoard)).toContain('No raiders on the board yet. Approve members on the Roster tab.');
     expect(officerBoard).toContain('href="#roster"');
     expect(board([], false)).not.toContain('Open the roster');
+  });
+
+  it('draws the raider step as a quiet line with no button when the band signs up (guild round 3)', () => {
+    const markup = card({
+      officer: false,
+      nextRaid: QUIET_RAID,
+      raidHref: '/r/7',
+      bandSignsUp: true,
+    });
+    expect(markup).not.toContain('data-testid="guild-week-one-action"');
+    expect(markup).toMatch(/class="text-muted text-\[14px\]" data-testid="guild-week-one-sentence"/);
   });
 });

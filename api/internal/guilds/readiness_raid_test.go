@@ -7,7 +7,7 @@ import (
 )
 
 // readinessRaidWorld is a planned raid a week out with: the officer In (fresh export), Kraggor
-// Late (export synced ten days before the raid), Mirelle In (no export at all) and
+// Late (export synced ten days ago), Mirelle In (no export at all) and
 // Sunderfel Out (with an export).
 func readinessRaidWorld(t *testing.T) (raidWorld, RaidView) {
 	t.Helper()
@@ -16,7 +16,7 @@ func readinessRaidWorld(t *testing.T) (raidWorld, RaidView) {
 	seedExport(t, w.h.pool, w.officer, officerKey, "us", "hardcore", "Thornhide")
 	seedExport(t, w.h.pool, w.member, memberKeyA, "us", "hardcore", "Kraggor")
 	seedExport(t, w.h.pool, w.member, memberKeyB, "us", "hardcore", "Sunderfel")
-	stale := raid.StartsAt.Add(-10 * 24 * time.Hour)
+	stale := time.Now().Add(-10 * 24 * time.Hour)
 	if _, err := w.h.pool.Exec(t.Context(),
 		`update addon_exports set updated_at = $1 where character_key = $2`, stale, memberKeyA); err != nil {
 		t.Fatal(err)
@@ -49,15 +49,16 @@ func TestReadinessCutToARaidKeepsItsInAndLateSignups(t *testing.T) {
 	if len(v.Rows) != 3 || by[memberKeyB].CharacterKey != "" {
 		t.Fatalf("rows = %+v", v.Rows)
 	}
+	cutoff := time.Now().AddDate(0, 0, -readinessFreshDays)
 	if v.Raid == nil || v.Raid.ID != raid.ID || v.Raid.Title != raid.Title || !v.Raid.StartsAt.Equal(raid.StartsAt) ||
-		!v.Raid.CutoffAt.Equal(raid.StartsAt) {
-		t.Fatalf("raid = %+v", v.Raid)
+		v.Raid.CutoffAt.Sub(cutoff).Abs() > time.Minute {
+		t.Fatalf("raid = %+v, want cutoff_at about %s (now minus the fresh days)", v.Raid, cutoff)
 	}
-	if r := by[officerKey]; r.SyncedBeforeCutoff == nil || !*r.SyncedBeforeCutoff || r.NoExport || r.Failing != 0 {
+	if r := by[officerKey]; r.SyncedBeforeCutoff == nil || *r.SyncedBeforeCutoff || r.NoExport || r.Failing != 0 {
 		t.Fatalf("fresh row = %+v", r)
 	}
 	stale := by[memberKeyA]
-	if stale.SyncedBeforeCutoff == nil || *stale.SyncedBeforeCutoff || stale.Failing != 1 {
+	if stale.SyncedBeforeCutoff == nil || !*stale.SyncedBeforeCutoff || stale.Failing != 1 {
 		t.Fatalf("stale row = %+v", stale)
 	}
 	if stale.NudgeText == nil {
@@ -93,9 +94,16 @@ func TestUnfilteredReadinessNamesTheNextRaid(t *testing.T) {
 		t.Fatalf("unfiltered rows = %+v", out.Rows)
 	}
 	for _, r := range out.Rows {
-		if r.SyncedBeforeCutoff != nil || r.NoExport {
-			t.Fatalf("unfiltered row carries raid facts: %+v", r)
+		if r.NoExport {
+			t.Fatalf("unfiltered row carries a no_export row: %+v", r)
 		}
+	}
+	// Freshness is judged against now on the unfiltered board too (guild round 3 API3).
+	if r := by[officerKey]; r.SyncedBeforeCutoff == nil || *r.SyncedBeforeCutoff || r.Failing != 0 {
+		t.Fatalf("unfiltered fresh row = %+v", r)
+	}
+	if r := by[memberKeyA]; r.SyncedBeforeCutoff == nil || !*r.SyncedBeforeCutoff || r.Failing != 1 || r.NudgeText == nil {
+		t.Fatalf("unfiltered stale row = %+v, want synced_before_cutoff, one failing check and a nudge", r)
 	}
 	if out.Raid != nil {
 		t.Fatalf("unfiltered raid = %+v", out.Raid)
@@ -116,4 +124,20 @@ func TestReadinessForAnUnknownRaidIs404(t *testing.T) {
 	w.as(w.officer)
 	expectError(t, w.h.do(http.MethodGet, w.path("/readiness?raid=999999"), ""), http.StatusNotFound, "not_found")
 	expectError(t, w.h.do(http.MethodGet, w.path("/readiness?raid=abc"), ""), http.StatusNotFound, "not_found")
+}
+
+// An export synced today is fresh for a raid five weeks out: freshness is judged against now,
+// never the raid's date (guild round 3: "Synced 35 days before the raid" for today's sync).
+func TestATodaysSyncIsFreshForAFarRaid(t *testing.T) {
+	w := newRaidWorld(t, true)
+	raid := w.raidAt(t, raidZoneOny, time.Now().Add(35*24*time.Hour).Truncate(time.Minute))
+	seedExport(t, w.h.pool, w.officer, officerKey, "us", "hardcore", "Thornhide")
+	w.signUp(t, raid.ID, officerKey, "Thornhide", "druid", w.officer, SignupIn)
+	w.as(w.officer)
+	var v ReadinessView
+	w.h.data(w.h.do(http.MethodGet, w.path("/readiness?raid=%d", raid.ID), ""), &v)
+	r := readinessRowsByKey(v)[officerKey]
+	if r.SyncedBeforeCutoff == nil || *r.SyncedBeforeCutoff || r.Failing != 0 {
+		t.Fatalf("today's sync = %+v, want fresh and nothing failing", r)
+	}
 }

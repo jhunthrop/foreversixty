@@ -34,4 +34,14 @@ describe('rosterBestLabels', () => {
     expect(labels.value).toBe('394 DPS');
     expect(labels.hover).toBe('Top DPS in any Onyxia kill');
   });
+
+  it('ends the row at its number when the fight has no score, never a bare dash (guild round 3)', () => {
+    expect(rosterBestLabels(best()).execution).toBeNull();
+  });
+
+  it('says what a score is: the kill against the simulator', () => {
+    const labels = rosterBestLabels(best({ execution_score: 0.921 }));
+    expect(labels.execution).toBe('92% of sim');
+    expect(labels.executionHover).toBe('92% of what this gear can do, simulated');
+  });
 });

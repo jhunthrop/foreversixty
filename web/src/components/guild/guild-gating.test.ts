@@ -26,6 +26,17 @@ describe('GuildPlanGate', () => {
     expect(body).toContain('id="officer-tools-gate-loot"');
   });
 
+  it('on a granted Guild plan reads as a note asking us, never the dead Move link (guild round 3)', () => {
+    const body = gate('loot', { guildTier: true, granted: true });
+    expect(text(body)).toBe(
+      'Awarding loot is part of Raid guild. Your plan was granted by Forever Sixty. Ask us on Discord to move it to Raid guild.',
+    );
+    expect(body).not.toContain('upgrade=1');
+    expect(body).toMatch(
+      /<a[^>]*href="https:\/\/discord\.gg\/[^"]+"[^>]*target="_blank"[^>]*>Ask us on Discord<\/a>/,
+    );
+  });
+
   it('asks the claim holder by crest and class colour, with no link', () => {
     const body = gate('loot', {
       guildMaster: false,
@@ -114,7 +125,7 @@ describe('GuildInviteLink', () => {
     expect(body).toContain('id="invite"');
     expect(body).toContain('scroll-mt-20');
     expect(text(body)).toContain(
-      'Anyone with this link joins Olympus as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once.',
+      'Anyone with this link joins Olympus as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once. A character with an officer rank in game still waits for an officer.',
     );
   });
 

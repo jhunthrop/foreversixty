@@ -1101,8 +1101,10 @@ data class GuildMember(
 
 @Serializable
 data class GuildMemberCounts(
+    /** Guild round 3: the entries the Roster list shows (approved characters, invited members, names in game without an account), never the waiting characters; everyone is on_roster + waiting. */
     @SerialName("on_roster") val onRoster: Int,
     @SerialName("in_game_no_account") val inGameNoAccount: Int,
+    /** Characters waiting for approval (guild round 3; the round-1 accounts rule is superseded), the Waiting for approval panel's rows and summary.waiting_for_approval. */
     @SerialName("waiting") val waiting: Int,
     @SerialName("not_seen") val notSeen: Int,
 )
@@ -1180,6 +1182,8 @@ data class GuildRosterRow(
     @SerialName("last_report_at") val lastReportAt: String? = null,
     @SerialName("may_remove") val mayRemove: Boolean,
     @SerialName("may_approve") val mayApprove: Boolean,
+    /** The character its account marked as main; the roster names an alt's main by it. */
+    @SerialName("is_main") val isMain: Boolean,
     /** The character's sim input is its FS1 export (gear consent only): the Roster tab's Open in simulator / planner slot has links to offer. */
     @SerialName("sim_export") val simExport: Boolean,
     @SerialName("addon") val addon: GuildRosterAddon? = null,
@@ -1209,6 +1213,18 @@ data class GuildStanding(
     @SerialName("rank_by_item_level") val rankByItemLevel: Int,
     @SerialName("item_level") val itemLevel: Int,
     @SerialName("needs_before_next_raid") val needsBeforeNextRaid: List<String> = emptyList(),
+    /** The raid needs_before_next_raid is before: the next planned raid of kind raid, the one Readiness and /raid name first (never a dungeon run or guild event the band may show); null when none is planned. */
+    @SerialName("needs_raid") val needsRaid: GuildStandingNeedsRaid? = null,
+)
+
+/** The raid needs_before_next_raid is before: the next planned raid of kind raid, the one Readiness and /raid name first (never a dungeon run or guild event the band may show); null when none is planned. */
+@Serializable
+data class GuildStandingNeedsRaid(
+    @SerialName("title") val title: String,
+    /** RFC 3339, UTC */
+    @SerialName("starts_at") val startsAt: String,
+    /** The character the viewer's account signed up for this raid, its best place (In, then Late, then Bench; Out names none): the needs line is that character's. Null when the account has no such sign-up, and the line keeps the viewer's current character. The standing above is anchored to it too when it can be. */
+    @SerialName("character_key") val characterKey: String? = null,
 )
 
 @Serializable
@@ -1488,6 +1504,8 @@ data class LootCandidate(
     @SerialName("ilvl_delta") val ilvlDelta: Int? = null,
     @SerialName("attendance") val attendance: GuildAttendance,
     @SerialName("already_equivalent") val alreadyEquivalent: Boolean,
+    /** The drop goes in a slot the character has nothing in; it ranks below a real upgrade in its tier */
+    @SerialName("fills_empty_slot") val fillsEmptySlot: Boolean,
     @SerialName("replaces") val replaces: String,
     /** The worn item the drop pushes out; null for an empty slot or one the class's item table cannot name. */
     @SerialName("replaces_item") val replacesItem: LootWornItem? = null,
@@ -1509,6 +1527,10 @@ data class LootEncounter(
     @SerialName("name") val name: String,
     @SerialName("zone") val zone: String,
     @SerialName("killed") val killed: Boolean,
+    /** Separate nights (days in the guild's raid zone) with a kill; two logs of one night count once. */
+    @SerialName("kill_nights") val killNights: Int,
+    /** kill_nights >= 3: the boss reads on farm. One or two kill nights read down. */
+    @SerialName("on_farm") val onFarm: Boolean,
 )
 
 /** /data/{build}/loot.json (W3-C8). Every source of every item, the quest rewards and the factions' sides. */
@@ -2370,6 +2392,8 @@ data class ReportRow(
     @SerialName("logging_character") val loggingCharacter: LoggingCharacter? = null,
     @SerialName("last_upload_at") val lastUploadAt: String? = null,
     @SerialName("heartbeat_at") val heartbeatAt: String? = null,
+    /** The log's first fight */
+    @SerialName("started_at") val startedAt: String? = null,
 )
 
 @Serializable

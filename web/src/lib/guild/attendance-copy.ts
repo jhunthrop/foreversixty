@@ -12,7 +12,7 @@ import type {
   RaidRef,
   RaidUnnamed,
 } from './attendance-contract';
-import { nightsLabel } from './nights';
+import { NO_RAID_NIGHTS, nightsLabel } from './nights';
 import { SEP } from './raid-copy';
 import { DEFAULT_LOCALE, clockText, dateLabel, stampParts } from './raid-time';
 
@@ -69,6 +69,9 @@ export function killTimeLabel(ms: number): string {
 
 export const attendanceCopy = {
   cameWord: 'came',
+  /** The night line's head when nobody signed up beforehand (the bot's words): never `0 of 0 came`. */
+  cameUnsigned: (n: number): string => `${n} came, nobody signed up beforehand`,
+  nobodySigned: 'Nobody signed up beforehand',
   match: {
     loggedAsNight: 'Logged as a raid night.',
     openNight: 'Open the night',
@@ -152,8 +155,8 @@ export const attendanceCopy = {
     excused: 'Excused',
   },
   roster: {
-    noRaids: 'No raids yet',
-    footnote: `Came: raids attended of raids signed up for or attended, over this guild's last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged raids.`,
+    noNights: NO_RAID_NIGHTS,
+    footnote: `Raid nights each raider came to, of those they signed up for or came to, over this guild's last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged raids.`,
   },
   readiness: {
     noExport: 'No export yet',
@@ -172,9 +175,13 @@ export const attendanceCopy = {
     "Added attendance and raid-night reports. A raid's log is matched when it is uploaded, and the raid page shows who came, kill times, deaths, loot and the biggest changes since last time.",
 } as const;
 
-/** The night line, the figures apart from the `came` ratio: a zero clause is left out. */
+/** Nobody signed up beforehand: the joiners are the whole night, so the head counts them. */
+const nobodySignedUp = (night: Pick<RaidNight, 'signed'>): boolean => night.signed === 0;
+
+/** The night line, the figures apart from the `came` head: a zero clause is left out, and the
+ *  joiners are left to the head when nobody signed up. */
 export function nightFacts(night: RaidNight): string[] {
-  const facts: string[] = night.joined > 0 ? [`${night.joined} joined`] : [];
+  const facts: string[] = night.joined > 0 && !nobodySignedUp(night) ? [`${night.joined} joined`] : [];
   if (night.kills > 0) facts.push(kills(night.kills));
   if (night.wipes > 0) facts.push(wipes(night.wipes));
   if (night.deaths > 0) facts.push(deaths(night.deaths));
@@ -182,8 +189,13 @@ export function nightFacts(night: RaidNight): string[] {
   return facts;
 }
 
-/** `22 of 23 came`. */
-export function cameRatio(night: Pick<RaidNight, 'came' | 'signed'>): string {
+/** `22 of 23 came`; with nobody signed up beforehand, the bot's `5 came, nobody signed up
+ *  beforehand` (or `Nobody signed up beforehand` with nobody in the log either). */
+export function cameRatio(night: Pick<RaidNight, 'came' | 'signed' | 'joined'>): string {
+  if (nobodySignedUp(night)) {
+    const came = night.came + night.joined;
+    return came > 0 ? attendanceCopy.cameUnsigned(came) : attendanceCopy.nobodySigned;
+  }
   return `${night.came} of ${night.signed} ${attendanceCopy.cameWord}`;
 }
 
@@ -287,8 +299,10 @@ export function killDeaths(n: number): string {
 
 export const notKilled = (wipesBefore: number): string => `Not killed${SEP}${wipes(wipesBefore)}`;
 
-export function unnamedLine(unnamed: RaidUnnamed): string {
-  return `${unit(unnamed.pulls, 'pull')} with no named encounter published: ${kills(unnamed.kills)}, ${wipes(unnamed.wipes)}.`;
+/** The pulls no boss is named for, in the night header's own words: `2 trash packs`. Like the
+ *  header, a pack that went badly is not counted; null when no pack died. */
+export function unnamedLine(unnamed: RaidUnnamed): string | null {
+  return unnamed.kills > 0 ? unit(unnamed.kills, 'trash pack') : null;
 }
 
 /** The kill-order row's words, by boss. */
@@ -356,7 +370,7 @@ export function attendanceSummary(night: RaidNight): string {
   const clauses = [cameRatio(night)];
   if (night.late > 0) clauses.push(`${night.late} late`);
   if (night.not_in_log > 0) clauses.push(`${night.not_in_log} not in the log`);
-  if (night.joined > 0) clauses.push(`${night.joined} more joined`);
+  if (night.joined > 0 && !nobodySignedUp(night)) clauses.push(`${night.joined} more joined`);
   if (night.excused > 0) clauses.push(`${night.excused} excused`);
   return clauses.join(SEP);
 }
@@ -370,25 +384,31 @@ export const cameAsOutcome = (alt: string): string => `Came as ${alt}`;
 /** `9/11`. */
 export const pullsRatio = (present: number, total: number): string => `${present}/${total}`;
 
-/** The roster chip: `Came 7 of 8 · 26 of 30 raids`, or `Came 3 of 3 raids` alone while the longer window adds nothing. */
+/** The roster chip, the bot's own (api guilds attendanceChip): `7 of 8 raid nights · 26 of the
+ *  last 30`, or `1 of 1 raid night` alone while the longer window adds nothing; `No raid nights
+ *  yet` with no eligible night in either window. */
 export function rosterChip(
   last8: { present: number; nights: number },
   last30: { present: number; nights: number } | undefined,
 ): string {
-  // One unit for both windows, named once at the end (WP A): `Came 7 of 8 · 26 of 30 raids`.
-  const head = `Came ${last8.present} of ${last8.nights}`;
-  if (last30 === undefined || last30.nights <= last8.nights) return `${head} raids`;
-  return `${head}${SEP}${last30.present} of ${last30.nights} raids`;
+  if (last8.nights === 0 && last30 !== undefined && last30.nights > 0) {
+    // Nothing in the short window but older nights in the long one: the long ratio alone, true.
+    return raidsAttended(last30.present, last30.nights);
+  }
+  const head = raidsAttended(last8.present, last8.nights);
+  if (last30 === undefined || last30.nights <= last8.nights) return head;
+  return `${head}${SEP}${last30.present} of the last ${last30.nights}`;
 }
 
-/** The loot line in raid mode: `7 of 8 raids`. */
-export const raidsAttended = (present: number, nights: number): string =>
-  nightsLabel(present, nights, 'raid');
+/** The one attendance figure on the site and in the bot (guild loop round 3): `7 of 8 raid
+ *  nights`, `1 of 1 raid night`, `0 of 1 raid night`, and `No raid nights yet` with no eligible
+ *  night. */
+export const raidsAttended = nightsLabel;
 
-/** The character guild line's tail in raid mode: ` · came 7 of 8 raids`. */
-/** `came 7 of 8 raids`, the clause the guild line appends after its separator. */
+/** `came 7 of 8 raid nights`, the clause the guild line appends after its separator; `No raid
+ *  nights yet` with no eligible night (never `came 0 of 0`). */
 export const cameGuildClause = (present: number, nights: number): string =>
-  `came ${raidsAttended(present, nights)}`;
+  nights === 0 ? NO_RAID_NIGHTS : `came ${raidsAttended(present, nights)}`;
 export const cameGuildLine = (present: number, nights: number): string =>
   `${SEP}${cameGuildClause(present, nights)}`;
 
@@ -404,5 +424,6 @@ export function showingParts(
   return { lead: `Showing the ${n} signed In or Late for `, title, tail: `, ${when}.` };
 }
 
-export const syncedBefore = (days: number): string =>
-  `Synced ${days} ${days === 1 ? 'day' : 'days'} before the raid`;
+/** `Synced 27 Oct`: a stale export (the readiness board's cutoff is 7 days, guild round 3), its
+ *  day in the Last synced column's one format (`syncedWord`). */
+export const syncedLine = (when: string): string => `Synced ${when}`;

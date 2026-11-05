@@ -1,12 +1,14 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  NO_PUBLIC_LOGS,
   bandCountsLine,
   downEncounterNames,
   bossesDownCountLine,
   bossesDownLine,
   progressionNightDay,
   raidNightDay,
-  rosterCardParts,
+  rosterCardFacts,
   showBandCounts,
   showsWeekOne,
   updatedLine,
@@ -72,11 +74,28 @@ describe('the cards', () => {
     expect(downEncounterNames([{ name: 'Onyxia', kills: 2 }])).toEqual(['Onyxia']);
   });
 
-  it('counts raiders with the plural helper', () => {
-    expect(rosterCardParts({ raiders: 1, waiting_for_approval: 4, below_rating_floor: 0 })).toEqual({
-      raiders: '1 raider with gear on the site',
-      waiting: '4 waiting for approval',
-      belowFloor: '0 below the rating floor',
-    });
+  it('counts raiders with the plural helper and leaves zero clauses out', () => {
+    expect(rosterCardFacts({ raiders: 1, waiting_for_approval: 4, below_rating_floor: 0 })).toEqual([
+      { text: '1 raider with gear on the site' },
+      { text: '4 waiting for approval', class: 'text-gold' },
+    ]);
+    expect(rosterCardFacts({ raiders: 5, waiting_for_approval: 0, below_rating_floor: 0 })).toEqual([
+      { text: '5 raiders with gear on the site' },
+    ]);
+    expect(
+      rosterCardFacts({ raiders: 5, waiting_for_approval: 0, below_rating_floor: 2 }).map((f) => f.text),
+    ).toEqual(['5 raiders with gear on the site', '2 below the rating floor']);
+  });
+});
+
+describe('NO_PUBLIC_LOGS', () => {
+  it("is the guild-page spec's Progression empty line, never weekly (guild loop round 3)", () => {
+    const spec = readFileSync(
+      new URL('../../../../design/specs/2026-10-04-guild-page.md', import.meta.url),
+      'utf8',
+    );
+    expect(NO_PUBLIC_LOGS).toBe('No public logs yet.');
+    expect(spec).toContain(`\`${NO_PUBLIC_LOGS}\``);
+    expect(NO_PUBLIC_LOGS).not.toContain('week');
   });
 });

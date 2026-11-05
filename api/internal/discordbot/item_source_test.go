@@ -45,18 +45,39 @@ func TestSourceLinesAreTheBisPagesOwn(t *testing.T) {
 		{1, "quest", "Alliance quest"},
 	}
 	for _, c := range cases {
-		if got := describeSource(&loot, c.id, c.kind, "alliance"); got != c.want {
+		if got := describeSource(&loot, c.id, c.kind, "alliance", ""); got != c.want {
 			t.Errorf("%d %s = %q, want %q", c.id, c.kind, got, c.want)
 		}
 	}
 	// Round 8 relabelled 467 Forever PvP listings as unranked "PvP reward (<Side>)" sources;
 	// the page reads them "PvP reward · Horde" (items/source-labels.ts pvpSourceLabel).
 	for _, kind := range []string{"pvp", "vendor"} {
-		if got := describeSource(&loot, 227198, kind, "horde"); got != "PvP reward · Horde" {
+		if got := describeSource(&loot, 227198, kind, "horde", ""); got != "PvP reward · Horde" {
 			t.Errorf("unranked pvp item as %s = %q, want %q", kind, got, "PvP reward · Horde")
 		}
 	}
-	if got := describeSource(&loot, 1, "quest", "horde"); got != "Horde quest" {
+	if got := describeSource(&loot, 1, "quest", "horde", ""); got != "Horde quest" {
 		t.Errorf("horde quest badge = %q", got)
+	}
+}
+
+// Tome of Fiery Arcana (19311) is sold by both Alterac Valley factions and loot.json gives
+// neither a side: the line names the band's own faction from the BiS row, never the first
+// listed (round 3 e2e: an Alliance mage read "Frostwolf Clan (exalted)").
+func TestARepItemBothSidesSellReadsTheBandsOwnFaction(t *testing.T) {
+	var loot lootFile
+	if err := json.Unmarshal([]byte(`{"sources": [
+	  {"kind": "rep", "name": "Frostwolf Clan", "standing": "exalted", "faction": null, "items": [19311]},
+	  {"kind": "rep", "name": "Stormpike Guard", "standing": "exalted", "faction": null, "items": [19311]}]}`), &loot); err != nil {
+		t.Fatal(err)
+	}
+	for named, want := range map[string]string{
+		"Stormpike Guard": "Stormpike Guard (exalted)",
+		"Frostwolf Clan":  "Frostwolf Clan (exalted)",
+		"":                "Frostwolf Clan (exalted)",
+	} {
+		if got := describeSource(&loot, 19311, "rep", "alliance", named); got != want {
+			t.Errorf("named %q = %q, want %q", named, got, want)
+		}
 	}
 }

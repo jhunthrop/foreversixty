@@ -5,20 +5,22 @@
      reads its spec and class. Officers get a label-less state select at the end of every row; a refusal reverts
      it, with the line under the roster, or under the row for the plan gate (focused). A change that
      moves the row to another group hands focus to its select there; a saving select stays enabled
-     (aria-busy), so the focused control is never disabled under the officer's hand. -->
+     (aria-busy), so the focused control is never disabled under the officer's hand. A guild event
+     counts no roles: its sign-ups are one list by state (In, Late, Bench, Out), each row crest,
+     name and class (guild events spec 3.5, guild round 3). -->
 <script lang="ts">
   import { tick } from 'svelte';
   import type { GuildRaidGroup, GuildRaidView, GuildSignupState } from '../../lib/guild/api';
-  import { raidCopy } from '../../lib/guild/raid-copy';
+  import { kindCountsRoles, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCount } from '../../lib/guild/raid-page';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
-  import { ownRowBand } from '../../lib/ui/row';
+  import { ownRowBandInside } from '../../lib/ui/row';
   import { rosterGroups, rosterSelectId, type RosterRow } from '../../lib/guild/raid-roster';
   import { SIGNUP_STATES } from '../../lib/guild/segments-keys';
   import type { FilterOption } from '../../lib/rankings/options';
   import { classColorVar } from '../../lib/report/format';
-  import { specClassLine } from '../../lib/guild/raid-comp';
+  import { classWord, specClassLine } from '../../lib/guild/raid-comp';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Select from '../ui/Select.svelte';
   import RaidDisclosure from './RaidDisclosure.svelte';
@@ -82,8 +84,11 @@
 
   const groups = $derived(rosterGroups(raid));
   const count = $derived(raidCount(raid));
+  /** A raid or a run splits In by role; a guild event lists In beside Late, Bench and Out. */
+  const roles = $derived(kindCountsRoles(kindOf(raid)));
   const others = $derived([
-    { id: 'late', label: raidCopy.subheads.late, rows: groups.late, withRole: true },
+    ...(roles ? [] : [{ id: 'in', label: raidCopy.segments.in, rows: groups.in, withRole: false }]),
+    { id: 'late', label: raidCopy.subheads.late, rows: groups.late, withRole: roles },
     { id: 'bench', label: raidCopy.subheads.bench, rows: groups.bench, withRole: false },
     { id: 'out', label: raidCopy.subheads.out, rows: groups.out, withRole: false },
   ]);
@@ -120,13 +125,14 @@
 
 {#snippet row(entry: RosterRow, withRole: boolean)}
   {@const busy = busyKey === entry.character_key}
-  {@const specLine = `${specClassLine(entry.class, entry.spec_key)}${withRole ? ` · ${raidCopy.roleLabels[entry.role]}` : ''}`}
+  {@const specLine = roles
+    ? `${specClassLine(entry.class, entry.spec_key)}${withRole ? ` · ${raidCopy.roleLabels[entry.role]}` : ''}`
+    : classWord(entry.class)}
   <!-- §7 caps: 36 px desktop, 44 phone before a note. A bare row centres crest, name and the
        officer select (32 desktop, 44 phone) with no padding past them; a noted row runs from the top. -->
   <li
-    class="rounded-control flex min-h-11 break-inside-avoid gap-3 {ownRowBand(
+    class="rounded-control flex min-h-11 break-inside-avoid flex-wrap gap-x-3 {ownRowBandInside(
       entry.own,
-      2,
     )} md:min-h-9 {entry.note === '' && entry.also === null ? 'items-center' : 'items-start py-1.5'}"
     aria-busy={busy}
     data-testid="raid-roster-row"
@@ -144,11 +150,14 @@
       <p class="text-muted block truncate text-[12px] leading-4" title={specLine}>{specLine}</p>
       <!-- One row per account: its other answered characters, so a benched alt is never hidden. -->
       {#if entry.also !== null}
-        <p class="text-muted text-[12px] leading-4 break-words" data-testid="raid-roster-also">
+        <!-- Phone: wrapped under the spec line (guild round 3). -->
+        <p
+          class="text-muted text-[12px] leading-4 break-words md:hidden"
+          data-testid="raid-roster-also-phone"
+        >
           {entry.also}
         </p>
       {/if}
-      {#if entry.note !== ''}<p class="text-text text-[12px] break-words">{entry.note}</p>{/if}
       {#if line?.control === `roster:${entry.character_key}`}
         <p
           class="text-wipe text-[13px]"
@@ -162,10 +171,13 @@
       {/if}
     </div>
     {#if officer}
-      <!-- The select's own floor (select.css .sel-root, 120 px): the slot is that wide, so the
-           field and its chevron stay inside the row and its band. -->
-      <div class="w-30 shrink-0">
+      <!-- 104 px, under the select's bare-field floor (select.css .sel-root, 120 px, which
+           `min-w-0` lifts): `Bench` and the chevron fit, and the name block gains the 16 px that
+           lets `Beast Mastery Hunter` read in full in a four-column roster at 1440 and 2000 (guild
+           loop round 3). The field and its chevron stay inside the row and its band. -->
+      <div class="w-26 shrink-0">
         <Select
+          class="min-w-0"
           id={rosterSelectId(entry.character_key)}
           size="dense"
           align="end"
@@ -180,31 +192,53 @@
         />
       </div>
     {/if}
+    {#if entry.also !== null}
+      <!-- From md the Also line spans the row under the name block and the select, indented past
+           the crest (24 + 12 px), so it reads in full; cut with the whole line as its title only
+           when the row still cannot hold it (guild round 3: the name column ellipsised it). -->
+      <p
+        class="text-muted hidden basis-full truncate pl-9 text-[12px] leading-4 md:block"
+        title={entry.also}
+        data-testid="raid-roster-also"
+      >
+        {entry.also}
+      </p>
+    {/if}
+    {#if entry.note !== ''}
+      <!-- The note spans the row under the Also line at every width, indented past the crest, so
+           Also always reads before the note (guild loop round 3: phone had Also first, desktop
+           the note first). -->
+      <p class="text-text basis-full pl-9 text-[12px] break-words" data-testid="raid-roster-note">
+        {entry.note}
+      </p>
+    {/if}
   </li>
 {/snippet}
 
 {#snippet body()}
-  <div class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 xl:grid-cols-4">
-    {#each GROUP_COLUMNS as column (column.group)}
-      {@const rows = groups.groups[column.group]}
-      <div class="flex min-w-0 flex-col gap-2 {column.place}" data-testid={`raid-roster-${column.group}`}>
-        {@render heading(column.label, rows.length, `raid-roster-${column.group}-heading`)}
-        {#if rows.length === 0}
-          <p class="text-muted text-[13px]">{raidCopy.emptyGroup[column.group]}</p>
-        {:else}
-          <ul>
-            {#each rows as entry (entry.character_key)}{@render row(entry, false)}{/each}
-          </ul>
-        {/if}
-      </div>
-    {/each}
-  </div>
-  <div class="mt-2 flex flex-col gap-6">
+  {#if roles}
+    <div class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 xl:grid-cols-4">
+      {#each GROUP_COLUMNS as column (column.group)}
+        {@const rows = groups.groups[column.group]}
+        <div class="flex min-w-0 flex-col gap-2 {column.place}" data-testid={`raid-roster-${column.group}`}>
+          {@render heading(column.label, rows.length, `raid-roster-${column.group}-heading`)}
+          {#if rows.length === 0}
+            <p class="text-muted text-[13px]">{raidCopy.emptyGroup[column.group]}</p>
+          {:else}
+            <ul>
+              {#each rows as entry (entry.character_key)}{@render row(entry, false)}{/each}
+            </ul>
+          {/if}
+        </div>
+      {/each}
+    </div>
+  {/if}
+  <div class="flex flex-col gap-6 {roles ? 'mt-2' : ''}">
     <!-- Late, Bench and Out side by side from 1024, two columns from 768, stacked below; an empty
            group is left out, so the rest flow left (spec 3.7). -->
     {#if shownOthers.length > 0}
       <div
-        class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 lg:grid-cols-3"
+        class="grid grid-cols-1 gap-x-4 gap-y-6 md:grid-cols-2 {roles ? 'lg:grid-cols-3' : 'xl:grid-cols-4'}"
         data-testid="raid-roster-others"
       >
         {#each shownOthers as group (group.id)}

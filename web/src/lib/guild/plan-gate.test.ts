@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import communityLinks from '../../data/links.json';
 import { gateAction, gateFactsFrom, type GateFacts } from './plan-gate';
 
 const SETTINGS = '/guild/us/pvp/olympus/settings';
@@ -11,6 +12,7 @@ const facts = (over: Partial<GateFacts> = {}): GateFacts => ({
   trialUsed: false,
   lapsed: false,
   guildTier: false,
+  granted: false,
   settingsHref: SETTINGS,
   claimHref: CLAIM,
   ...over,
@@ -54,6 +56,21 @@ describe('gateAction, the spec table', () => {
     expect(gateAction('readiness', facts({ guildTier: true }))).toMatchObject({
       label: 'Move to Raid guild',
     });
+  });
+
+  it('claim holder on a granted Guild plan, a Raid guild feature: ask us, never a dead Move link (guild round 3)', () => {
+    const granted = facts({ guildTier: true, granted: true });
+    for (const feature of ['loot', 'readiness'] as const) {
+      expect(gateAction(feature, granted)).toEqual({
+        kind: 'contact',
+        before: 'Your plan was granted by Forever Sixty. ',
+        link: 'Ask us on Discord',
+        after: ' to move it to Raid guild.',
+        href: communityLinks.discordInvite,
+      });
+    }
+    // A granted plan's Guild features are not gated: Raids reads its usual action.
+    expect(gateAction('raids', granted)).toMatchObject({ kind: 'link' });
   });
 
   it('an officer when someone else holds the claim: ask them, whatever the billing says', () => {
@@ -109,5 +126,15 @@ describe('gateFactsFrom', () => {
     });
     expect(got).toMatchObject({ guildMaster: true, lapsed: true, trialUsed: true });
     expect(gateFactsFrom(input)).toMatchObject({ guildMaster: false, lapsed: false, trialUsed: null });
+  });
+
+  it('reads a grant off an empty billing contact on a live plan, never on a lapsed or paid one', () => {
+    const granted = (covered: { state: 'active' | 'lapsed'; billed_by?: string } | null) =>
+      gateFactsFrom({ ...input, membership: { rank: 'leader', covered } }).granted;
+    expect(granted({ state: 'active', billed_by: '' })).toBe(true);
+    expect(granted({ state: 'active', billed_by: 'Thornhide' })).toBe(false);
+    expect(granted({ state: 'lapsed', billed_by: '' })).toBe(false);
+    expect(granted({ state: 'active' })).toBe(false);
+    expect(granted(null)).toBe(false);
   });
 });
