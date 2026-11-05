@@ -357,6 +357,7 @@ export const bisCopy = {
   /** The This set card's meta: the day the sim ran ("Simmed 29 Oct"). */
   simmedLine: (generatedAtDate: string): string => `Simmed ${utcDayMonth(generatedAtDate)}`,
   openInSimulator: 'Open in simulator',
+  viewRankingSim: 'View ranking sim',
   talentsInPlanner: 'Talents in planner',
   /** The Stat weights card's title; its band label is the head's meta (site alignment §5.3). */
   statWeightsTitle: 'Stat weights',

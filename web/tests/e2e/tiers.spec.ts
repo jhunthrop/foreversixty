@@ -295,6 +295,23 @@ test('every row offers BiS, Guide and Planner at 44px', async ({ page }) => {
   }
 });
 
+test('a DPS row links the ranking sim behind its number; a tank row, which /sim cannot run, has none', async ({
+  page,
+}) => {
+  await page.goto('/tiers');
+  const dpsRow = activePanel(page).locator('[data-testid^="tier-row-"]').first();
+  const sim = dpsRow.getByTestId('tier-sim-link');
+  await expect(sim).toHaveAccessibleName(/^View ranking sim: /);
+  const href = await sim.getAttribute('href');
+  expect(href).toMatch(/^\/sim\?code=/);
+  expect(href).toContain('run=1');
+  expect((await sim.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  await page.goto('/tiers/tank');
+  const tankRow = activePanel(page).locator('[data-testid^="tier-row-"]').first();
+  await expect(tankRow).toBeVisible();
+  await expect(tankRow.getByTestId('tier-sim-link')).toHaveCount(0);
+});
+
 test('Tier list is a Logs panel row and the Logs door is current', async ({ page }) => {
   await page.goto('/tiers');
   const logsDoor = page.getByTestId('primary-nav').locator('a.site-door[data-door="logs"]');
@@ -328,8 +345,10 @@ test.describe('phone', () => {
       const count = await rows.count();
       for (let index = 0; index < count; index += 1) {
         const links = rows.nth(index).locator('.tier-link');
-        await expect(links).toHaveCount(3);
-        for (let l = 0; l < 3; l += 1) {
+        // A DPS row adds the ranking sim; /sim cannot rerun a tank's or a healer's figure.
+        const linkCount = role === 'dps' ? 4 : 3;
+        await expect(links).toHaveCount(linkCount);
+        for (let l = 0; l < linkCount; l += 1) {
           expect((await links.nth(l).boundingBox())!.height).toBeGreaterThanOrEqual(44);
         }
       }

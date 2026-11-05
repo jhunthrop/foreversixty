@@ -51,7 +51,7 @@ import {
 } from '../../../lib/bis/rotation-view';
 import { classRows, racesForClass } from '../../../lib/planner/reference';
 import { bandPresets, BARE_PRESET, presetMeta, RAID_PRESET } from '../../../lib/bis/presets';
-import { bisSimHref } from '../../../lib/bis/sim-link';
+import { bisSimHref, rankingSimHrefFor } from '../../../lib/bis/sim-link';
 import { loadTalentFile } from '../../../lib/guides/build-tree';
 import { indexTalents } from '../../../lib/planner/rules';
 import type { BandView } from '../../../lib/bis/band-view';
@@ -158,6 +158,7 @@ function bandViewsFor(faction: Faction, infos: readonly BandInfo[], preset?: Bis
       bandLabel: bisCopy.bandRangeLabel(band),
       info,
       simHref: rawBand === undefined ? '/sim' : bisSimHref(rawBand, talentIndex, build),
+      rankingSimHref: rawBand === undefined ? undefined : rankingSimHrefFor(rawBand, talentIndex, build),
       plannerHref: `/planner?spec=${specEntry.spec}&talents=${encodeURIComponent(rawBand?.talents ?? '')}`,
       generatedAtDate: file.generated_at.slice(0, 10),
       rotationLines:
