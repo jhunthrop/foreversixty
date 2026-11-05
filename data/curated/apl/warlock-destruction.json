@@ -193,7 +193,7 @@
         }
       },
       {
-        "notes": "Immolate with 3 seconds or less left on it. Conflagrate and Incinerate's bonus both need it, so never let it drop.",
+        "notes": "Immolate with 3 seconds or less left on it. It lands a moment before the old one ends, and once you have Conflagrate and Incinerate both need it, so never let it drop.",
         "action": {
           "condition": {
             "cmp": {
