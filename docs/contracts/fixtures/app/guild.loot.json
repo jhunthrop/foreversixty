@@ -39,6 +39,7 @@
               "nights": 8
             },
             "already_equivalent": false,
+            "fills_empty_slot": false,
             "replaces": "Lionheart Helm",
             "items_won": 1,
             "gain_unit": "dps",

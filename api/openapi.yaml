@@ -2710,7 +2710,7 @@ components:
                 items:
                   type: object
                   title: LootCandidate
-                  required: [character_key, name, class, spec, gain_dps, gain_unit, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, replaces_item, items_won, tier]
+                  required: [character_key, name, class, spec, gain_dps, gain_unit, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, replaces_item, items_won, tier, fills_empty_slot]
                   properties:
                     character_key: { type: string }
                     name: { type: string }
@@ -2723,6 +2723,7 @@ components:
                     ilvl_delta: { type: [integer, "null"] }
                     attendance: { $ref: '#/components/schemas/GuildAttendance' }
                     already_equivalent: { type: boolean }
+                    fills_empty_slot: { type: boolean, description: The drop goes in a slot the character has nothing in; it ranks below a real upgrade in its tier, and the page says it fills an empty slot rather than quoting the drop's item level as a gain. }
                     replaces: { type: string }
                     replaces_item:
                       type: [object, "null"]

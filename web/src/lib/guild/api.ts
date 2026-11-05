@@ -1186,6 +1186,8 @@ export interface GuildLootCandidate {
   ilvl_delta: number | null;
   attendance: GuildRosterAttendance;
   already_equivalent: boolean;
+  /** The drop fills an empty slot: say so, never the drop's item level as a gain (loot spec §3.2). */
+  fills_empty_slot?: boolean;
   /** The item they wear now in the drop's slot; empty when the slot is empty. */
   replaces: string;
   /** The same item for the shared item link; `null` for an empty slot. */

@@ -454,7 +454,7 @@ Auth session, verified members only. Caching private. Fixture `guild.loot`. Answ
 `{ item_id, name, icon, quality (0 to 5), slot, copies, awarded_to, candidates[] }`; `awarded_to` is
 `{ award_id, character_key, name, at, by_name }` or null; a candidate is `{ character_key, name,
 class, spec, gain_dps (null when not sim-checked), not_sim_checked, ilvl_delta (nullable),
-attendance, already_equivalent, replaces, items_won }`, ranked best first. `icon` is an icon stem
+attendance, already_equivalent, fills_empty_slot, replaces, items_won }`, ranked best first. `icon` is an icon stem
 (see Icons). Errors: 403 `forbidden` (`guild.home.error-forbidden`), 404.
 
 The roster is the `roster[]` of the home read; there is no separate roster endpoint in v1.
