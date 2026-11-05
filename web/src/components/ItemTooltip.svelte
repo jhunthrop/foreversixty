@@ -1,7 +1,7 @@
 <!-- web/src/components/ItemTooltip.svelte -->
 <!-- The panel: icon, quality-coloured name (site body face, never the site's display face --
      tooltip-polish brief item 2), item level on its own muted line, slot/type, armor, weapon
-     line, green stats, "Equip:"-style effect text, set, required level, then the source block
+     line, white stats, the worn enchant's green line, green "Equip:" sentences and effect text, set, required level, then the source block
      behind a hairline -- the client's own tooltip layout and line order, tenet 2's "the real
      item" made visible. Pure presentation over an already-built ItemTooltipModel
      (lib/items/tooltip.ts); it fetches nothing and owns no open/close state -- ItemHover.svelte
@@ -20,7 +20,24 @@
   import { rarityClassFor } from '../lib/planner/items';
   import { dataUrl } from '../lib/planner/load';
 
-  let { model, build, id }: { model: ItemTooltipModel; build: string; id: string } = $props();
+  let {
+    model,
+    build,
+    id,
+    enchant,
+  }: {
+    model: ItemTooltipModel;
+    build: string;
+    id: string;
+    /** The enchant on the worn item, in the client's own words ("Crusader"): its green line. */
+    enchant?: string;
+  } = $props();
+
+  // The client prints a white stat ("+18 Strength") in white and the "Equip:" sentences in green,
+  // with the enchant's green line between them.
+  const EQUIP_PREFIX = 'Equip:';
+  const whiteStats = $derived(model.stats.filter((line) => !line.startsWith(EQUIP_PREFIX)));
+  const equipStats = $derived(model.stats.filter((line) => line.startsWith(EQUIP_PREFIX)));
 
   // The item pipeline's own placeholder for an id it has no real icon for is the client's
   // red-bordered "?" texture; the letter mark below is the tooltip's fallback for it, the
@@ -32,7 +49,7 @@
   {id}
   role="tooltip"
   data-testid="item-tooltip"
-  class="border-line bg-raised rounded-panel absolute z-30 flex w-[clamp(280px,calc(100vw_-_32px),360px)] flex-col gap-2 border p-3 text-[13px] shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+  class="border-line bg-raised rounded-panel text-strong absolute z-30 flex w-[clamp(280px,calc(100vw_-_32px),360px)] flex-col gap-2 border p-3 text-[13px] shadow-[0_12px_30px_rgba(0,0,0,.45)]"
   style:position="var(--item-tooltip-position, absolute)"
   style:left="var(--item-tooltip-shift, 0px)"
   style:top="var(--item-tooltip-top, 100%)"
@@ -103,11 +120,23 @@
     </div>
   {/if}
 
-  {#if model.stats.length > 0}
-    <div class="text-rarity-uncommon flex flex-col text-[12px]">
-      {#each model.stats as line (line)}
+  {#if whiteStats.length > 0}
+    <div class="flex flex-col text-[12px]" data-testid="item-tooltip-stats">
+      {#each whiteStats as line (line)}
         <!-- The client paints a negative stat red. -->
         <span class:text-death={line.startsWith('-')}>{line}</span>
+      {/each}
+    </div>
+  {/if}
+
+  {#if enchant !== undefined && enchant !== ''}
+    <span class="text-rarity-uncommon text-[12px]" data-testid="item-tooltip-enchant">{enchant}</span>
+  {/if}
+
+  {#if equipStats.length > 0}
+    <div class="text-rarity-uncommon flex flex-col text-[12px]">
+      {#each equipStats as line (line)}
+        <span>{line}</span>
       {/each}
     </div>
   {/if}

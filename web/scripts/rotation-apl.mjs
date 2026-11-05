@@ -156,11 +156,14 @@ function castKeyOf(node) {
  * then every priority line that casts something, with its own note, and the engine's cooldown pass
  * as a line of its own (`action: null`). A step that casts nothing and is not that pass is left
  * out: a wait or a bookkeeping step is not a line a player follows.
- * @param {CuratedApl & { rotation?: { prepullActions?: unknown[] } }} apl
+ * A step's note can have a version for a level and up (`level_notes`, see `levelNotesOf`): a saved
+ * result reads the one for its level, so a level 60 run never reads leveling clauses.
+ * @param {CuratedApl & { rotation?: { prepullActions?: unknown[] }, level_notes?: unknown }} apl
  * @param {string} [spec]
- * @returns {{ prepull: { action: string, at_seconds: number }[], priority: { action: string | null, note: string }[] }}
+ * @returns {{ prepull: { action: string, at_seconds: number }[], priority: { action: string | null, note: string, level_notes?: { from_level: number, note: string }[] }[] }}
  */
 export function rotationLinesOf(apl, spec = '<unknown spec>') {
+  const byStep = levelNotesOf(apl, spec);
   const prepull = (apl?.rotation?.prepullActions ?? [])
     .flatMap((entry) => {
       const step = /** @type {{ action?: unknown, doAtValue?: { const?: { val?: unknown } } }} */ (entry);
@@ -173,10 +176,53 @@ export function rotationLinesOf(apl, spec = '<unknown spec>') {
     const step = /** @type {{ action?: Record<string, unknown>, notes?: unknown }} */ (entry);
     const note = typeof step?.notes === 'string' ? step.notes.trim() : '';
     if (note !== '') assertNoEngineeringLeak(note, { spec, stepIndex });
-    if (step?.action !== undefined && 'autocastOtherCooldowns' in step.action)
-      return [{ action: null, note: '' }];
-    const action = castKeyOf(step?.action);
-    return action === null ? [] : [{ action, note }];
+    const pass = step?.action !== undefined && 'autocastOtherCooldowns' in step.action;
+    const action = pass ? null : castKeyOf(step?.action);
+    const levelNotes = byStep.get(stepIndex);
+    if (levelNotes !== undefined && action === null) {
+      throw new Error(`rotation-apl: ${spec} level_notes name step ${stepIndex}, which casts nothing`);
+    }
+    if (pass) return [{ action: null, note: '' }];
+    if (action === null) return [];
+    return [levelNotes === undefined ? { action, note } : { action, note, level_notes: levelNotes }];
   });
   return { prepull, priority };
+}
+
+/**
+ * The file's top-level `level_notes`: `[{ from_level, step, notes }]`, a priority step's note for a
+ * character of `from_level` and up. They live outside `rotation`, as `engineering_notes` do, because
+ * the engine's APLListItem schema rejects any other key on a step. Grouped by step, lowest level
+ * first; a malformed entry throws, naming the file.
+ * @param {{ level_notes?: unknown, rotation?: { priorityList?: unknown[] } }} apl
+ * @param {string} spec
+ * @returns {Map<number, { from_level: number, note: string }[]>}
+ */
+export function levelNotesOf(apl, spec) {
+  const entries = apl?.level_notes ?? [];
+  if (!Array.isArray(entries)) throw new Error(`rotation-apl: ${spec} level_notes is not a list`);
+  const steps = apl?.rotation?.priorityList?.length ?? 0;
+  /** @type {Map<number, { from_level: number, note: string }[]>} */
+  const byStep = new Map();
+  entries.forEach((entry, at) => {
+    const {
+      from_level: fromLevel,
+      step,
+      notes,
+    } = /** @type {{ from_level?: unknown, step?: unknown, notes?: unknown }} */ (entry ?? {});
+    const note = typeof notes === 'string' ? notes.trim() : '';
+    const valid =
+      Number.isInteger(fromLevel) && Number.isInteger(step) && Number(step) >= 0 && Number(step) < steps;
+    if (!valid || note === '') {
+      throw new Error(`rotation-apl: ${spec} level_notes[${at}] needs from_level, a priority step and notes`);
+    }
+    assertNoEngineeringLeak(note, { spec, stepIndex: Number(step) });
+    const list = byStep.get(Number(step)) ?? [];
+    list.push({ from_level: Number(fromLevel), note });
+    byStep.set(
+      Number(step),
+      list.sort((a, b) => a.from_level - b.from_level),
+    );
+  });
+  return byStep;
 }

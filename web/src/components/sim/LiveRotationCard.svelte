@@ -25,15 +25,14 @@
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
   import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
-  import { needsFidelityNote, specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
   import type { SpecFidelity } from '../../lib/sim/types';
+  import FidelityNote from './FidelityNote.svelte';
   import RotationDisclosure from './RotationDisclosure.svelte';
 
   let { spec, fidelity }: { spec: string; fidelity: SpecFidelity | null } = $props();
 
   const name = $derived(specDisplayName(spec));
   const simulated = $derived(isSimulatedSpec(spec));
-  const showNote = $derived(simulated && needsFidelityNote(fidelity));
 </script>
 
 <section
@@ -54,10 +53,5 @@
       {simCopy.rotationNotSimulated(name)}
     </p>
   {/if}
-  {#if showNote && fidelity !== null}
-    <p class="text-muted text-[13px]" data-testid="sim-rotation-card-note">
-      <a href="/sim/specs" class={specPillClass(fidelity.state)}>{specStateLabel(fidelity.state)}</a>
-      {specStateNote(fidelity.state)}
-    </p>
-  {/if}
+  {#if simulated}<FidelityNote {fidelity} testid="sim-rotation-card-note" />{/if}
 </section>

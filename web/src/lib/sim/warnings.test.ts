@@ -2,6 +2,7 @@
 // Spec 2026-11-04-sim-results section 3.5 and section 10, check 5.
 import { describe, expect, it } from 'vitest';
 import full from '../../fixtures/sim/result-full.json';
+import olderFixture from '../../fixtures/sim/result.json';
 import type { GameTipModel } from '../tooltips/game-tip';
 import type { ActionNames } from './action-names';
 import type { SimSpellFact } from './spell-info';
@@ -152,5 +153,16 @@ describe('cooldownWords', () => {
   it('reads an adjective and a noun', () => {
     expect(cooldownWords(1_800_000)).toEqual({ length: '30 minute', every: '30 minutes' });
     expect(cooldownWords(7_200_000)).toEqual({ length: '2 hour', every: '2 hours' });
+  });
+});
+
+describe('the older fixture (result.json: 0 Bloodthirst casts, talents that no longer fit)', () => {
+  it('fires W2 from the published spec list, ahead of the Recklessness note', () => {
+    expect(capstoneSpellOf('warrior-fury')).toBe(23894);
+    const notes = simWarnings({ result: olderFixture as unknown as SimResult, names, fact });
+    expect(notes.map((note) => note.id)).toEqual(['capstone', 'long-cooldown']);
+    expect(notes[0]!.text).toBe(
+      'Bloodthirst was never pressed in this run. Check the talents in Open in the sim.',
+    );
   });
 });

@@ -5,6 +5,8 @@
 import { slotLabel, type PaperdollSlot, type PaperdollSlotKey } from '../gear/paperdoll';
 import { slotsFromWorn } from '../gear/paperdoll-slots';
 import { SLOTS, type Item, type ItemSet } from '../planner/types';
+import { attemptsOf } from '../report/ability-table';
+import { parseActionKey } from './action-names';
 import type { EnchantRow } from './enchants';
 import { gearCardCopy as copy } from './input-cards-copy';
 import { grouped, oneDecimal } from './result-copy';
@@ -84,12 +86,9 @@ export interface StatCell {
   value: string;
 }
 
+/** The run's own miss rate under the hit figure: never a fixed cap the run could contradict. */
 export interface HitReference {
-  /** Bar fill against the scale, 0 to 100. */
-  fillPct: number;
-  /** Where the specials' cap sits on the scale. */
-  tickPct: number;
-  /** The scale's top: the dual-wield cap, or the specials' cap for one weapon. */
+  /** "Missed in this run: 0% of specials · 19.0% of white swings". */
   note: string;
 }
 
@@ -100,21 +99,48 @@ export interface StatsBlock {
   cells: StatCell[];
 }
 
-const SPECIALS_HIT_CAP = 8;
-const DUAL_WIELD_HIT_CAP = 27;
-/** The references are the hit table against a level 63 boss and no other. */
+/** The boss level the head names when the run does not say: a raid boss. */
 const REFERENCE_LEVEL = 63;
+/** Under this many attempts a miss rate says nothing. */
+const MIN_ATTEMPTS = 1;
 
 const percent = (value: number): string => `${value === 0 ? '0' : oneDecimal(value)}%`;
 
-function hitReference(hit: number, dualWield: boolean, level: number): HitReference | null {
-  if (level !== REFERENCE_LEVEL) return null;
-  const top = dualWield ? DUAL_WIELD_HIT_CAP : SPECIALS_HIT_CAP;
-  return {
-    fillPct: Math.min(100, (hit / top) * 100),
-    tickPct: (SPECIALS_HIT_CAP / top) * 100,
-    note: dualWield ? copy.hitRefs.dualWield : copy.hitRefs.oneHand,
-  };
+interface MissTally {
+  misses: number;
+  attempts: number;
+}
+
+const tallyShare = ({ misses, attempts }: MissTally): string | null =>
+  attempts < MIN_ATTEMPTS ? null : percent((misses / attempts) * 100);
+
+/**
+ * Misses over attempts, as the damage table's "Miss" sub-line counts them (glances are landed
+ * hits inside `hits`): the player's white swings, every hand, against the specials they pressed.
+ * A periodic row (ticks and no hits) rolls no miss and is left out.
+ */
+function measuredMiss(result: SimResult): { specials: string | null; white: string | null } {
+  const white: MissTally = { misses: 0, attempts: 0 };
+  const specials: MissTally = { misses: 0, attempts: 0 };
+  for (const ability of result.summary.damage_done[0]?.abilities ?? []) {
+    const parsed = parseActionKey(ability.name);
+    const swing = parsed?.kind === 'other' && parsed.label === 'attack';
+    const special = (parsed?.kind === 'spell' || parsed?.kind === 'item') && parsed.tag === 0;
+    if (!swing && !special) continue;
+    const into = swing ? white : specials;
+    into.misses += ability.misses?.MISS ?? 0;
+    into.attempts += attemptsOf(ability);
+  }
+  return { specials: tallyShare(specials), white: tallyShare(white) };
+}
+
+function hitReference(result: SimResult): HitReference | null {
+  const { specials, white } = measuredMiss(result);
+  const parts = [
+    ...(specials === null ? [] : [copy.missedSpecials(specials)]),
+    ...(white === null ? [] : [copy.missedWhite(white)]),
+  ];
+  return parts.length === 0 ? null : { note: copy.missedInRun(parts.join(' · ')) };
 }
 
 function skillValue(stats: FinalStats, dualWield: boolean): string | undefined {
@@ -160,7 +186,7 @@ export function statsBlock(result: SimResult): StatsBlock | null {
             id: 'hit',
             label: labels.hit,
             value: percent(hit),
-            reference: hitReference(hit, dualWield, level),
+            reference: hitReference(result),
           },
     cells,
   };

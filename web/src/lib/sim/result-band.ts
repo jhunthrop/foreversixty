@@ -17,12 +17,15 @@ export interface BandFact {
   value: string;
 }
 
+/** The Talents card meta's separator: "17 / 32 / 2" (spec 3.9); the band keeps "17/32/2". */
+export const SPACED_SPLIT = ' / ';
+
 /** Points per tree, from the stored talents string: "17/32/2". The page's one split. */
-export function talentSplit(talents: string): string {
+export function talentSplit(talents: string, separator = '/'): string {
   if (talents === '') return '';
   return ranksFromTalentsString(talents)
     .map((tree) => tree.reduce((sum, rank) => sum + rank, 0))
-    .join('/');
+    .join(separator);
 }
 
 /** The h1: the member's title, a character's real name, or the spec. */

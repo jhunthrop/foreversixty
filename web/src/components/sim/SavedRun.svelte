@@ -203,9 +203,8 @@
     };
   });
 
-  // Both cards' props: today's RotationCard reads spec and fidelity, lane C's rebuilt one reads
-  // result and names (contract). Each ignores the rest; spec and fidelity go when C's card lands.
-  const rotationProps = $derived({ spec, fidelity, result, names });
+  // The saved Rotation card: the run and its names, and the spec's fidelity for its note (tenet 8).
+  const rotationProps = $derived({ fidelity, result, names });
 
   const resolveTip = (key: string) => Promise.resolve(resultTip(key, spells));
   const resolveItem = async (id: number) => {

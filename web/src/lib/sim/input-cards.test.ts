@@ -4,6 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import fullFixture from '../../fixtures/sim/result-full.json';
 import olderFixture from '../../fixtures/sim/result.json';
+import furyApl from '../../../../data/curated/apl/warrior-fury.json';
 import { indexTalents } from '../planner/rules';
 import type { TalentFile } from '../planner/types';
 import { rotationLinesOf } from '../../../scripts/rotation-apl.mjs';
@@ -63,7 +64,10 @@ describe('resourceCard', () => {
     expect(rows[0]!.name).toBe('Main hand');
     expect(rows[0]!.barPct).toBe(100);
     expect(rows[0]!.lost).toBe('−17.2 lost');
-    expect(rows.find((row) => row.action === 'other:refund')).toMatchObject({ name: 'Refund', lost: null });
+    expect(rows.find((row) => row.action === 'other:refund')).toMatchObject({
+      name: 'Refunded on a miss, dodge or parry',
+      lost: null,
+    });
     expect(rows.find((row) => row.action === 'spell:2687')?.name).toBe('Bloodrage');
     expect(card.lists!.spent.some((row) => row.action === 'spell:2687')).toBe(false);
   });
@@ -260,10 +264,16 @@ describe('gear card', () => {
     expect(value('crit')).toBe(`${stats.melee_crit_pct_vs_target!.toFixed(1)}%`);
     expect(value('skill')).toBe(`${stats.weapon_skill!.main_hand} · ${stats.weapon_skill!.off_hand}`);
     expect(value('haste')).toBe('0%');
-    expect(block.hit?.reference?.tickPct).toBeCloseTo((8 / 27) * 100, 5);
   });
 
-  it('one weapon drops the 27% reference, another boss level drops the bar', () => {
+  it('puts the run’s own measured miss rate under hit, never a fixed cap', () => {
+    // Specials: 0 MISS in the fixture's yellow rows. White: 12 + 7 + 4 misses over 63 + 82 + 21 swings.
+    expect(statsBlock(full)?.hit?.reference?.note).toBe(
+      'Missed in this run: 0% of specials · 13.9% of white swings',
+    );
+  });
+
+  it('one weapon keeps the hit line; the skill shows one figure', () => {
     const oneHand: SimResult = {
       ...full,
       request: {
@@ -274,12 +284,9 @@ describe('gear card', () => {
         },
       },
     };
-    expect(statsBlock(oneHand)?.hit?.reference?.note).toBe('8% specials');
     expect(statsBlock(oneHand)?.cells.find((cell) => cell.id === 'skill')?.value).toBe(
       String(full.final_stats!.weapon_skill!.main_hand),
     );
-    const lower: SimResult = { ...full, target_stats: { level: 60 } };
-    expect(statsBlock(lower)?.hit?.reference).toBeNull();
   });
 
   it('hides the block without final_stats, never dashes', () => {
@@ -405,5 +412,69 @@ describe('rotationRows', () => {
       { action: 'spell:3', note: 'Hit it.' },
       { action: 'item:4', note: '' },
     ]);
+  });
+
+  const leveled = {
+    rotation: {
+      priorityList: [
+        { action: { autocastOtherCooldowns: {} } },
+        { notes: 'From 40 it goes first.', action: { castSpell: { spellId: { spellId: 20662 } } } },
+      ],
+    },
+    level_notes: [
+      { from_level: 60, step: 1, notes: 'First.' },
+      { from_level: 50, step: 1, notes: 'Fifty.' },
+    ],
+  } as Parameters<typeof rotationLinesOf>[0];
+
+  it('carries level notes per step, lowest level first, and rejects a bad one', () => {
+    expect(rotationLinesOf(leveled).priority[1]).toEqual({
+      action: 'spell:20662',
+      note: 'From 40 it goes first.',
+      level_notes: [
+        { from_level: 50, note: 'Fifty.' },
+        { from_level: 60, note: 'First.' },
+      ],
+    });
+    const onPass = { ...leveled, level_notes: [{ from_level: 60, step: 0, notes: 'x' }] };
+    expect(() => rotationLinesOf(onPass as typeof leveled)).toThrow(/casts nothing/);
+    const outOfRange = { ...leveled, level_notes: [{ from_level: 60, step: 9, notes: 'x' }] };
+    expect(() => rotationLinesOf(outOfRange as typeof leveled)).toThrow(/level_notes\[0\]/);
+  });
+
+  it('prints the note for the run’s level, and the general note below every level note', () => {
+    const parsed = { ...rotationLinesOf(leveled), sha: null };
+    const at = (level: number) => {
+      const run: SimResult = {
+        ...full,
+        request: { ...full.request, character: { ...full.request.character, level } },
+      };
+      return rotationRows(run, parsed, names).priority[1]!.note;
+    };
+    expect(at(60)).toBe('First.');
+    expect(at(55)).toBe('Fifty.');
+    expect(at(40)).toBe('From 40 it goes first.');
+  });
+
+  it('the curated Fury notes at 60 carry no leveling clause and one Execute wording', () => {
+    const fury = rotationLinesOf(furyApl, 'warrior-fury');
+    const notes = rotationRows(full, { ...fury, sha: null }, names).priority.map((row) => row.note);
+    expect(full.request.character.level).toBe(60);
+    for (const note of notes) {
+      expect(note).not.toMatch(/\b[Ff]rom (36|40)\b|before level|\bat 59\b|below 20%|from 25% down/);
+      expect(note).not.toMatch(/the execute phase/);
+    }
+  });
+
+  it('an older run counts a spell with no cast row from its damage row, as the table does', () => {
+    // result.json: Execute dealt 6 hits and kept no cast row; Bloodthirst has neither.
+    const fury = { ...rotationLinesOf(furyApl, 'warrior-fury'), sha: null };
+    const rows = rotationRows(older, fury, names).priority;
+    expect(rows.find((row) => row.name === 'Execute')).toMatchObject({ casts: 6, dimmed: false });
+    expect(rows.find((row) => row.name === 'Bloodthirst')).toMatchObject({ casts: 0, dimmed: true });
+    // A newer run's second-hand hit (Whirlwind's 462891) is not a second press of Whirlwind.
+    const current = rotationRows(full, fury, { ...names, spell: { ...names.spell, '462891': 'Whirlwind' } });
+    const whirlwind = full.summary.casts.find((row) => row.spell_name === 'spell:1680')!.succeeded;
+    expect(current.priority.find((row) => row.name === 'Whirlwind')?.casts).toBe(Math.round(whirlwind));
   });
 });
