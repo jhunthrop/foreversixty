@@ -98,7 +98,7 @@ No new control and no new token (tenet 10).
 
 | Worst check | Value (13 px) |
 |---|---|
-| Enchants | `No enchant: Main Hand, Chest and 2 more slots` (the client's slot casing; `and 1 more slot` singular; never `+2`, which reads as an enchant's own bonus; amended 2026-11-05, guild round 2). The Readiness tab's Enchants pill uses the same words: `Main hand, Chest and 2 more slots`. |
+| Enchants | `No enchant: Main Hand, Chest and 2 more slots` (the client's slot casing; `and 1 more slot` singular; never `+2`, which reads as an enchant's own bonus; amended 2026-11-05, guild round 2). The Readiness tab's Enchants pill names every missing slot, `Main hand, Chest, Back, Feet`, wrapping inside its 170 px column and never clamped or cut (amended 2026-11-05, guild loop round 3 web4, which found `MAIN HAND, CHEST AND 2…` clipped at 1440). |
 | Talents | `{n} talent points unspent` |
 | Consumables | `Bags short on consumables` |
 | Gear gap | `{n} upgrades waiting` |

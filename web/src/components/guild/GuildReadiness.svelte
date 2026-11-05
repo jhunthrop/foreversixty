@@ -32,7 +32,6 @@
     consumablesLabel,
     enchantKind,
     enchantLabel,
-    enchantPillText,
     gearGapLabel,
     AVG_ITEM_LEVEL,
     AVG_ITEM_LEVEL_TOOLTIP,
@@ -148,7 +147,10 @@
   const CHIP = 'flex flex-col gap-0.5 text-[12px] text-text';
   /** Fits the 1024 px content width, where the board's grid starts: the name and gear gap columns give. */
   // Last synced is 128px: the stale pill (`Synced 27 Oct`) stays on one line (guild loop round 3).
-  const BOARD_COLUMNS = 'minmax(120px,170px) minmax(120px,170px) 120px 100px 100px 140px 128px 84px';
+  // Enchants grows with the name and gear gap to 170px, so its missing-slot list reads in full
+  // (guild loop round 3, web4: `MAIN HAND, CHEST AND 2…` was clipped at 1440).
+  const BOARD_COLUMNS =
+    'minmax(120px,170px) minmax(120px,170px) minmax(120px,170px) 100px 100px 140px 128px 84px';
 
   /** The pill treatment per cell kind (Enchants/Consumables/Talent points): `consent`
    *  reads as plain muted text (never a coloured pill -- there is nothing to flag), `ok`
@@ -158,11 +160,9 @@
   const PILL_GOLD = 'text-gold bg-[rgba(229,185,85,.14)] border-[rgba(229,185,85,.35)]';
   // Overrides .pill's fixed single-line 22px height for the Enchants pill alone (inline,
   // never a scoped <style> rule touching the shared .pill class every other pill on the
-  // page still uses): a long missing-slot list ("Main hand, Chest and 2 more slots") wraps onto a
-  // second line instead of overflowing the 120px column, and clamps there -- the cell's
-  // own title attribute carries the untruncated list for a reader who needs it.
-  const ENCHANT_PILL_STYLE =
-    'height:auto;min-height:22px;white-space:normal;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:left;';
+  // page still uses): the missing-slot list is the point of the cell, so it wraps onto as
+  // many lines as it needs and is never clamped or cut (tenet 4; guild loop round 3, web4).
+  const ENCHANT_PILL_STYLE = 'height:auto;min-height:22px;white-space:normal;line-height:1.3;text-align:left;';
 
   /** A signed character with no export has no gear to read (UX 16): Gear gap to Item level read a dash. */
   const NO_EXPORT_CELLS = ['Gear gap', 'Enchants', 'Consumables', 'Talent points', 'Item level'] as const;
@@ -331,8 +331,8 @@
             {#if enchantKind(row) === 'consent'}
               <span class="text-muted text-[12px]">{enchantLabel(row)}</span>
             {:else}
-              <span class={pillClass(enchantKind(row))} style={ENCHANT_PILL_STYLE} title={enchantLabel(row)}
-                >{enchantPillText(row)}</span
+              <span class={pillClass(enchantKind(row))} style={ENCHANT_PILL_STYLE} data-testid="guild-readiness-enchants"
+                >{enchantLabel(row)}</span
               >
             {/if}
             {#if consumablesKind(row) === 'consent'}
@@ -412,7 +412,7 @@
                   <span
                     class={pillClass(enchantKind(row))}
                     style={ENCHANT_PILL_STYLE}
-                    title={enchantLabel(row)}>{enchantPillText(row)}</span
+                    data-testid="guild-readiness-enchants-phone">{enchantLabel(row)}</span
                   >
                 {/if}
               </span>

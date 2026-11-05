@@ -134,31 +134,13 @@ function enchantSlotLabel(slot: string): string {
 /** Spec §4.E's Enchants cell, full text -- `checked: false` means no gear consent, read
  *  the same as Gear gap's own consent gate (the stricter `gear_bags` floor applies to
  *  Consumables only, enchants share Gear gap's `gear` floor). Every missing slot, never
- *  truncated -- the Enchants cell's own tooltip (`title`) reads this; the pill itself
- *  reads `enchantPillText` below, which truncates a long list the pill cannot hold.
+ *  truncated: the Readiness board's Enchants pill reads it in full and wraps (guild loop
+ *  round 3, web4, after `Main hand, Chest and 2 more slots` clipped at 1440).
  */
 export function enchantLabel(row: GuildReadinessRow): string {
   if (!row.enchants.checked) return withheldWord(row, 'gear');
   if (row.enchants.missing_slots.length === 0) return ALL_ENCHANTED;
   return row.enchants.missing_slots.map(enchantSlotLabel).join(', ');
-}
-
-/** The Enchants pill can hold at most this many slot names before it reads as a wall of
- *  text ("MAIN_HAND, CHEST, BACK, FEET" overflowing the column, the defect this guards
- *  against) -- past this, the pill reads "<first two> +N more" and the cell's own
- *  `title` attribute (`enchantLabel`, above) carries the full list. */
-const ENCHANT_PILL_MAX_SLOTS = 2;
-
-/** The Enchants pill's own visible text: `enchantLabel`'s full list, truncated to
- *  `ENCHANT_PILL_MAX_SLOTS` slots with a "+N more" suffix once a row fails that many
- *  enchant checks at once. */
-export function enchantPillText(row: GuildReadinessRow): string {
-  if (!row.enchants.checked) return withheldWord(row, 'gear');
-  if (row.enchants.missing_slots.length === 0) return ALL_ENCHANTED;
-  const labels = row.enchants.missing_slots.map(enchantSlotLabel);
-  if (labels.length <= ENCHANT_PILL_MAX_SLOTS) return labels.join(', ');
-  const shown = labels.slice(0, ENCHANT_PILL_MAX_SLOTS).join(', ');
-  return `${shown}${moreSlots(labels.length - ENCHANT_PILL_MAX_SLOTS)}`;
 }
 
 /** The slots past the named ones, in words: ` and 2 more slots`, never `+2`, which reads as an

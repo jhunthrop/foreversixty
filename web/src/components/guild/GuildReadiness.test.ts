@@ -217,4 +217,29 @@ describe('GuildReadiness next-raid filter', () => {
   it('shows no toggle without a raid', () => {
     expect(html(true, true)).not.toContain('guild-readiness-next-raid');
   });
+
+  it('names every missing enchant slot in the pill, wrapped and never clamped (guild loop round 3)', () => {
+    const base = buildMockReadiness().rows[0];
+    const row = {
+      ...base,
+      no_export: false,
+      enchants: { missing_slots: ['main_hand', 'chest', 'back', 'feet'], checked: true },
+    };
+    const markup = render(GuildReadiness, {
+      props: {
+        rows: [row],
+        officer: true,
+        officerTools: true,
+        raidGuildTools: true,
+        myCharacterKey: null,
+        gateFacts: gateFactsFixture({ settingsHref: SETTINGS_HREF }),
+      },
+    }).body;
+    const at = markup.indexOf('data-testid="guild-readiness-enchants"');
+    const pill = markup.slice(markup.lastIndexOf('<span', at), markup.indexOf('</span>', at));
+    expect(text(pill)).toContain('Main hand, Chest, Back, Feet');
+    expect(pill).not.toContain('line-clamp');
+    expect(pill).not.toContain('overflow:hidden');
+    expect(markup).not.toContain('more slots');
+  });
 });
