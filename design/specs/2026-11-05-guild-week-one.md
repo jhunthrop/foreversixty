@@ -112,6 +112,7 @@ One source: `GET /v1/guilds/{id}/progression` (§4.1). Header line under the h2,
   - Before 9 Dec: message `Barrow Deeps, Hyjal Summit and Onyxia's Lair open {Wed 9 Dec}. Progression starts with your first logged pull.` action `{ label: 'How to log a raid', href: '/logs' }`.
   - From 9 Dec: message `No pulls logged yet. Upload your first raid night and it shows here.` action `{ label: 'Upload a log', href: '/logs' }`.
   - Roster bests stay hidden (they have no rows anyway).
+- **Roster bests** (amended 2026-11-05, guild round 3): each row is the name, `{Spec} {Class} · {Boss}`, and `{n} HPS` / `{n} DPS`. From 768 a row with an execution score ends with `{92%} of sim` (13 px muted, title `92% of what this gear can do, simulated`); a row with no score ends at its number. Round 2 ended every row with an unexplained `—`.
 - **Some pulls**: the 8 px progress bar (design system), `--border-soft` track, `--gold` fill at `down / named`. At `0 of 1` the track is empty, never full.
 - **Onyxia card**, each line only when its data exists:
   - `First kill {Wed 16 Dec} · best kill {3:45}` only when `first_kill_at` is a string and `best_kill_ms` is a number. The current `!== null` test lets an omitted field through and prints `NaN:NaN`; the check is `typeof === 'number'` / `typeof === 'string'`.
