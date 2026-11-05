@@ -303,6 +303,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="write nothing; exit non-zero if a generated file has drifted",
     )
 
+    ge = sub.add_parser(
+        "guild-events",
+        help="write the guild calendar's dungeon runs and guild events "
+        "(curated/raids/events.json and its Go twin) from the client's Group Finder tables",
+    )
+    ge.add_argument("--build", required=True, help="the client build the tables are read for")
+    ge.add_argument("--raw", required=True, help="a directory of its own for the fetched CSVs")
+    ge.add_argument("--fetch", action="store_true", help="download the tables into --raw first")
+    ge.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if either output has drifted",
+    )
+
     ph = sub.add_parser("phases", help="emit the phase calendar for the web")
     ph.add_argument("--web", default="../web/src/data/phases.json")
     ph.add_argument(
@@ -682,6 +696,24 @@ def main(argv: list[str] | None = None) -> int:
                 )
             return 1 if stale else 0
         for path in write_specs(Path("curated"), build_dir, *outputs):
+            print(path)
+    elif args.command == "guild-events":
+        import json
+        from pathlib import Path
+
+        from pipeline import guild_events
+
+        raw = Path(args.raw)
+        if args.fetch:
+            guild_events.fetch(args.build, raw)
+        loot = json.loads(Path("builds", args.build, "loot.json").read_text(encoding="utf-8"))
+        doc = guild_events.build_events(raw, args.build, loot)
+        if args.check:
+            drifted = guild_events.stale(doc)
+            for path in drifted:
+                logging.getLogger("pipeline").error("%s has drifted; run guild-events", path)
+            return 1 if drifted else 0
+        for path in guild_events.write(doc):
             print(path)
     elif args.command == "phases":
         from pathlib import Path
