@@ -82,7 +82,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 **Fire Nova on Clearcasting.** In the raid build, Elemental Focus sometimes makes your next damage spell free. Spend it on Fire Nova: in melee your Searing Totem stands within its 10 yards of the boss. Outside a proc, Fire Nova on its own cooldown costs more mana than its damage is worth on one target, and so does Flame Shock.
 
-**Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and keep spending five Maelstrom stacks on Lightning Bolt.
+**Packs.** Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it. On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning while your mana lasts, and once you have all five points of Maelstrom Weapon keep spending five stacks on Lightning Bolt.
 
 **Mana.** Stop shocking at a quarter of your mana: that last quarter pays for Stormstrike, which hits harder than the shock you skip, and for dropping your totems again. Your swings and free bolts carry you until your mana comes back. In a raid, Judgement of Wisdom and Mana Spring bring in enough mana that you never run dry, so Earth Shock never needs to wait and you shock freely down to that quarter.
 
