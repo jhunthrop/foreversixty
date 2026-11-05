@@ -57,6 +57,10 @@ type Raid struct {
 }
 
 // EndsAt is when the raid's window closes.
+// NoRoles is true for a guild event: events have no roles anywhere (events spec §3.5), so no
+// sign-up sentence, option or post names one.
+func (r Raid) NoRoles() bool { return zoneOf(r.Zone).Kind == ZoneEvent }
+
 func (r Raid) EndsAt() time.Time {
 	return r.StartsAt.Add(time.Duration(r.DurationMinutes) * time.Minute)
 }
