@@ -217,6 +217,17 @@ describe('the ladder’s point order', () => {
       'Spirit Tap',
     ]);
   });
+
+  // Sim-accuracy round 24: a reservation is spent in its own order across trees, so Fire's
+  // Wand Specialization (Arcane) comes right after Combustion, not after the whole Fire tree.
+  it('takes Fire’s Wand Specialization at 41 and 42, right after Combustion', () => {
+    const fire = guideBuilds().find((row) => row.spec === 'mage-fire')!;
+    const order = guideLadderOrder(BUILD, 'mage', 'mage-fire', fire.treeIndex, fire.build);
+    const trees = loadLadderTrees(BUILD, 'mage')!;
+    const nameOf = new Map(trees.flatMap((tree) => tree.talents.map((t) => [t.id, t.name] as const)));
+    const at = (level: number) => nameOf.get(order[level - 10]!);
+    expect([at(40), at(41), at(42)]).toEqual(['Combustion', 'Wand Specialization', 'Wand Specialization']);
+  });
 });
 
 describe('guideLadderSteps', () => {
