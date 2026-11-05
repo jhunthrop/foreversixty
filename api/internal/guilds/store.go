@@ -146,10 +146,10 @@ func (s *Store) IsVerifiedMember(ctx context.Context, guildID, userID int64) (bo
 }
 
 // IsMember reports whether this account has any guild_characters row in
-// this guild, verified or not — the gate for leaving the guild and for
-// the Readiness tab, never for report visibility or edit rights (those
-// stay on auth.Store.GuildRank, which is verified-only) nor for Home or
-// Loot (IsVerifiedMember).
+// this guild, verified or not — the gate for leaving the guild, never for
+// report visibility or edit rights (those stay on auth.Store.GuildRank,
+// which is verified-only) nor for Home, Loot or Readiness
+// (IsVerifiedMember).
 func (s *Store) IsMember(ctx context.Context, guildID, userID int64) (bool, error) {
 	var exists bool
 	if err := s.Pool.QueryRow(ctx,
