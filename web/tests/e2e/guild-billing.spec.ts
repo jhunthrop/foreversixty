@@ -67,9 +67,7 @@ test('case 10: a trial reads its first charge and the cancel-before date', async
     billing: { ...TRIAL_READ.billing!, trial_end: '2026-11-04T12:00:00Z' },
   };
   await openWith(page, read);
-  await expect(page.getByTestId('guild-billing-plan')).toContainText(
-    'Trial · first charge 4 Nov 2026: $15',
-  );
+  await expect(page.getByTestId('guild-billing-plan')).toContainText('Trial · first charge 4 Nov 2026: $15');
   await expect(page.getByTestId('guild-billing-contact')).toHaveText(
     'Cancel before 4 Nov and nothing is charged. Billed to you.',
   );
