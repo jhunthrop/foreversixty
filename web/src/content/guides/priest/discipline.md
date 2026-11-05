@@ -73,7 +73,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on, and keep Lesser Heal off your bars for good: when even Greater Heal rank 1 is more than you can afford, wait the few seconds for your regeneration rather than cast a heal that no longer grows with your gear.
 
-**Emergencies.** Flash Heal at the top rank on anyone about to die. It is your fastest heal and your dearest, so it never becomes the filler.
+**Emergencies.** Flash Heal at the top rank on anyone about to die. It takes a second and a half and it costs the most mana for what it heals, so it never becomes the filler.
 
 **Prayer of Healing** when three or more in a group are hurt. It heals the target's party, so target a member of the group that took the damage.
 

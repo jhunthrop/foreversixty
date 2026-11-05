@@ -190,7 +190,7 @@
       }
     },
     {
-      "notes": "On cooldown: your biggest hit outside Execute, and it cuts the healing the target takes in half.",
+      "notes": "On cooldown: a big hit every 6 seconds, and it cuts the healing the target takes in half.",
       "action": {
         "castSpell": {
           "spellId": {
