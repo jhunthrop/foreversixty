@@ -354,6 +354,20 @@ func (s *Store) signupState(ctx context.Context, raidID int64, characterKey stri
 	return state, nil
 }
 
+// signupRole is a character's stored sign-up role on a raid; "" when it has none.
+func (s *Store) signupRole(ctx context.Context, raidID int64, characterKey string) (string, error) {
+	var role string
+	err := s.Pool.QueryRow(ctx, `select role from guild_raid_signups where raid_id = $1 and character_key = $2`,
+		raidID, characterKey).Scan(&role)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return "", nil
+	}
+	if err != nil {
+		return "", fmt.Errorf("guilds: signup role: %w", err)
+	}
+	return role, nil
+}
+
 // accountPlaces is each signed-up account's best place on a raid: In over Late over Bench
 // over Out.
 func (s *Store) accountPlaces(ctx context.Context, raidID int64) (map[int64]string, error) {

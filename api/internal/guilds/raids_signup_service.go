@@ -94,9 +94,9 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	if err != nil {
 		return SignupResult{}, err
 	}
-	role := cmd.Role
-	if role == "" {
-		role = char.defaultRole()
+	role, err := s.signupRole(ctx, raid.ID, cmd.Role, char)
+	if err != nil {
+		return SignupResult{}, err
 	}
 	result := SignupResult{Character: char.candidate(role, false)}
 	// SignedBy is the character's account, not the actor: R3 groups by it, so an officer's
@@ -138,6 +138,23 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	}
 	result.Raid, err = s.signupRaidView(ctx, cmd)
 	return result, err
+}
+
+// signupRole is the role a sign-up takes: the asked one, else the role the character's
+// existing sign-up already holds (a Discord In press keeps the Tank picked on the site), else
+// the character's default.
+func (s *Service) signupRole(ctx context.Context, raidID int64, asked string, char raidRosterChar) (string, error) {
+	if asked != "" {
+		return asked, nil
+	}
+	stored, err := s.Store.signupRole(ctx, raidID, char.CharacterKey)
+	if err != nil {
+		return "", err
+	}
+	if stored != "" {
+		return stored, nil
+	}
+	return char.defaultRole(), nil
 }
 
 // signupTarget runs the first three checks: the actor is a verified member, the raid is the
