@@ -89,7 +89,7 @@
       }
     },
     {
-      "notes": "Searing Totem on a single target: it is your strongest Fire totem. Its bolts only reach 20 yards, so drop it within 20 yards of the boss.",
+      "notes": "Searing Totem on a single target: it is your Fire totem for one target. It costs a fraction of Magma Totem's mana, lasts far longer, and its bolts reach 20 yards where Magma Totem only burns within 8, so drop it within 20 yards of the boss.",
       "action": {
         "condition": {
           "and": {
@@ -221,7 +221,7 @@
       }
     },
     {
-      "notes": "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left. At 60, rank 10 costs 220 mana to rank 9's 190 for about 20% more base damage; at any level you spend spare mana on your top rank and drop to a cheaper rank as soon as you fall behind. In a raid you never need to.",
+      "notes": "Lightning Bolt at the top rank while your mana is ahead of the fight: more than the share of the fight left. At 60, with Convection, rank 10 costs 198 mana to rank 9's 171 for about 20% more base damage; at any level you spend spare mana on your top rank and drop to a cheaper rank as soon as you fall behind. In a raid you never need to.",
       "action": {
         "condition": {
           "cmp": {
