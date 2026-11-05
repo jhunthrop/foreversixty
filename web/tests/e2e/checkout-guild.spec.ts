@@ -328,7 +328,10 @@ test('confirm_claim: Yes, confirm it posts the confirm route and says who holds 
   const cell = await openStep(page, STEP_FIXTURES.confirm_claim);
   const posts = await routePost(page, CLAIM_CONFIRM_PATH, () => {
     cell.set(STEP_FIXTURES.claimed_ask);
-    return envelope({ status: 'confirmed', claimed_by: { name: 'Thornwick', class: 'paladin', character_key: 'us/pvp/thornwick' } });
+    return envelope({
+      status: 'confirmed',
+      claimed_by: { name: 'Thornwick', class: 'paladin', character_key: 'us/pvp/thornwick' },
+    });
   });
   await openClaim(page);
   await page.getByTestId(id('claim-commit')).click();
