@@ -4,7 +4,10 @@
     "mage": [
       {"aura": 400573, "talent_spell": 400574, "why": "Arcane Blast's buff: sim/mage/arcane_blast.go registerArcaneBlastSpell returns before RegisterAura unless Talents.ArcaneBlast."},
       {"aura": 400669, "talent_spell": 400647, "why": "Fingers of Frost's buff: sim/mage/fingers_of_frost.go applyFingersOfFrost returns before RegisterAura when Talents.FingersOfFrost == 0."},
-      {"aura": 12579, "talent_spell": 11180, "why": "Winter's Chill debuff: sim/mage/talents.go applyWintersChill returns before it builds the debuff array when Talents.WintersChill == 0."}
+      {"aura": 12579, "talent_spell": 11180, "why": "Winter's Chill debuff: sim/mage/talents.go applyWintersChill returns before it builds the debuff array when Talents.WintersChill == 0."},
+      {"aura": 400589, "talent_spell": 400588, "why": "Missile Barrage's buff: sim/mage/missile_barrage.go returns before it registers the buff when Talents.MissileBarrage == 0."},
+      {"aura": 400625, "talent_spell": 400624, "why": "Heating Up's buff: sim/mage/heating_up.go returns before it registers the buff unless Talents.HeatingUp."},
+      {"aura": 12873, "talent_spell": 11095, "why": "Improved Scorch debuff (12873; talents.json lists only the rank-1 id 11095): the debuff (sim/core/debuffs.go ImprovedScorchAura, 12873) exists only through sim/mage/talents.go applyImprovedScorch, which returns when Talents.ImprovedScorch == 0."}
     ],
     "shaman": [
       {"aura": 16246, "talent_spell": 16164, "why": "Clearcasting: Elemental Focus (16164) procs it (client tooltip: a 10% chance to enter a Clearcasting state); sim/shaman/talents.go applyElementalFocus returns before RegisterAura unless Talents.ElementalFocus."}

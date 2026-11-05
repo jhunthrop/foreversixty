@@ -1084,6 +1084,13 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
         # Round 24 (platform): the gate is on Clearcasting (16246), the aura Elemental Focus
         # (16164) gives; the raid order takes the talent at 52, the leveling build never does.
         ("shaman-enhancement", "Fire Nova on a Clearcasting proc", 52),
+        # The mage proc buffs (Missile Barrage 400589, Heating Up 400625) and the Improved
+        # Scorch debuff (12873) printed from 10, 20 and 22, before the talents.
+        ("mage-fire", "Pyroblast only on 3 stacks of Heating Up", 30),
+        ("mage-fire", "Scorch to build Improved Scorch to 5 stacks", 27),
+        ("mage-fire", "Arcane Missiles the moment Missile Barrage procs", 55),
+        ("mage-frost", "Arcane Missiles the moment Missile Barrage lights up", 51),
+        ("mage-arcane", "Arcane Missiles the moment Missile Barrage lights up", 22),
     ],
 )
 def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec, note, first):
