@@ -370,7 +370,7 @@ describe('rotationRows', () => {
           { action: { wait: {} } },
         ],
       },
-    });
+    } as Parameters<typeof rotationLinesOf>[0]);
     expect(parsed.prepull.map((row) => row.action)).toEqual(['spell:2', 'spell:1']);
     expect(parsed.priority).toEqual([
       { action: null, note: '' },

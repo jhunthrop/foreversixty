@@ -22,7 +22,7 @@
 // of reaching the live page; the same check is exercised directly against every curated
 // file in rotation-apl.test.ts.
 
-/** @typedef {{ notes?: unknown }} AplStep */
+/** @typedef {{ notes?: unknown, action?: unknown }} AplStep */
 /** @typedef {{ rotation?: { priorityList?: AplStep[] } }} CuratedApl */
 
 /**
