@@ -6,6 +6,7 @@ package guilds
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -182,6 +183,42 @@ type signupRequest struct {
 	// Spec, when set, is a specs.json key saved as the character's raid spec before the sign-up,
 	// whose role the sign-up then takes (spec 2026-10-28 §P.10.7).
 	Spec string `json:"spec"`
+}
+
+// RoleNotOfClassError is a sign-up asking for a role the character's class cannot play (a
+// mage tank); Message is the in-voice line the site and the bot show.
+type RoleNotOfClassError struct{ Class, Role string }
+
+func (e *RoleNotOfClassError) Error() string {
+	return fmt.Sprintf("guilds: a %s cannot sign up as %s", e.Class, e.Role)
+}
+
+// roleVerbs is what each role a class can be refused does, for the refusal line (every class
+// deals damage).
+var roleVerbs = map[string]string{RoleTank: "tank", RoleHealer: "heal"}
+
+// roleWords is each role as the pick names it.
+var roleWords = map[string]string{RoleTank: "tank", RoleHealer: "healer", RoleDPS: "DPS"}
+
+// Message is "Mages don't tank. Pick DPS." or "Warriors don't heal. Pick tank or DPS."
+func (e *RoleNotOfClassError) Message() string {
+	class := strings.ToLower(e.Class)
+	if class != "" {
+		class = strings.ToUpper(class[:1]) + class[1:]
+	}
+	picks := make([]string, 0, 3)
+	for _, r := range raidspec.ClassRoles(e.Class) {
+		picks = append(picks, roleWords[r])
+	}
+	return fmt.Sprintf("%ss don't %s. Pick %s.", class, roleVerbs[e.Role], strings.Join(picks, " or "))
+}
+
+// checkClassRole refuses a role the class cannot play; an unknown class is not judged.
+func checkClassRole(class, role string) error {
+	if raidspec.Plays(class, role) {
+		return nil
+	}
+	return &RoleNotOfClassError{Class: class, Role: role}
 }
 
 // validateSignup checks a sign-up body; role may be empty (the spec's default applies).

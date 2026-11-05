@@ -55,6 +55,8 @@ func distinctOwners(lists [][]RosterRow) []int64 {
 // Entitlements answers whether a user holds a per-guild feature; nil means nobody does.
 type Entitlements interface {
 	CanForGuild(ctx context.Context, guildID, userID int64, feature entitlements.Feature) (bool, entitlements.Reason, error)
+	// Can answers a personal feature (the log coach), as the coach itself asks it.
+	Can(ctx context.Context, userID int64, feature entitlements.Feature) (bool, entitlements.Reason, error)
 }
 
 // officerTools reports whether the officer views are unlocked for guildID. Like the

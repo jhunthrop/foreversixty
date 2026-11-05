@@ -281,14 +281,14 @@ type RaidPostSender interface {
 
 var _ RaidPostSender = (*notify.GuildDeliverer)(nil)
 
-// runDue sends one claimed row's post or reminder: only while the raid is still planned and
-// the row still holds this claim's lease, renewed just before the send.
+// runDue sends one claimed row's post or reminder: only while the raid still takes it (dueSends)
+// and the row still holds this claim's lease, renewed just before the send.
 func (s *Service) runDue(ctx context.Context, d DueSchedule, now time.Time) dueOutcome {
 	facts, found, err := s.RaidPostFacts(ctx, d.RaidID)
 	if err != nil {
 		return s.failDue(ctx, d.RaidID, d.Attempts, d.LeaseUntil, now, err)
 	}
-	if !found || facts.Status != RaidPlanned {
+	if !found || !dueSends(d.Kind, facts.Status) {
 		s.releaseDue(ctx, d.RaidID, d.LeaseUntil)
 		return outcomeSkipped
 	}
@@ -304,6 +304,15 @@ func (s *Service) runDue(ctx context.Context, d DueSchedule, now time.Time) dueO
 		return s.sendPost(ctx, d, lease, facts.Post.RaidPosted, now)
 	}
 	return s.sendReminder(ctx, d, lease, facts.Post.RaidPosted, now)
+}
+
+// dueSends reports whether a raid of this status still takes a due send: its post while planned
+// or locked, its reminder only while planned.
+func dueSends(kind dueKind, status string) bool {
+	if kind == duePost {
+		return status == RaidPlanned || status == RaidLocked
+	}
+	return status == RaidPlanned
 }
 
 // releaseDue drops the lease held; a lease another runner took since is left alone.

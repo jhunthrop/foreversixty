@@ -216,13 +216,18 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 	v := RaidView{
 		ID: r.ID, Zone: r.Zone, ZoneName: zone.Name, Title: r.Title, StartsAt: r.StartsAt.UTC(),
 		DurationMinutes: r.DurationMinutes, Status: r.Status, Size: zone.Size, GuildTimezone: vc.timezone,
-		NotesHTML: notesHTML, Notes: r.Notes, Counts: countSignups(signups),
-		Signups: make([]SignupView, 0, len(signups)), NotSigned: []RaidCharacter{},
+		NotesHTML: notesHTML, Notes: r.Notes, Signups: []SignupView{}, NotSigned: []RaidCharacter{},
 		Viewer: RaidViewer{Characters: []ViewerCharacter{}},
 	}
 	byKey := make(map[string]Signup, len(signups))
+	answered := make(map[int64]bool, len(signups))
 	for _, sg := range signups {
 		byKey[sg.CharacterKey] = sg
+		answered[sg.SignedBy] = true
+	}
+	shown := onePerAccount(signups)
+	v.Counts = countSignups(shown)
+	for _, sg := range shown {
 		v.Signups = append(v.Signups, SignupView{
 			CharacterKey: sg.CharacterKey, Name: sg.Name, Class: sg.Class, Spec: sg.Spec,
 			Role: sg.Role, State: sg.State, Note: sg.Note, Own: vc.owns(sg),
@@ -231,7 +236,8 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 	sortSignups(v.Signups)
 	for _, c := range vc.roster {
 		sg, signed := byKey[c.CharacterKey]
-		if c.verified && !signed {
+		// An account that has answered with any character is not waiting on an answer.
+		if c.verified && !answered[c.userID] {
 			v.NotSigned = append(v.NotSigned, c.RaidCharacter)
 		}
 		if c.userID == vc.viewerID {
@@ -243,6 +249,29 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 		return v.Viewer.Characters[i].Name < v.Viewer.Characters[j].Name
 	})
 	return v, nil
+}
+
+// placeRank orders an account's places: In over Late over Bench over Out (accountPlaces' order).
+var placeRank = map[string]int{SignupIn: 0, SignupLate: 1, SignupBench: 2, SignupOut: 3}
+
+// onePerAccount is each account's best sign-up, in signups' order: a player who switched from
+// their main to an alt (R3 benched the main) is one In, not an In and a Bench. Ties keep the
+// first row.
+func onePerAccount(signups []Signup) []Signup {
+	best := make(map[int64]int, len(signups))
+	for i, sg := range signups {
+		j, seen := best[sg.SignedBy]
+		if !seen || placeRank[sg.State] < placeRank[signups[j].State] {
+			best[sg.SignedBy] = i
+		}
+	}
+	out := make([]Signup, 0, len(best))
+	for i, sg := range signups {
+		if best[sg.SignedBy] == i {
+			out = append(out, sg)
+		}
+	}
+	return out
 }
 
 func viewerCharacter(c raidRosterChar, sg Signup, signed bool) ViewerCharacter {

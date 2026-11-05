@@ -1,7 +1,19 @@
 // web/src/lib/guild/raid-roles.test.ts
 import { describe, expect, it } from 'vitest';
 import { SPECS } from '../sim/specs';
-import { SPEC_ROLE, roleForSpec } from './raid-roles';
+import { SPEC_ROLE, roleForSpec, rolesForClass } from './raid-roles';
+
+describe('rolesForClass', () => {
+  it('offers only the roles the class plays in Classic', () => {
+    expect(rolesForClass('warrior')).toEqual(['tank', 'dps']);
+    expect(rolesForClass('Druid')).toEqual(['tank', 'healer', 'dps']);
+    expect(rolesForClass('paladin')).toEqual(['tank', 'healer', 'dps']);
+    expect(rolesForClass('priest')).toEqual(['healer', 'dps']);
+    expect(rolesForClass('shaman')).toEqual(['healer', 'dps']);
+    expect(rolesForClass('mage')).toEqual(['dps']);
+    expect(rolesForClass('')).toEqual(['tank', 'healer', 'dps']);
+  });
+});
 
 describe('roleForSpec', () => {
   it('maps tank, healer and damage specs', () => {

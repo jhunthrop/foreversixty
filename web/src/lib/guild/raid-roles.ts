@@ -17,6 +17,16 @@ const BY_LOWER = new Map<string, GuildRaidRole>(
   ]),
 );
 
+const ROLE_ORDER: readonly GuildRaidRole[] = ['tank', 'healer', 'dps'];
+
+/** The roles a class plays in Classic, tank, healer, DPS order (a mage only DPS); every role for
+ *  an unknown class, which the API does not judge either. */
+export function rolesForClass(cls: string): GuildRaidRole[] {
+  const slug = cls.trim().toLowerCase();
+  const played = new Set(SPECS.filter((spec) => spec.class_slug === slug).map((spec) => spec.role));
+  return played.size === 0 ? [...ROLE_ORDER] : ROLE_ORDER.filter((role) => played.has(role));
+}
+
 /** The role for a spec name (any case) or spec key (`druid-feral-bear`); `null` when unknown. */
 export function roleForSpec(spec: string): GuildRaidRole | null {
   return BY_LOWER.get(spec.trim().toLowerCase()) ?? null;

@@ -7,6 +7,7 @@
   import type { GuildRaidRole, GuildRaidViewerCharacter, GuildSignupState } from '../../lib/guild/api';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { raidCopy } from '../../lib/guild/raid-copy';
+  import { rolesForClass } from '../../lib/guild/raid-roles';
   import {
     pressAsksSpec,
     savedSpec,
@@ -63,10 +64,13 @@
 
   type RowStatus = { kind: 'saved'; kept: string | null } | { kind: 'error'; message: string; race: boolean };
 
-  const ROLE_OPTIONS = (['tank', 'healer', 'dps'] as const).map((role) => ({
-    value: role,
-    label: raidCopy.roleLabels[role],
-  }));
+  /** Only the roles the character's class plays (a mage is never offered tank). */
+  const ROLE_OPTIONS = $derived(
+    rolesForClass(character.class).map((role) => ({
+      value: role,
+      label: raidCopy.roleLabels[role],
+    })),
+  );
 
   /** `undefined` while the row shows the props' state. */
   let pendingState = $state<GuildSignupState | undefined>(undefined);

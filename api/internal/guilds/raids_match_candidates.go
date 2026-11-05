@@ -81,7 +81,7 @@ func (s *Store) guildLogs(ctx context.Context, guildID int64, logZone string, st
 		left join guild_raids mr on mr.report_id = r.id and mr.guild_id = $1
 		where `+matchGuildIs("r", "$1")+` and `+presence.EvidenceReport("r")+` and ($2 = '' or r.log_zone = $2)
 		  and coalesce(r.completed_at, r.created_at) between $3 and $4
-		order by abs(extract(epoch from (coalesce(r.completed_at, r.created_at) - $5::timestamptz))), r.id
+		order by abs(extract(epoch from (`+logAnchorSQL("r")+` - $5::timestamptz))), r.id
 		limit $6`,
 		guildID, logZone, now.AddDate(0, 0, -candidateWindowDays), now, startsAt, candidateCap)
 	if err != nil {
