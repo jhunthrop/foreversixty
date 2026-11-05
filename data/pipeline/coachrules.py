@@ -49,7 +49,7 @@ SPECS = {
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
     ),
-    # Immolation Trap is 18 s from Survivalist's Discipline at 38; F1 reads the base 30 s (round 26).
+    # Immolation Trap is 18 s from 38 (Survivalist's Discipline); F1 reads 30 s (round 26).
     "hunter-survival": dict(
         core=["Raptor Strike", "Strider Kick"],
         auras=[("Lacerate", DOT)],
