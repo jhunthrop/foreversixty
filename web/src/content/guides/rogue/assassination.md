@@ -63,7 +63,7 @@ The raid build goes 31/20/0: down Assassination to Mutilate, with Seal Fate, Ven
 - **Weapon Expertise** (2 points): the boss dodges or parries your attacks 2% less, so fewer Mutilates come back with no combo points.
 - **Coup de Grace** (3 points): Eviscerate hits 20% harder.
 
-Those Combat points are worth more to the raid build than Improved Poisons and Opportunity: a cheaper, harder Eviscerate and fewer dodged Mutilates beat more poison procs and 20% on Mutilate. Blood Splatter keeps your opening Garrote ticking 9 seconds longer and every Rupture 6 seconds longer, which is what puts Rupture in your raid rotation, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Two points each of Lightning Reflexes and Endurance are the toll to reach the Aggression row, and Composure on the way takes another 10 energy off your opener.
+Those Combat points are worth more to the raid build than Improved Poisons and Opportunity: a cheaper, harder Eviscerate and fewer dodged Mutilates beat more poison procs and 20% on Mutilate. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Two points each of Lightning Reflexes and Endurance are the toll to reach the Aggression row, and Composure on the way takes another 10 energy off your opener.
 
 [Open the planner](/planner?class=rogue) to change the build.
 
@@ -77,9 +77,9 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 ### The priority
 
-**Shank** on cooldown, right behind any damage racial and your trinket: 5 energy for 25 back, it cannot miss, and with Venom, for the next 6 seconds your poisons get another 30% on top of Vile Poisons and Instant Poison lands on half your main-hand hits at 60. At four or more combo points, Slice and Dice first if it is down or about to fall off, and a three-point Slice and Dice once it has dropped: with Improved Slice and Dice even three points keep it up for over 20 seconds. In the raid build, Rupture next whenever it is not ticking: Blood Splatter makes it last 6 seconds longer, and its ticks can crit in Forever. Otherwise press Cold Blood if it is ready and Eviscerate straight after. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
+**Shank** on cooldown, right behind any damage racial and your trinket: 5 energy for 25 back, it cannot miss, and with Venom, for the next 6 seconds your poisons get another 30% on top of Vile Poisons and Instant Poison lands on half your main-hand hits at 60. At four or more combo points, Slice and Dice first if it is down or about to fall off, and a three-point Slice and Dice once it has dropped: with Improved Slice and Dice even three points keep it up for over 20 seconds. Otherwise press Cold Blood if it is ready and Eviscerate straight after. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
 
-Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, and Ruthlessness often leaves you one after a finisher, so two Mutilates usually put you on four or five: waiting for exactly five wastes a Mutilate. Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors. Without Blood Splatter, in the level 60 build, skip Rupture too.
+Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, and Ruthlessness often leaves you one after a finisher, so two Mutilates usually put you on four or five: waiting for exactly five wastes a Mutilate. Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors. Rupture does not either: with Coup de Grace, Aggression and Flawless Execution, an Eviscerate costs 20 energy and lands more damage at once than a Rupture deals over its whole run.
 
 ### Energy
 
