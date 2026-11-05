@@ -16,7 +16,7 @@ sources:
     kind: community
 ---
 
-Warlock is a ranged caster that pays for mana with health through Life Tap, keeps a demon at its side, and stacks Shadow and Fire damage on the boss. Every spec plays out of the same kit: Corruption, a bane and Immolate, with Shadow Bolt as the filler until your talents replace it, Wrack for Affliction and Incinerate for Destruction from 40.
+Warlock is a ranged caster that pays for mana with health through Life Tap, keeps a demon at its side, and stacks Shadow and Fire damage on the boss. Every spec shares one kit: Corruption, a bane, Immolate and Shadow Bolt, which Wrack replaces for Affliction and Incinerate for Destruction from 40.
 
 ## What changed from 1.12
 
