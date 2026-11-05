@@ -218,3 +218,19 @@ func TestKitBuffsOtherClassesCarryNothing(t *testing.T) {
 		}
 	}
 }
+
+// A bear tank buffs Thorns on himself before he shifts: every melee hit
+// he takes deals Nature damage back, which is threat. Thorns rank 1 is
+// learned at 6 (client spell 467); the engine applies the rank the level
+// can learn (core.ThornsRanks).
+func TestKitBuffsBearCarriesThornsFromSix(t *testing.T) {
+	if got := KitBuffs("druid-feral-bear", 5); len(got) != 1 || got[0] != "gift_of_the_wild" {
+		t.Fatalf("druid-feral-bear at 5 = %v, want gift_of_the_wild only (Thorns is learned at 6)", got)
+	}
+	for _, level := range []int{6, 40, 60} {
+		got := KitBuffs("druid-feral-bear", level)
+		if len(got) != 2 || got[0] != "gift_of_the_wild" || got[1] != "thorns" {
+			t.Fatalf("druid-feral-bear at %d = %v, want [gift_of_the_wild thorns]", level, got)
+		}
+	}
+}

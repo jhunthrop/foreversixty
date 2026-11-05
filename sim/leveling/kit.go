@@ -76,6 +76,7 @@ const (
 	devotionAuraBuff     = "devotion_aura"
 	huntersMarkBuff      = "hunters_mark"
 	heartOfTheLionBuff   = "heart_of_the_lion"
+	thornsBuff           = "thorns"
 )
 
 // blessingOfMightLevel is the level Blessing of Might's first rank is
@@ -85,6 +86,10 @@ const blessingOfMightLevel = 4
 // blessingOfWisdomLevel is the level Blessing of Wisdom's first rank is
 // learned (client spell 19742).
 const blessingOfWisdomLevel = 14
+
+// thornsLevel is the level Thorns' first rank is learned (client spell
+// 467).
+const thornsLevel = 6
 
 // huntersMarkLevel is the level Hunter's Mark's first rank is learned
 // (client spell 1130).
@@ -112,6 +117,13 @@ const huntersMarkLevel = 6
 //     such talent (it became a baseline passive, of a rank the client
 //     tables do not state) and neither the Feral nor the Balance build
 //     can take it, so every druid spec carries the plain buff.
+//
+//   - druid-feral-bear, from level 6 (Thorns' first rank, client spell
+//     467): Thorns. A bear buffs it on himself before he shifts and it
+//     lasts 10 minutes; every melee hit he takes deals Nature damage
+//     back, which is threat. The engine models it as a reactive raid
+//     buff (core.ThornsRanks), so without the entry no bear fight had it
+//     (sim-accuracy round 20, druid B4: +0.7 to +0.8% threat at 60).
 //
 //   - Retribution and Protection, from level 4 (Blessing of Might's first
 //     rank): Blessing of Might. Forever's Holy tree has no Improved
@@ -151,6 +163,8 @@ func KitBuffs(spec string, level int) []string {
 	switch {
 	case isClassSpec(spec, "mage"):
 		return []string{arcaneBrillianceBuff}
+	case spec == "druid-feral-bear" && level >= thornsLevel:
+		return []string{giftOfTheWildBuff, thornsBuff}
 	case isClassSpec(spec, "druid"):
 		return []string{giftOfTheWildBuff}
 	case spec == "paladin-protection":

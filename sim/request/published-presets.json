@@ -35,6 +35,14 @@
           "gift_of_the_wild"
         ],
         "consumes": []
+      },
+      {
+        "from_level": 6,
+        "buffs": [
+          "gift_of_the_wild",
+          "thorns"
+        ],
+        "consumes": []
       }
     ],
     "druid-restoration": [
