@@ -124,6 +124,8 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await page.locator('#timeline').scrollIntoViewIfNeeded();
     await page.evaluate(() => document.getElementById('timeline')?.scrollIntoView());
     await expect(page.locator('[data-section="timeline"]')).toHaveAttribute('aria-current', 'location');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page.locator('[data-section="damage"]')).toHaveAttribute('aria-current', 'location');
 
     await page.locator('[data-section="settings"]').click();
     await expect(page.locator('[data-section="settings"]')).toHaveAttribute('aria-current', 'location');

@@ -193,6 +193,10 @@
     };
   });
 
+  // Both cards' props: today's RotationCard reads spec and fidelity, lane C's rebuilt one reads
+  // result and names (contract). Each ignores the rest; spec and fidelity go when C's card lands.
+  const rotationProps = $derived({ spec, fidelity, result, names });
+
   const resolveTip = (key: string) => Promise.resolve(resultTip(key, spells));
   const resolveItem = async (id: number) => {
     const { fetchItemTooltipModel } = await import('../../lib/items/lookup');
@@ -292,7 +296,7 @@
         ready={rotationLazy.current !== null}
         reserve={SECTION_RESERVE.rotation}
       >
-        {#if rotationLazy.current}<rotationLazy.current {spec} {fidelity} />{/if}
+        {#if rotationLazy.current}<rotationLazy.current {...rotationProps} />{/if}
       </LazySection>
       <LazySection
         id="settings"

@@ -31,12 +31,20 @@
 
   /** A card counts as current when it crosses this share of the viewport from the top. */
   const CURRENT_LINE = 0.3;
+  /** What sits above the first anchored card. */
+  const ABOVE_THE_CARDS = '[data-testid="sim-result-band"], [data-testid="sim-worth-knowing"]';
 
   $effect(() => {
     if (typeof IntersectionObserver === 'undefined' || !drawn) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) if (entry.isIntersecting) current = entry.target.id;
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          // Above the first card (the band, Worth knowing) the first section is the current one.
+          current = sections.some((section) => section.id === entry.target.id)
+            ? entry.target.id
+            : (sections[0]?.id ?? '');
+        }
       },
       { rootMargin: `-${CURRENT_LINE * 100}% 0px -${(1 - CURRENT_LINE) * 100 - 0.1}% 0px` },
     );
@@ -44,6 +52,7 @@
       const card = document.getElementById(section.id);
       if (card !== null) observer.observe(card);
     }
+    for (const above of document.querySelectorAll(ABOVE_THE_CARDS)) observer.observe(above);
     return () => observer.disconnect();
   });
 
