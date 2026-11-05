@@ -224,19 +224,38 @@
       }
     },
     {
-      "notes": "Under 80 rage: with Improved Berserker Rage it brings 10 rage, back every 30 seconds. Hold it for the fear on Magmadar, Onyxia and Nefarian.",
+      "notes": "From 36, under 80 rage: Improved Berserker Rage makes it 10 rage, back every 30 seconds. Hold it for the fear on Magmadar, Onyxia and Nefarian.",
       "action": {
         "condition": {
-          "cmp": {
-            "op": "OpLt",
-            "lhs": {
-              "currentRage": {}
-            },
-            "rhs": {
-              "const": {
-                "val": "80"
+          "and": {
+            "vals": [
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "currentLevel": {}
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "36"
+                    }
+                  }
+                }
+              },
+              {
+                "cmp": {
+                  "op": "OpLt",
+                  "lhs": {
+                    "currentRage": {}
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "80"
+                    }
+                  }
+                }
               }
-            }
+            ]
           }
         },
         "castSpell": {
@@ -249,6 +268,19 @@
     {
       "notes": "Only before level 36, while you still fight in Battle Stance. Once Whirlwind is trained you live in Berserker Stance and it never comes up.",
       "action": {
+        "condition": {
+          "cmp": {
+            "op": "OpLt",
+            "lhs": {
+              "currentLevel": {}
+            },
+            "rhs": {
+              "const": {
+                "val": "36"
+              }
+            }
+          }
+        },
         "castSpell": {
           "spellId": {
             "spellId": 11585,

@@ -1005,3 +1005,17 @@ def test_fury_death_wish_card_line_carries_the_whole_rule():
     assert "second one" in line
     assert "execute phase" in line
     assert "last 30 seconds" in line
+
+
+def test_fury_berserker_rage_starts_at_36_and_overpower_ends_there():
+    """Guide-accuracy round 19 (WARRIOR-R19-1): a Fury warrior fights in Battle Stance until
+    Whirlwind at 36, and Berserker Rage is a Berserker Stance button, so its card row starts
+    at 36; Overpower, a Battle Stance button, leaves the card there."""
+    rotations = build_rotations(Path("builds"), BUILD)
+    fury = {band.level: {line.name for line in band.lines} for band in rotations["warrior-fury"]}
+    for level in (30, 32):
+        assert "Berserker Rage" not in fury[level], level
+        assert "Overpower" in fury[level], level
+    for level in (36, 40, 60):
+        assert "Berserker Rage" in fury[level], level
+        assert "Overpower" not in fury[level], level
