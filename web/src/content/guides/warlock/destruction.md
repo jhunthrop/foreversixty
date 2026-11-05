@@ -55,7 +55,7 @@ The raid build keeps the leveling build's Destruction core and drops its safety 
 - **Aftermath** (3 points, 5 in the raid build): Immolate's first hit deals 30% more, 50% at 5 points.
 - **Conflagrate** and **Fire and Brimstone** (4 points): an instant Fire hit on a target with your Immolate, 10 second cooldown, with 25% more crit chance from Fire and Brimstone.
 - **Shadowburn** (1 point): an instant Shadow hit, 15 second cooldown, at any health. It costs a Soul Shard.
-- **Shadow and Flame** (5 points): Conflagrate gives you 20% more Shadow damage for 20 seconds and Shadowburn 20% more Fire damage for 20 seconds. At 5 points Conflagrate never eats your Immolate and every Shadowburn refunds its shard on the spot.
+- **Shadow and Flame** (5 points): Conflagrate gives you 20% more Shadow damage for 20 seconds and Shadowburn 20% more Fire damage for 20 seconds. Each point is 4% of that damage and a 20% chance that Conflagrate keeps your Immolate and Shadowburn refunds its shard, so at 5 points Conflagrate never eats your Immolate and every Shadowburn refunds its shard on the spot.
 - **Incinerate** (1 point): your filler from level 40. It deals 25% more while your Immolate is on the target.
 - **Suppression** and **Improved Corruption** (10 points): 5% hit on every spell, 20% less threat, and an instant Corruption.
 - **Pandemic** and **Malevolence** (raid build, 6 points): three points of Pandemic double the crit bonus on Corruption and both banes, and three of Malevolence add 3% crit to your Shadow spells: Corruption ticks, Doom and Shadowburn.
@@ -73,7 +73,7 @@ Priority after that:
 1. Corruption whenever it has fallen off. It is instant and ticks for 18 seconds off one global.
 2. Bane of Doom the moment the last one fires. In the last minute of the fight a new Doom would never land, so use Bane of Agony instead.
 3. Immolate when about 3 seconds are left on it. It lands a moment before the old one ends, so it never drops.
-4. Conflagrate on cooldown while Immolate is up.
+4. Conflagrate once Immolate has 6 seconds or less left until you take Shadow and Flame, then on cooldown while Immolate is up.
 5. Shadowburn on cooldown, at any boss health.
 6. Incinerate.
 
