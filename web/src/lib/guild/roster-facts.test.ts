@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { buildMockHome, VIEWER_MEMBER } from '../../fixtures/guild/mock-guild';
-import { entryFacts, gearSetLabel, inGameFacts, rosterSpecLine, rosterStatChips } from './roster-facts';
+import {
+  entryFacts,
+  entrySpecLine,
+  gearSetLabel,
+  inGameFacts,
+  rosterSpecLine,
+  rosterStatChips,
+} from './roster-facts';
 import { specClassName } from './spec-name';
 
 const NOW = new Date(2026, 11, 22, 21, 46);
@@ -99,6 +106,24 @@ describe('specClassName', () => {
     expect(specClassName('Holy Priest', 'priest')).toBe('Holy Priest');
     expect(specClassName('', 'priest')).toBe('Priest');
     expect(specClassName('Holy', undefined)).toBe('Holy');
+  });
+});
+
+describe('entrySpecLine', () => {
+  it('names the class of an invited member the addon has not seen, who has no spec on file', () => {
+    expect(entrySpecLine({ class: 'rogue' })).toBe('Rogue');
+  });
+
+  it('joins the spec and the class when both are known', () => {
+    expect(entrySpecLine({ class: 'warrior', spec: 'Arms' })).toBe('Arms Warrior');
+  });
+
+  it('keeps a spec two classes play alone when the class is not known', () => {
+    expect(entrySpecLine({ spec: 'Protection' })).toBe('Protection');
+  });
+
+  it('says nothing with neither', () => {
+    expect(entrySpecLine({})).toBe('');
   });
 });
 

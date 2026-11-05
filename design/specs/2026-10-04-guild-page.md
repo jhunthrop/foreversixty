@@ -195,7 +195,9 @@ Attendance, Last seen (the last still a two-bucket `logged_recently` sort pendin
   format).
 - **Main/alt grouping** (**EXISTS** — `guild_characters.user_id`; two characters sharing a
   `user_id` render a small "alt of {main}" tag under the alt's spec line, the main's own row
-  unmarked).
+  unmarked. The main is the character the player marked (`users.main_character_key`, sent as the
+  roster row's `is_main`), else the highest level, then the highest item level, then the name;
+  amended 2026-11-05, guild round 3).
 - **Last log uploaded** (**EXISTS** — `reports.owner_id` joined to this character's account,
   newest `created_at`).
 - Everything v1 already had (crest, class-colour name, rank pill, item level, logged-recently

@@ -219,6 +219,9 @@ export interface GuildRosterRow {
   item_level?: number;
   /** The export's level, else the addon roster's; null with neither or below gear consent. */
   level?: number | null;
+  /** The character the account marked as its main (`users.main_character_key`); absent on an API
+   *  that does not send it yet, which reads as unmarked (guild round 3). */
+  is_main?: boolean;
   consent: GuildConsent;
   attendance?: GuildRosterAttendance;
   /** Raid mode only: the same figure over the guild's last 30 logged raids. */

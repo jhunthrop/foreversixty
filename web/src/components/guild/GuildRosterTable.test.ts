@@ -364,9 +364,12 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(text(invited)).toContain('Member');
   });
 
-  it('says once above the list that ranks show once the addon sends them, only when a row has none', () => {
-    expect(text(asOfficer)).toContain('Ranks show once the addon sends them.');
-    expect(asOfficer.split('Ranks show once the addon sends them.').length - 1).toBe(1);
+  it('says once above the list that ranks show once the addon sends them, only when no rank is known', () => {
+    // The roster's rows carry the ranks the addon sent: the line would read over them.
+    expect(asOfficer).not.toContain('guild-roster-ranks-pending');
+    const onlyNames = officerAsk({ roster: [], pending: [] });
+    expect(text(onlyNames)).toContain('Ranks show once the addon sends them.');
+    expect(onlyNames.split('Ranks show once the addon sends them.').length - 1).toBe(1);
     const none = render(GuildRosterTable, {
       props: { ...props(home), members: undefined, counts: undefined, can: [] },
     }).body;

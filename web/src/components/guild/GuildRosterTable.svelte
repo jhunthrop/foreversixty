@@ -36,6 +36,7 @@
   import { rosterHoldsHandoff } from '../../lib/guild/roster-links';
   import {
     RANKS_PENDING_LINE,
+    entrySpecLine,
     entryFacts,
     inGameFacts,
     rosterSpecLine,
@@ -547,7 +548,9 @@
     </div>
     <div class="px-5">
       <p class="text-muted text-[13px]" data-testid="guild-roster-addon-snapshot">{snapshotLine}</p>
-      {#if extras.some((entry) => entry.state === 'no_account')}
+      <!-- Only while no rank is known: a roster row's rank is the addon's, so the line would read
+           over ranks it already sent (guild round 3). -->
+      {#if allRows.length === 0 && extras.some((entry) => entry.state === 'no_account')}
         <p class="text-muted text-[12px]" data-testid="guild-roster-ranks-pending">{RANKS_PENDING_LINE}</p>
       {/if}
 
@@ -681,11 +684,11 @@
                   style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)}`}
                   data-testid="guild-roster-entry-name">{entry.name}</span
                 >
-                {#if entry.spec !== undefined}
+                {#if entrySpecLine(entry) !== ''}
                   <span
                     class="text-nav text-[12px] max-lg:break-words lg:truncate"
-                    title={rosterSpecLine({ addonSpec: entry.spec, className: entry.class })}
-                    >{rosterSpecLine({ addonSpec: entry.spec, className: entry.class })}</span
+                    title={entrySpecLine(entry)}
+                    data-testid="guild-roster-entry-spec">{entrySpecLine(entry)}</span
                   >
                 {/if}
               </div>
