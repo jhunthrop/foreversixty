@@ -59,7 +59,8 @@ func TestRoundTwelveHealerRowsBelowSixty(t *testing.T) {
 		{"paladin-holy", "Flash of Light", 45, []int{2}},
 		// Round 20: the tank's Flash of Light is rank 3 at 50 to 54 and rank 4 at 55 to 59 and bare 60.
 		{"paladin-holy", "Flash of Light", 52, []int{3}},
-		{"paladin-holy", "Flash of Light", 60, []int{4}},
+		// Round 22: the raid-60 party row adds rank 5, so 60 carries both.
+		{"paladin-holy", "Flash of Light", 60, []int{4, 5}},
 	} {
 		got, err := ChosenRanks(c.spec, c.spell, c.level)
 		if err != nil {
