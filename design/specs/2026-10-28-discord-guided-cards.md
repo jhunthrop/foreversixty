@@ -126,7 +126,7 @@ A raid or character pick re-renders the card (type 7). A status press runs the b
 ### G.4.5 `/attendance`
 
 A member: unchanged (one embed per own character). An officer with no `name`: the same answer, then one more row, then the existing `Roster` row:
-- Select, placeholder `Look up a member`: the guild's members with the lowest attendance over the last 8 raids, lowest first, at most 25; label the character name, description the roster chip verbatim (`Came 3 of 8 · 10 of 30 raids`). Nothing pre-chosen.
+- Select, placeholder `Look up a member`: the guild's members with the lowest attendance over the last 8 raids, lowest first, at most 25; label the character name, description the /attendance wording (`3 of 8 raid nights · 10 of the last 30`, amended 2026-11-05). Nothing pre-chosen.
 - The `Roster` row gains `Type a name` (Secondary) before `Roster`. It opens the modal of §G.4.3 titled `Look up attendance`, label `Character name`.
 
 A pick or a submitted name replaces the message with that member's record; the select stays, the member `default`. A name that is not a member: the officer's own answer stays, the content line `No member of {Guild} named {typed}.` above it. Rank is re-checked on every pick (bot spec product §8.5); a former officer's pick answers `Only officers can look up another member's attendance.`

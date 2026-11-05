@@ -80,7 +80,7 @@ func TestExtractedReadsMatchTheRoutes(t *testing.T) {
 			}
 		}
 		// Kraggor came as Sunderfel: the night counts once, on Kraggor.
-		if recs[0].Chip != "Came 1 of 1 raids" || len(recs[0].Last) != 1 || recs[1].Chip != "" || len(recs[1].Last) != 0 {
+		if recs[0].Chip != "1 of 1 raid night" || len(recs[0].Last) != 1 || recs[1].Chip != "" || len(recs[1].Last) != 0 {
 			t.Fatalf("records = %+v", recs)
 		}
 		if l := recs[0].Last[0]; l.Outcome != OutcomePresent || l.CameAs != "Sunderfel" {
@@ -178,7 +178,7 @@ func TestReadinessListsTenRowsThenTheRest(t *testing.T) {
 
 // TestAttendanceChipIsTheRosterChipVerbatim: the web's own strings (roster-facts.ts
 // attendanceChip; attendance-copy.ts rosterChip; nights.ts nightsLabel), in both modes.
-func TestAttendanceChipIsTheRosterChipVerbatim(t *testing.T) {
+func TestAttendanceChipIsOneWording(t *testing.T) {
 	row := func(p, n int, long *Attendance) RosterRow {
 		return RosterRow{Attendance: Attendance{Present: p, Nights: n}, Attendance30: long}
 	}
@@ -187,11 +187,12 @@ func TestAttendanceChipIsTheRosterChipVerbatim(t *testing.T) {
 		source string
 		want   string
 	}{
-		{row(5, 8, nil), AttendanceSourceReports, "5 of 8 nights"},
-		{row(1, 1, nil), AttendanceSourceReports, "1 of 1 night"},
+		{row(5, 8, nil), AttendanceSourceReports, "5 of 8 raid nights"},
+		{row(1, 1, nil), AttendanceSourceReports, "1 of 1 raid night"},
 		{row(0, 0, nil), AttendanceSourceReports, ""},
-		{row(7, 8, &Attendance{Present: 26, Nights: 30}), AttendanceSourceRaids, "Came 7 of 8 · 26 of 30 raids"},
-		{row(3, 3, &Attendance{Present: 3, Nights: 3}), AttendanceSourceRaids, "Came 3 of 3 raids"},
+		{row(7, 8, &Attendance{Present: 26, Nights: 30}), AttendanceSourceRaids, "7 of 8 raid nights · 26 of the last 30"},
+		{row(3, 3, &Attendance{Present: 3, Nights: 3}), AttendanceSourceRaids, "3 of 3 raid nights"},
+		{row(1, 1, &Attendance{Present: 1, Nights: 1}), AttendanceSourceRaids, "1 of 1 raid night"},
 		{row(0, 0, &Attendance{}), AttendanceSourceRaids, ""},
 	} {
 		if got := attendanceChip(c.row, c.source); got != c.want {
