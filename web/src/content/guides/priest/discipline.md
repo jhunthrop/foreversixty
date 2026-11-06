@@ -3,8 +3,8 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70790:priest:gnome:00500503133001143/3350500303/0:'
-recommendedRaces: [gnome, undead]
+build: 'FS1:1.60.1.70790:priest:human:00500503133001143/3350500303/0:'
+recommendedRaces: [human, undead]
 statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
 description: 'How to heal as a Discipline Priest in Forever: Penance, the shield and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
 updated: 2026-11-04
@@ -97,13 +97,13 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Races
 
-**Gnome** is the Alliance pick, for Eureka!: your direct heals are 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and so are Penance's heals (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
+**Human** is the Alliance pick. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit, and while you level, when a long pull drains your bar, that regeneration keeps you casting where a Gnome is already out of mana.
 
-**Human** is level with Gnome, a hair ahead on a long tank fight, so take whichever you would rather play. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
+**Gnome** heals as well as a Human at 60, so take whichever you would rather play there. Eureka! makes your direct heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Penance's heals too (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
 
 **Undead** is the Horde pick for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
 
-**Night Elf** has Elune's Light for 10% crit (more Divine Aegis), **Troll** Berserking, and **Dwarf** Stoneform and Desperate Prayer. All three heal clearly less than a Gnome or a Human.
+**Night Elf** has Elune's Light for 10% crit (more Divine Aegis), **Troll** Berserking, and **Dwarf** Stoneform and Desperate Prayer. All three heal clearly less than a Human or a Gnome.
 
 ## Professions
 
