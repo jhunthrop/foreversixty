@@ -23,7 +23,7 @@
   import Select from './ui/Select.svelte';
 
   /** `known`: the site holds this character but has nothing on it, and the viewer does not hold it
-   *  (P.1): its own sentence, and only a quiet "Get the addon" link under the lookup box. */
+   *  (P.1): its own sentence, and only a quiet "Get the addon and companion" link under the lookup box. */
   let { path, name, known = false }: { path: CharacterPath; name: string; known?: boolean } = $props();
 
   const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-full border px-3 text-[15px]';

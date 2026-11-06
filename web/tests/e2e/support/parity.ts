@@ -1,6 +1,6 @@
 // web/tests/e2e/support/parity.ts
-// The mock parity gate (design/parity.md): a built page against its committed mock, region by
-// region. Both sides carry the same `data-region` names (src/lib/ui/regions.ts and the mock
+// The mock parity gate (design/parity.md): a built page against its mock, region by region, the
+// mock rendered at test time from the build being served (support/parity-mocks.ts). Both sides carry the same `data-region` names (src/lib/ui/regions.ts and the mock
 // library's ws_lib.REGION). For every region the gate compares
 //   - the inventory: the region's accessibility tree as role chains ("listbox>option",
 //     "paragraph>link", "heading[1]"), names and text ignored, plus a census of visible
@@ -8,7 +8,7 @@
 //     fails, whatever its text;
 //   - the box: x, y (y from the top of <main>, so the site header's own height is not every
 //     region's error) and width, height, within PARITY_TOLERANCE.
-// The mock and the build show the same data (design/mocks/bis_facts.mjs), so a difference is a
+// The mock and the build show the same data (support/parity-mocks.ts), so a difference is a
 // difference in design, never in data.
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -101,9 +101,10 @@ export async function settleParityPage(page: Page): Promise<void> {
   });
 }
 
-export async function openMock(page: Page, file: string): Promise<void> {
+/** A mock from `dir`: the spec's test-time render (support/parity-mocks.ts). */
+export async function openMock(page: Page, dir: string, file: string): Promise<void> {
   await prepareParityPage(page);
-  await page.goto(pathToFileURL(path.join(MOCKS_DIR, file)).href);
+  await page.goto(pathToFileURL(path.join(dir, file)).href);
   await settleParityPage(page);
 }
 

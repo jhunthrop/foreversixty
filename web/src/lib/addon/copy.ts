@@ -1,3 +1,4 @@
+import { ctaCopy } from './cta-copy';
 // web/src/lib/addon/copy.ts
 // Every string this lane adds to the site: the FSB1 decoder's refusals, the share
 // panel's button, the planner's import box and the /addon page. Components import from
@@ -71,7 +72,7 @@ export const addonCopy = {
   importPlaceholder: 'FS1:…',
   importAction: 'Import',
   importNoExport: "Don't have an export?",
-  importGetAddon: 'Get the addon',
+  importGetAddon: ctaCopy.getAddonAndCompanion,
   importOrderApproximated:
     'Nothing in the game records the order a build was spent in, so this order is our best reconstruction: the main tree first, each talent as soon as its row opens. The finished tree is exact.',
   importDropped: (names: string): string =>
@@ -180,7 +181,7 @@ export const addonCopy = {
   setupSignedInAs: (name: string): string => `Signed in as ${name}`,
   setupAddonArrived: (character: string, when: string): string =>
     `${character} arrived from the addon ${when}`,
-  setupAddonWaiting: 'No character yet. Refresh from Battle.net, or install the addon and paste an export.',
+  setupAddonWaiting: `No character yet. Refresh from Battle.net, or ${ctaCopy.installAddonAndCompanionInline}, then paste an export.`,
   /** Step 2 for an account whose characters came from Battle.net and none from the addon. */
   setupAddonOptional: 'Your characters are in from Battle.net. The addon adds bags, bank and live sync.',
   setupCompanionLine: (device: string, seen: string): string =>

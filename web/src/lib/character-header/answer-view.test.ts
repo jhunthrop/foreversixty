@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { MeCharacter } from '../account/api';
 import { answerViewFor, type AnswerPhase } from './answer-view';
 import type { AnswerSpec, HeaderAnswer } from './types';
+import { ctaCopy } from '../addon/cta-copy';
 
 const FIGURES: HeaderAnswer = {
   kind: 'figures',
@@ -20,7 +21,7 @@ const SPEC: AnswerSpec = {
   needsGear: true,
   strings: {
     belowLevelFloor: 'Best in slot starts at 20.',
-    noGear: { sentence: 'Add the addon.', link: { label: 'Get the addon', href: '/setup' } },
+    noGear: { sentence: 'Add the addon.', link: { label: ctaCopy.getAddonAndCompanion, href: '/setup' } },
     failed: 'Your upgrades did not load.',
   },
   load: () => Promise.resolve(FIGURES),
@@ -76,7 +77,7 @@ describe('answerViewFor', () => {
     expect(view).toEqual({
       kind: 'no-gear',
       sentence: 'Add the addon.',
-      link: { label: 'Get the addon', href: '/setup' },
+      link: { label: ctaCopy.getAddonAndCompanion, href: '/setup' },
     });
   });
 

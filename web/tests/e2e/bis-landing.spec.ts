@@ -17,6 +17,7 @@ import {
   storePointer,
   type FixtureCharacter,
 } from './support/selector';
+import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
@@ -369,10 +370,9 @@ test.describe('signed in, desktop', () => {
     await expect(header(page)).toContainText(
       'Add the addon to see how many of these slots you already wear.',
     );
-    await expect(header(page).getByRole('link', { name: 'Get the addon →' })).toHaveAttribute(
-      'href',
-      '/setup',
-    );
+    await expect(
+      header(page).getByRole('link', { name: `${ctaCopy.getAddonAndCompanion} →` }),
+    ).toHaveAttribute('href', '/setup');
     await expect(page.getByTestId('character-header-figure-1')).toHaveCount(0);
     await expect(page.getByTestId('character-header-sync')).toHaveCount(0);
     await expect(page.getByTestId('character-header-action')).toHaveText('Fury gear for 40 to 49 →');

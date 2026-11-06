@@ -9,6 +9,7 @@ import {
   captureRegions,
   compareRegions,
   formatFailures,
+  MOCKS_DIR,
   openMock,
   prepareParityPage,
   readParityConfig,
@@ -26,7 +27,9 @@ test.describe('Home mock parity at 1440', () => {
     test(`${state.id} matches ${state.mock}`, async ({ page, browser }) => {
       test.slow();
       const mockPage = await browser.newPage({ viewport: CONFIG.viewport });
-      await openMock(mockPage, state.mock);
+      // Home's mocks are the committed ones until its generator joins the test-time pattern
+      // (design/parity.md); BiS and sim render theirs from the served data.
+      await openMock(mockPage, MOCKS_DIR, state.mock);
       const mock = await captureRegions(mockPage);
 
       await prepareParityPage(page);

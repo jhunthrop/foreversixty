@@ -1,3 +1,4 @@
+import { ctaCopy } from '../addon/cta-copy';
 // web/src/lib/character-header/copy.ts
 // The strings the shared character header owns (design/specs/2026-10-11-character-header.md
 // sections 2 and 3): the label, the one shared signed-out line, the stale tail, the retry link.
@@ -9,7 +10,7 @@ export const characterHeaderCopy = {
   signedOut: 'Sign in or paste an export to see your character here',
   /** A signed-in account whose characters the site has not seen yet. */
   noCharacters: (who: string): string =>
-    `Signed in as ${who}. No characters yet: install the addon and the companion, then log out once in game.`,
+    `Signed in as ${who}. No characters yet: ${ctaCopy.installAddonAndCompanionInline}, then log out once in game.`,
   getSetUp: 'Get set up',
   getSetUpHref: '/setup',
   /** Only the words past the sync age go ember (nav selector spec 2.11 threshold). */

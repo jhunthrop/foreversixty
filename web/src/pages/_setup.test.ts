@@ -25,6 +25,7 @@ import activeBuild from '../data/active-build.json';
 import companion from '../data/companion.json';
 import { ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH, companionDownloadPath } from '../lib/downloads/paths';
 import SetupPage, { CURSEFORGE_URL, WAGO_URL } from './setup.astro';
+import { ctaCopy } from '../lib/addon/cta-copy';
 
 const source = readFileSync(new URL('./setup.astro', import.meta.url), 'utf8');
 
@@ -662,7 +663,7 @@ describe('the setup done lines (progress.ts)', () => {
   it('says what to do when the account has no character at all', () => {
     expect(addonLine(me([]), NOW)).toEqual({
       done: false,
-      text: 'No character yet. Refresh from Battle.net, or install the addon and paste an export.',
+      text: `No character yet. Refresh from Battle.net, or ${ctaCopy.installAddonAndCompanionInline}, then paste an export.`,
     });
   });
 

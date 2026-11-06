@@ -219,10 +219,14 @@ function listedByKind(slot: BisSlot, sources: Record<number, BisSourceInfo>): Bi
   return out;
 }
 
-function byKindEntries(byKind: BisSlot['by_kind']): BisByKindEntry[] {
-  const out: BisByKindEntry[] = [];
-  for (const entry of Object.values(byKind ?? {})) {
-    for (let node: BisByKindEntry | undefined = entry; node !== undefined; node = node.next) out.push(node);
+/** Every by_kind entry (and its `next` chain) with the kind it was listed under: the nightly omits
+ *  `source_kind` where the key already says it. */
+function byKindEntries(byKind: BisSlot['by_kind']): (BisByKindEntry & { source_kind: string })[] {
+  const out: (BisByKindEntry & { source_kind: string })[] = [];
+  for (const [kind, entry] of Object.entries(byKind ?? {})) {
+    for (let node: BisByKindEntry | undefined = entry; node !== undefined; node = node.next) {
+      out.push({ ...node, source_kind: node.source_kind ?? kind });
+    }
   }
   return out;
 }
@@ -259,7 +263,7 @@ function rowModel(
   const byKind = published ? raw.by_kind : listedByKind(raw, sources);
   for (const entry of byKindEntries(byKind)) {
     sources[entry.item_id] ??= sourceInfo(
-      { item_id: entry.item_id, source_kind: entry.source_kind ?? '', source: entry.source },
+      { item_id: entry.item_id, source_kind: entry.source_kind, source: entry.source },
       faction,
       deps,
     );

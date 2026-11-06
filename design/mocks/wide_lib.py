@@ -15,12 +15,15 @@ from mocklib import ROOT, SEAL, CLASS_COLOR, crest, emblem
 OUT = Path(__file__).resolve().parent / 'wide'
 BUILD = json.load(open(ROOT / 'web/src/data/active-build.json'))['build']
 ICONS = ROOT / 'web/public/data' / BUILD / 'icons'
+# The committed build's icons first, so a mock renders the same with or without a synced web/public/data (the parity
+# gate renders its mocks in CI, which syncs nothing); then the synced copies, for icons only an older build carries.
+ICON_DIRS = [ROOT / 'data/builds' / BUILD / 'icons', ICONS, *sorted((ROOT / 'web/public/data').glob('*/icons'))]
 _cache: dict[str, str] = {}
 
 
 def icon(name: str, size: int = 36, q: str = '') -> str:
     """A real game icon as an inline data URI, in the site's rounded frame; a dark tile if absent."""
-    p = next((d / f'{name}.webp' for d in [ICONS, *sorted((ROOT / 'web/public/data').glob('*/icons'))] if (d / f'{name}.webp').exists()), ICONS / f'{name}.webp')
+    p = next((d / f'{name}.webp' for d in ICON_DIRS if (d / f'{name}.webp').exists()), ICONS / f'{name}.webp')
     cls = f'ic {q}'.strip()
     if not p.exists():
         return f'<span class="{cls}" style="width:{size}px;height:{size}px"></span>'

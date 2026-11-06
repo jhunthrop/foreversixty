@@ -334,7 +334,7 @@ html:not([data-pointer-class]) .fs-chrome .csel-pre .csel-pre-char,html:not([dat
 @media (width <= 1279px){.fs-chrome .csel-btn{gap: 6px; width: 176px; padding: 0px 8px 0px 5px;}.fs-chrome .csel-text{max-width: 112px;}.fs-chrome .csel-sub{display: none;}.fs-chrome .csel-sub-short{color: var(--color-muted); white-space: nowrap; text-overflow: ellipsis; font-size: 12px; display: block; overflow: hidden;}.fs-chrome .csel-btn.is-signed-out{gap: 6px; width: 122px; padding: 0px 10px 0px 8px;}.fs-chrome .csel-btn.is-signed-out .csel-ghost{width: 24px; height: 24px;}.fs-chrome .csel-btn.is-signed-out .csel-ghost svg{width: 13px; height: 13px;}.fs-chrome .csel-btn.is-signed-out .csel-text{max-width: none;}.fs-chrome .csel-btn.is-signed-out .csel-sub{display: none;}}
 @media (width <= 1023px){.fs-chrome .csel{display: contents;}.fs-chrome .csel-btn,.fs-chrome .csel-btn.is-signed-out{background: 0px 0px; border: 0px; grid-area: 1 / 2; justify-content: center; gap: 4px; width: auto; min-width: 44px; height: 44px; margin: 0px; padding: 0px;}.fs-chrome .csel-btn:hover,.fs-chrome .csel-btn:active{background: 0px 0px; border: 0px;}.fs-chrome .csel-chev,.fs-chrome .csel-text{display: none;}.fs-chrome .csel-crestbox,.fs-chrome .csel-crest{width: 36px; height: 36px;}.fs-chrome .csel-btn.is-signed-out .csel-ghost,.fs-chrome .csel-pre .csel-pre-out .csel-ghost{background: rgba(229, 185, 85, 0.1); width: 36px; height: 36px; box-shadow: rgba(229, 185, 85, 0.45) 0px 0px 0px 1px;}.fs-chrome .csel-btn.is-signed-out .csel-ghost svg{width: 18px; height: 18px;}.fs-chrome .csel-badge{display: grid;}}
 @media (width >= 560px) and (width <= 1023px){.fs-chrome .csel-btn,.fs-chrome .csel-btn.is-signed-out{gap: 10px; padding: 0px 6px 0px 4px;}.fs-chrome .csel-badge{display: none;}.fs-chrome .csel-btn .csel-chev{display: block;}.fs-chrome .csel-btn.is-signed-out .csel-chev{display: none;}.fs-chrome .csel-name-bar{white-space: nowrap; text-overflow: ellipsis; max-width: min(200px, -460px + 100vw); font-size: 14px; font-weight: 600; display: block; overflow: hidden;}.fs-chrome .csel-btn.is-signed-out .csel-name-bar{display: none;}}
-html[data-premium-nav="hide"] .fs-chrome .site-door-premium{display: none;}
+html[data-premium-nav="hold"] .fs-chrome .site-door-premium{visibility: hidden;}
 </style><style>
 :root{--bg:#07090d;--raised:#0d111a;--hover:#131824;--line:#262e40;--line-soft:#1c2230;--line-warm:#3a3326;
 --text:#e9e4d8;--strong:#f2eee4;--muted:#9a9484;--nav:#b9b3a4;--gold:#e5b955;--gold-hover:#f5d27a;--kill:#7fd48a;--wipe:#f0736b;
@@ -497,6 +497,7 @@ body .sec-h{flex-wrap:wrap;row-gap:4px}body .sec-h .act{line-height:21px}body .r
 .row .b{min-width:0}.row .ttl{font:700 15px/20px var(--font-body);color:var(--strong)}
 .row .sub{font-size:13px;line-height:18px;color:var(--muted)}
 .row .trail{display:flex;gap:12px;align-items:center;justify-self:end}
+.row .foot{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding-top:8px}
 a.row:hover,.row.hov{background:var(--hover)}
 .row.cur{background:#e5b9551a;box-shadow:inset 3px 0 0 var(--gold)}
 .row .rank{width:24px;text-align:right;font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}

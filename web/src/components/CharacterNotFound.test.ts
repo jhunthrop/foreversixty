@@ -7,6 +7,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { scoreCopy } from '../lib/score/copy';
 import CharacterNotFound from './CharacterNotFound.svelte';
+import { ctaCopy } from '../lib/addon/cta-copy';
 
 const PATH = { region: 'us' as const, ruleset: 'pvp' as const, slug: 'nobody-here' };
 
@@ -34,11 +35,11 @@ describe('CharacterNotFound', () => {
     expect(body).toMatch(/<option value="pvp" selected/);
   });
 
-  it('offers "Your character? Get the addon"', () => {
+  it('offers "Your character? Get the addon and companion"', () => {
     const next = /data-testid="character-not-found-next">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
     expect(next).toContain('Your character?');
     expect(next).toContain('href="/setup"');
-    expect(next).toContain('>Get the addon</a>');
+    expect(next).toContain(`>${ctaCopy.getAddonAndCompanion}</a>`);
   });
 });
 
@@ -60,10 +61,10 @@ describe('CharacterNotFound for a character the site holds with no data (P.1)', 
     expect(body).not.toContain('No character called');
   });
 
-  it('keeps the lookup box and carries one quiet "Get the addon" link, no upload link', () => {
+  it('keeps the lookup box and carries one quiet "Get the addon and companion" link, no upload link', () => {
     expect(body).toContain('data-testid="character-not-found-form"');
     const next = /data-testid="character-not-found-next">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
-    expect(next).toContain('>Get the addon</a>');
+    expect(next).toContain(`>${ctaCopy.getAddonAndCompanion}</a>`);
     expect(next).not.toContain('Upload logs');
     expect(next).not.toContain('Your character?');
   });

@@ -3,6 +3,7 @@
 // design/specs/2026-10-09-nav-character-selector.md. One module so a wording change is one edit.
 import { accountPlanCopy } from '../billing/account-plan-copy';
 import { PREMIUM_LINKS } from '../billing/premium-links';
+import { ctaCopy } from '../addon/cta-copy';
 
 export const selectorCopy = {
   listHeading: 'Your characters',
@@ -24,7 +25,7 @@ export const selectorCopy = {
   pasteUse: 'Use this character',
   pasteCancel: 'Cancel',
   pasteInvalid: 'That is not a Forever Sixty export.',
-  addonTitle: 'Get the addon',
+  addonTitle: ctaCopy.getAddonAndCompanion,
   addonSub: 'Export a character from the game.',
   addonHref: '/setup',
   signedOutBody: 'Sign in and your characters arrive with their gear, talents and guild.',

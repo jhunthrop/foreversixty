@@ -8,6 +8,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from './support/character-fixture';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
+import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 const SHOTS = process.env.W8_SHOTS ?? 'test-results/w8';
 const SIZES = [
@@ -113,7 +114,9 @@ test('an unknown character says so, with the lookup and the addon line', async (
     'No character called Elyra Duskvale on Hardcore US yet.',
   );
   await expect(page.getByTestId('character-not-found-form')).toBeVisible();
-  await expect(page.getByTestId('character-not-found-next')).toContainText('Your character? Get the addon');
+  await expect(page.getByTestId('character-not-found-next')).toContainText(
+    `Your character? ${ctaCopy.getAddonAndCompanion}`,
+  );
   await expect(page).toHaveTitle('Character not found');
   await page.screenshot({ path: join(SHOTS, 'w8-character-not-found.png'), fullPage: true });
 });

@@ -19,6 +19,7 @@ import {
 } from './support/character-fixture';
 import { SAMPLE_REPORT_META, routeSampleReportMeta } from './support/logs-sample-fixture';
 import { fieldBox } from './support/select';
+import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 const SHOTS = process.env.P1_SHOTS;
 const SIZES = [
@@ -109,7 +110,7 @@ for (const size of SIZES) {
       );
       await expect(page.getByTestId('character-not-found-form')).toBeVisible();
       await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveText(
-        'Get the addon',
+        ctaCopy.getAddonAndCompanion,
       );
       await expect(page.getByTestId('forever-score-empty')).toHaveCount(0);
       await expect(page.getByTestId('character-in-game')).toHaveCount(0);

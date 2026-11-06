@@ -3,6 +3,7 @@
 // strings; this is the first module that is genuinely the planner's own -- the confirm step
 // Share opens into before it writes a build to a public link (one-product spec section 1).
 import { itemNotInDataLine } from '../items/unknown-item-copy';
+import { ctaCopy } from '../addon/cta-copy';
 
 export const plannerCopy = {
   /** A slot an import names with an item this build's data does not carry; see
@@ -73,7 +74,7 @@ export const plannerCharacterCardCopy = {
   sending: 'Sending',
   sent: 'Sent',
   /** A visitor with no current character cannot be sent anything: the button is the way in. */
-  getTheAddon: 'Get the addon to use this build in game',
+  getTheAddon: `${ctaCopy.getAddonAndCompanion} to use this build in game`,
   getTheAddonHref: '/setup#addon',
   /** A /reload never picks a delivery up: the build arrives at a login from the character screen. */
   sentLine: (characterName: string): string =>

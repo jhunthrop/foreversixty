@@ -5,6 +5,7 @@ import { planAnswer } from './answer-plan';
 import { characterHeaderCopy } from './copy';
 import { descriptorLines } from './descriptor';
 import { hasGearOnFile, syncText, syncView } from './sync';
+import { ctaCopy } from '../addon/cta-copy';
 
 const NOW = new Date('2026-10-11T12:00:00Z');
 const daysAgo = (days: number): string => new Date(NOW.getTime() - days * 86_400_000).toISOString();
@@ -162,7 +163,7 @@ describe('planAnswer', () => {
 describe('the signed-in-empty line', () => {
   it('says who is signed in and what to do, and links to /setup', () => {
     expect(characterHeaderCopy.noCharacters('Hunt#1234')).toBe(
-      'Signed in as Hunt#1234. No characters yet: install the addon and the companion, then log out once in game.',
+      `Signed in as Hunt#1234. No characters yet: ${ctaCopy.installAddonAndCompanionInline}, then log out once in game.`,
     );
     expect(characterHeaderCopy.getSetUp).toBe('Get set up');
     expect(characterHeaderCopy.getSetUpHref).toBe('/setup');

@@ -1,6 +1,7 @@
 // web/src/lib/account/account-page-copy.test.ts
 import { describe, expect, it } from 'vitest';
 import { accountPageCopy } from './account-page-copy';
+import { ctaCopy } from '../addon/cta-copy';
 
 describe('accountPageCopy first-run lines', () => {
   it('says the companion signs itself in, and a code is only the fallback', () => {
@@ -17,7 +18,7 @@ describe('accountPageCopy first-run lines', () => {
       'Signed in as Hunt#1234. Battle.net lists no Forever character on this account yet; make one in game, then refresh from Battle.net.',
     );
     expect(accountPageCopy.signedInBannerEmpty('hunt@example.com', false)).toBe(
-      'Signed in as hunt@example.com. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.',
+      `Signed in as hunt@example.com. Sign in with Battle.net to bring your Forever characters here, or ${ctaCopy.installAddonAndCompanionInline}.`,
     );
   });
 });

@@ -29,6 +29,7 @@ import { ratingCopy } from '../lib/rating/copy';
 import { scoreCopy } from '../lib/score/copy';
 import { NEEDS_WORK_COLOR, type ForeverScore } from '../lib/score/score';
 import CharacterRatingPanel from './CharacterRatingPanel.svelte';
+import { ctaCopy } from '../lib/addon/cta-copy';
 
 const PATH = { region: 'us' as const, ruleset: 'hardcore' as const, slug: 'elyra-duskvale' };
 
@@ -312,7 +313,7 @@ describe('CharacterRatingPanel Forever Score card', () => {
       props: { path: PATH, forever: UNSCORED, name: 'Elyra Duskvale' },
     });
     expect(body).not.toContain('forever-score-empty-next');
-    expect(body).not.toContain('Get the addon');
+    expect(body).not.toContain(ctaCopy.getAddonAndCompanion);
     expect(body).not.toContain('Upload logs');
     expect(body.match(/data-testid="forever-score-empty-action"/g)).toHaveLength(1);
   });

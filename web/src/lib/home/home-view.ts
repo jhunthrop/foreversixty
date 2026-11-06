@@ -3,6 +3,7 @@
 // line, the one next-step line, the talents, sim, logs, guild and set-up rows. Pure: the island
 // (components/home/HomeSignedIn.svelte) reads them, the unit tests pin them.
 import type { Me, MeCharacter, MyReport } from '../account/api';
+import { ctaCopy } from '../addon/cta-copy';
 import { bisHref } from '../character-profile';
 import { guildHref, guildRaidHref } from '../characters';
 import type { NextRaidView } from '../guild/api';
@@ -36,7 +37,7 @@ export const homeCopy = {
       sub: 'Imports your characters with their level, gear and item level.',
     },
     {
-      title: 'Install the addon and the companion',
+      title: ctaCopy.installAddonAndCompanion,
       sub: 'The addon rates every item in your bags; the companion uploads your logs as you play.',
     },
   ],
@@ -78,7 +79,7 @@ export const homeCopy = {
   noGearFix: 'Get set up',
   addonOptional: 'Addon and companion (optional)',
   addonOptionalSub: 'Rates every item in your bags with your weights, and uploads your logs as you play.',
-  addonOptionalLink: 'Get the addon and companion',
+  addonOptionalLink: ctaCopy.getAddonAndCompanion,
   noCharacter: 'No character yet. Battle.net lists a character after you play it and log out.',
   signedInAs: (tag: string) => `Signed in as ${tag}`,
   getIn: 'Get your character in',
@@ -86,7 +87,7 @@ export const homeCopy = {
   checkAgainSub: 'Battle.net lists a character after you play it and log out.',
   paste: 'Paste an addon export',
   pasteSub: 'Your gear and talents, straight from the game.',
-  getAddon: 'Get the addon and companion',
+  getAddon: ctaCopy.getAddonAndCompanion,
   getAddonSub: 'The addon rates every item in your bags; the companion uploads your logs as you play.',
   openRaid: 'Open the raid',
   openPlanner: 'Open the planner',

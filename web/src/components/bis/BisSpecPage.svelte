@@ -41,6 +41,7 @@
   import { readStoredSources, storeSources } from '../../lib/bis/source-store';
   import type { BisPresetId, Faction, SourceFilterKind } from '../../lib/bis/types';
   import type { ControlGroup, ControlOption } from '../../lib/ui/primitives';
+  import { SPECS } from '../../lib/sim/specs';
   import { REGION } from '../../lib/ui/regions';
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
 
@@ -233,9 +234,15 @@
     };
   });
 
-  /** The tallest answer variant (a healer's figure with its metrics row), measured at 1024 to 2000 px:
-   *  every spec of a class keeps its title and control bar at the same y. */
-  const HEAD_ROW_MIN_HEIGHT = '165px';
+  /** The tallest answer variant measured at 1024 to 2000 px: a healer's figure with its metrics row
+   *  (183 px; its trust line wraps on the real run notes). Every spec of a class keeps its title and
+   *  control bar at the same y, so a class with a healer spec takes the healer floor; a class
+   *  without one keeps the mocks' 165 px. */
+  const HEAD_ROW_MIN_HEIGHT_DEFAULT = '165px';
+  const HEALER_HEAD_ROW_MIN_HEIGHT = '183px';
+  const HEAD_ROW_MIN_HEIGHT = SPECS.some((s) => s.class_slug === classSlug && s.role === 'healer')
+    ? HEALER_HEAD_ROW_MIN_HEIGHT
+    : HEAD_ROW_MIN_HEIGHT_DEFAULT;
 </script>
 
 <div

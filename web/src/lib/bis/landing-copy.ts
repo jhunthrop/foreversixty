@@ -3,6 +3,7 @@
 // verbatim). A module of its own, not part of `bisCopy`: the landing's browser script loads it,
 // and it must not pull in the spec page's much larger copy object.
 import { bandLabel } from './landing-bands';
+import { ctaCopy } from '../addon/cta-copy';
 
 export const landingCopy = {
   title: 'Best in slot',
@@ -20,7 +21,7 @@ export const landingCopy = {
   countLabelStale: 'Pieces you wore at the last sync',
   countFailed: 'Your gear count did not load.',
   noSync: 'Add the addon to see how many of these slots you already wear.',
-  noSyncLink: 'Get the addon',
+  noSyncLink: ctaCopy.getAddonAndCompanion,
   noSyncHref: '/setup',
   under20: 'Best in slot starts at 20.',
   /** `of 17 slots`: the muted unit after the figure, so the figure can be set larger. */

@@ -6,6 +6,7 @@ marked `proposed`. Content is sample text for layout; the build renders from dat
 """
 import base64
 import json
+import os
 import re
 from html import escape
 from pathlib import Path
@@ -13,7 +14,9 @@ from pathlib import Path
 from mocklib import ROOT, CLASS_COLOR, crest
 from wide_lib import icon, crest_img, QCOL  # same real-icon helpers
 
-OUT = Path(__file__).resolve().parent / 'web'
+# Where write() puts a mock: the committed design/mocks/web, or FS_MOCK_OUT (the parity specs render their mocks at test
+# time into test-results, design/parity.md).
+OUT = Path(os.environ.get('FS_MOCK_OUT') or Path(__file__).resolve().parent / 'web')
 
 # The parity gate's region names (design/parity.md; web/src/lib/ui/regions.ts is the same list). The mock
 # emits them as data-region, the built primitives emit the same, and web/tests/e2e/support/parity.ts pairs them.
@@ -200,12 +203,17 @@ def _fill_chrome(name: str, html: str) -> str:
     attrs = ''.join(f' {k}="{escape(v, quote=True)}"' for k, v in chrome['html'].items())
     body_attrs = ''.join(f' {k}="{escape(v, quote=True)}"' for k, v in chrome.get('body', {}).items())
     css = (CHROME / 'chrome.css').read_text()
+    # The captures point images at the site's files from design/mocks/web; a mock rendered elsewhere
+    # (FS_MOCK_OUT, the parity specs' test-time mocks) gets the path from its own folder.
+    public = os.path.relpath(Path(__file__).resolve().parents[2] / 'web' / 'public', OUT)
+    header, footer = (chrome[k].replace('../../../web/public', public) for k in ('header', 'footer'))
+    chrome = {**chrome, 'header': header, 'footer': footer}
     return (html.replace(found.group(0), '').replace('%HTML_ATTRS%', attrs).replace('%BODY_ATTRS%', body_attrs).replace('%CHROME_CSS%', css)
             .replace('%HEADER%', chrome['header']).replace('%FOOTER%', chrome['footer']))
 
 
 def write(name: str, html: str) -> Path:
-    OUT.mkdir(exist_ok=True)
+    OUT.mkdir(parents=True, exist_ok=True)
     p = OUT / name
     p.write_text(_fill_chrome(name, html))
     return p
