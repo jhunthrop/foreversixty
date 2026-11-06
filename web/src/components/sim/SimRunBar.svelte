@@ -73,6 +73,7 @@
         ...FIGHT_STYLES.map((style) => ({
           value: style.id,
           label: simCopy.styleLabel[style.id] ?? style.id,
+          description: simCopy.fightStyleOptions[style.id],
         })),
       ],
     },
