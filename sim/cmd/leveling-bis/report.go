@@ -185,6 +185,22 @@ type slotRow struct {
 	// so the runners-up are the same two a reader of this page sees
 	// first. Omitted when the slot has no alternative at all.
 	RunnersUp []runnerUpRow `json:"runners_up,omitempty"`
+	// The source-filter fields (source_filter.go, owner MUST 2026-11-05).
+	// Kinds is the pick's filter kinds (source_kinds.go) when it has more
+	// than one; one kind is source_kind's own and is not repeated.
+	Kinds []string `json:"kinds,omitempty"`
+	// TwoHand marks a two-handed main hand pick.
+	TwoHand bool `json:"two_hand,omitempty"`
+	// Standing is the reputation standing the pick's source needs.
+	Standing string `json:"standing,omitempty"`
+	// NotWith (second slot of a pair) is the first slot's possible
+	// filtered items this pick cannot be worn beside.
+	NotWith []int `json:"not_with,omitempty"`
+	// ByKind is the slot's best candidate per filter kind (byKindRow).
+	ByKind map[string]byKindRow `json:"by_kind,omitempty"`
+	// Ranking (trinket rows) is the measured tournament that decided the
+	// pick (trinket_ranking.go).
+	Ranking []rankingRow `json:"ranking,omitempty"`
 	// EmptyReason explains a slot with no ItemID at all beyond "nothing
 	// eligible/sourced existed" (band.go's own NoSourceCount already
 	// covers that case): "no_dps_value" means at least one candidate WAS
@@ -1256,6 +1272,16 @@ type bandReport struct {
 	Weights      []weightRow `json:"weights"`
 	Slots        []slotRow   `json:"slots"`
 	SetDPS       float64     `json:"set_dps"`
+	// SetDPSError is SetDPS's standard error: both come from one
+	// finalSetIterations run of the final set (final_set.go).
+	SetDPSError float64 `json:"set_dps_error,omitempty"`
+	// TargetLevel is the level of the target this band's sims fight
+	// (run_conditions.go); the file's run block holds the rest.
+	TargetLevel int `json:"target_level,omitempty"`
+	// FilteredSetDPS is the set's DPS with the page's default source
+	// filters applied, keyed by filter set (filtered_sets.go), measured
+	// as SetDPS is; "all" is SetDPS itself.
+	FilteredSetDPS map[string]filteredSetDPS `json:"filtered_set_dps,omitempty"`
 	// SetDPSPartial is true when at least one published slot's own pick
 	// carries an item id this build's embedded item database does not
 	// have (a Slots row with SimStatus == "not_in_sim", above) - this
@@ -1676,6 +1702,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			}
 			row.Alternatives = buildAlternatives(pk, slot, bySlot[slot], picks, referenceDPSPerPoint, swForSlot, setDPS)
 			row.RunnersUp = runnersUp(row.Alternatives)
+			row.Ranking = trinketRanking(pk)
 			// This lane's brief, item 3: reconcile row.Ties against
 			// row.Alternatives' own, possibly sim-measured delta for the
 			// same item id - reconcileTies' own doc, above.
@@ -2043,6 +2070,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 	}
 
 	return bandReport{
+		TargetLevel:          bandTargetLevel(band),
 		Spec:                 spec.Spec,
 		Band:                 band,
 		Faction:              faction,
@@ -2151,6 +2179,9 @@ type specReport struct {
 	// HealProfile is the incoming-damage profile every healer entry in the
 	// file was measured under, reasons included. Set only for a healer.
 	HealProfile *request.HealProfile `json:"heal_profile,omitempty"`
+	// Run is the encounter and harness behind every number in the file
+	// (run_conditions.go). Absent from a file published before it existed.
+	Run *runConditions `json:"run,omitempty"`
 }
 
 // specReportOption adds an optional block to a spec report.
@@ -2165,6 +2196,10 @@ func withHealProfile(profile *request.HealProfile) specReportOption {
 // GeneratedAt is RFC3339, in UTC so two runs on different machines (a
 // dev's laptop, the nightly workflow's runner) produce comparable
 // timestamps rather than each in its own local zone.
+func withRunConditions(run runConditions) specReportOption {
+	return func(r *specReport) { r.Run = &run }
+}
+
 func writeSpecReport(path, spec, build string, reports []bandReport, presets map[string]request.ResolvedPreset, options ...specReportOption) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
