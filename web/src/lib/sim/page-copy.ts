@@ -1,0 +1,156 @@
+// web/src/lib/sim/page-copy.ts
+// The simulator page's frame copy (spec 2026-11-06-sim §5.1, §6): the landing, the head's answer
+// in every state, the run line and More settings. Verbatim from the spec; figures arrive as
+// arguments, never typed here (prose never quotes a nightly number).
+
+export const simPageCopy = {
+  title: 'Simulator',
+  landingMeta:
+    "Your character's DPS, simmed in your browser. Damage specs only; nothing is uploaded until you save.",
+  sections: {
+    simYourCharacter: 'Sim your character',
+    otherWaysIn: 'Other ways in',
+    bisSet: 'Sim a best-in-slot set',
+    bisSetMeta: 'The published BiS gear, not yours',
+    yourSims: 'Your sims',
+    yourSimsAll: 'All',
+  },
+  paste: {
+    label: 'Addon export or build code',
+    placeholder: 'FS1:…',
+    run: 'Run',
+    hint: 'In game, type /fs copy, press Ctrl+C, then paste it here.',
+    setUp: 'Get set up ›',
+    setUpHref: '/setup#paste',
+    invalid: 'That does not look like an addon export or a build code.',
+  },
+  ways: {
+    characters: 'Your characters',
+    charactersSub:
+      'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.',
+    signIn: 'Sign in with Battle.net',
+    build: 'From a build',
+    buildSub: 'A planner link, saved or not, or a saved build id.',
+    buildPlaceholder: 'foreversixty.gg/b/…',
+    fight: 'From a logged fight',
+    fightSub: 'A report link, or open a fight from a report and choose Sim this fight.',
+    fightPlaceholder: 'foreversixty.gg/reports/…?fight=2',
+    load: 'Load',
+  },
+  noCharacters:
+    'No characters yet: they are on their way from Battle.net. Paste an export below meanwhile, or check',
+  noCharactersLink: 'your account.',
+  noCharactersHref: '/account#characters',
+  head: {
+    meta: (race: string, spec: string, level: number, split: string, itemLevel: string): string =>
+      `${race} ${spec} · Level ${level} · ${split} talents · item level ${itemLevel}`,
+    metaNoGear: (race: string, spec: string, level: number, split: string): string =>
+      `${race} ${spec} · Level ${level} · ${split} talents`,
+    source: (from: string, date: string | null): string =>
+      date === null ? `Gear from ${from}` : `Gear from ${from}, ${date}`,
+    sourceKind: {
+      addon: 'the addon',
+      armory: 'Battle.net',
+      blizzard: 'Battle.net',
+      manual: 'a pasted export',
+      build: 'a build',
+      fight: 'a logged fight',
+    } as Readonly<Record<string, string>>,
+    savedMeta: (
+      race: string,
+      level: number,
+      split: string,
+      fight: string,
+      buffs: string,
+      consumables: number,
+    ): string =>
+      `${race} · Level ${level} · ${split} talents · ${fight} fight, ${buffs}, ${consumables} consumables`,
+    saved: (date: string): string => `Saved ${date}`,
+  },
+  answer: {
+    noSim: 'No sim yet',
+    noSimCaption: 'Press Run sim. It runs here, in your browser.',
+    notSimulated: 'Not simulated yet',
+    notSimulatedCaption: (spec: string): string => `${spec} is not simulated yet; there is nothing to run.`,
+    specSupport: 'Spec support ›',
+    specSupportHref: '/sim/specs',
+    loadingEngine: 'Loading the engine',
+    loadingEngineCaption: 'The engine is about 4 MB. It loads once and is cached after that.',
+    onServers: 'On our servers',
+    starting: 'Starting',
+    serverRunning: (done: string, total: string): string => `Running · ${done} of ${total} runs`,
+    runningBrowser: 'Running in your browser',
+    runningCaption: (band: string, done: string, total: string): string =>
+      `± ${band} (95%) · ${done} of ${total} runs`,
+    resultLabel: (spec: string, lane: 'browser' | 'server'): string =>
+      `${spec} · ${lane === 'server' ? 'run on our servers' : 'run in your browser'}`,
+    resultCaption: (band: string, pct: string): string => `± ${band} (95%) · ${pct}% error`,
+    savedLabel: (runs: string): string => `Saved sim · ${runs} runs`,
+    stoppedLabel: (done: string, total: string): string => `Stopped at ${done} of ${total} runs`,
+    stoppedFigure: (estimate: string): string => `about ${estimate}`,
+    stoppedCaption: (done: string, estimate: string, band: string): string =>
+      `Stopped at ${done} runs: about ${estimate} ± ${band}. A stopped run is not saved.`,
+    serverFailed: 'On our servers · failed',
+    serverFailedReason: 'Our server could not finish this run.',
+    serverFailedFix:
+      'Press Run again. If it fails twice, run it in your browser: choose a precision under High.',
+    browserFailed: 'In your browser · failed',
+    browserRefused: (reason: string): string => `The engine could not run this character: ${reason}.`,
+    browserRefusedFix: 'Paste a fresh addon export, or swap that item in Top gear, then press Run again.',
+    saveThis: 'Save this sim',
+    signInToSave: 'Sign in to save',
+    saved: 'Saved',
+    copyLink: 'Copy link',
+    copied: 'Copied',
+    copyFailed: 'Copy failed',
+    topGear: 'Find upgrades in Top Gear ›',
+    openInSim: 'Open in the sim',
+  },
+  bar: {
+    label: 'Sim choices',
+    fight: 'Fight',
+    length: 'Length',
+    targets: 'Targets',
+    buffs: 'Buffs',
+    precision: 'Precision',
+    buffOptions: { 'raid-buffed': 'Raid', bare: 'None', custom: 'Custom' } as Readonly<
+      Record<string, string>
+    >,
+    precisionOptions: {
+      fast: 'Fast, 500 runs',
+      normal: 'Normal, 3,000 runs',
+      high: 'High, 10,000 runs',
+      'target-error': 'Until ±0.5%',
+    } as Readonly<Record<string, string>>,
+    moreSettings: 'More settings',
+    runSim: 'Run sim',
+    runAgain: 'Run again',
+    tryAgain: 'Try again',
+    stop: 'Stop',
+    loadingEngine: 'Loading engine…',
+    runningOnServers: 'Running on our servers…',
+    runOnServers: 'Run on our servers',
+    busyTitle: 'Stop the run to change it',
+  },
+  more: {
+    title: 'More settings',
+    close: 'Close',
+    execute: 'Execute phase',
+    executeSub: (pct: number): string => `Last ${pct}% of the fight`,
+    on: 'On',
+    off: 'Off',
+    target: 'Target',
+    targetLevel: (level: number): string => `Level ${level} boss`,
+    armorSub: (armor: string): string => `${armor} armor`,
+    rotation: 'Rotation',
+    rotationValue: (spec: string): string => `The ${spec} rotation`,
+    request: 'Request',
+    requestLine: 'The whole request this run sends, as JSON.',
+    showIt: 'Show it ›',
+    hideIt: 'Hide it',
+    notify: 'Tell me when a server run finishes',
+    serverLine: (ceiling: string): string => `This request on our servers, up to ${ceiling} runs.`,
+    backToPreset: 'Back to the preset',
+    done: 'Done',
+  },
+} as const;

@@ -13,6 +13,7 @@ import {
   fromLoggedFight,
   fromManualCode,
   fromPlannerBuild,
+  fightRefOf,
   fromStoredCharacter,
   parseFightRef,
   relativeTime,
@@ -736,5 +737,17 @@ describe('current-character pointer writes', () => {
     });
     await fromStoredCharacter(path, ctx, storage);
     expect(readCurrent(storage)).toMatchObject({ source: 'armory', ref: 'us/normal/thrallgar' });
+  });
+});
+
+describe('fightRefOf', () => {
+  it('reads a report link and its ?fight=', () => {
+    expect(fightRefOf('foreversixty.gg/reports/abcdefghijkl?fight=2')).toBe('abcdefghijkl:2');
+  });
+  it('takes the first fight from a link without one', () => {
+    expect(fightRefOf('foreversixty.gg/reports/abcdefghijkl/')).toBe('abcdefghijkl:1');
+  });
+  it('keeps a pasted ref as it is', () => {
+    expect(fightRefOf(' abcdefghijkl:3 ')).toBe('abcdefghijkl:3');
   });
 });

@@ -1,127 +1,126 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { choose } from './support/select';
+import { openMoreSettings, pasteAndRun } from './support/sim-page';
 
-// Same fixture as sim-settings.spec.ts and sim-sources.spec.ts: an addon export needs no
-// API stub, so this reads the site's own active build id rather than hardcoding one.
-const activeBuild = JSON.parse(
-  readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
-) as { build: string };
-
-const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
-
-// sim-one-paste lane: `loadFury` now goes through ColdPasteHero.svelte, the view's one
-// paste surface -- SourceSwitcher's own addon card is gone whenever the hero renders
-// (`showAddonCard`). The hero pastes and runs in one click (SimView.svelte's
-// `runPastedInput`), so this helper's own postcondition changed from "character loaded,
-// never run" to "character loaded, one run already finished" -- waited out here so every
-// caller below starts from a settled `sim-run-button` rather than racing the hero's own
-// background run.
+// The landing's paste Plate loads and runs in one click (SimView.svelte's `runPastedInput`),
+// so this helper's postcondition is "character loaded, one run already finished": every caller
+// below starts from a settled `sim-run-button` rather than racing that first run.
 async function loadFury(page: Page): Promise<void> {
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
+  await pasteAndRun(page);
 }
 
-test('a run moves running -> done, and a cancel keeps the last figure', async ({ page }) => {
-  // The hero's own run (inside loadFury) already proved idle -> running -> done once --
+const answer = (page: Page) => page.getByTestId('sim-answer');
+
+test('a run moves running -> done, and a stop keeps the partial figure', async ({ page }) => {
+  // The paste's own run (inside loadFury) already proved idle -> running -> done once --
   // sim-cold-paste.spec.ts covers that first run start to finish. This test picks up from
-  // its "Run again" state and proves the mechanism survives a second run and a cancel.
+  // its "Run again" state and proves the mechanism survives a second run and a stop.
   await loadFury(page);
 
   const button = page.getByTestId('sim-run-button');
   await button.click();
   await expect(button).toHaveText('Stop');
-  await expect(page.getByTestId('sim-dps')).not.toHaveText('—');
-  await expect(page.getByTestId('sim-progress')).toHaveText(/\d+ of 3,000 iterations/);
+  await expect(answer(page)).toHaveAttribute('data-state', 'running');
+  await expect(page.getByTestId('sim-error')).toHaveText(/[\d,]+ of 3,000 runs/);
 
   await expect(button).toHaveText('Run again', { timeout: 5000 });
-  await expect(page.getByTestId('sim-progress')).toHaveText(/^3,000 iterations/);
-  await expect(page.getByTestId('sim-error')).toHaveText(/^± \d/);
+  await expect(answer(page)).toHaveAttribute('data-state', 'result');
+  await expect(page.getByTestId('sim-error')).toHaveText(/^± \d.*\(95%\) · [\d.]+% error$/);
+  await expect(page.getByTestId('sim-dps')).toHaveText(/^\s*[\d,]+\.\d\s*DPS\s*$/);
 
-  const finishedFigure = await page.getByTestId('sim-dps').textContent();
-
-  // Run again, and stop it before it has a chance to move the figure: the fake engine's
-  // first tick lands ~120ms out (engine-fake.ts's own default), which is long past the two
-  // clicks below.
+  // Run again at High (10,000 runs) and stop it once a partial figure is up: the number stays,
+  // greyed, labelled with how far it got (spec 2026-11-06-sim §5.1), and is not saved.
+  await choose(page.getByTestId('control-precision'), 'high');
   await button.click();
+  await expect(page.getByTestId('sim-dps')).toHaveText(/\d/);
   await button.click();
-  await expect(page.getByTestId('sim-message')).toHaveText('Stopped.');
-  await expect(page.getByTestId('sim-dps')).toHaveText(finishedFigure ?? '');
+  await expect(answer(page)).toHaveAttribute('data-state', 'stopped');
+  await expect(page.getByTestId('sim-answer-label')).toHaveText(/^Stopped at [\d,]+ of 10,000 runs$/);
+  await expect(page.getByTestId('sim-dps')).toHaveText(/^\s*about [\d,]+\s*DPS\s*$/);
+  await expect(page.getByTestId('sim-error')).toContainText('A stopped run is not saved.');
+  await expect(button).toHaveText('Run again');
+  await expect(page.getByTestId('sim-save-open')).toHaveCount(0);
 });
 
-// The controller addendum (Task 12): the settings bar's own disabled prop is wired to
-// store.phase === 'running', which Task 12 could not exercise without a run button.
-test('every settings control is disabled while the run control reads Stop, and re-enabled after', async ({
+// The run line's groups (and More settings) are inert while a run is in flight (spec §4.4, the
+// shipped rule); the primary stays live as Stop.
+test('every run-line control is inert while the primary reads Stop, and live again after', async ({
   page,
 }) => {
   await loadFury(page);
 
+  const groups = page.locator('#sim-bar-groups');
   const button = page.getByTestId('sim-run-button');
+  await expect(groups).not.toHaveAttribute('inert', /.*/);
   await button.click();
   await expect(button).toHaveText('Stop');
 
-  await expect(page.getByTestId('sim-duration')).toBeDisabled();
-  await expect(page.getByTestId('sim-targets')).toBeDisabled();
-  await expect(page.getByTestId('sim-execute')).toBeDisabled();
-  await expect(page.getByTestId('sim-preset')).toBeDisabled();
+  await expect(groups).toHaveAttribute('inert', /.*/);
+  await expect(groups).toHaveAttribute('data-busy', '');
+  await expect(groups).toHaveAttribute('title', 'Stop the run to change it');
+  for (const id of [
+    'control-style',
+    'control-length',
+    'control-targets',
+    'control-buffs',
+    'control-precision',
+  ]) {
+    await expect(groups.getByTestId(id).first()).toBeAttached();
+  }
+  await expect(groups.getByTestId('sim-settings-more')).toBeAttached();
 
   await button.click();
-  // "Run again", not "Run sim": loadFury's own hero run already finished once, so
-  // `runAndSettle` (store-request.ts) restores this cancelled run's phase to 'done'
-  // rather than 'idle' -- the same "the last completed result wins" rule the sibling
-  // test above proves for the figure itself.
+  // "Run again", not "Run sim": loadFury's own run already finished once.
   await expect(button).toHaveText('Run again');
-
-  await expect(page.getByTestId('sim-duration')).toBeEnabled();
-  await expect(page.getByTestId('sim-targets')).toBeEnabled();
-  await expect(page.getByTestId('sim-execute')).toBeEnabled();
-  await expect(page.getByTestId('sim-preset')).toBeEnabled();
+  await expect(groups).not.toHaveAttribute('inert', /.*/);
+  await expect(groups).not.toHaveAttribute('data-busy', /.*/);
 });
 
-test('high precision runs 10,000 iterations instead of 3,000', async ({ page }) => {
+test('high precision runs 10,000 runs instead of 3,000', async ({ page }) => {
   await loadFury(page);
 
-  await choose(page.getByTestId('sim-precision'), 'high');
+  await choose(page.getByTestId('control-precision'), 'high');
   await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-progress')).toHaveText(/^10,000 iterations/, { timeout: 8000 });
+  await expect(page.getByTestId('sim-error')).toHaveText(/of 10,000 runs/, { timeout: 8000 });
 });
 
 test('the server lane is not offered to a signed-out visitor', async ({ page }) => {
   await loadFury(page);
 
-  await expect(page.getByTestId('sim-run')).toBeVisible();
+  await expect(page.getByTestId('sim-settings')).toBeVisible();
+  await openMoreSettings(page);
   await expect(page.getByTestId('sim-server-run')).toHaveCount(0);
 });
 
 test('the precision select offers four choices and the report states the run', async ({ page }) => {
   await loadFury(page);
 
-  const precision = page.getByTestId('sim-precision');
+  const precision = page.getByTestId('control-precision');
   await expect(precision).toHaveValue('normal');
   await expect(precision.locator('option')).toHaveCount(4);
-  await expect(page.getByTestId('sim-target-error')).toBeHidden();
-
-  await choose(precision, 'target-error');
-  await expect(page.getByTestId('sim-target-error')).toContainText('30,000');
+  // Precision reads in runs, the one count the page uses (spec §4.1).
+  await expect(precision.locator('option')).toHaveText([
+    'Fast, 500 runs',
+    'Normal, 3,000 runs',
+    'High, 10,000 runs',
+    'Until ±0.5%',
+  ]);
 
   // Fast keeps the browser suite quick; the report is the same report at every precision.
   await choose(precision, 'fast');
   await page.getByTestId('sim-run-button').click();
   const report = page.getByTestId('sim-live-report');
   await expect(report).toBeVisible({ timeout: 30_000 });
-  await expect(report.getByTestId('sim-fact-runs')).toContainText('500');
-  await expect(report.getByTestId('sim-report-error')).toContainText('%');
-  await expect(report.getByTestId('sim-result-eyebrow')).toHaveText('RUN IN YOUR BROWSER');
-  await expect(page.getByTestId('sim-engine-version')).toHaveAttribute('href', '/sim/specs');
-  await expect(page.getByTestId('sim-progress')).toContainText('%');
+  // This run loads as it nears the viewport (LazySection).
+  await report.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await expect(report.getByTestId('sim-settings-runs')).toContainText('500');
+  await expect(page.getByTestId('sim-error')).toContainText('% error');
+  await expect(page.getByTestId('sim-answer-label')).toHaveText('Fury Warrior · run in your browser');
+  await expect(report.getByTestId('sim-spread-card')).toContainText('500 runs');
 });
 
-test('a finished run can be named, and the saved link opens in a new tab', async ({ page }) => {
+test('a finished run can be named in the save form', async ({ page }) => {
   // Persona review 2026-10-06 (retail-raider), §5/§8 item 1: SimSavePanel's Save button
   // now requires sign-in -- a cold-paste run reaching a result stays covered, signed out,
   // by sim-cold-paste.spec.ts; this test opens the save form, so it needs a signed-in
@@ -148,21 +147,19 @@ test('a finished run can be named, and the saved link opens in a new tab', async
       }),
     }),
   );
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-  // Waits out the hero's own run (normal precision) before picking fast and re-running,
-  // the same reason `loadFury` above waits: the precision select is disabled while a run
-  // is in flight.
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-  await choose(page.getByTestId('sim-precision'), 'fast');
+  // Waits out the paste's own run (normal precision) before picking fast and re-running, the
+  // same reason `loadFury` above waits: the run line is inert while a run is in flight.
+  await loadFury(page);
+  await choose(page.getByTestId('control-precision'), 'fast');
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 30_000 });
 
-  const title = page.getByTestId('sim-report-title');
+  // The title lives in the save form now (spec §4.5: ReportOptions retired), pre-filled with
+  // the run's composed name and editable before Save.
+  await page.getByTestId('sim-save-open').click();
+  const title = page.getByTestId('sim-save-title');
   await expect(title).toHaveValue('Bare, 3:00, single target');
   await title.fill('Pre-raid, no world buffs');
-  await page.getByTestId('sim-save-open').click();
-  await expect(page.getByTestId('sim-save-title')).toHaveValue('Pre-raid, no world buffs');
+  await expect(title).toHaveValue('Pre-raid, no world buffs');
+  await expect(page.getByTestId('sim-save-confirm')).toBeEnabled();
 });

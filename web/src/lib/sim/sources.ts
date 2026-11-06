@@ -74,6 +74,17 @@ export function parseFightRef(ref: string): { reportId: string; fightIndex: numb
   return { reportId: match[1], fightIndex: Number.parseInt(match[2], 10), guid: match[3] };
 }
 
+/** What somebody typed into "From a logged fight" as a fight ref: a report link carries the fight
+ *  in ?fight= (the first fight without one); a pasted ref already has it after a colon. */
+export function fightRefOf(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.includes(':')) return trimmed;
+  const [path, query = ''] = trimmed.split('?');
+  const id = path.replace(/\/+$/, '').split('/').at(-1) ?? '';
+  const fight = new URLSearchParams(query).get('fight') ?? '1';
+  return `${id}:${fight}`;
+}
+
 /**
  * Which roster row a fight ref resolves to. A named guid wins outright when the roster has
  * them, whatever their role -- a healer or tank named by the link loads as that combatant;

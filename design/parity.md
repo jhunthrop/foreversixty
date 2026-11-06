@@ -38,6 +38,10 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 The data on both sides is the same: `node design/mocks/bis_facts.mjs http://localhost:4321` reads names, numbers, sources and group membership from a running build into `design/mocks/data/bis-facts.json`, and `python3 design/mocks/ws_bis.py` renders the mocks from it. The facts carry no structure, so a block the build grows never reaches the mock. After a data refresh that moves the numbers, rerun both and commit the mocks with the change.
 
+## The home states
+
+`design/mocks/web/home-parity.json`: `out` (signed out), `34` (a level 34 leveler, no guild), `60` (a level 60 raider with a raid planned), `new` (signed in, no character), `loading` (the session hinted, `/v1/me` in flight), `error` (the upgrades failed). Mocks `web-home-<state>.html` from `design/mocks/ws_home.py` (spec `design/specs/2026-11-06-home.md`). The signed-in data is committed in `web/tests/e2e/fixtures/home/` (`python3 design/mocks/home_fixtures.py` writes it); `tests/e2e/support/home-page.ts` routes the same files, so the parity job needs no `data/builds`.
+
 ## When it fails
 
 Read the side-by-side. If the build grew something, remove it or take a mock change to review (`ux-designer`, `wow-player`): regenerate the mock, then the gate. Never widen the tolerance to pass. A known difference another lane is fixing is listed in the spec's `EXPECTED_DRIFT` with a date and the lane; the regions below it are still compared, and the test fails once the drift is gone so the entry is deleted.

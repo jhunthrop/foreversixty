@@ -21,7 +21,8 @@ export interface CardTables {
 }
 
 export function createCardTables(
-  result: () => SimResult,
+  /** Only the request is read: a section shown before its run passes `{ request }`. */
+  result: () => Pick<SimResult, 'request'>,
   names: () => ActionNames | null,
   keys: () => readonly string[],
 ): CardTables {

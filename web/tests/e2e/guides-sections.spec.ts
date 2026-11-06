@@ -8,12 +8,33 @@
 // The content comes from data/builds and the BiS ranker, not the planner fixture, so it is the
 // same under either FOREVER_DATA; only the check that icon files actually load needs the real
 // icon tree and so runs under FOREVER_DATA=real.
+import { readFileSync } from 'node:fs';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { guidesCopy } from '../../src/lib/guides/copy';
+import { raceNameFor } from '../../src/lib/guides/race-table';
+import { ACTIVE_BUILD } from './support/active-build';
+import { bisBand } from './support/bis-file';
 
 const DESKTOP = { width: 1280, height: 900 };
 const PHONE = { width: 390, height: 844 };
 const PAGE = '/guides/mage/frost';
+const BIS_SPEC = 'mage-frost';
+/** The race the ranker played the Horde 30 band as: every nightly re-rank may move it. */
+const HORDE_30_RACE = raceNameFor(ACTIVE_BUILD, bisBand(BIS_SPEC, 'horde', 30, 'bare').race ?? '');
+
+/** The main-hand enchant the ranker put on the level 60 raid pick, from the build's enchants.json:
+ *  the guide's table must name the same one (a re-rank onto a two-hander moves it). */
+function mainHandEnchant(): { name: string; spellPower: number } {
+  const slot = bisBand(BIS_SPEC, 'alliance', 60, 'raid').slots?.find((row) => row.slot === 'main_hand');
+  const records = JSON.parse(
+    readFileSync(new URL(`../../../data/builds/${ACTIVE_BUILD}/enchants.json`, import.meta.url), 'utf8'),
+  ) as { id: number; name: string; stats: Record<string, number> }[];
+  const record = records.find((row) => row.id === slot?.enchant_id);
+  if (record?.stats.spell_power === undefined)
+    throw new Error('the Frost 60 main hand carries no spell power enchant');
+  return { name: record.name, spellPower: record.stats.spell_power };
+}
 
 const SECTION_IDS = [
   'overview',
@@ -163,7 +184,9 @@ for (const [label, viewport] of [
       await page.getByTestId('guide-bis-faction-horde').click();
       const horde30 = page.getByTestId('guide-bis-panel-horde-30');
       await expect(horde30).toBeVisible();
-      await expect(page.getByTestId('guide-bis-caption-horde-30')).toContainText('Troll (Horde)');
+      await expect(page.getByTestId('guide-bis-caption-horde-30')).toHaveText(
+        guidesCopy.bisCaption(HORDE_30_RACE, 'Horde'),
+      );
       await expect(horde30.getByRole('link', { name: 'Full list and alternatives' })).toHaveAttribute(
         'href',
         '/bis/mage/frost?faction=horde#band-horde-30',
@@ -212,7 +235,10 @@ for (const [label, viewport] of [
     }) => {
       await page.goto(PAGE);
       await expect(page.getByTestId('guide-enchants').locator('h3')).toHaveText('Enchants');
-      await expect(page.getByTestId('guide-enchant-main_hand')).toContainText('+30 spell power');
+      const enchant = mainHandEnchant();
+      const mainHand = page.getByTestId('guide-enchant-main_hand');
+      await expect(mainHand).toContainText(enchant.name);
+      await expect(mainHand).toContainText(`+${enchant.spellPower} spell power`);
       await expect(page.getByTestId('guide-consumables').locator('h3')).toHaveText('Consumables');
       await expect(page.getByTestId('guide-consumables')).toContainText('Flask of Supreme Power');
       await expect(page.getByTestId('guide-consumables')).toContainText('Elixir of Frost Power');

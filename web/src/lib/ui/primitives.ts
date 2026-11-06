@@ -67,6 +67,8 @@ export interface ControlOption {
   count?: number;
   /** An icon URL (a spec icon at 22 px). */
   icon?: string;
+  /** A select option's second line in the open list (the sim's fight styles), muted. */
+  description?: string;
   /** A level with no data yet: shown, not selectable, with a reason in its title. */
   disabled?: boolean;
   disabledReason?: string;

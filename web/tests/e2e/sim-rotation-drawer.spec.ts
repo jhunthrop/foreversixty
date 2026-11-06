@@ -19,6 +19,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
 import { curatedRotationNotes } from './support/rotation-notes';
+import { gotoSim, simCharacter } from './support/sim-page';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -67,10 +68,10 @@ async function loadFrostMage(page: Page): Promise<void> {
   await page.route('**/data/*/talents/mage.json', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MAGE_TALENTS) }),
   );
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(FROST_FS1);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
+  // A code link loads the character without running it: the rail's Rotation section before a
+  // run, the moment the newcomer's repro was about.
+  await gotoSim(page, `/sim?code=${encodeURIComponent(FROST_FS1)}`);
+  await expect(simCharacter(page)).toBeVisible();
 }
 
 // The tank review's own repro: an Arms Warrior. No talent stub needed -- the fixture data
@@ -85,89 +86,53 @@ async function loadFrostMage(page: Page): Promise<void> {
 const ARMS_FS1 = `FS1:${activeBuild.build}:warrior:orc:3/0/0:head=12640,main_hand=11726`;
 
 async function loadArmsWarrior(page: Page): Promise<void> {
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(ARMS_FS1);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await gotoSim(page, `/sim?code=${encodeURIComponent(ARMS_FS1)}`);
+  await expect(simCharacter(page)).toBeVisible();
 }
 
-// The newcomer's own repro, verbatim at the time: /sim -> load a Frost Mage -> click "what
-// it does", before a run ever finishes. sim-one-paste lane: ColdPasteHero.svelte's Run now
-// pastes and runs in the same click, so `loadFrostMage` no longer lands on that literal
-// pre-run moment -- but `sim-rotation-link` (SettingsBar.svelte) is gated on `simulatedSpec`
-// alone, never on `store.result`, so the trigger it proves (works whether or not a run has
-// finished, never navigates, never loses the character) is unchanged either way.
-test('"what it does" opens the rotation in a drawer, without losing the character (newcomer repro)', async ({
+// The newcomer's own repro, verbatim at the time: /sim -> load a Frost Mage -> "what it does"
+// used to navigate away. The rotation is the rail's open Rotation section now (spec
+// 2026-11-06-sim §4.3), each line with its note in place: there is no drawer to open, no
+// navigation, and nothing to lose. The fidelity detail is the answer's caption (§4.6).
+test('the rotation reads in place in the rail, without losing the character (newcomer repro)', async ({
   page,
 }) => {
   await loadFrostMage(page);
 
   const url = page.url();
-  const settings = page.getByTestId('sim-settings');
-  await settings.getByTestId('sim-rotation-link').click();
-
-  const panel = settings.getByTestId('sim-rotation-drawer-panel');
-  await expect(panel).toBeVisible();
-  const steps = panel.getByTestId('sim-rotation-drawer-steps');
+  const section = page.getByTestId('sim-rotation-saved-card');
+  await section.scrollIntoViewIfNeeded();
+  await expect(section).toBeVisible();
+  await expect(section).toContainText('Frost, at ');
   const notes = curatedRotationNotes('mage-frost');
   expect(notes.length).toBeGreaterThan(0);
-  for (const note of notes) await expect(steps).toContainText(note);
+  for (const note of notes) await expect(section).toContainText(note);
 
-  // The point of the fix: no navigation happened at all, so nothing was there to lose.
+  // Nothing navigated, so nothing was there to lose.
   expect(page.url()).toBe(url);
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-
-  // The fidelity detail is still one click away, in a new tab rather than carrying this one
-  // away.
-  const fidelityLink = panel.getByTestId('sim-rotation-drawer-fidelity-link');
-  await expect(fidelityLink).toHaveAttribute('href', '/sim/specs#mage-frost');
-  await expect(fidelityLink).toHaveAttribute('target', '_blank');
+  await expect(simCharacter(page)).toBeVisible();
+  await expect(section.getByRole('link', { name: /Frost guide/ })).toHaveAttribute(
+    'href',
+    '/guides/mage/frost',
+  );
 });
 
 // The tank's own repro (tank review, MAJOR), verbatim at the time: /sim -> load an Arms
-// Warrior -> Load -> click "what it does" -> used to land on /sim/specs#warrior-arms with
-// the character gone, and Back did not restore it. Same note as the newcomer repro above:
-// the hero's own run no longer leaves this pre-run -- the point proved, no navigation
-// needed, stands regardless.
-test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, with no navigation needed', async ({
+// Warrior -> "what it does" used to land on /sim/specs#warrior-arms with the character gone.
+test('the tank’s repro: an Arms Warrior’s rotation reads in place, with no navigation needed', async ({
   page,
 }) => {
   await loadArmsWarrior(page);
 
   const url = page.url();
-  const settings = page.getByTestId('sim-settings');
-  await settings.getByTestId('sim-rotation-link').click();
-
-  const panel = settings.getByTestId('sim-rotation-drawer-panel');
-  await expect(panel).toBeVisible();
-  await expect(panel.getByTestId('sim-rotation-drawer-steps')).toContainText(
-    'Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute.',
+  const section = page.getByTestId('sim-rotation-saved-card');
+  await section.scrollIntoViewIfNeeded();
+  await expect(section).toContainText(
+    'Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute',
   );
 
   expect(page.url()).toBe(url);
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-
-  const fidelityLink = panel.getByTestId('sim-rotation-drawer-fidelity-link');
-  await expect(fidelityLink).toHaveAttribute('href', '/sim/specs#warrior-arms');
-  await expect(fidelityLink).toHaveAttribute('target', '_blank');
-});
-
-// Escape closes the drawer and returns focus to the trigger -- Disclosure.svelte's own
-// contract (Ruling 3), proven here rather than assumed for this caller. After a run, /sim
-// shows the report's always-open Rotation card (RunReport.svelte), so the settings bar's
-// trigger is the drawer's one path on this page, with a finished run on screen.
-test('Escape closes the rotation drawer and returns focus to the trigger', async ({ page }) => {
-  await loadFrostMage(page);
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-
-  const settings = page.getByTestId('sim-settings');
-  const trigger = settings.getByTestId('sim-rotation-link');
-  await trigger.click();
-  await expect(settings.getByTestId('sim-rotation-drawer-panel')).toBeVisible();
-
-  await page.keyboard.press('Escape');
-  await expect(settings.getByTestId('sim-rotation-drawer-panel')).toHaveCount(0);
-  await expect(trigger).toBeFocused();
+  await expect(simCharacter(page)).toBeVisible();
 });
 
 // task-6-brief.md: "/sim/specs' own per-spec card gains the same rotation prose, so the

@@ -1,6 +1,8 @@
 // web/tests/e2e/handoffs-setup.spec.ts
 import { apiUnreachable, expect, test } from './support/test';
+import { gotoSim, simCharacter } from './support/sim-page';
 import { ACTIVE_BUILD } from './support/active-build';
+import { addonCopy } from '../../src/lib/addon/copy';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
@@ -94,7 +96,7 @@ test.describe('What it does in the game (L8.3)', () => {
     await page.goto('/setup');
     await page.getByText('Everything the addon does').click();
     const commands = page.getByTestId('setup-commands').locator('li');
-    await expect(commands).toHaveCount(13);
+    await expect(commands).toHaveCount(addonCopy.commands.length);
     await expect(commands.first()).toHaveText('/fs: paste or copy a build');
     await expect(commands.last()).toHaveText('/fs help: every command');
     await expect(page.getByTestId('setup-handshake')).toContainText('Site has your save from');
@@ -119,7 +121,8 @@ test('an export pasted on /setup becomes the current character on the simulator 
 
   // A bare simulator URL (no ?code=) restores it and says so; so does a tool tab.
   await page.goto('/sim');
-  await expect(page.getByTestId('sim-character')).toBeVisible({ timeout: 15_000 });
+  await expect(simCharacter(page)).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('page-title')).toHaveText('Simfury');
   await page.goto('/sim/gear');
   await expect(page.getByTestId('selector-name')).toHaveText('Simfury', { timeout: 15_000 });
 
@@ -129,8 +132,9 @@ test('an export pasted on /setup becomes the current character on the simulator 
     .getByTestId('current-character-chip')
     .getByRole('button', { name: /forget/i })
     .click();
-  await page.goto('/sim');
-  await expect(page.getByTestId('sim-character')).toHaveCount(0);
+  await gotoSim(page);
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
+  await expect(simCharacter(page)).toHaveCount(0);
 });
 
 // The planner/sim links (data-testid="addon-paste-planner") sit ABOVE the reserved

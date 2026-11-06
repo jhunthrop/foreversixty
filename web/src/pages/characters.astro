@@ -1,0 +1,21 @@
+---
+// web/src/pages/characters.astro
+// The character lookup's own page (home spec 2026-11-06 H12): home no longer carries the full box,
+// so "Look up another character" (lib/score/copy.ts) and the missing-character page land here,
+// with the name, region and ruleset filled from the query (lib/character-search-dom.ts). The
+// header's compact search stays on every page. Restyled with the rest of the pages in turn.
+import Base from '../layouts/Base.astro';
+import CharacterSearch from '../components/CharacterSearch.astro';
+import Page from '../components/ui/Page.svelte';
+import PageHeader from '../components/ui/PageHeader.svelte';
+import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
+---
+
+<Base title={copy.heading} description={copy.aside} path="/characters" wide>
+  <main id="main" tabindex="-1" data-testid="characters">
+    <Page layout="ledger">
+      <PageHeader slot="header" title={copy.heading} />
+      <CharacterSearch />
+    </Page>
+  </main>
+</Base>

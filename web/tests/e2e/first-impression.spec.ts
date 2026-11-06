@@ -6,7 +6,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { CHARACTER_PATH, CHARACTER_URL } from './support/character-fixture';
+import { CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from './support/character-fixture';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const SHOTS = process.env.W8_SHOTS ?? 'test-results/w8';
@@ -55,29 +55,6 @@ async function signedOutWithFeeds(page: Page): Promise<void> {
 for (const size of SIZES) {
   test.describe(`signed out at ${size.name}`, () => {
     test.use({ viewport: { width: size.width, height: size.height } });
-
-    test('the landing page shows the next date first, no stale stamp, no "Loading"', async ({ page }) => {
-      mkdirSync(SHOTS, { recursive: true });
-      await signedOutWithFeeds(page);
-      await page.goto('/');
-      const line = page.getByTestId('home-dates-line');
-      // The launch card already counts down to the next date, so the line steps aside.
-      await expect(page.getByTestId('home-hero-countdown')).toBeVisible();
-      await expect(line).toBeHidden();
-      await expect(line).not.toContainText('Updated');
-      // What it holds: the running or next date first, and in gold.
-      await expect(line.locator('[data-next]')).toHaveCount(1);
-      await expect(line.locator('.dates-item').first()).toHaveAttribute('data-next', '');
-      await expect(page.getByRole('heading', { name: 'Get started' })).toBeVisible();
-      await expect(page.getByText('Five doors')).toHaveCount(0);
-      await expect(page.getByTestId('home-get-set-up-signed-out')).toContainText(
-        'Sign in, install the addon, and run the companion — one page.',
-      );
-      await page.getByTestId('home-around-the-site').scrollIntoViewIfNeeded();
-      await expect(page.getByTestId('home-around-the-site')).toBeVisible();
-      expect(await page.locator('main').innerText()).not.toContain('Loading');
-      await page.screenshot({ path: join(SHOTS, `w8-landing-${size.name}.png`), fullPage: true });
-    });
 
     test('/setup is three steps, the manual folded away, the companion after it', async ({ page }) => {
       mkdirSync(SHOTS, { recursive: true });
@@ -128,6 +105,7 @@ test('an unknown character says so, with the lookup and the addon line', async (
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
   await page.route(CHARACTER_URL, (route) => route.fulfill(fulfil(null, 404)));
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(fulfil(null, 404)));
+  await routeCharacterSearch(page);
   // Only the fixture character's address is prerendered in the preview build; the sentence's own
   // name, ruleset and region are pinned in CharacterNotFound.test.ts ("Nobody Here" on "PvP US").
   await page.goto(CHARACTER_PATH);

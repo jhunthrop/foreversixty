@@ -17,6 +17,7 @@ import {
   CHARACTER_PATH,
   CHARACTER_URL,
   SCORE_HISTORY,
+  routeCharacterSearch,
   routeOwner,
 } from './support/character-fixture';
 
@@ -43,6 +44,7 @@ const SCORE = {
 async function stub(page: Page, data: unknown | 'missing'): Promise<void> {
   await page.route(CHARACTER_URL, (route) => route.fulfill(data === 'missing' ? NOT_FOUND : ok(data)));
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  if (data === 'missing') await routeCharacterSearch(page);
 }
 
 test('the header says who the character is, the guild links to its page, and the chip ends the level line', async ({

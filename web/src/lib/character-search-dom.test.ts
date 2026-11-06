@@ -24,7 +24,7 @@ const field = (f: HTMLFormElement, selector: string): HTMLInputElement | HTMLSel
 describe('prefillFromQuery', () => {
   it('fills the name, region and ruleset a "Look up another character" link carries, and focuses the box', () => {
     const href = scoreCopy.lookupHref('Elyra Duskvale', 'eu', 'hardcore');
-    expect(href).toBe('/?character=Elyra%20Duskvale&region=eu&ruleset=hardcore#lookup');
+    expect(href).toBe('/characters?character=Elyra%20Duskvale&region=eu&ruleset=hardcore#lookup');
     const f = form();
     prefillFromQuery(f, new URL(href, 'https://example.test').search);
     expect(field(f, 'input').value).toBe('Elyra Duskvale');

@@ -228,7 +228,8 @@ def Checklist(items: list[tuple]) -> str:
     rows = []
     for st, title, sub, fix in items:
         mark = {'ok': '&#10003;', 'warn': '!', 'miss': '&times;', 'gap': '?'}[st]
-        rows.append(Row(title, sub, lead=f'<span class="ck {st}">{mark}</span>', trail=(f'<span class="link">{fix}</span>' if fix else ''), link=bool(fix)))
+        word = {'ok': 'Done', 'warn': 'To do', 'miss': 'Missing', 'gap': 'Not tracked'}[st]
+        rows.append(Row(title, sub, lead=f'<span class="ck {st}" role="img" aria-label="{word}">{mark}</span>', trail=(f'<span class="link">{fix}</span>' if fix else ''), link=bool(fix)))
     return Rows(rows, open_=True)
 
 
@@ -345,7 +346,7 @@ def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, link
 # Additive only. Figure gains size 'xl' (the sim's 56 px answer). StatTable is a numeric table on the Plate (lead icon, name and
 # sub line, an optional Meter column, right-aligned figure columns), the shape the shipped report/AbilityTable.svelte adopts and
 # the logs report reuses; in open mode (no Plate) it is the resource and aura lists. Facts is a key/value list. IconList is a
-# wrapping list of icon + name with no chip border (the old 30 px buff chips drew a box each). Doll is the shared Paperdoll in
+# wrapping list of icon + name with no chip border (the old 30 px buff chips drew a box each). The shared Paperdoll (below) is the worn doll in
 # `worn` mode (no gain column: the sim shows inputs only), plated or open. Histogram, Lanes and Trees mirror the shipped chart
 # components (DpsDistribution, SimTimeline, SimTalentsCard over GuideTreeColumns): SVG and icons, no surfaces.
 PRIM_CSS += '''
@@ -376,14 +377,6 @@ PRIM_CSS += '''
 .kv dt{color:var(--muted);padding-right:16px}.kv dd{color:var(--strong);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.kv dd small{display:block;font-weight:400;color:var(--muted);font-size:13px}
 .il{display:flex;flex-wrap:wrap;gap:8px 18px;padding-top:10px}.il span{display:inline-flex;align-items:center;gap:8px;font-size:14px;line-height:20px;color:var(--text);min-height:28px}.il span.dim{color:var(--muted)}.il span.dim img,.il span.dim .ic{opacity:.62}
 .il-l{margin-top:16px}
-.sdoll{display:grid;grid-template-columns:minmax(0,1fr)}
-@media(min-width:1024px){.sdoll{grid-template-columns:repeat(2,minmax(0,1fr))}.sdoll .dcol+.dcol{border-left:1px solid var(--line-soft)}}
-.sdoll .dc{display:grid;grid-template-columns:76px 40px minmax(0,1fr);column-gap:12px;align-items:center;min-height:58px;padding:8px 16px;border-bottom:1px solid var(--line-soft)}
-.sdoll .dcol .dc:last-child{border-bottom:0}.sdoll .dc:hover{background:var(--hover)}
-.sdoll .dc .sl{font:600 13px/18px var(--font-body);color:var(--muted)}.sdoll .dc .it{font:700 15px/20px var(--font-body);min-width:0}.sdoll .dc .ln2{font-size:13px;line-height:18px;color:var(--muted)}.sdoll .dc .ln2.ench{color:#1eff00}
-.sdoll .dc .emp{width:40px;height:40px;border:1px dashed var(--line);border-radius:5px}
-.sdoll.open .dc{padding-inline:0}.sdoll.open .dcol+.dcol .dc{padding-left:16px}
-@media(max-width:1023px){.sdoll .dcol+.dcol .dc:first-child{border-top:1px solid var(--line-soft)}.sdoll.open .dcol+.dcol .dc{padding-left:0}}
 .hist svg{display:block;width:100%;height:168px}.hist .ax{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding-top:6px;font-variant-numeric:tabular-nums}
 .lanes{overflow-x:auto}.lanes svg{display:block}.lanes .lg{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);padding:10px 0}.lanes .lg i{display:inline-block;width:14px;height:8px;margin-right:6px;border-radius:2px;vertical-align:middle}
 .trees{display:grid;gap:var(--gap);grid-template-columns:repeat(3,minmax(0,1fr))}.trees .tr h3{display:flex;gap:8px;align-items:baseline;font:700 15px/20px var(--font-body);color:var(--strong);padding-bottom:8px}.trees .tr h3 b{color:var(--gold)}
@@ -393,20 +386,33 @@ PRIM_CSS += '''
 '''
 
 
-def StatTable(heads: list[tuple[str, bool]], rows: list[str], n_figs: int, bar: bool = True, open_: bool = False, sort: str = '') -> str:
-    """A numeric table. heads: (label, right_aligned) for icon, name, [bar], figures; `sort` names the sorted head."""
-    h = ''.join(f'<span class="t-label{" r" if r else ""}{" on" if t == sort and t else ""}">{t}</span>' for t, r in heads)
+def StatTable(heads: list[tuple[str, bool]], rows: list[str], n_figs: int, bar: bool = True, open_: bool = False, sort: str = '',
+              sortable: tuple[str, ...] = ()) -> str:
+    """A numeric table. heads: (label, right_aligned) for icon, name, [bar], figures; `sort` names the sorted head and
+    `sortable` the heads that are sort buttons. An ARIA table (as the built ui/StatTable): the heads are columnheaders, a
+    sortable one holds a button and carries aria-sort; the icon and bar cells are decorative (aria-hidden). A table whose
+    heads are all empty (the open Rage and aura lists) draws no head row."""
+    def head(i, t, r):
+        if i == 0 or not t:
+            return f'<span class="t-label" aria-hidden="true">{t}</span>'
+        srt = f' aria-sort="{"descending" if t == sort else "none"}"' if t in sortable else ''
+        inner = f'<button type="button" class="st-sort">{t}</button>' if t in sortable else t
+        return f'<span class="t-label{" r" if r else ""}{" on" if t == sort and t else ""}" role="columnheader"{srt}>{inner}</span>'
+    h = ''.join(head(i, t, r) for i, (t, r) in enumerate(heads))
+    head_row = f'<div class="st-h stc" role="row">{h}</div>' if any(t for t, _ in heads) else ''
     cls = 'st' + ('' if bar else ' nobar') + (' open' if open_ else '')
-    return f'<div class="{cls}" style="--n:{n_figs}" data-n="{n_figs}"><div class="st-h stc" aria-hidden="true">{h}</div>{"".join(rows)}</div>'
+    return f'<div class="{cls}" style="--n:{n_figs}" data-n="{n_figs}" role="table">{head_row}{"".join(rows)}</div>'
 
 
-def StatRow(icon_html: str, name: str, sub: str, figures: list[str], meter: str = '', primary_phone: str = '', state: str = '', total: bool = False) -> str:
+def StatRow(icon_html: str, name: str, sub: str, figures: list[str], meter: str = '', primary_phone: str = '', state: str = '', total: bool = False,
+            bar: bool = True) -> str:
     """One table row. figures: html of each figure cell; the first is the sorted, primary figure (stays on phone with
-    `primary_phone` under it). `sub` may carry `<span class="m">` parts shown only on phone."""
-    figs = ''.join(f'<span class="f{" p" if i == 0 else ""}{" d" if f in ("&ndash;", "") else ""}">{f}{f"<span class=m>{primary_phone}</span>" if i == 0 and primary_phone else ""}</span>' for i, f in enumerate(figures))
-    br = f'<span class="br">{meter}</span>' if meter else ''
-    return (f'<div class="st-r stc{" hov" if state == "hover" else ""}{" tot" if total else ""}">{icon_html or "<span></span>"}'
-            f'<div class="nm">{name}' + (f'<div class="sub">{sub}</div>' if sub else '') + f'</div>{br}{figs}</div>')
+    `primary_phone` under it). `sub` may carry `<span class="m">` parts shown only on phone. `bar`: the table has a bar
+    column (the Total row keeps its empty cell so its figures stay under their heads)."""
+    figs = ''.join(f'<span class="f{" p" if i == 0 else ""}{" d" if f in ("&ndash;", "") else ""}" role="cell">{f}{f"<span class=m>{primary_phone}</span>" if i == 0 and primary_phone else ""}</span>' for i, f in enumerate(figures))
+    br = f'<span class="br" aria-hidden="true">{meter}</span>' if (meter or bar) else ''
+    return (f'<div class="st-r stc{" hov" if state == "hover" else ""}{" tot" if total else ""}" role="row"><span aria-hidden="true">{icon_html}</span>'
+            f'<div class="nm" role="cell">{name}' + (f'<div class="sub">{sub}</div>' if sub else '') + f'</div>{br}{figs}</div>')
 
 
 def Facts(items: list[tuple[str, str]]) -> str:
@@ -417,17 +423,6 @@ def IconList(items: list[tuple[str, str, bool]], label: str = '') -> str:
     """items: (icon_html, name, dim). A wrapping list; `dim` items are the ones with no effect on this spec."""
     lab = f'<h3 class="t-label il-l">{label}</h3>' if label else ''
     return lab + '<div class="il">' + ''.join(f'<span class="{"dim" if d else ""}">{ic}{n}</span>' for ic, n, d in items) + '</div>'
-
-
-def Doll(left: list[tuple], right: list[tuple], open_: bool = False) -> str:
-    """The shared Paperdoll, `worn` mode: (slot label, icon_html, name, colour, line 2, enchant?). Empty: icon_html ''."""
-    def cell(c):
-        lab, ic, name, col, ln2, ench = c
-        icon_cell = ic or '<span class="emp"></span>'
-        return (f'<div class="dc"><span class="sl">{lab}</span>{icon_cell}<div><div class="it" style="color:{col}">{name}</div>'
-                f'<div class="ln2{" ench" if ench else ""}">{ln2}</div></div></div>')
-    return (f'<div class="sdoll{" open" if open_ else ""}"><div class="dcol">{"".join(cell(c) for c in left)}</div>'
-            f'<div class="dcol">{"".join(cell(c) for c in right)}</div></div>')
 
 
 def Histogram(counts: list[int], start: float, bin_dps: float, mean: float, lo: float, hi: float, label: str, axis: tuple[str, str, str]) -> str:
@@ -446,29 +441,41 @@ def Histogram(counts: list[int], start: float, bin_dps: float, mean: float, lo: 
     return f'<div class="hist"><svg viewBox="0 0 100 168" preserveAspectRatio="none" role="img" aria-label="{label}">{bars}</svg><div class="ax">{ax}</div></div>'
 
 
-def Lanes(svg: str, legend: list[tuple[str, str]]) -> str:
-    lg = ''.join(f'<span><i style="--k:{c}" class="k"></i>{t}</span>' for c, t in legend)
-    return f'<div class="lanes"><div class="lg">{lg}</div>{svg}</div>'
+def LanesLegend(legend: list[tuple]) -> str:
+    """The lanes' legend, a list (the shipped SimTimeline's `ul`): (colour, label) or (colour, label, width, height) for a
+    swatch drawn at the mark's own size."""
+    def item(c, t, *size):
+        dim = f';width:{size[0]}px;height:{size[1]}px' if size else ''
+        return f'<li><i style="--k:{c}{dim}" class="k"></i>{t}</li>'
+    return '<ul class="lg">' + ''.join(item(*x) for x in legend) + '</ul>'
+
+
+def Lanes(svg: str, legend: list[tuple[str, str]] | None = None) -> str:
+    """The caller's plot carries the shipped plot's role. No legend: the caller places LanesLegend itself (the sim's tool line)."""
+    return f'<div class="lanes">{LanesLegend(legend) if legend else ""}{svg}</div>'
 
 
 PRIM_CSS += '.lanes .lg i.k{background:var(--k)}\n'
 
 
 def Trees(trees: list[tuple[str, int, list[tuple]]]) -> str:
-    """Read-only talent trees: (name, points, cells (tier, column, icon_html, rank, max)). The planner's tooltips on hover."""
+    """Read-only talent trees: (name, points, cells (tier, column, icon_html, rank, max)). The planner's tooltips on hover.
+    The built TreeGrid's semantics: a grid per tree, a row per tier, a gridcell per column, a group per talent."""
     out = ''
     for name, pts, cells in trees:
         grid = ''
         for tier in range(7):
+            row = ''
             for col in range(4):
                 c = next((x for x in cells if x[0] == tier and x[1] == col), None)
                 if c is None:
-                    grid += '<span></span>'
+                    row += '<span role="gridcell"></span>'
                     continue
                 _, _, ic, rk, mx = c
                 st = 'full' if rk == mx else ('part' if rk else 'off')
-                grid += f'<span class="tc {st}">{ic}' + (f'<b>{rk}/{mx}</b>' if rk else '') + '</span>'
-        out += f'<div class="tr"><h3>{name} <b class="num">{pts}</b></h3><div class="tg">{grid}</div></div>'
+                row += f'<span role="gridcell"><span class="tc {st}" role="group">{ic}' + (f'<b>{rk}/{mx}</b>' if rk else '') + '</span></span>'
+            grid += f'<div role="row">{row}</div>'
+        out += f'<div class="tr"><h3>{name} <b class="num">{pts}</b></h3><div class="tg" role="grid" aria-label="{name} talents">{grid}</div></div>'
     return f'<div class="trees">{out}</div>'
 PRIM_CSS += '''
 .tl{display:grid;grid-template-columns:200px minmax(0,1fr);min-width:0}
@@ -546,6 +553,10 @@ def PaperdollCell(c: dict) -> str:
                 f'<span class="l1"><span class="nm muted" style="font-weight:400">{escape(c["name"])}</span></span><span class="l2">{escape(c["line2"])}</span></span><span></span></div>')
     ic = icon(c['icon'], 40, _RARITY_ICON.get(c['quality'], '')) if c['icon'] else '<span class="ic0"></span>'
     stats = f'<span class="st">{escape(c["stats"])}</span>' if c['stats'] else ''
+    if c['gain'] is None and c['basis'] is None:   # `worn` mode (the sim): no gain column, as the built cell's empty auto track
+        return (f'<div class="cell" role="option" aria-selected="false">{lead}{ic}<span class="bd"><span class="l1">'
+                f'<span class="nm" style="color:{RARITY.get(c["quality"], RARITY["common"])}">{escape(c["name"])}</span>{stats}</span>'
+                f'<span class="l2">{escape(c["line2"])}</span></span><span class="gn0"></span></div>')
     g = c['gain'] or {'value': '', 'unit': ''}
     unit = f'<small>{escape(g["unit"])}</small>' if g['unit'] else ''
     b = c['basis']
@@ -564,3 +575,41 @@ def Paperdoll(label: str, view: str, columns: tuple[list[dict], list[dict]] = ([
         inner = ''.join(f'<div class="doll-col">{"".join(PaperdollCell(c) for c in side)}</div>' for side in columns)
     return (f'<div class="doll" data-view="{view}" data-region="{REGION["slots"]}">'
             f'<div class="doll-cols" role="listbox" aria-label="{escape(label)}">{inner}</div></div>')
+
+
+# ------------------------------------------------ primitives added by the home round (2026-11-06; design/specs/2026-11-06-home.md section 2)
+# ItemRow is the shipped ui/ItemRow (slot label | icon | name and source | the gain Figure), without a hairline (the shipped
+# row's box makes every row its own last child). RowGrid is the shipped ui/RowGrid: open Rows in columns (one below 768,
+# two to 1023, `cols` from 1024), the class picker first. Additive only: no earlier mock changes.
+PRIM_CSS += '''
+.irow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:12px;align-items:center;min-height:58px;padding:8px 16px}
+.irow.slot{grid-template-columns:60px auto minmax(0,1fr) auto}
+.irow .lbl{font:600 13px/18px var(--font-body);color:var(--muted)}
+.irow .bd{min-width:0}.irow .nm{display:block;font:700 15px/20px var(--font-body)}.irow .src{display:block;font-size:13px;line-height:18px;color:var(--muted)}
+.irow .tr{display:flex;gap:12px;align-items:center;justify-self:end}
+.irow .g{display:inline-flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
+.irow .g .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.irow .g .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.irow .g .c{font-size:12px;line-height:16px;color:var(--muted)}
+.irow-box{container-type:inline-size;min-width:0}
+@container (max-width:399px){.irow.slot{grid-template-columns:auto minmax(0,1fr) auto}.irow.slot .lbl{grid-column:2/-1;grid-row:1;font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase}.irow.slot>:nth-child(2){grid-row:1/span 2;grid-column:1}}
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr);column-gap:var(--gap)}
+@media(min-width:768px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1024px){.rgrid{grid-template-columns:repeat(var(--cols),minmax(0,1fr))}}
+.rgrid>.row{border-bottom:1px solid var(--line-soft)}
+'''
+
+
+def ItemRow(name: str, quality: int, icon_html: str, source: str, slot: str = '', gain: tuple[str, str, str] | None = None) -> str:
+    """One item: slot label, icon, the name in its quality colour (a tooltip trigger), its source, the gain (value, unit, caption)."""
+    lbl = f'<span class="lbl">{slot}</span>' if slot else ''
+    g = ''
+    if gain:
+        v, u, c = gain
+        g = f'<span class="g"><span class="v">{v}{f"<small>{u}</small>" if u else ""}</span>' + (f'<span class="c">{c}</span>' if c else '') + '</span>'
+    return (f'<div class="irow-box"><div class="irow{" slot" if slot else ""}">{lbl}<span>{icon_html}</span><span class="bd">'
+            f'<span class="nm" style="color:{QCOL.get(quality, QCOL[1])}" role="button" tabindex="0">{name}</span>'
+            f'<span class="src">{source}</span></span><span class="tr">{g}</span></div></div>')
+
+
+def RowGrid(rows: list[str], cols: int = 3) -> str:
+    return f'<div class="rgrid" style="--cols:{cols}">' + ''.join(rows) + '</div>'

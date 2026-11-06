@@ -134,6 +134,7 @@
       {/if}
       {#if gain}<Figure
           value={gain.value}
+          unit={gain.unit}
           caption={gain.caption}
           tone={gain.tone ?? 'strong'}
           size="sm"

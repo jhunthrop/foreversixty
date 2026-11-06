@@ -11,6 +11,7 @@ import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
+import { answerRaceQuestion } from './support/sim-race';
 
 const meta = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'fixtures', 'report', 'meta.json'), 'utf8'),
@@ -36,6 +37,7 @@ async function stubReportMeta(page: Page): Promise<void> {
 async function openCompare(page: Page): Promise<void> {
   await stubReportMeta(page);
   await page.goto(`/sim?source=fight&ref=${encodeURIComponent(REF)}&mode=compare`);
+  await answerRaceQuestion(page);
   // The fake engine (engine-fake.ts) ticks a few times before it resolves, so the headline
   // lands a moment after navigation rather than on first paint.
   await expect(page.getByTestId('compare-headline')).toBeVisible({ timeout: 10_000 });

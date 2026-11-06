@@ -49,8 +49,6 @@ import { HEADER_GEARED, HEADER_GEAR_HINT_KEY } from '../lib/character-header/gea
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
   LIVE_TTL_MS as SERVER_RUNS_LIVE_TTL_MS,
-  MAX_RESERVE_PX as SERVER_RUNS_MAX_RESERVE_PX,
-  RESERVE_STORAGE_KEY as SERVER_RUNS_RESERVE_KEY,
 } from '../lib/sim/server-runs-poll';
 
 interface Props {
@@ -102,10 +100,8 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <script
       is:inline
       data-me-storage-key={meStorageKey}
-      data-server-runs-reserve-key={SERVER_RUNS_RESERVE_KEY}
       data-server-runs-live-key={SERVER_RUNS_LIVE_KEY}
       data-server-runs-live-ttl={SERVER_RUNS_LIVE_TTL_MS}
-      data-server-runs-max-reserve={SERVER_RUNS_MAX_RESERVE_PX}
       data-history-reserve-key={HISTORY_RESERVE_KEY}
       data-history-max-reserve={HISTORY_MAX_RESERVE_PX}
       data-account-reserve-key={ACCOUNT_RESERVE_KEY}
@@ -180,10 +176,9 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       } catch {
         /* storage unavailable: the selector never claims a restore */
       }
-      // "Your server runs" on /sim (experience spec 2026-10-24 section 3.7): data-server-sims
-      // when the cached /v1/me says the account has server sims (the entitlement, else the
-      // legacy premium flag, as account/api.ts's effectiveServerSims reads them), and the
-      // last rendered list height as --server-runs-reserve, so the page reserves the list's box.
+      // data-server-sims when the cached /v1/me says the account has server sims (the
+      // entitlement, else the legacy premium flag, as account/api.ts's effectiveServerSims reads
+      // them): the header hides its Premium door for it.
       try {
         const el = document.currentScript;
         const root = document.documentElement;
@@ -200,11 +195,8 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
         const sinceLive = Date.now() - liveSince;
         const live = liveSince > 0 && sinceLive >= 0 && sinceLive < Number(el.dataset.serverRunsLiveTtl);
         if (root.dataset.session === '1' && payer && (finished || live)) root.dataset.finished = '1';
-        const reserve = Math.round(Number(localStorage.getItem(el.dataset.serverRunsReserveKey)));
-        if (reserve > 0 && reserve <= Number(el.dataset.serverRunsMaxReserve))
-          root.style.setProperty('--server-runs-reserve', reserve + 'px');
       } catch {
-        /* storage unavailable or malformed: the list reserves one row */
+        /* storage unavailable or malformed: no hints */
       }
       // The owner's History section on a character page (spec 2026-10-24-character-history
       // 3.11): data-history when the cached /v1/me says the plan has it and lists this page's

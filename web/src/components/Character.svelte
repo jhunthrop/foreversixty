@@ -274,8 +274,10 @@
     <p class="text-[15px]">
       Look one up by name, region and ruleset. Your own characters are in the character menu at the top.
     </p>
-    <a class={`${BUTTON_PRIMARY} ${BUTTON_MD}`} href="/#lookup" data-testid="character-missing-lookup"
-      >Look up a character</a
+    <a
+      class={`${BUTTON_PRIMARY} ${BUTTON_MD}`}
+      href="/characters#lookup"
+      data-testid="character-missing-lookup">Look up a character</a
     >
   </div>
 {:else if status === 'loading'}

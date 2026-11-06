@@ -489,34 +489,6 @@ html[data-session='1'] [data-session-hide] {
   visibility: hidden;
 }
 
-/* "Your server runs" on /sim reserves its box before data (experience spec 2026-10-24
-   section 3.7): the card head (48px) and its rule (1px), then the rows at the height they last
-   rendered. Base.astro sets --server-runs-reserve from fs.serverRuns.reserve (px) and
-   data-server-sims from the cached /v1/me; a first visit falls back to one row, 64px on
-   desktop and 100px on phone (a done row is 99.5px at 390). The static shell's copy of the
-   box is hidden unless both the session and the entitlement are hinted, so a free member or
-   a signed-out visitor reserves nothing. */
-.server-runs-reserve {
-  min-height: calc(49px + var(--server-runs-reserve, 100px));
-}
-.server-runs-rows-reserve {
-  min-height: var(--server-runs-reserve, 100px);
-}
-@media (min-width: 768px) {
-  .server-runs-reserve {
-    min-height: calc(49px + var(--server-runs-reserve, 64px));
-  }
-  .server-runs-rows-reserve {
-    min-height: var(--server-runs-reserve, 64px);
-  }
-}
-.server-runs-shell-reserve {
-  display: none;
-}
-html[data-session='1'][data-server-sims='1'] .server-runs-shell-reserve {
-  display: block;
-}
-
 /* The owner's History section on the character page holds its box before data (experience
    spec 2026-10-24-character-history 3.11). Base.astro sets data-history only for an owner on a
    plan with history, and --history-reserve from fs.history.reserve (px); a first visit falls
@@ -678,7 +650,7 @@ html[data-session='1'] .account-header-reserve {
   min-height: 110px;
 }
 .account-left-skeleton {
-  min-height: max(var(--account-left-reserve, 0px), 550px);
+  min-height: max(var(--account-left-reserve, 0px), 500px);
 }
 .account-devices-skeleton {
   min-height: 290px;
@@ -748,7 +720,7 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: 60px;
   }
   .account-left-skeleton {
-    min-height: max(var(--account-left-reserve, 0px), 410px);
+    min-height: max(var(--account-left-reserve, 0px), 355px);
   }
   .account-devices-skeleton {
     min-height: 270px;
@@ -835,68 +807,22 @@ html[data-finished='1'] .ch-band.ch-loading {
 /* From 1024px the skeleton's min-height and rows come from CharacterHeader.svelte's single
    footer-reserve rule (shared with the ready state's .ch-has-foot). */
 
-/* The homepage hero with a session hinted (home signed-in panel spec 2026-10-10): the
-   signed-out hero's text block and its example-panel cell collapse from first paint and the
-   island's cell takes the whole row, so the signed-in hero re-flows into one band without
-   waiting on /v1/me. If the hint was wrong, HomeAccountPanel sets `data-home-signed-out` on
-   <html> (HOME_SIGNED_OUT_ATTR) and the two-cell signed-out hero comes back. */
-html[data-session='1']:not([data-home-signed-out]) .home-example-cell,
-html[data-session='1']:not([data-home-signed-out]) .home-signed-out-block {
+/* Home (design/specs/2026-11-06-home.md §4): with a session hinted the server-rendered signed-out
+   page is gone before paint and the HomeSignedIn island holds the place; when /v1/me says nobody
+   is signed in after all, the island sets data-home-out (lib/home/home-layout.ts) and the
+   signed-out page comes back. Without the hint the island draws nothing. */
+html[data-session='1']:not([data-home-out]) .home-out,
+html:not([data-session='1']) .home-in,
+html[data-home-out] .home-in {
   display: none;
-}
-@media (min-width: 1024px) {
-  html[data-session='1']:not([data-home-signed-out]) .home-account-cell {
-    grid-column: 1 / -1;
-  }
 }
 
-/* Signed in with no account character (HOME_NO_HERO_ATTR, lib/home-panel-copy.ts): the hero
-   keeps the signed-out shape but swaps its sentence and sign-in row for the no-character ones,
-   and shows from first paint when the cached /v1/me already said so (index.astro), so the
-   data-session-hide visibility hold does not apply. */
-html:not([data-home-no-hero]) .home-no-hero-only,
-html[data-home-no-hero] .home-out-only {
+/* Blocks that exist only signed in or only signed out, on the same pre-paint session hint, as a
+   display:none swap: the hint lands before layout settles, so neither direction shifts. */
+html[data-session='1'] [data-signed-out-only] {
   display: none;
 }
-html[data-home-no-hero] .home-signed-out-block,
-html[data-home-no-hero] [data-testid='home-launch-panel-wrap'],
-html[data-home-no-hero] #home-get-set-up-signed-out {
-  visibility: visible;
-}
-
-/* Home "Get set up" row, signed in (owner 2026-10-29, fix round 1): the signed-out three-step card
-   is gone from first paint (display:none off the same hint as the hero, not the visibility hide
-   that kept its ~100 px as an empty band above "Latest" until the island ran), and the one line
-   that replaces it sits tight under the panels above and Latest below (the column's 32/48 px gaps
-   less the margins here leave 16 px above and 4 px below the 44 px line). */
-html[data-session='1']:not([data-home-signed-out]) #home-get-set-up-signed-out {
-  display: none;
-}
-html[data-session='1']:not([data-home-no-hero]) .home-get-set-up-root {
-  min-height: 2.75rem;
-}
-html[data-session='1']:not([data-home-signed-out]) [data-testid='home-companion-row'] {
-  margin-block: -1rem -1.75rem;
-}
-@media (min-width: 768px) {
-  html[data-session='1']:not([data-home-signed-out]) [data-testid='home-companion-row'] {
-    margin-block: -2rem -2.75rem;
-  }
-}
-
-/* Home rebuild spec §3.B.3/§3.B.5: "Your upgrades" and "Another class" exist only signed
-   in; "Best in slot by class" only signed out. All three toggle on the same pre-paint
-   session hint, as a `display:none` swap -- the hint
-   lands before layout settles, so this never causes a visible shift either direction, and
-   (unlike `data-session-hide`'s visibility toggle for the hero's own same-shaped overlay)
-   `display:none` costs no reserved height for the common case that never shows it. */
-html[data-session='1']:not([data-home-signed-out]) [data-signed-out-only] {
-  display: none;
-}
-/* The home page with a session but no account character (data-home-signed-out, set only on
-   the home page) renders the rows below the hero as a signed-out visitor sees them. */
-html:not([data-session='1']) [data-signed-in-only],
-html[data-home-signed-out] [data-signed-in-only] {
+html:not([data-session='1']) [data-signed-in-only] {
   display: none;
 }
 
@@ -1005,5 +931,37 @@ details:not([open]) > summary .when-open {
     animation-timing-function: linear;
     animation-fill-mode: both;
     animation-timeline: scroll(self inline);
+  }
+}
+
+/* The account's Characters card (account/CharacterList.svelte): the Battle.net refresh bar.
+   Here, not in the component's <style>: /logs imports Account.svelte lazily for its pairing
+   block, and with inlined stylesheets the build emits no file for a lazily imported island's
+   scoped CSS, so the import's CSS preload fails and the block never draws (scripts/chunk-css.mjs
+   now fails the build on that). */
+/* A thin bar on the card's top edge while Battle.net is asked; still under reduced motion. */
+.refresh-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  overflow: hidden;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: refresh-slide 1.2s linear infinite;
+}
+@keyframes refresh-slide {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .refresh-bar {
+    animation: none;
+    background: var(--color-gold);
+    opacity: 0.4;
   }
 }

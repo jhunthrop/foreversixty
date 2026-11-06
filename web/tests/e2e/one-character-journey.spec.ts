@@ -123,12 +123,13 @@ test('the chosen character follows the player through every page', async ({ page
   await shot(page, '02-planner');
 
   // 3. "Sim this build": the simulator shows the character, not a bare code.
+  // The head (spec 2026-11-06-sim §4.3): the name as the title, the meta line, the gear's source.
   await simLink.click();
-  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
-  await expect(page.getByTestId('paperdoll-descriptor')).toContainText(`${bow.race} ${bow.spec} Hunter · 60`);
-  await expect(page.getByTestId('paperdoll-source')).toHaveText('Build from planner · Bow Jackzon’s gear');
-  await expect(page.getByTestId('sim-gear')).toBeVisible();
-  await expect(page.getByTestId('sim-no-gear')).toHaveCount(0);
+  await expect(page.getByTestId('page-title')).toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('sim-head-meta')).toContainText(`${bow.race} ${bow.spec} Hunter · Level 60`);
+  await expect(page.getByTestId('sim-head-source')).toHaveText(/^Gear from /);
+  await expect(page.getByTestId('sim-gear-card')).toBeVisible();
+  await expect(page.getByTestId('sim-gear-empty')).toHaveCount(0);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   expect(await pointerOf(page)).toMatchObject({
     source: 'armory',
@@ -138,7 +139,7 @@ test('the chosen character follows the player through every page', async ({ page
   await shot(page, '03-sim');
   // A bare /sim still restores the same character, and still leaves the pointer alone.
   await page.goto('/sim');
-  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('page-title')).toHaveText('Bow Jackzon');
   await expect(page.getByText('Sign in with Battle.net to find your characters')).toHaveCount(0);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
 
@@ -200,7 +201,7 @@ test('the chosen character follows the player through every page', async ({ page
   // its Forget clears the pointer so the header falls back to the account's main.
   await page.evaluate(() => window.sessionStorage.clear());
   await page.goto('/sim');
-  await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('page-title')).toHaveText('Bow Jackzon');
   await page.getByTestId('character-selector').click();
   await expect(page.getByTestId('selector-restored')).toContainText('Restored your last character');
   await page.getByTestId('selector-forget').click();
@@ -208,21 +209,15 @@ test('the chosen character follows the player through every page', async ({ page
   await page.goto('/tiers');
   await expect(page.getByTestId('selector-name')).toHaveText('Pipsqueak');
   await shot(page, '09-forgotten');
-  // The simulator's landing lists the signed-in account's characters, never a sign-in prompt.
+  // The simulator lands on the header's character (the main, after Forget), never a sign-in
+  // prompt; a Holy Priest has no live "Run sim": the answer says "Not simulated yet" and the
+  // run line's primary is disabled (spec 2026-11-06-sim §4.3, §5).
   await page.goto('/sim');
   await expect(page.getByText('Sign in with Battle.net to find your characters')).toHaveCount(0);
-  await expect(page.getByRole('main')).toContainText('Bow Jackzon');
-  await expect(page.getByRole('main')).toContainText('Pipsqueak');
-  // The current character (the main, after Forget) is listed first, and a Holy Priest has no gold
-  // "Run sim": a quiet "Not simulated yet" stands where the button would be, in the card and the row.
-  const listed = await page
-    .locator('[data-testid^="sim-character-link-"]')
-    .evaluateAll((els) => els.map((el) => el.getAttribute('data-testid')));
-  expect(listed).toEqual([`sim-character-link-${PIPSQUEAK}`, `sim-character-link-${BOW}`]);
-  await expect(page.getByTestId('sim-run-block-action')).toHaveCount(0);
-  await expect(page.getByTestId('sim-run-block-not-simulated')).toHaveText('Not simulated yet');
-  await expect(page.getByTestId(`sim-pick-${PIPSQUEAK}`)).toHaveCount(0);
-  await expect(page.getByTestId(`sim-pick-${BOW}`)).toBeVisible();
+  await expect(page.getByTestId('page-title')).toHaveText('Pipsqueak');
+  await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'not-simulated');
+  await expect(page.getByTestId('sim-answer-label')).toHaveText('Not simulated yet');
+  await expect(page.getByTestId('sim-run-button')).toBeDisabled();
   await shot(page, '13-sim-landing');
 });
 
@@ -249,9 +244,10 @@ test('a linked code never replaces the character, and a nameless one is never th
   await choose(page, BOW);
   const nameless = 'FS1:1.60.1.70450:hunter:human:0/0/0:';
   await page.goto(`/sim?code=${encodeURIComponent(nameless)}`);
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('paperdoll-name')).toHaveCount(0);
-  await expect(page.getByTestId('paperdoll-source')).toHaveText('Entered by hand');
+  await expect(page.getByTestId('sim-head-meta')).toBeVisible();
+  // Nobody is named: the title is the spec, and the gear is not claimed for the addon.
+  await expect(page.getByTestId('page-title')).not.toHaveText('Bow Jackzon');
+  await expect(page.getByTestId('sim-head-source')).toHaveText(/^Gear from a pasted export/);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   await page.goto(`/planner?code=${encodeURIComponent(nameless)}`);
   await expect(nativeSelect(page, 'Class')).toHaveValue('hunter');
@@ -332,10 +328,10 @@ test.describe('at 360 px', () => {
     if (CAPTURES !== undefined) await card.screenshot({ path: `${CAPTURES}/w12-16-planner-card-360.png` });
 
     await page.getByTestId('planner-sim-link').click();
-    await expect(page.getByTestId('paperdoll-name')).toHaveText('Bow Jackzon');
+    await expect(page.getByTestId('page-title')).toHaveText('Bow Jackzon');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
     if (CAPTURES !== undefined)
-      await page.getByTestId('sim-character').screenshot({ path: `${CAPTURES}/w12-17-sim-card-360.png` });
+      await page.getByTestId('sim-head').screenshot({ path: `${CAPTURES}/w12-17-sim-card-360.png` });
 
     await page.goto('/account');
     await expect(page.getByTestId('account-hero')).toBeVisible();

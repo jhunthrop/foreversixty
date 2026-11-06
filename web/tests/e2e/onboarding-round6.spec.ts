@@ -7,6 +7,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { addonCopy } from '../../src/lib/addon/copy';
 import {
   CHARACTER,
   CHARACTER_PATH,
@@ -15,7 +16,6 @@ import {
   GEAR_ITEMS,
   routeGearIcons,
 } from './support/character-fixture';
-import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const SHOTS = process.env.W10_SHOTS ?? 'test-results/w10';
 const SIZES = [
@@ -158,15 +158,11 @@ for (const size of SIZES) {
       await settle(page);
       expect(await goldSteps(page)).toEqual(['1']);
       await chipRowIsOneLine(page);
-      await expect(page.getByTestId('setup-how-it-arrives')).toHaveText(
-        'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (see Try an export below).',
-      );
+      await expect(page.getByTestId('setup-how-it-arrives')).toHaveText(addonCopy.setupHowItArrives);
       await page.getByTestId('setup-how-it-arrives').getByRole('link', { name: 'Try an export' }).click();
       await expect(page.getByTestId('setup-try-export')).toHaveJSProperty('open', true);
       await expect(page.getByTestId('setup-try-export')).toBeInViewport();
-      await expect(page.getByTestId('setup-companion-note')).toHaveText(
-        'Sends your character automatically and logs live. Without it, paste an export after each change.',
-      );
+      await expect(page.getByTestId('setup-companion-note')).toHaveText(addonCopy.setupCompanionNote);
       await pictureShowsPhoneCrop(page, phone);
       await expect(page.getByTestId('setup-companion-capture-label')).toHaveText('Example');
       await expect(page.getByTestId('setup-companion-capture-label')).toBeVisible();
@@ -178,9 +174,7 @@ for (const size of SIZES) {
       await signedIn(page, ME_NEW, []);
       await page.goto('/setup');
       await settle(page);
-      await expect(page.getByTestId('setup-line-addon')).toHaveText(
-        'No character yet. Log out once with the addon on and the companion running, or paste an export.',
-      );
+      await expect(page.getByTestId('setup-line-addon')).toHaveText(addonCopy.setupAddonWaiting);
       expect(await goldSteps(page)).toEqual(['2']);
       await chipRowIsOneLine(page);
       await pictureShowsPhoneCrop(page, phone);
@@ -210,45 +204,6 @@ for (const size of SIZES) {
       await page.goto('/setup');
       await settle(page);
       expect(await goldSteps(page)).toEqual(['3']);
-    });
-
-    test('the landing after the beta: the example label, "levels", the next date in gold on Name reservation, full page', async ({
-      page,
-    }) => {
-      await page.clock.install({ time: new Date('2026-10-23T12:00:00Z') });
-      await signedOut(page);
-      await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await page.route('**/v1/rankings/guilds?**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await routeSampleReportMeta(page);
-      await page.goto('/');
-      await page.clock.resume();
-      await settle(page);
-      await expect(page.getByTestId('home-hero-label')).toHaveCount(0);
-      await expect(page.getByTestId('home-hero-link')).toContainText('Marksmanship Hunter best in slot');
-      await expect(page.getByTestId('home-hero-bands')).toHaveText(
-        'Leveling best in slot, levels 20, 30, 40, 50, 60',
-      );
-      await expect(page.getByTestId('home-dates-line').locator('[data-next]')).toHaveText(
-        'Name reservation Oct 27',
-      );
-      await shot(page, `landing-after-beta-full-${size.name}`);
-    });
-
-    test('the landing while the beta runs: the dates line leads with the running beta', async ({ page }) => {
-      await page.clock.install({ time: new Date('2026-10-20T12:00:00Z') });
-      await signedOut(page);
-      await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await page.route('**/v1/rankings/guilds?**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await routeSampleReportMeta(page);
-      await page.goto('/');
-      await page.clock.resume();
-      await settle(page);
-      await expect(page.getByTestId('home-hero-card')).toContainText('Beta is live');
-      await expect(page.getByTestId('home-hero-bands')).toHaveText('Leveling best in slot, levels 10 to 30');
-      await expect(page.getByTestId('home-dates-line').locator('[data-next]')).toHaveText(
-        'Beta live through Oct 21',
-      );
-      await shot(page, `landing-beta-live-full-${size.name}`);
     });
 
     test('a character the visitor does not hold, with no data: one sentence, the lookup, one quiet link', async ({

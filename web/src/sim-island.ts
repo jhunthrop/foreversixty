@@ -12,6 +12,8 @@ import SimView from './components/sim/SimView.svelte';
 import { scheduleBoot } from './lib/islands/boot';
 import { simIdFrom } from './lib/sim/url';
 import type { SimResult } from './lib/sim/types';
+import type { BisSetClass } from './lib/sim/bis-set-rail';
+import type { PrerenderedNote } from './lib/sim/prerender-notes';
 import './styles/fonts.css';
 import './styles/global.css';
 
@@ -35,6 +37,30 @@ export function simIdFor(element: HTMLElement, pathname: string): string {
   return simIdFrom(pathname);
 }
 
+/** The landing rail's build-time rows (sim.astro), or none on a page that carries no rail. */
+export function readBisSets(element: HTMLElement): BisSetClass[] {
+  const raw = element.dataset.bisSets;
+  if (raw === undefined || raw === '') return [];
+  try {
+    return JSON.parse(raw) as BisSetClass[];
+  } catch (error) {
+    console.error('sim island: data-bis-sets is not valid JSON', error);
+    return [];
+  }
+}
+
+/** A prerendered saved run's Worth knowing (sim/[id].astro), or none. */
+export function readInitialNotes(element: HTMLElement): PrerenderedNote[] | undefined {
+  const raw = element.dataset.simNotes;
+  if (raw === undefined || raw === '') return undefined;
+  try {
+    return JSON.parse(raw) as PrerenderedNote[];
+  } catch (error) {
+    console.error('sim island: data-sim-notes is not valid JSON', error);
+    return undefined;
+  }
+}
+
 /** The mount element's min-height classes, at every breakpoint. */
 export function shellReservations(element: HTMLElement): string[] {
   return [...element.classList].filter((name) => /(^|:)min-h-\[/.test(name));
@@ -46,6 +72,8 @@ function boot(): void {
   const props = {
     simId: simIdFor(target, window.location.pathname),
     inlineResult: readInlineResult(target),
+    bisSets: readBisSets(target),
+    initialNotes: readInitialNotes(target),
   };
   // The shell's no-JS paragraph lives inside the mount element; Svelte 5 appends rather
   // than replaces, so it has to go before the mount or it stays under the island.

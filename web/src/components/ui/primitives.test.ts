@@ -194,6 +194,15 @@ describe('ItemRow', () => {
     expect(html(ItemRow, { item: HOOD, build: BUILD })).not.toContain('<button');
   });
 
+  it("prints the gain's unit after the figure", () => {
+    const body = html(ItemRow, {
+      item: HOOD,
+      build: BUILD,
+      gain: { value: '+1.8', unit: 'DPS', caption: 'vs your Old' },
+    });
+    expect(body).toMatch(/\+1\.8<span[^>]*>DPS<\/span>/);
+  });
+
   it('takes a trail in place of the gain', () => {
     expect(html(ItemRow, { item: HOOD, build: BUILD, trail: text('<b>Open</b>') })).toContain('<b>Open</b>');
   });

@@ -160,6 +160,53 @@ export function rotationRows(
   };
 }
 
+/**
+ * The rotation before a run (sim spec 2026-11-06 §4.3, §6): the same lines with nothing counted,
+ * so no line is dimmed, and the cooldown pass says what it will press.
+ */
+export function plannedRotationRows(
+  lines: RotationLines,
+  names: ActionNames | null,
+  level: number,
+): RotationRows {
+  return {
+    prepull: lines.prepull.flatMap((line, at): PrepullRow[] =>
+      line.action === null
+        ? []
+        : [
+            {
+              key: `prepull-${at}`,
+              action: line.action,
+              name: resolveActionName(line.action, names),
+              at: copy.prepullAt(line.at_seconds),
+              cast: null,
+            },
+          ],
+    ),
+    priority: lines.priority.map((line, at): PriorityRow =>
+      line.action === null
+        ? {
+            key: `line-${at}`,
+            number: at + 1,
+            action: null,
+            name: copy.otherCooldowns,
+            note: copy.beforeRun,
+            casts: null,
+            dimmed: false,
+          }
+        : {
+            key: `line-${at}`,
+            number: at + 1,
+            action: line.action,
+            name: resolveActionName(line.action, names),
+            note: noteAt(line, level),
+            casts: null,
+            dimmed: false,
+          },
+    ),
+  };
+}
+
 /** The action keys the rows name, so the card can read the shard names they need. */
 export function rotationActionKeys(lines: RotationLines): string[] {
   return [...lines.prepull, ...lines.priority].flatMap((line) => (line.action === null ? [] : [line.action]));

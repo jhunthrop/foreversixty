@@ -9,6 +9,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { closeMoreSettings, gotoSim, openMoreSettings, simCharacter } from './support/sim-page';
+import { simPageCopy } from '../../src/lib/sim/page-copy';
 import { simCopy } from '../../src/lib/sim/copy';
 
 const activeBuild = JSON.parse(
@@ -81,12 +83,13 @@ async function stubDruidTalents(page: Page): Promise<void> {
 // property this whole suite exists to prove.
 async function loadRestoDruid(page: Page, route: string): Promise<void> {
   await stubDruidTalents(page);
-  await page.goto(route);
+  if (route === '/sim') await gotoSim(page);
+  else await page.goto(route);
   const [inputId, runId] =
     route === '/sim' ? ['sim-cold-paste-input', 'sim-cold-paste-run'] : ['sim-addon-input', 'sim-addon-load'];
   await page.getByTestId(inputId).fill(RESTO_DRUID_FS1);
   await page.getByTestId(runId).click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(route === '/sim' ? simCharacter(page) : page.getByTestId('sim-character')).toBeVisible();
 }
 
 /** Fix round 1: signs the visitor in as premium, the same shape sim-drops.spec.ts's own
@@ -103,44 +106,43 @@ async function stubPremium(page: Page): Promise<void> {
   );
 }
 
-test('/sim: a Restoration Druid loads the strip, but the run control is disabled and honest', async ({
+// On /sim the answer says it (spec 2026-11-06-sim §5: "a spec the sim does not run: 45%,
+// aria-disabled, the answer says why").
+test('/sim: a Restoration Druid loads the head, but Run sim is disabled and the answer is honest', async ({
   page,
 }) => {
   await stubPremium(page);
   await loadRestoDruid(page, '/sim');
 
-  // The BLOCKER/MAJOR findings' first demand: the strip still loads and still shows the
-  // character -- gear, talents, header -- whatever the spec.
-  await expect(page.getByTestId('sim-character')).toContainText('Restoration Druid');
+  // The BLOCKER/MAJOR findings' first demand: the page still loads and still shows the
+  // character -- gear, talents, head -- whatever the spec.
+  await expect(simCharacter(page)).toContainText('Restoration Druid');
 
-  // Final whole-branch review, C2 (healer review MAJOR, quoted verbatim: "'ROTATION --
-  // Default for Restoration' is a false statement"): SettingsBar's own rotation row used to
-  // read this unconditionally. It now reads the same honest line RotationCard already had.
-  await expect(page.getByTestId('sim-rotation')).toHaveText(simCopy.rotationNotSimulated('Restoration'));
+  const answer = page.getByTestId('sim-answer');
+  await expect(answer).toHaveAttribute('data-state', 'not-simulated');
+  await expect(page.getByTestId('sim-answer-label')).toHaveText(simPageCopy.answer.notSimulated);
+  await expect(page.getByTestId('sim-error')).toHaveText(simCopy.runNotSimulated('Restoration Druid'));
+  // The honest line is text in the answer, never a title= tooltip.
+  await expect(page.getByTestId('sim-error')).toHaveJSProperty('tagName', 'SPAN');
+  await expect(answer.getByRole('link', { name: /Spec support/ })).toHaveAttribute('href', '/sim/specs');
 
   const button = page.getByTestId('sim-run-button');
   await expect(button).toBeDisabled();
-
-  const note = page.getByTestId('sim-run-not-simulated');
-  await expect(note).toBeVisible();
-  await expect(note).toHaveText(simCopy.runNotSimulated('Restoration'));
-  // The honest line is a <p>, never a title= tooltip (Task 7 removes every title= in this
-  // lane; nothing here should add one back).
-  await expect(note).toHaveJSProperty('tagName', 'P');
   await expect(button).not.toHaveAttribute('title', /.+/);
 
-  // Fix round 1: the premium "Run on servers" button is a second run path beside the
-  // primary one, and used to stay enabled for an unsimulated spec.
-  const serverButton = page.getByTestId('sim-server-run');
-  await expect(serverButton).toBeVisible();
-  await expect(serverButton).toBeDisabled();
+  // Final whole-branch review, C2 (healer review MAJOR, quoted verbatim: "'ROTATION --
+  // Default for Restoration' is a false statement"): More settings' rotation reads the same
+  // honest line. Fix round 1: the premium "Run on our servers" is a second run path beside
+  // the primary one, so it is not offered for an unsimulated spec.
+  await openMoreSettings(page);
+  await expect(page.getByTestId('sim-rotation')).toContainText(simCopy.rotationNotSimulated('Restoration'));
+  await expect(page.getByTestId('sim-server-run')).toHaveCount(0);
+  await closeMoreSettings(page);
 
   await button.click({ force: true });
   await expect(button).toBeDisabled();
-  await expect(page.getByTestId('sim-dps')).toHaveText('—');
-
-  await serverButton.click({ force: true });
-  await expect(page.getByTestId('sim-dps')).toHaveText('—');
+  await expect(answer).toHaveAttribute('data-state', 'not-simulated');
+  await expect(page.getByTestId('sim-dps')).toHaveCount(0);
 
   await expect(page.locator('body')).not.toContainText('combine: part 0 failed');
   await expect(page.locator('body')).not.toContainText('unsupported spec');

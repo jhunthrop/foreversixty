@@ -397,11 +397,9 @@ test('Tier list is a Tools panel row and the Tools door is current, not Logs', a
   await expect(page.getByTestId('site-panel-row-tier-list')).toHaveAttribute('href', '/tiers');
 });
 
-test('the BiS index and the home page link to the tier list', async ({ page }) => {
+test('the BiS index links to the tier list', async ({ page }) => {
   await page.goto('/bis');
   await expect(page.getByTestId('bis-index-tier-link')).toHaveAttribute('href', '/tiers');
-  await page.goto('/');
-  await expect(page.getByTestId('home-tier-list-link').first()).toHaveAttribute('href', '/tiers');
 });
 
 test.describe('phone', () => {

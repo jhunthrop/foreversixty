@@ -66,11 +66,7 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
 var knownStaleBISFiles = map[string]string{
-	"mage-fire":           "ranked on r22 before round 23 moved its raid build; the last shard re-ranks it",
-	"rogue-assassination": "ranked on r22 before round 23 moved its raid build; the last shard re-ranks it",
-	"paladin-holy":        "ranks in healer shard 3; its file predates the guide",
-	"shaman-restoration":  "ranks in healer shard 3; its file predates the guide",
-	"warrior-protection":  "sim round 25 moved the Horde race to Undead (threat); the Protection warrior re-rank empties this",
+	"warrior-protection": "sim round 25 moved the Horde race to Undead (threat); the Protection warrior re-rank empties this",
 }
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files

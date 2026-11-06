@@ -57,3 +57,11 @@ describe('the stat table unit line', () => {
     );
   });
 });
+
+describe('the BiS caption', () => {
+  it('takes "an" before a vowel and "a" otherwise', () => {
+    expect(guidesCopy.bisCaption('Undead', 'Horde')).toBe('Picks for an Undead (Horde).');
+    expect(guidesCopy.bisCaption('Orc', 'Horde')).toBe('Picks for an Orc (Horde).');
+    expect(guidesCopy.bisCaption('Human', 'Alliance')).toBe('Picks for a Human (Alliance).');
+  });
+});

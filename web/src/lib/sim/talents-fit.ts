@@ -24,9 +24,3 @@ export function talentsFit(talents: string, index: TalentIndex): boolean {
   );
   return shaped && orderFromRanks(index, ranksFromTalentsString(talents)).dropped.length === 0;
 }
-
-/** The tree the phone opens on: the most points, the first on a tie. */
-export function fullestTree(talents: string): number {
-  const points = ranksFromTalentsString(talents).map((ranks) => ranks.reduce((sum, rank) => sum + rank, 0));
-  return points.indexOf(Math.max(...points));
-}

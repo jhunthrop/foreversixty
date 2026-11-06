@@ -13,6 +13,7 @@ import {
   CHARACTER_URL,
   ownerMeAnswer,
   routeCharacterHistory,
+  routeCharacterSearch,
 } from './support/character-fixture';
 import { readLayoutShift, trackLayoutShift } from './support/cls';
 
@@ -46,6 +47,7 @@ async function stubCharacter(page: Page, found = true): Promise<void> {
       : route.fulfill(NOT_FOUND),
   );
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  if (!found) await routeCharacterSearch(page);
 }
 
 /** Signs the viewer in as the character's owner, with or without the history entitlement. */

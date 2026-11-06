@@ -65,11 +65,11 @@ async function expectThreeRows(scope: Locator): Promise<void> {
   for (const row of await rows.all()) expect((await row.boundingBox())!.height).toBeGreaterThanOrEqual(44);
 }
 
-test.describe('the home page box', () => {
+test.describe('the lookup page box', () => {
   test('lists the matches and ArrowDown + Enter opens the first', async ({ page }) => {
     const asked = await stubSearch(page);
     await stubCharacter(page);
-    await page.goto('/');
+    await page.goto('/characters');
     await wired(page);
     const box = page.getByTestId('home-character-search');
     const input = box.getByRole('combobox', { name: 'Character name' });
@@ -88,7 +88,7 @@ test.describe('the home page box', () => {
 
   test('says so when nothing matches, and Enter still looks the typed name up', async ({ page }) => {
     await stubSearch(page);
-    await page.goto('/');
+    await page.goto('/characters');
     await wired(page);
     const box = page.getByTestId('home-character-search');
     const input = box.getByRole('combobox', { name: 'Character name' });
@@ -100,7 +100,7 @@ test.describe('the home page box', () => {
 
   test('Escape closes the list', async ({ page }) => {
     await stubSearch(page);
-    await page.goto('/');
+    await page.goto('/characters');
     await wired(page);
     const box = page.getByTestId('home-character-search');
     await box.getByRole('combobox', { name: 'Character name' }).fill('bo');
@@ -151,7 +151,7 @@ test.describe('the phone Menu', () => {
 
   test('lists the matches without scrolling sideways', async ({ page }) => {
     await stubSearch(page);
-    await page.goto('/');
+    await page.goto('/characters');
     await wired(page);
     await page.getByTestId('menu-button').click();
     const menuBox = page.locator('.site-menu-search');

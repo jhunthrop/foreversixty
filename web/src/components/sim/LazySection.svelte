@@ -1,35 +1,35 @@
 <!-- web/src/components/sim/LazySection.svelte -->
-<!-- One lazily mounted card of the saved result (spec 2026-11-04-sim-results 3.7, 4.4, 8): its
-     chunk loads as the card nears the viewport, and until then a skeleton holds the card's ready
-     height (lib/sim/section-reserve.ts) so nothing below it moves. The reserve goes the moment the
-     card renders or fails, so the section is always its card's own height after that. A chunk
-     that fails shows the page's one line with Try again; the rest of the page stands. -->
+<!-- One lazily mounted section of a sim result (spec 2026-11-04-sim-results 3.7, 8; sim spec
+     2026-11-06 §9): its chunk loads as the section nears the viewport, and until then the open
+     Section's own head stands over a skeleton that holds the section's ready height
+     (lib/sim/section-reserve.ts), so nothing below it moves. The reserve goes the moment the
+     section renders or fails. A chunk that fails shows the page's one line with Try again; the
+     rest of the page stands. The ready chunk draws its own Section (same title and meta). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { pageErrorCopy } from '../../lib/sim/result-copy';
   import type { SectionReserve } from '../../lib/sim/section-reserve';
-  import { CARD } from '../../lib/ui/card';
-  import type { GlyphName } from '../../lib/ui/glyphs';
-  import CardHead from '../ui/CardHead.svelte';
   import LoadError from '../ui/LoadError.svelte';
+  import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
 
   let {
     id,
-    head,
+    title,
+    meta,
     lazy,
     reserve = null,
     ready,
     children,
   }: {
-    /** The nav anchor. */
+    /** The section's test hook. */
     id: string;
-    /** The card's head while its chunk loads. An h3 until the real card's h2 arrives, so a nav
-     *  jump's focus lands on the heading that stays. */
-    head: { glyph: GlyphName; label: string; title: string; meta?: string | undefined };
+    /** The ready Section's title and meta, drawn while the chunk loads. */
+    title: string;
+    meta?: string;
     lazy: LazyLoadState;
-    /** The card's ready height under and from 768 px, held while it loads; null holds nothing. */
+    /** The section's ready height under and from 768 px, held while it loads; null holds nothing. */
     reserve?: SectionReserve | null;
     /** True once the chunk has resolved. */
     ready: boolean;
@@ -39,12 +39,12 @@
   /** How far ahead of the viewport the chunk starts to load. */
   const APPROACH_MARGIN = '600px';
 
-  let section = $state<HTMLElement | undefined>(undefined);
-  /** Only a card still loading holds its reserve: rendered or failed, the section is its card. */
+  let holder = $state<HTMLElement | undefined>(undefined);
+  /** Only a section still loading holds its reserve: rendered or failed, the holder is its section. */
   const held = $derived(!ready && lazy.error === '' && reserve !== null);
 
   $effect(() => {
-    if (section === undefined) return;
+    if (holder === undefined) return;
     if (typeof IntersectionObserver === 'undefined') {
       lazy.load();
       return;
@@ -58,41 +58,34 @@
       },
       { rootMargin: APPROACH_MARGIN },
     );
-    observer.observe(section);
+    observer.observe(holder);
     return () => observer.disconnect();
   });
 </script>
 
-<section
-  bind:this={section}
-  {id}
-  class={['scroll-mt-16', held && 'reserved']}
+<div
+  bind:this={holder}
+  class={['flex min-w-0 flex-col', held && 'reserved']}
   style:--reserve-phone={held ? `${reserve?.phone}px` : undefined}
   style:--reserve-wide={held ? `${reserve?.wide}px` : undefined}
   data-testid={`sim-section-${id}`}
 >
   {#if ready}
-    <div class="reveal">{@render children()}</div>
-  {:else if lazy.error !== ''}
-    <div class={`${CARD} mx-[18px] md:mx-0`}>
-      <CardHead {...head} headingLevel={3} />
-      <div class="border-line-soft border-t p-5">
+    {@render children()}
+  {:else}
+    <Section {title} {meta}>
+      {#if lazy.error !== ''}
         <LoadError
           message={pageErrorCopy.partFailed}
           onRetry={() => lazy.load()}
           testid={`sim-section-${id}-error`}
         />
-      </div>
-    </div>
-  {:else}
-    <div class={`${CARD} mx-[18px] md:mx-0`} style:min-height="inherit">
-      <CardHead {...head} headingLevel={3} />
-      <div class="border-line-soft border-t p-5">
+      {:else}
         <Skeleton lines={4} testid={`sim-section-${id}-skeleton`} />
-      </div>
-    </div>
+      {/if}
+    </Section>
   {/if}
-</section>
+</div>
 
 <style>
   .reserved {
