@@ -49,15 +49,11 @@ type rankPass struct {
 // published number request.PublishedPreset names raid (the /sim page
 // defaults to the same preset through sim/request/published-presets.json).
 func passesFor(base specInfo, band int, raid request.ResolvedPreset) []rankPass {
-	bare := base
-	bare.Applied = nil
-	passes := []rankPass{{name: presetBare, spec: bare}}
+	passes := []rankPass{{name: presetBare, spec: passSpec(base, presetBare, raid)}}
 	if request.PublishedPreset(band) != presetRaid {
 		return passes
 	}
-	raided := base
-	raided.Applied = &raid
-	return append(passes, rankPass{name: presetRaid, spec: raided})
+	return append(passes, rankPass{name: presetRaid, spec: passSpec(base, presetRaid, raid)})
 }
 
 // rankPreset is the preset a pass's requests name, so the rotation casts

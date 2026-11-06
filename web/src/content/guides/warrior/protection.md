@@ -4,7 +4,7 @@ classSlug: warrior
 spec: protection
 role: tank
 build: 'FS1:1.60.1.70790:warrior:night-elf:35300003/0/250533120330001351:'
-recommendedRaces: [night-elf, tauren]
+recommendedRaces: [night-elf, undead]
 statPriority:
   [
     Defense,
@@ -110,7 +110,7 @@ Mighty Rage Potion is threat at the pull. Pre-pull, the rum and Elixir of Fortit
 
 ## Races
 
-Night Elf is the Alliance pick and Tauren the Horde pick. Night Elf's Quickness is 1% more dodge and 2% more movement speed, and that dodge is every hit it turns away: a Night Elf takes less damage than any other Alliance race, and its health swings less than a Dwarf's. Tauren's Endurance is 5% more total health, and no race's health swings less when the big hits stack.
+Night Elf is the Alliance pick and Undead the Horde pick. Night Elf's Quickness is 1% more dodge and 2% more movement speed, and that dodge is every hit it turns away: a Night Elf takes less damage than any other Alliance race, and its health swings less than a Dwarf's. Undead's Touch of the Grave gives your attacks a chance to drain 5% of your maximum health from the target, at most once every 15 seconds. That drain is damage, and damage is threat: an Undead holds more threat than any other Horde race, with a little health back on every drain. Tauren's Endurance is 5% more total health, and no race's health swings less when the big hits stack, so take Tauren when your healers need the bigger health bar more than the raid needs your threat lead.
 
 Dwarf is the button race. Stoneform removes every bleed, poison and disease, makes you immune to them, and takes 10% off physical damage for 8 seconds every 3 minutes. It only helps when you press it, so save it for the hit you know is coming, or for the bleed or poison stack that would otherwise get a healer to panic.
 

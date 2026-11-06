@@ -23,14 +23,18 @@ type coreAbility struct {
 	family     string
 	spellID    int64
 	spell      SpellConst
-	actual     int64
-	lost       int64
-	gaps       []coreGap // counted gaps (at least one lost cast), in time order
-	unverified bool      // the resource could not be checked
-	youCPM     float64
-	refCPM     float64
-	cmp        *Basis
-	thin       string
+	cooldownMS int64 // the player's cooldown: the base less what their talents take off
+	// shortenable: the talents are unknown and one could shorten the cooldown, so
+	// cooldownMS is the base and the lost count a floor.
+	shortenable bool
+	actual      int64
+	lost        int64
+	gaps        []coreGap // counted gaps (at least one lost cast), in time order
+	unverified  bool      // the resource could not be checked
+	youCPM      float64
+	refCPM      float64
+	cmp         *Basis
+	thin        string
 }
 
 func (a coreAbility) possible() int64 { return a.actual + a.lost }
@@ -108,13 +112,18 @@ func assessAbility(in Input, c Counted, e RuleEntry) (coreAbility, bool) {
 	if len(seq) == 0 && notYetLearned(in, e) {
 		return coreAbility{}, false
 	}
+	if shardShort(in, e.Family) {
+		return coreAbility{}, false
+	}
 	id, sc, ok := pickSpell(e.SpellIDs, in.Tables.Spells, counts)
-	if !ok || sc.CooldownMS < CoreCooldownMinMS || sc.CooldownMS > CoreCooldownMaxMS {
+	cooldownMS, shortenable := cooldownFor(in, e.Family, sc)
+	if !ok || cooldownMS < CoreCooldownMinMS || cooldownMS > CoreCooldownMaxMS {
 		return coreAbility{}, false
 	}
 	res := newResourceCheck(in.Fight, guid, sc, in.Tables.BaseMana)
-	a := coreAbility{family: e.Family, spellID: id, spell: sc, actual: int64(len(seq)), unverified: res.unverified}
-	a.gaps = coreGaps(seq, sc.CooldownMS, c, res)
+	a := coreAbility{family: e.Family, spellID: id, spell: sc, cooldownMS: cooldownMS, shortenable: shortenable,
+		actual: int64(len(seq)), unverified: res.unverified}
+	a.gaps = coreGaps(seq, cooldownMS, c, res)
 	for _, g := range a.gaps {
 		a.lost += g.lost
 	}
@@ -327,10 +336,8 @@ func coreFinding(in Input, fired []coreAbility, anchors *coreAnchors) *Finding {
 		Severity: SeverityMinor,
 		Title:    Fill(TitleCoreCasts, map[string]string{"Spell": worst.spell.Name, "n": strconv.FormatInt(worst.lost, 10)}),
 		Detail:   coreDetail(worst, shown, fired[1:min(len(fired), 1+MoreAbilitiesInDetail)]),
-		Basis: Basis{Kind: BasisSpellData, Label: Fill(BasisCooldown, map[string]string{
-			"Spell": worst.spell.Name, "n": strconv.FormatFloat(float64(worst.spell.CooldownMS)/1000, 'f', -1, 64), "resource": worst.resource(),
-		})},
-		Facts: coreFacts(worst, shown, fired[1:min(len(fired), 1+MoreAbilitiesInDetail)]),
+		Basis:    Basis{Kind: BasisSpellData, Label: coreBasis(worst)},
+		Facts:    coreFacts(worst, shown, fired[1:min(len(fired), 1+MoreAbilitiesInDetail)]),
 	}
 	if worst.lostPct() >= CoreMajorPct {
 		f.Severity = SeverityMajor
@@ -349,6 +356,18 @@ func coreFinding(in Input, fired []coreAbility, anchors *coreAnchors) *Finding {
 }
 
 func ptr(v int64) *int64 { return &v }
+
+// coreBasis names the cooldown the count used: the player's own, or the base one when a
+// talent the log cannot show could shorten it (the count is then a floor).
+func coreBasis(a coreAbility) string {
+	format := BasisCooldown
+	if a.shortenable {
+		format = BasisCooldownBase
+	}
+	return Fill(format, map[string]string{
+		"Spell": a.spell.Name, "n": strconv.FormatFloat(float64(a.cooldownMS)/1000, 'f', -1, 64), "resource": a.resource(),
+	})
+}
 
 // longestGaps is the n gaps with the most ready time, longest first, earliest on a tie.
 func longestGaps(gaps []coreGap, n int) []coreGap {

@@ -28,6 +28,7 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 22 | 2026-11-05 | design/reviews/2026-11-05-sim-audit-round22/ (platform, items, one lane per class, integration) | 33 fixed: 27 old, 1 new-data, 1 70753, 2 R20, 1 R21, 1 R22; Leader of the Pack and Moonkin Aura exclusive (3% raid crit, every spec about -2.5%), talent spells at their tier level, rogue one-hand axes, Fire/Affliction/Assassination raid builds; weapon damage ranges match the client | bff826207 | no |
 | 23 | 2026-11-05 | design/reviews/2026-11-05-sim-audit-round23/ (platform, items, one lane per class, integration) | 19 fixed: 16 old, 3 R22; priest rank rows right after a new rank, Assassination raid build parse (landed alone first), demon gear crit, Robe of the Archmage and Ankh cooldowns, manaIncomePerSecond and the Retribution Consecration budget; raid crit exclusivity sourced to Blizzard's 3 Nov notes | 3b4d6b054 | no |
 | 24 | 2026-11-05 to 2026-11-06 | design/reviews/2026-11-05-sim-audit-round24/ (platform, items, data, healbisect, one lane per class or pair, integration) | 70 fixed; the measuring tool judged rank rows on band-floor talents (fixed; 193 rows re-judged); the 70790 hotfix push layered for the first time (Defiance 7/13/20, Natural flasks); manaSpentPerSecond; healer bare-band drops traced to round 15's level-gap penalty (correct) | bf727699f | no |
+| 25 | 2026-11-06 | design/reviews/2026-11-06-sim-audit-round25/ (coach, platform, race, shadow, healers-bare, integration) | 23 fixed: 14 old, 7 R21, 2 R24; below 20 the band gear had dropped weapons, bows and wands (now refilled from the client tables, faction-filtered); coach F1 counts on the player's own talent cooldowns and F7 offers melee-only defensives only at physical deaths; the ranker sweeps every legal race (Protection warrior Horde is Undead on threat); healer bare-band drops are round 15's penalty (correct); Shadowform at 40 loses to the current order | f871a65ae | no |
 
 ## Loop structure
 
@@ -80,6 +81,9 @@ Picks and deltas that only a full re-rank can show. Each row is checked in the v
 | MR29 | the cat's weapon DPS term in weights and tooltips | druid-feral, every band | Forever forms use the weapon's DPS; the landing's workaround removed | round 14 hybrids |
 | MR30 | Subtlety with Premeditation in the fight; Gnome rogues and warriors | rogue-subtlety; Gnome rogues/warriors | Premeditation needs no Stealth; Expansive Mind | round 14 physical, data |
 | MR31 | Beast Mastery bare 40/50/60, Destruction 40, Shadow bare 60 after the rank rows | those bands | rows removed | round 14 data, regmelee |
+| MR32 | the ranker's race sweep in every band report | every published BiS file | best race, margin and error next to the pick; no free race may beat a guide race beyond error by over 1% at 60 | round 25 race |
+| MR33 | Protection warrior Horde on Undead | warrior-protection, Horde, every band; then drop its knownStaleBISFiles entry | guide race moved on threat (Touch of the Grave) | round 25 race |
+| MR34 | Shadow's published band 20 to 40 talents and Alliance race | priest-shadow | they should follow the leveling order (Shadowform at 42) and Human | round 25 shadow |
 
 ## Round 13 at a glance
 

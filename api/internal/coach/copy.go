@@ -29,20 +29,23 @@ const (
 
 	// BasisTop's template differs from §11's `Top {n} {Spec} {class} on {Boss} ({size}): …`
 	// in field names only; the pin is §5.3's filled form.
-	BasisTop       = "Top {n} {Spec} {classPlural} on {Boss} ({size}): "
-	BasisTopHere   = "Top {n} {Spec} {classPlural} here: "
-	BasisSimLabel  = "The written {Spec} rotation, simulated at level {band}: "
-	BasisCooldown  = "Measured against {Spell}'s {n}-second cooldown and your own {resource} bar."
-	BasisPerMin    = "{ref} a minute. You: {you}."
-	BasisSameRank  = "{pct}% on the same rank."
-	BasisOwnBar    = "Measured against your own {resource} bar."
-	BasisCapOwnBar = "Measured against your own {resource} bar, {downtime} left out."
-	BasisSheet     = "From the character sheet in your log, against the site's consumable list for {roles}."
-	BasisAvoidable = "From your log. {Spell} is on this boss's list of damage you can avoid."
-	BasisDeathCD   = "From your log and {Spell}'s cooldown."
-	BasisRanks     = "The spell ranks a level {level} {class} can train."
-	FromYourLog    = "From your log"
-	LowerRanks     = "Lower ranks cost less mana."
+	BasisTop      = "Top {n} {Spec} {classPlural} on {Boss} ({size}): "
+	BasisTopHere  = "Top {n} {Spec} {classPlural} here: "
+	BasisSimLabel = "The written {Spec} rotation, simulated at level {band}: "
+	BasisCooldown = "Measured against {Spell}'s {n}-second cooldown and your own {resource} bar."
+	// BasisCooldownBase is BasisCooldown when a talent could shorten the cooldown and the
+	// character's talents are not on file: the count is then the fewest that were lost.
+	BasisCooldownBase = "Measured against {Spell}'s {n}-second base cooldown and your own {resource} bar. Your talents aren't on file, and a talent that shortens it would only add to the lost casts."
+	BasisPerMin       = "{ref} a minute. You: {you}."
+	BasisSameRank     = "{pct}% on the same rank."
+	BasisOwnBar       = "Measured against your own {resource} bar."
+	BasisCapOwnBar    = "Measured against your own {resource} bar, {downtime} left out."
+	BasisSheet        = "From the character sheet in your log, against the site's consumable list for {roles}."
+	BasisAvoidable    = "From your log. {Spell} is on this boss's list of damage you can avoid."
+	BasisDeathCD      = "From your log and {Spell}'s cooldown."
+	BasisRanks        = "The spell ranks a level {level} {class} can train."
+	FromYourLog       = "From your log"
+	LowerRanks        = "Lower ranks cost less mana."
 
 	RulesOpening = "Here is what your log shows for {Boss}."
 	RulesNothing = "Nothing to fix on this pull that the log can show."

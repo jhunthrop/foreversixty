@@ -262,15 +262,38 @@ func rotationFor(o options, forced []forcedRank, class, race string, level int) 
 }
 
 type bisEntry struct {
-	Band    int    `json:"band"`
-	Preset  string `json:"preset"`
-	Faction string `json:"faction"`
-	Race    string `json:"race"`
-	Talents string `json:"talents"`
-	Slots   []struct {
-		Slot   string `json:"slot"`
-		ItemID int    `json:"item_id"`
-	} `json:"slots"`
+	Band    int       `json:"band"`
+	Preset  string    `json:"preset"`
+	Faction string    `json:"faction"`
+	Race    string    `json:"race"`
+	Talents string    `json:"talents"`
+	Slots   []bisSlot `json:"slots"`
+}
+
+// bisSlot is one published slot: its pick and the band's runners-up for it.
+type bisSlot struct {
+	Slot         string    `json:"slot"`
+	ItemID       int       `json:"item_id"`
+	Alternatives []bisItem `json:"alternatives"`
+	RunnersUp    []bisItem `json:"runners_up"`
+}
+
+type bisItem struct {
+	ItemID int `json:"item_id"`
+}
+
+// alternatives is each slot's runners-up, best first: the alternatives the
+// ranker verified, then its other runners-up.
+func (e bisEntry) alternatives() map[string][]int {
+	out := make(map[string][]int, len(e.Slots))
+	for _, s := range e.Slots {
+		for _, list := range [][]bisItem{s.Alternatives, s.RunnersUp} {
+			for _, a := range list {
+				out[s.Slot] = append(out[s.Slot], a.ItemID)
+			}
+		}
+	}
+	return out
 }
 
 // bisDirectory is where the published entries are read from: the active
@@ -355,44 +378,18 @@ func (o options) characterTalents(entry bisEntry, level int) (string, error) {
 	return leveling.GuideLevelTalents(o.repoRoot, build, specs.ByKey[o.spec], level, o.preset == request.RaidPreset)
 }
 
-// itemRequiredLevels maps every item of the active build to its required level.
-func itemRequiredLevels(repoRoot string) (map[int]int, error) {
-	dir, err := buildDirectory(repoRoot)
+// levelGear is gear as a level below the band holds it (request.LevelGear.Fit):
+// a slot the level cannot wear takes a runner-up or a weapon it can.
+func levelGear(o options, entry bisEntry, gear []api.GearSlot, level int) ([]api.GearSlot, error) {
+	build, err := leveling.ReadActiveBuild(o.repoRoot)
 	if err != nil {
 		return nil, err
 	}
-	raw, err := os.ReadFile(filepath.Join(dir, "items.json"))
-	if err != nil {
-		return nil, fmt.Errorf("item levels: %w", err)
-	}
-	var rows []struct {
-		ID            int `json:"id"`
-		RequiredLevel int `json:"required_level"`
-	}
-	if err := json.Unmarshal(raw, &rows); err != nil {
-		return nil, fmt.Errorf("item levels: %w", err)
-	}
-	out := make(map[int]int, len(rows))
-	for _, r := range rows {
-		out[r.ID] = r.RequiredLevel
-	}
-	return out, nil
-}
-
-// wearableGear is gear without the slots whose item requires more than level:
-// a band entry run below its band leaves those slots empty.
-func wearableGear(repoRoot string, gear []api.GearSlot, level int) ([]api.GearSlot, error) {
-	required, err := itemRequiredLevels(repoRoot)
+	fit, err := request.LoadLevelGear(o.repoRoot, build, o.spec, o.faction)
 	if err != nil {
 		return nil, err
 	}
-	out := make([]api.GearSlot, 0, len(gear))
-	for _, g := range gear {
-		if required[g.ItemID] <= level {
-			out = append(out, g)
-		}
-	}
-	return out, nil
+	return fit.Fit(gear, entry.alternatives(), level), nil
 }
 
 func buildRequest(o options) (api.SimRequest, error) {
@@ -417,7 +414,7 @@ func buildRequest(o options) (api.SimRequest, error) {
 		return api.SimRequest{}, err
 	}
 	if level < o.band {
-		if gear, err = wearableGear(o.repoRoot, gear, level); err != nil {
+		if gear, err = levelGear(o, entry, gear, level); err != nil {
 			return api.SimRequest{}, err
 		}
 	}

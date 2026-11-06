@@ -2,8 +2,10 @@ package coach
 
 // RulesVersion names the threshold set below; a change to any value moves it, and so does a
 // change to what a rule measures or says (v2, 2026-10-28: the final-review fixes, and the
-// profile's active share over counted time).
-const RulesVersion = "coach-rules-v2"
+// profile's active share over counted time; v3, 2026-11-06: F1 and F7 read the cooldowns
+// the player's talents shorten, F1 judges Shadowburn only with its shard refund, and F7
+// offers a dodge-or-parry defensive only at a physical death).
+const RulesVersion = "coach-rules-v3"
 
 // The §6.1 and §6.2 v1 values (docs/superpowers/specs/2026-10-27-log-coach-design.md).
 const (

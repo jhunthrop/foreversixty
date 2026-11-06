@@ -1275,6 +1275,10 @@ type bandReport struct {
 	// SetDPSError is SetDPS's standard error: both come from one
 	// finalSetIterations run of the final set (final_set.go).
 	SetDPSError float64 `json:"set_dps_error,omitempty"`
+	// RaceSweep is the final set measured on every race the class can be
+	// in this faction (race_sweep.go): the best race, its margin over the
+	// guide race and the margin's error.
+	RaceSweep *raceSweep `json:"race_sweep,omitempty"`
 	// TargetLevel is the level of the target this band's sims fight
 	// (run_conditions.go); the file's run block holds the rest.
 	TargetLevel int `json:"target_level,omitempty"`
@@ -2262,6 +2266,9 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 			fmt.Fprintf(&b, "### Band %d%s (%s, %s)\n\n", r.Band, presetHeadingSuffix(r.Preset), r.Race, r.Talents)
 			fmt.Fprintf(&b, "Set DPS (verified): %.1f. Weights run: %.1fs. Verify run: %.1fs. %d eligible items had no known source.\n\n",
 				r.SetDPS, r.WeightsRunSeconds, r.VerifyRunSeconds, r.NoSourceCount)
+			if r.RaceSweep != nil {
+				fmt.Fprintf(&b, "Race sweep: %s.\n\n", formatRaceSweep(*r.RaceSweep))
+			}
 			if r.UnconfirmedWithinErrorHeld > 0 {
 				fmt.Fprintf(&b, "%d slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).\n\n", r.UnconfirmedWithinErrorHeld)
 			}

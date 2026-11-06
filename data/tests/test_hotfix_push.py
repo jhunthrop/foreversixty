@@ -545,3 +545,28 @@ def test_a_client_error_is_not_retried():
     with pytest.raises(httpx.HTTPStatusError):
         hotfix_push._ask(client, "70755 spell", sleep=lambda _: None)
     assert len(seen) == 1
+
+
+# Round 25 (platform): 1.60.1.70790's activation committed a push record whose every
+# search total was 0 (wago's search paging was broken), so nothing was layered and the
+# sim ran shipped values for a day before a lane noticed. A live Forever build always
+# carries a push; a record that found none is reported and the active build's must not
+# be one.
+ACTIVE_BUILD_JSON = Path("../web/src/data/active-build.json")
+
+
+def test_a_record_whose_search_found_nothing_is_reported():
+    empty = {"build": BUILD, "search_totals": {"Spell": 0, "SpellEffect": 0}, "tables": {}}
+    assert hotfix_push.empty_push_reason(empty) == (
+        f"the {BUILD} push record lists no hotfix entries for any table: "
+        "wago's search found nothing, so nothing was layered"
+    )
+    assert hotfix_push.empty_push_reason({**empty, "search_totals": {"Spell": 3}}) is None
+    assert hotfix_push.empty_push_reason({**empty, "search_totals": {}}) is not None
+
+
+def test_the_active_builds_push_record_layered_a_push():
+    build = json.loads(ACTIVE_BUILD_JSON.read_text(encoding="utf-8"))["build"]
+    record = read_push_record(Path("builds") / build)
+    assert record is not None, f"builds/{build} has no {PUSH_RECORD}"
+    assert hotfix_push.empty_push_reason(record) is None
