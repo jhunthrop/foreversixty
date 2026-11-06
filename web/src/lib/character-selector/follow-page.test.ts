@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Me } from '../account/api';
 import type { CurrentCharacter } from '../current-character';
-import { characterFollowHref, guildFollowHref, pointerCharacterHref } from './follow-page';
+import { characterFollowHref, guildFollowHref, landingGuildHref, pointerCharacterHref } from './follow-page';
 
 const millennials = { name: 'Employed Millennials', href: '/guild/us/pvp/employed-millennials' };
 const olympus = { name: 'OLYMPUS XXVII', href: '/guild/us/pvp/olympus-xxvii' };
@@ -150,5 +150,26 @@ describe('pointerCharacterHref', () => {
   it('is null for a pointer with no character page', () => {
     expect(pointerCharacterHref(null, null)).toBeNull();
     expect(pointerCharacterHref(me, pointer('code', 'FS1:y'))).toBeNull();
+  });
+});
+
+describe('landingGuildHref (D17: signed in, /guild goes to your guild)', () => {
+  const inGuilds = (...names: string[]) =>
+    ({
+      guilds: names.map((name, i) => ({ id: i + 1, region: 'us', ruleset: 'pvp', name })),
+    }) as unknown as Me;
+
+  it('opens the current character’s guild first', () => {
+    expect(landingGuildHref(olympus, inGuilds('Employed Millennials'))).toBe(olympus.href);
+  });
+
+  it('opens the account’s only guild when the current character has none', () => {
+    expect(landingGuildHref(null, inGuilds('Employed Millennials'))).toBe(millennials.href);
+  });
+
+  it('stays on the directory for several guilds, none, or signed out', () => {
+    expect(landingGuildHref(null, inGuilds('Employed Millennials', 'OLYMPUS XXVII'))).toBeNull();
+    expect(landingGuildHref(null, inGuilds())).toBeNull();
+    expect(landingGuildHref(null, null)).toBeNull();
   });
 });
