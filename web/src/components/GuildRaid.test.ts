@@ -36,7 +36,8 @@ const DEPS: RaidPageDeps = {
   loadMatchCandidates: never,
   putMatch: never,
   deleteMatch: never,
-  putExcused: never,
+  putOverride: never,
+  deleteOverride: never,
   postReport: never,
   putCompTarget: never,
   deleteCompTarget: never,
@@ -147,16 +148,14 @@ describe('a raid with a matched log', () => {
     }).body;
   }
 
-  it('puts the night line where the count line was, with the match line under it', () => {
+  it('is the report: the Done tag in the head, the match line under it, no sign-up count or night line', () => {
     const body = doneHtml();
     expect(body).not.toContain('23 of 40 signed up');
-    expect(text(between(body, 'raid-night-line', 'raid-match-line'))).toBe(
-      '22 of 23 came · 2 joined · 1 kill · 3 wipes · 14 deaths · 2 h 41 min',
-    );
-    expect(text(between(body, 'raid-match-line', 'guild-tabs'))).toContain(
+    expect(body).not.toContain('raid-night-line');
+    expect(text(between(body, 'raid-match-line', 'raid-report'))).toContain(
       `${attendanceCopy.match.loggedAsNight} ${attendanceCopy.match.openNight}`,
     );
-    expect(text(between(body, 'raid-status-chip', 'raid-title'))).toContain('Done');
+    expect(text(between(body, 'raid-status-chip', 'raid-when'))).toContain('Done');
   });
 
   it('shows members the lines without Not this log, and officers with it', () => {
@@ -164,15 +163,17 @@ describe('a raid with a matched log', () => {
     expect(doneHtml({ role: 'officer' })).toContain('raid-not-this-log');
   });
 
-  it('keeps the count line on a raid without a night', () => {
+  it('draws no count line and no report on a done raid without a night', () => {
     const body = doneHtml({}, doneRaid({ night: null }));
-    expect(text(between(body, 'raid-count', 'raid-match-line'))).toContain('23 of 40 signed up');
+    expect(body).not.toContain('raid-count');
+    expect(body).not.toContain('id="report"');
+    expect(body).toContain('raid-match-line');
   });
 
   it('keeps an empty polite live region, which says the log was matched once the poll flips', () => {
     expect(doneHtml()).toMatch(/role="status"[^>]*data-testid="raid-live-region">\s*<\/p>/);
     const raised = doneHtml({ logMatched: true });
-    expect(text(between(raised, 'raid-live-region', 'raid-title'))).toContain(attendanceCopy.liveRegion);
+    expect(text(between(raised, 'raid-live-region', 'raid-match-line'))).toContain(attendanceCopy.liveRegion);
     expect(raised).toMatch(/class="sr-only"[^>]*role="status"/);
   });
 
