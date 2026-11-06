@@ -132,34 +132,37 @@
 {/snippet}
 
 {#snippet header()}
-  <div class="px-[var(--page-inset)] pt-3">
-    <a
-      href={`${guildPath}#raids`}
-      class="text-muted inline-flex min-h-11 items-center text-[13px] underline"
-      data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a
-    >
+  <!-- One block, so the shell's gap sits under the header, not between the back link and it. -->
+  <div>
+    <div class="px-[var(--page-inset)]">
+      <a
+        href={`${guildPath}#raids`}
+        class="text-muted inline-flex min-h-11 items-center text-[13px] underline"
+        data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a
+      >
+    </div>
+    <PageHeader title={raid.title} tone={titleTone} {meta} testid="raid-head">
+      {#snippet actions()}
+        {#if officer && !c.editing}
+          <RaidOfficerRow
+            {raid}
+            ended={flags.ended}
+            readOnly={!c.officerTools}
+            busy={c.busy}
+            line={c.line}
+            {gateId}
+            {gateFacts}
+            {guildTimezone}
+            onEdit={() => c.openEdit()}
+            {onStatus}
+          />
+        {/if}
+      {/snippet}
+      {#snippet tabs()}
+        <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
+      {/snippet}
+    </PageHeader>
   </div>
-  <PageHeader title={raid.title} tone={titleTone} {meta} testid="raid-head">
-    {#snippet actions()}
-      {#if officer && !c.editing}
-        <RaidOfficerRow
-          {raid}
-          ended={flags.ended}
-          readOnly={!c.officerTools}
-          busy={c.busy}
-          line={c.line}
-          {gateId}
-          {gateFacts}
-          {guildTimezone}
-          onEdit={() => c.openEdit()}
-          {onStatus}
-        />
-      {/if}
-    {/snippet}
-    {#snippet tabs()}
-      <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
-    {/snippet}
-  </PageHeader>
 {/snippet}
 
 {#snippet bar()}
