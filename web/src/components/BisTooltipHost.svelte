@@ -28,6 +28,13 @@
      page's models map does not carry -- every id here already came from a build-time
      `readItemTooltipModel` read (lib/items/lookup.ts), the same the page used to hand
      ItemHover directly, so there is nothing left to fetch. -->
+<script lang="ts" module>
+  /** The events a host on this page has already acted on. Two islands can each mount a host (the
+   *  sim's character strip and its result): every listener sees every event, so the first host
+   *  that can open an item claims it and the others leave it alone. */
+  const claimed = new WeakSet<Event>();
+</script>
+
 <script lang="ts">
   import { mount, unmount, onMount, type Component } from 'svelte';
   import type { ItemTooltipModel } from '../lib/items/tooltip';
@@ -112,6 +119,20 @@
 
   /** The row/pill the pointer or focus is moving TO, so a move between two elements still
    *  inside the same host (its icon, its name) never reads as leaving it. */
+  /** Whether this host has a model, or a way to fetch one, for `host`. */
+  function canOpen(host: HTMLElement): boolean {
+    if (host.dataset.gameTip !== undefined) return resolveTip !== undefined;
+    return resolve !== undefined || models.has(Number(host.dataset.bisItem));
+  }
+
+  /** True when this host acts on `event` for `host`: it can open it and no other host has. */
+  function claim(event: Event, host: HTMLElement): boolean {
+    if (activeHost !== host && !canOpen(host)) return false;
+    if (claimed.has(event)) return false;
+    claimed.add(event);
+    return true;
+  }
+
   function relatedHostFor(event: PointerEvent | FocusEvent): HTMLElement | null {
     const related = 'relatedTarget' in event ? event.relatedTarget : null;
     return hostFor(related as EventTarget | null);
@@ -202,7 +223,7 @@
     if (dismissed !== null && event.target === dismissed) dismissed = null;
     if (!moved(event)) return;
     const host = hostFor(event.target);
-    if (host !== null && host !== dismissed) openHost(host);
+    if (host !== null && host !== dismissed && claim(event, host)) openHost(host);
   }
 
   /** A real move records where the mouse is and opens what it now rests on: the 2px nudge after
@@ -214,7 +235,7 @@
     lastX = event.clientX;
     lastY = event.clientY;
     const host = hostFor(event.target);
-    if (host !== null && host !== dismissed) openHost(host);
+    if (host !== null && host !== dismissed && claim(event, host)) openHost(host);
   }
 
   function onPointerDown(): void {
@@ -234,7 +255,7 @@
   function onFocusIn(event: FocusEvent): void {
     if (performance.now() - pressedAt < 1000) return;
     const host = hostFor(event.target);
-    if (host === null) return;
+    if (host === null || !claim(event, host)) return;
     dismissed = null;
     openHost(host);
   }
@@ -256,6 +277,11 @@
       return;
     }
     event.preventDefault();
+    if (!claim(event, host)) {
+      // Another host opens this one: close what this host has open.
+      if (activeHost !== null && activeHost !== host) closeHost(activeHost);
+      return;
+    }
     if (activeHost === host) {
       closeHost(host);
       dismissed = host;

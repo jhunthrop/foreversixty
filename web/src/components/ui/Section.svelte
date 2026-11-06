@@ -33,7 +33,7 @@
 
 <section
   {id}
-  class="ui-section min-w-0"
+  class="ui-section min-w-0 scroll-mt-[calc(var(--bar-h)+12px)]"
   data-testid={testid}
   aria-labelledby={id ? `${id}-title` : undefined}
 >

@@ -9,6 +9,7 @@ import type { CharacterHistory } from '../../../src/lib/character/history-api';
 import { meAddonFixture } from '../../../src/fixtures/me-addon';
 import { readFileSync, existsSync } from 'node:fs';
 import {
+  GEAR_FIXTURE_BIS,
   GEAR_FIXTURE_ITEMS,
   GEAR_FIXTURE_LONGEST,
   GEAR_PANEL_FIXTURE,
@@ -18,6 +19,9 @@ import {
  *  src/fixtures/character-gear.ts. The shared CHARACTER below leaves it out, as an API that
  *  predates it does; character-gear.spec.ts adds it. */
 export const GEAR = GEAR_PANEL_FIXTURE;
+
+/** The spec's BiS file the gains are priced from (bis/priest-holy.json): one band, 60 alliance. */
+export const GEAR_BIS = GEAR_FIXTURE_BIS;
 
 /** The paperdoll's worst case: the longest names in every slot. */
 export const GEAR_LONGEST = { gear: GEAR_FIXTURE_LONGEST, gear_gap_total: null };

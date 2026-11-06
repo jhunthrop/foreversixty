@@ -17,7 +17,7 @@
     "components/Character.svelte": 1,
     "components/character/BossPicker.svelte": 2,
     "components/character/CharacterFightTable.svelte": 2,
-    "components/character/CharacterGearPanel.svelte": 4,
+    "components/character/CharacterGearPanel.svelte": 3,
     "components/character/CharacterHeader.svelte": 4,
     "components/character/CharacterHeaderSignedOut.svelte": 1,
     "components/character/CharacterHistory.svelte": 3,
@@ -164,7 +164,6 @@
     "components/sim/ActionIcon.svelte": 1,
     "components/sim/BestPerSpecTable.svelte": 4,
     "components/sim/BuffPanel.svelte": 5,
-    "components/sim/CharacterStrip.svelte": 1,
     "components/sim/ColdPasteHero.svelte": 5,
     "components/sim/CompareView.svelte": 9,
     "components/sim/CooldownRows.svelte": 4,
@@ -191,7 +190,7 @@
     "components/sim/SettingsSheet.svelte": 4,
     "components/sim/SimAurasCard.svelte": 2,
     "components/sim/SimCastList.svelte": 2,
-    "components/sim/SimGearCard.svelte": 5,
+    "components/sim/SimGearCard.svelte": 2,
     "components/sim/SimHistory.svelte": 1,
     "components/sim/SimResourceCard.svelte": 6,
     "components/sim/SimSavePanel.svelte": 11,
@@ -240,7 +239,6 @@
     "pages/sim.astro": 6,
     "styles/global.css": 11,
     "styles/nav.css": 35,
-    "styles/paperdoll.css": 8,
     "styles/select.css": 11,
     "styles/typeahead.css": 5
   }

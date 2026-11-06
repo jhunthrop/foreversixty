@@ -400,7 +400,6 @@
                   className={classOf.get(combatant.guid)}
                   {dataBuild}
                   name={display.text}
-                  spec={combatant.spec ?? ''}
                 />
               </div>
             {/if}

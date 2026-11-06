@@ -1,12 +1,14 @@
 // web/src/lib/gear/paperdoll.ts
-// The paperdoll's pure model (design/specs/2026-10-31-paperdoll.md): where each slot sits in the
-// character frame, what its upgrade line says, the item-level ruling and the panel's words.
-// Paperdoll.svelte draws what this returns; the sim card, the character page and the report
-// each map their own data to `PaperdollSlot`s and nothing else.
+// The worn paperdoll's rules (design/specs/2026-10-31-paperdoll.md, web layout spec 2026-11-05
+// §4.1 item 9): each slot's state, its upgrade (the API's verdict, priced in the band's unit), the
+// two-hander covering the off hand, unknown items, the item-level ruling and the panel's words.
+// The sim card, the character page and the report each map their data to `PaperdollSlot`s
+// (paperdoll-slots.ts); doll-cells.ts turns those into the shared doll's cells.
 import { wearsListedBest } from '../bis/best-in-slot';
-import { itemIdLabel, itemNotInDataPhrase } from '../items/unknown-item-copy';
+import { itemIdLabel } from '../items/unknown-item-copy';
 import type { Slot } from '../planner/types';
 import { slotLabelForClass } from '../bis/slot-display-labels';
+import type { SlotScoreUnit } from '../bis/tank-view';
 import { gearCopy } from './copy';
 import type { CharacterGearSlot } from './types';
 
@@ -31,8 +33,10 @@ export interface PaperdollItemRef {
   quality: number | null;
 }
 
+/** A gain in the band's own unit (`SlotScoreUnit`: DPS, HPS or a tank's score); `value` null when
+ *  the rule cannot price it (lib/home/upgrades.ts `slotGainFor`: a weapon no sim checked). */
 export type PaperdollUpgrade =
-  | { kind: 'gain'; points: number; pick: PaperdollItemRef }
+  | { kind: 'gain'; value: number | null; unit: SlotScoreUnit; pick: PaperdollItemRef }
   | { kind: 'best' }
   | { kind: 'unscored'; pick: PaperdollItemRef };
 
@@ -50,137 +54,17 @@ export interface PaperdollSlot {
   enchant?: string;
 }
 
-export interface PaperdollIdentity {
-  name: string;
-  classSlug: string;
-  /** "Human"; empty when unknown (a combat log names no race). */
-  race: string;
-  /** "Arms". */
-  spec: string;
-  level: number | null;
-  faction: 'alliance' | 'horde' | null;
-  /** The source pill's words ("Addon export, 12 min ago", "At pull"). */
-  source: string;
-}
-
-export type PaperdollSide = 'left' | 'right' | 'centre';
-
-/** One element of the frame in DOM order: a slot cell or its phone upgrade row. */
-export interface PaperdollCell {
-  kind: 'slot' | 'upgrade';
-  slot: PaperdollSlotKey;
-  side: PaperdollSide;
-  /** The desktop grid row (1 to 10). */
-  row: number;
-  /** The phone grid row; row 1 is the identity. */
-  phoneRow: number;
-  /** DOM order. */
-  order: number;
-  /**
-   * The empty off hand under a two-handed main hand ("Two-hand in main hand"): the two-hander,
-   * which the frame draws greyed in the slot as the game's character pane does. Null otherwise.
-   */
-  coveredBy: PaperdollItemRef | null;
-  data: PaperdollSlot;
-}
-
-const LEFT: readonly PaperdollSlotKey[] = [
-  'head',
-  'neck',
-  'shoulder',
-  'back',
-  'chest',
-  'shirt',
-  'tabard',
-  'wrist',
-];
-const RIGHT: readonly PaperdollSlotKey[] = [
-  'hands',
-  'waist',
-  'legs',
-  'feet',
-  'finger1',
-  'finger2',
-  'trinket1',
-  'trinket2',
-];
-/** Shirt and tabard are drawn only when the data carries them (§3.1). */
+/** Shirt and tabard are drawn only when the data carries them (§3.1); the item level skips them. */
 const OPTIONAL: ReadonlySet<PaperdollSlotKey> = new Set(['shirt', 'tabard']);
-const WEAPON_ROW = 9;
-const RANGED_ROW = 10;
-
-/** The phone frame draws an upgrade row for a gain or "Not scored"; never for "Best in slot". */
-export function phoneUpgradeShown(upgrade: PaperdollUpgrade | undefined): boolean {
-  return upgrade !== undefined && upgrade.kind !== 'best';
-}
-
-/** The two-handed main hand, when the off hand is empty under it. */
-function twoHandOver(bySlot: ReadonlyMap<PaperdollSlotKey, PaperdollSlot>): PaperdollItemRef | null {
-  const main = bySlot.get('main_hand')?.item;
-  return bySlot.get('off_hand')?.state !== 'item' && main?.twoHand === true ? main : null;
-}
-
-/** Every slot the frame draws, in its column order; a missing required slot is drawn empty. */
-function columns(bySlot: ReadonlyMap<PaperdollSlotKey, PaperdollSlot>): {
-  left: PaperdollSlot[];
-  right: PaperdollSlot[];
-} {
-  const pick = (keys: readonly PaperdollSlotKey[]): PaperdollSlot[] =>
-    keys
-      .filter((key) => !OPTIONAL.has(key) || bySlot.has(key))
-      .map((key) => bySlot.get(key) ?? { slot: key, state: 'empty' });
-  return { left: pick(LEFT), right: pick(RIGHT) };
-}
 
 /**
- * The frame's cells in DOM order (§3.3): pairs of left and right slots, each pair followed by its
- * phone upgrade rows (the left slot's first), then the weapons pair and its rows, then ranged and
- * its row. The DOM order is the phone's visual order; the desktop grid places the same elements
- * by `row` and `side`.
+ * The two-handed main hand covering an empty off hand (§4.3 "Two-hand in main hand"): the doll
+ * draws it greyed in the off hand's socket, as the game's character pane does. Null otherwise.
  */
-export function paperdollLayout(slots: readonly PaperdollSlot[]): PaperdollCell[] {
-  const bySlot = new Map(slots.map((slot) => [slot.slot, slot]));
-  const twoHander = twoHandOver(bySlot);
-  const { left, right } = columns(bySlot);
-  const empty = (key: PaperdollSlotKey): PaperdollSlot => bySlot.get(key) ?? { slot: key, state: 'empty' };
-  const pairs: { left?: PaperdollSlot; right?: PaperdollSlot; row: number }[] = [];
-  for (let index = 0; index < Math.max(left.length, right.length); index++)
-    pairs.push({ left: left[index], right: right[index], row: index + 1 });
-  pairs.push({ left: empty('main_hand'), right: empty('off_hand'), row: WEAPON_ROW });
-
-  const cells: PaperdollCell[] = [];
-  let phoneRow = 2;
-  const push = (
-    kind: PaperdollCell['kind'],
-    data: PaperdollSlot,
-    side: PaperdollSide,
-    row: number,
-    at: number,
-  ) =>
-    cells.push({
-      kind,
-      slot: data.slot,
-      side,
-      row,
-      phoneRow: at,
-      order: cells.length,
-      coveredBy: kind === 'slot' && data.slot === 'off_hand' ? twoHander : null,
-      data,
-    });
-  for (const pair of pairs) {
-    const pairRow = phoneRow++;
-    if (pair.left) push('slot', pair.left, 'left', pair.row, pairRow);
-    if (pair.right) push('slot', pair.right, 'right', pair.row, pairRow);
-    for (const [data, side] of [
-      [pair.left, 'left'],
-      [pair.right, 'right'],
-    ] as const)
-      if (data && phoneUpgradeShown(data.upgrade)) push('upgrade', data, side, pair.row, phoneRow++);
-  }
-  const ranged = empty('ranged');
-  push('slot', ranged, 'centre', RANGED_ROW, phoneRow++);
-  if (phoneUpgradeShown(ranged.upgrade)) push('upgrade', ranged, 'centre', RANGED_ROW, phoneRow);
-  return cells;
+export function twoHandCover(slots: readonly PaperdollSlot[]): PaperdollItemRef | null {
+  const main = slots.find((slot) => slot.slot === 'main_hand')?.item;
+  const off = slots.find((slot) => slot.slot === 'off_hand');
+  return off?.state !== 'item' && main?.twoHand === true ? main : null;
 }
 
 /**
@@ -203,15 +87,23 @@ export function unknownCount(slots: readonly PaperdollSlot[]): number {
   return slots.filter((slot) => slot.state === 'unknown').length;
 }
 
+/** Prices the API's gain: the pick's gain over the worn id in `unit`, null when it cannot. */
+export interface GainPricer {
+  unit: SlotScoreUnit;
+  price: (slot: PaperdollSlotKey, pickId: number, wornId: number | undefined) => number | null;
+}
+
 /**
  * A character-page slot's upgrade (§3.4) from the API's `CharacterGearSlot`. `wornBySlot` is the
  * worn item id per slot, for the rings and trinkets matched either way round; `ref` resolves a
- * pick's icon and quality. Never a gain when the pick is worn.
+ * pick's icon and quality. The API's gap decides whether there is a gain (never when the pick is
+ * worn); `pricer` says how much in the band's unit (web layout spec §4.6, D4: no points).
  */
 export function upgradeFor(
   gear: CharacterGearSlot,
   wornBySlot: Readonly<Record<string, number | undefined>>,
   ref: (id: number, name: string) => PaperdollItemRef,
+  pricer: GainPricer,
 ): PaperdollUpgrade | undefined {
   const { worn, pick, gap } = gear;
   if (pick === null) return undefined;
@@ -219,7 +111,13 @@ export function upgradeFor(
   if (worn !== null && wearsListedBest(gear.slot, pick.id, { ...wornBySlot, [gear.slot]: worn.id }))
     return { kind: 'best' };
   if (gap === null) return worn === null ? { kind: 'unscored', pick: ref(pick.id, pick.name) } : undefined;
-  return gap > 0 ? { kind: 'gain', points: gap, pick: ref(pick.id, pick.name) } : undefined;
+  if (gap <= 0) return undefined;
+  return {
+    kind: 'gain',
+    value: pricer.price(gear.slot, pick.id, worn?.id),
+    unit: pricer.unit,
+    pick: ref(pick.id, pick.name),
+  };
 }
 
 /** The slot's word: `slotLabelForClass` ("Relic" for the relic classes), plus shirt and tabard. */
@@ -234,113 +132,9 @@ export function unknownName(slot: PaperdollSlotKey, id: number, classSlug = ''):
   return `${slotLabel(slot, classSlug)} · ${itemIdLabel(id)}`;
 }
 
-/** The cell's accessible name (§6): "Head: Lionheart Helm". */
-export function cellLabel(slot: PaperdollSlot, classSlug = '', twoHandOff = false): string {
-  const label = slotLabel(slot.slot, classSlug);
-  if (slot.state === 'item' && slot.item) return `${label}: ${slot.item.name}`;
-  if (slot.state === 'unknown')
-    return `${label}: ${itemIdLabel(slot.unknownId ?? 0)}, ${itemNotInDataPhrase.toLowerCase()}`;
-  return `${label}: ${twoHandOff ? gearCopy.paperdoll.twoHand.toLowerCase() : gearCopy.paperdoll.empty}`;
-}
-
-/** The pick's accessible name (§6): "Head upgrade: Lionheart Helm, 60 points to gain". */
-export function pickLabel(slot: PaperdollSlotKey, upgrade: PaperdollUpgrade, classSlug = ''): string {
-  if (upgrade.kind === 'best') return `${slotLabel(slot, classSlug)}: ${gearCopy.paperdoll.best}`;
-  const tail =
-    upgrade.kind === 'gain' ? gearCopy.gapLabel(upgrade.points) : gearCopy.paperdoll.notScoredLabel;
-  return `${slotLabel(slot, classSlug)}${gearCopy.paperdoll.upgradeLabel}${upgrade.pick.name}, ${tail}`;
-}
-
 /** The note under the stage (§3.3, §6): once, only when a slot is unknown or the file failed. */
 export function paperdollNote(unknown: number, failed: boolean): string | null {
   if (failed) return gearCopy.paperdoll.noteFailed;
   if (unknown === 0) return null;
   return unknown === 1 ? gearCopy.paperdoll.noteOne : gearCopy.paperdoll.noteMany(unknown);
-}
-
-const SOFT_HYPHEN = '­';
-const VOWEL = /[aeiouy]/i;
-/** Consonant onsets English keeps together at a syllable's start. */
-const ONSETS: ReadonlySet<string> = new Set([
-  'bl',
-  'br',
-  'ch',
-  'cl',
-  'cr',
-  'dr',
-  'fl',
-  'fr',
-  'gl',
-  'gr',
-  'kn',
-  'ph',
-  'pl',
-  'pr',
-  'qu',
-  'sc',
-  'sh',
-  'sk',
-  'sl',
-  'sm',
-  'sn',
-  'sp',
-  'st',
-  'sw',
-  'th',
-  'tr',
-  'tw',
-  'wh',
-  'wr',
-  'chr',
-  'sch',
-  'scr',
-  'shr',
-  'spl',
-  'spr',
-  'str',
-  'thr',
-]);
-/** Only a word this long can be wider than the narrowest name line (a 360 px phone's ~100 px at
- *  12 px holds about 12 letters, so "Shoulderguard" needs a break): shorter words wrap whole, and a
- *  soft hyphen in one would make the browser hyphenate a word that fits its own line ("Mysta-ria"). */
-const MIN_WORD = 12;
-const MIN_PART = 3;
-/** A syllable between two breaks may be two letters ("mag-ne-tic"). */
-const MIN_INNER = 2;
-
-/** The onset starting at `index`, when a vowel follows it: its length, or 0. */
-function onsetAt(word: string, index: number): number {
-  if (VOWEL.test(word[index] ?? '')) return 0;
-  for (const length of [3, 2, 1]) {
-    const onset = word.slice(index, index + length).toLowerCase();
-    const known = length === 1 || ONSETS.has(onset);
-    if (known && onset.length === length && VOWEL.test(word[index + length] ?? '')) return length;
-  }
-  return 0;
-}
-
-function hyphenateWord(word: string): string {
-  if (word.length < MIN_WORD) return word;
-  let out = '';
-  let last = 0;
-  for (let index = MIN_PART; index <= word.length - MIN_PART; index++) {
-    if (onsetAt(word, index) === 0 || !VOWEL.test(word.slice(last, index))) continue;
-    const across = word.slice(index - 1, index + 1).toLowerCase();
-    if (!VOWEL.test(word[index - 1] ?? '') && ONSETS.has(across)) continue;
-    if (index - last < (last === 0 ? MIN_PART : MIN_INNER)) continue;
-    out += word.slice(last, index) + SOFT_HYPHEN;
-    last = index;
-  }
-  return out + word.slice(last);
-}
-
-/**
- * Soft hyphens at the syllable breaks of every long word (§3.3, build requirement): a word wider
- * than its line breaks with a visible hyphen in every engine, without relying on `hyphens: auto`,
- * which headless Chromium and some WebKit builds do not apply. Only words too long for the
- * narrowest line get them, at maximal-onset breaks, never within three letters of either end.
- * Punctuation and spacing are untouched.
- */
-export function hyphenate(text: string): string {
-  return text.replace(/[A-Za-z]+/g, hyphenateWord);
 }

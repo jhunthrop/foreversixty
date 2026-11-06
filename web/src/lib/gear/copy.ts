@@ -44,16 +44,21 @@ export const gearCopy = {
   paperdoll: {
     shirt: 'Shirt',
     tabard: 'Tabard',
-    empty: 'empty',
+    /** An empty slot's line 1 on a worn doll. */
+    emptyTitle: 'Empty',
     twoHand: 'Two-hand in main hand',
     best: 'Best in slot',
-    /** A slot's gain, always one decimal as the API serves it: "+60.0", "+4.4" (§6). */
-    gain: (value: number): string => `+${value.toFixed(1)}`,
     notScored: 'Not scored',
-    notScoredLabel: 'not scored',
-    upgradeLabel: ' upgrade: ',
-    level: (level: number): string => `Level ${level}`,
-    itemLevel: 'Item level',
+    /** A tie with the pick (lib/bis/doll-view.ts `isTie`). */
+    same: 'Same',
+    /** A gain the rule cannot price (a weapon no sim checked): never 0. */
+    notSimChecked: 'Not sim-checked',
+    /** Before the pick under a gain: "vs Lionheart Helm". */
+    versus: 'vs',
+    /** A worn cell's line 2 when it has no enchant: "Item level 62". */
+    itemLevelLine: (level: number): string => `Item level ${level}`,
+    /** The average over the equipped slots, beside the heading. */
+    averageItemLevel: (level: string): string => `Item level ${level}`,
     simHead: 'Character',
     noteOne:
       '1 item is not in our item data yet. It is new in the beta, and it gets a name and icon when the client lists it. Item level shows once every item is known.',
@@ -63,8 +68,13 @@ export const gearCopy = {
     /** The report's slot detail: "Item level 66 · Enchanted". */
     reportDetail: (itemLevel: number, enchanted: boolean): string =>
       `Item level ${itemLevel}${enchanted ? ' · Enchanted' : ''}`,
-    atPull: 'At pull',
+    /** The report doll's accessible name. */
+    atPullLabel: 'Gear at pull',
   },
+  /** The worn doll's head line: "+12.4 DPS across 9 slots", the priced gains summed (§4.6). */
+  gainSummary: (total: string, unit: string, slots: number): string =>
+    `${total} ${unit} across ${slots} ${slots === 1 ? 'slot' : 'slots'}`,
+
   /** The title line is "Gear" then its summary: "+70 pts across 7 slots", from gear_gap_total
    *  and the count of slots whose gap is above 0. The dot between them is drawn after "Gear"
    *  (fix round 2 ruling 4), so no line starts with it. */

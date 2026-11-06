@@ -125,7 +125,7 @@ test.describe('/sim and the header selector', () => {
     await expect(page.getByTestId('selector-name')).toHaveText('Ironhide');
 
     await expect(page.getByTestId('paperdoll-name')).toHaveText('Ironhide');
-    await expect(page.getByTestId('sim-character')).toContainText('Level 24');
+    await expect(page.getByTestId('sim-character')).toContainText('Fury Warrior · 24');
   });
 
   test("the Run block's Run sim loads the current character and runs it", async ({ page }) => {
