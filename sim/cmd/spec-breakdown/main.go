@@ -57,16 +57,19 @@ type options struct {
 	consumes   string
 	buffs      string
 	talents    string
-	rotation   string
-	rank       string
-	jsonOut    bool
-	tank       bool
-	heal       bool
-	duration   int
-	targetType string
-	targets    int
-	bisDir     string
-	gear       string
+	// bandTalents keeps the band entry's talents at -level instead of the
+	// ladder's at that level (the pre-round-24 behaviour).
+	bandTalents bool
+	rotation    string
+	rank        string
+	jsonOut     bool
+	tank        bool
+	heal        bool
+	duration    int
+	targetType  string
+	targets     int
+	bisDir      string
+	gear        string
 }
 
 func main() {
@@ -83,6 +86,7 @@ func main() {
 	flag.StringVar(&o.consumes, "consumes", "", "comma list replacing the kit and preset consumables")
 	flag.StringVar(&o.buffs, "buffs", "", "comma list added to the request's buffs")
 	flag.StringVar(&o.talents, "talents", "", "talent string replacing the published one")
+	flag.BoolVar(&o.bandTalents, "band-talents", false, "with -level, keep the band entry's talents instead of the ones the guide's leveling order gives at that level")
 	flag.StringVar(&o.rank, "rank", "", "comma list of authoredSpellID=rank pairs forced on every reference to that spell (casts and conditions, every line), on -rotation or the spec's own curated rotation; the way to judge a rank row")
 	flag.StringVar(&o.rotation, "rotation", "", "JSON file whose \"rotation\" object (the curated file's shape) replaces the spec's own priority list")
 	flag.StringVar(&o.gear, "gear", "", "comma list of slot:item_id pairs replacing the published entry's items, e.g. off_hand:20688")
@@ -321,6 +325,25 @@ func (o options) characterLevel() (int, error) {
 	return o.level, nil
 }
 
+// characterTalents is -talents, else with -level (and not -band-talents) the
+// talents the guide's published order gives at that level (the ladder string
+// the site and the addon show for it, leveling.GuideLevelTalents; the raid
+// build under the raid preset), else the entry's. Round 24 hunter: rank rows
+// judged at band+N used to run without the points a player has by then.
+func (o options) characterTalents(entry bisEntry, level int) (string, error) {
+	if o.talents != "" {
+		return o.talents, nil
+	}
+	if o.level == 0 || o.bandTalents {
+		return entry.Talents, nil
+	}
+	build, err := leveling.ReadActiveBuild(o.repoRoot)
+	if err != nil {
+		return "", err
+	}
+	return leveling.GuideLevelTalents(o.repoRoot, build, specs.ByKey[o.spec], level, o.preset == request.RaidPreset)
+}
+
 // itemRequiredLevels maps every item of the active build to its required level.
 func itemRequiredLevels(repoRoot string) (map[int]int, error) {
 	dir, err := buildDirectory(repoRoot)
@@ -387,9 +410,9 @@ func buildRequest(o options) (api.SimRequest, error) {
 			return api.SimRequest{}, err
 		}
 	}
-	talents := entry.Talents
-	if o.talents != "" {
-		talents = o.talents
+	talents, err := o.characterTalents(entry, level)
+	if err != nil {
+		return api.SimRequest{}, err
 	}
 	kitBuffs := leveling.KitBuffs(o.spec, min(level, o.band))
 	kitConsumes := leveling.KitConsumes(o.spec, min(level, o.band))
