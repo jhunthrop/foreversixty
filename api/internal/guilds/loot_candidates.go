@@ -93,6 +93,7 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem) []LootCandidat
 			}
 			cand.NotSimChecked = match.verdict.NotSimChecked
 			cand.AlreadyEquivalent = !match.verdict.Upgrade
+			cand.bisPick = match.isPick
 			_, worn := row.gear[match.slot]
 			cand.FillsEmptySlot = !worn
 			s.fillReplaces(&cand, row, match.slot)
@@ -170,6 +171,8 @@ type bisSlotMatch struct {
 	slot    string
 	verdict bis.SlotVerdict
 	unit    string
+	// isPick is true when the band's pick for the slot is the item itself, not a listed alternative.
+	isPick bool
 }
 
 // bisMatch is the tier-0 test: row's spec band names item in one of slots (the pick or a listed
@@ -193,7 +196,8 @@ func (s *Store) bisMatch(row RosterRow, item lootItem, slots []string) (bisSlotM
 			continue
 		}
 		wornID, hasWorn := row.gear[slot]
-		match := bisSlotMatch{slot: slot, verdict: bis.VerdictFor(pick, wornID, hasWorn), unit: gainUnitFor(band)}
+		match := bisSlotMatch{slot: slot, verdict: bis.VerdictFor(pick, wornID, hasWorn), unit: gainUnitFor(band),
+			isPick: pick.ItemID == item.ItemID}
 		if !found || s.pushesOut(row, match, best) {
 			best, found = match, true
 		}

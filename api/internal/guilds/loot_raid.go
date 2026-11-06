@@ -127,10 +127,12 @@ func (s *Store) latestKillNight(ctx context.Context, guildID, encounterID int64,
 // award per drop per raid (loot_awards_drop_idx); on a logged night with no planned raid, the one
 // per drop per log (loot_awards_drop_night_idx, migration 0071). An award with no night has no
 // conflict target: it is its own row, so the same item awarded on two unmatched nights keeps both.
+// A replaced award takes the new decision record.
 func awardConflict(night awardNight) string {
 	const update = ` do update set
 		  character_key = excluded.character_key, awarded_by = excluded.awarded_by,
-		  awarded_at = now(), report_id = excluded.report_id`
+		  awarded_at = now(), report_id = excluded.report_id, ms_os = excluded.ms_os, reason = excluded.reason,
+		  votes_yes = excluded.votes_yes, votes_no = excluded.votes_no, votes_officers = excluded.votes_officers`
 	switch {
 	case night.raidID != nil:
 		return `on conflict (guild_id, raid_id, encounter_id, item_id)` + update
@@ -141,15 +143,17 @@ func awardConflict(night awardNight) string {
 	}
 }
 
-// upsertAward writes the award, replacing the earlier one for the same drop on the same night
-// (awardConflict); an award with no night is always a new row.
-func (s *Store) upsertAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, night awardNight) (int64, error) {
+// upsertAward writes the award with its decision record, replacing the earlier one for the same
+// drop on the same night (awardConflict); an award with no night is always a new row.
+func (s *Store) upsertAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, night awardNight, rec awardDecisionRecord) (int64, error) {
 	var id int64
 	err := s.Pool.QueryRow(ctx, `
-		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by, raid_id, report_id)
-		values ($1, $2, $3, $4, $5, $6, $7)
+		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by, raid_id, report_id,
+			ms_os, reason, votes_yes, votes_no, votes_officers)
+		values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 		`+awardConflict(night)+`
-		returning id`, guildID, encounterID, itemID, characterKey, awardedBy, night.raidID, night.reportID).Scan(&id)
+		returning id`, guildID, encounterID, itemID, characterKey, awardedBy, night.raidID, night.reportID,
+		rec.msOs, rec.reason, rec.votesYes, rec.votesNo, rec.officers).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("guilds: create loot award: %w", err)
 	}

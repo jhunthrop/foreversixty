@@ -173,7 +173,8 @@ func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, err
 }
 
 // finishMatch is the rest of every match, in the match's own transaction: the raid's
-// attendance against its new log and the loot awarded during it. A failure rolls the match back.
+// attendance against its new log, the loot awarded during it and the council's votes and flags. A
+// failure rolls the match back.
 func (s *Store) finishMatch(ctx context.Context, tx pgx.Tx, raid Raid) error {
 	rows, err := attendanceRowsOf(ctx, tx, raid.GuildID, raid.ID, *raid.ReportID)
 	if err != nil {
@@ -182,7 +183,10 @@ func (s *Store) finishMatch(ctx context.Context, tx pgx.Tx, raid Raid) error {
 	if err := writeAttendanceRows(ctx, tx, raid.ID, rows); err != nil {
 		return err
 	}
-	return attachMatchLoot(ctx, tx, raid.ID)
+	if err := attachMatchLoot(ctx, tx, raid.ID); err != nil {
+		return err
+	}
+	return attachCouncilRows(ctx, tx, raid.ID)
 }
 
 func isUniqueViolation(err error) bool {

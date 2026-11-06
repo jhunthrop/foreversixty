@@ -94,7 +94,7 @@ func TestExportAttendance_HeaderAndRows(t *testing.T) {
 func TestExportLoot_HeaderOnlyWhenEmpty(t *testing.T) {
 	f := newExportFixture(t, "Export Empty")
 	rows := f.rows("loot")
-	want := "date,raid,boss,item_id,item,character"
+	want := "date,raid,boss,item_id,item,character,class,ms_os,votes_yes,votes_no,reason,awarded_by"
 	if len(rows) != 1 || strings.Join(rows[0], ",") != want {
 		t.Fatalf("rows = %v, want header only %q", rows, want)
 	}
