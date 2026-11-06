@@ -232,6 +232,10 @@
       compare?.stop();
     };
   });
+
+  /** The tallest answer variant (a healer's figure with its metrics row), measured at 1024 to 2000 px:
+   *  every spec of a class keeps its title and control bar at the same y. */
+  const HEAD_ROW_MIN_HEIGHT = '165px';
 </script>
 
 <div
@@ -245,7 +249,12 @@
 >
   <Page layout="ledger" testid="bis-ledger">
     {#snippet header()}
-      <PageHeader title={`${specName} ${className}`} tone={{ classSlug } as never} testid="bis-page-head">
+      <PageHeader
+        title={`${specName} ${className}`}
+        tone={{ classSlug } as never}
+        minRowHeight={HEAD_ROW_MIN_HEIGHT}
+        testid="bis-page-head"
+      >
         {#snippet crest()}
           <img
             src={crestSrc}
