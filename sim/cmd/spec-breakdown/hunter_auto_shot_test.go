@@ -13,6 +13,10 @@ import (
 
 const arcaneShotsAt50Floor = 15.0
 
+// arcaneShotRank1 is Arcane Shot rank 1; the rank rows pick the rank a
+// level casts, so the count takes every rank.
+const arcaneShotRank1 = 3044
+
 // autoShots is the hunter's Auto Shot casts per iteration under rotation.
 func autoShots(t *testing.T, rotation *proto.APLRotation) float64 {
 	t.Helper()
@@ -106,7 +110,7 @@ func TestMarksmanshipAt50KeepsShootingWhenAimedShotIsOutOfReach(t *testing.T) {
 	var arcane float64
 	for _, action := range player.GetActions() {
 		switch action.GetId().GetSpellId() {
-		case 14283, 14284, 14285, 14286, 14287:
+		case arcaneShotRank1, 14281, 14282, 14283, 14284, 14285, 14286, 14287:
 			for _, target := range action.GetTargets() {
 				arcane += float64(target.GetCasts())
 			}

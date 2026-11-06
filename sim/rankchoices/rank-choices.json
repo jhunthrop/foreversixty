@@ -344,23 +344,61 @@
         "authored": 14287,
         "bands": [
           {
-            "from_level": 26,
+            "from_level": 20,
+            "to_level": 33,
+            "rank": 1,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents."
+          },
+          {
+            "from_level": 34,
+            "to_level": 39,
+            "rank": 3,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents."
+          },
+          {
+            "from_level": 40,
             "to_level": 49,
             "rank": 1,
-            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents."
           },
           {
             "from_level": 50,
+            "to_level": 52,
+            "rank": 3,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents."
+          },
+          {
+            "from_level": 53,
+            "to_level": 53,
+            "rank": 4,
+            "races": ["troll"],
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents. At 53 rank 4 wins for a Troll (+0.1%) and ties for a Dwarf."
+          },
+          {
+            "from_level": 53,
+            "to_level": 53,
+            "rank": 3,
+            "races": ["human", "orc", "dwarf", "night-elf", "tauren", "high-order-skyborne", "windshaper-skyborne"],
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents."
+          },
+          {
+            "from_level": 54,
+            "to_level": 57,
+            "rank": 4,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents."
+          },
+          {
+            "from_level": 58,
             "to_level": 59,
             "rank": 3,
-            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents."
           },
           {
             "from_level": 60,
             "to_level": 60,
             "rank": 3,
             "preset": "bare",
-            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents."
           }
         ]
       },
@@ -369,10 +407,16 @@
         "authored": 13555,
         "bands": [
           {
-            "from_level": 26,
-            "to_level": 39,
+            "from_level": 20,
+            "to_level": 37,
             "rank": 1,
-            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): every Serpent Sting tick carries 5% of ranged attack power on every rank (Blizzard, 3 November), so rank 1 keeps most of the damage for 15 mana while the hunter is short of mana; from the level where the newest rank wins again the default rule applies."
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): every Serpent Sting tick carries 5% of ranged attack power on every rank (Blizzard, 3 November), so rank 1 keeps most of the damage for 15 mana; rank 2 wins at 38 and 39 next to Arcane Shot rank 3."
+          },
+          {
+            "from_level": 38,
+            "to_level": 39,
+            "rank": 2,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): every Serpent Sting tick carries 5% of ranged attack power on every rank (Blizzard, 3 November), so rank 1 keeps most of the damage for 15 mana; rank 2 wins at 38 and 39 next to Arcane Shot rank 3."
           }
         ]
       }
@@ -408,22 +452,68 @@
           },
           {
             "from_level": 30,
-            "to_level": 39,
+            "to_level": 32,
             "rank": 3,
             "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
           },
           {
-            "from_level": 40,
+            "from_level": 42,
+            "to_level": 47,
+            "rank": 4,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%."
+          },
+          {
+            "from_level": 48,
+            "to_level": 48,
+            "rank": 5,
+            "races": ["troll"],
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%. At 48 rank 5 wins for a Troll (+0.2%) and rank 4 for a Dwarf (+0.2%)."
+          },
+          {
+            "from_level": 48,
+            "to_level": 48,
+            "rank": 4,
+            "races": ["human", "orc", "dwarf", "night-elf", "tauren", "high-order-skyborne", "windshaper-skyborne"],
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%."
+          },
+          {
+            "from_level": 49,
+            "to_level": 53,
+            "rank": 5,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%."
+          },
+          {
+            "from_level": 54,
+            "to_level": 56,
+            "rank": 6,
+            "races": ["dwarf"],
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%. At 54 to 56 rank 6 wins for a Dwarf (+0.2 to 0.4%); a Troll keeps rank 5 (it ties at 56)."
+          },
+          {
+            "from_level": 54,
+            "to_level": 56,
+            "rank": 5,
+            "races": ["human", "orc", "night-elf", "tauren", "troll", "high-order-skyborne", "windshaper-skyborne"],
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%."
+          },
+          {
+            "from_level": 57,
+            "to_level": 57,
+            "rank": 6,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%."
+          },
+          {
+            "from_level": 58,
             "to_level": 59,
-            "rank": 1,
-            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+            "rank": 5,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%."
           },
           {
             "from_level": 60,
             "to_level": 60,
-            "rank": 1,
+            "rank": 4,
             "preset": "bare",
-            "note": "Sim-accuracy round 22, level by level (spec-breakdown -level, bare bands, every rank at 20 to 60): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana, and a leveling hunter who fires it on every cooldown runs dry for over a minute of 180 s with the newest rank. Round 20 assumed the share could not flip a rank and did not sweep."
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): Arcane Shot carries 15% of ranged attack power on every rank (Blizzard, 3 November), so a low rank keeps most of its hit for a fraction of the mana. Round 22 judged these rows at each band floor with the floor's talents, without the mana talents a Marksmanship hunter has by 33; with them the best rank is the newest but one or two, by 1 to 4%."
           }
         ]
       },
@@ -492,6 +582,19 @@
             "to_level": 29,
             "rank": 3,
             "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+          },
+          {
+            "from_level": 33,
+            "to_level": 33,
+            "rank": 1,
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): at 33 only the first point of Resourcefulness is in, and rank 1 beats rank 5 by 1.4% for both races; at 34 the second point is in and rank 5 wins by over 2%."
+          },
+          {
+            "from_level": 40,
+            "to_level": 40,
+            "rank": 5,
+            "races": ["troll"],
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): a Troll gains about 0.2% with rank 5 over rank 6 at 40 (beyond error at both seeds); a Dwarf ties, and at 41 the Troll's gain is inside error."
           },
           {
             "from_level": 46,
