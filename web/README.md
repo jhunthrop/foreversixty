@@ -308,13 +308,14 @@ Sessions are an opaque `HttpOnly` cookie, so no code here reads one — `credent
 'include'` is the whole mechanism — and every state-changing call sends the readable
 `fs_csrf` cookie back in `X-CSRF-Token`.
 
-`Rankings.svelte`, `Character.svelte` and `Guild.svelte` are ordinary `client:load` Astro
-islands rather than a third standalone Vite build: Astro bundles each into `dist/_astro/`
-under a content-hashed filename (`Rankings.<hash>.js`, and so on), so they cannot be checked
-by a fixed-path budget the way `planner-island.js` and `report-island.js` are. None of their
-pages are in `lighthouserc.json`'s `collect.url` either — Step 1 of Task 21 audits the report
-page but not the rankings, character or guild shells, so nothing in the Lighthouse run would
-catch a regression here. `scripts/check-island-size.mjs` therefore also globs
+`Rankings.svelte`, `Character.svelte` and `Guild.svelte` are ordinary Astro islands
+(`Rankings` hydrates `client:after-paint`, so its module chain stays behind the server-drawn
+header and board skeleton that are its largest contentful paint) rather than a third standalone
+Vite build: Astro bundles each into `dist/_astro/` under a content-hashed filename
+(`Rankings.<hash>.js`, and so on), so they cannot be checked by a fixed-path budget the way
+`planner-island.js` and `report-island.js` are. `/rankings` and the fixture
+`/rankings/warden-kelthas` are in `lighthouserc.json`'s `collect.url` under the catch-all budget
+(performance 0.95, LCP 2400 ms); the character shell is not. `scripts/check-island-size.mjs` therefore also globs
 `dist/_astro/` for each of the three by component name and holds them to 16 KB gzipped —
 today they measure roughly 4 KB, 2 KB and 2 KB, so the ceiling is headroom against a
 regression rather than a target to grow into.
