@@ -20,29 +20,25 @@ import PageHead from '../components/ui/PageHead.astro';
 import StepTile from '../components/ui/StepTile.astro';
 import companion from '../data/companion.json';
 import activeBuild from '../data/active-build.json';
-import communityLinks from '../data/links.json';
+import { ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH, companionDownloadPath } from '../lib/downloads/paths';
 
 // CurseForge is addressed by project id (the ids in the two TOCs' X-Curse-Project-ID lines;
 // the site redirects an id to the project's page, whatever its slug), Wago by the slugs its
-// pages answer to. The GitHub ones derive from links.json's githubRepo, the same source
-// Footer.astro's Contribute link uses; the data pack is released nightly under its own tag.
+// pages answer to. The zip and the data pack go through the site's own /dl/ paths, which the
+// Worker redirects to wherever the files are hosted (lib/downloads/redirect.ts).
 export const CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706689';
 export const WAGO_URL = 'https://addons.wago.io/addons/foreversixty';
-// Not releases/latest: that is the companion's release (companion.yml keeps --latest), which
-// carries no addon zip. The addon's own releases are tagged addon-v<version>.
-export const GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases?q=addon-v`;
-export const DATA_GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases?q=data-v`;
 
 // CurseForge is the step's button; Wago and the zip are secondary buttons beside it in one row.
 const otherInstalls = [
   { label: addonCopy.installWago, href: WAGO_URL },
-  { label: addonCopy.installGitHub, href: GITHUB_RELEASES_URL },
+  { label: addonCopy.installZip, href: ADDON_DOWNLOAD_PATH },
 ];
 
 // The manual-install disclosure keeps only the hand-install downloads: the addon zip and the data release.
 const manualLinks = [
-  { label: addonCopy.installGitHub, href: GITHUB_RELEASES_URL },
-  { label: addonCopy.installDataGitHub, href: DATA_GITHUB_RELEASES_URL },
+  { label: addonCopy.installZip, href: ADDON_DOWNLOAD_PATH },
+  { label: addonCopy.installDataRelease, href: DATA_DOWNLOAD_PATH },
 ];
 
 // The "how it arrives" line carries the export disclosure's title as a link that opens that disclosure.
@@ -52,7 +48,6 @@ const [arrivesLeadRaw, arrivesTailRaw] = addonCopy.setupHowItArrives.split(addon
 const arrivesLead = arrivesLeadRaw.replace(/ $/, NO_BREAK_SPACE);
 const arrivesTail = arrivesTailRaw.replace(/^ /, NO_BREAK_SPACE);
 
-const downloadUrl = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
 // The first download is the step's button; any other platform is a secondary button beside it.
 const [primaryDownload, ...otherDownloads] = companion.downloads;
 const platformsLine = companionPlatformsLine(companion.downloads.map((entry) => entry.platform));
@@ -243,14 +238,14 @@ const SECONDARY_ACTION = `${button('secondary', 'md')} max-w-full w-fit !h-auto 
           <a
             class={STEP_BUTTON}
             data-step="3"
-            href={downloadUrl(primaryDownload.asset)}
+            href={companionDownloadPath(primaryDownload.asset)}
             rel="noopener"
             data-testid="setup-companion-download"
           >
             {addonCopy.setupCompanionDownload(primaryDownload.platform)}
           </a>
           {otherDownloads.map((entry) => (
-            <a class={SECONDARY_ACTION} href={downloadUrl(entry.asset)} rel="noopener">
+            <a class={SECONDARY_ACTION} href={companionDownloadPath(entry.asset)} rel="noopener">
               {addonCopy.setupCompanionDownload(entry.platform)}
             </a>
           ))}

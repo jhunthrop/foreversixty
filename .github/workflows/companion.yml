@@ -483,3 +483,18 @@ jobs:
             --notes "Desktop companion ${TAG#companion-v} for macOS, Windows and Linux. \
           Each binary is published beside its minisign signature; companion/README.md has the \
           public key and the command to check one."
+
+      - uses: actions/setup-node@v4
+        if: env.MINISIGN_SECRET_KEY != ''
+        with: { node-version-file: web/.node-version }
+      - name: publish to the site's release feed
+        # Beside the GitHub release just made, signed builds only.
+        # The same signed files go to foreversixty.gg/dl/companion/ (tools/publish-feed.sh,
+        # web/src/lib/downloads), which /setup links to and the companion updates from, so
+        # nothing depends on this repository's releases once it is private
+        # (docs/runbooks/repo-private.md). Only a signed release reaches the feed.
+        if: env.MINISIGN_SECRET_KEY != ''
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_R2_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: tools/publish-feed.sh companion "$TAG" staged/*

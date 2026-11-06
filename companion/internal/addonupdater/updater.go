@@ -6,13 +6,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -20,18 +18,13 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/updater"
 )
 
-// Every is how often the releases are listed (the companion's own
+// Every is how often the feed is read (the companion's own
 // six-hour check), and ApplyEvery how often a release that is waiting for
 // the game to close is tried again.
 const (
 	Every      = updater.Every
 	ApplyEvery = time.Minute
 )
-
-// maxPages bounds how far down the release list a check reads. The
-// repository publishes a data release every night, so an addon release can
-// sit a few months down; ten pages of thirty is most of a year.
-const maxPages = 10
 
 // retryAfter is how long an install that failed is left alone, so a folder
 // the system will not let go of is not copied again every minute.
@@ -53,13 +46,10 @@ var (
 type Options struct {
 	// Dir is where downloads wait, in the companion's home.
 	Dir string
-	// APIBase is https://api.github.com unless a test says otherwise.
-	APIBase string
-	// Repo is the repository whose releases are read; the companion's own
-	// unless a test says otherwise.
-	Repo string
-	HTTP *http.Client
-	Log  *slog.Logger
+	// FeedBase is updater.DefaultFeedBase unless a test says otherwise.
+	FeedBase string
+	HTTP     *http.Client
+	Log      *slog.Logger
 	// PublicKey is the minisign key a zip must verify against. Empty
 	// disables the updater: it installs nothing it cannot verify.
 	PublicKey string
@@ -77,7 +67,8 @@ type Options struct {
 
 // Updater keeps the addon and the data addon current.
 type Updater struct {
-	o Options
+	o    Options
+	feed updater.Feed
 
 	// run serialises everything that downloads or writes.
 	run sync.Mutex
@@ -98,11 +89,8 @@ type Updater struct {
 
 // New builds an updater.
 func New(o Options) *Updater {
-	if o.APIBase == "" {
-		o.APIBase = "https://api.github.com"
-	}
-	if o.Repo == "" {
-		o.Repo = updater.Repo
+	if o.FeedBase == "" {
+		o.FeedBase = updater.DefaultFeedBase
 	}
 	if o.HTTP == nil {
 		o.HTTP = &http.Client{Timeout: 5 * time.Minute}
@@ -128,7 +116,7 @@ func New(o Options) *Updater {
 	if o.ApplyEvery <= 0 {
 		o.ApplyEvery = ApplyEvery
 	}
-	u := &Updater{o: o, backoff: map[string]time.Time{}, rejected: map[string]bool{}, waitSaid: map[string]bool{}}
+	u := &Updater{o: o, feed: updater.Feed{Base: o.FeedBase, HTTP: o.HTTP}, backoff: map[string]time.Time{}, rejected: map[string]bool{}, waitSaid: map[string]bool{}}
 	u.recs = loadRecords(o.Dir)
 	return u
 }
@@ -138,8 +126,8 @@ type candidate struct {
 	family  Family
 	tag     string
 	version string
-	zipURL  string
-	sigURL  string
+	zip     updater.Asset
+	sig     updater.Asset
 }
 
 // staged is what waits in the companion's home for a game to close.
@@ -175,7 +163,7 @@ func (u *Updater) clearStaged(f Family) {
 // lets it install anything at all.
 func (u *Updater) Keyed() bool { return u.o.PublicKey != "" }
 
-// Tick is one pass of the schedule: the release list is read at the first
+// Tick is one pass of the schedule: the feed is read at the first
 // call and every six hours after, and anything waiting for a game to close
 // is tried at that moment and then once a minute. It does nothing when the
 // switch is off or the build carries no key. Failures are logged, never
@@ -209,8 +197,8 @@ func (u *Updater) Due(now time.Time) bool {
 	return now.Sub(u.lastLook) >= u.o.ApplyEvery
 }
 
-// due decides what a tick does and records that it looked: the release list
-// at the first tick and every six hours, and in between, once a minute, the
+// due decides what a tick does and records that it looked: the feed at the
+// first tick and every six hours, and in between, once a minute, the
 // release waiting for a game to close.
 func (u *Updater) due(now time.Time) (poll, apply bool) {
 	if u.o.PublicKey == "" || !u.o.Enabled() {
@@ -265,7 +253,7 @@ func (u *Updater) needs(f Family, version string) []string {
 	return out
 }
 
-// refresh lists the releases and stages the newest signed release of each
+// refresh reads the feed and stages the newest signed release of each
 // family that some install needs.
 func (u *Updater) refresh(ctx context.Context) error {
 	cands, err := u.candidates(ctx, Families...)
@@ -307,57 +295,23 @@ func (u *Updater) reject(tag string) {
 	u.rejected[tag] = true
 }
 
-// candidates reads the release list, newest first, until it has found a
-// release with a signed zip for every family asked for, or run out of pages.
-// A release without a signature is not a candidate: it is skipped, and an
-// older signed one is taken instead.
+// candidates reads the manifest of every family asked for and returns the
+// ones whose release carries a signed zip. The feed names only signed
+// releases, so a manifest without a zip and its signature, one whose tag is
+// not the family's, or a family with no manifest yet is simply no
+// candidate. A manifest that cannot be read is an error.
 func (u *Updater) candidates(ctx context.Context, fams ...Family) (map[string]candidate, error) {
 	out := map[string]candidate{}
-	skipped := 0
-	// One line per check, not one per tag: a repository with two dozen
-	// releases from before signing would otherwise fill the log every time.
-	defer func() {
-		if skipped == 0 {
-			return
-		}
-		newest := "none"
-		if len(out) > 0 {
-			tags := make([]string, 0, len(out))
-			for _, c := range out {
-				tags = append(tags, c.tag)
-			}
-			sort.Strings(tags)
-			newest = strings.Join(tags, ", ")
-		}
-		noun := "releases"
-		if skipped == 1 {
-			noun = "release"
-		}
-		u.o.Log.Info(fmt.Sprintf("the update check skipped %d unsigned %s; newest signed: %s", skipped, noun, newest),
-			"component", "addonupdater")
-	}()
-	for page := 1; page <= maxPages; page++ {
-		rels, err := u.list(ctx, page)
+	for _, f := range fams {
+		rel, err := u.feed.Latest(ctx, f.Key)
 		if err != nil {
 			return out, err
 		}
-		for _, rel := range rels {
-			if rel.Draft || rel.Prerelease {
-				continue
-			}
-			for _, f := range fams {
-				if _, done := out[f.Key]; done || !strings.HasPrefix(rel.TagName, f.TagPrefix) {
-					continue
-				}
-				if c, ok := pick(f, rel); ok {
-					out[f.Key] = c
-				} else {
-					skipped++
-				}
-			}
+		if !strings.HasPrefix(rel.TagName, f.TagPrefix) {
+			continue
 		}
-		if len(out) == len(fams) || len(rels) < updater.PerPage {
-			break
+		if c, ok := pick(f, rel); ok {
+			out[f.Key] = c
 		}
 	}
 	return out, nil
@@ -365,68 +319,23 @@ func (u *Updater) candidates(ctx context.Context, fams ...Family) (map[string]ca
 
 // pick finds the family's zip on a release and the signature beside it.
 func pick(f Family, rel updater.Release) (candidate, bool) {
-	var zipName, zipURL string
+	var zip updater.Asset
 	for _, a := range rel.Assets {
 		if strings.HasPrefix(a.Name, f.Main()+"-") && strings.HasSuffix(a.Name, ".zip") {
-			zipName, zipURL = a.Name, a.URL
+			zip = a
 			break
 		}
 	}
-	if zipName == "" {
+	if zip.Name == "" {
 		return candidate{}, false
 	}
 	for _, a := range rel.Assets {
-		if a.Name == zipName+".minisig" {
+		if a.Name == zip.Name+".minisig" {
 			return candidate{family: f, tag: rel.TagName, version: f.VersionOfTag(rel.TagName),
-				zipURL: zipURL, sigURL: a.URL}, true
+				zip: zip, sig: a}, true
 		}
 	}
 	return candidate{}, false
-}
-
-func (u *Updater) list(ctx context.Context, page int) ([]updater.Release, error) {
-	url := fmt.Sprintf("%s/repos/%s/releases?per_page=%d&page=%d", u.o.APIBase, u.o.Repo, updater.PerPage, page)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Accept", "application/vnd.github+json")
-	resp, err := u.o.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("GitHub answered %d for the release list", resp.StatusCode)
-	}
-	var rels []updater.Release
-	if err := json.NewDecoder(io.LimitReader(resp.Body, 4<<20)).Decode(&rels); err != nil {
-		return nil, err
-	}
-	return rels, nil
-}
-
-func (u *Updater) fetch(ctx context.Context, url string) ([]byte, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := u.o.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("downloading %s: %d", url, resp.StatusCode)
-	}
-	b, err := io.ReadAll(io.LimitReader(resp.Body, updater.MaxAsset+1))
-	if err != nil {
-		return nil, err
-	}
-	if len(b) > updater.MaxAsset {
-		return nil, fmt.Errorf("downloading %s: over the %d byte ceiling", url, updater.MaxAsset)
-	}
-	return b, nil
 }
 
 // stage downloads a candidate, verifies it against the public key, proves
@@ -441,11 +350,11 @@ func (u *Updater) stage(ctx context.Context, c candidate) error {
 			return nil
 		}
 	}
-	body, err := u.fetch(ctx, c.zipURL)
+	body, err := u.feed.Fetch(ctx, c.zip)
 	if err != nil {
 		return err
 	}
-	sig, err := u.fetch(ctx, c.sigURL)
+	sig, err := u.feed.Fetch(ctx, c.sig)
 	if err != nil {
 		return err
 	}
@@ -560,7 +469,7 @@ func (u *Updater) apply(ctx context.Context) {
 		}
 		// A game is closed and about to get this release. The release that
 		// was staged hours ago may have been followed by newer ones, so the
-		// list is read again and the newest signed one goes in.
+		// feed is read again and the newest signed one goes in.
 		meta = u.newest(ctx, f, meta)
 		need = u.needs(f, meta.Version)
 		if len(need) == 0 {
@@ -601,14 +510,14 @@ func (u *Updater) apply(ctx context.Context) {
 	}
 }
 
-// newest re-reads the releases and, when a signed release of family f is
-// newer than the staged one, stages it in the staged one's place and returns
-// it. A listing that cannot be read, a newest release that is not newer, or
+// newest re-reads the feed and, when a signed release of family f is newer
+// than the staged one, stages it in the staged one's place and returns it. A
+// manifest that cannot be read, a newest release that is not newer, or
 // one that cannot be taken leaves the staged release as it was.
 func (u *Updater) newest(ctx context.Context, f Family, meta staged) staged {
 	cands, err := u.candidates(ctx, f)
 	if err != nil {
-		u.o.Log.Warn("could not re-read the releases before installing; using the one that was staged",
+		u.o.Log.Warn("could not re-read the release feed before installing; using the one that was staged",
 			"component", "addonupdater", "staged", meta.Version, "err", err.Error())
 		return meta
 	}

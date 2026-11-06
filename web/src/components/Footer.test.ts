@@ -64,9 +64,10 @@ describe('Footer', () => {
     }
   });
 
-  it('carries the Discord invite and the Report a bug issues link as buttons', async () => {
+  it('carries the Discord invite and Report a bug, which goes to the Discord too, as buttons', async () => {
     const html = await renderFooter();
     expect(html).toMatch(/<a[^>]*href="https:\/\/discord\.gg\/[^"]+"[^>]*>[\s\S]*?Join the Discord/);
-    expect(html).toMatch(/<a[^>]*href="[^"]+\/issues"[^>]*>[\s\S]*?Report a bug/);
+    expect(html).toMatch(/<a[^>]*href="https:\/\/discord\.gg\/[^"]+"[^>]*>\s*Report a bug\s*</);
+    expect(html).not.toMatch(/github\.com/i);
   });
 });
