@@ -58,16 +58,28 @@ function levelRow(item: ChecklistItem, zone: string): ChecklistRow {
   return { key: item.key, tone: 'miss', title: `Level ${need} for ${zone}`, sub, fix: null };
 }
 
-function attunementRow(item: ChecklistItem, zone: string): ChecklistRow {
-  if (item.attunement_kind === 'quest') {
-    const chain = item.key_item?.name;
-    const title = `Attuned to ${zone}`;
-    if (item.state === 'ok')
-      return { key: item.key, tone: 'ok', title, sub: 'Your attunement is done.', fix: null };
+/** A quest attunement (Onyxia's Lair): the zone's chain, and the item it hands out when it has one
+ *  ("Finish the attunement chain for Onyxia's Lair and keep the Drakefire Amulet in your bags."). */
+function questAttunementRow(item: ChecklistItem, zone: string): ChecklistRow {
+  const reward = item.key_item?.name;
+  const title = `Attuned to ${zone}`;
+  if (item.state === 'ok') {
     const sub =
-      chain === undefined ? 'Your attunement quest is not done yet.' : `The ${chain} quest is not done yet.`;
-    return { key: item.key, tone: 'miss', title, sub, fix: null };
+      reward === undefined ? 'Attunement chain done.' : `Attunement chain done. Keep the ${reward} on you.`;
+    return { key: item.key, tone: 'ok', title, sub, fix: null };
   }
+  const keep = reward === undefined ? '' : ` and keep the ${reward} in your bags`;
+  return {
+    key: item.key,
+    tone: 'miss',
+    title,
+    sub: `Finish the attunement chain for ${zone}${keep}.`,
+    fix: null,
+  };
+}
+
+function attunementRow(item: ChecklistItem, zone: string): ChecklistRow {
+  if (item.attunement_kind === 'quest') return questAttunementRow(item, zone);
   const key = item.key_item?.name ?? 'The key';
   if (item.state === 'ok')
     return { key: item.key, tone: 'ok', title: `Key for ${zone}`, sub: `${key} is in your bags.`, fix: null };
@@ -90,7 +102,13 @@ function flaskFoodRow(item: ChecklistItem): ChecklistRow {
   const names = (item.supplies ?? []).map((stack) => stack.name);
   const missing = item.missing ?? [];
   if (item.state === 'ok')
-    return { key: item.key, tone: 'ok', title: 'Flask and food', sub: `${listWords(names)}.`, fix: null };
+    return {
+      key: item.key,
+      tone: 'ok',
+      title: 'Flask and food',
+      sub: `You carry ${listWords(names)}.`,
+      fix: null,
+    };
   const title =
     FLASK_FOOD_MISSING[missing.length > 1 ? 'both' : (missing[0] ?? 'both')] ?? FLASK_FOOD_MISSING.both!;
   const sub =
@@ -180,20 +198,25 @@ export function checklistRows(list: GuildChecklist, race: string | null = null):
 
 const SETUP_HREF = '/setup';
 
+/** What the member shares to fix an untracked check, by the API's reason: the addon setup shows how. */
+const SHARE_ROWS: Readonly<Record<string, { title: string; sub: string }>> = {
+  gear_not_shared: { title: 'Share your gear', sub: 'Your addon export has no gear on file yet.' },
+  quests_not_in_export: {
+    title: 'Share your quests',
+    sub: 'Update the addon and sync to check your attunement.',
+  },
+  bags_not_shared: {
+    title: 'Share your bags',
+    sub: 'Allow bag sharing in the addon to check your flask and food.',
+  },
+};
+
 /** A check we cannot read that the member can fix themselves (share the export); the rest of the
  *  untracked checks (keys, named consumables, resistance, no BiS list) are not drawn. */
 function actionableRow(item: ChecklistItem): ChecklistRow[] {
   const fix = { label: 'How', href: SETUP_HREF };
-  if (item.reason === 'gear_not_shared')
-    return [
-      {
-        key: item.key,
-        tone: 'warn',
-        title: 'Share your gear',
-        sub: 'Your addon export has no gear on file yet.',
-        fix,
-      },
-    ];
+  const share = item.reason === undefined ? undefined : SHARE_ROWS[item.reason];
+  if (share !== undefined) return [{ key: item.key, tone: 'warn', ...share, fix }];
   if (item.key === 'level' && item.reason === 'no_level')
     return [
       { key: item.key, tone: 'warn', title: 'Share your level', sub: 'Your level is not on file yet.', fix },
