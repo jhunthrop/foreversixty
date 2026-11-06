@@ -21,6 +21,7 @@
 // entries readable by a version 1 one.
 import { canAddPoint, withPoint, type TalentIndex } from './rules';
 import { SLOTS, type Gear, type Slot } from './types';
+import { decodeDrops, type FS1DropCorpse } from './fs1-drops';
 import { decodePrepSection, isPrepSection, type FS1Prep } from './fs1-prep';
 
 export const FS1_PREFIX = 'FS1';
@@ -60,6 +61,8 @@ export interface FS1Loadout {
 }
 
 export interface FS1Build extends FS1Prep {
+  /** The drops= section (fs1-drops.ts): boss corpses the addon's loot window read in raids. */
+  drops?: FS1DropCorpse[];
   dataBuild: string;
   classSlug: string;
   raceSlug: string;
@@ -341,6 +344,7 @@ export function decodeFS1(code: string): FS1Result {
     ignored: [] as string[],
     character: undefined as { name: string; realm: string } | undefined,
     level: undefined as number | undefined,
+    drops: undefined as FS1DropCorpse[] | undefined,
   };
 
   for (const section of sections) {
@@ -396,6 +400,8 @@ export function decodeFS1(code: string): FS1Result {
       };
     } else if (isPrepSection(name)) {
       Object.assign(build, decodePrepSection(name, field));
+    } else if (name === 'drops') {
+      build.drops = decodeDrops(field);
     } else if (name !== '') {
       // Contract 7: unknown sections are ignored by the decoder and reported in its
       // result. An addon a version ahead of the site is a thing that will happen, and

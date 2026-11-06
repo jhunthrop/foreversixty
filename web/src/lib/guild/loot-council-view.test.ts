@@ -25,6 +25,7 @@ import {
   tableDrop,
   pickOptions,
   NOT_IN_CLIENT,
+  RECORDED_BY_ADDON,
 } from './loot-council-view';
 
 const table = buildMockLoot().items;
@@ -47,8 +48,14 @@ describe('nights', () => {
     expect(defaultNight(nights)?.night).toBe('raid:12');
     expect(defaultNight([past])?.night).toBe('raid:11');
     expect(defaultNight([])).toBeNull();
-    expect(nightSummary(current)).toBe('3 drops, 2 open');
+    expect(nightSummary(current)).toBe('3 drops, 2 open · 2 recorded by the addon');
+    expect(nightSummary(past)).toBe('1 drop, 0 open');
     expect(nightSummary({ ...current, drops: [] })).toBe('No drops yet');
+  });
+
+  it('says the addon recorded the night when it saw every drop', () => {
+    const drops = current.drops.map((drop) => ({ ...drop, recorded: true, count: 1 }));
+    expect(nightSummary({ ...current, drops })).toBe(`3 drops, 2 open · ${RECORDED_BY_ADDON}`);
   });
 });
 
@@ -58,6 +65,16 @@ describe('drop rows', () => {
     expect(rows.map((row) => row.state)).toEqual(['open', 'open', 'awarded']);
     expect(rows[0].sub).toMatch(/· \d+ candidates?$/);
     expect(rows[2].sub).toContain(`Awarded to ${current.drops[2].award?.name}`);
+    expect(rows[2].sub).toMatch(new RegExp(`Awarded to .* · Looted by ${current.drops[2].award?.name}$`));
+    expect(rows[1].sub).not.toContain('Looted by');
+  });
+
+  it('says how many copies the addon saw drop', () => {
+    const night = {
+      ...current,
+      drops: [{ ...current.drops[0], recorded: true, count: 2, looted_by: ['A', 'B'] }],
+    };
+    expect(dropRows(night, table)[0].sub).toMatch(/· 2 dropped · .* · Looted by A, B$/);
   });
 
   it('names a non-gear drop by its kind', () => {

@@ -2555,9 +2555,10 @@ components:
           type: [object, "null"]
           title: OfficerActionDrops
           description: >-
-            The newest loot council night with drops (GET .../loot/nights: what the council
-            awarded, voted on or flagged); null when no night has any. count is its drops still
-            open; awarded is the awards filed under that night. tracked is always true.
+            The newest loot council night with drops (GET .../loot/nights: what the addon recorded
+            dropping and what the council awarded, voted on or flagged); null when no night has
+            any. count is its drops still open, recorded ones included; awarded is the awards filed
+            under that night. tracked is always true.
           required: [tracked, count, raid_id, label, awarded]
           properties:
             tracked: { type: boolean }
@@ -3480,9 +3481,11 @@ components:
       type: object
       description: >-
         GET /v1/guilds/{id}/loot/nights: the guild's loot nights, newest first. A night's drops are
-        the items the council awarded, voted on or flagged on it (no record of what dropped exists
-        beyond that); the current night (where an award made now is filed) is always listed, first
-        when nothing else holds it, and the page offers the whole loot table on it (GET .../loot).
+        what a raider's addon recorded dropping on it (the export's drops= section, recorded true),
+        plus the items the council awarded, voted on or flagged; the current night (where an award
+        made now is filed) is always listed, first when nothing else holds it, and the page offers
+        the whole loot table on it (GET .../loot) for a night no addon recorded. Members read the
+        same drops with no vote counts.
       required: [officers, nights]
       properties:
         officers: { type: integer }
@@ -3505,7 +3508,7 @@ components:
                 items:
                   type: object
                   title: LootNightDrop
-                  required: [item_id, name, icon, quality, kind, encounter_id, boss, state, award]
+                  required: [item_id, name, icon, quality, kind, encounter_id, boss, state, award, recorded, count, looted_by]
                   properties:
                     item_id: { type: integer }
                     name: { type: string }
@@ -3516,6 +3519,12 @@ components:
                     boss: { type: string }
                     state: { type: string, enum: [open, awarded] }
                     award: { oneOf: [{ $ref: '#/components/schemas/LootDecision' }, { type: "null" }] }
+                    recorded: { type: boolean, description: True when a raider's addon recorded the drop from the loot window. }
+                    count: { type: integer, minimum: 0, description: The copies the addon recorded; 0 when no addon recorded the drop. }
+                    looted_by:
+                      type: array
+                      description: Who the loot chat says received a copy, as the client named them; empty when unknown.
+                      items: { type: string }
               decisions:
                 type: array
                 description: The night's decision record, oldest first.
