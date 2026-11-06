@@ -11,12 +11,15 @@
     label,
     testid,
     children,
+    foot,
   }: {
     kind?: 'tooltip' | 'sheet' | 'menu';
     role?: string;
     label?: string;
     testid?: string;
     children: Snippet;
+    /** A muted note under a hairline at the overlay's foot (a checklist's explanation). */
+    foot?: Snippet;
   } = $props();
 </script>
 
@@ -31,4 +34,7 @@
   data-testid={testid}
 >
   {@render children()}
+  {#if foot}<div class="border-line-soft text-muted border-t px-[14px] pt-2 pb-3 text-[12px] leading-4">
+      {@render foot()}
+    </div>{/if}
 </div>

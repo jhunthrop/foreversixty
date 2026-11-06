@@ -19,7 +19,7 @@ const SRC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 /** The primitives themselves, the one place a surface may be drawn. */
 const PRIMITIVES = 'components/ui/';
 /** The number of allowlisted files when this ratchet landed (2026-11-05); lower it, never raise it. */
-const ALLOWLIST_CEILING = 251;
+const ALLOWLIST_CEILING = 249;
 
 /** Surface classes: the card, the panel radius, the line borders, the raised and hover grounds. */
 const SURFACE_CLASS =

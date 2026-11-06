@@ -58,7 +58,9 @@ async function openRaidsTab(page: Page, options: RaidStubOptions, at = NOW): Pro
 
 const segment = (page: Page, name: string, state: string): Locator =>
   page.getByTestId(`${stripId('segments', name)}-${state}`);
-const rosterSelects = (page: Page): Locator => page.locator('select[data-testid^="raid-roster-select-"]');
+/** The officer's in-row state controls (each segment of each row). */
+const rosterSelects = (page: Page): Locator =>
+  page.locator('[role="radiogroup"][data-testid^="raid-roster-state-"] button');
 
 async function openForm(page: Page): Promise<Locator> {
   await page.getByTestId('guild-raids-plan').click();
@@ -173,7 +175,7 @@ test('an officer posts a raid with Post to Discord, and the planned row opens it
   await expect(row).toBeVisible();
   await row.click();
   await page.waitForURL(`**${raidUrl(FIRST_NEW_ID)}`);
-  await expect(page.getByTestId('raid-title')).toContainText("Onyxia's Lair");
+  await expect(page.getByTestId('raid-head')).toContainText("Onyxia's Lair");
 });
 
 test('a 429 on Post the event says to wait, keeps the form and posts nothing', async ({ page }) => {
@@ -236,7 +238,7 @@ test.describe('officer-read-only (§3.2, gate spec §3.4)', () => {
       selects = await rosterSelects(live).count();
       expect(selects).toBeGreaterThan(0);
       expect(
-        await rosterSelects(live).evaluateAll((n) => n.every((s) => !(s as HTMLSelectElement).disabled)),
+        await rosterSelects(live).evaluateAll((n) => n.every((s) => !(s as HTMLButtonElement).disabled)),
       ).toBe(true);
     } finally {
       await live.close();
@@ -254,7 +256,7 @@ test.describe('officer-read-only (§3.2, gate spec §3.4)', () => {
       await expect(page.getByTestId('guild-raids-plan-gate')).toBeVisible();
       await expect(rosterSelects(page)).toHaveCount(selects);
       expect(
-        await rosterSelects(page).evaluateAll((n) => n.every((s) => (s as HTMLSelectElement).disabled)),
+        await rosterSelects(page).evaluateAll((n) => n.every((s) => (s as HTMLButtonElement).disabled)),
       ).toBe(true);
 
       const copy = page.getByTestId('raid-officer-copy');
@@ -612,6 +614,6 @@ test.describe('Post to Discord and the reminder (guided cards P.3)', () => {
     await stubGuildRaids(page, { viewer: 'member', raids: [storedRaid({ id: 1 })] });
     await page.clock.install({ time: NOW });
     await gotoHydrated(page, raidUrl(1), 'raid-page');
-    await expect(page.getByTestId('raid-title')).toContainText("Onyxia's Lair");
+    await expect(page.getByTestId('raid-head')).toContainText("Onyxia's Lair");
   });
 });

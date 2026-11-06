@@ -7,7 +7,7 @@ import { bisHref } from '../character-profile';
 import { counted } from '../plural';
 import { tallyTone, type CellTone, type MarkTone } from '../ui/cells';
 import type { GridRowModel } from '../ui/cells';
-import type { GuildRaidCounts, GuildRaidCoverRow } from './api';
+import type { GuildRaidCounts, GuildRaidCoverRow, GuildRaidView } from './api';
 import { coverSigned, coverTone } from './cover-view';
 import { DEFAULT_LOCALE, clockText, dateLabel, offsetsDiffer, zoneAbbreviation } from './raid-time';
 import { enchantSlotLabel as slotWord } from './readiness-view';
@@ -325,6 +325,13 @@ export function coverGridRows(
       ],
     };
   });
+}
+
+/** The ping may go out: the raid has a Discord post and the 6 h throttle has passed. */
+export function pingAllowed(raid: Pick<GuildRaidView, 'discord_post' | 'ping'>, now: Date): boolean {
+  if (raid.discord_post === null) return false;
+  const next = raid.ping?.next_allowed_at ?? null;
+  return next === null || new Date(next) <= now;
 }
 
 /** The ping's answer in words: who was named, and who could not be. */

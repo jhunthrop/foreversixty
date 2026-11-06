@@ -7,6 +7,7 @@
      stack. Turning a kind off re-picks; nothing hides. -->
 <script lang="ts">
   import Overlay from '../ui/Overlay.svelte';
+  import { button as buttonClass } from '../../lib/ui/button';
   import { popoverSupported } from '../../lib/ui/listbox-model';
   import type { PopoverHandle } from '../../lib/ui/popover';
   import { SOURCE_FILTER_KINDS } from '../../lib/bis/source-filter';
@@ -25,7 +26,8 @@
     onchange: (next: SourceFilterKind[]) => void;
   } = $props();
 
-  const FOOT = 'Counts are slots with a ranked option from that source. Turning one off re-picks each slot; nothing is hidden.';
+  const FOOT =
+    'Counts are slots with a ranked option from that source. Turning one off re-picks each slot; nothing is hidden.';
   const PANEL_ID = 'bis-sources-panel';
 
   let wrap = $state<HTMLElement | null>(null);
@@ -97,7 +99,7 @@
     <button
       bind:this={button}
       type="button"
-      class="bis-sources-button"
+      class="{buttonClass('secondary', 'sm', true)} bis-sources-button"
       aria-haspopup="dialog"
       aria-expanded={open}
       aria-controls={PANEL_ID}
@@ -139,7 +141,7 @@
             </label>
           {/each}
         </fieldset>
-        <p class="bis-sources-note text-muted">{FOOT}</p>
+        {#snippet foot()}{FOOT}{/snippet}
       </Overlay>
     </div>
   </div>
@@ -181,9 +183,6 @@
     gap: 8px;
     height: 36px;
     padding: 0 10px;
-    border: 1px solid var(--color-line-card);
-    border-radius: var(--radius-control);
-    background: rgb(255 255 255 / 0.045);
     color: var(--color-strong);
     font-size: 13px;
     font-weight: 600;
@@ -258,13 +257,6 @@
     color: var(--color-muted);
     font-variant-numeric: tabular-nums;
     font-size: 13px;
-  }
-  .bis-sources-note {
-    margin: 0;
-    padding: 8px 14px 12px;
-    border-top: 1px solid var(--color-line-soft);
-    font-size: 12px;
-    line-height: 16px;
   }
   .bis-chip {
     display: inline-flex;
