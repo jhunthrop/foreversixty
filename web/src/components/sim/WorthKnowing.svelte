@@ -21,7 +21,8 @@
     notes: readonly SimWarning[];
     spells: SpellInfo;
     plannerHref: string;
-    onrerun: () => void;
+    /** "Open in the sim" for a saved run; absent on /sim itself, where the run control is above. */
+    onrerun?: () => void;
   } = $props();
 </script>
 
@@ -62,7 +63,7 @@
           <a class={`${ACTION_LINK} shrink-0 whitespace-nowrap`} href={plannerHref}
             >{warningsCopy.openInPlanner}<Glyph name="chevron" /></a
           >
-        {:else if note.action === 'sim'}
+        {:else if note.action === 'sim' && onrerun !== undefined}
           <button type="button" class={`${ACTION_LINK} shrink-0 whitespace-nowrap`} onclick={onrerun}
             >{warningsCopy.openInSim}<Glyph name="chevron" /></button
           >

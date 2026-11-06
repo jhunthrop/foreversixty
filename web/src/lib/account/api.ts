@@ -511,6 +511,12 @@ export async function postMyExports(
   return result?.characters ?? [];
 }
 
+/** The moment a report row dates: the night it logged, else its upload. A Wednesday night uploaded
+ *  on Thursday reads Wednesday, as its title does (guild round 3). */
+export function reportNightAt(report: Pick<MyReport, 'created_at' | 'started_at'>): string {
+  return report.started_at ?? report.created_at;
+}
+
 /** One row of the "Your reports" list. */
 export interface MyReport {
   id: string;
@@ -519,6 +525,9 @@ export interface MyReport {
   status: string;
   visibility: string;
   created_at: string;
+  /** When the logged night began (its first fight); absent on an API that does not send it yet,
+   *  when the row reads the upload's `created_at` (guild round 3). */
+  started_at?: string | null;
   fight_count: number;
   kill_count: number;
   /** Distinct bosses killed (the API's own count; absent from an API before it). */

@@ -36,6 +36,7 @@
   import { rosterHoldsHandoff } from '../../lib/guild/roster-links';
   import {
     RANKS_PENDING_LINE,
+    entrySpecLine,
     entryFacts,
     inGameFacts,
     rosterSpecLine,
@@ -547,7 +548,9 @@
     </div>
     <div class="px-5">
       <p class="text-muted text-[13px]" data-testid="guild-roster-addon-snapshot">{snapshotLine}</p>
-      {#if extras.some((entry) => entry.state === 'no_account')}
+      <!-- Only while no rank is known: a roster row's rank is the addon's, so the line would read
+           over ranks it already sent (guild round 3). -->
+      {#if allRows.length === 0 && extras.some((entry) => entry.state === 'no_account')}
         <p class="text-muted text-[12px]" data-testid="guild-roster-ranks-pending">{RANKS_PENDING_LINE}</p>
       {/if}
 
@@ -636,7 +639,7 @@
               </div>
               {@render inGame(row)}
               <div
-                class="contents lg:ml-auto lg:flex lg:w-[190px] lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3"
+                class="contents lg:ml-auto lg:flex lg:w-[216px] lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3"
                 data-testid="guild-roster-actions"
               >
                 {#if rosterHoldsHandoff(row)}
@@ -681,11 +684,11 @@
                   style={entry.class === undefined ? '' : `color:${classColorVar(entry.class)}`}
                   data-testid="guild-roster-entry-name">{entry.name}</span
                 >
-                {#if entry.spec !== undefined}
+                {#if entrySpecLine(entry) !== ''}
                   <span
                     class="text-nav text-[12px] max-lg:break-words lg:truncate"
-                    title={rosterSpecLine({ addonSpec: entry.spec, className: entry.class })}
-                    >{rosterSpecLine({ addonSpec: entry.spec, className: entry.class })}</span
+                    title={entrySpecLine(entry)}
+                    data-testid="guild-roster-entry-spec">{entrySpecLine(entry)}</span
                   >
                 {/if}
               </div>
@@ -715,7 +718,7 @@
               {#if canRemove && entry.may_remove === true && entry.account_key !== undefined}
                 {@const accountKey = entry.account_key}
                 <div
-                  class="contents lg:ml-auto lg:flex lg:w-[190px] lg:shrink-0 lg:items-center lg:justify-end"
+                  class="contents lg:ml-auto lg:flex lg:w-[216px] lg:shrink-0 lg:items-center lg:justify-end"
                   data-testid="guild-roster-entry-actions"
                 >
                   <button
@@ -729,7 +732,7 @@
                   </button>
                 </div>
               {:else}
-                <div class="ml-auto shrink-0 max-lg:hidden lg:w-[190px]" aria-hidden="true"></div>
+                <div class="ml-auto shrink-0 max-lg:hidden lg:w-[216px]" aria-hidden="true"></div>
               {/if}
             </div>
             {#if entry.account_key !== undefined && removingKey === entry.account_key}
@@ -741,7 +744,7 @@
         </div>
       {/if}
       {#if attendanceSource === 'raids' && ordered.length > 0}
-        <p class="text-muted text-[12px]" data-testid="guild-roster-attendance-footnote">
+        <p class="text-muted pb-5 text-[12px]" data-testid="guild-roster-attendance-footnote">
           {attendanceCopy.roster.footnote}
         </p>
       {/if}

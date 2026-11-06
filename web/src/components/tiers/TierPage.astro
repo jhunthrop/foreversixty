@@ -465,13 +465,16 @@ const stampTitle =
   }
   .tier-list {
     --tier-chip-width: 148px;
+    /* The links column, shared by the heads and every row (TierRow.astro): wide enough for
+       BiS, Guide, Planner and Sim on one line. */
+    --tier-links-col: minmax(244px, 256px);
     display: flex;
     flex-direction: column;
     gap: 0;
   }
   .tier-heads {
     display: grid;
-    grid-template-columns: 32px 36px minmax(150px, 248px) minmax(60px, 1fr) 108px 84px minmax(168px, 210px);
+    grid-template-columns: 32px 36px minmax(150px, 248px) minmax(60px, 1fr) 108px 84px var(--tier-links-col);
     column-gap: 14px;
     align-items: end;
     padding: 10px 17px 8px 17px;

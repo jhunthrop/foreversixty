@@ -3,6 +3,7 @@
 // §9.1. A `{…}` slot in the spec is a function argument here. The figure 25 is
 // GUILD_TIER_MEMBER_LIMIT and every 7 is GUILD_TRIAL_DAYS; dates arrive as stored values.
 import { utcDayMonthYear } from '../dates';
+import { counted } from '../plural';
 import { possessive as of } from '../possessive';
 import {
   CLAIM_COOLDOWN_DAYS,
@@ -51,9 +52,11 @@ export const checkoutGuildCopy = {
   verifyMark: { verified: 'Verified', notVerified: 'Not verified' },
   more: (count: number): string => `+${count} more`,
   facts: {
-    verified: (count: number): string => `${count} verified`,
+    // Each fact names what it counts (guild loop round 3: "4 verified · 8 on the roster" read as one
+    // unit): verified accounts are members, the roster counts characters.
+    verified: (count: number): string => `${counted(count, 'verified member')}`,
     noneVerified: 'No one verified yet',
-    onRoster: (count: number): string => `${count} on the roster`,
+    onRoster: (count: number): string => `${counted(count, 'character')} on the roster`,
     noPlan: 'No plan',
     plan: (tier: GuildTier): string => `${tierWord(tier)} plan`,
     trial: (tier: GuildTier): string => `${tierWord(tier)} plan · trial`,

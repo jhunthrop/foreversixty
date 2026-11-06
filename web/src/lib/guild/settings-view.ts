@@ -12,6 +12,8 @@ export const settingsWords = {
   releaseOnClaimPage: 'Release on the claim page',
   visibilityHelp: 'Public, Unlisted (link only) or Guild only. Applies to new reports.',
   guildPlan: 'Guild plan',
+  /** The plan row with no date to show (the card's title names the tier). */
+  planActive: 'Active',
   officerTools: 'Officer tools',
   noBillingContact: 'No billing contact yet',
   grantedByUs: 'Granted by Forever Sixty.',

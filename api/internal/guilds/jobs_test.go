@@ -44,7 +44,7 @@ func TestAgeOutKeepsAMemberWhoJoinedByInvite(t *testing.T) {
 	s := &Store{Pool: pool}
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Forever")
-	token, _, err := s.RotateInvite(ctx, gid)
+	token, _, err := s.RotateInvite(ctx, gid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

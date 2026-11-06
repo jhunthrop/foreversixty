@@ -3,7 +3,7 @@
      target and the engine on the left, the buffs, debuffs and consumables as chips on the right
      with what changes nothing for this spec filed apart, and the copy and download actions at the
      foot. It loads what only it reads: the buff table, the spec's weights and the talent layout
-     Copy for the game needs. DetailsCard stays for the live /sim page. -->
+     Copy for the game needs. DetailsCard stays for bulk and weights results (SavedKind). -->
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import activeBuild from '../../data/active-build.json';

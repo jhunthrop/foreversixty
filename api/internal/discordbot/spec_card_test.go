@@ -139,7 +139,7 @@ func TestTheSpecPickSavesAndSignsUpWithItsRole(t *testing.T) {
 	w := newPressWorld(t)
 	paladin(t, w)
 	rep := w.mustSpecPress(t, specPickID(w, "in", keyZulmara), "paladin-holy")
-	want := "Zulmara is In as Healer for Onyxia's Lair, " + w.day() + ". 1 of 40 signed up. Holy is kept for Zulmara."
+	want := "Zulmara is In as Healer for Onyxia's Lair, " + w.day() + ". 1 of 40 signed up. Zulmara signs up as Holy from now on."
 	wantReply(t, rep, want, true, changeSpecButton(w, keyZulmara))
 	if w.raidSpecOf(t, keyZulmara) != "paladin-holy" {
 		t.Fatal("raid_spec not saved")
@@ -201,14 +201,14 @@ func TestChangeSpecNeverChangesTheState(t *testing.T) {
 	}
 	setID := sel.CustomID
 	rep := w.mustSpecPress(t, setID, "paladin-retribution")
-	want := "Zulmara is already on the Bench for Onyxia's Lair, " + w.day() + ". Retribution is kept for Zulmara."
+	want := "Zulmara is already on the Bench for Onyxia's Lair, " + w.day() + ". Zulmara signs up as Retribution from now on."
 	wantReply(t, rep, want, true, changeSpecButton(w, keyZulmara))
 	if state, role, spec := w.signupRow(t, keyZulmara); state != "bench" || role != "dps" || spec != "Retribution" {
 		t.Fatalf("row %s %s %s", state, role, spec)
 	}
 	w.press(t, "out")
 	rep = w.mustSpecPress(t, setID, "paladin-protection")
-	wantReply(t, rep, "Protection is kept for Zulmara.", true)
+	wantReply(t, rep, "Zulmara signs up as Protection from now on.", true)
 	if state, _, _ := w.signupRow(t, keyZulmara); state != "out" || w.raidSpecOf(t, keyZulmara) != "paladin-protection" {
 		t.Fatalf("out row %s", state)
 	}

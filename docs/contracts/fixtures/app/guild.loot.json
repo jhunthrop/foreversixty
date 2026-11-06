@@ -6,7 +6,9 @@
         "encounter_id": 1084,
         "name": "Onyxia",
         "zone": "Onyxia's Lair",
-        "killed": true
+        "killed": true,
+        "kill_nights": 3,
+        "on_farm": true
       }
     ],
     "selected": 1084,
@@ -39,6 +41,7 @@
               "nights": 8
             },
             "already_equivalent": false,
+            "fills_empty_slot": false,
             "replaces": "Lionheart Helm",
             "items_won": 1,
             "gain_unit": "dps",

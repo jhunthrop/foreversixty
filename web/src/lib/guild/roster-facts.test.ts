@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { buildMockHome, VIEWER_MEMBER } from '../../fixtures/guild/mock-guild';
-import { entryFacts, gearSetLabel, inGameFacts, rosterSpecLine, rosterStatChips } from './roster-facts';
+import {
+  entryFacts,
+  entrySpecLine,
+  gearSetLabel,
+  inGameFacts,
+  rosterSpecLine,
+  rosterStatChips,
+} from './roster-facts';
 import { specClassName } from './spec-name';
 
 const NOW = new Date(2026, 11, 22, 21, 46);
@@ -15,7 +22,7 @@ describe('rosterStatChips', () => {
   it('names the unit first on every chip', () => {
     const chips = rosterStatChips(rowNamed('Kraggor'));
     expect(chips[0]).toMatch(/^Item level \d+$/);
-    expect(chips.some((c) => /^\d+ of \d+ nights$/.test(c))).toBe(true);
+    expect(chips.some((c) => /^\d+ of \d+ raid nights?$/.test(c))).toBe(true);
     expect(chips.some((c) => /^Top (DPS|HPS) \d+$/.test(c))).toBe(true);
     expect(chips.some((c) => /^Rating \d+$/.test(c))).toBe(true);
     expect(chips.join(' ')).not.toMatch(/\d+ rating|ilvl|best DPS/);
@@ -27,25 +34,29 @@ describe('rosterStatChips in raid mode', () => {
   type Window = { present: number; nights: number };
   const raidRow = (last8: Window, last30?: Window) => ({ ...base, attendance: last8, attendance_30: last30 });
 
-  it('reads Came 7 of 8 \u00b7 26 of 30', () => {
+  it('reads the bot chip, 7 of 8 raid nights \u00b7 26 of the last 30', () => {
     const chips = rosterStatChips(raidRow({ present: 7, nights: 8 }, { present: 26, nights: 30 }), 'raids');
-    expect(chips).toContain('Came 7 of 8 \u00b7 26 of 30 raids');
-    expect(chips.some((c) => /nights?$/.test(c))).toBe(false);
+    expect(chips).toContain('7 of 8 raid nights \u00b7 26 of the last 30');
   });
 
-  it('reads Came 3 of 3 alone when the long window adds nothing', () => {
+  it('reads 3 of 3 raid nights alone when the long window adds nothing', () => {
     const chips = rosterStatChips(raidRow({ present: 3, nights: 3 }, { present: 3, nights: 3 }), 'raids');
-    expect(chips).toContain('Came 3 of 3 raids');
+    expect(chips).toContain('3 of 3 raid nights');
   });
 
-  it('says No raids yet for a 0 of 0 chip', () => {
+  it('says No raid nights yet for a 0 of 0 chip in either mode', () => {
     const chips = rosterStatChips(raidRow({ present: 0, nights: 0 }, { present: 0, nights: 0 }), 'raids');
-    expect(chips).toContain('No raids yet');
+    expect(chips).toContain('No raid nights yet');
+    expect(rosterStatChips(raidRow({ present: 0, nights: 0 }), 'reports')).toContain('No raid nights yet');
   });
 
-  it('keeps report mode unchanged', () => {
-    expect(rosterStatChips(raidRow({ present: 5, nights: 8 }), 'reports')).toContain('5 of 8 nights');
-    expect(rosterStatChips(raidRow({ present: 5, nights: 8 }))).toContain('5 of 8 nights');
+  it('reads the real ratio for a member who missed the one eligible night', () => {
+    expect(rosterStatChips(raidRow({ present: 0, nights: 1 }), 'raids')).toContain('0 of 1 raid night');
+  });
+
+  it('reads the same words in report mode', () => {
+    expect(rosterStatChips(raidRow({ present: 5, nights: 8 }), 'reports')).toContain('5 of 8 raid nights');
+    expect(rosterStatChips(raidRow({ present: 1, nights: 1 }))).toContain('1 of 1 raid night');
   });
 });
 
@@ -102,6 +113,24 @@ describe('specClassName', () => {
   });
 });
 
+describe('entrySpecLine', () => {
+  it('names the class of an invited member the addon has not seen, who has no spec on file', () => {
+    expect(entrySpecLine({ class: 'rogue' })).toBe('Rogue');
+  });
+
+  it('joins the spec and the class when both are known', () => {
+    expect(entrySpecLine({ class: 'warrior', spec: 'Arms' })).toBe('Arms Warrior');
+  });
+
+  it('keeps a spec two classes play alone when the class is not known', () => {
+    expect(entrySpecLine({ spec: 'Protection' })).toBe('Protection');
+  });
+
+  it('says nothing with neither', () => {
+    expect(entrySpecLine({})).toBe('');
+  });
+});
+
 // One spec per character, labelled with the record it comes from (lifecycle round 8, P8-1).
 describe('rosterSpecLine', () => {
   it('names the spec and class alone when the snapshot and the site agree', () => {
@@ -122,6 +151,8 @@ describe('rosterSpecLine', () => {
       'Survival Hunter on the site',
     );
     expect(rosterSpecLine({ siteSpec: 'Survival', className: 'hunter' })).toBe('Survival Hunter on the site');
-    expect(rosterSpecLine({ addonSpec: null, className: 'hunter' })).toBe('');
+    // No spec anywhere (no talents spent): the class alone, never a bare row (guild round 3).
+    expect(rosterSpecLine({ addonSpec: null, className: 'hunter' })).toBe('Hunter');
+    expect(rosterSpecLine({ addonSpec: null })).toBe('');
   });
 });

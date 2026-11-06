@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"strings"
 	"time"
@@ -18,6 +19,8 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
 // HomeReportsPerPage is the page size of the guild home's "this week's
@@ -173,6 +176,9 @@ type RosterRow struct {
 	// row is not already verified - the Roster tab's own Approve control (contract's
 	// own field, mirroring MayRemove's convention).
 	MayApprove bool `json:"may_approve"`
+	// IsMain is true for the character its account marked as main (users.main_character_key):
+	// the Roster tab's "alt of" label names that one.
+	IsMain bool `json:"is_main"`
 	// SimExport is true when the character's sim input is its FS1 export (sims.ExportIsInputSQL),
 	// so the Roster tab's Open in simulator / planner slot has links to offer; false below gear
 	// consent. The web decides from it at first paint whether the row holds that slot at all.
@@ -266,6 +272,64 @@ type StandingView struct {
 	RankByItemLevel     int      `json:"rank_by_item_level"`
 	ItemLevel           int      `json:"item_level"`
 	NeedsBeforeNextRaid []string `json:"needs_before_next_raid"`
+	// NeedsRaid is the raid needs_before_next_raid is before: the next planned raid of kind
+	// raid (Store.NextRaid, the one Readiness's chip, the nudge and /raid name first), never a
+	// dungeon run or guild event the band may show; null when none is planned.
+	NeedsRaid *NeedsRaidView `json:"needs_raid"`
+}
+
+// NeedsRaidView names the raid the standing line's needs are before. CharacterKey is the
+// character the viewer's account signed up for it, its best place (In, then Late, then Bench;
+// an Out answer names none): the needs line is that character's, null when the account has no
+// such sign-up and the line keeps the header character (guild round 3: the line named the
+// header character, not the one the account signed up).
+type NeedsRaidView struct {
+	Title        string    `json:"title"`
+	StartsAt     time.Time `json:"starts_at"`
+	CharacterKey *string   `json:"character_key"`
+}
+
+// needsRaid is the standing line's raid at now for viewerUserID (NeedsRaidView), nil when none
+// is planned.
+func (s *Store) needsRaid(ctx context.Context, guildID, viewerUserID int64, now time.Time) (*NeedsRaidView, error) {
+	raid, ok, err := s.NextRaid(ctx, guildID, now)
+	if err != nil || !ok {
+		return nil, err
+	}
+	signups, err := s.RaidSignups(ctx, raid.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &NeedsRaidView{Title: raid.Title, StartsAt: raid.StartsAt.UTC(),
+		CharacterKey: signedUpCharacter(signups, viewerUserID)}, nil
+}
+
+// signedUpCharacter is the key of the account's best-placed sign-up among signups (In, Late,
+// Bench; the first of a tie), nil when the account has none of those.
+func signedUpCharacter(signups []Signup, accountID int64) *string {
+	var best *Signup
+	for i := range signups {
+		sg := &signups[i]
+		if sg.SignedBy != accountID || sg.State == SignupOut {
+			continue
+		}
+		if best == nil || placeRank[sg.State] < placeRank[best.State] {
+			best = sg
+		}
+	}
+	if best == nil {
+		return nil
+	}
+	key := best.CharacterKey
+	return &key
+}
+
+// signedKeyOf is needs' signed-up character key, "" when there is none.
+func signedKeyOf(needs *NeedsRaidView) string {
+	if needs == nil || needs.CharacterKey == nil {
+		return ""
+	}
+	return *needs.CharacterKey
 }
 
 type HomeView struct {
@@ -376,10 +440,13 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 		       case when gm.consent in ('gear', 'gear_bags') then fm.ilvl end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.faction end,
 		       case when gm.consent in ('gear', 'gear_bags') then ae.export end,
-		       `+rosterSimExportSQL+`
+		       `+rosterSimExportSQL+`,
+		       case when gm.consent in ('gear', 'gear_bags') then gc.raid_spec end,
+		       coalesce(u.main_character_key = gc.character_key, false)
 		from guild_characters gc
 		join addon_exports ae on ae.character_key = gc.character_key
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
+		left join users u on u.id = gc.user_id
 		left join lateral (
 		  select m.class, m.spec, m.role, m.ilvl, m.faction
 		  from fight_metrics m join reports r on r.id = m.report_id
@@ -395,11 +462,14 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 	defer rows.Close()
 	out := []RosterRow{}
 	for rows.Next() {
-		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer)
+		var raidSpec *string
+		var isMain bool
+		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer, &raidSpec, &isMain)
 		if err != nil {
 			return nil, err
 		}
-		out = append(out, row)
+		row.IsMain = isMain
+		out = append(out, row.withRaidSpec(raidSpec))
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -471,9 +541,36 @@ func (s *Store) scanRosterRow(rows pgx.Rows, g Guild, actorID int64, moderator, 
 					row.faction = f
 				}
 			}
+			if level, ok := equippedItemLevel(decoded, sims.GearItem); ok {
+				row.ItemLevel = &level
+			}
 		}
 	}
 	return row, nil
+}
+
+// itemLookup is an item in a build's per-class table: sims.GearItem, the table the character
+// card reads its worn item levels from.
+type itemLookup func(build, classSlug string, itemID int) (trees.Item, bool)
+
+// equippedItemLevel is an export's one item-level figure (upgrades.EquippedItemLevel, the number
+// /char shows too) over its equipped gear slots, each item read from the export's own data build
+// as the card reads it; ok is false with no gear, or an item that build lacks, and the row keeps
+// its latest log's item level.
+func equippedItemLevel(decoded fs1.Decoded, item itemLookup) (int, bool) {
+	var levels []*int
+	for _, slot := range upgrades.Slots {
+		id, worn := decoded.Gear[slot.Key]
+		if !worn || id <= 0 {
+			continue
+		}
+		var level *int
+		if it, found := item(decoded.DataBuild, decoded.ClassSlug, id); found {
+			level = &it.ItemLevel
+		}
+		levels = append(levels, level)
+	}
+	return upgrades.EquippedItemLevel(levels)
 }
 
 // snapshotMember is one stored member line of guild_roster_snapshots.members, as
@@ -526,11 +623,12 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 		}
 		line := &AddonMemberView{SeenAt: m.SeenAt, SnapshotAt: snap.ReceivedAt}
 		if hasGearConsent(roster[i].Consent) {
-			level, spec, gap := m.Level, m.Spec, m.GearGap
-			line.Level, line.Spec, line.GearGap = &level, &spec, &gap
+			level, spec := m.Level, m.Spec
+			line.Level, line.Spec = &level, &spec
 			if roster[i].Level == nil && m.Level > 0 {
 				roster[i].Level = &level
 			}
+			line.GearGap = s.rosterGearGap(roster[i])
 			if m.Build != "" {
 				build := m.Build
 				line.Build = &build
@@ -539,6 +637,21 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 		roster[i].Addon = line
 	}
 	return &snap, members, nil
+}
+
+// rosterGearGap is the roster's "Gear gap N DPS": the readiness board's own gap
+// (computeReadiness over the same band and export gear; /char lists the same band's slots) in
+// whole DPS, rounded as the board rounds it. The addon's own announced figure is never shown:
+// it measured against the addon's data, not the site's, and read 38 DPS where the board said
+// no upgrades (guild round 3). Nil when the board has no DPS figure for the row: no export gear
+// or band, a healer's or tank's band, or a leveling character.
+func (s *Store) rosterGearGap(row RosterRow) *int {
+	cr := s.readinessOf(row, nil)
+	if !cr.GearChecked || cr.GearUnit != gearUnitDPS || len(row.gear) == 0 {
+		return nil
+	}
+	gap := int(math.Round(cr.GearGap.GainDps))
+	return &gap
 }
 
 // accountKeyFor is the contract's own "same value for a main and its alts" grouping key.
@@ -593,6 +706,10 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	}
 	markRemovable(invited, g, userID, moderator, verifiedOfficer)
 	describeRosterRows(roster)
+	snapshotLines, err = s.withExportClasses(ctx, g, snapshotLines)
+	if err != nil {
+		return HomeView{}, err
+	}
 	members, counts := mergeRoster(roster, invited, snapshotLines)
 	describeMembers(members, roster)
 	claim, err := s.withClaimHolder(ctx, claimState(g, time.Now()), g, userID)
@@ -637,6 +754,10 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		return HomeView{}, err
 	}
 
+	needs, err := s.needsRaid(ctx, guildID, userID, time.Now())
+	if err != nil {
+		return HomeView{}, err
+	}
 	view := HomeView{
 		Guild: GuildIdentity{
 			ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Faction: g.Faction,
@@ -645,10 +766,13 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		Viewer:   ViewerView{Role: role, CharacterKey: viewerKey, Verified: verified, Verify: verifyViews[guildID]},
 		Claim:    claim,
 		Summary:  summary,
-		Standing: standingFor(s, roster, userID),
+		Standing: standingFor(s, roster, userID, signedKeyOf(needs)),
 		Reports:  reports, Roster: roster, Pending: pending,
 		AddonSnapshot: addonSnapshot, Members: members, Counts: counts,
 		AttendanceSource: source,
+	}
+	if view.Standing != nil {
+		view.Standing.NeedsRaid = needs
 	}
 	if len(reports) == HomeReportsPerPage {
 		last := reports[len(reports)-1]

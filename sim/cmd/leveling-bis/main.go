@@ -656,7 +656,11 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				if kept != nil {
 					log.Printf("leveling-bis: %s band %d %s %s: kept %s (%.1f +/- %.1f beats the final set's %.1f +/- %.1f; differs in %v)", spec, band, f.name, pass.name, kept.Kept, kept.KeptScore, kept.KeptError, kept.NewScore, kept.NewError, kept.DifferingSlots)
 				}
-				picks, setDPS, swaps, verifyErrors := verified.picks, verified.setDPS, verified.swaps, verified.errors
+				picks, swaps, verifyErrors := verified.picks, verified.swaps, verified.errors
+				setDPS, setDPSError, err := measureFinalSet(runner, specInfo, f.race, band, engineTalents, picks)
+				if err != nil {
+					return fmt.Errorf("band %d %s: measuring the final set at %d iterations: %w", band, f.name, finalSetIterations, err)
+				}
 				for _, e := range verifyErrors {
 					log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
 				}
@@ -672,7 +676,14 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				report.Preset = pass.name
 				report.UnconfirmedWithinErrorHeld = heldUnconfirmed
 				report.KeptAlternative = kept
+				report.SetDPSError = setDPSError
 				report.Slots = withEnchantIDs(specInfo, report.Slots)
+				report.Slots = withSourceKindPicks(report.Slots, sourceFilterInputs{Spec: specInfo.Spec, Picks: picks, PickBySlot: pickBySlot, ReferenceDPSPerPoint: bandReferenceDPSPerPoint})
+				filtered, filterNotes := measureFilteredSets(runner, filteredSetInputs{Spec: specInfo, Race: f.race, Band: band, Talents: engineTalents, Picks: picks, PickBySlot: pickBySlot, SetDPS: setDPS, SetDPSError: setDPSError})
+				report.FilteredSetDPS = filtered
+				for _, note := range filterNotes {
+					log.Printf("leveling-bis: %s band %d %s %s: %s", spec, band, f.name, pass.name, note)
+				}
 				// "No primary stat ever published as 'not significant'"
 				// (this lane's brief, item 3) - clears Insignificant on
 				// exactly the anchor row, on an otherwise-trustworthy band
@@ -770,7 +781,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	}
 	jsonPath := filepath.Join(outDir, spec+".json")
 	presets := map[string]request.ResolvedPreset{presetRaid: raidPreset}
-	if err := writeSpecReport(jsonPath, spec, activeBuild, reports, presets, withHealProfile(healProfile)); err != nil {
+	if err := writeSpecReport(jsonPath, spec, activeBuild, reports, presets, withHealProfile(healProfile), withRunConditions(rankerRunConditions(specInfo, weightsIterations))); err != nil {
 		return fmt.Errorf("writing %s: %w", jsonPath, err)
 	}
 	mdPath := filepath.Join(outDir, spec+".md")

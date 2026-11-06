@@ -25,7 +25,7 @@ What the audit found on that screen: a hunter ranked for a caster book, characte
 
 ### 3.1 Header (unchanged structure)
 
-`Card` with `glyph="star"`, title `Loot`, the boss `Select` at the right (`Onyxia · on farm` or `Onyxia · not killed yet`), the `Read-only` label for members. The gate sentence for officers without the plan sits under it (spec C owns the words). The old two lines under the header (`Gain here is item level. The simulator has not checked these.` and the footnote) move: see §3.4.
+`Card` with `glyph="star"`, title `Loot`, the boss `Select` at the right (`Onyxia · on farm` or `Onyxia · not killed yet`; amended guild round 3 API3: `on farm` only from kills on 3 separate nights, the API's `encounters[].on_farm` (`kill_nights >= 3`, days in the guild's raid zone, two logs of one night once); one or two kill nights read `Onyxia · down`), the `Read-only` label for members. The gate sentence for officers without the plan sits under it (spec C owns the words). The old two lines under the header (`Gain here is item level. The simulator has not checked these.` and the footnote) move: see §3.4.
 
 ### 3.2 Who is a candidate (the rule, API side)
 
@@ -38,13 +38,16 @@ A roster character is a candidate for an item only when every test passes. The t
    Two rules sit on top of the table:
    - A one-hander in the off hand needs Dual Wield from the same tables. Shamans never dual wield in Forever.
    - Held In Off-hand (`inventory_type` 23) is open to every class; rule 4 decides who wants it.
-4. **The spec wants the stats.** For the item-level fallback tier only (tier 1). Each spec belongs to one stat family in `equip_rules.go`: **physical** (Warrior, Rogue, Hunter, Feral, Enhancement, Retribution), **caster** (Mage, Warlock, Shadow, Balance, Elemental), **healer** (Holy and Discipline priest, Holy paladin, Restoration druid and shaman). An item qualifies when it carries a stat of the spec's family (physical: Strength, Agility, attack power; caster: Intellect, spell damage; healer: Intellect, Spirit, healing, mana per 5) or hit or crit (which every family values), or carries no family stat at all (Stamina, armour, resistances, Defense only). A weapon with no family stat (Deathbringer and Vis'kag the Bloodletter carry only a chance on hit) counts only for a character who fights in melee with it: warriors, rogues, Survival hunters (melee in Forever), Enhancement shamans, Retribution and Protection paladins, and any logged tank but a bear. Beast Mastery and Marksmanship hunters, Feral cats, casters and healers never swing it; with no such character on the roster the item goes to the collapsed line (§3.5). Tanks (Protection warrior and paladin, Feral bear) read as physical plus Defense: Defense draws a tank in but shuts nobody out, so Ring of Binding (armour, resistances, Defense) is open to every class at 60 (amended 2026-11-05, guild round 1). This removes a Beast Mastery hunter from Ancient Cornerstone Grimoire and a Holy paladin from Deathbringer. Tier 0 (the item is on the spec's BiS list) skips this test: the list already chose it. The rule is a table, not the curated stat weights, because `data/curated` is not in the API image.
+4. **The spec wants the stats.** For the item-level fallback tier only (tier 1). Each spec belongs to one stat family in `equip_rules.go`: **physical** (Warrior, Rogue, Hunter, Feral, Enhancement, Retribution), **caster** (Mage, Warlock, Shadow, Balance, Elemental), **healer** (Holy and Discipline priest, Holy paladin, Restoration druid and shaman). An item qualifies when it carries a stat of the spec's family (physical: Strength, Agility, attack power, dodge, parry, block; caster: Intellect, spell damage; healer: Intellect, Spirit, healing, mana per 5). A stat of another family keeps it out whatever hit or crit rides along: a physical stat is never a caster's or healer's (Eskhandar's Collar, 17 Stamina, 1% dodge, 1% crit in build 1.60.1.70790 from classic-db, lists no caster or healer; amended 2026-11-05, guild round 3). Hit or crit counts for everyone only on an item with no family stat at all, and so does an item of Stamina, armour, resistances or Defense only. A weapon with no family stat (Deathbringer and Vis'kag the Bloodletter carry only a chance on hit) counts only for a character who fights in melee with it: warriors, rogues, Survival hunters (melee in Forever), Enhancement shamans, Retribution and Protection paladins, and any logged tank but a bear. Beast Mastery and Marksmanship hunters, Feral cats, casters and healers never swing it; with no such character on the roster the item goes to the collapsed line (§3.5). Tanks (Protection warrior and paladin, Feral bear) read as physical plus Defense: Defense draws a tank in but shuts nobody out, so Ring of Binding (armour, resistances, Defense) is open to every class at 60 (amended 2026-11-05, guild round 1). This removes a Beast Mastery hunter from Ancient Cornerstone Grimoire and a Holy paladin from Deathbringer. Tier 0 (the item is on the spec's BiS list) skips this test: the list already chose it. The rule is a table, not the curated stat weights, because `data/curated` is not in the API image.
 5. **Slotless items have no candidates** (today), and are not drawn as item cards (§3.5).
 
 Known-good fixtures (tenet 8), each a failing test until true:
 - Ancient Cornerstone Grimoire never lists a hunter, warrior or rogue.
 - Deathbringer and Vis'kag list melee specs that can wield them, never a Beast Mastery or Marksmanship hunter.
-- Ring of Binding lists every class at 60.
+- Ring of Binding lists every class at 60, a tank first (an item with Defense ranks tanks first within its tier).
+- Eskhandar's Collar lists no caster or healer.
+
+**Order within a tier** (amended 2026-11-05, guild round 3): a tank first on a drop with Defense; then a real upgrade over a worn item ahead of a drop that fills an empty slot (`fills_empty_slot: true`; the page says `fills an empty slot`, never the drop's whole item level as a gain); then the tier's gain or item-level delta; then attendance.
 - Deathbringer never lists a Holy paladin or any priest.
 - A level 58 character is on no Onyxia item.
 - Dragonstalker's Helm lists hunters only; Judgement Crown paladins only; Stormrage Cover druids only.
@@ -75,7 +78,7 @@ Weapon and hand words keep the client's casing in sentences: `Main Hand`, `Off H
 |---|---|
 | Who | `ClassCrestRing` 24, the name 14 px 600 in class colour, `(you)` for the viewer; under it 12 px muted the spec (`Beast Mastery Hunter`). |
 | Replaces | 13 px: `Replaces ` then the worn item as the shared item link (16 px icon, quality colour, tooltip), or `Empty slot` muted. For a ring, a trinket or a one-hander a dual wielder could put in either hand, it names the weaker of the two worn items (lower gain verdict, else lower item level), since that is the one the drop pushes out. |
-| Gain | `numeric` 14 px. Tier 0 with a sim gain: `+12.4 DPS` (healers `HPS`, tanks `TPS`, the unit from the BiS file; no unit, no figure: `On their BiS list`). Tier 1: `+14 item levels`, 13 px muted. |
+| Gain | `numeric` 14 px. Tier 0 with a sim gain: `+12.4 DPS` (healers `HPS`, tanks `TPS`, the unit from the BiS file; no unit, no figure: `On their BiS list`). Tier 1: `+14 item levels`, 13 px muted; when the candidate wears nothing in the slot (`fills_empty_slot`), `Fills an empty slot` instead, since the gap would only be the item's own level (amended 2026-11-05, guild round 3). |
 | Attendance | 13 px muted `{3} of {4} raid nights` (`1 of 1 raid night` singular). Hidden, cell and header both, while the guild has fewer than 1 counted raid night (`attendance.nights === 0` for every row). |
 | Action | Officer: `Award` (today's control and gate). Member: nothing. |
 
@@ -135,7 +138,7 @@ Before the first kill the list still shows (a council plans ahead), and the boss
 | Where | String |
 |---|---|
 | Slot eyebrows | `HEAD · CLOTH`, `HEAD · LEATHER`, `HEAD · MAIL`, `HEAD · PLATE`, `TRINKET`, `HELD IN OFF-HAND`, `ONE-HAND · AXE`, `ONE-HAND · SWORD`, `BACK`, `NECK`, `FINGER` |
-| Candidate | `Replaces `, `Empty slot`, `+{g} DPS`, `+{g} HPS`, `+{g} TPS`, `On their BiS list`, `+{n} item levels`, `{p} of {n} raid nights`, `1 of 1 raid night`, `(you)` |
+| Candidate | `Replaces `, `Empty slot`, `+{g} DPS`, `+{g} HPS`, `+{g} TPS`, `On their BiS list`, `+{n} item levels`, `Fills an empty slot`, `{p} of {n} raid nights`, `1 of 1 raid night`, `(you)` |
 | Tier-1 label | `Ranked by item level only. Not on their best-in-slot list.` (first card); `Item level only` (later cards) |
 | More rows | `Show {n} more` |
 | Footnote | `Candidates are characters who can wear the item at their level. Each is ranked by how much it adds over what they wear now. A drop stays open until an officer awards it.` |

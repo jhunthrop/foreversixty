@@ -106,8 +106,9 @@ export interface RosterModel {
 
 /**
  * The members and counts once the characters in `keys` are approved: each waiting entry for one
- * becomes approved and the waiting count drops with it, so the count line and the list agree in
- * the same frame. A home without the roster model passes through untouched.
+ * becomes approved, joins the roster count and leaves the waiting count (both count characters,
+ * guild round 3: `on_roster` is what the Roster list shows, waiting characters left out), so the
+ * count line and the list agree in the same frame. A home without the roster model passes through.
  */
 export function afterApprove(model: RosterModel, keys: ReadonlySet<string>): RosterModel {
   if (model.members === undefined || model.counts === undefined) return model;
@@ -119,7 +120,11 @@ export function afterApprove(model: RosterModel, keys: ReadonlySet<string>): Ros
     changed += 1;
     return { ...entry, state: 'approved' as const };
   });
-  return { members, counts: { ...model.counts, waiting: Math.max(0, model.counts.waiting - changed) } };
+  const { on_roster, waiting } = model.counts;
+  return {
+    members,
+    counts: { ...model.counts, on_roster: on_roster + changed, waiting: Math.max(0, waiting - changed) },
+  };
 }
 
 /**
@@ -146,7 +151,8 @@ function withoutEntry(model: RosterModel, matches: (entry: GuildRosterEntry) => 
     members: model.members.filter((entry) => entry !== gone),
     counts: {
       ...model.counts,
-      on_roster: Math.max(0, model.counts.on_roster - 1),
+      // A waiting character was never in the roster count (guild round 3).
+      on_roster: gone.state === 'waiting' ? model.counts.on_roster : Math.max(0, model.counts.on_roster - 1),
       waiting: less(model.counts.waiting, 'waiting'),
       not_seen: less(model.counts.not_seen, 'not_seen'),
     },

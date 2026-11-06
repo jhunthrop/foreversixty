@@ -9,7 +9,7 @@ export const checkoutCopy = {
   redirecting: 'Redirecting to secure checkout…',
   signInRequired: 'Sign in to continue.',
   canceled: 'Checkout was canceled. Nothing was charged.',
-  notOpenYet: 'Purchases are not open yet. Check back soon — nothing was charged.',
+  notOpenYet: 'Purchases are not open yet. Nothing was charged. Check back soon.',
   genericFailure: 'That did not work; try again.',
   processing: 'Confirming your payment…',
   confirmed: "You're all set.",

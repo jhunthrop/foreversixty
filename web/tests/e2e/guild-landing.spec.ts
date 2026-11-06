@@ -53,7 +53,11 @@ test.describe('guild landing', () => {
     await expect(page.getByTestId('guild-lookup')).toBeVisible();
     await expect(page.getByRole('heading', { level: 2, name: 'Top guilds' })).toBeVisible();
     await expect(page.getByTestId('home-top-guilds')).toContainText('The Last Watch');
-    await expect(page.getByText('Run a guild? Open its page and choose Claim this guild.')).toBeVisible();
+    await expect(
+      page.getByText(
+        'Run a guild? Sign in and import your character, then open the guild page and choose Claim this guild.',
+      ),
+    ).toBeVisible();
   });
 
   test('an empty name explains itself and does not navigate', async ({ page }) => {

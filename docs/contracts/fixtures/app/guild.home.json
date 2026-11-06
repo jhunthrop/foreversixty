@@ -111,6 +111,7 @@
         "logged_at": "2026-10-30T14:04:09.696441-05:00",
         "logged_recently": true,
         "may_approve": true,
+        "is_main": false,
         "sim_export": false,
         "may_remove": true,
         "name": "Rootgall",
@@ -166,6 +167,7 @@
         "logged_at": "2026-12-15T05:10:00Z",
         "logged_recently": true,
         "may_approve": false,
+        "is_main": false,
         "sim_export": false,
         "may_remove": false,
         "name": "Obnoxious Yell",
@@ -211,6 +213,7 @@
         "logged_at": "2026-10-30T14:04:09.692643-05:00",
         "logged_recently": true,
         "may_approve": false,
+        "is_main": false,
         "sim_export": false,
         "may_remove": true,
         "name": "Zulmara",
@@ -253,7 +256,12 @@
       "needs_before_next_raid": [
         "Enchant chest",
         "Spend 1 talent point"
-      ]
+      ],
+      "needs_raid": {
+        "title": "Onyxia's Lair",
+        "starts_at": "2026-12-20T01:00:00Z",
+        "character_key": null
+      }
     }
   },
   "error": null,

@@ -21,6 +21,9 @@ var (
 	ErrNotOfficer = errors.New("guilds: not a verified officer of the guild")
 	// ErrRaidGuildRequired is an officer whose guild's plan does not cover the Raid guild tools.
 	ErrRaidGuildRequired = errors.New("guilds: the Raid guild plan is required")
+	// ErrRaidGuildGranted is ErrRaidGuildRequired for a guild on a plan Forever Sixty granted:
+	// it has no upgrade to buy, so the answer asks us rather than linking checkout.
+	ErrRaidGuildGranted = fmt.Errorf("%w: the plan was granted", ErrRaidGuildRequired)
 	// ErrOfficerOnly is a member naming a character that is not theirs.
 	ErrOfficerOnly = errors.New("guilds: only officers can name another member")
 	// ErrNoSuchMember is a name no verified character of the guild carries.

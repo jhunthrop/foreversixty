@@ -53,6 +53,9 @@ func (s *Service) reportReply(ctx context.Context, in Interaction, guildID, view
 	if err != nil {
 		return Reply{}, err
 	}
+	if !found && strings.TrimSpace(raw) == "" {
+		return s.loggedNightReply(ctx, guildID, viewer, update)
+	}
 	if !found {
 		return pressReply(officerCopy.ReportNone, update), nil
 	}
@@ -164,22 +167,41 @@ func reportHead(ans guilds.ReportAnswer, link string) notify.Embed {
 // nightLine is G2's night line: "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min",
 // a zero clause left out.
 func nightLine(n guilds.NightView) string {
+	return strings.Join(append(cameClauses(n), tallyClauses(n.Kills, n.Wipes, n.Deaths, n.DurationMS)...), lineJoin)
+}
+
+// cameClauses open the night line: "22 of 23 came" and " · 2 joined"; with nobody signed up
+// beforehand, never "0 of 0 came", but "5 came, nobody signed up beforehand".
+func cameClauses(n guilds.NightView) []string {
+	if n.Signed == 0 {
+		if came := n.Came + n.Joined; came > 0 {
+			return []string{fill(nightCopy.CameUnsigned, "{n}", strconv.Itoa(came))}
+		}
+		return []string{nightCopy.NobodySigned}
+	}
 	parts := []string{fill(nightCopy.Came, "{came}", strconv.Itoa(n.Came), "{signed}", strconv.Itoa(n.Signed))}
 	if n.Joined > 0 {
 		parts = append(parts, fmt.Sprintf("%d joined", n.Joined))
 	}
+	return parts
+}
+
+// tallyClauses are a night line's "1 kill", "3 wipes", "14 deaths" and "2 h 41 min", a zero
+// clause left out.
+func tallyClauses(kills, wipes, deaths int, durationMS int64) []string {
+	var parts []string
 	for _, c := range []struct {
 		n    int
 		unit string
-	}{{n.Kills, "kill"}, {n.Wipes, "wipe"}, {n.Deaths, "death"}} {
+	}{{kills, "kill"}, {wipes, "wipe"}, {deaths, "death"}} {
 		if c.n > 0 {
 			parts = append(parts, units(c.n, c.unit))
 		}
 	}
-	if n.DurationMS > 0 {
-		parts = append(parts, nightDuration(n.DurationMS))
+	if durationMS > 0 {
+		parts = append(parts, nightDuration(durationMS))
 	}
-	return strings.Join(parts, lineJoin)
+	return parts
 }
 
 func units(n int, singular string) string {
@@ -263,18 +285,25 @@ func mostDeaths(deaths []guilds.ReportDeathView) string {
 }
 
 // consumablesLine is "3 short before the raid", then " · 2 with no flask in the log" once the
-// log carries buff data.
+// log carries buff data. With every raider's bags not shared the short count says nothing, so
+// the clause reads "Nobody shared their bags before the raid" instead of "0 short".
 func consumablesLine(c guilds.ReportConsumablesView) string {
-	short, noFlask := 0, 0
+	short, shared, noFlask := 0, 0, 0
 	for _, r := range c.Rows {
 		if r.Before == "short" {
 			short++
+		}
+		if r.Before == "short" || r.Before == "stocked" {
+			shared++
 		}
 		if r.Flask != nil && !*r.Flask {
 			noFlask++
 		}
 	}
 	line := fill(nightCopy.ShortBefore, "{n}", strconv.Itoa(short))
+	if shared == 0 {
+		line = nightCopy.NothingShared
+	}
 	if c.LogHasBuffs {
 		line += lineJoin + fill(nightCopy.NoFlask, "{n}", strconv.Itoa(noFlask))
 	}
@@ -289,8 +318,12 @@ func lootCount(r *guilds.ReportView) int {
 	return n
 }
 
-// lootLine is "6 items." and, when items follow, " The first 6:".
+// lootLine is "6 items." and, when items follow, " The first 6:"; "No loot awarded." (the
+// site's words) for none.
 func lootLine(n int) string {
+	if n <= 0 {
+		return officerCopy.LootNone
+	}
 	template := officerCopy.LootCount
 	if n > 0 && n <= maxLootEmbeds { // every item follows: no "The first" repeating the count
 		template = officerCopy.LootAll

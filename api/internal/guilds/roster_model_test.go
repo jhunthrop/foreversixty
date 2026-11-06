@@ -40,7 +40,21 @@ func TestMergeRosterTable(t *testing.T) {
 				{Name: "Bow", CharacterKey: "us/pvp/bow", State: EntryApproved, Rank: "leader"},
 				{Name: "Ashenveil", CharacterKey: "us/pvp/ashenveil", State: EntryWaiting, Rank: "officer"},
 			},
-			counts: RosterCounts{OnRoster: 2, Waiting: 1},
+			counts: RosterCounts{OnRoster: 1, Waiting: 1},
+		},
+		{
+			name: "waiting counts characters: two of one account are two waiting, off the list's count",
+			rows: []RosterRow{
+				{Name: "Alt", CharacterKey: "us/pvp/alt", Rank: "member", ownerUserID: 7},
+				{Name: "Main", CharacterKey: "us/pvp/main", Rank: "member", ownerUserID: 7},
+				{Name: "Other", CharacterKey: "us/pvp/other", Rank: "member", ownerUserID: 8},
+			},
+			want: []RosterEntry{
+				{Name: "Alt", CharacterKey: "us/pvp/alt", State: EntryWaiting, Rank: "member"},
+				{Name: "Main", CharacterKey: "us/pvp/main", State: EntryWaiting, Rank: "member"},
+				{Name: "Other", CharacterKey: "us/pvp/other", State: EntryWaiting, Rank: "member"},
+			},
+			counts: RosterCounts{OnRoster: 0, Waiting: 3},
 		},
 		{
 			name:     "a snapshot name with no account is in game without one, by name, rank member",
@@ -113,7 +127,7 @@ func TestMergeRosterTable(t *testing.T) {
 			counts: RosterCounts{OnRoster: 1},
 		},
 		{
-			name: "the guild from the walk: seven on the roster, two in game without an account, one waiting, one not seen",
+			name: "the guild from the walk: six on the roster list, two in game without an account, one waiting, one not seen",
 			rows: []RosterRow{
 				approved("Bow", "us/pvp/bow", "leader"),
 				approved("Ashenveil", "us/pvp/ashenveil", "officer"),
@@ -122,7 +136,7 @@ func TestMergeRosterTable(t *testing.T) {
 			},
 			invited:  []invitedMember{{UserID: 4, Name: "Driftwood"}},
 			snapshot: []snapshotMember{line("Bow"), line("Ashenveil"), line("Strayhound"), line("Oldmarrow")},
-			counts:   RosterCounts{OnRoster: 7, InGameNoAccount: 2, Waiting: 1, NotSeen: 1},
+			counts:   RosterCounts{OnRoster: 6, InGameNoAccount: 2, Waiting: 1, NotSeen: 1},
 		},
 	}
 	for _, tc := range cases {
@@ -134,8 +148,8 @@ func TestMergeRosterTable(t *testing.T) {
 			if tc.want != nil && !reflect.DeepEqual(got, tc.want) {
 				t.Errorf("entries = %+v, want %+v", got, tc.want)
 			}
-			if len(got) != counts.OnRoster {
-				t.Errorf("len(entries) = %d, on_roster = %d", len(got), counts.OnRoster)
+			if len(got) != counts.OnRoster+counts.Waiting {
+				t.Errorf("len(entries) = %d, on_roster + waiting = %d", len(got), counts.OnRoster+counts.Waiting)
 			}
 		})
 	}
@@ -327,7 +341,7 @@ func TestHomeMembersListsEveryoneTheAddonSaw(t *testing.T) {
 	if got := states(view); !reflect.DeepEqual(got, want) {
 		t.Fatalf("member states = %v, want %v", got, want)
 	}
-	if view.Counts != (RosterCounts{OnRoster: 5, InGameNoAccount: 2, Waiting: 1, NotSeen: 1}) {
+	if view.Counts != (RosterCounts{OnRoster: 4, InGameNoAccount: 2, Waiting: 1, NotSeen: 1}) {
 		t.Errorf("counts = %+v", view.Counts)
 	}
 	for _, e := range view.Members {
@@ -353,8 +367,8 @@ func TestHomeMembersListsEveryoneTheAddonSaw(t *testing.T) {
 	if got := states(view)["Driftwood"]; got != EntryApproved {
 		t.Errorf("Driftwood once the snapshot names them = %q, want approved", got)
 	}
-	if view.Counts.NotSeen != 0 || view.Counts.OnRoster != 5 {
-		t.Errorf("counts after the sighting = %+v, want 5 on the roster and none unseen", view.Counts)
+	if view.Counts.NotSeen != 0 || view.Counts.OnRoster != 4 {
+		t.Errorf("counts after the sighting = %+v, want 4 on the roster list and none unseen", view.Counts)
 	}
 
 	// An invited account's own character appearing in the guild as a normal row (its player

@@ -43,9 +43,7 @@
     /**
      * Overrides the generic "No buffs/debuffs in this window" text. A real fight's empty
      * DEBUFFS tab genuinely means none were cast, so ReportView.svelte's calls leave this
-     * unset; a sim's DEBUFFS tab is always empty for a different reason -- the engine
-     * reports no debuff data at all -- so SimResults.svelte passes its own honest message
-     * (copy.ts's AURA_EMPTY_MESSAGE, Task 4).
+     * unset; a caller whose empty list means something else passes its own honest message.
      */
     emptyMessage?: string;
     /** `bars` is the saved sim's one column of uptime bars; the logs report keeps `table`. */

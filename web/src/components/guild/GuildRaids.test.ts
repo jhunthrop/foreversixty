@@ -89,6 +89,20 @@ describe('GuildRaids planned section', () => {
     expect(text(html({ planned: [], officer: true }))).toContain(raidCopy.emptyPlanned.officer);
   });
 
+  it('draws no Planned panel for a gated officer with nothing planned: header, gate, then Raid nights', () => {
+    const markup = html({ planned: [], officer: true, officerTools: false });
+    expect(markup).not.toContain('data-testid="guild-planned"');
+    expect(text(markup)).not.toContain(raidCopy.emptyPlanned.officer);
+    const gate = markup.indexOf('guild-raids-plan-gate');
+    expect(gate).toBeGreaterThan(markup.indexOf('guild-raids-header'));
+    expect(markup.indexOf('guild-raid-nights-heading')).toBeGreaterThan(gate);
+  });
+
+  it('keeps the Planned rows of a gated officer whose plan lapsed with raids still planned', () => {
+    const markup = html({ planned: weeks(1), officer: true, officerTools: false });
+    expect(markup).toContain('data-testid="guild-planned-rows"');
+  });
+
   it('puts Raid nights under Planned', () => {
     const markup = html({ planned: weeks(1) });
     expect(markup.indexOf('guild-raid-nights-heading')).toBeGreaterThan(markup.indexOf('guild-planned'));

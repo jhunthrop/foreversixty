@@ -82,7 +82,7 @@ function attendanceRow(name: string, seen: Seen): RaidAttendanceRow {
   };
 }
 
-/** A verified raider who has signed up for and attended no logged raid yet: `No raids yet`. */
+/** A verified raider who has signed up for and attended no logged raid yet: `No raid nights yet`. */
 export const NEW_RECRUIT = 'Grimvow';
 
 /** The roster attendance the API reads once for both the roster chip and the account's guild line

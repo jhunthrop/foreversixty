@@ -13,7 +13,6 @@
   import { rosterBestLabels } from '../../lib/guild/roster-best';
   import { counted } from '../../lib/plural';
   import type { GuildRosterBest } from '../../lib/rankings/api';
-  import { executionLabel, executionTitle } from '../../lib/sim/execution';
   import Card from '../ui/Card.svelte';
   import EmptyState from '../ui/EmptyState.svelte';
 
@@ -178,12 +177,15 @@
           </a>
           <span class="text-muted min-w-0 truncate text-[13px]">{labels.what}</span>
           <span class="numeric ml-auto text-[14px]" title={labels.hover}>{labels.value}</span>
-          <span
-            class="text-muted numeric hidden text-right text-[13px] md:inline"
-            title={executionTitle(row.execution_score)}
-          >
-            {executionLabel(row.execution_score)}
-          </span>
+          {#if labels.execution !== null}
+            <span
+              class="text-muted numeric hidden text-right text-[13px] md:inline"
+              title={labels.executionHover}
+              data-testid="guild-roster-best-execution"
+            >
+              {labels.execution}
+            </span>
+          {/if}
         </div>
       {/each}
     </div>

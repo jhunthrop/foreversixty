@@ -38,12 +38,14 @@
   import ClaimPlanLine from './claim/ClaimPlanLine.svelte';
   import ClaimNextSteps from './claim/ClaimNextSteps.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
+  import { guildHasPlan } from '../lib/guild/join-plan';
   import { guildClaimCopy, guildHomeCopy } from '../lib/guild/copy';
   import { formatMadeOn } from '../lib/guild/invite-link';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { button } from '../lib/ui/button';
   import Card from './ui/Card.svelte';
-  import { fetchGuild } from '../lib/rankings/api';
+  import { fetchGuild, RankingsError } from '../lib/rankings/api';
+  import GuildNotFound from './guild/GuildNotFound.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
@@ -55,7 +57,7 @@
   let guildName = $state('');
   let settings = $state<GuildSettingsData | null>(null);
   let home = $state<GuildHome | null>(null);
-  let status = $state<'loading' | 'ready' | 'failed'>('loading');
+  let status = $state<'loading' | 'ready' | 'failed' | 'notfound'>('loading');
   let error = $state('');
   let busy = $state(false);
   let showContestConfirm = $state(false);
@@ -103,7 +105,12 @@
           : Promise.resolve(null),
       ]);
       status = 'ready';
-    } catch {
+    } catch (thrown) {
+      // A guild the site does not know yet is not a failure: say so, as the guild page does.
+      if (thrown instanceof RankingsError && thrown.status === 404) {
+        status = 'notfound';
+        return;
+      }
       status = 'failed';
       error = guildClaimCopy.failed;
     }
@@ -181,6 +188,9 @@
       settings = await fetchGuildSettings(guildId);
     });
 
+  /** The guild has no plan (none, or one that lapsed): events and the Discord bot are gated. */
+  const planGated = $derived(!guildHasPlan(membership?.covered));
+
   // The guild's own page and settings, for the next-step links once the viewer holds it.
   const guildBase = $derived(guildHref(path.region, path.ruleset, guildName || path.slug));
   const settingsBase = $derived(guildSettingsHref(path.region, path.ruleset, guildName || path.slug));
@@ -201,7 +211,9 @@
   <h1 class="heading-page" data-testid="guild-claim-heading">
     {holdsClaim ? guildClaimCopy.headingHeld(guildName) : guildClaimCopy.heading(guildName)}
   </h1>
-  {#if status === 'loading' || status === 'failed'}
+  {#if status === 'notfound'}
+    <GuildNotFound {path} />
+  {:else if status === 'loading' || status === 'failed'}
     <GuildStatus
       status={status === 'loading' ? 'loading' : 'failed'}
       {error}
@@ -273,7 +285,7 @@
         {#if holdsClaim}
           <p class="text-[16px]" data-testid="guild-claim-state">{guildClaimCopy.youHold(guildName)}</p>
           {#if claimState !== 'contested'}
-            <ClaimNextSteps {subscribe} {claimPlan} {guildBase} {settingsBase} />
+            <ClaimNextSteps {subscribe} {claimPlan} {guildBase} {settingsBase} gated={planGated} />
           {/if}
           {#if !showReleaseConfirm}
             <button

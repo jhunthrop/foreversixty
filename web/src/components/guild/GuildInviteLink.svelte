@@ -1,13 +1,14 @@
 <!-- web/src/components/guild/GuildInviteLink.svelte -->
-<!-- The invite row of the Members and access card (spec 2026-11-05 §3.3, the no-migration interim).
-     The API keeps only a fingerprint of the token, so the link can be shown only right after it is
-     made: the row says so instead of offering a "show current link" it cannot honour. A first link
-     needs no confirm, nothing breaks; a new one asks first, because the old one stops working. The
-     URL lives in this component's state only, never in storage. -->
+<!-- The invite row of the Members and access card (spec 2026-11-05 §3.3, §4.1). The API keeps the
+     link sealed and hands it back to a verified officer (`url`), so a later visit shows the field,
+     `Made {date} by {Name}.` and Make a new link. Where the API could not keep it (`url` null), the
+     link shows only right after it is made and the row says so, never offering a "show current
+     link" it cannot honour. A first link needs no confirm, nothing breaks; a new one asks first,
+     because the old one stops working. The URL lives in props and state only, never in storage. -->
 <script lang="ts">
   import { tick } from 'svelte';
   import { guildInviteHref } from '../../lib/characters';
-  import { rotateInvite } from '../../lib/guild/api';
+  import { rotateInvite, type ClaimHolder, type GuildInviteView } from '../../lib/guild/api';
   import { guildSettingsCopy as copy } from '../../lib/guild/copy';
   import { formatMadeOn, inviteUrl } from '../../lib/guild/invite-link';
   import { BUSY_CLASS } from '../../lib/ui/busy';
@@ -15,6 +16,7 @@
   import { COPIED_LONG_MS } from '../../lib/ui/copy-feedback';
   import CopyLinkField from '../ui/CopyLinkField.svelte';
   import SettingsRow from '../ui/SettingsRow.svelte';
+  import GuildCharacterName from './GuildCharacterName.svelte';
 
   const TESTID = 'guild-invite';
 
@@ -22,6 +24,8 @@
     guildId,
     guildName,
     rotatedAt = null,
+    keptUrl = null,
+    madeBy = null,
     disabled = false,
     onRotated = undefined,
   }: {
@@ -29,28 +33,38 @@
     guildName: string;
     /** When the current link was made (the settings read); null when none exists. */
     rotatedAt?: string | null;
+    /** The current link's site path when the API kept it; null when it cannot be shown again. */
+    keptUrl?: string | null;
+    /** Who made the current link, by their character on the roster. */
+    madeBy?: ClaimHolder | null;
     disabled?: boolean;
-    onRotated?: (rotatedAt: string) => void;
+    onRotated?: (invite: GuildInviteView) => void;
   } = $props();
 
   let confirming = $state(false);
   let busy = $state(false);
   let failed = $state(false);
-  let url = $state<string | null>(null);
+  /** The link made on this page, until the settings read hands back the kept one. */
+  let madePath = $state<string | null>(null);
   let root = $state<HTMLElement | null>(null);
   let cancelButton = $state<HTMLButtonElement | null>(null);
   let newLinkButton = $state<HTMLButtonElement | null>(null);
 
   const madeOn = $derived(rotatedAt === null ? '' : formatMadeOn(rotatedAt));
+  const kept = $derived(keptUrl !== null);
+  const url = $derived.by(() => {
+    const path = keptUrl ?? madePath;
+    return path === null ? null : inviteUrl(path);
+  });
 
   async function make(): Promise<void> {
     busy = true;
     failed = false;
     try {
       const result = await rotateInvite(guildId);
-      url = inviteUrl(guildInviteHref(result.token));
+      madePath = guildInviteHref(result.token);
       confirming = false;
-      onRotated?.(result.rotated_at);
+      onRotated?.(result.invite);
       await tick();
       root?.querySelector<HTMLElement>(`[data-testid="${TESTID}-copy"]`)?.focus();
     } catch {
@@ -83,21 +97,7 @@
 <div bind:this={root} id="invite" class="flex scroll-mt-20 flex-col" data-testid={`${TESTID}-block`}>
   <SettingsRow label={copy.inviteHeading} sub={copy.inviteHelp(guildName)} />
   <div class="flex flex-col items-start gap-3 px-5 pb-4">
-    {#if url !== null}
-      <div class="w-full">
-        {#key url}
-          <CopyLinkField
-            {url}
-            label={copy.linkLabel}
-            shareTitle={copy.inviteShareTitle}
-            shareText={copy.inviteShareText}
-            testid={TESTID}
-            copiedMs={COPIED_LONG_MS}
-          />
-        {/key}
-      </div>
-      <p class="text-muted text-[13px]" data-testid={`${TESTID}-shown-once`}>{copy.tokenShownOnce}</p>
-    {:else if confirming}
+    {#if confirming}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="border-line-soft flex w-full flex-col gap-3 border p-4"
@@ -126,6 +126,43 @@
           </button>
         </div>
       </div>
+    {:else if url !== null}
+      <div class="w-full">
+        {#key url}
+          <CopyLinkField
+            {url}
+            label={copy.linkLabel}
+            shareTitle={copy.inviteShareTitle}
+            shareText={copy.inviteShareText}
+            testid={TESTID}
+            copiedMs={COPIED_LONG_MS}
+          />
+        {/key}
+      </div>
+      {#if kept}
+        <p
+          class="text-muted inline-flex flex-wrap items-center gap-1 text-[13px]"
+          data-testid={`${TESTID}-made`}
+        >
+          {#if madeBy !== null}
+            {copy.linkMadeBy(madeOn)}
+            <span><GuildCharacterName holder={madeBy} crestSize={0} />.</span>
+          {:else}
+            {copy.linkMade(madeOn)}
+          {/if}
+        </p>
+        <button
+          bind:this={newLinkButton}
+          class={button('secondary', 'sm')}
+          onclick={() => void askFirst()}
+          {disabled}
+          data-testid={`${TESTID}-rotate`}
+        >
+          {copy.newLinkButton}
+        </button>
+      {:else}
+        <p class="text-muted text-[13px]" data-testid={`${TESTID}-shown-once`}>{copy.tokenShownOnce}</p>
+      {/if}
     {:else if madeOn !== ''}
       <p class="text-muted text-[13px]" data-testid={`${TESTID}-made`}>{copy.currentLinkMade(madeOn)}</p>
       <button

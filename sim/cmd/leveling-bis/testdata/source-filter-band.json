@@ -1,0 +1,757 @@
+{
+  "dual_wield": {
+    "slots": [
+      {
+        "slot": "head",
+        "item_id": 101,
+        "item_name": "Dungeon Helm",
+        "source": "Deadmines: Smite",
+        "source_kind": "dungeon",
+        "verified": false,
+        "by_kind": {
+          "crafted": {
+            "item_id": 103,
+            "rank": 3,
+            "source": "Blacksmithing",
+            "dps_delta": -1.5
+          },
+          "quest": {
+            "item_id": 102,
+            "rank": 2,
+            "source": "Helm Quest",
+            "dps_delta": -1
+          },
+          "rep": {
+            "item_id": 104,
+            "rank": 4,
+            "source": "Stormwind",
+            "dps_delta": -2.5,
+            "standing": "honored"
+          }
+        }
+      },
+      {
+        "slot": "finger1",
+        "item_id": 201,
+        "item_name": "Ring A",
+        "source": "Scarlet Monastery",
+        "source_kind": "dungeon",
+        "verified": false,
+        "by_kind": {
+          "crafted": {
+            "item_id": 204,
+            "rank": 4,
+            "source": "Jewelcrafting",
+            "dps_delta": -1.5
+          },
+          "pvp": {
+            "item_id": 205,
+            "rank": 5,
+            "source": "PvP reward",
+            "dps_delta": -2
+          },
+          "quest": {
+            "item_id": 202,
+            "rank": 2,
+            "source": "Ring Quest",
+            "dps_delta": -0.5
+          },
+          "world": {
+            "item_id": 206,
+            "rank": 6,
+            "source_kind": "world_drop",
+            "source": "World drop",
+            "dps_delta": -2.5
+          }
+        }
+      },
+      {
+        "slot": "finger2",
+        "item_id": 202,
+        "item_name": "Quest Ring",
+        "source": "Ring Quest",
+        "source_kind": "quest",
+        "verified": false,
+        "not_with": [
+          202
+        ],
+        "by_kind": {
+          "crafted": {
+            "item_id": 204,
+            "rank": 4,
+            "source": "Jewelcrafting",
+            "dps_delta": -1,
+            "not_with": [
+              204,
+              205
+            ]
+          },
+          "dungeon": {
+            "item_id": 201,
+            "rank": 1,
+            "source": "Scarlet Monastery",
+            "dps_delta": 0,
+            "not_with": [
+              201,
+              206
+            ],
+            "next": {
+              "item_id": 203,
+              "rank": 3,
+              "source": "Razorfen Kraul",
+              "dps_delta": -0.5
+            }
+          },
+          "pvp": {
+            "item_id": 205,
+            "rank": 5,
+            "source": "PvP reward",
+            "dps_delta": -1.5,
+            "not_with": [
+              204,
+              205
+            ]
+          },
+          "quest": {
+            "item_id": 203,
+            "rank": 3,
+            "source": "Other Quest",
+            "dps_delta": -0.5
+          },
+          "world": {
+            "item_id": 206,
+            "rank": 6,
+            "source_kind": "world_drop",
+            "source": "World drop",
+            "dps_delta": -2,
+            "not_with": [
+              201,
+              206
+            ]
+          }
+        }
+      },
+      {
+        "slot": "trinket1",
+        "item_id": 301,
+        "item_name": "Raid Trinket",
+        "source": "Molten Core",
+        "source_kind": "raid",
+        "verified": false,
+        "by_kind": {
+          "rep": {
+            "item_id": 302,
+            "rank": 2,
+            "source": "Argent Dawn",
+            "dps_delta": -0.5,
+            "standing": "revered"
+          },
+          "vendor": {
+            "item_id": 304,
+            "rank": 4,
+            "source": "Some Vendor",
+            "dps_delta": -3.5
+          }
+        }
+      },
+      {
+        "slot": "trinket2",
+        "item_id": 302,
+        "item_name": "Rep Trinket",
+        "source": "Argent Dawn",
+        "source_kind": "rep",
+        "verified": false,
+        "standing": "revered",
+        "not_with": [
+          302
+        ],
+        "by_kind": {
+          "raid": {
+            "item_id": 301,
+            "rank": 1,
+            "source": "Molten Core",
+            "dps_delta": 0,
+            "not_with": [
+              301
+            ],
+            "next": {
+              "item_id": 303,
+              "rank": 3,
+              "source": "Onyxia's Lair",
+              "dps_delta": -2.5
+            }
+          },
+          "vendor": {
+            "item_id": 304,
+            "rank": 4,
+            "source": "Some Vendor",
+            "dps_delta": -3,
+            "not_with": [
+              304
+            ]
+          }
+        }
+      },
+      {
+        "slot": "main_hand",
+        "item_id": 402,
+        "item_name": "Dungeon Sword",
+        "source": "Gnomeregan",
+        "source_kind": "dungeon",
+        "verified": false,
+        "by_kind": {
+          "crafted": {
+            "item_id": 404,
+            "rank": 3,
+            "source": "Blacksmithing",
+            "dps_delta": -1
+          },
+          "vendor": {
+            "item_id": 403,
+            "rank": 2,
+            "source": "Weaponsmith",
+            "dps_delta": -0.5
+          }
+        }
+      },
+      {
+        "slot": "off_hand",
+        "item_id": 403,
+        "item_name": "Vendor Sword",
+        "source": "Weaponsmith",
+        "source_kind": "vendor",
+        "verified": false,
+        "not_with": [
+          403
+        ],
+        "by_kind": {
+          "dungeon": {
+            "item_id": 402,
+            "rank": 1,
+            "source": "Gnomeregan",
+            "dps_delta": 0,
+            "not_with": [
+              402
+            ]
+          },
+          "rep": {
+            "item_id": 405,
+            "rank": 3,
+            "source": "Darnassus",
+            "dps_delta": -1.5
+          }
+        }
+      }
+    ],
+    "cases": [
+      {
+        "kinds": [],
+        "want": {}
+      },
+      {
+        "kinds": [
+          "crafted",
+          "dungeon",
+          "pvp",
+          "quest",
+          "raid",
+          "rep",
+          "vendor",
+          "world"
+        ],
+        "want": {
+          "finger1": 201,
+          "finger2": 202,
+          "head": 101,
+          "main_hand": 402,
+          "off_hand": 403,
+          "trinket1": 301,
+          "trinket2": 302
+        }
+      },
+      {
+        "kinds": [
+          "dungeon"
+        ],
+        "want": {
+          "finger1": 201,
+          "finger2": 203,
+          "head": 101,
+          "main_hand": 402
+        }
+      },
+      {
+        "kinds": [
+          "raid"
+        ],
+        "want": {
+          "trinket1": 301,
+          "trinket2": 303
+        }
+      },
+      {
+        "kinds": [
+          "world"
+        ],
+        "want": {
+          "finger1": 206
+        }
+      },
+      {
+        "kinds": [
+          "quest"
+        ],
+        "want": {
+          "finger1": 202,
+          "finger2": 203,
+          "head": 102
+        }
+      },
+      {
+        "kinds": [
+          "crafted"
+        ],
+        "want": {
+          "finger1": 204,
+          "head": 103,
+          "main_hand": 404
+        }
+      },
+      {
+        "kinds": [
+          "rep"
+        ],
+        "want": {
+          "head": 104,
+          "off_hand": 405,
+          "trinket1": 302
+        }
+      },
+      {
+        "kinds": [
+          "vendor"
+        ],
+        "want": {
+          "main_hand": 403,
+          "trinket1": 304
+        }
+      },
+      {
+        "kinds": [
+          "pvp"
+        ],
+        "want": {
+          "finger1": 205
+        }
+      },
+      {
+        "kinds": [
+          "rep",
+          "vendor"
+        ],
+        "want": {
+          "head": 104,
+          "main_hand": 403,
+          "off_hand": 405,
+          "trinket1": 302,
+          "trinket2": 304
+        }
+      },
+      {
+        "kinds": [
+          "crafted",
+          "pvp",
+          "quest"
+        ],
+        "want": {
+          "finger1": 202,
+          "finger2": 203,
+          "head": 102,
+          "main_hand": 404
+        }
+      },
+      {
+        "kinds": [
+          "raid",
+          "world"
+        ],
+        "want": {
+          "finger1": 206,
+          "trinket1": 301,
+          "trinket2": 303
+        }
+      }
+    ]
+  },
+  "two_hand": {
+    "slots": [
+      {
+        "slot": "head",
+        "item_id": 101,
+        "item_name": "Dungeon Helm",
+        "source": "Deadmines: Smite",
+        "source_kind": "dungeon",
+        "verified": false,
+        "by_kind": {
+          "crafted": {
+            "item_id": 103,
+            "rank": 3,
+            "source": "Blacksmithing",
+            "dps_delta": -1.5
+          },
+          "quest": {
+            "item_id": 102,
+            "rank": 2,
+            "source": "Helm Quest",
+            "dps_delta": -1
+          },
+          "rep": {
+            "item_id": 104,
+            "rank": 4,
+            "source": "Stormwind",
+            "dps_delta": -2.5,
+            "standing": "honored"
+          }
+        }
+      },
+      {
+        "slot": "finger1",
+        "item_id": 201,
+        "item_name": "Ring A",
+        "source": "Scarlet Monastery",
+        "source_kind": "dungeon",
+        "verified": false,
+        "by_kind": {
+          "crafted": {
+            "item_id": 204,
+            "rank": 4,
+            "source": "Jewelcrafting",
+            "dps_delta": -1.5
+          },
+          "pvp": {
+            "item_id": 205,
+            "rank": 5,
+            "source": "PvP reward",
+            "dps_delta": -2
+          },
+          "quest": {
+            "item_id": 202,
+            "rank": 2,
+            "source": "Ring Quest",
+            "dps_delta": -0.5
+          },
+          "world": {
+            "item_id": 206,
+            "rank": 6,
+            "source_kind": "world_drop",
+            "source": "World drop",
+            "dps_delta": -2.5
+          }
+        }
+      },
+      {
+        "slot": "finger2",
+        "item_id": 202,
+        "item_name": "Quest Ring",
+        "source": "Ring Quest",
+        "source_kind": "quest",
+        "verified": false,
+        "not_with": [
+          202
+        ],
+        "by_kind": {
+          "crafted": {
+            "item_id": 204,
+            "rank": 4,
+            "source": "Jewelcrafting",
+            "dps_delta": -1,
+            "not_with": [
+              204,
+              205
+            ]
+          },
+          "dungeon": {
+            "item_id": 201,
+            "rank": 1,
+            "source": "Scarlet Monastery",
+            "dps_delta": 0,
+            "not_with": [
+              201,
+              206
+            ],
+            "next": {
+              "item_id": 203,
+              "rank": 3,
+              "source": "Razorfen Kraul",
+              "dps_delta": -0.5
+            }
+          },
+          "pvp": {
+            "item_id": 205,
+            "rank": 5,
+            "source": "PvP reward",
+            "dps_delta": -1.5,
+            "not_with": [
+              204,
+              205
+            ]
+          },
+          "quest": {
+            "item_id": 203,
+            "rank": 3,
+            "source": "Other Quest",
+            "dps_delta": -0.5
+          },
+          "world": {
+            "item_id": 206,
+            "rank": 6,
+            "source_kind": "world_drop",
+            "source": "World drop",
+            "dps_delta": -2,
+            "not_with": [
+              201,
+              206
+            ]
+          }
+        }
+      },
+      {
+        "slot": "trinket1",
+        "item_id": 301,
+        "item_name": "Raid Trinket",
+        "source": "Molten Core",
+        "source_kind": "raid",
+        "verified": false,
+        "by_kind": {
+          "rep": {
+            "item_id": 302,
+            "rank": 2,
+            "source": "Argent Dawn",
+            "dps_delta": -0.5,
+            "standing": "revered"
+          },
+          "vendor": {
+            "item_id": 304,
+            "rank": 4,
+            "source": "Some Vendor",
+            "dps_delta": -3.5
+          }
+        }
+      },
+      {
+        "slot": "trinket2",
+        "item_id": 302,
+        "item_name": "Rep Trinket",
+        "source": "Argent Dawn",
+        "source_kind": "rep",
+        "verified": false,
+        "standing": "revered",
+        "not_with": [
+          302
+        ],
+        "by_kind": {
+          "raid": {
+            "item_id": 301,
+            "rank": 1,
+            "source": "Molten Core",
+            "dps_delta": 0,
+            "not_with": [
+              301
+            ],
+            "next": {
+              "item_id": 303,
+              "rank": 3,
+              "source": "Onyxia's Lair",
+              "dps_delta": -2.5
+            }
+          },
+          "vendor": {
+            "item_id": 304,
+            "rank": 4,
+            "source": "Some Vendor",
+            "dps_delta": -3,
+            "not_with": [
+              304
+            ]
+          }
+        }
+      },
+      {
+        "slot": "main_hand",
+        "item_id": 401,
+        "item_name": "Big Axe",
+        "source": "Uldaman",
+        "source_kind": "dungeon",
+        "verified": false,
+        "two_hand": true,
+        "by_kind": {
+          "crafted": {
+            "item_id": 403,
+            "rank": 3,
+            "source": "Blacksmithing",
+            "dps_delta": -5.5
+          },
+          "quest": {
+            "item_id": 402,
+            "rank": 2,
+            "source": "Sword Quest",
+            "dps_delta": -4
+          }
+        }
+      },
+      {
+        "slot": "off_hand",
+        "verified": false,
+        "by_kind": {
+          "dungeon": {
+            "item_id": 502,
+            "rank": 2,
+            "source": "Stockades"
+          },
+          "vendor": {
+            "item_id": 501,
+            "rank": 1,
+            "source": "Armorer"
+          }
+        }
+      }
+    ],
+    "cases": [
+      {
+        "kinds": [],
+        "want": {}
+      },
+      {
+        "kinds": [
+          "crafted",
+          "dungeon",
+          "pvp",
+          "quest",
+          "raid",
+          "rep",
+          "vendor",
+          "world"
+        ],
+        "want": {
+          "finger1": 201,
+          "finger2": 202,
+          "head": 101,
+          "main_hand": 401,
+          "trinket1": 301,
+          "trinket2": 302
+        }
+      },
+      {
+        "kinds": [
+          "dungeon"
+        ],
+        "want": {
+          "finger1": 201,
+          "finger2": 203,
+          "head": 101,
+          "main_hand": 401
+        }
+      },
+      {
+        "kinds": [
+          "raid"
+        ],
+        "want": {
+          "trinket1": 301,
+          "trinket2": 303
+        }
+      },
+      {
+        "kinds": [
+          "world"
+        ],
+        "want": {
+          "finger1": 206
+        }
+      },
+      {
+        "kinds": [
+          "quest"
+        ],
+        "want": {
+          "finger1": 202,
+          "finger2": 203,
+          "head": 102,
+          "main_hand": 402
+        }
+      },
+      {
+        "kinds": [
+          "crafted"
+        ],
+        "want": {
+          "finger1": 204,
+          "head": 103,
+          "main_hand": 403
+        }
+      },
+      {
+        "kinds": [
+          "rep"
+        ],
+        "want": {
+          "head": 104,
+          "trinket1": 302
+        }
+      },
+      {
+        "kinds": [
+          "vendor"
+        ],
+        "want": {
+          "off_hand": 501,
+          "trinket1": 304
+        }
+      },
+      {
+        "kinds": [
+          "pvp"
+        ],
+        "want": {
+          "finger1": 205
+        }
+      },
+      {
+        "kinds": [
+          "rep",
+          "vendor"
+        ],
+        "want": {
+          "head": 104,
+          "off_hand": 501,
+          "trinket1": 302,
+          "trinket2": 304
+        }
+      },
+      {
+        "kinds": [
+          "crafted",
+          "pvp",
+          "quest"
+        ],
+        "want": {
+          "finger1": 202,
+          "finger2": 203,
+          "head": 102,
+          "main_hand": 402
+        }
+      },
+      {
+        "kinds": [
+          "raid",
+          "world"
+        ],
+        "want": {
+          "finger1": 206,
+          "trinket1": 301,
+          "trinket2": 303
+        }
+      }
+    ]
+  }
+}

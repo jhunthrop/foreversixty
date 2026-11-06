@@ -548,7 +548,10 @@ func serve(log *slog.Logger) error {
 	// the same TreeDataDir every other build-scoped read in this file uses. Trees backs
 	// the loot tab's fallback candidate tier (class usability + item level from the
 	// client's own per-class item tables, already loaded above).
-	guildStore := newGuildStore(cfg, pool, treeData)
+	guildStore, err := newGuildStore(cfg, pool, treeData, log)
+	if err != nil {
+		return err
+	}
 	membership := &guilds.MembershipJob{Store: guildStore, Log: log}
 	if err := membership.Run(ctx); err != nil {
 		return fmt.Errorf("guilds membership sweep: %w", err)
@@ -581,6 +584,8 @@ func serve(log *slog.Logger) error {
 	// attribution (loot) resolve a user id to a battletag through this, the same
 	// Accounts dependency guilds.Service already takes below.
 	guildStore.Accounts = authStore
+	// A member who rejoins by invite gets his synced characters back through the addon sync.
+	guildStore.Exports = &addon.Store{Pool: pool, Log: log}
 	roleSyncer := linkedRoleSyncer(cfg, pool, log)
 	entStore := entitlementsStore(pool, roleSyncer)
 	authenticator := &auth.Authenticator{

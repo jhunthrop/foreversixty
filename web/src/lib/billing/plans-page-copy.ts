@@ -250,17 +250,17 @@ export const plansPageCopy = {
     },
     {
       question: 'Can I get a refund?',
-      answer: "Email us and we'll sort it out — see the refund policy for the details.",
+      answer: "Email us and we'll sort it out. The refund policy has the details.",
     },
     {
       question: 'Is anything from Battle.net ever paid?',
       answer:
-        "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always — Blizzard's own rules for using their data require this, and we would want it that way regardless.",
+        "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always. Blizzard's own rules for using their data require this, and we would want it that way regardless.",
     },
     {
       question: 'Are there ads?',
       answer:
-        'No. Not for anyone, paying or not. The site is paid for by Premium and the guild plans, not by ads, and that is not a perk you are buying — it is true for everyone.',
+        'No. Not for anyone, paying or not. The site is paid for by Premium and the guild plans, not by ads, and that is not a perk you are buying. It is true for everyone.',
     },
     {
       question: 'Who am I paying?',

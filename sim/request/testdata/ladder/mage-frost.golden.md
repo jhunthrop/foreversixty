@@ -100,13 +100,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-010000000000000000 | main_hand:284287 ranged:286750 | 10.3 | 2 | spell:5019=71.2, spell:205=36.1 | {SpellID: 400589} |
-| 20 | 000000000000000000-00000000000000000-253100000000000000 | main_hand:6505 ranged:5243 | 27.9 | 3 | spell:5019=52.4, spell:7322=40.8, spell:12051=1.0 | {SpellID: 1312002}, {SpellID: 400589}, {SpellID: 400669} |
-| 30 | 000000000000000000-00000000000000000-253510130100000000 | main_hand:249392 ranged:5213 | 41.6 | 3 | spell:8406=49.0, spell:5019=40.6, item:5514=1.0, other:mana_gain=1.0, spell:12051=1.0 | {SpellID: 12579}, {SpellID: 400589}, {SpellID: 400669} |
-| 38 | 000000000000000000-00000000000000000-253510130101301210 | main_hand:873 ranged:13064 | 82.6 | 6 | spell:8408=50.2, spell:5019=25.2, spell:1240044=5.9, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 400589} |
-| 40 | 000000000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:5216 | 91.2 | 7 | spell:8408=44.2, spell:5019=34.4, spell:1240044=5.8, spell:11426=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
-| 50 | 230005000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:249232 | 142.6 | 7 | spell:10180=42.2, spell:5019=28.6, spell:1240046=5.5, spell:13031=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
-| 60 | 230005203000000000-50000000000000000-253510130101301221 | main_hand:22589 ranged:22821 | 288.1 | 8 | spell:10181=46.2, spell:5019=15.1, spell:10212=9.6, spell:1240047=5.7, spell:13033=3.0 | - |
+| 10 | 000000000000000000-00000000000000000-010000000000000000 | main_hand:284287 ranged:286750 | 10.2 | 2 | spell:5019=71.2, spell:205=36.1 | {SpellID: 400589} |
+| 20 | 000000000000000000-00000000000000000-253100000000000000 | main_hand:6505 ranged:5243 | 27.7 | 3 | spell:5019=52.4, spell:7322=40.8, spell:12051=1.0 | {SpellID: 1312002}, {SpellID: 400589}, {SpellID: 400669} |
+| 30 | 000000000000000000-00000000000000000-253510130100000000 | main_hand:249392 ranged:5213 | 41.3 | 3 | spell:8406=49.0, spell:5019=40.6, item:5514=1.0, other:mana_gain=1.0, spell:12051=1.0 | {SpellID: 12579}, {SpellID: 400589}, {SpellID: 400669} |
+| 38 | 000000000000000000-00000000000000000-253510130101301210 | main_hand:873 ranged:13064 | 83.4 | 5 | spell:8408=50.5, spell:5019=24.9, spell:1240044=6.0, other:mana_gain=2.0, item:5513=1.0 | {SpellID: 400589} |
+| 40 | 000000000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:5216 | 91.7 | 6 | spell:8408=45.7, spell:5019=33.0, spell:1240044=5.8, spell:11426=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
+| 50 | 230005000000000000-00000000000000000-253510130101301221 | main_hand:873 ranged:249232 | 142.5 | 6 | spell:10180=43.7, spell:5019=27.3, spell:1240046=5.6, spell:13031=3.0, other:mana_gain=2.0 | {SpellID: 400589} |
+| 60 | 230005203000000000-50000000000000000-253510130101301221 | main_hand:22589 ranged:22821 | 287.0 | 7 | spell:10181=48.1, spell:5019=12.5, spell:10212=9.6, spell:1240047=6.1, spell:13033=3.0 | - |
 
 ## Learned but unused (informational)
 
@@ -160,6 +160,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blast Wave (spell 13018)
 - Blizzard (spell 8427)
 - Chill (spell 1308651)
+- Cone of Cold (spell 8492)
 - Fire Blast (spell 8413)
 - Fireball (spell 8402)
 - Flamestrike (spell 8422)
@@ -177,6 +178,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blast Wave (spell 13018)
 - Blizzard (spell 8427)
 - Chill (spell 1308651)
+- Cone of Cold (spell 8492)
 - Fire Blast (spell 8413)
 - Fireball (spell 8402)
 - Flamestrike (spell 8423)
@@ -195,6 +197,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blast Wave (spell 13019)
 - Blizzard (spell 10185)
 - Chill (spell 1308651)
+- Cone of Cold (spell 10160)
 - Fire Blast (spell 10197)
 - Fireball (spell 10149)
 - Flamestrike (spell 10215)
@@ -213,6 +216,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Blast Wave (spell 13021)
 - Blizzard (spell 10187)
 - Chill (spell 1308651)
+- Cone of Cold (spell 10161)
 - Debug Frost Spell (spell 29607)
 - Fire Blast (spell 10199)
 - Fireball (spell 10151)
