@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
 import { accountPlanCopy as copy } from './account-plan-copy';
+import { settingsWords } from '../guild/settings-view';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-launch-pricing.md', import.meta.url);
 const spec = (label: string, index: number, fill: Record<string, string> = {}): string =>
@@ -42,7 +43,8 @@ describe('account page rows', () => {
     );
     expect(copy.seatEnded.action(4000, 'yearly')).toBe(spec('Seat ended', 1, { price: '$40 a year' }));
     expect(copy.guildRow.youHoldSeat).toBe(spec('Guild row', 0));
-    expect(copy.guildRow.active).toBe(spec('Guild row', 1));
+    // The row's date-less word is the plan card's own (guild round 3: one function for both).
+    expect(settingsWords.planActive).toBe(spec('Guild row', 1));
   });
 });
 

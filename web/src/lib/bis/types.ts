@@ -77,6 +77,9 @@ export interface BisSlot {
   /** One of loot.ts's LootKind -- the picker's own kinds, so a BiS row's badge reads the
    *  same word as the Droptimizer's. */
   source_kind: string;
+  /** The permanent enchant this item wears, by `enchants.json` id. Present only on a raid
+   *  preset's band 60 row whose slot takes one. */
+  enchant_id?: number;
   /** The stat-weight estimate in the band's `score_unit`; absent on a row the ranker's
    *  own sim decided (trinkets, proc items, weapon pairs), which carries `sim_dps` instead
    *  (ranker-integrity-2, 2026-09-30: one number per row, never two units side by side). */
@@ -131,6 +134,81 @@ export interface BisSlot {
    *  same discipline it already applies to `coverage`/`new_at_band`. A separate lane renders
    *  this list -- this lane only carries the data through. */
   alternatives?: BisAlternative[];
+  /** The source-filter fields (`sim/cmd/leveling-bis/source_filter.go`; `source-filter.ts`
+   *  resolves them). All optional: a file published before them loads unchanged, and a row
+   *  without `by_kind` simply has nothing to fall back to under a filter.
+   *  `kinds`: the pick's filter kinds when it has more than one (else its `source_kind`'s). */
+  kinds?: SourceFilterKind[];
+  /** A two-handed main hand pick: no off hand beside it. */
+  two_hand?: boolean;
+  /** The reputation standing the pick's source needs. */
+  standing?: string;
+  /** Second slot of a pair (finger2, trinket2, off_hand): the first slot's possible filtered
+   *  items this pick cannot be worn beside. */
+  not_with?: number[];
+  /** The slot's best-ranked candidate per filter kind. A first or lone slot omits the kinds
+   *  its own pick belongs to; a pair's second slot keeps every kind. */
+  by_kind?: Partial<Record<SourceFilterKind, BisByKindEntry>>;
+  /** Trinket rows: the measured tournament that decided the pick, up to eight candidates. */
+  ranking?: BisRankingEntry[];
+}
+
+/** The page's source filters: loot.json's own kind words, the three open-world kinds folded
+ *  into `world` (`source-filter.ts`'s `filterKindOfSource`). */
+export type SourceFilterKind = 'dungeon' | 'raid' | 'world' | 'quest' | 'crafted' | 'rep' | 'vendor' | 'pvp';
+
+/** One `BisSlot.by_kind` entry (`sim/cmd/leveling-bis/source_filter.go`'s `byKindRow`). */
+export interface BisByKindEntry {
+  item_id: number;
+  /** 1-based position in the slot's ranked pool; the pick ranks ahead of every entry. */
+  rank: number;
+  /** The entry's loot kind for this filter kind; absent when it is the key itself. */
+  source_kind?: string;
+  source: string;
+  /** Real DPS against the pick, negative when worse (`BisAlternative.dps_delta`'s
+   *  convention). Absent on a row with no pick. */
+  dps_delta?: number;
+  two_hand?: boolean;
+  standing?: string;
+  not_with?: number[];
+  /** Pair second slots: the next candidate of the kind, for when this one is blocked. */
+  next?: BisByKindEntry;
+}
+
+/** One `BisSlot.ranking` entry: a trinket the tournament measured, against the pick. */
+export interface BisRankingEntry {
+  item_id: number;
+  source_kind?: string;
+  /** Measured set DPS minus the pick's, same tournament. Can be positive (a modelled trinket
+   *  kept within the margin, or a pick whose gain was inside its error). */
+  dps_delta: number;
+}
+
+/** One `BisBand.filtered_set_dps` entry. */
+export interface BisFilteredSetDps {
+  dps: number;
+  error: number;
+  changed_slots: number;
+}
+
+/** The file's `run` block (`sim/cmd/leveling-bis/run_conditions.go`): what every number was
+ *  simmed under. Per-band `target_level` applies `target_level_offset`. */
+export interface BisRunConditions {
+  target_type: string;
+  target_level_offset: number;
+  duration_sec: number;
+  variation: number;
+  targets: number;
+  execute_ratio: number;
+  iterations: {
+    set: number;
+    verify: number;
+    guard: number;
+    trinket_rank: number;
+    weights_per_direction: number;
+  };
+  heal_iteration_scale?: number;
+  seed: number;
 }
 
 /** One candidate `BisSlot.alternatives` names beyond the slot's own pick. */
@@ -381,6 +459,13 @@ export interface BisBand {
   expertise_to_cap?: BisExpertiseToCap | null;
   slots: BisSlot[];
   set_dps: number;
+  /** `set_dps`'s standard error (one `run.iterations.set` run). Absent on older files. */
+  set_dps_error?: number;
+  /** The level of the target this band fought. Absent on older files. */
+  target_level?: number;
+  /** The set's DPS under the default filters: keys `all`, `dungeon`, `leveling_default`
+   *  (below 60; no rep above Friendly; crafts not skill-gated). Absent: not measured. */
+  filtered_set_dps?: Partial<Record<'all' | 'dungeon' | 'leveling_default', BisFilteredSetDps>>;
   no_source_count: number;
   /** Slots where a confirmed-stats item kept the pick over one whose stats the client has not confirmed (within sim error). Absent means none. */
   unconfirmed_within_error_held?: number;
@@ -470,6 +555,8 @@ export interface BisFile {
   presets?: Partial<Record<BisPresetId, BisPresetMeta>>;
   /** Healer files only: the incoming-damage profile every healer figure is measured under. */
   heal_profile?: BisHealProfile;
+  /** Absent on a file published before the run block. */
+  run?: BisRunConditions;
 }
 
 /** data/curated/specs.json's own shape -- the master list of written specs, one row per

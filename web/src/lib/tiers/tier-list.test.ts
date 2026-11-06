@@ -424,6 +424,14 @@ describe('hrefsFor', () => {
       bis: '/bis/warrior/fury',
       guide: '/guides/warrior/fury',
       planner: '/planner?spec=warrior-fury&talents=1-2-3',
+      sim: undefined,
     });
+  });
+
+  it("carries the input's ranking sim link onto its row, and none where the input has none", () => {
+    const withSim = { ...dpsInput('warrior', 'fury', 'Fury', 100), simHref: '/sim?code=x&run=1' };
+    const [linked, bare] = rankRole([withSim, dpsInput('warrior', 'arms', 'Arms', 90)], 'dps');
+    expect(hrefsFor(linked!).sim).toBe('/sim?code=x&run=1');
+    expect(hrefsFor(bare!).sim).toBeUndefined();
   });
 });

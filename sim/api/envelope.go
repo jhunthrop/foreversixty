@@ -25,19 +25,21 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
-// The five character sources.
+// The six character sources. SourceBlizzard is a Battle.net profile import
+// (the API stores it as addon_exports.source = 'blizzard').
 const (
-	SourceArmory = "armory"
-	SourceAddon  = "addon"
-	SourceBuild  = "build"
-	SourceFight  = "fight"
-	SourceManual = "manual"
+	SourceArmory   = "armory"
+	SourceAddon    = "addon"
+	SourceBuild    = "build"
+	SourceFight    = "fight"
+	SourceManual   = "manual"
+	SourceBlizzard = "blizzard"
 )
 
 // Sources is the closed set Validate checks CharacterSource.Kind
 // against. Declaring the constants without ever comparing to them let a
 // typo through as a stored row nothing could ever join on.
-var Sources = []string{SourceArmory, SourceAddon, SourceBuild, SourceFight, SourceManual}
+var Sources = []string{SourceArmory, SourceAddon, SourceBlizzard, SourceBuild, SourceFight, SourceManual}
 
 // The encounter profiles the contract names.
 //
@@ -204,14 +206,13 @@ type CharacterSpec struct {
 	// only starts when DistanceFromTarget <= MaxMeleeAttackDistance, a
 	// ranged/wand swing only when it is >= MinRangedAttackDistance -
 	// sim/core/constants.go pins those at 5 and 12). Zero (the field
-	// omitted) is the engine's own melee-range default - every request
-	// this site ever sent left it unset before this field existed, so
-	// every character effectively stood in melee range regardless of
-	// spec. Set it above 12 for a spec whose kit has no melee attacks at
-	// all (sim/cmd/leveling-bis's own noMeleeAutoAttackSpecs) so a Shoot/
-	// wand-using character still fires its ranged auto-attack without
-	// also picking up a melee weapon's own auto-swing DPS the real
-	// character could never use.
+	// omitted) is the engine's own melee-range default for a melee spec;
+	// for a spec whose kit has no melee attacks at all
+	// (leveling.NoMeleeAutoAttackSpecs) sim/request stands it at
+	// leveling.CasterDistanceFromTarget instead, as the BiS ranker does,
+	// so a Shoot/wand-using character still fires its ranged auto-attack
+	// without also picking up a melee weapon's own auto-swing DPS the
+	// real character could never use. A non-zero value is sent as is.
 	DistanceFromTarget float64 `json:"distance_from_target,omitempty"`
 }
 

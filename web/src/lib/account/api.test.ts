@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockEntitlements, premiumEntitlements } from '../../test-support/billing-fixtures';
 import { invalidate, subscribe } from '../data/query';
 import {
+  reportNightAt,
   ACCOUNT_FAILED,
   AccountError,
   type BillingView,
@@ -559,5 +560,20 @@ describe('queueBuildToAddon', () => {
     const failure = await queueBuildToAddon('nope', undefined, API).catch((e: unknown) => e);
     expect(failure).toBeInstanceOf(AccountError);
     expect((failure as AccountError).status).toBe(400);
+  });
+});
+
+describe('reportNightAt', () => {
+  it('dates a report by the night it logged, not its upload', () => {
+    expect(reportNightAt({ created_at: '2026-11-05T15:00:00Z', started_at: '2026-11-05T01:00:00Z' })).toBe(
+      '2026-11-05T01:00:00Z',
+    );
+  });
+
+  it('falls back to the upload on an API that sends no start', () => {
+    expect(reportNightAt({ created_at: '2026-11-05T15:00:00Z' })).toBe('2026-11-05T15:00:00Z');
+    expect(reportNightAt({ created_at: '2026-11-05T15:00:00Z', started_at: null })).toBe(
+      '2026-11-05T15:00:00Z',
+    );
   });
 });

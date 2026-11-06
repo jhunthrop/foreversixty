@@ -38,6 +38,29 @@ func (c raidRosterChar) applyRaidSpec() raidRosterChar {
 	return c
 }
 
+// specKey is the character's spec in the guild as a specs.json key: the raid spec the player
+// picked, else the newest logged fight's spec; "" when neither resolves. One rule for the raid
+// page, the roster and the bot (raid spec 2026-10-28 §P.10.1, amended 2026-11-05).
+func (c raidRosterChar) specKey() string {
+	if sp, ok := raidspec.ByKey(c.raidSpec); ok {
+		return sp.Key
+	}
+	if sp, ok := raidspec.Resolve(c.Class, c.Spec, c.role); ok {
+		return sp.Key
+	}
+	return ""
+}
+
+// GuildSpecOf is the character's spec in the guild (raidRosterChar.specKey) as a specs.json
+// key; "" when the character is not on the guild's roster or no spec resolves.
+func (s *Service) GuildSpecOf(ctx context.Context, guildID int64, characterKey string) (string, error) {
+	rows, err := s.Store.raidRoster(ctx, guildID, characterKey)
+	if err != nil || len(rows) == 0 {
+		return "", err
+	}
+	return rows[0].specKey(), nil
+}
+
 // defaultRole is the role a sign-up takes when the request names none: the newest logged
 // fight's role, else the spec's.
 func (c raidRosterChar) defaultRole() string {

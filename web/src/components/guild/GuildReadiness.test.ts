@@ -158,7 +158,8 @@ describe('GuildReadiness next-raid filter', () => {
     const copy = text(markup.replace(/<\/a>/g, '')).replace(/&#39;/g, "'");
     expect(copy).toContain('Next raid \u00b7 Thu 10 Dec');
     expect(copy).toContain("Showing the 2 signed In or Late for Onyxia's Lair, Thu 10 Dec, 8:00 pm.");
-    expect(copy).toContain('Synced 9 days before the raid');
+    // The page reads the clock it runs on, so only the format is pinned (the words are in readiness-raid.test).
+    expect(copy).toMatch(/Synced (today|yesterday|\d days ago|\d{1,2} [A-Z][a-z]{2})/);
     expect(copy).toContain('No export yet');
   });
 
@@ -175,11 +176,12 @@ describe('GuildReadiness next-raid filter', () => {
     );
   });
 
-  it('lets the stale pill wrap instead of clipping in the Synced column', () => {
+  it('keeps the stale pill on one line in a Last synced column wide enough for it', () => {
     const markup = filtered(true);
     const pill = markup.match(/<span class="([^"]*)" data-testid="guild-readiness-stale"/);
-    expect(pill?.[1]).toContain('h-auto');
-    expect(pill?.[1]).toContain('whitespace-normal');
+    expect(pill?.[1]).toContain('whitespace-nowrap');
+    expect(pill?.[1]).not.toContain('whitespace-normal');
+    expect(markup).toContain('140px 128px 84px');
   });
 
   it('draws no column header over the empty state', () => {
@@ -214,5 +216,30 @@ describe('GuildReadiness next-raid filter', () => {
 
   it('shows no toggle without a raid', () => {
     expect(html(true, true)).not.toContain('guild-readiness-next-raid');
+  });
+
+  it('names every missing enchant slot in the pill, wrapped and never clamped (guild loop round 3)', () => {
+    const base = buildMockReadiness().rows[0];
+    const row = {
+      ...base,
+      no_export: false,
+      enchants: { missing_slots: ['main_hand', 'chest', 'back', 'feet'], checked: true },
+    };
+    const markup = render(GuildReadiness, {
+      props: {
+        rows: [row],
+        officer: true,
+        officerTools: true,
+        raidGuildTools: true,
+        myCharacterKey: null,
+        gateFacts: gateFactsFixture({ settingsHref: SETTINGS_HREF }),
+      },
+    }).body;
+    const at = markup.indexOf('data-testid="guild-readiness-enchants"');
+    const pill = markup.slice(markup.lastIndexOf('<span', at), markup.indexOf('</span>', at));
+    expect(text(pill)).toContain('Main Hand, Chest, Back, Feet');
+    expect(pill).not.toContain('line-clamp');
+    expect(pill).not.toContain('overflow:hidden');
+    expect(markup).not.toContain('more slots');
   });
 });

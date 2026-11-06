@@ -9,7 +9,7 @@ import { fetchMeOnce } from '../account/api';
 import { specKeyForCharacter } from '../home/upgrades-loader';
 import { readCurrent } from '../current-character';
 import { classSlugFromName } from '../report/tree-sizes';
-import { decideBisFollow, type BisPageState, type SelectedTarget } from './follow-selector';
+import { decideBisDefault, decideBisFollow, type BisPageState, type SelectedTarget } from './follow-selector';
 import { MIN_BAND } from './hover';
 import type { Faction } from './types';
 
@@ -60,4 +60,12 @@ export async function follow(root: HTMLElement): Promise<void> {
   const action = decideBisFollow(readPageState(root), target);
   if (action.kind === 'navigate') window.location.assign(action.href);
   else if (action.kind === 'update') showBand(action.faction, action.band);
+}
+
+/** At load with no band in the URL: the selected character's band and faction, never another page. */
+export async function followDefault(root: HTMLElement): Promise<void> {
+  const target = await selectedTarget();
+  if (target === null) return;
+  const action = decideBisDefault(readPageState(root), target);
+  if (action.kind === 'update') showBand(action.faction, action.band);
 }

@@ -5,8 +5,7 @@
 <script lang="ts">
   import type { ClaimHolder } from '../../lib/guild/api';
   import { guildHomeCopy } from '../../lib/guild/copy';
-  import { classColorVar } from '../../lib/report/format';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import GuildCharacterName from './GuildCharacterName.svelte';
 
   let { holder, testid = 'guild-claimed-by' }: { holder: ClaimHolder | null | undefined; testid?: string } =
     $props();
@@ -17,7 +16,6 @@
 {:else}
   <span class="inline-flex items-center gap-1.5" data-testid={testid}>
     {guildHomeCopy.claimedBy}
-    <ClassCrestRing characterClass={holder.class ?? ''} size={20} />
-    <span class="font-semibold" style:color={classColorVar(holder.class ?? undefined)}>{holder.name}</span>
+    <GuildCharacterName {holder} />
   </span>
 {/if}

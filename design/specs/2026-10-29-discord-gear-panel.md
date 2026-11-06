@@ -197,22 +197,21 @@ Ephemeral, flags 32832.
       ```
       ### [{Name}]({character URL})
       Level {n} {Spec} {Class} · {Guild}
-      -# Item level {x.x} · Readiness: {word} · Synced <t:{unix}:R>
+      -# Item level {ilvl} · Readiness: {word} · Synced <t:{unix}:R>
       ```
       The accessory is the crest. Each line-3 clause appears only when known. Readiness and Synced appear only for a verified member.
    2. **Separator**.
-   3. **Text Display**: `**Top upgrades** · {band label}`, then `-# By DPS gained, against the guide build.` (tank: `-# By Forever Score gained, against the guide build.`).
-   4. **Up to five upgrade rows** (§A.3; `maxUpgrades` = 5), ordered:
-      1. Empty slots that have a pick, in frame order, each with its real gain or `Gain not modelled yet` (§A.3).
-      2. Measured gains, largest first.
-      3. Picks whose gain is not modelled (`Gain not modelled yet`), in frame order.
+   3. **Text Display**: `**Top upgrades** · {band label}`, then `-# By DPS gained, against the guide build.` A healer or tank is never ranked by DPS (amended 2026-11-05, guild round 3): `-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.`, the rows ranked by item levels gained toward the BiS list of the same band, most first (amended again in guild round 3 API3): an empty slot (`Fills an empty slot`) by its pick's whole item level, a worn slot by the gap (`+12 item levels`, `+1 item level`), then the list's other picks in frame order (`On the BiS list`), an empty slot whose pick's level is unknown among them. With no band for the spec, any spec reads `-# By Forever Score gained, against the guide build.`
+   4. **Three upgrade rows for every role** (§A.3; `maxUpgrades` = 3, the command's "top 3 upgrades"; amended 2026-11-05, guild round 3 API3, was five), ordered the way the label reads:
+      1. Measured gains, largest first. An empty slot with a real gain ranks among them by that gain.
+      2. Picks with no figure (`Gain not modelled yet`, or `On the BiS list` on a level list), in frame order, an empty slot whose gain is unknown included. A `Gain not modelled yet` row never ranks above a measured one.
 
-      Zulmara's list: Trinket 2 (empty, `Gain not modelled yet`: Molten Heart of the Mountain is sim-decided, no score), Ranged +23.1, Chest +11.0, Legs +9.3, Wrist +4.7, then four more.
-   5. When more exist: `-# {n} more upgrades on the character page.` (`-# 1 more upgrade on the character page.`).
+      Zulmara's list: Ranged +23.1, Chest +11.0, Legs +9.3, then six more (Wrist +4.7 first; Trinket 2, empty and `Gain not modelled yet` because Molten Heart of the Mountain is sim-decided, last).
+   5. When more exist, for every role: `-# {n} more upgrades on the character page.` (`-# 1 more upgrade on the character page.`).
 2. **Action row 1**: `Share in channel`, `Someone else`, `Character page` (Link).
 3. **Action row 2**, with two or more verified characters: `Another of your characters`.
 
-An empty slot whose band names a pick is kept even though `VerdictFor` gives no `GainDps`. A test pins Zulmara's empty Trinket 2 first.
+An empty slot whose band names a pick is kept even though `VerdictFor` gives no `GainDps`. A test pins Zulmara's empty Trinket 2 after every measured gain.
 
 The `/bis` panel's lead keeps saying each gain is over the next best item; the `/char` sheet's gold legend says its figures are the gain over what is worn (ruling B6).
 
@@ -313,7 +312,7 @@ The channel asks: "What is this build, or this character, wearing, at a glance?"
 | Rule | 16, 76, 568, 1 | `--color-line-warm` |
 | Right column | x 344, rows at y = 92 + 72i, i 0 to 7, each 240 x 64 | Hands, Waist, Legs, Feet, Ring 1, Ring 2, Trinket 1, Trinket 2 |
 | Left column | x 16, rows at y = 92 + 72i, i 0 to 5, each 240 x 64 | Head, Neck, Shoulder, Back, Chest, Wrist (top-aligned with the right column, ruling B10) |
-| Centre column | x 264, w 72, y 92 to 660, contents vertically centred | Crest 64 x 64 (native 128 px). `/bis`: `Level {n}` Barlow 600 14/17 `--color-strong`, then `{range}` Barlow 400 13/16 muted. `/char`: `ITEM LEVEL` Barlow 600 11/13 tracking 0.12em muted, then `{x.x}` Cinzel 700 22/26 gold. Then the faction mark 32 x 32 and `Alliance` or `Horde`, Barlow 600 13/16, `--color-alliance` #6fb1ff or `--color-horde` #ff6b5c |
+| Centre column | x 264, w 72, y 92 to 660, contents vertically centred | Crest 64 x 64 (native 128 px). `/bis`: `Level {n}` Barlow 600 14/17 `--color-strong`, then `{range}` Barlow 400 13/16 muted. `/char`: `ITEM LEVEL` Barlow 600 11/13 tracking 0.12em muted, then `{ilvl}` (whole level, as the panel) Cinzel 700 22/26 gold. Then the faction mark 32 x 32 and `Alliance` or `Horde`, Barlow 600 13/16, `--color-alliance` #6fb1ff or `--color-horde` #ff6b5c |
 | Weapons, row 9 | y 668: Main hand at x 16 (left style), Off hand at x 344 (right style) | |
 | Weapons, row 10 | y 740: Ranged centred, x 180, w 240 (left style) | |
 | Footer | 16, 814, 568, 16 | Barlow 400 13/16 muted. `/bis` left: `Updated {d Mon yyyy}` (the band file's `generated_at`). `/char` left: `Gold: gain over what is worn, {band label}`, and nothing on the right: the shared sheet never prints a sync date (ruling B11) |
@@ -452,10 +451,11 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `char.upgrades.title` | `**Top upgrades** · {band label}` |
 | `char.upgrades.byDPS` | `-# By DPS gained, against the guide build.` |
 | `char.upgrades.byScore` | `-# By Forever Score gained, against the guide build.` |
+| `char.upgrades.byLevel` | `-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.`; rows `Fills an empty slot`, `+{n} item levels` (`+1 item level`), `On the BiS list` |
 | `char.upgrades.more` | `-# {n} more upgrades on the character page.`; for one `-# 1 more upgrade on the character page.` |
 | `char.upgrades.none` | `Every slot already wears the guide's pick for {band label}.` |
 | `char.noGear` | `No gear shared yet. Upgrades show once the character is synced.` (unchanged) |
-| `char.facts` | `-# Item level {x.x} · Readiness: {word} · Synced <t:{unix}:R>` |
+| `char.facts` | `-# Item level {ilvl} · Readiness: {word} · Synced <t:{unix}:R>` ({ilvl} is the guild roster's and readiness board's whole-level figure, the equipped mean rounded, else the latest log's; amended 2026-11-05, guild round 3) |
 | `tile.alt` | `{Item name}, {Quality} {slot} item`; without a quality `{Item name}, {slot} item` |
 | `crest.alt` | `{Class} crest` |
 | `sheet.bis.kicker` | `Best in slot` |

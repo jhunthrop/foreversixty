@@ -370,6 +370,11 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 	}); err != nil {
 		return fmt.Errorf("addon: sync guild membership for %s: %w", key, err)
 	}
+	// An account that joined this guild by invite is already verified: its character carries
+	// that verification instead of waiting for an officer.
+	if err := guilds.AdoptInviteVerification(ctx, tx, guildID, userID); err != nil {
+		return err
+	}
 
 	if rank == "leader" {
 		if err := guilds.AutoConfirmClaimIfPending(ctx, tx, guildID, userID); err != nil {

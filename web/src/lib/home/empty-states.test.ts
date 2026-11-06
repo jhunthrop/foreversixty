@@ -6,7 +6,7 @@ import { homeTopGuildsCopy } from '../rankings/copy';
 
 describe('landing empty states (P.1)', () => {
   it('Top guilds empty reads the claim sentence and offers the guild page', () => {
-    expect(homeTopGuildsCopy.empty).toBe('No guilds ranked yet. Claim yours from the Guild menu.');
+    expect(homeTopGuildsCopy.empty).toBe('No guild has a boss kill logged yet.');
     expect(homeTopGuildsCopy.emptyAction).toBe('Open the guild page');
     expect(homeTopGuildsCopy.emptyHref).toBe('/guild');
   });

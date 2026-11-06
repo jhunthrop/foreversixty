@@ -126,7 +126,7 @@ A raid or character pick re-renders the card (type 7). A status press runs the b
 ### G.4.5 `/attendance`
 
 A member: unchanged (one embed per own character). An officer with no `name`: the same answer, then one more row, then the existing `Roster` row:
-- Select, placeholder `Look up a member`: the guild's members with the lowest attendance over the last 8 raids, lowest first, at most 25; label the character name, description the roster chip verbatim (`Came 3 of 8 · 10 of 30 raids`). Nothing pre-chosen.
+- Select, placeholder `Look up a member`: the guild's members with the lowest attendance over the last 8 raids, lowest first, at most 25; label the character name, description the /attendance wording (`3 of 8 raid nights · 10 of the last 30`, amended 2026-11-05). Nothing pre-chosen.
 - The `Roster` row gains `Type a name` (Secondary) before `Roster`. It opens the modal of §G.4.3 titled `Look up attendance`, label `Character name`.
 
 A pick or a submitted name replaces the message with that member's record; the select stays, the member `default`. A name that is not a member: the officer's own answer stays, the content line `No member of {Guild} named {typed}.` above it. Rank is re-checked on every pick (bot spec product §8.5); a former officer's pick answers `Only officers can look up another member's attendance.`
@@ -219,7 +219,7 @@ Discord strings live in a new copy struct `guideCopy` (`api/internal/discordbot/
 | `spec.lead` | `The pick signs **{Name}** up as {State} for {Title}, {Date}.` |
 | `spec.lead.change` | `The pick changes the spec **{Name}** brings to {Title}, {Date}.` |
 | `spec.placeholder` | `Choose a spec` (shared with `bis.placeholder.spec`) |
-| `spec.kept` | ` {Spec} is kept for {Name}.` (appended to the outcome sentence; alone, without the leading space) |
+| `spec.kept` | ` {Name} signs up as {Spec} from now on.` (amended 2026-11-05, guild round 3; appended to the outcome sentence; alone, without the leading space) |
 | `spec.change` | `Change spec` |
 | `spec.option` | The option label is the spec's full catalogue name (`Beast Mastery`, `Retribution`); never a short word (§P.9.3) |
 | `spec.stale` | `This card is out of date. Press the button on the raid post again.` |
@@ -453,7 +453,7 @@ When `raid_spec` is set, it wins over the logs (the player said so), and the sig
 In `signupFlow` (bot spec §3.3.2), after the raid's refusals and after the character is known (the one verified character, the character select's pick, the `/signup` card's key), and before `signUp`:
 
 - The state is In, Late or Bench, the class is known, and the spec is unknown: answer the spec card instead of signing up. It is a new ephemeral message (type 4) on a press of the post or the reminder, and an in-place update (type 7) after the character select or on the `/signup` card.
-- The state is Out, or the class is unknown, or the spec is known: sign up as today, with no card.
+- The state is Out, or the class is unknown, or the spec is known: sign up as today, with no card. Known means picked for the guild's raids, or named by the character's newest logged fight (amended 2026-11-05, guild round 3: a raid weeks out no longer asks a spec the logs already show; `Change spec` still changes it). A guild event never asks (events spec §3.5).
 - An unlinked presser never reaches this step: `pressCopy.NotLinked` and `Link Discord`, unchanged.
 
 So a member's first In costs two taps (the button, the spec); every press after it costs one.
@@ -472,7 +472,7 @@ Part G's grammar (§G.4.1) applies.
 1. Re-check, in order: the raid's refusals (the bot spec's sentences, in place); the character key is one of the presser's verified characters (else `pressCopy.Failure` in place); the value is one of the class's specs (else `pressCopy.Failure`).
 2. Save `raid_spec`.
 3. Run `signUp` for the state in the id, with the new spec's role.
-4. Answer type 7: the §3.3.2 outcome sentence, then `spec.kept` (`Aurelith is In as Healer for Onyxia's Lair, Thu 10 Dec. 34 of 40 signed up. Holy is kept for Aurelith.`). The outcome's row gains `Change spec` (Secondary) before any `Add a note` link.
+4. Answer type 7: the §3.3.2 outcome sentence, then `spec.kept` (`Aurelith is In as Healer for Onyxia's Lair, Thu 10 Dec. 34 of 40 signed up. Aurelith signs up as Holy from now on.`). The outcome's row gains `Change spec` (Secondary) before any `Add a note` link.
 5. The post's next edit draws the line with the new spec.
 
 ### P.10.5 Change spec

@@ -57,8 +57,11 @@
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { guildRaidHref } from '../../lib/characters';
   import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
-  import { bandLineParts, whenPhrase } from '../../lib/guild/raid-copy';
+  import { bandLineParts, kindCountsRoles, kindOf, whenPhrase } from '../../lib/guild/raid-copy';
   import { putSignup } from '../../lib/guild/raids-api';
+  import { guildGateCopy } from '../../lib/guild/copy';
+  import { gateAction, type GateFacts } from '../../lib/guild/plan-gate';
+  import GateActionInline from './GateActionInline.svelte';
   import SignupSegments from './SignupSegments.svelte';
 
   interface OwnCharacter {
@@ -71,6 +74,7 @@
     nextRaid,
     officer,
     officerTools = true,
+    gateFacts = null,
     guildPath,
     currentKey,
     ownCharacters,
@@ -86,6 +90,9 @@
     officer: boolean;
     /** False when the guild's plan gates officer tools: the none-planned line drops its link. */
     officerTools?: boolean;
+    /** The gate sentence's facts: a gated none-planned line carries the same plan link the Raids
+     *  tab does (guild round 3). Null draws part 1 alone. */
+    gateFacts?: GateFacts | null;
     guildPath: string;
     /** The header character, when it is in this guild; no segments without one. */
     currentKey: string | null;
@@ -102,6 +109,8 @@
     viewerTimezone?: string;
   } = $props();
 
+  /** The space between the gate's two parts, an expression so block-edge trimming keeps it. */
+  const WORD_SPACE = ' ';
   /** A refused press's line stays this long, then the band is back at rest. */
   const STATUS_LINE_MS = 6000;
 
@@ -159,7 +168,8 @@
     return bandLineParts({
       when,
       state: shown?.state ?? null,
-      role: shown?.role,
+      // A guild event counts no roles: `you are In`, never `In as DPS` (guild round 3).
+      role: kindCountsRoles(kindOf(nextRaid)) ? shown?.role : undefined,
       characterName: named ? ownCharacters.find((c) => c.character_key === shown.key)?.name : undefined,
       n: nextRaid.counts.in + nextRaid.counts.late,
       size: nextRaid.size,
@@ -211,7 +221,14 @@
 {#if nextRaid === null}
   <p class="text-[14px]" data-testid="guild-raid-line-none">
     {officer ? raidCopy.bandNone.officer : raidCopy.bandNone.member}
-    {#if officer && officerTools}
+    {#if officer && !officerTools}
+      <!-- The gate sentence, part 2 included: the guild master meets the trial link here too. -->
+      <span data-testid="guild-raid-line-gate"
+        >{guildGateCopy.lead.raids}{#if gateFacts !== null}{WORD_SPACE}<GateActionInline
+            action={gateAction('raids', gateFacts)}
+          />{/if}</span
+      >
+    {:else if officer}
       <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
         >{raidCopy.bandNone.planLink}</a
       >

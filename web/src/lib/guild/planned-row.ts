@@ -3,7 +3,16 @@
 // and numbers it draws, so PlannedRaidRow.svelte only lays them out. Times read in the viewer's zone;
 // the guild-time label shows only when the offsets differ.
 import type { GuildRaidRole, GuildRaidStatus, GuildRaidView, GuildSignupState } from './api';
-import { countdown, countLine, countRatio, yourTimeLine, zonedClock, zoneLineOf } from './raid-copy';
+import {
+  countdown,
+  countLine,
+  countRatio,
+  kindCountsRoles,
+  kindOf,
+  yourTimeLine,
+  zonedClock,
+  zoneLineOf,
+} from './raid-copy';
 import { raidBreakdownLine } from './raid-comp';
 
 const MINUTE_MS = 60_000;
@@ -13,7 +22,8 @@ export type RaidChipStatus = GuildRaidStatus | 'ended';
 
 export interface ViewerAnswer {
   state: GuildSignupState | null;
-  role: GuildRaidRole;
+  /** `null` on a guild event, whose chip says `In` with no role (guild round 3). */
+  role: GuildRaidRole | null;
 }
 
 export interface PlannedRowView {
@@ -63,13 +73,14 @@ export function chipStatus(raid: GuildRaidView, now: Date): RaidChipStatus {
 /** The viewer's answer for the chip: a signed character (In first), else unsigned; `null` with no
  *  verified character in the guild. */
 export function viewerAnswer(raid: GuildRaidView): ViewerAnswer | null {
+  const roles = kindCountsRoles(kindOf(raid));
   const verified = raid.viewer.characters.filter((c) => c.verified);
   for (const state of STATE_ORDER) {
     const signed = verified.find((c) => c.state === state);
-    if (signed !== undefined) return { state, role: signed.role };
+    if (signed !== undefined) return { state, role: roles ? signed.role : null };
   }
   const first = verified[0];
-  return first === undefined ? null : { state: null, role: first.role };
+  return first === undefined ? null : { state: null, role: roles ? first.role : null };
 }
 
 function datePart(d: Date, tz: string, locale: string, option: Intl.DateTimeFormatOptions): string {

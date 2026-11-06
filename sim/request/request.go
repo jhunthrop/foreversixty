@@ -16,6 +16,7 @@ import (
 	"fmt"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
@@ -215,11 +216,10 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		Buffs:         buffs.Individual,
 		Profession1:   first,
 		Profession2:   second,
-		// This lane's brief (bis-ranker-integrity-5, item 7): passed
-		// straight through - api.CharacterSpec.DistanceFromTarget's own
-		// doc explains what zero (the default, every request before this
-		// field existed) does and why a caller sets it.
-		DistanceFromTarget: ch.DistanceFromTarget,
+		// api.CharacterSpec.DistanceFromTarget's own doc explains what
+		// the field gates; distanceFromTarget fills in a caster's stand-off
+		// when the request leaves it unset.
+		DistanceFromTarget: distanceFromTarget(req.Spec, ch.DistanceFromTarget),
 	}
 	preset, err := rankPreset(req)
 	if err != nil {
@@ -286,6 +286,22 @@ func applyRoleFight(engineReq *proto.RaidSimRequest, spec string) error {
 // proto.Player. It is ch.Level unchanged - the envelope already bounds it
 // to 1..api.MaxLevel - kept as its own named function so every place a
 // level belongs reads the same one.
+// distanceFromTarget is where the character stands. A request that sets a
+// distance gets it. One that leaves it at zero stands a spec that never
+// melees (leveling.NoMeleeAutoAttackSpecs) at leveling.CasterDistanceFromTarget,
+// as the BiS ranker stands it for every published figure, so the browser
+// sim, the server sim and the ranker run the same caster: at zero yards the
+// engine starts the melee auto-swing a real caster never has (shaman-
+// elemental at level 60, raid preset: 757.0 DPS at 0 yards against the
+// published 750.5 at 30). Every other spec keeps zero, the engine's own
+// melee-range default.
+func distanceFromTarget(spec string, requested float64) float64 {
+	if requested == 0 && leveling.NoMeleeAutoAttackSpecs[spec] {
+		return leveling.CasterDistanceFromTarget
+	}
+	return requested
+}
+
 func engineCharacterLevel(ch api.CharacterSpec) int32 {
 	return int32(ch.Level)
 }

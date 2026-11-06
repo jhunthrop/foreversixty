@@ -1,0 +1,24 @@
+{
+  "profiles": {
+    "fixture": {
+      "hands": {
+        "id": 8206,
+        "why": "fixture: +10 Agility"
+      }
+    }
+  },
+  "specs": {
+    "hunter-marksmanship": {
+      "profile": "fixture"
+    },
+    "hunter-beast-mastery": {
+      "profile": "fixture"
+    },
+    "mage-fire": {
+      "profile": "fixture"
+    },
+    "priest-shadow": {
+      "profile": "fixture"
+    }
+  }
+}

@@ -56,15 +56,16 @@ No new control and no new token (tenet 10).
 
 **Row 3, professions (only when cheap).** Shown only when at least one counted row carries `professions`. 13 px muted, wraps with trailing separators (the profile header's rule): primary professions only, alphabetical, each followed by who has it, highest skill first, with the skill when the export carries it: `Alchemy: Rootbound 285, Cindergale · Enchanting: Ashenveil 300`. A profession with more than three people reads its top three then `+{n}`. Today the export carries profession slugs only (`fs1.go` `parseProfessions`), so skill numbers show only once the addon sends them; the names show now. Secondary skills (cooking, first aid, fishing) are left out. Label before it, 13 px `quiet-label`: `Professions`.
 
-**Row 4, the next step.** A `--border-soft` 1 px rule 16 px above it, then a flex row (`justify-between`, gap 16, wraps below 768): one 15 px sentence on the left, the action on the right. **Below 768 the next step leads the card** (amended 2026-11-05, guild round 2): round 1 measured the primary button at about y 950 at 390 x 640 (leveling-gm-overview-390), and moving only professions down still leaves it near y 720, under the 2 by 2 tiles and the two-line raids line. So below 768 the order is: the next-step row (sentence, the full-width primary, then the secondary link), its rule moved below it, then the tiles, the raids-open line and professions last. From 768 the order is as written above. Exactly one `button('primary','md')` per viewer; anything else is an `ActionLink`. Order of branches: the first that applies wins.
+**Row 4, the next step.** A `--border-soft` 1 px rule 16 px above it, then a flex row (`justify-between`, gap 16, wraps below 768): one 15 px sentence on the left, the action on the right. **Below 768 the next step leads the card** (amended 2026-11-05, guild round 2): round 1 measured the primary button at about y 950 at 390 x 640 (leveling-gm-overview-390), and moving only professions down still leaves it near y 720, under the 2 by 2 tiles and the two-line raids line. So below 768 the order is: the next-step row (sentence, the full-width primary, then the secondary link), its rule moved below it, then the tiles, the raids-open line and professions last. From 768 the order is as written above. At most one `button('primary','md')` per viewer (none when the band already holds the sign-up, below); anything else is an `ActionLink`. Order of branches: the first that applies wins.
 
 | Viewer state | Sentence | Primary button | Secondary `ActionLink` |
 |---|---|---|---|
 | Officer, someone waiting for approval | `{n} waiting for approval. Approve them so they can sign up.` | `Approve {n}` (opens Roster tab, focus on `Approve all`) | `Copy the invite link` (Settings `#invite`) |
-| Officer, no event planned | `Nothing on the calendar yet. Post a dungeon run or a guild event.` | `Plan an event` (Raids tab, form open, spec D) | `Copy the invite link` |
+| Officer, no event planned | `Nothing on the calendar yet. Post a dungeon run or a guild event.`; when the guild's plan gates planning, `Nothing on the calendar yet. Planning raids and events is part of the Guild and Raid guild plans.` (amended 2026-11-05, guild round 3; the Raids tab's gate carries the plan link) | `Plan an event` (Raids tab, form open, spec D) | `Copy the invite link` |
 | Officer, an event planned | `{Title} {when}, {n} signed up.`; at 0 `{Title} {when}. Nobody signed up yet.` (amended 2026-11-05, guild round 2: never `0 signed up`) | `Open the sign-ups` (the raid page) | `Copy the invite link` |
 | Raider, viewer's character has no export | `Sync the addon or import from Battle.net so the guild sees your level and gear.` | `Import your character` (`/setup`) | none |
 | Raider, an event planned, viewer not signed up | `{Title} {when}. You have not signed up yet.` | `Sign up` (the raid page) | none |
+| Raider, an event planned, viewer not signed up, and the band already shows the In, Late, Bench and Out segments for it | `{Title} {when}. You have not signed up yet. Answer In, Late, Bench or Out at the top of the page.` as a quiet line (14 px `--muted`) | none (the band's segments are the control; amended 2026-11-05, guild round 3: at 390 the band and the card's `Sign up` sat about 230 px apart doing the same thing) | none |
 | Raider, signed up or nothing planned | `{Name} is level {L}, {n} levels to 60.` (at 60: `{Name} is level 60. Check your gear before {Wed 9 Dec}.`) | `Level as {Spec}` (guide `#leveling`); at 60 `Open your best in slot` (`/bis/{class}/{spec}`) | none |
 
 - `{when}` is the raid spec's `{when}` (`Thursday 8 pm`). `{Name}` is the header selector's current character, in its class colour, 600.
@@ -88,6 +89,7 @@ No new control and no new token (tenet 10).
    - Every check passes: `{Name} passes every readiness check.` in `--color-kill`. The old `Every readiness check passes. Nothing needed before the next raid.` is deleted; it read as a guild-wide claim beside a board with failures (WP-7).
    - Under 60: `{Name} is level {L}. Rank and readiness checks start at 60.` 14 px `--text`, never green, no link. It shows for every viewer whose current character is on the roster under 60, officers included, and is the band's only viewer line.
    - The fails list is built from the viewer's row on the same `/readiness` response the board renders (`readinessFails`), so the line and the board can never disagree.
+   - The line names the raid it means (amended 2026-11-05, guild round 3 API3): `home.standing.needs_raid` (`{title, starts_at}` or null) is the next planned raid of kind `raid`, the rule Readiness's chip and `/raid` use first, never the dungeon run or event the band may show. With it the line can say `before Onyxia's Lair, Thu 10 Dec` (date in the guild's raid zone); null keeps `before the next raid`.
 
 ### 3.3 Overview summary cards after the Before raids open card
 
@@ -96,7 +98,7 @@ No new control and no new token (tenet 10).
 
 | Worst check | Value (13 px) |
 |---|---|
-| Enchants | `No enchant: Main Hand, Chest and 2 more slots` (the client's slot casing; `and 1 more slot` singular; never `+2`, which reads as an enchant's own bonus; amended 2026-11-05, guild round 2). The Readiness tab's Enchants pill uses the same words: `Main hand, Chest and 2 more slots`. |
+| Enchants | `No enchant: Main Hand, Chest and 2 more slots` (the client's slot casing; `and 1 more slot` singular; never `+2`, which reads as an enchant's own bonus; amended 2026-11-05, guild round 2). The Readiness tab's Enchants pill names every missing slot in the client's casing, `Main Hand, Chest, Back, Feet`, wrapping inside its 170 px column and never clamped or cut (amended 2026-11-05, guild loop round 3 web4, which found `MAIN HAND, CHEST AND 2…` clipped at 1440). |
 | Talents | `{n} talent points unspent` |
 | Consumables | `Bags short on consumables` |
 | Gear gap | `{n} upgrades waiting` |
@@ -112,6 +114,7 @@ One source: `GET /v1/guilds/{id}/progression` (§4.1). Header line under the h2,
   - Before 9 Dec: message `Barrow Deeps, Hyjal Summit and Onyxia's Lair open {Wed 9 Dec}. Progression starts with your first logged pull.` action `{ label: 'How to log a raid', href: '/logs' }`.
   - From 9 Dec: message `No pulls logged yet. Upload your first raid night and it shows here.` action `{ label: 'Upload a log', href: '/logs' }`.
   - Roster bests stay hidden (they have no rows anyway).
+- **Roster bests** (amended 2026-11-05, guild round 3): each row is the name, `{Spec} {Class} · {Boss}`, and `{n} HPS` / `{n} DPS`. From 768 a row with an execution score ends with `{92%} of sim` (13 px muted, title `92% of what this gear can do, simulated`); a row with no score ends at its number. Round 2 ended every row with an unexplained `—`.
 - **Some pulls**: the 8 px progress bar (design system), `--border-soft` track, `--gold` fill at `down / named`. At `0 of 1` the track is empty, never full.
 - **Onyxia card**, each line only when its data exists:
   - `First kill {Wed 16 Dec} · best kill {3:45}` only when `first_kill_at` is a string and `best_kill_ms` is a number. The current `!== null` test lets an omitted field through and prints `NaN:NaN`; the check is `typeof === 'number'` / `typeof === 'string'`.

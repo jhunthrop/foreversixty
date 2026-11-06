@@ -178,7 +178,7 @@ func TestGuildStanding_RosterCountMatchesHome(t *testing.T) {
 	h.actor = auth.Actor{UserID: master, Role: "user", Method: "session"}
 	var view HomeView
 	h.data(h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), ""), &view)
-	want := view.Counts.OnRoster
+	want := view.Counts.OnRoster + view.Counts.Waiting
 
 	got, err := h.store.GuildStanding(ctx, master, []int64{gid})
 	if err != nil {

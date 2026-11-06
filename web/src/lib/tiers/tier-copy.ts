@@ -153,7 +153,7 @@ export function tierNotes(ctx: NoteContext): NoteSegment[][] {
  *  what the number does and does not count. */
 export function howToReadBullets(role: BisRole, presetLabel: string): string[] {
   return [
-    `Every spec is simmed in its best ${presetLabel} gear with raid buffs and consumables.`,
+    `Every spec is simmed in its best ${presetLabel} gear, with enchants a fresh level 60 can buy, raid buffs and consumables.`,
     role === 'dps'
       ? `One target for ${DPS_FIGHT_SECONDS} seconds. Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid.`
       : "Same boss profile as the BiS pages, so the number here is the number on the spec's page.",
@@ -213,7 +213,9 @@ export const tiersCopy = {
   },
   topGap: 'Top',
   leastGap: 'Least',
-  rowLinks: { bis: 'BiS', guide: 'Guide', planner: 'Planner' },
+  rowLinks: { bis: 'BiS', guide: 'Guide', planner: 'Planner', sim: 'Sim' },
+  simLinkLabel: (specName: string): string => `View ranking sim: ${specName}`,
+  simLinkTitle: (specName: string): string => `Run the ${specName} ranking sim behind this number`,
   plannerTitle: (specName: string): string => `Open the ${specName} level 60 build in the planner`,
   tierBand,
   tierCount: (count: number): string => `${count} ${count === 1 ? 'spec' : 'specs'}`,

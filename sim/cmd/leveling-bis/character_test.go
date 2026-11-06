@@ -92,13 +92,15 @@ func TestNoMeleeAutoAttackSpecsCoversTheRuledSpecs(t *testing.T) {
 	}
 }
 
-// ladderCharacter deliberately does not get this treatment (this
-// lane's brief scopes the fix to the tournament character only) - a
-// caster's weights sweep is untouched.
+// ladderCharacter leaves the field unset: sim/request's Build stands a
+// caster spec at leveling.CasterDistanceFromTarget whenever a request
+// leaves it at zero (TestCasterSpecsStandAtCasterDistance), so the
+// weights sweep runs the same caster as the tournament without the
+// character carrying it.
 func TestLadderCharacterNeverSetsDistanceFromTarget(t *testing.T) {
 	ch := ladderCharacter("gnome", "mage", 60, "", nil)
 	if ch.DistanceFromTarget != 0 {
-		t.Fatalf("ladderCharacter DistanceFromTarget = %v, want 0 - ladderCharacter is out of this lane's scope", ch.DistanceFromTarget)
+		t.Fatalf("ladderCharacter DistanceFromTarget = %v, want 0 (sim/request fills it in)", ch.DistanceFromTarget)
 	}
 }
 

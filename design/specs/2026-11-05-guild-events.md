@@ -87,14 +87,25 @@ Labels: the form's h2 and button change from raid words to event words (§5). `P
 ### 3.4 The Raids tab and the rows
 
 - The tab keeps its name, `Raids`; it already holds raid nights and planned nights. The header button becomes `Plan an event` (`button('primary','md')`; gated rules in spec C §3.2).
-- A planned row is the raid spec's row. The title cell's second line (zone, shown when the title differs) reads the zone name with size for events: `Guild event · 10`. Count `3/5` with the bar when sized; `3 signed up` without.
-- The empty `Planned` lines (raid spec §6.1) become: member `Nothing planned yet. Officers post dungeon runs, events and raids here.`; officer `Nothing planned yet. Post a dungeon run or a guild event and the guild can sign up.`
+- A planned row is the raid spec's row. The title cell's second line (zone, shown when the title differs) reads the zone name with size for events: `Guild event · 10 players` (amended 2026-11-05, guild round 3: a bare `10` read as nothing). Count `3/5` with the bar when sized; `3 signed up` without.
+- The empty `Planned` lines (raid spec §6.1) become: member `Nothing planned yet. Officers post dungeon runs, events and raids here.`; officer `Nothing planned yet. Post a dungeon run or a guild event and the guild can sign up.` An officer whose plan gates planning sees no `Planned` panel when nothing is planned (raid spec §3.1, amended 2026-11-05, guild round 3).
 - The band raid line and its `{Zone} →` link work unchanged for every kind.
 - Readiness's `Next raid` chip and the needs line's `before {Weekday}` read the next planned **raid** only (kind `raid`), never a dungeon run; before 9 Dec they fall back to `before the next raid`.
 
 ### 3.5 The event page
 
 `GuildRaid.svelte` unchanged in layout. Words that say `raid` follow §5 by kind: eyebrow `RAID` / `DUNGEON` / `EVENT`; `Cancel raid` / `Cancel run` / `Cancel event`; `This raid has ended.` / `This run has ended.` / `This event has ended.`; cancel confirm `Cancel this {raid|run|event}? Members see it as cancelled.`; `Logged as a raid night.` stays raid-only. One copy function per string, keyed by `zone.kind`, in `raid-copy.ts`.
+
+**The title line** (amended 2026-11-05, guild round 3): a title that is not the zone's name is followed by the planned row's zone line, so a sized event reads `Stormwind photo · Guild event · 20 players`, never a bare `· 20`. One function, `zoneLineOf` in `raid-copy.ts`, writes both.
+
+**A guild event is a plain list** (amended 2026-11-05, guild round 3: a guild meeting showed the Tanks / Healers / Melee / Ranged grid and a class row). One rule, `kindCountsRoles(kind)` in `raid-copy.ts`: kind `event` counts no roles; `raid` and `dungeon` do (a run needs a tank and a healer). For kind `event`:
+- **Band**: no class row. The count line has no role words: `12 of 20 signed up`, then ` · 2 late` only when someone is late.
+- **Your sign-up**: each row is who (crest, name, the class alone: `Priest`), the segments `In` · `Late` · `Bench` · `Out`, and the note. No spec picker, no `Pick a spec first.`; a press saves at once and sends no spec (the character's own role rides along unseen). Desktop grid `minmax(180px,1fr) auto minmax(200px,1.4fr)`; phone: who, segments, note.
+- **Sign-ups**: no role grid. One list grouped by state, `In {n}`, `Late {n}`, `Bench {n}`, `Out {n}` (the 11 px `label` heads), side by side from 1280 (four columns), two from 768, stacked below; an empty group is left out. Each row is crest, name in class colour, and the class (`Priest`), never a spec or a role word. `Not signed up` and the officer selects are unchanged.
+- **Planned row**: the breakdown is empty, or `2 late`; the viewer chip reads `In`, `Late` with no role.
+- **Band raid line** on the guild page: `Sunday 8 pm CST, you are In, 12 of 20 signed up.`, never `In as DPS`.
+- **Copy the sign-up list**: no `Classes:` line and no role groups; `In: …`, then `Late`, `Bench`, `Out`.
+- **Discord** (round 3): an event's post has no role fields; under `Signed up` one list grouped `In · {n}`, `Late · {n}`, `Bench · {n}` (each `{Name} · {Class}`, drawn only when someone is in it), then `Out · {n}` by name. The bot never asks `Which spec tonight?` and offers no `Change spec` on an event.
 
 ### 3.6 Discord
 
@@ -132,7 +143,7 @@ Touch and keyboard as the raid spec: every control 44 px on phone, native select
 | Ended | `This raid has ended.`, `This run has ended.`, `This event has ended.` |
 | Cancelled | `This raid was cancelled.`, `This run was cancelled.`, `This event was cancelled.` |
 | Cancel confirm | `Cancel this {raid|run|event}? Members see it as cancelled.`; `Cancel the {raid|run|event}` |
-| Row zone line | `Guild event · {size}`; the event page's h1 follows a title that is not the zone's name with the same words, 15 px muted in their own case, never the h1's uppercase (amended 2026-11-05, guild round 2) |
+| Row zone line | `Guild event · {size} players`; the event page's h1 follows a title that is not the zone's name with the same words, 15 px muted in their own case, never the h1's uppercase (amended 2026-11-05, guild round 2; `players` after the size, guild round 3) |
 | Changelog | `Officers can now post dungeon runs and guild events as well as raids. Members sign up the same way.` |
 
 Every other raid-spec string is unchanged. `Choose a raid.` and `Choose a raid` are replaced by the strings above.

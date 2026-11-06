@@ -134,6 +134,7 @@ def normalize_build(
     the same as the standalone `python -m pipeline icons` pass without
     `--engine`.
     """
+    from pipeline.client_evidence import client_item_rows, confirmed_ids
     from pipeline.csvio import (
         check_item_sparse_completeness,
         check_wowhead_items_floor,
@@ -258,8 +259,21 @@ def normalize_build(
     classicdb_supplement, classicdb_spells = (
         classicdb_extract if classicdb_extract is not None else (None, {})
     )
+    # client_unconfirmed lane, 2026-11-05: the client's Item and item-effect
+    # tables name most of these ids even though its ItemSparse does not (the
+    # server sends that row on demand); pipeline.client_evidence decides
+    # which ones it confirms in classic-db's shape.
+    classicdb_confirmed = (
+        confirmed_ids(
+            classicdb_supplement,
+            client_item_rows(item_rows, t("ItemEffect"), optional("ItemXItemEffect")),
+            classicdb_spells,
+        )
+        if classicdb_supplement is not None
+        else frozenset()
+    )
     items = (
-        merge_classicdb_items(items, classicdb_supplement)
+        merge_classicdb_items(items, classicdb_supplement, classicdb_confirmed)
         if classicdb_supplement is not None
         else items
     )
@@ -395,9 +409,7 @@ def normalize_build(
     # even though its stats/required_level stay classic-db's own
     # (merge_classicdb_class_items below, threaded into to_gear_item).
     client_icon_file_ids = {
-        int(row["ID"]): int(row["IconFileDataID"])
-        for row in item_rows
-        if row.get("IconFileDataID")
+        int(row["ID"]): int(row["IconFileDataID"]) for row in item_rows if row.get("IconFileDataID")
     }
     try:
         class_items = build_class_items(
@@ -434,6 +446,7 @@ def normalize_build(
                 spell_names,
                 client_icon_file_ids,
                 icons,
+                confirmed=classicdb_confirmed,
             )
         class_items = fill_bonding(class_items, classicdb_bonding(build_dir))
         # Every class is checked against its own previous count before any of

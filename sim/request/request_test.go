@@ -10,6 +10,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/wowsims/classic/sim/core/proto"
 	googleproto "google.golang.org/protobuf/proto"
 )
@@ -288,6 +289,57 @@ func TestDistanceFromTargetReachesThePlayer(t *testing.T) {
 	p = got.Raid.Parties[0].Players[0]
 	if p.DistanceFromTarget != 0 {
 		t.Errorf("a character with no DistanceFromTarget set got %v, want 0", p.DistanceFromTarget)
+	}
+}
+
+// A spec that never melees stands where the ranker stands it
+// (leveling.NoMeleeAutoAttackSpecs at leveling.CasterDistanceFromTarget)
+// when the request leaves the distance unset: /sim's requests never set
+// it, and at zero yards a caster picks up melee auto-swings the published
+// figure never had. A distance the request does set is kept, and a melee
+// spec keeps zero. The rest of a "View ranking sim" request (gear,
+// talents, race, level, buffs, consumables, fight) is pinned by
+// web/src/lib/tiers/ranking-sim.test.ts over the published files.
+func TestCasterSpecsStandAtCasterDistance(t *testing.T) {
+	caster := func(spec, class, race string) api.SimRequest {
+		req := fury()
+		req.Spec = spec
+		req.Character.Class = class
+		req.Character.Race = race
+		req.Character.Talents = ""
+		req.Character.Gear = nil
+		req.Character.Buffs = nil
+		req.Character.Consumes = nil
+		return req
+	}
+	distance := func(req api.SimRequest) float64 {
+		t.Helper()
+		got, err := Build(req)
+		if err != nil {
+			t.Fatalf("%s: %v", req.Spec, err)
+		}
+		return got.Raid.Parties[0].Players[0].DistanceFromTarget
+	}
+
+	for _, req := range []api.SimRequest{
+		caster("mage-fire", "mage", "gnome"),
+		caster("shaman-elemental", "shaman", "orc"),
+	} {
+		if !leveling.NoMeleeAutoAttackSpecs[req.Spec] {
+			t.Fatalf("%s is not in leveling.NoMeleeAutoAttackSpecs", req.Spec)
+		}
+		if got := distance(req); got != leveling.CasterDistanceFromTarget {
+			t.Errorf("%s with no distance stands at %v, want %v", req.Spec, got, leveling.CasterDistanceFromTarget)
+		}
+	}
+
+	near := caster("mage-fire", "mage", "gnome")
+	near.Character.DistanceFromTarget = 20
+	if got := distance(near); got != 20 {
+		t.Errorf("a caster asking for 20 yards stands at %v", got)
+	}
+	if got := distance(fury()); got != 0 {
+		t.Errorf("warrior-fury with no distance stands at %v, want 0 (melee range)", got)
 	}
 }
 

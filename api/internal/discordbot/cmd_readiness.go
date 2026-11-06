@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	// readinessTab is the guild page's Readiness tab.
-	readinessTab = "/readiness"
+	// readinessTab is the guild page's Readiness tab, by fragment like rosterTab.
+	readinessTab = "#readiness"
 	// goldColor is #e5b955, a neutral answer.
 	goldColor = 15055189
 	// readinessLineMax bounds one failing row; the guilds read keeps the rows inside a field.
@@ -108,12 +108,21 @@ func (s *Service) readinessRefusal(err error, guildName, billing string) (Reply,
 		return pressReply(fill(officerCopy.NotOfficer, "{Guild}", guildName), false), true
 	case errors.Is(err, guilds.ErrPlanRequired):
 		return pressReply(officerCopy.PlanLapsed, false, planLink(officerCopy.Subscribe)), true
+	case errors.Is(err, guilds.ErrRaidGuildGranted):
+		return grantedPlanReply(), true
 	case errors.Is(err, guilds.ErrRaidGuildRequired):
 		return pressReply(officerCopy.RaidGuild, false, planLink(officerCopy.MoveToRaidGuild)), true
 	case errors.Is(err, guilds.ErrClaimContested):
 		return pressReply(officerCopy.Frozen, false), true
 	}
 	return Reply{}, false
+}
+
+// grantedPlanReply answers a Raid guild feature on a plan Forever Sixty granted: there is no
+// upgrade to buy, so it asks us on Discord in the site's words (copy.ts grantedMove).
+func grantedPlanReply() Reply {
+	return pressReply(officerCopy.GrantedMove, false,
+		Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.AskUsOnDiscord, URL: CommunityDiscordInvite})
 }
 
 // readinessEmbed is the board summary: who signed, who has something to fix, and the first ten

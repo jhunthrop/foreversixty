@@ -225,6 +225,10 @@ func (g GuildBilling) Scoped() bool { return len(g.Features) > 0 }
 // on_plan reads. A nil row is no plan.
 func LiveWholePlan(g *GuildBilling) bool { return g != nil && g.Active && !g.Scoped() }
 
+// GrantedWholePlan reports whether g is a live whole plan Forever Sixty granted (no Stripe
+// subscription): there is no upgrade to buy, so a Raid guild prompt asks us instead.
+func GrantedWholePlan(g *GuildBilling) bool { return LiveWholePlan(g) && g.StripeSubscriptionID == "" }
+
 // guildBillingSelect is the guild-plan row's columns, guild_id first, as scanGuildBilling
 // reads them. (guild_id, plan) is the row's upsert key, so a guild has at most one.
 const guildBillingSelect = `

@@ -86,6 +86,13 @@
   font-display: swap;
   src: url('../assets/fonts/jetbrains-mono-500-subset.woff2') format('woff2');
 }
+@font-face {
+  font-family: 'Marcellus';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/marcellus-400-subset.woff2') format('woff2');
+}
 
 /* Barlow needs a size-adjusted fallback face: it is the family behind the LCP-candidate text
    on every audited page (the homepage's hero label, a dungeon page's lead paragraph), and a
@@ -153,5 +160,27 @@
   size-adjust: 77.71%;
   ascent-override: 128.68%;
   descent-override: 25.74%;
+  line-gap-override: 0%;
+}
+
+/* Marcellus's size-adjusted fallbacks, the page title's face (web layout spec 2026-11-05 section 3.3):
+   Georgia, then Times New Roman where Georgia is not installed, so the title does not shift when
+   the real face swaps in (tenet 13). Computed with `node scripts/fallback-metrics.mjs` against
+   src/assets/fonts/marcellus-400-subset.woff2 and macOS's Supplemental/Georgia.ttf and
+   Times New Roman.ttf, 2026-11-05. */
+@font-face {
+  font-family: 'Marcellus Fallback';
+  src: local('Georgia');
+  size-adjust: 102.52%;
+  ascent-override: 95.02%;
+  descent-override: 27.29%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Marcellus Fallback Times';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT');
+  size-adjust: 112.5%;
+  ascent-override: 86.59%;
+  descent-override: 24.87%;
   line-gap-override: 0%;
 }

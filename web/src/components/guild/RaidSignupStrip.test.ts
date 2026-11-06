@@ -7,7 +7,6 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidSignup, GuildRaidView, GuildRaidViewerCharacter } from '../../lib/guild/api';
-import { RAID_ENDED_LINE_ID } from '../../lib/guild/raid-page';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { NO_LOG_YET } from '../../test-support/raid-fixtures';
 import RaidSignupStrip from './RaidSignupStrip.svelte';
@@ -216,11 +215,12 @@ describe('RaidSignupStrip', () => {
     expect(markup).toMatch(/<input[^>]*disabled/);
   });
 
-  it('disables the rows of an ended raid and points them at the band line that says why', () => {
+  it('replaces the rows of an ended raid with the ended line: no segments (guild round 3)', () => {
     const markup = html({ ended: true });
-    expect(markup).not.toContain('data-testid="raid-strip-state"');
-    expect(markup).toMatch(/<select[^>]*disabled/);
-    expect(markup).toContain(`aria-describedby="${RAID_ENDED_LINE_ID}"`);
+    expect(text(markup)).toContain('This raid has ended.');
+    expect(rowOrder(markup)).toEqual([]);
+    expect(markup).not.toContain('<select');
+    expect(markup).not.toMatch(/>\s*Bench\s*</);
   });
 
   it('is replaced by the cancelled line when the raid is cancelled', () => {
@@ -270,5 +270,19 @@ describe('RaidSignupStrip', () => {
     expect(markup).toContain(`data-testid="signup-seen-as-${MENDA.character_key}"`);
     expect(text(markup)).toContain('Officers see Kraggor (Late).');
     expect(markup).not.toContain(`data-testid="signup-seen-as-${KRAGGOR.character_key}"`);
+  });
+
+  it('asks a guild event only In, Late, Bench or Out and a note: no spec picker, the class as who', () => {
+    const body = html({ view: { ...raid([KRAGGOR, MENDA]), zone_kind: 'event' } });
+    expect(body).not.toContain('data-testid="signup-spec-');
+    expect(body).toContain('data-testid="signup-segments-us-forever-menda"');
+    expect(body).toContain('data-testid="signup-note-us-forever-menda"');
+    expect(/data-testid="signup-who-us-forever-menda">([^<]*)</.exec(body)?.[1]?.trim()).toBe('Priest');
+    expect(body).toContain('md:grid-cols-[minmax(180px,1fr)_auto_minmax(200px,1.4fr)]');
+  });
+
+  it('keeps the spec picker on a dungeon run, which needs a tank and a healer', () => {
+    const body = html({ view: { ...raid([MENDA]), zone_kind: 'dungeon' } });
+    expect(body).toContain('data-testid="signup-spec-us-forever-menda"');
   });
 });

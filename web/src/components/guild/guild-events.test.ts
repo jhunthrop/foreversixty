@@ -36,7 +36,7 @@ describe('the planned row zone line', () => {
       title: 'PvP premade',
       size: 10,
     });
-    expect(row.zoneLine).toBe('Guild event · 10');
+    expect(row.zoneLine).toBe('Guild event · 10 players');
   });
 
   it('leaves out a no-limit event’s size, and counts it bare', () => {

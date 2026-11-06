@@ -5,7 +5,9 @@
 // class, at the drop's required level, and able to equip it (equip_rules.go). Then two tiers: tier
 // 0, the character's BiS band names the item; tier 1, the spec wants the item's stats and it is an
 // item-level upgrade over what they wear, or the slot is empty. A slotless drop never has
-// candidates: there is no slot to compare against (loot_quests.go lists those).
+// candidates: there is no slot to compare against (loot_quests.go lists those). A character whose
+// gear is unknown (no gear list on file: the roster reads the export only at gear consent, so
+// this is gearOnFile) is no candidate at all: its slots are unknown, not empty.
 package guilds
 
 import (
@@ -66,14 +68,17 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem) []LootCandidat
 		return out
 	}
 	stats, isWeapon := s.dropStats(item), item.ItemClass == itemClassWeapon
+	forTanks := hasAny(stats, tankStats)
 	for _, row := range roster {
 		level, ok := rosterLevel(row)
-		if !row.Verified || row.className == "" || !ok || level < item.RequiredLevel ||
-			!canEquip(row.className, level, item) {
+		if !row.Verified || row.className == "" || len(row.gear) == 0 || !ok ||
+			level < item.RequiredLevel || !canEquip(row.className, level, item) {
 			continue
 		}
 		slots := characterSlots(row, item, level)
-		cand := LootCandidate{CharacterKey: awardKeyOf(row), Name: row.Name, Attendance: row.Attendance}
+		role := roleOf(row)
+		cand := LootCandidate{CharacterKey: awardKeyOf(row), Name: row.Name, Attendance: row.Attendance,
+			tankFirst: forTanks && role == RoleTank}
 		if row.Class != nil {
 			cand.Class = *row.Class
 		}
@@ -88,11 +93,12 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem) []LootCandidat
 			}
 			cand.NotSimChecked = match.verdict.NotSimChecked
 			cand.AlreadyEquivalent = !match.verdict.Upgrade
+			_, worn := row.gear[match.slot]
+			cand.FillsEmptySlot = !worn
 			s.fillReplaces(&cand, row, match.slot)
 			out = append(out, cand)
 			continue
 		}
-		role := roleOf(row)
 		families := familiesFor(row.className, row.specStr, role)
 		if !suitsFamily(stats, isWeapon, families, fightsInMeleeWith(row.className, row.specStr, role)) {
 			continue
@@ -101,6 +107,8 @@ func (s *Store) lootCandidates(roster []RosterRow, item lootItem) []LootCandidat
 			cand.Tier = 1
 			cand.NotSimChecked = true
 			cand.IlvlDelta = &delta
+			_, worn := row.gear[slot]
+			cand.FillsEmptySlot = !worn
 			s.fillReplaces(&cand, row, slot)
 			out = append(out, cand)
 		}
@@ -332,12 +340,20 @@ func sortLootCandidates(cands []LootCandidate) {
 }
 
 // lootCandidateLess reports whether a ranks ahead of b: tier 0 (BiS-matched) always ahead
-// of tier 1 (fallback); within tier 0, gain_dps desc (a nil gain sorts last within the
-// tier, never ahead of a measured one); within tier 1, ilvl_delta desc; either tier,
-// attendance (present over the candidate's own nights, then present) desc breaks the remaining tie.
+// of tier 1 (fallback); within a tier, a tank ahead on a drop with Defense, then a real upgrade
+// over a worn item ahead of filling an empty slot; then within tier 0, gain_dps desc (a nil gain
+// sorts last within the tier, never ahead of a measured one); within tier 1, ilvl_delta desc;
+// either tier, attendance (present over the candidate's own nights, then present) desc breaks the
+// remaining tie.
 func lootCandidateLess(a, b LootCandidate) bool {
 	if a.Tier != b.Tier {
 		return a.Tier < b.Tier
+	}
+	if a.tankFirst != b.tankFirst {
+		return a.tankFirst
+	}
+	if a.FillsEmptySlot != b.FillsEmptySlot {
+		return !a.FillsEmptySlot
 	}
 	if a.Tier == 0 {
 		ag, bg := gainOrLowest(a.GainDps), gainOrLowest(b.GainDps)

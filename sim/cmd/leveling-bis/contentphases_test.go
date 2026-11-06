@@ -123,6 +123,27 @@ func TestTheForeverZoneReputationsFollowTheLaunchEvidence(t *testing.T) {
 	}
 }
 
+// Pix Xizzix sells for Tarnished Undermine Reals, the dungeon currency Blizzard
+// brought back for Forever, so her stock opens with the dungeons. The other four
+// Undermine traders' currency is still unknown, so they stay gated.
+func TestPixXizzixOpensWithTheRealsAndTheOtherTradersStayGated(t *testing.T) {
+	g, err := loadContentGates(publishedRepoRoot)
+	if err != nil {
+		t.Fatalf("loadContentGates: %v", err)
+	}
+	if closed, known := g.gateClosed["undermine-reals"]; !known || closed {
+		t.Errorf("undermine-reals gate: known %v, closed %v; want open at launch", known, closed)
+	}
+	if ref, gated := g.npcs[227853]; gated {
+		t.Errorf("Pix Xizzix (227853) = %+v, want no gate", ref)
+	}
+	for _, trader := range []int{265574, 265575, 265576, 265577} {
+		if ref, gated := g.npcs[trader]; !gated || ref.opens != opensLater {
+			t.Errorf("trader %d = %+v (gated %v), want gated later", trader, ref, gated)
+		}
+	}
+}
+
 func TestParseContentGatesFailsFast(t *testing.T) {
 	cases := map[string]string{
 		"unknown phase":  `[{"key": "a", "phase": "phase-9", "npcs": [{"id": 1, "name": "x"}]}]`,

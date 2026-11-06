@@ -51,10 +51,13 @@ export interface SimState {
   mode: SimMode;
   /** The fight compare mode is comparing against: "<report_id>:<fight_index>". */
   fight: string;
+  /** `run=1`: start the run as soon as the character loads. A "View ranking sim" link (the tier
+   *  list, the BiS band) opens a published number to see it reproduced, not to edit a setup. */
+  run: boolean;
 }
 
 export function defaultSimState(): SimState {
-  return { source: '', ref: '', code: '', req: '', mode: 'sim', fight: '' };
+  return { source: '', ref: '', code: '', req: '', mode: 'sim', fight: '', run: false };
 }
 
 function bounded(value: string | null, max: number): string {
@@ -73,6 +76,7 @@ export function parseSimState(search: string): SimState {
     req: bounded(params.get('req'), MAX_REQUEST_PARAM),
     mode: MODES.includes(mode as SimMode) ? (mode as SimMode) : 'sim',
     fight: bounded(params.get('fight'), MAX_REF),
+    run: params.get('run') === '1',
   };
 }
 
@@ -84,6 +88,7 @@ export function simSearch(state: SimState): string {
   if (state.req !== '') params.set('req', state.req);
   if (state.mode !== 'sim') params.set('mode', state.mode);
   if (state.fight !== '') params.set('fight', state.fight);
+  if (state.run) params.set('run', '1');
   const query = params.toString();
   return query === '' ? '' : `?${query}`;
 }

@@ -13,6 +13,9 @@ import (
 type OfficerReads interface {
 	// ReportFor is a done raid's report as the viewer may see it (0: a signed-out visitor).
 	ReportFor(ctx context.Context, guildID, viewerID int64, raidID *int64) (guilds.ReportAnswer, bool, error)
+	// LatestLoggedNight is the newest night on the guild's Raids tab as the viewer sees it there,
+	// matched to a planned raid or not: /report's answer when no raid has a matched log.
+	LatestLoggedNight(ctx context.Context, guildID, viewerID int64) (guilds.LoggedNightAnswer, bool, error)
 	// DoneRaids is the guild's logged raids, newest first; publicOnly keeps public logs.
 	DoneRaids(ctx context.Context, guildID int64, publicOnly bool, limit int) ([]guilds.Raid, error)
 	// AttendanceFor is the viewer's own records, or the named character's.

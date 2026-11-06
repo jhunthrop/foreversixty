@@ -91,7 +91,8 @@ export function buildModel(css) {
       if (color) colors.push({ name: camel(name.slice('--color-'.length)), ...color });
     } else if (name === '--text-body--line-height') {
       bodyLineHeight = px(value);
-    } else if (name.startsWith('--text-')) {
+    } else if (name.startsWith('--text-') && !name.endsWith('--line-height')) {
+      // A role's own line height (`--text-title--line-height`) is the web's pairing; the apps set theirs.
       const size = px(value);
       if (size !== null) textSizes.push({ name: camel(name.slice('--text-'.length)), size });
     } else if (name.startsWith('--radius-')) {

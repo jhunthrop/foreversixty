@@ -39,6 +39,11 @@ describe('itemTooltipModel', () => {
     expect(itemTooltipModel(item(), NO_SOURCES).clientUnconfirmed).toBe(false);
   });
 
+  it('keeps the 1.12 tag on a client-confirmed item whose numbers are still classic-db', () => {
+    const row = item({ client_unconfirmed: false, stats_source: 'classic-db' });
+    expect(itemTooltipModel(row, NO_SOURCES).clientUnconfirmed).toBe(true);
+  });
+
   it('carries clientUnconfirmed straight off the row when the row is a classic-db-only item', () => {
     expect(itemTooltipModel(item({ client_unconfirmed: true }), NO_SOURCES).clientUnconfirmed).toBe(true);
   });

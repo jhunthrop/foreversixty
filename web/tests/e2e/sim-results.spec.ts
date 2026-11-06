@@ -1,237 +1,112 @@
+// web/tests/e2e/sim-results.spec.ts
+// A finished run on /sim renders the saved page's report (RunReport.svelte, spec
+// 2026-11-04-sim-results), fed from the run's own result: the band, the section nav, the damage
+// table beside the spread, then the lazy cards. The run controls, the save panel and the
+// settings stay where they were. sim-saved.spec.ts covers the report's cards in depth on
+// /sim/<id>; this file covers what is particular to the live page.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { AURA_EMPTY_MESSAGE, simCopy } from '../../src/lib/sim/copy';
+import { simCopy } from '../../src/lib/sim/copy';
 
-// Same fixture as sim-run.spec.ts, sim-settings.spec.ts and sim-sources.spec.ts: an addon
-// export needs no API stub, so this reads the site's own active build id rather than
-// hardcoding one.
+// Same fixture as sim-run.spec.ts: an addon export needs no API stub, so this reads the site's
+// own active build id rather than hardcoding one.
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
 ) as { build: string };
 
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
-// sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface now --
-// SourceSwitcher's own addon card is gone whenever the hero renders -- and its Run both
-// loads and runs the character in one click (SimView.svelte's `runPastedInput`), so the
-// explicit `sim-run-button` click this helper used to make is gone too.
+// ColdPasteHero's Run loads and runs in one click. The fake engine (engine-fake.ts) answers
+// with src/fixtures/sim/result.json's own summary, whatever DPS its seeded normal invents.
 async function loadFuryAndRun(page: Page): Promise<void> {
   await page.goto('/sim');
   await page.getByTestId('sim-cold-paste-input').fill(FURY);
   await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
-  // The fake engine (engine-fake.ts) always resolves with the fixture's own summary, so
-  // this is the moment `store.result` lands and SimResults' own lazy chunk starts loading.
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-  await expect(page.getByTestId('sim-results')).toBeVisible();
+  await expect(page.getByTestId('sim-live-report')).toBeVisible();
 }
 
-// Every figure asserted below comes from src/fixtures/sim/result.json's own summary --
-// engine-fake.ts's simRun and simCombine both answer with `summary: fixture.summary`
-// verbatim, whatever DPS numbers the fake's seeded normal distribution invents for `dps`.
-// public/data/<build>/simnames/warrior.json does not exist under FOREVER_DATA=fixture (the
-// fixture planner tree has no spellconst directory, so scripts/sync-data.mjs's own
-// writeSimNames writes nothing), so `store.actionNames` stays null. D48 (dps-minmaxer
-// review round 2): that used to mean every ability, aura and cast name on this page was
-// the engine's own raw action key -- "spell:20662" on screen. resolveActionName's own
-// unresolved fallback (action-names.ts) means a null table now reads "An unnamed spell"
-// instead -- English with no number in it at all, never a raw key and never (2026-09-21
-// result-page review round 2) the id itself spelled out as "Spell 20662".
-
-test('the sentence names the two biggest damage sources, their share and the biggest buff', async ({
-  page,
-}) => {
+test('a finished run shows the report under the run control, with no tab strip', async ({ page }) => {
   await loadFuryAndRun(page);
 
-  // other:attack/1 (10,816) and spell:1680 (3,399) of the actor's 18,219 total is 78%; the
-  // auto-attack row reads as prose regardless of the (here null) name table. spell:25289 is
-  // the first 100%-uptime buff in the fixture's own array order (the tiebreak
-  // summarySentence uses -- see sentence.ts -- keeps a stable sort's original order, unlike
-  // AuraTable's own name-tiebroken sort below).
-  const sentence = page.getByTestId('sim-sentence');
-  await expect(sentence).toHaveText(
-    'main-hand white hits and An unnamed spell are 78% of your damage; An unnamed spell is up 19% of the fight.',
-  );
-  await expect(sentence).not.toContainText(/\bspell:/);
-  await expect(sentence).not.toContainText(/\bSpell \d+\b/);
+  const report = page.getByTestId('sim-live-report');
+  await expect(report.getByTestId('sim-result-band')).toBeVisible();
+  await expect(report.getByTestId('sim-result-eyebrow')).toHaveText('RUN IN YOUR BROWSER');
+  await expect(report.getByTestId('sim-report-dps')).toHaveText(/^\d[\d,]*\.\d$/);
+  await expect(report.getByTestId('sim-fact-runs')).toBeVisible();
+  await expect(report.getByTestId('sim-section-nav')).toBeVisible();
+  await expect(report.getByTestId('sim-damage-card')).toBeVisible();
+  await expect(report.getByTestId('sim-spread-card')).toBeVisible();
+
+  // The old eight-tab view is gone, and no brushable time chart came back with the report.
+  await expect(page.getByTestId('sim-tab-damage')).toHaveCount(0);
+  await expect(page.getByTestId('sim-results')).toHaveCount(0);
+  await expect(page.getByTestId('time-chart')).toHaveCount(0);
+
+  // The run control comes first; the report sits between it and the save and settings panels.
+  const runBox = await page.getByTestId('sim-run').boundingBox();
+  const bandBox = await report.getByTestId('sim-result-band').boundingBox();
+  const titleBox = await page.getByTestId('sim-report-title').boundingBox();
+  expect(runBox !== null && bandBox !== null && titleBox !== null).toBe(true);
+  expect(bandBox!.y).toBeGreaterThan(runBox!.y);
+  expect(titleBox!.y).toBeGreaterThan(bandBox!.y);
 });
 
-test('the Damage tab is selected first and the actor table reads a humanised label, never the raw key', async ({
-  page,
-}) => {
+test('the live band is not the page heading and carries none of the saved page actions', async ({ page }) => {
   await loadFuryAndRun(page);
 
-  const damageTab = page.getByTestId('sim-tab-damage');
-  await expect(damageTab).toHaveAttribute('aria-selected', 'true');
-
-  await page.getByTestId('actor-sim-player').click();
-  const row = page.getByTestId('row-abilities');
-  await expect(row).toContainText('An unnamed spell');
-  await expect(row).not.toContainText(/\bspell:/);
-  await expect(row).not.toContainText(/\bSpell \d+\b/);
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('h2[data-testid="sim-saved-title"]')).toBeVisible();
+  await expect(page.getByTestId('sim-run-yourself')).toHaveCount(0);
+  await expect(page.getByTestId('sim-saved-copy')).toHaveCount(0);
+  // The run control keeps its own figure; the band's figure has its own test id.
+  await expect(page.getByTestId('sim-dps')).toHaveCount(1);
+  await expect(page.getByTestId('sim-error')).toHaveCount(1);
 });
 
-test('the Buffs tab shows the first aura row at 100% uptime, with no engine-internal rows', async ({
-  page,
-}) => {
+test('the damage table reads humanised names, never a raw engine key', async ({ page }) => {
   await loadFuryAndRun(page);
 
-  await page.getByTestId('sim-tab-buffs').click();
-  const table = page.getByTestId('aura-table');
-  const first = table.locator('li').first();
-  // spell:25289 and spell:2458 tie at the top on uptime share; both now read the same
-  // unresolved prose (2026-09-21 result-page review round 2), so AuraTable's own
-  // name-ascending tiebreak no longer distinguishes them and the stable sort keeps the
-  // fixture's own array order instead -- 25289 first.
-  await expect(first).toHaveAttribute('data-testid', 'aura-25289-sim-player');
-  await expect(first).toContainText('An unnamed spell');
-  await expect(first).not.toContainText(/\bspell:/);
-  await expect(first).not.toContainText(/\bSpell \d+\b/);
-  // The fixture's own uptime_ms (179,863) is a hair past its duration_ms (179,629) --
-  // 100.13% unclamped -- which is exactly AuraTable's shareOf clamp's own job to cap at
-  // 100.0%, never a number over it (2026-09-21 result-page review round 3, E8's display
-  // layer clamp).
-  await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.0%');
-  // Task 4: sanitizeAuraTracks drops the fixture's own inert rows (including other:move)
-  // and folds a tag/rank duplicate into its base row.
-  //
-  // AuraTable's own `ambiguous` disambiguates two DIFFERENT spells that render the SAME
-  // name on one target by appending "#<spell id>" (the newcomer-sim repro's "Blizzard#10"
-  // shape) -- and with a null name table every unresolved row now reads the identical "An
-  // unnamed spell" (2026-09-21 result-page review round 2), so it fires for all seven here.
-  // That is the fix working as designed, not a regression: the id is still on screen for
-  // someone who needs it, just never glued to the words "Spell" the way the old fallback
-  // read.
-  await expect(first).toContainText('An unnamed spell#25289');
+  const table = page.getByTestId('ability-table');
+  await expect(table).toBeVisible();
+  await expect(table).not.toContainText(/\bspell:/);
+  await expect(table).not.toContainText(/\bSpell \d+\b/);
 });
 
-test('the Debuffs tab says the engine does not report debuffs, not that the fight had none', async ({
-  page,
-}) => {
+test('the deeper cards load as they near the viewport, down to the settings card', async ({ page }) => {
   await loadFuryAndRun(page);
 
-  await page.getByTestId('sim-tab-debuffs').click();
-  await expect(page.getByTestId('table-empty')).toHaveText(AURA_EMPTY_MESSAGE.DEBUFF);
+  await page.locator('#timeline').scrollIntoViewIfNeeded();
+  await expect(page.locator('#timeline')).toBeVisible();
+  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('sim-settings-card')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByTestId('sim-copy-json')).toBeVisible();
 });
 
-test('the Casts tab reads a cast row by its humanised label and count, never the raw key', async ({
-  page,
-}) => {
+test('running again keeps one report, the new run in it', async ({ page }) => {
   await loadFuryAndRun(page);
 
-  await page.getByTestId('sim-tab-casts').click();
-  const row = page.getByTestId('cast-sim-player-1680');
-  await expect(row).toContainText('An unnamed spell');
-  await expect(row).not.toContainText(/\bspell:/);
-  await expect(row).not.toContainText(/\bSpell \d+\b/);
-  await expect(row).toContainText('13');
+  await page.getByTestId('sim-run-button').click();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
+  await expect(page.getByTestId('sim-live-report')).toHaveCount(1);
+  await expect(page.getByTestId('sim-result-band')).toHaveCount(1);
 });
 
-// 2026-09-21 result-page review, Defect 4: the fixture's own resource track (Energy,
-// gained 515, spent 509) carries an empty `series` -- a sim reports a whole-fight total
-// only, never a per-second reading (sim/adapter/adapter.go's `resources`) -- and the tab
-// used to filter on the series alone, so this exact fixture read "No resource changes in
-// this window" while real rage/energy plainly moved. The row must show the real totals and
-// say plainly why there is no line to draw, not read as if nothing happened.
-test('the Resources tab shows the fixture’s real activity, with no per-second line for a sim', async ({
-  page,
-}) => {
-  await loadFuryAndRun(page);
+test('run=1 runs the linked build once it loads, with no press', async ({ page }) => {
+  await page.goto(`/sim?code=${encodeURIComponent(FURY)}&run=1`);
 
-  await page.getByTestId('sim-tab-resources').click();
-  await expect(page.getByTestId('table-empty')).toHaveCount(0);
-  const totals = page.getByTestId('resource-totals-only');
-  await expect(totals).toContainText('gained 515');
-  await expect(totals).toContainText('spent 509');
-  await expect(page.getByText('No per-second reading or cap for a simulated fight')).toBeVisible();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again');
 });
 
-test('the Timeline tab draws one lane, the player rostered from the sample iteration', async ({ page }) => {
-  await loadFuryAndRun(page);
+test('a plain code link still waits for the press', async ({ page }) => {
+  await page.goto(`/sim?code=${encodeURIComponent(FURY)}`);
 
-  await page.getByTestId('sim-tab-timeline').click();
-  // The design's intent is a sample cast timeline (TimelinesView draws CastRow.sequence
-  // as ticks, exactly as it draws a logged fight's), but src/fixtures/sim/result.json's
-  // own cast rows and aura tracks both carry empty `sequence`/`segments` arrays -- only
-  // their aggregate counts (`succeeded`, `uptime_ms`) are populated. So this fixture's own
-  // lane draws no ticks or bars; what it does prove is the one-lane-per-roster-row wiring,
-  // which is what this asserts.
-  await expect(page.getByTestId('lane-sim-player')).toBeVisible();
-  await expect(page.getByTestId('lane-sim-player')).toContainText('Thrallgar');
-});
-
-test('the Distribution tab shows the spread tiles, and stands in for the missing chart', async ({ page }) => {
-  await loadFuryAndRun(page);
-
-  await page.getByTestId('sim-tab-distribution').click();
-  const distribution = page.getByTestId('sim-distribution');
-  await expect(distribution).toBeVisible();
-  for (const tile of ['mean', 'error', 'spread', 'lowest', 'highest', 'runs']) {
-    await expect(page.getByTestId(`sim-spread-tile-${tile}`)).toBeVisible();
-  }
-});
-
-test('no brushable time chart exists anywhere on the page', async ({ page }) => {
-  await loadFuryAndRun(page);
-
-  for (const tab of [
-    'damage',
-    'buffs',
-    'debuffs',
-    'casts',
-    'resources',
-    'timeline',
-    'sample',
-    'distribution',
-  ]) {
-    await page.getByTestId(`sim-tab-${tab}`).click();
-    await expect(page.getByTestId('time-chart')).toHaveCount(0);
-  }
-});
-
-test('the buffs tab counts applications and the sample tab shows one iteration', async ({ page }) => {
-  await loadFuryAndRun(page);
-
-  await page.getByTestId('sim-tab-buffs').click();
-  await expect(page.getByTestId('aura-applied').first()).toHaveText(/^\d+$/);
-
-  await page.getByTestId('sim-tab-sample').click();
-  const log = page.getByTestId('sim-sample-log');
-  await expect(log).toBeVisible();
-  // The fixture's first two casts are before the pull and are labelled as such.
-  await expect(log.getByText(simCopy.samplePrePull).first()).toBeVisible();
-  // public/data/<build>/simnames/warrior.json does not exist under FOREVER_DATA=fixture
-  // (see the note above loadFuryAndRun), so the sample log resolves nothing and renders
-  // resolveActionName's unresolved fallback -- the same thing the cast table renders in
-  // this environment. The resolved-name path is covered instead, with names injected, by
-  // src/lib/sim/sample-log.test.ts.
-  await expect(log).toContainText('An unnamed spell');
-  await expect(log).not.toContainText(/\bspell:/);
-  await expect(log).not.toContainText(/\bSpell \d+\b/);
-  // Resources after each cast: the fixture's only pool is rage.
-  await expect(log.locator('th', { hasText: simCopy.resourceLabel.rage })).toHaveCount(1);
-});
-
-test.describe('phone', () => {
-  test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
-
-  test('every results tab clears 44px', async ({ page }) => {
-    await loadFuryAndRun(page);
-
-    for (const tab of [
-      'damage',
-      'buffs',
-      'debuffs',
-      'casts',
-      'resources',
-      'timeline',
-      'sample',
-      'distribution',
-    ]) {
-      const box = await page.getByTestId(`sim-tab-${tab}`).boundingBox();
-      expect(box?.height ?? 0, tab).toBeGreaterThanOrEqual(44);
-    }
-  });
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-run-button')).toHaveText(simCopy.run);
+  await expect(page.getByTestId('sim-live-report')).toHaveCount(0);
 });

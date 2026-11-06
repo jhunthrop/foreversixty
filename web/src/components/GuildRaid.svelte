@@ -268,7 +268,7 @@
           </div>
         {:else}
           <h1 class="heading-page md:col-span-2" data-testid="raid-title">
-            <!-- The zone line in its own case, as the planned row writes it: `· Guild event · 20`,
+            <!-- The zone line in its own case, as the planned row writes it: `· Guild event · 20 players`,
                  never the h1's uppercase (guild round 2). -->
             {raid.title}{#if raid.title !== raid.zone_name}<span
                 class="text-muted font-sans text-[15px] font-normal tracking-normal whitespace-nowrap normal-case"

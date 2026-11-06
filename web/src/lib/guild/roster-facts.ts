@@ -6,25 +6,24 @@
 import { guildRosterAddonCopy } from './copy';
 import type { GuildRosterEntry, GuildRosterRow } from './api';
 import type { AttendanceSource } from './attendance-contract';
-import { attendanceCopy, rosterChip } from './attendance-copy';
-import { nightsLabel } from './nights';
+import { rosterChip } from './attendance-copy';
 import { outputFigure, topOutputLabel } from './output-figure';
 import { addonGapLabel, addonIdentity, addonSeen, addonSpecName } from './roster-addon';
 import { specClassName, specName } from './spec-name';
+import { classDisplayName } from '../sim/spec-label';
 
-/** One row's attendance chip: raid mode counts raids over two windows (`Came 7 of 8 · 26 of 30`, or
- *  `No raids yet` for a character with none), report mode counts nights. */
+/** One row's attendance chip, the bot's words in both modes: `7 of 8 raid nights`, and in raid mode
+ *  ` · 26 of the last 30` when the longer window holds more; `No raid nights yet` with no eligible
+ *  night in either mode (`raidsAttended`). */
 function attendanceChip(
   row: GuildRosterRow,
   last8: NonNullable<GuildRosterRow['attendance']>,
   source: AttendanceSource,
 ): string {
-  if (source !== 'raids') return nightsLabel(last8.present, last8.nights);
-  if (last8.nights === 0) return attendanceCopy.roster.noRaids;
-  return rosterChip(last8, row.attendance_30);
+  return rosterChip(last8, source === 'raids' ? row.attendance_30 : undefined);
 }
 
-/** "Item level 68", "5 of 8 nights", "Top DPS 238", "Rating 65": every figure with its unit
+/** "Item level 68", "5 of 8 raid nights", "Top DPS 238", "Rating 65": every figure with its unit
  *  named first, never a bare "65 rating". */
 export function rosterStatChips(row: GuildRosterRow, source: AttendanceSource = 'reports'): string[] {
   const chips: string[] = [];
@@ -72,10 +71,24 @@ export function rosterSpecLine(input: {
     input.addonSpec === undefined || input.addonSpec === null || input.addonSpec === ''
       ? ''
       : specName(addonSpecName(input.addonSpec));
-  if (game === '') return site === '' ? '' : siteSpecLabel(specClassName(site, input.className));
+  if (game === '' && site === '') {
+    // No spec on either side (a character with no talents spent): the class alone, never a bare row.
+    return input.className === undefined || input.className === '' ? '' : classDisplayName(input.className);
+  }
+  if (game === '') return siteSpecLabel(specClassName(site, input.className));
   const named = specClassName(game, input.className);
   if (site === '' || site.toLowerCase() === game.toLowerCase()) return named;
   return `${named} · ${siteSpecLabel(site)}`;
+}
+
+/** The line under an entry's name (a row with no roster row): the snapshot's spec with the class,
+ *  the class alone when only the class is known (an invited member the addon has not seen, guild
+ *  round 3), the spec alone when the class is not, else nothing. */
+export function entrySpecLine(entry: Pick<GuildRosterEntry, 'spec' | 'class'>): string {
+  if (entry.spec !== undefined && entry.spec !== '') {
+    return rosterSpecLine({ addonSpec: entry.spec, className: entry.class });
+  }
+  return entry.class === undefined || entry.class === '' ? '' : classDisplayName(entry.class);
 }
 
 export type InGameFactKey = 'level' | 'gap' | 'build' | 'seen';
@@ -118,5 +131,5 @@ export function entryFacts(entry: GuildRosterEntry, now: Date): InGameFact[] {
   return facts;
 }
 
-/** Shown once above the roster when some rows carry no rank (names only the addon saw). */
+/** Shown once above the roster when no rank is known: only names the addon saw, no account row. */
 export const RANKS_PENDING_LINE = 'Ranks show once the addon sends them.';

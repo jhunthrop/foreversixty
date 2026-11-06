@@ -257,6 +257,27 @@ describe('orderRosterForTab', () => {
 });
 
 describe('altOfMainName', () => {
+  it('takes the marked main first, then the highest level, before item level', () => {
+    const account = 'u:3';
+    const marked = [
+      row({
+        character_key: 'q',
+        name: 'Quillfeather',
+        account_key: account,
+        level: 60,
+        item_level: 60,
+        is_main: true,
+      }),
+      row({ character_key: 'c', name: 'Cindergale', account_key: account, level: 60, item_level: 61 }),
+    ];
+    expect(altOfMainName(marked).get('c')).toBe('Quillfeather');
+    const byLevel = [
+      row({ character_key: 'r', name: 'Rootbound', account_key: account, level: 60, item_level: 50 }),
+      row({ character_key: 'c', name: 'Cindergale', account_key: account, level: 55, item_level: 61 }),
+    ];
+    expect(altOfMainName(byLevel).get('c')).toBe('Rootbound');
+  });
+
   it('tags the lower-item-level row of a shared account as "alt of" the higher one', () => {
     const rows = [
       row({ character_key: 'main', name: 'Kraggor', account_key: 'u:1', item_level: 68 }),

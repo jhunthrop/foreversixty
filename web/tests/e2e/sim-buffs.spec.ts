@@ -88,7 +88,7 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
   // string the run actually posted to a worker.
   await choose(page.getByTestId('sim-precision'), 'fast');
   await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 30_000 });
 
   const sawThorns = await page.evaluate(() => {
     const messages = (window as unknown as { __simMessages: unknown[] }).__simMessages ?? [];

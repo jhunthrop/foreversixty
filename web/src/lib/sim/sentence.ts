@@ -62,7 +62,7 @@ function mergedAbilities(abilities: readonly { name: string; total: number }[]):
  * and the input is never mutated. Auras additionally pass through sanitizeAuraTracks
  * (aura-rows.ts, Task 4) first: the engine seeds a row for every rank or metric variant a
  * spec could register, whether it ever fired or not, and this is the one place every
- * report component under SimResults.svelte reads auras from, so the cleanup happens once
+ * report component reads a sim's auras from, so the cleanup happens once
  * rather than per-tab.
  */
 export function namedSummary(summary: Summary, names: ActionNames | null): Summary {

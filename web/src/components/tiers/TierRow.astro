@@ -2,8 +2,9 @@
 // web/src/components/tiers/TierRow.astro
 // One spec's row (design/specs/2026-10-09-tier-list.md, 4.C): rank, circular ringed crest,
 // the spec name as the BiS link with class and race under it, a bar scaled to the leader, the
-// sorted figure with its unit, the gap, and the three next steps. One markup serves both
-// layouts: the grid areas below are the desktop columns and the phone's three lines.
+// sorted figure with its unit, the gap, and the next steps (BiS, Guide, Planner and, on a DPS
+// row, the ranking Sim). One markup serves both layouts: the grid areas below are the desktop
+// columns and the phone's three lines.
 import ClassCrest from '../ClassCrest.astro';
 import classes from '../../data/classes.json';
 import { classColorVar } from '../../lib/report/format';
@@ -113,6 +114,17 @@ const gapLabel = tiersCopy.headers.gap[row.role];
     >
       {tiersCopy.rowLinks.planner}
     </a>
+    {href.sim !== undefined && (
+      <a
+        class="tier-link"
+        href={href.sim}
+        title={tiersCopy.simLinkTitle(fullName)}
+        aria-label={tiersCopy.simLinkLabel(fullName)}
+        data-testid="tier-sim-link"
+      >
+        {tiersCopy.rowLinks.sim}
+      </a>
+    )}
   </span>
 </li>
 
@@ -120,7 +132,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
   .tier-row {
     position: relative;
     display: grid;
-    grid-template-columns: 32px 36px minmax(150px, 248px) minmax(60px, 1fr) 108px 84px minmax(168px, 210px);
+    grid-template-columns: 32px 36px minmax(150px, 248px) minmax(60px, 1fr) 108px 84px var(--tier-links-col);
     grid-template-areas: 'rank crest name bar num gap links';
     align-items: center;
     column-gap: 14px;
@@ -356,7 +368,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
     color: #f5d27f;
   }
 
-  /* Phone and tablet: three lines per row and a three-cell link strip, nothing hidden. */
+  /* Phone and tablet: three lines per row and a link strip (three cells, four with the sim), nothing hidden. */
   @media (max-width: 1099px) {
     .tier-row,
     :global([data-role='tank']) .tier-row {

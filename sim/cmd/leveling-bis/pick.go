@@ -11,6 +11,11 @@ type scored struct {
 	Score     float64
 	Source    itemSource // zero value when HasSource is false
 	HasSource bool
+	// KindSources is the item's preferred obtainable source per BiS
+	// filter kind (source_kinds.go): every kind it can be had from at
+	// this band, not only Source's. Nil for a candidate built outside
+	// buildBandPool; filterKindSources falls back to Source alone.
+	KindSources map[string]itemSource
 	// MeasuredDPS is the real, engine-measured full-set DPS this exact
 	// candidate produced in whichever real-sim pass actually decided
 	// it - rankTrinketSlot's own tournament (trinkets.go), rankSlotWithEffects
@@ -119,6 +124,11 @@ type slotPick struct {
 	// SetBonus is set only by trySetCompletion (sets.go): the set bonus this
 	// slot's piece was adopted for. Nil for every slot that pass never changes.
 	SetBonus *setBonusNote
+	// Tournament is every candidate rankByMeasuredGain (trinkets.go)
+	// measured for this slot, best set DPS first, all at
+	// trinketRankIterations on verifySeed. Nil for a slot no trinket
+	// tournament decided; report.go publishes it as slotRow.Ranking.
+	Tournament []tournamentEntry
 	// FactionNoteNeedsPick is true only when FactionNote's own wording
 	// names Item itself as "this faction's own pick" (the
 	// gainsIndistinguishable branch of reconcileTrinketDirection,

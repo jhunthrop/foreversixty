@@ -81,6 +81,51 @@ func TestRaidCommandStates(t *testing.T) {
 	})
 }
 
+// addZoneNight posts a night of zone (a dungeon run or guild event) at starts.
+func (w *pressWorld) addZoneNight(t *testing.T, zone, title string, starts time.Time) int64 {
+	t.Helper()
+	var id int64
+	if err := w.st.Pool.QueryRow(context.Background(), `insert into guild_raids
+		(guild_id, zone, title, starts_at, duration_minutes, created_by)
+		values ($1, $2, $3, $4, 120, $5) returning id`, w.gid, zone, title, starts.Truncate(time.Minute), w.uid).Scan(&id); err != nil {
+		t.Fatal(err)
+	}
+	return id
+}
+
+// /raid names the next raid, the one Readiness names, even with a run sooner; with no raid
+// planned it shows the next run or event, led by a line that says which.
+func TestRaidCommandPrefersTheNextRaid(t *testing.T) {
+	t.Run("a run sooner than the raid", func(t *testing.T) {
+		w := newPressWorld(t)
+		w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+		w.addZoneNight(t, "dungeon:ragefire-chasm", "Ragefire Chasm", time.Now().Add(2*time.Hour))
+		rep := w.raidCmdAs(t, pressDiscord)
+		if rep.Message.Content != "" || !strings.HasPrefix(rep.Message.Embeds[0].Title, "Onyxia's Lair") {
+			t.Fatalf("reply = %q %q, want the raid", rep.Message.Content, rep.Message.Embeds[0].Title)
+		}
+	})
+	for _, c := range []struct{ zone, title, word string }{
+		{"dungeon:ragefire-chasm", "Ragefire Chasm", "run"},
+		{"event:guild", "Guild meeting", "event"},
+	} {
+		t.Run(c.word, func(t *testing.T) {
+			w := newPressWorld(t)
+			w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
+			w.exec(t, `delete from guild_raids`)
+			w.addZoneNight(t, c.zone, c.title, time.Now().Add(2*time.Hour))
+			rep := w.raidCmdAs(t, pressDiscord)
+			want := fill(commandCopy.RaidFallback, "{kind}", c.word)
+			if rep.Message.Content != want || !strings.HasPrefix(rep.Message.Embeds[0].Title, c.title) {
+				t.Fatalf("reply = %q %q, want %q over %s", rep.Message.Content, rep.Message.Embeds[0].Title, want, c.title)
+			}
+			if got := specString(t, commandHeading, "`/raid`", 11, map[string]string{"kind": c.word}); got != want {
+				t.Fatalf("spec = %q, want %q", got, want)
+			}
+		})
+	}
+}
+
 // assertRowMatchesPost: the answer's embed and row are the raid post's own.
 func assertRowMatchesPost(t *testing.T, w *pressWorld, m Message) {
 	t.Helper()

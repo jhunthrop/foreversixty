@@ -3,9 +3,7 @@
 // GET .../loot) already ranks candidates and names the awardee; this module only formats
 // what it sent -- never re-ranks or re-decides an award client-side.
 import { dayWord } from '../dates';
-import type { AttendanceSource } from './attendance-contract';
 import { raidsAttended } from './attendance-copy';
-import { nightsLabel } from './nights';
 import { specClassName } from './spec-name';
 import type { GuildLootCandidate, GuildLootEncounter, GuildLootItem, GuildLootPage } from './api';
 
@@ -18,6 +16,9 @@ export const NOBODY_AT_60 = "Onyxia's drops need level 60. Candidates show here 
 export const NO_CANDIDATES_AT_60 = 'Nobody at 60 can use these drops yet.';
 export const LOOT_LOAD_ERROR = 'Loot did not load.';
 export const EMPTY_SLOT = 'Empty slot';
+/** A tier-1 gain cell when the candidate wears nothing there: the item-level gap would only be the
+ *  item's own level (guild round 3). */
+export const FILLS_EMPTY_SLOT = 'Fills an empty slot';
 export const ON_BIS_LIST = 'On their BiS list';
 export const ALREADY_AWARDED = 'Already awarded';
 export const UNDO_AWARD = 'Undo';
@@ -34,7 +35,9 @@ export function awardQuestion(itemName: string, candidateName: string): string {
  *  killed yet". Never the filter's own jargon. */
 export function bossPickerLabel(selected: GuildLootEncounter | undefined): string {
   if (selected === undefined) return 'No bosses killed yet this tier';
-  return selected.killed ? `${selected.name} · on farm` : `${selected.name} · not killed yet`;
+  if (!selected.killed) return `${selected.name} · not killed yet`;
+  // "On farm" only once the API says so (kills on 3 separate nights); before that it is "down".
+  return selected.on_farm === true ? `${selected.name} · on farm` : `${selected.name} · down`;
 }
 
 /** The drops the council ranks: a slotted drop with at least one candidate, in the boss's order. */
@@ -71,14 +74,8 @@ export function showsAttendance(items: readonly GuildLootItem[]): boolean {
   return items.some((item) => item.candidates.some((candidate) => candidate.attendance.nights > 0));
 }
 
-/** "3 of 4 raid nights", the attendance cell; in raid mode the figure counts raids ("7 of 8 raids"). */
-export function attendanceLabel(
-  present: number,
-  nights: number,
-  source: AttendanceSource = 'reports',
-): string {
-  return source === 'raids' ? raidsAttended(present, nights) : nightsLabel(present, nights, 'raid night');
-}
+/** "3 of 4 raid nights", the attendance cell: the one attendance figure (attendance-copy). */
+export const attendanceLabel = raidsAttended;
 
 /** "Awarded to Rootbound · today · by Bow Jackzon": said once, on the item. */
 export function awardedLine(
@@ -103,7 +100,8 @@ export function nextUnkilledEncounter(
 /**
  * A candidate's gain cell. Tier 0 reads the sim's gain in the BiS file's own unit (`+12.4 DPS`, a
  * healer's `HPS`, a tank's `TPS`), or `On their BiS list` when no figure was measured. Tier 1 reads
- * the item-level gap (`+14 item levels`). `gain_dps` is null on every tier-1 row, so nothing may
+ * the item-level gap (`+14 item levels`), or `Fills an empty slot` when the candidate wears nothing
+ * there (the gap would only be the item's own level). `gain_dps` is null on every tier-1 row, so nothing may
  * call a number method on it without checking.
  */
 export function candidateGainLabel(candidate: GuildLootCandidate): string {
@@ -111,6 +109,7 @@ export function candidateGainLabel(candidate: GuildLootCandidate): string {
     if (candidate.gain_dps === null || candidate.gain_unit === null) return ON_BIS_LIST;
     return `+${candidate.gain_dps.toFixed(1)}${NBSP}${candidate.gain_unit.toUpperCase()}`;
   }
+  if (candidate.fills_empty_slot === true) return FILLS_EMPTY_SLOT;
   const delta = candidate.ilvl_delta ?? 0;
   return `+${delta}${NBSP}item${NBSP}level${delta === 1 ? '' : 's'}`;
 }

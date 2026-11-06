@@ -1,0 +1,20 @@
+{
+  "notes": "Forever enchants the engine fork's enchant table lacks, named by teaching spell. data/pipeline/loot/client_enchants.py reads every other column (enchant id, name, icon, slots, shape, stats) from the build's client tables. Each row says where a player gets it; the evidence and client row ids are in design/reviews/2026-11-04-raid-enchants.md. Every row here is a Merchant's Favor recipe (Alynsia, Three Corners, Redridge; Beneris, outside the Crossroads, the Barrens), which no content gate in content-phases.json holds back.",
+  "enchants": [
+    {"spell_id": 1213622, "name": "Enchant Gloves - Holy Power", "source": "Formula 249536, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1213626, "name": "Enchant Gloves - Arcane Power", "source": "Formula 249534, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1219580, "name": "Enchant 2H Weapon - Spellblasting", "source": "Formula 274394, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1219587, "name": "Enchant Cloak - Agility", "source": "Formula 274399, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1220624, "name": "Enchant Bracer - Greater Spellpower", "source": "Formula 274401, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1248607, "name": "Enchant 2H Weapon - Mighty Spell Power", "source": "Formula 249525, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1248636, "name": "Enchant 2H Weapon - Mighty Healing Power", "source": "Formula 249526, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1248640, "name": "Enchant Gloves - Superior Strength", "source": "Formula 274398, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1248645, "name": "Enchant Gloves - Natural Power", "source": "Formula 249535, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1248661, "name": "Enchant Bracer - Superior Intellect", "source": "Formula 249538, 240 Merchant's Favor, Honored, Enchanting 300"},
+    {"spell_id": 1249019, "name": "Enchant Necklace - Strength", "source": "Formula 249496, 120 Merchant's Favor, Friendly, Enchanting 210"},
+    {"spell_id": 1249057, "name": "Enchant Necklace - Spell Power", "source": "Formula 249502, 120 Merchant's Favor, Friendly, Enchanting 210"},
+    {"spell_id": 1249058, "name": "Enchant Necklace - Healing Power", "source": "Formula 249503, 120 Merchant's Favor, Friendly, Enchanting 210"},
+    {"spell_id": 1249059, "name": "Enchant Necklace - Agility", "source": "Formula 249504, 120 Merchant's Favor, Friendly, Enchanting 210"},
+    {"spell_id": 1254770, "item_id": 252487, "name": "Mystic Rugged Armor Kit", "source": "Pattern 252941 (Daniel Stitchsong, Three Corners; Pawani), 90 Merchant's Favor, Honored, Leatherworking 235"}
+  ]
+}
