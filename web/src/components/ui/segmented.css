@@ -2,7 +2,7 @@
    The one segmented control's look (web layout spec 2026-11-05 §3.4, §7.3), shared by ControlBar's
    groups and ui/Segmented, so the bar's choice and an in-row choice (sign-up In / Late / Bench) are
    drawn by one set of rules. Lives inside ui/ because only the primitives draw a surface (§3A.3).
-   `.ui-seg--sm` is the in-row size. */
+   `.ui-seg--sm` is the in-row size from 768; phones keep 44 px. */
 .ui-seg {
   display: flex;
   border: 1px solid var(--color-line);
@@ -57,10 +57,13 @@
     color: var(--color-strong);
   }
 }
-.ui-seg--sm .ui-seg-item {
-  height: 32px;
-  padding: 0 10px;
-  font-size: 13px;
+/* The in-row size is a pointer size: below 768 every item keeps the 44 px phone target (§3.4). */
+@media (min-width: 768px) {
+  .ui-seg--sm .ui-seg-item {
+    height: 32px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
 }
 .ui-seg-item:disabled {
   opacity: 0.5;

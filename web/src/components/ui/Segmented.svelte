@@ -25,7 +25,7 @@
     pending?: T | null;
     /** The group's accessible name ("Hollowmend's sign-up"). */
     label: string;
-    /** `md` is 44 px (the bar's phone size); `sm` 32 px, for a choice inside a row. */
+    /** `md` is 44 px (the bar's phone size); `sm` 32 px from 768, for a choice inside a row (44 on phone). */
     size?: 'md' | 'sm';
     /** Stretch to the container's width; `phone` below 768 only; else as wide as the labels. */
     fill?: boolean | 'phone';
