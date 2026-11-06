@@ -1,8 +1,28 @@
 {
   "specs": [
-    "druid-restoration",
-    "priest-discipline",
-    "priest-holy"
+    "druid-balance",
+    "druid-feral-bear",
+    "druid-feral",
+    "hunter-beast-mastery",
+    "hunter-marksmanship",
+    "hunter-survival",
+    "mage-arcane",
+    "mage-fire",
+    "mage-frost",
+    "paladin-protection",
+    "paladin-retribution",
+    "priest-shadow",
+    "rogue-assassination",
+    "rogue-combat",
+    "rogue-subtlety",
+    "shaman-elemental",
+    "shaman-enhancement",
+    "warlock-affliction",
+    "warlock-demonology",
+    "warlock-destruction",
+    "warrior-arms",
+    "warrior-fury",
+    "warrior-protection"
   ],
-  "reason": "Healer shard 2 of 3 after 2.0.28: each healer can take up to 80 minutes, so five do not fit one ranking step. Shaman and paladin healers rank next, then the damage and tank specs again on round 23."
+  "reason": "Final pass, run A of 3: the damage and tank specs. Healers take up to 80 minutes each, so the 28 specs split across three runs that each fit the 250-minute ranking step."
 }
