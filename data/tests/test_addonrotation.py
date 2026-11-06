@@ -980,7 +980,8 @@ def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts
         b for b in build_rotation("paladin-holy", Path("curated"), spellranks) if b.level == 40
     )
     flash = [line.spell_id for line in band.lines if line.name == "Flash of Light"]
-    assert set(flash) == {19750}
+    # Round 24: the group's Flash of Light is rank 2 (19939) at 40 to 42.
+    assert set(flash) == {19750, 19939}
     assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {1026}
     assert {line.spell_id for line in band.lines if line.name == "Holy Shock"} == {1311606}
 
