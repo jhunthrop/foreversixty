@@ -137,7 +137,7 @@ test('BiS: What to stack shows scale factors normalized to the top stat, DPS per
   const weights = page.getByTestId('bis-weights-alliance-60');
   await expect(weights).toBeVisible();
   await expect(weights.getByTestId('bis-weights-sentence')).toContainText(/^Stack [a-z ,]+\.$/);
-  await weights.getByText('Show the weights and their error').click();
+  await expect(weights.locator('details')).toHaveCount(0);
   await expect(weights).toContainText(/Normalized to [A-Za-z ]+ = 1\.00/);
   await expect(weights).toContainText('1.00');
   await expect(weights).toContainText(/\d\.\d\d\d DPS/);

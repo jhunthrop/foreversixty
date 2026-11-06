@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { bandEntry } from './load';
-import { effectGroupsFor, raidCaptionFor } from './preset-caption';
+import { effectLineFor, raidCaptionFor } from './preset-caption';
 import { bandPresets, filePresets, parsePresetId, presetLabelFor, presetMeta, selectBand } from './presets';
 import type { BisBand, BisFile, BisPresetMeta, Faction } from './types';
 
@@ -126,8 +126,8 @@ describe('preset labels and captions', () => {
     expect(presetMeta(LEGACY, 'raid')).toBeUndefined();
   });
 
-  it('counts the includes in the caption and drops empty groups from the disclosure', () => {
+  it('counts the includes in the caption and drops empty groups from the hover line', () => {
     expect(raidCaptionFor(RAID_META)).toBe('Raid-ready, Phase 1: 1 buff, 0 debuffs and 2 consumables.');
-    expect(effectGroupsFor(RAID_META).map((group) => group.heading)).toEqual(['Buffs', 'Consumables']);
+    expect(effectLineFor(RAID_META)).toMatch(/^Buffs: [^.]+\. Consumables: [^.]+\.$/);
   });
 });

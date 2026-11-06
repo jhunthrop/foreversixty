@@ -16,6 +16,7 @@ const countOf = (count: number, noun: string): string => `${count} ${noun}${coun
 const option = (page: Page, preset: 'raid' | 'bare') => page.getByTestId(`control-preset-${preset}`);
 const answer = (page: Page) => page.getByTestId('bis-this-set');
 const root = (page: Page) => page.getByTestId('bis-page');
+const escapeRegExp = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 test('level 60 opens on the raid-ready preset with a trust line naming what it includes', async ({
   page,
@@ -46,15 +47,18 @@ test('both presets state what the sim fights when the run is published, and neve
   }
 });
 
-test('the id lists live in a disclosure, not inline', async ({ page }) => {
+test('the page head has no disclosure; the raid preset names its effects on the trust line title', async ({
+  page,
+}) => {
   await open(page, PRESET_PAGE);
-  const effects = page.getByTestId('bis-preset-effects');
+  await expect(answer(page).locator('details')).toHaveCount(0);
+  await expect(answer(page)).not.toContainText('What is included');
   const firstConsumable = bisPreset(SPEC, 'raid').consumes[0]?.label ?? '';
   expect(firstConsumable).not.toBe('');
-  const list = effects.locator('dd', { hasText: firstConsumable });
-  await expect(list).toBeHidden();
-  await effects.getByText('What is included').click();
-  await expect(list).toBeVisible();
+  await expect(page.getByTestId('bis-trust-line')).toHaveAttribute(
+    'title',
+    new RegExp(`Consumables: .*${escapeRegExp(firstConsumable)}`),
+  );
 });
 
 test('choosing Bare swaps the numbers and writes ?preset=bare without a reload', async ({ page }) => {

@@ -1,6 +1,6 @@
 // web/tests/e2e/bis-healer.spec.ts
 // A healer spec's BiS page (priest holy, both presets at 60): the answer headlines HPS with the
-// overheal, mana and healing-per-mana cells and the profile disclosure; nothing at band level
+// overheal, mana and healing-per-mana cells and no disclosure; nothing at band level
 // says DPS; the simulator link is not offered; the weights and runners-up read in HPS.
 import type { Page } from '@playwright/test';
 import { test, expect } from './support/test';
@@ -32,20 +32,18 @@ test('the raid-ready healer answer shows HPS, overheal, mana, healing per mana a
   await open(page);
   await expectHealerCells(page);
   expect(PROFILE_LABEL).not.toBe('');
-  await expect(answer(page).getByTestId('bis-healer-caption')).toHaveText(
+  await expect(answer(page).getByTestId('bis-healer-figure')).toHaveAttribute(
+    'title',
     `Effective healing per second under ${PROFILE_LABEL}`,
   );
   await expect(answer(page).getByTestId('bis-healer-hpm')).toContainText('Healing per mana');
 });
 
-test('the profile is a disclosure that states what the sim assumes', async ({ page }) => {
+test('the page head has no disclosure and none of the profile notes', async ({ page }) => {
   await open(page);
-  const profile = answer(page).getByTestId('bis-healer-profile');
-  await expect(profile.getByText(/health each/)).toBeHidden();
-  await profile.getByText('What this profile assumes').click();
-  await expect(profile.getByText(/\d[\d,]* health, a [\d,]+ hit every/)).toBeVisible();
-  await expect(profile.getByText(/[\d,]+ health each/)).toBeVisible();
-  await expect(profile.getByText(/[\d,]+ damage to \d+ members every/)).toBeVisible();
+  await expect(answer(page).locator('details')).toHaveCount(0);
+  await expect(answer(page)).not.toContainText('What this profile assumes');
+  await expect(answer(page)).not.toContainText('What is included');
 });
 
 test('choosing Bare swaps the healer figures and ?preset=bare opens on them', async ({ page }) => {
