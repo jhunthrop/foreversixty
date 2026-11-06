@@ -139,7 +139,7 @@ test('the run page reads DUNGEON and Cancel run, its count against five', async 
   await stubGuildRaids(page, { viewer: 'officer', raids: [deadmines] });
   await page.clock.install({ time: WEEK_ONE });
   await gotoHydrated(page, raidUrl(DEADMINES_ID), 'raid-page');
-  await expect(page.getByTestId('raid-page').locator('.label').first()).toHaveText(/dungeon/i);
+  await expect(page.getByTestId('raid-kind')).toHaveText(/dungeon/i);
   await expect(page.getByTestId('raid-officer-cancel')).toHaveText('Cancel run');
   await expect(page.getByTestId('raid-count')).toContainText('2 of 5');
   await shot(page, 'run-page');

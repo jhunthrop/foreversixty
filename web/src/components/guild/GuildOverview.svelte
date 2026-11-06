@@ -25,7 +25,13 @@
     type GuildOfficerActions,
     type GuildRecentAttendance,
   } from '../../lib/guild/overview-api';
-  import { checklistRows, raidWeekday, verdictLine, verdictWord } from '../../lib/guild/overview-role-view';
+  import {
+    checklistRows,
+    pingAllowed,
+    raidWeekday,
+    verdictLine,
+    verdictWord,
+  } from '../../lib/guild/overview-role-view';
   import {
     bossesDownCountLine,
     bossesDownLine,
@@ -162,11 +168,7 @@
     ];
   });
   const planHref = $derived(nextRaid === null ? '#raids' : guildRaidHref(guildPath, nextRaid.id));
-  const canPing = $derived(
-    raid !== null &&
-      raid.discord_post !== null &&
-      (raid.ping?.next_allowed_at == null || new Date(raid.ping.next_allowed_at) <= clock.now),
-  );
+  const canPing = $derived(raid !== null && pingAllowed(raid, clock.now));
 </script>
 
 {#snippet lastRaid()}
