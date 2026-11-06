@@ -161,8 +161,9 @@ jobs:
     timeout-minutes: 20
     defaults: { run: { working-directory: web } }
     steps:
-      # As e2e's checkout (the committed mocks included); no data/builds: the parity specs and
-      # the served dist read none.
+      # As e2e's checkout (the committed mocks included), without data/builds: the BiS spec and
+      # the served dist read none. The simulator spec serves the mocks' own data files to the
+      # fixture build, so the next step adds just those files of the active build.
       - uses: actions/checkout@v4
         with:
           sparse-checkout-cone-mode: false
@@ -176,6 +177,9 @@ jobs:
             !/docs/superpowers/reviews/
             !/apps/ios/
             !/apps/android/
+      # tests/e2e/support/sim-parity.ts serves these to the build (the mocks are drawn from them).
+      - name: the mocks' data files
+        run: git sparse-checkout add $(node tests/e2e/support/parity-data-paths.mjs)
       - uses: actions/setup-node@v4
         with:
           {
