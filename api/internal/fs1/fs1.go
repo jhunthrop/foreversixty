@@ -59,7 +59,30 @@ type Decoded struct {
 	// character's bags at capture time) - the readiness board's own "has anything in
 	// bags" consumables proxy (see guilds' readiness.go). Empty, not nil, when the
 	// section is absent.
-	Bags                 []int
+	Bags []int
+	// HasBags is true when the export carried a bags= section at all (an empty one included):
+	// the readiness board's "unknown" against "short".
+	HasBags bool
+	// Bank is the item ids the bank= section lists (gear only, as bags=). Empty, not nil.
+	Bank []int
+	// Resistances is the school= section (prep.go), nil when the export carries none.
+	Resistances *Resistances
+	// Supplies is item id -> count of every Consumable-class stack in the carried bags
+	// (supplies=); HasSupplies is false for an export from an addon too old to write it.
+	Supplies    map[int]int
+	HasSupplies bool
+	// Keyring is the keys the character carries (locks=: the keyring plus any Key-class item
+	// in the bags); HasKeyring false when the addon predates the section.
+	Keyring    []int
+	HasKeyring bool
+	// Quests is attunement quest id -> completed (quests=), every quest the addon asked the
+	// client about; HasQuests false when the client could not be asked.
+	Quests    map[int]bool
+	HasQuests bool
+	// Owned is attunement item id -> worn or in the carried bags (owned=: the Drakefire
+	// Amulet); HasOwned false when the addon predates the section.
+	Owned                map[int]bool
+	HasOwned             bool
 	CharacterName, Realm string
 	HasWho               bool
 }
@@ -101,6 +124,11 @@ func Decode(export string) (Decoded, bool) {
 		Talents:     Talents{Trees: treeStrings, Points: points},
 		Professions: []string{},
 		Bags:        []int{},
+		Bank:        []int{},
+		Supplies:    map[int]int{},
+		Keyring:     []int{},
+		Quests:      map[int]bool{},
+		Owned:       map[int]bool{},
 	}
 
 	for _, section := range pipes[1:] {
@@ -116,7 +144,11 @@ func Decode(export string) (Decoded, bool) {
 		case "professions":
 			d.Professions = parseProfessions(field)
 		case "bags":
-			d.Bags = parseBagItemIDs(field)
+			d.Bags, d.HasBags = parseBagItemIDs(field), true
+		case "bank":
+			d.Bank = parseBagItemIDs(field)
+		default:
+			d.decodePrep(name, field)
 		}
 	}
 	return d, true
@@ -171,7 +203,7 @@ func parseProfessions(field string) []string {
 	return out
 }
 
-// parseBagItemIDs reads the bags= section's comma-joined `item_id[:enchant[:suffix]]`
+// parseBagItemIDs reads the bags= (and bank=) section's comma-joined `item_id[:enchant[:suffix]]`
 // entries (Codec.lua's encodeItems — a bag item has no slot name, unlike the gear list) into
 // item ids, skipping a non-numeric or negative entry the same way parseGear does.
 func parseBagItemIDs(field string) []int {

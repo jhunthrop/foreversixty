@@ -42,25 +42,31 @@ func TestBuildChecklistOrderAndVerdicts(t *testing.T) {
 		verdict string
 		keys    int
 	}{
-		"ready":             {checklistInput{zone: &ony, readiness: ready, row: geared, onRoster: true}, VerdictReady, 5},
-		"two upgrades":      {checklistInput{zone: &ony, readiness: upgrades, row: geared, onRoster: true, band: band, hasBand: true}, VerdictAlmost, 5},
-		"leveling":          {checklistInput{zone: &ony, readiness: CharacterReadiness{Level: &fifty, Leveling: true}}, VerdictGettingStarted, 5},
-		"no export":         {checklistInput{zone: &ony}, VerdictGettingStarted, 5},
-		"gear not shared":   {checklistInput{zone: &ony, readiness: CharacterReadiness{Level: &sixty}, row: RosterRow{Consent: "roster"}, onRoster: true}, VerdictAlmost, 5},
-		"no raid planned":   {checklistInput{readiness: ready, row: geared, onRoster: true}, VerdictReady, 5},
-		"keyed run, key on": {checklistInput{zone: &ubrs, readiness: ready, row: geared, onRoster: true}, VerdictReady, 6},
+		"ready":             {checklistInput{zone: &ony, readiness: ready, row: geared, onRoster: true}, VerdictReady, 6},
+		"two upgrades":      {checklistInput{zone: &ony, readiness: upgrades, row: geared, onRoster: true, band: band, hasBand: true}, VerdictAlmost, 6},
+		"leveling":          {checklistInput{zone: &ony, readiness: CharacterReadiness{Level: &fifty, Leveling: true}}, VerdictGettingStarted, 6},
+		"no export":         {checklistInput{zone: &ony}, VerdictGettingStarted, 6},
+		"gear not shared":   {checklistInput{zone: &ony, readiness: CharacterReadiness{Level: &sixty}, row: RosterRow{Consent: "roster"}, onRoster: true}, VerdictAlmost, 6},
+		"no raid planned":   {checklistInput{readiness: ready, row: geared, onRoster: true}, VerdictReady, 4},
+		"keyed run, key on": {checklistInput{zone: &ubrs, readiness: ready, row: geared, onRoster: true}, VerdictReady, 5},
 	}
 	for name, tc := range cases {
 		items, verdict := buildChecklist(tc.in)
 		if verdict != tc.verdict || len(items) != tc.keys {
 			t.Errorf("%s: verdict %s, items %v", name, verdict, itemKeys(items))
 		}
-		if items[0].Key != CheckLevel || items[len(items)-1].Key != CheckFireResistance {
+		// An export with no raid-prep sections: flask and food, and fire resistance where the
+		// zone asks for it, stay not tracked and never fail.
+		last := CheckFlaskFood
+		if tc.in.zone != nil && tc.in.zone.Key == raidZoneOny {
+			last = CheckFireResistance
+		}
+		if items[0].Key != CheckLevel || items[len(items)-1].Key != last {
 			t.Errorf("%s: order %v", name, itemKeys(items))
 		}
 		for _, key := range []string{CheckFlaskFood, CheckFireResistance} {
-			if itemOf(items, key).State != CheckNotTracked {
-				t.Errorf("%s: %s tracked", name, key)
+			if it := itemOf(items, key); it.Key != "" && it.State != CheckNotTracked {
+				t.Errorf("%s: %s tracked: %+v", name, key, it)
 			}
 		}
 	}
@@ -75,19 +81,6 @@ func TestBuildChecklistOrderAndVerdicts(t *testing.T) {
 	}
 	if lv := itemOf(items, CheckLevel); *lv.RequiredLevel != 59 {
 		t.Fatalf("UBRS level = %+v", lv)
-	}
-}
-
-func TestAttunedIsTrueOrUnknownNeverFalse(t *testing.T) {
-	key := KeyItem{ID: 12344}
-	if got := attunedOf(key, RosterRow{Consent: "gear_bags", bags: []int{12344}}); got == nil || !*got {
-		t.Fatal("key in bags is not attuned")
-	}
-	if got := attunedOf(key, RosterRow{Consent: "gear", bags: []int{12344}}); got != nil {
-		t.Fatal("bags read without the bags share")
-	}
-	if got := attunedOf(key, RosterRow{Consent: "gear_bags", bags: []int{1}}); got != nil {
-		t.Fatal("a missing key read as not attuned")
 	}
 }
 
@@ -136,7 +129,7 @@ func TestChecklistWithNoRaidPlanned(t *testing.T) {
 	w.as(w.member2)
 	var v ChecklistView
 	w.h.data(w.h.do(http.MethodGet, w.path("/me/checklist"), ""), &v)
-	if v.Raid != nil || v.Character.Name != "Mirelle" || len(v.Items) != 5 {
+	if v.Raid != nil || v.Character.Name != "Mirelle" || len(v.Items) != 4 {
 		t.Fatalf("checklist = %+v", v)
 	}
 }

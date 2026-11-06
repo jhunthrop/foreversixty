@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 )
 
 // enchantableSlots are the four slots design spec §4.E's own readiness board checks
@@ -71,6 +72,8 @@ type readinessInput struct {
 	Gear, Enchants             map[string]int
 	Bags                       []int
 	HasBagsSection             bool
+	Supplies                   map[int]int
+	HasSupplies                bool
 	TalentPointsSpent          int
 	HasTalents                 bool
 	Level                      *int
@@ -82,6 +85,7 @@ func readinessInputOf(row RosterRow, band bis.Band, hasBand bool, median *int) r
 	return readinessInput{
 		Consent: row.Consent, Band: band, HasBand: hasBand,
 		Gear: row.gear, Enchants: row.enchants, Bags: row.bags, HasBagsSection: row.hasBagsSection,
+		Supplies: row.prep.supplies, HasSupplies: row.prep.hasSupplies,
 		TalentPointsSpent: row.talentPointsSpent, HasTalents: row.hasTalents,
 		Level: row.Level, ItemLevel: row.ItemLevel, MedianItemLevel: median,
 	}
@@ -166,7 +170,9 @@ func computeReadiness(in readinessInput) CharacterReadiness {
 		cr.EnchantsChecked = true
 		cr.MissingEnchantSlots = missingEnchants(in.Gear, in.Enchants)
 	}
-	cr.ConsumablesState = consumablesState(in.Consent, in.Bags, in.HasBagsSection)
+	cr.ConsumablesState = consumablesState(in.Consent, fs1.Decoded{
+		Bags: in.Bags, HasBags: in.HasBagsSection, Supplies: in.Supplies, HasSupplies: in.HasSupplies,
+	})
 
 	if in.HasTalents {
 		cr.TalentsRead = true
@@ -205,14 +211,22 @@ const (
 	consumablesShort   = "short"
 )
 
-// consumablesState is the bags rule: "unknown" without the bags share, "stocked" with
-// anything in the bags, else "short". The readiness board and the raid report's Before pill
-// both read it.
-func consumablesState(consent string, bags []int, hasBagsSection bool) string {
+// consumablesState is "unknown" without the bags share. With the supplies= section (D14) it
+// is the raid leader's minimum (readSupplies: a flask or raid elixir, and buff food):
+// "stocked" when met, else "short". An older export falls back to the bags rule: "stocked"
+// with anything in the bags, "short" with none, "unknown" with no bags= section. The
+// readiness board and the raid report's Before pill both read it.
+func consumablesState(consent string, d fs1.Decoded) string {
 	switch {
-	case consent != "gear_bags" || !hasBagsSection:
+	case consent != "gear_bags":
 		return consumablesUnknown
-	case len(bags) > 0:
+	case d.HasSupplies && readSupplies(d.Supplies).ready():
+		return consumablesStocked
+	case d.HasSupplies:
+		return consumablesShort
+	case !d.HasBags:
+		return consumablesUnknown
+	case len(d.Bags) > 0:
 		return consumablesStocked
 	default:
 		return consumablesShort

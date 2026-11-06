@@ -78,20 +78,19 @@ func (s *Store) consumableRows(ctx context.Context, vc raidViewContext, keys []s
 		if err := rows.Scan(&c.CharacterKey, &c.Name, &consent, &class, &export); err != nil {
 			return nil, fmt.Errorf("guilds: report consumables: %w", err)
 		}
-		var bags []int
-		hasBags := false
+		var decoded fs1.Decoded
 		if class != nil {
 			c.Class = *class
 		}
 		if export != nil {
-			if decoded, ok := fs1.Decode(*export); ok {
-				bags, hasBags = decoded.Bags, hasBagsSection(*export)
+			if d, ok := fs1.Decode(*export); ok {
+				decoded = d
 				if c.Class == "" {
 					c.Class = decoded.ClassSlug
 				}
 			}
 		}
-		c.Before = consumablesState(consent, bags, hasBags)
+		c.Before = consumablesState(consent, decoded)
 		c.own = vc.ownsKey(c.CharacterKey)
 		out = append(out, c)
 	}

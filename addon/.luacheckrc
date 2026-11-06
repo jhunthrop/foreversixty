@@ -23,7 +23,9 @@ read_globals = {
 	-- Items
 	"GetInventoryItemLink", "GetContainerItemLink", "GetContainerNumSlots",
 	"GetItemStats", "GetItemInfo", "GetItemInfoInstant", "RequestLoadItemDataByID",
-	"C_Container",
+	"C_Container", "GetContainerItemInfo",
+	-- Raid prep (RaidPrep.lua): resistances, the keyring, attunement quests
+	"UnitResistance", "KEYRING_CONTAINER", "C_QuestLog", "IsQuestFlaggedCompleted",
 	-- Character
 	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion", "GetCurrentRegionName",
 	-- The worn item's enchant line (Compat.inventoryTooltipRows), each behind a type check.
@@ -89,6 +91,7 @@ files["tests/"] = {
 		"GetInventoryItemLink", "GetContainerItemLink", "GetContainerNumSlots",
 		"GetItemStats", "GetItemInfo", "GetItemInfoInstant", "C_Container",
 		"RequestLoadItemDataByID",
+		"GetContainerItemInfo", "UnitResistance", "KEYRING_CONTAINER", "C_QuestLog", "IsQuestFlaggedCompleted",
 		"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
 		"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
 		"CreateFrame", "UIParent", "SlashCmdList",
