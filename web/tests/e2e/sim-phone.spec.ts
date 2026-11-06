@@ -132,10 +132,10 @@ async function sectionsKeepGutter(page: Page): Promise<void> {
 }
 
 /**
- * The paperdoll's phone frame (design/specs/2026-10-31-paperdoll.md §3.3): two mirrored columns,
- * the left slot of each pair beside the right one -- head beside hands, neck under head.
+ * The shared paperdoll on a phone (web layout spec 2026-11-05 §4.3): one column in the character
+ * panel's reading order -- head, then neck under it, the right column's hands further down.
  */
-async function gearGridIsTwoColumns(page: Page): Promise<void> {
+async function gearGridIsOneColumn(page: Page): Promise<void> {
   const head = await page.getByTestId('paperdoll-slot-head').boundingBox();
   const hands = await page.getByTestId('paperdoll-slot-hands').boundingBox();
   const neck = await page.getByTestId('paperdoll-slot-neck').boundingBox();
@@ -143,9 +143,9 @@ async function gearGridIsTwoColumns(page: Page): Promise<void> {
   expect(hands, 'paperdoll-slot-hands missing').not.toBeNull();
   expect(neck, 'paperdoll-slot-neck missing').not.toBeNull();
 
-  expect(Math.round(head!.y), 'head and hands are not the same row').toBe(Math.round(hands!.y));
-  expect(head!.x, 'head is not left of hands').toBeLessThan(hands!.x);
-  expect(neck!.y, 'neck is not a new row').toBeGreaterThan(head!.y);
+  expect(Math.round(neck!.x), 'neck is not in the head column').toBe(Math.round(head!.x));
+  expect(neck!.y, 'neck is not under head').toBeGreaterThan(head!.y);
+  expect(hands!.y, 'hands is not under the left column').toBeGreaterThan(neck!.y);
 }
 
 // sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface and pastes and
@@ -247,7 +247,7 @@ test('a loaded character reaches the run button and the DPS figure in one scroll
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);
   await sectionsKeepGutter(page);
-  await gearGridIsTwoColumns(page);
+  await gearGridIsOneColumn(page);
 
   // A player on a phone has to press run and see the number without moving. CharacterStrip
   // and SettingsBar are both taller than the phone viewport by design (Task 11: "nothing is

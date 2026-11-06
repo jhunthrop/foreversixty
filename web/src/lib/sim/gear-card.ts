@@ -2,7 +2,7 @@
 // The Gear card's model (spec 2026-11-04-sim-results 3.8): the stored gear as the paperdoll's
 // slots with each slot's client enchant name, the set lines and the character stats. Every stat
 // is one the engine computed for this run; nothing is recomputed here.
-import { slotLabel, type PaperdollSlot, type PaperdollSlotKey } from '../gear/paperdoll';
+import type { PaperdollSlot, PaperdollSlotKey } from '../gear/paperdoll';
 import { slotsFromWorn } from '../gear/paperdoll-slots';
 import { SLOTS, type Item, type ItemSet } from '../planner/types';
 import { attemptsOf } from '../report/ability-table';
@@ -24,24 +24,15 @@ export function enchantNames(rows: readonly EnchantRow[]): ReadonlyMap<number, s
 
 interface SlotSources {
   gear: readonly GearSlot[];
-  classSlug: string;
   items: ReadonlyMap<number, Item>;
   failed: boolean;
   enchants: ReadonlyMap<number, string>;
 }
 
-export function gearSlots({ gear, classSlug, items, failed, enchants }: SlotSources): PaperdollSlot[] {
+export function gearSlots({ gear, items, failed, enchants }: SlotSources): PaperdollSlot[] {
   const worn = Object.fromEntries(gear.map((row) => [row.slot, row.item_id]));
   const bySlot = new Map(gear.map((row) => [row.slot, row]));
-  return slotsFromWorn(worn, {
-    lookup: (id) => items.get(id),
-    failed,
-    detail: (slot) => {
-      const id = bySlot.get(slot)?.item_id;
-      const level = id === undefined ? undefined : items.get(id)?.item_level;
-      return level === undefined ? undefined : copy.slotLine(slotLabel(slot, classSlug), level);
-    },
-  }).map((slot) => {
+  return slotsFromWorn(worn, { lookup: (id) => items.get(id), failed }).map((slot) => {
     const enchantId = bySlot.get(slot.slot as PaperdollSlotKey)?.enchant;
     const enchant = enchantId === undefined ? undefined : enchants.get(enchantId);
     return enchant === undefined ? slot : { ...slot, enchant };

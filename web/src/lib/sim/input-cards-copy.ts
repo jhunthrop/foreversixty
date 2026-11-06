@@ -8,7 +8,6 @@ export const gearCardCopy = {
   title: 'Gear',
   meta: (worn: number, total: number, enchants: number) =>
     `${worn} of ${total} slots · ${enchants === 0 ? 'no enchants' : `${enchants} ${enchants === 1 ? 'enchant' : 'enchants'}`}`,
-  slotLine: (slot: string, itemLevel: number) => `${slot} · ${itemLevel}`,
   statsHead: (level: number) => `Character stats in the fight, against a level ${level} boss`,
   stats: {
     attackPower: 'Attack power',
