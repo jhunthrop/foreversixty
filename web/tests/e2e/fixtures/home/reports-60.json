@@ -1,0 +1,52 @@
+{
+  "rows": [
+    {
+      "status": "done",
+      "visibility": "guild",
+      "logging_character": {
+        "key": "us/normal/thandrel",
+        "name": "Thandrel"
+      },
+      "id": "r-3",
+      "title": "Upper Blackrock Spire",
+      "zone": "Blackrock Spire",
+      "created_at": "2026-11-05T21:00:00Z",
+      "fight_count": 14,
+      "kill_count": 5,
+      "boss_count": 5
+    },
+    {
+      "status": "done",
+      "visibility": "guild",
+      "logging_character": {
+        "key": "us/normal/thandrel",
+        "name": "Thandrel"
+      },
+      "id": "r-2",
+      "title": "Scholomance",
+      "zone": "Scholomance",
+      "created_at": "2026-11-03T20:30:00Z",
+      "fight_count": 11,
+      "kill_count": 6,
+      "boss_count": 6
+    },
+    {
+      "status": "done",
+      "visibility": "guild",
+      "logging_character": {
+        "key": "us/normal/thandrel",
+        "name": "Thandrel"
+      },
+      "id": "r-1",
+      "title": "Stratholme, living side",
+      "zone": "Stratholme",
+      "created_at": "2026-11-02T19:00:00Z",
+      "fight_count": 9,
+      "kill_count": 4,
+      "boss_count": 4
+    }
+  ],
+  "total": 3,
+  "page": 1,
+  "per_page": 100
+}

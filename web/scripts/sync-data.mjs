@@ -503,6 +503,67 @@ async function publishFallbackBis({ repoRoot, build, sourceDir, publicDir }) {
   return [`bis (ranked on ${source})`];
 }
 
+/** Every `item_id` anywhere in a parsed BiS file: picks, runner-ups and per-source alternatives. */
+export function bisItemIds(value, ids = new Set()) {
+  if (Array.isArray(value)) {
+    for (const entry of value) bisItemIds(entry, ids);
+  } else if (value !== null && typeof value === 'object') {
+    for (const [key, entry] of Object.entries(value)) {
+      if (key === 'item_id' && typeof entry === 'number') ids.add(entry);
+      else bisItemIds(entry, ids);
+    }
+  }
+  return ids;
+}
+
+/**
+ * The fixture publishes a small hand-picked icon set, but the pages read the real BiS files at
+ * build time (lib/bis/load.ts), so their item rows name icons the fixture does not carry and
+ * draw a broken image until hydration. Copies the pipeline's own icon file (byte for byte, never
+ * a placeholder) for every item any BiS list the pages read names, so that set never goes stale
+ * when the nightly moves the picks. Only the fixture source needs it: a real build publishes
+ * its whole icons/ directory.
+ * @param {{ repoRoot: string, webRoot: string, build: string, publicDir: string }} options
+ * @returns {Promise<string[]>} `icons (n from data/builds)` when any icon was added
+ */
+async function publishBisIcons({ repoRoot, webRoot, build, publicDir }) {
+  const buildDir = path.join(repoRoot, 'data/builds', build);
+  if (!(await exists(path.join(buildDir, 'items')))) return [];
+  const bisFiles = [
+    ...(await listJson(bisDirFor(repoRoot, bisSourceBuild(repoRoot, build)))),
+    ...(await listJson(path.join(webRoot, 'src/data/fixtures/bis'))),
+  ];
+  const ids = new Set();
+  for (const file of bisFiles) bisItemIds(await readJson(file), ids);
+  const iconOf = new Map();
+  for (const file of await listJson(path.join(buildDir, 'items'))) {
+    for (const item of (await readJson(file)).items) iconOf.set(item.id, item.icon);
+  }
+  const iconsDir = path.join(publicDir, 'icons');
+  await mkdir(iconsDir, { recursive: true });
+  let added = 0;
+  for (const icon of new Set([...ids].map((id) => iconOf.get(id)).filter(Boolean))) {
+    const target = path.join(iconsDir, `${icon}.webp`);
+    const from = path.join(buildDir, 'icons', `${icon}.webp`);
+    if ((await exists(target)) || !(await exists(from))) continue;
+    await cp(from, target);
+    added += 1;
+  }
+  return added === 0 ? [] : [`icons (${added} from data/builds)`];
+}
+
+/** The `.json` files directly in a directory, as paths; empty when it does not exist. */
+async function listJson(dir) {
+  try {
+    return (await readdir(dir))
+      .filter((name) => name.endsWith('.json'))
+      .sort()
+      .map((name) => path.join(dir, name));
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Resets public/data/<build> and copies SYNC_ENTRIES from sourceDir into it, then derives
  * public/data/<build>/simnames/<class>.json from the same sourceDir (see `writeSimNames`)
@@ -535,6 +596,9 @@ async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
   copied.push(...(await writeSimNames(sourceDir, publicDir)));
   copied.push(...(await publishFallbackBis({ repoRoot, build, sourceDir, publicDir })));
   copied.push(...(await publishBisFixtures({ webRoot, publicDir })));
+  if (sourceDir === path.join(webRoot, 'src/fixtures/planner')) {
+    copied.push(...(await publishBisIcons({ repoRoot, webRoot, build, publicDir })));
+  }
 
   return copied;
 }

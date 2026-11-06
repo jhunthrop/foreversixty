@@ -56,29 +56,6 @@ for (const size of SIZES) {
   test.describe(`signed out at ${size.name}`, () => {
     test.use({ viewport: { width: size.width, height: size.height } });
 
-    test('the landing page shows the next date first, no stale stamp, no "Loading"', async ({ page }) => {
-      mkdirSync(SHOTS, { recursive: true });
-      await signedOutWithFeeds(page);
-      await page.goto('/');
-      const line = page.getByTestId('home-dates-line');
-      // The launch card already counts down to the next date, so the line steps aside.
-      await expect(page.getByTestId('home-hero-countdown')).toBeVisible();
-      await expect(line).toBeHidden();
-      await expect(line).not.toContainText('Updated');
-      // What it holds: the running or next date first, and in gold.
-      await expect(line.locator('[data-next]')).toHaveCount(1);
-      await expect(line.locator('.dates-item').first()).toHaveAttribute('data-next', '');
-      await expect(page.getByRole('heading', { name: 'Get started' })).toBeVisible();
-      await expect(page.getByText('Five doors')).toHaveCount(0);
-      await expect(page.getByTestId('home-get-set-up-signed-out')).toContainText(
-        'Sign in, install the addon, and run the companion — one page.',
-      );
-      await page.getByTestId('home-around-the-site').scrollIntoViewIfNeeded();
-      await expect(page.getByTestId('home-around-the-site')).toBeVisible();
-      expect(await page.locator('main').innerText()).not.toContain('Loading');
-      await page.screenshot({ path: join(SHOTS, `w8-landing-${size.name}.png`), fullPage: true });
-    });
-
     test('/setup is three steps, the manual folded away, the companion after it', async ({ page }) => {
       mkdirSync(SHOTS, { recursive: true });
       await signedOutWithFeeds(page);

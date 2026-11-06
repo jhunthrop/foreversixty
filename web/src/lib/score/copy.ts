@@ -157,7 +157,7 @@ export const scoreCopy = {
   /** The home page's lookup with the name, region and ruleset filled in (CharacterSearch.astro
    *  reads all three; fix round 3 item 3). */
   lookupHref: (name: string, region: string, ruleset: string): string =>
-    `/?character=${encodeURIComponent(name)}&region=${encodeURIComponent(region)}&ruleset=${encodeURIComponent(ruleset)}#lookup`,
+    `/characters?character=${encodeURIComponent(name)}&region=${encodeURIComponent(region)}&ruleset=${encodeURIComponent(ruleset)}#lookup`,
   noLogsOwner: 'The companion uploads your fights automatically.',
   noLogsUpload: 'Upload logs',
   noLogsUploadHref: '/setup',

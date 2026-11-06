@@ -27,7 +27,32 @@ type spellConstFile struct {
 		Cost               *int64  `json:"cost"`
 		CostType           int64   `json:"cost_type"`
 		CostPct            float64 `json:"cost_pct"`
+		Effects            []struct {
+			Effect int64 `json:"effect"`
+			Aura   int64 `json:"aura"`
+		} `json:"effects"`
 	} `json:"spells"`
+}
+
+// The client's SpellEffect values meleeOnly reads: an apply-aura effect, and the dodge and
+// parry chance auras (MOD_DODGE_PERCENT, MOD_PARRY_PERCENT).
+const (
+	effectApplyAura     = 6
+	auraModParryPercent = 47
+	auraModDodgePercent = 49
+)
+
+// meleeOnly is true when the spell has effects and every one applies a dodge or parry aura.
+func meleeOnly(effects []struct {
+	Effect int64 `json:"effect"`
+	Aura   int64 `json:"aura"`
+}) bool {
+	for _, e := range effects {
+		if e.Effect != effectApplyAura || (e.Aura != auraModDodgePercent && e.Aura != auraModParryPercent) {
+			return false
+		}
+	}
+	return len(effects) > 0
 }
 
 // ParseSpellConst reads one class's spellconst file into Tables.Spells. The cooldown is
@@ -46,7 +71,7 @@ func ParseSpellConst(data []byte) (map[int64]SpellConst, error) {
 			return nil, fmt.Errorf("coach spellconst: spell key %q: %w", key, err)
 		}
 		c := SpellConst{Name: s.Name, Rank: s.Rank, CooldownMS: max(s.CooldownMS, s.CategoryCooldownMS), GCDMS: s.GCDMS,
-			CostType: s.CostType, CostPct: s.CostPct}
+			CostType: s.CostType, CostPct: s.CostPct, MeleeOnly: meleeOnly(s.Effects)}
 		if s.Cost != nil && (*s.Cost > 0 || s.CostPct == 0) {
 			c.Cost, c.CostKnown = *s.Cost, true
 		}

@@ -16,7 +16,6 @@ import {
   GEAR_ITEMS,
   routeGearIcons,
 } from './support/character-fixture';
-import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const SHOTS = process.env.W10_SHOTS ?? 'test-results/w10';
 const SIZES = [
@@ -205,45 +204,6 @@ for (const size of SIZES) {
       await page.goto('/setup');
       await settle(page);
       expect(await goldSteps(page)).toEqual(['3']);
-    });
-
-    test('the landing after the beta: the example label, "levels", the next date in gold on Name reservation, full page', async ({
-      page,
-    }) => {
-      await page.clock.install({ time: new Date('2026-10-23T12:00:00Z') });
-      await signedOut(page);
-      await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await page.route('**/v1/rankings/guilds?**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await routeSampleReportMeta(page);
-      await page.goto('/');
-      await page.clock.resume();
-      await settle(page);
-      await expect(page.getByTestId('home-hero-label')).toHaveCount(0);
-      await expect(page.getByTestId('home-hero-link')).toContainText('Marksmanship Hunter best in slot');
-      await expect(page.getByTestId('home-hero-bands')).toHaveText(
-        'Leveling best in slot, levels 20, 30, 40, 50, 60',
-      );
-      await expect(page.getByTestId('home-dates-line').locator('[data-next]')).toHaveText(
-        'Name reservation Oct 27',
-      );
-      await shot(page, `landing-after-beta-full-${size.name}`);
-    });
-
-    test('the landing while the beta runs: the dates line leads with the running beta', async ({ page }) => {
-      await page.clock.install({ time: new Date('2026-10-20T12:00:00Z') });
-      await signedOut(page);
-      await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await page.route('**/v1/rankings/guilds?**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await routeSampleReportMeta(page);
-      await page.goto('/');
-      await page.clock.resume();
-      await settle(page);
-      await expect(page.getByTestId('home-hero-card')).toContainText('Beta is live');
-      await expect(page.getByTestId('home-hero-bands')).toHaveText('Leveling best in slot, levels 10 to 30');
-      await expect(page.getByTestId('home-dates-line').locator('[data-next]')).toHaveText(
-        'Beta live through Oct 21',
-      );
-      await shot(page, `landing-beta-live-full-${size.name}`);
     });
 
     test('a character the visitor does not hold, with no data: one sentence, the lookup, one quiet link', async ({

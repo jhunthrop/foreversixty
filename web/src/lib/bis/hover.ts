@@ -123,6 +123,16 @@ async function fetchBisFileUncached(build: string, spec: string): Promise<BisFil
   }
 }
 
+/** A spec's BiS file where a failure must show (the home's upgrades, home spec 2026-11-06 §4):
+ *  null only for a spec with no published file (404); any other failure rejects, so the caller
+ *  can offer Try again. Not cached here: the caller's query cache holds the answer. */
+export async function fetchBisFileStrict(build: string, spec: string): Promise<BisFile | null> {
+  const response = await fetch(bisAssetUrl(build, spec), { headers: { accept: 'application/json' } });
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`The ${spec} list did not load (${response.status}).`);
+  return (await response.json()) as BisFile;
+}
+
 /**
  * A spec's BiS file, fetched at most once per (build, spec) for the life of the page and
  * cached in memory -- the planner island never bundles this data (design step 2), so

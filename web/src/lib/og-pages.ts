@@ -37,6 +37,7 @@ export const STATIC_OG_PAGES: Readonly<Record<string, OgContent>> = {
   logs: { title: 'Logs and coaching', kicker: SITE_KICKER },
   'reports/sample': { title: 'Sample report', kicker: 'Logs and coaching' },
   character: { title: 'Character', kicker: SITE_KICKER },
+  characters: { title: 'Look up a character', kicker: SITE_KICKER },
   setup: { title: 'Get set up', kicker: 'Addon · companion · apps' },
   connect: { title: 'Connect your companion', kicker: SITE_KICKER },
   account: { title: 'Your account', kicker: SITE_KICKER },

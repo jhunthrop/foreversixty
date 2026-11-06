@@ -79,11 +79,12 @@ export interface BisContext {
  */
 export async function loadBisContextFor(
   character: Pick<MeCharacter, 'class' | 'spec' | 'level' | 'faction' | 'build'>,
+  fetchFile: (build: string, spec: string) => Promise<BisFile | null> = fetchBisFile,
 ): Promise<BisContext | null> {
   const specKey = homeSpecKeyFor(character);
   if (specKey === undefined || character.level === undefined || character.faction === undefined) return null;
   const classSlug = classSlugFromName(character.class ?? '');
-  const [bisFile, items] = await Promise.all([fetchBisFile(activeBuild.build, specKey), itemsFor(classSlug)]);
+  const [bisFile, items] = await Promise.all([fetchFile(activeBuild.build, specKey), itemsFor(classSlug)]);
   if (bisFile === null) return null;
   const band = bandEntryFor(bisFile, bandForLevel(character.level), character.faction);
   if (band === undefined) return null;
@@ -143,11 +144,12 @@ function itemsNamedBy(result: UpgradesResult, items: ReadonlyMap<number, Item>):
  */
 export function cachedUpgradesFor(
   character: Pick<MeCharacter, 'key' | 'class' | 'spec' | 'level' | 'faction' | 'build'>,
+  fetchFile: (build: string, spec: string) => Promise<BisFile | null> = fetchBisFile,
 ): Promise<CachedUpgrades | null> {
   return query<CachedUpgrades | null>(
     upgradesCacheKey(character),
     async () => {
-      const ctx = await loadBisContextFor(character);
+      const ctx = await loadBisContextFor(character, fetchFile);
       if (ctx === null) return null;
       const result = upgradesFor(character, ctx.band, ctx.items);
       return { specKey: ctx.specKey, band: ctx.band.band, result, items: itemsNamedBy(result, ctx.items) };

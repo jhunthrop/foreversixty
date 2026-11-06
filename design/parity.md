@@ -71,6 +71,10 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 **It warns, it does not block.** In CI the `parity` job runs it after the specs with `continue-on-error`: a stale reference writes a warning annotation and the commands into the job summary, and the job stays green. The gate already compared against the test-time mocks, so a stale reference cannot hide a structural regression; it only makes the hand side-by-side read older numbers. Blocking on it would bring back exactly what this design removes: a nightly data refresh (bis.yml, data.yml) that cannot land until someone regenerates mocks by hand. Refresh the reference when a page's design changes, or whenever the warning shows up on `main`.
 
+## The home states
+
+`design/mocks/web/home-parity.json`: `out` (signed out), `34` (a level 34 leveler, no guild), `60` (a level 60 raider with a raid planned), `new` (signed in, no character), `loading` (the session hinted, `/v1/me` in flight), `error` (the upgrades failed). Mocks `web-home-<state>.html` from `design/mocks/ws_home.py` (spec `design/specs/2026-11-06-home.md`). The signed-in data is committed in `web/tests/e2e/fixtures/home/` (`python3 design/mocks/home_fixtures.py` writes it); `tests/e2e/support/home-page.ts` routes the same files, so the parity job needs no `data/builds`.
+
 ## When it fails
 
 Read the side-by-side (`web/test-results/parity/<page>-<state>.png`, the test-time mock against the build). A data refresh never lands here: both sides read the same data. If the build grew something, remove it or take a mock change to review (`ux-designer`, `wow-player`): change the generator (`ws_bis.py`, `ws_sim.py`, `ws_prims.py`), rerun the gate, and regenerate the reference mocks with the commands above. Never widen the tolerance to pass. A known difference another lane is fixing is listed in the spec's `EXPECTED_DRIFT` with a date and the lane; the regions below it are still compared, and the test fails once the drift is gone so the entry is deleted.

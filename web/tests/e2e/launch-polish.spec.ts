@@ -59,68 +59,6 @@ for (const size of SIZES) {
   test.describe(`at ${size.name}`, () => {
     test.use({ viewport: { width: size.width, height: size.height } });
 
-    test('the landing: three outcome rows, and a list with nothing in it says so in words', async ({
-      page,
-    }) => {
-      await signedOut(page);
-      await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await page.route('**/v1/rankings/guilds?**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await routeSampleReportMeta(page);
-      await page.goto('/');
-
-      const rows = page.getByTestId('home-outcomes');
-      await expect(rows.getByRole('heading')).toHaveText('Get started');
-      await expect(rows.locator('a')).toHaveCount(3);
-      await expect(rows).toContainText('Plan your talents');
-      await expect(rows).toContainText('Sim your gear');
-      await expect(rows).toContainText('Upload tonight’s raid');
-      await expect(page.getByText('What the site does')).toHaveCount(0);
-      await expect(page.getByTestId('home-five-doors')).toHaveCount(0);
-
-      await page.getByTestId('home-around-the-site').scrollIntoViewIfNeeded();
-      const guilds = page.getByTestId('home-top-guilds-empty');
-      await expect(guilds).toContainText('No guild has a boss kill logged yet.');
-      const open = guilds.getByRole('link', { name: 'Open the guild page' });
-      await expect(open).toHaveAttribute('href', '/guild');
-      // A ghost button: outlined, no gold fill.
-      expect(await open.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
-      await expect(page.getByTestId('home-top-guilds-skeleton')).toHaveCount(0);
-
-      // Recent reports with nothing in the feed: no skeleton, no sentence, only the sample row.
-      await expect(page.getByTestId('recent-reports-skeleton')).toHaveCount(0);
-      await expect(page.getByTestId('recent-reports-empty')).toHaveCount(0);
-      await expect(page.getByTestId('recent-reports-sample')).toBeVisible();
-      await expect(page.getByTestId('recent-reports-sample').getByTestId('report-row')).toHaveCount(1);
-      expect(await page.getByTestId('home-around-the-site').innerText()).not.toContain('Loading');
-
-      await scrollThrough(page);
-      await shot(page, `landing-${size.name}`);
-    });
-
-    test('the class row is a grid of five and four at 390 and one row at 1280', async ({ page }) => {
-      await signedOut(page);
-      await page.goto('/');
-      const picker = page.getByTestId('home-class-picker');
-      const crests = picker.getByTestId(/^home-class-picker-/);
-      await expect(crests).toHaveCount(9);
-      const boxes = await crests.evaluateAll((all) =>
-        all.map((el) => {
-          const box = el.getBoundingClientRect();
-          return { top: Math.round(box.top), left: box.left, right: box.right };
-        }),
-      );
-      const tops = [...new Set(boxes.map((box) => box.top))];
-      if (size.width < 640) {
-        const perRow = tops.map((top) => boxes.filter((box) => box.top === top).length).sort();
-        expect(perRow).toEqual([4, 5]);
-        expect(boxes.every((box) => box.left >= 0 && box.right <= size.width)).toBe(true);
-        const clipped = await picker.evaluate((el) => el.scrollWidth > el.clientWidth + 1);
-        expect(clipped).toBe(false);
-      } else {
-        expect(tops).toHaveLength(1);
-      }
-    });
-
     test('a character whose realm is not its ruleset: the realm line and the badge say different things', async ({
       page,
     }) => {

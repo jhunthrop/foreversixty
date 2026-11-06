@@ -1,0 +1,12 @@
+{
+  "comment": "The home states the parity gate checks (web/tests/e2e/parity-home.spec.ts) at 1440 x 1000. ws_home.py renders one mock per state from web/tests/e2e/fixtures/home/ (home_fixtures.py), the files the spec routes for the signed-in states.",
+  "viewport": { "width": 1440, "height": 1000 },
+  "states": [
+    { "id": "out", "path": "/", "mock": "web-home-out.html" },
+    { "id": "34", "path": "/", "mock": "web-home-34.html", "me": "me-34.json", "sims": "sims-34.json", "reports": "reports-34.json" },
+    { "id": "60", "path": "/", "mock": "web-home-60.html", "me": "me-60.json", "sims": "sims-60.json", "reports": "reports-60.json", "guild": "guild-home-60.json" },
+    { "id": "new", "path": "/", "mock": "web-home-new.html", "me": "me-new.json" },
+    { "id": "loading", "path": "/", "mock": "web-home-loading.html", "me": "pending" },
+    { "id": "error", "path": "/", "mock": "web-home-error.html", "me": "me-34.json", "sims": "sims-34.json", "reports": "reports-34.json", "failBis": true }
+  ]
+}

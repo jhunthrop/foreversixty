@@ -361,7 +361,7 @@ test.describe('coarse pointer: the native picker behind the same face', () => {
   });
 
   test('a static page’s field follows its select with no Svelte runtime', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/characters');
     const region = page.locator('#home-character-search-region');
     await expect(region).toBeVisible();
     await region.selectOption('eu');
