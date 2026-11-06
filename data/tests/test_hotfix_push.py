@@ -225,6 +225,41 @@ def test_fetch_push_splits_a_search_wider_than_one_page_by_record_id():
     assert got == sorted(e["id"] for e in entries)
 
 
+def test_fetch_push_splits_a_record_with_more_than_a_page_of_entries_by_push_id():
+    """One record (451) pushed 40 times, every push id ending in 0: the record-id
+    split reaches "0 451 70790 spell", which still holds two pages (25 of 40 at
+    1.60.1.70790), so the search splits again by the push id's next digits until
+    each page is whole. Every entry comes back exactly once."""
+    entries = [wago_entry(n, 451, "Spell", push_id=113000 + 10 * n, build=70790) for n in range(40)]
+    entries += [wago_entry(100 + n, 4000 + n, "Spell", build=70790) for n in range(30)]
+    wago = FakeWago(entries)
+    pushed = fetch_push("1.60.1.70790", ("Spell",), wago.client())
+    got = sorted(e.entry_id for e in pushed["Spell"])
+    assert got == sorted(e["id"] for e in entries)
+    assert "0 451 70790 spell" in wago.searches
+
+
+def test_fetch_push_splits_one_push_of_one_record_by_locale():
+    """Record 451 at 1.60.1.70790: two pushes, each carrying the row in every
+    locale, 30 entries a push that no push-id digit can split. Once the push id is
+    whole, the search splits by locale; every entry comes back once and the
+    counts still add up."""
+    locales = ("enUS", "deDE", "esES", "esMX", "frFR", "itIT", "koKR", "ptBR", "ruRU", "zhCN")
+    entries = []
+    for push in (112720, 112870):
+        for loc in locales:
+            for table in ("Spell", "SpellName", "SpellChainEffects"):
+                entry = wago_entry(len(entries), 451, table, push_id=push, build=70790, locale=loc)
+                entry["search_text"] = entry["search_text"].replace("enus", loc.lower(), 1)
+                entries.append(entry)
+    entries += [wago_entry(500 + n, 4000 + n, "Spell", build=70790) for n in range(30)]
+    tables = ("Spell", "SpellName", "SpellChainEffects")
+    pushed = fetch_push("1.60.1.70790", tables, FakeWago(entries).client())
+    got = sorted(e.entry_id for t in pushed.values() for e in t)
+    want = sorted(e["id"] for e in entries if e["locale"] == "enUS")
+    assert got == want
+
+
 def test_fetch_push_fails_loudly_on_an_http_error():
     client = httpx.Client(
         base_url="https://wago.tools", transport=httpx.MockTransport(lambda r: httpx.Response(503))
