@@ -91,6 +91,13 @@ describe('pointerForCharacter', () => {
     expect(pointerForCharacter(c).label).toBe('Aria · Beast Mastery Hunter');
   });
 
+  it('carries the faction, from the API or else from the race, and none when neither is known', () => {
+    expect(pointerForCharacter(character({ key: 'k', name: 'A', faction: 'horde' })).faction).toBe('horde');
+    expect(pointerForCharacter(character({ key: 'k', name: 'A', race: 'Undead' })).faction).toBe('horde');
+    expect(pointerForCharacter(character({ key: 'k', name: 'A', race: 'Night Elf' })).faction).toBe('alliance');
+    expect('faction' in pointerForCharacter(character({ key: 'k', name: 'A' }))).toBe(false);
+  });
+
   it('falls back to the character name alone with no class on file', () => {
     const c = character({ key: 'us/normal/a', name: 'Aria' });
     const pointer = pointerForCharacter(c);

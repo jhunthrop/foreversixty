@@ -8,6 +8,7 @@ import { sameCharacter } from '../account/hero-character';
 import { pointerForCharacter } from '../account/main-character';
 import { announcePageLoadedCharacter, writeCurrent, type CurrentCharacter } from '../current-character';
 import { decodeFS1 } from '../planner/fs1';
+import { factionOfRace } from '../race-faction';
 
 export { sameCharacter };
 
@@ -37,6 +38,7 @@ export function resolvePastedExport(
     return { ok: true, account, pointer: { ...pointerForCharacter(account), savedAt: now.toISOString() } };
   }
   const className = capitalise(classSlug);
+  const faction = factionOfRace(decoded.build.raceSlug) ?? undefined;
   return {
     ok: true,
     account: null,
@@ -45,6 +47,7 @@ export function resolvePastedExport(
       ref: code,
       label: name === undefined ? className : `${name} · ${className}`,
       classSlug,
+      ...(faction === undefined ? {} : { faction }),
       savedAt: now.toISOString(),
     },
   };

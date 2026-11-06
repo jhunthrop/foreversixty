@@ -6,6 +6,7 @@
 // inside the functions below, so importing it is safe during SSR/prerender (Global
 // Constraint: "never read it during SSR/prerender").
 import { CURRENT_CHARACTER_STORAGE_KEY } from './current-character-events';
+import type { Faction } from './faction-mark';
 import { SIM_TABS, tabHref, type SimTabEntry } from './sim/tabs';
 import { defaultSimState, withSimState } from './sim/url';
 
@@ -23,6 +24,9 @@ export interface CurrentCharacter {
   /** What the chip shows: "Simfury · Fury Warrior". Derived once at load, never parsed back. */
   label: string;
   classSlug: string;
+  /** The character's faction when its race is known, so a page can open on it before paint
+   *  (the tier list's pre-paint script reads it). Absent on an older pointer or an unknown race. */
+  faction?: Faction;
   savedAt: string; // ISO
 }
 
@@ -115,6 +119,7 @@ function isCurrentCharacter(value: unknown): value is CurrentCharacter {
     typeof candidate.ref === 'string' &&
     typeof candidate.label === 'string' &&
     typeof candidate.classSlug === 'string' &&
+    (candidate.faction === undefined || candidate.faction === 'alliance' || candidate.faction === 'horde') &&
     typeof candidate.savedAt === 'string'
   );
 }
