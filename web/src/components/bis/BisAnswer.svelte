@@ -22,6 +22,10 @@
     /** "Simmed as a Night Elf" when the race control names another race. */
     raceNote?: string;
   } = $props();
+
+  /** Between the trust line's facts and between the links: one space each side (Svelte trims the
+   *  whitespace at a block's edges, so the separator is an expression, never literal text). */
+  const SEPARATOR = ' · ';
 </script>
 
 <div class="bis-answer" data-testid="bis-this-set">
@@ -64,13 +68,16 @@
     {/if}
   {/if}
   <p class="bis-answer-line" title={answer.trustTitle} data-testid="bis-trust-line">
-    {answer.trust.join(' · ')}{#if raceNote}
-      · {raceNote}{/if}{#if answer.rankingSimHref}
-      · <a href={answer.rankingSimHref} data-testid="bis-ranking-sim-link">View ranking sim ›</a>{/if}
+    {answer.trust.join(
+      SEPARATOR,
+    )}{#if raceNote}{SEPARATOR}{raceNote}{/if}{#if answer.rankingSimHref}{SEPARATOR}<a
+        href={answer.rankingSimHref}
+        data-testid="bis-ranking-sim-link">View ranking sim ›</a
+      >{/if}
   </p>
   <p class="bis-answer-links">
-    {#if answer.simHref}<a href={answer.simHref} data-testid="bis-sim-link">Open in simulator</a> ·
-    {/if}<a href={answer.plannerHref} data-testid="bis-planner-link">Talents in planner</a>
+    {#if answer.simHref}<a href={answer.simHref} data-testid="bis-sim-link">Open in simulator</a
+      >{SEPARATOR}{/if}<a href={answer.plannerHref} data-testid="bis-planner-link">Talents in planner</a>
   </p>
 </div>
 

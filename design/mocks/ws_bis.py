@@ -5,9 +5,10 @@ level, icon, name and two short stats, the gain figure; line 2 the full source a
 what the figure is against on one line; Sources a compact button; group labels from 1920; 360 px inspector from 1760).
 Rev 3 (persona fixes, three-line rows, the inline next best) is superseded by 5.13; its renders stay in design/reviews.
 
-The head answer is one figure with its unit, the trust line and the links. Nothing else: no disclosure, no metrics
-list, no explanatory note (the holy-priest drift of 2026-11-06 is not the design). Tanks show one figure, damage taken
-per second (the tiers' tank sort); an owner decision may change which.
+The head answer is the set's figure with its unit, the trust line and the links; no disclosure, no explanatory note.
+A healer adds its three metrics under the figure (Overheal, Mana lasts, Healing per mana); a tank shows four figures
+(effective health, DTPS, chance of death, TPS) and the TMI line in place of the one figure (spec 5.13, 2026-11-06:
+both shipped and kept, in the build's blocks, order and words).
 
 States: design/mocks/web/bis-parity.json. Data: design/mocks/data/bis-facts.json (names, numbers and sources read
 from the built page by bis_facts.mjs; the mock decides every block and where it sits). Regions: design/parity.md.
@@ -18,16 +19,14 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_lib import REGION, control_bar, crest_img, icon, sel, seg
-from ws_prims import Meter, PageHeader, Plate, Section, build_page, write
+from ws_lib import REGION, control_bar, crest_img, sel, seg
+from ws_prims import Meter, PageHeader, Paperdoll, Plate, Section, build_page, write
 
 HERE = Path(__file__).resolve().parent
 CONFIG = json.loads((HERE / 'web/bis-parity.json').read_text())
 FACTS = json.loads((HERE / 'data/bis-facts.json').read_text())
-RARITY = {'poor': '#9d9d9d', 'common': '#ffffff', 'uncommon': '#1eff00', 'rare': '#3d94f0', 'epic': '#b866f5', 'legendary': '#ff8000'}
-TANK_FIGURE = ('dtps', 'DTPS')  # the tank answer: one figure (id in the facts, unit shown)
 
-# The page's own rules (the built Paperdoll, BisAnswer, BisWeights and summary measure the same).
+# The page's own rules (the built BisAnswer, BisWeights and summary measure the same; the Paperdoll's are ws_prims').
 BIS_CSS = '''
 /* The BiS head keeps a fixed floor from 1024 so the title and the controls hold their y across specs
    (one figure, a healer's metrics, a tank's four): BisSpecPage HEAD_ROW_MIN_HEIGHT, b66cf09b8. */
@@ -36,6 +35,11 @@ BIS_CSS = '''
 .ans .bis-ans{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right;max-width:640px}
 .bis-ans .fig .v{font-size:36px;line-height:40px}.bis-ans .fig small{font-size:13px}
 .bis-ans .cap{font-size:12px;line-height:16px;color:var(--muted)}
+.bis-ans dl{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 20px}
+.bis-ans dt{font:700 12px/18px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bis-hm dd{font-size:16px;line-height:24px;font-variant-numeric:tabular-nums}
+.bis-tf .tv{font:700 24px/36px var(--font-body);font-variant-numeric:tabular-nums}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .bis-line{font-size:13px;line-height:18px;color:var(--muted)}.bis-links{font-size:14px;font-weight:600}
 .cbar[data-labels-from="1920"] .pc{column-gap:12px}
 .cbar .seg a{height:40px}.cbar .seg a .sp{width:22px;height:22px;border-radius:4px;background:#10141d;border:1px solid var(--line)}
@@ -45,22 +49,6 @@ BIS_CSS = '''
 .bis-sum p button{background:none;border:0;padding:0;margin-left:6px;font:inherit;font-weight:600;cursor:pointer}
 .bis-sum .seg a{height:44px}
 .bis-note{color:var(--muted);font-size:13px;line-height:20px;margin-bottom:8px}
-.doll-cols{display:grid;grid-template-columns:minmax(0,1fr)}
-@media(min-width:1024px){.doll-cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.doll-col+.doll-col{border-left:1px solid var(--line-soft)}
- .doll[data-view="where"] .doll-cols{display:block;columns:2;column-gap:0}}
-.doll-grp{break-inside:avoid}.doll-grp-h{display:flex;align-items:baseline;gap:12px;padding:14px 16px 6px}
-.doll-grp-h b{font:700 18px/24px var(--font-body);color:var(--strong)}.doll-grp-h span{margin-left:auto;font-size:13px;color:var(--muted)}
-.cell{display:grid;grid-template-columns:64px 40px minmax(0,1fr) auto;column-gap:12px;align-items:start;min-height:58px;padding:9px 16px;border-bottom:1px solid var(--line-soft)}
-.cell .lb{display:flex;flex-direction:column;padding-top:1px;font:600 13px/18px var(--font-body);color:var(--muted)}
-.cell .lb .fl{font-size:12px;line-height:16px;font-weight:700}
-.cell .bd{display:flex;flex-direction:column;gap:1px;min-width:0}
-.cell .l1{display:flex;align-items:baseline;column-gap:10px;min-width:0}.cell .l1 .nm{flex:none;max-width:100%;font:700 15px/20px var(--font-body)}
-.cell .l1 .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:20px;color:var(--muted)}
-.cell .l2{font-size:13px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}
-.cell .gn{display:flex;flex-direction:column;align-items:flex-end;width:144px;min-width:0;justify-self:end}
-.cell .gn .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.cell .gn .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
-.cell .gn .bs{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:16px;color:var(--muted);text-align:right}
-.cell .ic0{width:40px;height:40px;border-radius:5px;border:1px dashed var(--line-soft)}
 .bis-stack{margin-top:32px}
 .wt-s{font-size:15px;line-height:24px}
 .wt-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:12px}
@@ -71,24 +59,33 @@ BIS_CSS = '''
 '''
 
 
-def colored(text: str, rarity: str) -> str:
-    return f'<span style="color:{RARITY.get(rarity, RARITY["common"])}">{escape(text)}</span>'
+def healer_metrics(a: dict) -> str:
+    """BisAnswer's healer cells: label, value, and the value's sentence for a screen reader."""
+    if not a['healer']:
+        return ''
+    cells = ''.join(f'<div><dt>{escape(m["label"])}</dt><dd>{escape(m["value"])}</dd><dd class="sr-only">{escape(m["line"])}</dd></div>'
+                    for m in a['healer'])
+    return f'<dl class="bis-hm">{cells}</dl>'
+
+
+def tank_figures(a: dict) -> str:
+    """BisAnswer's tank head: the four figures, then the TMI line."""
+    cells = ''.join(f'<div><dt>{escape(t["label"])}</dt><dd class="tv">{escape(t["value"])}</dd></div>' for t in a['tank'])
+    return f'<dl class="bis-tf">{cells}</dl><p class="bis-line">{escape(a["tankLine"])}</p>'
 
 
 def answer(f: dict) -> str:
     a = f['answer']
     if a['figure']:
         fig = a['figure']
-        label, value, unit, caption = fig['label'], fig['value'], fig['unit'], fig['caption']
+        cap = f'<span class="cap">{escape(fig["caption"])}</span>' if fig['caption'] else ''
+        lead = (f'<div class="fig"><span class="t-label">{escape(fig["label"])}</span>'
+                f'<span class="v">{escape(fig["value"])}<small>{escape(fig["unit"])}</small></span>{cap}</div>{healer_metrics(a)}')
     else:
-        tank = next(t for t in a['tank'] if t['id'] == TANK_FIGURE[0])
-        label, value, unit, caption = 'This set', tank['value'], TANK_FIGURE[1], ''
+        lead = tank_figures(a)
     ranking = f' &middot; <a href="#">{escape(a["rankingSim"])}</a>' if a['rankingSim'] else ''
     links = ' &middot; '.join(f'<a href="#">{escape(t)}</a>' for t in (a['simLink'], a['plannerLink']) if t)
-    cap = f'<span class="cap">{escape(caption)}</span>' if caption else ''
-    return (f'<div class="bis-ans"><div class="fig"><span class="t-label">{escape(label)}</span>'
-            f'<span class="v">{escape(value)}<small>{escape(unit)}</small></span>{cap}</div>'
-            f'<p class="bis-line">{escape(a["trust"])}{ranking}</p><p class="bis-links">{links}</p></div>')
+    return f'<div class="bis-ans">{lead}<p class="bis-line">{escape(a["trust"])}{ranking}</p><p class="bis-links">{links}</p></div>'
 
 
 def controls(f: dict) -> str:
@@ -119,33 +116,9 @@ def notes(f: dict) -> str:
     return f'<div data-region="{REGION["notes"]}">' + ''.join(f'<p class="bis-note">{escape(n)}</p>' for n in f['notes']) + '</div>'
 
 
-def cell(c: dict) -> str:
-    flag = f'<span class="fl">{escape(c["flag"]["text"])}</span>' if c['flag'] else ''
-    lead = f'<span class="lb">{escape(c["label"])}{flag}</span>'
-    if c['state'] == 'empty':
-        return (f'<div class="cell" role="option" aria-disabled="true">{lead}<span class="ic0"></span><span class="bd">'
-                f'<span class="l1"><span class="nm muted" style="font-weight:400">{escape(c["name"])}</span></span><span class="l2">{escape(c["line2"])}</span></span><span></span></div>')
-    q = {'poor': 'q0', 'uncommon': 'q2', 'rare': 'q3', 'epic': 'q4', 'legendary': 'q5'}.get(c['quality'], '')
-    ic = icon(c['icon'], 40, q) if c['icon'] else '<span class="ic0"></span>'
-    stats = f'<span class="st">{escape(c["stats"])}</span>' if c['stats'] else ''
-    g = c['gain'] or {'value': '', 'unit': ''}
-    unit = f'<small>{escape(g["unit"])}</small>' if g['unit'] else ''
-    b = c['basis']
-    basis = f'<span class="bs">{escape(b["prefix"])} {colored(b["item"], b["quality"]) if b["item"] else ""}</span>' if b else ''
-    return (f'<div class="cell" role="option" aria-selected="false">{lead}{ic}<span class="bd"><span class="l1">'
-            f'<span class="nm" style="color:{RARITY.get(c["quality"], RARITY["common"])}">{escape(c["name"])}</span>{stats}</span>'
-            f'<span class="l2">{escape(c["line2"])}</span></span><span class="gn"><span class="v">{escape(g["value"])}{unit}</span>{basis}</span></div>')
-
-
 def doll(f: dict) -> str:
     d = f['doll']
-    if d['view'] == 'where':
-        inner = ''.join(f'<div class="doll-grp" role="group" aria-label="{escape(g["title"])}"><div class="doll-grp-h"><b>{escape(g["title"])}</b>'
-                        f'<span>{escape(g["count"])}</span></div>{"".join(cell(c) for c in g["cells"])}</div>' for g in d['groups'])
-    else:
-        inner = ''.join(f'<div class="doll-col">{"".join(cell(c) for c in d[side])}</div>' for side in ('left', 'right'))
-    return (f'<div class="doll" data-view="{d["view"]}" data-region="{REGION["slots"]}">'
-            f'<div class="doll-cols" role="listbox" aria-label="{escape(d["label"])}">{inner}</div></div>')
+    return Paperdoll(d['label'], d['view'], columns=(d['left'], d['right']), groups=d['groups'])
 
 
 def weight(r: dict) -> str:

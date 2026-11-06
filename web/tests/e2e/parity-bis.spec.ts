@@ -36,29 +36,10 @@ interface ExpectedDrift {
   why: string;
 }
 
-/** The head answer and what it pushes: the title sits on the head's bottom edge. */
-const HEAD_ANSWER = {
-  regions: ['head-answer'],
-  containers: ['head'],
-  moved: ['head-title', 'head-meta'],
-} as const;
-
-// land/bis-header (merged 2026-11-06, eb335cb7e) removed the head disclosures. What is left in
-// BisAnswer.svelte, each entry dated; delete an entry the day its state matches (the test fails
-// then, so it cannot outlive the drift).
-const EXPECTED_DRIFT: Readonly<Record<string, ExpectedDrift>> = {
-  // TODO(2026-11-06): the trust line and links drop the space before each middot
-  // ("consumables.· View ranking sim", "simulator ·Talents"), so the build's trust line fits one
-  // line where the mock's wraps (16 px). Fix the spacing in BisAnswer.svelte.
-  'dps-60': { ...HEAD_ANSWER, why: 'BisAnswer middot spacing (2026-11-06)' },
-  // TODO(2026-11-06): the healer metrics list (Overheal, Mana lasts, Healing per mana: 3 terms,
-  // 6 definitions) under the figure. Not in the approved head (one figure, trust line, links);
-  // owner decision: drop it, or approve it and add it to the mock (ws_bis.py answer()).
-  'healer-60': { ...HEAD_ANSWER, why: 'healer metrics list in the head, decision pending (2026-11-06)' },
-  // TODO(2026-11-06): the tank head is four figures (effective health, DTPS, chance of death, TPS)
-  // and a TMI line; the mock shows one (DTPS). Owner decision as for the healer metrics.
-  'tank-60': { ...HEAD_ANSWER, why: 'tank four-figure head, decision pending (2026-11-06)' },
-};
+// No known drift: land/parity-bis-drift (2026-11-06) fixed the trust line's middot spacing and put
+// the healer metrics and the tank's four figures in the mocks (spec 5.13). A new entry names the
+// regions, the lane and the date, as the interface above describes.
+const EXPECTED_DRIFT: Readonly<Record<string, ExpectedDrift>> = {};
 
 /** The build's regions below the drifted container, moved up by the height the drift added. */
 function withoutDriftHeight(
