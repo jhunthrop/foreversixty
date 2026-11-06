@@ -16,14 +16,10 @@ const { path } = Astro.params;
 
 <Base
   title="Character"
-  description="A World of Warcraft: Forever character: every ranked fight, best per encounter, and the builds they were seen in."
+  description="A World of Warcraft: Forever character: the gear they wear and the upgrades waiting, their Forever Score, best fights and builds."
   path={`/character/${path}`}
 >
-  <main
-    id="main"
-    tabindex="-1"
-    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
-  >
+  <main id="main" tabindex="-1">
     <Character client:load />
     <CharacterNoScript />
   </main>

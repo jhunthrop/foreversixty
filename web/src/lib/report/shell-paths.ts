@@ -30,6 +30,9 @@ export function fixtureRankingsPaths(): { params: { slug: string } }[] {
 // Playwright navigates to and what the fixture-only [...path].astro route prerenders,
 // and it must never ship in a real build.
 export const FIXTURE_CHARACTER_PATH = 'us/hardcore/elyra-duskvale';
+/** The character page's other parity states (design/specs/2026-11-06-character.md section 3): the
+ *  level 34 leveler and a name no realm holds. */
+export const FIXTURE_CHARACTER_EXTRA_PATHS = ['us/normal/felsnap', 'us/hardcore/thalrin'] as const;
 export const FIXTURE_GUILD_PATH = 'us/hardcore/the-last-watch';
 
 // A second guild fixture, same region and ruleset as FIXTURE_GUILD_PATH but a different
@@ -52,7 +55,9 @@ export const FIXTURE_GUILD_INVITE_TOKEN = 'fixtureinvitetoken1';
 export const FIXTURE_GUILD_CENTRE_PATH = 'us/pvp/olympus-xxvii';
 
 export function fixtureCharacterPaths(): { params: { path: string } }[] {
-  return process.env.FOREVER_DATA === 'fixture' ? [{ params: { path: FIXTURE_CHARACTER_PATH } }] : [];
+  return process.env.FOREVER_DATA === 'fixture'
+    ? [FIXTURE_CHARACTER_PATH, ...FIXTURE_CHARACTER_EXTRA_PATHS].map((path) => ({ params: { path } }))
+    : [];
 }
 
 // The one guild path the local walkthrough stack (tools/dev-stack, `npm run dev:local-api`)

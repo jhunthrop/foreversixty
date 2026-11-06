@@ -14,6 +14,7 @@
     tone = 'strong',
     size = 'default',
     align = 'start',
+    color,
     testid,
   }: {
     value: string;
@@ -25,6 +26,8 @@
     tone?: FigureTone;
     size?: 'sm' | 'default' | 'big' | 'xl';
     align?: 'start' | 'end';
+    /** A colour the value takes from data (a score tier), over the tone. */
+    color?: string;
     testid?: string;
   } = $props();
 
@@ -44,7 +47,7 @@
   data-testid={testid}
 >
   {#if label}<span class="text-label tracking-label text-muted font-bold uppercase">{label}</span>{/if}
-  <span class={['font-bold tabular-nums', SIZE[size], TONE_TEXT[tone]]}
+  <span class={['font-bold tabular-nums', SIZE[size], TONE_TEXT[tone]]} style:color
     >{value}{#if unit}<span
         class={[
           'text-muted font-semibold tracking-normal',

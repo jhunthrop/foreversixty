@@ -15,6 +15,7 @@ import path from 'node:path';
 import type { Browser, Page } from '@playwright/test';
 import { test } from './support/test';
 import { openBis } from './support/bis-page';
+import { openCharacter, type CharacterState } from './support/character-page';
 import { openHome, type HomeState } from './support/home-page';
 import { openSimState, type SimParityState } from './support/sim-parity';
 import { openLogsState, type LogsParityState } from './support/logs-parity';
@@ -261,5 +262,14 @@ test.describe('site chrome capture', () => {
       s.id as LogsParityState,
     ]);
     await each(browser, states, openLogsState);
+  });
+
+  test('character', async ({ browser }) => {
+    const states = readParityConfig('character-parity.json').states as (CharacterState & { mock: string })[];
+    await each(
+      browser,
+      states.map((s): [string, CharacterState] => [s.mock, s]),
+      openCharacter,
+    );
   });
 });

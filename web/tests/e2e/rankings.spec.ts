@@ -762,31 +762,39 @@ const GUILD = {
   request_id: 'r',
 };
 
-test('a character page shows bests, history and the builds they were seen in', async ({ page }) => {
+test('a character page shows the best per encounter and the builds they were seen in', async ({ page }) => {
   await page.route('**/v1/characters/us/hardcore/elyra-duskvale', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(CHARACTER) }),
   );
 
   await page.goto('/character/us/hardcore/elyra-duskvale');
 
-  await expect(page.locator('main h1')).toHaveText('Elyra Duskvale');
-  await expect(page.getByTestId('character')).toContainText('Hardcore US');
-  await expect(page.getByTestId('character-best')).toContainText('Warden Kelthas');
-  await expect(page.getByTestId('character-history')).toContainText('Discipline');
-  // L8.4 fix round 2 item 8: the rows carry execution_score, as the API always sends it.
-  await expect(page.getByTestId('character-best-execution').first()).toHaveText('94%');
+  await expect(page.getByTestId('character-head').getByTestId('page-title')).toHaveText('Elyra Duskvale');
+  await expect(page.getByTestId('character-fact-chip')).toHaveText('Hardcore US');
+  const best = page.getByTestId('character-best');
+  await expect(best).toContainText('Warden Kelthas');
+  await expect(best.getByRole('link', { name: /Warden Kelthas/ })).toHaveAttribute(
+    'href',
+    '/rankings/warden-kelthas',
+  );
+  // The parse percentile and the amount on each row, never NaN.
+  await expect(best.getByLabel('96 percentile')).toHaveText('96');
+  await expect(best).toContainText('1,840');
   await expect(page.getByTestId('character')).not.toContainText('NaN');
-  // A split as text, not a planner link: the log does not record the order points were spent in.
-  await expect(page.getByTestId('character-builds')).toContainText('31/20/0');
-  await expect(page.getByTestId('character-builds').getByRole('link')).toHaveCount(0);
+  // Every ranked fight lives on /logs, counted from the history.
+  await expect(best.getByRole('link', { name: 'All ranked fights (1) ›' })).toHaveAttribute('href', '/logs');
+  const builds = page.getByTestId('character-builds');
+  await expect(builds).toContainText('31/20/0');
+  await expect(builds).toContainText('Discipline · first seen 9 Dec 2026');
 
   // rankings/api.ts's encounterSlug is the one derivation of this identifier, trailing
   // hyphen trimmed and all. A second, inlined copy here linked "Emeriss (Dream)" to
   // /rankings/emeriss-dream- , which the Worker accepts and renders as a permanently empty
   // board, while every other page on the site links to /rankings/emeriss-dream.
-  await expect(
-    page.getByTestId('character-best').getByRole('link', { name: 'Emeriss (Dream)' }),
-  ).toHaveAttribute('href', '/rankings/emeriss-dream');
+  await expect(best.getByRole('link', { name: /Emeriss \(Dream\)/ })).toHaveAttribute(
+    'href',
+    '/rankings/emeriss-dream',
+  );
 });
 
 test('a guild page leads with the pull count and kills, and its Progression tab lists roster bests', async ({

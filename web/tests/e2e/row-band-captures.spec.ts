@@ -114,13 +114,9 @@ const SHOTS: Shot[] = [
     path: CHARACTER_PATH,
     setup: stubCharacter,
     ready: async (page) => {
-      await expect(page.getByTestId('forever-score-card')).toBeVisible();
+      await expect(page.getByTestId('character-best')).toBeVisible();
     },
-    act: async (page) => {
-      const id = await page.locator('li[id^="fight-"]').first().getAttribute('id');
-      if (id !== null) await page.evaluate((hash) => (window.location.hash = hash), id);
-    },
-    focus: ['character-history'],
+    focus: ['character-best'],
   },
   {
     name: 'report',

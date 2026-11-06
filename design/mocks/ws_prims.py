@@ -729,3 +729,18 @@ def Disclosure(summary: str, body: str, open_: bool = False, cls: str = '') -> s
 def EmptyCrest(px: int) -> str:
     """A character whose class the log does not carry: the ringed empty disc of the one crest language."""
     return f'<span class="crest none" style="width:{px}px;height:{px}px"></span>'
+
+# ------------------------------------------------ primitives added by the character round (2026-11-06; design/specs/2026-11-06-character.md)
+# Disclosure is the shipped ui/Disclosure.svelte: a summary line (the body face 600, a caret) that opens its body in place,
+# no box. Additive only.
+PRIM_CSS += '''
+.disc>summary{display:flex;align-items:center;gap:8px;min-height:44px;cursor:pointer;list-style:none;font:600 14px/20px var(--font-body);color:var(--nav)}
+.disc>summary::-webkit-details-marker{display:none}.disc>summary::before{content:'\\25B8';font-size:11px;color:var(--muted)}
+.disc[open]>summary::before{content:'\\25BE'}.disc>summary .t-small{margin-left:4px}
+.disc>.disc-b{padding:4px 0 8px}
+'''
+
+
+def Disclosure(summary: str, body: str, open_: bool = False, meta: str = '') -> str:
+    m = f'<span class="t-small">{meta}</span>' if meta else ''
+    return f'<details class="disc"{" open" if open_ else ""}><summary>{summary}{m}</summary><div class="disc-b">{body}</div></details>'

@@ -1,0 +1,2735 @@
+{
+  "spec": "priest-holy",
+  "build": "1.60.1.70790",
+  "engine_version": "bf727699f",
+  "generated_at": "2026-11-06T17:02:07Z",
+  "bands": [
+    {
+      "spec": "priest-holy",
+      "band": 60,
+      "preset": "raid",
+      "faction": "alliance",
+      "race": "human",
+      "talents": "005005031030000000-33505003030121431-00000000000000000",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "healing_power",
+          "weight": 1,
+          "error": 0.19336644205196077,
+          "insignificant": false,
+          "weight_per_percent": 1,
+          "scale_factor": 1.9478394157051342,
+          "dps_per_point": 0.4167615712715447,
+          "scale_error": 0.3766467775034719
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.5133893440789582,
+          "error": 0.04042009655119548,
+          "insignificant": false,
+          "weight_per_percent": 0.5133893440789582,
+          "scale_factor": 1,
+          "dps_per_point": 0.2139609497124143,
+          "scale_error": 0.07873185724902572
+        },
+        {
+          "stat": "spirit",
+          "weight": 0.74825932915475,
+          "error": 0.03929423423607113,
+          "insignificant": false,
+          "weight_per_percent": 0.74825932915475,
+          "scale_factor": 1.4574890144967039,
+          "dps_per_point": 0.31184573373712554,
+          "scale_error": 0.07653885825496948
+        },
+        {
+          "stat": "mp5",
+          "weight": 1.3656515613918112,
+          "error": 0.041837865695986146,
+          "insignificant": false,
+          "weight_per_percent": 1.3656515613918112,
+          "scale_factor": 2.6600699393982294,
+          "dps_per_point": 0.5691510905350896,
+          "scale_error": 0.08149344387161953
+        },
+        {
+          "stat": "crit",
+          "weight": 0.4097780223191103,
+          "error": 0.028787174004451143,
+          "insignificant": false,
+          "unit": "rating",
+          "rating_factor": 14,
+          "weight_per_percent": 5.736892312467544,
+          "scale_factor": 0.7981817835628613,
+          "dps_per_point": 0.1707797324542585,
+          "scale_error": 0.05607279219263214
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.19898378090712268,
+          "error": 0.7429896787137785,
+          "insignificant": true,
+          "weight_per_percent": 0.19898378090712268,
+          "scale_factor": 0.3875884515369283,
+          "dps_per_point": 0.08292879318840524,
+          "scale_error": 1.4472245816607916
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 16693,
+          "item_name": "Devout Crown",
+          "source": "Scholomance: Darkmaster Gandling",
+          "source_kind": "dungeon",
+          "enchant_id": 1509,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 227121,
+              "item_name": "Lieutenant Commander's Satin Hood",
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 231622,
+              "item_name": "Field Marshal's Satin Hood",
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 14140,
+              "item_name": "Mooncloth Circlet",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -18.407461696,
+              "verified": true
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 227121,
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance"
+            },
+            {
+              "item_id": 231622,
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance"
+            }
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 14140,
+              "rank": 1,
+              "source": "Tailoring",
+              "dps_delta": -18.41
+            },
+            "quest": {
+              "item_id": 13216,
+              "rank": 14,
+              "source": "Houses of the Holy",
+              "dps_delta": -4.85
+            },
+            "world": {
+              "item_id": 13102,
+              "rank": 3,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
+            }
+          },
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
+        },
+        {
+          "slot": "neck",
+          "item_id": 10769,
+          "item_name": "Glowing Eye of Mordresh",
+          "source": "Razorfen Downs: Mordresh Fire Eye",
+          "source_kind": "dungeon",
+          "enchant_id": 8219,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 18723,
+              "item_name": "Animated Chain Necklace",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Ramstein the Gorger",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 14558,
+              "item_name": "Lady Maye's Pendant",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.863203641
+            },
+            {
+              "item_id": 15856,
+              "item_name": "Archlight Talisman",
+              "source_kind": "quest",
+              "source": "Hidden Treasures",
+              "dps_delta": -2.906170671
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 18723,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Ramstein the Gorger"
+            },
+            {
+              "item_id": 14558,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            }
+          ],
+          "by_kind": {
+            "pvp": {
+              "item_id": 18443,
+              "rank": 26,
+              "source": "PvP rank 4 \u00b7 Master Sergeant \u00b7 Alliance",
+              "dps_delta": -7.86
+            },
+            "quest": {
+              "item_id": 15856,
+              "rank": 4,
+              "source": "Hidden Treasures",
+              "dps_delta": -2.91
+            },
+            "rep": {
+              "item_id": 19098,
+              "rank": 15,
+              "source": "Stormpike Guard",
+              "dps_delta": -5.63,
+              "standing": "honored"
+            },
+            "vendor": {
+              "item_id": 19098,
+              "rank": 15,
+              "source": "Gaelden Hammersmith",
+              "dps_delta": -5.63,
+              "standing": "honored"
+            },
+            "world": {
+              "item_id": 14558,
+              "rank": 3,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.86
+            }
+          }
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 14139,
+          "item_name": "Mooncloth Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 45.230852621,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 227119,
+              "item_name": "Lieutenant Commander's Satin Mantle",
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 231628,
+              "item_name": "Field Marshal's Satin Mantle",
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 254119,
+              "item_name": "Earthenweave Mantle",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -5.480270002,
+              "verified": true
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 227119,
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance"
+            },
+            {
+              "item_id": 231628,
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance"
+            }
+          ],
+          "by_kind": {
+            "dungeon": {
+              "item_id": 22405,
+              "rank": 3,
+              "source": "Stratholme: Cannon Master Willey",
+              "dps_delta": -4.42
+            },
+            "quest": {
+              "item_id": 4197,
+              "rank": 32,
+              "source": "The Crone of the Kraul",
+              "dps_delta": -13.79
+            },
+            "rep": {
+              "item_id": 20061,
+              "rank": 11,
+              "source": "The League of Arathor",
+              "dps_delta": -7.94,
+              "standing": "exalted"
+            },
+            "vendor": {
+              "item_id": 20061,
+              "rank": 11,
+              "source": "Samuel Hawke",
+              "dps_delta": -7.94,
+              "standing": "exalted"
+            },
+            "world": {
+              "item_id": 18720,
+              "rank": 10,
+              "source": "Balnazzar",
+              "dps_delta": -7.62
+            }
+          }
+        },
+        {
+          "slot": "back",
+          "item_id": 272413,
+          "item_name": "Drape of Recovery",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 19530,
+              "item_name": "Caretaker's Cape",
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
+              "dps_delta": -3.856955093,
+              "verified": true
+            },
+            {
+              "item_id": 20697,
+              "item_name": "Crystalline Threaded Cape",
+              "source_kind": "world",
+              "source": "Chillwind Ravager",
+              "dps_delta": -6.005137848
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 19530,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
+            },
+            {
+              "item_id": 20697,
+              "source_kind": "world",
+              "source": "Chillwind Ravager"
+            }
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 13860,
+              "rank": 13,
+              "source": "Tailoring",
+              "dps_delta": -9.73
+            },
+            "dungeon": {
+              "item_id": 11623,
+              "rank": 6,
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": -6.21
+            },
+            "pvp": {
+              "item_id": 16337,
+              "rank": 23,
+              "source": "PvP rank 5 \u00b7 Sergeant Major \u00b7 Alliance",
+              "dps_delta": -10.99
+            },
+            "quest": {
+              "item_id": 15421,
+              "rank": 15,
+              "source": "In Dreams",
+              "dps_delta": -9.8
+            },
+            "rep": {
+              "item_id": 19530,
+              "rank": 2,
+              "source": "Silverwing Sentinels",
+              "dps_delta": -3.86,
+              "standing": "honored"
+            },
+            "world": {
+              "item_id": 20697,
+              "rank": 4,
+              "source": "Chillwind Ravager",
+              "dps_delta": -6.01
+            }
+          }
+        },
+        {
+          "slot": "chest",
+          "item_id": 14154,
+          "item_name": "Truefaith Vestments",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "enchant_id": 1891,
+          "score": 84.972149266,
+          "verified": true,
+          "effect_unmodelled": true,
+          "alternatives": [
+            {
+              "item_id": 231624,
+              "item_name": "Field Marshal's Satin Tunic",
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": -0.776390828
+            },
+            {
+              "item_id": 13346,
+              "item_name": "Robes of the Exalted",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare",
+              "dps_delta": -5.358441743,
+              "verified": true
+            },
+            {
+              "item_id": 10020,
+              "item_name": "Stormcloth Vest",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -8.746189439
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 231624,
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance"
+            },
+            {
+              "item_id": 13346,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare"
+            }
+          ],
+          "by_kind": {
+            "dungeon": {
+              "item_id": 13346,
+              "rank": 2,
+              "source": "Stratholme: Baron Rivendare",
+              "dps_delta": -5.36
+            },
+            "quest": {
+              "item_id": 9623,
+              "rank": 11,
+              "source": "The Grand Betrayal",
+              "dps_delta": -20.84
+            },
+            "vendor": {
+              "item_id": 220892,
+              "rank": 9,
+              "source": "Captain Dirgehammer",
+              "dps_delta": -19.05
+            },
+            "world": {
+              "item_id": 12462,
+              "rank": 17,
+              "source": "Avatar of Hakkar",
+              "dps_delta": -22.42
+            }
+          }
+        },
+        {
+          "slot": "wrist",
+          "item_id": 16697,
+          "item_name": "Devout Bracers",
+          "source": "Stratholme: Crimson Priest",
+          "source_kind": "dungeon",
+          "enchant_id": 1901,
+          "chance": 0.0371,
+          "verified": true,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +16.5 DPS over it",
+          "dps_delta": 16.45604057231003,
+          "alternatives": [
+            {
+              "item_id": 19596,
+              "item_name": "Dryad's Wrist Bindings",
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 254131,
+              "item_name": "Earthenweave Cuffs",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": 0
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 19596,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
+            },
+            {
+              "item_id": 254131,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            }
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 254131,
+              "rank": 2,
+              "source": "Tailoring",
+              "dps_delta": 0
+            },
+            "pvp": {
+              "item_id": 18456,
+              "rank": 48,
+              "source": "PvP rank 5 \u00b7 Sergeant Major \u00b7 Alliance",
+              "dps_delta": -7.92
+            },
+            "quest": {
+              "item_id": 13958,
+              "rank": 8,
+              "source": "Maxwell's Mission",
+              "dps_delta": -2.81
+            },
+            "rep": {
+              "item_id": 19595,
+              "rank": 1,
+              "source": "Silverwing Sentinels",
+              "dps_delta": 0,
+              "standing": "exalted"
+            },
+            "vendor": {
+              "item_id": 19595,
+              "rank": 1,
+              "source": "Illiyana Moonblaze",
+              "dps_delta": 0,
+              "standing": "exalted"
+            },
+            "world": {
+              "item_id": 12546,
+              "rank": 12,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -4.33
+            }
+          },
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
+        },
+        {
+          "slot": "hands",
+          "item_id": 16692,
+          "item_name": "Devout Gloves",
+          "source": "Stratholme: Archivist Galford",
+          "source_kind": "dungeon",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 227128,
+              "item_name": "Knight-Lieutenant's Satin Handwraps",
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 231623,
+              "item_name": "Marshal's Satin Handwraps",
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 12554,
+              "item_name": "Hands of the Exalted Herald",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Princess Moira Bronzebeard ",
+              "dps_delta": -15.715970581,
+              "verified": true
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 227128,
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance"
+            },
+            {
+              "item_id": 231623,
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance"
+            }
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 254095,
+              "rank": 2,
+              "source": "Tailoring",
+              "dps_delta": 0
+            },
+            "pvp": {
+              "item_id": 220897,
+              "rank": 7,
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            "quest": {
+              "item_id": 21318,
+              "rank": 16,
+              "source": "Winterfall Activity",
+              "dps_delta": -4.52
+            },
+            "rep": {
+              "item_id": 271945,
+              "rank": 3,
+              "source": "Theramore Expeditionary Force",
+              "dps_delta": 0,
+              "standing": "exalted"
+            },
+            "vendor": {
+              "item_id": 220897,
+              "rank": 7,
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            "world": {
+              "item_id": 14461,
+              "rank": 31,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -8.24
+            }
+          },
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
+        },
+        {
+          "slot": "waist",
+          "item_id": 19047,
+          "item_name": "Wisdom of the Timbermaw",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 44.921784779,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 272394,
+              "item_name": "Penitent's Cinch",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -3.415656737,
+              "verified": true
+            },
+            {
+              "item_id": 254077,
+              "item_name": "Earthenweave Cord",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -4.455569685
+            },
+            {
+              "item_id": 254081,
+              "item_name": "Gilded Waistcord",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -4.709939494
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 272394,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
+            },
+            {
+              "item_id": 254077,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            }
+          ],
+          "by_kind": {
+            "dungeon": {
+              "item_id": 16696,
+              "rank": 6,
+              "source": "Blackrock Spire: Blackhand Summoner",
+              "dps_delta": -7.05
+            },
+            "quest": {
+              "item_id": 15707,
+              "rank": 30,
+              "source": "A Final Blow",
+              "dps_delta": -13.46
+            },
+            "rep": {
+              "item_id": 19094,
+              "rank": 8,
+              "source": "Stormpike Guard",
+              "dps_delta": -9.08,
+              "standing": "honored"
+            },
+            "vendor": {
+              "item_id": 272394,
+              "rank": 2,
+              "source": "Pix Xizzix",
+              "dps_delta": -3.42
+            },
+            "world": {
+              "item_id": 16685,
+              "rank": 15,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -11.31
+            }
+          }
+        },
+        {
+          "slot": "legs",
+          "item_id": 16694,
+          "item_name": "Devout Skirt",
+          "source": "Stratholme: Baron Rivendare",
+          "source_kind": "dungeon",
+          "enchant_id": 1509,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 227125,
+              "item_name": "Knight-Captain's Satin Legguards",
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 231626,
+              "item_name": "Marshal's Satin Legguards",
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 254125,
+              "item_name": "Earthenweave Leggings",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -25.700514653,
+              "verified": true
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 227125,
+              "source_kind": "pvp",
+              "source": "PvP reward \u00b7 Alliance"
+            },
+            {
+              "item_id": 231626,
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance"
+            }
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 254125,
+              "rank": 1,
+              "source": "Tailoring",
+              "dps_delta": -25.7
+            },
+            "quest": {
+              "item_id": 11123,
+              "rank": 27,
+              "source": "Jammal'an the Prophet",
+              "dps_delta": -11.96
+            },
+            "rep": {
+              "item_id": 22752,
+              "rank": 5,
+              "source": "Silverwing Sentinels",
+              "dps_delta": -1.53,
+              "standing": "exalted"
+            },
+            "vendor": {
+              "item_id": 237815,
+              "rank": 3,
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -0.13
+            },
+            "world": {
+              "item_id": 13008,
+              "rank": 25,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -10.66
+            }
+          }
+        },
+        {
+          "slot": "feet",
+          "item_id": 16691,
+          "item_name": "Devout Sandals",
+          "source": "Stratholme: Maleki the Pallid",
+          "source_kind": "dungeon",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 231627,
+              "item_name": "Marshal's Satin Walkers",
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 275609,
+              "item_name": "Swarmtender's Footpads",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 22247,
+              "item_name": "Faith Healer's Boots",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": -16.126297446,
+              "verified": true
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 231627,
+              "source_kind": "vendor",
+              "source": "PvP reward \u00b7 Alliance"
+            },
+            {
+              "item_id": 275609,
+              "source_kind": "crafted",
+              "source": "Tailoring"
+            }
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 275609,
+              "rank": 1,
+              "source": "Tailoring",
+              "dps_delta": 0
+            },
+            "pvp": {
+              "item_id": 220895,
+              "rank": 11,
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": -1.12
+            },
+            "quest": {
+              "item_id": 10359,
+              "rank": 23,
+              "source": "Power Stones",
+              "dps_delta": -5.05
+            },
+            "rep": {
+              "item_id": 20054,
+              "rank": 24,
+              "source": "The League of Arathor",
+              "dps_delta": -5.31,
+              "standing": "revered"
+            },
+            "vendor": {
+              "item_id": 220895,
+              "rank": 11,
+              "source": "PvP reward \u00b7 Alliance",
+              "dps_delta": -1.12
+            },
+            "world": {
+              "item_id": 13101,
+              "rank": 8,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.82
+            }
+          },
+          "set_bonus": {
+            "set": "Vestments of the Devout",
+            "pieces": 5,
+            "bonus": "Your spellcasts have a 5% chance to energize you for 200 mana."
+          }
+        },
+        {
+          "slot": "finger1",
+          "item_id": 272407,
+          "item_name": "Blessed Band of Light",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 16058,
+              "item_name": "Fordring's Seal",
+              "source_kind": "quest",
+              "source": "In Dreams",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Urok Doomhowl",
+              "dps_delta": -0.48253356
+            },
+            {
+              "item_id": 13001,
+              "item_name": "Maiden's Circle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -4.543865246
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 16058,
+              "source_kind": "quest",
+              "source": "In Dreams"
+            },
+            {
+              "item_id": 13178,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Urok Doomhowl"
+            }
+          ],
+          "by_kind": {
+            "dungeon": {
+              "item_id": 22334,
+              "rank": 2,
+              "source": "Stratholme: Balnazzar",
+              "dps_delta": 0
+            },
+            "quest": {
+              "item_id": 16058,
+              "rank": 1,
+              "source": "In Dreams",
+              "dps_delta": 0
+            },
+            "rep": {
+              "item_id": 19522,
+              "rank": 7,
+              "source": "Silverwing Sentinels",
+              "dps_delta": -7.3,
+              "standing": "honored"
+            },
+            "world": {
+              "item_id": 13001,
+              "rank": 5,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -4.54
+            }
+          }
+        },
+        {
+          "slot": "finger2",
+          "item_id": 22334,
+          "item_name": "Band of Mending",
+          "source": "Stratholme: Balnazzar",
+          "source_kind": "dungeon",
+          "verified": true,
+          "swap_note": "confirmed by the sim against Blessed Band of Light (id 272407): kept the pick, +3.6 DPS over it",
+          "dps_delta": 3.5706575018133435,
+          "alternatives": [
+            {
+              "item_id": 16058,
+              "item_name": "Fordring's Seal",
+              "source_kind": "quest",
+              "source": "In Dreams",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 13178,
+              "item_name": "Rosewine Circle",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Urok Doomhowl",
+              "dps_delta": -1.35656874
+            },
+            {
+              "item_id": 13001,
+              "item_name": "Maiden's Circle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -5.417900427
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 16058,
+              "source_kind": "quest",
+              "source": "In Dreams"
+            },
+            {
+              "item_id": 13178,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Urok Doomhowl"
+            }
+          ],
+          "not_with": [22334],
+          "by_kind": {
+            "dungeon": {
+              "item_id": 13178,
+              "rank": 4,
+              "source": "Blackrock Spire: Urok Doomhowl",
+              "dps_delta": -1.36
+            },
+            "quest": {
+              "item_id": 16058,
+              "rank": 1,
+              "source": "In Dreams",
+              "dps_delta": 0,
+              "not_with": [16058],
+              "next": {
+                "item_id": 12543,
+                "rank": 6,
+                "source": "The Princess's Surprise",
+                "dps_delta": -6.04
+              }
+            },
+            "rep": {
+              "item_id": 19522,
+              "rank": 7,
+              "source": "Silverwing Sentinels",
+              "dps_delta": -8.18,
+              "standing": "honored",
+              "not_with": [19522],
+              "next": {
+                "item_id": 21563,
+                "rank": 46,
+                "source": "Stormpike Guard",
+                "dps_delta": -13.9,
+                "standing": "exalted"
+              }
+            },
+            "vendor": {
+              "item_id": 272407,
+              "rank": 3,
+              "source": "Pix Xizzix",
+              "dps_delta": -0.87,
+              "not_with": [272407],
+              "next": {
+                "item_id": 19522,
+                "rank": 7,
+                "source": "Illiyana Moonblaze",
+                "dps_delta": -8.18,
+                "standing": "honored",
+                "not_with": [19522]
+              }
+            },
+            "world": {
+              "item_id": 13001,
+              "rank": 5,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -5.42,
+              "not_with": [13001],
+              "next": {
+                "item_id": 19109,
+                "rank": 9,
+                "source": "Ivus the Forest Lord",
+                "dps_delta": -9.15
+              }
+            }
+          }
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "verified": true,
+          "effect_unmodelled": true,
+          "alternatives": [
+            {
+              "item_id": 272438,
+              "item_name": "Weakness Analyzer",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -8.335231425
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -8.398005449,
+              "verified": true
+            },
+            {
+              "item_id": 11302,
+              "item_name": "Uther's Strength",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -10.002277711
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
+            },
+            {
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
+            }
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 13503,
+              "rank": 12,
+              "source": "Alchemy",
+              "dps_delta": -16.26
+            },
+            "dungeon": {
+              "item_id": 11819,
+              "rank": 2,
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -8.4
+            },
+            "quest": {
+              "item_id": 10659,
+              "rank": 7,
+              "source": "Heroes of Old",
+              "dps_delta": -14.09
+            },
+            "rep": {
+              "item_id": 271903,
+              "rank": 9,
+              "source": "Theramore Expeditionary Force",
+              "dps_delta": -14.66,
+              "standing": "friendly"
+            },
+            "world": {
+              "item_id": 11302,
+              "rank": 4,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -10
+            }
+          }
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 249473,
+          "item_name": "Dormant Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "verified": true,
+          "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +10.6 DPS over it",
+          "dps_delta": 10.587092561984718,
+          "alternatives": [
+            {
+              "item_id": 11302,
+              "item_name": "Uther's Strength",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 11832,
+              "item_name": "Burst of Knowledge",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash",
+              "dps_delta": 0
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 11302,
+              "source_kind": "world_drop",
+              "source": "World drop"
+            },
+            {
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
+            }
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 13503,
+              "rank": 12,
+              "source": "Alchemy",
+              "dps_delta": 0,
+              "not_with": [13503]
+            },
+            "dungeon": {
+              "item_id": 11819,
+              "rank": 2,
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": 0,
+              "not_with": [11819],
+              "next": {
+                "item_id": 11832,
+                "rank": 5,
+                "source": "Blackrock Depths: Ambassador Flamelash",
+                "dps_delta": 0
+              }
+            },
+            "quest": {
+              "item_id": 10659,
+              "rank": 7,
+              "source": "Heroes of Old",
+              "dps_delta": 0,
+              "not_with": [10659],
+              "next": {
+                "item_id": 18951,
+                "rank": 8,
+                "source": "Look at the Size of It!",
+                "dps_delta": 0
+              }
+            },
+            "rep": {
+              "item_id": 271903,
+              "rank": 9,
+              "source": "Theramore Expeditionary Force",
+              "dps_delta": 0,
+              "standing": "friendly",
+              "not_with": [271903]
+            },
+            "vendor": {
+              "item_id": 272439,
+              "rank": 1,
+              "source": "Pix Xizzix",
+              "dps_delta": 0,
+              "not_with": [272439]
+            },
+            "world": {
+              "item_id": 11302,
+              "rank": 4,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "not_with": [11302],
+              "next": {
+                "item_id": 1713,
+                "rank": 6,
+                "source_kind": "world_drop",
+                "source": "World drop",
+                "dps_delta": 0
+              }
+            }
+          },
+          "ranking": [
+            {
+              "item_id": 272439,
+              "source_kind": "vendor",
+              "dps_delta": 6.66
+            },
+            {
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "dps_delta": -0.07
+            },
+            {
+              "item_id": 271903,
+              "source_kind": "rep",
+              "dps_delta": -2.12
+            },
+            {
+              "item_id": 11302,
+              "source_kind": "world_drop",
+              "dps_delta": -3.05
+            },
+            {
+              "item_id": 744,
+              "source_kind": "quest",
+              "dps_delta": -3.41
+            },
+            {
+              "item_id": 271905,
+              "source_kind": "rep",
+              "dps_delta": -3.45
+            },
+            {
+              "item_id": 18951,
+              "source_kind": "quest",
+              "dps_delta": -3.82
+            },
+            {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "dps_delta": -3.87
+            }
+          ]
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 812,
+          "item_name": "Glowing Brightwood Staff",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "enchant_id": 8212,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 17743,
+              "item_name": "Resurgence Rod",
+              "source_kind": "quest",
+              "source": "Corruption of Earth and Seed",
+              "dps_delta": -21.13496416,
+              "verified": true
+            },
+            {
+              "item_id": 249454,
+              "item_name": "Dreamstaff",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -21.840680912
+            },
+            {
+              "item_id": 23454,
+              "item_name": "Grand Marshal's Warhammer",
+              "source_kind": "vendor",
+              "source": "PvP rank 14 \u00b7 Grand Marshal \u00b7 Alliance",
+              "dps_delta": -25.139725139
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 17743,
+              "source_kind": "quest",
+              "source": "Corruption of Earth and Seed"
+            },
+            {
+              "item_id": 249454,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            }
+          ],
+          "two_hand": true,
+          "by_kind": {
+            "crafted": {
+              "item_id": 249454,
+              "rank": 3,
+              "source": "Enchanting",
+              "dps_delta": -21.84,
+              "two_hand": true
+            },
+            "dungeon": {
+              "item_id": 22406,
+              "rank": 6,
+              "source": "Stratholme: Cannon Master Willey",
+              "dps_delta": -40.28,
+              "two_hand": true
+            },
+            "quest": {
+              "item_id": 17743,
+              "rank": 2,
+              "source": "Corruption of Earth and Seed",
+              "dps_delta": -21.13,
+              "two_hand": true
+            },
+            "rep": {
+              "item_id": 20069,
+              "rank": 4,
+              "source": "The League of Arathor",
+              "dps_delta": -26.86,
+              "two_hand": true,
+              "standing": "exalted"
+            },
+            "vendor": {
+              "item_id": 20069,
+              "rank": 4,
+              "source": "Samuel Hawke",
+              "dps_delta": -26.86,
+              "two_hand": true,
+              "standing": "exalted"
+            }
+          }
+        },
+        {
+          "slot": "off_hand",
+          "verified": false,
+          "by_kind": {
+            "crafted": {
+              "item_id": 249456,
+              "rank": 5,
+              "source": "Enchanting"
+            },
+            "dungeon": {
+              "item_id": 11928,
+              "rank": 2,
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+            },
+            "quest": {
+              "item_id": 11904,
+              "rank": 7,
+              "source": "It's Dangerous to Go Alone"
+            },
+            "rep": {
+              "item_id": 19312,
+              "rank": 1,
+              "source": "Stormpike Guard",
+              "standing": "exalted"
+            },
+            "vendor": {
+              "item_id": 4837,
+              "rank": 41,
+              "source": "Kzixx"
+            },
+            "world": {
+              "item_id": 19312,
+              "rank": 1,
+              "source": "Grunnda Wolfheart"
+            }
+          },
+          "empty_reason": "two_hand_equipped"
+        },
+        {
+          "slot": "ranged",
+          "item_id": 279246,
+          "item_name": "Torch of Light",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "score": 25.230852621,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 249385,
+              "item_name": "Brilliant Wand",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -5.266668993
+            },
+            {
+              "item_id": 22408,
+              "item_name": "Ritssyn's Wand of Bad Mojo",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare",
+              "dps_delta": -5.930872499
+            },
+            {
+              "item_id": 13938,
+              "item_name": "Bonecreeper Stylus",
+              "source_kind": "dungeon",
+              "source": "Scholomance: Darkmaster Gandling",
+              "dps_delta": -7.12967238,
+              "verified": true
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 249385,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
+            {
+              "item_id": 22408,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare"
+            }
+          ],
+          "by_kind": {
+            "dungeon": {
+              "item_id": 13938,
+              "rank": 2,
+              "source": "Scholomance: Darkmaster Gandling",
+              "dps_delta": -7.13
+            },
+            "quest": {
+              "item_id": 16789,
+              "rank": 7,
+              "source": "Claim Rackmore's Treasure!",
+              "dps_delta": -7.08
+            },
+            "world": {
+              "item_id": 9381,
+              "rank": 6,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -6.76
+            }
+          }
+        }
+      ],
+      "set_dps": 867.2916734202473,
+      "set_dps_error": 0.5261640715183469,
+      "target_level": 63,
+      "filtered_set_dps": {
+        "all": {
+          "dps": 867,
+          "error": 0.5,
+          "changed_slots": 0
+        },
+        "dungeon": {
+          "dps": 798.1,
+          "error": 0.5,
+          "changed_slots": 10
+        }
+      },
+      "no_source_count": 1359,
+      "unconfirmed_within_error_held": 2,
+      "no_source_sample": [
+        "1189 Overseer's Ring",
+        "1216 Frost Bracers",
+        "2664 Spinner Fang",
+        "2944 Cursed Eye of Paleth",
+        "3222 Wicked Dagger",
+        "3738 Brewing Rod",
+        "4642 Star of Xil'yeh",
+        "4797 Fiery Cloak",
+        "4798 Heavy Runed Cloak",
+        "4799 Antiquated Cloak",
+        "4988 Burning Obsidian Band",
+        "4989 Mage Dragon Robe",
+        "4990 Scorched Bands",
+        "5000 Coral Band",
+        "5004 Mark of the Kirin Tor"
+      ],
+      "new_at_band": [
+        "head: Devout Crown",
+        "shoulder: Mooncloth Shoulders",
+        "back: Drape of Recovery",
+        "chest: Truefaith Vestments",
+        "wrist: Devout Bracers",
+        "hands: Devout Gloves",
+        "waist: Wisdom of the Timbermaw",
+        "legs: Devout Skirt",
+        "feet: Devout Sandals",
+        "finger1: Blessed Band of Light",
+        "finger2: Band of Mending",
+        "trinket1: Serenity Field",
+        "trinket2: Dormant Heart of the Mountain",
+        "ranged: Torch of Light"
+      ],
+      "weights_run_seconds": 17.616605301,
+      "verify_run_seconds": 487.063057166,
+      "coverage": {
+        "back": {
+          "eligible": 456,
+          "sourced": 325,
+          "rare_spawn_skipped": 21
+        },
+        "chest": {
+          "eligible": 339,
+          "sourced": 267,
+          "rare_spawn_skipped": 7
+        },
+        "feet": {
+          "eligible": 222,
+          "sourced": 168,
+          "rare_spawn_skipped": 4
+        },
+        "finger1": {
+          "eligible": 383,
+          "sourced": 145,
+          "rare_spawn_skipped": 6
+        },
+        "finger2": {
+          "eligible": 383,
+          "sourced": 145,
+          "rare_spawn_skipped": 6
+        },
+        "hands": {
+          "eligible": 232,
+          "sourced": 163,
+          "rare_spawn_skipped": 4
+        },
+        "head": {
+          "eligible": 202,
+          "sourced": 143,
+          "rare_spawn_skipped": 3
+        },
+        "legs": {
+          "eligible": 223,
+          "sourced": 158,
+          "rare_spawn_skipped": 5
+        },
+        "main_hand": {
+          "eligible": 567,
+          "sourced": 350,
+          "rare_spawn_skipped": 32
+        },
+        "neck": {
+          "eligible": 201,
+          "sourced": 76,
+          "rare_spawn_skipped": 5
+        },
+        "off_hand": {
+          "eligible": 155,
+          "sourced": 93,
+          "rare_spawn_skipped": 6
+        },
+        "ranged": {
+          "eligible": 108,
+          "sourced": 77,
+          "rare_spawn_skipped": 4
+        },
+        "shoulder": {
+          "eligible": 176,
+          "sourced": 128,
+          "rare_spawn_skipped": 2
+        },
+        "trinket1": {
+          "eligible": 160,
+          "sourced": 78
+        },
+        "trinket2": {
+          "eligible": 160,
+          "sourced": 78
+        },
+        "waist": {
+          "eligible": 202,
+          "sourced": 151,
+          "rare_spawn_skipped": 5
+        },
+        "wrist": {
+          "eligible": 167,
+          "sourced": 112,
+          "rare_spawn_skipped": 3
+        }
+      },
+      "reference_dps_per_point": 0.4167615712715447,
+      "score_unit": "reference_stat_points",
+      "scale_reference_stat": "intellect",
+      "haste_scale_factor": 0.3875884515369283,
+      "haste_on_items": false,
+      "role": "healer",
+      "profile": "phase1-scaled",
+      "metrics": {
+        "hps": 867.2916734202473,
+        "hps_error": 0.6487598141141164,
+        "hps_at_bounds": [
+          {
+            "scale": 1.85,
+            "hps": 865.5464305136376,
+            "hps_error": 0.6454030208846895
+          },
+          {
+            "scale": 2.3,
+            "hps": 867.2916734202473,
+            "hps_error": 0.6487598141141164
+          }
+        ],
+        "raw_hps": 923.6396700762967,
+        "overheal_pct": 0.061006470901574406,
+        "mana_lasts_sec": 120.36686090154849,
+        "hpm": 6.624749121114269
+      }
+    }
+  ],
+  "presets": {
+    "raid": {
+      "label": "Raid-ready, Phase 1",
+      "buffs": [
+        {
+          "id": "arcane_brilliance",
+          "label": "Arcane Intellect"
+        },
+        {
+          "id": "gift_of_the_wild",
+          "label": "Mark of the Wild"
+        },
+        {
+          "id": "power_word_fortitude",
+          "label": "Power Word: Fortitude"
+        },
+        {
+          "id": "divine_spirit",
+          "label": "Divine Spirit"
+        },
+        {
+          "id": "blessing_of_might",
+          "label": "Blessing of Might"
+        },
+        {
+          "id": "blessing_of_wisdom",
+          "label": "Blessing of Wisdom"
+        },
+        {
+          "id": "battle_shout",
+          "label": "Battle Shout"
+        },
+        {
+          "id": "trueshot_aura",
+          "label": "Trueshot Aura"
+        },
+        {
+          "id": "heart_of_the_lion",
+          "label": "Heart of the Lion"
+        },
+        {
+          "id": "leader_of_the_pack",
+          "label": "Leader of the Pack"
+        },
+        {
+          "id": "moonkin_aura",
+          "label": "Moonkin Aura"
+        },
+        {
+          "id": "strength_of_earth_totem",
+          "label": "Strength of Earth Totem"
+        },
+        {
+          "id": "windfury_totem",
+          "label": "Windfury Totem"
+        },
+        {
+          "id": "mana_spring_totem:improved",
+          "label": "Mana Spring Totem"
+        }
+      ],
+      "debuffs": [
+        {
+          "id": "curse_of_elements",
+          "label": "Curse of the Elements"
+        },
+        {
+          "id": "sunder_armor",
+          "label": "Sunder Armor"
+        },
+        {
+          "id": "faerie_fire",
+          "label": "Faerie Fire"
+        },
+        {
+          "id": "judgement_of_wisdom",
+          "label": "Judgement of Wisdom"
+        },
+        {
+          "id": "judgement_of_the_crusader",
+          "label": "Judgement of the Crusader"
+        },
+        {
+          "id": "judgement_of_light",
+          "label": "Judgement of Light"
+        },
+        {
+          "id": "hunters_mark",
+          "label": "Hunter's Mark"
+        },
+        {
+          "id": "curse_of_recklessness",
+          "label": "Curse of Recklessness"
+        }
+      ],
+      "consumes": [
+        {
+          "id": "gizzard_gum",
+          "label": "Gizzard Gum"
+        },
+        {
+          "id": "flask_of_distilled_wisdom",
+          "label": "Flask of Distilled Wisdom"
+        },
+        {
+          "id": "greater_mageblood_elixir",
+          "label": "Greater Mageblood Elixir"
+        },
+        {
+          "id": "greater_clerics_elixir",
+          "label": "Greater Cleric's Elixir"
+        },
+        {
+          "id": "elixir_of_sages",
+          "label": "Elixir of Sages"
+        },
+        {
+          "id": "cerebral_cortex_compound",
+          "label": "Cerebral Cortex Compound"
+        },
+        {
+          "id": "food_sages_tea",
+          "label": "Sage's Tea"
+        },
+        {
+          "id": "main_hand_imbue:brilliant_mana_oil",
+          "label": "Brilliant Mana Oil"
+        },
+        {
+          "id": "major_mana_potion",
+          "label": "Major Mana Potion"
+        },
+        {
+          "id": "conjured_demonic_rune",
+          "label": "Demonic Rune"
+        }
+      ],
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; only Mana Spring qualifies, through the Restoration shaman's Restorative Totems (watch forever-bugs #215, which asks for that talent's removal: if it goes, the preset goes back to the plain totem). Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries one potion: Mighty Rage Potion for the warrior and the bear, a mana potion and then Major Spellblasting Potion for the paladin. Each tank also carries the main-hand imbue that measured best for its threat: an Elemental Sharpening Stone for the warrior and the bear, Brilliant Wizard Oil for the paladin (round 10). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: Baked Salmon (28 spell damage) is the caster's and a paladin tank's food, Smoked Desert Dumplings (20 Strength) a strength user's and a warrior or bear tank's, and Poached Sunscale Salmon (40 attack power and ranged attack power) an agility user's (rounds 8 and 9, design/reviews/2026-11-02-sim-audit-round8/auras.md and design/reviews/2026-11-02-sim-audit-round9/auras.md). Where a slot lists two consumables the first one the character's level can use is carried, the spec's list before the class's before the group's, so a lower-level food follows the item it stands in for. Forever's 30-second potions share the two-minute potion category (4) with the mana and rage potions, so each spec carries the potion that measured best: Major Frenzy Potion for the rogues, the Survival hunter and Enhancement, Major Spellblasting Potion for Balance, Frost, Shadow and the paladin tank, the mana or rage potion for the rest (round 10). Their recipes are sold by the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens. Forever lets a druid drink any potion and Thistle Tea in a form without leaving it, and weapon enchantments and Windfury Totem work in a form (the druid deep dive, news.blizzard.com article 24301515), so the cat carries the melee group's stone, Major Frenzy Potion and Thistle Tea, and Windfury Totem reaches the cat and the bear. The Blasted Lands buffs share one hour-long category (103), so each spec carries one: R.O.I.D.S. for strength users and tanks, Ground Scorpok Assay for rogues, hunters and Feral, Cerebral Cortex Compound for the damage casters and the Holy paladin and Restoration shaman, Gizzard Gum for the druid and priest healers (round 9)."
+    }
+  },
+  "heal_profile": {
+    "id": "phase1-scaled",
+    "label": "Phase 1 tank hits and raid pulses, scaled so gear separates",
+    "summary": "One healer's share of a Phase 1 raid fight, scaled up until the strongest raid-ready healer covers about 80 percent of what comes in and the weakest about 60: a tank taking big melee hits, raid-wide damage in regular pulses, and four more raid members to look after, with the healer taking its share of the raid-wide damage.",
+    "notes": "A healing sim ranks gear under a stated incoming-damage profile. It never says one healer class beats another, and every healer number the site publishes names this profile. No client table states a creature's damage, so every figure below is a stated assumption, and this profile is a stand-in for Phase 1 that is NOT a named boss. It was first sized to an Onyxia-class boss, but at that size the raid-ready healers covered 80 to 97 percent of what came in, healing met the damage, and more healing power changed nothing, so gear tied. The retune rule (design/reviews/2026-10-08-heal-profile-retune.md) is: scale the tank hit size and the raid-wide pulse damage together, keeping their ratio and cadence, by the smallest multiplier at which the strongest raid-ready healer covers about 80 percent of the incoming damage, the weakest about 60, every bare set (no raid consumables) covers less than half, and mana is a live constraint (a bare set's mana runs out before the fight ends for every healer, and a raid set's for at least one). The multiplier chosen was 1.5 on 2026-10-08 and is 1.65 since 2026-11-01: client 1.60.1.70707 gave the Restoration druid Bloom and let heals over time crit (the client flags every trained heal over time PERIODIC_CAN_CRIT, and Blizzard's beta notes of 24 September say so for Rejuvenation), which took the druid to 91 percent at 1.5, and 1.65 is the smallest multiplier that brings every raid set back between about 60 and 85 percent (design/reviews/2026-11-01-sim-audit-round4/hybrids.md). It is 1.85 since 2026-11-02: round 7's engine fixes (Mana Spring stacking with Blessing of Wisdom, Healing Stream counted in the shaman's healing, Oath of Light, Water Shield on raid damage, casts pushed back by the pulses) took the Restoration shaman to 97 percent at 1.65, and 1.85 is the smallest multiplier that brings every raid set back between about 60 and 85 percent on the published gear (design/reviews/2026-11-02-sim-audit-round7/healers.md). It is 2.3 since 2026-11-04: round 13 made rank 1 Rejuvenation the Restoration druid's party heal, cast whenever someone is hurt, which took the druid's raid set to 95 percent and its bare set to 60 percent at 1.85; 2.3 is the smallest multiplier (in steps of 0.05) at which the strongest raid set covers about 80 percent (83) and every bare set less than half, on both factions' published gear. At 2.3 the weakest raid sets cover about 54 percent, under the rule's about 60: the druid's lead over the other healers is wider than the rule's 80-to-60 spread, so no multiplier meets every clause, and the strict clause (bare sets under half) decides (design/reviews/2026-11-04-sim-audit-round14/healers.md). The next retune (Phase 2 gear) follows the same rule. The figures are damage AFTER mitigation, because the fake raid has no armor or avoidance to roll. They are the share of the fight one healer is asked to cover, not the whole raid's incoming damage, and they stay the same for every spec and every gear set so the ranking compares gear and not fights. Every figure above is the level-60 band's. Below 60 each leveling band fights the same fight at its own level, with the damage its own content deals (bands, below): until 2026-11-03 every band fought the level-60 figures, so a level-20 healer covered a few percent of a raid fight and every rank choice below 60 was a healing-per-mana figure.",
+    "duration_sec": 300,
+    "damage_spread": 0.25,
+    "tuning": {
+      "scale": 2.3,
+      "bounds": [1.85, 2.3],
+      "base_tank_hit_damage": 1150,
+      "base_pulse_damage": 300,
+      "reason": "The tank hit and the raid pulse are the Onyxia-class figures first assumed (1,150 and 300) times one multiplier, set by the retune rule: 1.5 on 2026-10-08, 1.65 on 2026-11-01 once the client let heals over time crit, 1.85 on 2026-11-02 once the engine fixes of round 7 (Mana Spring stacking with Blessing of Wisdom, Healing Stream counted, Oath of Light, Water Shield on raid damage) took the strongest raid set to 97 percent, and 2.3 on 2026-11-04 once round 13's rank 1 Rejuvenation took the Restoration druid's raid set to 95 percent and its bare set to 60. The multiplier is a tuning, not a measured boss, so the two answers are its bounds: /tiers/healer orders two healers only when the order holds, and the gap is beyond the error, at both."
+    },
+    "tank": {
+      "health": 9500,
+      "hit_damage": 2645,
+      "swing_seconds": 3.3,
+      "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. The hit is a stand-in sized by the retune rule, not a boss's: 2.3 times the 1,150 an Onyxia-class boss was first assumed to land on a mitigated tank, which is the smallest scale at which the strongest raid-ready set covers about 80 percent of the incoming damage and every bare set less than half. With misses, dodges and parries averaged in one hit lands about every 3.3 seconds, about 800 damage a second; each hit rolls 25 percent either side."
+    },
+    "members": {
+      "health": 5000,
+      "reason": "A raid member that is not the tank has about 5,000 health: a plate or mail wearer sits above it and a cloth wearer below."
+    },
+    "pulse": {
+      "damage": 690,
+      "interval_seconds": 5,
+      "members": 3,
+      "reaches_healer": true,
+      "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the five members of the healer's group, the healer among them, take 690, about 414 damage a second spread over the group the healer stands in. The healer is one of the five because raid-wide damage does not skip the player casting the heals; until round 6 (design/reviews/2026-11-02-sim-audit-round6/healers.md) it landed only on the four others, so every group heal put a fifth of its healing on a healer who was never hurt. The total is unchanged: three members a pulse, now chosen from five. Scaled by the same 2.3 as the tank hit, so the tank-to-raid ratio and the cadence are what they were."
+    },
+    "bands": {
+      "rule": "Below 60 each band fights the same fight at its own level (owner ruling, sim-accuracy round 10): the same length, cadence, spread and members, with the damage its own content deals and the health a character of the band has. A band's content is the open dungeons whose last boss stands from the band's level to five levels above it, the dungeons a group of that level goes to; at 60 it is the open raid, because the level-60 profile is a raid fight. A last boss's damage a second is its melee plus its spells. Its melee is its creature_template hit, melee attack power over 14 plus the mean of its minimum and maximum melee damage times its damage multiplier, over its attack time (cmangos Creature::UpdateDamagePhysical), less the share of the fight it spends casting or channelling. Its spells are every damaging spell its AI casts while it is tanked (the spell list its template names, else its EventAI rows, else its script, at the melee-range timers; at 60, Onyxia's ground phase), each counted once a cast on one target: the cast's mean damage at the boss's level (cmangos spell_template, the 1.12 values: base points, dice and points per level; ticks of a periodic aura over its duration; a weapon-damage effect as one melee hit plus its bonus; triggered spells as they trigger) over the mean of its repeat timer. Heals, buffs, summons, crowd control without damage and one-off health-threshold casts are left out. A band's damage is the median of its last bosses' damage a second times the content's client damage modifier, and the band's incoming damage a second scales by that against the reference band's; how it splits between the tank hit and the raid pulse is the split rule's. The tank's and the members' health scale by the client's expected player health at the band's level against level 60's. The tuning scale multiplies every band alike, so a band keeps its place inside the tuning bounds. A level between two bands fights the band at or below it, the way rank choices run from one band to the next, and a level below 20 fights band 20. Each row states its derived figures, and loading refuses a row whose figures are not the rule's. Pulls (owner ruling, sim-accuracy round 11): a dungeon is mostly trash, and a hard trash pull often hits harder than the last boss. A band's trash is every creature its dungeons spawn that is hostile to players (client FactionTemplate) and can be fought, less its bosses (instance_encounters), vendors, critters and hidden triggers; a spawn with a random entry stands for its first listed one (creature_spawn_entry, else spawn_group_entry). It is cut into pulls the way the server pulls: a pulled creature calls every creature of its own faction within its assistance radius, and each of those calls the next (mangos-classic Creature::MarkCallAssistanceOnPull), and spawn groups that aggro together and aggro-linked creatures (creature_linking, creature_linking_template) come with them. The radius is the creature's own CallForHelp where creature_template states one, else bands.pull_rule's (10 yards, TrinityCore's CreatureFamilyAssistanceRadius: cmangos ships 5, which pulls most of the Deadmines one mob at a time). Line of sight is not checked. A pull's damage a second is the sum of its mobs', each counted the way a last boss is (melee less its casting share, plus its repeating in-combat spells from creature_spell_list or EventAI, once a cast on one target). Pulls are weighted by the mobs in them, because a run spends its time killing mobs, and the band fights the pull at bands.pull_rule's percentile (the 75th: a quarter of a run's mobs come in pulls at least this hard). The pull multiplier is that pull's damage a second over the median last boss's, never below 1, so a band fights the harder of the two; the band's damage is its median last boss's times the pull multiplier times the content's damage modifier. Split (owner ruling, sim-accuracy round 12): the tank's share of a band's incoming damage is taken from logs, not from spawns, because spawns assume every mob stays on the tank for the whole pull (the pulls' own figures put 96 to 99 percent of trash damage on the tank) and real groups do not play that way. It is the median, over the band's dungeons' logged trash fights on foreverlogs.gg (the beta), of the share of the damage the group's players take from creatures that lands on the group's tank; a band fights a trash pull, so trash fights are the ones counted. The group is the three to six players seen in the fight; the tank is the warrior, paladin or druid who takes the most creature melee over all of that group's fights in the report, so a fight where a loose mob, a pet or a caster took the hits still counts against the tank's share. Pets and player-on-player damage are left out, because the profile heals players. A band whose dungeons hold fewer than bands.split_rule's minimum of logged trash fights takes the median over every logged beta dungeon's trash fights (the beta stops at about level 30, so bands 40 and 50 do). The tank hit carries that share of the band's incoming damage a second at the profile's swing, and the pulse the rest at its cadence. Level 60 keeps the profile's own split (1,150 a 3.3-second hit against 300 to three members every 5 seconds, 0.659 on the tank) until public level-60 raid logs can be read. Each band row states the logged fights its share rests on, and loading refuses a share that is not their median. Each band row states its dungeons' pull counts, the pull it fights spawn by spawn, and that pull's mobs, and loading refuses a pull whose mobs do not sum to it or a multiplier that is not the rule's.",
+      "pull_rule": {
+        "assist_radius_yards": 10,
+        "percentile": 0.75
+      },
+      "split_rule": {
+        "min_fights": 30
+      },
+      "window_levels": 5,
+      "reference_level": 60,
+      "notes": "Client 1.60.1.70707 holds no creature's damage: CreatureDifficulty lists 184 creatures and none of these bosses, and ExpectedStat's creature columns are one generic curve with no line between a dungeon boss and a raid boss (scaling the level-60 raid fight down that curve left a level-20 healer covering about a tenth of the fight and dry inside 30 seconds, the very fault the ruling names). So the bosses' damage is creature_template's (cmangos classic-db, the commit data/pipeline/classic_quest_levels.py pins), their levels are creature_template's and Wowhead's Forever tooltips agree on every one, and the client supplies the rest: ExpectedStat (the Classic set, ExpansionID -2, row id = level) gives PlayerHealth; ContentTuningXExpected rows 3400 to 3428 give every Classic dungeon's content tuning (5237 to 5256, which LFGDungeons names) ExpectedStatMod 489, creature melee and spell damage times 1.2, while the raids' tuning (4509) has none, so the dungeon bands carry 1.2 and the raid 1.0. That modifier is one client table with no Blizzard post behind it. Shadowfang Keep (Archmage Arugal, 26), Blackfathom Deeps (Aku'mai, 28), the Stockade (Bazil Thredd, 29), Scarlet Monastery's Library (Arcanist Doan, 37), Uldaman (Archaedas, 47) and Zul'Farrak (Chief Ukorz Sandscalp, 48) fall between bands under the five-level window; Forever's new dungeons state no boss in either source and are left out. The client stores these bosses' spells only in a scaled form whose formula it does not state (Wowhead's tooltips print no amount for them), so the amounts are spell_template's. Each spell row names the AI source of its timer: cmangos classic-db creature_spell_list and creature_ai_scripts, and the mangos-classic ScriptDevAI scripts boss_herod.cpp, boss_mograine_and_whitemane.cpp, boss_thermaplugg.cpp and boss_onyxia.cpp at commit ff13624. The pulls come from cmangos classic-db's spawns (creature, creature_spawn_entry, spawn_group, spawn_group_spawn, spawn_group_entry, creature_linking, creature_linking_template) and its trash templates and AI (creature_template, creature_spell_list, creature_ai_scripts) at the same commit; client 1.60.1.70707's Creature and CreatureDifficulty hold 184 creatures and none of these dungeons' trash, so the client gives only FactionTemplate (which creatures are hostile). The Scarlet Monastery's four wings share one map and are told apart by position.",
+      "rows": [
+        {
+          "level": 20,
+          "content": [
+            {
+              "name": "The Deadmines",
+              "last_boss": "Edwin VanCleef",
+              "npc_id": 639,
+              "boss_level": 21,
+              "min_melee_dmg": 23,
+              "max_melee_dmg": 30,
+              "damage_multiplier": 2.45,
+              "melee_attack_power": 74,
+              "melee_base_attack_time_ms": 1500,
+              "spells": []
+            },
+            {
+              "name": "Wailing Caverns",
+              "last_boss": "Mutanus the Devourer",
+              "npc_id": 3654,
+              "boss_level": 22,
+              "min_melee_dmg": 32,
+              "max_melee_dmg": 42,
+              "damage_multiplier": 2.4,
+              "melee_attack_power": 78,
+              "melee_base_attack_time_ms": 2000,
+              "spells": [
+                {
+                  "spell_id": 8150,
+                  "name": "Thundercrack",
+                  "source": "creature_ai_scripts: Mutanus the Devourer - Cast Thundercrack",
+                  "damage_per_cast": 104,
+                  "derivation": "104 direct",
+                  "interval_seconds": 13,
+                  "cast_seconds": 0
+                }
+              ]
+            }
+          ],
+          "pulls": {
+            "trash_mobs": 418,
+            "trash_pulls": 279,
+            "mob_weighted_median_pull_size": 2,
+            "pull_size": 3,
+            "median_pull_damage_per_second": 37.3,
+            "pull_damage_per_second": 82.2,
+            "tank_share": 0.99,
+            "dungeons": [
+              {
+                "name": "The Deadmines",
+                "map_id": 36,
+                "trash_mobs": 184,
+                "trash_pulls": 138,
+                "mob_weighted_median_pull_size": 1
+              },
+              {
+                "name": "Wailing Caverns",
+                "map_id": 43,
+                "trash_mobs": 234,
+                "trash_pulls": 141,
+                "mob_weighted_median_pull_size": 2
+              }
+            ],
+            "pull": {
+              "dungeon": "Wailing Caverns",
+              "creature_guids": [4300133, 4300202, 4300203],
+              "mobs": [
+                {
+                  "npc_id": 3840,
+                  "name": "Druid of the Fang",
+                  "count": 1,
+                  "level": 19,
+                  "rank": 1,
+                  "min_melee_dmg": 26,
+                  "max_melee_dmg": 36,
+                  "damage_multiplier": 1.7,
+                  "melee_attack_power": 64,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 25.1,
+                  "group_damage_per_second": 0,
+                  "spells": [
+                    {
+                      "spell_id": 9532,
+                      "name": "Lightning Bolt",
+                      "damage_per_cast": 75,
+                      "interval_seconds": 3.1,
+                      "hits": "tank",
+                      "source": "creature_ai_scripts 384006"
+                    }
+                  ]
+                },
+                {
+                  "npc_id": 5055,
+                  "name": "Deviate Lasher",
+                  "count": 2,
+                  "level": 19,
+                  "rank": 0,
+                  "min_melee_dmg": 28,
+                  "max_melee_dmg": 39,
+                  "damage_multiplier": 1.15,
+                  "melee_attack_power": 70,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 28.5,
+                  "group_damage_per_second": 0,
+                  "spells": [
+                    {
+                      "spell_id": 7342,
+                      "name": "Wide Slash",
+                      "damage_per_cast": 57.5,
+                      "interval_seconds": 8.5,
+                      "hits": "tank",
+                      "source": "creature_ai_scripts 505501"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "pull_multiplier": 1.61,
+          "content_damage_mod": 1.2,
+          "player_health": 503,
+          "tank_health": 1836,
+          "member_health": 966,
+          "tank_share": 0.679,
+          "split": {
+            "content_fights": 218,
+            "pooled": false,
+            "fights": 218,
+            "dungeons": ["Deadmines", "Wailing Caverns"],
+            "median_tank_share": 0.679,
+            "q25": 0.443,
+            "q75": 0.892,
+            "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
+          },
+          "tank_hit_damage": 183,
+          "pulse_damage": 44
+        },
+        {
+          "level": 30,
+          "content": [
+            {
+              "name": "Razorfen Kraul",
+              "last_boss": "Charlga Razorflank",
+              "npc_id": 4421,
+              "boss_level": 33,
+              "min_melee_dmg": 43,
+              "max_melee_dmg": 57,
+              "damage_multiplier": 1.7,
+              "melee_attack_power": 104,
+              "melee_base_attack_time_ms": 2000,
+              "spells": [
+                {
+                  "spell_id": 8292,
+                  "name": "Chain Bolt",
+                  "source": "creature_ai_scripts: Charlga Razorflank - Cast Chain Bolt",
+                  "damage_per_cast": 161.7,
+                  "derivation": "162 direct",
+                  "interval_seconds": 3.5,
+                  "cast_seconds": 2.5
+                }
+              ]
+            },
+            {
+              "name": "Gnomeregan",
+              "last_boss": "Mekgineer Thermaplugg",
+              "npc_id": 7800,
+              "boss_level": 34,
+              "min_melee_dmg": 47.3,
+              "max_melee_dmg": 62.8,
+              "damage_multiplier": 2.4,
+              "melee_attack_power": 114,
+              "melee_base_attack_time_ms": 2000,
+              "spells": [
+                {
+                  "spell_id": 10101,
+                  "name": "Knock Away",
+                  "source": "boss_thermaplugg.cpp: SPELL_KNOCK_AWAY, urand(17000, 20000)",
+                  "damage_per_cast": 170.3,
+                  "derivation": "weapon hit 140 + 30",
+                  "interval_seconds": 18.5,
+                  "cast_seconds": 0
+                }
+              ]
+            },
+            {
+              "name": "Scarlet Monastery Graveyard",
+              "last_boss": "Bloodmage Thalnos",
+              "npc_id": 4543,
+              "boss_level": 34,
+              "min_melee_dmg": 44,
+              "max_melee_dmg": 58,
+              "damage_multiplier": 1.7,
+              "melee_attack_power": 106,
+              "melee_base_attack_time_ms": 2000,
+              "spells": [
+                {
+                  "spell_id": 8814,
+                  "name": "Flame Spike",
+                  "source": "creature_spell_list 454301: Bloodmage Thalnos - Flame Spike",
+                  "damage_per_cast": 214,
+                  "derivation": "214 direct",
+                  "interval_seconds": 12,
+                  "cast_seconds": 3
+                },
+                {
+                  "spell_id": 12470,
+                  "name": "Fire Nova",
+                  "source": "creature_spell_list 454301: Bloodmage Thalnos - Fire Nova",
+                  "damage_per_cast": 159,
+                  "derivation": "159 direct",
+                  "interval_seconds": 10.5,
+                  "cast_seconds": 0
+                },
+                {
+                  "spell_id": 8053,
+                  "name": "Flame Shock",
+                  "source": "creature_spell_list 454301: Bloodmage Thalnos - Flame Shock",
+                  "damage_per_cast": 190.5,
+                  "derivation": "94 direct; 4 ticks x 24",
+                  "interval_seconds": 38,
+                  "cast_seconds": 0
+                }
+              ]
+            }
+          ],
+          "pulls": {
+            "trash_mobs": 643,
+            "trash_pulls": 342,
+            "mob_weighted_median_pull_size": 2,
+            "pull_size": 5,
+            "median_pull_damage_per_second": 92.6,
+            "pull_damage_per_second": 151.2,
+            "tank_share": 0.985,
+            "dungeons": [
+              {
+                "name": "Razorfen Kraul",
+                "map_id": 47,
+                "trash_mobs": 179,
+                "trash_pulls": 136,
+                "mob_weighted_median_pull_size": 1
+              },
+              {
+                "name": "Gnomeregan",
+                "map_id": 90,
+                "trash_mobs": 380,
+                "trash_pulls": 168,
+                "mob_weighted_median_pull_size": 3
+              },
+              {
+                "name": "Scarlet Monastery Graveyard",
+                "map_id": 189,
+                "trash_mobs": 84,
+                "trash_pulls": 38,
+                "mob_weighted_median_pull_size": 3
+              }
+            ],
+            "pull": {
+              "dungeon": "Gnomeregan",
+              "creature_guids": [9000201, 9000302, 9000303, 9000304, 9000305],
+              "mobs": [
+                {
+                  "npc_id": 6233,
+                  "name": "Mechanized Sentry",
+                  "count": 1,
+                  "level": 28,
+                  "rank": 1,
+                  "min_melee_dmg": 39.3,
+                  "max_melee_dmg": 54.3,
+                  "damage_multiplier": 1.7,
+                  "melee_attack_power": 100,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 43.4,
+                  "group_damage_per_second": 0,
+                  "spells": []
+                },
+                {
+                  "npc_id": 7603,
+                  "name": "Leprous Assistant",
+                  "count": 4,
+                  "level": 28,
+                  "rank": 0,
+                  "min_melee_dmg": 39.3,
+                  "max_melee_dmg": 54.3,
+                  "damage_multiplier": 1,
+                  "melee_attack_power": 100,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 27,
+                  "group_damage_per_second": 0,
+                  "spells": []
+                }
+              ]
+            }
+          },
+          "pull_multiplier": 2.06,
+          "content_damage_mod": 1.2,
+          "player_health": 878,
+          "tank_health": 3204,
+          "member_health": 1687,
+          "tank_share": 0.687,
+          "split": {
+            "content_fights": 182,
+            "pooled": false,
+            "fights": 182,
+            "dungeons": ["Gnomeregan", "Razorfen Kraul", "SM Graveyard"],
+            "median_tank_share": 0.6873,
+            "q25": 0.4989,
+            "q75": 0.8863,
+            "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
+          },
+          "tank_hit_damage": 341,
+          "pulse_damage": 78
+        },
+        {
+          "level": 40,
+          "content": [
+            {
+              "name": "Scarlet Monastery Armory",
+              "last_boss": "Herod",
+              "npc_id": 3975,
+              "boss_level": 40,
+              "min_melee_dmg": 70,
+              "max_melee_dmg": 93,
+              "damage_multiplier": 3.3,
+              "melee_attack_power": 136,
+              "melee_base_attack_time_ms": 2500,
+              "spells": [
+                {
+                  "spell_id": 15496,
+                  "name": "Cleave",
+                  "source": "boss_herod.cpp: SPELL_CLEAVE, urand(7500, 17500)",
+                  "damage_per_cast": 318.7,
+                  "derivation": "weapon hit 279 + 40",
+                  "interval_seconds": 12.5,
+                  "cast_seconds": 0
+                },
+                {
+                  "spell_id": 8989,
+                  "name": "Whirlwind",
+                  "source": "boss_herod.cpp: SPELL_WHIRLWIND, urand(15000, 25000)",
+                  "damage_per_cast": 2283.3,
+                  "derivation": "5 x triggered 15578 (weapon hit 279 + 178)",
+                  "interval_seconds": 20,
+                  "cast_seconds": 10
+                }
+              ]
+            },
+            {
+              "name": "Razorfen Downs",
+              "last_boss": "Amnennar the Coldbringer",
+              "npc_id": 7358,
+              "boss_level": 41,
+              "min_melee_dmg": 55,
+              "max_melee_dmg": 72,
+              "damage_multiplier": 4,
+              "melee_attack_power": 132,
+              "melee_base_attack_time_ms": 2000,
+              "spells": [
+                {
+                  "spell_id": 15531,
+                  "name": "Frost Nova",
+                  "source": "creature_ai_scripts: Amnennar the Coldbringer - Cast Frost Nova",
+                  "damage_per_cast": 120,
+                  "derivation": "120 direct",
+                  "interval_seconds": 15,
+                  "cast_seconds": 0
+                },
+                {
+                  "spell_id": 13009,
+                  "name": "Amnennar's Wrath",
+                  "source": "creature_ai_scripts: Amnennar the Coldbringer - Cast Amnennar's Wrath",
+                  "damage_per_cast": 0,
+                  "derivation": "",
+                  "interval_seconds": 12,
+                  "cast_seconds": 0
+                },
+                {
+                  "spell_id": 15530,
+                  "name": "Frostbolt",
+                  "source": "creature_ai_scripts: Amnennar the Coldbringer - Cast Frostbolt",
+                  "damage_per_cast": 196,
+                  "derivation": "196 direct",
+                  "interval_seconds": 3.9,
+                  "cast_seconds": 3
+                }
+              ]
+            },
+            {
+              "name": "Scarlet Monastery Cathedral",
+              "last_boss": "High Inquisitor Whitemane",
+              "npc_id": 3977,
+              "boss_level": 42,
+              "min_melee_dmg": 58,
+              "max_melee_dmg": 77,
+              "damage_multiplier": 2,
+              "melee_attack_power": 142,
+              "melee_base_attack_time_ms": 2000,
+              "spells": [
+                {
+                  "spell_id": 9481,
+                  "name": "Holy Smite",
+                  "source": "boss_mograine_and_whitemane.cpp: WHITEMANE_ACTION_HOLY_SMITE, melee mode urand(3500, 8000)",
+                  "damage_per_cast": 150,
+                  "derivation": "150 direct",
+                  "interval_seconds": 5.75,
+                  "cast_seconds": 2.5
+                }
+              ]
+            }
+          ],
+          "pulls": {
+            "trash_mobs": 357,
+            "trash_pulls": 137,
+            "mob_weighted_median_pull_size": 3,
+            "pull_size": 6,
+            "median_pull_damage_per_second": 189.7,
+            "pull_damage_per_second": 270.1,
+            "tank_share": 0.958,
+            "dungeons": [
+              {
+                "name": "Scarlet Monastery Armory",
+                "map_id": 189,
+                "trash_mobs": 66,
+                "trash_pulls": 29,
+                "mob_weighted_median_pull_size": 3
+              },
+              {
+                "name": "Razorfen Downs",
+                "map_id": 129,
+                "trash_mobs": 197,
+                "trash_pulls": 52,
+                "mob_weighted_median_pull_size": 4
+              },
+              {
+                "name": "Scarlet Monastery Cathedral",
+                "map_id": 189,
+                "trash_mobs": 94,
+                "trash_pulls": 56,
+                "mob_weighted_median_pull_size": 2
+              }
+            ],
+            "pull": {
+              "dungeon": "Razorfen Downs",
+              "creature_guids": [1290160, 1290165, 1290166, 1290167, 1290231, 1290244],
+              "mobs": [
+                {
+                  "npc_id": 7343,
+                  "name": "Splinterbone Skeleton",
+                  "count": 1,
+                  "level": 35,
+                  "rank": 0,
+                  "min_melee_dmg": 49,
+                  "max_melee_dmg": 60,
+                  "damage_multiplier": 1,
+                  "melee_attack_power": 25,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 28.1,
+                  "group_damage_per_second": 0,
+                  "spells": []
+                },
+                {
+                  "npc_id": 7344,
+                  "name": "Splinterbone Warrior",
+                  "count": 3,
+                  "level": 37,
+                  "rank": 0,
+                  "min_melee_dmg": 73,
+                  "max_melee_dmg": 92,
+                  "damage_multiplier": 1,
+                  "melee_attack_power": 38,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 42.6,
+                  "group_damage_per_second": 0,
+                  "spells": []
+                },
+                {
+                  "npc_id": 7348,
+                  "name": "Thorn Eater Ghoul",
+                  "count": 1,
+                  "level": 37,
+                  "rank": 1,
+                  "min_melee_dmg": 51,
+                  "max_melee_dmg": 70,
+                  "damage_multiplier": 1.8,
+                  "melee_attack_power": 128,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 59,
+                  "group_damage_per_second": 0,
+                  "spells": []
+                },
+                {
+                  "npc_id": 7352,
+                  "name": "Frozen Soul",
+                  "count": 1,
+                  "level": 37,
+                  "rank": 1,
+                  "min_melee_dmg": 48,
+                  "max_melee_dmg": 65,
+                  "damage_multiplier": 1.8,
+                  "melee_attack_power": 120,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 55.1,
+                  "group_damage_per_second": 0,
+                  "spells": []
+                }
+              ]
+            }
+          },
+          "pull_multiplier": 3.05,
+          "content_damage_mod": 1.2,
+          "player_health": 1353,
+          "tank_health": 4938,
+          "member_health": 2599,
+          "tank_share": 0.677,
+          "split": {
+            "content_fights": 6,
+            "pooled": true,
+            "fights": 990,
+            "dungeons": [
+              "Blackfathom Deeps",
+              "Deadmines",
+              "Excavation Site: Wetlands (Forever)",
+              "Gnomeregan",
+              "Ragefire Chasm",
+              "Razorfen Kraul",
+              "Ruins of Lordaeron (Forever)",
+              "SM Armory",
+              "SM Graveyard",
+              "Shadowfang Keep",
+              "The Stockade",
+              "Wailing Caverns",
+              "arcane wing (Forever)"
+            ],
+            "median_tank_share": 0.677,
+            "q25": 0.4286,
+            "q75": 0.8751,
+            "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
+          },
+          "tank_hit_damage": 600,
+          "pulse_damage": 144
+        },
+        {
+          "level": 50,
+          "content": [
+            {
+              "name": "Maraudon",
+              "last_boss": "Princess Theradras",
+              "npc_id": 12201,
+              "boss_level": 51,
+              "min_melee_dmg": 344,
+              "max_melee_dmg": 444,
+              "damage_multiplier": 1,
+              "melee_attack_power": 182,
+              "melee_base_attack_time_ms": 2000,
+              "spells": [
+                {
+                  "spell_id": 21909,
+                  "name": "Dust Field",
+                  "source": "creature_ai_scripts: Princess Theradras - Cast Dust Field",
+                  "damage_per_cast": 1200,
+                  "derivation": "8 x triggered 21868 (150 direct)",
+                  "interval_seconds": 22.5,
+                  "cast_seconds": 0
+                },
+                {
+                  "spell_id": 21832,
+                  "name": "Boulder",
+                  "source": "creature_ai_scripts: Princess Theradras - Cast Boulder",
+                  "damage_per_cast": 450,
+                  "derivation": "450 direct",
+                  "interval_seconds": 9,
+                  "cast_seconds": 2
+                }
+              ]
+            },
+            {
+              "name": "Sunken Temple",
+              "last_boss": "Shade of Eranikus",
+              "npc_id": 5709,
+              "boss_level": 55,
+              "min_melee_dmg": 316,
+              "max_melee_dmg": 408,
+              "damage_multiplier": 1,
+              "melee_attack_power": 167,
+              "melee_base_attack_time_ms": 1208,
+              "spells": [
+                {
+                  "spell_id": 11876,
+                  "name": "War Stomp",
+                  "source": "creature_ai_scripts: Shade of Eranikus - Cast War Stomp",
+                  "damage_per_cast": 401.9,
+                  "derivation": "weapon hit 374 + 28",
+                  "interval_seconds": 20,
+                  "cast_seconds": 0
+                },
+                {
+                  "spell_id": 12891,
+                  "name": "Acid Breath",
+                  "source": "creature_ai_scripts: Shade of Eranikus - Cast Acid Breath",
+                  "damage_per_cast": 932.5,
+                  "derivation": "9 ticks x 42; 550 direct",
+                  "interval_seconds": 25,
+                  "cast_seconds": 0
+                }
+              ]
+            }
+          ],
+          "pulls": {
+            "trash_mobs": 685,
+            "trash_pulls": 281,
+            "mob_weighted_median_pull_size": 4,
+            "pull_size": 6,
+            "median_pull_damage_per_second": 382.3,
+            "pull_damage_per_second": 580.6,
+            "tank_share": 0.958,
+            "dungeons": [
+              {
+                "name": "Maraudon",
+                "map_id": 349,
+                "trash_mobs": 499,
+                "trash_pulls": 201,
+                "mob_weighted_median_pull_size": 4
+              },
+              {
+                "name": "Sunken Temple",
+                "map_id": 109,
+                "trash_mobs": 186,
+                "trash_pulls": 80,
+                "mob_weighted_median_pull_size": 3
+              }
+            ],
+            "pull": {
+              "dungeon": "Maraudon",
+              "creature_guids": [3490164, 3490165, 3490247, 3490276, 3490277, 3490278],
+              "mobs": [
+                {
+                  "npc_id": 11791,
+                  "name": "Putridus Trickster",
+                  "count": 2,
+                  "level": 44,
+                  "rank": 1,
+                  "min_melee_dmg": 269,
+                  "max_melee_dmg": 346,
+                  "damage_multiplier": 1,
+                  "melee_attack_power": 142,
+                  "melee_base_attack_time_ms": 1500,
+                  "tank_damage_per_second": 211.8,
+                  "group_damage_per_second": 0,
+                  "spells": []
+                },
+                {
+                  "npc_id": 12216,
+                  "name": "Poison Sprite",
+                  "count": 1,
+                  "level": 42,
+                  "rank": 0,
+                  "min_melee_dmg": 64,
+                  "max_melee_dmg": 79,
+                  "damage_multiplier": 1,
+                  "melee_attack_power": 33,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 31.5,
+                  "group_damage_per_second": 0,
+                  "spells": [
+                    {
+                      "spell_id": 21067,
+                      "name": "Poison Bolt",
+                      "damage_per_cast": 70,
+                      "interval_seconds": 4.1,
+                      "hits": "tank",
+                      "source": "creature_ai_scripts 1221603"
+                    }
+                  ]
+                },
+                {
+                  "npc_id": 12217,
+                  "name": "Corruptor",
+                  "count": 3,
+                  "level": 42,
+                  "rank": 0,
+                  "min_melee_dmg": 64,
+                  "max_melee_dmg": 79,
+                  "damage_multiplier": 1,
+                  "melee_attack_power": 33,
+                  "melee_base_attack_time_ms": 2000,
+                  "tank_damage_per_second": 32.7,
+                  "group_damage_per_second": 9.1,
+                  "spells": [
+                    {
+                      "spell_id": 21068,
+                      "name": "Corruption",
+                      "damage_per_cast": 160,
+                      "interval_seconds": 17.5,
+                      "hits": "group",
+                      "source": "creature_ai_scripts 1221702"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "pull_multiplier": 1.85,
+          "content_damage_mod": 1.2,
+          "player_health": 1928,
+          "tank_health": 7036,
+          "member_health": 3703,
+          "tank_share": 0.677,
+          "split": {
+            "content_fights": 0,
+            "pooled": true,
+            "fights": 990,
+            "dungeons": [
+              "Blackfathom Deeps",
+              "Deadmines",
+              "Excavation Site: Wetlands (Forever)",
+              "Gnomeregan",
+              "Ragefire Chasm",
+              "Razorfen Kraul",
+              "Ruins of Lordaeron (Forever)",
+              "SM Armory",
+              "SM Graveyard",
+              "Shadowfang Keep",
+              "The Stockade",
+              "Wailing Caverns",
+              "arcane wing (Forever)"
+            ],
+            "median_tank_share": 0.677,
+            "q25": 0.4286,
+            "q75": 0.8751,
+            "source": "foreverlogs.gg beta reports (the 119 public reports cached 2026-10-31; damage timelines fetched 2026-11-03 with reports/{id}/encounters/{id}/timeline?event_types=damage): a seeded sample of up to 12 trash fights of 10 s or more a report; tools in design/reviews/2026-11-03-sim-audit-round12/healprofile/"
+          },
+          "tank_hit_damage": 1289,
+          "pulse_damage": 311
+        },
+        {
+          "level": 60,
+          "content": [
+            {
+              "name": "Onyxia's Lair",
+              "last_boss": "Onyxia",
+              "npc_id": 10184,
+              "boss_level": 63,
+              "min_melee_dmg": 109.8,
+              "max_melee_dmg": 145.6,
+              "damage_multiplier": 15,
+              "melee_attack_power": 268,
+              "melee_base_attack_time_ms": 2000,
+              "spells": [
+                {
+                  "spell_id": 18435,
+                  "name": "Flame Breath",
+                  "source": "boss_onyxia.cpp: SPELL_FLAMEBREATH, urand(10000, 20000)",
+                  "damage_per_cast": 3500,
+                  "derivation": "3500 direct",
+                  "interval_seconds": 15,
+                  "cast_seconds": 2
+                },
+                {
+                  "spell_id": 19983,
+                  "name": "Cleave",
+                  "source": "boss_onyxia.cpp: SPELL_CLEAVE, urand(5000, 10000)",
+                  "damage_per_cast": 2249.6,
+                  "derivation": "weapon hit 1935 + 315",
+                  "interval_seconds": 7.5,
+                  "cast_seconds": 0
+                },
+                {
+                  "spell_id": 15847,
+                  "name": "Tail Sweep",
+                  "source": "boss_onyxia.cpp: SPELL_TAILSWEEP, urand(15000, 20000)",
+                  "damage_per_cast": 800,
+                  "derivation": "800 direct",
+                  "interval_seconds": 17.5,
+                  "cast_seconds": 0
+                },
+                {
+                  "spell_id": 18500,
+                  "name": "Wing Buffet",
+                  "source": "boss_onyxia.cpp: SPELL_WINGBUFFET, urand(15000, 30000)",
+                  "damage_per_cast": 750,
+                  "derivation": "750 direct",
+                  "interval_seconds": 22.5,
+                  "cast_seconds": 1
+                },
+                {
+                  "spell_id": 19633,
+                  "name": "Knock Away",
+                  "source": "boss_onyxia.cpp: SPELL_KNOCK_AWAY, urand(25000, 40000)",
+                  "damage_per_cast": 1964.6,
+                  "derivation": "weapon hit 1935 + 30",
+                  "interval_seconds": 32.5,
+                  "cast_seconds": 0
+                }
+              ]
+            }
+          ],
+          "pull_multiplier": 1,
+          "content_damage_mod": 1,
+          "player_health": 2603,
+          "tank_health": 9500,
+          "member_health": 5000,
+          "tank_share": 0.659,
+          "tank_hit_damage": 2645,
+          "pulse_damage": 690
+        }
+      ],
+      "sources": [
+        {
+          "label": "cmangos classic-db creature_template (commit ec4f596146be6467ea93c57397858e329e2db852): the last bosses' levels and melee damage",
+          "url": "https://github.com/cmangos/classic-db/blob/ec4f596146be6467ea93c57397858e329e2db852/Full_DB/ClassicDB_1_12_1_z2815.sql.gz",
+          "kind": "site"
+        },
+        {
+          "label": "cmangos classic-db spell_template, creature_spell_list and creature_ai_scripts (commit ec4f596146be6467ea93c57397858e329e2db852): the bosses' spell amounts and timers",
+          "url": "https://github.com/cmangos/classic-db/blob/ec4f596146be6467ea93c57397858e329e2db852/Full_DB/ClassicDB_1_12_1_z2815.sql.gz",
+          "kind": "site"
+        },
+        {
+          "label": "cmangos mangos-classic, Creature::UpdateDamagePhysical: a creature's hit from its template",
+          "url": "https://github.com/cmangos/mangos-classic/blob/master/src/game/Entities/StatSystem.cpp",
+          "kind": "site"
+        },
+        {
+          "label": "cmangos mangos-classic ScriptDevAI boss scripts (commit ff13624): Herod, Whitemane, Thermaplugg and Onyxia's spell timers",
+          "url": "https://github.com/cmangos/mangos-classic/tree/ff13624a4be74816796bc0f8555f03011438144e/src/game/AI/ScriptDevAI/scripts",
+          "kind": "site"
+        },
+        {
+          "label": "Wowhead Forever NPC tooltips (checked 2026-11-02): every last boss's level agrees with creature_template; Onyxia is a skull (63)",
+          "url": "https://nether.wowhead.com/forever/tooltip/npc/639",
+          "kind": "site"
+        },
+        {
+          "label": "wago.tools, ExpectedStat, client 1.60.1.70707 (PlayerHealth)",
+          "url": "https://wago.tools/db2/ExpectedStat/csv?build=1.60.1.70707",
+          "kind": "site"
+        },
+        {
+          "label": "wago.tools, ContentTuningXExpected and ExpectedStatMod row 489, client 1.60.1.70707",
+          "url": "https://wago.tools/db2/ContentTuningXExpected/csv?build=1.60.1.70707",
+          "kind": "site"
+        },
+        {
+          "label": "wago.tools, LFGDungeons, client 1.60.1.70707 (each dungeon's content tuning)",
+          "url": "https://wago.tools/db2/LFGDungeons/csv?build=1.60.1.70707",
+          "kind": "site"
+        },
+        {
+          "label": "wago.tools, SpellCastTimes and SpellDuration, client 1.60.1.70707 (cast and channel times)",
+          "url": "https://wago.tools/db2/SpellCastTimes/csv?build=1.60.1.70707",
+          "kind": "site"
+        },
+        {
+          "label": "cmangos classic-db creature, creature_spawn_entry, spawn_group, spawn_group_spawn, spawn_group_entry, creature_linking and creature_linking_template (commit ec4f596146be6467ea93c57397858e329e2db852): the trash spawns and the packs that aggro together",
+          "url": "https://github.com/cmangos/classic-db/blob/ec4f596146be6467ea93c57397858e329e2db852/Full_DB/ClassicDB_1_12_1_z2815.sql.gz",
+          "kind": "site"
+        },
+        {
+          "label": "cmangos mangos-classic, Creature::MarkCallAssistanceOnPull and CanAssistTo (commit ff13624): a pulled creature calls its own faction within its CallForHelp radius",
+          "url": "https://github.com/cmangos/mangos-classic/blob/ff13624a4be74816796bc0f8555f03011438144e/src/game/Entities/Creature.cpp",
+          "kind": "site"
+        },
+        {
+          "label": "TrinityCore worldserver.conf.dist, CreatureFamilyAssistanceRadius = 10 (cmangos mangosd.conf.dist ships 5)",
+          "url": "https://github.com/TrinityCore/TrinityCore/blob/3.3.5/src/server/worldserver/worldserver.conf.dist",
+          "kind": "site"
+        },
+        {
+          "label": "wago.tools, FactionTemplate, client 1.60.1.70707 (which creatures are hostile to players)",
+          "url": "https://wago.tools/db2/FactionTemplate/csv?build=1.60.1.70707",
+          "kind": "site"
+        }
+      ]
+    },
+    "sources": [
+      {
+        "label": "Blizzard, World of Warcraft Forever Deep Dive panel recap: first raid tier opens 9 December",
+        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+        "kind": "blizzard"
+      },
+      {
+        "label": "This site, data/curated/loot/forever-raid-phases.json: Barrow Deeps, Hyjal Summit and Onyxia open on 9 December",
+        "url": "https://foreversixty.gg/data/1.60.1.70009/loot.json",
+        "kind": "site"
+      }
+    ]
+  },
+  "run": {
+    "target_type": "unknown",
+    "target_level_offset": 3,
+    "duration_sec": 180,
+    "variation": 0.2,
+    "targets": 1,
+    "execute_ratio": 0.25,
+    "iterations": {
+      "set": 3003,
+      "verify": 300,
+      "guard": 300,
+      "trinket_rank": 100,
+      "weights_per_direction": 1600
+    },
+    "heal_iteration_scale": 7,
+    "seed": 7
+  }
+}

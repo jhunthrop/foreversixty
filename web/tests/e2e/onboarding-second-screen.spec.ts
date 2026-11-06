@@ -7,15 +7,8 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import {
-  CHARACTER,
-  CHARACTER_PATH,
-  CHARACTER_URL,
-  GEAR,
-  GEAR_ITEMS,
-  routeCharacterSearch,
-  routeGearIcons,
-} from './support/character-fixture';
+import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from './support/character-fixture';
+import { expectFixtureNotFound } from './support/character-not-found';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
@@ -189,7 +182,7 @@ for (const size of SIZES) {
       await page.screenshot({ path: join(SHOTS, `w9-logs-${size.name}.png`), fullPage: true });
     });
 
-    test('a real character with no logs: no typo hint, the gear card above, class and race tidy', async ({
+    test('a real character with no logs, seen by a visitor: the not-found page, class and race tidy', async ({
       page,
     }) => {
       await signedOut(page);
@@ -209,13 +202,11 @@ for (const size of SIZES) {
           body: JSON.stringify({ ...CHARACTER, data }),
         }),
       );
+      await routeCharacterSearch(page);
       await page.goto(CHARACTER_PATH);
       await settle(page);
-      // P.1: a visitor to a character with nothing on it gets one sentence and the lookup box.
-      await expect(page.getByTestId('character-not-found-line')).toHaveText(
-        'Elyra Duskvale is here, with no gear, talents or logs yet.',
-      );
-      await expect(page.getByText('Check the name and ruleset')).toHaveCount(0);
+      // C10: a visitor to a character with nothing on it gets the not-found page.
+      await expectFixtureNotFound(page, { signedIn: false });
       await expect(page.getByText('(Player)')).toHaveCount(0);
       await page.screenshot({ path: join(SHOTS, `w9-character-no-logs-${size.name}.png`), fullPage: true });
     });
@@ -242,34 +233,6 @@ test.describe('the sample report on a phone', () => {
   });
 });
 
-test.describe('a character with gear and no score', () => {
-  test.use({ viewport: { width: 1280, height: 900 } });
-  test('leads with the gear card, above the empty score card', async ({ page }) => {
-    await signedOut(page);
-    const data = { ...CHARACTER.data, ...GEAR, best: [], history: [], builds_seen: [], score_history: [] };
-    await routeGearIcons(page);
-    await page.route('**/data/*/items/priest.json', (route) =>
-      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GEAR_ITEMS) }),
-    );
-    await page.route(CHARACTER_URL, (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ ...CHARACTER, data }),
-      }),
-    );
-    await page.goto(CHARACTER_PATH);
-    await settle(page);
-    const gear = await page.getByTestId('character-gear').boundingBox();
-    const score = await page.getByTestId('forever-score').boundingBox();
-    expect(gear).not.toBeNull();
-    expect(score).not.toBeNull();
-    expect(gear!.y).toBeLessThan(score!.y);
-    mkdirSync(SHOTS, { recursive: true });
-    await page.screenshot({ path: join(SHOTS, 'w9-character-gear-first-1280.png'), fullPage: true });
-  });
-});
-
 test.describe('the not-found character page', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
   test('reads at full strength once settled', async ({ page }) => {
@@ -279,7 +242,8 @@ test.describe('the not-found character page', () => {
     await page.goto(CHARACTER_PATH);
     await settle(page);
     await expect(page.getByTestId('character-not-found')).toBeVisible();
-    expect(await page.getByTestId('character-name').evaluate((el) => getComputedStyle(el).opacity)).toBe('1');
+    const title = page.getByTestId('character-head').getByTestId('page-title');
+    expect(await title.evaluate((el) => getComputedStyle(el).opacity)).toBe('1');
     mkdirSync(SHOTS, { recursive: true });
     await page.screenshot({ path: join(SHOTS, 'w9-character-not-found-1280.png') });
   });
