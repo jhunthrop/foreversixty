@@ -185,6 +185,7 @@ end
 ---   supplies=<item_id>:<count>,...
 ---   locks=<item_id>,...
 ---   quests=<quest_id>:<0|1>,...
+---   owned=<item_id>:<0|1>,...
 --- No name starts with a letter the font strings read as an escape (see "who" below).
 local function encodePrep(build, sections)
 	if build.resistances then
@@ -206,6 +207,13 @@ local function encodePrep(build, sections)
 			parts[index] = string.format("%d:%d", quest.questId, quest.done and 1 or 0)
 		end
 		sections[#sections + 1] = "quests=" .. table.concat(parts, ",")
+	end
+	if build.owned then
+		local parts = {}
+		for index, item in ipairs(build.owned) do
+			parts[index] = string.format("%d:%d", item.itemId, item.held and 1 or 0)
+		end
+		sections[#sections + 1] = "owned=" .. table.concat(parts, ",")
 	end
 end
 
@@ -399,6 +407,18 @@ end
 --- The raid-prep sections, read leniently: a malformed entry is dropped and a malformed
 --- school= section is left out, never refusing the code. They are the client's own reading,
 --- not something a player types, and an older reader ignores them altogether.
+--- `<id>:<0|1>,...` as { { [idKey] = id, [flagKey] = bool } }, a malformed entry dropped.
+local function flagList(field, idKey, flagKey)
+	local out = {}
+	for _, entry in ipairs(field == "" and {} or split(field, ",")) do
+		local id, flag = entry:match("^(%d+):([01])$")
+		if id then
+			out[#out + 1] = { [idKey] = tonumber(id), [flagKey] = flag == "1" }
+		end
+	end
+	return out
+end
+
 local PREP_DECODERS = {
 	school = function(field, build)
 		local totals = {}
@@ -430,13 +450,10 @@ local PREP_DECODERS = {
 		end
 	end,
 	quests = function(field, build)
-		build.quests = {}
-		for _, entry in ipairs(field == "" and {} or split(field, ",")) do
-			local id, flag = entry:match("^(%d+):([01])$")
-			if id then
-				build.quests[#build.quests + 1] = { questId = tonumber(id), done = flag == "1" }
-			end
-		end
+		build.quests = flagList(field, "questId", "done")
+	end,
+	owned = function(field, build)
+		build.owned = flagList(field, "itemId", "held")
 	end,
 }
 

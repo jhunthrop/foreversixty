@@ -1,8 +1,8 @@
 -- addon/ForeverSixty/RaidPrep.lua
 -- What a raid leader checks before the pull, read from the client for the export (owner
 -- decision D14): resistance totals, the consumables in the bags, the keyring and the
--- attunement quests. Codec.encodeFS1 writes them as the school=, supplies=, locks= and
--- quests= sections; the site names the consumables and judges the readiness.
+-- attunement quests and items. Codec.encodeFS1 writes them as the school=, supplies=,
+-- locks=, quests= and owned= sections; the site names the consumables and judges the readiness.
 --
 -- Each reader answers nil when this client has no API for it, and Export then writes no
 -- section: an absent section reads "not tracked" on the site, never "missing". A reader the
@@ -18,12 +18,18 @@ local RaidPrep = {}
 --- shadow, arcane (0 is armor and 1 holy, which nothing reads). Spike check 98.
 RaidPrep.RESISTANCE_SCHOOLS = { 2, 3, 4, 5, 6 }
 
---- The attunement quests the export asks the client about. Onyxia's Lair: Drakefire Amulet
---- (Alliance, 6502) and Blood of the Black Dragon Champion (Horde, 6602), the last quest of
---- each side's chain (ids from data/builds/1.60.1.70790/raw/quests/quest-levels.json, both
---- level 60; names are cmangos classic-db's, unconfirmed on the Forever client: spike
---- check 101).
-RaidPrep.ATTUNEMENT_QUESTS = { 6502, 6602 }
+--- The attunement quests the export asks the client about, each the last quest of its chain.
+--- Onyxia's Lair: Drakefire Amulet (6502, Alliance: Stormwind Rendezvous 6402, The Great
+--- Masquerade 6403, The Dragon's Eye 6501, then 6502) and Blood of the Black Dragon Champion
+--- (6602, Horde, after Ascension... 6601). Molten Core: Attunement to the Core (7848). Every id
+--- is a row of the 1.60.1.70790 client's QuestV2 table (wago.tools db2/QuestV2, which carries no
+--- titles); titles and chain order are cmangos classic-db quest_template's (PrevQuestId).
+--- Spike check 101 confirms them in game.
+RaidPrep.ATTUNEMENT_QUESTS = { 6502, 6602, 7848 }
+
+--- The items an attunement chain hands out that the export says are held or not, worn or in
+--- the carried bags: the Drakefire Amulet (16309), which both Onyxia chains reward.
+RaidPrep.ATTUNEMENT_ITEMS = { 16309 }
 
 --- The item class GetItemInfoInstant reports for food, drink, potions, elixirs and flasks
 --- (Enum.ItemClass.Consumable). Every stack of it in the carried bags is exported with its
@@ -180,9 +186,41 @@ function RaidPrep.quests()
 	return out
 end
 
+--- Each attunement item and whether it is worn or in `bags`: { { itemId, held } }, nil
+--- without a container API (an empty read would prove nothing).
+function RaidPrep.owned(bags, container)
+	if not RaidPrep.hasContainers() then
+		return nil
+	end
+	local held = {}
+	for slot = 1, RaidPrep.EQUIPPED_SLOTS do
+		local id = itemOf(GetInventoryItemLink("player", slot))
+		if id ~= nil then
+			held[id] = true
+		end
+	end
+	for _, bag in ipairs(bags) do
+		for slot = 1, container.size(bag) do
+			local id = itemOf(container.link(bag, slot))
+			if id ~= nil then
+				held[id] = true
+			end
+		end
+	end
+	local out = {}
+	for index, id in ipairs(RaidPrep.ATTUNEMENT_ITEMS) do
+		out[index] = { itemId = id, held = held[id] == true }
+	end
+	return out
+end
+
+--- The inventory slots GetInventoryItemLink answers for worn gear (1 head to 19 tabard).
+RaidPrep.EQUIPPED_SLOTS = 19
+
 --- Every raid-prep field Codec.encodeFS1 takes, read now.
 function RaidPrep.read(bags, container)
 	return {
+		owned = RaidPrep.owned(bags, container),
 		resistances = RaidPrep.resistances(),
 		supplies = RaidPrep.supplies(bags, container),
 		keyring = RaidPrep.keyring(bags, container),

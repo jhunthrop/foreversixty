@@ -140,14 +140,39 @@ describe("RaidPrep", function()
 			install({ globals = { C_QuestLog = { IsQuestFlaggedCompleted = function(id)
 				return id == 6502
 			end } } })
-			assert.are.same({ { questId = 6502, done = true }, { questId = 6602, done = false } }, RaidPrep.quests())
+			assert.are.same(
+				{ { questId = 6502, done = true }, { questId = 6602, done = false }, { questId = 7848, done = false } },
+				RaidPrep.quests())
 		end)
 
 		it("falls back to the old global", function()
 			install({ globals = { IsQuestFlaggedCompleted = function(id)
 				return id == 6602
 			end } })
-			assert.are.same({ { questId = 6502, done = false }, { questId = 6602, done = true } }, RaidPrep.quests())
+			assert.are.same(
+				{ { questId = 6502, done = false }, { questId = 6602, done = true }, { questId = 7848, done = false } },
+				RaidPrep.quests())
+		end)
+	end)
+
+	describe("owned", function()
+		local AMULET = "|Hitem:16309|h"
+
+		it("says whether the Drakefire Amulet is worn or in the bags", function()
+			install({ itemStats = { [AMULET] = { __itemId = 16309, __class = 4, __slot = "INVTYPE_NECK" } } })
+			assert.are.same({ { itemId = 16309, held = false } }, RaidPrep.owned(Export.CARRIED_BAGS, container(Export)))
+			install({ equipped = { [2] = AMULET },
+				itemStats = { [AMULET] = { __itemId = 16309, __class = 4, __slot = "INVTYPE_NECK" } } })
+			assert.are.same({ { itemId = 16309, held = true } }, RaidPrep.owned(Export.CARRIED_BAGS, container(Export)))
+			install({ bags = { [3] = { AMULET } },
+				itemStats = { [AMULET] = { __itemId = 16309, __class = 4, __slot = "INVTYPE_NECK" } } })
+			assert.are.same({ { itemId = 16309, held = true } }, RaidPrep.owned(Export.CARRIED_BAGS, container(Export)))
+		end)
+
+		it("is nil on a client with no container API at all", function()
+			install()
+			_G.C_Container, _G.GetContainerNumSlots = nil, nil
+			assert.is_nil(RaidPrep.owned(Export.CARRIED_BAGS, container(Export)))
 		end)
 	end)
 
@@ -167,7 +192,9 @@ describe("RaidPrep", function()
 			})
 			withStacks({ [0] = { [1] = 5 } })
 			local code = assert(Export.string(DATA))
-			assert.is_truthy(code:find("|level=60|school=52:0:0:0:0|supplies=20452:5|locks=13704|quests=6502:0,6602:0|who=",
+			local want = "|level=60|school=52:0:0:0:0|supplies=20452:5|locks=13704"
+				.. "|quests=6502:0,6602:0,7848:0|owned=16309:0|who="
+			assert.is_truthy(code:find(want,
 				1, true), code)
 		end)
 
@@ -176,7 +203,7 @@ describe("RaidPrep", function()
 			local code = assert(Export.string(DATA))
 			assert.is_nil(code:find("school=", 1, true))
 			assert.is_nil(code:find("quests=", 1, true))
-			assert.is_truthy(code:find("|supplies=|locks=|", 1, true), code)
+			assert.is_truthy(code:find("|supplies=|locks=|owned=16309:0|", 1, true), code)
 		end)
 	end)
 end)
@@ -198,14 +225,18 @@ describe("Codec FS1 raid-prep sections", function()
 			supplies = { { itemId = 13510, count = 1 }, { itemId = 20452, count = 20 } },
 			keyring = { 13704 },
 			quests = { { questId = 6502, done = true }, { questId = 6602, done = false } },
+			owned = { { itemId = 16309, held = true } },
 		}
 		local code = Codec.encodeFS1(build)
-		assert.are.equal(HEAD .. "|school=52:10:0:15:5|supplies=13510:1,20452:20|locks=13704|quests=6502:1,6602:0", code)
+		assert.are.equal(HEAD .. "|school=52:10:0:15:5|supplies=13510:1,20452:20|locks=13704"
+			.. "|quests=6502:1,6602:0|owned=16309:1",
+			code)
 		local decoded = assert(Codec.decodeFS1(code))
 		assert.are.same(build.resistances, decoded.resistances)
 		assert.are.same(build.supplies, decoded.supplies)
 		assert.are.same(build.keyring, decoded.keyring)
 		assert.are.same(build.quests, decoded.quests)
+		assert.are.same(build.owned, decoded.owned)
 		assert.are.same({}, decoded.ignored)
 	end)
 

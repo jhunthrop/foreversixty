@@ -351,6 +351,7 @@ function Export.string(data, fallbackGuild)
 		supplies = prep.supplies,
 		keyring = prep.keyring,
 		quests = prep.quests,
+		owned = prep.owned,
 		dataBuild = data.build,
 		classSlug = classSlug,
 		raceSlug = Compat.playerRaceSlug(),

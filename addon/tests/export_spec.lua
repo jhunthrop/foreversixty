@@ -62,7 +62,8 @@ describe("Export", function()
 		-- carries whatever the client says the player is called, url-encoded, so the site can
 		-- show it.
 		local head, level, name =
-			code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|level=(%d+)|supplies=|locks=|who=(.+)$")
+			code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|level=(%d+)"
+				.. "|supplies=|locks=|owned=16309:0|who=(.+)$")
 		assert.are.equal("FS1:1.60.1.69893:paladin:human:2/0/0:head=12640", head)
 		assert.are.equal("60", level)
 		assert.is_truthy(name and name:find(":", 1, true), code)
@@ -200,7 +201,8 @@ describe("Export", function()
 			guild = { name = "Iron Vanguard", rankName = "Officer", rankIndex = 2 },
 		})
 		local code = assert(Export.string(DATA))
-		assert.is_truthy(code:find("|professions=enchanting|supplies=|locks=|guild=Iron%20Vanguard:2", 1, true), code)
+		local want = "|professions=enchanting|supplies=|locks=|owned=16309:0|guild=Iron%20Vanguard:2"
+		assert.is_truthy(code:find(want, 1, true), code)
 	end)
 
 	it("exports a character with no points spent, as an all-zero tree", function()
