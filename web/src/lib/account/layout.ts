@@ -23,7 +23,7 @@ export const PLAN_GAP_PX = 16;
  *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
  *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
  *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
-export const SIGNED_OUT_MIN_H = 'min-h-[1651px] lg:min-h-[949px]';
+export const SIGNED_OUT_MIN_H = 'min-h-[1601px] lg:min-h-[949px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
@@ -48,20 +48,11 @@ export type HintState = 'none' | 'free' | 'connect' | 'form' | 'saved' | 'off' |
 /** The ready header row: 44 px beside the title at 1024 and up, the stacked row below it. */
 export const HEADER_ROW_H: BucketPx = { lg: 60, stack: 110 };
 
-/** The Characters panel's last-raid coach line (experience spec 2026-10-28-log-coach 3.3): 57 px
- *  (two 13 px / 20 px lines, 16 px padding, 1 px rule: a long zone wraps at 1440), 77 px on the phone's three (the free line), held in every state, plus the panel's 16 px (`gap-4`)
- *  flex gap above the list. Counted once, in `LEFT_FLOOR`. */
-export const COACH_LAST_RAID_RESERVE: BucketPx = { lg: 57, stack: 77 };
-
-/** The gap between a StatePanel's label row, the coach line and its body (Tailwind `gap-4`). */
-const PANEL_GAP_PX = 16;
-
-/** An empty Characters panel with the coach line, an empty Your reports panel and the 32 px gap between them
- *  (298 / 403 measured before the coach line existed). */
-export const LEFT_FLOOR: BucketPx = {
-  lg: 337 + COACH_LAST_RAID_RESERVE.lg + PANEL_GAP_PX,
-  stack: 457 + COACH_LAST_RAID_RESERVE.stack + PANEL_GAP_PX,
-};
+/** An empty Characters panel, an empty Your reports panel and the 32 px gap between them, measured
+ *  2026-11-06 at 356 / 504 and rounded down to 5. The empty panel draws no last-raid coach line
+ *  (spec 2026-11-04-account-characters: it shows under the rows only), so the floor holds none;
+ *  an account with characters is taller, and its stored height takes over after the first visit. */
+export const LEFT_FLOOR: BucketPx = { lg: 355, stack: 500 };
 
 /** The Plan card for a free account: head, four settings rows and the See plans foot (polish task 4, measured 380 / 460 on the empty fixture account at 1440 / 390). */
 const PLAN_EMPTY_FLOOR: BucketPx = { lg: 380, stack: 460 };

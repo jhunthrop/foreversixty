@@ -650,7 +650,7 @@ html[data-session='1'] .account-header-reserve {
   min-height: 110px;
 }
 .account-left-skeleton {
-  min-height: max(var(--account-left-reserve, 0px), 550px);
+  min-height: max(var(--account-left-reserve, 0px), 500px);
 }
 .account-devices-skeleton {
   min-height: 290px;
@@ -720,7 +720,7 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: 60px;
   }
   .account-left-skeleton {
-    min-height: max(var(--account-left-reserve, 0px), 410px);
+    min-height: max(var(--account-left-reserve, 0px), 355px);
   }
   .account-devices-skeleton {
     min-height: 270px;
@@ -977,5 +977,37 @@ details:not([open]) > summary .when-open {
     animation-timing-function: linear;
     animation-fill-mode: both;
     animation-timeline: scroll(self inline);
+  }
+}
+
+/* The account's Characters card (account/CharacterList.svelte): the Battle.net refresh bar.
+   Here, not in the component's <style>: /logs imports Account.svelte lazily for its pairing
+   block, and with inlined stylesheets the build emits no file for a lazily imported island's
+   scoped CSS, so the import's CSS preload fails and the block never draws (scripts/chunk-css.mjs
+   now fails the build on that). */
+/* A thin bar on the card's top edge while Battle.net is asked; still under reduced motion. */
+.refresh-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  overflow: hidden;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: refresh-slide 1.2s linear infinite;
+}
+@keyframes refresh-slide {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .refresh-bar {
+    animation: none;
+    background: var(--color-gold);
+    opacity: 0.4;
   }
 }

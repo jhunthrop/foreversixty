@@ -211,7 +211,7 @@
   {/if}
   <!-- The last raid is a coach hint, not about any one character: under the rows, above the
        help line. With no characters it would read as a stray line. -->
-  {#if characters.length > 0}<CoachLastRaidLine premium={logCoach} hideWhenNone />{/if}
+  {#if characters.length > 0}<CoachLastRaidLine premium={logCoach} />{/if}
   {#if characters.length > 0}
     <p class="text-muted border-line-soft border-t px-5 py-4 text-[13px]">
       {characterListCopy.introBattlenetLine}
@@ -222,32 +222,3 @@
     </p>
   {/if}
 </section>
-
-<style>
-  /* A thin bar on the card's top edge while Battle.net is asked; still under reduced motion. */
-  .refresh-bar {
-    position: absolute;
-    inset: 0 0 auto;
-    height: 2px;
-    overflow: hidden;
-    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
-    background-size: 40% 100%;
-    background-repeat: no-repeat;
-    animation: refresh-slide 1.2s linear infinite;
-  }
-  @keyframes refresh-slide {
-    from {
-      background-position: -40% 0;
-    }
-    to {
-      background-position: 140% 0;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .refresh-bar {
-      animation: none;
-      background: var(--color-gold);
-      opacity: 0.4;
-    }
-  }
-</style>

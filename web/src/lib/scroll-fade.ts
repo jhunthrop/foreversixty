@@ -16,6 +16,18 @@ export function updateScrollFade(scroller: HTMLElement): void {
   wrapper.toggleAttribute('data-fade-end', last.getBoundingClientRect().right > edge.right + EPSILON_PX);
 }
 
+/**
+ * Scrolls `scroller` along its own axis just far enough to show `tab`, and nothing else: unlike
+ * scrollIntoView, the page never moves, so a strip below the fold does not pull the page down to
+ * it on load.
+ */
+export function revealInStrip(scroller: HTMLElement, tab: HTMLElement): void {
+  const edge = scroller.getBoundingClientRect();
+  const box = tab.getBoundingClientRect();
+  if (box.left < edge.left) scroller.scrollLeft -= edge.left - box.left;
+  else if (box.right > edge.right) scroller.scrollLeft += box.right - edge.right;
+}
+
 /** Svelte action for the scroller: keeps the wrapper's fade attributes current. */
 export function scrollFade(scroller: HTMLElement): { destroy: () => void } {
   const update = (): void => updateScrollFade(scroller);

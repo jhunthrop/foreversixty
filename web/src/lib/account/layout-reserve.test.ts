@@ -11,7 +11,6 @@ import {
   ACCOUNT_RESERVE_KEY,
   ACCOUNT_RESERVE_MAX_PX,
   ACCOUNT_DISCORD_LINK_RESERVE,
-  COACH_LAST_RAID_RESERVE,
   DISCORD_FLOORS,
   HEADER_ROW_H,
   LEFT_FLOOR,
@@ -140,9 +139,8 @@ describe('the floors', () => {
     expect(RAIL_FLOORS.plan).toEqual({ lg: 380 + 45 + 20, stack: 460 + 45 + 20 });
   });
 
-  it('count the Characters panel coach line once, in the left floor', () => {
-    expect(COACH_LAST_RAID_RESERVE).toEqual({ lg: 57, stack: 77 });
-    expect(LEFT_FLOOR).toEqual({ lg: 337 + 57 + 16, stack: 457 + 77 + 16 });
+  it('hold no coach line in the left floor: the empty Characters panel draws none', () => {
+    expect(LEFT_FLOOR).toEqual({ lg: 355, stack: 500 });
   });
 
   it('take the taller column at lg and stack the two below it', () => {
