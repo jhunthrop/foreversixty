@@ -535,20 +535,6 @@
     }
   },
   "enchants": {
-    "2": {
-      "name": "Enchant Cloak - Minor Resistance",
-      "rank": 0,
-      "cost": 0,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 5000,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 0,
-      "range_yd": 0.0,
-      "description": "Permanently enchant a cloak so that it increases the resistance to all schools of magic by 2.",
-      "icon": "spell_holy_greaterheal"
-    },
     "15": {
       "name": "Armor +8, Stamina +1",
       "rank": 0,
@@ -561,48 +547,6 @@
       "cooldown_ms": 0,
       "range_yd": 0.0,
       "description": "Permanently increase the Stamina value by 1 and the Armor value by 8 of an item worn on the chest, legs, hands or feet.",
-      "icon": "temp"
-    },
-    "16": {
-      "name": "Armor +16, Stamina +2",
-      "rank": 0,
-      "cost": 0,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 3000,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 0,
-      "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by 2 and the armor value by 16 of an item worn on the chest, legs, hands or feet.",
-      "icon": "temp"
-    },
-    "17": {
-      "name": "Heavy Armor Kit",
-      "rank": 0,
-      "cost": 0,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 3000,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 0,
-      "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
-      "icon": "temp"
-    },
-    "18": {
-      "name": "Thick Armor Kit",
-      "rank": 0,
-      "cost": 0,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 3000,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 0,
-      "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
       "icon": "temp"
     },
     "24": {
@@ -729,6 +673,20 @@
       "cooldown_ms": 0,
       "range_yd": 0.0,
       "description": "Enchant a piece of chest armor so it has a 5% chance per hit of giving you 25 points of damage absorption. Cannot occur more often than once every 5 sec.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "65": {
+      "name": "Enchant Cloak - Minor Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak so that it increases the resistance to all schools of magic by 2.",
       "icon": "spell_holy_greaterheal"
     },
     "66": {
@@ -858,7 +816,7 @@
       "icon": "spell_holy_greaterheal"
     },
     "254": {
-      "name": "Enchant Chest - Stamina",
+      "name": "Enchant Boots - Lesser Stamina",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -868,21 +826,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a piece of chest armor to increase the Stamina of the wearer by 4.",
-      "icon": "spell_holy_greaterheal"
-    },
-    "255": {
-      "name": "Enchant Boots - Lesser Spirit",
-      "rank": 0,
-      "cost": 0,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 5000,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 0,
-      "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +4 Spirit.",
+      "description": "Permanently enchant boots to give +4 Stamina.",
       "icon": "spell_holy_greaterheal"
     },
     "256": {
@@ -928,7 +872,7 @@
       "icon": "temp"
     },
     "723": {
-      "name": "Enchant Bracer - Lesser Intellect",
+      "name": "Enchant 2H Weapon - Lesser Intellect",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -938,21 +882,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a bracer so it increases the wearer's Intellect by $ec1.",
-      "icon": "spell_holy_greaterheal"
-    },
-    "724": {
-      "name": "Enchant Boots - Lesser Stamina",
-      "rank": 0,
-      "cost": 0,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 5000,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 0,
-      "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +4 Stamina.",
+      "description": "Permanently enchant a Two-Handed Melee Weapon to add 5 to Intellect.",
       "icon": "spell_holy_greaterheal"
     },
     "744": {
@@ -1208,7 +1138,7 @@
       "icon": "spell_holy_greaterheal"
     },
     "856": {
-      "name": "Enchant Gloves - Strength",
+      "name": "Enchant Necklace - Strength",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -1218,7 +1148,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +7 Strength.",
+      "description": "Permanently enchant a necklace to increase Strength by 5.",
       "icon": "spell_holy_greaterheal"
     },
     "857": {
@@ -1306,7 +1236,7 @@
       "icon": "spell_holy_greaterheal"
     },
     "904": {
-      "name": "Enchant Boots - Agility",
+      "name": "Enchant Necklace - Agility",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -1316,7 +1246,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant boots to give +5 Agility.",
+      "description": "Permanently enchant a necklace to increase Agility by 5.",
       "icon": "spell_holy_greaterheal"
     },
     "905": {
@@ -1502,7 +1432,7 @@
       "icon": "spell_holy_greaterheal"
     },
     "927": {
-      "name": "Enchant Gloves - Greater Strength",
+      "name": "Enchant Bracer - Greater Strength",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -1512,7 +1442,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant gloves to grant +10 Strength.",
+      "description": "Permanently enchant bracers to give +7 Strength.",
       "icon": "spell_holy_greaterheal"
     },
     "928": {
@@ -1725,20 +1655,6 @@
       "description": "Permanently adds 8 spirit to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
       "icon": "temp"
     },
-    "1843": {
-      "name": "Rugged Armor Kit",
-      "rank": 0,
-      "cost": 0,
-      "cost_type": 0,
-      "cost_pct": 0.0,
-      "cast_time_ms": 3000,
-      "channeled": false,
-      "passive": false,
-      "cooldown_ms": 0,
-      "range_yd": 0.0,
-      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
-      "icon": "temp"
-    },
     "1883": {
       "name": "Enchant Bracer - Greater Intellect",
       "rank": 0,
@@ -1782,7 +1698,7 @@
       "icon": "spell_holy_greaterheal"
     },
     "1886": {
-      "name": "Enchant Bracer - Superior Stamina",
+      "name": "Enchant Shield - Greater Stamina",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -1792,7 +1708,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant bracers to give +9 Stamina.",
+      "description": "Permanently enchant a shield to give +9 Stamina.",
       "icon": "spell_holy_greaterheal"
     },
     "1887": {
@@ -1977,6 +1893,20 @@
       "description": "Permanently enchant a melee weapon so that often when attacking in melee it heals for 100 and increases Strength by 100 for 15 sec.",
       "icon": "spell_holy_greaterheal"
     },
+    "1901": {
+      "name": "Enchant Bracer - Superior Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +9 Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
     "1903": {
       "name": "Enchant 2H Weapon - Major Spirit",
       "rank": 0,
@@ -2132,7 +2062,7 @@
       "icon": "temp"
     },
     "2563": {
-      "name": "Enchant Weapon - Strength",
+      "name": "Enchant Gloves - Superior Strength",
       "rank": 0,
       "cost": 0,
       "cost_type": 0,
@@ -2142,7 +2072,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Permanently enchant a melee weapon to grant +15 strength.",
+      "description": "Permanently enchant gloves to increase Strength by 15.",
       "icon": "spell_holy_greaterheal"
     },
     "2564": {
@@ -2633,6 +2563,300 @@
       "cooldown_ms": 0,
       "range_yd": 0.0,
       "description": "Permanently enchant a Shield to add up to 30 damage to spells and up to 55 points of healing to healing spells.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7646": {
+      "name": "Enchant Gloves - Holy Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase holy damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7647": {
+      "name": "Enchant Gloves - Arcane Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase arcane damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7662": {
+      "name": "Enchant 2H Weapon - Spellblasting",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a 2H Weapon to add 65 Spell Power.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7665": {
+      "name": "Enchant Bracer - Greater Spellpower",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant Bracers to add 16 to spell power.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7667": {
+      "name": "Enchant Cloak - Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Cloak to add 5 to agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8203": {
+      "name": "Enchant Boots - Lesser Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +4 Spirit.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8204": {
+      "name": "Enchant Boots - Lesser Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +4 Agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8205": {
+      "name": "Enchant 2H Weapon - Impact",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Two-handed Melee Weapon to do 6 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8206": {
+      "name": "Enchant Gloves - Greater Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +10 Agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8207": {
+      "name": "Enchant Gloves - Greater Strength",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +10 Strength.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8211": {
+      "name": "Enchant 2H Weapon - Mighty Spell Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a two-handed melee weapon to increase damage and healing by up to 55.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8212": {
+      "name": "Enchant 2H Weapon - Mighty Healing Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a two-handed melee weapon to increase healing by up to 100 and damage by up to 34.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8213": {
+      "name": "Enchant Gloves - Natural Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase Nature damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8218": {
+      "name": "Enchant Necklace - Spell Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a necklace to increase spell damage and healing by up to 6.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8219": {
+      "name": "Enchant Necklace - Healing Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a necklace to increase healing by up to 11 and spell damage by up to 4.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8481": {
+      "name": "Armor +16, Stamina +2",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by 2 and the armor value by 16 of an item worn on the chest, legs, hands or feet.",
+      "icon": "temp"
+    },
+    "8484": {
+      "name": "Heavy Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "icon": "temp"
+    },
+    "8487": {
+      "name": "Thick Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "icon": "temp"
+    },
+    "8490": {
+      "name": "Rugged Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands or feet. Only usable on items level $ecim and above.",
+      "icon": "temp"
+    },
+    "8492": {
+      "name": "Mystic Rugged Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Spell Power value by $ec2 and armor value by $ec1 of an item worn on the chest, legs, hands, or feet. Only usable on items level $ecim and above.",
+      "icon": "temp"
+    },
+    "8734": {
+      "name": "Enchant Bracer - Lesser Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a bracer so it increases the wearer's Intellect by $ec1.",
       "icon": "spell_holy_greaterheal"
     }
   },
@@ -3449,22 +3673,22 @@
     }
   },
   "hotfix_layer": {
-    "ItemEffect": "33a684bf6cf3c2d7447a16ef99647d62604dce511cb1b76219e3634d5c7f3ec2",
+    "ItemEffect": "4a8a227c7c8fc3d36bce88937f111973931f7eda6e2eec0c94f2c56c07eda9e2",
     "ItemXItemEffect": "a4a3ca2962977126a8bf27a706f2cec0436ad7f41491c64d85d7028cae76dcf4",
     "ManifestInterfaceData": "71b82f75741b87ad38c82bb73cba99b3e3bdeb6c0c00e09dde1298dafce31441",
     "SkillLine": "f3867d43ab42d1f5278e6e5028d0151bc06e4ef8e5cbd790a20df6ee57aa654d",
     "SkillLineAbility": "ba3e396415ce1cbf34df00acafbf0edc9a8d70dd4b2584ca4ddf1325fb8c9d14",
-    "Spell": "bfe5ed9d1403f04c431f74af2f0ddc91002ebc07208883da999efc5d0e7e5b77",
-    "SpellAuraOptions": "b06b01ba50324e57bd5b51e8ccf03cfde64fffbf1e9f0e247dffcca56b6d4e70",
+    "Spell": "bb1d9dfc46d6639e9080ba025ad06e9f89cd01fe4f77df6a49fa9318db2d29c3",
+    "SpellAuraOptions": "aecc911e6aec0686159eb0636a1e19e9e15a426b8f2d4eb0999bbd0f2bc356d2",
     "SpellCastTimes": "f94e1e3a3495d11af875fd7b007124fdd660a19ba626bc1de00a609da81f25d8",
-    "SpellCooldowns": "d08bb4238048e193aead2806450220dbd21644fb6b5d50ff17ac77d4d54e0c85",
+    "SpellCooldowns": "3c073431f4ac2b7267a4b1218410bc943377e69c492303768292f35119c2ff2f",
     "SpellDuration": "4787f303fe8487cd67e5f9e8574fdc6fa2a03516dcfaabba23d9944f937223f5",
-    "SpellEffect": "52724739763341c79e941a9a7b2071d138ae98cc8e4f1e88c4dfbc68408dcd8e",
-    "SpellMisc": "04496faca714b6eef1654b4493289a150a65c287e30d4033b7f7ceb5076141f4",
-    "SpellName": "7c4193359dab5dd805819f5f8765439195639582511479353378cdc5e556a0d6",
-    "SpellPower": "39d0e78afed09db8f7c220e72032103363fdd92a5febad1eb714437009cf3310",
-    "SpellRadius": "c45efa9792d9be30af61aac2e2499493834bc030f6a29d0c119be76f9fe336ed",
+    "SpellEffect": "882afedd815c896413060e09391c943603a217b7b32e869d76cf7e221b093e26",
+    "SpellMisc": "52552837d2bd61a9ebee3c318761145ffc78f538c1eaefd66d8262f40c09b151",
+    "SpellName": "9e93482a551143ec75d656dce6a5120c869ecdab1d34a0513e057465bf06a930",
+    "SpellPower": "251dfe18ce8257e875e8d92e116405e0c828eaa9add70493e5791e77ff18639e",
+    "SpellRadius": "ae97b1f91868aa7b4414c3e26c5d15f6981921b2f6aa1694adc7a0c3e821826b",
     "SpellRange": "30734ead3acfb44c57737ed7c9f8ff2feafda2fbffa291711d4c4afef989b1b3",
-    "SpellTargetRestrictions": "771ee61840826d8a9c2ea3afe8e2cb59b5196c5290f72a9bc7f59e9ef3379e15"
+    "SpellTargetRestrictions": "5a6c2278aef22562993afc431f54d8c00a0d986bce4d07080282c830684719a8"
   }
 }
