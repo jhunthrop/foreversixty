@@ -4911,6 +4911,151 @@ public struct RaidAlsoSignup: Codable, Sendable, Equatable {
     }
 }
 
+/// A slot's pick, RaidAssignmentRaider plus off_role.
+public struct RaidAssignedName: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    public let group: String
+    public let state: String
+    /// The viewer's own character.
+    public let own: Bool
+    /// The slot is for a role this character does not fill tonight.
+    public let offRole: Bool
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        group: String,
+        state: String,
+        own: Bool,
+        offRole: Bool
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.group = group
+        self.state = state
+        self.own = own
+        self.offRole = offRole
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case group
+        case state
+        case own
+        case offRole
+    }
+}
+
+public struct RaidAssignmentRaider: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    public let group: String
+    public let state: String
+    /// The viewer's own character.
+    public let own: Bool
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        group: String,
+        state: String,
+        own: Bool
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.group = group
+        self.state = state
+        self.own = own
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case group
+        case state
+        case own
+    }
+}
+
+/// Each boss of the raid's zone with its template's slots (api/internal/guilds/ raid_assign_templates.go). A picked character whose sign-up is no longer In, Late or Bench drops out of every reading.
+public struct RaidAssignments: Codable, Sendable, Equatable {
+    public let encounters: [RaidEncounterAssignments]
+    /// The raid's name when the game client carries none of its bosses yet; else empty.
+    public let notInClient: [String]
+    /// Every character signed In, Late or Bench, tanks, healers, melee, ranged, then by name.
+    public let candidates: [RaidAssignmentRaider]
+    /// When the assignments last went to Discord.
+    public let postedAt: Date?
+
+    public init(
+        encounters: [RaidEncounterAssignments] = [],
+        notInClient: [String] = [],
+        candidates: [RaidAssignmentRaider] = [],
+        postedAt: Date? = nil
+    ) {
+        self.encounters = encounters
+        self.notInClient = notInClient
+        self.candidates = candidates
+        self.postedAt = postedAt
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        encounters = try c.decodeIfPresent([RaidEncounterAssignments].self, forKey: .encounters) ?? []
+        notInClient = try c.decodeIfPresent([String].self, forKey: .notInClient) ?? []
+        candidates = try c.decodeIfPresent([RaidAssignmentRaider].self, forKey: .candidates) ?? []
+        postedAt = try c.decodeIfPresent(Date.self, forKey: .postedAt)
+    }
+}
+
+public struct RaidAssignmentSlot: Codable, Sendable, Equatable {
+    public let key: String
+    public let label: String
+    /// What the slot does in the fight
+    public let purpose: String
+    /// The most names the slot takes.
+    public let count: Int
+    /// Orders the picker and flags an off-role pick; never refuses one.
+    public let role: String
+    public let names: [RaidAssignedName]
+
+    public init(
+        key: String,
+        label: String,
+        purpose: String,
+        count: Int,
+        role: String,
+        names: [RaidAssignedName] = []
+    ) {
+        self.key = key
+        self.label = label
+        self.purpose = purpose
+        self.count = count
+        self.role = role
+        self.names = names
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        key = try c.decode(String.self, forKey: .key)
+        label = try c.decode(String.self, forKey: .label)
+        purpose = try c.decode(String.self, forKey: .purpose)
+        count = try c.decode(Int.self, forKey: .count)
+        role = try c.decode(String.self, forKey: .role)
+        names = try c.decodeIfPresent([RaidAssignedName].self, forKey: .names) ?? []
+    }
+}
+
 /// An officer's manual fix of this night (PUT …/attendance/{region}/{ruleset}/{name}/override), null for none. present and bench earn the night; absent is a no-show for a raider signed In or Late, else absent; excused keeps the log's outcome and counts the night for nobody.
 public struct RaidAttendanceOverride: Codable, Sendable, Equatable {
     public let status: String
@@ -5283,6 +5428,40 @@ public struct RaidDiscordPost: Codable, Sendable, Equatable {
         self.postAt = postAt
         self.remindedAt = remindedAt
         self.remind = remind
+    }
+}
+
+public struct RaidEncounterAssignments: Codable, Sendable, Equatable {
+    /// The client's DungeonEncounter id.
+    public let encounterId: Int64
+    public let name: String
+    /// The raid's name, "Onyxia's Lair".
+    public let raidZone: String
+    public let slots: [RaidAssignmentSlot]
+    /// One line per filled slot for /rw ("MT: Thornhide"), each at most 255 bytes.
+    public let raidWarning: [String]
+
+    public init(
+        encounterId: Int64,
+        name: String,
+        raidZone: String,
+        slots: [RaidAssignmentSlot] = [],
+        raidWarning: [String] = []
+    ) {
+        self.encounterId = encounterId
+        self.name = name
+        self.raidZone = raidZone
+        self.slots = slots
+        self.raidWarning = raidWarning
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        encounterId = try c.decode(Int64.self, forKey: .encounterId)
+        name = try c.decode(String.self, forKey: .name)
+        raidZone = try c.decode(String.self, forKey: .raidZone)
+        slots = try c.decodeIfPresent([RaidAssignmentSlot].self, forKey: .slots) ?? []
+        raidWarning = try c.decodeIfPresent([String].self, forKey: .raidWarning) ?? []
     }
 }
 
@@ -6019,6 +6198,8 @@ public struct RaidView: Codable, Sendable, Equatable {
     public let report: JSONValue?
     /// The buff and debuff cover of the sign-ups (owner decision D15), one row per entry of data/curated/raid-cover.json in its order (party buffs, raid buffs, debuffs); null for a dungeon or an event.
     public let cover: [RaidCoverRow]?
+    /// The raid leader's assignments per encounter (Go guilds.RaidAssignments); null for a dungeon or an event. Manual only: officers pick every name.
+    public let assignments: RaidAssignments?
 
     public init(
         id: Int64,
@@ -6048,7 +6229,8 @@ public struct RaidView: Codable, Sendable, Equatable {
         night: RaidNight? = nil,
         attendance: [RaidAttendanceRow]? = nil,
         report: JSONValue? = nil,
-        cover: [RaidCoverRow]? = nil
+        cover: [RaidCoverRow]? = nil,
+        assignments: RaidAssignments? = nil
     ) {
         self.id = id
         self.zone = zone
@@ -6078,6 +6260,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         self.attendance = attendance
         self.report = report
         self.cover = cover
+        self.assignments = assignments
     }
 
     public init(from decoder: any Decoder) throws {
@@ -6110,6 +6293,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         attendance = try c.decodeIfPresent([RaidAttendanceRow].self, forKey: .attendance)
         report = try c.decodeIfPresent(JSONValue.self, forKey: .report)
         cover = try c.decodeIfPresent([RaidCoverRow].self, forKey: .cover)
+        assignments = try c.decodeIfPresent(RaidAssignments.self, forKey: .assignments)
     }
 }
 

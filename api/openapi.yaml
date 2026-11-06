@@ -2979,12 +2979,17 @@ components:
         state: { type: string, enum: [in, late, bench] }
         own: { type: boolean, description: The viewer's own character. }
     RaidAssignedName:
-      allOf:
-        - $ref: '#/components/schemas/RaidAssignmentRaider'
-        - type: object
-          required: [off_role]
-          properties:
-            off_role: { type: boolean, description: The slot is for a role this character does not fill tonight. }
+      type: object
+      description: A slot's pick, RaidAssignmentRaider plus off_role.
+      required: [character_key, name, class, group, state, own, off_role]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string, x-name: className }
+        group: { type: string, enum: [tank, healer, melee, ranged] }
+        state: { type: string, enum: [in, late, bench] }
+        own: { type: boolean, description: The viewer's own character. }
+        off_role: { type: boolean, description: The slot is for a role this character does not fill tonight. }
     RaidAssignmentInput:
       type: object
       required: [character_keys]
