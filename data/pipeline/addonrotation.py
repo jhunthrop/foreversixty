@@ -42,8 +42,9 @@ from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
 from pipeline.models import AddonRotationBand, AddonRotationLine
 from pipeline.spelltext import SpellText, load_spell_text
 from pipeline.talent_levels import (
+    first_point_levels,
     floor_pairs,
-    load_spec_point_levels,
+    load_spec_rank_levels,
     load_talent_owned_auras,
     tier_level,
 )
@@ -280,30 +281,73 @@ def _level_allows(condition: object, level: int) -> bool:
 _KNOWN_VALUES = {"auraIsKnown": "auraId", "spellIsKnown": "spellId"}
 
 
-def _required_known_ids(condition: object) -> list[int]:
-    """The spell ids `condition` needs known: an auraIsKnown or spellIsKnown that is the
-    whole condition or one of its top-level and's terms (a negated or or-ed one gates nothing)."""
+def _known_gate(term: object) -> tuple[int, int] | None:
+    """(spell id, rank) an auraIsKnown or spellIsKnown term asks for: its rank tag (a talent
+    aura registered per rank, Maelstrom Weapon's tag 5) or rank 1 untagged."""
+    for value, id_key in _KNOWN_VALUES.items():
+        node = term.get(value) if isinstance(term, dict) else None
+        action = node.get(id_key, {}) if isinstance(node, dict) else None
+        spell_id = action.get("spellId") if isinstance(action, dict) else None
+        if isinstance(spell_id, int):
+            tag = action.get("tag")
+            return spell_id, tag if isinstance(tag, int) and tag > 0 else 1
+    return None
+
+
+def _condition_terms(condition: object) -> list[object]:
+    """The whole condition, or its top-level and's terms."""
     if not isinstance(condition, dict):
         return []
     group = condition.get("and")
-    terms = group.get("vals", []) if isinstance(group, dict) else [condition]
-    ids: list[int] = []
-    for term in terms:
-        for value, id_key in _KNOWN_VALUES.items():
-            node = term.get(value) if isinstance(term, dict) else None
-            spell_id = node.get(id_key, {}).get("spellId") if isinstance(node, dict) else None
-            if isinstance(spell_id, int):
-                ids.append(spell_id)
-    return ids
+    return group.get("vals", []) if isinstance(group, dict) else [condition]
 
 
-def _talents_allow(condition: object, level: int, point_levels: Mapping[int, int]) -> bool:
-    """False while `condition` needs a talent's spell known that the published build has not
+def _required_known(condition: object) -> list[tuple[int, int]]:
+    """The (spell id, rank) gates `condition` needs known: an auraIsKnown or spellIsKnown that
+    is the whole condition or one of its top-level and's terms (an or-ed one gates nothing)."""
+    return [gate for term in _condition_terms(condition) if (gate := _known_gate(term))]
+
+
+def _excluded_ranks(condition: object) -> list[tuple[int, int]]:
+    """The rank-tagged gates `condition` needs NOT known (a negated top-level term with a rank
+    tag): the line stops firing once the build takes that rank. An untagged negation is left
+    alone (round 23's rule): it may name a trainer spell."""
+    gates = []
+    for term in _condition_terms(condition):
+        inner = term.get("not", {}).get("val") if isinstance(term, dict) else None
+        action = next((v for v in (inner or {}).values() if isinstance(v, dict)), {})
+        tagged = any(isinstance(a, dict) and "tag" in a for a in action.values())
+        if tagged and (gate := _known_gate(inner)):
+            gates.append(gate)
+    return gates
+
+
+def _rank_floor(
+    gate: tuple[int, int], level: int, rank_levels: Mapping[tuple[int, int], int]
+) -> int:
+    """The level a gate's rank comes on the published build: `level` (no floor) for a spell no
+    talent teaches, past 60 for a rank of a taken talent the build never reaches."""
+    spell_id, rank = gate
+    if gate in rank_levels:
+        return rank_levels[gate]
+    return MAX_RANK_FLOOR if (spell_id, 1) in rank_levels else level
+
+
+#: Past the level cap: a rank the published build never takes.
+MAX_RANK_FLOOR = 61
+
+
+def _talents_allow(
+    condition: object, level: int, rank_levels: Mapping[tuple[int, int], int]
+) -> bool:
+    """False while `condition` needs a talent rank known that the published build has not
     taken by `level` (round 23: Restoration's Healing Wave after Nature's Swiftness printed
-    from 10, the talent comes at 44)."""
-    return all(
-        level >= point_levels.get(spell_id, level) for spell_id in _required_known_ids(condition)
-    )
+    from 10, the talent comes at 44; round 24: a rank tag waits for that rank, Enhancement's
+    five-stack Lightning Bolt for Maelstrom Weapon 5/5), or once it has taken a rank the
+    condition needs unknown (round 24: Arcane's Missiles until Missile Barrage rank 2)."""
+    starts = all(level >= _rank_floor(g, level, rank_levels) for g in _required_known(condition))
+    ends = any(g in rank_levels and level >= rank_levels[g] for g in _excluded_ranks(condition))
+    return starts and not ends
 
 
 def apl_cast_spell_ids(rotation: object) -> set[int]:
@@ -524,15 +568,15 @@ def build_rotation(
     icon_of: Callable[[int], str] | None = None,
     trainable_ids: frozenset[int] = frozenset(),
     talent_spells: Mapping[str, list[tuple[int, int]]] = MappingProxyType({}),
-    point_levels: Mapping[int, int] = MappingProxyType({}),
+    rank_levels: Mapping[tuple[int, int], int] = MappingProxyType({}),
 ) -> list[AddonRotationBand]:
     """One spec's rotation table: a band at every LEVEL_BANDS rung and at
     every level between where a line changes (`_band_levels`).
     `trainable_ids` is the class's trainer-learned ids (`load_trainable_ids`),
     `talent_spells` its talents' own spells (`load_talent_spells`), and
-    `point_levels` the level the spec's published build takes each talent's
-    spell (`load_spec_point_levels`): a talent's row starts there, and so does a row whose
-    condition needs that talent known (`_talents_allow`)."""
+    `rank_levels` the level the spec's published build takes each rank of each talent's
+    spell (`load_spec_rank_levels`): a talent's row starts at its first point, and a row whose
+    condition needs a rank known at that rank (`_talents_allow`)."""
     apl_path = curated_dir / "apl" / f"{spec}.json"
     if not apl_path.exists():
         raise AddonRotationError(f"missing {apl_path}")
@@ -540,7 +584,7 @@ def build_rotation(
     casts = _cast_lines(curated.get("rotation", {}))
 
     families = {
-        name: floor_pairs(pairs, point_levels)
+        name: floor_pairs(pairs, first_point_levels(rank_levels))
         for name, pairs in _family_ranks(
             spellranks, _class_slug(spec), trainable_ids, talent_spells
         ).items()
@@ -556,7 +600,7 @@ def build_rotation(
             line
             for cast in casts
             if _level_allows(cast.get("condition"), level)
-            and _talents_allow(cast.get("condition"), level, point_levels)
+            and _talents_allow(cast.get("condition"), level, rank_levels)
             and (line := _line_at(context, cast, level)) is not None
         ]
         if level in LEVEL_BANDS or not bands or lines != bands[-1].lines:
@@ -879,7 +923,7 @@ def build_rotations(
             icon_of,
             load_trainable_ids(root / build, _class_slug(spec)),
             load_talent_spells(root / build, _class_slug(spec)),
-            load_spec_point_levels(
+            load_spec_rank_levels(
                 root / build,
                 spec,
                 _class_slug(spec),

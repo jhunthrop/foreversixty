@@ -50,6 +50,17 @@ func (c rankChoices) forRequest(preset, race string) rankChoices {
 	return out
 }
 
+// without is c less the rows on each of ids.
+func (c rankChoices) without(ids []int32) rankChoices {
+	out := make(rankChoices, len(c))
+	for id, rows := range c {
+		if !slices.Contains(ids, id) {
+			out[id] = rows
+		}
+	}
+	return out
+}
+
 // appliesTo reports whether a row keyed key ("" for every value) applies to value.
 func appliesTo(key, value string) bool { return key == "" || key == value }
 

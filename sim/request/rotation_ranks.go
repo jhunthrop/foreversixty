@@ -74,10 +74,20 @@ import (
 // rank choices under preset for race (a race slug, as a request's character
 // names it), so a copy of the published rotation casts what it does.
 func RewriteRotationRanks(raw []byte, spec, class, preset, race string, level int) ([]byte, error) {
+	return RewriteForcedRotationRanks(raw, spec, class, preset, race, level, nil)
+}
+
+// RewriteForcedRotationRanks is RewriteRotationRanks for a rotation that
+// ForceRotationRank has already forced: the spec's rows on each forced
+// authored id are dropped, so the forced rank is what the line casts even
+// when it is the authored rank itself (round 24 hunter: forcing Aimed Shot's
+// authored rank 6 at bare 60 kept the id, and the bare-60 row rewrote it to
+// rank 1 again).
+func RewriteForcedRotationRanks(raw []byte, spec, class, preset, race string, level int, forced []int32) ([]byte, error) {
 	if _, ok := ParseRace(race); !ok {
 		return nil, fmt.Errorf("%w: %q; rank choices follow the character's race", ErrUnknownRace, race)
 	}
-	return rewriteRotationRanks(raw, class, level, specRankChoices(spec, preset, race))
+	return rewriteRotationRanks(raw, class, level, specRankChoices(spec, preset, race).without(forced))
 }
 
 func rewriteRotationRanks(raw []byte, class string, level int, choices rankChoices) ([]byte, error) {

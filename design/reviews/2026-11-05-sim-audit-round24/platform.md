@@ -73,3 +73,41 @@ Error is +/- 0.2 DPS. 45 and every checkpoint are the same build.
 
 - L1 (logs).
 - Whole-mana truncation of costs (X1): the engine keeps fractions of a mana point. Under 1 mana a cast; not worth moving every caster's numbers for.
+
+## Second pass (the measuring tool)
+
+Merged int/r24 (6fa2054d7 site, bacbf86df fork: druid, paladin, items, shaman, the hunter fork fix) into both lane branches first. Evidence: `$R/hunter/STATE.md` ("BIG FINDING" 1 and 2). No engine change this pass.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| T1 | **`spec-breakdown -level N` kept the band entry's talents.** A rank row judged at band+3 ran without the points a player has by then (Survival at 33 had no Resourcefulness; below 20 the band-20 entry's 11 points ran on a level-12 character the game would refuse). `-level` now wears the guide's published order at N: `leveling.GuideLevelTalents` (new, composes `GuideTalentTargets` + `LadderTalentString`, the climb the ladder harness, the ranker and the addon's leveling order use; the raid build under `-preset raid`). It matches the addon order (`$R/hunter/tools/lt.py` gives the same string at Survival 33). `-band-talents` keeps the old behaviour; `-talents` still wins. Survival bare 30 at 33, horde, 3,000 it: 106.2 (band talents) -> 108.7 (ladder). | `sim/cmd/spec-breakdown/main.go` `characterTalents`, `sim/leveling/level_talents.go`; tests `TestLevelWearsTheLadderTalentsOfThatLevel` (red: band-30 string at 33), `TestLevelBelowTheLowestBandIsALegalBuild` (red: 11 points at 12) | CONFIRMED-BUG (tool) | old (`-level` arrived in 22d545cb5, 4 Nov; every round since judged rows on it) | S 50235426e |
+| T2 | **A forced `-rank` lost to the spell's rank row when it named the authored rank.** `ForceRotationRank` leaves the authored id unchanged, then the rank rewrite applied the row: at bare 60 `-rank 20904=6` cast Aimed Shot rank 1, so "authored against row" ran the row twice (any level where the forced rank is the authored one). spec-breakdown now rewrites with `request.RewriteForcedRotationRanks`, which drops the rows on every forced authored id. Marksmanship bare 60, horde, 3,000 it: `-rank 20904=1` 455.8, `-rank 20904=6` 412.1 (was 455.8 twice): the bare-60 rank-1 row holds. | `sim/request/rotation_ranks.go`, `rank_choices.go` (`without`), `force_rank.go` doc, `sim/cmd/spec-breakdown/main.go` `rotationFor`; test `TestForcedAuthoredRankWinsOverTheRankRow` (red: rank 1 still cast). Shared code: `RewriteRotationRanks` keeps its behaviour (no forced ids), so rotation-search and every published rotation are unchanged. | CONFIRMED-BUG (tool) | old (`-rank` arrived in 8bcae36ff, 4 Nov) | S fcceada57 |
+| T3 | **The card start rule ignored a gate's rank tag.** Enhancement's five-stack Lightning Bolt (`auraIsKnown` Maelstrom Weapon 408498 tag 5; the engine tags the aura with the talent rank, `sim/shaman/talents.go:883`) printed from 37, the first point, though it fires only at 5/5: 42 on the leveling order. Arcane's "Missiles until you have both ranks of Missile Barrage" (`not auraIsKnown` 400588 tag 2) printed to 60 though it stops at rank 2 (23). `talent_levels.load_spec_rank_levels` now gives (spell, rank) -> level (leveling order first, raid order for a rank it never takes, owned auras with their talent); a tagged gate starts the row at that rank, a negated tagged gate ends it there. Untagged negations stay as round 23 left them (they also name trainer spells). Whole-catalogue diff of every curated APL's card, old code against new: only these two rows move (Enhancement 37 -> 42; Arcane 10-60 -> 10-22). Destruction's tagged Shadow and Flame gates do not move (its published orders never take the talent). | `data/pipeline/talent_levels.py`, `data/pipeline/addonrotation.py`; tests `...starts_where_the_published_build_takes_it[...Lightning Bolt...-42]` (red: 37), `test_a_row_gated_on_lacking_a_talent_rank_ends_where_the_build_takes_it` (red), `test_rank_levels_count_each_point_of_a_talent`; `test_addonrotation.py` 66 passed | CONFIRMED-BUG (card data) | R23 6c639ea7f (the row-start rule never read the tag) | S 2ee737163 |
+
+### Reach of T1: rank rows judged on band-floor talents
+
+Every row in `data/curated/rank-choices.json` that covers a level other than its band floor (20, 30, ... 60; below 20 the band-20 entry) was judged on the band entry's talents unless its note says it used the leveling order's talents. Full list (spec, spell, authored id, levels, rank, preset, races, what the note says): `design/reviews/2026-11-05-sim-audit-round24/platform-suspect-rank-rows.tsv`. **193 suspect rows** (197 above a floor, 4 already on ladder talents: Protection Holy Strike 12-14, Elemental Flame Shock 19, Enhancement Earth Shock 25, Restoration Healing Wave 18-19). 18 of the 193 sit below 20, where the band-20 entry ran more points than the level has.
+
+| spec | suspect | spec | suspect |
+|---|---|---|---|
+| druid-balance | 12 | paladin-holy | 15 |
+| druid-feral | 3 | paladin-protection | 7 |
+| druid-restoration | 25 | paladin-retribution | 12 |
+| hunter-beast-mastery | 4 | priest-discipline | 16 |
+| hunter-marksmanship | 5 | priest-holy | 29 |
+| hunter-survival | 10 | priest-shadow | 27 |
+| mage-arcane | 1 | shaman-elemental | 7 |
+| mage-fire | 5 | shaman-restoration | 8 |
+| mage-frost | 2 | warlock-demonology | 2 |
+| | | warlock-destruction | 3 |
+
+Not re-judged here (class lanes own them). A row whose spell and mana the extra points cannot touch will hold; the lanes decide which. Re-judge with plain `spec-breakdown -level N -rank id=rank` on S 50235426e or later (no `-talents` needed now).
+
+### Pre-existing failures on int/r24 (not this lane's; seen while running the touched packages)
+
+- `sim/cmd/spec-breakdown` `TestPublishedResultsCarryIgniteAndShootSchools` (Shoot school 1 on the published results; needs the nightly results regenerated) and `TestMarksmanshipAt50KeepsShootingWhenAimedShotIsOutOfReach` (Arcane Shot 0 casts at MM bare 50): both fail identically with this pass's changes stashed.
+- `sim/request` `TestCuratedRankChoicesAreCastableDownranks`: paladin-protection Consecration rank 3 from 49 and rank 4 from 58 are "what the rotation casts anyway" (paladin lane's rows).
+
+### Files to regenerate (second pass)
+
+- The addon data step (`addon-data.json`, `Data.lua`) for T3's two rows. T1 and T2 change only the measuring tool: nothing published moves.
