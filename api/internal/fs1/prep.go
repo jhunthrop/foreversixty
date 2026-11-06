@@ -6,7 +6,8 @@
 //	school=<fire>:<nature>:<frost>:<shadow>:<arcane>   resistance totals (UnitResistance)
 //	supplies=<item_id>:<count>,...                     every Consumable-class stack in the
 //	                                                   carried bags, counts summed per item
-//	locks=<item_id>,...                                the keyring's items
+//	locks=<item_id>,...                                the keys carried: the keyring plus
+//	                                                   any Key-class item in the bags
 //	quests=<quest_id>:<0|1>,...                        each curated attunement quest asked
 //	                                                   about, 1 when the client flags it done
 //

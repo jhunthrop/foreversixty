@@ -31,8 +31,11 @@ RaidPrep.ATTUNEMENT_QUESTS = { 6502, 6602 }
 --- a new Forever consumable needs a site change, never an addon release.
 RaidPrep.CONSUMABLE_CLASS = 0
 
+--- The item class of keys (Enum.ItemClass.Key): the Skeleton Key and the Key to the City.
+RaidPrep.KEY_CLASS = 13
+
 --- The keyring's bag id: the client's KEYRING_CONTAINER (-2 on Classic), else the Enum.
---- nil on a client with neither, which then writes no locks= section.
+--- nil on a client with neither: the keys in the bags are then all locks= carries.
 function RaidPrep.keyringBag()
 	if type(KEYRING_CONTAINER) == "number" then
 		return KEYRING_CONTAINER
@@ -123,22 +126,30 @@ function RaidPrep.supplies(bags, container)
 	return out
 end
 
---- The keyring's item ids, sorted and unique, or nil when this client has no keyring (no
---- bag id, or a keyring of no slots).
-function RaidPrep.keyring(container)
-	local bag = RaidPrep.keyringBag()
-	if bag == nil or not RaidPrep.hasContainers() then
-		return nil
-	end
-	local size = container.size(bag)
-	if size <= 0 then
+--- The keys the character carries: every item on the keyring plus every Key-class item in
+--- `bags` (a full keyring spills keys into the bags, and a client without a keyring keeps
+--- them there), sorted and once each. Bags hold only gear in bags=, so a key there is seen
+--- only here. nil without a container API.
+function RaidPrep.keyring(bags, container)
+	if not RaidPrep.hasContainers() then
 		return nil
 	end
 	local ids = {}
-	for slot = 1, size do
-		local id = itemOf(container.link(bag, slot))
-		if id ~= nil then
-			ids[id] = true
+	local keyring = RaidPrep.keyringBag()
+	if keyring ~= nil then
+		for slot = 1, container.size(keyring) do
+			local id = itemOf(container.link(keyring, slot))
+			if id ~= nil then
+				ids[id] = true
+			end
+		end
+	end
+	for _, bag in ipairs(bags) do
+		for slot = 1, container.size(bag) do
+			local id, classId = itemOf(container.link(bag, slot))
+			if id ~= nil and classId == RaidPrep.KEY_CLASS then
+				ids[id] = true
+			end
 		end
 	end
 	return sortedKeys(ids)
@@ -174,7 +185,7 @@ function RaidPrep.read(bags, container)
 	return {
 		resistances = RaidPrep.resistances(),
 		supplies = RaidPrep.supplies(bags, container),
-		keyring = RaidPrep.keyring(container),
+		keyring = RaidPrep.keyring(bags, container),
 		quests = RaidPrep.quests(),
 	}
 end

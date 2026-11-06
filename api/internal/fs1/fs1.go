@@ -71,8 +71,8 @@ type Decoded struct {
 	// (supplies=); HasSupplies is false for an export from an addon too old to write it.
 	Supplies    map[int]int
 	HasSupplies bool
-	// Keyring is the keyring's item ids (locks=); HasKeyring false when the client has no
-	// keyring or the addon predates it.
+	// Keyring is the keys the character carries (locks=: the keyring plus any Key-class item
+	// in the bags); HasKeyring false when the addon predates the section.
 	Keyring    []int
 	HasKeyring bool
 	// Quests is attunement quest id -> completed (quests=), every quest the addon asked the

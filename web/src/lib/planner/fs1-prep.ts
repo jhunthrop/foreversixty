@@ -4,7 +4,7 @@
 //
 //   school=<fire>:<nature>:<frost>:<shadow>:<arcane>   resistance totals
 //   supplies=<item_id>:<count>,...                     Consumable-class stacks in the bags
-//   locks=<item_id>,...                                the keyring's items
+//   locks=<item_id>,...                                the keys carried (keyring and bags)
 //   quests=<quest_id>:<0|1>,...                        attunement quests, 1 when done
 //
 // Read leniently, unlike the other known sections: a malformed entry is dropped and a
