@@ -52,6 +52,10 @@ type REST interface {
 	PutCommands(ctx context.Context, serverID string, cmds []Command) error
 	EditOriginal(ctx context.Context, interactionToken string, m Message) error
 	FollowUp(ctx context.Context, interactionToken string, m Message) error
+	// AddMemberRole gives a server member a role (the bot needs Manage Roles, above the role).
+	AddMemberRole(ctx context.Context, serverID, userID, roleID string) error
+	// OpenDM is the bot's direct-message channel with a Discord user.
+	OpenDM(ctx context.Context, userID string) (string, error)
 }
 
 // APIError is a non-2xx answer from Discord. It never carries a credential.
@@ -324,4 +328,23 @@ func (r *HTTPREST) ServerLayout(ctx context.Context, serverID string) (ServerLay
 	}
 	layout.BotRoleIDs = member.Roles
 	return layout, nil
+}
+
+func (r *HTTPREST) AddMemberRole(ctx context.Context, serverID, userID, roleID string) error {
+	path := "/guilds/" + url.PathEscape(serverID) + "/members/" + url.PathEscape(userID) + "/roles/" + url.PathEscape(roleID)
+	return r.do(ctx, call{method: http.MethodPut, path: path, botAuth: true})
+}
+
+func (r *HTTPREST) OpenDM(ctx context.Context, userID string) (string, error) {
+	var out struct {
+		ID string `json:"id"`
+	}
+	body := map[string]string{"recipient_id": userID}
+	if err := r.do(ctx, call{method: http.MethodPost, path: "/users/@me/channels", botAuth: true, body: body, out: &out}); err != nil {
+		return "", err
+	}
+	if out.ID == "" {
+		return "", errors.New("discordbot: direct message channel answered without an id")
+	}
+	return out.ID, nil
 }

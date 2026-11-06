@@ -4796,6 +4796,363 @@ components:
               properties:
                 priority: { type: string, enum: [HIGH, NORMAL] }
                 collapse_key: { type: string, description: "widget.refresh, live-raid-<id> or live-sim-<id>." }
+    RecruitWanted:
+      type: object
+      description: One "what we look for" line. spec is a specs.json key of class; spec_name the catalogue's words for it.
+      required: [class, spec, spec_name, note]
+      properties:
+        class: { type: string, description: "A class slug: warrior, paladin, hunter, rogue, priest, shaman, mage, warlock, druid." }
+        spec: { type: [string, "null"] }
+        spec_name: { type: [string, "null"], description: "\"Holy Paladin\"; null without a spec." }
+        note: { type: string, maxLength: 80 }
+    GuildRecruitCard:
+      type: object
+      description: >-
+        The public recruiting card (GET /v1/guilds/{id}/recruit). members is verified accounts;
+        progress is the public guild page's tier bar (GET .../progression's tier as anyone reads
+        it); officers are the guild master and officers the public guild page already names (a
+        boss kill in one of the guild's public, unflagged reports), one per account, guild master
+        first. raid_nights.text is the officers' words; raid_nights.upcoming lists the guild's
+        planned raids over the next 14 days (at most 8) only while open, for the viewer's own clock.
+      required: [guild, members, open, pitch, raid_nights, progress, wanted, officers, updated_at]
+      properties:
+        guild:
+          type: object
+          title: RecruitGuild
+          required: [id, name, region, ruleset, faction, crest_url, path]
+          properties:
+            id: { type: integer, format: int64 }
+            name: { type: string }
+            region: { type: string }
+            ruleset: { type: string }
+            faction: { type: [string, "null"], enum: [alliance, horde, null] }
+            crest_url: { type: [string, "null"] }
+            path: { type: string, description: "The guild page's site path." }
+        members: { type: integer }
+        open: { type: boolean, description: "Whether applications are open." }
+        pitch: { type: string, maxLength: 500 }
+        raid_nights:
+          type: object
+          title: RecruitNights
+          required: [text, upcoming, timezone]
+          properties:
+            text: { type: [string, "null"], maxLength: 120 }
+            upcoming: { type: array, items: { type: string, format: date-time } }
+            timezone: { type: [string, "null"], description: "The guild's IANA raid zone; null when never set." }
+        progress:
+          type: object
+          title: RecruitProgress
+          required: [name, raids, named_encounters, down, pulls_total]
+          properties:
+            name: { type: string }
+            raids: { type: array, items: { type: string } }
+            named_encounters: { type: integer }
+            down: { type: integer }
+            pulls_total: { type: integer }
+        wanted: { type: array, items: { $ref: '#/components/schemas/RecruitWanted' } }
+        officers:
+          type: array
+          items:
+            type: object
+            title: RecruitOfficer
+            required: [name, class, spec, rank]
+            properties:
+              name: { type: string }
+              class: { type: [string, "null"] }
+              spec: { type: [string, "null"], description: "The spec word of the kill that names them (\"Holy\")." }
+              rank: { type: string, enum: [leader, officer] }
+        updated_at: { type: [string, "null"], format: date-time }
+    GuildRecruitSettings:
+      type: object
+      description: An officer's view of the card, with the Discord role the bot grants an accepted applicant.
+      required: [card, discord_role_id]
+      properties:
+        card: { $ref: '#/components/schemas/GuildRecruitCard' }
+        discord_role_id: { type: [string, "null"], pattern: '^[0-9]{17,20}$' }
+    RecruitPatch:
+      type: object
+      description: An officer's edit; an absent field is left as it is. discord_role_id "" clears it.
+      properties:
+        open: { type: boolean }
+        pitch: { type: string, maxLength: 500 }
+        raid_nights: { type: string, maxLength: 120 }
+        wanted:
+          type: array
+          maxItems: 12
+          items:
+            type: object
+            title: RecruitWantedInput
+            required: [class]
+            properties:
+              class: { type: string }
+              spec: { type: [string, "null"] }
+              note: { type: string, maxLength: 80 }
+        discord_role_id: { type: string, description: "A Discord role id (17 to 20 digits) in the guild's own server, or \"\"." }
+    ApplicationInput:
+      type: object
+      required: [character_key]
+      properties:
+        character_key: { type: string, description: "One of the applicant's own characters, on the guild's region and ruleset." }
+        message: { type: string, maxLength: 1000 }
+        availability: { type: string, maxLength: 200 }
+        discord_dm: { type: boolean, description: "\"Message me on Discord about this application\"; off by default. The bot DMs the decision only when on." }
+    ApplicantCharacter:
+      type: object
+      description: >-
+        The character an application names. class and level from the character, spec from its
+        newest ranked fight in a public, unflagged report, item_level the Battle.net equipped
+        figure else that fight's. best_parse is the roster's best boss parse rule over every
+        report (an applicant has none of the guild's own yet); null with none.
+      required: [character_key, name, class, spec, spec_name, level, item_level, best_parse]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: [string, "null"] }
+        spec: { type: [string, "null"] }
+        spec_name: { type: [string, "null"] }
+        level: { type: [integer, "null"] }
+        item_level: { type: [integer, "null"] }
+        best_parse:
+          oneOf:
+            - type: object
+              title: ApplicantBestParse
+              required: [metric, value, percentile, encounter, report_id, fight_index]
+              properties:
+                metric: { type: string, enum: [dps, hps] }
+                value: { type: number }
+                percentile: { type: [number, "null"] }
+                encounter: { type: string }
+                report_id: { type: string }
+                fight_index: { type: integer }
+            - { type: "null" }
+    GuildApplication:
+      type: object
+      description: One application as its applicant reads it.
+      required: [id, guild_id, status, created_at, decided_at, message, availability, discord_dm, character]
+      properties:
+        id: { type: integer, format: int64 }
+        guild_id: { type: integer, format: int64 }
+        status: { type: string, enum: [pending, accepted, declined, withdrawn] }
+        created_at: { type: string, format: date-time }
+        decided_at: { type: [string, "null"], format: date-time }
+        message: { type: string }
+        availability: { type: string }
+        discord_dm: { type: boolean }
+        character: { $ref: '#/components/schemas/ApplicantCharacter' }
+    GuildApplications:
+      type: object
+      required: [rows]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/GuildApplication' } }
+    GuildApplicationVotes:
+      type: object
+      description: voters is how many verified officers (guild master included) the guild has; mine the viewer's own vote.
+      required: [yes, no, voters, mine]
+      properties:
+        yes: { type: integer }
+        no: { type: integer }
+        voters: { type: integer }
+        mine: { type: [string, "null"], enum: [yes, no, null] }
+    GuildOfficerApplication:
+      type: object
+      description: >-
+        One application as officers read it: the applicant's fields, the votes, the deciding
+        officer by their character on the roster (null while pending or withdrawn), and what the
+        bot did on the decision (role_outcome, dm_outcome; DiscordOutcome's reason words or
+        granted / sent), null until one is made.
+      required: [id, guild_id, status, created_at, decided_at, message, availability, discord_dm, character, votes, decided_by, role_outcome, dm_outcome]
+      properties:
+        id: { type: integer, format: int64 }
+        guild_id: { type: integer, format: int64 }
+        status: { type: string, enum: [pending, accepted, declined, withdrawn] }
+        created_at: { type: string, format: date-time }
+        decided_at: { type: [string, "null"], format: date-time }
+        message: { type: string }
+        availability: { type: string }
+        discord_dm: { type: boolean }
+        character: { $ref: '#/components/schemas/ApplicantCharacter' }
+        votes: { $ref: '#/components/schemas/GuildApplicationVotes' }
+        decided_by:
+          oneOf:
+            - { $ref: '#/components/schemas/GuildCharacterRef' }
+            - { type: "null" }
+        role_outcome: { type: [string, "null"] }
+        dm_outcome: { type: [string, "null"] }
+    GuildCharacterRef:
+      type: object
+      description: An account named by its character on the guild's roster.
+      required: [name, class, character_key]
+      properties:
+        name: { type: string }
+        class: { type: [string, "null"] }
+        character_key: { type: string }
+    GuildOfficerApplications:
+      type: object
+      description: Every pending application, oldest first, then the latest 20 decided ones, newest first.
+      required: [rows, pending, discord_role_id]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/GuildOfficerApplication' } }
+        pending: { type: integer, description: "How many rows are pending." }
+        discord_role_id: { type: [string, "null"] }
+    DiscordOutcome:
+      type: object
+      description: >-
+        One bot step on a decision. done is true when it happened; else reason is no_role_set
+        (no recruit role configured), no_bot (no bot in the guild's server), not_linked (the
+        applicant has no linked Discord account), not_opted_in (the DM only: the applicant left
+        "Message me on Discord" off), not_accepted (the role only: a decline grants nothing),
+        discord_refused (Discord said no: not in the server, missing Manage Roles, role above the
+        bot's) or failed (the bot could not be reached). The decision stands either way.
+      required: [done, reason]
+      properties:
+        done: { type: boolean }
+        reason: { type: [string, "null"], enum: [no_role_set, no_bot, not_linked, not_opted_in, not_accepted, discord_refused, failed, null] }
+    GuildApplicationDecision:
+      type: object
+      required: [application, discord_role, discord_dm]
+      properties:
+        application: { $ref: '#/components/schemas/GuildOfficerApplication' }
+        discord_role: { $ref: '#/components/schemas/DiscordOutcome' }
+        discord_dm: { $ref: '#/components/schemas/DiscordOutcome' }
+    GuildMemberNote:
+      type: object
+      description: One private officer note. may_delete is the viewing officer's own note, or any for the guild master.
+      required: [id, body, author, created_at, may_delete]
+      properties:
+        id: { type: integer, format: int64 }
+        body: { type: string, maxLength: 1000 }
+        author:
+          oneOf:
+            - { $ref: '#/components/schemas/GuildCharacterRef' }
+            - { type: "null" }
+        created_at: { type: string, format: date-time }
+        may_delete: { type: boolean }
+    GuildMemberNotes:
+      type: object
+      required: [rows]
+      properties:
+        rows: { type: array, description: "Newest first.", items: { $ref: '#/components/schemas/GuildMemberNote' } }
+    GuildReadinessRow:
+      type: object
+      description: The readiness board's row for one character (GET /v1/guilds/{id}/readiness rows[]).
+      required: [character_key, name, class, spec, consent, level, gear_gap, enchants, consumables, talent_points_unspent, talent_points_read, item_level, item_level_delta, logged_at, failing, synced_before_cutoff, no_export]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string }
+        spec: { type: string }
+        consent: { type: string }
+        level: { type: [integer, "null"] }
+        gear_gap:
+          oneOf:
+            - type: object
+              title: ReadinessGearGap
+              required: [upgrades, gain_dps, not_sim_checked, unit]
+              properties:
+                upgrades: { type: integer }
+                gain_dps: { type: number }
+                not_sim_checked: { type: integer }
+                unit: { type: [string, "null"], description: "\"dps\" for a damage spec, the BiS page's unit; null for a healer or tank." }
+            - { type: "null" }
+        enchants:
+          type: object
+          title: ReadinessEnchants
+          required: [missing_slots, checked]
+          properties:
+            missing_slots: { type: array, items: { type: string } }
+            checked: { type: boolean }
+        consumables:
+          type: object
+          title: ReadinessConsumables
+          required: [state]
+          properties:
+            state: { type: string, enum: [stocked, short, unknown] }
+        talent_points_unspent: { type: integer }
+        talent_points_read: { type: boolean }
+        item_level: { type: [integer, "null"] }
+        item_level_delta: { type: [integer, "null"] }
+        logged_at: { type: string, format: date-time }
+        failing: { type: integer }
+        synced_before_cutoff: { type: [boolean, "null"] }
+        no_export: { type: boolean }
+        nudge_text: { type: string }
+    GuildMemberProfile:
+      type: object
+      description: >-
+        One member's profile, officer or self. member is the home's roster row for the picked
+        character (character_key, else the main, else the first), null when none of the account's
+        characters is on the roster with an export; the sections are then empty or null.
+        attendance.source is the guild's attendance source: in raids mode last_4 and last_30 are
+        the last 4 and 30 logged raids and nights the last 4 one by one; in reports mode last_4 is
+        the last 4 reports and last_30 is null. loot counts every award to the character (this
+        tier, as the loot council counts). readiness is the readiness board's row (verified
+        characters only), its gear_gap in the BiS page's unit. notes is present for an officer only.
+      required: [account_key, member, characters, attendance, loot, readiness]
+      properties:
+        account_key: { type: string }
+        member:
+          oneOf:
+            - { $ref: '#/components/schemas/GuildRosterRow' }
+            - { type: "null" }
+        characters:
+          type: array
+          items:
+            type: object
+            title: ProfileCharacter
+            required: [character_key, name, class, is_main]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: [string, "null"] }
+              is_main: { type: boolean }
+        attendance:
+          oneOf:
+            - type: object
+              title: ProfileAttendance
+              required: [source, last_4, last_30, nights]
+              properties:
+                source: { type: string, enum: [raids, reports] }
+                last_4: { $ref: '#/components/schemas/GuildAttendance' }
+                last_30:
+                  oneOf:
+                    - { $ref: '#/components/schemas/GuildAttendance' }
+                    - { type: "null" }
+                nights:
+                  type: array
+                  items:
+                    type: object
+                    title: ProfileNight
+                    required: [raid_id, starts_at, outcome, excused]
+                    properties:
+                      raid_id: { type: integer, format: int64 }
+                      starts_at: { type: string, format: date-time }
+                      outcome: { type: [string, "null"], enum: [present, late, absent, no_show, null] }
+                      excused: { type: boolean }
+            - { type: "null" }
+        loot:
+          type: object
+          title: ProfileLoot
+          required: [count, items]
+          properties:
+            count: { type: integer }
+            items:
+              type: array
+              items:
+                type: object
+                title: ProfileLootItem
+                required: [item_id, name, icon, quality, raid_id, awarded_at]
+                properties:
+                  item_id: { type: integer }
+                  name: { type: [string, "null"] }
+                  icon: { type: [string, "null"] }
+                  quality: { type: [integer, "null"] }
+                  raid_id: { type: [integer, "null"], format: int64 }
+                  awarded_at: { type: string, format: date-time }
+        readiness:
+          oneOf:
+            - { $ref: '#/components/schemas/GuildReadinessRow' }
+            - { type: "null" }
+        notes: { type: array, description: "Officers only; never present for a member.", items: { $ref: '#/components/schemas/GuildMemberNote' } }
   parameters:
     XApp:
       name: X-App
@@ -8385,4 +8742,416 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '409':
           description: A link already has that slug
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+
+  /v1/guilds/{id}/recruit:
+    get:
+      summary: The guild's public recruiting card
+      description: Public, signed in or not; edge-cached 60 s. Carries no officer-only field.
+      operationId: getGuildRecruit
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The card"
+          x-fixtures: [guild.recruit]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildRecruitCard' } } }
+        '404':
+          description: "No such guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    patch:
+      summary: Officers edit the recruiting card and the role an accepted applicant gets
+      description: >-
+        A verified officer or the guild master; 409 claim_contested while the claim is
+        contested. wanted replaces the whole list (at most 12 lines, a known class, a spec of
+        that class, a note of at most 80). Answers the card with discord_role_id beside it.
+      operationId: patchGuildRecruit
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/RecruitPatch' } } }
+      responses:
+        '200':
+          description: "The card as saved"
+          x-fixtures: [guild.recruit.settings]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildRecruitSettings' } } }
+        '400':
+          description: "invalid, fields naming the broken field and its rule"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "Not signed in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: "Not a verified officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/applications:
+    post:
+      summary: Apply to the guild with one of your characters
+      description: >-
+        Signed in; 10 an hour per IP. One open application per guild and account. Refused while
+        the guild is not recruiting (409 not_recruiting), for a character that is not yours (400
+        invalid) or not on the guild's region and ruleset (400 wrong_realm), for a verified
+        member (409 already_member) and with one already open (409 already_applied).
+      operationId: applyToGuild
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/ApplicationInput' } } }
+      responses:
+        '201':
+          description: "The application, pending"
+          x-fixtures: [guild.application]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildApplication' } } }
+        '400':
+          description: "invalid or wrong_realm"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "Not signed in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "not_recruiting, already_applied or already_member"
+          x-fixtures: [guild.application.error-already-applied]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    get:
+      summary: The officers' application list
+      description: A verified officer or the guild master. Pending first (oldest first), then the latest 20 decisions.
+      operationId: listGuildApplications
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The list"
+          x-fixtures: [guild.applications]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildOfficerApplications' } } }
+        '401':
+          description: "Not signed in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: "Not a verified officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/applications/mine:
+    get:
+      summary: Your own applications to the guild, newest first
+      operationId: myGuildApplications
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "Your applications; rows is [] when you have none"
+          x-fixtures: [guild.applications.mine]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildApplications' } } }
+        '401':
+          description: "Not signed in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/applications/{app}/withdraw:
+    post:
+      summary: Withdraw your own pending application
+      operationId: withdrawGuildApplication
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The application, withdrawn"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildApplication' } } }
+        '401':
+          description: "Not signed in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such application of yours"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "application_closed: already decided or withdrawn"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/applications/{app}/vote:
+    put:
+      summary: An officer votes yes or no on a pending application (changeable)
+      operationId: voteGuildApplication
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: VoteInput
+              required: [vote]
+              properties:
+                vote: { type: string, enum: [yes, no] }
+      responses:
+        '200':
+          description: "The tally"
+          x-fixtures: [guild.application.votes]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildApplicationVotes' } } }
+        '400':
+          description: "invalid: vote is not yes or no"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: "Not a verified officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such application in this guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "application_closed, or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      summary: An officer takes their vote back
+      operationId: unvoteGuildApplication
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The tally"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildApplicationVotes' } } }
+        '403':
+          description: "Not a verified officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such application in this guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "application_closed, or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/applications/{app}/accept:
+    post:
+      summary: An officer accepts an application
+      description: >-
+        Joins the applicant's account the way a redeemed invite does (verified at once; their
+        exported characters naming the guild attach). Then the bot grants the guild's recruit role
+        to the applicant's linked Discord user and, only if the applicant opted in, DMs the
+        decision. Neither step can undo the accept; discord_role and discord_dm say what happened.
+      operationId: acceptGuildApplication
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The decision"
+          x-fixtures: [guild.application.accept]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildApplicationDecision' } } }
+        '403':
+          description: "Not a verified officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such application in this guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "application_closed, or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/applications/{app}/decline:
+    post:
+      summary: An officer declines an application
+      description: Grants nothing (discord_role reason not_accepted); DMs the decision only if the applicant opted in.
+      operationId: declineGuildApplication
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The decision"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildApplicationDecision' } } }
+        '403':
+          description: "Not a verified officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such application in this guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "application_closed, or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/members/{account}/profile:
+    get:
+      summary: One member's profile (officer or self)
+      description: account is the roster's account_key ("u:42") or "me". Notes only for an officer.
+      operationId: getGuildMemberProfile
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: account, in: path, required: true, schema: { type: string } }
+        - { name: character_key, in: query, schema: { type: string }, description: "Which of the account's roster characters; default its main, else its first." }
+      responses:
+        '200':
+          description: "The profile"
+          x-fixtures: [guild.member.profile]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildMemberProfile' } } }
+        '401':
+          description: "Not signed in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: "Another member's profile, not an officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild, or the account is not in it"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/members/{account}/notes:
+    get:
+      summary: The private officer notes on a member, newest first (officers only)
+      description: Notes are about the account, so they survive a rename or an alt swap. No member read ever carries them.
+      operationId: listGuildMemberNotes
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: account, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The notes"
+          x-fixtures: [guild.member.notes]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildMemberNotes' } } }
+        '403':
+          description: "Not a verified officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild, or the account is not in it"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    post:
+      summary: An officer adds a note on a member
+      operationId: addGuildMemberNote
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: account, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: MemberNoteInput
+              required: [body]
+              properties:
+                body: { type: string, minLength: 1, maxLength: 1000 }
+      responses:
+        '201':
+          description: "The note"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildMemberNote' } } }
+        '400':
+          description: "invalid: empty or over 1000 characters"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: "Not a verified officer"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild, or the account is not in it"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/members/{account}/notes/{note}:
+    delete:
+      summary: Delete a note (its author, or the guild master for any)
+      operationId: deleteGuildMemberNote
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: account, in: path, required: true, schema: { type: string } }
+        - { name: note, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "Removed"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, title: NoteRemoved, required: [status], properties: { status: { type: string, enum: [removed] } } }
+        '403':
+          description: "Not a verified officer, or not the note's author and not the guild master"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such note on this member"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "claim_contested"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
