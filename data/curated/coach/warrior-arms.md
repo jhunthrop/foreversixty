@@ -27,14 +27,13 @@ This is the best Arms Warrior on Forever. Arms is the two-handed warrior: Rend, 
 - Overpower the moment it lights up, even ahead of Mortal Strike from forty. A dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in.
 - Mortal Strike on cooldown from forty, and from fifty-seven in the raid build Reckless Swings right behind it.
 - Slam only with Improved Slam, between Mortal Strikes from forty: the talent keeps your swing timer running through the cast.
-- Spearing Strike in the raid build, on any free global in Battle Stance. It stops at the execute swap.
+- Spearing Strike from twenty-five in the raid build, on any free global in Battle Stance. It stops at the execute swap.
 - Heroic Strike only when you are about to cap at ninety or more. Below that, keep the rage for Overpower from twelve, Execute from twenty-four and Mortal Strike from forty.
 - Hamstring only with a Windfury Totem in the group, on a free global for ten rage. Never from twenty-five percent down: that rage is the first Execute.
 - Execute from twenty-four, at twenty percent, in Battle Stance first. It spends your whole bar, so that first Execute is your biggest hit of the fight.
 - Recklessness from fifty: once that first Execute has emptied the bar, swap to Berserker Stance and press it. Before fifty, stay in Battle Stance.
 - Sweeping Strikes only with two or more targets, from thirty-six. Press it in Battle Stance, then Berserker Stance and Whirlwind, and back for Overpower and Rend.
-- Whirlwind hits up to four targets and every Sweeping Strikes charge copies a hit onto a second one.
-- Use Cleave instead of Heroic Strike when two mobs are in front of you.
+- Cleave from twenty instead of Heroic Strike when two mobs are in front of you.
 
 **The mistakes to look for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -46,7 +45,7 @@ This is the best Arms Warrior on Forever. Arms is the two-handed warrior: Rend, 
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want food (Smoked Desert Dumplings); a weapon enchant (Elemental Sharpening Stone); a combat potion (Mighty Rage Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want food (Smoked Desert Dumplings) from forty-five; a weapon enchant (Elemental Sharpening Stone) from fifty; a combat potion (Mighty Rage Potion) from forty-six, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -54,8 +53,8 @@ This is the best Arms Warrior on Forever. Arms is the two-handed warrior: Rend, 
 - drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each when its line says, never earlier, and again the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the rage bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
-- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check food, a weapon enchant and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for.
+- drill.preparation: Before every boss, check food from thirty-five, a weapon enchant from fifty and a combat potion from forty-six on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

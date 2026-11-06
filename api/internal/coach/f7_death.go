@@ -25,6 +25,14 @@ const (
 	deathStoneTalent       = "Improved Healthstone"
 )
 
+// forbearanceSpellID is Forbearance (1.60.1.70790/spellconst/paladin.json#25771): the
+// minute after a Divine Shield, Divine Protection or Blessing of Protection lands, during
+// which none of the three can be cast on the paladin who carries it.
+const forbearanceSpellID = 25771
+
+// forbearanceBlocks is the defensive families Forbearance stops (Lay on Hands is not one).
+var forbearanceBlocks = map[string]bool{"Divine Shield": true, "Divine Protection": true, "Blessing of Protection": true}
+
 const (
 	deathFactAmount = "killing blow damage"
 	deathFactUnit   = "damage"
@@ -237,9 +245,14 @@ func isHealingConsumable(name string) bool {
 // trainable level, and only when the level is known: it is proven ready from its
 // cooldown's length into the pull (a cast at the end of an earlier pull is back by then),
 // and otherwise is only not used this pull (§20.4: fires only when the data proves it).
+// A defensive Forbearance blocks is neither while the player carries it at the death.
 func defensivesAt(in Input, atMS int64) deathDefensives {
 	var out deathDefensives
+	forbearance := auraUpAt(in.Fight, in.Row.GUID, forbearanceSpellID, atMS)
 	for _, e := range in.Tables.Rules.Defensives {
+		if forbearance && forbearanceBlocks[e.Family] {
+			continue
+		}
 		lastID, lastMS, cast := lastCastBefore(in.Fight, in.Row.GUID, e.SpellIDs, atMS)
 		if cast {
 			sc, known := in.Tables.Spells[lastID]
@@ -268,6 +281,22 @@ func defensivesAt(in Input, atMS int64) deathDefensives {
 		}
 	}
 	return out
+}
+
+// auraUpAt reports whether guid carried spellID at atMS: a segment of its aura track that
+// started at or before atMS and ended at or after it (an aura a death strips ends then).
+func auraUpAt(fight summary.Summary, guid string, spellID, atMS int64) bool {
+	for _, tr := range fight.Auras {
+		if tr.TargetGUID != guid || tr.SpellID != spellID {
+			continue
+		}
+		for _, seg := range tr.Segments {
+			if seg.StartMS <= atMS && atMS <= seg.EndMS {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // lastCastBefore is guid's latest successful cast of any of ids before atMS.

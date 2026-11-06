@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
@@ -172,11 +171,7 @@ func foldPreparation(sum summary.Summary, adapter *percentileAdapter) bool {
 		band = ratingengine.BandTypical
 	}
 	for _, row := range sum.Roster {
-		var cat *consumables.RoleCatalogue
-		if rc, ok := consumables.Load().For(row.Role); ok {
-			cat = &rc
-		}
-		value, ok := ratingengine.PreparationValue(sum, row.GUID, cat)
+		value, ok := ratingengine.PreparationValue(sum, row.GUID, preparationCatalogue(row))
 		if !ok {
 			continue
 		}

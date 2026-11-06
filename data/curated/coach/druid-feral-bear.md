@@ -28,7 +28,7 @@ This is the best Feral Bear Druid on Forever. The bear tanks on health and armor
 - Faerie Fire whenever the boss does not have it.
 - Demoralizing Roar whenever the boss does not have it, and again in its last three seconds, unless a warrior's Demoralizing Shout is already on it.
 - Maul queued on your next swing whenever you have fifteen rage spare. From forty to fifty-three, wait for thirty rage, so Primal Bite seldom waits on rage.
-- Swipe only with two or more targets in front of you, above forty rage. On a single boss, put the rage into Maul, Lacerate and Primal Bite.
+- Swipe only with two or more targets in front of you, above forty rage. On a single boss, put the rage into Maul, and into Lacerate from twenty-five and Primal Bite from forty.
 - Challenging Roar is your panic button when the pack runs to the healers.
 - Barkskin takes twenty percent off physical damage for fifteen seconds every minute, and Forever lets you cast it in Bear Form.
 - Frenzied Regeneration turns up to ten rage a second into health for ten seconds, and in Forever a full one hundred rage of it heals your whole health bar.
@@ -43,7 +43,7 @@ This is the best Feral Bear Druid on Forever. The bear tanks on health and armor
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want a flask (Flask of the Titans); food (Smoked Desert Dumplings); a weapon enchant (Elemental Sharpening Stone); a combat potion (Mighty Rage Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want a flask (Flask of the Titans) from fifty; food (Smoked Desert Dumplings) from forty-five; a weapon enchant (Elemental Sharpening Stone) from fifty; a combat potion (Mighty Rage Potion) from forty-six, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -51,8 +51,8 @@ This is the best Feral Bear Druid on Forever. The bear tanks on health and armor
 - drill.uptime: Watch the debuffs on the boss and the buff on you. Refresh each where its line says, before it drops: a stacking debuff that falls off takes its stacks with it.
 - drill.idle: When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.
 - drill.resource: Watch the rage bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
-- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check a flask, food, a weapon enchant, a combat potion and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for.
+- drill.preparation: Before every boss, check a flask from fifty, food from thirty-five, a weapon enchant from fifty, a combat potion from forty-six and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Put your emergency cooldown on a key you can hit without looking, and press it on a dummy pull the moment your health falls past half.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

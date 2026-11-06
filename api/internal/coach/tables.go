@@ -58,6 +58,7 @@ type classKey struct{ build, class string }
 type classData struct {
 	spells    map[int64]SpellConst
 	trainable map[string][]TrainableRank
+	baseMana  map[int64]int64 // level -> base mana; nil when the build has no levels.json
 }
 
 // BuildAt is the client build in force at t: the newest client build (numeric compare, as
@@ -179,10 +180,11 @@ func (f *FileTables) TablesFor(ctx context.Context, row summary.RosterRow, encou
 	if err != nil {
 		return Tables{}, err
 	}
-	t := Tables{Rules: rules, Spells: class.spells, Trainable: class.trainable, RankChoices: choices, WorstActions: worst}
+	t := Tables{Rules: rules, Spells: class.spells, BaseMana: class.baseMana[row.Level], Trainable: class.trainable,
+		RankChoices: choices, WorstActions: worst}
 	t.Rotation, t.RotationOK = sims.RotationFor(build, slug, int(row.Level))
 	cat := consumables.Load()
-	t.Consumables, _ = cat.For(row.Role)
+	t.Consumables, _ = cat.ForPlayer(row.Role, slug, row.Level)
 	t.RaidBuffs = cat.RaidBuffs
 	if m, ok := mechanics.Load(encounterID); ok {
 		t.Mechanics = &m
@@ -232,10 +234,14 @@ func (f *FileTables) classFor(build, class string) (classData, error) {
 		return classData{}, err
 	}
 	trainable = withoutBookRanks(trainable, books)
+	baseMana, err := readBaseMana(f.BuildsDir, build, class)
+	if err != nil {
+		return classData{}, err
+	}
 	if f.classes == nil {
 		f.classes = map[classKey]classData{}
 	}
-	c := classData{spells: spells, trainable: trainable}
+	c := classData{spells: spells, trainable: trainable, baseMana: baseMana}
 	f.classes[key] = c
 	return c, nil
 }
@@ -256,6 +262,24 @@ func readBookRanks(buildsDir, build, class string) (map[int64]bool, error) {
 		return nil, fmt.Errorf("%s: %w", path, err)
 	}
 	return books, nil
+}
+
+// readBaseMana is class's base mana by level from <builds>/<build>/levels.json. A build
+// without the file has no base mana: nil, and a percent-of-base-mana cost stays unknown.
+func readBaseMana(buildsDir, build, class string) (map[int64]int64, error) {
+	path := filepath.Join(buildsDir, build, "levels.json")
+	data, err := os.ReadFile(path)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("coach tables: %s: %w", path, err)
+	}
+	baseMana, err := ParseBaseMana(data, class)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+	return baseMana, nil
 }
 
 // readBuildFile parses <builds>/<build>/<dir>/<class>.json; a missing file is ErrNoTables.

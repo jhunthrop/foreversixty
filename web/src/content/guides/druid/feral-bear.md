@@ -80,7 +80,7 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 5. **Maul** queued on your next swing whenever you have 15 rage spare. At levels 40 to 53 rage is short: queue Maul only at 30 rage, so Primal Bite seldom waits on rage when it comes off cooldown.
 6. **Swipe** only with two or more targets in front of you, above 40 rage. It hits up to three, and each hit grows with your attack power. On a single boss, leave it on the bar: the same rage does more threat in Maul, Lacerate and Primal Bite.
 
-**Adds.** Swipe moves to the top on a pack, with Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
+**Adds.** In a raid at 60, on three or more targets, Swipe goes to the top. On two targets, and while leveling, keep it below Primal Bite, Lacerate and Maul. Put Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
 
 **Cooldowns.** Barkskin takes 20% off physical damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns up to 10 rage a second into health for 10 seconds, and in Forever a full 100 rage of it heals your whole health bar. Use it under half health with rage banked, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
 
