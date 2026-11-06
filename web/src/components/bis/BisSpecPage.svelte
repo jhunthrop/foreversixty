@@ -112,6 +112,9 @@
   );
   const nextBand = $derived(data.bands[data.bands.indexOf(state.band) + 1]);
 
+  /** Fits "Night Elf"; the rare long race name ("High Order Skyborne") truncates in the field only. */
+  const RACE_FIELD_PX = 120;
+
   const groupsBar = $derived.by((): ControlGroup[] => {
     const presets = context.presetsFor(state.faction, state.band);
     const list: ControlGroup[] = [
@@ -143,7 +146,14 @@
         value: state.preset,
       });
     }
-    list.push({ label: 'Race', param: 'race', kind: 'select', options: raceOptions[state.faction], value: state.race });
+    list.push({
+      label: 'Race',
+      param: 'race',
+      kind: 'select',
+      options: raceOptions[state.faction],
+      value: state.race,
+      fieldWidth: RACE_FIELD_PX,
+    });
     return list;
   });
 
@@ -243,7 +253,7 @@
       </PageHeader>
     {/snippet}
     {#snippet bar()}
-      <ControlBar groups={groupsBar} label="Best in slot controls" onchange={onControl} testid="bis-controls">
+      <ControlBar groups={groupsBar} label="Best in slot controls" labelsFrom={1920} onchange={onControl} testid="bis-controls">
         {#snippet tail()}
           <BisSources on={state.sources} {counts} band={state.band} onchange={onSources} />
         {/snippet}

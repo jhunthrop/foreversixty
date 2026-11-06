@@ -34,7 +34,7 @@ export interface DollCell {
   /** The worn id is missing from our data. */
   unknown?: boolean;
   badge?: 'upgrade' | 'worn';
-  /** Short stats on line 2, after the source: `+8 Agi · +10 Sta`. */
+  /** Short stats after the name on line 1: `+8 Agi · +10 Sta`. */
   stats?: string;
   /** Line 2: where it comes from, in full; it wraps on a phone and is never truncated. */
   source?: string;

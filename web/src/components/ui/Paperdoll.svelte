@@ -1,8 +1,8 @@
 <!-- web/src/components/ui/Paperdoll.svelte -->
 <!-- The one paperdoll (web layout spec 2026-11-05 §4, owner decisions D3 and D10): two left-aligned
      columns in the character panel's order, icon first, each cell two lines. Line 1: the slot label
-     and its level flag, the icon in its quality frame, the item name in its quality colour, the gain
-     at the right. Line 2: the full source, the short stats and the next best (or the worn item).
+     and its level flag, the icon in its quality frame, the item name in its quality colour and its
+     short stats, the gain at the right. Line 2: the full source and the next best (or the worn item).
      One cell is selected; below 1760 px the selected cell expands in place under itself, from 1760
      the detail sits in the side inspector. Four modes (pick, compare, worn, report) differ only in
      the cells the caller maps (lib/ui/paperdoll.ts); the frame, cell, states and keyboard are one.
@@ -148,6 +148,7 @@
             data-bis-item={cell.unknown ? undefined : cell.item.id}
             data-testid={`item-hover-${cell.item.id}`}>{cell.item.name}</span
           >
+          {#if cell.stats}<span class="ui-doll-stats text-muted text-[13px] leading-5">{cell.stats}</span>{/if}
         {:else}
           <span class="text-muted text-[15px] leading-5">Nothing better yet</span>
         {/if}
@@ -157,8 +158,6 @@
           {cell.empty ?? ''}
         {:else}
           {#if cell.source}<span class="ui-doll-src" data-source-kind={cell.sourceKind}>{cell.source}</span
-            >{/if}
-          {#if cell.stats}<span class="ui-doll-sep" aria-hidden="true"> · </span><span>{cell.stats}</span
             >{/if}
           {#if cell.note}
             <span class="ui-doll-note" data-testid={`${testid}-note-${cell.slot}`}>
@@ -334,6 +333,15 @@
     flex-direction: column;
     gap: 1px;
     min-width: 0;
+  }
+  .ui-doll-line1 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 10px;
+  }
+  .ui-doll-stats {
+    white-space: nowrap;
   }
   .ui-doll-line2 {
     overflow-wrap: anywhere;

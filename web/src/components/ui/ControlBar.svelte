@@ -1,7 +1,7 @@
 <!-- web/src/components/ui/ControlBar.svelte -->
 <!-- The one control bar (web layout spec 2026-11-05 §3.4): a full-bleed 56 px row, sticky under the
      header, hairlines above and below, content in the page column. Left to right: segmented groups,
-     then selects, then the `end` content. Group labels show from 1280. Below 768 it is one 48 px line,
+     then selects, then the `end` content. Group labels show from 1280 (or 1920, `labelsFrom`). Below 768 it is one 48 px line,
      the choices in words and "Change", that expands the controls in place, stacked and full width,
      and collapses on a choice. A segmented group is a radio group of links (`?param=value`, or the
      option's own href for a path choice such as the spec), so it works before any script; the URL
@@ -22,6 +22,7 @@
     end,
     tail,
     sticky = true,
+    labelsFrom = 1280,
     staticField = false,
     onchange,
     id = 'control-bar',
@@ -36,6 +37,9 @@
     /** Groups the bar's own kinds do not cover (a multi-select), after the groups. */
     tail?: Snippet;
     sticky?: boolean;
+    /** The width the group labels show from: 1280 by default; 1920 for a bar whose choices name
+     *  themselves and need the room to stay on one row (the BiS bar). */
+    labelsFrom?: 1280 | 1920;
     /** Server-rendered for ControlBar.astro: its script wires the radios and selects. */
     staticField?: boolean;
     onchange?: (param: string, value: string) => void;
@@ -64,6 +68,7 @@
   class={['ui-cbar full-bleed', sticky && 'ui-cbar--sticky']}
   data-control-bar
   data-open={open ? '' : undefined}
+  data-labels-from={labelsFrom}
   role="group"
   aria-label={label}
   data-testid={testid}
@@ -126,12 +131,17 @@
               {/each}
             </div>
           {:else}
-            <div class="ui-cbar-select" data-param={group.param}>
+            <div
+              class="ui-cbar-select"
+              data-param={group.param}
+              data-fixed-width={group.fieldWidth === undefined ? undefined : 'true'}
+              style:--cbar-field-w={group.fieldWidth === undefined ? undefined : `${group.fieldWidth}px`}
+            >
               <Select
                 id={`${id}-${group.param}`}
                 label={group.label}
                 size="dense"
-                fit
+                fit={group.fieldWidth === undefined}
                 {staticField}
                 value={group.value}
                 options={group.options.map((option) => ({
@@ -237,6 +247,9 @@
       flex: none;
       height: 40px;
     }
+    .ui-cbar-select[data-fixed-width='true'] {
+      width: var(--cbar-field-w);
+    }
     .ui-cbar-end {
       margin-left: auto;
       display: flex;
@@ -245,7 +258,12 @@
     }
   }
   @media (min-width: 1280px) {
-    .ui-cbar-label {
+    .ui-cbar[data-labels-from='1280'] .ui-cbar-label {
+      display: block;
+    }
+  }
+  @media (min-width: 1920px) {
+    .ui-cbar[data-labels-from='1920'] .ui-cbar-label {
       display: block;
     }
   }
