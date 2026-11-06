@@ -83,7 +83,9 @@ test.describe('a saved sim from the prerendered fixture', () => {
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
     });
-    await expect(page.getByTestId('sim-dps')).toHaveText(new RegExp(`^\\s*${figure.replace('.', '\\.')}\\s*DPS\\s*$`));
+    await expect(page.getByTestId('sim-dps')).toHaveText(
+      new RegExp(`^\\s*${figure.replace('.', '\\.')}\\s*DPS\\s*$`),
+    );
     await expect(page.getByTestId('sim-head-meta')).toContainText('3:00');
     await expect(page.getByTestId('sim-answer-label')).toHaveText(
       `Saved sim · ${fixtureResult.iterations_run.toLocaleString('en-US')} runs`,
@@ -246,7 +248,9 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
 
 // A validated spec renders no note at all, rather than a green "all is well" line: dropping the
 // `!== 'validated'` clause in needsFidelityNote would break nothing without this.
-test('a saved sim for a validated spec carries the rotation section with no fidelity note', async ({ page }) => {
+test('a saved sim for a validated spec carries the rotation section with no fidelity note', async ({
+  page,
+}) => {
   await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('validated')));
   await page.goto('/sim/simfixtureab');
   await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();

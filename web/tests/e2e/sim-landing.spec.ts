@@ -119,7 +119,9 @@ test.describe('a signed-in member with characters', () => {
     await expect(page.getByTestId('page-title')).toHaveText('Thrallgar');
     await expect(simCharacter(page)).toContainText('Fury Warrior');
     // The source line the API actually answered: an addon export, captured just now.
-    await expect(page.getByTestId('sim-head-source')).toHaveText(/^Gear from the addon, \d{1,2} [A-Z][a-z]{2}$/);
+    await expect(page.getByTestId('sim-head-source')).toHaveText(
+      /^Gear from the addon, \d{1,2} [A-Z][a-z]{2}$/,
+    );
     await expect(page.getByTestId('sim-settings')).toBeVisible();
     await expect(page.getByTestId('sim-landing')).toHaveCount(0);
     await expect(page.getByTestId('sim-sources')).toHaveCount(0);
@@ -165,9 +167,7 @@ test.describe('a signed-in member with characters', () => {
   // The race refusal names itself; the landing's notice says the character could not be read
   // (spec §5, "Character from the header"). LandingState's appended "paste your export" hint
   // retired with the list.
-  test('a header character with no recorded race says why, and the landing stays up', async ({
-    page,
-  }) => {
+  test('a header character with no recorded race says why, and the landing stays up', async ({ page }) => {
     await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithMain('us/normal/roland'))));
     await gotoSim(page);
 

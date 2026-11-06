@@ -60,7 +60,9 @@ test('a nonsense paste shows the decoder’s own sentence and Run stays disabled
     .fill('https://foreversixty.gg/planner?code=FS2:1:warrior:orc:0/0/0:');
 
   await expect(run).toBeDisabled();
-  await expect(page.locator('#sim-cold-paste-input-error')).toHaveText('That code is FS2; this site reads FS1.');
+  await expect(page.locator('#sim-cold-paste-input-error')).toHaveText(
+    'That code is FS2; this site reads FS1.',
+  );
   await expect(simCharacter(page)).toHaveCount(0);
 });
 

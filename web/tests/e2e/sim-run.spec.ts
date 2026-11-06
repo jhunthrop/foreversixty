@@ -59,7 +59,13 @@ test('every run-line control is inert while the primary reads Stop, and live aga
   await expect(groups).toHaveAttribute('inert', /.*/);
   await expect(groups).toHaveAttribute('data-busy', '');
   await expect(groups).toHaveAttribute('title', 'Stop the run to change it');
-  for (const id of ['control-style', 'control-length', 'control-targets', 'control-buffs', 'control-precision']) {
+  for (const id of [
+    'control-style',
+    'control-length',
+    'control-targets',
+    'control-buffs',
+    'control-precision',
+  ]) {
     await expect(groups.getByTestId(id).first()).toBeAttached();
   }
   await expect(groups.getByTestId('sim-settings-more')).toBeAttached();

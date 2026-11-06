@@ -23,7 +23,8 @@ async function loadEveryCard(page: Page): Promise<void> {
 }
 
 /** The lazy holders (LazySection's `sim-section-<id>`), not their skeleton or error inside. */
-const HOLDERS = 'div[data-testid^="sim-section-"]:not([data-testid$="-skeleton"]):not([data-testid$="-error"])';
+const HOLDERS =
+  'div[data-testid^="sim-section-"]:not([data-testid$="-skeleton"]):not([data-testid$="-error"])';
 
 /** Each lazy holder's box against its section's, and what is left of its reserve. */
 function sectionBoxes(page: Page): Promise<{ id: string; box: number; card: number; minHeight: string }[]> {

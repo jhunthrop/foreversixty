@@ -1,12 +1,13 @@
 // web/tests/e2e/paperdoll.spec.ts
-// The shared paperdoll on the sim's character strip (`worn`) and the report's "At pull"
-// (`report`), web layout spec 2026-11-05 §4.2: every item opens the shared tooltip on hover,
+// The shared paperdoll on the sim's Gear section (`worn`, spec 2026-11-06-sim §4.5, open after
+// a run) and the report's "At pull" (`report`), web layout spec 2026-11-05 §4.2: every item opens the shared tooltip on hover,
 // focus and tap, and the tooltip carries the binding and armour lines the item row states. The
 // character page's own coverage is character-gear.spec.ts.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { pasteAndRun } from './support/sim-page';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -16,16 +17,15 @@ const activeBuild = JSON.parse(
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=12784|who=Simfury:Realm`;
 
 async function loadSim(page: Page): Promise<void> {
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('paperdoll-slot-head')).toHaveAttribute('data-state', 'item');
-  // The paste runs a sim at once; wait it out so the card is at rest before it is touched.
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
+  // The paste runs a sim at once; wait it out so the page is at rest before it is touched.
+  await pasteAndRun(page, FURY);
+  // The result's Gear section loads as it nears the viewport.
+  await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('sim-gear-doll-slot-head')).toHaveAttribute('data-state', 'item');
 }
 
-/** The strip's doll (the result's gear card further down draws the same items). */
-const strip = (page: Page) => page.getByTestId('paperdoll');
+/** The result's Gear doll. */
+const strip = (page: Page) => page.getByTestId('sim-gear-doll');
 
 test.describe('the sim card at 1280', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
@@ -34,10 +34,10 @@ test.describe('the sim card at 1280', () => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await loadSim(page);
-    await expect(page.getByTestId('paperdoll-name')).toHaveText('Simfury');
-    await expect(page.getByTestId('paperdoll-slot-neck')).toHaveAttribute('data-state', 'empty');
-    await expect(page.getByTestId('paperdoll-slot-neck')).toContainText('Empty');
-    await expect(page.getByTestId('paperdoll-slot-off_hand')).toContainText('Two-hand in main hand');
+    await expect(page.getByTestId('page-title')).toHaveText('Simfury');
+    await expect(page.getByTestId('sim-gear-doll-slot-neck')).toHaveAttribute('data-state', 'empty');
+    await expect(page.getByTestId('sim-gear-doll-slot-neck')).toContainText('Empty');
+    await expect(page.getByTestId('sim-gear-doll-slot-off_hand')).toContainText('Two-hand in main hand');
     const head = strip(page).getByTestId('item-hover-12640');
     await expect(head).toHaveText('Lionheart Helm');
     await head.hover();
@@ -47,7 +47,7 @@ test.describe('the sim card at 1280', () => {
     await expect(tip.getByTestId('item-tooltip-bind')).toHaveText('Binds when equipped');
     await expect(tip).toContainText('Plate');
     await page.mouse.move(0, 0);
-    await page.getByTestId('paperdoll-slot-main_hand').focus();
+    await page.getByTestId('sim-gear-doll-slot-main_hand').focus();
     await expect(tip).toContainText('Arcanite Reaper');
     await expect(tip).toHaveCount(1);
     expect(errors).toEqual([]);

@@ -8,6 +8,8 @@ import { addonCopy } from '../../src/lib/addon/copy';
 import { ACTIVE_BUILD } from './support/active-build';
 import { shareBuild } from './support/planner';
 import { nativeSelect } from './support/select';
+import { gotoSim, simCharacter } from './support/sim-page';
+import { simPageCopy } from '../../src/lib/sim/page-copy';
 
 // The fixture Fury Warrior every other /sim* spec in this suite already pastes (grepped
 // across tests/e2e for `FS1:`) -- a known-good FS1 v2 code for the fixture data build,
@@ -25,10 +27,10 @@ const envelope = (data: unknown) => ({
 
 test.describe('current character', () => {
   test('a named export pasted on /sim, then opening /planner bare, restores it', async ({ page }) => {
-    await page.goto('/sim');
+    await gotoSim(page);
     await page.getByTestId('sim-cold-paste-input').fill(NAMED_FURY);
     await page.getByTestId('sim-cold-paste-run').click();
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(simCharacter(page)).toBeVisible();
 
     // Planner rebuild spec §3: the proof of a restore on this page is the planner itself --
     // the pointer bridge (`decidePlannerLoad` still restores a bare /planner from
@@ -43,21 +45,23 @@ test.describe('current character', () => {
   });
 
   test('a code that names nobody is looked at and never becomes the current character', async ({ page }) => {
-    await page.goto(`/sim?code=${encodeURIComponent(FURY)}`);
-    await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('paperdoll-name')).toHaveCount(0);
+    await gotoSim(page, `/sim?code=${encodeURIComponent(FURY)}`);
+    await expect(simCharacter(page)).toBeVisible();
+    // Nobody is named: the title is the spec, not a character.
+    await expect(page.getByTestId('page-title')).toHaveText('Fury Warrior');
     expect(await page.evaluate(() => window.localStorage.getItem('fs.currentCharacter'))).toBeNull();
-    await page.goto('/sim');
-    await expect(page.getByTestId('sim-character')).toHaveCount(0);
+    await gotoSim(page);
+    await expect(page.getByTestId('sim-landing')).toBeVisible();
+    await expect(simCharacter(page)).toHaveCount(0);
   });
 
   test('Forget in the header clears a restored pointer for the next bare load', async ({ page, context }) => {
-    await page.goto('/sim');
+    await gotoSim(page);
     await page.getByTestId('sim-cold-paste-input').fill(NAMED_FURY);
     await page.getByTestId('sim-cold-paste-run').click();
     // The island boots after the shell's first paint (IslandScript.astro), so the pointer
     // is written a beat after `load`: wait for the character to show before leaving.
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(simCharacter(page)).toBeVisible();
 
     // Chosen in this visit: the selector says nothing about a restore.
     await page.getByTestId('character-selector').click();
@@ -67,29 +71,32 @@ test.describe('current character', () => {
     // A later visit (a new tab: a new session, the same stored pointer) restores it.
     const later = await context.newPage();
     await later.goto('/sim');
-    await expect(later.getByTestId('sim-character')).toBeVisible();
+    await expect(simCharacter(later)).toBeVisible();
     await later.getByTestId('character-selector').click();
     await expect(later.getByTestId('selector-restored')).toContainText('Restored your last character');
     await later.getByTestId('selector-forget').click();
 
-    await later.goto('/sim');
-    await expect(later.getByTestId('sim-character')).toHaveCount(0);
+    await gotoSim(later);
+    await expect(later.getByTestId('sim-landing')).toBeVisible();
+    await expect(simCharacter(later)).toHaveCount(0);
     expect(await later.evaluate(() => window.localStorage.getItem('fs.currentCharacter'))).toBeNull();
   });
 
   test('every paste box links to /setup', async ({ page }) => {
     await page.goto('/sim');
-    await expect(page.getByTestId('sim-cold-paste-setup')).toHaveAttribute('href', '/setup');
+    await expect(
+      page.getByTestId('sim-cold-paste').getByRole('link', { name: simPageCopy.paste.setUp }),
+    ).toHaveAttribute('href', /^\/setup(#|$)/);
 
     await page.goto('/planner');
     await expect(page.getByTestId('import-get-addon')).toHaveAttribute('href', '/setup');
   });
 
+  // The scope caveat is the landing head's one meta line now (spec 2026-11-06-sim §4.2, §6).
   test('the merged scope caveat is on /sim', async ({ page }) => {
     await page.goto('/sim');
-    await expect(page.getByTestId('sim-scope-note')).toHaveText(
-      'Damage specs are simulated; healing and tanking specs are not simulated yet.',
-    );
+    await expect(page.getByTestId('sim-head')).toContainText(simPageCopy.landingMeta);
+    await expect(page.getByTestId('sim-head')).toContainText('Damage specs only');
   });
 
   test("Droptimizer's every-upgrade rows offer Plan it, opening the planner with the item's code", async ({
