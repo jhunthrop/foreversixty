@@ -40,6 +40,9 @@ type Tables struct {
 	// nil today, and so does Task 29b.
 	Assignments  []ratingengine.Assignment
 	WorstActions map[string]bool // families on the spec's sims WorstActions list
+	// Talents is the player's talent ranks from the character's stored build; nil is
+	// unknown (Service.talentsOf fills it, TablesFor never does).
+	Talents PlayerTalents
 }
 
 // SpellConst is one spell's constants. CooldownMS is the larger of spellconst's
@@ -56,6 +59,9 @@ type SpellConst struct {
 	CostType   int64
 	CostKnown  bool
 	CostPct    float64
+	// MeleeOnly is true when every effect of the spell raises dodge or parry (Evasion,
+	// Deterrence): it can stop a melee swing or a physical attack, never a spell.
+	MeleeOnly bool
 }
 
 // CostAt is the spell's cost for a player with baseMana: the flat cost when the data
