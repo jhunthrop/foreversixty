@@ -1,7 +1,0 @@
-{
-  "specs": [
-    "paladin-holy",
-    "shaman-restoration"
-  ],
-  "reason": "Final pass, run C of 3: the shaman and paladin healers. Healers take up to 80 minutes each, so the 28 specs split across three runs that each fit the 250-minute ranking step."
-}
