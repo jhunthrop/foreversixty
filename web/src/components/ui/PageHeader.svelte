@@ -16,6 +16,7 @@
     answer,
     actions,
     tabs,
+    minRowHeight,
     testid,
   }: {
     title: string;
@@ -28,6 +29,10 @@
     /** The page's buttons, when it has no answer. */
     actions?: Snippet;
     tabs?: Snippet;
+    /** A CSS length: the row's floor from 1024 px, so a page whose answer changes height
+     *  (one spec's figure, another's four) keeps its title and controls at the same y. The
+     *  title block sits at the bottom of that area. */
+    minRowHeight?: string;
     testid?: string;
     /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
     children?: Snippet;
@@ -35,7 +40,7 @@
 </script>
 
 <header class="ui-page-header" data-testid={testid}>
-  <div class="ui-page-header-row">
+  <div class="ui-page-header-row" style:--row-min={minRowHeight}>
     <div class="flex min-w-0 items-center gap-4">
       {#if crest}{@render crest()}{/if}
       <div class="min-w-0">
@@ -79,6 +84,11 @@
     .ui-title {
       font-size: var(--text-title);
       line-height: var(--text-title--line-height);
+    }
+  }
+  @media (min-width: 1024px) {
+    .ui-page-header-row {
+      min-height: var(--row-min, auto);
     }
   }
   @media (min-width: 900px) {
