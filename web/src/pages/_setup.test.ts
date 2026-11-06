@@ -23,12 +23,9 @@ import {
   signInLine,
 } from '../lib/setup/progress';
 import activeBuild from '../data/active-build.json';
-import SetupPage, {
-  CURSEFORGE_URL,
-  DATA_GITHUB_RELEASES_URL,
-  GITHUB_RELEASES_URL,
-  WAGO_URL,
-} from './setup.astro';
+import companion from '../data/companion.json';
+import { ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH, companionDownloadPath } from '../lib/downloads/paths';
+import SetupPage, { CURSEFORGE_URL, WAGO_URL } from './setup.astro';
 
 const source = readFileSync(new URL('./setup.astro', import.meta.url), 'utf8');
 
@@ -37,9 +34,9 @@ const STRING_COPY_KEYS = [
   'pageNoNetwork',
   'installCurseForge',
   'installWago',
-  'installGitHub',
+  'installZip',
   'installDataLead',
-  'installDataGitHub',
+  'installDataRelease',
   'flowOutTitle',
   'flowOutBody',
   'flowInTitle',
@@ -89,9 +86,11 @@ describe('/setup', () => {
     );
   });
 
-  it('derives the GitHub release link from links.json, not a second copy of the repo URL', () => {
-    expect(source).toContain('communityLinks.githubRepo');
-    expect(source).not.toContain('jhunthrop/forever/releases');
+  it('links every download through the site’s own /dl/ paths, never the release host', () => {
+    expect(source).not.toMatch(/github\.com/i);
+    for (const entry of companion.downloads)
+      expect(html).toContain(`href="${companionDownloadPath(entry.asset)}"`);
+    expect(html).not.toMatch(/github\.com/i);
   });
 
   it('is reachable from the primary nav as "Get set up"', () => {
@@ -101,16 +100,16 @@ describe('/setup', () => {
   it('links all three install routes in the rendered output', () => {
     expect(html).toContain(CURSEFORGE_URL);
     expect(html).toContain(WAGO_URL);
-    expect(html).toContain(GITHUB_RELEASES_URL);
+    expect(html).toContain(ADDON_DOWNLOAD_PATH);
   });
 
   it('keeps the data addon’s own links and the build number in the Manual install disclosure, not in the step', () => {
     expect(html).toContain('data-testid="setup-manual-install"');
-    expect(html).toContain(DATA_GITHUB_RELEASES_URL);
+    expect(html).toContain(DATA_DOWNLOAD_PATH);
     const open = html.indexOf('data-testid="setup-manual-install"');
     const close = html.indexOf('</details>', open);
     const inside = html.slice(open, close);
-    for (const url of [GITHUB_RELEASES_URL, DATA_GITHUB_RELEASES_URL]) {
+    for (const url of [ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH]) {
       expect(inside).toContain(url);
     }
     expect(inside).toContain(addonCopy.currentDataBuild(activeBuild.build));
@@ -126,7 +125,7 @@ describe('/setup', () => {
   });
 
   it('every install link opts out of opener access', () => {
-    for (const url of [CURSEFORGE_URL, WAGO_URL, GITHUB_RELEASES_URL, DATA_GITHUB_RELEASES_URL]) {
+    for (const url of [CURSEFORGE_URL, WAGO_URL, ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH]) {
       const anchor = [...html.matchAll(/<a\s+[^>]*>/g)].map((m) => m[0]).find((tag) => tag.includes(url));
       expect(anchor, `no <a> found for ${url}`).toBeDefined();
       expect(anchor).toContain('rel="noopener"');
@@ -511,8 +510,8 @@ describe('/setup as three steps (W.9)', () => {
     expect(html).toContain('Download for Windows');
     // Wago and the zip are quiet links, not buttons.
     expect(anchorWith(WAGO_URL)).not.toContain(GOLD);
-    expect(anchorWith(GITHUB_RELEASES_URL)).not.toContain(GOLD);
-    expect(addonCopy.installGitHub).toBe('Download the zip');
+    expect(anchorWith(ADDON_DOWNLOAD_PATH)).not.toContain(GOLD);
+    expect(addonCopy.installZip).toBe('Download the zip');
   });
 
   it('gives each step a line component, hidden until a session exists', () => {

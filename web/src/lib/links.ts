@@ -1,6 +1,6 @@
 // web/src/lib/links.ts
 // src/data/links.json ships with PLACEHOLDER values so the site builds before the Discord
-// invite and the GitHub repo exist. A deploy must never carry them.
+// invite exists. A deploy must never carry them.
 export const LINKS_FILE = 'web/src/data/links.json';
 export const PLACEHOLDER = 'PLACEHOLDER';
 

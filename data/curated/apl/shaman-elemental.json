@@ -18,11 +18,6 @@
   ],
   "sources": [
     {
-      "label": "wowsims-forever elemental_shaman default priority list",
-      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/elemental_shaman/apls/default.apl.json",
-      "kind": "community"
-    },
-    {
       "label": "Warcraft Tavern: WoW Classic PvE Elemental Shaman guide",
       "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-elemental-shaman/",
       "kind": "community"

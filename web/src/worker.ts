@@ -1,5 +1,5 @@
 // The only server code in web/. wrangler.jsonc's run_worker_first lists exactly the
-// prefixes this handler owns -- the tracked /go/ links, the shared build proxy, report files and the DuckDB
+// prefixes this handler owns -- the tracked /go/ links, the /dl/ downloads, the shared build proxy, report files and the DuckDB
 // runtime out of R2, the engine module's brotli negotiation, and the four shells -- and every other path is served straight from
 // the static assets with no Worker execution at all.
 //
@@ -19,6 +19,8 @@ import {
 } from './lib/characters';
 import { GO_PREFIX } from './lib/golinks/config';
 import { serveGoLink, type ExecutionContext } from './lib/golinks/redirect';
+import { DOWNLOAD_PREFIX } from './lib/downloads/paths';
+import { serveDownload } from './lib/downloads/redirect';
 import { DUCKDB_RUNTIME_PREFIX, duckdbRuntimeKey } from './lib/report/duckdb-runtime';
 import {
   characterShellMeta,
@@ -42,6 +44,8 @@ import { serveSimWasm, SIM_WASM_PATH } from './lib/sim/wasm-serve';
 export interface Env {
   /** Origin of the Go API, from `vars` in wrangler.jsonc. */
   API_BASE_URL: string;
+  /** Where the /dl/ downloads redirect to, from `vars` in wrangler.jsonc (lib/downloads/redirect.ts). */
+  RELEASES_URL?: string;
   /** The static assets binding. */
   ASSETS: { fetch(request: Request): Promise<Response> };
   /**
@@ -560,6 +564,8 @@ export default {
     const url = new URL(request.url);
     // The tracked short links (lib/golinks/redirect.ts): a 302 now, the count after.
     if (url.pathname.startsWith(GO_PREFIX)) return serveGoLink(request, env, ctx);
+    // The site's downloads (lib/downloads/redirect.ts): a 302 to wherever the file is hosted.
+    if (url.pathname.startsWith(DOWNLOAD_PREFIX)) return serveDownload(request, env);
     // The sample's old database id: the link lives in cached pages and old shares.
     const legacy = SAMPLE_LEGACY_IDS.find((id) => url.pathname === `/reports/${id}`);
     if (legacy !== undefined) return Response.redirect(new URL(SAMPLE_REPORT_PATH, url).toString(), 301);

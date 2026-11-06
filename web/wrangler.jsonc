@@ -21,9 +21,11 @@
     // API's JSON (see src/worker.ts). /sim itself is not listed: it is a plain static
     // shell with no request-time id, and the tightest LCP budget on this lane. Every other
     // path is served from the assets with no Worker invocation, so the static site keeps
-    // its zero-runtime cost. /go/* is the tracked short links (src/lib/golinks/redirect.ts).
+    // its zero-runtime cost. /go/* is the tracked short links (src/lib/golinks/redirect.ts),
+    // /dl/* the downloads (src/lib/downloads/redirect.ts).
     "run_worker_first": [
       "/go/*",
+      "/dl/*",
       "/b/*",
       "/logs-data/*",
       "/duckdb-runtime/*",
@@ -43,6 +45,9 @@
   ],
   "vars": {
     "API_BASE_URL": "https://api.foreversixty.gg",
+    // Where /dl/* redirects (src/lib/downloads/redirect.ts). Kept here, not in a page, so the
+    // built site never links to the release host and moving the files is a Worker deploy.
+    "RELEASES_URL": "https://github.com/jhunthrop/foreversixty/releases",
   },
   "workers_dev": true,
   "routes": [
