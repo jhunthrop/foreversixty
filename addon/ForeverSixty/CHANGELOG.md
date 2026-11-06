@@ -1,5 +1,10 @@
 # Forever Sixty
 
+## 2.0.30
+
+- Protection warrior: Horde lists are now built for Undead, the stronger threat pick. Your upgrade order changes.
+- Leveling ranks below 20: Beast Mastery and Marksmanship use rank 1 Arcane Shot and Serpent Sting where it does more for the mana, and Feral's Wrath and Moonfire ranks follow your race.
+
 ## 2.0.29
 
 - New best in slot lists for every spec, healers included, all ranked on the same latest sim. Your upgrade order changes.

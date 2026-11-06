@@ -12,9 +12,12 @@ both shipped and kept, in the build's blocks, order and words).
 
 States: design/mocks/web/bis-parity.json. Data: design/mocks/data/bis-facts.json (names, numbers and sources read
 from the built page by bis_facts.mjs; the mock decides every block and where it sits). Regions: design/parity.md.
+    node design/mocks/bis_facts.mjs http://localhost:<port>   (a running `npm run preview -- --port <port>` in web/)
     python3 design/mocks/ws_bis.py  -> design/mocks/web/web-bis-<state>.html
+FS_BIS_FACTS and FS_MOCK_OUT point both elsewhere: the parity spec renders its mocks at test time (design/parity.md).
 """
 import json
+import os
 from html import escape
 from pathlib import Path
 
@@ -24,7 +27,8 @@ from ws_prims import Meter, PageHeader, Paperdoll, Plate, Section, build_page, w
 
 HERE = Path(__file__).resolve().parent
 CONFIG = json.loads((HERE / 'web/bis-parity.json').read_text())
-FACTS = json.loads((HERE / 'data/bis-facts.json').read_text())
+# The facts: the committed data/bis-facts.json, or FS_BIS_FACTS (the parity spec's own, read from the build it serves).
+FACTS = json.loads(Path(os.environ.get('FS_BIS_FACTS') or HERE / 'data/bis-facts.json').read_text())
 
 # The page's own rules (the built BisAnswer, BisWeights and summary measure the same; the Paperdoll's are ws_prims').
 BIS_CSS = '''

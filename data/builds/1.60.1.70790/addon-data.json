@@ -129293,12 +129293,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 250530,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "item_id": 19972,
+                  "source_kind": "quest",
+                  "source": "Rare Fish - Keefer's Angelfish"
                 },
                 {
-                  "item_id": 250528,
+                  "item_id": 250530,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 }
@@ -129311,14 +129311,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20442,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
-                },
-                {
                   "item_id": 277203,
                   "source_kind": "quest",
                   "source": "Friend of the Library"
+                },
+                {
+                  "item_id": 20442,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -129365,12 +129365,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2866,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "item_id": 10399,
+                  "source_kind": "dungeon",
+                  "source": "The Deadmines: Edwin VanCleef"
                 },
                 {
-                  "item_id": 250490,
+                  "item_id": 2866,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 }
@@ -129401,12 +129401,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 250510,
+                  "item_id": 250508,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 250512,
+                  "item_id": 250510,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 }
@@ -129522,14 +129522,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 1937,
+                  "source_kind": "dungeon",
+                  "source": "The Deadmines: Sneed's Shredder"
+                },
+                {
                   "item_id": 6633,
                   "source_kind": "dungeon",
                   "source": "Shadowfang Keep: Razorclaw the Butcher"
-                },
-                {
-                  "item_id": 6504,
-                  "source_kind": "quest",
-                  "source": "Leaders of the Fang"
                 }
               ]
             },
@@ -129540,12 +129540,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4820,
-                  "source_kind": "vendor",
-                  "source": "Grazlix"
+                  "item_id": 276889,
+                  "source_kind": "quest",
+                  "source": "Chol'aruk the Ravener"
                 },
                 {
-                  "item_id": 4821,
+                  "item_id": 4820,
                   "source_kind": "vendor",
                   "source": "Grazlix"
                 }
@@ -129927,12 +129927,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 250500,
+                  "item_id": 250499,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 250499,
+                  "item_id": 250500,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 }
@@ -129963,12 +129963,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 277049,
+                  "item_id": 277041,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 277041,
+                  "item_id": 277049,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
                 }
@@ -130004,9 +130004,9 @@
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 4071,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 250519,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
                 }
               ]
             },
@@ -130157,15 +130157,15 @@
               ]
             },
             "main_hand": {
-              "item_id": 13048,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 8226,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 8226,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery"
+                  "item_id": 13048,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 7786,
@@ -130247,7 +130247,7 @@
             6414,
             21120,
             21566,
-            13048,
+            8226,
             273055,
             7729
           ]
@@ -131251,14 +131251,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13073,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 220803,
                   "source_kind": "vendor",
                   "source": "PvP reward · Horde"
+                },
+                {
+                  "item_id": 13073,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -131269,14 +131269,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 19159,
+                  "source_kind": "quest",
+                  "source": "Wanted: Vile Priestess Hexx and Her Minions"
+                },
+                {
                   "item_id": 9243,
                   "source_kind": "dungeon",
                   "source": "Zul'Farrak: Chief Ukorz Sandscalp"
-                },
-                {
-                  "item_id": 9641,
-                  "source_kind": "dungeon",
-                  "source": "Zul'Farrak: Antu'sul"
                 }
               ]
             },
@@ -131323,14 +131323,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 10845,
+                  "source_kind": "world",
+                  "source": "Avatar of Hakkar"
+                },
+                {
                   "item_id": 13067,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 15064,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -131364,9 +131364,9 @@
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 220807,
-                  "source_kind": "vendor",
-                  "source": "PvP reward · Horde"
+                  "item_id": 250551,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
                 }
               ]
             },
@@ -131418,9 +131418,9 @@
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 10846,
-                  "source_kind": "world",
-                  "source": "Avatar of Hakkar"
+                  "item_id": 14549,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -131436,9 +131436,9 @@
                   "source": "Creeg Bothunk"
                 },
                 {
-                  "item_id": 1980,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9588,
+                  "source_kind": "quest",
+                  "source": "Nogg's Ring Redo"
                 }
               ]
             },
@@ -131454,9 +131454,9 @@
                   "source": "Creeg Bothunk"
                 },
                 {
-                  "item_id": 1980,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9588,
+                  "source_kind": "quest",
+                  "source": "Nogg's Ring Redo"
                 }
               ]
             },
@@ -131521,14 +131521,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1203,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 11631,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Lord Roccor"
+                },
+                {
+                  "item_id": 1203,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -131539,14 +131539,14 @@
               "chance": 0.001,
               "alternatives": [
                 {
+                  "item_id": 13137,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 7729,
                   "source_kind": "dungeon",
                   "source": "Scarlet Monastery"
-                },
-                {
-                  "item_id": 13021,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             }
@@ -131937,56 +131937,56 @@
               ]
             },
             "neck": {
-              "item_id": 16335,
-              "source_kind": "vendor",
-              "source": "PvP rank 4 · Senior Sergeant · Horde",
+              "item_id": 19534,
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19534,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 13177,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: War Master Voone"
                 },
                 {
-                  "item_id": 19095,
-                  "source_kind": "rep",
-                  "source": "Frostwolf Clan"
+                  "item_id": 11755,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Verek"
                 }
               ]
             },
             "shoulder": {
-              "item_id": 272108,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
+              "item_id": 20212,
+              "source_kind": "rep",
+              "source": "The Defilers",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 227042,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Horde"
-                },
                 {
                   "item_id": 231534,
                   "source_kind": "pvp",
                   "source": "PvP reward · Horde"
+                },
+                {
+                  "item_id": 20184,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
                 }
               ]
             },
             "back": {
-              "item_id": 279269,
-              "source_kind": "crafted",
-              "source": "Tailoring",
+              "item_id": 11930,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11930,
+                  "item_id": 22269,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "source": "Blackrock Spire: General Drakkisath"
                 },
                 {
-                  "item_id": 12967,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: The Beast"
+                  "item_id": 279269,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -131997,32 +131997,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 227049,
+                  "item_id": 231530,
                   "source_kind": "pvp",
                   "source": "PvP reward · Horde"
                 },
                 {
-                  "item_id": 231530,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Horde"
+                  "item_id": 12895,
+                  "source_kind": "quest",
+                  "source": "Breastplate of the Chromatic Flight"
                 }
               ]
             },
             "wrist": {
-              "item_id": 18429,
-              "source_kind": "vendor",
-              "source": "PvP rank 5 · First Sergeant · Horde",
+              "item_id": 13951,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Darkmaster Gandling",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 13951,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
-                },
                 {
                   "item_id": 16546,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
+                },
+                {
+                  "item_id": 19578,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -132033,14 +132033,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 227050,
+                  "item_id": 231532,
                   "source_kind": "pvp",
                   "source": "PvP reward · Horde"
                 },
                 {
-                  "item_id": 231532,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Horde"
+                  "item_id": 12639,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
                 }
               ]
             },
@@ -132056,9 +132056,9 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 14620,
+                  "item_id": 13502,
                   "source_kind": "dungeon",
-                  "source": "Scholomance"
+                  "source": "Blackrock Spire: Goraluk Anvilcrack "
                 }
               ]
             },
@@ -132069,14 +132069,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 16732,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
+                },
+                {
                   "item_id": 231533,
                   "source_kind": "pvp",
                   "source": "PvP reward · Horde"
-                },
-                {
-                  "item_id": 22651,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -132105,14 +132105,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13373,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Ramstein the Gorger"
+                  "item_id": 272408,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 272064,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 18701,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Scholomance Handler"
                 }
               ]
             },
@@ -132123,27 +132123,27 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13373,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Ramstein the Gorger"
+                  "item_id": 272408,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 272064,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 18701,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Scholomance Handler"
                 }
               ]
             },
             "trinket1": {
-              "item_id": 17909,
-              "source_kind": "quest",
-              "source": "The Eye of Command",
+              "item_id": 20072,
+              "source_kind": "rep",
+              "source": "The Defilers",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272437,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 17909,
+                  "source_kind": "quest",
+                  "source": "The Eye of Command"
                 },
                 {
                   "item_id": 272440,
@@ -132153,20 +132153,20 @@
               ]
             },
             "trinket2": {
-              "item_id": 20072,
-              "source_kind": "rep",
-              "source": "The Defilers",
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272437,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 17909,
+                  "source_kind": "quest",
+                  "source": "The Eye of Command"
                 },
                 {
-                  "item_id": 272440,
+                  "item_id": 272060,
                   "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -132218,9 +132218,9 @@
                   "source": "Stratholme: Nerub'enkan"
                 },
                 {
-                  "item_id": 234559,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Horde"
+                  "item_id": 13023,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             }
@@ -132248,19 +132248,19 @@
           ],
           "horde": [
             12620,
-            16335,
-            272108,
-            279269,
+            19534,
+            20212,
+            11930,
             15413,
-            18429,
+            13951,
             279264,
             272403,
             279265,
             279263,
             2246,
             272409,
-            17909,
             20072,
+            272061,
             279261,
             19321,
             19558
@@ -149283,6 +149283,7 @@
     "11748": "Pyric Caduceus",
     "11749": "Searingscale Leggings",
     "11750": "Kindling Stave",
+    "11755": "Verek's Collar",
     "11782": "Boreal Mantle",
     "11815": "Hand of Justice",
     "11819": "Second Wind",
@@ -149332,6 +149333,7 @@
     "12618": "Enchanted Thorium Breastplate",
     "12620": "Enchanted Thorium Helm",
     "12633": "Whitesoul Helm",
+    "12639": "Stronghold Gauntlets",
     "12640": "Lionheart Helm",
     "12651": "Blackcrow",
     "12653": "Riphook",
@@ -149365,7 +149367,6 @@
     "13008": "Dalewind Trousers",
     "13012": "Yorgen Bracers",
     "13014": "Axe of Rin'ji",
-    "13021": "Needle Threader",
     "13022": "Gryphonwing Long Bow",
     "13023": "Eaglehorn Long Bow",
     "13031": "Orb of Mistmantle",
@@ -149447,6 +149448,7 @@
     "13392": "The Postmaster's Seal",
     "13400": "Vambraces of the Sadist",
     "13404": "Mask of the Unforgiven",
+    "13502": "Handcrafted Mastersmith Girdle",
     "13503": "Alchemist's Stone",
     "13858": "Runecloth Robe",
     "13860": "Runecloth Cloak",
@@ -149631,6 +149633,7 @@
     "16711": "Shadowcraft Boots",
     "16715": "Wildheart Boots",
     "16731": "Helm of Valor",
+    "16732": "Legplates of Valor",
     "16734": "Boots of Valor",
     "16735": "Bracers of Valor",
     "16738": "Witherseed Gloves",
@@ -149693,7 +149696,6 @@
     "18104": "Feralsurge Girdle",
     "18427": "Sergeant's Cloak",
     "18428": "Senior Sergeant's Insignia",
-    "18429": "First Sergeant's Plate Bracers",
     "18436": "First Sergeant's Dragonhide Armguards",
     "18440": "Sergeant's Cape",
     "18441": "Sergeant's Cape",
@@ -149846,6 +149848,7 @@
     "20173": "Defiler's Lizardhide Girdle",
     "20174": "Defiler's Lizardhide Girdle",
     "20179": "Defiler's Lamellar Girdle",
+    "20184": "Defiler's Lamellar Spaulders",
     "20190": "Defiler's Leather Girdle",
     "20191": "Defiler's Leather Girdle",
     "20192": "Defiler's Leather Girdle",
@@ -149982,13 +149985,10 @@
     "223074": "Knight's Mail Legplates",
     "223076": "Sergeant Major's Mail Gauntlets",
     "223078": "Knight's Mail Armor",
-    "227042": "Champion's Plate Shoulders",
     "227043": "Champion's Plate Helm",
     "227044": "Lieutenant Commander's Plate Helm",
     "227045": "Lieutenant Commander's Plate Shoulders",
     "227046": "Knight-Captain's Plate Hauberk",
-    "227049": "Legionnaire's Plate Hauberk",
-    "227050": "Blood Guard's Plate Gauntlets",
     "227051": "Blood Guard's Plate Greaves",
     "227052": "Knight-Lieutenant's Plate Greaves",
     "227053": "Knight-Lieutenant's Plate Gauntlets",
@@ -150858,7 +150858,6 @@
     "12984": 21.6,
     "13000": 53.0,
     "13014": 35.0,
-    "13021": 24.5,
     "13022": 28.3,
     "13023": 32.2,
     "13033": 22.1,
