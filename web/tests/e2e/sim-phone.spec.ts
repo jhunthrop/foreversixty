@@ -12,6 +12,7 @@ import { expect, test } from './support/test';
 import { closeMoreSettings, gotoSim, openMoreSettings, pasteAndRun, gotoSavedSim } from './support/sim-page';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { fieldBox } from './support/select';
+import { answerRaceQuestion } from './support/sim-race';
 
 test.describe.configure({ mode: 'serial' });
 // No test.use({ viewport }): the phone audit runs under --project=mobile (Pixel 7, 412px),
@@ -241,6 +242,7 @@ test('compare mode stacks the ability table into one figure per row, with no sid
     }),
   );
   await page.goto(`/sim?source=fight&ref=${encodeURIComponent(COMPARE_REF)}&mode=compare`);
+  await answerRaceQuestion(page);
   await expect(page.getByTestId('compare-headline')).toBeVisible({ timeout: 10_000 });
 
   await noHorizontalScroll(page);

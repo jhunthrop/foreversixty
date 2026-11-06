@@ -131,8 +131,20 @@
       return;
     }
     // The one place a sim starts without a press: the player already asked for the comparison.
-    if (store.character !== null) await store.run();
+    // A logged fight records no race, so the strip asks for one first (character.ts
+    // PENDING_RACE); the comparison then starts as soon as it is answered.
+    if (store.character === null) return;
+    if (store.needsRace) compareAwaitsRace = true;
+    else await store.run();
   }
+
+  /** Compare mode stopped at the race question: the run it owes starts once a race is picked. */
+  let compareAwaitsRace = $state(false);
+  $effect(() => {
+    if (!compareAwaitsRace || store.needsRace || store.character === null) return;
+    compareAwaitsRace = false;
+    void store.run();
+  });
 
   if (bootstrap.mode === 'compare') void enterCompare(bootstrap.ref);
 
