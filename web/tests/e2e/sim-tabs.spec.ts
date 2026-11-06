@@ -193,7 +193,8 @@ test.describe('the simulator tab strip at phone width', () => {
   // inside the head rather than scrolling; the tool pages keep SimTabs.astro's scrolling
   // strip, which the tests after this one hold to its fades and containment.
   test('/sim wraps its tabs inside the head, with no page scroll, every tab 44x44', async ({ page }) => {
-    await page.goto('/sim');
+    // The island mounts over the static head; measure the mounted strip.
+    await gotoSim(page);
     await assertNoHorizontalScroll(page, 390);
     const strip = page.getByTestId('sim-nav-tabs');
     const stripBox = await strip.boundingBox();
