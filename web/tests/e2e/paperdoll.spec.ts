@@ -97,6 +97,8 @@ test.describe('the report "At pull" at 1280', () => {
     await expect(frame.getByTestId('paperdoll-slot-head')).toHaveAttribute('data-state', 'item');
     await expect(frame.getByTestId('paperdoll-line2-head')).toHaveText('Item level 66 · Enchanted');
     await expect(frame.getByTestId('paperdoll-slot-head').locator('.ui-doll-figure')).toHaveCount(0);
+    // The worn set's average item level sits above the doll (owner 2026-11-06).
+    await expect(page.getByTestId('gear-list-ilvl')).toHaveText(/^Item level \d+(\.\d)?$/);
     await frame.getByTestId('item-hover-12640').hover();
     await expect(page.getByTestId('item-tooltip')).toContainText('Lionheart Helm');
   });

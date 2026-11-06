@@ -97,6 +97,8 @@ describe('Section', () => {
     expect(body).toContain('href="/setup"');
     expect(body).not.toContain('bg-raised');
     expect(body).not.toContain('uppercase');
+    // A sticky control bar or section nav never covers a section it scrolls to.
+    expect(body).toContain('scroll-mt-[calc(var(--bar-h)+12px)]');
   });
 });
 

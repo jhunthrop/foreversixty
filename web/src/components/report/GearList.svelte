@@ -10,6 +10,7 @@
   import GearDoll from '../character/GearDoll.svelte';
   import Plate from '../ui/Plate.svelte';
   import { gearCopy } from '../../lib/gear/copy';
+  import { averageItemLevel } from '../../lib/gear/paperdoll';
   import { slotsFromWorn } from '../../lib/gear/paperdoll-slots';
   import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
@@ -62,12 +63,19 @@
       },
     }),
   );
+  /** The mean item level of the worn set at pull, once every item is known (the paperdoll's rule). */
+  const itemLevel = $derived(items === null || failed ? null : averageItemLevel(slots));
   const resolveItem = async (id: number) => {
     const { fetchItemTooltipModel } = await import('../../lib/items/lookup');
     return fetchItemTooltipModel(dataBuild, classSlug, id);
   };
 </script>
 
+{#if itemLevel !== null}
+  <p class="text-muted mb-2 text-[13px] leading-5" data-testid="gear-list-ilvl">
+    {gearCopy.paperdoll.averageItemLevel(itemLevel)}
+  </p>
+{/if}
 <Plate label={gearCopy.paperdoll.atPullLabel} testid="gear-list">
   <GearDoll
     {slots}
