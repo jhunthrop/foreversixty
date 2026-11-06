@@ -44,38 +44,3 @@ func TestRaidBossesAreFirstTierZones(t *testing.T) {
 		}
 	}
 }
-
-// TestRaidBossesCarryOnyxiaAsTheLootCouncilKnowsHer is the swap's safety net: the table's Onyxia
-// is progression.go's encounter and carries every drop onyxiaLoot lists, with the same item rows.
-func TestRaidBossesCarryOnyxiaAsTheLootCouncilKnowsHer(t *testing.T) {
-	var onyxia *tierBoss
-	for _, r := range firstTierRaids {
-		for i := range r.Bosses {
-			if r.Bosses[i].EncounterID == encounterOnyxia {
-				if r.Key != onyxiaZoneKey {
-					t.Errorf("encounter %d is under %s, want %s", encounterOnyxia, r.Key, onyxiaZoneKey)
-				}
-				onyxia = &r.Bosses[i]
-			}
-		}
-	}
-	if onyxia == nil {
-		t.Fatalf("the table has no encounter %d", encounterOnyxia)
-	}
-	drops := map[int]tierItem{}
-	for _, it := range onyxia.Loot {
-		drops[it.ItemID] = it
-	}
-	for _, want := range onyxiaLoot {
-		got, ok := drops[want.ItemID]
-		if !ok {
-			t.Errorf("Onyxia's table lacks %d %s", want.ItemID, want.Name)
-			continue
-		}
-		if got.Name != want.Name || got.Quality != want.Quality || got.ItemLevel != want.ItemLevel ||
-			got.RequiredLevel != want.RequiredLevel || got.ItemClass != want.ItemClass ||
-			got.Subclass != want.Subclass || got.InventoryType != want.InventoryType {
-			t.Errorf("item %d: table %+v, onyxiaLoot %+v", want.ItemID, got, want)
-		}
-	}
-}

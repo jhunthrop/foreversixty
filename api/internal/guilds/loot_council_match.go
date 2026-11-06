@@ -27,7 +27,7 @@ var councilMatchTables = []councilMatchTable{
 // attachCouncilRows runs inside a match's transaction, after attachMatchLoot.
 func attachCouncilRows(ctx context.Context, tx pgx.Tx, raidID int64) error {
 	for _, t := range councilMatchTables {
-		if _, err := tx.Exec(ctx, attachCouncilSQL(t), raidID, matchLeadHours, matchTailHours, onyxiaZoneKey); err != nil {
+		if _, err := tx.Exec(ctx, attachCouncilSQL(t), raidID, matchLeadHours, matchTailHours, bossZones(), bossEncounters()); err != nil {
 			return fmt.Errorf("guilds: attach %s: %w", t.name, err)
 		}
 	}
@@ -47,7 +47,7 @@ func attachCouncilSQL(t councilMatchTable) string {
 		            and y.%[2]s >= g.starts_at - make_interval(hours => $2)
 		            and y.%[2]s <= least(coalesce(r.completed_at, r.created_at),
 		                                 g.starts_at + make_interval(mins => g.duration_minutes)) + make_interval(hours => $3)))
-		  where g.id = $1 and g.zone = $4
+		  where g.id = $1 and `+zoneEncounterSQL("g.zone", "y.encounter_id", "$4", "$5")+`
 		  order by y.encounter_id, y.item_id, %[3]s, y.%[2]s desc, y.id desc)
 		and not exists (
 		  select 1 from %[1]s o

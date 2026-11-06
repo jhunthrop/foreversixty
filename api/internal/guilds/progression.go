@@ -13,13 +13,9 @@
 // player sees and opens, is read from EvidenceReport for every viewer, as every other parse
 // reader is (task L6.12).
 //
-// The tier (Barrow Deeps/Hyjal Summit/Onyxia's Lair, Onyxia the one published encounter)
-// is hardcoded rather than read from data/curated/loot/forever-raid-phases.json, matching
-// api/cmd/seedguild/raid.go's own choice: that file's own "replace" list carries open
-// dates, not display names or a raid roster, and data/curated/ is not copied into this
-// service's Docker image at all (api/Dockerfile only copies data/builds/) - so a runtime
-// read of it would 404 in production exactly like data/curated/specs.json would (see
-// api/internal/bis/catalog.go's own reasoning).
+// The tier's raids are first-tier.json's (raidZones, raids_zones.go); its named encounters are the
+// generated boss table's (loot_table.go). A raid the game client does not carry yet has no named
+// encounter, so its pulls count toward the tier total as an unnamed zone (design spec §12.1).
 package guilds
 
 import (
@@ -36,25 +32,39 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
-const (
-	tierName        = "First tier"
-	zoneBarrowDeeps = "Barrow Deeps"
-	zoneHyjal       = "Hyjal Summit"
-	zoneOnyxia      = "Onyxia's Lair"
-	encounterOnyxia = int64(1084)
-	encounterName   = "Onyxia"
-)
+const tierName = "First tier"
 
-// tierRaids is this tier's three raids, in the order the design doc names them.
-var tierRaids = []string{zoneBarrowDeeps, zoneHyjal, zoneOnyxia}
+// tierRaids is this tier's raids by name, in first-tier.json's order.
+var tierRaids = func() []string {
+	out := make([]string, 0, len(raidZones))
+	for _, z := range raidZones {
+		out = append(out, z.Name)
+	}
+	return out
+}()
 
-// unnamedZones are this tier's raids with no published encounter list at all - every pull
-// in them counts toward the tier total but cannot be named or ranked per boss (design spec
-// §12.1's own ruling).
-var unnamedZones = []string{zoneBarrowDeeps, zoneHyjal}
+// unnamedZones are this tier's raids the boss table holds no boss for (the game client does not
+// carry them yet): every pull in them counts toward the tier total but cannot be named or ranked
+// per boss (design spec §12.1's own ruling).
+var unnamedZones = func() []string {
+	var out []string
+	for _, z := range raidZones {
+		if !raidHasBosses(z.Key) {
+			out = append(out, z.Name)
+		}
+	}
+	return out
+}()
 
-// namedTierEncounters are this tier's named encounters: the ones Tier.Down counts.
-var namedTierEncounters = []int64{encounterOnyxia}
+// raidHasBosses reports whether the boss table holds a boss of zoneKey.
+func raidHasBosses(zoneKey string) bool {
+	for _, b := range lootBosses {
+		if b.RaidKey == zoneKey {
+			return true
+		}
+	}
+	return false
+}
 
 // TierView is the Progression tab's own tier bar.
 type TierView struct {
@@ -136,26 +146,30 @@ func countedReports(member bool) string {
 	return presence.EvidenceReport("r")
 }
 
-// Progression assembles the guild's own tier bar, Onyxia's depth and the two unnamed
+// Progression assembles the guild's own tier bar, each table boss's depth and the unnamed
 // zones' pull counts, as member (a verified member of the guild) or anyone else sees them
 // (countedReports).
 func (s *Store) Progression(ctx context.Context, guildID int64, member bool) (ProgressionView, error) {
 	view := ProgressionView{
-		Tier:       TierView{Name: tierName, Raids: tierRaids, NamedEncounters: len(namedTierEncounters)},
+		Tier:       TierView{Name: tierName, Raids: tierRaids, NamedEncounters: len(lootBosses)},
 		Encounters: []EncounterProgress{},
 		Unnamed:    []UnnamedZoneProgress{},
 	}
 	counted := countedReports(member)
 
-	onyxia, err := s.encounterProgress(ctx, guildID, encounterOnyxia, encounterName, zoneOnyxia, counted)
+	for _, b := range lootBosses {
+		ep, err := s.encounterProgress(ctx, guildID, b.EncounterID, b.Name, b.RaidName, counted)
+		if err != nil {
+			return ProgressionView{}, err
+		}
+		view.Encounters = append(view.Encounters, ep)
+		view.Tier.PullsTotal += ep.Pulls
+	}
+	down, err := s.tierDown(ctx, guildID, counted)
 	if err != nil {
 		return ProgressionView{}, err
 	}
-	view.Encounters = append(view.Encounters, onyxia)
-	view.Tier.PullsTotal += onyxia.Pulls
-	if view.Tier.Down, err = s.tierDown(ctx, guildID, counted); err != nil {
-		return ProgressionView{}, err
-	}
+	view.Tier.Down = down
 
 	for _, zone := range unnamedZones {
 		uz, err := s.unnamedZoneProgress(ctx, guildID, zone, counted)
@@ -176,7 +190,7 @@ func (s *Store) tierDown(ctx context.Context, guildID int64, counted string) (in
 	if err := s.Pool.QueryRow(ctx, `
 		select count(distinct f.encounter_id) from fights f join reports r on r.id = f.report_id
 		where r.guild_id = $1 and f.kill and f.encounter_id = any($2) and `+counted,
-		guildID, namedTierEncounters).Scan(&down); err != nil {
+		guildID, allLoot.encounters).Scan(&down); err != nil {
 		return 0, fmt.Errorf("guilds: tier down: %w", err)
 	}
 	return down, nil

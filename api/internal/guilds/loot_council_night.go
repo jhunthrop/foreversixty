@@ -27,7 +27,7 @@ const (
 	nightKeyLive   = "live"
 )
 
-// ErrInvalidNight is a night key that is malformed or names no Onyxia night of the guild.
+// ErrInvalidNight is a night key that is malformed or names no loot night of the guild.
 var ErrInvalidNight = errors.New("guilds: invalid loot night")
 
 // key is the night's opaque key.
@@ -69,11 +69,11 @@ func liveCutoff(now time.Time) time.Time { return now.Add(-raidlessAwardNight) }
 
 // councilNight is the night a council read or write names: the current night (resolveAwardNight)
 // for an empty key, else the key's night once it is checked to be the guild's. A raid must be the
-// guild's Onyxia raid and not cancelled; a report must be the guild's unflagged log, and a report
+// guild's raid in a loot table zone and not cancelled; a report must be the guild's unflagged log, and a report
 // a planned raid holds reads as that raid.
 func (s *Store) councilNight(ctx context.Context, guildID int64, key string, now time.Time) (awardNight, error) {
 	if key == "" {
-		return s.resolveAwardNight(ctx, guildID, onyxiaEncounterID, nil, now)
+		return s.resolveAwardNight(ctx, guildID, allLoot, nil, now)
 	}
 	night, ok := parseNightKey(key)
 	if !ok {
@@ -91,8 +91,8 @@ func (s *Store) councilNight(ctx context.Context, guildID int64, key string, now
 func (s *Store) checkCouncilRaid(ctx context.Context, guildID, raidID int64) error {
 	var ok bool
 	if err := s.Pool.QueryRow(ctx,
-		`select exists(select 1 from guild_raids where id = $1 and guild_id = $2 and zone = $3 and status <> 'cancelled')`,
-		raidID, guildID, onyxiaZoneKey).Scan(&ok); err != nil {
+		`select exists(select 1 from guild_raids where id = $1 and guild_id = $2 and zone = any($3) and status <> 'cancelled')`,
+		raidID, guildID, allLoot.zones).Scan(&ok); err != nil {
 		return fmt.Errorf("guilds: council night: %w", err)
 	}
 	if !ok {
@@ -105,10 +105,10 @@ func (s *Store) councilReportNight(ctx context.Context, guildID int64, reportID 
 	var raidID *int64
 	err := s.Pool.QueryRow(ctx, `
 		select (select g.id from guild_raids g
-		        where g.report_id = r.id and g.guild_id = $2 and g.zone = $3 and g.status <> 'cancelled'
+		        where g.report_id = r.id and g.guild_id = $2 and g.zone = any($3) and g.status <> 'cancelled'
 		        order by g.starts_at desc limit 1)
 		from reports r where r.id = $1 and r.guild_id = $2 and `+presence.NotFlagged("r"),
-		reportID, guildID, onyxiaZoneKey).Scan(&raidID)
+		reportID, guildID, allLoot.zones).Scan(&raidID)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return awardNight{}, ErrInvalidNight
 	}

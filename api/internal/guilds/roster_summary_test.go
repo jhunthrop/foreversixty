@@ -96,7 +96,7 @@ func TestEncountersDownAgreesWithProgression(t *testing.T) {
 
 	if _, err := h.pool.Exec(ctx,
 		`insert into fights (report_id, fight_index, name, encounter_id, kill) values ('down-night', 1, 'Onyxia', $1, true)`,
-		encounterOnyxia); err != nil {
+		testOnyxiaEncounter); err != nil {
 		t.Fatal(err)
 	}
 	agree(1, 1)

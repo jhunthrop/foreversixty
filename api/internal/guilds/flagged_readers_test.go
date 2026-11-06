@@ -231,7 +231,7 @@ func TestLootOnFarmNeedsThreeKillNights(t *testing.T) {
 	s := &Store{Pool: pool}
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Farm Nights")
-	kill := []seedFight{{encounterID: int(onyxiaEncounterID), kill: true, duration: 4 * time.Minute}}
+	kill := []seedFight{{encounterID: int(testOnyxiaEncounter), kill: true, duration: 4 * time.Minute}}
 	night := func(id string, at time.Time) { seedNight(t, pool, gid, id, "Onyxia's Lair", at, kill) }
 	first := time.Date(2026, 12, 10, 1, 0, 0, 0, time.UTC)
 	night("farm-1", first)

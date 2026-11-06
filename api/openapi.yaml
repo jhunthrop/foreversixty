@@ -3326,9 +3326,27 @@ components:
         post_to_discord: { type: boolean }
     GuildLoot:
       type: object
-      required: [encounters, selected, items, at_level_cap]
+      description: >-
+        The first tier's loot table: every boss the game client carries (the generated boss table),
+        raid by raid, with its drops. raids lists every first-tier raid for the picker's grouping, a
+        raid the client does not carry yet with in_client false and no encounters.
+      required: [encounters, selected, items, raids, at_level_cap]
       properties:
         at_level_cap: { type: integer, description: Verified roster characters whose level on file is 60. }
+        raids:
+          type: array
+          items:
+            type: object
+            title: LootRaidGroup
+            required: [key, name, in_client, encounters]
+            properties:
+              key: { type: string, description: "The zone key, e.g. raid:onyxias-lair." }
+              name: { type: string }
+              in_client: { type: boolean, description: "False while the game client does not carry the raid: no bosses or loot yet." }
+              encounters:
+                type: array
+                description: The raid's bosses' encounter ids, in the table's order.
+                items: { type: integer, format: int64 }
         encounters:
           type: array
           items:
@@ -3352,9 +3370,12 @@ components:
           items:
             type: object
             title: LootItem
-            required: [item_id, name, icon, quality, slot, copies, awarded_to, candidates, inventory_type, item_class, item_subclass, kind, quest_label, eligible]
+            required: [item_id, name, icon, quality, slot, copies, awarded_to, candidates, inventory_type, item_class, item_subclass, kind, quest_label, eligible, encounter_id, boss, raid]
             properties:
               item_id: { type: integer }
+              encounter_id: { type: integer, format: int64, description: The boss the drop falls from. }
+              boss: { type: string }
+              raid: { type: string, description: The boss's raid name. }
               name: { type: string }
               icon: { type: string }
               quality: { type: integer, minimum: 0, maximum: 5 }
@@ -3456,7 +3477,7 @@ components:
     LootNights:
       type: object
       description: >-
-        GET /v1/guilds/{id}/loot/nights: the guild's Onyxia nights, newest first. A night's drops are
+        GET /v1/guilds/{id}/loot/nights: the guild's loot nights, newest first. A night's drops are
         the items the council awarded, voted on or flagged on it (no record of what dropped exists
         beyond that); the current night (where an award made now is filed) is always listed, first
         when nothing else holds it, and the page offers the whole loot table on it (GET .../loot).

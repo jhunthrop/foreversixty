@@ -214,7 +214,7 @@ func (s *Store) profileLoot(ctx context.Context, guildID int64, key string) (Pro
 			return out, fmt.Errorf("guilds: profile loot: %w", err)
 		}
 		it.AwardedAt = it.AwardedAt.UTC()
-		if item, ok := onyxiaItem(it.ItemID); ok {
+		if item, ok := lootItemByID(it.ItemID); ok {
 			it.Name, it.Icon, it.Quality = &item.Name, &item.Icon, &item.Quality
 		}
 		out.Items = append(out.Items, it)

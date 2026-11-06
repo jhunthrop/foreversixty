@@ -488,7 +488,7 @@ func TestLootCountsAnInvitedMemberAsACandidate(t *testing.T) {
 // and the council lists the name once with Copies 2.
 func TestLootListsEachDropOnce(t *testing.T) {
 	seen := map[string]int{}
-	for _, it := range onyxiaLoot {
+	for _, it := range testOnyxiaLoot {
 		seen[it.Name]++
 	}
 	dupes := map[string]int{}
@@ -500,9 +500,9 @@ func TestLootListsEachDropOnce(t *testing.T) {
 	if !reflect.DeepEqual(dupes, map[string]int{"Head of Onyxia": 2}) {
 		t.Fatalf("names the table repeats = %v, want only Head of Onyxia twice", dupes)
 	}
-	groups := lootGroups(onyxiaLoot)
-	if len(groups) != len(onyxiaLoot)-1 {
-		t.Errorf("lootGroups = %d groups, want %d", len(groups), len(onyxiaLoot)-1)
+	groups := lootGroups(testOnyxiaLoot)
+	if len(groups) != len(testOnyxiaLoot)-1 {
+		t.Errorf("lootGroups = %d groups, want %d", len(groups), len(testOnyxiaLoot)-1)
 	}
 	for _, group := range groups {
 		if group[0].Name == "Head of Onyxia" && len(group) != 2 {

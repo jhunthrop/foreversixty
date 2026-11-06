@@ -2,8 +2,8 @@
 //
 // GET /v1/guilds/{id}/loot, POST .../loot/awards, DELETE .../loot/awards/{award_id}
 // (contract step 6, docs/contracts/2026-10-04-guild-centre-api.md): the loot council
-// helper, Onyxia's own real 22-item table (data/builds/1.60.1.70630/loot.json's
-// raid:onyxias-lair, npc 10184). Member read-only, officer gets the Award control (design
+// helper over the first tier's boss table (loot_table.go: the generated raid_bosses_table.go
+// plus loot_item_extras.go). Member read-only, officer gets the Award control (design
 // spec §4.F / §10.1's own proposed ruling, recorded as "Shown, read-only" for a member).
 package guilds
 
@@ -21,21 +21,10 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
-// onyxiaEncounterID/onyxiaZone are progression.go's own constants, reused here under this
-// file's own name for readability at the call sites below.
-const onyxiaEncounterID = encounterOnyxia
-
-// lootItem is one of Onyxia's own 22 drops: id, name and quality from
-// data/builds/1.60.1.70630/items.json (every item carries a real row there; the 22 are unchanged
-// since 1.60.1.70009); slot from the BiS build's (Store.BisBuild)
-// data/builds/<build>/items/<class>.json where one of the nine per-class weighted item pools
-// carries it. Icon is the client's own: Item.IconFileDataID through ManifestInterfaceData (wago.tools,
-// build 1.60.1.70532), so the six quest, reputation and crafting items with no inventory slot (Scale
-// of Onyxia, Onyxia Hide Backpack, both Head of Onyxia stacks, Mature Black Dragon Sinew and Draconic
-// for Dummies) show their real art too; having no slot, they never gain a candidates list.
-// ItemClass, Subclass, InventoryType, RequiredLevel and ItemLevel are items.json's class_id,
-// subclass_id, inventory_type, required_level and item_level; AllowableClass is classic-db's
-// item_template allowable_class (-1 for no restriction). loot_items_test.go pins all six.
+// lootItem is one drop of the loot table (loot_table.go): id, name, quality, ItemClass, Subclass,
+// InventoryType, RequiredLevel and ItemLevel from the generated boss table (the build's items.json
+// fields), Icon, Slot, AllowableClass and Unique from lootItemExtras. A drop with no slot (a
+// quest, reputation or crafting item, a bag) never gains a candidates list.
 type lootItem struct {
 	ItemID         int
 	Name           string
@@ -50,72 +39,8 @@ type lootItem struct {
 	AllowableClass int
 	// Unique is item_template's unique flag: a character holds one.
 	Unique bool
-}
-
-// onyxiaLoot is deliberately not read from loot.json/items.json/items/<class>.json at
-// request time: those three files total over 40MB for this one build, and a per-request
-// scan across them to resolve 22 fixed ids would blow the readiness-style latency budget
-// for no reason - this table never changes without a data refresh this package's own tests
-// would need updating for anyway, matching api/cmd/seedguild/readiness.go's own
-// "a small, real subset... read by hand from that file" convention for exactly this kind
-// of small, fixed catalogue.
-var onyxiaLoot = []lootItem{
-	{ItemID: 15410, Name: "Scale of Onyxia", Icon: "inv_misc_monsterscales_07", Quality: 3,
-		ItemClass: 7, Subclass: 6, ItemLevel: 60, AllowableClass: -1},
-	{ItemID: 16900, Name: "Stormrage Cover", Icon: "inv_helmet_09", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 2, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 1024},
-	{ItemID: 16908, Name: "Bloodfang Hood", Icon: "inv_helmet_41", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 2, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 8},
-	{ItemID: 16914, Name: "Netherwind Crown", Icon: "inv_helmet_70", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 1, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 128},
-	{ItemID: 16921, Name: "Halo of Transcendence", Icon: "inv_helmet_24", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 1, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 16},
-	{ItemID: 16929, Name: "Nemesis Skullcap", Icon: "inv_helmet_08", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 1, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 256},
-	{ItemID: 16939, Name: "Dragonstalker's Helm", Icon: "inv_helmet_05", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 3, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 4},
-	{ItemID: 16947, Name: "Helmet of Ten Storms", Icon: "inv_helmet_69", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 3, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 64},
-	{ItemID: 16955, Name: "Judgement Crown", Icon: "inv_helmet_74", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 4, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 2},
-	{ItemID: 16963, Name: "Helm of Wrath", Icon: "inv_helmet_71", Quality: 4, Slot: "head",
-		ItemClass: 4, Subclass: 4, InventoryType: 1, RequiredLevel: 60, ItemLevel: 76, AllowableClass: 1},
-	{ItemID: 17064, Name: "Shard of the Scale", Icon: "inv_misc_monsterscales_15", Quality: 4, Slot: "trinket",
-		ItemClass: 4, Subclass: 0, InventoryType: 12, RequiredLevel: 60, ItemLevel: 71, AllowableClass: -1, Unique: true},
-	{ItemID: 17067, Name: "Ancient Cornerstone Grimoire", Icon: "inv_misc_book_07", Quality: 4, Slot: "off_hand",
-		ItemClass: 4, Subclass: 0, InventoryType: 23, RequiredLevel: 60, ItemLevel: 76, AllowableClass: -1},
-	{ItemID: 17068, Name: "Deathbringer", Icon: "inv_axe_09", Quality: 4, Slot: "main_hand",
-		ItemClass: 2, Subclass: 0, InventoryType: 13, RequiredLevel: 60, ItemLevel: 75, AllowableClass: -1},
-	{ItemID: 17075, Name: "Vis'kag the Bloodletter", Icon: "inv_sword_18", Quality: 4, Slot: "main_hand",
-		ItemClass: 2, Subclass: 7, InventoryType: 13, RequiredLevel: 60, ItemLevel: 74, AllowableClass: -1, Unique: true},
-	{ItemID: 17078, Name: "Sapphiron Drape", Icon: "inv_misc_cape_16", Quality: 4, Slot: "back",
-		ItemClass: 4, Subclass: 1, InventoryType: 16, RequiredLevel: 60, ItemLevel: 72, AllowableClass: -1},
-	{ItemID: 17966, Name: "Onyxia Hide Backpack", Icon: "inv_misc_bag_22", Quality: 2,
-		ItemClass: 1, Subclass: 0, InventoryType: 18, ItemLevel: 55, AllowableClass: -1},
-	{ItemID: 18205, Name: "Eskhandar's Collar", Icon: "inv_belt_12", Quality: 4, Slot: "neck",
-		ItemClass: 4, Subclass: 0, InventoryType: 2, RequiredLevel: 60, ItemLevel: 71, AllowableClass: -1, Unique: true},
-	{ItemID: 18422, Name: "Head of Onyxia", Icon: "inv_misc_head_dragon_01", Quality: 4,
-		ItemClass: 12, Subclass: 0, RequiredLevel: 60, ItemLevel: 60, AllowableClass: -1},
-	{ItemID: 18423, Name: "Head of Onyxia", Icon: "inv_misc_head_dragon_01", Quality: 4,
-		ItemClass: 12, Subclass: 0, RequiredLevel: 60, ItemLevel: 60, AllowableClass: -1},
-	// classic-db's full item_template gives the Sinew AllowableClass 4 (hunter); the build's
-	// narrowed raw/classicdb/item_template.json keeps equippable items only.
-	{ItemID: 18705, Name: "Mature Black Dragon Sinew", Icon: "spell_holy_dispelmagic", Quality: 4,
-		ItemClass: 12, Subclass: 0, RequiredLevel: 60, ItemLevel: 71, AllowableClass: 4},
-	{ItemID: 18813, Name: "Ring of Binding", Icon: "inv_jewelry_ring_13", Quality: 4, Slot: "finger",
-		ItemClass: 4, Subclass: 0, InventoryType: 11, RequiredLevel: 60, ItemLevel: 73, AllowableClass: -1, Unique: true},
-	{ItemID: 21108, Name: "Draconic for Dummies", Icon: "inv_misc_stonetablet_03", Quality: 4,
-		ItemClass: 15, Subclass: 0, ItemLevel: 1, AllowableClass: -1},
-}
-
-// onyxiaItem is the table's row for itemID.
-func onyxiaItem(itemID int) (lootItem, bool) {
-	for _, it := range onyxiaLoot {
-		if it.ItemID == itemID {
-			return it, true
-		}
-	}
-	return lootItem{}, false
+	// EncounterID is the table boss the item drops from.
+	EncounterID int64
 }
 
 // AwardedTo is a loot item's own award, when one exists. AwardID is the row
@@ -150,7 +75,7 @@ type LootCandidate struct {
 	AlreadyEquivalent bool       `json:"already_equivalent"`
 	// Replaces names the item this character wears now in the drop's slot (empty when the slot is
 	// empty or the item cannot be named); ItemsWon counts the awards this character has had in this
-	// guild this tier (Onyxia is the only encounter an award can name, so every award row is the tier).
+	// guild this tier (awards are read for the loot table's encounters only, so every award row is the tier).
 	// For a ring, a trinket or a one-hander a dual wielder could hold in either hand it is the weaker
 	// of the two worn items, the one the drop pushes out.
 	Replaces string `json:"replaces"`
@@ -182,7 +107,7 @@ type LootWornItem struct {
 	Quality int    `json:"quality"`
 }
 
-// LootItemView is one of Onyxia's own 22 drops, as the Loot tab shows it.
+// LootItemView is one drop of the loot table, as the Loot tab shows it.
 type LootItemView struct {
 	ItemID    int        `json:"item_id"`
 	Name      string     `json:"name"`
@@ -208,6 +133,10 @@ type LootItemView struct {
 	// Eligible is who an officer can hand a quest drop or the bag to: verified level-60 characters
 	// the quest is for. Empty for gear and for the skinned scale.
 	Eligible []LootEligible `json:"eligible"`
+	// EncounterID and Boss are the table boss the drop falls from; Raid is that boss's raid.
+	EncounterID int64  `json:"encounter_id"`
+	Boss        string `json:"boss"`
+	Raid        string `json:"raid"`
 }
 
 // LootEncounterOption is one entry of the boss picker.
@@ -256,55 +185,96 @@ func (s *Store) killNights(ctx context.Context, guildID, encounterID int64) (int
 
 // LootView is the body of GET /v1/guilds/{id}/loot.
 type LootView struct {
+	// Encounters is every boss of the loot table, raid by raid; Selected is the first.
 	Encounters []LootEncounterOption `json:"encounters"`
 	Selected   int64                 `json:"selected"`
-	Items      []LootItemView        `json:"items"`
+	// Items is every boss's drops, boss by boss, each naming its encounter.
+	Items []LootItemView `json:"items"`
+	// Raids is the first tier's raids for the picker's grouping, a raid the game client does not
+	// carry yet included with no encounters.
+	Raids []LootRaidGroup `json:"raids"`
 	// AtLevelCap counts the verified roster characters at level 60, whose level is on file.
 	AtLevelCap int `json:"at_level_cap"`
 }
 
-// Loot assembles the Loot tab for guildID. Onyxia is the only selectable encounter today
-// (the only real, named boss this tier publishes) - any requested encounter id other than
-// 1084 is ignored rather than answered with an empty page or an error, since there is
-// nothing else to select yet (design spec's own "next unkilled: none, farm" copy). Killed
-// counts the guild's private nights too, never a flagged report (presence.NotFlagged).
+// LootRaidGroup is one first-tier raid of the picker: its zone key and name, whether the game
+// client carries it (InClient false: no bosses or loot to offer yet), and its bosses' encounter
+// ids in the table's order.
+type LootRaidGroup struct {
+	Key        string  `json:"key"`
+	Name       string  `json:"name"`
+	InClient   bool    `json:"in_client"`
+	Encounters []int64 `json:"encounters"`
+}
+
+// lootRaidGroups is every first-tier raid (raidZones, the curated order) with its table bosses.
+func lootRaidGroups() []LootRaidGroup {
+	out := make([]LootRaidGroup, 0, len(raidZones))
+	for _, z := range raidZones {
+		g := LootRaidGroup{Key: z.Key, Name: z.Name, Encounters: []int64{}}
+		for _, b := range lootBosses {
+			if b.RaidKey == z.Key {
+				g.InClient = true
+				g.Encounters = append(g.Encounters, b.EncounterID)
+			}
+		}
+		out = append(out, g)
+	}
+	return out
+}
+
+// Loot assembles the Loot tab for guildID: every boss of the loot table with its drops, each drop
+// marked with tonight's award for its boss. Killed counts the guild's private nights too, never a
+// flagged report (presence.NotFlagged).
 func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
-	killNights, err := s.killNights(ctx, guildID, onyxiaEncounterID)
-	if err != nil {
-		return LootView{}, err
-	}
-
-	view := LootView{
-		Encounters: []LootEncounterOption{{EncounterID: onyxiaEncounterID, Name: encounterName, Zone: zoneOnyxia,
-			Killed: killNights > 0, KillNights: killNights, OnFarm: killNights >= onFarmKillNights}},
-		Selected: onyxiaEncounterID,
-		Items:    []LootItemView{},
-	}
-
 	lr, err := s.lootRoster(ctx, guildID)
 	if err != nil {
 		return LootView{}, err
 	}
-	g, roster := lr.guild, lr.roster
-	all, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)
+	all, err := s.lootAwards(ctx, guildID, allLoot.encounters)
 	if err != nil {
 		return LootView{}, err
 	}
 	lr.nameInvited(all)
-	now := time.Now()
-	night, err := s.resolveAwardNight(ctx, guildID, onyxiaEncounterID, nil, now)
-	if err != nil {
-		return LootView{}, err
-	}
-
-	awards := tonightsAwards(all, night, now)
+	view := LootView{Encounters: []LootEncounterOption{}, Items: []LootItemView{}, Raids: lootRaidGroups(),
+		AtLevelCap: countAtLevelCap(lr.roster)}
 	wonBy := awardCounts(all)
-	view.AtLevelCap = countAtLevelCap(roster)
+	now := time.Now()
+	for _, b := range lootBosses {
+		opt, err := s.encounterOption(ctx, guildID, b)
+		if err != nil {
+			return LootView{}, err
+		}
+		view.Encounters = append(view.Encounters, opt)
+		night, err := s.resolveAwardNight(ctx, guildID, scopeOf(b), nil, now)
+		if err != nil {
+			return LootView{}, err
+		}
+		view.Items = append(view.Items, s.bossItemViews(lr, b, tonightsAwards(all, night, now), wonBy)...)
+	}
+	if len(view.Encounters) > 0 {
+		view.Selected = view.Encounters[0].EncounterID
+	}
+	return view, nil
+}
 
-	// Two of the table's items can share a name (the Alliance and Horde "Head of Onyxia" quest
-	// items, both slotless); the council lists a name once and says how many it stands for.
-	for _, group := range lootGroups(onyxiaLoot) {
-		iv := s.lootItemView(roster, group, g.Faction)
+// encounterOption is b's picker entry with the guild's kill nights.
+func (s *Store) encounterOption(ctx context.Context, guildID int64, b lootBoss) (LootEncounterOption, error) {
+	nights, err := s.killNights(ctx, guildID, b.EncounterID)
+	if err != nil {
+		return LootEncounterOption{}, err
+	}
+	return LootEncounterOption{EncounterID: b.EncounterID, Name: b.Name, Zone: b.RaidName,
+		Killed: nights > 0, KillNights: nights, OnFarm: nights >= onFarmKillNights}, nil
+}
+
+// bossItemViews is b's drops as Loot tab rows. Two of a boss's items can share a name (the
+// Alliance and Horde "Head of Onyxia" quest items, both slotless); the council lists a name once
+// and says how many it stands for.
+func (s *Store) bossItemViews(lr lootRosterSet, b lootBoss, awards map[int]*AwardedTo, wonBy map[string]int) []LootItemView {
+	out := make([]LootItemView, 0, len(b.Items))
+	for _, group := range lootGroups(b.Items) {
+		iv := s.lootItemView(lr.roster, group, lr.guild.Faction)
 		for _, item := range group {
 			if iv.AwardedTo == nil {
 				iv.AwardedTo = awards[item.ItemID]
@@ -313,9 +283,9 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 		for i := range iv.Candidates {
 			iv.Candidates[i].ItemsWon = wonBy[iv.Candidates[i].CharacterKey]
 		}
-		view.Items = append(view.Items, iv)
+		out = append(out, iv)
 	}
-	return view, nil
+	return out
 }
 
 // lootGroups is items grouped by name, in the table's order.
@@ -351,6 +321,7 @@ func (s *Store) lootItemView(roster []RosterRow, group []lootItem, guildFaction 
 		ItemID: item.ItemID, Name: item.Name, Icon: item.Icon, Quality: item.Quality, Slot: item.Slot,
 		Copies: len(group), InventoryType: item.InventoryType, ItemClass: item.ItemClass,
 		ItemSubclass: item.Subclass, Kind: kind, Candidates: []LootCandidate{}, Eligible: []LootEligible{},
+		EncounterID: item.EncounterID, Boss: bossName(item.EncounterID), Raid: bossRaidName(item.EncounterID),
 	}
 	switch kind {
 	case lootKindGear:
@@ -426,14 +397,9 @@ func (s *Store) awarderNames(ctx context.Context, guildID int64, userIDs []int64
 	return out, nil
 }
 
-// ErrInvalidAward is returned for an award whose encounter/item is not one of Onyxia's
-// own 22 drops, or whose character_key is not this guild's own roster.
+// ErrInvalidAward is returned for an award whose item is not a drop of the loot table, or not
+// of the named encounter, or whose character_key is not this guild's own roster.
 var ErrInvalidAward = errors.New("guilds: invalid loot award")
-
-func validOnyxiaItem(itemID int) bool {
-	_, ok := onyxiaItem(itemID)
-	return ok
-}
 
 // CreateLootAward records an officer's loot decision. A second Award of the same drop on the same
 // night (a raid, or a logged night with no planned raid) replaces the first; an award with no night
@@ -442,7 +408,8 @@ func validOnyxiaItem(itemID int) bool {
 // it under the raid being played now (loot_raid.go), else the latest night that killed the boss,
 // else no night until a match attaches it. The award keeps its decision record (decisionSnapshot).
 func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, raidID *int64, d AwardDecision) (int64, error) {
-	if encounterID != onyxiaEncounterID {
+	boss, ok := lootBossByEncounter(encounterID)
+	if !ok || dropEncounter(itemID) != encounterID {
 		return 0, ErrInvalidAward
 	}
 	if err := s.checkDropTarget(ctx, guildID, itemID, characterKey); err != nil {
@@ -454,7 +421,7 @@ func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64,
 		night = *d.Night
 	} else {
 		var err error
-		if night, err = s.resolveAwardNight(ctx, guildID, encounterID, raidID, now); err != nil {
+		if night, err = s.resolveAwardNight(ctx, guildID, scopeOf(boss), raidID, now); err != nil {
 			return 0, err
 		}
 	}
@@ -573,7 +540,7 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case errors.As(err, &badRaid):
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
-			fmt.Sprintf("raid %d is not a done Onyxia raid of this guild", badRaid.RaidID), nil)
+			fmt.Sprintf("raid %d is not a done raid of this guild for that drop", badRaid.RaidID), nil)
 	case errors.Is(err, ErrInvalidAward):
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a valid encounter/item/character for this guild", nil)
 	case errors.Is(err, ErrInvalidNight):
@@ -616,9 +583,9 @@ func (s *Service) deleteLootAward(w http.ResponseWriter, r *http.Request) {
 }
 
 // awardCounts is how many of the tier's drops each character has been awarded in this guild,
-// every award row counted (two weeks of the same helm are two items). An award row names one
-// encounter (Onyxia, the only one an award can name), so every row is the current tier and the
-// count needs no table of its own.
+// every award row counted (two weeks of the same helm are two items). The awards are read for the
+// loot table's encounters only, so every row is the current tier and the count needs no table of
+// its own.
 func awardCounts(awards []lootAward) map[string]int {
 	out := make(map[string]int, len(awards))
 	for _, a := range awards {

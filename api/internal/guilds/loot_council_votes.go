@@ -49,7 +49,7 @@ func (s *Store) dropVotes(ctx context.Context, guildID int64, night awardNight, 
 	rows, err := s.Pool.Query(ctx, `
 		select v.character_key, v.voter_id, v.vote from loot_votes v
 		where v.guild_id = $1 and v.encounter_id = $5 and v.item_id = $6 and `+nightMatchSQL("v", "$2", "$3", "$4", "voted_at"),
-		append([]any{guildID}, append(night.args(now), onyxiaEncounterID, itemID)...)...)
+		append([]any{guildID}, append(night.args(now), dropEncounter(itemID), itemID)...)...)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: loot votes: %w", err)
 	}
@@ -79,10 +79,10 @@ func tallyVote(t LootVotes, vote string, mine bool) LootVotes {
 	return t
 }
 
-// checkDropTarget is ErrInvalidAward unless itemID is one of Onyxia's drops and characterKey is
+// checkDropTarget is ErrInvalidAward unless itemID is a drop of the loot table and characterKey is
 // on the guild's roster.
 func (s *Store) checkDropTarget(ctx context.Context, guildID int64, itemID int, characterKey string) error {
-	if !validOnyxiaItem(itemID) {
+	if !validLootItem(itemID) {
 		return ErrInvalidAward
 	}
 	var exists bool
@@ -103,7 +103,7 @@ func (s *Store) dropAwarded(ctx context.Context, guildID int64, night awardNight
 	err := s.Pool.QueryRow(ctx, `
 		select exists(select 1 from loot_awards la
 		  where la.guild_id = $1 and la.encounter_id = $5 and la.item_id = $6 and `+nightMatchSQL("la", "$2", "$3", "$4", "awarded_at")+`)`,
-		append([]any{guildID}, append(night.args(now), onyxiaEncounterID, itemID)...)...).Scan(&awarded)
+		append([]any{guildID}, append(night.args(now), dropEncounter(itemID), itemID)...)...).Scan(&awarded)
 	if err != nil {
 		return false, fmt.Errorf("guilds: loot council: %w", err)
 	}
@@ -136,7 +136,7 @@ func (s *Store) SetLootVote(ctx context.Context, guildID int64, night awardNight
 			delete from loot_votes
 			where guild_id = $1 and coalesce(raid_id, 0) = coalesce($2::bigint, 0) and coalesce(report_id, '') = coalesce($3::text, '')
 			  and encounter_id = $4 and item_id = $5 and character_key = $6 and voter_id = $7`,
-			guildID, night.raidID, night.reportID, onyxiaEncounterID, itemID, characterKey, voter)
+			guildID, night.raidID, night.reportID, dropEncounter(itemID), itemID, characterKey, voter)
 		if err != nil {
 			return fmt.Errorf("guilds: loot vote: %w", err)
 		}
@@ -147,7 +147,7 @@ func (s *Store) SetLootVote(ctx context.Context, guildID int64, night awardNight
 		values ($1, $2, $3, $4, $5, $6, $7, $8)
 		on conflict (guild_id, (coalesce(raid_id, 0)), (coalesce(report_id, '')), encounter_id, item_id, character_key, voter_id)
 		do update set vote = excluded.vote, voted_at = now()`,
-		guildID, night.raidID, night.reportID, onyxiaEncounterID, itemID, characterKey, voter, vote)
+		guildID, night.raidID, night.reportID, dropEncounter(itemID), itemID, characterKey, voter, vote)
 	if err != nil {
 		return fmt.Errorf("guilds: loot vote: %w", err)
 	}

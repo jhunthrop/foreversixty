@@ -358,9 +358,9 @@ func TestLootAwardRejectsAnUnknownItem(t *testing.T) {
 }
 
 func TestMain_lootStrings(t *testing.T) {
-	// Sanity check: every onyxiaLoot name is non-empty, and the table has no duplicate ids.
+	// Sanity check: every testOnyxiaLoot name is non-empty, and the table has no duplicate ids.
 	seen := map[int]bool{}
-	for _, it := range onyxiaLoot {
+	for _, it := range testOnyxiaLoot {
 		if it.Name == "" || strings.TrimSpace(it.Name) == "" {
 			t.Fatalf("item %d has no name", it.ItemID)
 		}
@@ -369,8 +369,8 @@ func TestMain_lootStrings(t *testing.T) {
 		}
 		seen[it.ItemID] = true
 	}
-	if len(onyxiaLoot) != 22 {
-		t.Fatalf("onyxiaLoot has %d entries, want 22", len(onyxiaLoot))
+	if len(testOnyxiaLoot) != 22 {
+		t.Fatalf("testOnyxiaLoot has %d entries, want 22", len(testOnyxiaLoot))
 	}
 }
 
@@ -607,7 +607,7 @@ func TestAwardLineNamesTheOfficersCharacter(t *testing.T) {
 	award(stranger, 16939, "us/hardcore/awardwinner")
 	award(hidden, 16947, "us/hardcore/awardwinner")
 
-	got, err := store.lootAwards(ctx, gid, 1084)
+	got, err := store.lootAwards(ctx, gid, []int64{1084})
 	if err != nil {
 		t.Fatal(err)
 	}

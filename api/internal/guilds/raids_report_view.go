@@ -178,10 +178,8 @@ func (s *Store) reportLoot(ctx context.Context, vc raidViewContext, raidID int64
 
 // lootItemFacts is an award's item name, quality and icon from the loot table (the Loot tab's).
 func lootItemFacts(itemID int) (string, int, string) {
-	for _, it := range onyxiaLoot {
-		if it.ItemID == itemID {
-			return it.Name, it.Quality, it.Icon
-		}
+	if it, ok := lootItemByID(itemID); ok {
+		return it.Name, it.Quality, it.Icon
 	}
 	return fmt.Sprintf("Item %d", itemID), 0, ""
 }
@@ -193,11 +191,7 @@ func addLootAward(bosses []ReportLootBoss, encounterID int64, a ReportLootAward)
 			return bosses
 		}
 	}
-	boss := fmt.Sprintf("Encounter %d", encounterID)
-	if encounterID == onyxiaEncounterID {
-		boss = encounterName
-	}
-	return append(bosses, ReportLootBoss{EncounterID: encounterID, Boss: boss, Awards: []ReportLootAward{a}})
+	return append(bosses, ReportLootBoss{EncounterID: encounterID, Boss: bossName(encounterID), Awards: []ReportLootAward{a}})
 }
 
 // killStat is one raider's best kill on one boss.

@@ -123,7 +123,7 @@ func TestOfficerActionsCountTheOpenDrops(t *testing.T) {
 	if res := w.putVote("", memberKeyA, `"yes"`); res.StatusCode != http.StatusOK {
 		t.Fatalf("vote = %d: %s", res.StatusCode, readBody(res))
 	}
-	other := onyxiaLoot[1].ItemID
+	other := testOnyxiaLoot[1].ItemID
 	if res := w.h.do(http.MethodPost, w.path("/loot/awards"), fmt.Sprintf(
 		`{"encounter_id":1084,"item_id":%d,"character_key":%q}`, other, memberKeyB)); res.StatusCode != http.StatusOK {
 		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
