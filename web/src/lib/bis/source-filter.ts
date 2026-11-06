@@ -46,7 +46,10 @@ const PAIR_FIRST: Readonly<Record<string, string>> = {
 };
 
 /** The fields of a slot the filter reads. */
-export type FilterableSlot = Pick<BisSlot, 'slot' | 'item_id' | 'source_kind' | 'kinds' | 'two_hand' | 'not_with' | 'by_kind'>;
+export type FilterableSlot = Pick<
+  BisSlot,
+  'slot' | 'item_id' | 'source_kind' | 'kinds' | 'two_hand' | 'not_with' | 'by_kind'
+>;
 
 /** A slot's answer under a filter. `source`/`source_kind` are absent when it is the pick. */
 export interface FilteredPick {

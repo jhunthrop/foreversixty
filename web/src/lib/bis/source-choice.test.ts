@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { BisBandModel } from './page-model';
-import { defaultRuleLine, setFigureFor, sourceChoiceFor, sourcesButtonLabel, sourcesFieldLabel } from './source-choice';
+import {
+  defaultRuleLine,
+  setFigureFor,
+  sourceChoiceFor,
+  sourcesButtonLabel,
+  sourcesFieldLabel,
+} from './source-choice';
 import { SOURCE_FILTER_KINDS } from './source-filter';
 
 const ALL = SOURCE_FILTER_KINDS;

@@ -24,7 +24,9 @@ async function markNoReload(page: Page): Promise<void> {
 }
 
 async function expectNoReloadSoFar(page: Page): Promise<void> {
-  const marker = await page.evaluate(() => (window as unknown as { __noReloadMarker?: boolean }).__noReloadMarker);
+  const marker = await page.evaluate(
+    () => (window as unknown as { __noReloadMarker?: boolean }).__noReloadMarker,
+  );
   expect(marker).toBe(true);
 }
 
@@ -34,7 +36,9 @@ function cells(page: Page): Locator {
   return page.locator('[data-testid="bis-doll"] [data-doll-slot]');
 }
 
-test('BiS: index links to a spec, faction and band controls switch the doll with no reload', async ({ page }) => {
+test('BiS: index links to a spec, faction and band controls switch the doll with no reload', async ({
+  page,
+}) => {
   await page.goto('/bis');
   await expect(page.getByRole('heading', { name: 'Best in slot', level: 1 })).toBeVisible();
   const marksmanshipLink = page.locator('a[href^="/bis/hunter/marksmanship"]').first();
@@ -109,7 +113,11 @@ test('BiS: a pick’s runners-up open with the slot, every one its own hover tar
   await expect(doll).not.toContainText('+0.0 DPS');
 
   const tooltip = page.getByTestId('item-tooltip');
-  const pickName = (await page.locator('[data-testid="bis-doll"] [aria-selected="true"] [data-testid^="item-hover-"]').innerText()).trim();
+  const pickName = (
+    await page
+      .locator('[data-testid="bis-doll"] [aria-selected="true"] [data-testid^="item-hover-"]')
+      .innerText()
+  ).trim();
   await page.locator('[data-testid="bis-doll"] [aria-selected="true"] [data-testid^="item-hover-"]').hover();
   await expect(tooltip).toBeVisible();
   await expect(tooltip).toContainText(pickName);
@@ -142,12 +150,14 @@ test('BiS: What to stack shows scale factors normalized to the top stat, DPS per
 
 test('BiS: an insignificant stat reads "Not significant", never a number', async ({ page }) => {
   await openBis(page, '/bis/hunter/marksmanship');
-  const bands = await page.locator('[data-testid^="control-band-"]').evaluateAll((nodes) =>
-    nodes.map((node) => node.getAttribute('data-value') ?? ''),
-  );
+  const bands = await page
+    .locator('[data-testid^="control-band-"]')
+    .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-value') ?? ''));
   for (const band of bands) {
     await chooseControl(page, 'band', band);
-    const faint = page.getByTestId(`bis-weights-alliance-${band}`).locator('.faint', { hasText: 'Not significant' });
+    const faint = page
+      .getByTestId(`bis-weights-alliance-${band}`)
+      .locator('.faint', { hasText: 'Not significant' });
     if ((await faint.count()) > 0) {
       await expect(faint.first()).not.toContainText(/\d\.\d\d/);
       return;
@@ -156,14 +166,19 @@ test('BiS: an insignificant stat reads "Not significant", never a number', async
   test.skip(true, 'no insignificant stat on any Alliance band with the current data');
 });
 
-test('BiS: an ordinary empty slot (not a two-hander gap) reads the plain no-source copy', async ({ page }) => {
+test('BiS: an ordinary empty slot (not a two-hander gap) reads the plain no-source copy', async ({
+  page,
+}) => {
   await page.goto('/bis/druid/balance?view=slot');
   const empty = page.locator('[data-testid="bis-doll"] [data-state="empty"]');
   const texts = await empty.allInnerTexts();
   test.skip(texts.length === 0, 'no empty slot on this band with the current data');
   for (const text of texts) expect(text).toMatch(ANY_EMPTY_COPY);
   const ordinary = texts.filter((text) => !TWO_HANDER_EMPTY_COPY.test(text));
-  test.skip(ordinary.length === 0, 'every empty slot on this band is the two-hander gap with the current data');
+  test.skip(
+    ordinary.length === 0,
+    'every empty slot on this band is the two-hander gap with the current data',
+  );
   for (const text of ordinary) {
     expect(text).toMatch(ORDINARY_EMPTY_COPY);
     expect(text).not.toMatch(TWO_HANDER_EMPTY_COPY);

@@ -81,7 +81,10 @@ export interface SetFigure {
   error?: number;
 }
 
-function filteredKey(on: readonly SourceFilterKind[], band: number): 'all' | 'dungeon' | 'leveling_default' | undefined {
+function filteredKey(
+  on: readonly SourceFilterKind[],
+  band: number,
+): 'all' | 'dungeon' | 'leveling_default' | undefined {
   if (on.length === SOURCE_FILTER_KINDS.length) return 'all';
   if (isLevelingDefault(on, band)) return 'leveling_default';
   if (on.length === 1 && on[0] === 'dungeon') return 'dungeon';
@@ -96,7 +99,11 @@ export function setFigureFor(
 ): SetFigure | undefined {
   const answer = model.answer;
   if (answer.figure === undefined) return undefined;
-  const best: SetFigure = { value: answer.figure, label: `This set, ${answer.simmed.toLowerCase()}`, error: answer.error };
+  const best: SetFigure = {
+    value: answer.figure,
+    label: `This set, ${answer.simmed.toLowerCase()}`,
+    error: answer.error,
+  };
   if (changed === 0) return best;
   const key = filteredKey(on, model.band);
   const measured = key === undefined ? undefined : answer.filtered?.[key];
