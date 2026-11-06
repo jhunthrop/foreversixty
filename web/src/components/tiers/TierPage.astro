@@ -1,28 +1,47 @@
 ---
 // web/src/components/tiers/TierPage.astro
-// The tier list page for one role (design/specs/2026-10-09-tier-list.md). /tiers, /tiers/tank
-// and /tiers/healer render this with a different role. Both factions' lists are in the HTML
-// and an inline pre-paint script picks the one the URL asks for, so there is no island above
-// the fold; the only client work after paint is the signed-in callout and the faction pills.
+// The tier list page for one role (design/specs/2026-11-06-tiers.md, the frame; the rules are
+// 2026-10-09-tier-list.md's). /tiers, /tiers/tank and /tiers/healer render this with a different
+// role. Built from the ui/ primitives: PageHeader (the signed-in answer at its right), the
+// ControlBar (role and faction), then per faction a caption, the one Plate holding a RankList and
+// the open "How to read this" Section. Both factions are in the HTML and an inline pre-paint
+// script picks the one the URL (or the current character) asks for, so there is no island above
+// the fold; the only client work after paint is the faction choice and the answer.
 import Base from '../../layouts/Base.astro';
-import FactionMark from '../FactionMark.astro';
 import UpdatedStamp from '../UpdatedStamp.astro';
-import Card from '../ui/Card.astro';
-import PageHead from '../ui/PageHead.astro';
-import TierRow from './TierRow.astro';
-import { FACTION_ATTRIBUTE, FACTION_PARAM, TIER_FACTION_ORDER } from '../../lib/tiers/tier-controls';
+import TierRankRow from './TierRankRow.astro';
+import ControlBar from '../ui/ControlBar.astro';
+import Notice from '../ui/Notice.svelte';
+import Page from '../ui/Page.svelte';
+import PageHeader from '../ui/PageHeader.svelte';
+import Plate from '../ui/Plate.svelte';
+import RankGroup from '../ui/RankGroup.svelte';
+import RankList from '../ui/RankList.svelte';
+import Section from '../ui/Section.svelte';
+import Figure from '../ui/Figure.svelte';
+import { CURRENT_CHARACTER_STORAGE_KEY } from '../../lib/current-character-events';
+import { factionMarkSrc } from '../../lib/faction-mark';
+import { LINK, type ControlGroup } from '../../lib/ui/primitives';
+import type { RankHead } from '../../lib/ui/rank-list';
+import {
+  DEFAULT_FACTION,
+  FACTION_ATTRIBUTE,
+  FACTION_PARAM,
+  TIER_FACTION_ORDER,
+} from '../../lib/tiers/tier-controls';
 import { tierSpecViews } from '../../lib/tiers/tier-callout';
 import {
   FACTION_LABELS,
   ROLE_LABELS,
   ROLE_PATHS,
-  howToReadBullets,
-  tierNotes,
+  caption,
+  readColumns,
   tiersCopy,
 } from '../../lib/tiers/tier-copy';
 import { TIER_ROLES, groupByTier, roleHasTiers } from '../../lib/tiers/tier-list';
+import { TIER_LETTER_TONES } from '../../lib/tiers/tier-rules';
 import { loadTierData } from '../../lib/tiers/tier-load';
-import type { BisRole } from '../../lib/bis/types';
+import type { BisRole, Faction } from '../../lib/bis/types';
 
 interface Props {
   role: BisRole;
@@ -32,17 +51,42 @@ const { role } = Astro.props;
 const data = loadTierData();
 const presetLabel = data.presetLabel ?? '';
 const hasData = data.updated !== null;
+const isTank = role === 'tank';
 const roleCounts = Object.fromEntries(TIER_ROLES.map((r) => [r, data.lists.alliance[r].length])) as Record<
   BisRole,
   number
 >;
-const viewsByFaction = Object.fromEntries(
-  TIER_FACTION_ORDER.map((faction) => [faction, tierSpecViews(data.lists[faction])]),
-);
+const groups: ControlGroup[] = [
+  {
+    label: tiersCopy.roleGroupLabel,
+    param: 'role',
+    kind: 'segmented',
+    value: role,
+    options: TIER_ROLES.map((r) => ({
+      value: r,
+      label: ROLE_LABELS[r],
+      count: roleCounts[r],
+      href: ROLE_PATHS[r],
+    })),
+  },
+  {
+    label: tiersCopy.factionGroupLabel,
+    param: FACTION_PARAM,
+    kind: 'segmented',
+    value: DEFAULT_FACTION,
+    defaultValue: DEFAULT_FACTION,
+    options: TIER_FACTION_ORDER.map((faction) => ({
+      value: faction,
+      label: FACTION_LABELS[faction],
+      icon: factionMarkSrc(faction),
+    })),
+  },
+];
 const clientConfig = {
   role,
-  views: viewsByFaction,
-  paths: ROLE_PATHS,
+  views: Object.fromEntries(
+    TIER_FACTION_ORDER.map((faction) => [faction, tierSpecViews(data.lists[faction])]),
+  ),
   factionParam: FACTION_PARAM,
   factionAttribute: FACTION_ATTRIBUTE,
 };
@@ -50,183 +94,218 @@ const stampTitle =
   data.build === null
     ? undefined
     : `Ranked on build ${data.build}, engine ${data.engineVersion ?? ''}`.trim();
+const heads: RankHead[] = tiersCopy.heads[role].map((label, index, all) => ({
+  label,
+  // The figures and the gap: every head after the bar but the links'.
+  align: index > 3 && index < all.length - 1 ? 'end' : 'start',
+}));
+
+function contextFor(faction: Faction) {
+  return {
+    role,
+    faction,
+    presetLabel,
+    healSeconds: data.healSeconds,
+    healerOrderMeasured: data.healerOrderMeasured[faction],
+    bossSwingSeconds: data.bossSwingSeconds,
+    hasTie: data.lists[faction][role].some((row) => row.tie !== null),
+  };
+}
+const linkCount = role === 'dps' ? 4 : 3;
 ---
 
-<Base title={tiersCopy.pageTitle(role)} description={tiersCopy.metaDescription(role)} path={ROLE_PATHS[role]}>
-  <script is:inline define:vars={{ param: FACTION_PARAM, attribute: FACTION_ATTRIBUTE }}>
-    if (new URLSearchParams(location.search).get(param) === 'horde') {
-      document.documentElement.setAttribute(attribute, 'horde');
-    }
-  </script>
-  <main
-    id="main"
-    tabindex="-1"
-    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
-    data-testid="tier-page"
-    data-role={role}
+<Base
+  title={tiersCopy.pageTitle(role)}
+  description={tiersCopy.metaDescription(role)}
+  path={ROLE_PATHS[role]}
+  wide
+>
+  <script
+    is:inline
+    define:vars={{
+      param: FACTION_PARAM,
+      attribute: FACTION_ATTRIBUTE,
+      pointerKey: CURRENT_CHARACTER_STORAGE_KEY,
+    }}
   >
-    <PageHead
-      eyebrow={data.presetLabel !== null ? tiersCopy.eyebrow(presetLabel) : 'Level 60'}
-      title={tiersCopy.title}
-      job={tiersCopy.jobLine}
-    >
-      <Fragment slot="below">
-        <div class="tier-you" data-signed-in-only data-testid="tier-you-slot" id="tier-you-slot">
-          <div class="tier-you-skeleton" role="status" aria-busy="true" data-testid="tier-you-skeleton">
+    // lib/tiers/tier-controls.ts initialFaction, repeated because an inline script cannot import:
+    // the URL wins, then the current character's faction, then Alliance.
+    let faction = new URLSearchParams(location.search).get(param);
+    if (faction !== 'horde' && faction !== 'alliance') {
+      try {
+        faction = JSON.parse(localStorage.getItem(pointerKey) || 'null')?.faction;
+      } catch {
+        faction = null;
+      }
+    }
+    if (faction === 'horde') document.documentElement.setAttribute(attribute, 'horde');
+  </script>
+  <main id="main" tabindex="-1" class="tier-page" data-testid="tier-page" data-role={role}>
+    <Page layout="ledger" testid="tier-body">
+      <PageHeader slot="header" title={tiersCopy.title} tone="strong">
+        <span slot="meta">
+          {tiersCopy.metaLine(data.presetLabel)}
+          {data.updated !== null && (
+            <span title={stampTitle}>
+              · <UpdatedStamp date={data.updated} />
+            </span>
+          )}
+        </span>
+        <div slot="answer" class="tier-answer" id="tier-answer" data-signed-in-only data-testid="tier-answer">
+          <div class="tier-answer-skeleton" role="status" aria-busy="true" data-answer-skeleton>
             <span class="sr-only">Loading</span>
-            <span class="skeleton-block tier-you-skeleton-crest" aria-hidden="true"></span>
-            <span class="skeleton-block tier-you-skeleton-text" aria-hidden="true"></span>
+            <span class="skeleton-block tier-sk-crest" aria-hidden="true"></span>
+            <span class="tier-sk-lines" aria-hidden="true">
+              <span class="skeleton-block tier-sk-name"></span>
+              <span class="skeleton-block tier-sk-detail"></span>
+            </span>
+            <span class="skeleton-block tier-sk-figure" aria-hidden="true"></span>
           </div>
-        </div>
-        <div class="tier-controls">
-          <div class="tier-tabs" role="tablist" aria-label={tiersCopy.roleTabsLabel}>
-            {TIER_ROLES.map((r) => (
-              <a
-                href={ROLE_PATHS[r]}
-                role="tab"
-                aria-selected={r === role}
-                tabindex={r === role ? 0 : -1}
-                class:list={['tier-tab', r === role && 'is-current']}
-                data-role-tab={r}
-                data-testid={`tier-tab-${r}`}
-              >
-                {ROLE_LABELS[r]}
-                <span class="tier-tab-count">{roleCounts[r]}</span>
+          <div class="tier-answer-body" data-answer-body hidden data-testid="tier-answer-body">
+            <span class="text-label tracking-label text-muted font-bold uppercase" data-field="label"></span>
+            <div class="tier-answer-who">
+              <img class="tier-answer-crest" data-field="crest" src="" alt="" width="40" height="40" hidden />
+              <span class="tier-answer-text">
+                <span class="tier-answer-name" data-field="name"></span>
+                <span
+                  class="text-small text-muted"
+                  data-field="detail"
+                  data-testid="tier-answer-detail"
+                ></span>
+              </span>
+              <span data-field="figure">
+                <Figure
+                  value="0"
+                  unit="of 0"
+                  size="big"
+                  tone="gold"
+                  align="end"
+                  testid="tier-answer-figure"
+                />
+              </span>
+            </div>
+            <span class="tier-answer-links" data-field="links">
+              <a class={LINK} data-field="bis" href="/bis" data-testid="tier-answer-bis">
+                {tiersCopy.answer.bis} ›
               </a>
-            ))}
-          </div>
-          <span class="tier-divider" aria-hidden="true"></span>
-          <div class="tier-factions" role="group" aria-label={tiersCopy.factionGroupLabel}>
-            {TIER_FACTION_ORDER.map((faction) => (
-              <button
-                type="button"
-                class="tier-tab tier-faction-pill"
-                data-faction-pill={faction}
-                aria-pressed={faction === 'alliance'}
-                data-testid={`tier-faction-${faction}`}
-              >
-                <FactionMark faction={faction} size={20} />
-                {FACTION_LABELS[faction]}
+              <a class={LINK} data-field="guide" href="/guides">
+                {tiersCopy.answer.guide} ›
+              </a>
+              <a class={LINK} href="/sim" data-testid="tier-answer-sim">
+                {tiersCopy.answer.sim} ›
+              </a>
+            </span>
+            <a class={LINK} data-field="other" href="/tiers" hidden data-testid="tier-answer-other">
+              {tiersCopy.answer.otherRoleLink} ›
+            </a>
+            <span class="tier-answer-message" data-field="message" hidden>
+              <span class="text-small text-muted"></span>
+              <button type="button" class={LINK} data-field="choose" hidden>
+                {tiersCopy.answer.unknownLink} ›
               </button>
-            ))}
+              <button type="button" class={LINK} data-field="retry" hidden>
+                {tiersCopy.answer.retry}
+              </button>
+            </span>
           </div>
         </div>
+      </PageHeader>
+      <Fragment slot="bar">
+        <ControlBar id="tier-bar" label={tiersCopy.controlsLabel} groups={groups} testid="tier-bar" />
+        <script is:inline define:vars={{ attribute: FACTION_ATTRIBUTE, param: FACTION_PARAM }}>
+          // The bar is server-rendered on Alliance; a Horde page (set before paint above) checks
+          // Horde before the bar is painted, so the selection never flashes.
+          if (document.documentElement.getAttribute(attribute) === 'horde') {
+            for (const radio of document.querySelectorAll(`[data-param="${param}"] [role="radio"]`)) {
+              const on = radio.dataset.value === 'horde';
+              radio.setAttribute('aria-checked', String(on));
+              radio.tabIndex = on ? 0 : -1;
+            }
+          }
+        </script>
       </Fragment>
-    </PageHead>
-
-    <div class="tier-body">
-      {!hasData && (
-        <p class="tier-empty card-surface-quiet" data-testid="tier-no-data">
-          {tiersCopy.noData}
-        </p>
-      )}
       {TIER_FACTION_ORDER.map((faction) => {
         const rows = data.lists[faction][role];
-        const notes = hasData
-          ? tierNotes({
-              role,
-              faction,
-              presetLabel,
-              healSeconds: data.healSeconds,
-              healerOrderMeasured: data.healerOrderMeasured[faction],
-              bossSwingSeconds: data.bossSwingSeconds,
-            })
-          : [];
+        const ctx = contextFor(faction);
         return (
-          <section class="tier-faction" data-faction={faction} data-testid={`tier-faction-panel-${faction}`}>
-            <div class="tier-notes" data-testid="tier-notes">
-              {notes.map((note) => (
-                <p>
-                  {note.map((segment) =>
-                    segment.href !== undefined ? (
-                      <a href={segment.href}>{segment.text}</a>
-                    ) : segment.strong === true ? (
-                      <b>{segment.text}</b>
-                    ) : (
-                      segment.text
-                    ),
-                  )}
+          <div class="tier-faction" data-faction={faction} data-testid={`tier-faction-panel-${faction}`}>
+            {hasData && rows.length > 0 && (
+              <Notice text={caption(ctx)} tone="neutral" testid="tier-caption">
+                <span slot="tail" data-signed-out-only>
+                  <a class={LINK} href={tiersCopy.signInHref(ROLE_PATHS[role])}>
+                    {tiersCopy.signIn}
+                  </a>
+                  {tiersCopy.signInSuffix}
+                </span>
+              </Notice>
+            )}
+            <Plate label={tiersCopy.listLabel(role, faction)} testid="tier-plate">
+              {!hasData ? (
+                <p class="tier-empty" data-testid="tier-no-data">
+                  {tiersCopy.noData}
                 </p>
-              ))}
-            </div>
-            {rows.length === 0 ? (
-              hasData && (
-                <p class="tier-empty card-surface-quiet" data-testid="tier-empty">
+              ) : rows.length === 0 ? (
+                <p class="tier-empty" data-testid="tier-empty">
                   {tiersCopy.emptyRole(role)}
                 </p>
-              )
-            ) : (
-              <Card
-                compact
-                glyph="trophy"
-                title={tiersCopy.listTitle(role)}
-                meta={FACTION_LABELS[faction]}
-                body="none"
-                testid="tier-list-card"
+              ) : (
+                <RankList
+                  heads={heads}
+                  figures={isTank ? 3 : 1}
+                  links={linkCount}
+                  grouped={roleHasTiers(role)}
+                  label={tiersCopy.listLabel(role, faction)}
+                  testid="tier-list"
+                >
+                  {roleHasTiers(role)
+                    ? groupByTier(rows).map((group) => (
+                        <RankGroup
+                          letter={group.letter}
+                          tone={TIER_LETTER_TONES[group.letter]}
+                          band={tiersCopy.tierBand(group)}
+                          count={tiersCopy.tierCount(group.rows.length)}
+                          label={tiersCopy.tierLabel(group.letter)}
+                          testid="tier-group"
+                        >
+                          {group.rows.map((row) => (
+                            <TierRankRow row={row} count={rows.length} />
+                          ))}
+                        </RankGroup>
+                      ))
+                    : rows.map((row) => <TierRankRow row={row} count={rows.length} />)}
+                </RankList>
+              )}
+            </Plate>
+            {hasData && (
+              <Section
+                title={tiersCopy.howToReadHeading}
+                action={{ label: tiersCopy.simChecksLink, href: tiersCopy.simChecksHref }}
+                testid="tier-howto"
               >
-                <div class="tier-list" data-role={role}>
-                  <div class="tier-heads" aria-hidden="true">
-                    <span class="quiet-label">{rows[0]?.ranked === false ? '' : tiersCopy.headers.rank}</span>
-                    <span class="quiet-label"></span>
-                    <span class="quiet-label">{tiersCopy.headers.spec}</span>
-                    <span class="quiet-label">{tiersCopy.headers.bar[role]}</span>
-                    <span class="quiet-label tier-head-num">{tiersCopy.headers.number[role]}</span>
-                    {role === 'tank' && (
-                      <>
-                        <span class="quiet-label tier-head-num">{tiersCopy.headers.effectiveHealth}</span>
-                        <span class="quiet-label tier-head-num">{tiersCopy.headers.threat}</span>
-                      </>
-                    )}
-                    <span class="quiet-label tier-head-num">{tiersCopy.headers.gap[role]}</span>
-                    <span class="quiet-label"></span>
-                  </div>
-                  <ol class="tier-panel" data-testid="tier-list">
-                    {roleHasTiers(role)
-                      ? groupByTier(rows).map((group) => (
-                          <li class="tier-group" data-tier={group.letter} data-testid="tier-group">
-                            <div class="tier-chip" data-testid="tier-chip">
-                              <span class="tier-letter" data-testid="tier-letter">
-                                <span class="sr-only">{tiersCopy.tierLabel(group.letter)}: </span>
-                                <span aria-hidden="true">{group.letter}</span>
-                              </span>
-                              <span class="tier-count">{tiersCopy.tierCount(group.rows.length)}</span>
-                              <span class="tier-chip-band">{tiersCopy.tierBand(group)}</span>
-                            </div>
-                            <ol class="tier-rows" aria-label={tiersCopy.tierLabel(group.letter)}>
-                              {group.rows.map((row) => (
-                                <TierRow row={row} />
-                              ))}
-                            </ol>
-                          </li>
-                        ))
-                      : rows.map((row) => <TierRow row={row} />)}
-                  </ol>
+                <div class="tier-read">
+                  {readColumns(ctx).map((column) => (
+                    <div class="tier-read-col">
+                      <h3 class="text-label tracking-label text-muted font-bold uppercase">{column.label}</h3>
+                      <p>
+                        {column.body.map((segment) =>
+                          segment.href !== undefined ? (
+                            <a class={LINK} href={segment.href}>
+                              {segment.text}
+                            </a>
+                          ) : (
+                            segment.text
+                          ),
+                        )}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              </Card>
+              </Section>
             )}
-          </section>
+          </div>
         );
       })}
-
-      {hasData && (
-        <aside class="tier-howto card-surface-quiet" data-testid="tier-howto">
-          <h2 class="label">{tiersCopy.howToReadHeading}</h2>
-          <ul>
-            {howToReadBullets(role, presetLabel).map((bullet) => (
-              <li>{bullet}</li>
-            ))}
-          </ul>
-          <p class="tier-howto-foot">
-            {data.updated !== null && (
-              <span title={stampTitle}>
-                <UpdatedStamp date={data.updated} />
-              </span>
-            )}
-            <a href={tiersCopy.simChecksHref}>{tiersCopy.simChecksLink}</a>
-          </p>
-        </aside>
-      )}
-    </div>
+    </Page>
   </main>
   <script
     is:inline
@@ -235,427 +314,164 @@ const stampTitle =
     set:html={JSON.stringify(clientConfig)}
   ></script>
   <script>
-    import { mountTierPage } from '../../lib/tiers/tier-client';
-    mountTierPage();
+    // After first paint (lib/after-paint.ts): the lists, both factions and the bar's links work
+    // without it, so its module chain stays out of the first paint's critical path.
+    import { afterPaint } from '../../lib/after-paint';
+
+    afterPaint(() => {
+      void import('../../lib/tiers/tier-client').then((m) => m.mountTierPage());
+    });
   </script>
 </Base>
 
 <style>
-  .tier-you {
-    min-height: 72px;
-    max-width: 820px;
-  }
-  .tier-you-skeleton {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 72px;
-    padding: 14px 18px;
-    box-sizing: border-box;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
-  }
-  .tier-you-skeleton-crest {
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    flex-shrink: 0;
-  }
-  .tier-you-skeleton-text {
-    width: 260px;
-    max-width: 60%;
-    height: 16px;
-  }
-  :global(.tier-callout) {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    min-height: 72px;
-    padding: 14px 18px;
-    box-sizing: border-box;
-    border: 1px solid var(--color-line-card);
-    border-radius: var(--radius-panel);
-    background: var(--surface-card);
-    box-shadow:
-      inset 0 1px 0 var(--card-highlight),
-      var(--shadow-card);
-  }
-  :global(.tier-callout-who) {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-  }
-  :global(.tier-callout-text) {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  :global(.tier-callout-title) {
-    font-size: 15px;
-    color: var(--color-strong);
-  }
-  :global(.tier-callout-title b) {
-    font-family: var(--font-heading);
-    font-weight: 800;
-    color: var(--c);
-  }
-  :global(.tier-callout-detail) {
-    font-size: 13px;
-    color: #c9c2b2;
-  }
-  :global(.tier-callout-button) {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    height: 44px;
-    padding: 0 16px;
-    border: 1px solid var(--color-line-card);
-    border-radius: var(--radius-control);
-    background: rgb(255 255 255 / 4.5%);
-    color: var(--color-strong);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    transition:
-      background-color 120ms ease-out,
-      color 120ms ease-out;
-  }
-  :global(.tier-callout-button:hover) {
-    background: rgb(255 255 255 / 8%);
-    border-color: rgb(229 185 85 / 30%);
-  }
-  :global(.tier-callout-button:active) {
-    background: color-mix(in srgb, var(--color-gold) 18%, transparent);
-  }
-  :global(.tier-callout-button:focus-visible),
-  :global(.tier-pointer:focus-visible) {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-  :global(.tier-pointer) {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 72px;
-    font-size: 14px;
-    color: #c9c2b2;
-  }
-  :global(.tier-pointer b) {
-    font-family: var(--font-heading);
-    font-weight: 800;
-    color: var(--c);
-  }
-  :global(.tier-pointer-cta) {
-    color: var(--color-gold);
-    font-weight: 700;
-  }
-  :global(.tier-pointer:hover .tier-pointer-cta) {
-    color: var(--color-gold-hover);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  .tier-controls {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    flex-wrap: wrap;
-  }
-  .tier-tabs,
-  .tier-factions {
-    display: flex;
-    gap: 6px;
-  }
-  .tier-divider {
-    width: 1px;
-    height: 32px;
-    background: var(--color-line);
-  }
-  .tier-tab {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 44px;
-    padding: 0 14px;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-control);
-    background: transparent;
-    color: var(--color-nav);
-    font-family: var(--font-body);
-    font-size: 13px;
-    cursor: pointer;
-    transition:
-      color 120ms ease-out,
-      border-color 120ms ease-out,
-      background-color 120ms ease-out;
-  }
-  .tier-tab:hover {
-    color: var(--color-strong);
-  }
-  .tier-tab:active {
-    background: color-mix(in srgb, var(--color-gold) 12%, transparent);
-  }
-  .tier-tab:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-  .tier-tab.is-current {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
-    background: color-mix(in srgb, var(--color-gold) 8%, transparent);
-  }
-  .tier-tab-count {
-    font-family: var(--font-body);
-    font-variant-numeric: tabular-nums;
-    font-size: 11px;
-    color: var(--color-muted);
-  }
-  .tier-tab.is-current .tier-tab-count {
-    color: var(--color-gold);
-  }
-  .tier-faction-pill {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  :global(html:not([data-tier-faction='horde'])) .tier-faction-pill[data-faction-pill='alliance'] {
-    border-color: var(--color-alliance);
-    color: var(--color-alliance);
-    background: color-mix(in srgb, var(--color-alliance-bar) 15%, transparent);
-  }
-  :global(html[data-tier-faction='horde']) .tier-faction-pill[data-faction-pill='horde'] {
-    border-color: var(--color-horde);
-    color: var(--color-horde);
-    background: color-mix(in srgb, var(--color-horde-bar) 15%, transparent);
-  }
-  .tier-body {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 0;
+  .tier-page {
+    padding-bottom: 40px;
   }
   .tier-faction {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+  }
+  .tier-faction > :global(.ui-section) {
+    margin-top: calc(var(--section-gap) - 16px);
   }
   :global(html:not([data-tier-faction='horde'])) .tier-faction[data-faction='horde'],
   :global(html[data-tier-faction='horde']) .tier-faction[data-faction='alliance'] {
     display: none;
   }
-  .tier-notes {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .tier-notes p {
-    margin: 0;
-    max-width: 112ch;
-    font-size: 13px;
-    color: #c9c2b2;
-  }
-  .tier-notes b {
-    color: var(--color-strong);
-  }
-  .tier-list {
-    --tier-chip-width: 148px;
-    /* The links column, shared by the heads and every row (TierRow.astro): wide enough for
-       BiS, Guide, Planner and Sim on one line. */
-    --tier-links-col: minmax(244px, 256px);
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-  .tier-heads {
-    display: grid;
-    grid-template-columns: 32px 36px minmax(150px, 248px) minmax(60px, 1fr) 108px 84px var(--tier-links-col);
-    column-gap: 14px;
-    align-items: end;
-    padding: 10px 17px 8px 17px;
-    border-top: 1px solid var(--color-line-soft);
-  }
-  .tier-list[data-role='dps'] .tier-heads {
-    padding-left: calc(17px + var(--tier-chip-width));
-  }
-  .tier-list[data-role='tank'] .tier-heads {
-    grid-template-columns:
-      32px 36px minmax(140px, 220px) minmax(50px, 1fr) 170px 92px 84px 84px
-      minmax(160px, 200px);
-    column-gap: 12px;
-  }
-  .tier-heads .label {
-    font-size: 10px;
-  }
-  .tier-head-num {
-    text-align: right;
-  }
-  .tier-panel {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    overflow: hidden;
-  }
-  .tier-group {
-    --tier: var(--color-muted);
-    display: grid;
-    grid-template-columns: var(--tier-chip-width) minmax(0, 1fr);
-    border-top: 1px solid var(--color-line);
-  }
-  .tier-group:first-child {
-    border-top: 0;
-  }
-  .tier-group[data-tier='S'] {
-    --tier: var(--color-rarity-legendary);
-  }
-  .tier-group[data-tier='A'] {
-    --tier: var(--color-rarity-epic-text);
-  }
-  .tier-group[data-tier='B'] {
-    --tier: var(--color-rarity-rare-text);
-  }
-  .tier-group[data-tier='C'] {
-    --tier: var(--color-rarity-uncommon);
-  }
-  .tier-group[data-tier='D'] {
-    --tier: var(--color-rarity-poor);
-  }
-  .tier-chip {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      'letter count'
-      'band band';
-    align-content: start;
-    align-items: baseline;
-    column-gap: 8px;
-    row-gap: 2px;
-    padding: 14px 12px 14px 16px;
-    background: color-mix(in srgb, var(--tier) 3%, var(--color-raised));
-    border-left: 3px solid var(--tier);
-  }
-  .tier-letter {
-    grid-area: letter;
-    font-family: var(--font-heading);
-    font-size: 30px;
-    font-weight: 800;
-    line-height: 1;
-    color: var(--tier);
-  }
-  .tier-count {
-    grid-area: count;
-    justify-self: end;
-    font-family: var(--font-body);
-    font-variant-numeric: tabular-nums;
-    font-size: 11px;
-    color: var(--color-muted);
-  }
-  .tier-chip-band {
-    grid-area: band;
-    font-size: 12px;
-    line-height: 1.3;
-    color: #c9c2b2;
-  }
-  .tier-rows {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    min-width: 0;
-  }
   .tier-empty {
     margin: 0;
-    padding: 24px;
-    font-size: 14px;
+    padding: 20px 16px;
+    font-size: 15px;
     color: var(--color-muted);
   }
-  .tier-howto {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 820px;
-    padding: 18px 22px;
+  .tier-read {
+    display: grid;
+    gap: 20px var(--gap);
+    grid-template-columns: minmax(0, 1fr);
   }
-  .tier-howto h2 {
-    margin: 0;
-  }
-  .tier-howto ul {
-    margin: 0;
-    padding-left: 18px;
-    list-style: disc;
+  .tier-read-col {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    font-size: 13px;
-    line-height: 1.5;
-    color: #c9c2b2;
   }
-  .tier-howto-foot {
+  .tier-read-col h3 {
+    margin: 0;
+  }
+  .tier-read-col p {
+    margin: 0;
+    max-width: 62ch;
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--color-text);
+  }
+  @media (min-width: 1024px) {
+    .tier-read {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* The signed-in answer (spec 4.6): reserved at its final size while the account loads. */
+  .tier-answer {
+    display: flex;
+    flex-direction: column;
+    min-height: 96px;
+  }
+  .tier-answer-skeleton {
+    display: grid;
+    grid-template-columns: 40px 220px 120px;
+    align-items: center;
+    gap: 12px;
+    padding-top: 20px;
+  }
+  .tier-sk-crest {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+  }
+  .tier-sk-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tier-sk-name {
+    width: 160px;
+    height: 20px;
+  }
+  .tier-sk-detail {
+    width: 220px;
+    height: 16px;
+  }
+  .tier-sk-figure {
+    width: 120px;
+    height: 40px;
+  }
+  .tier-answer-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tier-answer-body[hidden],
+  .tier-answer-skeleton[hidden] {
+    display: none;
+  }
+  .tier-answer-who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tier-answer-crest {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    object-fit: cover;
+  }
+  .tier-answer-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .tier-answer :global(.ui-figure > span) {
+    white-space: nowrap;
+  }
+  .tier-answer-name {
+    font: 700 18px/22px var(--font-body);
+  }
+  .tier-answer-links,
+  .tier-answer-message {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 16px;
-    margin: 0;
-    font-size: 12px;
+    gap: 4px 16px;
   }
-  .tier-howto-foot a {
+  .tier-answer-links a,
+  .tier-answer-message button,
+  .tier-answer-body > a {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
-    font-weight: 700;
+    min-height: 32px;
+    font-size: 15px;
   }
-
-  @media (max-width: 1099px) {
-    .tier-heads {
-      display: none;
+  @media (min-width: 900px) {
+    .tier-answer {
+      min-width: 420px;
+      align-items: flex-end;
     }
-    .tier-group {
-      grid-template-columns: minmax(0, 1fr);
+    .tier-answer-body,
+    .tier-answer-who,
+    .tier-answer-links,
+    .tier-answer-message {
+      align-items: flex-end;
+      justify-content: flex-end;
     }
-    .tier-chip {
-      grid-template-columns: auto auto 1fr;
-      grid-template-areas: 'letter band count';
+    .tier-answer-who {
       align-items: center;
-      column-gap: 12px;
-      padding: 8px 14px 8px 12px;
-      border-bottom: 1px solid var(--color-line-soft);
     }
-    .tier-letter {
-      font-size: 22px;
-    }
-    .tier-body {
-      padding: 0;
-      gap: 16px;
-    }
-    .tier-faction {
-      gap: 16px;
-    }
-    :global(.tier-callout) {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 12px;
-    }
-    .tier-controls {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
-    }
-    .tier-divider {
-      display: none;
-    }
-    .tier-tabs,
-    .tier-factions {
-      width: 100%;
-    }
-    .tier-tab {
-      flex: 1;
-    }
-    .tier-howto {
-      max-width: none;
+    .tier-answer-text {
+      align-items: flex-end;
+      text-align: right;
     }
   }
 </style>

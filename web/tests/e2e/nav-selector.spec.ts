@@ -387,21 +387,27 @@ test.describe('choosing a character', () => {
     return page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept === true);
   }
 
-  test('on /tiers, the callout and the YOUR SPEC badge move to the new character without a reload', async ({
+  test('on /tiers, the answer and the Your spec mark move to the new character without a reload', async ({
     page,
   }) => {
     await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.goto('/tiers');
     await ready(page);
-    await expect(page.getByTestId('tier-callout')).toContainText('Fury Warrior is');
-    await expect(page.getByTestId('tier-row-warrior-fury').first()).toHaveClass(/is-you/);
+    await expect(page.getByTestId('tier-answer-body')).toContainText('Fury Warrior');
+    await expect(page.getByTestId('tier-row-warrior-fury').first()).toHaveAttribute('aria-current', 'true');
     await choose(page, FROSTBYTE);
-    await expect(page.getByTestId('tier-callout')).toContainText('Frost Mage is');
-    await expect(page.getByTestId('tier-callout')).not.toContainText('Fury Warrior is');
-    await expect(page.getByTestId('tier-row-mage-frost').first()).toHaveClass(/is-you/);
-    await expect(page.getByTestId('tier-row-warrior-fury').first()).not.toHaveClass(/is-you/);
-    await expect(page.locator('[data-testid="tier-you-pill"]:visible')).toHaveCount(1);
+    await expect(page.getByTestId('tier-answer-body')).toContainText('Frost Mage');
+    await expect(page.getByTestId('tier-answer-body')).not.toContainText('Fury Warrior');
+    await expect(page.locator('[data-testid="tier-row-mage-frost"]:visible')).toHaveAttribute(
+      'aria-current',
+      'true',
+    );
+    await expect(page.getByTestId('tier-row-warrior-fury').first()).not.toHaveAttribute(
+      'aria-current',
+      'true',
+    );
+    await expect(page.locator('[data-testid="tier-you-tag"]:visible')).toHaveCount(1);
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 

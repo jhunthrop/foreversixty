@@ -82,6 +82,8 @@ export interface ControlGroup {
   kind: 'segmented' | 'select';
   options: readonly ControlOption[];
   value: string;
+  /** The value the URL leaves out: choosing it removes the parameter (`data-default`). */
+  defaultValue?: string;
   /** A select's width from 768 px, in px, instead of its longest label: one long, rare option
    *  (a race name) truncates in the field, never in its list, so the bar keeps to one row. */
   fieldWidth?: number;

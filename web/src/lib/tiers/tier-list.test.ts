@@ -335,6 +335,100 @@ describe('ties on the published Alliance numbers (rows 6 to 14)', () => {
   });
 });
 
+/** The 1.60.1.70790 level 60 raid figures (data/builds/1.60.1.70790/bis/*.json, set_dps), the
+ *  top seven DPS specs per faction: the Survival, Fury and Arms cases the owner called out. */
+const LIVE_70790 = {
+  alliance: [
+    ['hunter', 'marksmanship', 'Marksmanship', 1063.2],
+    ['warrior', 'fury', 'Fury', 975.6],
+    ['hunter', 'survival', 'Survival', 950.2],
+    ['warrior', 'arms', 'Arms', 942.2],
+    ['hunter', 'beast-mastery', 'Beast Mastery', 940.3],
+    ['druid', 'feral', 'Feral', 938.9],
+    ['shaman', 'enhancement', 'Enhancement', 911.2],
+  ],
+  horde: [
+    ['hunter', 'marksmanship', 'Marksmanship', 1045.7],
+    ['warrior', 'fury', 'Fury', 975.8],
+    ['hunter', 'survival', 'Survival', 949.6],
+    ['hunter', 'beast-mastery', 'Beast Mastery', 940.6],
+    ['druid', 'feral', 'Feral', 917.3],
+    ['warrior', 'arms', 'Arms', 907.4],
+    ['shaman', 'enhancement', 'Enhancement', 890.7],
+  ],
+} as const;
+
+describe('tie partners on the live 70790 numbers', () => {
+  const ranked = (faction: keyof typeof LIVE_70790) =>
+    rankRole(
+      LIVE_70790[faction].map(([c, s, n, v]) => dpsInput(c, s, n, v)),
+      'dps',
+    );
+  const partners = (rows: TierRow[]) =>
+    Object.fromEntries(rows.map((r) => [r.name, r.tiedWith.map((m) => m.name)]));
+
+  it('Alliance: Survival ties with Arms only; Arms with Survival, Beast Mastery and Feral; Fury with nobody', () => {
+    expect(partners(ranked('alliance'))).toEqual({
+      Marksmanship: [],
+      Fury: [],
+      Survival: ['Arms'],
+      Arms: ['Survival', 'Beast Mastery', 'Feral'],
+      'Beast Mastery': ['Arms', 'Feral'],
+      Feral: ['Arms', 'Beast Mastery'],
+      Enhancement: [],
+    });
+  });
+
+  it('never names a spec only chained through a third (Survival and Beast Mastery are 1.04% apart)', () => {
+    const rows = ranked('alliance');
+    const within = (a: number, b: number) => Math.abs(1 - a / b) * 100 <= 1;
+    for (const row of rows) {
+      for (const mate of row.tiedWith) {
+        const other = rows.find((r) => r.name === mate.name)!;
+        expect(within(Math.min(row.metric, other.metric), Math.max(row.metric, other.metric))).toBe(true);
+      }
+      expect(row.tie === null).toBe(row.tiedWith.length === 0);
+    }
+  });
+
+  it('Horde: Survival (A) ties with Beast Mastery (B) across the line; Fury and Arms tie with nobody', () => {
+    const rows = ranked('horde');
+    expect(partners(rows)).toEqual({
+      Marksmanship: [],
+      Fury: [],
+      Survival: ['Beast Mastery'],
+      'Beast Mastery': ['Survival'],
+      Feral: [],
+      Arms: [],
+      Enhancement: [],
+    });
+    const survival = rows.find((r) => r.name === 'Survival')!;
+    const beastMastery = rows.find((r) => r.name === 'Beast Mastery')!;
+    expect([survival.tier, beastMastery.tier]).toEqual(['A', 'B']);
+    expect(survival.tiedWith[0]!.tier).toBe('B');
+    expect(beastMastery.tiedWith[0]!.tier).toBe('A');
+  });
+
+  it("names a healer's neighbours the error cannot order it against, and no tank partner", () => {
+    const healers = rankRole(
+      [
+        healerInput('d', 'r', 'Restoration', 1000, 10, [{ scale: 0.8, hps: 1000, hps_error: 10 }]),
+        healerInput('s', 'r', 'Restoration', 990, 10, [{ scale: 0.8, hps: 990, hps_error: 10 }]),
+      ],
+      'healer',
+    );
+    expect(healers.map((r) => r.tiedWith.map((m) => m.classSlug))).toEqual([['s'], ['d']]);
+    const tanks = rankRole(
+      [
+        tankInput('a', 'a', 'A', { dtps: 300, effective_health: 1, tps: 1 }),
+        tankInput('b', 'b', 'B', { dtps: 300.5, effective_health: 1, tps: 1 }),
+      ],
+      'tank',
+    );
+    expect(tanks.map((r) => r.tiedWith)).toEqual([[], []]);
+  });
+});
+
 describe('race, confidence and rulers', () => {
   it('names the band race and carries the low-confidence flag', () => {
     const entry = catalogEntry('warlock', 'affliction', 'Affliction');

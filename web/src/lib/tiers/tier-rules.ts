@@ -29,3 +29,12 @@ export const TIE_MARGIN_PERCENT = 1;
  *  many standard errors of their difference, sqrt(e1^2 + e2^2), about 95% confidence, at the
  *  tuned heal profile and at both its tuning bounds. */
 export const HEALER_ERROR_Z = 2;
+
+/** Each letter's colour, the item quality colours (S legendary down to D poor), as CSS tokens. */
+export const TIER_LETTER_TONES: Readonly<Record<TierLetter, string>> = {
+  S: 'var(--color-rarity-legendary)',
+  A: 'var(--color-rarity-epic-text)',
+  B: 'var(--color-rarity-rare-text)',
+  C: 'var(--color-rarity-uncommon)',
+  D: 'var(--color-rarity-poor)',
+};

@@ -46,6 +46,12 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         href: '/sim',
         description: 'What your gear does, simulated fight by fight',
       },
+      // A sim ranking, not a log one (it was under Logs, which lit Logs on /tiers).
+      {
+        label: 'Tier list',
+        href: '/tiers',
+        description: 'Where every DPS, tank and healer spec stands at 60, by our sim',
+      },
     ],
   },
   {
@@ -66,11 +72,6 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         label: 'Rankings',
         href: '/rankings',
         description: 'Parses by boss, spec and level range, from every log',
-      },
-      {
-        label: 'Tier list',
-        href: '/tiers',
-        description: 'DPS, healer and tank, ranked from the same logs',
       },
     ],
   },

@@ -36,14 +36,18 @@ describe('tierSpecViews', () => {
   it('says the top DPS spec is level with itself', () => {
     expect(views['warrior/fury']).toMatchObject({
       title: 'Fury Warrior is 1st of 3 DPS specs.',
+      place: '1st',
+      placeUnit: 'of 3',
       detail: 'Level with the top spec.',
       bisHref: '/bis/warrior/fury',
+      guideHref: '/guides/warrior/fury',
       rolePath: '/tiers',
     });
   });
 
-  it('names the top spec and the gap for a DPS spec behind it', () => {
-    expect(views['warrior/arms']!.detail).toBe('4.8% behind Fury Warrior.');
+  it('names the tier, the gap in percent and the top spec for a DPS spec behind it', () => {
+    expect(views['warrior/arms']!.detail).toBe('Tier S · 4.8% behind Fury Warrior');
+    expect(views['mage/fire']!.detail).toBe('Tier C · 20.0% behind Fury Warrior');
     expect(views['mage/fire']!.title).toBe('Fire Mage is 3rd of 3 DPS specs.');
   });
 
@@ -51,8 +55,9 @@ describe('tierSpecViews', () => {
     expect(views['paladin/protection']!.detail).toBe('Takes the least damage.');
     expect(views['warrior/protection']).toMatchObject({
       title: 'Protection Warrior is 2nd of 2 Tank specs.',
-      detail: '15.0% more damage taken than Protection Paladin.',
-      pointer: 'Protection Warrior is on the Tank list. See where it stands →',
+      place: '2nd',
+      placeUnit: 'of 2',
+      detail: '15.0% more taken than Protection Paladin',
       rolePath: '/tiers/tank',
     });
   });
@@ -93,6 +98,8 @@ describe('tierSpecViews', () => {
       ),
     });
     expect(tied['priest/holy']!.title).toBe('Holy Priest is tied 2nd of 3 Healer specs.');
+    expect(tied['priest/holy']).toMatchObject({ place: '=2', detail: 'Tied' });
+    expect(unranked['priest/holy']!.place).toBe('');
   });
 
   it('skips an empty role', () => {

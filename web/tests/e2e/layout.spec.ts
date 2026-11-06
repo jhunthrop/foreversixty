@@ -52,7 +52,7 @@ test.describe('one centred column at 2000px', () => {
   const PAGES = [
     { path: '/bis/hunter/marksmanship', content: '[data-testid="bis-plate"]' },
     { path: '/bis', content: 'main' },
-    { path: '/tiers/tank', content: '[data-testid="tier-page"] .tier-body' },
+    { path: '/tiers/tank', content: '[data-testid="tier-faction-panel-alliance"]' },
     { path: '/guides', content: '.guides-index-body' },
     { path: '/changelog', content: 'main' },
   ];
