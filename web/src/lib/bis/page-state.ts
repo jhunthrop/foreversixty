@@ -31,6 +31,9 @@ export interface BisStateContext {
 }
 
 export const MAX_BAND = 60;
+
+/** The query params the page's state reads (stateSearch writes the same names). */
+export const STATE_PARAMS = ['band', 'faction', 'preset', 'race', 'view', 'sources'] as const;
 const LEGACY_HASH = /^#band-(alliance|horde)-(\d+)$/;
 
 export function defaultView(band: number): BisView {

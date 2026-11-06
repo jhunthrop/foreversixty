@@ -30,7 +30,7 @@
     whereGroups,
     type DollCharacter,
   } from '../../lib/bis/doll-view';
-  import { BIS_SHOW_EVENT, type BisShowDetail } from '../../lib/bis/show-event';
+  import { BIS_SHOW_EVENT, takePendingShow, type BisShowDetail } from '../../lib/bis/show-event';
   import type { CompareSession } from '../../lib/bis/compare-session';
   import { readStoredSources, storeSources } from '../../lib/bis/source-store';
   import type { BisPresetId, Faction, SourceFilterKind } from '../../lib/bis/types';
@@ -160,11 +160,15 @@
     const hadHash = /^#band-/.test(window.location.hash);
     if (!isDefaultState(initial, context) || hadHash) apply(initial, hadHash);
     document.documentElement.removeAttribute('data-bis-pending');
-    const onShow = (event: Event) => {
-      const detail = (event as CustomEvent<BisShowDetail>).detail;
+    const show = (detail: BisShowDetail) => {
+      if (root !== undefined) delete root.dataset.bisShow;
+      if (!data.bands.includes(detail.band)) return;
       apply(withChange(state, { faction: detail.faction, band: detail.band }, context));
     };
+    const onShow = (event: Event) => show((event as CustomEvent<BisShowDetail>).detail);
     root?.addEventListener(BIS_SHOW_EVENT, onShow);
+    const pending = root === undefined ? undefined : takePendingShow(root);
+    if (pending !== undefined) show(pending);
     void import('../../lib/bis/compare-session').then(({ watchCompare }) => {
       compare = watchCompare({ build: data.build, spec, classSlug }, shownBand(), (next, race) => {
         character = next;
@@ -270,7 +274,9 @@
         </Paperdoll>
       </Plate>
 
-      <BisWeights weights={model.weights} testid={`bis-weights-${state.faction}-${state.band}`} />
+      <div class="bis-stack">
+        <BisWeights weights={model.weights} testid={`bis-weights-${state.faction}-${state.band}`} />
+      </div>
     </div>
 
     <p class="bis-guide-line" data-testid="bis-guide-line">
@@ -317,6 +323,9 @@
     font-size: 13px;
     line-height: 20px;
     margin-bottom: 8px;
+  }
+  .bis-stack {
+    margin-top: 32px;
   }
   .bis-guide-line {
     color: var(--color-muted);

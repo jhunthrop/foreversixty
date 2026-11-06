@@ -12,6 +12,9 @@ function keyFor(band: number): string {
   return `${KEY_PREFIX}${band < MAX_BAND ? 'leveling' : 'max'}`;
 }
 
+/** Both buckets' keys (the head script checks them before the island loads). */
+export const SOURCES_STORAGE_KEYS: readonly string[] = [keyFor(0), keyFor(MAX_BAND)];
+
 export function readStoredSources(band: number, storage: Pick<Storage, 'getItem'> | undefined = globalThis.localStorage): SourceFilterKind[] | undefined {
   try {
     const raw = storage?.getItem(keyFor(band));

@@ -11,7 +11,7 @@ import { readCurrent } from '../current-character';
 import { classSlugFromName } from '../report/tree-sizes';
 import { decideBisDefault, decideBisFollow, type BisPageState, type SelectedTarget } from './follow-selector';
 import { MIN_BAND } from './hover';
-import { BIS_SHOW_EVENT, type BisShowDetail } from './show-event';
+import { sendBisShow } from './show-event';
 import type { Faction } from './types';
 
 /** The page's island publishes the shown faction and band on its root (`data-bis-faction`,
@@ -38,7 +38,7 @@ async function selectedTarget(): Promise<SelectedTarget | null> {
 }
 
 function showBand(root: HTMLElement, faction: Faction, band: number): void {
-  root.dispatchEvent(new CustomEvent<BisShowDetail>(BIS_SHOW_EVENT, { detail: { faction, band } }));
+  sendBisShow(root, { faction, band });
 }
 
 export async function follow(root: HTMLElement): Promise<void> {
