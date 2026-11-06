@@ -168,7 +168,7 @@ func TestRestorationDruidRejuvenationKeepsItsHealingBonusInARaid(t *testing.T) {
 func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 	filler, _ := restorationHealingWaveLines(t)
 	assertRanks(t, filler, "shaman-restoration", "shaman", "tauren", healingWaveRanks, []rankCase{
-		{12, BarePreset, 3}, {24, BarePreset, 2}, {32, BarePreset, 3}, {40, BarePreset, 4}, {50, BarePreset, 6},
+		{12, BarePreset, 3}, {24, BarePreset, 3}, {32, BarePreset, 3}, {40, BarePreset, 4}, {50, BarePreset, 6},
 		{60, BarePreset, 9}, {60, RaidPreset, 9},
 	})
 }
