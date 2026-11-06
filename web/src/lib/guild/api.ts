@@ -10,6 +10,7 @@ import type {
   GuildRaidPingState,
   GuildRoleCounts,
 } from './overview-api';
+import type { GuildRaidAssignments } from './assignments-api';
 import { AccountError, invalidateMe, requestEnvelope, type EnvelopeResult } from '../account/api';
 import { invalidate, query, refetch, setQueryData } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
@@ -991,6 +992,9 @@ export interface GuildRaidView extends RaidAttendanceFields {
   not_signed_raiders?: GuildNotSignedRaider[];
   /** Officers only: the Discord ping's throttle. */
   ping?: GuildRaidPingState;
+  /** The raid leader's assignments per encounter; `null` for a dungeon or an event, absent from
+   *  older fixtures. */
+  assignments?: GuildRaidAssignments | null;
 }
 
 /** How a cover row's need is counted: per raid, or per five raiders in melee or at range. */

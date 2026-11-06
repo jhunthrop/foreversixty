@@ -13,6 +13,7 @@ import {
   setMatch,
 } from './attendance-api';
 import { fetchGuildHome, fetchGuildRaids } from './api';
+import { clearAssignment, postAssignments, setAssignment } from './assignments-api';
 import { pingRaid, resetCompTarget, setCompTarget } from './overview-api';
 import { browserStorage } from './reserve-keys';
 import type { RaidPageDeps, RaidRoute } from './raid-page-types';
@@ -37,6 +38,11 @@ export function liveRaidPageDeps(route: RaidRoute): RaidPageDeps {
     putCompTarget: (guildId, raidId, target) => setCompTarget(guildId, raidId, target),
     deleteCompTarget: (guildId, raidId) => resetCompTarget(guildId, raidId),
     pingRaid: (guildId, raidId) => pingRaid(guildId, raidId),
+    putAssignment: (guildId, raidId, encounterId, slot, keys) =>
+      setAssignment(guildId, raidId, encounterId, slot, keys),
+    deleteAssignment: (guildId, raidId, encounterId, slot) =>
+      clearAssignment(guildId, raidId, encounterId, slot),
+    postAssignments: (guildId, raidId) => postAssignments(guildId, raidId),
     loadZones: (guildId) => fetchGuildRaids(guildId).then((page) => page.zones ?? []),
     isVisible: () => typeof document === 'undefined' || document.visibilityState === 'visible',
     now: () => new Date(),

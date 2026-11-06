@@ -89,6 +89,14 @@ export function deps(extra: Partial<RaidPageDeps> = {}): RaidPageDeps {
         no_discord_names: [],
         next_allowed_at: null,
       }),
+    putAssignment: () => Promise.resolve(plannedRaid()),
+    deleteAssignment: () => Promise.resolve(plannedRaid()),
+    postAssignments: () =>
+      Promise.resolve({
+        posted: true,
+        posted_at: '2026-12-10T20:00:00Z',
+        next_allowed_at: '2026-12-10T20:01:00Z',
+      }),
     loadZones: () => Promise.resolve(ZONES),
     isVisible: () => visibility.visible,
     now: () => new Date(Date.now()),
