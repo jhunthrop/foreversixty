@@ -10,6 +10,8 @@
 //	                                                   any Key-class item in the bags
 //	quests=<quest_id>:<0|1>,...                        each curated attunement quest asked
 //	                                                   about, 1 when the client flags it done
+//	owned=<item_id>:<0|1>,...                          each attunement item, 1 when worn or in
+//	                                                   the carried bags
 //
 // None starts with a letter the client's font strings read as an escape (c, r, n, h, t, a,
 // k: see Codec.encodeFS1's "who" note). Each section is written only when the client could
@@ -80,9 +82,9 @@ func parseIDList(field string) []int {
 	return out
 }
 
-// parseQuests reads quests='s `quest_id:0|1` entries into quest id -> done, skipping a
+// parseFlags reads quests='s and owned='s `id:0|1` entries into id -> flag, skipping a
 // malformed entry.
-func parseQuests(field string) map[int]bool {
+func parseFlags(field string) map[int]bool {
 	out := map[int]bool{}
 	for _, entry := range nonEmpty(field) {
 		idText, flag, found := strings.Cut(entry, ":")
@@ -132,6 +134,8 @@ func (d *Decoded) decodePrep(name, field string) {
 	case "locks":
 		d.Keyring, d.HasKeyring = parseIDList(field), true
 	case "quests":
-		d.Quests, d.HasQuests = parseQuests(field), true
+		d.Quests, d.HasQuests = parseFlags(field), true
+	case "owned":
+		d.Owned, d.HasOwned = parseFlags(field), true
 	}
 }

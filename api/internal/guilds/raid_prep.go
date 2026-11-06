@@ -23,6 +23,8 @@ type exportPrep struct {
 	hasKeyring  bool
 	quests      map[int]bool
 	hasQuests   bool
+	// owned is attunement item id -> worn or in the carried bags (owned=).
+	owned map[int]bool
 }
 
 // prepOf is the raid-prep part of a decoded export.
@@ -32,6 +34,7 @@ func prepOf(d fs1.Decoded) exportPrep {
 		supplies: d.Supplies, hasSupplies: d.HasSupplies,
 		keyring: d.Keyring, hasKeyring: d.HasKeyring,
 		quests: d.Quests, hasQuests: d.HasQuests,
+		owned: d.Owned,
 	}
 }
 
@@ -146,8 +149,8 @@ func keyAttunement(key KeyItem, row RosterRow) attunementReading {
 }
 
 // questAttunement is ok when the client flags any of the chain's quests done or the chain's
-// item is carried or worn; a fail only when the export asked about every quest of the chain
-// and none is done.
+// item is held (owned=, read at gear consent, or seen worn, bagged or banked); a fail only
+// when the export asked about every quest of the chain and none is done.
 func questAttunement(a Attunement, row RosterRow) attunementReading {
 	if !hasGearConsent(row.Consent) {
 		return attunementReading{State: CheckNotTracked, Reason: reasonGearNotShared}
@@ -161,7 +164,7 @@ func questAttunement(a Attunement, row RosterRow) attunementReading {
 		asked = asked && ok
 	}
 	switch {
-	case carries(row, a.Item.ID):
+	case a.Item != nil && (row.prep.owned[a.Item.ID] || carries(row, a.Item.ID)):
 		return attunementReading{State: CheckOK}
 	case asked:
 		return attunementReading{State: CheckFail}

@@ -6,6 +6,7 @@
 //   supplies=<item_id>:<count>,...                     Consumable-class stacks in the bags
 //   locks=<item_id>,...                                the keys carried (keyring and bags)
 //   quests=<quest_id>:<0|1>,...                        attunement quests, 1 when done
+//   owned=<item_id>:<0|1>,...                          attunement items, 1 when held
 //
 // Read leniently, unlike the other known sections: a malformed entry is dropped and a
 // malformed school= is left out, never refusing the code. They are the client's own
@@ -24,9 +25,10 @@ export interface FS1Prep {
   supplies?: { itemId: number; count: number }[];
   keyring?: number[];
   quests?: { questId: number; done: boolean }[];
+  owned?: { itemId: number; held: boolean }[];
 }
 
-export const PREP_SECTIONS = ['school', 'supplies', 'locks', 'quests'] as const;
+export const PREP_SECTIONS = ['school', 'supplies', 'locks', 'quests', 'owned'] as const;
 type PrepSection = (typeof PREP_SECTIONS)[number];
 
 const DIGITS = /^\d+$/;
@@ -79,5 +81,7 @@ export function decodePrepSection(name: PrepSection, field: string): FS1Prep {
       };
     case 'quests':
       return { quests: pairs(field, /^[01]$/).map(([questId, done]) => ({ questId, done: done === '1' })) };
+    case 'owned':
+      return { owned: pairs(field, /^[01]$/).map(([itemId, held]) => ({ itemId, held: held === '1' })) };
   }
 }

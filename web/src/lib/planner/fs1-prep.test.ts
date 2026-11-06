@@ -7,7 +7,7 @@ const HEAD = 'FS1:1.60.1.70790:warrior:human:0/0/0:head=16866|level=60';
 describe('decodeFS1 raid-prep sections', () => {
   it('reads school, supplies, locks and quests, and reports none as ignored', () => {
     const decoded = decodeFS1(
-      `${HEAD}|school=52:10:0:15:5|supplies=13510:1,20452:20|locks=13704|quests=6502:1,6602:0`,
+      `${HEAD}|school=52:10:0:15:5|supplies=13510:1,20452:20|locks=13704|quests=6502:1,6602:0|owned=16309:1`,
     );
     expect(decoded.ok).toBe(true);
     if (!decoded.ok) return;
@@ -21,6 +21,7 @@ describe('decodeFS1 raid-prep sections', () => {
       { questId: 6502, done: true },
       { questId: 6602, done: false },
     ]);
+    expect(decoded.build.owned).toEqual([{ itemId: 16309, held: true }]);
     expect(decoded.build.ignored).toEqual([]);
   });
 

@@ -77,8 +77,12 @@ type Decoded struct {
 	HasKeyring bool
 	// Quests is attunement quest id -> completed (quests=), every quest the addon asked the
 	// client about; HasQuests false when the client could not be asked.
-	Quests               map[int]bool
-	HasQuests            bool
+	Quests    map[int]bool
+	HasQuests bool
+	// Owned is attunement item id -> worn or in the carried bags (owned=: the Drakefire
+	// Amulet); HasOwned false when the addon predates the section.
+	Owned                map[int]bool
+	HasOwned             bool
 	CharacterName, Realm string
 	HasWho               bool
 }
@@ -124,6 +128,7 @@ func Decode(export string) (Decoded, bool) {
 		Supplies:    map[int]int{},
 		Keyring:     []int{},
 		Quests:      map[int]bool{},
+		Owned:       map[int]bool{},
 	}
 
 	for _, section := range pipes[1:] {

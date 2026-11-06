@@ -103,11 +103,34 @@ func TestOnyxiaAttunementReadsTheQuestFlags(t *testing.T) {
 		"amulet in bags":   {prepRow(t, "gear_bags", "|bags=16309|quests=6502:0,6602:0"), attunementReading{State: CheckOK}},
 		"roster consent":   {prepRow(t, "roster", "|quests=6502:1,6602:0"), attunementReading{State: CheckNotTracked, Reason: reasonGearNotShared}},
 		"amulet, no share": {prepRow(t, "gear", "|bags=16309|quests=6502:0,6602:0"), attunementReading{State: CheckFail}},
+		"amulet held":      {prepRow(t, "gear", "|quests=6502:0,6602:0|owned=16309:1"), attunementReading{State: CheckOK}},
+		"amulet not held":  {prepRow(t, "gear", "|quests=6502:0,6602:0|owned=16309:0"), attunementReading{State: CheckFail}},
+		"amulet only":      {prepRow(t, "gear", "|owned=16309:1"), attunementReading{State: CheckOK}},
 	}
 	for name, tc := range cases {
 		if got := attunementOf(ony, tc.row); got != tc.want {
 			t.Errorf("%s: %+v, want %+v", name, got, tc.want)
 		}
+	}
+}
+
+func TestMoltenCoreAttunementIsItsQuestFlag(t *testing.T) {
+	mc := zoneOf("raid:molten-core")
+	cases := map[string]attunementReading{
+		"":               {State: CheckNotTracked, Reason: reasonQuestsNotInExport},
+		"|quests=7848:1": {State: CheckOK},
+		"|quests=7848:0": {State: CheckFail},
+		"|quests=6502:1": {State: CheckNotTracked, Reason: reasonQuestsNotInExport},
+		"|owned=16309:1": {State: CheckNotTracked, Reason: reasonQuestsNotInExport},
+	}
+	for sections, want := range cases {
+		if got := attunementOf(mc, prepRow(t, "gear", sections)); got != want {
+			t.Errorf("%q: %+v, want %+v", sections, got, want)
+		}
+	}
+	items, _ := buildChecklist(checklistInput{zone: &mc, row: prepRow(t, "gear", "|quests=7848:1"), onRoster: true})
+	if a := itemOf(items, CheckAttunement); a.State != CheckOK || a.KeyItem != nil || a.AttunementKind != attunementQuest {
+		t.Fatalf("molten core attunement = %+v", a)
 	}
 }
 

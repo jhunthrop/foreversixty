@@ -181,8 +181,7 @@ func attunementItem(zone Zone, r attunementReading) ChecklistItem {
 	it := ChecklistItem{Key: CheckAttunement, State: r.State, Reason: r.Reason, KeyItem: zone.KeyItem,
 		AttunementKind: attunementKey}
 	if a, ok := attunementFor(zone); ok && zone.KeyItem == nil {
-		item := a.Item
-		it.KeyItem, it.AttunementKind = &item, attunementQuest
+		it.KeyItem, it.AttunementKind = a.Item, attunementQuest
 	}
 	return it
 }

@@ -2433,10 +2433,11 @@ components:
           type: array
           description: >-
             In order: level, attunement (only for a run whose zone has a key item or an attunement
-            quest chain: Onyxia's Lair), gear_gap, enchants, flask_food, fire_resistance (only for
+            quest chain: Onyxia's Lair, its last quest or the Drakefire Amulet held; Molten Core,
+            Attunement to the Core), gear_gap, enchants, flask_food, fire_resistance (only for
             Onyxia's Lair and Molten Core). Read from the addon export's raid-prep sections
-            (school=, supplies=, locks=, quests=); an export without them reads not_tracked, never
-            fail. flask_food is ok with a flask or raid elixir and buff food in the bags, else fail
+            (school=, supplies=, locks=, quests=, owned=); an export without them reads
+            not_tracked, never fail. flask_food is ok with a flask or raid elixir and buff food in the bags, else fail
             with missing. fire_resistance is ok whenever read: the total, with no target.
             Attunement fails only once the export lists the keys carried (locks=) or answers every
             quest of the chain.
@@ -2464,7 +2465,8 @@ components:
                 enum: [key, quest]
                 description: >-
                   What attunement asks for: the zone's key (key_item), or its quest chain (quest;
-                  key_item is then the item the chain hands out, Drakefire Amulet for Onyxia).
+                  key_item is then the item the chain hands out, Drakefire Amulet for Onyxia, and
+                  absent for a chain that hands out none).
               supplies:
                 type: array
                 description: flask_food's counted stacks in the bags, flasks, then elixirs, then food.
@@ -2631,8 +2633,8 @@ components:
                 type: [boolean, "null"]
                 description: >-
                   Officers only (null for everyone else): the attunement of the board's raid (the
-                  ?raid= raid, else the next raid), its key carried, banked or worn or its quest
-                  chain done (Onyxia's Lair); false once the export lists the keys carried or
+                  ?raid= raid, else the next raid), its key carried, banked or worn, or its quest
+                  chain done (Onyxia's Lair: the last quest or the Drakefire Amulet held); false once the export lists the keys carried or
                   answers the chain's quests and neither shows it; null when the run needs none or
                   the export cannot say.
               resistances:

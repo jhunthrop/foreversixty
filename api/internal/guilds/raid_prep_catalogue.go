@@ -113,26 +113,40 @@ var fireResistanceZones = map[string]bool{
 }
 
 // Attunement is a zone's attunement by quest: done when the client flags any of Quests
-// complete (one per faction), or when Item, what the chain hands out, is carried or worn.
+// complete (one per faction), or when Item, what the chain hands out (nil for a chain that
+// hands out none), is held.
 type Attunement struct {
 	Quests []int
-	Item   KeyItem
+	Item   *KeyItem
 }
 
-// onyxiaAttunement is Onyxia's Lair's: Drakefire Amulet (6502, Alliance) and Blood of the
-// Black Dragon Champion (6602, Horde), each side's last quest (ids in
-// data/builds/1.60.1.70790/raw/quests/quest-levels.json, both level 60, names from cmangos
-// classic-db; RaidPrep.ATTUNEMENT_QUESTS asks the client about the same two), and the
-// Drakefire Amulet both reward (items.json: 16309, a neck item of quality 3).
-var onyxiaAttunement = Attunement{
-	Quests: []int{6502, 6602},
-	Item:   KeyItem{ID: 16309, Name: "Drakefire Amulet", Quality: 3},
-}
+// The attunement chains' last quests. Each id is a row of the 1.60.1.70790 client's QuestV2
+// table (wago.tools db2/QuestV2?build=1.60.1.70790, fetched 2026-11-06; the table carries no
+// titles), and its title and chain order are cmangos classic-db quest_template's
+// (PrevQuestId), the source data/builds/1.60.1.70790/raw/quests/quest-levels.json names.
+// RaidPrep.ATTUNEMENT_QUESTS asks the client about the same three.
+const (
+	// questDrakefireAmulet ends the Alliance chain: Stormwind Rendezvous 6402, The Great
+	// Masquerade 6403, The Dragon's Eye 6501, Drakefire Amulet 6502.
+	questDrakefireAmulet = 6502
+	// questBlackDragonChampion ends the Horde chain: Ascension... 6601, Blood of the Black
+	// Dragon Champion 6602.
+	questBlackDragonChampion = 6602
+	// questAttunementToTheCore is Molten Core's.
+	questAttunementToTheCore = 7848
+)
+
+// drakefireAmulet is the item both Onyxia chains reward (items.json: 16309, a neck item of
+// quality 3); the export says whether it is held (owned=).
+var drakefireAmulet = KeyItem{ID: 16309, Name: "Drakefire Amulet", Quality: 3}
 
 // zoneAttunements is zone key -> its attunement by quest. Kept beside the zone catalogue
 // rather than on Zone: first-tier.json, which the raid zones mirror, carries no quests.
+// Molten Core is not in the curated tier data, so its zone is not schedulable yet; its entry
+// is read the day the catalogue adds it.
 var zoneAttunements = map[string]Attunement{
-	"raid:onyxias-lair": onyxiaAttunement,
+	"raid:onyxias-lair": {Quests: []int{questDrakefireAmulet, questBlackDragonChampion}, Item: &drakefireAmulet},
+	"raid:molten-core":  {Quests: []int{questAttunementToTheCore}},
 }
 
 // attunementFor is the zone's attunement by quest, ok false when it has none.
