@@ -113,6 +113,10 @@ describe('planner-island.css', () => {
       'Barlow Fallback',
       'Cinzel',
       'JetBrains Mono',
+      // The page title's face and its two size-adjusted fallbacks (web layout spec 2026-11-05 §3.3).
+      'Marcellus',
+      'Marcellus Fallback',
+      'Marcellus Fallback Times',
     ]);
   });
 
