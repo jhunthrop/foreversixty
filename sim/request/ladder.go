@@ -750,11 +750,15 @@ func pickShieldItem(items []buildItem, known map[int]bool, floors map[int]int, l
 // (harness rule 2, this wave's brief) are the same for every slot this
 // spec fills - main_hand, off_hand and ranged all score against the
 // spec's own stats, not a per-slot preference.
-func ladderGear(items []buildItem, known map[int]bool, floors map[int]int, spec string, level int) []api.GearSlot {
+//
+// otherFaction is loadOtherFactionItems' result for the character's faction
+// (round 26 platform): no pick is an item only the other faction can earn.
+func ladderGear(items []buildItem, known map[int]bool, floors map[int]int, otherFaction map[int]bool, spec string, level int) []api.GearSlot {
 	profile := ladderGearProfiles[spec]
 	if profile.Skip && (profile.SkipFromLevel == 0 || level >= profile.SkipFromLevel) {
 		return nil
 	}
+	items = withoutOtherFaction(items, otherFaction)
 	primaryStats := specWeaponPrimaryStats(spec)
 	weightDPS := specWeaponDPSMatters(spec)
 	var gear []api.GearSlot

@@ -20,7 +20,8 @@ import (
 // Greataxe, a level-22 quest's) was held at 10. LevelGear gates on the level
 // the ladder and the BiS ranker use (leveling.EffectiveRequiredLevel) and
 // refills a weapon, shield or wand slot from the class's client item table
-// with the ladder's own pickers.
+// with the ladder's own pickers, and (round 26) an armor, jewellery or
+// trinket slot with pickArmorItem.
 type LevelGear struct {
 	spec   string
 	items  []buildItem
@@ -78,6 +79,10 @@ func loadOtherFactionItems(repoRoot, build, faction string) (map[int]bool, error
 	if faction != "horde" && faction != "alliance" {
 		return nil, fmt.Errorf("level gear: faction %q is neither horde nor alliance", faction)
 	}
+	opposite := "alliance"
+	if faction == "alliance" {
+		opposite = "horde"
+	}
 	dir := filepath.Join(repoRoot, "data", "builds", build)
 	b, err := os.ReadFile(filepath.Join(dir, "loot.json"))
 	if err != nil {
@@ -119,9 +124,11 @@ func loadOtherFactionItems(repoRoot, build, faction string) (map[int]bool, error
 		if err != nil || sourced[id] || len(quests) == 0 {
 			continue
 		}
+		// Only a quest that names the other faction is closed: "both", ""
+		// and "unknown" are open, as the BiS ranker reads them.
 		other := true
 		for _, q := range quests {
-			if q.Faction == faction || q.Faction == "both" || q.Faction == "" {
+			if q.Faction != opposite {
 				other = false
 			}
 		}
@@ -175,10 +182,16 @@ func (g LevelGear) RequiredLevel(id int) int {
 	return g.clientLevels[id]
 }
 
+// OnlyTheOtherFactionEarns is whether item id is one only the other faction
+// can earn (loadOtherFactionItems).
+func (g LevelGear) OnlyTheOtherFactionEarns(id int) bool {
+	return g.otherFaction[id]
+}
+
 // Fit is gear as a level-level character holds it. A slot it can wear keeps
 // its item. A slot it cannot takes the first of alternatives[slot] (the band's
 // own runners-up, best first) it can wear, else the class table's best weapon,
-// shield or wand for that slot at the level, else stays empty. A weapon refill
+// shield, wand or armor for that slot at the level, else stays empty. A weapon refill
 // keeps the dropped item's handedness and, where one exists, its weapon type
 // (a dagger stays a dagger for Backstab), and never repeats the main hand's
 // item. A two-hand main hand leaves no off hand.
@@ -207,10 +220,13 @@ func (g LevelGear) replacement(dropped api.GearSlot, alternatives []int, worn []
 	if !ok {
 		return 0, false
 	}
-	pool := g.earnable(withoutItem(g.items, worn))
+	pool := withoutOtherFaction(withoutItem(g.items, worn), g.otherFaction)
 	switch {
 	case it.WeaponClass == itemClassArmor && it.WeaponSubclass == armorSubclassShield:
 		pick, found := pickShieldItem(pool, g.known, g.floors, level)
+		return pick.ID, found
+	case it.WeaponClass == itemClassArmor:
+		pick, found := g.pickArmorItem(pool, dropped.Slot, it, level)
 		return pick.ID, found
 	case it.WeaponClass != itemClassWeapon:
 		return 0, false
@@ -219,6 +235,59 @@ func (g LevelGear) replacement(dropped api.GearSlot, alternatives []int, worn []
 		return pick.ID, found
 	}
 	return g.weapon(pool, dropped.Slot, it, level)
+}
+
+// relicSubclasses are the armor subclasses a class trainer teaches (libram,
+// idol, totem): a relic refill keeps the dropped relic's kind.
+var relicSubclasses = []int{7, 8, 9}
+
+// tableSlot is the class item table's slot for an entry slot: both rings are
+// "finger" and both trinkets "trinket" there.
+func tableSlot(slot string) string {
+	switch slot {
+	case "finger1", "finger2":
+		return "finger"
+	case "trinket1", "trinket2":
+		return "trinket"
+	}
+	return slot
+}
+
+// pickArmorItem is the class table's best armor, jewellery or trinket for an
+// entry slot at level (round 26 platform): one the level, the class's armor
+// proficiency (leveling.ArmorProficiencyLevel: mail and plate from 40 where
+// Forever gates them) and the build's sim database allow. It scores the sum
+// of the spec's WeightStats on the item, then item level, then the lower id.
+// A relic stays a relic of the same kind.
+func (g LevelGear) pickArmorItem(pool []buildItem, slot string, dropped buildItem, level int) (buildItem, bool) {
+	info := specs.ByKey[g.spec]
+	want := tableSlot(slot)
+	relic := containsInt(relicSubclasses, dropped.WeaponSubclass)
+	var best buildItem
+	var bestScore float64
+	found := false
+	for _, it := range pool {
+		if it.Slot != want || it.WeaponClass != itemClassArmor || it.WeaponSubclass == armorSubclassShield || !g.known[it.ID] {
+			continue
+		}
+		if relic != containsInt(relicSubclasses, it.WeaponSubclass) || (relic && it.WeaponSubclass != dropped.WeaponSubclass) {
+			continue
+		}
+		if leveling.EffectiveRequiredLevel(it.RequiredLevel, g.floors[it.ID]) > level {
+			continue
+		}
+		if level < leveling.ArmorProficiencyLevel(info.ClassSlug, it.WeaponSubclass) {
+			continue
+		}
+		score := 0.0
+		for _, stat := range info.WeightStats {
+			score += it.Stats[stat]
+		}
+		if !found || score > bestScore || (score == bestScore && (it.ItemLevel > best.ItemLevel || (it.ItemLevel == best.ItemLevel && it.ID < best.ID))) {
+			best, bestScore, found = it, score, true
+		}
+	}
+	return best, found
 }
 
 // sameHandedness is whether a and b are both two-handers or both not: a
@@ -268,15 +337,39 @@ func weaponFamily(subclass int) []int {
 	return nil
 }
 
-// earnable is items without the ones only the other faction can earn.
-func (g LevelGear) earnable(items []buildItem) []buildItem {
+// withoutOtherFaction is items without the ones otherFaction marks: those
+// only the other faction can earn (loadOtherFactionItems).
+func withoutOtherFaction(items []buildItem, otherFaction map[int]bool) []buildItem {
 	out := make([]buildItem, 0, len(items))
 	for _, it := range items {
-		if !g.otherFaction[it.ID] {
+		if !otherFaction[it.ID] {
 			out = append(out, it)
 		}
 	}
 	return out
+}
+
+// LoadRaceFaction is race's faction ("horde" or "alliance") in build's
+// races.json.
+func LoadRaceFaction(repoRoot, build, race string) (string, error) {
+	path := filepath.Join(repoRoot, "data", "builds", build, "races.json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return "", fmt.Errorf("level gear: reading %s: %w", path, err)
+	}
+	var rows []struct {
+		Slug    string `json:"slug"`
+		Faction string `json:"faction"`
+	}
+	if err := json.Unmarshal(b, &rows); err != nil {
+		return "", fmt.Errorf("level gear: parsing %s: %w", path, err)
+	}
+	for _, r := range rows {
+		if r.Slug == race {
+			return r.Faction, nil
+		}
+	}
+	return "", fmt.Errorf("level gear: build %s has no race %q", build, race)
 }
 
 func slotItemIDs(gear []api.GearSlot) map[int]bool {

@@ -157,6 +157,14 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	if err != nil {
 		t.Fatal(err)
 	}
+	faction, err := LoadRaceFaction(repoRoot, build, race)
+	if err != nil {
+		t.Fatal(err)
+	}
+	otherFaction, err := loadOtherFactionItems(repoRoot, build, faction)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	consts, err := loadSpellConst(repoRoot, build, class)
 	if err != nil {
@@ -229,7 +237,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		if err != nil {
 			t.Fatalf("%s level %d: reading the ladder's own talent string: %v", spec.Spec, level, err)
 		}
-		gear := ladderGear(items, knownItems, requiredLevelFloors, spec.Spec, level)
+		gear := ladderGear(items, knownItems, requiredLevelFloors, otherFaction, spec.Spec, level)
 
 		req := api.SimRequest{
 			EngineVersion: enginever.Version,
