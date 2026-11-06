@@ -6,6 +6,7 @@
      handlers (the static render) every form still submits to /sim the plain way. -->
 <script lang="ts">
   import { classTone } from '../../lib/ui/primitives';
+  import { validateColdPaste } from '../../lib/sim/cold-paste';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
   import type { BisSetClass } from '../../lib/sim/bis-set-rail';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
@@ -44,6 +45,20 @@
   let buildRef = $state('');
   let fightRef = $state('');
 
+  // The paste decodes locally (§5 "Paste plate"): Run waits for a paste that decodes, and one that
+  // does not says why under the field. The static render (no handler) leaves the plain form be.
+  const pasteCheck = $derived(validateColdPaste(paste));
+  const pasteMessage = $derived(
+    pasteError !== '' ? pasteError : onpaste !== undefined && !pasteCheck.ok ? pasteCheck.message : null,
+  );
+  const pasteBlocked = $derived(onpaste !== undefined && !pasteCheck.ok);
+
+  function submitPaste(event: SubmitEvent): void {
+    if (onpaste === undefined) return;
+    event.preventDefault();
+    if (pasteCheck.ok) onpaste(pasteCheck.code);
+  }
+
   function handle(event: SubmitEvent, value: string, handler: ((value: string) => void) | undefined): void {
     if (handler === undefined) return;
     event.preventDefault();
@@ -59,7 +74,7 @@
           label={copy.paste.label}
           action="/sim"
           method="get"
-          onsubmit={(event) => handle(event, paste, onpaste)}
+          onsubmit={submitPaste}
         >
           <Field
             id="sim-cold-paste-input"
@@ -68,11 +83,11 @@
             placeholder={copy.paste.placeholder}
             grow
             bind:value={paste}
-            error={pasteError === '' ? undefined : pasteError}
+            error={pasteMessage ?? undefined}
             testid="sim-cold-paste-input"
           />
           {#snippet submit()}
-            <Button tone="primary" type="submit" disabled={busy} testid="sim-cold-paste-run"
+            <Button tone="primary" type="submit" disabled={busy || pasteBlocked} testid="sim-cold-paste-run"
               >{copy.paste.run}</Button
             >
           {/snippet}
