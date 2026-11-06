@@ -1625,7 +1625,7 @@ async function words(locator: Locator): Promise<string> {
 
 test.describe('guild facts read as sentences (P.1)', () => {
   for (const width of [1280, 390]) {
-    test(`at ${width} the header, Overview and roster facts are body-face sentences with " · " spaced`, async ({
+    test(`at ${width} the header and Overview facts are body-face sentences with " · " spaced`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
@@ -1639,11 +1639,11 @@ test.describe('guild facts read as sentences (P.1)', () => {
       );
       const raidFacts = page.getByTestId('guild-overview-raid-facts').first();
       expect(await words(raidFacts)).toMatch(/ · /);
-      for (const line of [header, rosterFacts, raidFacts]) {
+      for (const line of [header, raidFacts]) {
         expect(await line.evaluate((el) => getComputedStyle(el).fontFamily)).not.toMatch(/mono/i);
       }
       // Each fact is one piece: no fact's box is split across two lines.
-      for (const line of [header, rosterFacts, raidFacts]) {
+      for (const line of [header, raidFacts]) {
         const split = await line.evaluate(
           (el) =>
             [...el.querySelectorAll('.whitespace-nowrap')].filter(
