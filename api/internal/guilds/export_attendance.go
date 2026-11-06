@@ -70,8 +70,9 @@ func attendanceRowBefore(a, b attendanceExportRow) bool {
 func (s *Store) plannedAttendanceRows(ctx context.Context, guildID int64, loc *time.Location) ([]attendanceExportRow, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select r.starts_at, r.title, a.name, a.character_key, a.class, coalesce(a.signed, ''), a.outcome, a.excused,
-		       a.pulls_present, a.pulls_total
+		       a.pulls_present, a.pulls_total, coalesce(o.status, '')
 		from guild_raid_attendance a join guild_raids r on r.id = a.raid_id
+		left join guild_raid_attendance_overrides o on o.raid_id = a.raid_id and o.character_key = a.character_key
 		where r.guild_id = $1`, guildID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: export attendance: %w", err)
@@ -82,14 +83,15 @@ func (s *Store) plannedAttendanceRows(ctx context.Context, guildID int64, loc *t
 		var (
 			startsAt                              time.Time
 			title, name, key, class, signed, kind string
+			fix                                   string
 			excused                               bool
 			present, total                        int
 		)
-		if err := rows.Scan(&startsAt, &title, &name, &key, &class, &signed, &kind, &excused, &present, &total); err != nil {
+		if err := rows.Scan(&startsAt, &title, &name, &key, &class, &signed, &kind, &excused, &present, &total, &fix); err != nil {
 			return nil, fmt.Errorf("guilds: export attendance: %w", err)
 		}
 		out = append(out, attendanceExportRow{at: startsAt, name: name, key: key,
-			cells: exportAttendanceCells(startsAt.In(loc), title, name, class, signed, kind, excused, present, total)})
+			cells: exportAttendanceCells(startsAt.In(loc), title, name, class, signed, kind, excused, present, total, fix)})
 	}
 	return out, rows.Err()
 }
@@ -120,7 +122,7 @@ func (s *Store) loggedNightRows(ctx context.Context, guildID int64, loc *time.Lo
 				name = key
 			}
 			out = append(out, attendanceExportRow{at: n.at, name: name, key: key,
-				cells: exportAttendanceCells(n.at.In(loc), n.label, name, p.Class, "", exportOutcomePresent, false, p.PullsPresent, total)})
+				cells: exportAttendanceCells(n.at.In(loc), n.label, name, p.Class, "", exportOutcomePresent, false, p.PullsPresent, total, "")})
 		}
 	}
 	return out, nil
@@ -152,8 +154,9 @@ func (s *Store) loggedNights(ctx context.Context, guildID int64) ([]loggedNight,
 }
 
 // exportAttendanceCells is one attendance CSV row, formula-safe; at is already in the guild's
-// zone (exportLocation).
-func exportAttendanceCells(at time.Time, raid, name, class, signed, outcome string, excused bool, present, total int) []string {
+// zone (exportLocation). outcome and excused are the effective values; fix is the officer's
+// manual fix ("" for none).
+func exportAttendanceCells(at time.Time, raid, name, class, signed, outcome string, excused bool, present, total int, fix string) []string {
 	return safeRow(at.Format(exportDateLayout), raid, name, class, signed, outcome,
-		strconv.FormatBool(excused), strconv.Itoa(present), strconv.Itoa(total))
+		strconv.FormatBool(excused), strconv.Itoa(present), strconv.Itoa(total), fix)
 }

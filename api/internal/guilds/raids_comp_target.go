@@ -51,33 +51,25 @@ type CompTarget struct {
 	Source string `json:"source"`
 }
 
-// raidSize40 is the classic raid size the defaults are written for.
-const raidSize40 = 40
-
-// compDefaults are the per-zone defaults a veteran raid leader starts from. Onyxia: two tanks
-// (main tank plus the fear and whelp pickup), eight healers, and a ranged-heavy damage split
-// for the air phase.
+// compDefaults are the first tier's defaults a raid leader starts from (Forever's raids of 9
+// December: Barrow Deeps 10, Hyjal Summit 20, Onyxia's Lair 40). Barrow Deeps: one tank, three
+// healers, six damage. Hyjal Summit: two tanks, five healers, thirteen damage. Onyxia: two tanks
+// (main tank plus the fear and whelp pickup), eight healers, and a ranged-heavy split for the air
+// phase. An officer edits them per raid; a raid zone without a row here has no target.
 var compDefaults = map[string]RoleCounts{
+	"raid:barrow-deeps": {Tanks: 1, Healers: 3, Melee: 3, Ranged: 3},
+	"raid:hyjal-summit": {Tanks: 2, Healers: 5, Melee: 6, Ranged: 7},
 	"raid:onyxias-lair": {Tanks: 2, Healers: 8, Melee: 10, Ranged: 20},
 }
 
-// default40 is any other 40-player raid zone's default, the Molten Core shape: four tanks for
-// the pack pulls and add tanking, ten healers, and the damage split evenly-ish toward ranged.
-var default40 = RoleCounts{Tanks: 4, Healers: 10, Melee: 12, Ranged: 14}
-
-// zoneCompDefault is the zone's default target; false for a zone with none (not a raid, or a
-// raid whose size is not sourced, or a size the defaults are not written for).
+// zoneCompDefault is the zone's default target; false for a zone with none (not a raid, a raid
+// whose size is not sourced, or one with no row in compDefaults).
 func zoneCompDefault(z Zone) (RoleCounts, bool) {
 	if !z.IsRaid() || z.Size == nil {
 		return RoleCounts{}, false
 	}
-	if c, ok := compDefaults[z.Key]; ok {
-		return c, true
-	}
-	if *z.Size == raidSize40 {
-		return default40, true
-	}
-	return RoleCounts{}, false
+	c, ok := compDefaults[z.Key]
+	return c, ok
 }
 
 // compTargetOf is the raid's target: its own row when set, else the zone default; nil when the

@@ -30,6 +30,11 @@ const SIGNUP_PUTS = /signups\/us\/pvp\/zulmara$/;
 const PHONE = { width: 360, height: 800 };
 /** Raid comp spec 3.2: a phone strip row is at most 180 px. */
 const PHONE_ROW_MAX = 180;
+/** Raid comp spec 3.2 (amended 2026-11-05, guild round 2): below 768 the spec face shows the spec
+ *  alone, so the Who line carries the role; from 768 the face carries it and the Who line does not. */
+const WIDE_FROM = 768;
+const whoAfterPick = (page: Page): string =>
+  (page.viewportSize()?.width ?? WIDE_FROM) < WIDE_FROM ? 'Survival Hunter · DPS' : 'Survival Hunter';
 
 async function openAsking(page: Page): Promise<RaidStub> {
   const stub = await stubGuildRaids(page, { viewer: 'member', askSpec: true });
@@ -65,7 +70,7 @@ test('In with no spec waits: Pick a spec first., then the pick signs up in one r
   await expect(status(page)).toHaveText(raidCopy.stripStatus.saved);
   await expect(segment(page, 'in')).toHaveAttribute('aria-checked', 'true');
   expect(bodies(stub)).toEqual([{ state: 'in', role: 'dps', note: '', spec: 'hunter-survival' }]);
-  await expect(who(page)).toHaveText('Survival Hunter');
+  await expect(who(page)).toHaveText(whoAfterPick(page));
   await expect(page.getByTestId('raid-roster-melee')).toContainText(VIEWER_MEMBER);
 });
 

@@ -323,6 +323,9 @@ func releaseLog(ctx context.Context, tx pgx.Tx, raidID int64, reportID string, b
 		on conflict (raid_id, report_id) do nothing`, raidID, reportID, by); err != nil {
 		return Raid{}, fmt.Errorf("guilds: clear match: reject: %w", err)
 	}
+	if err := dropOverrides(ctx, tx, raidID); err != nil {
+		return Raid{}, err
+	}
 	if _, err := tx.Exec(ctx, `delete from guild_raid_attendance where raid_id = $1`, raidID); err != nil {
 		return Raid{}, fmt.Errorf("guilds: clear match: attendance: %w", err)
 	}

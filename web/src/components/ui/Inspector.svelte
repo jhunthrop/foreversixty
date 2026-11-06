@@ -40,6 +40,7 @@
   data-placement={placement}
   aria-label={`${selection} detail`}
   aria-live="polite"
+  tabindex={placement === 'side' ? 0 : undefined}
   data-testid={testid}
 >
   {#if head}<div class="ui-inspector-head">{@render head()}</div>{/if}

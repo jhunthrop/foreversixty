@@ -22,7 +22,7 @@ const (
 )
 
 var (
-	attendanceExportHeader = []string{"date", "raid", "character", "class", "signed", "outcome", "excused", "pulls_present", "pulls_total"}
+	attendanceExportHeader = []string{"date", "raid", "character", "class", "signed", "outcome", "excused", "pulls_present", "pulls_total", "fixed"}
 	lootExportHeader       = []string{"date", "raid", "boss", "item_id", "item", "character", "class", "ms_os",
 		"votes_yes", "votes_no", "reason", "awarded_by"}
 	nonAlphanumeric = regexp.MustCompile(`[^a-z0-9]+`)

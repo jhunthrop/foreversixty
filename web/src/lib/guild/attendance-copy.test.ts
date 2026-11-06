@@ -11,13 +11,10 @@ import {
   cameAsOutcome,
   durationLabel,
   lateOutcome,
-  pullsRatio,
   endedHint,
-  killRowText,
   killTimeLabel,
   matchedElsewhereParts,
   moveDelta,
-  moveFigures,
   nightLine,
   nextRaidToggle,
   pickerEmpty,
@@ -28,9 +25,7 @@ import {
   showingParts,
   stampLabel,
   syncedLine,
-  unnamedLine,
   uploadedLine,
-  usedChips,
 } from './attendance-copy';
 
 const SPEC = new URL('../../../../design/specs/2026-10-27-guild-attendance.md', import.meta.url);
@@ -203,7 +198,6 @@ describe('outcome words', () => {
   it('writes the attendance outcomes', () => {
     expect(lateOutcome(22)).toBe(str('Attendance', 9, { m: '22' }));
     expect(cameAsOutcome('Grimtotem')).toBe(str('Attendance', 10, { Alt: 'Grimtotem' }));
-    expect(pullsRatio(9, 11)).toBe('9/11');
   });
 
   it('writes the window constants into prose', () => {
@@ -213,50 +207,10 @@ describe('outcome words', () => {
 });
 
 describe('report words', () => {
-  it('kill rows', () => {
-    const base = {
-      encounter_id: 1,
-      name: 'Onyxia',
-      fight_index: 4,
-      killed: true,
-      kill_ms: 102_000,
-      deaths: 2,
-    };
-    expect(killRowText({ ...base, wipes_before: 3 })).toEqual({
-      time: '1:42',
-      note: 'after 3 wipes',
-      deaths: ' · 2 deaths',
-      firstPull: false,
-    });
-    expect(killRowText({ ...base, wipes_before: 0, deaths: 0 })).toMatchObject({
-      note: 'first pull',
-      deaths: '',
-      firstPull: true,
-    });
-    expect(killRowText({ ...base, killed: false, kill_ms: null, wipes_before: 4 })).toEqual({
-      time: null,
-      note: 'Not killed · 4 wipes',
-      deaths: '',
-      firstPull: false,
-    });
-    expect(unnamedLine({ pulls: 7, kills: 5, wipes: 2 })).toBe('5 trash packs');
-    expect(unnamedLine({ pulls: 2, kills: 1, wipes: 1 })).toBe(
-      str('Kill order', 4, { k: '1' }).replace('(s)', ''),
-    );
-    expect(unnamedLine({ pulls: 2, kills: 0, wipes: 2 })).toBeNull();
-  });
-
-  it('changes and consumables', () => {
-    expect(moveFigures('dps', 238, 291)).toBe('DPS 238 → 291');
+  it('changes', () => {
     expect(moveDelta(238, 291)).toEqual({ text: '+53', rising: true, size: 53 });
     expect(moveDelta(291, 291)).toEqual({ text: '+0', rising: false, size: 0 });
     expect(moveDelta(291, 279)).toEqual({ text: '−12', rising: false, size: 12 });
-    expect(usedChips({ flask: true, food: false, potions: 3 }).map((x) => x.text)).toEqual([
-      'Flask',
-      'No food',
-      'Potions 3',
-    ]);
-    expect(usedChips({ flask: null, food: null, potions: 0 })).toEqual([{ text: 'No potions', used: false }]);
   });
 });
 

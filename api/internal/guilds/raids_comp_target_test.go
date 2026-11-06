@@ -6,18 +6,24 @@ import (
 )
 
 func TestZoneCompDefaults(t *testing.T) {
-	ony, _ := ZoneByKey(raidZoneOny)
-	if got, ok := zoneCompDefault(ony); !ok || got != (RoleCounts{Tanks: 2, Healers: 8, Melee: 10, Ranged: 20}) || got.total() != 40 {
-		t.Fatalf("onyxia default = %+v, %v", got, ok)
+	// Every first-tier raid (9 December) has a default that fills its size exactly.
+	want := map[string]RoleCounts{
+		"raid:barrow-deeps": {Tanks: 1, Healers: 3, Melee: 3, Ranged: 3},
+		"raid:hyjal-summit": {Tanks: 2, Healers: 5, Melee: 6, Ranged: 7},
+		raidZoneOny:         {Tanks: 2, Healers: 8, Melee: 10, Ranged: 20},
 	}
-	if default40.total() != raidSize40 {
-		t.Fatalf("default40 sums to %d", default40.total())
+	for key, w := range want {
+		z, _ := ZoneByKey(key)
+		got, ok := zoneCompDefault(z)
+		if !ok || got != w || z.Size == nil || got.total() != *z.Size {
+			t.Errorf("%s default = %+v, %v (size %v)", key, got, ok, z.Size)
+		}
 	}
-	other := Zone{Key: "raid:molten-core", Kind: ZoneRaid, Size: intPtr(40)}
-	if got, ok := zoneCompDefault(other); !ok || got != default40 {
-		t.Fatalf("40-player raid default = %+v, %v", got, ok)
+	// A raid outside the first tier has no default, whatever its size.
+	if _, ok := zoneCompDefault(Zone{Key: "raid:unannounced", Kind: ZoneRaid, Size: intPtr(40)}); ok {
+		t.Error("an unlisted raid has a default")
 	}
-	for _, key := range []string{"raid:barrow-deeps", "dungeon:scholomance", "event:guild-40"} {
+	for _, key := range []string{"dungeon:scholomance", "event:guild-40"} {
 		z, _ := ZoneByKey(key)
 		if _, ok := zoneCompDefault(z); ok {
 			t.Errorf("%s has a default", key)

@@ -1,4 +1,6 @@
 <!-- web/src/components/guild/SignupRow.svelte -->
+<!-- Phone (< 768): who at the left of line 1 with the 176 px spec picker at its right, the
+     segments on line 2, the note on line 3, then the status line: at most 180 px (spec-ask e2e). -->
 <!-- One character's row of the sign-up strip (raids spec 3.3, raid comp spec 3.2): who (crest, name,
      `Holy Paladin`), the segments, one spec picker whose (spec, role) pair sets the role, and the
      note, then a reserved 20 px status line. Picking on a signed-up row saves at once; on an
@@ -262,32 +264,35 @@
 {:else}
   <li
     bind:this={rowEl}
-    class="border-line-soft border-b pt-2 last:border-b-0 md:pt-3"
+    class="border-line-soft border-b pt-1.5 last:border-b-0 md:pt-3"
     aria-busy={busy}
     data-testid={`signup-row-${key}`}
   >
     <div
-      class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-2 md:min-h-[68px] md:gap-4 {asksSpec
+      class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-x-2 gap-y-1 md:min-h-[68px] md:gap-4 {asksSpec
         ? 'md:grid-cols-[minmax(180px,1fr)_auto_220px_minmax(200px,1.4fr)]'
         : 'md:grid-cols-[minmax(180px,1fr)_auto_minmax(200px,1.4fr)]'}"
       data-testid={`signup-grid-${key}`}
     >
-      <div class="col-span-2 col-start-1 row-start-1 flex min-w-0 items-center gap-3 md:col-span-1">
+      <div
+        class="col-start-1 row-start-1 flex min-w-0 items-center gap-3 md:col-span-1 {asksSpec
+          ? ''
+          : 'col-span-2'}"
+      >
         <ClassCrestRing characterClass={character.class} size={32} />
         <div class="min-w-0">
           <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
             {character.name}
           </p>
-          <p class="text-muted text-[12px] md:truncate" data-testid={`signup-who-${key}`}>
+          <p
+            class="text-muted text-[12px] leading-4 md:truncate md:leading-normal"
+            data-testid={`signup-who-${key}`}
+          >
             {who}
           </p>
         </div>
       </div>
-      <div
-        class="col-span-2 md:col-span-1 md:col-start-2 md:row-start-1 {asksSpec
-          ? 'row-start-3'
-          : 'row-start-2'}"
-      >
+      <div class="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">
         <SignupSegments
           value={shownState}
           pending={askedState}
@@ -300,9 +305,7 @@
         />
       </div>
       {#if asksSpec}
-        <div
-          class="col-span-2 col-start-1 row-start-2 flex w-[176px] min-w-0 md:col-span-1 md:col-start-3 md:row-start-1 md:w-auto"
-        >
+        <div class="col-start-2 row-start-1 flex w-[176px] min-w-0 md:col-start-3 md:w-auto">
           <Select
             id={specId}
             class="w-full"
@@ -321,9 +324,9 @@
         </div>
       {/if}
       <div
-        class="relative col-span-2 md:col-span-1 md:row-start-1 {asksSpec
-          ? 'row-start-4 md:col-start-4'
-          : 'row-start-3 md:col-start-3'}"
+        class="relative col-span-2 row-start-3 md:col-span-1 md:row-start-1 {asksSpec
+          ? 'md:col-start-4'
+          : 'md:col-start-3'}"
       >
         <input
           type="text"

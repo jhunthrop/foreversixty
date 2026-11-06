@@ -2824,9 +2824,30 @@ components:
               first_seen_offset_s: { type: integer }
               pulls_present: { type: integer }
               pulls_total: { type: integer }
-              excused: { type: boolean }
+              excused: { type: boolean, description: The effective excused flag (an officer's fix included). }
               own: { type: boolean }
-        report: { $ref: '#/components/schemas/OpenObject', description: "Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web." }
+              auto_outcome:
+                type: string
+                enum: [present, late, absent, no_show]
+                description: >-
+                  What the log and the sign-ups said, before any officer's fix; outcome is the
+                  effective value every count reads (the roster's nights, the CSV export, the
+                  night's figures). Equal to outcome when there is no fix.
+              auto_excused: { type: boolean, description: The excused flag under the fix; equal to excused when there is no fix. }
+              override:
+                type: [object, "null"]
+                title: RaidAttendanceOverride
+                description: >-
+                  An officer's manual fix of this night (PUT …/attendance/{region}/{ruleset}/{name}/override),
+                  null for none. present and bench earn the night; absent is a no-show for a raider
+                  signed In or Late, else absent; excused keeps the log's outcome and counts the
+                  night for nobody.
+                required: [status, by_name, at]
+                properties:
+                  status: { type: string, enum: [present, absent, bench, excused] }
+                  by_name: { type: string, description: "The officer's main character name, or \"an officer\"." }
+                  at: { type: string, format: date-time }
+        report: { $ref: '#/components/schemas/OpenObject', description: "The night's report, shaped as RaidReport (Go guilds.ReportView); the apps carry it and open the full report on the web." }
         cover:
           type: [array, "null"]
           description: >-
@@ -2862,6 +2883,248 @@ components:
         providers_bench: { type: integer }
         likely: { type: integer }
         state: { type: string, enum: [ok, short, missing] }
+    RaidReport:
+      type: object
+      description: >-
+        A done raid's report (Go guilds.ReportView), in RaidView.report. An officer or leader reads
+        every row; a member reads the headline, every pull, kill and loot row, and only their own
+        characters' deaths (with causes), consumables, parses and moves. Death causes and the
+        consumables by pull are read once from each fight's stored summary (guild_report_pulls);
+        a fight not read yet carries death_causes null and a not_read reason.
+      required: [headline, pulls, parses, kill_order, unnamed, deaths, consumables, loot, moves, posted_at]
+      properties:
+        headline:
+          type: object
+          title: RaidReportHeadline
+          description: Attempts are boss pulls (kills plus wipes); deaths count every pull, trash included, so they add up to the pulls.
+          required: [kills, wipes, attempts, deaths]
+          properties:
+            kills: { type: integer }
+            wipes: { type: integer }
+            attempts: { type: integer }
+            deaths: { type: integer }
+        pulls:
+          type: array
+          description: Every fight of the night in order.
+          items:
+            type: object
+            title: RaidReportPull
+            required: [fight_index, encounter_id, name, attempt, result, duration_ms, deaths, death_causes]
+            properties:
+              fight_index: { type: integer }
+              encounter_id: { type: [integer, "null"], description: Null on trash. }
+              name: { type: string }
+              attempt: { type: [integer, "null"], description: The boss pull's number (1 for the first pull of that boss); null on trash. }
+              result: { type: string, enum: [kill, wipe, clear], description: clear is a trash pull the raid won. }
+              duration_ms: { type: integer, format: int64 }
+              deaths: { type: integer }
+              death_causes:
+                type: [array, "null"]
+                description: >-
+                  One per death, in order; null until the fight's summary has been read (deaths
+                  still counts them). A member reads their own characters' only.
+                items:
+                  type: object
+                  title: RaidReportDeath
+                  required: [character_key, name, class, at_ms, killing_blow, last_hits]
+                  properties:
+                    character_key: { type: string, description: Empty when the log name maps to no character of the night. }
+                    name: { type: string }
+                    class: { type: string, x-name: className }
+                    at_ms: { type: integer, format: int64, description: Time into the pull. }
+                    killing_blow:
+                      oneOf: [{ $ref: '#/components/schemas/RaidReportHit' }, { type: "null" }]
+                      description: The last hit that overkilled, else the last hit; null when the log showed no hit before the death.
+                    last_hits:
+                      type: array
+                      description: Up to the last 3 damage-taken events before the death, oldest first.
+                      items: { $ref: '#/components/schemas/RaidReportHit' }
+        parses:
+          type: array
+          description: >-
+            Per raider per boss kill: DPS, HPS for a healer (the guild's one parse rule), and the
+            fight's overall rating, null when none was computed. Ordered by kill, then damage before
+            healing, then best first.
+          items:
+            type: object
+            title: RaidReportParse
+            required: [character_key, name, class, role, encounter_id, encounter, fight_index, metric, value, rating]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              role: { type: string }
+              encounter_id: { type: integer }
+              encounter: { type: string }
+              fight_index: { type: integer }
+              metric: { type: string, enum: [dps, hps] }
+              value: { type: number }
+              rating: { type: [number, "null"] }
+        kill_order:
+          type: array
+          items:
+            type: object
+            title: RaidReportKill
+            required: [encounter_id, name, fight_index, killed, kill_ms, wipes_before, deaths]
+            properties:
+              encounter_id: { type: integer }
+              name: { type: string }
+              fight_index: { type: integer }
+              killed: { type: boolean }
+              kill_ms: { type: [integer, "null"], format: int64 }
+              wipes_before: { type: integer }
+              deaths: { type: integer }
+        unnamed:
+          type: [object, "null"]
+          title: RaidReportUnnamed
+          required: [pulls, kills, wipes]
+          properties:
+            pulls: { type: integer }
+            kills: { type: integer }
+            wipes: { type: integer }
+        deaths:
+          type: array
+          items:
+            type: object
+            title: RaidReportDeathCount
+            required: [character_key, name, class, on_wipes, on_kills]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              on_wipes: { type: integer }
+              on_kills: { type: integer }
+        consumables:
+          type: object
+          title: RaidReportConsumables
+          required: [log_has_buffs, rows, by_pull]
+          properties:
+            log_has_buffs: { type: boolean, description: True when at least one boss pull carried a character sheet to read. }
+            rows:
+              type: array
+              description: The bags pill per roster character (the readiness board's rule); flask, food and potions are always null here.
+              items:
+                type: object
+                title: RaidReportBagsRow
+                required: [character_key, name, class, before, flask, food, potions]
+                properties:
+                  character_key: { type: string }
+                  name: { type: string }
+                  class: { type: string, x-name: className }
+                  before: { type: string, enum: [short, unknown, stocked] }
+                  flask: { type: [boolean, "null"] }
+                  food: { type: [boolean, "null"] }
+                  potions: { type: [integer, "null"] }
+            by_pull:
+              type: array
+              description: >-
+                One per boss pull: what each raider brought, read from the pull's character sheet
+                (COMBATANT_INFO) against the curated consumables catalogue
+                (logs/engine/mechanics/consumables). rows is null with reason
+                no_character_sheet when the log carried no sheet for the pull (nothing can be
+                said: unknown, never missing), or not_read when the summary is not read yet.
+              items:
+                type: object
+                title: RaidReportPullConsumables
+                required: [fight_index, name, attempt, reason, rows]
+                properties:
+                  fight_index: { type: integer }
+                  name: { type: string }
+                  attempt: { type: integer }
+                  reason: { type: [string, "null"], enum: [no_character_sheet, not_read, null] }
+                  rows:
+                    type: [array, "null"]
+                    items:
+                      type: object
+                      title: RaidReportPullConsumable
+                      required: [character_key, name, class, flask, food, weapon_enchant, potions, brought]
+                      description: >-
+                        true: up at the pull (or applied within 10 s of it); false: proven missing
+                        (only where the catalogue's list is complete, which today is flasks); null:
+                        the log cannot say.
+                      properties:
+                        character_key: { type: string }
+                        name: { type: string }
+                        class: { type: string, x-name: className }
+                        flask: { type: [boolean, "null"] }
+                        food: { type: [boolean, "null"] }
+                        weapon_enchant: { type: [boolean, "null"] }
+                        potions: { type: integer, description: Combat potions used in the pull. }
+                        brought: { type: array, items: { type: string }, description: The names of what was up. }
+        loot:
+          type: array
+          items:
+            type: object
+            title: RaidReportLootBoss
+            required: [encounter_id, boss, awards]
+            properties:
+              encounter_id: { type: integer, format: int64 }
+              boss: { type: string }
+              awards:
+                type: array
+                items:
+                  type: object
+                  title: RaidReportLootAward
+                  required: [item_id, item_name, quality, icon, character_key, name, class, by_name, at]
+                  properties:
+                    item_id: { type: integer }
+                    item_name: { type: string }
+                    quality: { type: integer }
+                    icon: { type: string }
+                    character_key: { type: string }
+                    name: { type: string }
+                    class: { type: string, x-name: className }
+                    by_name: { type: string }
+                    at: { type: string, format: date-time }
+        moves:
+          type: object
+          title: RaidReportMoves
+          required: [previous, rows]
+          properties:
+            previous:
+              type: [object, "null"]
+              title: RaidReportPrevious
+              required: [id, title, starts_at]
+              properties:
+                id: { type: integer, format: int64 }
+                title: { type: string }
+                starts_at: { type: string, format: date-time }
+            rows:
+              type: array
+              items:
+                type: object
+                title: RaidReportMove
+                required: [character_key, name, class, metric, encounter, before, after]
+                properties:
+                  character_key: { type: string }
+                  name: { type: string }
+                  class: { type: string, x-name: className }
+                  metric: { type: string, enum: [dps, hps] }
+                  encounter: { type: string }
+                  before: { type: integer }
+                  after: { type: integer }
+        posted_at: { type: [string, "null"], format: date-time, description: When the summary was last posted to Discord. }
+    RaidReportHit:
+      type: object
+      description: One damage event on a raider before their death.
+      required: [at_ms, spell_id, ability, source, amount, overkill]
+      properties:
+        at_ms: { type: integer, format: int64, description: Time into the pull. }
+        spell_id: { type: integer, format: int64, description: 1 is a melee swing in the engine's convention. }
+        ability: { type: string }
+        source: { type: string }
+        amount: { type: integer, format: int64 }
+        overkill: { type: integer, format: int64 }
+    AttendanceOverrideRequest:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [present, absent, bench, excused] }
+    ReportPostRequest:
+      type: object
+      description: Optional; an empty body is a first post.
+      properties:
+        repost: { type: boolean, description: Post an already posted report again. }
     SignupRequest:
       type: object
       required: [state]
@@ -6752,6 +7015,126 @@ paths:
         '409':
           description: "conflict: the raid's status does not allow the move"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/attendance/{region}/{ruleset}/{name}:
+    put:
+      summary: An officer excuses a raider for the night, or takes the excuse back
+      description: >-
+        Verified officer or leader of a guild with the plan, claim not frozen. The latest officer
+        word wins: a manual fix on the row is cleared first (its auto value restored).
+      operationId: excuseGuildRaidAttendance
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [excused], properties: { excused: { type: boolean } } }
+      responses:
+        '200':
+          description: The raid view as it now stands
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403': { description: "forbidden or guild_plan_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such raid or character", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '422': { description: "invalid: no excused, or no attendance row for the character", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/raids/{raid}/attendance/{region}/{ruleset}/{name}/override:
+    put:
+      summary: An officer fixes a raider's attendance for the night
+      description: >-
+        Marks the raider present, absent, bench or excused, over what the log said; who and when
+        are kept. The fix is stored apart from the auto value, survives every recompute of the
+        log, and every attendance reader (the raid view, the roster's nights, the CSV export, the
+        Discord reads) reads the effective value. A verified roster character with no row (not
+        signed up, not in the log) gets one. Verified officer or leader of a guild with the plan,
+        claim not frozen; budget shared with the other officer raid writes.
+      operationId: setGuildRaidAttendanceOverride
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/AttendanceOverrideRequest' } } }
+      responses:
+        '200':
+          description: The raid view, the row carrying auto_outcome, override and the effective outcome
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '400': { description: "invalid: the body is not JSON", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden or guild_plan_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such raid (also to a signed-out caller)", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "conflict: the raid has no matched log; or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '422': { description: "invalid: status, or the character is not a verified raider of the guild", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+    delete:
+      summary: An officer clears a fix, restoring what the log said
+      description: Clearing a row with no fix is a no-op. Same gate as the PUT.
+      operationId: clearGuildRaidAttendanceOverride
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: The raid view as it now stands
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403': { description: "forbidden or guild_plan_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such raid", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "conflict: the raid has no matched log; or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/raids/{raid}/report/post:
+    post:
+      summary: An officer posts the night's summary to the guild's raid channel
+      description: >-
+        One post per report: a second press answers already_posted unless the body asks for a
+        repost. The summary (copy in api/internal/notify/report_embed.go) carries the raid and its
+        date, kills with times, wipes, the night's time, came of signed, the death count, the top
+        3 damage parses by name, the loot by item and winner, and a link to the report. It names
+        nobody for dying. A post that reaches no channel releases the claim (a repost puts the
+        earlier stamp back). Verified officer or leader with the plan, claim not frozen.
+      operationId: postGuildRaidReport
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: false
+        content: { application/json: { schema: { $ref: '#/components/schemas/ReportPostRequest' } } }
+      responses:
+        '200':
+          description: Posted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [posted_at], properties: { posted_at: { type: string, format: date-time } } }
+        '400': { description: "invalid: the body is not JSON", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden or guild_plan_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such raid", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "conflict (not done, or the log is not public), already_posted, not_posted (a repost of a report never posted), or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '502': { description: "post_failed: the post reached no channel; try again", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
   /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}:
     put:
       summary: Answer for one character (In, Late, Bench, Out)
