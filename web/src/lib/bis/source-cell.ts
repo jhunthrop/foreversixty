@@ -29,6 +29,8 @@ export interface QuestSourceCell {
   /** The level a player must be to take the quest (loot.json's `min_level`), not the quest's
    *  own level, which read as a requirement it is not (spec 2026-10-29 §A.3). 0 when unknown. */
   minLevel: number;
+  /** The quest log zone, when loot.json names one (optional field, 2026-11-05). */
+  zone?: string;
 }
 
 export interface PlaceSourceCell {
@@ -42,6 +44,9 @@ export interface PlaceSourceCell {
    *  2026-09-29). Undefined when no source contributing to this bucket names one -- the
    *  fork database and wowhead's scrape never do. */
   dropChance?: number;
+  /** The instance's level range, when loot.json carries it on the source (2026-11-05). */
+  levelMin?: number;
+  levelMax?: number;
 }
 
 export interface CraftedSourceCell {
@@ -52,6 +57,8 @@ export interface CraftedSourceCell {
    *  as `name` for every crafted source today. See `bisCopy.craftedSourceLabel`'s own doc
    *  for why both are carried through rather than just one. */
   profession?: string;
+  /** The recipe's skill, when loot.json's `required_skill` names it (2026-11-05). */
+  skill?: number;
 }
 
 export interface VendorSourceCell {
@@ -208,7 +215,13 @@ export function resolveSourceCell(
     // matching `sourceBadgeLabel`'s existing rule for the generic per-kind badge.
     return option === undefined
       ? fallback
-      : { kind: 'quest', questName: option.name, faction, minLevel: option.min_level };
+      : {
+          kind: 'quest',
+          questName: option.name,
+          faction,
+          minLevel: option.min_level,
+          ...(option.zone ? { zone: option.zone } : {}),
+        };
   }
 
   if (slot.source_kind === 'dungeon' || slot.source_kind === 'raid') {
@@ -220,6 +233,9 @@ export function resolveSourceCell(
           instance: source.name,
           boss: findBoss(source, itemId),
           dropChance: findChance(source, itemId),
+          ...(source.level_min !== undefined && source.level_max !== undefined
+            ? { levelMin: source.level_min, levelMax: source.level_max }
+            : {}),
         };
   }
 
@@ -227,7 +243,14 @@ export function resolveSourceCell(
     const source = findSource(loot.sources, 'crafted', itemId);
     return source === undefined
       ? fallback
-      : { kind: 'crafted', name: source.name, profession: source.profession };
+      : {
+          kind: 'crafted',
+          name: source.name,
+          profession: source.profession,
+          ...(source.required_skill?.[String(itemId)] !== undefined
+            ? { skill: source.required_skill[String(itemId)] }
+            : {}),
+        };
   }
 
   if (slot.source_kind === 'vendor') {

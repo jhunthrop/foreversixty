@@ -1,8 +1,8 @@
-"""Subset Barlow Condensed 800 to exactly the glyphs the homepage hero headline can show.
+"""Subset Barlow 700 to exactly the glyphs the homepage hero headline can show.
 
 The homepage's LCP element is the signed-out hero `<h1>` in src/pages/index.astro -- see
 that file and web-home-lcp/web-home-chunks' lane reports for the measurement. The heading
-face (Barlow Condensed, polish spec 2026-10-28 section 4.4, direction B) is loaded with
+face (Barlow 700 since the fonts lane, 2026-11-06: no condensed face anywhere) is loaded with
 `font-display: swap` over a size-adjusted fallback (styles/fonts.css), so there is no layout
 shift, but Chrome does not count text painted in the fallback face as an LCP candidate: the
 LCP would land when the real face finishes downloading and paints.
@@ -13,12 +13,12 @@ first paint. This script reads the exact strings the hero headline can show (cur
 `*headline*`-named field so a future signed-in variant is picked up automatically), takes
 their capitals (the hero is set `text-transform: uppercase`, so the capitals are the only
 glyphs it paints; carrying the lowercase too would more than double the bytes inlined ahead
-of the LCP), subsets the committed Barlow Condensed 800 subset (src/assets/fonts, itself cut from
-@fontsource/barlow-condensed by the command in fonts/README.md) to only those characters
-with fonttools, and writes a tiny inline `@font-face` for a `Barlow Condensed Hero` family
+of the LCP), subsets the committed Barlow 700 subset (src/assets/fonts, itself cut from
+@fontsource/barlow by the command in fonts/README.md) to only those characters
+with fonttools, and writes a tiny inline `@font-face` for a `Barlow Hero` family
 that `index.astro` declares in its own `<head>` (not Base.astro -- no other page should pay
 for it) with `font-display: block`. The hero's metrics are untouched; only the font-family
-list gains `'Barlow Condensed Hero'` ahead of the heading stack, so a glyph this subset is
+list gains `'Barlow Hero'` ahead of the heading stack, so a glyph this subset is
 missing (there should be none) still falls back to the same face, never a visual defect --
 just back to swap timing for that one glyph.
 
@@ -47,11 +47,12 @@ COPY_FILES = [
 # The only field actually painted in the hero's heading face today.
 HERO_FIELD_PATTERN = re.compile(r"headline", re.IGNORECASE)
 # Group 1 is the key, group 2 the quote character, group 3 the literal's body.
-KEY_STRING_PATTERN = re.compile(r"""(\w+)\s*:\s*(['"])((?:\\.|(?!\2).)*)\2""")
+# A `key: 'value'` pair or a `const NAME = 'value'` (the headline is built from two consts).
+KEY_STRING_PATTERN = re.compile(r"""(?:const\s+)?(\w+)\s*[:=]\s*(['"])((?:\\.|(?!\2).)*)\2""")
 OUTPUT_CSS = WEB_ROOT / "src/styles/hero-font.css"
-SOURCE_FONT = WEB_ROOT / "src/assets/fonts/barlow-condensed-800-subset.woff2"
-FONT_FAMILY = "Barlow Condensed Hero"
-FONT_WEIGHT = 800
+SOURCE_FONT = WEB_ROOT / "src/assets/fonts/barlow-700-subset.woff2"
+FONT_FAMILY = "Barlow Hero"
+FONT_WEIGHT = 700
 
 GENERATED_BANNER = (
     "/* GENERATED FILE -- do not hand-edit.\n"
@@ -103,16 +104,15 @@ def subset_font(chars: set[str]) -> bytes:
                 str(SOURCE_FONT),
                 f"--unicodes={unicodes_arg(chars)}",
                 "--flavor=woff2",
-                # Barlow Condensed 800 carries GSUB liga/locl (plus figure features the
+                # Barlow 700 carries GSUB liga/locl (plus figure features the
                 # hero's letters never reach) and GPOS kern (checked with fontTools.ttLib
                 # against the source woff2). Dropping 'kern' would shift every glyph after
                 # the first by a fraction of a pixel against the full face, so the three
                 # that can touch the headline are kept explicitly.
                 "--layout-features=kern,liga,locl",
-                # Barlow Condensed carries TrueType hinting; the hero paints at 40 px and
+                # Barlow carries TrueType hinting; the hero paints at 40 px and
                 # above, where hinting changes nothing a reader can see, and the hinting
-                # programs are 60% of these glyphs' bytes (3884 hinted against 1552), all of
-                # it inlined ahead of the LCP.
+                # programs are most of these glyphs' bytes, all of it inlined ahead of the LCP.
                 "--no-hinting",
                 f"--output-file={out_path}",
             ],

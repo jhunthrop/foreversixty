@@ -4,9 +4,8 @@
 // the route /setup.test. Astro skips `_`-prefixed files; vitest still collects it.
 //
 // Adapted from _addon.test.ts (Task 6, spec 2026-09-25 §3.4): /setup replaces /addon with
-// three numbered panels. The GitHub release link is derived from links.json's githubRepo, so
-// it is asserted off the rendered output rather than as a literal substring of the source,
-// same as the page it replaces.
+// three numbered panels. Every download links to the site's own /dl/ paths
+// (lib/downloads/paths.ts), asserted off the rendered output.
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createPageContainer } from '../test-support/page-container';
