@@ -77,8 +77,8 @@ test('the run line reads the defaults and every control changes the settings', a
   await closeMoreSettings(page);
   await expect(style).toHaveValue('');
 
-  // Done keeps the changes on the run line.
-  await expect(duration).toHaveValue('180');
+  // Done keeps the changes on the run line: the length set by hand holds through it all.
+  await expect(duration).toHaveValue('600');
   await choose(page.getByTestId('control-targets'), '4');
   await expect(page.getByTestId('control-targets')).toHaveValue('4');
 });

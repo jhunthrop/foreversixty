@@ -9,6 +9,7 @@ import path from 'node:path';
 import { apiUnreachable, expect, test } from './support/test';
 import { SIM_TABS } from '../../src/lib/sim/tabs';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
+import { gotoSim, simCharacter } from './support/sim-page';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
@@ -57,9 +58,6 @@ const PAGES = [
   { path: '/sim/talents', current: 'talents' },
   { path: '/sim/weights', current: 'weights' },
   { path: '/sim/specs', current: 'specs' },
-  // A saved-sim permalink (task-1-brief.md: "give it the strip too, with Quick Sim
-  // current"), not one of the six tools -- Quick Sim is the closest thing it has to a home.
-  { path: `/sim/${FIXTURE_SIM_ID}`, current: 'quick-sim' },
 ] as const;
 
 test.describe('the simulator tab strip', () => {
@@ -86,10 +84,19 @@ test.describe('the simulator tab strip', () => {
     });
   }
 
+  // Ruling S5 (spec 2026-11-06-sim): a saved sim is a document, with no tool tabs and no run
+  // line; Open in the sim is the way back into the tools.
+  test(`/sim/${FIXTURE_SIM_ID} carries no tab strip`, async ({ page }) => {
+    await page.goto(`/sim/${FIXTURE_SIM_ID}`);
+    await expect(page.getByTestId('sim-saved')).toBeVisible();
+    await expect(page.getByTestId('sim-nav-tabs')).toHaveCount(0);
+    await expect(page.getByTestId('sim-run-yourself')).toBeVisible();
+  });
+
   test('loading a character on /sim carries its query onto the Top Gear tab’s href', async ({ page }) => {
     await stubFightMeta(page);
-    await page.goto(`/sim?source=fight&ref=${encodeURIComponent(FIGHT_REF)}`);
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await gotoSim(page, `/sim?source=fight&ref=${encodeURIComponent(FIGHT_REF)}`);
+    await expect(simCharacter(page)).toBeVisible();
 
     const expectedQuery = `?source=fight&ref=${encodeURIComponent(FIGHT_REF)}`;
     await expect(page.getByTestId('sim-nav-tab-gear')).toHaveAttribute('href', `/sim/gear${expectedQuery}`);
@@ -114,12 +121,11 @@ test.describe('the simulator tab strip', () => {
   // ?code= link. Since the tools island now bootstraps from ?code=, every tab including
   // Top Gear gets that link and loads the character from it.
   test('an addon-pasted character gets a working ?code= href on every tab', async ({ page }) => {
-    await page.goto('/sim');
-    // sim-one-paste lane: ColdPasteHero.svelte is /sim's own one paste surface now
-    // (SourceSwitcher's addon card is gone whenever it renders).
+    await gotoSim(page);
+    // The landing's paste Plate is /sim's one paste surface.
     await page.getByTestId('sim-cold-paste-input').fill(FURY);
     await page.getByTestId('sim-cold-paste-run').click();
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(simCharacter(page)).toBeVisible();
 
     // The fallback code needs the store's own talent index, which resolves slightly after
     // `character` itself does (bulk-store.svelte.ts's own `adopt()`, same ordering
@@ -145,9 +151,8 @@ test.describe('the simulator tab strip', () => {
 
     // Proves the Quick Sim link, once followed, genuinely restores the character -- not
     // merely that it carries a code= parameter.
-    await page.goto(quickSimHref ?? '/sim');
-    await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('paperdoll-descriptor')).toContainText('Fury Warrior');
+    await gotoSim(page, quickSimHref ?? '/sim');
+    await expect(simCharacter(page)).toContainText('Fury Warrior');
 
     // Same proof for the tools island's own `?code=` bootstrap (ToolsView.svelte's
     // `bootstrapCharacter`, `runBootstrapRestore` with `storeHandlesUrl: false`).
@@ -184,10 +189,28 @@ test.describe('the simulator tab strip at phone width', () => {
   // 390x844, the width task-1-brief.md's own acceptance criterion names.
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('scrolls sideways within itself rather than the page, and every tab clears 44x44', async ({
+  // /sim's tool tabs are the page head's TabStrip (spec 2026-11-06-sim §4.1), which wraps
+  // inside the head rather than scrolling; the tool pages keep SimTabs.astro's scrolling
+  // strip, which the tests after this one hold to its fades and containment.
+  test('/sim wraps its tabs inside the head, with no page scroll, every tab 44x44', async ({ page }) => {
+    await page.goto('/sim');
+    await assertNoHorizontalScroll(page, 390);
+    const strip = page.getByTestId('sim-nav-tabs');
+    const stripBox = await strip.boundingBox();
+    for (const tab of SIM_TABS) {
+      const box = await page.getByTestId(`sim-nav-tab-${tab.id}`).boundingBox();
+      expect(box?.height ?? 0, `${tab.id} height`).toBeGreaterThanOrEqual(44);
+      expect(box?.width ?? 0, `${tab.id} width`).toBeGreaterThanOrEqual(44);
+      expect((box?.x ?? 0) + (box?.width ?? 0), `${tab.id} inside the strip`).toBeLessThanOrEqual(
+        (stripBox?.x ?? 0) + (stripBox?.width ?? 0) + 1,
+      );
+    }
+  });
+
+  test('a tool page scrolls its strip sideways within itself rather than the page, and every tab clears 44x44', async ({
     page,
   }) => {
-    await page.goto('/sim');
+    await page.goto('/sim/gear');
     await assertNoHorizontalScroll(page, 390);
 
     for (const tab of SIM_TABS) {
@@ -226,7 +249,7 @@ test.describe('the simulator tab strip at phone width', () => {
   test('on load, the last tab is off-screen and a right-edge fade is present, with no left-edge fade', async ({
     page,
   }) => {
-    await page.goto('/sim');
+    await page.goto('/sim/gear');
 
     const lastTab = SIM_TABS[SIM_TABS.length - 1];
     const box = await page.getByTestId(`sim-nav-tab-${lastTab.id}`).boundingBox();
@@ -234,11 +257,17 @@ test.describe('the simulator tab strip at phone width', () => {
     expect((box?.x ?? 0) + (box?.width ?? 0), `${lastTab.id} clears the 390px viewport`).toBeGreaterThan(390);
 
     await expect.poll(() => fadeOpacity(page, 'end')).toBe('1');
-    expect(await fadeOpacity(page, 'start'), 'already at the start: no left fade').toBe('0');
+    // Gear is the second tab, scrolled into view on load; back at the strip's start there is no
+    // left fade.
+    await page.evaluate(() => {
+      const nav = document.querySelector('[data-testid="sim-nav-tabs"]');
+      if (nav) nav.scrollLeft = 0;
+    });
+    await expect.poll(() => fadeOpacity(page, 'start'), { message: 'at the start: no left fade' }).toBe('0');
   });
 
   test('scrolling the strip to its end removes the right fade and shows the left one', async ({ page }) => {
-    await page.goto('/sim');
+    await page.goto('/sim/gear');
     await expect.poll(() => fadeOpacity(page, 'end')).toBe('1');
 
     await page.evaluate(() => {
@@ -268,7 +297,7 @@ test.describe('the simulator tab strip at phone width', () => {
   });
 
   test('the strip contains its own overscroll rather than bouncing the page', async ({ page }) => {
-    await page.goto('/sim');
+    await page.goto('/sim/gear');
     await expect(page.getByTestId('sim-nav-tabs')).toHaveCSS('overscroll-behavior-x', 'contain');
   });
 });
