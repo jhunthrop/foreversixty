@@ -473,7 +473,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	}
 	racesByFaction := make(map[string][]string, len(factions))
 	for _, f := range factions {
-		if racesByFaction[f.name], err = legalRaces(buildDir, specInfo.ClassSlug, f.name); err != nil {
+		if racesByFaction[f.name], err = request.LegalRaces(buildDir, specInfo.ClassSlug, f.name); err != nil {
 			return err
 		}
 	}
