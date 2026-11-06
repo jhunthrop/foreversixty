@@ -1,6 +1,6 @@
 // web/tests/e2e/guild-claim.spec.ts
 import type { Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { priceFor } from '../../src/lib/billing/plan-costs';
 import { checkoutGuildCopy } from '../../src/lib/billing/checkout-guild-copy';
 import { PLANS, formatPrice, founderOpen } from '../../src/lib/billing/plans';
@@ -12,6 +12,8 @@ import { buildMe, stepGuild, subscribeView } from '../../src/test-support/subscr
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { expectTapHeight, routeMeCell } from './support/subscribe-stubs';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/devices', '**/v1/guilds/*/home'));

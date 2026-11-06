@@ -2,8 +2,10 @@
 // The bare /guild landing: the header's Guild door lands here. A lookup by name, the top
 // guilds, and a redirect to the member's own guild when the session has a verified one.
 import type { Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { choose, nativeSelect } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/*/*', '**/v1/guilds/*/home'));

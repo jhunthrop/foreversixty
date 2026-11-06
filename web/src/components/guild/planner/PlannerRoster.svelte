@@ -1,0 +1,95 @@
+<!-- web/src/components/guild/planner/PlannerRoster.svelte -->
+<!-- The planner's one Plate (web layout spec 2026-11-05 §7.2, §3A.2): every sign-up as a Row, in
+     the grouping the control bar chose. Role is the shipped Raid-Helper read (Tanks, Healers,
+     Melee, Ranged, then Late, Bench, Out); Status and Class regroup the same rows. Each group is a
+     caps label with its count over its rows, never a Section (a Plate holds no headed section).
+     After an officer's change moves a row to another group, focus follows it to its new place. -->
+<script lang="ts">
+  import { tick } from 'svelte';
+  import type { GuildRaidView, GuildSignupState } from '../../../lib/guild/api';
+  import { kindCountsRoles, kindOf } from '../../../lib/guild/raid-copy';
+  import type { OfficerLine } from '../../../lib/guild/raid-page-types';
+  import { plannerGroups, type PlannerGrouping } from '../../../lib/guild/raid-planner-view';
+  import type { RosterRow } from '../../../lib/guild/raid-roster';
+  import Plate from '../../ui/Plate.svelte';
+  import PlannerRow from './PlannerRow.svelte';
+
+  let {
+    raid,
+    grouping,
+    officer,
+    officerTools,
+    gateId,
+    closed = false,
+    busyKey = null,
+    line = null,
+    onSetState,
+  }: {
+    raid: GuildRaidView;
+    grouping: PlannerGrouping;
+    officer: boolean;
+    officerTools: boolean;
+    gateId: string;
+    /** A cancelled raid takes no sign-up changes: the controls stay, disabled. */
+    closed?: boolean;
+    busyKey?: string | null;
+    line?: OfficerLine | null;
+    onSetState: (row: RosterRow, state: GuildSignupState) => Promise<boolean>;
+  } = $props();
+
+  const groups = $derived(plannerGroups(raid, grouping));
+  const roles = $derived(kindCountsRoles(kindOf(raid)));
+  const empty = $derived(groups.every((group) => group.rows.length === 0));
+
+  async function setState(row: RosterRow, state: GuildSignupState): Promise<boolean> {
+    const saved = await onSetState(row, state);
+    if (!saved) return false;
+    await tick();
+    document
+      .querySelector<HTMLElement>(`[data-testid="raid-roster-state-${row.character_key}-${state}"]`)
+      ?.focus();
+    return true;
+  }
+</script>
+
+<div class={closed ? 'opacity-60' : undefined} data-testid="raid-roster">
+  <Plate label="Sign-ups">
+    {#if empty}
+      <p class="text-muted px-4 py-5 text-[14px]" data-testid="raid-roster-empty">
+        Nobody has signed up yet.
+      </p>
+    {:else}
+      {#each groups as group (group.id)}
+        <div class="pb-1" data-testid={`raid-roster-${group.id}`}>
+          <h3
+            class="text-label tracking-label text-muted flex items-baseline gap-2 px-4 pt-3 pb-1 font-bold uppercase"
+            data-testid={`raid-roster-${group.id}-heading`}
+          >
+            {group.label} <span class="tabular-nums">{group.rows.length}</span>
+          </h3>
+          {#if group.rows.length === 0}
+            <p class="text-muted px-4 pb-3 text-[13px]">{group.empty}</p>
+          {:else}
+            <ul>
+              {#each group.rows as row (row.character_key)}
+                <PlannerRow
+                  {row}
+                  {roles}
+                  {officer}
+                  disabled={!officerTools || closed}
+                  describedBy={officerTools ? undefined : gateId}
+                  busy={busyKey === row.character_key}
+                  refusal={line?.control === `roster:${row.character_key}` ? line.message : null}
+                  onSetState={setState}
+                />
+              {/each}
+            </ul>
+          {/if}
+        </div>
+      {/each}
+    {/if}
+  </Plate>
+  {#if line?.control === 'roster'}
+    <p class="text-wipe mt-2 text-[13px]" role="alert" data-testid="raid-roster-error">{line.message}</p>
+  {/if}
+</div>

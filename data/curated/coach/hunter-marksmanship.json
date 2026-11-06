@@ -9,21 +9,6 @@
       ],
       "talent": false,
       "verified": "1.60.1.70790/spellconst/hunter.json#3045"
-    },
-    {
-      "family": "Aimed Shot",
-      "spell_ids": [
-        19434,
-        20900,
-        20901,
-        20902,
-        20903,
-        27632,
-        1236188,
-        20904
-      ],
-      "talent": false,
-      "verified": "1.60.1.70790/spellconst/hunter.json#20904"
     }
   ],
   "auras": [

@@ -78,6 +78,16 @@ export function deps(extra: Partial<RaidPageDeps> = {}): RaidPageDeps {
     deleteMatch: () => Promise.resolve(plannedRaid()),
     putExcused: () => Promise.resolve(plannedRaid()),
     postReport: () => Promise.resolve({ posted_at: '2026-12-11T05:58:00Z' }),
+    putCompTarget: () => Promise.resolve(plannedRaid()),
+    deleteCompTarget: () => Promise.resolve(plannedRaid()),
+    pingRaid: () =>
+      Promise.resolve({
+        posted: true,
+        mentioned: 0,
+        no_discord: 0,
+        no_discord_names: [],
+        next_allowed_at: null,
+      }),
     loadZones: () => Promise.resolve(ZONES),
     isVisible: () => visibility.visible,
     now: () => new Date(Date.now()),

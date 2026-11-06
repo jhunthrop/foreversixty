@@ -1,7 +1,7 @@
 // web/tests/e2e/guild-billing-seats.spec.ts
 // Launch pricing spec section 9, guild settings #billing: case 12 (seats), 13 (transfer) and 15
 // (a read-only officer). API stubbed.
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {
   READ_ONLY_OFFICER_READ,
@@ -17,6 +17,8 @@ import {
 } from '../../src/test-support/billing-fixtures';
 import { GUILD_ID, envelope, openLive, stubCandidates } from './support/guild-billing';
 import { choose, fieldControl } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const PENDING_OFFEREE = { name: 'Mirelle', class: 'priest', offered_at: '2026-11-10T12:00:00Z' };
 const SEATED = (seats: GuildBillingSettings['seats']): GuildBillingSettings =>

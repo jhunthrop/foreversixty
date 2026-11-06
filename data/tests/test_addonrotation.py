@@ -15,6 +15,7 @@ from pipeline.addonrotation import (
     coach_persona_spell_ids,
     coach_spell_ids,
     compute_spell_icons,
+    raid_cover_spell_ids,
     rank_siblings,
 )
 
@@ -1184,3 +1185,30 @@ def test_compute_spell_icons_lets_an_engine_id_take_another_rows_icon(tmp_path):
     build_dir.mkdir(exist_ok=True)
     (build_dir / "spellranks.json").write_text(json.dumps({"classes": {}}), encoding="utf-8")
     assert 12867 in compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
+
+
+def test_raid_cover_spell_ids_reads_rows_and_provider_spells(tmp_path):
+    (tmp_path / "raid-cover.json").write_text(
+        json.dumps(
+            {
+                "entries": [
+                    {"spell_id": 10938, "providers": [{"class": "priest"}]},
+                    {"spell_id": 20355, "providers": [{"class": "paladin", "spell": 20357}]},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert raid_cover_spell_ids(tmp_path) == {10938, 20355, 20357}
+    assert raid_cover_spell_ids(tmp_path / "missing") == set()
+
+
+def test_compute_spell_icons_adds_the_raid_cover_spells(tmp_path):
+    import shutil
+
+    shutil.copy(Path("curated") / "raid-cover.json", tmp_path / "raid-cover.json")
+    build_dir = tmp_path / BUILD
+    build_dir.mkdir(exist_ok=True)
+    (build_dir / "spellranks.json").write_text(json.dumps({"classes": {}}), encoding="utf-8")
+    icons = compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
+    assert raid_cover_spell_ids(Path("curated")) <= set(icons)

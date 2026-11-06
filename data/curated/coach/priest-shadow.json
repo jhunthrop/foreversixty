@@ -66,21 +66,6 @@
     }
   ],
   "downranks": [],
-  "defensives": [
-    {
-      "family": "Desperate Prayer",
-      "spell_ids": [
-        13908,
-        19236,
-        19238,
-        19240,
-        19241,
-        19242,
-        19243
-      ],
-      "talent": false,
-      "verified": "1.60.1.70790/spellconst/priest.json#19243"
-    }
-  ],
+  "defensives": [],
   "efficiency": []
 }

@@ -149,7 +149,7 @@ def fetch(build: str, raw: Path, client: httpx.Client | None = None) -> None:
             client.close()
 
 
-def _rows(raw: Path, table: str) -> list[dict[str, str]]:
+def read_rows(raw: Path, table: str) -> list[dict[str, str]]:
     with (raw / f"{table}.csv").open(encoding="utf-8", newline="") as fh:
         return list(csv.DictReader(fh))
 
@@ -168,7 +168,7 @@ def _open_dungeon_areas(loot: dict) -> set[int]:
     }
 
 
-def _area_map(area: dict[str, str], maps: dict[int, dict[str, str]]) -> tuple[int, bool]:
+def area_map(area: dict[str, str], maps: dict[int, dict[str, str]]) -> tuple[int, bool]:
     """The instance map an area names, and whether the area lies inside it.
 
     An area inside an instance has that map as its ContinentID (The
@@ -192,13 +192,13 @@ def _wanted_maps(raw: Path, loot: dict, maps: dict[int, dict[str, str]]) -> dict
     The name is the loot source's area, an area inside the map winning over
     an entrance area (Sunken Temple over The Temple of Atal'Hakkar).
     """
-    areas = {int(a["ID"]): a for a in _rows(raw, "AreaTable")}
+    areas = {int(a["ID"]): a for a in read_rows(raw, "AreaTable")}
     named: dict[int, tuple[bool, str]] = {}
     for area_id in sorted(_open_dungeon_areas(loot)):
-        map_id, inside = _area_map(areas[area_id], maps)
+        map_id, inside = area_map(areas[area_id], maps)
         if map_id not in named or (inside and not named[map_id][0]):
             named[map_id] = (inside, areas[area_id]["AreaName_lang"])
-    lfg = {int(r["ID"]): r["Name_lang"] for r in _rows(raw, "LFGDungeons")}
+    lfg = {int(r["ID"]): r["Name_lang"] for r in read_rows(raw, "LFGDungeons")}
     for lfg_id, name in NEW_DUNGEONS.items():
         if lfg.get(lfg_id) != name:
             raise GuildEventsError(f"LFGDungeons {lfg_id} is {lfg.get(lfg_id)!r}, not {name!r}")
@@ -216,7 +216,7 @@ def _wanted_maps(raw: Path, loot: dict, maps: dict[int, dict[str, str]]) -> dict
 
 
 def _check_key(raw: Path, activity: int, key: KeyItem) -> None:
-    for lock in _rows(raw, "Lock"):
+    for lock in read_rows(raw, "Lock"):
         for i in range(8):
             if lock[f"_Index_{i}"] == str(key.item_id) and lock[f"Type_{i}"] == str(LOCK_TYPE_ITEM):
                 return
@@ -224,19 +224,21 @@ def _check_key(raw: Path, activity: int, key: KeyItem) -> None:
 
 
 def _dungeon_rows(raw: Path, build: str, loot: dict, qualities: dict[int, int]) -> list[dict]:
-    maps = {int(r["ID"]): r for r in _rows(raw, "Map")}
+    maps = {int(r["ID"]): r for r in read_rows(raw, "Map")}
     normal_cap = {
         int(r["MapID"]): int(r["MaxPlayers"])
-        for r in _rows(raw, "MapDifficulty")
+        for r in read_rows(raw, "MapDifficulty")
         if r["DifficultyID"] == str(NORMAL_DIFFICULTY)
     }
     category = next(
-        r["ID"] for r in _rows(raw, "GroupFinderCategory") if r["Name_lang"] == DUNGEONS_CATEGORY
+        r["ID"]
+        for r in read_rows(raw, "GroupFinderCategory")
+        if r["Name_lang"] == DUNGEONS_CATEGORY
     )
     wanted = _wanted_maps(raw, loot, maps)
     acts = [
         r
-        for r in _rows(raw, "GroupFinderActivity")
+        for r in read_rows(raw, "GroupFinderActivity")
         if r["GroupFinderCategoryID"] == category and int(r["MapID"]) in wanted
     ]
     per_map: dict[int, int] = {}

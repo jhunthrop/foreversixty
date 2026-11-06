@@ -24,15 +24,15 @@ This is the best Beast Mastery Hunter on Forever. Beast Mastery is the pet spec:
 - Hunter's Mark first, before the pull, so the mana is back by the time the boss is pulled.
 - Aspect of the Hawk goes up before the pull.
 - Bestial Wrath from forty on the pull with Rapid Fire and your trinkets, then again every two minutes.
-- Rapid Fire on the pull as an auto shot leaves and the shared cooldown is about to come back, and from forty with Bestial Wrath.
+- Rapid Fire from twenty-six on the pull, as an auto shot leaves. Press it as the shared cooldown is about to come back, and from forty with Bestial Wrath.
 - Aimed Shot from twenty, every time the cooldown it shares with Multi-Shot comes up. Your auto shots keep firing while you cast it.
 - Multi-Shot on its cooldown at eighteen and nineteen. From twenty it is for packs and for moving, and never under a quarter of your mana.
 - Serpent Sting when it is about to drop.
-- Arcane Shot to fill a gap, and from eighteen only when the shared cooldown is more than a global away or you are under a quarter of your mana.
-- Feign Death before you reach the tank's threat, not after the boss turns. If it says Resisted, you still have all your threat.
-- Volley is a channel, costs a lot of mana, and is worth it only on a big pack that will live through the whole channel.
-- Freezing Trap is the hunter's crowd control: lay it before the pull, and remember any damage breaks it.
-- Explosive Trap under a pack the tank is holding hits everything within ten yards, and at sixty it costs even more than Volley, so save it for the same big packs.
+- Arcane Shot to fill a gap; from eighteen, only with the shared cooldown over a global away or under a quarter mana.
+- Feign Death from thirty, before you reach the tank's threat, not after the boss turns. If it says Resisted, you still have all your threat.
+- Volley from forty is a mana-heavy channel, worth it only on a big pack that lives through it.
+- Freezing Trap from twenty is your crowd control, laid before the pull. Any damage breaks it.
+- Explosive Trap from thirty-four under a pack the tank is holding hits everything within ten yards. At sixty it costs more than Volley, so save it for the same big packs.
 - Tranquilizing Shot removes a boss's frenzy, and on a frenzying boss it is a raid job that someone is assigned to: if it is you, it comes before any damage.
 - Distracting Shot puts a big lump of threat on a loose add, enough to pull it off a healer and onto you.
 
@@ -46,7 +46,7 @@ This is the best Beast Mastery Hunter on Forever. Beast Mastery is the pet spec:
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want food (Poached Sunscale Salmon); a combat potion (Major Mana Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want food (Poached Sunscale Salmon) from thirty-five; a combat potion (Major Mana Potion) from forty-nine, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -55,7 +55,7 @@ This is the best Beast Mastery Hunter on Forever. Beast Mastery is the pet spec:
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check food from thirty-five and a combat potion from forty-nine on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

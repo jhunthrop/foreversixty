@@ -80,6 +80,14 @@ function unstubbedMessage(unstubbed: readonly string[]): string {
 
 /** A spec's explicit "this read goes unanswered here": the page is tested without it. Routed on
  *  the context, so any stub the test itself adds (page or context) still wins. */
+/** The guild Overview's own reads (web layout spec 2026-11-05 7.1): a spec that opens a guild page
+ *  and does not answer them leaves them unreachable, so the Overview draws without those modules. */
+export const GUILD_OVERVIEW_READS: readonly string[] = [
+  '**/v1/guilds/*/me/checklist*',
+  '**/v1/guilds/*/officer/actions',
+  '**/v1/guilds/*/attendance/recent*',
+];
+
 export async function apiUnreachable(page: Page, ...globs: readonly string[]): Promise<void> {
   for (const glob of globs) await page.context().route(glob, unreachable);
 }

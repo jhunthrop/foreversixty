@@ -1,5 +1,5 @@
 <!-- web/src/components/guild/RaidSignupStrip.svelte -->
-<!-- Your sign-up (spec 3.3, 4 "Page states" and "Races"): one row per character of the viewer in
+<!-- Your sign-up, an open Section on the raid planner (spec 3.3, 4 "Page states" and "Races"): one row per character of the viewer in
      this guild, the header selector's current character first. Locked puts its line above disabled
      rows; ended and cancelled replace the rows with their line (guild round 3: an ended raid draws
      no segments). The strip owns every row, so
@@ -9,6 +9,7 @@
   import { cancelledLineOf, endedLineOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import { officersSeeLine } from '../../lib/guild/raid-roster';
   import { orderedCharacters, type SignupChoice, type SignupHandler } from '../../lib/guild/signup-strip';
+  import Section from '../ui/Section.svelte';
   import SignupRow from './SignupRow.svelte';
 
   let {
@@ -59,7 +60,7 @@
 
   // The Discord post's "Add a note" button links to #signup; the strip renders after the raid
   // loads, so the browser's own jump to the hash has already happened by then.
-  let stripEl = $state<HTMLElement | null>(null);
+  let stripEl = $state<HTMLDivElement | null>(null);
   $effect(() => {
     if (stripEl !== null && typeof location !== 'undefined' && location.hash === '#signup') {
       stripEl.scrollIntoView({ block: 'start' });
@@ -67,35 +68,30 @@
   });
 </script>
 
-<section
-  id="signup"
-  bind:this={stripEl}
-  class="bg-raised border-line rounded-panel scroll-mt-24 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5"
-  aria-labelledby="raid-signup-heading"
-  data-testid="raid-signup-strip"
->
-  <h2 id="raid-signup-heading" class="section-title">{raidCopy.subheads.yourSignup}</h2>
-  {#if closedLine !== null}
-    <p class="text-muted mt-3 text-[14px]" data-testid="raid-strip-state">{closedLine}</p>
-  {:else}
-    {#if stateLine !== null}
-      <p id={stateLineId} class="text-text mt-3 text-[14px]" data-testid="raid-strip-state">{stateLine}</p>
+<div id="signup" bind:this={stripEl} class="scroll-mt-24" data-testid="raid-signup-strip">
+  <Section title={raidCopy.subheads.yourSignup} id="raid-signup">
+    {#if closedLine !== null}
+      <p class="text-muted text-[14px]" data-testid="raid-strip-state">{closedLine}</p>
+    {:else}
+      {#if stateLine !== null}
+        <p id={stateLineId} class="text-text text-[14px]" data-testid="raid-strip-state">{stateLine}</p>
+      {/if}
+      <ul>
+        {#each rows as character (character.character_key)}
+          <SignupRow
+            {character}
+            savedNote={savedNotes.get(character.character_key) ?? ''}
+            disabled={rowsDisabled}
+            {describedBy}
+            notice={notices[character.character_key] ?? null}
+            seenAs={officersSeeLine(raid, character.character_key)}
+            kind={kindOf(raid)}
+            onClearNotice={() => setNotice(character.character_key, null)}
+            onSave={(choice) => save(character.character_key, choice)}
+            onMoved={noteMoved}
+          />
+        {/each}
+      </ul>
     {/if}
-    <ul class="mt-1">
-      {#each rows as character (character.character_key)}
-        <SignupRow
-          {character}
-          savedNote={savedNotes.get(character.character_key) ?? ''}
-          disabled={rowsDisabled}
-          {describedBy}
-          notice={notices[character.character_key] ?? null}
-          seenAs={officersSeeLine(raid, character.character_key)}
-          kind={kindOf(raid)}
-          onClearNotice={() => setNotice(character.character_key, null)}
-          onSave={(choice) => save(character.character_key, choice)}
-          onMoved={noteMoved}
-        />
-      {/each}
-    </ul>
-  {/if}
-</section>
+  </Section>
+</div>

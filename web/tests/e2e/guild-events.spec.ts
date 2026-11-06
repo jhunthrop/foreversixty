@@ -4,7 +4,7 @@
 // the event page's words by kind. The API is stubbed by support/guild-raids.ts; FS_EVENT_SHOTS, a
 // directory, also saves the §10 acceptance captures there.
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { gotoHydrated } from './support/hydrated';
 import { choose } from './support/select';
 import {
@@ -17,6 +17,8 @@ import {
   stubGuildRaids,
   writesTo,
 } from './support/guild-raids';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 test.use({ timezoneId: CHICAGO });
 
@@ -137,7 +139,7 @@ test('the run page reads DUNGEON and Cancel run, its count against five', async 
   await stubGuildRaids(page, { viewer: 'officer', raids: [deadmines] });
   await page.clock.install({ time: WEEK_ONE });
   await gotoHydrated(page, raidUrl(DEADMINES_ID), 'raid-page');
-  await expect(page.getByTestId('raid-page').locator('.label').first()).toHaveText(/dungeon/i);
+  await expect(page.getByTestId('raid-kind')).toHaveText(/dungeon/i);
   await expect(page.getByTestId('raid-officer-cancel')).toHaveText('Cancel run');
   await expect(page.getByTestId('raid-count')).toContainText('2 of 5');
   await shot(page, 'run-page');

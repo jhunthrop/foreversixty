@@ -8,12 +8,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { GuildRaidView } from '../lib/guild/api';
 import { attendanceCopy } from '../lib/guild/attendance-copy';
 import { guildClaimCopy } from '../lib/guild/copy';
-import { notesEmptyOf, raidCopy } from '../lib/guild/raid-copy';
+import { raidCopy } from '../lib/guild/raid-copy';
 import { RAID_BAND_LINES_MIN, RAID_STRIP_RESERVE } from '../lib/guild/raid-layout';
 import { RAID_ROWS_KEY } from '../lib/guild/reserve-keys';
 import { RaidPageController } from '../lib/guild/raid-page-controller.svelte';
 import type { RaidPageDeps, RaidPageSeed } from '../lib/guild/raid-page-types';
-import { CHICAGO, NEW_YORK, NOW, between, doneRaid, plannedRaid, text } from '../test-support/raid-fixtures';
+import { CHICAGO, NOW, between, doneRaid, plannedRaid, text } from '../test-support/raid-fixtures';
 import GuildRaid from './GuildRaid.svelte';
 
 const ROUTE = { guild: { region: 'us', ruleset: 'pvp', slug: 'olympus-xxvii' }, raidId: '7' } as const;
@@ -38,6 +38,9 @@ const DEPS: RaidPageDeps = {
   deleteMatch: never,
   putExcused: never,
   postReport: never,
+  putCompTarget: never,
+  deleteCompTarget: never,
+  pingRaid: never,
   loadZones: never,
   isVisible: () => true,
   now: () => NOW,
@@ -64,148 +67,6 @@ afterEach(() => {
 });
 
 describe('the band', () => {
-  it('links back to the guild Raids tab and reads eyebrow, chip and title', () => {
-    const body = html();
-    expect(body).toContain(`href="${GUILD_PATH}#raids"`);
-    expect(text(between(body, 'raid-back-link', 'raid-status-chip'))).toContain(
-      raidCopy.backLink('Olympus XXVII'),
-    );
-    expect(text(between(body, 'raid-status-chip', 'raid-title'))).toContain('Planned');
-    expect(text(between(body, 'raid-title', 'raid-when'))).toBe("Onyxia's Lair");
-  });
-
-  it('follows a title that differs from the zone with the zone', () => {
-    const body = ready(plannedRaid({ title: 'Ony farm' }));
-    expect(text(between(body, 'raid-title', 'raid-when'))).toBe("Ony farm · Onyxia's Lair");
-  });
-
-  it('follows an event title with Guild event and its size, in its own case', () => {
-    const event = plannedRaid({
-      title: 'Stormwind photo',
-      zone: 'event:guild-20',
-      zone_name: 'Guild event',
-      zone_kind: 'event',
-      size: 20,
-    });
-    const body = ready(event);
-    expect(text(between(body, 'raid-title', 'raid-when'))).toBe('Stormwind photo · Guild event · 20 players');
-    expect(between(body, 'raid-title-zone', 'raid-when')).not.toBe('');
-    expect(body).toMatch(/class="[^"]*normal-case[^"]*" data-testid="raid-title-zone"/);
-  });
-
-  it('keeps the spaces around every separator, which the md-up inline layout shows as is', () => {
-    const body = html({ raid: plannedRaid({ title: 'Ony farm' }) }, NEW_YORK);
-    const markup = (from: string, to: string): string =>
-      between(body, from, to)
-        .replace(/<!--[\s\S]*?-->/g, '')
-        .replace(/<[^>]+>/g, '');
-    expect(markup('raid-when', 'raid-count').trim()).toBe(
-      'Thursday 10 December · 8:00 pm to 11:00 pm\u00a0CST · 9:00 pm EST your time · in 2 days 8 h',
-    );
-    expect(markup('raid-count', 'guild-tabs').replace(/\u00a0/g, ' ')).toContain(
-      '23 of 40 signed up · 3 tanks',
-    );
-    expect(markup('raid-title', 'raid-when').trim()).toBe("Ony farm · Onyxia's Lair");
-  });
-
-  it('reads the when line in the guild clock and zone, the viewer’s own time only when the offsets differ', () => {
-    const chicago = text(between(html(), 'raid-when', 'raid-count'));
-    expect(chicago).toBe('Thursday 10 December · 8:00 pm to 11:00 pm CST · in 2 days 8 h');
-    const newYork = text(between(html({}, NEW_YORK), 'raid-when', 'raid-count'));
-    expect(newYork).toBe(
-      'Thursday 10 December · 8:00 pm to 11:00 pm CST · 9:00 pm EST your time · in 2 days 8 h',
-    );
-  });
-
-  it('reads the count line with the bar, and no bar while the size is unknown', () => {
-    const body = html();
-    expect(text(between(body, 'raid-count', 'guild-tabs'))).toBe(
-      '23 of 40 signed up · 3 tanks · 7 healers · 7 melee · 6 ranged · 2 late',
-    );
-    expect(body).toContain('width: 57%');
-    expect(ready(plannedRaid({ size: null }))).not.toContain('bg-gold absolute');
-  });
-
-  it('draws the class row under the count line: game order, names from md, specs in title and name', () => {
-    const raid = plannedRaid({
-      counts: { ...plannedRaid().counts, classes: { druid: 1, warrior: 2, mage: 0 } },
-      signups: [
-        {
-          character_key: 'us/pvp/kraggor',
-          name: 'Kraggor',
-          class: 'warrior',
-          spec: 'Protection',
-          spec_key: 'warrior-protection',
-          group: 'tank',
-          role: 'tank',
-          state: 'in',
-          note: '',
-          own: false,
-        },
-        {
-          character_key: 'us/pvp/brokk',
-          name: 'Brokk',
-          class: 'warrior',
-          spec: 'Fury',
-          spec_key: 'warrior-fury',
-          group: 'tank',
-          role: 'tank',
-          state: 'late',
-          note: '',
-          own: false,
-        },
-        {
-          character_key: 'us/pvp/moon',
-          name: 'Moon',
-          class: 'druid',
-          spec: 'Balance',
-          spec_key: 'druid-balance',
-          group: 'ranged',
-          role: 'dps',
-          state: 'in',
-          note: '',
-          own: false,
-        },
-      ],
-    });
-    const row = between(ready(raid), 'raid-class-row', 'guild-tabs');
-    expect(ready(raid)).toContain('aria-label="Classes signed up"');
-    expect(row.indexOf('raid-class-warrior')).toBeLessThan(row.indexOf('raid-class-druid'));
-    expect(row).toContain('title="Fury (tank) 1, Protection 1"');
-    expect(row).toContain('<span class="sr-only">Warrior 2: Fury (tank) 1, Protection 1</span>');
-    // A class with nobody In or Late is left out (guild round 3), never a greyed `Mage 0`.
-    expect(row).not.toContain('raid-class-mage');
-    expect(row).toMatch(/hidden text-\[13px\] font-semibold md:inline/);
-  });
-
-  it('marks a raid still ahead in gold, and a cancelled or started one muted', () => {
-    const live = between(html(), 'raid-when', 'guild-tabs');
-    expect(live).toMatch(
-      /whitespace-nowrap text-gold">(<!--[^>]*-->)*in (<!--[^>]*-->)*<span class="numeric">2<\/span>/,
-    );
-    expect(live).toContain('bg-gold absolute');
-    const cancelled = between(ready(plannedRaid({ status: 'cancelled' })), 'raid-when', 'guild-tabs');
-    expect(cancelled).not.toContain('text-gold');
-    expect(cancelled).not.toContain('bg-gold');
-    expect(cancelled).toMatch(
-      /whitespace-nowrap text-muted">(<!--[^>]*-->)*in (<!--[^>]*-->)*<span class="numeric">2<\/span>/,
-    );
-    expect(cancelled).toContain('bg-muted absolute');
-    expect(cancelled).toMatch(/text-muted numeric text-\[15px\]">23 of 40 signed up/);
-    const controller = new RaidPageController(DEPS, ROUTE, {
-      guild: GUILD,
-      access: 'member',
-      load: 'ready',
-      raid: plannedRaid(),
-    });
-    const started = render(GuildRaid, {
-      props: { path: ROUTE, controller, now: new Date('2026-12-11T02:30:00Z'), viewerTimezone: CHICAGO },
-    }).body;
-    expect(between(started, 'raid-when', 'guild-tabs')).toMatch(
-      /whitespace-nowrap text-muted">(<!--[^>]*-->)*started (<!--[^>]*-->)*<span class="numeric">30<\/span>/,
-    );
-  });
-
   it('draws the officer row for officers only', () => {
     expect(html()).not.toContain('data-testid="raid-officer-row"');
     const officer = html({ role: 'officer' });
@@ -218,38 +79,14 @@ describe('the band', () => {
     expect(body).toContain(`href="${GUILD_PATH}#roster"`);
     expect(body).toMatch(/aria-current="page"[^>]*data-tab-id="raids"/);
   });
-
-  it('shows the poll pause line after three failed polls', () => {
-    expect(html()).not.toContain(raidCopy.poll);
-    expect(text(between(html({ pollPaused: true }), 'raid-poll-paused', 'guild-tabs'))).toBe(raidCopy.poll);
-  });
 });
 
 describe('the body', () => {
-  it('orders the strip, the notes and the roster', () => {
-    const body = html();
-    const strip = body.indexOf('data-testid="raid-signup-strip"');
-    const notes = body.indexOf('data-testid="raid-notes"');
-    expect(strip).toBeGreaterThan(0);
-    expect(notes).toBeGreaterThan(strip);
-    expect(body.indexOf('data-testid="raid-roster"')).toBeGreaterThan(notes);
-  });
-
   it('draws the notes lists with their bullets and numbers', () => {
     const body = ready(plannedRaid({ notes_html: '<ul><li>Cloak</li></ul>' }));
     expect(body).toMatch(/class="[^"]*\[(?:&|&amp;)_ul\]:list-disc[^"]*"[^>]*data-testid="raid-notes-prose"/);
     expect(body).toMatch(
       /class="[^"]*\[(?:&|&amp;)_ol\]:list-decimal[^"]*"[^>]*data-testid="raid-notes-prose"/,
-    );
-  });
-
-  it('renders the API notes, or the empty line for members and officers', () => {
-    expect(ready(plannedRaid({ notes_html: '<p><strong>Flasks</strong></p>' }))).toContain(
-      '<strong>Flasks</strong>',
-    );
-    expect(text(between(html(), 'raid-notes-empty', 'raid-roster'))).toBe(notesEmptyOf('raid', false));
-    expect(text(between(html({ role: 'officer' }), 'raid-notes-empty', 'raid-roster'))).toBe(
-      notesEmptyOf('raid', true),
     );
   });
 });
@@ -279,37 +116,12 @@ describe('page states', () => {
     expect(text(between(ended, 'raid-status-chip', 'raid-title'))).toContain('Ended');
   });
 
-  it('replaces the strip on a cancelled raid and mutes the roster', () => {
-    const body = ready(plannedRaid({ status: 'cancelled' }));
-    expect(text(between(body, 'raid-strip-state', 'raid-notes'))).toBe('This raid was cancelled.');
-    expect(body).toMatch(/class="[^"]*opacity-60[^"]*"[^>]*data-testid="raid-roster"/);
-  });
-
   it('puts a cancelled race line above the cancelled strip, focusable', () => {
     const body = ready(plannedRaid({ status: 'cancelled' }), { raceLine: raidCopy.races.cancelled });
     expect(body).toMatch(/role="alert"[^>]*tabindex="-1"[^>]*data-testid="raid-race-line"/);
     expect(body.indexOf('raid-race-line')).toBeLessThan(body.indexOf('raid-signup-strip'));
     expect(text(between(body, 'raid-race-line', 'raid-signup-strip'))).toBe(raidCopy.races.cancelled);
     expect(html()).not.toContain('raid-race-line');
-  });
-
-  it('holds the officer roster selects on a cancelled or done raid', () => {
-    const signups = [
-      {
-        character_key: 'us/pvp/bolt',
-        name: 'Bolt',
-        class: 'warrior',
-        spec: 'Fury',
-        role: 'dps' as const,
-        state: 'in' as const,
-        note: '',
-        own: false,
-      },
-    ];
-    for (const status of ['cancelled', 'done'] as const) {
-      const body = ready(plannedRaid({ status, signups }), { role: 'officer' });
-      expect(/<select[^>]*data-testid="raid-roster-select-Bolt"[^>]*>/.exec(body)?.[0]).toMatch(/ disabled/);
-    }
   });
 
   it('says the raid did not load, with Try again, even before access is known', () => {

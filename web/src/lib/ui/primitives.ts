@@ -32,6 +32,12 @@ export function isClassSlug(value: string): value is ClassSlug {
   return CLASS_SLUGS.has(value);
 }
 
+/** A row or title in a character's class colour; an unknown class reads the strong colour. */
+export function classTone(classSlug: string): TitleTone {
+  const slug = classSlug.toLowerCase();
+  return isClassSlug(slug) ? { classSlug: slug } : 'strong';
+}
+
 /** The CSS colour a title tone paints with, always a token. */
 export function titleColor(tone: TitleTone): string {
   if (tone === 'strong') return 'var(--color-strong)';

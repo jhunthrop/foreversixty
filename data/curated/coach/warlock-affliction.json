@@ -45,22 +45,6 @@
       "kind": "dot",
       "talent": true,
       "verified": "1.60.1.70790/spellconst/warlock.json#18881"
-    },
-    {
-      "spell_id": 11668,
-      "spell_ids": [
-        348,
-        707,
-        1094,
-        2941,
-        11665,
-        11667,
-        25309,
-        11668
-      ],
-      "name": "Immolate",
-      "kind": "dot",
-      "verified": "1.60.1.70790/spellconst/warlock.json#11668"
     }
   ],
   "downranks": [],

@@ -37,6 +37,7 @@ from pipeline.classic_sources import (
     quest_factions_from_classic_sources,
     quest_profession_from_classic_sources,
     quest_turn_in_items_from_classic_sources,
+    quest_zones_from_classic_sources,
 )
 from pipeline.classicdb_crafted import ClassicDbCraftedRecipe
 from pipeline.csvio import populated
@@ -1190,6 +1191,13 @@ def build_loot(
     # neither the fork nor wowhead publishes either fact today).
     quest_classes = quest_classes_from_classic_sources(classic_sources or {})
     quest_professions = quest_profession_from_classic_sources(classic_sources or {})
+    # 2026-11-05: the quest's own zone (classic-db `ZoneOrSort`), kept only
+    # when zones.json names it, so the page can say "Quest · Zone · level N".
+    quest_zones = {
+        quest_id: zone_id
+        for quest_id, zone_id in quest_zones_from_classic_sources(classic_sources or {}).items()
+        if zone_id in zone_names
+    }
     quest_detail = {
         item_id: [
             entry.model_copy(
@@ -1209,6 +1217,8 @@ def build_loot(
                     classes=quest_classes.get(entry.quest_id),
                     profession=(quest_professions.get(entry.quest_id) or (None, None))[0],
                     skill=(quest_professions.get(entry.quest_id) or (None, None))[1],
+                    zone_id=quest_zones.get(entry.quest_id),
+                    zone=zone_names.get(quest_zones.get(entry.quest_id, -1)),
                 )
             )
             for entry in entries

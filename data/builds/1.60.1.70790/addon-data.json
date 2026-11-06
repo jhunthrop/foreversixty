@@ -10502,7 +10502,7 @@
           {
             "spell_id": 14260,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           }
@@ -10521,7 +10521,7 @@
           {
             "spell_id": 14260,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10547,7 +10547,7 @@
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10587,7 +10587,7 @@
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10627,7 +10627,7 @@
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10667,7 +10667,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10707,7 +10707,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "dwarf": 14261,
@@ -10756,7 +10756,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "dwarf": 14261,
@@ -10805,7 +10805,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "dwarf": 14261,
@@ -10854,7 +10854,7 @@
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10894,7 +10894,7 @@
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -10948,7 +10948,7 @@
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11009,7 +11009,7 @@
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11070,7 +11070,7 @@
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11131,7 +11131,7 @@
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11192,7 +11192,7 @@
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11253,7 +11253,7 @@
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11314,7 +11314,7 @@
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11375,7 +11375,7 @@
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "orc": 14263,
@@ -11441,7 +11441,7 @@
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "orc": 14263,
@@ -11506,7 +11506,7 @@
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11567,7 +11567,7 @@
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11628,7 +11628,7 @@
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11689,7 +11689,7 @@
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11750,7 +11750,7 @@
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29 and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -13699,7 +13699,7 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13720,7 +13720,7 @@
           {
             "spell_id": 143,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13732,7 +13732,7 @@
           {
             "spell_id": 2136,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13753,7 +13753,7 @@
           {
             "spell_id": 145,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13765,7 +13765,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13786,7 +13786,7 @@
           {
             "spell_id": 145,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13798,7 +13798,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13819,7 +13819,7 @@
           {
             "spell_id": 145,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13831,7 +13831,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13852,7 +13852,7 @@
           {
             "spell_id": 3140,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13878,7 +13878,7 @@
           {
             "spell_id": 2137,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13899,7 +13899,7 @@
           {
             "spell_id": 3140,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -13932,7 +13932,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -13967,7 +13967,7 @@
           {
             "spell_id": 3140,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14000,7 +14000,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14035,7 +14035,7 @@
           {
             "spell_id": 8400,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14068,7 +14068,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14103,7 +14103,7 @@
           {
             "spell_id": 8400,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14136,7 +14136,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14171,7 +14171,7 @@
           {
             "spell_id": 8401,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14204,7 +14204,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14239,7 +14239,7 @@
           {
             "spell_id": 8401,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14272,7 +14272,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14307,7 +14307,7 @@
           {
             "spell_id": 8402,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14340,7 +14340,7 @@
           {
             "spell_id": 2138,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14375,7 +14375,7 @@
           {
             "spell_id": 8402,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14415,7 +14415,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14450,7 +14450,7 @@
           {
             "spell_id": 8402,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14490,7 +14490,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14525,7 +14525,7 @@
           {
             "spell_id": 10148,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14565,7 +14565,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14600,7 +14600,7 @@
           {
             "spell_id": 10148,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14640,7 +14640,7 @@
           {
             "spell_id": 8412,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14675,7 +14675,7 @@
           {
             "spell_id": 10149,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14715,7 +14715,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14750,7 +14750,7 @@
           {
             "spell_id": 10149,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14790,7 +14790,7 @@
           {
             "spell_id": 10197,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14825,7 +14825,7 @@
           {
             "spell_id": 10149,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14865,7 +14865,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14900,7 +14900,7 @@
           {
             "spell_id": 10150,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -14940,7 +14940,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -14975,7 +14975,7 @@
           {
             "spell_id": 10150,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -15015,7 +15015,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15057,7 +15057,7 @@
           {
             "spell_id": 10150,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -15097,7 +15097,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15139,7 +15139,7 @@
           {
             "spell_id": 10150,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -15179,7 +15179,7 @@
           {
             "spell_id": 10199,
             "name": "Fire Blast",
-            "condition": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack.",
+            "condition": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -15221,7 +15221,7 @@
           {
             "spell_id": 10151,
             "name": "Fireball",
-            "condition": "Below 30, Fireball is the filler.",
+            "condition": "Until you have Heating Up, Fireball is the filler.",
             "icon": "spell_fire_flamebolt",
             "race_spell_ids": {}
           }
@@ -16009,7 +16009,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16028,7 +16028,7 @@
           {
             "spell_id": 647,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16047,7 +16047,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16066,7 +16066,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16134,7 +16134,7 @@
           {
             "spell_id": 635,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16209,7 +16209,7 @@
           {
             "spell_id": 639,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16284,7 +16284,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16359,7 +16359,7 @@
           {
             "spell_id": 1042,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16476,7 +16476,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16593,7 +16593,7 @@
           {
             "spell_id": 1026,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16710,7 +16710,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16827,7 +16827,7 @@
           {
             "spell_id": 3472,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -16944,7 +16944,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17061,7 +17061,7 @@
           {
             "spell_id": 1026,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17178,7 +17178,7 @@
           {
             "spell_id": 10328,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17295,7 +17295,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17412,7 +17412,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17529,7 +17529,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -17646,7 +17646,7 @@
           {
             "spell_id": 10329,
             "name": "Holy Light",
-            "condition": "On the tank below 40%, right behind Divine Favor.",
+            "condition": "On the tank below 40%, right behind Divine Favor once you have it at 21.",
             "icon": "spell_holy_holybolt",
             "race_spell_ids": {}
           },
@@ -26978,7 +26978,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27256,7 +27256,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27534,7 +27534,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -27812,7 +27812,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28097,7 +28097,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28382,7 +28382,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28660,7 +28660,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -28938,7 +28938,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -29216,7 +29216,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -29494,7 +29494,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -29772,7 +29772,7 @@
           {
             "spell_id": 2060,
             "name": "Greater Heal",
-            "condition": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60.",
+            "condition": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60.",
             "icon": "spell_holy_greaterheal",
             "race_spell_ids": {}
           },
@@ -39448,7 +39448,7 @@
           {
             "spell_id": 1106,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -39516,7 +39516,7 @@
           {
             "spell_id": 7641,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -39584,7 +39584,7 @@
           {
             "spell_id": 7641,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -39652,7 +39652,7 @@
           {
             "spell_id": 7641,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -39727,7 +39727,7 @@
           {
             "spell_id": 11659,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -39802,7 +39802,7 @@
           {
             "spell_id": 11659,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -39877,7 +39877,7 @@
           {
             "spell_id": 11659,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -39952,7 +39952,7 @@
           {
             "spell_id": 11659,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -40027,7 +40027,7 @@
           {
             "spell_id": 11660,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -40102,7 +40102,7 @@
           {
             "spell_id": 11660,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -40177,7 +40177,7 @@
           {
             "spell_id": 11660,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -40252,7 +40252,7 @@
           {
             "spell_id": 11660,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -40334,7 +40334,7 @@
           {
             "spell_id": 11661,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt the moment Nightfall gives you a Shadow Trance, once your current Wrack ends and ahead of the next.",
+            "condition": "Raid build, from 34: Shadow Bolt the moment Nightfall gives you a Shadow Trance, ahead of your next Wrack from 40.",
             "icon": "spell_shadow_shadowbolt",
             "race_spell_ids": {}
           },
@@ -41173,7 +41173,7 @@
           {
             "spell_id": 6353,
             "name": "Soul Fire",
-            "condition": "Soul Fire every 6 seconds while Decimation is up, except in the raid build at 60.",
+            "condition": "Soul Fire every 6 seconds while Decimation is up; the raid build casts it only from rank 2 at 56 to 59.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
@@ -41227,7 +41227,7 @@
           {
             "spell_id": 6353,
             "name": "Soul Fire",
-            "condition": "Soul Fire every 6 seconds while Decimation is up, except in the raid build at 60.",
+            "condition": "Soul Fire every 6 seconds while Decimation is up; the raid build casts it only from rank 2 at 56 to 59.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
@@ -41281,7 +41281,7 @@
           {
             "spell_id": 6353,
             "name": "Soul Fire",
-            "condition": "Soul Fire every 6 seconds while Decimation is up, except in the raid build at 60.",
+            "condition": "Soul Fire every 6 seconds while Decimation is up; the raid build casts it only from rank 2 at 56 to 59.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
@@ -41335,7 +41335,7 @@
           {
             "spell_id": 6353,
             "name": "Soul Fire",
-            "condition": "Soul Fire every 6 seconds while Decimation is up, except in the raid build at 60.",
+            "condition": "Soul Fire every 6 seconds while Decimation is up; the raid build casts it only from rank 2 at 56 to 59.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
@@ -41389,7 +41389,7 @@
           {
             "spell_id": 17924,
             "name": "Soul Fire",
-            "condition": "Soul Fire every 6 seconds while Decimation is up, except in the raid build at 60.",
+            "condition": "Soul Fire every 6 seconds while Decimation is up; the raid build casts it only from rank 2 at 56 to 59.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
@@ -41443,7 +41443,7 @@
           {
             "spell_id": 17924,
             "name": "Soul Fire",
-            "condition": "Soul Fire every 6 seconds while Decimation is up, except in the raid build at 60.",
+            "condition": "Soul Fire every 6 seconds while Decimation is up; the raid build casts it only from rank 2 at 56 to 59.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
@@ -41497,7 +41497,7 @@
           {
             "spell_id": 17924,
             "name": "Soul Fire",
-            "condition": "Soul Fire every 6 seconds while Decimation is up, except in the raid build at 60.",
+            "condition": "Soul Fire every 6 seconds while Decimation is up; the raid build casts it only from rank 2 at 56 to 59.",
             "icon": "spell_fire_fireball02",
             "race_spell_ids": {}
           },
@@ -44812,7 +44812,7 @@
           {
             "spell_id": 284,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44845,7 +44845,7 @@
           {
             "spell_id": 284,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44878,7 +44878,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44911,7 +44911,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44944,7 +44944,7 @@
           {
             "spell_id": 285,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -44984,7 +44984,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45024,7 +45024,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45071,7 +45071,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45125,7 +45125,7 @@
           {
             "spell_id": 1608,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45179,7 +45179,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45240,7 +45240,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45301,7 +45301,7 @@
           {
             "spell_id": 11564,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45369,7 +45369,7 @@
           {
             "spell_id": 11565,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45437,7 +45437,7 @@
           {
             "spell_id": 11565,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45505,7 +45505,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45580,7 +45580,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45655,7 +45655,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45730,7 +45730,7 @@
           {
             "spell_id": 11566,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45805,7 +45805,7 @@
           {
             "spell_id": 11567,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }
@@ -45880,7 +45880,7 @@
           {
             "spell_id": 11567,
             "name": "Heroic Strike",
-            "condition": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it.",
+            "condition": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it.",
             "icon": "ability_rogue_ambush",
             "race_spell_ids": {}
           }

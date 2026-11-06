@@ -93,6 +93,19 @@ export function guildFollowHref(input: GuildFollowInput): string | null {
 }
 
 /**
+ * Where the bare `/guild` landing sends a signed-in player on load (owner decision D17, web layout
+ * spec 7.1): the current character's guild; else the account's only guild; else null, and the
+ * landing stays, with "Your guilds" leading when the account is in several.
+ */
+export function landingGuildHref(current: { href: string } | null, me: Me | null): string | null {
+  if (current !== null) return current.href;
+  const guilds = me?.guilds ?? [];
+  if (guilds.length !== 1) return null;
+  const only = guilds[0];
+  return only === undefined ? null : guildHref(only.region, only.ruleset, only.name);
+}
+
+/**
  * Where a character page goes when the current character changes, or null to stay: only the
  * previous character's own page moves, to the new character's page with the same section.
  */
