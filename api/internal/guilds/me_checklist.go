@@ -36,13 +36,15 @@ const (
 
 // Why a check is not tracked, for the web's words.
 const (
-	reasonNoLevel          = "no_level"
-	reasonKeysNotInExport  = "keys_not_in_export"
-	reasonGearNotShared    = "gear_not_shared"
-	reasonNoBisList        = "no_bis_list"
-	reasonLeveling         = "leveling"
-	reasonNeedsConsumables = "needs_named_consumables"
-	reasonNeedsResistance  = "needs_resistance_totals"
+	reasonNoLevel           = "no_level"
+	reasonKeysNotInExport   = "keys_not_in_export"
+	reasonGearNotShared     = "gear_not_shared"
+	reasonNoBisList         = "no_bis_list"
+	reasonLeveling          = "leveling"
+	reasonNeedsConsumables  = "needs_named_consumables"
+	reasonNeedsResistance   = "needs_resistance_totals"
+	reasonQuestsNotInExport = "quests_not_in_export"
+	reasonBagsNotShared     = "bags_not_shared"
 )
 
 // ChecklistItem is one check. The detail fields carry only what that key reads.
@@ -54,8 +56,10 @@ type ChecklistItem struct {
 	// level
 	Level         *int `json:"level,omitempty"`
 	RequiredLevel *int `json:"required_level,omitempty"`
-	// attunement
-	KeyItem *KeyItem `json:"key_item,omitempty"`
+	// attunement: the zone's key, or the item its quest chain hands out; AttunedBy says
+	// how an ok reading was read ("item" or "quest").
+	KeyItem   *KeyItem `json:"key_item,omitempty"`
+	AttunedBy string   `json:"attuned_by,omitempty"`
 	// gear_gap, in the Readiness board's units
 	Upgrades *int     `json:"upgrades,omitempty"`
 	GainDps  *float64 `json:"gain_dps,omitempty"`
@@ -63,6 +67,13 @@ type ChecklistItem struct {
 	Slots    []string `json:"slots,omitempty"`
 	// enchants
 	MissingSlots []string `json:"missing_slots,omitempty"`
+	// flask_food: the counted stacks in the bags, and what the minimum lacks
+	// (flask_or_elixir, food).
+	Supplies []SupplyStack `json:"supplies,omitempty"`
+	Missing  []string      `json:"missing,omitempty"`
+	// fire_resistance: the character's fire resistance total. No target: the number is the
+	// reading.
+	Resistance *int `json:"resistance,omitempty"`
 }
 
 // ChecklistCharacter is the character the checklist is for.
@@ -103,12 +114,15 @@ type checklistInput struct {
 // buildChecklist is the checklist's items and verdict; pure.
 func buildChecklist(in checklistInput) ([]ChecklistItem, string) {
 	items := []ChecklistItem{levelCheck(in)}
-	if in.zone != nil && in.zone.KeyItem != nil {
-		items = append(items, attunementCheck(*in.zone.KeyItem, in.row))
+	if in.zone != nil {
+		if r := attunementOf(*in.zone, in.row); r.State != "" {
+			items = append(items, attunementItem(*in.zone, r))
+		}
 	}
-	items = append(items, gearGapCheck(in), enchantsCheck(in),
-		ChecklistItem{Key: CheckFlaskFood, State: CheckNotTracked, Reason: reasonNeedsConsumables},
-		ChecklistItem{Key: CheckFireResistance, State: CheckNotTracked, Reason: reasonNeedsResistance})
+	items = append(items, gearGapCheck(in), enchantsCheck(in), flaskFoodCheck(in))
+	if in.zone != nil && fireResistanceZones[in.zone.Key] {
+		items = append(items, fireResistanceCheck(in.row))
+	}
 	return items, checklistVerdict(items)
 }
 
@@ -155,38 +169,21 @@ func levelCheck(in checklistInput) ChecklistItem {
 	return it
 }
 
-// attunementCheck is ok when the key is in the export's bags or worn. The export lists only
-// gear in bags (Export.lua isEquippable) and never the keyring, so a key that is not there is
-// not tracked rather than missing: absence proves nothing.
-func attunementCheck(key KeyItem, row RosterRow) ChecklistItem {
-	it := ChecklistItem{Key: CheckAttunement, KeyItem: &key}
-	if attuned := attunedOf(key, row); attuned != nil {
-		it.State = CheckOK
-		return it
+// attunementItem is the zone's attunement reading (raid_prep.go attunementOf) as a checklist
+// item, with the key or the chain's item it names.
+func attunementItem(zone Zone, r attunementReading) ChecklistItem {
+	it := ChecklistItem{Key: CheckAttunement, State: r.State, Reason: r.Reason, KeyItem: zone.KeyItem}
+	if a, ok := attunementFor(zone); ok && zone.KeyItem == nil {
+		item := a.Item
+		it.KeyItem = &item
 	}
-	it.State, it.Reason = CheckNotTracked, reasonKeysNotInExport
+	if r.State == CheckOK {
+		it.AttunedBy = "item"
+		if r.ByQuest {
+			it.AttunedBy = "quest"
+		}
+	}
 	return it
-}
-
-// attunedOf is true when the key is in the row's bags (at bags consent) or worn (at gear
-// consent); nil otherwise, never false (see attunementCheck).
-func attunedOf(key KeyItem, row RosterRow) *bool {
-	yes := true
-	if row.Consent == "gear_bags" {
-		for _, id := range row.bags {
-			if id == key.ID {
-				return &yes
-			}
-		}
-	}
-	if hasGearConsent(row.Consent) {
-		for _, id := range row.gear {
-			if id == key.ID {
-				return &yes
-			}
-		}
-	}
-	return nil
 }
 
 func gearGapCheck(in checklistInput) ChecklistItem {
@@ -252,9 +249,9 @@ func enchantsCheck(in checklistInput) ChecklistItem {
 	return it
 }
 
-// readinessKeyItem is the key the board's raid asks for: the filtered raid's zone, else the
-// guild's next raid's; nil when it needs none or none is planned.
-func (s *Store) readinessKeyItem(ctx context.Context, guildID int64, raid *Raid) (*KeyItem, error) {
+// readinessZone is the zone of the board's raid: the filtered raid's, else the guild's next
+// raid's; nil when none is planned.
+func (s *Store) readinessZone(ctx context.Context, guildID int64, raid *Raid) (*Zone, error) {
 	if raid == nil {
 		next, ok, err := s.NextRaid(ctx, guildID, time.Now())
 		if err != nil || !ok {
@@ -262,5 +259,6 @@ func (s *Store) readinessKeyItem(ctx context.Context, guildID int64, raid *Raid)
 		}
 		raid = &next
 	}
-	return zoneOf(raid.Zone).KeyItem, nil
+	zone := zoneOf(raid.Zone)
+	return &zone, nil
 }
