@@ -73,9 +73,11 @@ func TestProtectionConsecrationSpendsWhatTheNetRateCovers(t *testing.T) {
 	}
 }
 
-// Re-judged on the net-rate line (sim-accuracy round 24): rank 1 at 30 and 31,
-// 40 to 48 and 50 to 57; rank 3 at 49; rank 4 at 58 and 59; rank 1 at bare 60;
-// the trained top rank everywhere else (rank 2 at 32 to 39).
+// Re-judged on the net-rate line (sim-accuracy round 24): rank 1 at 30 to 33,
+// 40 to 48 and 50 to 57; rank 1 at bare 60; the trained top rank everywhere
+// else (rank 2 at 34 to 39, rank 3 at 49, rank 4 at 58 and 59, which need no
+// row). The second pass, on the talents at each level, moved 32 and 33 to
+// rank 1 (+0.35 to 0.5%; an Undead ties at 32).
 func TestProtectionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	for _, c := range []struct {
 		preset string
@@ -84,7 +86,9 @@ func TestProtectionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	}{
 		{BarePreset, 30, 26573},
 		{BarePreset, 31, 26573},
-		{BarePreset, 32, 20116},
+		{BarePreset, 32, 26573},
+		{BarePreset, 33, 26573},
+		{BarePreset, 34, 20116},
 		{BarePreset, 48, 26573},
 		{BarePreset, 49, 20922},
 		{BarePreset, 57, 26573},
