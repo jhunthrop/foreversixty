@@ -19,7 +19,13 @@
   import BisWeights from './BisWeights.svelte';
   import { readBisPageData } from '../../lib/bis/page-registry';
   import { bandModelKey } from '../../lib/bis/model-key';
-  import { isDefaultState, parseState, stateSearch, withChange, type BisPageState } from '../../lib/bis/page-state';
+  import {
+    isDefaultState,
+    parseState,
+    stateSearch,
+    withChange,
+    type BisPageState,
+  } from '../../lib/bis/page-state';
   import { choiceWords, defaultRuleLine, setFigureFor, sourceChoiceFor } from '../../lib/bis/source-choice';
   import {
     changedCount,
@@ -123,7 +129,10 @@
         label: 'Level',
         param: 'band',
         kind: 'segmented',
-        options: data.bands.map((band) => ({ value: String(band), label: band >= 60 ? '60' : `${band}-${band + 9}` })),
+        options: data.bands.map((band) => ({
+          value: String(band),
+          label: band >= 60 ? '60' : `${band}-${band + 9}`,
+        })),
         value: String(state.band),
       },
       {
@@ -160,7 +169,8 @@
   function apply(next: BisPageState, push = true): void {
     if (data.models[bandModelKey(next.faction, next.band, next.preset)] === undefined) return;
     if (next.band !== state.band || next.faction !== state.faction) selected = null;
-    if (next.band !== state.band || next.faction !== state.faction || next.preset !== state.preset) character = undefined;
+    if (next.band !== state.band || next.faction !== state.faction || next.preset !== state.preset)
+      character = undefined;
     state = next;
     if (!push) return;
     const url = `${window.location.pathname}${stateSearch(next, context)}`;
@@ -248,12 +258,20 @@
         {/snippet}
         {#snippet meta()}<span data-testid="bis-page-sub">Best in slot</span>{/snippet}
         {#snippet answer()}
-          <div class="bis-pending-hide"><BisAnswer answer={model.answer} {figure} unit={model.unit} {raceNote} /></div>
+          <div class="bis-pending-hide">
+            <BisAnswer answer={model.answer} {figure} unit={model.unit} {raceNote} />
+          </div>
         {/snippet}
       </PageHeader>
     {/snippet}
     {#snippet bar()}
-      <ControlBar groups={groupsBar} label="Best in slot controls" labelsFrom={1920} onchange={onControl} testid="bis-controls">
+      <ControlBar
+        groups={groupsBar}
+        label="Best in slot controls"
+        labelsFrom={1920}
+        onchange={onControl}
+        testid="bis-controls"
+      >
         {#snippet tail()}
           <BisSources on={state.sources} {counts} band={state.band} onchange={onSources} />
         {/snippet}
@@ -284,7 +302,9 @@
       </div>
       {#if ruleLine}<p class="bis-note" data-testid="bis-default-rule">{ruleLine}</p>{/if}
       {#if model.weights.hitCap}
-        <p class="bis-note" title={model.weights.hitCap.title} data-testid="bis-hit-cap">{model.weights.hitCap.text}</p>
+        <p class="bis-note" title={model.weights.hitCap.title} data-testid="bis-hit-cap">
+          {model.weights.hitCap.text}
+        </p>
       {/if}
       {#if model.weaponNote}<p class="bis-note" data-testid="bis-weapon-note">{model.weaponNote}</p>{/if}
 
@@ -294,7 +314,7 @@
           mode={character ? 'compare' : 'pick'}
           build={data.build}
           bind:selected
-          groups={groups}
+          {groups}
           label={`${specName} ${className} best in slot, ${model.label}`}
           testid="bis-doll"
         >
@@ -318,7 +338,8 @@
     </div>
 
     <p class="bis-guide-line" data-testid="bis-guide-line">
-      Talents, rotation and stat priority for this spec: <a href={guideHref}>{specName} {className} guide ›</a>
+      Talents, rotation and stat priority for this spec: <a href={guideHref}>{specName} {className} guide ›</a
+      >
     </p>
   </Page>
 </div>

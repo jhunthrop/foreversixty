@@ -21,9 +21,10 @@ export const FOOTER_DISCORD_BUTTON: FooterLink = {
   href: communityLinks.discordInvite,
 };
 
-export const FOOTER_CONTRIBUTE_BUTTON: FooterLink = {
+// Bugs are reported in the Discord's #bug-reports forum; the invite lands a newcomer there.
+export const FOOTER_REPORT_BUG_BUTTON: FooterLink = {
   label: 'Report a bug',
-  href: `${communityLinks.githubRepo}/issues`,
+  href: communityLinks.discordInvite,
 };
 
 export const FOOTER_COLUMNS: readonly FooterColumn[] = [

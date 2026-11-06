@@ -29,11 +29,6 @@
   ],
   "sources": [
     {
-      "label": "wowsims-forever feral_druid p1 (Shred-only) priority list",
-      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/feral_druid/apls/p1.apl.json",
-      "kind": "community"
-    },
-    {
       "label": "Warcraft Tavern: WoW Classic Feral Druid DPS rotation",
       "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-feral-druid-dps-rotations-cooldowns/",
       "kind": "community"

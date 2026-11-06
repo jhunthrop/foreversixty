@@ -14,12 +14,16 @@
 </script>
 
 <Section title="What to stack" {testid}>
-  {#if weights.sentence}<p class="bis-weights-sentence" data-testid="bis-weights-sentence">{weights.sentence}</p>{/if}
+  {#if weights.sentence}<p class="bis-weights-sentence" data-testid="bis-weights-sentence">
+      {weights.sentence}
+    </p>{/if}
   {#if weights.rows.length > 0}
     <details class="bis-weights-fold" data-testid="bis-weights-fold">
       <summary>Show the weights and their error</summary>
       <p class="bis-weights-caption text-muted">
-        {lead ? `Normalized to ${lead.label} = 1.00. ` : ''}{weights.note}{weights.haste ? ` ${weights.haste}` : ''}
+        {lead ? `Normalized to ${lead.label} = 1.00. ` : ''}{weights.note}{weights.haste
+          ? ` ${weights.haste}`
+          : ''}
       </p>
       <div class="bis-weights-table" role="table" aria-label="Stat weights">
         <div class="bis-weights-row bis-weights-header" role="row">
@@ -45,7 +49,9 @@
             {#if row.significant}
               <span role="cell" class="num">{row.scaleFactor.toFixed(2)}</span>
               <span role="cell" class="num muted"
-                >{row.dpsPerPoint !== undefined ? `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit}` : ''}</span
+                >{row.dpsPerPoint !== undefined
+                  ? `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit}`
+                  : ''}</span
               >
               <span role="cell" class="num muted">{`±${row.scaleError.toFixed(2)}`}</span>
             {:else}
@@ -57,7 +63,11 @@
         {/each}
       </div>
       {#if weights.expertiseCap}
-        <p class="text-muted bis-weights-line" title={weights.expertiseCap.title} data-testid={`${testid}-expertise-cap`}>
+        <p
+          class="text-muted bis-weights-line"
+          title={weights.expertiseCap.title}
+          data-testid={`${testid}-expertise-cap`}
+        >
           {weights.expertiseCap.text}
         </p>
       {/if}

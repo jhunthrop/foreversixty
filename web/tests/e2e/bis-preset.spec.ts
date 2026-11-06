@@ -17,8 +17,9 @@ const option = (page: Page, preset: 'raid' | 'bare') => page.getByTestId(`contro
 const answer = (page: Page) => page.getByTestId('bis-this-set');
 const root = (page: Page) => page.getByTestId('bis-page');
 
-
-test('level 60 opens on the raid-ready preset with a trust line naming what it includes', async ({ page }) => {
+test('level 60 opens on the raid-ready preset with a trust line naming what it includes', async ({
+  page,
+}) => {
   await open(page, PRESET_PAGE);
   await expect(option(page, 'raid')).toHaveAttribute('aria-checked', 'true');
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'false');
@@ -32,7 +33,9 @@ test('level 60 opens on the raid-ready preset with a trust line naming what it i
   );
 });
 
-test('both presets state what the sim fights when the run is published, and never invent it', async ({ page }) => {
+test('both presets state what the sim fights when the run is published, and never invent it', async ({
+  page,
+}) => {
   const run = readBisFile(SPEC).run;
   await open(page, PRESET_PAGE);
   const trust = page.getByTestId('bis-trust-line');

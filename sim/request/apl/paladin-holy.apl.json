@@ -49,7 +49,7 @@
           }
         }
       },
-      "notes": "Keep it sworn on the tank. It adds a flat amount to every Holy Light, Flash of Light and Holy Shock the tank gets from you, as long as the rank is close to your level, and it lasts 5 minutes, so renew it only in a long fight."
+      "notes": "Keep it sworn on the tank. It adds a flat amount to every Holy Light and Flash of Light the tank gets from you, and to Holy Shock once you have it, as long as the rank is close to your level, and it lasts 5 minutes, so renew it only in a long fight."
     },
     {
       "action": {

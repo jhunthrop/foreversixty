@@ -26,7 +26,11 @@ export function bisContext(
 }
 
 /** The presets a faction and band publish, raid-ready first. */
-export function presetsOffered(data: Pick<BisPageData, 'models'>, faction: Faction, band: number): BisPresetId[] {
+export function presetsOffered(
+  data: Pick<BisPageData, 'models'>,
+  faction: Faction,
+  band: number,
+): BisPresetId[] {
   return PRESETS.filter((preset) => data.models[bandModelKey(faction, band, preset)] !== undefined);
 }
 
