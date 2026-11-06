@@ -234,8 +234,12 @@ func (s *Service) raidViews(ctx context.Context, guildID, viewerID int64, raids 
 	return out, nil
 }
 
-// raidViewOf is raidViews for one raid.
+// raidViewOf is raidViews for one raid. A done raid's log is digested first when it has fights
+// not yet read (fillPullDigests), so the report's pulls carry their death causes.
 func (s *Service) raidViewOf(ctx context.Context, guildID, viewerID int64, raid Raid) (RaidView, error) {
+	if raid.Status == RaidDone && raid.ReportID != nil {
+		s.fillPullDigests(ctx, *raid.ReportID)
+	}
 	views, err := s.raidViews(ctx, guildID, viewerID, []Raid{raid})
 	if err != nil {
 		return RaidView{}, err
