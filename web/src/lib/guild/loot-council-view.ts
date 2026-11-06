@@ -1,7 +1,8 @@
 // web/src/lib/guild/loot-council-view.ts
 // The loot council's words (web layout spec 2026-11-05 §7.2): "This dropped. Who gets it, and
-// why?" A night's drops are what the council awarded, voted on or flagged (nothing records what
-// dropped); the current night also offers the whole loot table (GET .../loot) to open a drop.
+// why?" A night's drops are what a raider's addon recorded dropping, plus what the council awarded,
+// voted on or flagged; the current night also offers the whole loot table (GET .../loot) to open a
+// drop on a night no addon recorded.
 // This module only formats what the API sent; it never re-ranks or re-decides an award.
 import { counted } from '../plural';
 import { slotLine } from '../items/slot-words';
@@ -22,7 +23,7 @@ import { candidateGainLabel } from './loot-view';
 export const REASON_MAX = 200;
 export const NO_DROPS_OFFICER = 'Nothing opened on this night yet. Open a drop from the loot table.';
 export const NO_DROPS_MEMBER = 'Nothing on this night yet.';
-export const NO_DROPS_PAST = 'Nothing was awarded, voted on or flagged on this night.';
+export const NO_DROPS_PAST = 'Nothing was recorded, awarded, voted on or flagged on this night.';
 export const PICK_PROMPT = 'Pick a drop to see who wants it.';
 export const NO_CANDIDATES = 'Nobody here can use it yet.';
 export const MEMBER_FLAG_HELP = 'Tell the officers how you want it. Only officers see it.';
@@ -49,11 +50,22 @@ export function defaultNight(nights: readonly LootNight[]): LootNight | null {
   return nights.find((night) => night.current) ?? nights[0] ?? null;
 }
 
-/** "6 drops, 4 open" for a night. */
+/** The night's source hint: "Recorded by the addon" when the addon saw every drop, else how many it saw. */
+function recordedHint(night: LootNight): string {
+  const recorded = night.drops.filter((drop) => drop.recorded).length;
+  if (recorded === 0) return '';
+  return recorded === night.drops.length ? RECORDED_BY_ADDON : `${recorded} recorded by the addon`;
+}
+
+/** The hint beside a night whose drops a raider's addon recorded from the loot window. */
+export const RECORDED_BY_ADDON = 'Recorded by the addon';
+
+/** "6 drops, 4 open" for a night, then where its drops came from when the addon recorded any. */
 export function nightSummary(night: LootNight): string {
   const open = night.drops.filter((drop) => drop.state === 'open').length;
   if (night.drops.length === 0) return 'No drops yet';
-  return `${counted(night.drops.length, 'drop')}, ${open} open`;
+  const hint = recordedHint(night);
+  return `${counted(night.drops.length, 'drop')}, ${open} open${hint === '' ? '' : ` · ${hint}`}`;
 }
 
 /** One row of the drops Plate. */
@@ -87,13 +99,19 @@ function canUse(table: GuildLootItem | undefined): number | null {
   return table.kind === 'gear' ? table.candidates.length : table.eligible.length;
 }
 
-function dropSub(drop: Pick<LootNightDrop, 'kind' | 'award'>, table: GuildLootItem | undefined): string {
+type SubDrop = Pick<LootNightDrop, 'kind' | 'award'> & Partial<Pick<LootNightDrop, 'count' | 'looted_by'>>;
+
+function dropSub(drop: SubDrop, table: GuildLootItem | undefined): string {
   const parts = [dropWhat(drop.kind, table)];
+  if ((drop.count ?? 0) > 1) parts.push(`${drop.count} dropped`);
   if (drop.award !== null) parts.push(`Awarded to ${drop.award.name}`);
   else {
     const count = canUse(table);
     if (count !== null) parts.push(counted(count, 'candidate'));
   }
+  // The loot window's own winner, beside the council's award: who actually took it in game.
+  const looted = drop.looted_by ?? [];
+  if (looted.length > 0) parts.push(`Looted by ${looted.join(', ')}`);
   return parts.filter((part) => part !== '').join(' · ');
 }
 

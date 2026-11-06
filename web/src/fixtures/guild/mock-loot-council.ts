@@ -1,7 +1,8 @@
 // web/src/fixtures/guild/mock-loot-council.ts
 // The loot council's API answers for tests and the mocked e2e (api/openapi.yaml LootNights,
 // LootCouncilDrop), built over buildMockLoot's loot table so names, icons and candidates agree.
-// Two nights: the current one with two open drops and one award, and last week's with one award.
+// Two nights: the current one with two open drops and one award (the addon recorded the first and
+// the awarded one), and last week's with one award.
 import type { GuildLootItem } from '../../lib/guild/api';
 import type {
   LootCouncilCandidate,
@@ -41,7 +42,8 @@ function decision(item: GuildLootItem, awardId: number, at: string, officer: boo
   };
 }
 
-function drop(item: GuildLootItem, award: LootDecision | null): LootNightDrop {
+/** A night's drop; `recorded` makes it one a raider's addon recorded, looted by the award's winner. */
+function drop(item: GuildLootItem, award: LootDecision | null, recorded = false): LootNightDrop {
   return {
     item_id: item.item_id,
     name: item.name,
@@ -52,6 +54,9 @@ function drop(item: GuildLootItem, award: LootDecision | null): LootNightDrop {
     boss: 'Onyxia',
     state: award === null ? 'open' : 'awarded',
     award,
+    recorded,
+    count: recorded ? 1 : 0,
+    looted_by: recorded && award !== null ? [award.name] : [],
   };
 }
 
@@ -71,7 +76,7 @@ export function buildMockLootNights(officer = true): LootNights {
         at: '2026-12-15T19:30:00Z',
         zone: "Onyxia's Lair",
         current: true,
-        drops: [drop(first, null), drop(second, null), drop(third, awarded)],
+        drops: [drop(first, null, true), drop(second, null), drop(third, awarded, true)],
         decisions: [awarded],
       },
       {

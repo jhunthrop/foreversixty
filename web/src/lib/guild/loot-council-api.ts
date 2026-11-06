@@ -41,6 +41,12 @@ export interface LootNightDrop {
   boss: string;
   state: 'open' | 'awarded';
   award: LootDecision | null;
+  /** True when a raider's addon recorded the drop from the loot window. */
+  recorded: boolean;
+  /** The copies the addon recorded; 0 when no addon recorded the drop. */
+  count: number;
+  /** Who the loot chat says received a copy; empty when unknown. */
+  looted_by: string[];
 }
 
 export interface LootNight {

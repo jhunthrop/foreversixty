@@ -15,7 +15,8 @@ local L = {
 	-- and the Settings page all print it (Options.helpLines, L3.5 ruling 3); /fs help alone
 	-- adds the testers' two lines after it, muted (fix round 1, item 16; fix round 3, item 5:
 	-- one line read as options of /fs diag; /fs record's arguments are in its own usage,
-	-- recorderHelp).
+	-- recorderHelp). Guild redesign 2026-11-06 (owner): /fs job joins as the fourteenth, because a
+	-- command players cannot find does not exist; the raid entry line alone is not enough.
 	settingsCommands = {
 		"/fs: paste or copy a build",
 		"/fs copy: copy my character for the site",
@@ -25,6 +26,7 @@ local L = {
 		"/fs link: copy a player's site page",
 		"/fs group: your group's specs, gear and buffs",
 		"/fs ready: check flasks, food and buffs now",
+		"/fs job: your jobs for the next raid",
 		"/fs loot: what an item is worth to you",
 		"/fs floor N: tag members scored under N",
 		"/fs options: open the settings page",
@@ -33,7 +35,7 @@ local L = {
 	},
 	helpTesters = {
 		"For testers: /fs diag verbose",
-		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome",
+		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome, /fs drops",
 	},
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
@@ -1581,6 +1583,15 @@ L.timePm = "pm"
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel
+
+-- /fs drops (RaidDrops.lua): the raid nights the loot window recorded for the export's drops=.
+L.dropsNone = "No raid drops recorded on this character yet. Open a boss corpse in a raid."
+L.dropsHeader = "Raid drops recorded: %d nights, newest first"
+L.dropsNight = "%s %s: %d corpses"
+L.dropsCorpse = "  %s (%s): %s"
+L.dropsItem = "%s x%d%s"
+L.dropsLootedBy = ", looted by %s"
+L.dropsNoBoss = "Boss not seen"
 
 ns.L = L
 return L

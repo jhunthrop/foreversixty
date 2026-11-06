@@ -7,6 +7,7 @@ import type { CharacterPath } from '../characters';
 import type { GuildPage } from '../rankings/api';
 import type { GuildHome, GuildRaidView, GuildZoneView } from './api';
 import type { AttendanceOverrideStatus, MatchCandidates, PostReportResult } from './attendance-contract';
+import type { AssignmentPostResult } from './assignments-api';
 import type { GuildCompRole, GuildPingResult } from './overview-api';
 import type { RaidInput, RaidStatusAction, RaidStatusBody, SignupInput, SignupResult } from './raids-api';
 
@@ -58,6 +59,21 @@ export interface RaidPageDeps {
   deleteCompTarget: (guildId: number, raidId: string) => Promise<GuildRaidView>;
   /** Ping on Discord: one message under the raid's post naming the non-signers. */
   pingRaid: (guildId: number, raidId: string) => Promise<GuildPingResult>;
+  /** The assignments (officers): a slot's names in order, a cleared slot, the Discord post. */
+  putAssignment: (
+    guildId: number,
+    raidId: string,
+    encounterId: number,
+    slot: string,
+    characterKeys: readonly string[],
+  ) => Promise<GuildRaidView>;
+  deleteAssignment: (
+    guildId: number,
+    raidId: string,
+    encounterId: number,
+    slot: string,
+  ) => Promise<GuildRaidView>;
+  postAssignments: (guildId: number, raidId: string) => Promise<AssignmentPostResult>;
   /** The edit form's Raid list (the raids page carries it). */
   loadZones: (guildId: number) => Promise<GuildZoneView[]>;
   isVisible: () => boolean;

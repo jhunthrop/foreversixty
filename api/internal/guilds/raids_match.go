@@ -173,8 +173,8 @@ func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, err
 }
 
 // finishMatch is the rest of every match, in the match's own transaction: the raid's
-// attendance against its new log, the loot awarded during it and the council's votes and flags. A
-// failure rolls the match back.
+// attendance against its new log, the loot awarded during it, the drops recorded in it and the
+// council's votes and flags. A failure rolls the match back.
 func (s *Store) finishMatch(ctx context.Context, tx pgx.Tx, raid Raid) error {
 	rows, err := attendanceRowsOf(ctx, tx, raid.GuildID, raid.ID, *raid.ReportID)
 	if err != nil {
@@ -184,6 +184,9 @@ func (s *Store) finishMatch(ctx context.Context, tx pgx.Tx, raid Raid) error {
 		return err
 	}
 	if err := attachMatchLoot(ctx, tx, raid.ID); err != nil {
+		return err
+	}
+	if err := attachMatchDrops(ctx, tx, raid.ID); err != nil {
 		return err
 	}
 	return attachCouncilRows(ctx, tx, raid.ID)
@@ -330,6 +333,9 @@ func releaseLog(ctx context.Context, tx pgx.Tx, raidID int64, reportID string, b
 		return Raid{}, fmt.Errorf("guilds: clear match: attendance: %w", err)
 	}
 	if err := detachMatchLoot(ctx, tx, raidID); err != nil {
+		return Raid{}, err
+	}
+	if err := detachMatchDrops(ctx, tx, raidID); err != nil {
 		return Raid{}, err
 	}
 	return raid, nil

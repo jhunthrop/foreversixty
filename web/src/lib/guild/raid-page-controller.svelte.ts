@@ -18,6 +18,7 @@ import { attendanceCopy } from './attendance-copy';
 import { guildMarkSrc } from './mark';
 import { NightActions, type NightActionHost } from './night-actions.svelte';
 import { PlannerActions } from './planner-actions.svelte';
+import { AssignmentActions } from './assignment-actions.svelte';
 import { PLAN_REQUIRED, REPORT_MATCHED, type MatchOutcome } from './match-picker.svelte';
 import { kindOf, raidCopy } from './raid-copy';
 import type { RaidSubmitResult } from './raid-form';
@@ -85,6 +86,8 @@ export class RaidPageController {
   readonly night: NightActions;
   /** The planner's comp target and Discord ping. */
   readonly planner: PlannerActions;
+  /** The planner's assignments: a slot's names and the Discord post. */
+  readonly assignments: AssignmentActions;
 
   private readonly deps: RaidPageDeps;
   private readonly route: RaidRoute;
@@ -107,6 +110,7 @@ export class RaidPageController {
     };
     this.night = new NightActions(host, deps, route);
     this.planner = new PlannerActions(host, deps, route);
+    this.assignments = new AssignmentActions(host, deps, route);
     Object.assign(this, seed);
   }
 
