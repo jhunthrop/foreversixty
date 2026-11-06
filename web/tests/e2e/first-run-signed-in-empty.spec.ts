@@ -86,7 +86,7 @@ test.describe('/setup and /logs first-run copy', () => {
     );
   });
 
-  test('/logs puts the Battle.net line above a text-link code', async ({ page }) => {
+  test('/logs puts the Battle.net line above the pairing-code button', async ({ page }) => {
     await signInWith(page, []);
     await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
     await page.goto('/logs');
@@ -94,6 +94,6 @@ test.describe('/setup and /logs first-run copy', () => {
     await expect(line).toHaveText(
       'Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.',
     );
-    await expect(page.getByRole('button', { name: 'Show pairing code' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Get a pairing code' })).toBeVisible();
   });
 });

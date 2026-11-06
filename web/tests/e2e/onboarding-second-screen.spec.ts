@@ -146,9 +146,7 @@ for (const size of SIZES) {
       await expect(page.getByTestId('addon-paste-box')).toBeVisible();
     });
 
-    test('/logs: one row style, the sample dated like its page, the sign-in button, cards sized to content', async ({
-      page,
-    }) => {
+    test('/logs: one row style, the sample dated like its page, the sign-in button', async ({ page }) => {
       await signedOut(page);
       await page.route('**/v1/reports/recent**', (route) =>
         route.fulfill(
@@ -173,8 +171,11 @@ for (const size of SIZES) {
       const rows = page.getByTestId('report-row');
       await expect(rows).toHaveCount(2);
       await expect(rows.first()).toContainText('Bow Jackzon');
-      await expect(rows.first()).toContainText('Blackrock Depths · 3 bosses · 14 fights · today');
-      const titles = rows.locator('.report-title');
+      await expect(rows.first().getByTestId('report-row-summary')).toHaveText(
+        'Blackrock Depths · 3 bosses · 14 fights',
+      );
+      await expect(rows.first().getByTestId('report-row-when')).toHaveText('today');
+      const titles = rows.locator('span.text-strong');
       const [a, b] = await Promise.all([
         titles.nth(0).evaluate((el) => getComputedStyle(el).color + getComputedStyle(el).fontSize),
         titles.nth(1).evaluate((el) => getComputedStyle(el).color + getComputedStyle(el).fontSize),
@@ -184,7 +185,7 @@ for (const size of SIZES) {
       await expect(page.getByTestId('reports-sign-in')).toBeVisible();
       await expect(page.getByText('Sign in or paste an export to see your character here')).toHaveCount(0);
       await expect(page.getByTestId('logs-companion-link')).toHaveAttribute('href', '/setup#companion');
-      await expect(page.getByTestId('pairing')).toHaveCount(0);
+      await expect(page.getByTestId('logs-companion-pair')).toHaveCount(0);
       await page.screenshot({ path: join(SHOTS, `w9-logs-${size.name}.png`), fullPage: true });
     });
 

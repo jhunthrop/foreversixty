@@ -379,23 +379,26 @@ test('/setup says "type /fs copy, press Ctrl+C" (L8.5 ruling 5)', async ({ page 
   await expect(page.getByText('/fs export')).toHaveCount(0);
 });
 
-test.describe('the /ratings sample at 1440 (fix round 1 item 5)', () => {
+test.describe('the /ratings sample at 1440 (logs spec 2026-11-07 section 8)', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
   test.skip(() => test.info().project.name !== 'desktop', 'a desktop width');
 
-  test('stays one column in its 560px container, the sparkline under the line', async ({ page }) => {
+  test('reads as three figures on one line, the sparkline under its label', async ({ page }) => {
     await page.goto('/ratings');
     const sample = page.getByTestId('ratings-rating-sample');
-    await expect(sample.getByTestId('rating-card')).toBeVisible();
+    await expect(sample).toContainText('65');
     const boxes = await sample.evaluate((element) => {
-      const box = (testid: string) =>
-        element.querySelector(`[data-testid="${testid}"]`)!.getBoundingClientRect();
-      const main = box('rating-card-main');
-      const side = box('rating-card-side');
-      return { mainBottom: main.bottom, mainLeft: main.left, sideTop: side.top, sideLeft: side.left };
+      const cells = [...element.children].map((child) => child.getBoundingClientRect());
+      const spark = element.querySelector('svg')!.getBoundingClientRect();
+      const label = element.children[1]!.firstElementChild!.getBoundingClientRect();
+      return {
+        tops: cells.map((cell) => Math.round(cell.top)),
+        sparkTop: spark.top,
+        labelBottom: label.bottom,
+      };
     });
-    expect(boxes.sideTop).toBeGreaterThanOrEqual(boxes.mainBottom - 0.5);
-    expect(Math.abs(boxes.sideLeft - boxes.mainLeft)).toBeLessThan(1);
+    expect(new Set(boxes.tops).size).toBe(1);
+    expect(boxes.sparkTop).toBeGreaterThanOrEqual(boxes.labelBottom - 0.5);
   });
 });
 

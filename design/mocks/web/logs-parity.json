@@ -57,17 +57,17 @@
     },
     {
       "id": "rankings-you",
-      "path": "/rankings/onyxia",
+      "path": "/rankings",
       "mock": "web-rankings-you.html"
     },
     {
       "id": "rankings-off",
-      "path": "/rankings/onyxia",
+      "path": "/rankings",
       "mock": "web-rankings-off.html"
     },
     {
       "id": "rankings-unranked",
-      "path": "/rankings/onyxia",
+      "path": "/rankings",
       "mock": "web-rankings-unranked.html"
     },
     {

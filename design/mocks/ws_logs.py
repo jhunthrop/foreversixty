@@ -237,7 +237,8 @@ def ranking_row(row: dict, total: int, newest: datetime, multi: bool, you: bool 
     rank = f'<span style="color:{pct_colour(row["rank"], total)}">{row["rank"]}</span>'
     secs = row['duration_ms'] // 1000
     ilvl = str(row['item_level']) if row.get('item_level') else '&ndash;'   # G12: no board row carries an item level yet
-    figs = [(f'{row["value"]:,}', 'DPS', '', False), (ilvl, '', 'Item level', False), (f'{row["execution_score"] * 100:.0f}%', '', 'Executed', False),
+    # a scored kill's Executed opens compare mode on that fight (shipped; lib/sim/execution.ts executionHref)
+    figs = [(f'{row["value"]:,}', 'DPS', '', False), (ilvl, '', 'Item level', False), (f'<a href="#">{row["execution_score"] * 100:.0f}%</a>', '', 'Executed', False),
             (f'{secs // 60}:{secs % 60:02d}', '', 'Length', False)]
     rr = RankRow(rank, crest_img(sl, 32) if multi else '', CLASS_COLOR[sl], escape(p['name']), sub, row['value'] / top, figs, f'{days} day{"s" if days != 1 else ""} ago',
                  [('Report', True), ('Build', False)], you='You' if you else '', selected=you)

@@ -1,10 +1,12 @@
 <!-- web/src/components/Rankings.svelte -->
-<!-- The Rankings page (design/specs/2026-10-11-rankings.md): "Where does my character stand among
-     characters like it?" The band, the shared character header (signed in: your rank on this
-     encounter, one action; signed out: its one muted line), the board's heading, one filter
-     panel and the board. Character boards and guild boards share the filters and the page's
-     shape; only the rows differ. Every filter is in the URL (lib/rankings/url.ts), so a filtered
-     board is a link.
+<!-- The Rankings page (design/specs/2026-11-07-logs-reports.md section 7; the rules are
+     2026-10-11-rankings.md's): "Where does my character stand on this boss?" A ledger Page: the
+     PageHeader (the encounter as the title; signed in, your rank as its answer), the ControlBar
+     (Encounter, Class, Spec, Ruleset, Metric, Board, and Region, Phase, Faction and Today only
+     behind Filters, K2), the Tier list line, then the cohort's Section holding the one Plate: a
+     RankList of each character's best kill, your row in place or pinned on top (K5), and the
+     pager; the rank colour legend closes the page. With no encounter named and none to aim at,
+     the page is the encounter list (K4). Every filter is in the URL (lib/rankings/url.ts).
 
      Who is looking sets where the board starts (lib/rankings/defaults.ts): the viewer's own
      class, spec, ruleset and role's metric, the current phase, and the encounter they most
@@ -16,8 +18,8 @@
   import { formatDate } from '../lib/dates';
   import { createCharacterCardState } from '../lib/bis/character-card-state.svelte';
   import { guildHref } from '../lib/characters';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import { formatAmount, rowLink } from '../lib/report/format';
+  import { classCrestSrc } from '../lib/class-crest';
+  import { formatAmount } from '../lib/report/format';
   import { titleize } from '../lib/report/og-meta';
   import {
     fetchCharacter,
@@ -27,48 +29,59 @@
     type EncounterOption,
     type GuildRankingRow,
     type RankingMetric,
+    type RankingRow as RankingRowData,
     type RankingsPage,
   } from '../lib/rankings/api';
   import { encounterPickerCopy, rankingsEmptyCopy, rankingsCopy } from '../lib/rankings/copy';
   import { applyDefaults, reaim, rankingsDefaults, resolveDefaultEncounter } from '../lib/rankings/defaults';
   import { RANKINGS_LOADING_MIN_H } from '../lib/rankings/layout';
-  import { PENDING_ANSWER, ownParsesAction, ownRankSpec } from '../lib/rankings/own-rank';
-  import { PHASES } from '../lib/rankings/phases';
-  import { cohortName, filterSummary, scopeHeading } from '../lib/rankings/scope';
   import {
+    classOptions,
+    encounterOptions,
+    metricOptions,
+    rulesetOptions,
+    specOptions,
+  } from '../lib/rankings/options';
+  import { rankRowView } from '../lib/rankings/rank-row-view';
+  import { RANK_LEGEND, ownRowPlacement, showRowCrests } from '../lib/rankings/row-view';
+  import { REGION } from '../lib/ui/regions';
+  import { LINK, type ControlGroup } from '../lib/ui/primitives';
+  import type { RankHead } from '../lib/ui/rank-list';
+  import { PENDING_ANSWER, ownRankSpec } from '../lib/rankings/own-rank';
+  import { cohortName, scopeHeading } from '../lib/rankings/scope';
+  import {
+    GUILD_KINDS,
     RANKING_METRICS,
     parseRankingsState,
     rankingsSearch,
     requiresEncounter,
     type RankingsState,
   } from '../lib/rankings/url';
-  import CharacterHeader from './character/CharacterHeader.svelte';
-  import RankingsBoard from './rankings/RankingsBoard.svelte';
-  import RankingsFilters from './rankings/RankingsFilters.svelte';
-  import RankingsBoards from './rankings/RankingsBoards.svelte';
-  import RankingsLegend from './rankings/RankingsLegend.svelte';
-  import RankingsHero from './rankings/RankingsHero.svelte';
-  import ActionLink from './ui/ActionLink.svelte';
-  import Card from './ui/Card.svelte';
-  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../lib/ui/link';
-  import Glyph from './ui/Glyph.svelte';
-  import EmptyState from './ui/EmptyState.svelte';
-  import LoadError from './ui/LoadError.svelte';
+  import RankingsAnswer from './rankings/RankingsAnswer.svelte';
+  import RankingsMoreFilters from './rankings/RankingsMoreFilters.svelte';
+  import ControlBar from './ui/ControlBar.svelte';
+  import Notice from './ui/Notice.svelte';
+  import Page from './ui/Page.svelte';
+  import PageHeader from './ui/PageHeader.svelte';
+  import Plate from './ui/Plate.svelte';
+  import RankList from './ui/RankList.svelte';
+  import RankRow from './ui/RankRow.svelte';
+  import Row from './ui/Row.svelte';
+  import Section from './ui/Section.svelte';
   import Skeleton from './ui/Skeleton.svelte';
+  import Tag from './ui/Tag.svelte';
 
   // The prerendered fixture page passes the slug; the Worker-served shell has none, so the
   // island reads it out of the path. One component, both routes.
   let { slug = '' }: { slug?: string } = $props();
 
   const SLUG_PATH = /^\/rankings\/([a-z0-9-]{1,64})\/?$/;
-  const PHASE_NAMES: ReadonlyMap<string, string> = new Map(PHASES.map((phase) => [phase.id, phase.label]));
   const reads = { encounters: fetchEncounters, character: fetchCharacter };
   const now = new Date();
 
   const session = createCharacterCardState();
   const viewer = $derived(session.character);
   const settled = $derived(session.status === 'ready' || session.status === 'failed');
-  const signedIn = $derived(settled ? viewer !== null : null);
   const ownDefaults = $derived(rankingsDefaults(viewer, now));
 
   const initialSlug = untrack(() =>
@@ -85,7 +98,6 @@
     typeof window === 'undefined' ? parseRankingsState('') : parseRankingsState(window.location.search),
   );
   let aimed = $state(false);
-  let otherBoard = $state(false);
   let page = $state<RankingsPage | null>(null);
   let guildRows = $state<GuildRankingRow[]>([]);
   let updatedAt = $state<string | null>(null);
@@ -113,7 +125,6 @@
       state.class === ownDefaults.class &&
       state.spec === ownDefaults.spec,
   );
-  const showClassAndSpec = $derived(viewer === null || ownDefaults.class === '' || otherBoard || !ownBoard);
   const ownCohort = $derived(cohortName(ownDefaults.class, ownDefaults.spec));
   const lastPage = $derived(page === null ? 1 : Math.max(1, Math.ceil(page.total / page.per_page)));
 
@@ -174,11 +185,12 @@
       : reaim(state, defaults);
     const chosen = early;
     early = { filters: {} };
-    otherBoard = false;
     aimed = true;
     show(
       { ...aimedState, ...chosen.filters },
-      chosen.encounter ?? (keepEncounter ? encounterSlug : resolved.slug),
+      // Signed out with no encounter named, the page is the encounter list (K4); signed in it
+      // opens the encounter the character last killed.
+      chosen.encounter ?? (keepEncounter ? encounterSlug : character === null ? '' : resolved.slug),
     );
   }
 
@@ -283,174 +295,376 @@
     );
   });
 
-  const summary = $derived(
-    filterSummary({ encounterName, state, defaultMetric: ownDefaults.metric }, PHASE_NAMES),
-  );
   const updatedStamp = $derived(updatedAt === null ? null : formatDate(new Date(updatedAt)));
 
-  /** The character board's rows run the card's full width; every other state sits in the padded body. */
-  const boardShown = $derived(
-    !needsPicker && status === 'ready' && state.board !== 'guild' && page !== null && page.rows.length > 0,
+  // ---- the page's frame (spec 2026-11-07 section 7)
+  const TWO_METRICS = new Set(['dps', 'hps']);
+  const BOARDS = [
+    { value: 'character', label: 'Characters' },
+    { value: 'guild', label: 'Guilds' },
+  ];
+  const isIndex = $derived(encounterSlug === '' && (needsPicker || !aimed));
+  const cohort = $derived(
+    state.class === '' ? rankingsCopy.everyClassAndSpec : scopeHeading(state.class, state.spec),
   );
+  const rulesetName = $derived(
+    rulesetOptions().find((option) => option.value === state.ruleset)?.label ?? rankingsCopy.allRulesets,
+  );
+  const rulesetMeta = $derived(state.ruleset === '' ? rulesetName : `${rulesetName} ruleset`);
+  const groups = $derived.by((): ControlGroup[] => {
+    const select = (
+      label: string,
+      param: string,
+      value: string,
+      options: readonly { value: string; label: string }[],
+    ): ControlGroup => ({
+      label,
+      param,
+      kind: 'select',
+      value,
+      options: options.map((option) => ({ value: option.value, label: option.label })),
+    });
+    const metric: ControlGroup = TWO_METRICS.has(state.metric)
+      ? {
+          label: rankingsCopy.metricLabel,
+          param: 'metric',
+          kind: 'segmented',
+          value: state.metric,
+          options: metricOptions().filter((option) => TWO_METRICS.has(option.value)),
+        }
+      : select(rankingsCopy.metricLabel, 'metric', state.metric, metricOptions());
+    return [
+      select(
+        rankingsCopy.encounterLabel,
+        'encounter',
+        encounterSlug,
+        encounterOptions(encounters, encounterSlug),
+      ),
+      ...(state.board === 'guild'
+        ? [
+            select(
+              'Kind',
+              'kind',
+              state.kind,
+              GUILD_KINDS.map((kind) => ({ value: kind.id, label: kind.label })),
+            ),
+          ]
+        : [
+            select(rankingsCopy.classLabel, 'class', state.class, classOptions()),
+            select(rankingsCopy.specLabel, 'spec', state.spec, specOptions(state.class)),
+            select(rankingsCopy.rulesetLabel, 'ruleset', state.ruleset, rulesetOptions()),
+            metric,
+          ]),
+      {
+        label: rankingsCopy.boardLabel,
+        param: 'board',
+        kind: 'segmented',
+        value: state.board,
+        options: BOARDS,
+      },
+    ];
+  });
+
+  function onBar(param: string, value: string): void {
+    if (param === 'encounter') return chooseEncounter(value);
+    if (param === 'class') return patch({ class: value, spec: '' });
+    patch({ [param]: value } as Partial<RankingsState>);
+  }
+
+  const heads = $derived<RankHead[]>([
+    { label: '#' },
+    { label: '' },
+    { label: 'Character' },
+    { label: 'Share of the top' },
+    { label: metricLabel === 'Damage' ? 'DPS' : metricLabel, align: 'end' },
+    { label: 'Item level', align: 'end' },
+    { label: 'Executed', align: 'end' },
+    { label: 'Length', align: 'end' },
+    { label: 'Date', align: 'end' },
+    { label: '' },
+  ]);
+  const multiClass = $derived(page !== null && showRowCrests(page.rows));
+  const ownKey = $derived(ownBoard && viewer !== null ? viewer.key : null);
+  const placement = $derived(
+    page === null || ownKey === null ? 'none' : ownRowPlacement(page.rows, page.character_rank),
+  );
+  const boardView = $derived(
+    page === null
+      ? null
+      : {
+          total: page.total,
+          top: page.rows[0]?.value ?? 0,
+          unit: metricLabel === 'Damage' ? 'DPS' : state.metric === 'hps' ? 'HPS' : '',
+          now,
+        },
+  );
+  const pageHref = (n: number): string => urlFor({ ...state, page: n }, encounterSlug);
 
   function backToOwnBoard(): void {
-    otherBoard = false;
     patch({ class: ownDefaults.class, spec: ownDefaults.spec });
   }
 </script>
 
-<div data-testid="rankings" id="rankings" class="flex flex-col">
-  <RankingsHero {signedIn} updated={updatedStamp} />
-
-  <div class="flex flex-col gap-4 px-[var(--page-inset)] pt-1 pb-10 min-[600px]:gap-[22px]">
-    <CharacterHeader action={({ character }) => ownParsesAction(character)} {answer} source={session} />
-
-    {#if viewer !== null && ownDefaults.class !== '' && !ownBoard}
-      <p class="text-muted text-[13px]" data-testid="rankings-showing-note">
-        {rankingsCopy.showingNote(
-          state.class === ''
-            ? rankingsCopy.everyClassAndSpec.toLowerCase()
-            : scopeHeading(state.class, state.spec),
-          ownCohort,
-        )}
-        <button
-          type="button"
-          class="text-gold hover:text-gold-hover inline-flex min-h-11 items-center underline underline-offset-4"
-          data-testid="rankings-back"
-          onclick={backToOwnBoard}>{rankingsCopy.backTo(`${ownCohort}s`)}</button
+<div data-testid="rankings" id="rankings" class="flex flex-col pb-10">
+  <Page layout="ledger" testid="rankings-page">
+    {#snippet header()}
+      <PageHeader
+        title={isIndex ? rankingsCopy.h1 : encounterName}
+        answer={!isIndex && viewer !== null && state.board !== 'guild' ? rankAnswer : undefined}
+      >
+        {#snippet meta()}
+          {#if isIndex}<span>{rankingsCopy.jobSignedOut}</span>
+          {:else}<span>{rankingsCopy.h1} · {state.board === 'guild' ? 'Guilds' : cohort} · {rulesetMeta}</span
+            >{/if}
+          {#if updatedStamp !== null}<span>Updated {updatedStamp}</span>{/if}
+        {/snippet}
+      </PageHeader>
+    {/snippet}
+    {#snippet bar()}
+      {#if !isIndex}
+        <ControlBar
+          {groups}
+          label="Ranking choices"
+          labelsFrom={1920}
+          summary={`${encounterName} · ${state.spec !== '' ? state.spec : state.class === '' ? rankingsCopy.everyClass : cohort}`}
+          onchange={onBar}
+          testid="rankings-filters"
         >
-      </p>
-    {/if}
-
-    <Card
-      glyph="trophy"
-      title={scopeHeading(state.class, state.spec)}
-      titleTestid="rankings-scope"
-      body="none"
-      testid="rankings-heading"
-    >
-      {#snippet aside()}
-        <RankingsBoards board={state.board} onboard={(board) => patch({ board })} />
-      {/snippet}
-      <div class="border-line-soft flex flex-col gap-2 border-t px-5 py-4">
-        {#if viewer !== null && ownDefaults.class !== '' && !showClassAndSpec}
-          <button
-            type="button"
-            class={ACTION_LINK}
-            data-testid="rankings-another"
-            onclick={() => (otherBoard = true)}
-          >
-            {rankingsCopy.anotherBoard}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
-          </button>
-        {/if}
-        <RankingsFilters
-          filters={state}
-          {encounters}
-          {encounterSlug}
-          {summary}
-          {showClassAndSpec}
-          noEncounters={aimed && encounters.length === 0 && encounterSlug === ''}
-          onpatch={patch}
-          onencounter={chooseEncounter}
-        />
-      </div>
-      <div class="border-line-soft border-t" class:px-5={!boardShown} class:py-4={!boardShown}>
-        {#if needsPicker}
-          <div data-testid="encounter-picker" class="flex flex-col gap-3">
-            {#if encounters.length === 0}
-              <p class="text-muted text-[14px]" data-testid="rankings-no-encounters">
-                {encounterPickerCopy.noneYet}
-              </p>
-              <p class="text-muted text-[14px]">{encounterPickerCopy.tryGuildsProgress}</p>
-              <ActionLink href={guildsBoardHref} data-testid="rankings-try-guilds" onclick={openGuildsBoard}>
-                {state.board === 'guild'
-                  ? encounterPickerCopy.openProgressBoard
-                  : encounterPickerCopy.openGuildsBoard}
-              </ActionLink>
-            {:else}
-              <h2 class="label text-muted">{encounterPickerCopy.heading}</h2>
-              <ul class="flex flex-col" data-testid="encounter-picker-rows">
-                {#each encounters as option (option.id)}
-                  <li class="border-line-soft border-b py-2 text-[14px]">
-                    <a class={rowLink} href={`/rankings/${option.slug}${rankingsSearch(state, ownDefaults)}`}
-                      >{option.name}</a
-                    >
-                  </li>
-                {/each}
-              </ul>
-            {/if}
-          </div>
-        {:else if status === 'loading'}
-          <Skeleton
-            lines={8}
-            rowHeight="h-11"
-            minHeight={RANKINGS_LOADING_MIN_H}
-            testid="rankings-skeleton"
-          />
-        {:else if status === 'failed'}
-          <LoadError message={error} onRetry={() => (attempt += 1)} testid="rankings-error" />
-        {:else if state.board === 'guild'}
-          {#if guildRows.length === 0}
-            <EmptyState
-              message={rankingsEmptyCopy.message}
-              action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
-              testid="rankings-empty"
-            />
-          {:else}
-            <ul class="reveal flex flex-col" data-testid="guild-rows">
-              {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
-                <li
-                  class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
-                >
-                  <span class="numeric text-[12px]">{row.rank}</span>
-                  <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
-                    >{row.guild.name}</a
-                  >
-                  <span class="numeric text-right">{formatAmount(Math.round(row.value))}</span>
-                </li>
-              {/each}
-            </ul>
+          {#snippet tail()}<RankingsMoreFilters
+              filters={state}
+              defaultPhase={ownDefaults.phase}
+              onpatch={patch}
+            />{/snippet}
+        </ControlBar>
+      {/if}
+      <div class="full-bleed" data-region={REGION.summary}>
+        <div class="page-column px-[var(--page-inset)]">
+          <Notice text={rankingsCopy.tierQuestion} tone="neutral">
+            {#snippet tail()}<a
+                class="{LINK} inline-flex items-center max-md:-my-[10px] max-md:min-h-11"
+                href="/tiers"
+                data-testid="rankings-tier-link">{rankingsCopy.tierLink} ›</a
+              >{/snippet}
+          </Notice>
+          {#if viewer !== null && ownDefaults.class !== '' && !ownBoard && !isIndex}
+            <p class="text-small text-muted" data-testid="rankings-showing-note">
+              {rankingsCopy.showingNote(cohort.toLowerCase(), ownCohort)}
+              <button type="button" class={LINK} data-testid="rankings-back" onclick={backToOwnBoard}
+                >{rankingsCopy.backTo(`${ownCohort}s`)}</button
+              >
+            </p>
           {/if}
-        {:else if page === null || page.rows.length === 0}
-          <EmptyState
-            message={rankingsEmptyCopy.message}
-            action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
-            testid="rankings-empty"
-          />
-        {:else}
-          <RankingsBoard
-            {page}
-            {metricLabel}
-            ownKey={ownBoard && viewer !== null ? viewer.key : null}
-            {now}
-          />
-
-          <div class="flex items-center gap-3 px-5 py-4">
-            <button
-              type="button"
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
-              disabled={state.page <= 1}
-              data-testid="rankings-prev"
-              onclick={() => patch({ page: state.page - 1 })}
-            >
-              Previous
-            </button>
-            <span class="text-muted numeric text-[13px]">Page {state.page} of {lastPage}</span>
-            <button
-              type="button"
-              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
-              disabled={state.page >= lastPage}
-              data-testid="rankings-next"
-              onclick={() => patch({ page: state.page + 1 })}
-            >
-              Next
-            </button>
-          </div>
-        {/if}
+        </div>
       </div>
-      {#snippet foot()}
-        <RankingsLegend />
-      {/snippet}
-    </Card>
-  </div>
+    {/snippet}
+
+    {#if isIndex}
+      <Section
+        title={encounterPickerCopy.heading}
+        meta={encounters.length > 0 ? `${encounters.length} encounters ranked` : undefined}
+        testid="encounter-picker"
+      >
+        <Plate label={encounterPickerCopy.heading}>
+          {#if !aimed}
+            <div class="p-4"><Skeleton lines={2} rowHeight="h-11" testid="rankings-skeleton" /></div>
+          {:else if encounters.length === 0}
+            <div class="text-muted p-4 text-[14px] leading-5" data-testid="rankings-no-encounters">
+              <p>{encounterPickerCopy.noneYet}</p>
+              <p>{encounterPickerCopy.tryGuildsProgress}</p>
+              <div class="mt-3">
+                <a
+                  class={LINK}
+                  href={guildsBoardHref}
+                  data-testid="rankings-try-guilds"
+                  onclick={openGuildsBoard}
+                  >{state.board === 'guild'
+                    ? encounterPickerCopy.openProgressBoard
+                    : encounterPickerCopy.openGuildsBoard} ›</a
+                >
+              </div>
+            </div>
+          {:else}
+            <div data-testid="rankings-encounters">
+              {#each encounters as option (option.id)}
+                <Row
+                  title={option.name}
+                  sub="Characters and guilds, every class and spec"
+                  href={`/rankings/${option.slug}${rankingsSearch(state, ownDefaults)}`}
+                >
+                  {#snippet trail()}<span class="text-gold text-[14px] font-semibold">Open the board ›</span
+                    >{/snippet}
+                </Row>
+              {/each}
+            </div>
+          {/if}
+        </Plate>
+      </Section>
+      {@render legend(false)}
+    {:else}
+      <Section
+        title={state.board === 'guild' ? 'Guilds' : cohort}
+        meta={page !== null && state.board !== 'guild'
+          ? `${page.total} ranked${page.deduped === true ? ', each character’s best kill' : ''}`
+          : undefined}
+        testid="rankings-heading"
+      >
+        <Plate label={rankingsCopy.h1}>
+          {#if status === 'loading'}
+            <div class="p-4">
+              <Skeleton
+                lines={8}
+                rowHeight="h-11"
+                minHeight={RANKINGS_LOADING_MIN_H}
+                testid="rankings-skeleton"
+              />
+            </div>
+          {:else if status === 'failed'}
+            <div class="text-muted p-4 text-[14px] leading-5" role="alert" data-testid="rankings-error">
+              <p>{error || 'Rankings did not load.'}</p>
+              <div class="mt-3">
+                <button type="button" class={LINK} onclick={() => (attempt += 1)}>Try again</button>
+              </div>
+            </div>
+          {:else if state.board === 'guild'}
+            {#if guildRows.length === 0}
+              {@render empty()}
+            {:else}
+              <div data-testid="guild-rows">
+                {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
+                  <Row
+                    title={row.guild.name}
+                    rank={String(row.rank)}
+                    href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
+                  >
+                    {#snippet trail()}<span class="text-strong font-bold tabular-nums"
+                        >{formatAmount(Math.round(row.value))}</span
+                      >{/snippet}
+                  </Row>
+                {/each}
+              </div>
+            {/if}
+          {:else if page === null || page.rows.length === 0 || boardView === null}
+            {@render empty()}
+          {:else}
+            <RankList
+              heads={multiClass ? heads : heads.filter((_, index) => index !== 1)}
+              figures={4}
+              links={3}
+              leads={multiClass}
+              label={cohort}
+              testid="ranking-board"
+            >
+              {#if placement === 'pinned' && page.character_rank}
+                {@render rankRow(
+                  { ...page.character_rank.row, rank: page.character_rank.rank },
+                  true,
+                  'ranking-pinned-row',
+                )}
+              {/if}
+              {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
+                {@render rankRow(
+                  row,
+                  placement === 'in-place' && row.player.key === ownKey,
+                  `ranking-${row.rank}`,
+                )}
+              {/each}
+            </RankList>
+            {#if lastPage > 1}
+              <div
+                class="border-line-soft flex items-center justify-end gap-4 border-t px-4 py-3 text-[14px]"
+                data-testid="rankings-pager"
+              >
+                <span class="text-small text-muted tabular-nums">Page {state.page} of {lastPage}</span>
+                {#if state.page > 1}
+                  <a
+                    class={LINK}
+                    href={pageHref(state.page - 1)}
+                    data-testid="rankings-prev"
+                    onclick={(event) => {
+                      event.preventDefault();
+                      patch({ page: state.page - 1 });
+                    }}>Previous</a
+                  >
+                {:else}<span class="text-muted" data-testid="rankings-prev" aria-disabled="true"
+                    >Previous</span
+                  >{/if}
+                {#if state.page < lastPage}
+                  <a
+                    class={LINK}
+                    href={pageHref(state.page + 1)}
+                    data-testid="rankings-next"
+                    onclick={(event) => {
+                      event.preventDefault();
+                      patch({ page: state.page + 1 });
+                    }}>Next</a
+                  >
+                {:else}<span class="text-muted" data-testid="rankings-next" aria-disabled="true">Next</span
+                  >{/if}
+              </div>
+            {/if}
+          {/if}
+        </Plate>
+      </Section>
+      {@render legend(true)}
+    {/if}
+  </Page>
 </div>
+
+{#snippet rankAnswer()}
+  {#if viewer !== null}<RankingsAnswer spec={answer} character={viewer} />{/if}
+{/snippet}
+
+{#snippet empty()}
+  <div class="text-muted p-4 text-[14px] leading-5" data-testid="rankings-empty">
+    <p>{rankingsEmptyCopy.message}</p>
+    <div class="mt-3"><a class={LINK} href={rankingsEmptyCopy.href}>{rankingsEmptyCopy.action} ›</a></div>
+  </div>
+{/snippet}
+
+{#snippet rankRow(row: RankingRowData, you: boolean, testid: string, label?: string)}
+  {#if boardView !== null}
+    {@const view = rankRowView(row, boardView)}
+    <RankRow
+      rank={view.rank}
+      rankColor={view.rankColor}
+      name={view.name}
+      href={view.href}
+      classSlug={view.classSlug}
+      sub={view.sub}
+      note={view.note}
+      fraction={view.fraction}
+      figures={view.figures}
+      gap={view.gap}
+      links={view.links}
+      selected={you}
+      {label}
+      {testid}
+    >
+      {#snippet lead()}
+        {#if multiClass}<img
+            src={classCrestSrc(view.classSlug)}
+            alt=""
+            width="32"
+            height="32"
+            class="rounded-full"
+          />{/if}
+      {/snippet}
+      {#snippet tag()}
+        {#if you}<Tag tone="gold">You</Tag>{/if}
+      {/snippet}
+    </RankRow>
+  {/if}
+{/snippet}
+
+{#snippet legend(region: boolean)}
+  <div class="pt-1" data-region={region ? REGION.footerNote : undefined}>
+    <p
+      class="text-small text-muted flex flex-wrap items-baseline gap-x-[14px] gap-y-1"
+      data-testid="rankings-legend"
+    >
+      {rankingsCopy.legendLead}
+      {#each RANK_LEGEND as step (step.label)}<b class="font-bold" style:color={step.color}>{step.label}</b
+        >{/each}
+    </p>
+  </div>
+{/snippet}

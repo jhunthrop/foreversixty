@@ -74,6 +74,7 @@ async function openLogs(page: Page, id: LogsParityState): Promise<void> {
   await stubReports(page, list[id as keyof typeof list]);
   await page.goto('/logs');
   await expect(page.getByTestId('recent-reports-sample')).toBeVisible();
+  await expect(page.getByTestId('recent-reports-skeleton')).toHaveCount(0);
   if (id === 'logs-you') await expect(page.getByTestId('report-row').first()).toBeVisible();
   if (id === 'logs-empty') await expect(page.getByTestId('my-reports-empty')).toBeVisible();
   if (id !== 'logs') await expect(page.getByTestId('logs-companion-pair')).toBeVisible();
@@ -107,7 +108,13 @@ async function openRankings(page: Page, id: LogsParityState): Promise<void> {
     }
     await page.goto(id === 'rankings-board' ? '/rankings/warden-kelthas' : '/rankings');
     await expect(
-      page.getByTestId(id === 'rankings-board' ? 'ranking-1' : 'rankings-encounters'),
+      page.getByTestId(
+        {
+          rankings: 'rankings-encounters',
+          'rankings-empty': 'rankings-no-encounters',
+          'rankings-board': 'ranking-1',
+        }[id],
+      ),
     ).toBeVisible();
     return;
   }
@@ -117,7 +124,8 @@ async function openRankings(page: Page, id: LogsParityState): Promise<void> {
     ownOffPage: id === 'rankings-off',
     unranked: id === 'rankings-unranked',
   });
-  await page.goto('/rankings/onyxia');
+  // Signed in, /rankings opens the encounter the character last killed (Onyxia).
+  await page.goto('/rankings');
   await expect(page.getByTestId('ranking-1')).toBeVisible();
   await expect(page.getByTestId('rankings-answer')).toBeVisible();
 }

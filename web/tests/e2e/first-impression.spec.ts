@@ -90,7 +90,8 @@ for (const size of SIZES) {
       const named = feed.getByTestId('report-row').first();
       await expect(named).toContainText('Blackrock Depths');
       // The credited character is the title; the zone leads the muted line under it (W.9).
-      await expect(named.getByRole('link', { name: 'Bow Jackzon' })).toBeVisible();
+      await expect(named).toHaveAttribute('href', /^\/reports\//);
+      await expect(named).toContainText('Bow Jackzon');
       await expect(named.getByTestId('report-row-summary')).toHaveText(
         'Blackrock Depths · 3 bosses · 14 fights',
       );
