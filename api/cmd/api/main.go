@@ -654,7 +654,7 @@ func serve(log *slog.Logger) error {
 		Rankings: &rankings.Service{Store: rankStore, Log: log, Supporters: entStore},
 		Addon: &addon.Service{
 			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData,
-			Accounts: authStore, Guilds: guildStore, Sims: simStore, Log: log,
+			Accounts: authStore, Guilds: guildStore, Sims: simStore, Assignments: guildStore, Log: log,
 		},
 		Guilds: guildService,
 		Rating: &rating.Service{
