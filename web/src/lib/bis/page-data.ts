@@ -8,7 +8,16 @@ import type { ItemTooltipModel } from '../items/tooltip';
 import { readBuildJson } from '../guides/build-files';
 import type { TalentIndex } from '../planner/rules';
 import { bandLevels, instanceLevels, itemDetails, loadLootFile } from './load';
-import { bandModelFor, bandModelKey, itemDictionary, modelItemIds, type BisBandModel, type BisPageData, type EnchantNames, type GainUnit } from './page-model';
+import {
+  bandModelFor,
+  bandModelKey,
+  itemDictionary,
+  modelItemIds,
+  type BisBandModel,
+  type BisPageData,
+  type EnchantNames,
+  type GainUnit,
+} from './page-model';
 import { bandInfosFor } from './panel-view';
 import { bandPresets, selectBand } from './presets';
 import { bisSimHref, rankingSimHrefFor } from './sim-link';
@@ -69,13 +78,20 @@ export function buildBisPageData(input: BisPageDataInput): BisServerPage {
     unit,
     simHrefFor: (band: BisBand) => bisSimHref(band, talentIndex, build),
     rankingSimHrefFor: (band: BisBand) => rankingSimHrefFor(band, talentIndex, build),
-    plannerHrefFor: (band: BisBand) => `/planner?spec=${spec}&talents=${encodeURIComponent(band.talents ?? '')}`,
+    plannerHrefFor: (band: BisBand) =>
+      `/planner?spec=${spec}&talents=${encodeURIComponent(band.talents ?? '')}`,
   };
   const models: Record<string, BisBandModel> = {};
   for (const faction of BIS_FACTIONS) {
     const presets = new Set(bands.flatMap((band) => bandPresets(file, band, faction)));
     for (const preset of presets) {
-      const infos = bandInfosFor(file, bands, faction, { itemDetails: details, loot, tooltipFor, spec, preset });
+      const infos = bandInfosFor(file, bands, faction, {
+        itemDetails: details,
+        loot,
+        tooltipFor,
+        spec,
+        preset,
+      });
       for (const info of infos) {
         const raw = selectBand(file, info.band, faction, preset);
         if (raw === undefined || (raw.preset ?? 'bare') !== preset) continue;
@@ -84,7 +100,9 @@ export function buildBisPageData(input: BisPageDataInput): BisServerPage {
     }
   }
   const names = new Map<number, string>();
-  for (const band of file.bands) for (const slot of band.slots) if (typeof slot.item_id === 'number') names.set(slot.item_id, slot.item_name);
+  for (const band of file.bands)
+    for (const slot of band.slots)
+      if (typeof slot.item_id === 'number') names.set(slot.item_id, slot.item_name);
   const ids = modelItemIds(Object.values(models));
   const tooltips: Record<number, ItemTooltipModel> = {};
   for (const id of ids) {

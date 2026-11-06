@@ -63,7 +63,8 @@
   data-testid={testid}
 >
   {#if face === 'frame'}
-    <span class="h-full w-full rounded-[5px] border" style:border-color={rarityBorderColorFor(quality)}></span>
+    <span class="h-full w-full rounded-[5px] border" style:border-color={rarityBorderColorFor(quality)}
+    ></span>
   {:else if face === 'image'}
     <img
       bind:this={image}

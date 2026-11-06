@@ -25,7 +25,9 @@ test('the legacy #band hash still opens on its band and faction', async ({ page 
   await expect(page.getByTestId('control-faction-horde')).toHaveAttribute('aria-checked', 'true');
 });
 
-test('the default band never shows under a deep link: the doll is hidden until the state applies', async ({ page }) => {
+test('the default band never shows under a deep link: the doll is hidden until the state applies', async ({
+  page,
+}) => {
   await page.route('**/_astro/BisSpecPage.*.js', async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     await route.continue();

@@ -186,7 +186,9 @@
               class="ui-doll-basis"
               title={basisText(cell.gain.basis)}
               data-testid={`${testid}-basis-${cell.slot}`}
-              >{cell.gain.basis.prefix}{#if cell.gain.basis.item}{' '}<span
+              >{cell.gain.basis.item
+                ? `${cell.gain.basis.prefix} `
+                : cell.gain.basis.prefix}{#if cell.gain.basis.item}<span
                   class={rarityClassFor(cell.gain.basis.item.quality)}
                   data-bis-item={cell.gain.basis.item.id}>{cell.gain.basis.item.name}</span
                 >{/if}</span
