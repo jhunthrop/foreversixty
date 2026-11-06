@@ -17,6 +17,11 @@ func TestProtectionHolyStrikeRankOneWhileLeveling(t *testing.T) {
 		{"undead", 15, 679, 678},
 		{"dwarf", 15, 678, 679},
 		{"undead", 16, 678, 679},
+		// Round 24, second pass: rank 1 holds at 40; at 41 and 42 the top rank,
+		// 5 (2495), wins by 0.5 to 1.1% for both races.
+		{"dwarf", 40, 679, 2495},
+		{"dwarf", 41, 2495, 679},
+		{"undead", 42, 2495, 679},
 	} {
 		ids := rotationIDs(t, "paladin-protection", "paladin", c.level, specRankChoices("paladin-protection", BarePreset, c.race))
 		if !ids[c.want] || ids[c.not] {

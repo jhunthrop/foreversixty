@@ -96,7 +96,7 @@ Left out: Reckoning (extra attacks after a block or a crit; it adds a little thr
 5. **Swift Judgement** whenever it is ready.
 6. **Judgement** on cooldown, once Holy Shield's mana is safe.
 7. **Exorcism** on Undead and Demons.
-8. **Consecration** last, with mana to spare: cast it while the mana you have, plus what you regain less what you spend, still pays for it by the end of the fight, and also once you drop below 35% health, when mana held back may never get used. It makes far less threat per mana than Hammer of the Righteous, so it is how you spend mana you will not need. While you level, rank 1 is the better Consecration at 30 and 31, 40 to 48 and 50 to 57, because it goes down far more often; use rank 3 at 49, rank 4 at 58 and 59, and rank 1 again at 60 without raid buffs.
+8. **Consecration** last, with mana to spare: cast it while the mana you have, plus what you regain less what you spend, still pays for it by the end of the fight, and also once you drop below 35% health, when mana held back may never get used. It makes far less threat per mana than Hammer of the Righteous, so it is how you spend mana you will not need. While you level, rank 1 is the better Consecration at 30 to 33, 40 to 48 and 50 to 57, because it goes down far more often; at the other levels use your newest rank, and rank 1 again at 60 without raid buffs.
 
 **Mana.** You run on blocks: Shield Specialization gives back 4% of your mana on a block, and Holy Strike under Shieldsworn triggers it too. Hold Holy Shield's cost in reserve at all times. If you are going dry, cut Consecration first, then Hammer of the Righteous, and never Holy Shield.
 

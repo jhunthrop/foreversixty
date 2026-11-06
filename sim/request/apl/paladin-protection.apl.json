@@ -212,7 +212,7 @@
           }
         }
       },
-      "notes": "On cooldown. Strong threat for little mana, twenty at 60; with Iron Creed it also cuts your damage taken for 6 seconds, and from 40 Shieldsworn brings it back every 6 seconds. While you level, rank 1 is your Holy Strike from 12 to 14 and from 40 to 42: it costs far less, and the mana buys more Judgements."
+      "notes": "On cooldown. Strong threat for little mana, twenty at 60; with Iron Creed it also cuts your damage taken for 6 seconds, and from 40 Shieldsworn brings it back every 6 seconds. While you level, rank 1 is your Holy Strike from 12 to 14 and at 40: it costs far less, and the mana buys more Judgements."
     },
     {
       "action": {
@@ -461,7 +461,7 @@
           }
         }
       },
-      "notes": "Last, while what you hold plus what you regain, less what you spend, over the rest of the fight still pays for it, or once you drop below 35% health. It spends only mana your strikes and, from 30, Holy Shield will not need, and from 40 Hammer of the Righteous makes far more threat for its mana. Rank 1 does more than the higher ranks at 30 and 31, 40 to 48 and 50 to 57 because it goes down far more often; rank 3 at 49, rank 4 at 58 and 59, and rank 1 again at 60 without raid buffs."
+      "notes": "Last, while what you hold plus what you regain, less what you spend, over the rest of the fight still pays for it, or once you drop below 35% health. It spends only mana your strikes and, from 30, Holy Shield will not need, and from 40 Hammer of the Righteous makes far more threat for its mana. Rank 1 does more than the higher ranks at 30 to 33, 40 to 48 and 50 to 57 because it goes down far more often; your newest rank at the other levels, and rank 1 again at 60 without raid buffs."
     }
   ]
 }

@@ -178,9 +178,11 @@ func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 // re-judged 40 to 49; round 20 re-judged 43 to 60 after Oath of Light began
 // adding its whole amount under the rank's level rule (10,000 iterations,
 // seeds 1 and 50001, both factions). The tank's Flash of Light keeps rank 1
-// to 42, rank 2 at 43 to 49, rank 3 at 50 to 54, rank 4 at 55 to 59 and at
-// bare 60 (rank 5, as authored, in a raid). Holy Light casts rank 1 to 24,
-// rank 2 at 25 to 29, its top rank at 30 to 39, rank 4 at 40 to 42, its top
+// to 42 (where it pairs with the group's rank 2, round 24), rank 2 at 43 to
+// 49, rank 3 at 50 to 54, rank 4 at 55 to 59 and at bare 60 (rank 5, as authored, in a
+// raid). Holy Light casts rank 1 to 23, its top rank at 24, rank 1 at 25,
+// rank 2 at 26 to 29 (round 24, on the talents at each level), its top rank
+// at 30 to 39, rank 4 at 40 to 42, its top
 // rank at 43 to 46, rank 4 at 47 to 49 and its top rank from 50: the cheap
 // ranks round 16 kept at 47 to 59 leaned on an Oath bonus the level rule
 // now takes away.
@@ -193,7 +195,7 @@ func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) 
 	})
 	light := linesCasting(t, "paladin-holy", 10329)
 	assertRanks(t, light, "paladin-holy", "paladin", "human", holyLightRanks, []rankCase{
-		{20, BarePreset, 1}, {24, BarePreset, 1}, {25, BarePreset, 2}, {29, BarePreset, 2}, {30, BarePreset, 5},
+		{20, BarePreset, 1}, {23, BarePreset, 1}, {24, BarePreset, 4}, {25, BarePreset, 1}, {26, BarePreset, 2}, {29, BarePreset, 2}, {30, BarePreset, 5},
 		{39, BarePreset, 6}, {40, BarePreset, 4}, {42, BarePreset, 4}, {43, BarePreset, 6}, {46, BarePreset, 7}, {47, BarePreset, 4}, {49, BarePreset, 4}, {50, BarePreset, 7}, {59, BarePreset, 8}, {60, BarePreset, 8}, {60, RaidPreset, 8},
 	})
 }
@@ -202,13 +204,15 @@ func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) 
 // is rank 2 at 44 to 46, where rank 1 (MaxLevel 25) has lost most of its
 // bonus and rank 2 (MaxLevel 31) still keeps 85 to 95% of it. Round 20: rank
 // 2 to 49 as well (+1.0 to +1.3% over rank 1 at 47 to 49), then the top rank.
+// Round 24, on the talents at each level: rank 2 at 40 to 42 too (+0.1 to
+// +0.3% over rank 1), rank 1 at 43.
 // Holy Shock casts rank 1 at 40 to 49: it keeps its whole bonus to 46 for 160
 // mana against rank 2's 225, and +0.3 to +0.6% at 47 to 49; from 50 the ranks
 // tie and the top rank is cast. Round 22: rank 5 in a raid at 60.
 func TestHolyPaladinGroupFlashOfLightAndHolyShockBelowFifty(t *testing.T) {
 	group := linesCasting(t, "paladin-holy", 19941)
 	assertRanks(t, group, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
-		{40, BarePreset, 1}, {43, BarePreset, 1}, {44, BarePreset, 2}, {46, BarePreset, 2}, {47, BarePreset, 2}, {49, BarePreset, 2},
+		{39, BarePreset, 1}, {40, BarePreset, 2}, {42, BarePreset, 2}, {43, BarePreset, 1}, {44, BarePreset, 2}, {46, BarePreset, 2}, {47, BarePreset, 2}, {49, BarePreset, 2},
 		{50, BarePreset, 4}, {60, RaidPreset, 5},
 	})
 	shock := linesCasting(t, "paladin-holy", 20930)
