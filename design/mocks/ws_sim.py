@@ -713,7 +713,7 @@ def regions(html: str) -> str:
                  ('<div class="pc"><p class="notice', '<div class="pc" data-region="summary"><p class="notice'),
                  ('<div class="plate">', '<div class="plate" data-region="plate">'),
                  ('<aside class="rail', '<aside data-region="rail" class="rail'),
-                 ('<div class="doll', '<div data-region="slots" class="doll')):
+                 ('<div class="sdoll', '<div data-region="slots" class="sdoll')):
         html = html.replace(a, b, 1)
     slug = lambda t: re.sub(r'[^a-z0-9]+', '-', t.lower()).strip('-')
     return re.sub(r'<section><div class="sec-h"><h2 class="t-h3">([^<&]+)',
