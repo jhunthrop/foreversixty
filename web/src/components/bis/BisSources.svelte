@@ -92,7 +92,7 @@
     gap: 6px;
     min-height: 32px;
     padding: 0 10px;
-    border: 1px solid var(--color-line);
+    border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
     border-radius: var(--radius-control, 6px);
     color: var(--color-muted);
     font-size: 13px;

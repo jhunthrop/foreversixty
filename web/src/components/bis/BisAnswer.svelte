@@ -64,7 +64,7 @@
     {/if}
   {/if}
   <p class="bis-answer-line" data-testid="bis-trust-line">
-    {answer.trust.join(' · ')}{#if raceNote}{' · '}{raceNote}{/if}{#if answer.rankingSimHref}{' · '}<a
+    {answer.trust.join(' · ')}{#if raceNote} · {raceNote}{/if}{#if answer.rankingSimHref} · <a
         href={answer.rankingSimHref}
         data-testid="bis-ranking-sim-link">View ranking sim ›</a
       >{/if}
@@ -96,7 +96,7 @@
     </details>
   {/if}
   <p class="bis-answer-links">
-    {#if answer.simHref}<a href={answer.simHref} data-testid="bis-sim-link">Open in simulator</a>{' · '}{/if}<a
+    {#if answer.simHref}<a href={answer.simHref} data-testid="bis-sim-link">Open in simulator</a> · {/if}<a
       href={answer.plannerHref}
       data-testid="bis-planner-link">Talents in planner</a
     >

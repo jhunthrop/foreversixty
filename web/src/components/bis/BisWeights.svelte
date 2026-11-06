@@ -4,6 +4,7 @@
      stays a link: the addon reads its weights from its own data, it has no paste format. -->
 <script lang="ts">
   import Section from '../ui/Section.svelte';
+  import Meter from '../ui/Meter.svelte';
   import { bisCopy } from '../../lib/bis/copy';
   import type { BisWeightsModel } from '../../lib/bis/page-model';
 
@@ -39,7 +40,7 @@
           >
             <span role="cell">{row.label}</span>
             <span class="bar" aria-hidden="true"
-              >{#if row.significant}<span style={`width:${row.barPercent}%`}></span>{/if}</span
+              >{#if row.significant}<Meter value={row.barPercent / 100} />{/if}</span
             >
             {#if row.significant}
               <span role="cell" class="num">{row.scaleFactor.toFixed(2)}</span>
@@ -103,7 +104,6 @@
     gap: 12px;
     align-items: center;
     min-height: 32px;
-    border-bottom: 1px solid var(--color-line);
     font-size: 14px;
   }
   .bis-weights-header {
@@ -127,15 +127,7 @@
     grid-column: span 3;
   }
   .bar {
-    height: 6px;
-    background: var(--color-line);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .bar span {
-    display: block;
-    height: 100%;
-    background: var(--color-gold);
+    min-width: 0;
   }
   @media (max-width: 767px) {
     .bis-weights-row {
