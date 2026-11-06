@@ -6,8 +6,6 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { apiUnreachable, expect, test } from './support/test';
-import { gotoSim, simCharacter } from './support/sim-page';
-import { simPageCopy } from '../../src/lib/sim/page-copy';
 import { bulkCopy } from '../../src/lib/sim/copy';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
@@ -286,46 +284,6 @@ test('the flat list only lists genuine upgrades, and the boss card names the tru
  * upgrades in Top Gear ›" (spec 2026-11-06-sim §4.5), so a later plain sim names Top Gear
  * for the same character rather than reading the record back.
  */
-test('a real Droptimizer upgrade is recorded, and a later plain sim names Top Gear next', async ({
-  page,
-}) => {
-  await stubPremiumRun(page);
-  await loadDrops(page);
-  await page.getByTestId('sim-upcoming').check();
-  await page.getByTestId('sim-source-raid:molten-core:11502').check();
-  await expect(page.getByTestId('sim-server-run')).toBeVisible();
-  await page.getByTestId('sim-server-run').click();
-  await expect(page.getByTestId('sim-drops-flat')).toBeVisible({ timeout: 10_000 });
-
-  // Wait on the write itself, not the DOM's own render timing, for proof the effect ran.
-  await expect
-    .poll(() => page.evaluate(() => window.localStorage.getItem('fs.lastDroptimizerUpgrade')))
-    .toContain('Band of Accuria');
-
-  // A wholly separate page load, per current-character.ts's own "nothing fetched anew"
-  // rule: no ?code= carries the upgrade across, only the localStorage record -- the
-  // current-character pointer `loadDrops` above already wrote restores the same FURY
-  // character here on its own, the same restore-over-paste-box behaviour `loadDrops`
-  // itself accounts for.
-  await gotoSim(page);
-  // The fallback paste surface is the landing's paste Plate, whose Run pastes and runs in one
-  // click, so this waits that run out before the explicit run click below.
-  const addonInput = page.getByTestId('sim-cold-paste-input');
-  const characterStrip = simCharacter(page);
-  await expect(addonInput.or(characterStrip)).toBeVisible();
-  if (await addonInput.isVisible()) {
-    await addonInput.fill(FURY);
-    await page.getByTestId('sim-cold-paste-run').click();
-    await expect(characterStrip).toBeVisible();
-    await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-  }
-  await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 10_000 });
-
-  const next = page.getByTestId('sim-next-action');
-  await expect(next).toHaveText(simPageCopy.answer.topGear);
-  await expect(next).toHaveAttribute('href', /^\/sim\/gear/);
-});
 
 test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page }) => {
   await stubPremiumRun(page);

@@ -378,4 +378,64 @@ test.describe('the contextual links land on their anchors', () => {
     await expect(page.locator('#coach')).toBeInViewport();
     await expect(page.locator('#coach')).toHaveCSS('background-color', TINT);
   });
+
+  test('the sim server-run link is muted text that lands on #server-sims', async ({ page }) => {
+    // A member with one stored build, the sim landing's own fixture shape (sim-landing.spec.ts).
+    const envelope = (data: unknown) => ({ ok: true, data, error: null, request_id: 'r' });
+    await page.route('**/v1/me', (route) =>
+      route.fulfill({
+        json: envelope({
+          ...FREE_ME,
+          user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
+          characters: [
+            {
+              key: 'us/normal/thrallgar',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'Thrallgar',
+              class: 'Warrior',
+              build: { source: 'addon', captured_at: '2026-09-20T00:00:00Z' },
+            },
+          ],
+          guilds: [],
+        }),
+      }),
+    );
+    await page.route('**/v1/characters/us/normal/thrallgar/sim-input', (route) =>
+      route.fulfill({
+        json: envelope({
+          spec: 'warrior-fury',
+          gear: { slots: [12640, 11726] },
+          talents: '31/0/20',
+          buffs: ['battle_shout'],
+          race: 'orc',
+          captured_at: new Date().toISOString(),
+          source: 'addon',
+        }),
+      }),
+    );
+    await page.route('**/v1/sims?mine=1*', (route) =>
+      route.fulfill({ json: envelope({ rows: [], total: 0, page: 1, per_page: 100 }) }),
+    );
+    // The header's character loads on arrival (spec 2026-11-06-sim 4.3); the link sits in More
+    // settings, beside where a payer's own "Run on our servers" is.
+    await page.goto('/sim');
+    await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 15_000 });
+    await page.getByTestId('sim-settings-more').click();
+    const link = page.getByTestId('sim-server-run-free');
+    await expect(link).toBeVisible({ timeout: 15_000 });
+    await expect(link).toHaveText('Run on our servers · Premium plan');
+    const run = await page.getByTestId('sim-run-button').evaluate((el) => getComputedStyle(el).fontWeight);
+    const quiet = await link.evaluate((el) => ({
+      weight: getComputedStyle(el).fontWeight,
+      border: getComputedStyle(el).borderTopWidth,
+      bg: getComputedStyle(el).backgroundColor,
+    }));
+    expect(Number(quiet.weight)).toBeLessThan(Number(run));
+    expect(quiet.border).toBe('0px');
+    expect(quiet.bg).toBe('rgba(0, 0, 0, 0)');
+    await link.click();
+    await expect(page).toHaveURL(/\/premium#server-sims$/);
+    await expect(page.locator('#server-sims')).toBeInViewport();
+  });
 });

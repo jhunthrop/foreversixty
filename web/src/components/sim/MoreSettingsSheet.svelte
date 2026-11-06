@@ -7,6 +7,7 @@
 <script lang="ts">
   import { buffLabel, type BuffNames } from '../../lib/sim/buff-names';
   import { MAX_LEVEL } from '../../lib/sim/character';
+  import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
   import { LANE_ITERATION_CEILING } from '../../lib/sim/precision';
   import type { RequestValidation } from '../../lib/sim/engine';
@@ -47,6 +48,7 @@
     notifier = false,
     notifyWanted = false,
     premium = false,
+    signedIn = false,
     onserver,
     onclose,
     onchange,
@@ -70,6 +72,8 @@
     notifyWanted?: boolean;
     /** A payer: this request on our servers (the server lane), from here. */
     premium?: boolean;
+    /** Signed in without the server lane: the quiet link to the plan that has it. */
+    signedIn?: boolean;
     onserver?: () => void;
     onclose: () => void;
     onchange: (next: SimSettings) => void;
@@ -204,6 +208,17 @@
       >
       <Button size="sm" {disabled} onclick={onserver} testid="sim-server-run">{copy.bar.runOnServers}</Button>
     </div>
+  {/if}
+  {#if !premium && signedIn && simulated}
+    <!-- A quiet link, never a button and never gold: Run stays the control (spec
+         2026-10-29-premium-entry section 7). It starts nothing. -->
+    <p class="text-small text-muted pt-5">
+      <a
+        class="hover:text-text underline-offset-2 hover:underline"
+        href={PREMIUM_LINKS.serverSims}
+        data-testid="sim-server-run-free">{simCopy.runOnServersFree}</a
+      >
+    </p>
   {/if}
 
   {#snippet foot()}

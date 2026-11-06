@@ -67,7 +67,7 @@
       {required}
       {maxlength}
       bind:value
-      class={[CONTROL, 'h-10', FOCUS, error ? 'border-wipe' : 'border-line']}
+      class={[CONTROL, 'h-11 md:h-10', FOCUS, error ? 'border-wipe' : 'border-line']}
       aria-invalid={error ? 'true' : undefined}
       aria-describedby={describedBy}
       data-testid={testid}

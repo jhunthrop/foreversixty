@@ -648,6 +648,7 @@
         disabled={busy}
         notifier={notifier !== null && store.premium}
         premium={store.premium}
+        {signedIn}
         onserver={() => {
           moreOpen = false;
           runServer();
