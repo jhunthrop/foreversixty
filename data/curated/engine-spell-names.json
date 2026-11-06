@@ -217,10 +217,6 @@
       "name": "Elemental Devastation",
       "engine": "sim/shaman/talents.go: ranks 2 and 3 of the proc"
     },
-    "58984": {
-      "name": "Elune's Light",
-      "engine": "sim/core/racials.go: a racial no class spellbook owns"
-    },
     "450527": {
       "name": "Sudden Insight",
       "engine": "sim/core/client_sets_gen.go: a set bonus whose client name is internal (\"S03 - Mana Proc on Cast - Magister's Regalia\"); the player sees the mana it restores as Sudden Insight (450554, \"Restores 200 mana.\", Wowhead Forever tooltip 2026-11-02)"
@@ -228,10 +224,6 @@
     "450576": {
       "name": "Sudden Insight",
       "engine": "sim/core/client_sets_gen.go: a set bonus whose client name is internal (\"S03 - Mana Proc on Cast - Vestments of the Devout\"); the player sees the mana it restores as Sudden Insight (450554, \"Restores 200 mana.\", Wowhead Forever tooltip 2026-11-02)"
-    },
-    "1000101": {
-      "name": "Eureka!",
-      "engine": "sim/core/racials.go: a racial no class spellbook owns"
     },
     "1249110": {
       "name": "Frozen Heart of the Mountain",
