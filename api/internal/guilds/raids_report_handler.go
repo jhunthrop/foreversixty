@@ -23,6 +23,7 @@ import (
 
 func mountRaidReportRoutes(mux *http.ServeMux, s *Service, officerLimit func(http.Handler) http.Handler) {
 	mux.Handle("POST /v1/guilds/{id}/raids/{raid}/report/post", officerLimit(raidRouteSession(s.postReport)))
+	mountAttendanceOverrideRoutes(mux, s, officerLimit)
 }
 
 // ClaimReportPost stamps report_posted_at on a done raid that has none; ok is false when it
