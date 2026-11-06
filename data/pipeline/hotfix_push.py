@@ -420,6 +420,19 @@ def push_moved(record: Mapping[str, Any] | None, live: Mapping[str, int]) -> boo
     return record is None or dict(record.get("search_totals", {})) != dict(live)
 
 
+def empty_push_reason(record: Mapping[str, Any]) -> str | None:
+    """Why a push record layered nothing, or None. A live Forever build always
+    carries a server push (round 25: 1.60.1.70790's activation committed a record
+    whose every search total was 0, wago's search paging being broken, and the sim
+    read shipped values until a lane noticed)."""
+    if any(count > 0 for count in dict(record.get("search_totals", {})).values()):
+        return None
+    return (
+        f"the {record.get('build')} push record lists no hotfix entries for any table: "
+        "wago's search found nothing, so nothing was layered"
+    )
+
+
 def read_push_record(build_dir: Path) -> dict[str, Any] | None:
     path = build_dir / PUSH_RECORD
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
@@ -543,6 +556,8 @@ def layer_hotfix_push(
         summary["tables"][table] = {**asdict(counts), "sha256": _sha256(target)}
         if counts != LayerCounts():
             logger.info("layered the %s push over %s: %s", build, table, asdict(counts))
+    if reason := empty_push_reason(summary):
+        logger.warning("%s; re-run `layer-hotfix-push` once wago.tools lists the push", reason)
     text = json.dumps(summary, indent=1, sort_keys=True) + "\n"
     record_path.write_text(text, encoding="utf-8")
     (root / build / PUSH_RECORD).write_text(text, encoding="utf-8")

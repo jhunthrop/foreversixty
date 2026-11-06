@@ -526,6 +526,18 @@ stub_gh() {
 	cat >"$dir/gh" <<STUB
 #!/usr/bin/env bash
 echo "gh \$*" >>"$dir/calls"
+# GitHub refuses a label description over 100 characters (HTTP 422): client.yml's
+# push-alert failed this way on 5 and 6 Nov 2026 and opened no issue.
+if [ "\$1 \$2" = "label create" ]; then
+  prev=""
+  for arg in "\$@"; do
+    if [ "\$prev" = --description ] && [ \${#arg} -gt 100 ]; then
+      echo "HTTP 422: Validation Failed (description is too long (maximum is 100 characters))" >&2
+      exit 1
+    fi
+    prev=\$arg
+  done
+fi
 if [ "\$1 \$2" = "issue list" ]; then
   case " \$* " in *" --label "*) cat "$dir/label-list" ;; *) cat "$dir/search-list" ;; esac
 fi
