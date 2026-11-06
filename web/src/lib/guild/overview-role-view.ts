@@ -59,6 +59,15 @@ function levelRow(item: ChecklistItem, zone: string): ChecklistRow {
 }
 
 function attunementRow(item: ChecklistItem, zone: string): ChecklistRow {
+  if (item.attunement_kind === 'quest') {
+    const chain = item.key_item?.name;
+    const title = `Attuned to ${zone}`;
+    if (item.state === 'ok')
+      return { key: item.key, tone: 'ok', title, sub: 'Your attunement is done.', fix: null };
+    const sub =
+      chain === undefined ? 'Your attunement quest is not done yet.' : `The ${chain} quest is not done yet.`;
+    return { key: item.key, tone: 'miss', title, sub, fix: null };
+  }
   const key = item.key_item?.name ?? 'The key';
   if (item.state === 'ok')
     return { key: item.key, tone: 'ok', title: `Key for ${zone}`, sub: `${key} is in your bags.`, fix: null };
@@ -67,6 +76,34 @@ function attunementRow(item: ChecklistItem, zone: string): ChecklistRow {
     tone: 'miss',
     title: `Key for ${zone}`,
     sub: `${key} is not in your bags.`,
+    fix: null,
+  };
+}
+
+const FLASK_FOOD_MISSING: Readonly<Record<string, string>> = {
+  flask_or_elixir: 'No flask or elixir in your bags',
+  food: 'No buff food in your bags',
+  both: 'No flask, elixir or buff food in your bags',
+};
+
+function flaskFoodRow(item: ChecklistItem): ChecklistRow {
+  const names = (item.supplies ?? []).map((stack) => stack.name);
+  const missing = item.missing ?? [];
+  if (item.state === 'ok')
+    return { key: item.key, tone: 'ok', title: 'Flask and food', sub: `${listWords(names)}.`, fix: null };
+  const title =
+    FLASK_FOOD_MISSING[missing.length > 1 ? 'both' : (missing[0] ?? 'both')] ?? FLASK_FOOD_MISSING.both!;
+  const sub =
+    names.length > 0 ? `You have ${listWords(names)}.` : 'Bring a flask or a raid elixir, and buff food.';
+  return { key: item.key, tone: 'warn', title, sub, fix: null };
+}
+
+function fireResistanceRow(item: ChecklistItem): ChecklistRow {
+  return {
+    key: item.key,
+    tone: 'ok',
+    title: `Fire resistance ${item.resistance ?? 0}`,
+    sub: 'From your gear and buffs when you last synced.',
     fix: null,
   };
 }
@@ -131,6 +168,10 @@ export function checklistRows(list: GuildChecklist, race: string | null = null):
         return [gearRow(item, bis)];
       case 'enchants':
         return [enchantsRow(item)];
+      case 'flask_food':
+        return [flaskFoodRow(item)];
+      case 'fire_resistance':
+        return [fireResistanceRow(item)];
       default:
         return [];
     }

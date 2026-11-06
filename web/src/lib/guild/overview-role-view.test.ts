@@ -43,6 +43,39 @@ describe('checklistRows', () => {
     expect(rows.map((row) => row.key)).toEqual(['level']);
   });
 
+  it('reads Onyxia attunement as the quest chain, flask and food by name, and the fire total', () => {
+    const rows = checklistRows(
+      checklist([
+        {
+          key: 'attunement',
+          state: 'fail',
+          attunement_kind: 'quest',
+          key_item: { id: 16309, name: 'Drakefire Amulet', quality: 3 },
+        },
+        {
+          key: 'flask_food',
+          state: 'fail',
+          supplies: [{ id: 13510, name: 'Flask of the Titans', kind: 'flask', count: 1 }],
+          missing: ['food'],
+        },
+        { key: 'fire_resistance', state: 'ok', resistance: 85 },
+      ]),
+    );
+    expect(rows).toEqual([
+      expect.objectContaining({
+        tone: 'miss',
+        title: "Attuned to Onyxia's Lair",
+        sub: 'The Drakefire Amulet quest is not done yet.',
+      }),
+      expect.objectContaining({
+        tone: 'warn',
+        title: 'No buff food in your bags',
+        sub: 'You have Flask of the Titans.',
+      }),
+      expect.objectContaining({ tone: 'ok', title: 'Fire resistance 85' }),
+    ]);
+  });
+
   it('asks the member to share gear the checklist cannot see, so the verdict never reads ready for it', () => {
     const rows = checklistRows(
       checklist([{ key: 'gear_gap', state: 'not_tracked', reason: 'gear_not_shared' }]),

@@ -57,11 +57,18 @@ export interface ChecklistItem {
   level?: number;
   required_level?: number;
   key_item?: GuildKeyItem;
+  /** What attunement asks for: the zone's key, or its quest chain (key_item is then the chain's item). */
+  attunement_kind?: 'key' | 'quest';
   upgrades?: number;
   gain_dps?: number;
   unit?: string;
   slots?: string[];
   missing_slots?: string[];
+  /** flask_food: the counted stacks in the bags, and what the minimum lacks. */
+  supplies?: { id: number; name: string; kind: 'flask' | 'elixir' | 'food'; count: number }[];
+  missing?: ('flask_or_elixir' | 'food')[];
+  /** fire_resistance: the total. */
+  resistance?: number;
 }
 
 export interface GuildChecklist {
