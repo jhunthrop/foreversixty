@@ -16,6 +16,9 @@
 
   const ROWS = 5;
 
+  /** The empty board's "Open the guild page" button; off on the guild landing, which is that page. */
+  let { emptyAction = true }: { emptyAction?: boolean } = $props();
+
   let rows = $state<GuildRankingRow[]>([]);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let attempt = $state(0);
@@ -54,9 +57,11 @@
 {:else if rows.length === 0}
   <div class="flex flex-col items-start gap-3" data-testid="home-top-guilds-empty">
     <p class="text-muted text-[14px]">{homeTopGuildsCopy.empty}</p>
-    <a class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4" href={homeTopGuildsCopy.emptyHref}>
-      {homeTopGuildsCopy.emptyAction}
-    </a>
+    {#if emptyAction}
+      <a class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4" href={homeTopGuildsCopy.emptyHref}>
+        {homeTopGuildsCopy.emptyAction}
+      </a>
+    {/if}
   </div>
 {:else}
   <ul class="reveal flex flex-col" data-testid="home-top-guilds">
