@@ -100,7 +100,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:4570 | 5.9 | 3 | spell:5177=32.2, other:attack/1=22.1, spell:8924=2.4, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 9850} |
+| 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:4570 | 7.0 | 3 | spell:5176=41.0, other:attack/1=27.4, spell:8921=12.4, spell:1259799=1.5 | {SpellID: 1322605}, {SpellID: 9850} |
 | 20 | 0000000000000000-50212010000000000000-0000000000000000 | bare | 60.4 | 5 | other:attack/1=182.1, spell:1082=49.5, spell:1079=9.3, spell:770/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
 | 30 | 0000000000000000-50212032123000000000-0000000000000000 | bare | 88.0 | 5 | other:attack/1=182.1, spell:6800=47.3, spell:9492=9.0, spell:778/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
 | 38 | 0000000000000000-50212032123012122000-0000000000000000 | bare | 105.1 | 6 | other:attack/1=182.1, spell:8992=46.2, spell:9493=9.6, spell:778/1=5.8, spell:1259799=1.5 | {SpellID: 1322605} |
@@ -115,6 +115,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Entangling Roots (spell 339)
 - Maul (spell 6807)
+- Moonfire (spell 8924)
+- Wrath (spell 5177)
 
 ### Level 20
 

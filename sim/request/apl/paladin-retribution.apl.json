@@ -225,7 +225,7 @@
       }
     },
     {
-      "notes": "Below 20% health, on its 6 second cooldown. Champion of the Light makes it instant, so you never stop swinging to cast it.",
+      "notes": "Below 20% health, on its 6 second cooldown. Champion of the Light makes it instant, so you never stop swinging to cast it. At 53, and at 54 for an Undead paladin, rank 1 does a little more than rank 2 for less mana.",
       "action": {
         "condition": {
           "isExecutePhase": {

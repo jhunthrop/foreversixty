@@ -315,6 +315,12 @@ def build_parser() -> argparse.ArgumentParser:
         required=True,
         help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
     )
+    lm.add_argument(
+        "--buffs-only",
+        action="store_true",
+        help="write simbuffs.json ALONE (name the buff ids IDS.md gained), leaving the "
+        "nightly-owned loot.json untouched; for a lane that changed the engine's buff ids",
+    )
 
     sp = sub.add_parser(
         "specs", help="generate the Go, TypeScript and JSON spec lists and their icon map"
@@ -719,9 +725,10 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "loot-merge":
         from pathlib import Path
 
-        from pipeline.loot import merge_loot_files
+        from pipeline.loot import merge_loot_files, merge_simbuffs_file
 
-        for path in merge_loot_files(args.build, Path(args.engine)):
+        merge = merge_simbuffs_file if args.buffs_only else merge_loot_files
+        for path in merge(args.build, Path(args.engine)):
             print(path)
     elif args.command == "simproto":
         from pathlib import Path

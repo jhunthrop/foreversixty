@@ -65,41 +65,76 @@ def floor_pairs(pairs: list[tuple[int, int]], levels: Mapping[int, int]) -> list
     )
 
 
-def build_point_levels(order: list[list[int]], trees: list[dict]) -> dict[int, int]:
-    """Spell id -> the level `order` spends its first point in the talent that teaches it."""
+def build_rank_levels(order: list[list[int]], trees: list[dict]) -> dict[tuple[int, int], int]:
+    """(spell id, rank) -> the level `order` spends that rank of the talent that teaches the
+    spell: rank 1 is its first point, rank N its Nth (an APL gate's rank tag)."""
     by_position = {
         (tree_index + 1, talent["tier"] + 1, talent["column"] + 1): talent
         for tree_index, tree in enumerate(trees)
         for talent in tree["talents"]
         if isinstance(talent.get("tier"), int) and isinstance(talent.get("column"), int)
     }
-    levels: dict[int, int] = {}
+    spent: dict[tuple[int, int, int], int] = {}
+    levels: dict[tuple[int, int], int] = {}
     for index, point in enumerate(order):
         talent = by_position.get(tuple(point))
         if talent is None:
             continue
-        ids = {talent.get("spell_id")} | {rank.get("spell_id") for rank in talent.get("ranks", [])}
+        rank = spent.get(tuple(point), 0) + 1
+        spent[tuple(point)] = rank
+        ids = {talent.get("spell_id")} | {r.get("spell_id") for r in talent.get("ranks", [])}
         for spell_id in ids:
             if isinstance(spell_id, int) and spell_id > 0:
-                levels.setdefault(spell_id, FIRST_TALENT_LEVEL + index)
+                levels.setdefault((spell_id, rank), FIRST_TALENT_LEVEL + index)
     return levels
 
 
-def load_spec_point_levels(build_dir: Path, spec: str, class_slug: str) -> dict[int, int]:
-    """Spell id -> the level the spec's published leveling build spends its talent's first
-    point, or the raid build's for a talent the leveling build never takes. A card row for a
-    talent's spell starts there, not at its tier's first level (round 22: Survival spends
-    Counterattack at 32, seven levels after its tier opens at 25). Empty with
-    no published build."""
+def first_point_levels(rank_levels: Mapping[tuple[int, int], int]) -> dict[int, int]:
+    """Spell id -> the level of its talent's first point (rank 1 of `rank_levels`)."""
+    return {spell_id: level for (spell_id, rank), level in rank_levels.items() if rank == 1}
+
+
+#: Auras a talent gives that rotation conditions name (Clearcasting from Elemental Focus):
+#: per class, aura spell id -> the talent's spell id.
+TALENT_OWNED_AURAS_FILE = "talent-owned-auras.json"
+
+
+def load_talent_owned_auras(curated_dir: Path, class_slug: str) -> dict[int, int]:
+    """Aura spell id -> the spell id of the talent that gives it, for `class_slug`."""
+    path = curated_dir / TALENT_OWNED_AURAS_FILE
+    if not path.exists():
+        return {}
+    rows = json.loads(path.read_text(encoding="utf-8"))["classes"].get(class_slug, [])
+    return {row["aura"]: row["talent_spell"] for row in rows}
+
+
+def load_spec_rank_levels(
+    build_dir: Path,
+    spec: str,
+    class_slug: str,
+    owned_auras: Mapping[int, int] | None = None,
+) -> dict[tuple[int, int], int]:
+    """(spell id, rank) -> the level the spec's published leveling build spends that rank of
+    its talent, or the raid build's for a rank the leveling build never takes. A card row for a
+    talent's spell starts at its first point, not at its tier's first level (round 22: Survival
+    spends Counterattack at 32, seven levels after its tier opens at 25), and a gate on rank N
+    (an APL rank tag) at its Nth (round 24: Enhancement's five-stack Lightning Bolt waits for
+    Maelstrom Weapon 5/5). An aura the talent gives (`owned_auras`, aura -> talent spell) has
+    its talent's levels (round 24: Fire Nova on Clearcasting waits for Elemental Focus).
+    Empty with no published build."""
     builds_path = build_dir / ADDON_BUILDS_FILE
     talents_path = build_dir / "talents" / f"{class_slug}.json"
     if not builds_path.exists() or not talents_path.exists():
         return {}
     builds = json.loads(builds_path.read_text(encoding="utf-8")).get(spec, {})
     trees = json.loads(talents_path.read_text(encoding="utf-8"))["trees"]
-    levels: dict[int, int] = {}
+    levels: dict[tuple[int, int], int] = {}
     for kind in ("leveling", "raid"):
         if kind in builds:
-            for spell_id, level in build_point_levels(builds[kind]["order"], trees).items():
-                levels.setdefault(spell_id, level)
+            for key, level in build_rank_levels(builds[kind]["order"], trees).items():
+                levels.setdefault(key, level)
+    for aura, talent_spell in (owned_auras or {}).items():
+        for (spell_id, rank), level in list(levels.items()):
+            if spell_id == talent_spell:
+                levels.setdefault((aura, rank), level)
     return levels

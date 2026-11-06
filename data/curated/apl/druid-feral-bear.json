@@ -327,7 +327,7 @@
         }
       },
       {
-        "notes": "On two or more targets, above 40 rage. It hits up to three; on a single boss, put the rage into Maul instead, and into Lacerate from 25 and Primal Bite from 40.",
+        "notes": "On two or more targets, above 40 rage. It hits up to three, but Maul stays your biggest threat on a pack too; on a single boss, put the rage into Maul instead, and into Lacerate from 25 and Primal Bite from 40.",
         "action": {
           "castSpell": {
             "spellId": {

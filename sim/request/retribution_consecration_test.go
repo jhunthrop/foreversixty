@@ -114,14 +114,13 @@ func containsKey(node any, key string) bool {
 	return false
 }
 
-// Re-measured on the mana budget (sim-accuracy round 23, 10,000 iterations,
-// seeds 1 and 50001, Human, Dwarf and Undead, every level from 40 to 59): the
-// budget leaves more mana for Consecration, which moves the cheap ranks. Rank 1
-// wins at 30 to 46 and at 50 to 53 for every race; rank 2 holds at 47 to 49
-// for Human and Dwarf; from 54 the races split (Human rank 1 at 54 and 55 and
-// rank 3 at 57; Dwarf rank 3 at 54 to 56 and rank 1 at 58 and 59; Undead
-// rank 1 at 47 and rank 3 at 54 to 58); at 60 the bare fight casts rank 4,
-// the raid fight keeps rank 5.
+// Re-measured on the talents the leveling order gives at each level
+// (sim-accuracy round 24, second pass; 10,000 iterations, seeds 1 and 50001,
+// Human, Dwarf and Undead, every level from 29 to 60). Rank 1 wins at 30 to
+// 52 for every race. Holy Conduit's second point at 53 (Consecration 40%
+// cheaper) makes rank 3 the best from 53 to 59 by 0.4 to 10%; the races no
+// longer split. At 60 the bare fight casts
+// rank 4, the raid fight keeps rank 5.
 func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	for _, c := range []struct {
 		preset string
@@ -130,45 +129,21 @@ func TestRetributionCastsTheReMeasuredConsecrationRanks(t *testing.T) {
 	}{
 		{BarePreset, 30, 26573},
 		{BarePreset, 43, 26573},
-		{BarePreset, 45, 26573},
-		{BarePreset, 48, 20116},
-		{BarePreset, 50, 26573},
-		{BarePreset, 53, 26573},
-		{BarePreset, 54, 26573},
-		{BarePreset, 57, 20922},
-		{BarePreset, 59, 20923},
+		{BarePreset, 47, 26573},
+		{BarePreset, 49, 26573},
+		{BarePreset, 51, 26573},
+		{BarePreset, 52, 26573},
+		{BarePreset, 53, 20922},
+		{BarePreset, 56, 20922},
+		{BarePreset, 59, 20922},
 		{BarePreset, 60, 20923},
 		{RaidPreset, 60, retributionConsecrationID},
 	} {
-		ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", c.preset, "human"))
-		if !ids[c.want] {
-			t.Errorf("%s %d: Consecration does not cast %d", c.preset, c.level, c.want)
-		}
-	}
-}
-
-// Sim-accuracy round 23: the races split where a keyed row beats the default
-// beyond error at both seeds (rank-choices.json notes carry the numbers).
-func TestRetributionConsecrationRankFollowsTheRace(t *testing.T) {
-	for _, c := range []struct {
-		race  string
-		level int
-		want  int32
-	}{
-		{"human", 53, 26573},
-		{"dwarf", 53, 26573},
-		{"undead", 53, 26573},
-		{"undead", 47, 26573},
-		{"dwarf", 47, 20116},
-		{"undead", 48, 20922},
-		{"dwarf", 55, 20922},
-		{"undead", 56, 20922},
-		{"dwarf", 58, 26573},
-		{"human", 58, 20923},
-	} {
-		ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", BarePreset, c.race))
-		if !ids[c.want] {
-			t.Errorf("%s %d: Consecration does not cast %d", c.race, c.level, c.want)
+		for _, race := range []string{"human", "dwarf", "undead"} {
+			ids := rotationIDs(t, "paladin-retribution", "paladin", c.level, specRankChoices("paladin-retribution", c.preset, race))
+			if !ids[c.want] {
+				t.Errorf("%s %s %d: Consecration does not cast %d", race, c.preset, c.level, c.want)
+			}
 		}
 	}
 }

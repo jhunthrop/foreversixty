@@ -96,7 +96,7 @@ Left out: Reckoning (extra attacks after a block or a crit; it adds a little thr
 5. **Swift Judgement** whenever it is ready.
 6. **Judgement** on cooldown, once Holy Shield's mana is safe.
 7. **Exorcism** on Undead and Demons.
-8. **Consecration** only above half mana. It makes far less threat per mana than Hammer of the Righteous, so it is how you spend mana you will not need.
+8. **Consecration** last, with mana to spare: cast it while the mana you have, plus what you regain less what you spend, still pays for it by the end of the fight, and also once you drop below 35% health, when mana held back may never get used. It makes far less threat per mana than Hammer of the Righteous, so it is how you spend mana you will not need. While you level, rank 1 is the better Consecration at 30 to 33, 40 to 48 and 50 to 57, because it goes down far more often; at the other levels use your newest rank, and rank 1 again at 60 without raid buffs.
 
 **Mana.** You run on blocks: Shield Specialization gives back 4% of your mana on a block, and Holy Strike under Shieldsworn triggers it too. Hold Holy Shield's cost in reserve at all times. If you are going dry, cut Consecration first, then Hammer of the Righteous, and never Holy Shield.
 
@@ -128,7 +128,7 @@ Mining and Blacksmithing make plate, shields and the tanking weapons. Engineerin
 
 Devotion Aura comes at 1, Judgement at 4, Holy Strike at 6 and Hammer of Justice at 8. At 10 you get Righteous Fury and Seal of Fury: with a shield on, every swing under Seal of Fury gives you an absorb, and judging it hits for Holy damage and taunts for 3 seconds.
 
-At 12, the class quest from your trainer teaches Redemption.
+At 12, the class quest from your trainer teaches Redemption. Holy Strike rank 2 also arrives at 12, but keep rank 1 on your bar to 14, and an Undead paladin to 15: it costs a fraction of the mana, and that mana goes into more Seals and Judgements.
 
 Most tanks level as Retribution and pick these up when they respec; the Retribution guide has those points. If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
 

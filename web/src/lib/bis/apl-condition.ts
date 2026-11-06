@@ -5,7 +5,7 @@
 // one of them, so the words have to come from the condition tree itself.
 //
 // Only the shapes the lists use today are read (health and mana comparisons, the mana
-// pace, the mana budget, "not already on the target"); a step with any other clause reads as `null` and
+// pace, the mana budget, income against spend, "not already on the target"); a step with any other clause reads as `null` and
 // keeps its note alone rather than a half-translated sentence.
 
 /** The fake raid the healer lists are written against: player 5 is the tank, 1-4 the party. */
@@ -101,8 +101,25 @@ const MANA_BUDGET_ATOM: Atom = {
   predicate: 'your mana and what you regain before the fight ends cover what is left to cast',
 };
 
+/** `manaIncomePerSecond >= manaSpentPerSecond`: the rotation is not drawing the pool down. */
+const MANA_KEEPS_UP_ATOM: Atom = {
+  who: null,
+  predicate: 'what you regain keeps up with what you spend',
+};
+
+function isIncomeAtLeastSpend(node: Node): boolean {
+  return (
+    node.op === 'OpGe' &&
+    isNode(node.lhs) &&
+    isNode(node.lhs.manaIncomePerSecond) &&
+    isNode(node.rhs) &&
+    isNode(node.rhs.manaSpentPerSecond)
+  );
+}
+
 function comparisonAtom(node: Node): Atom | null {
   if (node.op === 'OpGe' && isManaBudget(node.lhs)) return MANA_BUDGET_ATOM;
+  if (isIncomeAtLeastSpend(node)) return MANA_KEEPS_UP_ATOM;
   const word = COMPARISON_WORDS[String(node.op)];
   if (word === undefined || !isNode(node.lhs)) return null;
   const bound = constantOf(node.rhs);

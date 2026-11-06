@@ -228,3 +228,17 @@ func TestBossSwingsBlockedShareOfDamage(t *testing.T) {
 		t.Fatalf("got %+v", got)
 	}
 }
+
+func TestTankAndHealMarkdownReportTheMeanError(t *testing.T) {
+	res := &proto.RaidSimResult{IterationsDone: 4}
+	tank := tankMarkdown(api.SimRequest{Spec: "paladin-protection", Encounter: api.DefaultEncounter()}, &proto.ComputeStatsResult{}, res,
+		&proto.UnitMetrics{Threat: &proto.DistributionMetrics{Avg: 50, Stdev: 4}}, nil)
+	if !strings.Contains(tank, "| threat /s | 50.00 +/- 2.00 |") { // stdev 4 / sqrt(4 iterations)
+		t.Errorf("tank threat has no error:\n%s", tank)
+	}
+	heal := healMarkdown(api.SimRequest{Spec: "paladin-holy", Encounter: api.DefaultEncounter()}, &proto.ComputeStatsResult{}, res,
+		&proto.UnitMetrics{EffectiveHps: &proto.DistributionMetrics{Avg: 300, Stdev: 10}}, nil)
+	if !strings.Contains(heal, "| effective HPS | 300.00 +/- 5.00 |") {
+		t.Errorf("effective HPS has no error:\n%s", heal)
+	}
+}

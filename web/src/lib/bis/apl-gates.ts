@@ -68,6 +68,7 @@ export const CONDITION_NODES: ReadonlySet<string> = new Set([
   'dotRemainingTime',
   'isExecutePhase',
   'manaIncomePerSecond',
+  'manaSpentPerSecond',
   'math',
   'numberTargets',
   'remainingTime',
@@ -166,4 +167,26 @@ export function gateWords(gate: AplGate, name: string): string {
   if (gate.onTarget)
     return gate.positive ? `once ${name} is on the target` : `while ${name} is not on the target`;
   return gate.positive ? `while ${name} is up` : `while ${name} is not up`;
+}
+
+/** The APL values that ask whether a spell or aura is known, and the key naming its id. */
+const KNOWN_VALUES: Readonly<Record<string, string>> = { auraIsKnown: 'auraId', spellIsKnown: 'spellId' };
+
+function isRankTaggedKnown(node: unknown): boolean {
+  if (!isNode(node)) return false;
+  return Object.entries(KNOWN_VALUES).some(([value, idKey]) => {
+    const inner = node[value];
+    const id = isNode(inner) ? inner[idKey] : undefined;
+    return isNode(id) && typeof id.tag === 'number' && id.tag > 0;
+  });
+}
+
+/** Whether `condition` needs a talent rank NOT known (a negated, rank-tagged `auraIsKnown` or
+ *  `spellIsKnown`, the whole condition or a top-level `and` term): the step stops once the
+ *  build takes that rank, so the published band past it has no line for the step (the
+ *  pipeline's `addonrotation._excluded_ranks`; Arcane's Missiles until Missile Barrage 2/2). */
+export function endsAtTalentRank(condition: unknown): boolean {
+  if (!isNode(condition)) return false;
+  const terms = isNode(condition.and) && Array.isArray(condition.and.vals) ? condition.and.vals : [condition];
+  return terms.some((term) => isNode(term) && isNode(term.not) && isRankTaggedKnown(term.not.val));
 }

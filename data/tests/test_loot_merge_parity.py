@@ -22,7 +22,9 @@ import pytest
 from test_loot import prepare_build, prepare_curated
 
 from pipeline.classic_sources import ClassicDbSourceRecord, write_classic_sources
-from pipeline.loot import LOOT, merge_loot_files, write_loot_files
+from pipeline.loot import LOOT, merge_loot_files, merge_simbuffs_file, write_loot_files
+from pipeline.loot.buffs import SIMBUFFS
+from pipeline.manifest import read_manifest
 
 HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures/loot"
@@ -548,3 +550,45 @@ def test_battleground_spawns_are_loot_sources():
     from pipeline.loot import constants
 
     assert constants.BATTLEGROUND_SPAWNS_ARE_SOURCES is True
+
+
+def test_buffs_only_names_a_new_id_and_leaves_loot_json_alone(tmp_path: Path):
+    """`loot-merge --buffs-only`: an id IDS.md gained since the last full
+    `loot` run is named again, and the nightly-owned loot.json is not
+    rewritten; the manifest re-hashes simbuffs.json."""
+    root = _prepare_build(tmp_path)
+    engine_dir = _augmented_engine(tmp_path)
+    curated = prepare_curated(tmp_path)
+    ids_md = FIXTURES / "IDS.md"
+    write_loot_files(
+        BUILD,
+        engine_dir=engine_dir,
+        root=root,
+        overlay_dir=tmp_path / "no-overlay",
+        curated_dir=curated,
+        ids_md=ids_md,
+    )
+    build_dir = root / BUILD
+    full = json.loads((build_dir / SIMBUFFS).read_text(encoding="utf-8"))
+    dropped = sorted(full["entries"])[0]
+    trimmed = {**full, "entries": {k: v for k, v in full["entries"].items() if k != dropped}}
+    (build_dir / SIMBUFFS).write_text(json.dumps(trimmed), encoding="utf-8")
+    sentinel = b'{"sentinel": true}'
+    (build_dir / LOOT).write_bytes(sentinel)
+
+    written = merge_simbuffs_file(
+        BUILD, engine_dir=engine_dir, root=root, curated_dir=curated, ids_md=ids_md
+    )
+
+    assert written == [build_dir / SIMBUFFS]
+    merged = json.loads((build_dir / SIMBUFFS).read_text(encoding="utf-8"))
+    assert merged["entries"][dropped] == full["entries"][dropped]
+    assert (build_dir / LOOT).read_bytes() == sentinel
+    manifest_files = json.dumps(read_manifest(build_dir))
+    assert SIMBUFFS in manifest_files
+
+
+def test_buffs_only_refuses_a_build_with_no_simbuffs(tmp_path: Path):
+    root = _prepare_build(tmp_path)
+    with pytest.raises(SystemExit, match="run the full `loot` command first"):
+        merge_simbuffs_file(BUILD, engine_dir=_augmented_engine(tmp_path), root=root)

@@ -64,7 +64,7 @@ func TestElementalFlameShockRanksByBand(t *testing.T) {
 // best rank moves to rank 3 at 30 and rank 6 at 50. Round 16 measured the
 // rows at every level of their bands, not only the floor: a rank chosen at
 // 30 is 8 levels deeper in the gap by 39, and the best rank climbs with the
-// level. The filler (line 8, authored at rank 10 so a raid casts it as
+// level. The filler (line 9, authored at rank 10 so a raid casts it as
 // written) casts rank 3 to 33, 4 to 38, 5 to 44, 6 to 50, 7 to 56 and 8 from
 // 57 (bare 60 too): at 39 rank 5 is +11.8% over rank 3, at 49 rank 6 +29.7%
 // over rank 4, at 59 rank 8 +19.6% over rank 6, and at 40 rank 5 +0.5% over
@@ -82,7 +82,7 @@ func TestElementalLightningBoltRanksByBand(t *testing.T) {
 	}{
 		{30, map[int]bool{3: true, 5: true}}, {33, map[int]bool{3: true, 6: true}},
 		{34, map[int]bool{4: true, 6: true}}, {38, map[int]bool{4: true, 7: true}},
-		{39, map[int]bool{5: true, 7: true}}, {40, map[int]bool{5: true, 7: true}}, {44, map[int]bool{5: true, 8: true}},
+		{39, map[int]bool{4: true, 7: true}}, {40, map[int]bool{5: true, 7: true}}, {44, map[int]bool{5: true, 8: true}},
 		{45, map[int]bool{6: true, 8: true}}, {50, map[int]bool{6: true, 9: true}},
 		{51, map[int]bool{7: true, 9: true}}, {56, map[int]bool{7: true, 10: true}},
 		{57, map[int]bool{8: true, 10: true}}, {59, map[int]bool{8: true, 10: true}},

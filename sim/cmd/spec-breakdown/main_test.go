@@ -328,12 +328,12 @@ func TestBuildRequestTakesTheRace(t *testing.T) {
 }
 
 // A -rotation file casts the race's rank choices: Shadow at 40 casts Mind Blast
-// rank 4 (8104) as an Undead and the top rank, 6 (8106), as a Gnome (race-keyed
-// rows re-judged at sim-accuracy round 18).
+// rank 4 (8104) as a Troll and rank 5 (8105) as a Gnome (race-keyed rows
+// re-judged on the player's talents at sim-accuracy round 24).
 func TestLoadRotationFollowsTheRace(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "rot.json")
 	writeFile(t, path, `{"rotation":{"priorityList":[{"action":{"castSpell":{"spellId":{"spellId":10947}}}}]}}`)
-	for race, want := range map[string]int32{"undead": 8104, "gnome": 8106} {
+	for race, want := range map[string]int32{"troll": 8104, "gnome": 8105} {
 		rot, err := loadRotation(path, "priest-shadow", "priest", "bare", race, 40)
 		if err != nil {
 			t.Fatal(err)

@@ -86,6 +86,22 @@ describe('stepWords', () => {
     expect(stepWords({ condition: flipped })).toBeNull();
   });
 
+  it('reads income against spend: what you regain keeps up with what you spend', () => {
+    const keepsUp = {
+      cmp: {
+        op: 'OpGe',
+        lhs: { manaIncomePerSecond: { windowSeconds: 10 } },
+        rhs: { manaSpentPerSecond: { windowSeconds: 10 } },
+      },
+    };
+    expect(stepWords({ condition: keepsUp })).toEqual({
+      subject: null,
+      qualifiers: ['what you regain keeps up with what you spend'],
+    });
+    const fallsBehind = { cmp: { ...keepsUp.cmp, op: 'OpLt' } };
+    expect(stepWords({ condition: fallsBehind })).toBeNull();
+  });
+
   it('has no target phrase and no qualifiers for an unconditional self-cast', () => {
     expect(stepWords({})).toEqual({ subject: null, qualifiers: [] });
   });

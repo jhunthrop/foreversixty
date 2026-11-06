@@ -12,6 +12,7 @@ var ladderOrderSpecs = map[string]struct {
 	tree        int
 }{
 	"hunter-beast-mastery": {"hunter", "beast-mastery", 0},
+	"mage-fire":            {"mage", "fire", 1},
 }
 
 func TestEmbeddedLadderOrderMatchesCurated(t *testing.T) {

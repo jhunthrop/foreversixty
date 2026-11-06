@@ -237,6 +237,11 @@
             ],
             "ids": [
               {
+                "id": "flask_of_natural_aggression",
+                "label": "Flask of Natural Aggression",
+                "reason": "Forever's Alchemy flask (item 274274, client level 55): 30 Stamina and 2% crit in Mount Hyjal, Hyjal Summit and the Barrow Deeps (the 1.60.1.70790 server push 113570 values). The best Natural flask for most melee and within 1% of the best for the rest (Precision for Retribution and Assassination, Accuracy for Arms), against no flask before."
+              },
+              {
                 "id": "elixir_of_the_mongoose",
                 "label": "Elixir of the Mongoose",
                 "reason": "Agility and crit; client level 46."
@@ -281,6 +286,11 @@
             ],
             "ids": [
               {
+                "id": "flask_of_natural_aggression",
+                "label": "Flask of Natural Aggression",
+                "reason": "30 Stamina and 2% crit in the Barrow Deeps and Hyjal (item 274274, client level 55). The best Natural flask for Beast Mastery and Marksmanship; Survival gains slightly more from Precision."
+              },
+              {
                 "id": "elixir_of_the_mongoose",
                 "label": "Elixir of the Mongoose",
                 "reason": "Agility and crit; client level 46."
@@ -308,9 +318,9 @@
             ],
             "ids": [
               {
-                "id": "flask_of_the_titans",
-                "label": "Flask of the Titans",
-                "reason": "The tank flask: 1200 health for two hours. Its recipe drops from General Drakkisath in Blackrock Spire (data/builds/1.60.1.70009/loot.json), Phase 1 content, so unlike the Zanza potions it is available before Ahn'Qiraj."
+                "id": "flask_of_natural_precision",
+                "label": "Flask of Natural Precision",
+                "reason": "The tank flask for threat: 30 Stamina and 2% less chance to be dodged or parried in Mount Hyjal, Hyjal Summit and the Barrow Deeps (item 274275, client level 55; the 1.60.1.70790 server push 113570 values). Tanks are judged on threat, and it leads every other flask for all three tanks, Flask of the Titans included (which only adds health)."
               },
               {
                 "id": "elixir_of_greater_defense",

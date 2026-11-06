@@ -74,9 +74,9 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 }
 
 // A request's rank choices follow its character's race: the same Shadow priest at 40 casts
-// Mind Blast rank 4 as an Undead and the top rank (6) as a Gnome (round 18).
+// Mind Blast rank 4 as a Dwarf and rank 5 as a Gnome (round 24).
 func TestBuildCastsTheRacesRankChoice(t *testing.T) {
-	for race, want := range map[string]string{"undead": `"spellId":8104`, "gnome": `"spellId":8106`} {
+	for race, want := range map[string]string{"dwarf": `"spellId":8104`, "gnome": `"spellId":8105`} {
 		req := api.SimRequest{
 			EngineVersion: enginever.Version, Spec: "priest-shadow",
 			Source:    api.CharacterSource{Kind: api.SourceManual},
@@ -109,12 +109,13 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 	}{
 		// Mind Blast at 40: rank 4 (8104) for a Dwarf or a Night Elf too, whom rank 3 (8103)
 		// never beats; a Gnome casts the top rank, 6 (8106). Re-judged level by level at
-		// sim-accuracy round 18.
-		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8106, 8104},
+		// sim-accuracy round 18. Round 24, on the talents at 40: a Gnome casts rank 5 (8105).
+		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8105, 8106},
 		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8104, 8103},
 		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8104, 8103},
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned for every race.
-		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 10945, 8102},
+		// Round 24: a Night Elf casts rank 5 (8105) at 50 and 51.
+		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 8105, 10945},
 		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 10945, 8103},
 		// Devouring Plague at 50: rank 2 (19276) for every race since sim-accuracy round 18
 		// (rank 1 for most races until then).
@@ -130,7 +131,8 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 		// Rows no race loses with lose their race key: Fire Blast rank 3 (2138) at 30 and Prayer
 		// of Healing rank 1 at bare 60. (Corruption rank 3 at 40 was one; round 14 found it ties
 		// for every race, and the row is gone: see below.)
-		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2138, 8412},
+		// Round 24 (on the talents at 30): rank 2 (2137) for every race at 30 to 35.
+		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2137, 8412},
 		// Sim-accuracy round 18: rank 2 (996, whole at 60) beats rank 1 (596, 55% of its bonus) at bare 60.
 		{"Gnome Prayer of Healing at bare 60", "priest-holy", "priest", BarePreset, "gnome", 60, 996, 596},
 		// Protection's Holy Strike rank 1 (679) at 40: the mana it saves buys more Judgements
@@ -190,7 +192,7 @@ func TestRound16MageRankRowsFollowTheLevel(t *testing.T) {
 		want, not  int32
 	}{
 		{"Frost Frostbolt at 26", "mage-frost", 26, 7322, 8406},
-		{"Frost Frostbolt at 29", "mage-frost", 29, 7322, 8406},
+		{"Frost Frostbolt at 29", "mage-frost", 29, 8406, 7322}, // round 24: a Gnome casts rank 5 at 29
 		{"Frost Frostbolt at 30", "mage-frost", 30, 8406, 7322},
 		{"Frost Frostbolt at 32", "mage-frost", 32, 8406, 8407},
 		{"Frost Frostbolt at 33", "mage-frost", 33, 8406, 8407},
@@ -278,7 +280,8 @@ func TestRound20DevouringPlagueRankOneAt28ForGnomeAndTroll(t *testing.T) {
 		{"Gnome Devouring Plague at 28", "gnome", 28, 2944, 19276},
 		{"Gnome Devouring Plague at 29", "gnome", 29, 2944, 19276},
 		{"Troll Devouring Plague at 28", "troll", 28, 2944, 19276},
-		{"Troll Devouring Plague at 29", "troll", 29, 2944, 19276},
+		// Round 24, on the talents at 29: a Troll casts rank 2 (+0.3% / +0.4%).
+		{"Troll Devouring Plague at 29", "troll", 29, 19276, 2944},
 		{"Human Devouring Plague at 28 is the top rank", "human", 28, 19276, 2944},
 		{"Undead Devouring Plague at 29 is the top rank", "undead", 29, 19276, 2944},
 		{"Gnome Devouring Plague at 30 is rank 1 as before", "gnome", 30, 2944, 19276},
@@ -340,6 +343,57 @@ func TestRound21SurvivalRaptorStrikeRows(t *testing.T) {
 		{"Night Elf at 47 keeps rank 5", "night-elf", 47, r5, 14264},
 	} {
 		ids := rotationIDs(t, "hunter-survival", "hunter", c.level, specRankChoices("hunter-survival", BarePreset, c.race))
+		if !ids[c.want] || ids[c.not] {
+			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
+		}
+	}
+}
+
+// Sim-accuracy round 24 (casters lane): the mage and warlock rows re-judged on the talents the
+// player has at each level (spec-breakdown -level N -rank, frozen BiS, 10,000 iterations, seeds 1
+// and 50001, every race of the class), and the rank sweep at the two levels after each new rank
+// (design/reviews/2026-11-05-sim-audit-round24/casters.md).
+func TestRound24CasterRankRows(t *testing.T) {
+	for _, c := range []struct {
+		name, spec, class, preset, race string
+		level                           int
+		want, not                       int32
+	}{
+		// Fire Blast rank 2 (2137) at 30 to 35, rank 3 (2138) at 36 to 39, judged jointly with Pyroblast.
+		{"Gnome Fire Blast at 30", "mage-fire", "mage", BarePreset, "gnome", 30, 2137, 2138},
+		{"Undead Fire Blast at 35", "mage-fire", "mage", BarePreset, "undead", 35, 2137, 2138},
+		{"Human Fire Blast at 36", "mage-fire", "mage", BarePreset, "human", 36, 2138, 2137},
+		// Scorch rank 1 (2948) from 28, when rank 2 arrives.
+		{"Orc Scorch at 28", "mage-fire", "mage", BarePreset, "orc", 28, 2948, 8444},
+		// Pyroblast: rank 2 (12505) at 30 to 33 and 36 to 37, rank 3 (12522) at 34, 35 and 38 to 40.
+		{"Human Pyroblast at 30", "mage-fire", "mage", BarePreset, "human", 30, 12505, 12522},
+		{"Gnome Pyroblast at 34", "mage-fire", "mage", BarePreset, "gnome", 34, 12522, 12505},
+		{"Gnome Pyroblast at 36", "mage-fire", "mage", BarePreset, "gnome", 36, 12505, 12523},
+		{"Orc Pyroblast at 39", "mage-fire", "mage", BarePreset, "orc", 39, 12522, 12523},
+		// Fireball rank 4 (3140) at 24 for every race but a Gnome.
+		{"Undead Fireball at 24", "mage-fire", "mage", BarePreset, "undead", 24, 3140, 8400},
+		{"Gnome Fireball at 24", "mage-fire", "mage", BarePreset, "gnome", 24, 8400, 3140},
+		// Arcane's Frostbolt rank 4 (7322) from 26, when rank 5 (8406) arrives, to 33.
+		{"Troll Arcane Frostbolt at 26", "mage-arcane", "mage", BarePreset, "troll", 26, 7322, 8406},
+		{"Human Arcane Frostbolt at 29", "mage-arcane", "mage", BarePreset, "human", 29, 7322, 8406},
+		// Frost's Frostbolt at 29: rank 5 for a Gnome, Orc or Undead; rank 4 for a Human to 31.
+		{"Gnome Frost Frostbolt at 29", "mage-frost", "mage", BarePreset, "gnome", 29, 8406, 7322},
+		{"Troll Frost Frostbolt at 29", "mage-frost", "mage", BarePreset, "troll", 29, 7322, 8406},
+		{"Human Frost Frostbolt at 30", "mage-frost", "mage", BarePreset, "human", 30, 7322, 8406},
+		{"Gnome Frost Frostbolt at 30", "mage-frost", "mage", BarePreset, "gnome", 30, 8406, 7322},
+		// Destruction's Shadow Bolt rank 2 (695) at 20 to 23; rank 3 (705) at 24 for a Gnome or
+		// Human; rank 4 (1088) at 28 for a Troll.
+		{"Orc Destruction Shadow Bolt at 20", "warlock-destruction", "warlock", BarePreset, "orc", 20, 695, 705},
+		{"Human Destruction Shadow Bolt at 24", "warlock-destruction", "warlock", BarePreset, "human", 24, 705, 1088},
+		{"Troll Destruction Shadow Bolt at 24", "warlock-destruction", "warlock", BarePreset, "troll", 24, 1088, 705},
+		{"Troll Destruction Shadow Bolt at 28", "warlock-destruction", "warlock", BarePreset, "troll", 28, 1088, 1106},
+		{"Orc Destruction Shadow Bolt at 28", "warlock-destruction", "warlock", BarePreset, "orc", 28, 1106, 1088},
+		// Demonology's Shadow Bolt rank 5 (1106) at 36 and 37, when rank 6 (7641) arrives.
+		{"Undead Demonology Shadow Bolt at 36", "warlock-demonology", "warlock", BarePreset, "undead", 36, 1106, 7641},
+		// Fire's Fireball rank 10 (10150) at bare 60; the raid set keeps rank 11 (10151).
+		{"Human Fireball at bare 60", "mage-fire", "mage", BarePreset, "human", 60, 10150, 10151},
+	} {
+		ids := rotationIDs(t, c.spec, c.class, c.level, specRankChoices(c.spec, c.preset, c.race))
 		if !ids[c.want] || ids[c.not] {
 			t.Errorf("%s: want %d cast and %d not", c.name, c.want, c.not)
 		}

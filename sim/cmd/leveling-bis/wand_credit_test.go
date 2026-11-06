@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"testing"
 
@@ -182,5 +183,95 @@ func TestTheFinalWandCheckReplacesAWandTheFinalSetOutgrew(t *testing.T) {
 	fake = &fakeEngine{DPSByGear: map[string]float64{"ranged=13064;": 149.0, "ranged=5253;": 148.7, "ranged=249144;": 148.0}}
 	if out, _ := finalWandCheck(fake, specInfo{}, "human", "priest", 40, "", vb, map[string][]scored{"ranged": pool}); out.picks["ranged"].Item.ID != 5253 {
 		t.Errorf("a 0.2%% lead replaced the wand; want it kept under swapMargin")
+	}
+}
+
+// Round 24 (items lane, from the BiS lane): the Alliance Destruction raid
+// set wore Torch of Light (6 spell power, 11 Spirit) over Brilliant Wand
+// (9 spell power, 7 Intellect). A raid warlock never shoots, so neither
+// wand earns wand credit and both score on their stats; Torch scored first
+// only on that band's Spirit weight (0.394, inside its own noise bar; the
+// horde run of the same build measured 0.139). The tournament then took the
+// higher of two 300-iteration runs, Torch by 0.07 DPS against errors of
+// about 2, and nothing after it moves a wand by less than 1%. On the frozen
+// set Brilliant Wand is 0.24 to 0.34% ahead at 10,000 iterations on both
+// seeds and factions. A lead inside the combined error at the verify
+// harness is now settled at the guard harness.
+func TestTheWandTournamentSettlesALeadInsideTheErrorAtTheGuardHarness(t *testing.T) {
+	wand := func(id int, name string, score float64) scored {
+		return scored{candidate: candidate{ID: id, Name: name, ClassID: itemClassWeapon, SubclassID: wandSubclassID, DPS: 60, Slots: []string{"ranged"}}, Score: score, HasSource: true}
+	}
+	pool := []scored{wand(279246, "Torch of Light", 10.33), wand(249385, "Brilliant Wand", 10.22), wand(249237, "Greater Eternal Wand", 9)}
+	picks := map[string]slotPick{"ranged": slotPickFrom(pool)}
+	spec := specInfo{Spec: "warlock-destruction", ClassSlug: "warlock", Role: "dps"}
+	verifyRun := map[string]float64{"ranged=279246;": 865.24, "ranged=249385;": 865.17, "ranged=249237;": 863.7}
+	guardRun := map[string]float64{"ranged=279246;": 731.25, "ranged=249385;": 733.36, "ranged=249237;": 732.8}
+	fake := &fakeEngine{
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			if req.Iterations == guardIterations(spec) {
+				return guardRun[gearKey(req.Character.Gear)], nil
+			}
+			return verifyRun[gearKey(req.Character.Gear)], nil
+		},
+		StdErrFunc: func(req api.SimRequest) float64 {
+			if req.Iterations == guardIterations(spec) {
+				return 0.78
+			}
+			return 2.1
+		},
+	}
+	out, _ := rankWandSlot(fake, spec, "gnome", "warlock", 60, "", picks, map[string][]scored{"ranged": pool})
+	if got := out["ranged"].Item.ID; got != 249385 {
+		t.Fatalf("ranged = %d, want Brilliant Wand (249385): Torch's 0.07 lead was inside the error and the guard harness has Brilliant 2.1 ahead", got)
+	}
+	if ru := out["ranged"].RunnerUp; ru == nil || ru.ID != 249237 {
+		t.Errorf("runner-up = %+v, want Greater Eternal Wand, second at the guard harness", ru)
+	}
+	if got := out["ranged"].Item.MeasuredDPS; got != 733.36 {
+		t.Errorf("MeasuredDPS = %v, want the guard harness reading 733.36", got)
+	}
+}
+
+// A lead beyond the combined error at the verify harness needs no guard run.
+func TestTheWandTournamentRunsNoGuardForALeadBeyondTheError(t *testing.T) {
+	wand := func(id int, score float64) scored {
+		return scored{candidate: candidate{ID: id, Name: fmt.Sprint(id), ClassID: itemClassWeapon, SubclassID: wandSubclassID, DPS: 60, Slots: []string{"ranged"}}, Score: score, HasSource: true}
+	}
+	pool := []scored{wand(1, 3), wand(2, 2)}
+	picks := map[string]slotPick{"ranged": slotPickFrom(pool)}
+	fake := &fakeEngine{DPSByGear: map[string]float64{"ranged=1;": 800, "ranged=2;": 790}, DefaultStdErr: 2}
+	out, _ := rankWandSlot(fake, specInfo{Role: "dps"}, "orc", "warlock", 60, "", picks, map[string][]scored{"ranged": pool})
+	if out["ranged"].Item.ID != 1 {
+		t.Fatalf("ranged = %d, want 1", out["ranged"].Item.ID)
+	}
+	if len(fake.Calls) != 2 {
+		t.Errorf("sims = %d, want 2 (no guard run)", len(fake.Calls))
+	}
+}
+
+// The final check compares the best wand with the worn one inside the same
+// tournament: when a tie went to the guard harness both readings are at the
+// guard count, so a 300-iteration set figure on another scale cannot fake a
+// 1% lead.
+func TestTheFinalWandCheckComparesTheWornWandInTheSameHarness(t *testing.T) {
+	wand := func(id int, score float64) scored {
+		return scored{candidate: candidate{ID: id, Name: fmt.Sprint(id), ClassID: itemClassWeapon, SubclassID: wandSubclassID, DPS: 60, Slots: []string{"ranged"}}, Score: score, HasSource: true}
+	}
+	pool := []scored{wand(1, 3), wand(2, 2)}
+	worn := pool[1]
+	vb := verifiedBand{picks: map[string]slotPick{"ranged": {Item: &worn}}, setDPS: 700}
+	spec := specInfo{Role: "dps"}
+	fake := &fakeEngine{
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			if req.Iterations == guardIterations(spec) {
+				return map[string]float64{"ranged=1;": 733, "ranged=2;": 731}[gearKey(req.Character.Gear)], nil
+			}
+			return map[string]float64{"ranged=1;": 865, "ranged=2;": 864}[gearKey(req.Character.Gear)], nil
+		},
+		DefaultStdErr: 2,
+	}
+	out, _ := finalWandCheck(fake, spec, "orc", "warlock", 60, "", vb, map[string][]scored{"ranged": pool})
+	if got := out.picks["ranged"].Item.ID; got != 2 {
+		t.Fatalf("ranged = %d, want the worn wand kept: 733 against its own 731 is under 1%%", got)
 	}
 }

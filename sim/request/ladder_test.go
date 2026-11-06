@@ -189,7 +189,11 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		t.Fatal(err)
 	}
 	talentSpellIDs = expandTalentSpellIDs(talentSpellIDs, abilities)
-	talentSpellIDs = addTalentOwnedAuras(class, talentSpellIDs)
+	owned, err := talentOwnedAuraIDs(repoRoot, class)
+	if err != nil {
+		t.Fatal(err)
+	}
+	talentSpellIDs = addTalentOwnedAuras(owned, talentSpellIDs)
 	rankLevelByID := idLearnLevel(ranks, class)
 
 	var rows []ladderRow
@@ -477,9 +481,27 @@ func TestLadderLearnLevelOverridesMirrorTheRewrites(t *testing.T) {
 // the ladder's zero-points exemption has to find it through that talent.
 func TestAddTalentOwnedAurasExemptsWintersChill(t *testing.T) {
 	const wintersChillNode = 105763
-	got := addTalentOwnedAuras("mage", map[int]int{11180: wintersChillNode})
+	owned, err := talentOwnedAuraIDs(filepath.Join("..", ".."), "mage")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := addTalentOwnedAuras(owned, map[int]int{11180: wintersChillNode})
 	if node, ok := got[12579]; !ok || node != wintersChillNode {
 		t.Errorf("Winter's Chill aura 12579 -> node %d (present %v), want %d", node, ok, wintersChillNode)
+	}
+}
+
+// Round 24 (platform): Clearcasting (16246) is Elemental Focus's (16164), read from the
+// same curated table the card pipeline reads.
+func TestAddTalentOwnedAurasExemptsClearcasting(t *testing.T) {
+	const elementalFocusNode = 104768
+	owned, err := talentOwnedAuraIDs(filepath.Join("..", ".."), "shaman")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := addTalentOwnedAuras(owned, map[int]int{16164: elementalFocusNode})
+	if node, ok := got[16246]; !ok || node != elementalFocusNode {
+		t.Errorf("Clearcasting 16246 -> node %d (present %v), want %d", node, ok, elementalFocusNode)
 	}
 }
 

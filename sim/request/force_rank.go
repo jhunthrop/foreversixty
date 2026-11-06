@@ -14,8 +14,9 @@ import (
 // a probe that swapped only the cast left a DoT condition watching the
 // authored rank, so the swapped line recast on every global and Shadow Word:
 // Pain rank 4 read -29%. It errs when the rank is not learned by level.
-// Run RewriteRotationRanks after it: the forced id no longer matches a rank
-// row keyed on the authored id, so the forced rank is what the line casts.
+// Run RewriteForcedRotationRanks after it with the forced authored ids: it
+// drops the rank rows on them, so the forced rank is what the line casts,
+// the authored rank itself included.
 func ForceRotationRank(raw []byte, class string, authored int32, rank, level int) ([]byte, error) {
 	forced, ok := spellranks.SpellIDOfRank(class, authored, rank, level)
 	if !ok {
