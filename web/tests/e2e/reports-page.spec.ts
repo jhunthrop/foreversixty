@@ -83,10 +83,8 @@ test('signed in, it lists the reports newest first, each opening its report', as
   await page.goto('/reports');
   const rows = page.getByTestId('your-reports').getByTestId('report-row');
   await expect(rows).toHaveCount(2);
-  await expect(rows.nth(0).getByRole('link', { name: 'Tuesday raid' })).toHaveAttribute(
-    'href',
-    '/reports/newreport2ab',
-  );
+  await expect(rows.nth(0)).toContainText('Tuesday raid');
+  await expect(rows.nth(0)).toHaveAttribute('href', '/reports/newreport2ab');
   await expect(rows.nth(1)).toContainText('Monday raid');
   await expect(page.getByTestId('your-reports-signin')).toHaveCount(0);
 });
@@ -96,7 +94,7 @@ test('signed in with no reports, it says No logs yet, with the upload and the sa
   await page.goto('/reports');
   const empty = page.getByTestId('my-reports-empty');
   await expect(empty).toContainText('No logs yet.');
-  await expect(empty.getByRole('link', { name: 'Upload a log' })).toHaveAttribute('href', '/logs');
+  await expect(empty.getByRole('link', { name: 'Upload a log' })).toHaveAttribute('href', '/logs#upload');
   await expect(page.getByTestId('my-reports-empty-secondary')).toHaveAttribute('href', SAMPLE_REPORT_PATH);
 });
 

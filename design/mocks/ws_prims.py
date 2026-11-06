@@ -262,7 +262,7 @@ PRIM_CSS += '''
 .rg-l .bd{grid-area:bd;font-size:13px;line-height:18px;color:var(--text)}
 .rg-rows{min-width:0}
 .rr{position:relative;align-items:center;min-height:var(--row-h);padding:8px 16px;border-bottom:1px solid var(--line-soft)}
-.rg-rows>.rr:last-child,.rl>.rr:last-child{border-bottom:0}
+.rg-rows>.rr:last-child,.rl>.rr:last-child,.rl>[role=list]>.rr:last-child{border-bottom:0}
 .rr::before{content:"";position:absolute;top:0;bottom:0;left:calc(-1 * var(--grp-w));width:3px;background:transparent;z-index:1}
 .rr:hover,.rr.hov{background:var(--hover)}.rr:hover::before,.rr.hov::before{background:var(--c)}.rr:hover .meter>i,.rr.hov .meter>i{filter:brightness(1.18)}
 .rr.cur{background:#e5b9551a}.rr.cur::before{background:var(--gold)}
@@ -325,7 +325,7 @@ def RankRow(rank: str, crest: str, color: str, name: str, sub: str, frac: float,
     you_html = f'<span class="pill tag you">{you}</span>' if you else ''
     lk = ''.join(f'<a href="#" class="{"p" if p else ""}{" " + state.split(":")[1] if state.startswith("link:") and i == 0 else ""}">{t}</a>' for i, (t, p) in enumerate(links))
     cls = 'rr cols' + (' cur' if selected else '') + (' hov' if state == 'hover' else '')
-    return (f'<div class="{cls}" style="--c:{color}"><span class="rk">{rank}</span><span class="ld">{crest}</span>'
+    return (f'<div class="{cls}" role="listitem" style="--c:{color}"><span class="rk">{rank}</span><span class="ld">{crest}</span>'
             f'<div class="nm"><span class="ttl"><a href="#">{name}</a>{you_html}</span><span class="sub">{sub}</span>{low_html}</div>'
             f'<span class="br">{MeterClass(frac, color)}</span>{first}<span class="x">{extra}</span>'
             f'<span class="gp{" top" if gap_top else ""}">{gap}{tie_html}</span><span class="lk">{lk}</span></div>')
@@ -339,7 +339,8 @@ def RankGroup(letter: str, color: str, band: str, count: str, rows: list[str]) -
 
 def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, links3: bool = False, tank: bool = False) -> str:
     cls = 'rl' + (' grouped' if grouped else '') + (' links3' if links3 else '') + (' tank' if tank else '')
-    return f'<div class="{cls}" style="--n:{n_figs}">{heads}{body}</div>'
+    # the built RankList's semantics: the heads are hidden from assistive tech, the rows an ordered list
+    return f'<div class="{cls}" style="--n:{n_figs}">{heads}<div role="list">{body}</div></div>'
 
 
 # ------------------------------------------------ primitives added by the sim round (2026-11-06; design/specs/2026-11-06-sim.md section 4)

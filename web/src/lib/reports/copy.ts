@@ -10,9 +10,8 @@ export const recentReportsCopy = {
   older: 'Older reports',
 } as const;
 
-/** The page band's own copy (logs spec 2026-10-11 section 2.2): eyebrow, h1 and the one job line. */
+/** The page head's own copy (logs spec 2026-11-07 section 4): the h1 and the one meta line. */
 export const logsBandCopy = {
-  eyebrow: 'Combat logs',
   h1: 'Logs',
   jobLine: 'Upload a combat log or log live, then read every pull.',
 } as const;

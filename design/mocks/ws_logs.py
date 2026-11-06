@@ -46,6 +46,11 @@ UPDATED = datetime.strptime(FACTS['board_you']['updated_at'][:10], '%Y-%m-%d')
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
 
 
+# A Button that navigates (sign in, the companion's step, the upload) is a link, as the build's is; one that acts on the
+# page (a pairing code, Try again) is a button.
+LinkButton = _Button
+
+
 def Button(label: str, primary: bool = False, small: bool = False) -> str:
     return _Button(label, primary, small).replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
 
@@ -70,10 +75,13 @@ def report_title(r: dict) -> str:
 
 
 PAGE_CSS = '''<style>
+/* the built Section's body sits 12 px under its hairline whatever it holds (ui/Section.svelte) */
+section>.sec-h+*{margin-top:12px}.empty{line-height:20px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .ans-who{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap}.ans-who b{font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px}
 @media(min-width:900px){.head .ans{min-width:360px}.ans-who{justify-content:flex-end}.ans-links{justify-content:flex-end}}
 .prose p{font-size:15px;line-height:24px;max-width:72ch;margin-top:12px}.prose p.muted{color:var(--muted)}
-.up{display:flex;flex-direction:column;gap:12px;padding:18px 20px}.up.open{padding:16px 0 0}.up p{font-size:15px;line-height:24px;max-width:72ch}.up .t-small{max-width:72ch}
+.up{display:flex;flex-direction:column;gap:12px;padding:18px 20px}.up.open{padding:4px 0 0}.up p{font-size:15px;line-height:24px;max-width:72ch}.up .t-small{max-width:72ch}
 .up-act{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 code{font:13px/20px ui-monospace,Menlo,monospace;color:var(--strong)}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;font-size:13px;color:var(--muted)}.legend b{font:700 13px/20px var(--font-body)}
@@ -120,7 +128,7 @@ def recent_section() -> str:
     # public report has neither, so the feed is its empty line and the sample row)
     feed = [report_row(r) for r in MINE['recent'] if r['kill_count'] > 0 or (r.get('zone') or '').strip()]
     body = (f'<p class="empty">{escape(rc["empty"])}</p>' if not feed else '') + Rows(feed + [sample_row()], open_=True)
-    return Section(rc['heading'], body, action=Link('All public reports &rsaquo;'))
+    return Section(rc['heading'], body)   # no page lists every public report yet: no action
 
 
 def upload_body(state: str) -> str:
@@ -130,16 +138,18 @@ def upload_body(state: str) -> str:
              'and <code>WTF</code>. Up to 4 GB. Type <code>/combatlog</code> again to stop logging first, so the file is whole.</p>')
     if state == 'out':
         zone = DropZone('<span>Drop <code>WoWCombatLog.txt</code> here, or</span>', '<span class="link muted">choose a file</span>', off=True)
-        act = (f'<p>Uploading needs a signed-in account; the report is filed under it.</p><div class="up-act">{Button(COPY["myReportsCopy"]["signInAction"], primary=True)}'
+        act = (f'<p>Uploading needs a signed-in account; the report is filed under it.</p><div class="up-act">{LinkButton(COPY["myReportsCopy"]["signInAction"], primary=True)}'
                f'{Link(COPY["yourReportsPageCopy"]["sampleAction"] + " &rsaquo;")}</div>')
         return f'<div class="up">{intro}{zone}{act}</div>'
-    zone = DropZone('<span>Drop <code>WoWCombatLog.txt</code> here, or</span>', '<a class="link" href="#">choose a file</a>')
+    # the shipped control: a visually hidden file input and its label (the input is the accessible control)
+    zone = DropZone('<span>Drop <code>WoWCombatLog.txt</code> here, or</span>',
+                    '<input id="upload-file" class="sr-only" type="file" accept=".txt,text/plain"><label class="link" for="upload-file">choose a file</label>')
     return f'<div class="up{" open" if state == "open" else ""}">{intro}{zone}</div>'
 
 
 def companion_section(signed_in: bool) -> str:
     lc = COPY['logsCompanionCopy']
-    body = f'<div class="up open"><p>{escape(lc["pointer"])}</p><div class="up-act">{Button(lc["pointerLink"])}</div>'
+    body = f'<div class="up open"><p>{escape(lc["pointer"])}</p><div class="up-act">{LinkButton(lc["pointerLink"])}</div>'
     if signed_in:
         body += f'<span class="t-label">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(COPY["pairingCopy"]["companionFirst"])}</p><div class="up-act">{Button("Get a pairing code", small=True)}</div>'
     return Section('The companion', body + '</div>', meta='Live, while you raid')
@@ -181,11 +191,11 @@ def reports_page(state: str) -> str:
     yc, mc = COPY['yourReportsPageCopy'], COPY['myReportsCopy']
     n = len(MINE['rows'])
     meta = [escape(yc['job'])] + ([f'{n} report{"s" if n != 1 else ""}'] if state == 'list' else [])
-    head = PageHeader(escape(yc['title']), meta=meta, actions=Button(mc['uploadAction']) if state in ('list', 'empty') else '')
+    head = PageHeader(escape(yc['title']), meta=meta, actions=LinkButton(mc['uploadAction']) if state in ('list', 'empty', 'failed') else '')
     if state == 'out':
-        inner = f'<div class="empty"><p>{escape(yc["signedOut"])}</p><div class="act">{Button(mc["signInAction"], primary=True)}{Link(yc["sampleAction"] + " &rsaquo;")}</div></div>'
+        inner = f'<div class="empty"><p>{escape(yc["signedOut"])}</p><div class="act">{LinkButton(mc["signInAction"], primary=True)}{Link(yc["sampleAction"] + " &rsaquo;")}</div></div>'
     elif state == 'empty':
-        inner = f'<div class="empty"><p>{escape(yc["empty"])} {escape(mc["empty"].split(". ", 1)[1])}</p><div class="act">{Button(mc["uploadAction"], primary=True)}{Link(yc["sampleAction"] + " &rsaquo;")}</div></div>'
+        inner = f'<div class="empty"><p>{escape(yc["empty"])}</p><div class="act">{LinkButton(mc["uploadAction"], primary=True)}{Link(yc["sampleAction"] + " &rsaquo;")}</div></div>'
     elif state == 'failed':
         inner = f'<div class="empty" role="alert"><p>{escape(mc["failed"])}</p><div class="act">{Button("Try again", small=True)}</div></div>'
     else:
@@ -366,7 +376,7 @@ def ratings_page() -> str:
                  trail='<span class="t-small">The sample</span>' if t['tier'] == tier else '').replace('<div class="row', f'<div style="--c:{tcol[t["tier"]]}" class="row', 1)
              for t in tiers]
     rail = (Section(sc['tierColumn'] + 's', f'<div class="tiers">{Rows(trows, open_=True)}</div>' + f'<p class="t-small" style="margin-top:10px">{escape(sc["tiersNote"])}</p>')
-            + Section(sc['explainerLogsHeading'], f'<p class="t-small" style="margin-top:10px">{escape(sc["explainerLogsBody"])}</p><p style="margin-top:12px">{Button(sc["explainerLogsButton"])}</p>'))
+            + Section(sc['explainerLogsHeading'], f'<p class="t-small" style="margin-top:10px">{escape(sc["explainerLogsBody"])}</p><p style="margin-top:12px">{LinkButton(sc["explainerLogsButton"])}</p>'))
     body = head + Page('split', s1 + s2 + s3 + s4 + s5 + s6, rail) + PAGE_CSS
     return build_page(sc['explainerPageTitle'], body, 'Logs', None, '/ratings mock. Data: ratings.astro sample score, trend, weights and prose; lib/score and lib/rating copy.')
 

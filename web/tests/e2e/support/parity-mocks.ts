@@ -62,3 +62,16 @@ export function renderSimMocks(): string {
   run(PYTHON, [path.join(GENERATORS, 'ws_sim.py')], { FS_DATA_ROOT: REPO_ROOT, FS_MOCK_OUT: dir });
   return dir;
 }
+
+/**
+ * The logs, reports list, rankings and ratings mocks (ws_logs.py) from the files the spec serves
+ * (support/logs-parity.ts): logs_facts.mjs bundles the copy modules and the rankings stubs, and
+ * ws_logs.py reads web/src/fixtures/reports and the bundled sample's meta. Returns the folder.
+ */
+export function renderLogsMocks(): string {
+  const dir = freshDir('logs');
+  const facts = path.join(dir, 'logs-facts.json');
+  run('node', [path.join(GENERATORS, 'logs_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_logs.py')], { FS_LOGS_FACTS: facts, FS_MOCK_OUT: dir });
+  return dir;
+}

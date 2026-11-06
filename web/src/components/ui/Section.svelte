@@ -15,6 +15,7 @@
     action,
     reading = false,
     id,
+    anchor,
     testid,
     head,
     children,
@@ -24,7 +25,10 @@
     meta?: string;
     action?: { label: string; href: string };
     reading?: boolean;
+    /** Names the section (aria-labelledby its heading: a landmark) and is its link target. */
     id?: string;
+    /** A link target only (`/logs#upload`): the section stays an unnamed block. */
+    anchor?: string;
     testid?: string;
     /** Extra content in the head row, right-aligned (a toggle, a Tag). */
     head?: Snippet;
@@ -33,7 +37,7 @@
 </script>
 
 <section
-  {id}
+  id={id ?? anchor}
   class="ui-section min-w-0 scroll-mt-[calc(var(--bar-h)+12px)]"
   data-testid={testid}
   data-region={sectionRegion(title)}

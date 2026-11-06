@@ -179,7 +179,7 @@ test("the pairing code is on the page, and the companion's downloads point to /s
   await openLogs(page);
   await expect(page.getByTestId('logs-companion-link')).toHaveAttribute('href', '/setup#companion');
   await expect(page.getByTestId('companion-downloads')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Show pairing code' }).click();
+  await page.getByRole('button', { name: 'Get a pairing code' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
 });
 

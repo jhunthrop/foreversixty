@@ -71,7 +71,7 @@ test('a guild tab strip shows when the visitor has a guild, and switches the lis
   await page.goto('/logs');
   const tabs = page.getByTestId('my-reports-guild-tabs');
   await expect(tabs).toBeVisible();
-  const mine = tabs.getByRole('tab', { name: 'Mine' });
+  const mine = tabs.getByRole('tab', { name: 'Yours' });
   const guild = tabs.getByTestId('my-reports-guild-tab');
   await expect(mine).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByRole('link', { name: 'Solo farm' })).toBeVisible();

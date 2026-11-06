@@ -3,6 +3,7 @@ import {
   accountReportSummary,
   creditedName,
   formatReportLength,
+  ownReportRow,
   ownReportSummary,
   publicReportRow,
   publicReportSummary,
@@ -85,7 +86,10 @@ describe('reportStatusLabel', () => {
   it('names live and processing, and says nothing once complete', () => {
     expect(reportStatusLabel('live')).toBe('Live');
     expect(reportStatusLabel('processing')).toBe('Processing');
+    expect(reportStatusLabel('uploading')).toBe('Uploading');
     expect(reportStatusLabel('complete')).toBe('');
+    // MUST 4 (spec 2026-11-07): a finished report carries no Tag, "ready" included.
+    expect(reportStatusLabel('ready')).toBe('');
     expect(reportStatusLabel('')).toBe('');
   });
 });
@@ -151,5 +155,31 @@ describe('publicReportRow (W.9)', () => {
     const row = publicReportRow({ ...FACTS, loggingCharacter: 'Bow Jackzon' });
     expect(row.summary).not.toContain(row.title);
     expect(publicReportRow(FACTS).summary).not.toContain(FACTS.zone);
+  });
+});
+
+describe('ownReportRow (logs spec 2026-11-07 section 5)', () => {
+  const base = {
+    title: '',
+    zone: '',
+    startedAt: '2026-09-17T20:54:38.383Z',
+    fightCount: 42,
+    killCount: 0,
+    bossCount: 0,
+    loggingCharacter: null,
+  };
+
+  it('falls back from the title to the zone, then to the night it logged', () => {
+    expect(ownReportRow(base).title).toBe('Report, 17 Sep 2026');
+    expect(ownReportRow({ ...base, zone: 'Molten Core' }).title).toBe('Molten Core');
+    expect(ownReportRow({ ...base, title: 'Tuesday raid', zone: 'Molten Core' }).title).toBe('Tuesday raid');
+  });
+
+  it('reads zone, bosses, fights and the credit, leaving out a zone it does not have', () => {
+    expect(ownReportRow(base).sub).toBe('0 bosses · 42 fights · Not credited');
+    expect(
+      ownReportRow({ ...base, zone: 'Molten Core', bossCount: 1, fightCount: 1, loggingCharacter: 'Soren' })
+        .sub,
+    ).toBe('Molten Core · 1 boss · 1 fight · Soren');
   });
 });

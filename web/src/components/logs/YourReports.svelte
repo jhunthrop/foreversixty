@@ -1,26 +1,32 @@
 <!-- web/src/components/logs/YourReports.svelte -->
-<!-- The /reports page's one card ("Your reports" in the Logs menu): every report the visitor owns,
-     newest first, through the same MyReports list /logs and /account mount. Signed out it is a
-     sign-in prompt; with no reports, "No logs yet" and the way to upload one; either way the sample
-     report is one click away. A session that will not load says so and retries in place.
+<!-- /reports, "Your reports" (logs spec 2026-11-07 section 5): the PageHeader (title, the job line,
+     the count once listed, `Upload a log` signed in), then the ledger Page's one Plate holding
+     every state: signed out, the sign-in sentence over the primary and the sample report; signed
+     in, MyReports (rows, `No logs yet` with Upload a log and the sample, or the failed line); a
+     session that will not load says so and retries in place.
 
-     Signed out is the server markup's own state (`me` is undefined until the session answers), so a
-     visitor with no session hint paints the prompt at once and keeps the same node; a hinted visitor
-     sees the list's reserve instead (`.ch-hint-out-only` and `.reserve` below). -->
+     Signed out is the server markup's own state (`me` is undefined until the session answers), so
+     a visitor with no session hint paints it at once; a hinted visitor's Plate keeps the list's
+     reserve until the answer. -->
 <script lang="ts">
-  import { fetchMeOnce, type Me } from '../../lib/account/api';
+  import { battlenetStartUrl, fetchMeOnce, listMyReports, type Me } from '../../lib/account/api';
   import { SAMPLE_REPORT_PATH } from '../../lib/report/sample';
-  import { yourReportsPageCopy as copy } from '../../lib/reports/my-reports-copy';
+  import { myReportsCopy, yourReportsPageCopy as copy } from '../../lib/reports/my-reports-copy';
+  import { LINK } from '../../lib/ui/primitives';
   import MyReports from '../MyReports.svelte';
-  import SignInPrompt from '../SignInPrompt.svelte';
-  import Card from '../ui/Card.svelte';
-  import LoadError from '../ui/LoadError.svelte';
+  import Button from '../ui/Button.svelte';
+  import Page from '../ui/Page.svelte';
+  import PageHeader from '../ui/PageHeader.svelte';
+  import Plate from '../ui/Plate.svelte';
 
   const SAMPLE_LINK = { label: copy.sampleAction, href: SAMPLE_REPORT_PATH } as const;
+  const UPLOAD_LINK = { label: myReportsCopy.uploadAction, href: '/logs#upload' } as const;
 
   /** Undefined until the session answers; null signed out. */
   let me = $state<Me | null | undefined>(undefined);
   let failed = $state(false);
+  /** The list's total once it answers, for the head's count. */
+  let total = $state<number | null>(null);
 
   async function load(): Promise<void> {
     failed = false;
@@ -28,44 +34,70 @@
       me = await fetchMeOnce();
     } catch {
       failed = true;
+      return;
     }
+    if (me !== null) total = (await listMyReports(1).catch(() => null))?.total ?? null;
   }
 
   $effect(() => {
     void load();
   });
+
+  const signedIn = $derived(me !== undefined && me !== null);
 </script>
 
-<Card glyph="chart" title={copy.cardTitle} testid="your-reports">
-  <div class:reserve={me === undefined && !failed}>
-    {#if failed}
-      <LoadError message={copy.sessionFailed} onRetry={() => void load()} testid="your-reports-error" />
-    {:else if me === undefined || me === null}
-      <div class="flex flex-col items-start gap-4" class:ch-hint-out-only={me === undefined}>
-        <SignInPrompt line={copy.signedOut} next="/reports" testid="your-reports-signin" />
-        <a
-          class="text-muted inline-flex min-h-11 items-center text-[13px] underline md:min-h-0"
-          href={SAMPLE_LINK.href}
-          data-testid="your-reports-sample">{SAMPLE_LINK.label}</a
-        >
+<Page layout="ledger" testid="your-reports">
+  {#snippet header()}
+    <PageHeader title={copy.title} actions={signedIn ? upload : undefined}>
+      {#snippet meta()}
+        <span>{copy.job}</span>
+        {#if total !== null && total > 0}<span data-testid="your-reports-count"
+            >{total} report{total === 1 ? '' : 's'}</span
+          >{/if}
+      {/snippet}
+    </PageHeader>
+  {/snippet}
+
+  {#if signedIn}
+    <MyReports
+      plate={copy.title}
+      guilds={me?.guilds ?? []}
+      emptyMessage={copy.empty}
+      emptyAction={UPLOAD_LINK}
+      emptySecondary={SAMPLE_LINK}
+    />
+  {:else}
+    <Plate label={copy.title}>
+      <div class="reserve text-muted p-4 text-[14px] leading-5" class:hinted={me === undefined && !failed}>
+        {#if failed}
+          <div role="alert" data-testid="your-reports-error">
+            <p>{copy.sessionFailed}</p>
+            <div class="mt-3"><Button size="sm" onclick={() => void load()}>Try again</Button></div>
+          </div>
+        {:else}
+          <div class:ch-hint-out-only={me === undefined} data-testid="your-reports-signin">
+            <p>{copy.signedOut}</p>
+            <div class="mt-3 flex flex-wrap items-center gap-4">
+              <Button tone="primary" href={battlenetStartUrl('/reports')}>{myReportsCopy.signInAction}</Button
+              >
+              <a class={LINK} href={SAMPLE_LINK.href} data-testid="your-reports-sample"
+                >{SAMPLE_LINK.label} ›</a
+              >
+            </div>
+          </div>
+        {/if}
       </div>
-    {:else}
-      <MyReports
-        heading={false}
-        guilds={me.guilds ?? []}
-        nightDates
-        emptyMessage={copy.empty}
-        emptySecondary={SAMPLE_LINK}
-      />
-    {/if}
-  </div>
-</Card>
+    </Plate>
+  {/if}
+</Page>
+
+{#snippet upload()}
+  <Button href={UPLOAD_LINK.href} testid="your-reports-upload">{UPLOAD_LINK.label}</Button>
+{/snippet}
 
 <style>
-  /* Until the session answers, a visitor whose hint says signed in gets the list's loading height
-     (REPORTS_LOADING_MIN_H in lib/reports/layout.ts, which MyReports' skeleton then holds), so the
-     rows land without moving the footer. */
-  :global(html[data-session='1']) .reserve {
-    min-height: 360px;
+  /* Until the session answers, a visitor whose hint says signed in gets the list's reserve. */
+  :global(html[data-session='1']) .reserve.hinted {
+    min-height: 200px;
   }
 </style>

@@ -89,6 +89,8 @@ export interface BoardOptions {
   ownOffPage?: boolean;
   /** The API predates `distinct=character`: no `deduped`, no `character_rank`. */
   legacy?: boolean;
+  /** The viewer's character has no ranked kill: its row is gone and character_rank is null. */
+  unranked?: boolean;
 }
 
 /** What GET /v1/rankings answers for a request, by class, spec and the character asked for. */
@@ -108,6 +110,7 @@ export function boardFor(url: URL, options: BoardOptions = {}): Record<string, u
   const placed = ((): unknown => {
     if (character === null) return undefined;
     if (character === OWN_KEY && cls === 'warrior') {
+      if (options.unranked === true) return null;
       return options.ownOffPage === true
         ? { rank: FAR_RANK, row: row({ ...WARRIORS[13]!, name: 'Obnoxious Yell' }, FAR_RANK) }
         : { rank: OWN_RANK, row: rows[OWN_RANK - 1] };
@@ -116,7 +119,7 @@ export function boardFor(url: URL, options: BoardOptions = {}): Record<string, u
     return index < 0 ? null : { rank: index + 1, row: rows[index] };
   })();
   const rowsShown =
-    options.ownOffPage === true && cls === 'warrior'
+    (options.ownOffPage === true || options.unranked === true) && cls === 'warrior'
       ? rows.filter((entry) => (entry.player as { key: string }).key !== OWN_KEY)
       : rows;
   return {

@@ -49,7 +49,15 @@ describe('the crest rule', () => {
 
 describe('the colour legend', () => {
   it('runs best first through the seven steps, each in the colour its rank numeral takes', () => {
-    expect(RANK_LEGEND.map((step) => step.label)).toEqual(['100', '99+', '95+', '75+', '50+', '25+', 'under 25']);
+    expect(RANK_LEGEND.map((step) => step.label)).toEqual([
+      '100',
+      '99+',
+      '95+',
+      '75+',
+      '50+',
+      '25+',
+      'under 25',
+    ]);
     expect(RANK_LEGEND.map((step) => step.color)).toEqual([
       'var(--color-parse-gold)',
       'var(--color-parse-pink)',

@@ -12,18 +12,20 @@ import { recentReportsCopy } from '../lib/reports/copy';
 import RecentReports from './RecentReports.svelte';
 
 describe('RecentReports (initial render)', () => {
-  it('shows its own heading by default', () => {
+  it('is the open Section of its own name', () => {
     const { body } = render(RecentReports, { props: {} });
     expect(body).toContain(recentReportsCopy.heading);
-  });
-
-  it('omits the heading when told the page already titles the panel', () => {
-    const { body } = render(RecentReports, { props: { heading: false } });
-    expect(body).not.toContain(recentReportsCopy.heading);
+    expect(body).toContain('data-region="section-recent-public-reports"');
   });
 
   it('reserves height with a Skeleton instead of a bare loading line', () => {
     const { body } = render(RecentReports, { props: {} });
     expect(body).toContain('data-testid="recent-reports-skeleton"');
+  });
+
+  it('always carries the sample report row, Tagged once its meta is read', () => {
+    const { body } = render(RecentReports, { props: {} });
+    expect(body).toContain('data-testid="recent-reports-sample"');
+    expect(body).toContain('href="/reports/sample"');
   });
 });

@@ -674,7 +674,7 @@
             <section class="card-surface overflow-hidden" data-testid="account-reports">
               <CardHead glyph="chart" title={accountPageCopy.reportsLabel} />
               <div class="border-line-soft border-t px-5 py-4">
-                <MyReports heading={false} nightDates />
+                <MyReports nightDates />
               </div>
             </section>
           </div>

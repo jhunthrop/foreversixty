@@ -20,9 +20,7 @@ async function signedOut(page: import('@playwright/test').Page): Promise<void> {
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
 }
 
-test('the sample report is one plain labelled row, with a date and its kills, and no Sample pill', async ({
-  page,
-}) => {
+test('the sample report is one row Tagged Sample report, with a date and its fights', async ({ page }) => {
   await signedOut(page);
   await routeSampleReportMeta(page);
   await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
@@ -30,12 +28,10 @@ test('the sample report is one plain labelled row, with a date and its kills, an
   await page.goto('/logs');
   const sample = page.getByTestId('recent-reports-sample');
   await sample.scrollIntoViewIfNeeded();
-  await expect(sample).toContainText('A sample report');
+  await expect(sample).toContainText('Sample report');
   const row = sample.getByTestId('report-row');
-  await expect(row.getByRole('link', { name: SAMPLE_REPORT_META.title })).toHaveAttribute(
-    'href',
-    `/reports/${SAMPLE_REPORT_ID}`,
-  );
+  await expect(row).toContainText(SAMPLE_REPORT_META.title);
+  await expect(row).toHaveAttribute('href', `/reports/${SAMPLE_REPORT_ID}`);
   // The date the report page says (its first fight), not a second format (W.9); the zone and
   // count come from the sample's meta, the same source the page reads (L.7).
   await expect(row.getByTestId('report-row-when')).toHaveText('17 Sept 2026');
