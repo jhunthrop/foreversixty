@@ -271,7 +271,7 @@ describe("SettingsPage, the command list", function()
 	-- others for options; /fs record's arguments live in its own usage.
 	it("names every tester command in two short chat lines, no pipes", function()
 		assert.are.same({ "For testers: /fs diag verbose",
-			"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome" },
+			"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome, /fs drops" },
 			L.helpTesters)
 		for _, line in ipairs(L.helpTesters) do
 			assert.is_nil(line:find("|", 1, true))

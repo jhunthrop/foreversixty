@@ -9,7 +9,9 @@ describe("the TOC", function()
 		"Locale.lua", "Data.lua", "Compat.lua", "Rules.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
 		"Theme.lua", "Widgets.lua", "Cards.lua",
 		-- The raid-prep reads (D14): Export writes them into the code.
-		"RaidPrep.lua", "Export.lua", "Follow.lua", "Gear.lua",
+		"RaidPrep.lua",
+		-- What dropped in a raid (guild slice 7): Export writes it into the code as drops=.
+		"RaidDrops.lua", "Export.lua", "Follow.lua", "Gear.lua",
 		"Progress.lua", "Rotation.lua",
 		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
 		"Score.lua", "Comms.lua", "Inspect.lua",

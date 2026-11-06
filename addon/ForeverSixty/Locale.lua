@@ -33,7 +33,7 @@ local L = {
 	},
 	helpTesters = {
 		"For testers: /fs diag verbose",
-		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome",
+		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome, /fs drops",
 	},
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
@@ -1581,6 +1581,15 @@ L.timePm = "pm"
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel
+
+-- /fs drops (RaidDrops.lua): the raid nights the loot window recorded for the export's drops=.
+L.dropsNone = "No raid drops recorded on this character yet. Open a boss corpse in a raid."
+L.dropsHeader = "Raid drops recorded: %d nights, newest first"
+L.dropsNight = "%s %s: %d corpses"
+L.dropsCorpse = "  %s (%s): %s"
+L.dropsItem = "%s x%d%s"
+L.dropsLootedBy = ", looted by %s"
+L.dropsNoBoss = "Boss not seen"
 
 ns.L = L
 return L

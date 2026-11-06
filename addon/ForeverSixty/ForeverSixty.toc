@@ -21,6 +21,7 @@ Theme.lua
 Widgets.lua
 Cards.lua
 RaidPrep.lua
+RaidDrops.lua
 Export.lua
 Follow.lua
 Gear.lua
