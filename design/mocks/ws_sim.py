@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import (Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, Link, Meter, Notice,
+from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, Link, Meter, Notice,
                       Page, PageHeader, Plate, Row, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
                       control_bar, crest_img, seg, sel, write, Paperdoll)
 import ws_compose
@@ -72,6 +72,12 @@ _icache: dict[str, str] = {}
 
 
 # ------------------------------------------------------------------------------------------------ data helpers
+def Button(label: str, primary: bool = False, small: bool = False) -> str:
+    """The system Button as the build renders it, a <button> (ws_prims draws an <a>): the parity gate counts roles. Its case is the
+    system's (decision 2026-11-06: no page-level case override)."""
+    return _Button(label, primary, small).replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
+
+
 def gicon(name, size: int = 28, q=None) -> str:
     """A real game icon from the build's icon set; the dark socket (never an invented icon) when the data has none."""
     cls = f'ic q{q}' if q else 'ic'
@@ -604,7 +610,7 @@ def run_bar(state: str = 'ready', open_m: bool = False) -> str:
     running (Stop), engine (Loading engine...), server (Running on our servers...), disabled (a spec the sim does not run)."""
     btn = {'ready': Button('Run sim', primary=True), 'done': Button('Run again', primary=True), 'retry': Button('Try again', primary=True),
            'running': Button('Stop'), 'engine': Button('Loading engine&hellip;'), 'server': Button('Running on our servers&hellip;'),
-           'disabled': '<span class="btn primary is-off" aria-disabled="true">Run sim</span>'}[state]
+           'disabled': '<button type="button" class="btn primary is-off" aria-disabled="true">Run sim</button>'}[state]
     off = state in ('running', 'engine', 'server')
     buffs = seg([('Raid', True, None, ''), ('None', False, None, ''), ('Custom', False, None, '')])
     summary = (f'<span class="sum-t"><b>{FIGHT_STYLE} {clock(FIGHT["duration_sec"])}</b> &middot; Raid</span>'
@@ -706,8 +712,6 @@ PAGE_CSS = '''<style>
 @media(max-width:1023px){.pc .layout-split{display:flex;flex-direction:column;align-items:stretch;gap:var(--section-gap)}.pc .layout-split section{min-width:0;max-width:100%}.pc .layout-split>.main,.pc .layout-split>.rail{display:contents}[data-region=section-damage-by-ability]{order:1}[data-region=section-dps-spread]{order:2}[data-region=section-timeline]{order:3}[data-region=section-gear]{order:4}[data-region=section-talents]{order:5}[data-region=section-rage]{order:6}[data-region=section-buffs-and-debuffs]{order:7}[data-region=section-this-run]{order:8}[data-region=section-rotation]{order:9}[data-region=section-your-sims]{order:10}}
 .statesheet{display:grid;gap:40px;grid-template-columns:minmax(0,1fr)}.statesheet>section{min-width:0}.statesheet>section>h2{margin-bottom:8px}
 .cls-links{display:flex;gap:4px 16px;flex-wrap:wrap;padding-top:2px}.cls-links .link{font-size:14px}
-/* ruling SHOULD 3: one button case on the page, sentence case as the tabs (the system Button is caps; see spec section 13) */
-.btn{text-transform:none;letter-spacing:0;font-size:14px;font-weight:700}
 .bar-end{display:flex;gap:20px;align-items:center}.bar-end .link{font-size:14px}
 .bar-d.is-run .grp,.bar-d.is-run .bar-end .link{opacity:.5;pointer-events:none}
 .fig.muted .v{color:var(--muted)}
