@@ -178,8 +178,11 @@
     position: sticky;
     top: 0;
   }
-  .ui-cbar-inner {
-    padding-inline: var(--page-inset);
+  /* The phone inset only: from 768 .page-column's own gutter puts the bar on the content edge. */
+  @media (max-width: 767px) {
+    .ui-cbar-inner {
+      padding-inline: var(--page-inset);
+    }
   }
   .ui-cbar-toggle {
     display: flex;
