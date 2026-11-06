@@ -13,7 +13,7 @@ func TestNight_SeverityThenMostBossesThenEarliest(t *testing.T) {
 		packRank1(1, CodeCoreCasts, SeverityMajor, "Bloodthirst: 9 casts lost"),
 		packRank1(2, CodePreparation, SeverityMajor, "No flask at the pull"),
 		packRank1(3, CodeCoreCasts, SeverityMajor, "Bloodthirst: 4 casts lost"),
-		packRank1(4, CodeResource, SeverityMinor, "Rage full for 14 seconds"),
+		packRank1(4, CodeResource, SeverityMinor, "Rage full for 14 seconds in total"),
 	}
 	l, ok := Night(packs)
 	if !ok || l.Code != CodeCoreCasts || l.Stem != "Bloodthirst casts lost" || l.On != 2 || l.Of != 4 {
@@ -26,7 +26,7 @@ func TestNight_SeverityThenMostBossesThenEarliest(t *testing.T) {
 
 func TestNight_TieGoesToTheEarliestBoss(t *testing.T) {
 	packs := []NightFight{
-		packRank1(1, CodeResource, SeverityMajor, "Rage full for 14 seconds"),
+		packRank1(1, CodeResource, SeverityMajor, "Rage full for 14 seconds in total"),
 		packRank1(2, CodeCoreCasts, SeverityMajor, "Bloodthirst: 4 casts lost"),
 	}
 	if l, ok := Night(packs); !ok || l.Code != CodeResource || l.FightIndex != 1 || l.On != 1 || l.Of != 2 {
@@ -69,7 +69,7 @@ func TestStem_EveryTitleForm(t *testing.T) {
 		{CodeCoreCasts, "Bloodthirst: 9 casts lost", "Bloodthirst casts lost"},
 		{CodeUptime, "Sunder Armor up 41% of the fight", "Sunder Armor uptime"},
 		{CodeIdle, "Idle for 12 seconds", StemIdle},
-		{CodeResource, "Rage full for 14 seconds", "Rage at the cap"},
+		{CodeResource, "Rage full for 14 seconds in total", "Rage at the cap"},
 		{CodeResource, "Out of mana from 2:10", StemOutOfMana},
 		{CodeRanks, "Heal (Rank 2): 61% overheal", "Heal overheal"},
 		{CodeRanks, "Frostbolt: 14 casts of Rank 3", "Frostbolt below your best rank"},

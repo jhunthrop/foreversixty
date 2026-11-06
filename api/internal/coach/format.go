@@ -43,5 +43,5 @@ func PctNumber(v float64) string { return strconv.FormatFloat(math.Round(v), 'f'
 // PerMinute is a rate to one decimal (9.06 -> "9.1").
 func PerMinute(v float64) string { return strconv.FormatFloat(v, 'f', 1, 64) }
 
-// ClassPlural is a class name as the copy counts it ("Warrior" -> "warriors").
-func ClassPlural(class string) string { return strings.ToLower(class) + "s" }
+// ClassPlural is a class name as the copy counts it, its own capitals kept ("Warrior" -> "Warriors").
+func ClassPlural(class string) string { return class + "s" }

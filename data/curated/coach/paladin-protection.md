@@ -50,14 +50,14 @@ This is the best Protection Paladin on Forever. Protection tanks with a shield a
 
 ## Drills
 
-- drill.core_casts: On a dummy with a friend hitting you, press the first button of the priority list the moment it is ready. Fillers wait their turn.
+- drill.core_casts: On trash pulls, press the first button of the priority list the moment it is ready. Fillers wait their turn.
 - drill.uptime: Watch the debuffs on the boss and the buff on you. Refresh each where its line says, before it drops: a stacking debuff that falls off takes its stacks with it.
 - drill.idle: When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
 - drill.preparation: Before every boss, check a flask from fifty-five, food from thirty-five, a combat potion from forty-nine and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
-- drill.death: From twenty, put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade.
-- drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
+- drill.death: From twenty, put Templar's Bulwark on a key you can hit without looking, and press it on trash pulls when your health falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade.
+- drill.adherence: On trash pulls, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
 ## Voice
 

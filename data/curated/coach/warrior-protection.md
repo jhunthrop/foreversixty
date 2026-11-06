@@ -40,14 +40,14 @@ The best Protection warrior on Forever stands in Defensive Stance with a shield 
 
 ## Drills
 
-- drill.core_casts: On a dummy with a friend hitting you, press Shield Slam from forty the moment it is ready and Revenge from fourteen the moment it lights. Sunder Armor and Heroic Strike wait their turn.
+- drill.core_casts: On trash pulls, press Shield Slam from forty the moment it is ready and Revenge from fourteen the moment it lights. Sunder Armor and Heroic Strike wait their turn.
 - drill.uptime: Watch the Shield Block buff, not its cooldown. The moment it drops, press it again. Check Thunder Clap and Demoralizing Shout on the boss each time you do; a druid's Roar holding the slot counts as your Shout.
 - drill.idle: When you move the boss, keep it in front of you and keep swinging. Your first button after the move is Revenge from fourteen, or Shield Slam from forty, not a walk to the next spot.
 - drill.resource: When rage passes 40 with Shield Slam cooling down, queue Heroic Strike. At the cap it should already be queued.
 - drill.ranks: Visit your trainer every time you level, then check Sunder Armor, Revenge, Shield Slam, Thunder Clap and Heroic Strike against the rank your level calls for.
 - drill.preparation: Before every boss, check food buff, sharpening stone, from fifty a flask, from forty-six a Mighty Rage Potion, and a healing potion on your bars. Do it on the walk to the pull, not after it.
-- drill.death: From twenty-eight, put Shield Wall on a key you can hit without looking, and say "wall" out loud when your health drops toward forty percent on a dummy pull with a friend.
-- drill.adherence: On a dummy, play only Shield Block, Revenge, Shield Slam, Thunder Clap, Demoralizing Shout, Sunder Armor and Heroic Strike for three minutes, with Bloodrage when rage is low. Anything else waits.
+- drill.death: From twenty-eight, put Shield Wall on a key you can hit without looking, and say "wall" out loud when your health drops toward forty percent on trash pulls.
+- drill.adherence: On trash pulls, play only Shield Block, Revenge, Shield Slam, Thunder Clap, Demoralizing Shout, Sunder Armor and Heroic Strike for three minutes, with Bloodrage when rage is low. Anything else waits.
 
 ## Voice
 

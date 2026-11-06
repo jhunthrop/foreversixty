@@ -49,7 +49,7 @@ func TestAdherenceTextAndAnchors(t *testing.T) {
 	if f.Detail != "Most-cast spells outside the written rotation: Hamstring (15), Rend (9) and Cleave (6)." {
 		t.Errorf("detail %q", f.Detail)
 	}
-	if f.Basis.Kind != BasisTopLogs || f.Basis.Label != "Top 25 Fury warriors on Onyxia (40): 90% on the rotation. You: 70%." {
+	if f.Basis.Kind != BasisTopLogs || f.Basis.Label != "Top 25 Fury Warriors on Onyxia (40): 90% on the rotation. You: 70%." {
 		t.Errorf("basis %+v", f.Basis)
 	}
 	assertNumbers(t, f.Facts, "70", "90", "25")

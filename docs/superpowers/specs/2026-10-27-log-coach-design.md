@@ -146,7 +146,7 @@ The web renders a fixed structure. It never renders free prose.
 - **Doing well:** one or two items.
 - **Couldn't check:** the pack's lines, word for word.
 - **Footer:** `Reviewed {date} · Based on: {labels}.`, e.g. `Reviewed 10 Dec · Based on: Top 25
-  Fury warriors on Onyxia (40), your log.` The basis labels the pack used, deduplicated.
+  Fury Warriors on Onyxia (40), your log.` The basis labels the pack used, deduplicated.
 
 Every item carries the evidence anchor ids it used. The web turns each one into a link into
 the report: the Casts row, the aura row, the death, or the resource graph at a time. They are
@@ -189,9 +189,9 @@ Pack findings, ranked:
 
 | Rank | Id | Title | Detail | Basis | Anchors |
 |---|---|---|---|---|---|
-| 1 (major) | `f1` | `Bloodthirst: 9 casts lost` | `9 of a possible 40 went unused while you had the rage. Longest gaps 1:12–1:25 and 2:40–2:51.` | `Measured against Bloodthirst's 6-second cooldown and your own rage bar. Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0.` | `a1` Casts row, `a2` 1:12, `a3` 2:40 |
+| 1 (major) | `f1` | `Bloodthirst: 9 casts lost` | `9 of a possible 40 went unused while you had the rage. Longest gaps 1:12–1:25 and 2:40–2:51.` | `Measured against Bloodthirst's 6-second cooldown and your own rage bar. Top 25 Fury Warriors on Onyxia (40): 9.1 a minute. You: 8.0.` | `a1` Casts row, `a2` 1:12, `a3` 2:40 |
 | 2 (major) | `f6` | `No flask at the pull` | `You pulled with Grilled Squid and an Elemental Sharpening Stone, and no flask.` | `From the character sheet in your log, against the site's consumable list for damage dealers.` | `a4` Buffs tab |
-| 3 (minor) | `f4` | `Rage full for 14 seconds` | `Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.` | `Measured against your own rage bar, air phase left out. Top 25 Fury warriors here: 3 s.` | `a5` rage graph at 2:41 |
+| 3 (minor) | `f4` | `Rage full for 14 seconds in total` | `Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.` | `Measured against your own rage bar, air phase left out. Top 25 Fury Warriors here: 3 s.` | `a5` rage graph at 2:41 |
 
 Strengths: `s1` `Alive the whole fight.` `s2` `Battle Shout up 100% of the fight. Top 25: 97%.`
 Links: `l1` (`f1`, `f4`): `The Bloodthirst gap at 2:40–2:51 overlaps the rage cap at 2:41–2:50.`
@@ -204,10 +204,10 @@ Review:
 - **Fix first, `Bloodthirst: 9 casts lost`:** `Bloodthirst is the button the Fury rotation is
   built around, and 9 of a possible 40 went unused while you had the rage, longest at
   1:12–1:25. At 2:40–2:51 you sat on a full bar instead, so that one gap cost you twice.`
-  Drill: `On a target dummy, press Bloodthirst the moment it comes off cooldown, before
+  Drill: `On trash pulls, press Bloodthirst the moment it comes off cooldown, before
   anything else; Whirlwind and Heroic Strike wait their turn.` Anchors `a1 a2 a3 a5`, link `l1`.
 - **Then:** `No flask at the pull`: `A flask is the cheapest damage you will ever buy; bring
-  one to every 40-player boss.` (`a4`) · `Rage full for 14 seconds`: `When the bar is full,
+  one to every 40-player boss.` (`a4`) · `Rage full for 14 seconds in total`: `When the bar is full,
   Heroic Strike turns rage into damage instead of losing it.` (`a5`)
 - **Doing well:** `s1`, `s2`, each in one sentence.
 
@@ -241,7 +241,7 @@ Review:
 | Rank | Id | Title | Detail | Basis | Anchors |
 |---|---|---|---|---|---|
 | 1 (major) | `f7` | `Died at 2:50, Shield Wall not used` | `Onyxia's melee killed you at 2:50. Shield Wall was not used this pull.` | `From your log and Shield Wall's cooldown.` | `a1` the death, `a2` Shield Wall row |
-| 2 (minor) | `f2` | `Shield Block up 18% of the fight` | `Shield Block was up for 42 s of 3:52.` | `Top 20 Protection warriors on Onyxia (40): 34%.` | `a3` Buffs row |
+| 2 (minor) | `f2` | `Shield Block up 18% of the fight` | `Shield Block was up for 42 s of 3:52.` | `Top 20 Protection Warriors on Onyxia (40): 34%.` | `a3` Buffs row |
 | 3 (minor) | `f5` | `Sunder Armor: 22 casts of Rank 4` | `Rank 5 is trainable at your level. Rank 4 was cast 22 times.` | `The spell ranks a level 60 warrior can train.` | `a4` Casts row |
 
 Strengths: `s1` `Sunder Armor at 5 stacks from 0:21 to the end.` Links: none.
@@ -252,8 +252,8 @@ Review:
 - **Fix first, `Died at 2:50 with Shield Wall ready`:** `Shield Wall had been ready since the
   pull, and a tank who dies takes the raid with them. Pressing it is never wasted.` Drill:
   `Put Shield Wall on a key you can hit without looking, and say "wall" out loud when your
-  health drops past half on a dummy pull with a friend.` (`a1 a2`)
-- **Then:** `Shield Block up 18% of the fight`: `Top Protection warriors here keep it up 34%;
+  health drops past half on trash pulls.` (`a1 a2`)
+- **Then:** `Shield Block up 18% of the fight`: `Top Protection Warriors here keep it up 34%;
   it is your cheapest mitigation.` (`a3`) · `Sunder Armor: 22 casts of Rank 4`: `Rank 5 is
   trainable at your level; visit your trainer.` (`a4`)
 - **Doing well:** `s1`.
@@ -350,7 +350,7 @@ only** (Inner Focus, Mana Tide Totem, Nature's Swiftness), never framed as missi
 **F2. Key buff or debuff uptime** (`uptime`). Owned auras, uptime from first application to
 the end, excluding time dead and downtime. A debuff is judged only when the player is its
 **sole applier** (`AuraTrack.Appliers`). Otherwise it goes to "Couldn't check": `Your share of
-Sunder Armor: 3 warriors applied it, and the log merges them.` *Fires* ≥ 10 points under the
+Sunder Armor: 3 Warriors applied it, and the log merges them.` *Fires* ≥ 10 points under the
 reference and under 90%. *Major* at ≥ 25 points under. *Basis:* top logs, else the sim, else
 `not enough logs yet`. *Roles:* DPS own DoTs, debuffs, self-buffs; tank defensive uptime
 (Shield Block, Demoralizing Shout/Roar, Thunder Clap), top logs only; healer own self-buffs.

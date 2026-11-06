@@ -20,7 +20,7 @@ func f4WithDowntime(in Input) Input {
 func TestF4CapLeavesOutCuratedDowntime(t *testing.T) {
 	in := f4WithDowntime(f4Capped(t, PowerRage, f4RageMax, 100_000, span(30_000, 65_000)))
 	f := f4Resource(in).Finding
-	if f == nil || f.Title != "Rage full for 15 seconds" {
+	if f == nil || f.Title != "Rage full for 15 seconds in total" {
 		t.Fatalf("10 s before and 5 s after the downtime count: %+v", f)
 	}
 	if want := "Your rage sat at its cap for 15 s outside downtime, longest at 0:30–0:40."; f.Detail != want {
@@ -63,7 +63,7 @@ func TestResource(t *testing.T) {
 		none                  bool
 	}{
 		{name: "fury rage capped 14 s of 232 s", in: furyRageCapped(t, 232_000, span(161_000, 170_000), span(60_000, 65_000)),
-			wantTitle: "Rage full for 14 seconds", wantSev: SeverityMinor},
+			wantTitle: "Rage full for 14 seconds in total", wantSev: SeverityMinor},
 		{name: "holy out of mana from 3:05", in: holyManaLow(t, 232_000, 185_000, 200_000),
 			wantTitle: "Out of mana from 3:05", wantSev: SeverityMinor, wantDetail: "15 s"},
 		{name: "mana low only in the last 10%", in: holyManaLow(t, 232_000, 215_000, 232_000), none: true},
@@ -127,7 +127,7 @@ func TestF4CapThresholds(t *testing.T) {
 
 func TestF4EnergyCapTitle(t *testing.T) {
 	o := f4Resource(f4Capped(t, PowerEnergy, f4EnergyMax, 100_000, span(40_000, 52_000)))
-	if o.Finding == nil || o.Finding.Title != "Energy full for 12 seconds" {
+	if o.Finding == nil || o.Finding.Title != "Energy full for 12 seconds in total" {
 		t.Fatalf("got %+v", o.Finding)
 	}
 	if !strings.Contains(o.Finding.Detail, "energy") {
@@ -169,7 +169,7 @@ func TestF4CapIgnoresTimeDead(t *testing.T) {
 	in = furyRageCapped(t, 100_000, span(60_000, 100_000))
 	in.Fight = withDeath(in.Fight, furyGUID, 75_000, 0, "")
 	f := f4Resource(in).Finding
-	if f == nil || f.Title != "Rage full for 15 seconds" {
+	if f == nil || f.Title != "Rage full for 15 seconds in total" {
 		t.Fatalf("counted only to the death at 75 s: %+v", f)
 	}
 }
@@ -332,7 +332,7 @@ func TestF4NothingToCheck(t *testing.T) {
 
 func TestF4TextIsFilled(t *testing.T) {
 	text := textOf(f4Resource(furyRageCapped(t, 232_000, span(161_000, 170_000), span(60_000, 65_000))))
-	for _, want := range []string{"Rage full for 14 seconds", "2:41", "2:50"} {
+	for _, want := range []string{"Rage full for 14 seconds in total", "2:41", "2:50"} {
 		if !strings.Contains(text, want) {
 			t.Errorf("text lacks %q: %q", want, text)
 		}

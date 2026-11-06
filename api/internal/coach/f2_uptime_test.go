@@ -22,7 +22,7 @@ func TestUptime(t *testing.T) {
 		{name: "dps self-buff at 100% vs 97% is a strength", in: furyBattleShout(t, 1.0, poolUptime(6673, 97, 25)),
 			none: true, wantStrength: "Battle Shout up 100% of the fight. Top 25: 97%."},
 		{name: "shared debuff goes to couldn't check", in: furySunderShared(t, 3), none: true,
-			wantCannot: "Your share of Sunder Armor: 3 warriors applied it, and the log merges them."},
+			wantCannot: "Your share of Sunder Armor: 3 Warriors applied it, and the log merges them."},
 		{name: "tank with no pool: top logs only", in: protShieldBlock(t, 42_000, 232_000, noPool(0)), none: true},
 		{name: "25 points under is major", in: furyRendLow(t, poolUptime(f2RendID, 75, 25)),
 			wantTitle: "Rend up 20% of the fight", wantSev: SeverityMajor},
@@ -57,7 +57,7 @@ func TestUptime_ShieldBlockFinding(t *testing.T) {
 		t.Errorf("code %q detail %q", f.Code, f.Detail)
 	}
 	if f.Basis.Kind != BasisTopLogs || f.Basis.N != 20 ||
-		f.Basis.Label != "Top 20 Protection warriors on Onyxia (40): 34% up. You: 18%." {
+		f.Basis.Label != "Top 20 Protection Warriors on Onyxia (40): 34% up. You: 18%." {
 		t.Errorf("basis %+v", f.Basis)
 	}
 	assertNumbers(t, f.Facts, "18", "34", "42")
@@ -309,7 +309,7 @@ func TestUptime_AnotherPlayersLowerRankCountsTowardTheSoleApplier(t *testing.T) 
 	in.Fight = withAura(in.Fight, f2BossGUID, rendHigh, f2RendName, []string{furyGUID}, span(0, f2FightMS/5))
 	in.Fight = withAura(in.Fight, f2BossGUID, rendLow, f2RendName, []string{f2SecondaryGUID}, span(0, f2FightMS/5))
 	o := uptime(withPool(in, poolUptime(rendHigh, 80, 25)), CountedTime(in))
-	want := "Your share of Rend: 2 warriors applied it, and the log merges them."
+	want := "Your share of Rend: 2 Warriors applied it, and the log merges them."
 	if o.Finding != nil || !slices.Contains(o.CouldNotCheck, want) {
 		t.Fatalf("finding %+v, couldn't check %q", o.Finding, o.CouldNotCheck)
 	}

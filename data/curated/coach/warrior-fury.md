@@ -40,14 +40,14 @@ The best Fury warrior on Forever plays two weapons as one rage engine. From fort
 
 ## Drills
 
-- drill.core_casts: From forty, on a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.
+- drill.core_casts: From forty, on trash pulls, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.
 - drill.uptime: Put Battle Shout where you can see its timer. Recast it the moment it drops, and again the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and swing the moment you arrive. Practise on trash: the first button after a reposition is Bloodthirst from forty, not a walk to the side.
-- drill.resource: Watch the rage bar on a dummy. Above 60 with Bloodthirst cooling down, queue Heroic Strike; at the cap, it should already be queued.
+- drill.resource: Watch the rage bar on trash pulls. Above 60 with Bloodthirst cooling down, queue Heroic Strike; at the cap, it should already be queued.
 - drill.ranks: Visit your trainer every time you level, then check Bloodthirst, Whirlwind, Execute, Heroic Strike and Battle Shout against the rank your level calls for.
 - drill.preparation: Before every boss, check food, elixirs, a stone on both weapons, and from forty-six a Mighty Rage Potion on your bars. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot behind the boss, out of its cleave. With Death Wish running, keep a healing potion on a key you can reach without looking.
-- drill.adherence: On a dummy, play only Bloodrage, Death Wish, Battle Shout, Execute, Bloodthirst, Whirlwind, Reckless Swings, Berserker Rage and Heroic Strike for three minutes. Anything else on your bars waits.
+- drill.adherence: On trash pulls, play only Bloodrage, Death Wish, Battle Shout, Execute, Bloodthirst, Whirlwind, Reckless Swings, Berserker Rage and Heroic Strike for three minutes. Anything else on your bars waits.
 
 ## Voice
 

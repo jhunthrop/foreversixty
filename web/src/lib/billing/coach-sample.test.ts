@@ -46,7 +46,7 @@ describe('the sample file against the coach fixture', () => {
   it('has the gap and the full-bar window agree: 2:44 to 2:58 is 14 seconds', () => {
     expect(answer.review.fixFirst?.why).toContain('At 2:44–2:58 you sat on a full bar');
     expect(answer.review.fixFirst?.why).toContain('so that one gap cost you two Bloodthirsts.');
-    expect(answer.review.thenFix[0]?.title).toBe('Rage full for 14 seconds');
+    expect(answer.review.thenFix[0]?.title).toBe('Rage full for 14 seconds in total');
     expect(answer.anchors.a4?.to_ms).toBe(179000);
     expect((answer.anchors.a4?.to_ms ?? 0) - (answer.anchors.a4?.at_ms ?? 0)).toBe(14_000);
   });

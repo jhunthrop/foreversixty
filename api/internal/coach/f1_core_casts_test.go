@@ -62,7 +62,7 @@ func TestCoreCasts_PoolComparisonIsCastsPerMinute(t *testing.T) {
 	in := withPool(furyFight(t, 60_000, 23881, []int64{0, 6000, 12000, 18000, 24000}, repeat(500, 60)),
 		poolCPM("Bloodthirst", 9.1, 25))
 	f := coreCasts(in, CountedTime(in)).Finding
-	if f == nil || f.Comparison == nil || f.Comparison.Kind != BasisTopLogs || !strings.HasPrefix(f.Comparison.Label, "Top 25 Fury warriors on Onyxia (40): ") {
+	if f == nil || f.Comparison == nil || f.Comparison.Kind != BasisTopLogs || !strings.HasPrefix(f.Comparison.Label, "Top 25 Fury Warriors on Onyxia (40): ") {
 		t.Fatalf("comparison %+v", f)
 	}
 	assertNumbers(t, f.Facts, "9.1", "5.0")

@@ -22,7 +22,7 @@
       "title": "Bloodthirst: 9 casts lost",
       "why": "9 of a possible 33 went unused while you had the rage. Longest gaps 1:12–1:25 and 2:44–2:55.",
       "drill": "drill.core_casts",
-      "drillText": "From forty, on a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.",
+      "drillText": "From forty, on trash pulls, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.",
       "anchors": [
         "a1",
         "a2",
@@ -38,7 +38,7 @@
     "thenFix": [
       {
         "finding": "f2",
-        "title": "Rage full for 14 seconds",
+        "title": "Rage full for 14 seconds in total",
         "why": "Your rage sat at its cap for 14 s, longest at 2:45–2:54.",
         "anchors": [
           "a4"
@@ -129,7 +129,7 @@
   },
   "basis_labels": [
     "Measured against Bloodthirst's 6-second cooldown and your own rage bar.",
-    "Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 6.2.",
+    "Top 25 Fury Warriors on Onyxia (40): 9.1 a minute. You: 6.2.",
     "Measured against your own rage bar."
   ]
 }
