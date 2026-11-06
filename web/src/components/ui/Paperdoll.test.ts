@@ -44,6 +44,7 @@ describe('Paperdoll', () => {
     expect(body).toContain('Crafted · Leatherworking (skill 100)');
     expect(body).toContain('+10 Sta · +8 Agi');
     expect(body).toContain('title="vs Trapper\'s Leather Hood"');
+    expect(body.replace(/<[^>]+>/g, '')).toContain("vs Trapper's Leather Hood");
     expect(body).toContain('data-testid="paperdoll-basis-head"');
     expect(body).toMatch(
       /ui-doll-line2[^>]*>\s*<span class="ui-doll-src"[^>]*>Crafted · Leatherworking \(skill 100\)<\/span>\s*<\/span>/,

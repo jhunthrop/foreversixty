@@ -101,7 +101,7 @@ test('weights and slot figures say score, never DPS, on a tank band', async ({ p
   // unit is asserted over the doll's figures, not one slot's.
   const head = page.getByTestId('bis-doll-slot-head');
   await expect(head).not.toContainText('DPS');
-  await expect(page.getByTestId('bis-doll')).toContainText(/score vs next best|[−+]\d[\d,.]* score/);
+  await expect(page.getByTestId('bis-doll')).toContainText(/[−+]\d[\d,.]*\s*score/);
   await expect(page.getByTestId('bis-doll')).not.toContainText('DPS');
   await head.click();
   const runners = page.locator('[data-testid="bis-detail-runners"]:visible');
