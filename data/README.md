@@ -374,6 +374,11 @@ list below is what the script does and what to check when it stops.
 8. Re-check the APL ranks: `uv run pytest tests/test_apl.py -q --no-cov`. Forever may
    renumber spell ranks, and a rotation naming a rank the client does not have is a
    spell the engine cannot resolve.
+   Run `raid-bosses` after `loot` (`uv run python -m pipeline raid-bosses --build <build>`):
+   it writes `raid-bosses.json`, the first tier's bosses and loot tied to the client's own
+   `Map`, `DungeonEncounter` and Journal rows by name, from which `tools/activate-build.sh`
+   regenerates the API's boss table (`api/cmd/genraidbosses`). A raid the client does not
+   name is written empty with the status `not_in_client`.
 9. Curate the Forever facts under `curated/` with their sources.
 10. Commit `builds/<build>/` and bump `web/src/data/active-build.json`.
 
