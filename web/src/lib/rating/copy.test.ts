@@ -21,3 +21,14 @@ describe('ratingCopy.excludedReason', () => {
     expect(ratingCopy.excludedReason('Utility', 'something_new')).toBe('Utility — not scored.');
   });
 });
+
+describe('ratingCopy.percentileBasis', () => {
+  it('pluralises the class once (B1: never "Holy Priestss")', () => {
+    expect(ratingCopy.percentileBasis('Holy', 'Priest', 'healer', 71, 40)).toBe(
+      'Compared with other Holy Priests on this fight (40 logs).',
+    );
+    expect(ratingCopy.percentileBasis('Fury', 'Warrior', 'dps', 50, 12)).toBe(
+      'Compared with other Fury Warriors on this fight (12 logs).',
+    );
+  });
+});
