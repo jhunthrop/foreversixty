@@ -1,0 +1,691 @@
+{
+ "now": "2026-11-06T10:00:00.000Z",
+ "me": {
+  "addon": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap"
+  },
+  "bnet": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "blizzard",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap"
+  },
+  "none": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": null
+  }
+ },
+ "devices": [
+  {
+   "id": "d1",
+   "name": "JHUNT-PC",
+   "platform": "windows/amd64",
+   "kind": "companion",
+   "created_at": "2026-11-03T18:00:00Z",
+   "last_seen_at": "2026-11-06T09:57:00Z"
+  }
+ ],
+ "lookup": {
+  "name": "JHUNT-PC",
+  "platform": "Windows",
+  "expires_in": 540
+ },
+ "pair_code": {
+  "code": "4821-9930",
+  "expires_in": 600
+ },
+ "lines": {
+  "out": {
+   "signin": null,
+   "addon": null,
+   "companion": null
+  },
+  "none": {
+   "signin": {
+    "done": true,
+    "text": "Signed in as Hunthrop#1894"
+   },
+   "addon": {
+    "done": false,
+    "text": "No character yet. Refresh from Battle.net, or install the addon and the companion, then paste an export."
+   },
+   "companion": {
+    "done": false,
+    "text": "No companion signed in yet"
+   }
+  },
+  "bnet": {
+   "signin": {
+    "done": true,
+    "text": "Signed in as Hunthrop#1894"
+   },
+   "addon": {
+    "done": false,
+    "text": "Your characters are in from Battle.net. The addon adds bags, bank and live sync."
+   },
+   "companion": {
+    "done": false,
+    "text": "No companion signed in yet"
+   }
+  },
+  "addon": {
+   "signin": {
+    "done": true,
+    "text": "Signed in as Hunthrop#1894"
+   },
+   "addon": {
+    "done": true,
+    "text": "Felsnap arrived from the addon 1 day ago"
+   },
+   "companion": {
+    "done": false,
+    "text": "No companion signed in yet"
+   }
+  },
+  "done": {
+   "signin": {
+    "done": true,
+    "text": "Signed in as Hunthrop#1894"
+   },
+   "addon": {
+    "done": true,
+    "text": "Felsnap arrived from the addon 1 day ago"
+   },
+   "companion": {
+    "done": true,
+    "text": "Companion signed in on JHUNT-PC · last seen 3 minutes ago"
+   }
+  }
+ },
+ "device_status": [
+  "JHUNT-PC · windows/amd64 · last seen 3 minutes ago"
+ ],
+ "imported": "Imported from Battle.net 1 hour ago.",
+ "platforms_line": "Windows only; Mac is not supported yet. On a Mac, paste an export instead.",
+ "companion": {
+  "downloads": [
+   {
+    "platform": "Windows",
+    "asset": "foreversixty-companion_windows_amd64.exe",
+    "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway."
+   }
+  ]
+ },
+ "download": {
+  "label": "Download for Windows",
+  "href": "/dl/companion/foreversixty-companion_windows_amd64.exe"
+ },
+ "paths": {
+  "addon_zip": "/dl/addon",
+  "data": "/dl/data"
+ },
+ "data_build": "Current data build: 1.60.1.70790",
+ "addon_arrived": "Felsnap arrived from the addon 1 day ago",
+ "code": "KQ4-7TM",
+ "connect": {
+  "title": "Connect your companion",
+  "signedOutLead": "Sign in to connect your companion.",
+  "signedOutLeadNamed": "[fn]",
+  "codeLabel": "[fn]",
+  "codeCheck": "Check that this code matches the one in the companion.",
+  "pendingCodeCheck": "Only press Connect if this code matches the one in the companion window.",
+  "consent": "Forever Sixty will see your BattleTag and character list. It cannot see your password or play for you.",
+  "battlenet": "Continue with Battle.net",
+  "checking": "Checking the link.",
+  "pendingTitle": "[fn]",
+  "pendingBody": "The companion will upload your combat logs and install your chosen builds in the addon. You can remove it any time in Account > Devices.",
+  "notYou": "Not you?",
+  "signOut": "Sign out",
+  "connect": "Connect",
+  "connecting": "Connecting...",
+  "cancel": "Cancel",
+  "successTitle": "Connected.",
+  "successBody": "Connected. Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.",
+  "yourAccount": "Your account",
+  "getSetUp": "Get set up",
+  "openReports": "Open my reports",
+  "cancelledTitle": "Not connected.",
+  "cancelledBody": "Nothing was connected.",
+  "close": "Close",
+  "expiredTitle": "This link has expired.",
+  "expiredBody": "Go back to the companion and press Sign in with Battle.net again.",
+  "backHome": "Back to Forever Sixty",
+  "usedTitle": "This device is already connected.",
+  "usedBody": "If this was not you, remove it in Account > Devices.",
+  "failedTitle": "Could not reach the site.",
+  "failedBody": "Your device was not connected. Check your connection and try again.",
+  "tryAgain": "Try again",
+  "deviceLabel": "Device",
+  "platformLabel": "Platform",
+  "codeRowLabel": "Code"
+ },
+ "connect_fns": {
+  "codeLabel": "Code KQ4-7TM",
+  "pendingTitle": "Connect JHUNT-PC to Hunthrop#1894?",
+  "signedOutLeadNamed": "Sign in to connect JHUNT-PC."
+ },
+ "addon": {
+  "wrongPrefix": "[fn]",
+  "unlabelledCode": "unlabelled",
+  "tooLong": "That code is too long to read.",
+  "shortCode": "That code is missing its talent and gear fields.",
+  "orderLength": "That code’s talent order is not a whole number of points.",
+  "orderCell": "[fn]",
+  "unknownSlot": "[fn]",
+  "gearEntry": "[fn]",
+  "statPair": "[fn]",
+  "emptyField": "[fn]",
+  "dataBuildField": "data build",
+  "classField": "class",
+  "bagsNeedAddonForBlizzard": "Bags and bank come from the addon. Install it to include them.",
+  "copyForGame": "Copy for the game",
+  "copiedForGame": "Copied, paste it in game with /fs",
+  "copyFailed": "Could not copy; select the code below instead",
+  "buildCodeLabel": "Build code",
+  "addonCodeHint": "Paste this in game with /fs; the Forever Sixty line and the talent window follow it from then on.",
+  "importTitle": "Import from addon",
+  "importPlaceholder": "FS1:…",
+  "importAction": "Import",
+  "importNoExport": "Don't have an export?",
+  "importGetAddon": "Get the addon and companion",
+  "importOrderApproximated": "Nothing in the game records the order a build was spent in, so this order is our best reconstruction: the main tree first, each talent as soon as its row opens. The finished tree is exact.",
+  "importDropped": "[fn]",
+  "importOlderBuild": "[fn]",
+  "importWrongClass": "[fn]",
+  "importSwitchingClass": "[fn]",
+  "pasteTitle": "Try an export",
+  "pastePlaceholder": "FS1:…",
+  "pasteAction": "Load",
+  "pasteOpenPlanner": "Open in planner",
+  "pasteOpenSim": "Open in simulator",
+  "pasteSignInHint": "Sign in to keep this character on your account.",
+  "pasteNameLabel": "Character name",
+  "pasteRegionLabel": "Region",
+  "pasteRulesetLabel": "Ruleset",
+  "pasteSaveAction": "Save to your account",
+  "pasteNeedsName": "Give the character a name first.",
+  "pasteNeedsRegion": "Pick the region first.",
+  "pasteNeedsRuleset": "Pick the ruleset first.",
+  "pasteSaved": "Saved to your account",
+  "pageDescription": "The addon brings your character here: gear and talents, bags and bank, your professions, an in-game build guide, and a fresh export the moment you log out.",
+  "pageNoNetwork": "The addon never talks to the network. Everything it knows is generated here and carried in the strings you copy.",
+  "installCurseForge": "Install from CurseForge",
+  "installWago": "Install from Wago Addons",
+  "installZip": "Download the zip",
+  "installDataLead": "Forever Sixty Data carries the Forever Scores and guild standings the addon shows, updated nightly. CurseForge and Wago add it for you; a hand install needs both.",
+  "installDataHint": "Forever Sixty Data adds the item scores the addon uses, updated nightly. CurseForge and Wago install it for you.",
+  "setupManualInstall": "Manual install",
+  "installDataRelease": "Latest data release",
+  "currentDataBuild": "[fn]",
+  "flowOutTitle": "Out of the game",
+  "flowOutBody": "In game, type /fs copy, press Ctrl+C, then paste it into the planner’s Import from addon box.",
+  "flowInTitle": "Into the game",
+  "flowInBody": "Save a build here, press Copy for the game, then type /fs in game and paste it.",
+  "inGameTitle": "The in-game window",
+  "inGameBody": "The addon is in beta testing in game. Every surface it draws is listed above under What it does in the game, with a capture from the client where we have one.",
+  "setupStep1Title": "Sign in",
+  "setupStep2Title": "The addon",
+  "setupStep3Title": "The companion",
+  "setupSignInBody": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
+  "setupSignInAction": "Sign in with Battle.net",
+  "setupHowItArrives": "Your characters come in from Battle.net when you sign in. The addon adds bags and bank when you log out, and the companion sends them. No companion? Paste an export instead (see Try an export below).",
+  "setupCompanionNote": "Optional. Sends bags, bank and live logs after every session.",
+  "setupSubline": "Signing in with Battle.net brings your characters. The addon and companion are optional.",
+  "setupCompanionBody": "The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once, then restart the game. Type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.",
+  "setupPageTitle": "Get set up",
+  "setupEyebrow": "Addon and companion",
+  "setupProgressLabel": "Your progress",
+  "setupTagDone": "Done",
+  "setupTagTodo": "To do",
+  "setupTagOptional": "Optional",
+  "setupChips": [
+   {
+    "step": 1,
+    "href": "#signin",
+    "label": "Sign in",
+    "labelDone": "Signed in"
+   },
+   {
+    "step": 2,
+    "href": "#addon",
+    "label": "Addon"
+   },
+   {
+    "step": 3,
+    "href": "#companion",
+    "label": "Companion"
+   }
+  ],
+  "setupAddonDoneLine": "An export is loaded; the site is pointed at that character.",
+  "setupSignedInAs": "[fn]",
+  "setupAddonArrived": "[fn]",
+  "setupAddonWaiting": "No character yet. Refresh from Battle.net, or install the addon and the companion, then paste an export.",
+  "setupAddonOptional": "Your characters are in from Battle.net. The addon adds bags, bank and live sync.",
+  "setupCompanionLine": "[fn]",
+  "setupCompanionWaiting": "No companion signed in yet",
+  "setupHowItWorks": "How the addon works",
+  "setupEverything": "Everything the addon does",
+  "setupCompanionPair": "Sign in with Battle.net inside the companion; it connects itself.",
+  "setupCompanionPlatforms": "[fn]",
+  "setupCompanionDownload": "[fn]",
+  "setupCompanionCapture": {
+   "src": "/addon/companion-status.jpg",
+   "width": 1600,
+   "height": 436,
+   "phoneSrc": "/addon/companion-status-phone.jpg",
+   "phoneWidth": 734,
+   "phoneHeight": 172,
+   "exampleLabel": "Example",
+   "alt": "The companion’s Status page: the Forever Sixty header with Status, Reports, Device and Settings, then a green dot beside “Logging”, “Uploading your fights as they end · logging as Bow Jackzon” and the link “Open this report on the site”."
+  },
+  "setupTryExport": "Try an export",
+  "setupTryExportBody": "Paste what the addon saved (type /fs copy in game) to see your character without the companion.",
+  "surfacesTitle": "What it does in the game",
+  "surfaces": [
+   {
+    "section": "4.1",
+    "title": "The Forever Sixty line",
+    "body": "A small icon and line beside the minimap that names your next step: the talent to take, a bag item to equip, loot here for you, or what a raid check found missing.",
+    "images": [
+     {
+      "src": "/addon/chip-tooltip-legend.jpg",
+      "width": 1019,
+      "height": 360,
+      "alt": "The Forever Sixty line beside the minimap with its hover open: “Forever Sixty · Beast Mastery / Marksmanship build”, “Next talent at 25: Lethal Attacks”, the legend lines “Green arrow: a bag item beats what you wear.” and “Gold corner: next upgrade to chase.”, then the click, right-click and shift-drag hints."
+     }
+    ]
+   },
+   {
+    "section": "4.2",
+    "title": "Talent marks",
+    "body": "In the talent window, a gold ring marks the next talent, every talent your build takes carries its order number, and a strip along the bottom counts your progress and any points spent off plan.",
+    "images": [
+     {
+      "src": "/addon/talent-marks-trees.jpg",
+      "width": 504,
+      "height": 298,
+      "alt": "A hunter’s talent window, Beast Mastery, Marksmanship and Survival, with small order marks on the planned talents, one ringed in gold in Marksmanship, and the strip along the bottom: “Next: Lethal Attacks (1 of 5) · 12 of 51 points · 3 off plan”, the last part in red."
+     }
+    ]
+   },
+   {
+    "section": "4.3",
+    "title": "Item tooltip",
+    "body": "Every item tooltip gains a Forever Sixty section that says whether the item is an upgrade and by how much, the next upgrade for that slot and where it comes from, and two alternatives.",
+    "images": [
+     {
+      "src": "/addon/item-tooltip-ranged.jpg",
+      "width": 910,
+      "height": 615,
+      "alt": "A level 24 hunter’s worn Short Ash Bow tooltip on the character panel, ending in the Forever Sixty section: “Forever Sixty · Beast Mastery · Estimate”, “Equipped”, “Next upgrade: Ranger Bow +3.5 DPS”, “(+1 Agi, +3.4 weapon DPS)”, “Planned for your build”, “World drop · check the AH”, and “Also good:” Lil Timmy’s Peashooter +2.2 (needs bullets) and Cracked Blacksmith Hammer +0.8, with the Ranger Bow’s own tooltip beside it."
+     }
+    ]
+   },
+   {
+    "section": "4.4",
+    "title": "Paper doll, bags, quest rewards, rolls",
+    "body": "A green arrow marks a paper-doll slot and the bag item that beats it, a gold corner marks a slot with an upgrade to chase, the quest reward your spec prefers is marked, and the roll frame shows the tooltip’s verdict beside the item.",
+    "images": [
+     {
+      "src": "/addon/bag-arrow.jpg",
+      "width": 560,
+      "height": 300,
+      "alt": "The top of the Combined Backpack with a small green arrow on the top-right corner of an item in the second row of the backpack: a bag item that beats what the character wears."
+     }
+    ]
+   },
+   {
+    "section": "4.5",
+    "title": "The \"Forever Sixty\" character-panel tab",
+    "body": "A tab on the character panel with your next gear targets, your rotation for your level and your build; at 60 it adds your sim and your last raid.",
+    "images": [
+     {
+      "src": "/addon/character-panel-tab.jpg",
+      "tall": true,
+      "width": 580,
+      "height": 796,
+      "alt": "The Forever Sixty tab for a level 24 hunter: Next targets lists Ranger Bow +3.5 DPS (Ranged, World drop) and Blackened Defias Belt +1.1 DPS (Waist, The Deadmines, Captain Greenskin, 30% drop); Rotation lists Aimed Shot, Multi-Shot, Serpent Sting and Arcane Shot with their conditions, and Rapid Fire dimmed at level 26; Build reads “Plan: Beast Mastery 31 / Marksmanship 20”, “12 of 15 points on plan” and “3 off plan” in red, over the buttons Use a different build and Copy my character."
+     }
+    ]
+   },
+   {
+    "section": "4.6",
+    "title": "The player tooltip and the score",
+    "body": "Every player tooltip carries that player’s Forever Score, and in LFG, Trade, guild chat and whispers a sender with a score gets an FS badge before their message.",
+    "images": [
+     {
+      "src": "/addon/player-tooltip-score.jpg",
+      "width": 524,
+      "height": 307,
+      "alt": "A player tooltip for Bow Jackzon, level 24 hunter, with the line “Forever Score 1240 · Rare · as of 13 Oct” in blue and the muted hint “Shift: score details · target them, then /fs link” under the client’s own lines."
+     },
+     {
+      "src": "/addon/chat-badge-guild.jpg",
+      "width": 860,
+      "height": 90,
+      "alt": "A guild chat line, “[Guild] [Bow Jackzon]: FS 1240 · (addon test 3)”, with “FS 1240” in blue and a muted dot before the message."
+     }
+    ]
+   },
+   {
+    "section": "4.7",
+    "title": "Guild tab",
+    "body": "A tab on the guild frame lists the roster’s level, spec, gear, Forever Score, attendance and gear gap, sortable, live for members who run the addon.",
+    "images": [
+     {
+      "src": "/addon/guild-tab.jpg",
+      "tall": true,
+      "width": 728,
+      "height": 612,
+      "alt": "The Forever Sixty guild tab: “Online only” unticked, “97 of 97 shown · 2 of 3 online run Forever Sixty · 1-20 of 97”, and columns Name, Level, Spec, Gear, Score (sorted), Attendance and Gap, with scored rows for Belee Dat (Frost, 2310), Onearm Lopen (Arms, 1720, gap 14 DPS) and Bow Jackzon (Beast Mastery, 1240, gap 0 DPS), then two dimmed rows and “no logs” for the rest."
+     }
+    ]
+   },
+   {
+    "section": "4.8",
+    "title": "Group panel",
+    "body": "A tab on the raid frame shows each member’s spec, level, gear gap and score before the first pull, and on a ready check lists who lacks flask, food, weapon imbue or a class buff.",
+    "images": [
+     {
+      "src": "/addon/group-panel-solo.jpg",
+      "width": 883,
+      "height": 157,
+      "alt": "The Forever Sixty group panel while solo: “Not in a group.” then, muted, “A party or raid shows each member’s spec, gear gap, score and buffs. /fs ready tries the check on you.”"
+     }
+    ]
+   },
+   {
+    "section": "4.9",
+    "title": "Guild and raid messaging",
+    "body": "Addons in your guild, raid or party share level, spec, gear gap and build name, pass builds to each other, and tell the master looter what a drop is worth to each member.",
+    "images": []
+   },
+   {
+    "section": "4.10",
+    "title": "Build dialog",
+    "body": "The addon’s one window of its own, where you paste a build from this site to follow it or copy your character to paste here.",
+    "images": [
+     {
+      "src": "/addon/build-dialog-paste.jpg",
+      "tall": true,
+      "width": 770,
+      "height": 553,
+      "alt": "The build dialog for a hunter on Paste a build: “Following: Beast Mastery / Marksmanship build · Hunter · 51 po…”, “Next talent: Take Lethal Attacks (Marksmanship, 1 of 5)”, and the empty box “Paste a build code from foreversixty.gg (Ctrl+V)”, with “Tab to switch” at the bottom."
+     },
+     {
+      "src": "/addon/build-dialog-copy.jpg",
+      "tall": true,
+      "width": 770,
+      "height": 550,
+      "alt": "The build dialog on Copy my character with the hunter’s export string selected (FS1:1.60.1.70291:hunter:…), then “No companion found.”, “The companion is a small app on your computer that sends this when you log out.” and “Or paste it on the site at foreversixty.gg.”"
+     }
+    ]
+   },
+   {
+    "section": "4.11",
+    "title": "Settings",
+    "body": "Eight switches on the client’s Settings page, each with one line saying what it does, then Reset positions and the command list.",
+    "images": [
+     {
+      "src": "/addon/settings-switches.jpg",
+      "tall": true,
+      "width": 1166,
+      "height": 790,
+      "alt": "The Forever Sixty settings page with its eight switches ticked, each with its hint: Show the Forever Sixty line, Hide the Forever Sixty line in combat, Marks on the talent window, Show the minimap button, Gear tips on item tooltips, Score badges in chat, Share my build with my guild and Save my character for the companion app, then the Reset positions button."
+     }
+    ]
+   }
+  ],
+  "commandsTitle": "Commands",
+  "commands": [
+   {
+    "command": "/fs",
+    "description": "paste or copy a build"
+   },
+   {
+    "command": "/fs copy",
+    "description": "copy my character for the site"
+   },
+   {
+    "command": "/fs build",
+    "description": "switch between saved builds"
+   },
+   {
+    "command": "/fs chip",
+    "description": "show or hide the Forever Sixty line"
+   },
+   {
+    "command": "/fs inspect",
+    "description": "gear and talents of your target"
+   },
+   {
+    "command": "/fs link",
+    "description": "copy a player's site page"
+   },
+   {
+    "command": "/fs group",
+    "description": "your group's specs, gear and buffs"
+   },
+   {
+    "command": "/fs ready",
+    "description": "check flasks, food and buffs now"
+   },
+   {
+    "command": "/fs job",
+    "description": "your jobs for the next raid"
+   },
+   {
+    "command": "/fs loot",
+    "description": "what an item is worth to you"
+   },
+   {
+    "command": "/fs floor N",
+    "description": "tag members scored under N"
+   },
+   {
+    "command": "/fs options",
+    "description": "open the settings page"
+   },
+   {
+    "command": "/fs diag",
+    "description": "check what is wrong"
+   },
+   {
+    "command": "/fs help",
+    "description": "every command"
+   }
+  ],
+  "handshakeTitle": "The companion handshake",
+  "handshake": [
+   "When you log out, the addon saves your character export (level, spec, talents, equipped gear, and bags when the bag switch is on), any sim request and the guild tab’s live roster.",
+   "The roster is saved only while “Share my build with my guild” is on, and members who opted out appear as “seen HH:MM” only; the companion uploads all of it and brings back what the site has for you, builds and sim results included.",
+   "The build dialog’s Copy my character tab then says “Site has your save from” and how long ago once the site has your latest copy, and “Not sent to the site yet · log out to send” until then."
+  ],
+  "scoreColumn": "Score",
+  "sortByScore": "Sort by score",
+  "weightsTitle": "[fn]",
+  "weightsAreOpinions": "Weights are opinions. These are ours, with the sources we took them from.",
+  "weightsMissing": "No stat weights for this spec yet, so nothing is scored."
+ },
+ "cta": {
+  "getAddonAndCompanion": "Get the addon and companion",
+  "installAddonAndCompanion": "Install the addon and the companion",
+  "installAddonAndCompanionInline": "install the addon and the companion"
+ },
+ "characters": {
+  "heading": "Characters",
+  "empty": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.",
+  "emptyByEmail": "No characters yet. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.",
+  "getSetUp": "Get set up",
+  "getSetUpHref": "/setup",
+  "pasteAnExport": "Paste an export",
+  "pasteHref": "/setup#paste",
+  "refreshFromBattlenet": "Refresh from Battle.net",
+  "importedFrom": "[fn]",
+  "verified": "Verified",
+  "main": "Main",
+  "current": "Current",
+  "setAsMain": "Set as main",
+  "setAsMainFailed": "Could not set your main just now.",
+  "levelPrefix": "[fn]",
+  "refreshing": "Refreshing…",
+  "refreshingAnnounce": "Refreshing from Battle.net.",
+  "refreshError": "Battle.net did not answer. Nothing changed.",
+  "tryAgain": "Try again",
+  "updatedJustNow": "[fn]",
+  "noChanges": "[fn]",
+  "importedJustNow": "Imported from Battle.net just now.",
+  "introBattlenetLine": "Your characters come from Battle.net each time you sign in.",
+  "introInstallAddonLink": "Install the addon and the companion",
+  "introAddonTail": "for bags, bank and live sync. In Korea, or Battle.net is down?",
+  "introPasteLink": "Paste an export",
+  "introPasteTail": "instead.",
+  "battlenetSource": "Battle.net",
+  "addonSource": "Addon",
+  "noBuildYet": "No gear yet"
+ },
+ "pairing": {
+  "signedOut": "Live logging needs a signed-in account.",
+  "companionFirst": "Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.",
+  "success": "[fn]",
+  "success_line": "JHUNT-PC paired. It starts uploading as soon as you are logging."
+ },
+ "logs_companion": {
+  "pointer": "Log live while you raid.",
+  "pointerLink": "Get the companion",
+  "pointerHref": "/setup#companion",
+  "pairLabel": "Pair it with your account",
+  "pairAnotherLabel": "Pair another device"
+ },
+ "session_failed": "Your account did not load.",
+ "wrong_prefix": "That code is FS2; this site reads FS1.",
+ "pairing_component": {
+  "action": "Get a pairing code",
+  "failed": "The pairing code did not load. Try again.",
+  "code_line": "Type this into the companion within 10 minutes. It pairs one device and cannot be reused."
+ }
+}
