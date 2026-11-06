@@ -90,6 +90,7 @@
     onDecline,
     onApproveAll,
     rowPath,
+    profileHref = () => null,
     addonSnapshot = null,
     mySiteSpec = null,
     now = new Date(),
@@ -121,6 +122,8 @@
     onDecline: (row: GuildRosterRow) => void;
     onApproveAll: () => void;
     rowPath: (row: GuildRosterRow) => CharacterPath;
+    /** The row's member profile, when the viewer may open it (an officer, or their own row). */
+    profileHref?: (row: GuildRosterRow) => string | null;
     /** The home's `addon_snapshot` (Task L6.14); absent on a home from before it, read as null. */
     addonSnapshot?: GuildAddonSnapshot | null;
     /** The spec the site's own record (the account's character, `/v1/me`) holds for the viewer's
@@ -562,6 +565,7 @@
           {#each ordered as row (row.character_key)}
             {@const pinned = row.character_key === myCharacterKey}
             {@const chips = rosterStatChips(row, attendanceSource)}
+            {@const profile = profileHref(row)}
             {@const specLine = specLineOf(row)}
             {@const subtitle = altOf.has(row.character_key)
               ? `${specLine}${specLine === '' ? '' : ' · '}alt of ${altOf.get(row.character_key)}`
@@ -572,14 +576,18 @@
                text in the title), so every row's rank and stats start at the same left edge. -->
               <div class="flex min-w-0 flex-1 flex-col lg:w-[240px] lg:flex-none lg:shrink-0">
                 <span class="flex min-w-0 items-center gap-2">
-                  <span
-                    class="heading-name min-w-0 text-[14px] lg:truncate"
+                  <svelte:element
+                    this={profile === null ? 'span' : 'a'}
+                    href={profile ?? undefined}
+                    class="heading-name min-w-0 text-[14px] lg:truncate {profile === null
+                      ? ''
+                      : 'hover:underline focus-visible:underline'}"
                     style={`color:${classColorVar(row.class ?? '')}`}
                     title={`${row.name}${pinned ? ' (you)' : ''}`}
                     data-testid="guild-roster-name"
                   >
                     {row.name}{pinned ? ' (you)' : ''}
-                  </span>
+                  </svelte:element>
                   {#if row.supporter === true}<SupporterChip />{/if}
                 </span>
                 <!-- One line per part at lg ("Beast Mastery Hunter in game", then "Survival on the site"), each

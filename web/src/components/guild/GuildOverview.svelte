@@ -49,6 +49,7 @@
   import MemberChecklist from './overview/MemberChecklist.svelte';
   import NextRaidPlate from './overview/NextRaidPlate.svelte';
   import OfficerActions from './overview/OfficerActions.svelte';
+  import RecruitLine from './overview/RecruitLine.svelte';
   import RecentAttendance from './overview/RecentAttendance.svelte';
   import YourNumbers from './overview/YourNumbers.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
@@ -195,13 +196,14 @@
 <div data-testid="guild-overview-tab">
   {#if role === 'public'}
     <Page layout="split" testid="guild-overview-page">
+      {#if guildId !== null && guildPath !== ''}<RecruitLine {guildId} {guildPath} officer={false} />{/if}
       {@render lastRaid()}
     </Page>
   {:else if officer}
     <Page layout="split" testid="guild-overview-page">
       {@render lead?.()}
       {#if actions !== null}
-        <OfficerActions {guildId} {actions} {day} {canPing} {onSelectTab} />
+        <OfficerActions {guildId} {actions} {day} {canPing} {onSelectTab} {guildPath} />
       {/if}
       {@render plate()}
       {#if raid?.comp_target}
@@ -213,6 +215,7 @@
           <RecentAttendance page={attendance} rosterHref="#roster" timezone={guildTz} />
         {/if}
         {@render lastRaid()}
+        {#if guildId !== null}<RecruitLine {guildId} {guildPath} officer />{/if}
       {/snippet}
     </Page>
   {:else}

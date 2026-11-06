@@ -10,10 +10,13 @@
   import {
     guildHref,
     isGuildLandingPath,
+    parseGuildApplicationsPath,
     parseGuildClaimPath,
     parseGuildInviteToken,
+    parseGuildMemberPath,
     parseGuildPath,
     parseGuildRaidPath,
+    parseGuildRecruitPath,
     parseGuildSettingsPath,
   } from '../lib/characters';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
@@ -27,11 +30,17 @@
   import { guildClaimCopy, guildSettingsCopy } from '../lib/guild/copy';
   import { raidCopy } from '../lib/guild/raid-copy';
 
+  /** The recruit, applications and profile views' loading height, the same as their own skeleton. */
+  const GUILD_VIEW_LOADING = 'min-h-[640px]';
+
   // This island's entry is at its budget: each view off the guild page is its own chunk.
   const raidLazy = createLazyComponent(() => import('./GuildRaid.svelte'));
   const settingsLazy = createLazyComponent(() => import('./GuildSettings.svelte'));
   const claimLazy = createLazyComponent(() => import('./GuildClaim.svelte'));
   const joinLazy = createLazyComponent(() => import('./GuildJoin.svelte'));
+  const recruitLazy = createLazyComponent(() => import('./guild/recruit/GuildRecruit.svelte'));
+  const applicationsLazy = createLazyComponent(() => import('./guild/recruit/GuildApplications.svelte'));
+  const profileLazy = createLazyComponent(() => import('./guild/recruit/GuildMemberProfile.svelte'));
 
   let { path = null }: { path?: string | null } = $props();
 
@@ -41,6 +50,9 @@
   const settingsPath = $derived(parseGuildSettingsPath(resolvedPath));
   const inviteToken = $derived(parseGuildInviteToken(resolvedPath));
   const raidPath = $derived(parseGuildRaidPath(resolvedPath));
+  const recruitPath = $derived(parseGuildRecruitPath(resolvedPath));
+  const applicationsPath = $derived(parseGuildApplicationsPath(resolvedPath));
+  const memberPath = $derived(parseGuildMemberPath(resolvedPath));
   const guildPath = $derived(parseGuildPath(resolvedPath));
 
   // Every guild view follows the header selector (character-selector/follow-page.ts): your guild
@@ -59,6 +71,9 @@
     else if (settingsPath !== null) settingsLazy.load();
     else if (inviteToken !== null) joinLazy.load();
     else if (raidPath !== null) raidLazy.load();
+    else if (recruitPath !== null) recruitLazy.load();
+    else if (applicationsPath !== null) applicationsLazy.load();
+    else if (memberPath !== null) profileLazy.load();
   });
 </script>
 
@@ -118,6 +133,30 @@
       <div class="{RAID_BAND_MIN} {GUILD_BANDLESS_TOP}">
         <h1 class="sr-only">{raidCopy.page.eyebrow}</h1>
         {@render chunkPending(raidLazy, 'raid-chunk', '')}
+      </div>
+    {/if}
+  {:else if recruitPath !== null}
+    {#if recruitLazy.current}
+      <recruitLazy.current path={recruitPath} />
+    {:else}
+      <div class={GUILD_BANDLESS_TOP}>
+        {@render chunkPending(recruitLazy, 'guild-recruit-chunk', GUILD_VIEW_LOADING)}
+      </div>
+    {/if}
+  {:else if applicationsPath !== null}
+    {#if applicationsLazy.current}
+      <applicationsLazy.current path={applicationsPath} />
+    {:else}
+      <div class={GUILD_BANDLESS_TOP}>
+        {@render chunkPending(applicationsLazy, 'guild-applications-chunk', GUILD_VIEW_LOADING)}
+      </div>
+    {/if}
+  {:else if memberPath !== null}
+    {#if profileLazy.current}
+      <profileLazy.current path={memberPath.guild} account={memberPath.account} />
+    {:else}
+      <div class={GUILD_BANDLESS_TOP}>
+        {@render chunkPending(profileLazy, 'guild-profile-chunk', GUILD_VIEW_LOADING)}
       </div>
     {/if}
   {:else}

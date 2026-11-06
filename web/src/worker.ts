@@ -12,10 +12,15 @@
 // and would then apply to every file in the project.
 import {
   parseCharacterPath,
+  parseGuildApplicationsPath,
   parseGuildClaimPath,
   parseGuildInviteToken,
+  parseGuildMemberPath,
   parseGuildPath,
+  parseGuildRaidPath,
+  parseGuildRecruitPath,
   parseGuildSettingsPath,
+  type CharacterPath,
 } from './lib/characters';
 import { GO_PREFIX } from './lib/golinks/config';
 import { serveGoLink, type ExecutionContext } from './lib/golinks/redirect';
@@ -459,6 +464,17 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
     return { meta: guildSettingsShellMeta(guildSettings, data.guild.name), indexable: false };
   }
 
+  // A raid, the recruiting card, the applications list or a member profile: the guild page's head,
+  // never indexed (the guild page itself is the canonical one).
+  const guildView = guildViewPath(url.pathname);
+  if (guildView !== null) {
+    const data = await apiData<GuildHead>(
+      `${env.API_BASE_URL}/v1/guilds/${guildView.region}/${guildView.ruleset}/${guildView.slug}`,
+    );
+    if (data === null) return null;
+    return { meta: guildShellMeta(guildView, data), indexable: false };
+  }
+
   // No API call at all (plan ruling 6): there is no unauthenticated endpoint to resolve an
   // invite token to a guild name.
   const inviteToken = parseGuildInviteToken(url.pathname);
@@ -478,6 +494,17 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
   return null;
 }
 
+/** The guild of a view under the guild page: a raid, recruit, applications or a member profile. */
+function guildViewPath(pathname: string): CharacterPath | null {
+  return (
+    parseGuildRaidPath(pathname)?.guild ??
+    parseGuildRecruitPath(pathname) ??
+    parseGuildApplicationsPath(pathname) ??
+    parseGuildMemberPath(pathname)?.guild ??
+    null
+  );
+}
+
 /**
  * Whether this path names one report, encounter, character or guild. A path under a shell
  * prefix that does not -- `/reports/fixture2abcd/extra`, a prerendered fixture page's own
@@ -492,6 +519,7 @@ function shellPathIsAddressable(url: URL): boolean {
     parseGuildPath(url.pathname) !== null ||
     parseGuildClaimPath(url.pathname) !== null ||
     parseGuildSettingsPath(url.pathname) !== null ||
+    guildViewPath(url.pathname) !== null ||
     parseGuildInviteToken(url.pathname) !== null
   );
 }

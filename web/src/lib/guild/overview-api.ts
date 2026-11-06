@@ -80,6 +80,8 @@ export interface GuildRecentAttendance {
 
 export interface GuildOfficerActions {
   approvals: { count: number; names: string[] };
+  /** Pending applications, the applicants' characters oldest first. Absent on an older API. */
+  applications?: { count: number; names: string[] };
   not_signed: { raid_id: number | null; count: number; names: string[] };
   /** The loot council's newest night with drops (null with none): `count` is its drops still open.
    *  `tracked` is always true now; the row hides at a count of 0. */

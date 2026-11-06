@@ -183,7 +183,7 @@ export function verdictLine(
 }
 
 export interface ActionRow {
-  key: 'approvals' | 'not_signed' | 'drops';
+  key: 'approvals' | 'applications' | 'not_signed' | 'drops';
   title: string;
   sub: string;
 }
@@ -202,6 +202,13 @@ export function actionRows(actions: GuildOfficerActions, day: string | null): Ac
       key: 'approvals',
       title: `${counted(approvals.count, 'raider')} ${approvals.count === 1 ? 'is' : 'are'} waiting for approval`,
       sub: names(approvals.names),
+    });
+  const applications = actions.applications;
+  if (applications !== undefined && applications.count > 0)
+    rows.push({
+      key: 'applications',
+      title: counted(applications.count, 'application'),
+      sub: names(applications.names),
     });
   if (notSigned.count > 0 && notSigned.raid_id !== null)
     rows.push({
