@@ -27,6 +27,7 @@ Follow.lua
 Gear.lua
 Progress.lua
 Rotation.lua
+RaidAssign.lua
 Score.lua
 Comms.lua
 Inspect.lua

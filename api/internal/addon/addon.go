@@ -509,6 +509,9 @@ type Service struct {
 	// follow for a build's code.
 	Guilds GuildSource
 	Sims   SimSource
+	// Assignments produces the raid_assignment messages (raid_assignments.go): each
+	// character's own slots in its next raid. Nil sends none.
+	Assignments AssignmentSource
 	// SimRequests turns an outbox's sim_request into a server run.
 	// sims.Service satisfies it. Nil answers every request
 	// "unavailable"; the export it rode in with is still stored.

@@ -1837,6 +1837,56 @@ data class RaidAlsoSignup(
     @SerialName("state") val state: String,
 )
 
+/** A slot's pick, RaidAssignmentRaider plus off_role. */
+@Serializable
+data class RaidAssignedName(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("group") val group: String,
+    @SerialName("state") val state: String,
+    /** The viewer's own character. */
+    @SerialName("own") val own: Boolean,
+    /** The slot is for a role this character does not fill tonight. */
+    @SerialName("off_role") val offRole: Boolean,
+)
+
+@Serializable
+data class RaidAssignmentRaider(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("group") val group: String,
+    @SerialName("state") val state: String,
+    /** The viewer's own character. */
+    @SerialName("own") val own: Boolean,
+)
+
+/** Each boss of the raid's zone with its template's slots (api/internal/guilds/ raid_assign_templates.go). A picked character whose sign-up is no longer In, Late or Bench drops out of every reading. */
+@Serializable
+data class RaidAssignments(
+    @SerialName("encounters") val encounters: List<RaidEncounterAssignments> = emptyList(),
+    /** The raid's name when the game client carries none of its bosses yet; else empty. */
+    @SerialName("not_in_client") val notInClient: List<String> = emptyList(),
+    /** Every character signed In, Late or Bench, tanks, healers, melee, ranged, then by name. */
+    @SerialName("candidates") val candidates: List<RaidAssignmentRaider> = emptyList(),
+    /** When the assignments last went to Discord. */
+    @SerialName("posted_at") val postedAt: String? = null,
+)
+
+@Serializable
+data class RaidAssignmentSlot(
+    @SerialName("key") val key: String,
+    @SerialName("label") val label: String,
+    /** What the slot does in the fight */
+    @SerialName("purpose") val purpose: String,
+    /** The most names the slot takes. */
+    @SerialName("count") val count: Int,
+    /** Orders the picker and flags an off-role pick; never refuses one. */
+    @SerialName("role") val role: String,
+    @SerialName("names") val names: List<RaidAssignedName> = emptyList(),
+)
+
 /** An officer's manual fix of this night (PUT …/attendance/{region}/{ruleset}/{name}/override), null for none. present and bench earn the night; absent is a no-show for a raider signed In or Late, else absent; excused keeps the log's outcome and counts the night for nobody. */
 @Serializable
 data class RaidAttendanceOverride(
@@ -1978,6 +2028,18 @@ data class RaidDiscordPost(
     @SerialName("post_at") val postAt: String? = null,
     @SerialName("reminded_at") val remindedAt: String? = null,
     @SerialName("remind") val remind: Boolean,
+)
+
+@Serializable
+data class RaidEncounterAssignments(
+    /** The client's DungeonEncounter id. */
+    @SerialName("encounter_id") val encounterId: Long,
+    @SerialName("name") val name: String,
+    /** The raid's name, "Onyxia's Lair". */
+    @SerialName("raid_zone") val raidZone: String,
+    @SerialName("slots") val slots: List<RaidAssignmentSlot> = emptyList(),
+    /** One line per filled slot for /rw ("MT: Thornhide"), each at most 255 bytes. */
+    @SerialName("raid_warning") val raidWarning: List<String> = emptyList(),
 )
 
 /** A count per roster group (Go raidspec.Group). */
@@ -2267,6 +2329,8 @@ data class RaidView(
     @SerialName("report") val report: JsonElement? = null,
     /** The buff and debuff cover of the sign-ups (owner decision D15), one row per entry of data/curated/raid-cover.json in its order (party buffs, raid buffs, debuffs); null for a dungeon or an event. */
     @SerialName("cover") val cover: List<RaidCoverRow>? = null,
+    /** The raid leader's assignments per encounter (Go guilds.RaidAssignments); null for a dungeon or an event. Manual only: officers pick every name. */
+    @SerialName("assignments") val assignments: RaidAssignments? = null,
 )
 
 @Serializable
