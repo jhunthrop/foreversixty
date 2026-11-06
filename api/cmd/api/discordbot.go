@@ -89,6 +89,7 @@ func newDiscordBot(stop context.Context, cfg config.Config, pool *pgxpool.Pool, 
 	bot := discordbot.New(d)
 	accounts.DiscordLinks = bot
 	deps.Guilds.Bot = bot
+	deps.Guilds.ApplicationBot = bot
 	deps.Guilds.RaidEvents = raidRouterFor(bot, deps)
 	deps.Guilds.RaidPosts = d.Store
 	// The drainer runs in this process (one warm instance, always-on CPU). It stops claiming
