@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70790",
-  "engine_version": "bff826207",
-  "generated_at": "2026-11-05T12:21:28Z",
+  "engine_version": "bf727699f",
+  "generated_at": "2026-11-06T13:46:51Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -132,7 +132,15 @@
               "source_kind": "world",
               "source": "Dun Garok Rifleman"
             }
-          ]
+          ],
+          "by_kind": {
+            "world": {
+              "item_id": 4724,
+              "rank": 3,
+              "source": "Dun Garok Rifleman",
+              "dps_delta": -1.01
+            }
+          }
         },
         {
           "slot": "neck",
@@ -178,7 +186,23 @@
               "source_kind": "world_drop",
               "source": "World drop"
             }
-          ]
+          ],
+          "kinds": ["rep", "vendor"],
+          "standing": "honored",
+          "by_kind": {
+            "quest": {
+              "item_id": 277204,
+              "rank": 5,
+              "source": "Friend of the Library",
+              "dps_delta": -2.02
+            },
+            "world": {
+              "item_id": 273049,
+              "rank": 3,
+              "source": "Shade of the Archmage",
+              "dps_delta": -1.08
+            }
+          }
         },
         {
           "slot": "shoulder",
@@ -222,7 +246,27 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 4252,
+              "rank": 3,
+              "source": "Leatherworking",
+              "dps_delta": -1.35
+            },
+            "dungeon": {
+              "item_id": 2264,
+              "rank": 2,
+              "source": "Razorfen Kraul",
+              "dps_delta": -0.34
+            },
+            "quest": {
+              "item_id": 3560,
+              "rank": 17,
+              "source": "Bride of the Embalmer",
+              "dps_delta": -3.38
+            }
+          }
         },
         {
           "slot": "back",
@@ -265,7 +309,40 @@
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Skum"
             }
-          ]
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 2316,
+              "rank": 11,
+              "source": "Leatherworking",
+              "dps_delta": -1.69
+            },
+            "dungeon": {
+              "item_id": 6449,
+              "rank": 3,
+              "source": "Wailing Caverns: Skum",
+              "dps_delta": -0.67
+            },
+            "pvp": {
+              "item_id": 16315,
+              "rank": 5,
+              "source": "PvP rank 5 \u00b7 Sergeant Major \u00b7 Alliance",
+              "dps_delta": -1.16
+            },
+            "quest": {
+              "item_id": 9699,
+              "rank": 10,
+              "source": "Return to Vahlarriel",
+              "dps_delta": -1.69
+            },
+            "rep": {
+              "item_id": 271923,
+              "rank": 15,
+              "source": "Theramore Expeditionary Force",
+              "dps_delta": -2.32,
+              "standing": "honored"
+            }
+          }
         },
         {
           "slot": "chest",
@@ -311,7 +388,34 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 7374,
+              "rank": 1,
+              "source": "Leatherworking",
+              "dps_delta": -1.66
+            },
+            "quest": {
+              "item_id": 2041,
+              "rank": 3,
+              "source": "The Defias Brotherhood",
+              "dps_delta": -0.04
+            },
+            "vendor": {
+              "item_id": 4782,
+              "rank": 94,
+              "source": "Aldren Cordon",
+              "dps_delta": -3.7
+            },
+            "world": {
+              "item_id": 14570,
+              "rank": 8,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.39
+            }
+          }
         },
         {
           "slot": "wrist",
@@ -361,7 +465,33 @@
               "source_kind": "world",
               "source": "Nightbane Vile Fang"
             }
-          ]
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 18948,
+              "rank": 7,
+              "source": "Leatherworking",
+              "dps_delta": -0.67
+            },
+            "dungeon": {
+              "item_id": 9428,
+              "rank": 13,
+              "source": "Uldaman",
+              "dps_delta": -1.14
+            },
+            "quest": {
+              "item_id": 270033,
+              "rank": 5,
+              "source": "Morganth",
+              "dps_delta": -0.67
+            },
+            "vendor": {
+              "item_id": 4794,
+              "rank": 6,
+              "source": "Bernard Brubaker",
+              "dps_delta": -0.67
+            }
+          }
         },
         {
           "slot": "hands",
@@ -406,7 +536,27 @@
               "source_kind": "world_drop",
               "source": "World drop"
             }
-          ]
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 7358,
+              "rank": 2,
+              "source": "Leatherworking",
+              "dps_delta": -0.85
+            },
+            "dungeon": {
+              "item_id": 10413,
+              "rank": 4,
+              "source": "Wailing Caverns: Druid of the Fang",
+              "dps_delta": -1.01
+            },
+            "quest": {
+              "item_id": 1304,
+              "rank": 19,
+              "source": "The Everstill Bridge",
+              "dps_delta": -1.88
+            }
+          }
         },
         {
           "slot": "waist",
@@ -451,7 +601,41 @@
               "source_kind": "rep",
               "source": "The League of Arathor"
             }
-          ]
+          ],
+          "by_kind": {
+            "dungeon": {
+              "item_id": 10403,
+              "rank": 10,
+              "source": "The Deadmines: Captain Greenskin",
+              "dps_delta": -1.33
+            },
+            "quest": {
+              "item_id": 3562,
+              "rank": 5,
+              "source": "The Fury Runs Deep",
+              "dps_delta": -0.96
+            },
+            "rep": {
+              "item_id": 20090,
+              "rank": 3,
+              "source": "The League of Arathor",
+              "dps_delta": -0.66,
+              "standing": "honored"
+            },
+            "vendor": {
+              "item_id": 20090,
+              "rank": 3,
+              "source": "Samuel Hawke",
+              "dps_delta": -0.66,
+              "standing": "honored"
+            },
+            "world": {
+              "item_id": 3429,
+              "rank": 14,
+              "source": "Jailor Eston",
+              "dps_delta": -1.97
+            }
+          }
         },
         {
           "slot": "legs",
@@ -497,7 +681,33 @@
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
-          ]
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 7373,
+              "rank": 3,
+              "source": "Leatherworking",
+              "dps_delta": -0.34
+            },
+            "dungeon": {
+              "item_id": 9509,
+              "rank": 1,
+              "source": "Gnomeregan",
+              "dps_delta": -0.23
+            },
+            "quest": {
+              "item_id": 279868,
+              "rank": 18,
+              "source": "Bloodied Insignia",
+              "dps_delta": -2.51
+            },
+            "vendor": {
+              "item_id": 4830,
+              "rank": 14,
+              "source": "Wenna Silkbeard",
+              "dps_delta": -2.36
+            }
+          }
         },
         {
           "slot": "feet",
@@ -547,7 +757,33 @@
               "source_kind": "dungeon",
               "source": "The Deadmines: Defias Strip Miner"
             }
-          ]
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 252440,
+              "rank": 5,
+              "source": "Leatherworking",
+              "dps_delta": -0.82
+            },
+            "dungeon": {
+              "item_id": 10411,
+              "rank": 3,
+              "source": "Wailing Caverns: Lord Serpentis",
+              "dps_delta": -0.67
+            },
+            "quest": {
+              "item_id": 6752,
+              "rank": 9,
+              "source": "Mortality Wanes",
+              "dps_delta": -1.01
+            },
+            "vendor": {
+              "item_id": 4788,
+              "rank": 7,
+              "source": "Defias Profiteer",
+              "dps_delta": -1.01
+            }
+          }
         },
         {
           "slot": "finger1",
@@ -599,7 +835,30 @@
               "source_kind": "dungeon",
               "source": "The Stockade: Defias Prisoner"
             }
-          ]
+          ],
+          "kinds": ["dungeon", "world"],
+          "by_kind": {
+            "quest": {
+              "item_id": 6748,
+              "rank": 3,
+              "source": "Willix the Importer",
+              "dps_delta": -0.34
+            },
+            "rep": {
+              "item_id": 19517,
+              "rank": 2,
+              "source": "Silverwing Sentinels",
+              "dps_delta": 0,
+              "standing": "honored"
+            },
+            "vendor": {
+              "item_id": 19517,
+              "rank": 2,
+              "source": "Illiyana Moonblaze",
+              "dps_delta": 0,
+              "standing": "honored"
+            }
+          }
         },
         {
           "slot": "finger2",
@@ -643,7 +902,76 @@
               "source_kind": "dungeon",
               "source": "The Stockade: Defias Prisoner"
             }
-          ]
+          ],
+          "kinds": ["rep", "vendor"],
+          "standing": "honored",
+          "not_with": [19517],
+          "by_kind": {
+            "dungeon": {
+              "item_id": 1491,
+              "rank": 1,
+              "source": "Blackfathom Deeps",
+              "dps_delta": 0,
+              "not_with": [1491],
+              "next": {
+                "item_id": 1076,
+                "rank": 4,
+                "source": "The Stockade: Defias Prisoner",
+                "dps_delta": -0.67
+              }
+            },
+            "quest": {
+              "item_id": 6748,
+              "rank": 3,
+              "source": "Willix the Importer",
+              "dps_delta": -0.34,
+              "not_with": [6748],
+              "next": {
+                "item_id": 2933,
+                "rank": 6,
+                "source": "An Audience with the King",
+                "dps_delta": -0.82
+              }
+            },
+            "rep": {
+              "item_id": 20439,
+              "rank": 5,
+              "source": "Silverwing Sentinels",
+              "dps_delta": -0.67,
+              "standing": "honored",
+              "not_with": [19517],
+              "next": {
+                "item_id": 271911,
+                "rank": 8,
+                "source": "Theramore Expeditionary Force",
+                "dps_delta": -1.03,
+                "standing": "honored"
+              }
+            },
+            "vendor": {
+              "item_id": 20439,
+              "rank": 5,
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -0.67,
+              "standing": "honored",
+              "not_with": [19517]
+            },
+            "world": {
+              "item_id": 1491,
+              "rank": 1,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0,
+              "not_with": [1491],
+              "next": {
+                "item_id": 13097,
+                "rank": 7,
+                "source_kind": "world_drop",
+                "source": "World drop",
+                "dps_delta": -1.01
+              }
+            }
+          }
         },
         {
           "slot": "trinket1",
@@ -696,11 +1024,74 @@
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Razorfen Spearhide"
             }
-          ]
+          ],
+          "two_hand": true,
+          "by_kind": {
+            "crafted": {
+              "item_id": 250603,
+              "rank": 4,
+              "source": "Blacksmithing",
+              "dps_delta": -1.61,
+              "two_hand": true
+            },
+            "dungeon": {
+              "item_id": 6679,
+              "rank": 2,
+              "source": "Razorfen Kraul: Razorfen Spearhide",
+              "dps_delta": -1.26,
+              "two_hand": true
+            },
+            "quest": {
+              "item_id": 281296,
+              "rank": 8,
+              "source": "A Friend of the Family",
+              "dps_delta": -2.61,
+              "two_hand": true
+            },
+            "vendor": {
+              "item_id": 212583,
+              "rank": 11,
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -2.95
+            }
+          }
         },
         {
           "slot": "off_hand",
           "verified": false,
+          "by_kind": {
+            "crafted": {
+              "item_id": 3850,
+              "rank": 3,
+              "source": "Blacksmithing"
+            },
+            "dungeon": {
+              "item_id": 776,
+              "rank": 1,
+              "source": "Razorfen Kraul"
+            },
+            "quest": {
+              "item_id": 2908,
+              "rank": 15,
+              "source": "A Dark Threat Looms"
+            },
+            "vendor": {
+              "item_id": 212583,
+              "rank": 2,
+              "source": "Illiyana Moonblaze",
+              "not_with": [212583],
+              "next": {
+                "item_id": 12248,
+                "rank": 4,
+                "source": "Vharr"
+              }
+            },
+            "world": {
+              "item_id": 820,
+              "rank": 18,
+              "source": "Harvest Reaper"
+            }
+          },
           "empty_reason": "two_hand_equipped"
         },
         {
@@ -746,10 +1137,56 @@
               "source_kind": "world_drop",
               "source": "World drop"
             }
-          ]
+          ],
+          "by_kind": {
+            "crafted": {
+              "item_id": 217314,
+              "rank": 26,
+              "source": "Engineering",
+              "dps_delta": -10.89
+            },
+            "quest": {
+              "item_id": 5817,
+              "rank": 18,
+              "source": "Answered Questions",
+              "dps_delta": -8.14
+            },
+            "vendor": {
+              "item_id": 212581,
+              "rank": 7,
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -5.15
+            },
+            "world": {
+              "item_id": 13137,
+              "rank": 2,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.66
+            }
+          }
         }
       ],
-      "set_dps": 139.36749565630763,
+      "set_dps": 139.38658516823062,
+      "set_dps_error": 0.0851781337869778,
+      "target_level": 33,
+      "filtered_set_dps": {
+        "all": {
+          "dps": 139.4,
+          "error": 0.1,
+          "changed_slots": 0
+        },
+        "dungeon": {
+          "dps": 128.7,
+          "error": 0.1,
+          "changed_slots": 11
+        },
+        "leveling_default": {
+          "dps": 139.2,
+          "error": 0.1,
+          "changed_slots": 2
+        }
+      },
       "no_source_count": 463,
       "no_source_sample": [
         "913 Huge Ogre Sword",
@@ -784,8 +1221,8 @@
         "main_hand: Felbough Arm",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 7.6996110269999996,
-      "verify_run_seconds": 18.821694011,
+      "weights_run_seconds": 4.772511549,
+      "verify_run_seconds": 13.274622423,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -984,6 +1421,10 @@
           "label": "Major Mana Potion"
         },
         {
+          "id": "flask_of_natural_aggression",
+          "label": "Flask of Natural Aggression"
+        },
+        {
           "id": "elixir_of_the_mongoose",
           "label": "Elixir of the Mongoose"
         },
@@ -1002,5 +1443,21 @@
       ],
       "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; only Mana Spring qualifies, through the Restoration shaman's Restorative Totems (watch forever-bugs #215, which asks for that talent's removal: if it goes, the preset goes back to the plain totem). Blessing of Kings is left out. It is learnable (a trainer spell from level 20, SkillLineAbility 20217 and Greater Blessing of Kings 25898), but its +10% to every stat is the same aura and amount as Heart of the Lion's, which this preset already carries, and nothing in the client says whether the two stack (they share no SpellLabel or other exclusivity row); If they do stack, carrying Kings measured about 4% more for Fury and Retribution and about 1.5% for Fire (level-60 raid band, 2026-10-31); a beta character sheet with both buffs settles it. Sanctity Aura is left out too: spell 20218 has no SkillLineAbility row in the Forever client, so no paladin can learn it. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. Paladins and shamans are on both factions in Forever, so the blessings and the totems reach either faction's raid entry. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries one potion: Mighty Rage Potion for the warrior and the bear, a mana potion and then Major Spellblasting Potion for the paladin. Each tank also carries the main-hand imbue that measured best for its threat: an Elemental Sharpening Stone for the warrior and the bear, Brilliant Wizard Oil for the paladin (round 10). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md). Winter's Chill is left out: since client 1.60.1.70532 it is no longer a Frost crit debuff; its stacks raise only the applying mage's own next Cone of Cold, so a raid frost mage's stacks give no one else anything, and in the engine they would have fed this mage's Cone of Cold for free. Forever's foods give the stat of the Well Fed their aura 227 effect triggers, not Era's: Baked Salmon (28 spell damage) is the caster's and a paladin tank's food, Smoked Desert Dumplings (20 Strength) a strength user's and a warrior or bear tank's, and Poached Sunscale Salmon (40 attack power and ranged attack power) an agility user's (rounds 8 and 9, design/reviews/2026-11-02-sim-audit-round8/auras.md and design/reviews/2026-11-02-sim-audit-round9/auras.md). Where a slot lists two consumables the first one the character's level can use is carried, the spec's list before the class's before the group's, so a lower-level food follows the item it stands in for. Forever's 30-second potions share the two-minute potion category (4) with the mana and rage potions, so each spec carries the potion that measured best: Major Frenzy Potion for the rogues, the Survival hunter and Enhancement, Major Spellblasting Potion for Balance, Frost, Shadow and the paladin tank, the mana or rage potion for the rest (round 10). Their recipes are sold by the Azeroth Commerce Authority and Durotar Supply and Logistics alchemy vendors in Redridge Mountains and The Barrens. Forever lets a druid drink any potion and Thistle Tea in a form without leaving it, and weapon enchantments and Windfury Totem work in a form (the druid deep dive, news.blizzard.com article 24301515), so the cat carries the melee group's stone, Major Frenzy Potion and Thistle Tea, and Windfury Totem reaches the cat and the bear. The Blasted Lands buffs share one hour-long category (103), so each spec carries one: R.O.I.D.S. for strength users and tanks, Ground Scorpok Assay for rogues, hunters and Feral, Cerebral Cortex Compound for the damage casters and the Holy paladin and Restoration shaman, Gizzard Gum for the druid and priest healers (round 9)."
     }
+  },
+  "run": {
+    "target_type": "unknown",
+    "target_level_offset": 3,
+    "duration_sec": 180,
+    "variation": 0.2,
+    "targets": 1,
+    "execute_ratio": 0.25,
+    "iterations": {
+      "set": 3000,
+      "verify": 300,
+      "guard": 2100,
+      "trinket_rank": 100,
+      "weights_per_direction": 1600
+    },
+    "seed": 7
   }
 }
