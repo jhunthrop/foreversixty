@@ -78,6 +78,9 @@ public enum FSColor {
     public static let rarityRareText = Color(tokenHex: 0x3D94F0)
     public static let rarityEpicText = Color(tokenHex: 0xB866F5)
     public static let lineCard = Color(tokenHex: 0xE5B955, opacity: 0.17)
+    public static let hover = Color(tokenHex: 0x131824)
+    public static let pressed = Color(tokenHex: 0x1A2030)
+    public static let selected = Color(tokenHex: 0xE5B955, opacity: 0.1)
 }
 
 public enum FSFont {
@@ -103,10 +106,21 @@ public enum FSTextSize {
     public static let body: CGFloat = 15
     public static let meta: CGFloat = 13
     public static let micro: CGFloat = 11
+    public static let title: CGFloat = 40
+    public static let titlePhone: CGFloat = 32
+    public static let section: CGFloat = 18
+    public static let sectionReading: CGFloat = 22
+    public static let item: CGFloat = 15
+    public static let itemLg: CGFloat = 18
+    public static let lead: CGFloat = 17
+    public static let small: CGFloat = 13
+    public static let label: CGFloat = 12
     public static let bodyLineHeight: CGFloat = 22
 }
 
 public enum FSTracking {
+    /// 0.12em; multiply by the font size for SwiftUI's `tracking`.
+    public static let label: CGFloat = 0.12
     /// 0.01em; multiply by the font size for SwiftUI's `tracking`.
     public static let heading: CGFloat = 0.01
     /// 0.07em; multiply by the font size for SwiftUI's `tracking`.
@@ -117,6 +131,8 @@ public enum FSRadius {
     public static let panel: CGFloat = 12
     public static let control: CGFloat = 8
     public static let pill: CGFloat = 6
+    public static let plate: CGFloat = 6
+    public static let field: CGFloat = 4
 }
 
 public enum FSSpacing {

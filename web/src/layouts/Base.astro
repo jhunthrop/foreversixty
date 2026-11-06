@@ -62,8 +62,10 @@ interface Props {
   path: string;
   /** Extra JSON-LD nodes for this page; the homepage always carries the WebSite node. */
   jsonLd?: object[];
+  /** A page built from the ui/ primitives: from 1760 px its column widens (tokens.css, `data-column`). */
+  wide?: boolean;
 }
-const { title, description, path, jsonLd = [] } = Astro.props;
+const { title, description, path, jsonLd = [], wide = false } = Astro.props;
 const site = SITE_URL;
 const fullTitle = pageTitle(path, title);
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
@@ -285,7 +287,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       }
     </script>
   </head>
-  <body class="min-h-screen flex flex-col bg-bg">
+  <body class="min-h-screen flex flex-col bg-bg" data-column={wide ? 'wide' : undefined}>
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:left-[18px] focus:top-[18px] focus:z-50 focus:inline-flex focus:items-center focus:h-11 focus:px-4 focus:rounded-control focus:border focus:border-line-warm-strong focus:bg-raised focus:text-text focus:font-semibold"
