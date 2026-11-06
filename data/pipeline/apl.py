@@ -164,6 +164,14 @@ UNGROUPED_CLIENT_SPELL_IDS: dict[int, str] = {
         "sim/core/racials.go registers it by this id for every Dwarf; the "
         "Protection paladin list casts it below 70% health."
     ),
+    20554: (
+        "Berserking: the Troll racial (client 20554, races.json: 10% casting "
+        "and attack speed for 15 s on a 3 minute cooldown), "
+        "learned by race rather than class, so it carries no class "
+        "family_mask and spellconst's per-class split never carries it. "
+        "sim/core/racials.go registers it by this id for every Troll; the "
+        "Elemental list casts it once Lightning Mastery has ended."
+    ),
     1259705: (
         "Read Leyline: the Alliance Skyborne's racial (raw/Spell.csv), learned "
         "by race rather than class, so it carries no class family_mask and "
