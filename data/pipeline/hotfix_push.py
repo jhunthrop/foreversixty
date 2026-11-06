@@ -288,7 +288,7 @@ def _enumerate(client: httpx.Client, number: int, term: str) -> list[dict[str, A
                 next_frontier.extend((f"{d}{suffix}", suffix) for d in _DIGITS)
             for parent, total in parent_totals.items():
                 missing = total - covered.get(parent, 0)
-                if missing:
+                if missing > 0:
                     found.extend(_exact_ids(client, pool, number, term, parent, missing))
             frontier, parent_totals = next_frontier, next_totals
     return found
@@ -321,7 +321,10 @@ def _exact_ids(
             else:
                 next_frontier.extend(f"{d}{push}" for d in _DIGITS)
         frontier = next_frontier
-    if len(found) != missing:
+    # wago keeps ingesting a live push while the crawl runs (record 9823 at 70790
+    # gained copies between its parent's count and this search), so entries past
+    # the count are later copies; only a shortfall means rows were never seen.
+    if len(found) < missing:
         raise SystemExit(
             f"wago.tools search for record {suffix} ({number} {term}): "
             f"{len(found)} of {missing} entries"
