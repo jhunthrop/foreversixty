@@ -40,6 +40,9 @@ type Tables struct {
 	// nil today, and so does Task 29b.
 	Assignments  []ratingengine.Assignment
 	WorstActions map[string]bool // families on the spec's sims WorstActions list
+	// Talents is the player's talent ranks from the character's stored build; nil is
+	// unknown (Service.talentsOf fills it, TablesFor never does).
+	Talents PlayerTalents
 }
 
 // SpellConst is one spell's constants. CooldownMS is the larger of spellconst's

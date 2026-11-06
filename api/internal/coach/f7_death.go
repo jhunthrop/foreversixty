@@ -280,8 +280,9 @@ func defensivesAt(in Input, atMS int64, physical bool) deathDefensives {
 		lastID, lastMS, cast := lastCastBefore(in.Fight, in.Row.GUID, e.SpellIDs, atMS)
 		if cast {
 			sc, known := in.Tables.Spells[lastID]
-			if known && sc.CooldownMS > 0 && lastMS+sc.CooldownMS <= atMS {
-				out.Ready = append(out.Ready, deathReady{Name: e.Family, SpellID: lastID, ReadyAtMS: lastMS + sc.CooldownMS})
+			cd, _ := cooldownFor(in, e.Family, sc)
+			if known && cd > 0 && lastMS+cd <= atMS {
+				out.Ready = append(out.Ready, deathReady{Name: e.Family, SpellID: lastID, ReadyAtMS: lastMS + cd})
 			}
 			continue
 		}
@@ -297,9 +298,10 @@ func defensivesAt(in Input, atMS int64, physical bool) deathDefensives {
 			continue
 		}
 		sc, known := in.Tables.Spells[id]
+		cd, _ := cooldownFor(in, e.Family, sc)
 		switch {
-		case known && sc.CooldownMS > 0 && sc.CooldownMS <= atMS:
-			out.Ready = append(out.Ready, deathReady{Name: e.Family, SpellID: id, ReadyAtMS: sc.CooldownMS})
+		case known && cd > 0 && cd <= atMS:
+			out.Ready = append(out.Ready, deathReady{Name: e.Family, SpellID: id, ReadyAtMS: cd})
 		case out.NotUsed == nil:
 			out.NotUsed = &deathReady{Name: e.Family, SpellID: id, NotUsed: true}
 		}
