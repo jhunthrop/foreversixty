@@ -14,8 +14,7 @@ export function bisContext(
   data: Pick<BisPageData, 'bands' | 'models'>,
   raceOptions: Readonly<Record<Faction, readonly { value: string }[]>>,
 ): BisStateContext {
-  const presetsFor = (faction: Faction, band: number) =>
-    PRESETS.filter((preset) => data.models[bandModelKey(faction, band, preset)] !== undefined);
+  const presetsFor = (faction: Faction, band: number) => presetsOffered(data, faction, band);
   const racesFor = (faction: Faction) => raceOptions[faction].map((option) => option.value);
   return {
     bands: data.bands,
@@ -24,6 +23,11 @@ export function bisContext(
     simRaceFor: (faction, band, preset) =>
       data.models[bandModelKey(faction, band, preset)]?.race ?? racesFor(faction)[0] ?? '',
   };
+}
+
+/** The presets a faction and band publish, raid-ready first. */
+export function presetsOffered(data: Pick<BisPageData, 'models'>, faction: Faction, band: number): BisPresetId[] {
+  return PRESETS.filter((preset) => data.models[bandModelKey(faction, band, preset)] !== undefined);
 }
 
 /** The Profile control's words. */

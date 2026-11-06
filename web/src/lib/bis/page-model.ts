@@ -145,6 +145,8 @@ export interface BisPageData {
   bands: number[];
   models: Record<string, BisBandModel>;
   items: Record<number, BisItem>;
+  /** The inlined default slice: the full set is the page's JSON endpoint. */
+  partial?: boolean;
 }
 
 export { bandModelKey };

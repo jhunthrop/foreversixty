@@ -7,7 +7,6 @@
 // Lighthouse trace then counted all of it toward the BiS LCP, which swung between ~1.95 s and
 // ~2.7 s run to run against a 1.9 s budget.
 import { CURRENT_CHARACTER_STORAGE_KEY, onCurrentCharacterChange } from '../current-character-events';
-import { bandFromParam } from './follow-selector';
 
 export function mountBisFollow(root: HTMLElement): () => void {
   return onCurrentCharacterChange((change) => {
@@ -17,6 +16,9 @@ export function mountBisFollow(root: HTMLElement): () => void {
 }
 
 const BAND_HASH = /^#band-(?:alliance|horde)-\d+$/;
+/** A `?band=` the page reads (follow-selector.ts bandFromParam's shape), checked here without
+ *  importing the spec tables, so this eagerly loaded script stays a few hundred bytes. */
+const BAND_PARAM = /^\d{1,2}$/;
 
 /**
  * The band a BiS page opens on when its URL names none: a shared link's `?band=` (or the legacy
@@ -26,7 +28,7 @@ const BAND_HASH = /^#band-(?:alliance|horde)-\d+$/;
  */
 export function applyBisDefaultBand(root: HTMLElement, win: Window = window): void {
   if (BAND_HASH.test(win.location.hash)) return;
-  if (bandFromParam(new URLSearchParams(win.location.search).get('band')) !== null) return;
+  if (BAND_PARAM.test(new URLSearchParams(win.location.search).get('band') ?? '')) return;
   let stored: string | null = null;
   try {
     stored = win.localStorage.getItem(CURRENT_CHARACTER_STORAGE_KEY);

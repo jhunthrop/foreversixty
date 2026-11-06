@@ -47,6 +47,7 @@
     specOptions,
     raceOptions,
     guideHref,
+    dataHref,
   }: {
     spec: string;
     classSlug: string;
@@ -57,12 +58,29 @@
     specOptions: readonly ControlOption[];
     raceOptions: Readonly<Record<Faction, readonly { value: string; label: string }[]>>;
     guideHref: string;
+    /** The page's full data (every band); the HTML carries only the default state's slice. */
+    dataHref: string;
   } = $props();
 
-  const data = readBisPageData(spec);
-  const context = bisContext(data, raceOptions);
+  const inline = readBisPageData(spec);
+  let data = $state.raw(inline);
+  const context = $derived(bisContext(data, raceOptions));
+  /** Settles once the full data is in (at once when the page inlined all of it). */
+  let ready: Promise<void> = Promise.resolve();
 
-  let state = $state<BisPageState>(parseState('', '', context));
+  async function loadFull(): Promise<void> {
+    if (!inline.partial) return;
+    const response = await fetch(dataHref);
+    if (!response.ok) throw new Error(`${dataHref} answered ${response.status}`);
+    data = (await response.json()) as typeof inline;
+  }
+
+  /** Runs a state change once the full data is in; a failed load keeps the default state shown. */
+  function whenReady(change: () => void): void {
+    void ready.then(change, () => {});
+  }
+
+  let state = $state<BisPageState>(parseState('', '', bisContext(inline, raceOptions)));
   let selected = $state<string | null>(null);
   let character = $state<DollCharacter | undefined>(undefined);
   let root = $state<HTMLElement | undefined>(undefined);
@@ -130,6 +148,7 @@
   });
 
   function apply(next: BisPageState, push = true): void {
+    if (data.models[bandModelKey(next.faction, next.band, next.preset)] === undefined) return;
     if (next.band !== state.band || next.faction !== state.faction) selected = null;
     if (next.band !== state.band || next.faction !== state.faction || next.preset !== state.preset) character = undefined;
     state = next;
@@ -139,6 +158,10 @@
   }
 
   function onControl(param: string, value: string): void {
+    whenReady(() => control(param, value));
+  }
+
+  function control(param: string, value: string): void {
     if (param === 'band') apply(withChange(state, { band: Number(value) }, context));
     else if (param === 'faction') apply(withChange(state, { faction: value as Faction }, context));
     else if (param === 'preset') apply(withChange(state, { preset: value as BisPresetId }, context));
@@ -147,10 +170,10 @@
 
   function onSources(next: SourceFilterKind[]): void {
     storeSources(state.band, next);
-    apply(withChange(state, { sources: next }, context));
+    whenReady(() => apply(withChange(state, { sources: next }, context)));
   }
 
-  onMount(() => {
+  function applyUrlState(): void {
     const params = new URLSearchParams(window.location.search);
     let initial = parseState(window.location.search, window.location.hash, context);
     if (!params.has('sources')) {
@@ -159,11 +182,17 @@
     }
     // A legacy #band-<faction>-<band> link keeps its URL: the hash is read, not rewritten.
     if (!isDefaultState(initial, context)) apply(initial, false);
-    document.documentElement.removeAttribute('data-bis-pending');
+  }
+
+  onMount(() => {
+    ready = loadFull();
+    void ready
+      .then(applyUrlState, (error: unknown) => console.error('BiS page data failed to load', error))
+      .finally(() => document.documentElement.removeAttribute('data-bis-pending'));
     const show = (detail: BisShowDetail) => {
       if (root !== undefined) delete root.dataset.bisShow;
       if (!data.bands.includes(detail.band)) return;
-      apply(withChange(state, { faction: detail.faction, band: detail.band }, context));
+      whenReady(() => apply(withChange(state, { faction: detail.faction, band: detail.band }, context)));
     };
     const onShow = (event: Event) => show((event as CustomEvent<BisShowDetail>).detail);
     root?.addEventListener(BIS_SHOW_EVENT, onShow);
@@ -173,7 +202,7 @@
       compare = watchCompare({ build: data.build, spec, classSlug }, shownBand(), (next, race) => {
         character = next;
         if (race !== undefined && race !== state.race && context.racesFor(state.faction).includes(race)) {
-          apply(withChange(state, { race }, context));
+          whenReady(() => apply(withChange(state, { race }, context)));
         }
       });
     });

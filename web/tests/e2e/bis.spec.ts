@@ -5,7 +5,8 @@
 // in the shared tooltip; What to stack carries the SimC-convention weights; the controls and
 // the answer's links fit a 390 px phone. Picks come from the published nightly data, so the
 // assertions read shapes and known copy, never a pinned item.
-import { test, expect, type Page, type Locator } from './support/test';
+import type { Locator, Page } from '@playwright/test';
+import { test, expect } from './support/test';
 import { unrankedBisRoute } from './support/bis-file';
 import { openBis, waitForBis, chooseControl } from './support/bis-page';
 

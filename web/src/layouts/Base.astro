@@ -27,6 +27,9 @@ import '../styles/fonts.css';
 import barlowCondensed800Url from '../assets/fonts/barlow-condensed-800-subset.woff2?url';
 import barlow400Url from '../assets/fonts/barlow-400-subset.woff2?url';
 import barlow600Url from '../assets/fonts/barlow-600-subset.woff2?url';
+import barlow700Url from '../assets/fonts/barlow-700-subset.woff2?url';
+import barlowCondensed700Url from '../assets/fonts/barlow-condensed-700-subset.woff2?url';
+import marcellus400Url from '../assets/fonts/marcellus-400-subset.woff2?url';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -84,6 +87,12 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <link rel="preload" href={barlowCondensed800Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow400Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow600Url} as="font" type="font/woff2" crossorigin />
+    {/* A page built from the ui/ primitives (`wide`) paints the title in Marcellus and its
+        labels and figures in the 700 weights above the fold: preloading them keeps them off the
+        LCP's critical chain (BiS page, slice 2: 2.48 s simulated LCP without, against 2.2 s). */}
+    {wide && <link rel="preload" href={marcellus400Url} as="font" type="font/woff2" crossorigin />}
+    {wide && <link rel="preload" href={barlow700Url} as="font" type="font/woff2" crossorigin />}
+    {wide && <link rel="preload" href={barlowCondensed700Url} as="font" type="font/woff2" crossorigin />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:title" content={fullTitle} data-og="og-title" />
     <meta property="og:description" content={description} data-og="og-description" />

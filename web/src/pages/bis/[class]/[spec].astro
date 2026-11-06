@@ -13,16 +13,14 @@ import BisTooltipHost from '../../../components/BisTooltipHost.svelte';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
 import { bisCopy } from '../../../lib/bis/copy';
-import { loadBisFile, readSpecCatalog } from '../../../lib/bis/load';
-import { buildBisPageData } from '../../../lib/bis/page-data';
+import { readSpecCatalog } from '../../../lib/bis/load';
+import { bisServerPage, defaultSlice } from '../../../lib/bis/page-server';
 import { BIS_PAGE_DATA_ID, bisPageDataJson, registerBisPageData } from '../../../lib/bis/page-registry';
 import { BIS_PENDING_SCRIPT } from '../../../lib/bis/page-pending';
 import { publishedIcon } from '../../../lib/bis/spec-icon';
 import { classCrestSrc } from '../../../lib/class-crest';
 import { classColorVar } from '../../../lib/report/format';
 import { classRows, racesForClass } from '../../../lib/planner/reference';
-import { loadTalentFile } from '../../../lib/guides/build-tree';
-import { indexTalents } from '../../../lib/planner/rules';
 import type { Faction } from '../../../lib/bis/types';
 import type { ControlOption } from '../../../lib/ui/primitives';
 
@@ -42,17 +40,11 @@ const path = `/bis/${classSlug}/${specEntry.spec_slug}`;
 const guideHref = `/guides/${classSlug}/${specEntry.spec_slug}`;
 const build = activeBuild.build;
 
-const file = loadBisFile(specEntry.spec, build);
-const talentFile = loadTalentFile(build, classSlug);
-if (talentFile === undefined) {
-  throw new Error(`data/builds/${build}/talents/${classSlug}.json is missing; the sim link needs the trees`);
-}
-
-const server =
-  file === null
-    ? undefined
-    : buildBisPageData({ spec: specEntry.spec, classSlug, build, file, talentIndex: indexTalents(talentFile) });
-if (server !== undefined) registerBisPageData(server.data);
+const server = bisServerPage(specEntry.spec, classSlug) ?? undefined;
+// Only the default state ships in the HTML (and the server renders from the same slice, so
+// hydration matches it); the island fetches the rest from the JSON endpoint after mount.
+const inlineData = server === undefined ? undefined : defaultSlice(server.data);
+if (inlineData !== undefined) registerBisPageData(inlineData);
 const tooltipModelsJson = JSON.stringify(server?.tooltips ?? {}).replace(/</g, '\\u003c');
 
 const specOptions: ControlOption[] = readSpecCatalog()
@@ -88,8 +80,6 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
       </div>
     ) : (
       <Fragment>
-        <script is:inline type="application/json" id="bis-tooltip-models" set:html={tooltipModelsJson} />
-        <script is:inline type="application/json" id={BIS_PAGE_DATA_ID} set:html={bisPageDataJson(server.data)} />
         {/* Both islands hydrate with `client:idle-after-load` (src/directives/idle-after-load.ts):
             a plain idle callback can land before first paint in the Lighthouse trace and its
             module fetches then count toward the simulated LCP. */}
@@ -105,7 +95,12 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
           specOptions={specOptions}
           raceOptions={raceOptions}
           guideHref={guideHref}
+          dataHref={`${path}.json`}
         />
+        {/* The data the islands read at hydration sits after the markup, so the first paint never
+            waits on it streaming in (the default state is already server-rendered above). */}
+        <script is:inline type="application/json" id="bis-tooltip-models" set:html={tooltipModelsJson} />
+        <script is:inline type="application/json" id={BIS_PAGE_DATA_ID} set:html={bisPageDataJson(inlineData!)} />
       </Fragment>
     )}
   </main>

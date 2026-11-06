@@ -135,7 +135,7 @@
         size={40}
         badge={cell.badge}
         unknown={cell.unknown}
-        eager
+        deferred
       />
     </span>
     <span class="ui-doll-body">
@@ -236,11 +236,16 @@
     <div class="ui-doll-columns" role="listbox" aria-label={label}>
       {#if groups}
         {#each groups as group (group.key)}
-          <div class="ui-doll-group" data-testid={`${testid}-group-${group.key}`}>
-            <h3 class="ui-doll-group-head">
+          <div
+            class="ui-doll-group"
+            role="group"
+            aria-labelledby={`${testid}-group-${group.key}-head`}
+            data-testid={`${testid}-group-${group.key}`}
+          >
+            <div class="ui-doll-group-head" id={`${testid}-group-${group.key}-head`}>
               <span class="text-strong text-[18px] leading-6 font-bold">{group.title}</span>
               <span class="text-muted ml-auto text-[13px]">{group.count}</span>
-            </h3>
+            </div>
             {#each group.slots as slot (slot)}
               {@const cell = bySlot.get(slot)}
               {#if cell}{@render cellView(cell)}{/if}
