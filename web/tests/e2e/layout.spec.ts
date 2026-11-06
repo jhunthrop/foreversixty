@@ -71,12 +71,12 @@ test.describe('one centred column at 2000px', () => {
     });
   }
 
-  test('the BiS header band is full-bleed while its content stays in the column', async ({ page }) => {
+  test('the BiS control bar is full-bleed while its content stays in the column', async ({ page }) => {
     await page.goto('/bis/hunter/marksmanship');
-    const band = await page.locator('.art-panel').first().boundingBox();
+    const band = await page.getByTestId('bis-controls').boundingBox();
     expect(band!.x).toBeLessThanOrEqual(1);
     expect(band!.width).toBeGreaterThanOrEqual(VIEWPORT_WIDTH - 1);
-    const inner = await page.locator('.art-panel .page-column').first().boundingBox();
+    const inner = await page.getByTestId('bis-controls').locator('.page-column').first().boundingBox();
     const innerRight = VIEWPORT_WIDTH - (inner!.x + inner!.width);
     expect(Math.abs(inner!.x - innerRight)).toBeLessThanOrEqual(EQUAL_MARGIN_TOLERANCE_PX);
   });
