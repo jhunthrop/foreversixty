@@ -29,6 +29,9 @@ TANK_FIGURE = ('dtps', 'DTPS')  # the tank answer: one figure (id in the facts, 
 
 # The page's own rules (the built Paperdoll, BisAnswer, BisWeights and summary measure the same).
 BIS_CSS = '''
+/* The BiS head keeps a fixed floor from 1024 so the title and the controls hold their y across specs
+   (one figure, a healer's metrics, a tank's four): BisSpecPage HEAD_ROW_MIN_HEIGHT, b66cf09b8. */
+@media(min-width:1024px){.head{min-height:calc(165px + 36px)}} /* row floor plus the head padding 20/16; the mock .head is the row and is border-box */
 .bis-pg{padding-top:20px}
 .ans .bis-ans{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right;max-width:640px}
 .bis-ans .fig .v{font-size:36px;line-height:40px}.bis-ans .fig small{font-size:13px}
