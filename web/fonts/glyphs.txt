@@ -1,6 +1,6 @@
 # web/fonts/glyphs.txt
-# Explicit glyph inventory for the five self-hosted font subsets (Cinzel 700, Barlow
-# 400/600/700, JetBrains Mono 500). Every character the site may render in these faces
+# Explicit glyph inventory for the five self-hosted font subsets (Barlow 400/600/700,
+# JetBrains Mono 500, Marcellus 400). Every character the site may render in these faces
 # must appear here; web/scripts/check-glyph-coverage.mjs verifies that against a fixture
 # build of dist/ (HTML and the client JS bundles -- Svelte islands' copy only exists in
 # the latter), the markdown content, and the game data JSON. Generation command and
@@ -27,7 +27,7 @@
 #     marking a figure the summary cannot rescope to a window
 #   U+203A single right angle quote -- report disclosure affordances (NightView.svelte,
 #     ActorRow.svelte: "per pull \u203a")
-# None of Cinzel/Barlow/JetBrains Mono's `latin` cmap contains U+2190, U+2192 or U+2020
+# None of Barlow/JetBrains Mono/Marcellus's `latin` cmap contains U+2190, U+2192 or U+2020
 # (checked with fontTools against the source @fontsource files, before any subsetting), so
 # those three already render through the fallback stack in tokens.css today, with or
 # without this file -- pyftsubset can't add a glyph the source face never had. U+203A IS in
