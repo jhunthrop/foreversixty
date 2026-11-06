@@ -394,3 +394,33 @@ func TestDecisionTextHasNoDash(t *testing.T) {
 		}
 	}
 }
+
+func TestOfficerWritesStopWhileTheClaimIsContested(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid, officer := recruitGuild(t, h, "Frozen")
+	openRecruiting(t, h, gid, officer)
+	uid, key := applicant(t, h, "frozen-app@example.com", "frozenchar")
+	h.as(uid)
+	var a Application
+	h.data(h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/applications", gid), applyBody(key, false)), &a)
+	member := seedUser(t, h.pool, "frozen-member@example.com")
+	seedVerifiedMember(t, h, gid, member, "frozenmember", "member")
+	if _, err := h.pool.Exec(context.Background(), `update guilds set claim_contested_at = now() where id = $1`, gid); err != nil {
+		t.Fatal(err)
+	}
+	h.as(officer)
+	app := fmt.Sprintf("/v1/guilds/%d/applications/%d", gid, a.ID)
+	for _, call := range [][3]string{
+		{http.MethodPatch, fmt.Sprintf("/v1/guilds/%d/recruit", gid), `{"open":false}`},
+		{http.MethodPut, app + "/vote", `{"vote":"yes"}`},
+		{http.MethodPost, app + "/accept", ""},
+		{http.MethodPost, fmt.Sprintf("/v1/guilds/%d/members/%s/notes", gid, accountKeyFor(member)), `{"body":"x"}`},
+	} {
+		if got := h.status(call[0], call[1], call[2]); got != http.StatusConflict {
+			t.Fatalf("%s %s while contested = %d, want 409", call[0], call[1], got)
+		}
+	}
+	if got := h.status(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/applications", gid), ""); got != http.StatusOK {
+		t.Fatalf("the officer list while contested = %d, want 200 (reads stay open)", got)
+	}
+}
