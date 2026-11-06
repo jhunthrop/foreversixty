@@ -7,7 +7,7 @@ Spec: design/specs/2026-11-07-logs-reports.md. Data and copy, read at render tim
   - web/src/fixtures/reports/{mine,recent}.json: production's one public report (the 17 Sept beta night) as the signed-in
     player's own list and the public feed (G8 folded; decision D1: no retail-shaped stub rows), the files the parity spec serves;
   - web/public/sample-report/sample/meta.json: the sample report row;
-  - web/src/pages/ratings.astro: the ratings page's own prose, weight table and sample score (parsed from the source).
+  - lib/score/ratings-page.ts (through logs_facts.mjs): the ratings page's own prose, weight table and sample score.
 SAMPLE (typed, marked): none beyond what the stubs carry; the signed-in character on /rankings is the stub's own
 "Obnoxious Yell" (Fury Warrior), the signed-in account on /logs and /reports is the stub's "Fixture#1234".
 
@@ -16,7 +16,6 @@ SAMPLE (typed, marked): none beyond what the stubs carry; the signed-in characte
 """
 import json
 import os
-import re
 import sys
 from datetime import datetime
 from html import escape
@@ -39,7 +38,6 @@ MINE = {'rows': [dict(r, first_pull=(r.get('started_at') or r['created_at'])[:10
         'recent': [dict(r, status='complete', created_at=r['created_at'][:10], first_pull=r['created_at'][:10]) for r in _RECENT['page']['rows']]}
 NOW = datetime.strptime(_MINE['now'][:10], '%Y-%m-%d')
 SAMPLE_META = json.loads((ROOT / 'web/public/sample-report/sample/meta.json').read_text())
-RATINGS_SRC = (ROOT / 'web/src/pages/ratings.astro').read_text()
 ACCOUNT = ('Fixture#1234', None, 'No characters yet')
 RANK_YOU = ('Obnoxious Yell', 'warrior', 'Fury Warrior &middot; 60')
 UPDATED = datetime.strptime(FACTS['board_you']['updated_at'][:10], '%Y-%m-%d')
@@ -76,7 +74,7 @@ def report_title(r: dict) -> str:
 
 PAGE_CSS = '''<style>
 /* the built Section's body sits 12 px under its hairline whatever it holds (ui/Section.svelte) */
-section>.sec-h+*{margin-top:12px}.empty{line-height:20px}
+section>.sec-h+*,section>.sec-h+.rows{margin-top:12px}.empty{line-height:20px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .ans-who{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap}.ans-who b{font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px}
 @media(min-width:900px){.head .ans{min-width:360px}.ans-who{justify-content:flex-end}.ans-links{justify-content:flex-end}}
@@ -94,13 +92,16 @@ code{font:13px/20px ui-monospace,Menlo,monospace;color:var(--strong)}
 .tiers .row .ttl{font:700 19px/24px var(--font-body)}
 .tiers .rows.open .row{padding-inline:14px}
 .tiers .row.cur{background:color-mix(in srgb,var(--c) 12%,transparent);box-shadow:inset 3px 0 0 var(--c)}
+/* the shipped RankRow (ui/rank-list.css): the token row height and 44 px link targets */
+.rl .rr{min-height:58px}.rl .rr-heads .t-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rl .rr .lk a{min-height:44px}
 /* K3 as ruled: a single-class board has no crest column */
 .rl.nocrest .cols{grid-template-columns:28px var(--rr-name) var(--rr-bar) repeat(var(--n),var(--rr-fig)) var(--rr-gap) var(--rr-links)}
 .rl.nocrest .rr .ld{display:none}
 @media(max-width:1023px){.rl.nocrest .rr.cols{grid-template-columns:22px minmax(0,1fr) auto;grid-template-areas:"rk nm f1" "rk nm gp" ". xx xx" ". br br" ". lk lk"}}
-.rl{--rr-fig:96px}
 @media(max-width:1023px){.rr .fg.unk{display:none}}
 .parts .st-r .f.p{color:var(--strong)}
+/* the built StatRow's name line is 20 px (ui/stat-table.css) */
+.st-r .nm{line-height:20px}
 .empty .act{display:flex;gap:16px;align-items:center;margin-top:12px;flex-wrap:wrap}
 </style>'''
 
@@ -269,7 +270,7 @@ def rankings_bar(encounter: str, cls: str, spec: str, open_m: bool = False) -> s
     groups = [(rc['encounterLabel'], sel(encounter)), (rc['classLabel'], sel(cls)), (rc['specLabel'], sel(spec)), (rc['rulesetLabel'], sel('Normal' if cls != rc['everyClass'] else rc['allRulesets'])),
               (rc['metricLabel'], seg([('Damage', True, None, ''), ('Healing', False, None, '')])),
               (rc['boardLabel'], seg([('Characters', True, None, ''), ('Guilds', False, None, '')])),
-              ('Filters', '<span class="sel" role="button" aria-haspopup="dialog">Filters</span>')]
+              ('Filters', '<button type="button" class="sel" aria-expanded="false" aria-haspopup="dialog">Filters</button>')]   # the BiS Sources pattern
     return control_bar(groups, f'{encounter} &middot; {spec if spec != rc["everySpec"] else cls}', open_m=open_m, label='Ranking choices', labels_from=1920)
 
 
@@ -279,7 +280,7 @@ def rankings_page(state: str) -> str:
     upd = f'Updated {day(UPDATED)}'
     tier = Notice(f'<span>{escape(rc["tierQuestion"])}</span> {Link(rc["tierLink"] + " &rsaquo;")}', tone='neutral')
     if state in ('index', 'empty'):
-        head = PageHeader(escape(rc['h1']), meta=[escape(rc['jobSignedOut']), upd])
+        head = PageHeader(escape(rc['h1']), meta=[escape(rc['jobSignedOut'])])   # the index reads no board, so no Updated stamp
         if state == 'index':
             rows = [Row(escape(e['name']), 'Characters and guilds, every class and spec', trail='<span class="link">Open the board &rsaquo;</span>') for e in FACTS['encounters']]
             plate = Section(ec['heading'], Plate(Rows(rows), ec['heading']), meta=f'{len(rows)} encounters ranked')
@@ -311,36 +312,20 @@ def rankings_page(state: str) -> str:
         enc, cls, spec = 'Warden Kelthas', rc['everyClass'], rc['everySpec']
         head = PageHeader(enc, meta=[f'{rc["h1"]} &middot; {rc["everyClassAndSpec"]} &middot; {rc["allRulesets"]}', upd])
         plate = Section(rc['everyClassAndSpec'], board(data), meta=f'{data["total"]} ranked')
-    body = head + rankings_bar(enc, cls, spec, open_m=state == 'bar') + f'<div data-region="summary">{tier}</div>' + Page('ledger', plate + f'<div class="section" data-region="footer-note">{legend()}</div>')
+    body = head + rankings_bar(enc, cls, spec, open_m=state == 'bar') + f'<div data-region="summary">{tier}</div>' + Page('ledger', plate + f'<div class="section"><div data-region="footer-note">{legend()}</div></div>')
     return build_page(f'{enc} rankings', body + PAGE_CSS, 'Logs', RANK_YOU if you else None, f'/rankings/<slug> mock, {state}. Data: rankings-fixture.ts boardFor().')
 
 
 # ------------------------------------------------------------------------------------------------ /ratings
-def astro_paras(card_title: str) -> list[str]:
-    """The <p> texts of one Card in ratings.astro, tags other than <strong> stripped, whitespace collapsed."""
-    i = RATINGS_SRC.index(f'title="{card_title}"')
-    j = RATINGS_SRC.find('</Card>', i)
-    out = []
-    for m in re.finditer(r'<p[^>]*>(.*?)</p>', RATINGS_SRC[i:j], re.S):
-        t = re.sub(r'\s+', ' ', m.group(1)).strip()
-        if '{' in t:
-            continue
-        out.append(t)
-    return out
-
-
-def astro_testid_para(testid: str) -> str:
-    m = re.search(r'data-testid="' + testid + r'">(.*?)</p>', RATINGS_SRC, re.S)
-    return re.sub(r'\s+', ' ', m.group(1)).strip()
-
-
 def ratings_page() -> str:
     sc, rc = COPY['scoreCopy'], COPY['ratingCopy']
     fs = FACTS['fns']['score']
-    sample = {k: int(v) for k, v in re.findall(r'(\w+): (\d+)', re.search(r'components: \{([^}]*)\}', RATINGS_SRC).group(1))}
-    score = int(re.search(r'score: (\d+),', RATINGS_SRC).group(1))
-    weights = re.findall(r"\{ component: '(\w+)', dps: (\d+), healer: (\d+), tank: (\d+) \}", RATINGS_SRC)
-    trend = [int(x) for x in re.search(r'const sampleTrend = \[([\d, ]+)\]', RATINGS_SRC).group(1).split(',')]
+    rp = FACTS['ratings_page']   # lib/score/ratings-page.ts: the sample, the weights and the page's prose
+    sample = rp['sample']['components']
+    score = rp['sample']['score']
+    weights = [(w['component'], str(w['dps']), str(w['healer']), str(w['tank'])) for w in rp['weights']]
+    trend = rp['trend']
+    pc = rp['copy']
     maxes = FACTS['score']['component_max']
     total = sum(maxes.values())
     tiers = FACTS['score']['tiers']
@@ -360,17 +345,16 @@ def ratings_page() -> str:
                  f'<div class="prose"><p>{escape(sc["explainerWhat"])}</p><p class="muted">{escape(sc["explainerLaunch"])}</p></div>', meta=escape(sc['explainerScoreCaption']))
     rfig = (f'<div class="figs" style="--c:3;margin-top:16px">{Figure(str(trend[-1]), "Latest fight", rc["outOf100"], "gold", "big")}'
             f'<div class="fig"><span class="t-label">Last {len(trend)} fights</span>{Spark(trend, "#e5b955", total=100)}<span class="t-small">Up {trend[-1] - trend[0]} since the first</span></div>'
-            f'<div class="fig"><span class="t-label">Weakest part</span><span class="t-small" style="font-size:15px;color:var(--text)">{escape(rc["weakestPart"] if isinstance(rc["weakestPart"], str) else "Activity")}</span></div></div>')
-    rfig = rfig.replace('[fn]', 'Weakest part of a fight: Activity.')
+            f'<div class="fig"><span class="t-label">Weakest part</span><span class="t-small" style="font-size:15px;color:var(--text)">Weakest part of a fight: {escape(rp["weakest"])}.</span></div></div>')
     s2 = Section(sc['explainerRatingHeading'], f'<p class="t-lead">{escape(sc["explainerRatingBridge"])} {escape(sc["explainerPreparationShared"])}</p>{rfig}'
-                 f'<div class="prose"><p class="muted">{astro_testid_para("ratings-visibility")}</p>' + ''.join(f'<p>{p}</p>' for p in astro_paras('One number first, then six parts')) + '</div>',
+                 f'<div class="prose"><p class="muted">{escape(pc["visibility"])}</p>' + ''.join(f'<p>{escape(p)}</p>' for p in pc['oneNumberFirst']) + '</div>',
                  meta=escape(sc['explainerRatingCaption']))
-    comp = Rows([Row(p.split('</strong>')[0].replace('<strong>', '').rstrip('.'), p.split('</strong>', 1)[1].strip(), link=False) for p in astro_paras('What each component measures')], open_=True)
+    comp = Rows([Row(escape(c['part']), escape(c['body']), link=False) for c in pc['components']], open_=True)
     s3 = Section('What each component measures', comp)
     wrows = [StatRow('', f'<b>{c}</b>', '', [d, h, t], primary_phone=f'{d} / {h} / {t}', bar=False) for c, d, h, t in weights]
     s4 = Section('Weights, by role', StatTable([('', False), ('Component', False), ('DPS', True), ('Healer', True), ('Tank', True)], wrows, 3, bar=False, open_=True)
-                 + f'<div class="prose"><p class="muted">{astro_testid_para("ratings-roles")}</p><p class="muted">{astro_testid_para("ratings-adjustable")}</p></div>')
-    s5 = Section('Ranked against your spec, or absolute', '<div class="prose">' + ''.join(f'<p>{p}</p>' for p in astro_paras('Ranked against your spec, or absolute')) + '</div>')
+                 + f'<div class="prose"><p class="muted">{escape(pc["roles"])}</p><p class="muted">{escape(pc["adjustable"])}</p></div>')
+    s5 = Section('Ranked against your spec, or absolute', '<div class="prose">' + ''.join(f'<p>{escape(p)}</p>' for p in pc['rankedOrAbsolute']) + '</div>')
     s6 = Section('The cap', f'<div class="prose"><p>{escape(rc["cappedRule"])}</p></div>')
     trows = [Row(escape(t['tier'].capitalize()), escape(fs['tierShort'][t['tier']]), link=False, title_color=tcol[t['tier']], selected=t['tier'] == tier,
                  trail='<span class="t-small">The sample</span>' if t['tier'] == tier else '').replace('<div class="row', f'<div style="--c:{tcol[t["tier"]]}" class="row', 1)
@@ -378,7 +362,7 @@ def ratings_page() -> str:
     rail = (Section(sc['tierColumn'] + 's', f'<div class="tiers">{Rows(trows, open_=True)}</div>' + f'<p class="t-small" style="margin-top:10px">{escape(sc["tiersNote"])}</p>')
             + Section(sc['explainerLogsHeading'], f'<p class="t-small" style="margin-top:10px">{escape(sc["explainerLogsBody"])}</p><p style="margin-top:12px">{LinkButton(sc["explainerLogsButton"])}</p>'))
     body = head + Page('split', s1 + s2 + s3 + s4 + s5 + s6, rail) + PAGE_CSS
-    return build_page(sc['explainerPageTitle'], body, 'Logs', None, '/ratings mock. Data: ratings.astro sample score, trend, weights and prose; lib/score and lib/rating copy.')
+    return build_page(sc['explainerPageTitle'], body, 'Logs', None, '/ratings mock. Data: lib/score/ratings-page.ts (sample score, trend, weights, prose); lib/score and lib/rating copy.')
 
 
 PAGES = {

@@ -14,7 +14,7 @@ test("ships only the layout's character selector island", async ({ page }) => {
 
 test('publishes the weight table for all three roles', async ({ page }) => {
   await page.goto('/ratings');
-  await expect(page.getByRole('heading', { name: 'How ratings work' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Weights, by role' })).toBeVisible();
   const table = page.getByTestId('ratings-weights');
   await expect(table).toBeVisible();
   await expect(table).toContainText('Output');
