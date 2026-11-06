@@ -15,7 +15,7 @@ func TestTone_Problems(t *testing.T) {
 	}
 	// The pack's own spell-rank wording is not a ranking claim (F5 says "Rank 4").
 	for _, s := range []string{"Rank 5 is trainable at your level.", "Greater Heal (Rank 4) is your most-cast heal.",
-		"Cast rank 6 instead.", "Top 25: 97%.", "Top 25 Fury warriors on Onyxia (40): 31% active."} {
+		"Cast rank 6 instead.", "Top 25: 97%.", "Top 25 Fury Warriors on Onyxia (40): 31% active."} {
 		if got := toneProblems(s); len(got) != 0 {
 			t.Errorf("%q flagged: %v", s, got)
 		}

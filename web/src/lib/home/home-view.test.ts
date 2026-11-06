@@ -10,15 +10,13 @@ import {
   metaFacts,
   nextStep,
   ownLogs,
-  setUpChecks,
+  setUpView,
   shortDate,
   simRow,
   talentsToSpend,
   upgradeLines,
 } from './home-view';
 import type { SlotUpgrade } from './upgrades';
-
-const NOW = new Date('2026-11-06T18:00:00Z');
 
 function hunter(over: Partial<MeCharacter> = {}): MeCharacter {
   return {
@@ -86,6 +84,9 @@ describe('home view', () => {
   });
 
   it('lists the known facts and leaves the unknown out', () => {
+    expect(metaFacts(hunter({ class: 'hunter', spec: 'Beast Mastery' }))[0]).toBe(
+      'Level 34 Beast Mastery Hunter',
+    );
     expect(metaFacts(hunter())).toEqual(['Level 34 Beast Mastery Hunter', 'Alliance Dwarf', 'Item level 31']);
     expect(metaFacts(hunter({ item_level: undefined, race: undefined, faction: undefined }))).toEqual([
       'Level 34 Beast Mastery Hunter',
@@ -165,17 +166,24 @@ describe('home view', () => {
     expect(logSub(log('a'))).toBe('Z · 5 bosses · 5 Nov');
   });
 
-  it('warns on a missing or stale addon export', () => {
-    expect(setUpChecks(me(), hunter(), NOW).map((c) => c.tone)).toEqual(['ok', 'ok']);
-    const stale = setUpChecks(
-      me(),
-      hunter({ build: { source: 'addon', captured_at: '2026-10-20T00:00:00Z' } }),
-      NOW,
-    )[1];
-    expect(stale.tone).toBe('warn');
-    expect(stale.fix?.href).toBe('/setup');
-    const none = setUpChecks(me({ bnet_imported_at: undefined }), hunter({ build: undefined }), NOW);
-    expect(none.map((c) => c.tone)).toEqual(['warn', 'warn']);
+  it('reads Battle.net as the gear source and offers the addon as an optional extra', () => {
+    const view = setUpView(me(), hunter());
+    expect(view.checks.map((c) => [c.key, c.tone])).toEqual([['bnet', 'ok']]);
+    expect(view.addonOptional).toBe(true);
+    // No export at all is no warning while Battle.net has imported the gear.
+    expect(setUpView(me(), hunter({ build: undefined })).checks.map((c) => c.tone)).toEqual(['ok']);
+  });
+
+  it('falls back to the addon export, and warns only with no gear source at all', () => {
+    const addonOnly = setUpView(
+      me({ bnet_imported_at: undefined }),
+      hunter({ build: { source: 'addon', captured_at: '2026-11-04T19:30:00Z', gear: { head: 1 } } }),
+    );
+    expect(addonOnly.checks.map((c) => [c.key, c.tone])).toEqual([['addon', 'ok']]);
+    expect(addonOnly.addonOptional).toBe(false);
+    const none = setUpView(me({ bnet_imported_at: undefined }), hunter({ build: undefined }));
+    expect(none.checks.map((c) => [c.key, c.tone])).toEqual([['none', 'warn']]);
+    expect(none.checks[0].fix?.href).toBe('/setup');
   });
 
   it("links the guild and its raid from the account's guild entry", () => {

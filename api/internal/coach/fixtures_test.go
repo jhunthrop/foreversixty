@@ -531,7 +531,7 @@ func examplePack() Pack {
 			{ID: "f1", Code: CodeCoreCasts, Severity: SeverityMajor, Rank: 1, Title: "Bloodthirst: 9 casts lost",
 				Detail:     "31 of a possible 40 with rage in your bar. Longest gaps 1:12–1:25 and 2:40–2:51.",
 				Basis:      Basis{Label: "Measured against Bloodthirst's 6-second cooldown and your own rage bar.", Kind: BasisSpellData},
-				Comparison: top25("Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0."),
+				Comparison: top25("Top 25 Fury Warriors on Onyxia (40): 9.1 a minute. You: 8.0."),
 				Facts: Facts{
 					Numbers: []NumberFact{casts(31, "Bloodthirst"), casts(40, "Bloodthirst"), casts(9, "Bloodthirst"),
 						{V: 9.1, Text: "9.1", Unit: "casts per minute", Of: "Bloodthirst"}, {V: 8, Text: "8.0", Unit: "casts per minute", Of: "Bloodthirst"}},
@@ -544,10 +544,10 @@ func examplePack() Pack {
 				Basis:   Basis{Label: "From the character sheet in your log, against the site's consumable list for damage dealers.", Kind: BasisOwnLog},
 				Facts:   Facts{Items: []string{"Elemental Sharpening Stone", "Grilled Squid"}},
 				Anchors: []string{"a4"}},
-			{ID: "f4", Code: CodeResource, Severity: SeverityMinor, Rank: 3, Title: "Rage full for 14 seconds",
+			{ID: "f4", Code: CodeResource, Severity: SeverityMinor, Rank: 3, Title: "Rage full for 14 seconds in total",
 				Detail:     "Your rage sat at its cap for 14 s outside the air phase, longest at 2:41–2:50.",
 				Basis:      Basis{Label: "Measured against your own rage bar, air phase left out.", Kind: BasisOwnLog},
-				Comparison: top25("Top 25 Fury warriors here: 3 s."),
+				Comparison: top25("Top 25 Fury Warriors here: 3 s."),
 				Facts:      Facts{Numbers: []NumberFact{{V: 14, Text: "14", Unit: "s", Of: "rage at its cap"}}, Times: []string{"2:41", "2:50"}},
 				Anchors:    []string{"a5"}},
 		},
@@ -569,9 +569,9 @@ func examplePack() Pack {
 			{ID: "a5", Kind: AnchorResource, AtMS: ms(161_000), ToMS: ms(170_000)},
 		},
 		BasisLabels: []string{"Measured against Bloodthirst's 6-second cooldown and your own rage bar.",
-			"Top 25 Fury warriors on Onyxia (40): 9.1 a minute. You: 8.0.",
+			"Top 25 Fury Warriors on Onyxia (40): 9.1 a minute. You: 8.0.",
 			"From the character sheet in your log, against the site's consumable list for damage dealers.",
-			"Measured against your own rage bar, air phase left out.", "Top 25 Fury warriors here: 3 s."},
+			"Measured against your own rage bar, air phase left out.", "Top 25 Fury Warriors here: 3 s."},
 	}
 	p.Allowed = allowedOf(p)
 	// §5.3's review names Heroic Strike in a then-fix why, not only in the drill, so the
@@ -589,12 +589,12 @@ func exampleReview() ReviewDoc {
 			Why: "Bloodthirst is the button the Fury rotation is built around, and 9 of a possible 40 went unused while you had the rage, " +
 				"longest at 1:12–1:25. At 2:40–2:51 you sat on a full bar instead, so that one gap cost you twice.",
 			Drill:     "drill.core_casts",
-			DrillText: "On a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.",
+			DrillText: "On trash pulls, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.",
 			Anchors:   []string{"a1", "a2", "a3", "a5"}, Links: []string{"l1"},
 		},
 		ThenFix: []ThenItem{
 			{Finding: "f6", Title: "No flask at the pull", Why: "A flask is the cheapest damage you will ever buy; bring one to every 40-player boss.", Anchors: []string{"a4"}, Links: []string{}},
-			{Finding: "f4", Title: "Rage full for 14 seconds", Why: "When the bar is full, Heroic Strike turns rage into damage instead of losing it.", Anchors: []string{"a5"}, Links: []string{"l1"}},
+			{Finding: "f4", Title: "Rage full for 14 seconds in total", Why: "When the bar is full, Heroic Strike turns rage into damage instead of losing it.", Anchors: []string{"a5"}, Links: []string{"l1"}},
 		},
 		DoingWell: []WellItem{
 			{Strength: "s1", Text: "You were alive the whole fight.", Anchors: []string{}},

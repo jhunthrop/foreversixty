@@ -852,7 +852,7 @@ DRILL_LINES: dict[str, dict[str, str]] = {
     # protection.md: "Templar's Bulwark first, at about a third of your health"; Forbearance.
     "paladin-protection": {
         "death": (
-            "From twenty, put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health "
+            "From twenty, put Templar's Bulwark on a key you can hit without looking, and press it on trash pulls when your health "
             "falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade."
         ),
     },

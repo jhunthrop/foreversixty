@@ -1,0 +1,17 @@
+{
+  "_source": "Production's one public report z2opt2x2gs5u, read from GET https://api.foreversixty.gg/v1/reports/recent and GET /v1/reports/z2opt2x2gs5u on 2026-11-06 (uploaded 20 Oct 2026, 42 fights, 0 bosses, title and zone empty; the first 42 pulls of the 17 Sept 2026 beta night the bundled sample carries, first pull 2026-09-17T20:54:38.383Z). Served by the parity specs and read by design/mocks/ws_logs.py (gap G8, decision D1). Clock: 2026-11-06.",
+  "page": {
+    "rows": [
+      {
+        "id": "z2opt2x2gs5u",
+        "title": "",
+        "created_at": "2026-10-20T00:00:00Z",
+        "fight_count": 42,
+        "kill_count": 0,
+        "boss_count": 0,
+        "zone": "",
+        "logging_character": null
+      }
+    ]
+  }
+}

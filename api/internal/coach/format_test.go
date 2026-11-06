@@ -17,8 +17,9 @@ func TestClockAndSpan(t *testing.T) {
 		{"Pct rounds", Pct(44.5), "45%"},
 		{"PerMinute", PerMinute(9.06), "9.1"},
 		{"PerMinute whole", PerMinute(8), "8.0"},
-		{"ClassPlural", ClassPlural("Warrior"), "warriors"},
-		{"ClassPlural lower", ClassPlural("priest"), "priests"},
+		{"ClassPlural keeps the capital", ClassPlural("Warrior"), "Warriors"},
+		{"ClassPlural keeps lower case", ClassPlural("priest"), "priests"},
+		{"ClassPlural two words", ClassPlural("Death Knight"), "Death Knights"},
 	}
 	for _, c := range cases {
 		if c.got != c.want {

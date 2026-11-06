@@ -1,0 +1,90 @@
+{
+  "player_key": "us/hardcore/elyra-duskvale",
+  "sample_size": 6,
+  "trend": [
+    {
+      "report_id": "rpt12118",
+      "fight_index": 1,
+      "overall": 60,
+      "fought_at": "2026-11-03T20:40:00Z"
+    },
+    {
+      "report_id": "rpt11982",
+      "fight_index": 2,
+      "overall": 61,
+      "fought_at": "2026-11-03T21:05:00Z"
+    },
+    {
+      "report_id": "rpt12259",
+      "fight_index": 3,
+      "overall": 62,
+      "fought_at": "2026-11-03T21:30:00Z"
+    },
+    {
+      "report_id": "rpt12057",
+      "fight_index": 4,
+      "overall": 63,
+      "fought_at": "2026-10-27T21:10:00Z"
+    },
+    {
+      "report_id": "rpt12056",
+      "fight_index": 5,
+      "overall": 64,
+      "fought_at": "2026-10-27T21:50:00Z"
+    },
+    {
+      "report_id": "rpt12264",
+      "fight_index": 6,
+      "overall": 65,
+      "fought_at": "2026-10-27T22:10:00Z"
+    }
+  ],
+  "best_component": "consumables",
+  "worst_component": "resources",
+  "latest": {
+    "player_key": "us/hardcore/elyra-duskvale",
+    "player_name": "Elyra Duskvale",
+    "class": "priest",
+    "spec": "holy",
+    "role": "healer",
+    "overall": 65,
+    "overall_uncapped": 65,
+    "overall_capped": false,
+    "coverage": 0.9,
+    "insufficient": false,
+    "insufficient_reason": "",
+    "basis": "percentile",
+    "components": [
+      {
+        "name": "activity",
+        "score": 72,
+        "excluded": false
+      },
+      {
+        "name": "mechanics",
+        "score": 58,
+        "excluded": false
+      },
+      {
+        "name": "cooldowns",
+        "score": 66,
+        "excluded": false
+      },
+      {
+        "name": "consumables",
+        "score": 80,
+        "excluded": false
+      },
+      {
+        "name": "positioning",
+        "score": 61,
+        "excluded": false
+      },
+      {
+        "name": "resources",
+        "score": 54,
+        "excluded": false
+      }
+    ]
+  }
+}

@@ -3,8 +3,9 @@
 // That sweep never visits this route (a different shell, a different island), and a ranked
 // table is exactly the kind of wide content that breaks a phone layout, so it gets its own
 // sweep in the same idiom: nothing scrolls sideways, and every control -- including a row's
-// own links, which the report's rankings mode does not carry -- clears 44px.
+// own links -- clears 44px, with the bar's stack open so its fields are measured too.
 import { apiUnreachable, expect, test } from './support/test';
+import { barToggle, openFilters } from './support/rankings-filters';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
@@ -14,6 +15,8 @@ test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
 
 /** The phone width this file sets, and the number both sweeps measure against. */
 const PHONE_WIDTH = 360;
+/** The smallest touch target a phone control may have. */
+const TARGET_PX = 44;
 
 const ROWS = {
   ok: true,
@@ -101,72 +104,67 @@ test('nothing scrolls sideways on either board', async ({ page }) => {
     await expect(page.getByTestId('ranking-1').or(page.getByTestId('guild-rows'))).toBeVisible();
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(scrollWidth, query).toBeLessThanOrEqual(PHONE_WIDTH);
+    // With the bar's stack open, too: it holds every select and the Filters fields inline.
+    await openFilters(page);
+    const openWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(openWidth, `${query} stack open`).toBeLessThanOrEqual(PHONE_WIDTH);
   }
 });
+
+interface Sweep {
+  /** Each control under 44px, named and measured. */
+  short: string[];
+  /** Of those, the ones a known product gap explains (KNOWN_GAP below). */
+  measured: number;
+}
+
+/** Opens the board for `query` with the bar's stack open and measures every visible control. */
+async function sweep(page: import('@playwright/test').Page, query: string): Promise<Sweep> {
+  await page.goto(`/rankings/warden-kelthas${query}`);
+  await expect(page.getByTestId('rankings-filters')).toBeVisible();
+  await expect(page.getByTestId('ranking-1').or(page.getByTestId('guild-rows'))).toBeVisible();
+  // The bar collapses to a summary line on a phone: open its stack, so its controls are measured too.
+  await openFilters(page);
+  await expect(barToggle(page)).toHaveAttribute('aria-expanded', 'true');
+  const result: Sweep = { short: [], measured: 0 };
+  const controls = await page.locator('button:visible, select:visible, a[href]:visible, input:visible').all();
+  for (const control of controls) {
+    const box = await control.boundingBox();
+    if (box === null) continue;
+    const facts = await control.evaluate((element) => ({
+      // The skip link is 1px until it takes focus, the one control that is that size on purpose.
+      skip: getComputedStyle(element).clipPath !== 'none',
+      // `astro dev`'s own toolbar lives in a shadow root; it is not the page and never ships.
+      devTool: element.getRootNode() !== document,
+      // `#rankings` is this page's own scope (Rankings.svelte's root element), not the shared
+      // header and footer, which layout.spec.ts already measures.
+      inPage: element.closest('#rankings') !== null,
+      named: `<${element.tagName.toLowerCase()}${
+        element.getAttribute('data-testid') === null
+          ? ''
+          : ` data-testid=${element.getAttribute('data-testid')}`
+      }> ${(element.textContent ?? '').trim().slice(0, 40)}`,
+    }));
+    if (facts.skip || facts.devTool) continue;
+    result.measured += 1;
+    // The larger dimension everywhere, and height as well inside the page -- a 200x20 row link
+    // clears the max() line and is still unusable with a thumb, the same reasoning
+    // report-phone.spec.ts's own sweep pins for `#report`.
+    const clears = Math.max(box.height, box.width) >= TARGET_PX && (!facts.inPage || box.height >= TARGET_PX);
+    if (clears) continue;
+    const where = `${query} ${facts.named} measured ${Math.round(box.width)}x${Math.round(box.height)}`;
+    result.short.push(where);
+  }
+  return result;
+}
 
 test('every filter control, row link and pagination control clears 44px', async ({ page }) => {
   await stubApi(page);
   for (const query of STATES) {
-    await page.goto(`/rankings/warden-kelthas${query}`);
-    await expect(page.getByTestId('rankings-filters')).toBeVisible();
-    // The filters collapse to a summary line on a phone: open them, so their controls are measured too.
-    await page.getByTestId('rankings-filters-toggle').click();
-    let measured = 0;
-    const controls = await page
-      .locator('button:visible, select:visible, a[href]:visible, input:visible')
-      .all();
-    for (const control of controls) {
-      // A checkbox is toggled through the label wrapping it (`Today only`), so the label
-      // is the target and the box inside it is only the mark -- report-phone.spec.ts's
-      // own sweep settles this the same way.
-      // The Build link inside a row's muted line is plain text in a sentence, as a link in a
-      // paragraph is (the spec keeps it a plain link; Report beside it is the 44px target).
-      if (await control.evaluate((element) => element.closest('[data-testid="ranking-meta"]') !== null)) {
-        continue;
-      }
-      // A row's name link stretches over the whole name area (its ::after), so the row's own
-      // box is the touch target, not the line of text.
-      const stretched = await control.evaluate(
-        (element) => element.getAttribute('data-testid') === 'ranking-character',
-      );
-      const target = (await control.evaluate(
-        (element) =>
-          element instanceof HTMLInputElement &&
-          element.type === 'checkbox' &&
-          element.closest('label') !== null,
-      ))
-        ? control.locator('xpath=ancestor::label[1]')
-        : stretched
-          ? control.locator('xpath=ancestor::li[1]')
-          : control;
-      const box = await target.boundingBox();
-      if (box === null) continue;
-      // The skip link is 1px until it takes focus, the one control that is that size on
-      // purpose; nothing else on this page is inside a `<p>`, so the exclusion is narrower
-      // than report-phone.spec.ts's -- this page has no prose paragraph carrying a link.
-      const skip = await target.evaluate((element) => getComputedStyle(element).clipPath !== 'none');
-      if (skip) continue;
-      const named = await target.evaluate(
-        (element) =>
-          `<${element.tagName.toLowerCase()}${
-            element.getAttribute('data-testid') === null
-              ? ''
-              : ` data-testid=${element.getAttribute('data-testid')}`
-          }> ${(element.textContent ?? '').trim().slice(0, 40)}`,
-      );
-      const where = `${query} ${named} measured ${Math.round(box.width)}x${Math.round(box.height)}`;
-      expect(Math.max(box.height, box.width), where).toBeGreaterThanOrEqual(44);
-      // Height as well as the larger dimension, for the page this audit covers -- a
-      // 200x20 row link clears the max() line above and is still unusable with a thumb,
-      // the same reasoning report-phone.spec.ts's own sweep pins for `#report`.
-      // `#rankings` is this page's equivalent scope (Rankings.svelte's own root element),
-      // not the shared header and footer, which layout.spec.ts already measures.
-      const inPage = await target.evaluate((element) => element.closest('#rankings') !== null);
-      if (inPage) expect(box.height, where).toBeGreaterThanOrEqual(44);
-      measured += 1;
-    }
-    // Every state renders the board switch's two tabs plus at least the metric or kind
-    // filter, so the floor here is three -- a state whose controls all fell through the
+    const { short, measured } = await sweep(page, query);
+    expect(short, query).toEqual([]);
+    // Every state renders the board switch's two radios plus at least the metric or kind
+    // select, so the floor here is three -- a state whose controls all fell through the
     // exclusions above would leave this loop with nothing asserted and still green, which
     // is worse than no audit.
     expect(measured, `${query} measured no controls at all`).toBeGreaterThanOrEqual(3);

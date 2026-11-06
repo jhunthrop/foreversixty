@@ -23,7 +23,7 @@ export const PLAN_GAP_PX = 16;
  *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
  *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
  *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
-export const SIGNED_OUT_MIN_H = 'min-h-[1601px] lg:min-h-[949px]';
+export const SIGNED_OUT_MIN_H = 'min-h-[1576px] lg:min-h-[949px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
@@ -49,10 +49,11 @@ export type HintState = 'none' | 'free' | 'connect' | 'form' | 'saved' | 'off' |
 export const HEADER_ROW_H: BucketPx = { lg: 60, stack: 110 };
 
 /** An empty Characters panel, an empty Your reports panel and the 32 px gap between them, measured
- *  2026-11-06 at 356 / 504 and rounded down to 5. The empty panel draws no last-raid coach line
+ *  2026-11-06 at 356 / 504 and rounded down to 5; the stacked one re-measured 2026-11-07 at 478 once
+ *  Your reports' empty line became the logs redesign's one-line Row text. The empty panel draws no last-raid coach line
  *  (spec 2026-11-04-account-characters: it shows under the rows only), so the floor holds none;
  *  an account with characters is taller, and its stored height takes over after the first visit. */
-export const LEFT_FLOOR: BucketPx = { lg: 355, stack: 500 };
+export const LEFT_FLOOR: BucketPx = { lg: 355, stack: 475 };
 
 /** The Plan card for a free account: head, four settings rows and the See plans foot (polish task 4, measured 380 / 460 on the empty fixture account at 1440 / 390). */
 const PLAN_EMPTY_FLOOR: BucketPx = { lg: 380, stack: 460 };

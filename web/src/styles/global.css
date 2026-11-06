@@ -650,7 +650,7 @@ html[data-session='1'] .account-header-reserve {
   min-height: 110px;
 }
 .account-left-skeleton {
-  min-height: max(var(--account-left-reserve, 0px), 500px);
+  min-height: max(var(--account-left-reserve, 0px), 475px);
 }
 .account-devices-skeleton {
   min-height: 290px;

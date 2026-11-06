@@ -24,6 +24,18 @@
   }
 }
 
+/* A list whose rows carry no crest drops the 36 px lead column (a single-class board, K3). */
+@media (min-width: 1280px) {
+  .ui-rank-list[data-leads='none'] .ui-rank-cols {
+    grid-template-columns:
+      28px var(--rl-name) var(--rl-bar) repeat(var(--rl-n), var(--rl-fig))
+      var(--rl-gap) var(--rl-links);
+  }
+}
+.ui-rank-list[data-leads='none'] .ui-rr-lead {
+  display: none;
+}
+
 .ui-rank-body,
 .ui-rank-group-rows {
   margin: 0;
@@ -248,6 +260,26 @@
 }
 
 /* Below 1280 the letter column is a header strip above its rows. */
+/* A figure that opens something: the figure's own colour, underlined on hover. */
+.ui-rr-fig-link {
+  color: inherit;
+}
+.ui-rr-fig-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Phone: the name's and a figure's links are 44 px targets that take no more room than their line. */
+@media (max-width: 767px) {
+  .ui-rr-link,
+  .ui-rr-fig-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -12px;
+  }
+}
+
 @media (max-width: 1279px) {
   .ui-rank-group {
     grid-template-columns: minmax(0, 1fr);

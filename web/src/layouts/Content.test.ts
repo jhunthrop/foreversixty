@@ -20,7 +20,7 @@ describe('Content layout', () => {
       },
       slots: { default: '<p>body</p>' },
     });
-    expect(html).toContain('Updated Sept 12');
+    expect(html).toContain('Updated 12 Sept');
     expect(html).toContain('Reported by one outlet');
     expect(html).toContain('href="https://guided.news/x"');
     expect(html).toContain('pill-community');
@@ -81,11 +81,11 @@ describe('Content layout', () => {
       },
       slots: { default: '<p>body</p>' },
     });
-    expect(html).toContain('Updated Oct 28');
+    expect(html).toContain('Updated 28 Oct');
     expect(html).not.toContain('Confirmed by Blizzard');
     expect(html).not.toContain('Reported by one outlet');
     expect(html).not.toContain('Our inference');
     expect(html).not.toContain('>Sources<');
-    expect(html).not.toMatch(/Updated Oct 28[^<]*<\/[^>]+>\s*<span>·<\/span>/);
+    expect(html).not.toMatch(/Updated 28 Oct[^<]*<\/[^>]+>\s*<span>·<\/span>/);
   });
 });

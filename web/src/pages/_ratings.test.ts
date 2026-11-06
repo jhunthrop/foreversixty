@@ -1,20 +1,23 @@
 // web/src/pages/_ratings.test.ts
 // Underscore-prefixed like _setup.test.ts: everything else under src/pages/ is a route.
 //
-// Task L8.2 ruling 6 and fix round 1 item 7: /ratings explains both numbers. A page title and
-// a two-item jump row; the Forever Score section (captioned, its five parts with the addon's
-// own labels from the shared fixture, the tier strip with a visually hidden table, how logs
-// get here); then the Performance Rating section, its headings one level down, with no
-// "percentile" left in its words.
+// /ratings explains both numbers (design/specs/2026-11-07-logs-reports.md section 8, T1): the
+// PageHeader with the sample Forever Score as its answer in its tier's colour and the two-tab
+// jump row; the Forever Score Section with its five parts as the one Plate (the addon's labels,
+// from the shared fixture); the Performance Rating Section with three figures; the reference
+// Sections; the tiers in the item quality colours with the sample tinted (MUST 6); how logs get
+// here. No "percentile" in the rating's words.
 import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import labels from '../../../docs/contracts/fixtures/score-labels.json';
+import { ratingCopy } from '../lib/rating/copy';
 import { scoreCopy } from '../lib/score/copy';
-import { tierRanges, tierStrip } from '../lib/score/score';
+import { SAMPLE_SCORE, WEIGHTS, ratingsPageCopy } from '../lib/score/ratings-page';
+import { COMPONENT_MAX, tierRanges } from '../lib/score/score';
 import { createPageContainer } from '../test-support/page-container';
 import RatingsPage from './ratings.astro';
 
-const source = readFileSync(new URL('./ratings.astro', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../components/score/RatingsPage.svelte', import.meta.url), 'utf8');
 
 let html: string;
 
@@ -23,12 +26,11 @@ beforeAll(async () => {
   html = await container.renderToString(RatingsPage);
 });
 
-/** A top-level section's markup: from its id to the next one's (Panels are sections too, so
- *  the first `</section>` is not the end). */
-function section(id: 'forever-score' | 'performance-rating'): string {
-  const start = html.indexOf(`id="${id}"`);
-  const end = id === 'forever-score' ? html.indexOf('id="performance-rating"') : html.indexOf('</main>');
-  return start < 0 || end < 0 ? '' : html.slice(start, end);
+/** A Section's markup, from its region to the next Section's. */
+function section(slug: string): string {
+  const start = html.indexOf(`data-region="section-${slug}"`);
+  const end = html.indexOf('data-region="section-', start + 1);
+  return start < 0 ? '' : html.slice(start, end < 0 ? undefined : end);
 }
 
 function text(fragment: string): string {
@@ -38,73 +40,50 @@ function text(fragment: string): string {
     .replace(/\s+/g, ' ');
 }
 
-describe('/ratings page frame', () => {
-  it('is titled "Forever Score and ratings" with a two-item jump row', () => {
+describe('/ratings', () => {
+  it('is titled "Forever Score and ratings" with a two-tab jump row to its two Sections', () => {
     expect(html).toMatch(/<h1[^>]*>Forever Score and ratings<\/h1>/);
-    const jump = /<nav[^>]*data-testid="ratings-jump"[\s\S]*?<\/nav>/.exec(html)?.[0] ?? '';
+    const jump = /data-testid="ratings-jump"[\s\S]*?<\/nav>/.exec(html)?.[0] ?? '';
     expect(jump).toContain('href="#forever-score"');
     expect(jump).toContain('href="#performance-rating"');
-    expect(text(jump)).toContain('Forever Score · Performance Rating');
+    expect(html).toContain('id="forever-score"');
+    expect(html).toContain('id="performance-rating"');
   });
 
-  it('bridges the two systems with one caption each', () => {
-    expect(section('forever-score')).toContain('Forever Score: your whole record, 0 to 2100.');
-    expect(section('performance-rating')).toContain('Performance Rating: one fight, 0 to 100.');
+  it('bridges the two systems with one caption each, in the head', () => {
+    expect(html).toContain(scoreCopy.explainerScoreCaption);
+    expect(html).toContain(scoreCopy.explainerRatingCaption);
+    expect(text(html).split('0 to 2100').length - 1).toBeGreaterThanOrEqual(1);
   });
 
-  it('puts the rating group’s headings one level down, under its own h2', () => {
-    const rating = section('performance-rating');
-    expect(rating).toMatch(/<h2[^>]*>Performance Rating<\/h2>/);
-    expect(rating).toMatch(/<h3[^>]*>How ratings work<\/h3>/);
-    expect(rating).toMatch(/<h3[^>]*>Weights, by role<\/h3>/);
-    expect(rating).not.toMatch(/<h2[^>]*>Weights, by role/);
+  it('answers with the sample score in its tier colour, out of the five ceilings', () => {
+    const answer = /data-region="head-answer"[\s\S]*?<\/header>/.exec(html)?.[0] ?? '';
+    expect(text(answer)).toContain(`${scoreCopy.samplePill} · ${scoreCopy.explainerHeading}`);
+    expect(answer).toMatch(/data-testid="ratings-sample-score"[^>]*style="color: var\(--color-rarity-epic\)/);
+    const max = Object.values(COMPONENT_MAX).reduce((sum, n) => sum + n, 0);
+    expect(text(answer)).toContain(`of ${max.toLocaleString('en-US')} · Epic`);
+    expect(text(answer)).toContain(scoreCopy.mostToGainLead);
   });
 
-  it('says "ranked against players of your spec", never "percentile", in the rating copy', () => {
-    const rating = text(section('performance-rating'));
-    expect(rating).not.toMatch(/percentile/i);
-    expect(rating).toContain('ranked against players of your spec');
+  it('opens the Forever Score with what to use it for, then what it is, and when raid parts count', () => {
+    const score = text(section('forever-score'));
+    const lead = score.indexOf(scoreCopy.explainerLead);
+    expect(lead).toBeGreaterThan(-1);
+    expect(score.indexOf(scoreCopy.explainerWhat)).toBeGreaterThan(lead);
+    expect(score).toContain(scoreCopy.explainerLaunch);
   });
 
-  it('sits on the site column’s own gutter, not a centred narrower measure', () => {
-    expect(html).not.toMatch(/<main[^>]*measure-wide/);
-  });
-});
-
-describe('/ratings Forever Score section', () => {
-  it('sits above the Performance Rating', () => {
-    const score = html.indexOf('data-testid="ratings-forever-score"');
-    expect(score).toBeGreaterThan(-1);
-    expect(score).toBeLessThan(html.indexOf('data-testid="ratings-performance-rating"'));
-    expect(score).toBeLessThan(html.indexOf('How ratings work'));
-  });
-
-  it('opens with what to use it for, then says what the score is, and when raid parts count', () => {
-    const forever = section('forever-score');
-    expect(scoreCopy.explainerLead).toBe(
-      'Use it to see how your character compares and which part to work on.',
-    );
-    expect(forever.indexOf(scoreCopy.explainerLead)).toBeLessThan(forever.indexOf(scoreCopy.explainerWhat));
-    expect(forever).toContain('Parses, attendance and raid bosses count once raids open.');
-  });
-
-  it('lists the five components with the addon’s exact labels, in its order, each with what moves it', () => {
+  it('lists the five parts as the one Plate, with the addon’s labels in its order, each with what moves it', () => {
+    expect(html.split('data-region="plate"').length - 1).toBe(1);
     let last = -1;
     for (const component of labels.components) {
       const at = html.indexOf(`data-testid="ratings-forever-score-${component.key}"`);
       expect(at, component.key).toBeGreaterThan(last);
       last = at;
       expect(html).toContain(`>${component.label}<`);
+      expect(html).toContain(scoreCopy.upTo(COMPONENT_MAX[component.key as keyof typeof COMPONENT_MAX]));
     }
     for (const component of scoreCopy.components) expect(html).toContain(component.moves);
-  });
-
-  it('holds each component line to about 70 characters of measure', () => {
-    for (const component of labels.components) {
-      expect(html).toMatch(
-        new RegExp(`class="[^"]*max-w-\\[70ch\\][^"]*" data-testid="ratings-forever-score-${component.key}"`),
-      );
-    }
   });
 
   it('says how parses rank in plain words, never "percentile"', () => {
@@ -115,110 +94,84 @@ describe('/ratings Forever Score section', () => {
     expect(parses?.moves).not.toMatch(/percentile/i);
   });
 
-  it('draws the tiers as a strip in the tier colours, with the table kept for assistive tech', () => {
-    const strip = /<ol[^>]*data-testid="tier-strip"[\s\S]*?<\/ol>/.exec(html)?.[0] ?? '';
-    for (const segment of tierStrip()) {
-      expect(strip).toContain(`background-color: ${segment.color}`);
-      expect(strip).toContain(`color: ${segment.textColor}`);
-      expect(strip).toContain(segment.label);
-      expect(strip).toContain(segment.range);
-    }
-    expect(labels.tiers.common.color).toBe('#ffffff');
-    const table = /<table[^>]*data-testid="ratings-forever-tiers"[\s\S]*?<\/table>/.exec(html)?.[0] ?? '';
-    expect(table).toMatch(/<table class="sr-only"/);
-    for (const tier of Object.values(labels.tiers)) expect(table).toContain(tier.label);
-    for (const { range } of tierRanges()) expect(table).toContain(range);
-  });
-
-  it('notes that the tiers are item quality colours and the ranges may change', () => {
-    expect(html).toContain(
-      'The tiers take the colours of item quality in game. The ranges may change as more players are logged.',
-    );
-  });
-
-  it('says how logs get here, with a "Get the companion" button beside it', () => {
-    const logs = /<p[^>]*data-testid="ratings-forever-logs"[\s\S]*?<\/p>/.exec(html)?.[0] ?? '';
-    expect(logs).toContain(scoreCopy.explainerLogsBody);
-    expect(html).toMatch(/href="\/setup" data-testid="ratings-forever-logs-button">Get the companion</);
-    expect(html).toContain(`>${scoreCopy.explainerLogsHeading}<`);
-  });
-
-  it('leads with one sentence and then the profile’s own card as a Sample (round 2 item 5)', () => {
-    const forever = section('forever-score');
-    const lead = forever.indexOf(scoreCopy.explainerLead);
-    const sample = forever.indexOf('data-testid="ratings-forever-sample"');
-    expect(lead).toBeGreaterThan(-1);
-    expect(sample).toBeGreaterThan(lead);
-    expect(sample).toBeLessThan(forever.indexOf(scoreCopy.explainerWhat));
-    const card = forever.slice(sample);
-    expect(card).toContain('data-testid="forever-score-card"');
-    expect(card).toMatch(/class="pill pill-sample[^"]*">Sample</);
-    expect(card).toMatch(/data-testid="score-badge"[^>]*>1830</);
-  });
-
-  it('says "0 to 2100" once', () => {
-    expect(section('forever-score').match(/0 to 2100/g)).toHaveLength(1);
-  });
-
-  it('draws each part’s bar in proportion to its ceiling, with the tier strip in the same panel', () => {
-    const widths = { gear: 71.4, experience: 100, parses: 85.7, attendance: 28.6, discipline: 14.3 };
-    for (const [key, width] of Object.entries(widths)) {
-      expect(html).toMatch(new RegExp(`style="width: ${width}%" data-testid="ratings-forever-bar-${key}"`));
-    }
-    const panel =
-      /What moves each part[\s\S]*?data-testid="ratings-forever-tiers-note"/.exec(html)?.[0] ?? '';
-    expect(panel).toContain('data-testid="ratings-forever-score-gear"');
-    expect(panel).toContain('data-testid="tier-strip"');
-    expect(html).not.toMatch(/>Tiers<\/h3>/);
-  });
-
   it('reads the Gear blurb by level band', () => {
     expect(scoreCopy.components[0].moves).toContain(
       'How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60)',
     );
   });
 
-  it('bridges to the rating in one sentence, and says the two Preparations are the same thing (item 11)', () => {
-    const rating = section('performance-rating');
-    expect(rating).toContain('A rating scores one fight. The Forever Score counts all of them.');
-    expect(rating).toContain(scoreCopy.explainerPreparationShared);
+  it('lists every tier in its item quality colour, the sample’s tinted, then the note', () => {
+    const tiers = section('tiers');
+    for (const { tier, range } of tierRanges()) {
+      expect(tiers).toContain(`color: var(--color-rarity-${tier})`);
+      expect(tiers).toContain(range);
+    }
+    expect(tiers).toMatch(/data-current="true"[^>]*style="--tier: var\(--color-rarity-epic\)/);
+    expect(tiers).toContain('The sample');
+    expect(tiers).toContain(scoreCopy.tiersNote);
   });
 
-  it('renders the bridge as running text with a space between its sentences: "them. Both" (fix round 3 item 1)', () => {
+  it('says how logs get here, with a "Get the companion" button', () => {
+    const logs = section('how-to-get-your-logs-here');
+    expect(logs).toContain(scoreCopy.explainerLogsBody);
+    expect(logs).toMatch(/<a[^>]*href="\/setup"[^>]*data-testid="ratings-forever-logs-button"/);
+    expect(text(logs)).toContain('Get the companion');
+  });
+
+  it('bridges to the rating as running text: "them. Both", and the two Preparations are one thing', () => {
     const bridge = /<p[^>]*data-testid="ratings-rating-bridge"[^>]*>([\s\S]*?)<\/p>/.exec(html)?.[1] ?? '';
-    expect(text(bridge)).toContain('them. Both');
-    expect(bridge).not.toContain('them.Both');
+    expect(text(bridge)).toContain('A rating scores one fight. The Forever Score counts all of them. Both');
+    expect(text(bridge)).toContain(scoreCopy.explainerPreparationShared);
   });
 
-  // L8.5 ruling 1: the verdict carries the count the old "Last 6 fights" label did; the sample
-  // has no Forever Score, so it has no Parses half.
-  it('shows a Performance Rating sample, "65 of 100" with its verdict and sparkline', () => {
-    const rating = section('performance-rating');
-    const sample = rating.slice(rating.indexOf('data-testid="ratings-rating-sample"'));
-    expect(sample).toMatch(/data-testid="character-rating-overall">65</);
-    expect(sample).toContain('>of 100<');
-    // Fix round 2 item 7: the line is in spans now; a sample names no fight.
-    const verdict = /data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(sample)?.[1] ?? '';
-    expect(
-      verdict
-        .replace(/<[^>]+>/g, '')
-        .replace(/\s+/g, ' ')
-        .trim(),
-    ).toBe('Latest fight rated 65 of 100 · 6 fights rated');
-    expect(sample).toContain('data-testid="rating-trend"');
-    // Fix round 1 item 5: the sample sits in a 560px column, so it stays one column at any
-    // window width.
-    const columns = /<div class="([^"]*)" data-testid="rating-card-columns"/.exec(sample)?.[1] ?? '';
-    expect(columns.split(' ').filter((token) => token.startsWith('xl:'))).toEqual([]);
-    expect(sample).toMatch(/class="pill pill-sample[^"]*">Sample</);
+  it('shows the rating sample as three figures: 65 of 100, the last six fights, the weakest part', () => {
+    const sample = text(
+      /data-testid="ratings-rating-sample"[\s\S]*?<\/svg>[\s\S]*?Weakest part of a fight[^<]*/.exec(
+        html,
+      )?.[0] ?? '',
+    );
+    expect(sample).toContain('65');
+    expect(sample).toContain(ratingCopy.outOf100);
+    expect(sample).toContain('Last 6 fights');
+    expect(sample).toContain('Up 25 since the first');
+    expect(sample).toContain('Weakest part of a fight: Activity.');
   });
 
-  it('leaves 24px between the rating’s opening and "How ratings work"', () => {
-    expect(html).toMatch(/<section[^>]*id="performance-rating"[^>]*class="[^"]*gap-6[^"]*"/);
+  it('says "ranked against players of your spec", never "percentile", in the rating copy', () => {
+    const rating = text(
+      [section('performance-rating'), section('ranked-against-your-spec-or-absolute')].join(' '),
+    );
+    expect(rating).not.toMatch(/percentile/i);
+    expect(rating).toContain('ranked against players of your spec');
+    expect(rating).toContain(ratingsPageCopy.visibility);
   });
 
-  it('takes its labels from the fixture and its words from the copy file, never a literal', () => {
-    // "Preparation" is also the rating's own component in its weights table, on purpose (item 11).
+  it('defines each of the six components, the weights by role, the basis and the cap', () => {
+    for (const { part, body } of ratingsPageCopy.components) {
+      expect(section('what-each-component-measures')).toContain(body);
+      expect(text(section('what-each-component-measures'))).toContain(part);
+    }
+    const weights = text(section('weights-by-role'));
+    for (const row of WEIGHTS) {
+      // the phone line repeats the three after the primary figure
+      expect(weights).toContain(
+        `${row.component} ${row.dps} ${row.dps} / ${row.healer} / ${row.tank} ${row.healer} ${row.tank}`,
+      );
+    }
+    expect(weights).toContain(ratingsPageCopy.roles);
+    expect(weights).toContain(ratingsPageCopy.adjustable);
+    for (const paragraph of ratingsPageCopy.rankedOrAbsolute) {
+      expect(section('ranked-against-your-spec-or-absolute')).toContain(paragraph);
+    }
+    expect(section('the-cap')).toContain(ratingCopy.cappedRule);
+  });
+
+  it('draws no card: one Plate, open Sections', () => {
+    expect(html).not.toMatch(/card-surface|rounded-panel/);
+    expect(SAMPLE_SCORE.tier).toBe('epic');
+  });
+
+  it('takes its labels from the fixture and its words from the copy modules, never a literal', () => {
     for (const component of labels.components.filter((c) => c.key !== 'discipline')) {
       expect(source).not.toContain(`'${component.label}'`);
     }

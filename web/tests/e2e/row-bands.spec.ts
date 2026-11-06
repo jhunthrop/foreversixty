@@ -1,16 +1,15 @@
 // web/tests/e2e/row-bands.spec.ts
-// Row bands (design/specs/2026-11-01-row-bands.md): every lit row (the viewer's own row, an
-// addressed fight) is a rounded band whose content sits at least 12 px inside both sides, at
-// 1440 and 390; an unlit row keeps square corners so its hairline runs straight; a link row's
+// Row bands (design/specs/2026-11-01-row-bands.md): every lit row (the viewer's own row) is a
+// rounded band whose content sits at least 12 px inside both sides, at 1440 and 390; an unlit row keeps square corners so its hairline runs straight; a link row's
 // hover band is a raised ground with a ring. (The roster's handoff slot: guild-roster-handoff.spec.ts.)
 // The raid report is built from the ui/ primitives, whose own rows are Row's `selected` ground, not
-// row bands (web layout spec 2026-11-05 §3A.2), so it is no longer measured here.
+// row bands (web layout spec 2026-11-05 §3A.2), so it is no longer measured here; nor is the
+// character page, whose fight rows are Rows since design/specs/2026-11-06-character.md.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { CHARACTER_PATH } from './support/character-fixture';
 import { CHICAGO, NOW, stubGuildRaids, threePlanned } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';
-import { GUILD_PAGE, litBandRooms, stubCharacter, stubGuild } from './support/row-band-pages';
+import { GUILD_PAGE, litBandRooms, stubGuild } from './support/row-band-pages';
 
 const ROOM_PX = 12;
 const RADIUS = '8px';
@@ -43,19 +42,6 @@ for (const width of WIDTHS) {
       await stubGuild(page, 'member');
       await gotoHydrated(page, `${GUILD_PAGE}#readiness`, 'guild-readiness-rows');
       await expectRoomyBands(page, 1);
-    });
-
-    test('the addressed fight is a rounded band; the rows beside it keep square rules', async ({ page }) => {
-      await stubCharacter(page);
-      await page.goto(CHARACTER_PATH);
-      const first = page.locator('li[id^="fight-"]').first();
-      await expect(first).toBeVisible();
-      const id = await first.getAttribute('id');
-      expect(id).not.toBeNull();
-      await page.evaluate((hash) => (window.location.hash = hash), id ?? '');
-      await expectRoomyBands(page, 1);
-      const unlit = page.locator('li[id^="fight-"]').nth(1);
-      await expect(unlit).toHaveCSS('border-top-left-radius', '0px');
     });
   });
 }

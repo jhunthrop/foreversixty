@@ -1,27 +1,20 @@
 ---
 // web/src/pages/reports.astro
-// "Your reports", the Logs menu's second row: every report the visitor owns, newest first. The
-// head is static; the card under it is one island, because all three of its states (signed out,
-// no logs yet, the list) follow one session read. /reports/<id> is a different page: the Worker
-// serves report-shell.astro for it.
+// "Your reports", the Logs menu's second row (design/specs/2026-11-07-logs-reports.md section
+// 5): every report the visitor owns, newest first. One island (components/logs/YourReports.svelte),
+// because the head's count and action and the Plate's states all follow one session read.
+// /reports/<id> is a different page: the Worker serves report-shell.astro for it.
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/ui/PageHead.astro';
 import YourReports from '../components/logs/YourReports.svelte';
-import { yourReportsPageCopy as copy } from '../lib/reports/my-reports-copy';
 ---
 
 <Base
   title="Your reports"
   description="Every World of Warcraft: Forever combat log you uploaded or streamed, newest first."
   path="/reports"
+  wide
 >
-  <main
-    id="main"
-    tabindex="-1"
-    class="flex flex-col gap-[22px] px-[var(--page-inset)] pt-4 pb-10 md:gap-8 md:pt-7"
-    data-testid="reports-page"
-  >
-    <PageHead eyebrow={copy.eyebrow} title={copy.title} job={copy.job} />
+  <main id="main" tabindex="-1" class="flex w-full flex-col" data-testid="reports-page">
     <YourReports client:load />
   </main>
 </Base>

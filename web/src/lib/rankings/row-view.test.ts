@@ -48,9 +48,18 @@ describe('the crest rule', () => {
 });
 
 describe('the colour legend', () => {
-  it('runs best first through the six steps, each in the colour its rank numeral takes', () => {
-    expect(RANK_LEGEND.map((step) => step.label)).toEqual(['99+', '95+', '75+', '50+', '25+', 'under 25']);
+  it('runs best first through the seven steps, each in the colour its rank numeral takes', () => {
+    expect(RANK_LEGEND.map((step) => step.label)).toEqual([
+      '100',
+      '99+',
+      '95+',
+      '75+',
+      '50+',
+      '25+',
+      'under 25',
+    ]);
     expect(RANK_LEGEND.map((step) => step.color)).toEqual([
+      'var(--color-parse-gold)',
       'var(--color-parse-pink)',
       'var(--color-parse-orange)',
       'var(--color-parse-purple)',
@@ -64,8 +73,13 @@ describe('the colour legend', () => {
     expect(rankPercentile(1, 200)).toBe(100);
     expect(rankPercentile(101, 200)).toBe(50);
     expect(rankColor(14, 212)).toBe('var(--color-parse-purple)');
-    // The first rank is a 100th percentile but the legend ends at 99+, so it is pink, not gold.
-    expect(rankColor(1, 212)).toBe('var(--color-parse-pink)');
+    // The WCL scale, floored (spec 2026-11-07 MUST 3, bug B4): rank 1 of 212 is the 100th
+    // percentile and gold; ranks 2 and 3 (99.53, 99.06) are pink, never rounded up to gold;
+    // rank 4 (98.58) is orange.
+    expect(rankColor(1, 212)).toBe('var(--color-parse-gold)');
+    expect(rankColor(2, 212)).toBe('var(--color-parse-pink)');
+    expect(rankColor(3, 212)).toBe('var(--color-parse-pink)');
+    expect(rankColor(4, 212)).toBe('var(--color-parse-orange)');
     expect(rankColor(204, 212)).toBe('var(--color-parse-grey-text)');
   });
 });
@@ -79,7 +93,7 @@ describe('the row date', () => {
   });
 
   it('prints the date from two weeks on', () => {
-    expect(rankingDate('2026-11-25T12:00:00Z', now)).toBe('Nov 25');
+    expect(rankingDate('2026-11-25T12:00:00Z', now)).toBe('25 Nov');
   });
 });
 

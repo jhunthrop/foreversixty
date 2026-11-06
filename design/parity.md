@@ -10,6 +10,8 @@ The mock library (`design/mocks/ws_lib.py` `REGION`, emitted by `ws_lib` and `ws
 
 | Region | Built by | What it holds |
 |---|---|---|
+| `site-header` | `Header.astro` | The site header: wordmark, the doors, search, the account chip |
+| `site-footer` | `Footer.astro` | The site footer |
 | `head` | `PageHeader` | The whole page head |
 | `head-title` | `PageHeader` | Crest, title, meta line |
 | `head-meta` | `PageHeader` | The one meta line under the title |
@@ -30,7 +32,7 @@ The mock library (`design/mocks/ws_lib.py` `REGION`, emitted by `ws_lib` and `ws
 - **Present on both.** A region on one side only fails.
 - **Inventory.** The region's accessibility tree as role chains, names and text ignored (`listbox>option` x17, `paragraph>link`, `heading[1]`), plus every visible `details`, `summary` and `[aria-expanded]` (a select's own popup excepted). Any count that differs fails, so a new disclosure, note, list or link fails whatever it says.
 - **Box.** x and y (y from the top of `<main>`, so the site header is not every region's error) within **8 px**; width and height within **8 px or 5%**, whichever is larger. 8 px absorbs sub-pixel and hinting drift (Linux CI against macOS) and a padding nudge, never a text line (18 to 24 px). 5% of the BiS plate is about 30 px: one row wrapping to a third line passes, a new row (58 px) or a second bar line (46 px) fails.
-- **Deterministic.** Both sides at 1440 x 1000 use the site's own font files (the mock's Google Fonts request is answered with them), motion off, animations frozen.
+- **Deterministic.** Both sides at 1440 x 1000 use the site's own font files (the mock's Google Fonts request is answered with them), motion off, animations frozen. The header is compared hydrated, as a reader sees it after load: `settleParityPage` waits for the header's one island (the character selector, `client:idle-after-load`) to lose its `ssr` attribute, and `chrome-capture.spec.ts` captures after the same wait, so the committed header is the hydrated one. Before 2026-11-06 the build side could be measured either side of that hydration (a visitor's chip is a pre-rendered link, then a button).
 
 Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at the same scale, every region outlined and named. CI uploads them as `parity-side-by-side`.
 
@@ -74,6 +76,13 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 ## The home states
 
 `design/mocks/web/home-parity.json`: `out` (signed out), `34` (a level 34 leveler, no guild), `60` (a level 60 raider with a raid planned), `new` (signed in, no character), `loading` (the session hinted, `/v1/me` in flight), `error` (the upgrades failed). Mocks `web-home-<state>.html` from `design/mocks/ws_home.py` (spec `design/specs/2026-11-06-home.md`). The signed-in data is committed in `web/tests/e2e/fixtures/home/` (`python3 design/mocks/home_fixtures.py` writes it); `tests/e2e/support/home-page.ts` routes the same files, so the parity job needs no `data/builds`.
+
+## The site chrome
+
+Every mock's header and footer are the shipped ones, not drawings: `web/tests/e2e/chrome-capture.spec.ts` (a tool, skipped unless `CHROME_CAPTURE=1`) opens each parity state as its spec does and writes `design/mocks/data/chrome/<mock>.json` (the header and footer markup, scripts removed, links to `#`, images pointing at `web/public`) and `chrome.css` (the site CSS that styles them, scoped under `.fs-chrome`). `ws_lib.write` fills each mock from its own capture, or from a template (`template-out`, `template-in` with the mock's character, `template-new`, `template-pending`). After a change to the header or footer, rebuild and recapture, then regenerate the mocks:
+
+    cd web && npm run build && CHROME_CAPTURE=1 E2E_SKIP_BUILD=1 npx playwright test tests/e2e/chrome-capture.spec.ts --project=desktop
+    python3 design/mocks/ws_bis.py && python3 design/mocks/ws_tiers.py && python3 design/mocks/ws_sim.py && python3 design/mocks/ws_home.py
 
 ## When it fails
 

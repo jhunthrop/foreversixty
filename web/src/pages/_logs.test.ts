@@ -12,6 +12,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import companion from '../data/companion.json';
 import { logsCompanionCopy } from '../lib/reports/copy';
 import { myReportsCopy } from '../lib/reports/my-reports-copy';
+import { BUTTON_PRIMARY } from '../lib/ui/button';
 import Logs from './logs.astro';
 
 let container: AstroContainer;
@@ -45,14 +46,15 @@ describe('/logs', () => {
     expect(html).not.toContain('latest/download/foreversixty-companion_windows_amd64.exe');
   });
 
-  it('signed out, "Your reports" says to sign in and carries the gold Sign in button', async () => {
+  it('signed out, the upload Plate carries the one gold Sign in button and the sample report', async () => {
     const html = await container.renderToString(Logs);
     expect(myReportsCopy.signedOut).toBe('Sign in to see your reports.');
     expect(html).toContain(myReportsCopy.signedOut);
     const button = [...html.matchAll(/<a\s[^>]*data-testid="reports-sign-in"[^>]*>/g)][0]?.[0] ?? '';
-    expect(button).toContain('bg-gold');
+    expect(button).toContain(BUTTON_PRIMARY);
     expect(button).toContain('/v1/auth/battlenet');
     expect(html).toContain('Sign in with Battle.net');
+    expect(html).toContain('href="/reports/sample"');
   });
 
   it('leaves the signed-out character strip out of the page', async () => {
@@ -78,33 +80,27 @@ describe('/logs', () => {
     expect(html).not.toContain('pill-sample');
   });
 
-  it('mounts Your reports first, above the recent public reports panel', async () => {
+  it('signed out, leads with the upload Plate, then the public reports; the rail holds the companion', async () => {
     const html = await container.renderToString(Logs);
+    const uploadAt = html.indexOf('>Upload a log<');
     const recentAt = html.indexOf('>Recent public reports<');
-    // Matched by its element, not a plain text search, so a future block that happens to
-    // reuse the words "Your reports" in prose cannot false-match this heading. Searched from
-    // <main>: the header's Logs panel has a row of the same name.
-    const mineAt = html.indexOf('>Your reports<', html.indexOf('id="main"'));
-    expect(recentAt).toBeGreaterThan(-1);
-    expect(mineAt).toBeGreaterThan(-1);
-    expect(mineAt).toBeLessThan(recentAt);
-    // The panel titles it; RecentReports is told to leave its own heading off.
-    expect(html.split('Recent public reports').length - 1).toBe(1);
+    const companionAt = html.indexOf('>The companion<');
+    expect(uploadAt).toBeGreaterThan(-1);
+    expect(uploadAt).toBeLessThan(recentAt);
+    expect(recentAt).toBeLessThan(companionAt);
+    expect(html.split('>Recent public reports<').length - 1).toBe(1);
+    expect(html).toContain('data-region="plate"');
   });
 
-  it('leads with the band (eyebrow, h1, job line), then the header slot, then the reading column', async () => {
+  it('leads with the PageHeader (h1 and the job line), no eyebrow and no character band', async () => {
     const html = await container.renderToString(Logs);
     const mainAt = html.indexOf('id="main"');
     const h1At = html.indexOf('>Logs</h1>');
     const jobAt = html.indexOf('Upload a combat log or log live, then read every pull.');
-    const headerAt = html.indexOf('character-header');
-    const mineAt = html.indexOf('>Your reports<', mainAt);
-    expect(html).toContain('Combat logs');
-    expect(mainAt).toBeGreaterThan(-1);
     expect(h1At).toBeGreaterThan(mainAt);
     expect(jobAt).toBeGreaterThan(h1At);
-    expect(headerAt).toBeGreaterThan(jobAt);
-    expect(headerAt).toBeLessThan(mineAt);
+    expect(html).not.toContain('Combat logs');
+    expect(html).not.toContain('character-header');
   });
 
   it('uses no emoji, and no exclamation marks in its copy', async () => {

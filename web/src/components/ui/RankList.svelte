@@ -12,7 +12,9 @@
   let {
     heads,
     figures = 1,
+    figureWidth,
     links = 0,
+    leads = true,
     grouped = false,
     label,
     testid,
@@ -20,7 +22,11 @@
   }: {
     heads?: readonly RankHead[];
     figures?: number;
+    /** A figure column's width in px (112 by default). */
+    figureWidth?: number;
     links?: number;
+    /** The crest column; off on a list whose rows carry none (a single-class board, K3). */
+    leads?: boolean;
     /** The children are RankGroups (a letter column from 1100). */
     grouped?: boolean;
     /** The list's accessible name. */
@@ -33,7 +39,8 @@
 <div
   class="ui-rank-list"
   data-grouped={grouped ? 'true' : undefined}
-  style={rankListStyle({ figures, links })}
+  data-leads={leads ? undefined : 'none'}
+  style={rankListStyle({ figures, links, figureWidth })}
   data-testid={testid}
 >
   {#if heads && heads.length > 0}<ColumnHeads cells={heads} />{/if}

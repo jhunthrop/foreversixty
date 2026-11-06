@@ -15,6 +15,7 @@
     action,
     reading = false,
     id,
+    anchor,
     testid,
     head,
     children,
@@ -24,7 +25,10 @@
     meta?: string;
     action?: { label: string; href: string };
     reading?: boolean;
+    /** Names the section (aria-labelledby its heading: a landmark) and is its link target. */
     id?: string;
+    /** A link target only (`/logs#upload`): the section stays an unnamed block. */
+    anchor?: string;
     testid?: string;
     /** Extra content in the head row, right-aligned (a toggle, a Tag). */
     head?: Snippet;
@@ -33,7 +37,7 @@
 </script>
 
 <section
-  {id}
+  id={id ?? anchor}
   class="ui-section min-w-0 scroll-mt-[calc(var(--bar-h)+12px)]"
   data-testid={testid}
   data-region={sectionRegion(title)}
@@ -50,7 +54,12 @@
     {#if head || action}
       <span class="ml-auto flex items-center gap-4">
         {#if head}{@render head()}{/if}
-        {#if action}<a class="{LINK} text-[14px]" href={action.href}>{action.label} ›</a>{/if}
+        <!-- On a touch screen the link's hit area is 44 px tall: 12 px of padding above and below,
+             taken back by the same negative margin, so the head row does not grow. -->
+        {#if action}<a
+            class="{LINK} text-[14px] [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+            href={action.href}>{action.label} ›</a
+          >{/if}
       </span>
     {/if}
   </div>

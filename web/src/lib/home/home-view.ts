@@ -3,6 +3,7 @@
 // line, the one next-step line, the talents, sim, logs, guild and set-up rows. Pure: the island
 // (components/home/HomeSignedIn.svelte) reads them, the unit tests pin them.
 import type { Me, MeCharacter, MyReport } from '../account/api';
+import { ctaCopy } from '../addon/cta-copy';
 import { bisHref } from '../character-profile';
 import { guildHref, guildRaidHref } from '../characters';
 import type { NextRaidView } from '../guild/api';
@@ -17,9 +18,6 @@ import { slotSourceLine } from './source-line';
 export const UPGRADES_SHOWN = 3;
 /** How many of the character's own logs the rail lists (ruling H7). */
 export const LOGS_SHOWN = 3;
-/** An addon export older than this warns in Set up: the upgrades are read from it (ruling H7). */
-export const STALE_EXPORT_DAYS = 7;
-const DAY_MS = 24 * 60 * 60 * 1000;
 const MAX_LEVEL = 60;
 const BAND_SPAN = 9;
 
@@ -38,7 +36,10 @@ export const homeCopy = {
       title: 'Sign in with Battle.net',
       sub: 'Imports your characters with their level, gear and item level.',
     },
-    { title: 'Install the addon', sub: "Rates every item in your bags with your spec's weights." },
+    {
+      title: ctaCopy.installAddonAndCompanion,
+      sub: 'The addon rates every item in your bags; the companion uploads your logs as you play.',
+    },
   ],
   firstRaids: (date: string) => `First raids ${date}`,
   answerLabel: (band: string) => `Upgrades at ${band}`,
@@ -71,12 +72,14 @@ export const homeCopy = {
   setUp: 'Set up',
   bnet: 'Battle.net import',
   bnetDone: (date: string) => `Imported ${date}`,
-  bnetNone: 'Not imported yet',
   addon: 'Addon export',
   addonDone: (date: string) => `Exported ${date}`,
-  addonStale: (date: string) => `Exported ${date}. Your upgrades are read from it.`,
-  addonNone: 'No export yet. Your upgrades are read from it.',
-  addonFix: 'Get the addon',
+  noGear: 'No gear yet',
+  noGearSub: 'Sign in with Battle.net again to import your characters, or paste an addon export.',
+  noGearFix: 'Get set up',
+  addonOptional: 'Addon and companion (optional)',
+  addonOptionalSub: 'Rates every item in your bags with your weights, and uploads your logs as you play.',
+  addonOptionalLink: ctaCopy.getAddonAndCompanion,
   noCharacter: 'No character yet. Battle.net lists a character after you play it and log out.',
   signedInAs: (tag: string) => `Signed in as ${tag}`,
   getIn: 'Get your character in',
@@ -84,8 +87,8 @@ export const homeCopy = {
   checkAgainSub: 'Battle.net lists a character after you play it and log out.',
   paste: 'Paste an addon export',
   pasteSub: 'Your gear and talents, straight from the game.',
-  getAddon: 'Get the addon',
-  getAddonSub: "Rates every item in your bags with your spec's weights.",
+  getAddon: ctaCopy.getAddonAndCompanion,
+  getAddonSub: 'The addon rates every item in your bags; the companion uploads your logs as you play.',
   openRaid: 'Open the raid',
   openPlanner: 'Open the planner',
 } as const;
@@ -120,7 +123,11 @@ export function shortDate(iso: string, locale = 'en-GB'): string {
 /** The head's one fact line: level, spec and class; faction and race; item level. Unknown facts
  *  are left out, never a placeholder. */
 export function metaFacts(character: MeCharacter): string[] {
-  const who = [character.spec, character.class].filter(Boolean).join(' ');
+  // The API may send the class in lower case ("hunter"); the page names it as a title.
+  const who = [character.spec, character.class]
+    .filter(Boolean)
+    .map((part) => titleCase(part ?? ''))
+    .join(' ');
   const level = character.level === undefined ? who : `Level ${character.level} ${who}`.trim();
   const faction = character.faction === undefined ? '' : capitalise(character.faction);
   const origin = [faction, character.race ?? ''].filter(Boolean).join(' ');
@@ -246,40 +253,59 @@ export interface SetUpCheck {
   fix: HomeLink | null;
 }
 
-/** Set up (ruling H7): the Battle.net import and the addon export, with their age. */
-export function setUpChecks(me: Me, character: MeCharacter, now: Date = new Date()): SetUpCheck[] {
+export interface SetUpView {
+  /** The gear source rows: the Battle.net import (the primary source), else the addon export,
+   *  else one warning that there is no gear at all. */
+  checks: SetUpCheck[];
+  /** The addon offered as an optional extra (no status): shown whenever it is not the gear source. */
+  addonOptional: boolean;
+}
+
+/** Set up (ruling H7, owner correction 2026-11-06): Battle.net is the primary source of
+ *  characters and gear; the addon is optional. Only no gear source at all warns. */
+export function setUpView(me: Me, character: MeCharacter): SetUpView {
   const imported = me.bnet_imported_at;
-  const bnet: SetUpCheck = {
-    key: 'bnet',
-    tone: imported === undefined ? 'warn' : 'ok',
-    title: homeCopy.bnet,
-    sub: imported === undefined ? homeCopy.bnetNone : homeCopy.bnetDone(shortDate(imported)),
-    fix: null,
-  };
-  const build = character.build;
-  const captured = build?.source === 'addon' ? build.captured_at : undefined;
-  const fix = { label: homeCopy.addonFix, href: homeHrefs.addon };
-  let addon: SetUpCheck;
-  if (captured === undefined) {
-    addon = { key: 'addon', tone: 'warn', title: homeCopy.addon, sub: homeCopy.addonNone, fix };
-  } else if (now.getTime() - new Date(captured).getTime() > STALE_EXPORT_DAYS * DAY_MS) {
-    addon = {
-      key: 'addon',
-      tone: 'warn',
-      title: homeCopy.addon,
-      sub: homeCopy.addonStale(shortDate(captured)),
-      fix,
-    };
-  } else {
-    addon = {
-      key: 'addon',
-      tone: 'ok',
-      title: homeCopy.addon,
-      sub: homeCopy.addonDone(shortDate(captured)),
-      fix: null,
+  if (imported !== undefined) {
+    return {
+      checks: [
+        {
+          key: 'bnet',
+          tone: 'ok',
+          title: homeCopy.bnet,
+          sub: homeCopy.bnetDone(shortDate(imported)),
+          fix: null,
+        },
+      ],
+      addonOptional: true,
     };
   }
-  return [bnet, addon];
+  const build = character.build;
+  if (build?.source === 'addon' && build.gear !== undefined) {
+    return {
+      checks: [
+        {
+          key: 'addon',
+          tone: 'ok',
+          title: homeCopy.addon,
+          sub: homeCopy.addonDone(shortDate(build.captured_at)),
+          fix: null,
+        },
+      ],
+      addonOptional: false,
+    };
+  }
+  return {
+    checks: [
+      {
+        key: 'none',
+        tone: 'warn',
+        title: homeCopy.noGear,
+        sub: homeCopy.noGearSub,
+        fix: { label: homeCopy.noGearFix, href: homeHrefs.addon },
+      },
+    ],
+    addonOptional: false,
+  };
 }
 
 /** The character's guild page and the raid page, from the account's guild entry. */
@@ -292,6 +318,10 @@ export function guildLinks(
   if (entry === undefined) return { guild: null, raid: null };
   const guild = guildHref(entry.region, entry.ruleset, entry.name);
   return { guild, raid: raidId === null ? guild : guildRaidHref(guild, raidId) };
+}
+
+function titleCase(words: string): string {
+  return words.split(' ').map(capitalise).join(' ');
 }
 
 function capitalise(word: string): string {

@@ -70,7 +70,7 @@ export const ratingCopy = {
   noMatchingRow: 'This player has no rating for this fight.',
   /** Spec §1.2's two exact basis sentences. */
   percentileBasis: (spec: string, klass: string, role: string, pct: number, n: number): string =>
-    `Compared with other ${spec} ${roleNoun(klass, role)}s on this fight (${n} logs).`,
+    `Compared with other ${spec} ${roleNoun(klass, role)} on this fight (${n} logs).`,
   absoluteBasis: 'Measured against the encounter’s own numbers — not enough logs yet to compare players.',
   /** Spec §7.4's fixed excluded-reason strings, by the `reason` code the API returns. */
   excludedReason: (componentLabel: string, reason: string): string => {

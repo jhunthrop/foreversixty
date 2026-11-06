@@ -12,6 +12,8 @@
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { formatDuration, formatPercent, schoolName, schoolToken } from '../../lib/report/format';
+  import activeBuild from '../../data/active-build.json';
+  import { loadSharedSpellNames, nameAuras, type SpellNames } from '../../lib/report/aura-names';
   import type { AuraTrack } from '../../lib/report/types';
   import type { AuraColumn } from '../../lib/sim/aura-card';
   import type { CardTables } from '../../lib/sim/card-tables.svelte';
@@ -78,8 +80,17 @@
       .sort((a, b) => b.pct - a.pct);
   });
 
+  /** The build's spell names, for auras the log never named (B2); empty until read. */
+  let spellNames = $state<SpellNames>({});
+  $effect(() => {
+    if (variant !== 'table') return;
+    void loadSharedSpellNames(activeBuild.build).then((names) => {
+      spellNames = names;
+    });
+  });
+
   const rows = $derived(
-    tracks
+    nameAuras(tracks, spellNames)
       .filter((track) => track.type === kind)
       .sort((a, b) => shareOf(b) - shareOf(a) || a.name.localeCompare(b.name)),
   );

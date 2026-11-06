@@ -15,11 +15,12 @@ import {
   CHARACTER_URL,
   GEAR,
   GEAR_ITEMS,
+  routeCharacterSearch,
   routeGearIcons,
 } from './support/character-fixture';
+import { expectFixtureNotFound } from './support/character-not-found';
 import { SAMPLE_REPORT_META, routeSampleReportMeta } from './support/logs-sample-fixture';
 import { fieldBox } from './support/select';
-import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 const SHOTS = process.env.P1_SHOTS;
 const SIZES = [
@@ -78,15 +79,13 @@ for (const size of SIZES) {
       );
       await page.goto(CHARACTER_PATH);
       await page.waitForLoadState('networkidle');
-      await expect(page.getByTestId('character-realm')).toHaveText('Doomhowl');
-      await expect(page.getByTestId('character-ruleset-chip')).toHaveText('Hardcore US');
-      expect(await page.getByTestId('character-descriptor').innerText()).not.toMatch(/Beta/);
+      await expect(page.getByTestId('character-fact-realm')).toHaveText('Doomhowl');
+      await expect(page.getByTestId('character-fact-chip')).toHaveText('Hardcore US');
+      expect(await page.getByTestId('character-head').innerText()).not.toMatch(/Beta/);
       await shot(page, `character-realm-${size.name}`);
     });
 
-    test('a character with nothing on it, seen by a visitor: one sentence, the lookup and one quiet link', async ({
-      page,
-    }) => {
+    test('a character with nothing on it, seen by a visitor: the not-found page', async ({ page }) => {
       await signedOut(page);
       const data = {
         ...CHARACTER.data,
@@ -103,17 +102,10 @@ for (const size of SIZES) {
           body: JSON.stringify({ ...CHARACTER, data }),
         }),
       );
+      await routeCharacterSearch(page);
       await page.goto(CHARACTER_PATH);
       await page.waitForLoadState('networkidle');
-      await expect(page.getByTestId('character-not-found-line')).toHaveText(
-        'Elyra Duskvale is here, with no gear, talents or logs yet.',
-      );
-      await expect(page.getByTestId('character-not-found-form')).toBeVisible();
-      await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveText(
-        ctaCopy.getAddonAndCompanion,
-      );
-      await expect(page.getByTestId('forever-score-empty')).toHaveCount(0);
-      await expect(page.getByTestId('character-in-game')).toHaveCount(0);
+      await expectFixtureNotFound(page, { signedIn: false });
       await shot(page, `character-no-data-${size.name}`);
     });
 

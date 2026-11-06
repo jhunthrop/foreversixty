@@ -140,7 +140,7 @@ describe('the floors', () => {
   });
 
   it('hold no coach line in the left floor: the empty Characters panel draws none', () => {
-    expect(LEFT_FLOOR).toEqual({ lg: 355, stack: 500 });
+    expect(LEFT_FLOOR).toEqual({ lg: 355, stack: 475 });
   });
 
   it('take the taller column at lg and stack the two below it', () => {

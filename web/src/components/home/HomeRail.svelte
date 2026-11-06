@@ -1,10 +1,11 @@
 <!-- web/src/components/home/HomeRail.svelte -->
 <!-- The signed-in home's rail (home spec 2026-11-06 H7): Guild when the character is in one, the
-     character's own logs, and Set up (the Battle.net import and the addon export with their age).
+     character's own logs, and Set up (the gear source, Battle.net first; the addon is an optional extra).
      Open Sections of open Rows, no surface. -->
 <script lang="ts">
   import type { Me, MeCharacter, MyReport } from '../../lib/account/api';
-  import { homeCopy, homeHrefs, logSub, setUpChecks } from '../../lib/home/home-view';
+  import { homeCopy, homeHrefs, logSub, setUpView } from '../../lib/home/home-view';
+  import { LINK } from '../../lib/ui/primitives';
   import Checklist from '../ui/Checklist.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
@@ -14,14 +15,14 @@
     character,
     logs,
     guildHref,
-    now,
   }: {
     me: Me;
     character: MeCharacter;
     logs: readonly MyReport[];
     guildHref: string | null;
-    now: Date;
   } = $props();
+
+  const setUp = $derived(setUpView(me, character));
 
   const guild = $derived(character.guild);
   const guildSub = $derived.by(() => {
@@ -48,5 +49,10 @@
   {/if}
 </Section>
 <Section title={homeCopy.setUp} testid="home-set-up">
-  <Checklist items={setUpChecks(me, character, now)} testid="home-set-up-list" />
+  <Checklist items={setUp.checks} testid="home-set-up-list" />
+  {#if setUp.addonOptional}
+    <Row title={homeCopy.addonOptional} sub={homeCopy.addonOptionalSub} open testid="home-addon-optional">
+      {#snippet foot()}<a class={LINK} href={homeHrefs.addon}>{homeCopy.addonOptionalLink} ›</a>{/snippet}
+    </Row>
+  {/if}
 </Section>

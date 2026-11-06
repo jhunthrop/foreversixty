@@ -14,7 +14,7 @@ describe('FeedRow', () => {
         note: 'Four zones.',
       },
     });
-    expect(html).toContain('Sept 12');
+    expect(html).toContain('12 Sept');
     expect(html).toContain('pill-blizzard');
     expect(html).toContain('href="/changelog#a"');
     expect(html).toContain('Four zones.');

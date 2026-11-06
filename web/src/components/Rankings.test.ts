@@ -1,35 +1,55 @@
 // web/src/components/Rankings.test.ts
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { rankingsEmptyCopy } from '../lib/rankings/copy';
+import { rankingsCopy, rankingsEmptyCopy } from '../lib/rankings/copy';
 import Rankings from './Rankings.svelte';
 
 describe('Rankings', () => {
-  it('renders the band, then the shared character header, and no spine bar or pill', () => {
+  it('a board is the PageHeader, then the ControlBar; no shared band, spine bar or pill', () => {
     const { body } = render(Rankings, { props: { slug: 'ragnaros' } });
-    const bandIndex = body.indexOf('data-testid="rankings-band"');
-    const headerIndex = body.indexOf('data-testid="character-header');
-    expect(bandIndex).toBeGreaterThan(-1);
-    expect(headerIndex).toBeGreaterThan(bandIndex);
+    const titleIndex = body.indexOf('data-testid="page-title"');
+    const barIndex = body.indexOf('data-testid="rankings-filters"');
+    expect(titleIndex).toBeGreaterThan(-1);
+    expect(barIndex).toBeGreaterThan(titleIndex);
+    expect(body).toContain('aria-label="Ranking choices"');
+    expect(body).not.toContain('data-testid="rankings-band"');
+    expect(body).not.toContain('data-testid="character-header');
     expect(body).not.toContain('current-character-bar');
     expect(body).not.toMatch(/class="[^"]*\bpill\b/);
   });
 
+  it('titles a board with its encounter, and the index with Rankings and the encounter list', () => {
+    const board = render(Rankings, { props: { slug: 'ragnaros' } }).body;
+    expect(board).toMatch(/data-testid="page-title"[^>]*>Ragnaros<\/h1>/);
+    const index = render(Rankings, { props: {} }).body;
+    expect(index).toMatch(/data-testid="page-title"[^>]*>Rankings<\/h1>/);
+    expect(index).toContain(rankingsCopy.jobSignedOut);
+    expect(index).toContain('Choose an encounter');
+    // The index has no bar: it is a list of boards, not a board.
+    expect(index).not.toContain('data-testid="rankings-filters"');
+  });
+
   it('prints one Updated stamp at most, and names no sign-in control of its own', () => {
     const { body } = render(Rankings, { props: { slug: 'ragnaros' } });
-    expect(body.match(/Updated /g) ?? []).toHaveLength(0);
+    // One stamp, held invisible at its width until the board answers (no shift when it does).
+    expect(body.match(/Updated /g) ?? []).toHaveLength(1);
+    expect(body).toMatch(/data-testid="rankings-updated" class="invisible"/);
     expect(body).not.toMatch(/Sign in with/i);
   });
 
-  it('heads the page with Rankings and points at the tier list', () => {
-    const { body } = render(Rankings, { props: {} });
-    expect(body).toContain('>Rankings</h1>');
-    expect(body).toContain('href="/tiers"');
+  it('points at the tier list, and closes with the rank colour legend from gold 100', () => {
+    for (const props of [{}, { slug: 'ragnaros' }]) {
+      const { body } = render(Rankings, { props });
+      expect(body).toContain('href="/tiers"');
+      expect(body).toContain(rankingsCopy.tierQuestion);
+      expect(body).toContain('data-testid="rankings-legend"');
+      expect(body).toMatch(/color: var\(--color-parse-gold\);?">100<\/b>/);
+    }
   });
 });
 
 describe('Rankings empty state copy', () => {
-  it('the empty-result copy names what fills it and offers one action, through EmptyState', () => {
+  it('the empty-result copy names what fills it and offers one action', () => {
     // svelte/server never runs $effect, so the fetch never fires and the board never reaches
     // its loaded-empty state here -- this pins the copy module's own contract instead: the
     // exact string and action this component will render once `status === 'ready'` and the

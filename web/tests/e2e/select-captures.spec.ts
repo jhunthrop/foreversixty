@@ -51,10 +51,10 @@ for (const width of [1024, 1440, 2000, 390] as const) {
     });
 
     test(`rankings ${width}`, async ({ page }) => {
-      await page.goto('/rankings');
+      await page.goto('/rankings/warden-kelthas');
       await page.getByTestId('rankings-filters').waitFor();
-      if (phone) await page.getByTestId('rankings-filters-toggle').click();
-      else await open(page, 'filter-class', phone);
+      if (phone) await page.getByTestId('rankings-filters').locator('[data-control-bar-toggle]').click();
+      else await open(page, 'control-class', phone);
       await shot(page, 'rankings', width);
     });
 

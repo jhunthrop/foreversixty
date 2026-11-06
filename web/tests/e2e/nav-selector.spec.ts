@@ -354,7 +354,9 @@ test.describe('choosing a character', () => {
     expect(stored.pointer.label).toBe('Frostbyte · Frost Mage');
     expect(stored.order).toEqual([keyOf(FROSTBYTE)]);
     expect(stored.cls).toBe('mage');
-    await expect(page.getByTestId('character-header-name')).toHaveText('Frostbyte');
+    // /rankings has no character band any more (logs spec 2026-11-07, decision L2's rankings
+    // twin); with the encounter list unreachable here it stays the index, unreloaded (__kept).
+    await expect(page.locator('main h1')).toHaveText('Rankings');
     await page.goto('/tiers');
     await ready(page);
     await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');

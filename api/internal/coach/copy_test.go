@@ -21,10 +21,11 @@ func TestSpecVerbatimCopyIsInTheSpec(t *testing.T) {
 
 func TestSpecVerbatimFillsTheSpecsFilledForms(t *testing.T) {
 	cases := map[string]string{
-		"BasisTop":       "Top 25 Fury warriors on Onyxia (40): ",
+		"BasisTop":       "Top 25 Fury Warriors on Onyxia (40): ",
 		"TitleCoreCasts": "Bloodthirst: 9 casts lost",
+		"TitleCapped":    "Rage full for 14 seconds in total",
 		"TitleHealRank":  "Greater Heal (Rank 4): 44% overheal",
-		"SharedDebuff":   "Your share of Sunder Armor: 3 warriors applied it, and the log merges them.",
+		"SharedDebuff":   "Your share of Sunder Armor: 3 Warriors applied it, and the log merges them.",
 		"ThinPool":       ThinPool, // the spec shows only the template
 		"BasisSimLabel":  BasisSimLabel,
 	}

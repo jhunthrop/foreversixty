@@ -49,18 +49,10 @@
     alt=""
     loading="lazy"
     decoding="async"
-    class={`${XL_BOX} xl-crest bg-raised shrink-0 rounded-full object-cover`}
+    class={`${XL_BOX} bg-raised shrink-0 rounded-full object-cover shadow-[0_0_0_2px_color-mix(in_srgb,var(--c)_55%,transparent)]`}
     style={`--c: ${classColorVar(character.class)};`}
     data-testid={`${testid}-avatar`}
   />
 {:else}
   <ClassCrestRing characterClass={character.class} size={SIZE_PX[size]} testid={`${testid}-avatar`} />
 {/if}
-
-<style>
-  /* ClassCrest.astro's exact ring (home spec §6); the hero portrait sits in an <h1>, never
-     inside an anchor, so it has no hover state. */
-  .xl-crest {
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
-  }
-</style>

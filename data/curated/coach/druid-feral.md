@@ -44,14 +44,14 @@ This is the best Feral Druid on Forever. The cat opens with Ravage, keeps Rip on
 
 ## Drills
 
-- drill.core_casts: On a dummy, press the first button of the priority list the moment it is ready, before any filler. Read the list top to bottom and check it again after every cooldown.
+- drill.core_casts: On trash pulls, press the first button of the priority list the moment it is ready, before any filler. Read the list top to bottom and check it again after every cooldown.
 - drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each when its line says, never earlier, and again the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
-- drill.resource: Watch the energy bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
+- drill.resource: Watch the energy bar on trash pulls. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for.
 - drill.preparation: Before every boss, check a flask from fifty-five, food from thirty-five, a weapon enchant from fifty and a combat potion from twenty-five on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
-- drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
+- drill.adherence: On trash pulls, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
 ## Voice
 

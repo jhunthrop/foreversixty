@@ -52,7 +52,7 @@ const (
 
 	TitleCoreCasts     = "{Spell}: {n} casts lost"
 	TitleNoFlask       = "No flask at the pull"
-	TitleCapped        = "{Resource} full for {n} seconds"
+	TitleCapped        = "{Resource} full for {n} seconds in total"
 	TitleDiedTo        = "Died at {t} to {Spell}"
 	TitleDiedWithReady = "Died at {t} with {Spell} ready"
 	TitleOutOfMana     = "Out of mana from {t}"
@@ -274,12 +274,12 @@ var verbatim = map[string]verbatimEntry{
 	"CannotTalents":        {CannotTalents, nil},
 	"CannotRange":          {CannotRange, nil},
 	"CoreNoCost":           {CoreNoCost, nil},
-	"SharedDebuff":         {SharedDebuff, map[string]string{"Aura": "Sunder Armor", "n": "3", "classPlural": "warriors"}},
+	"SharedDebuff":         {SharedDebuff, map[string]string{"Aura": "Sunder Armor", "n": "3", "classPlural": "Warriors"}},
 	"FoodIncomplete":       {FoodIncomplete, nil},
 	"NoSheet":              {NoSheet, nil},
 	"ThinPool":             {ThinPool, nil},
-	"BasisTop":             {BasisTop, map[string]string{"n": "25", "Spec": "Fury", "classPlural": "warriors", "Boss": "Onyxia", "size": "40"}},
-	"BasisTopHere":         {BasisTopHere, map[string]string{"n": "25", "Spec": "Fury", "classPlural": "warriors"}},
+	"BasisTop":             {BasisTop, map[string]string{"n": "25", "Spec": "Fury", "classPlural": "Warriors", "Boss": "Onyxia", "size": "40"}},
+	"BasisTopHere":         {BasisTopHere, map[string]string{"n": "25", "Spec": "Fury", "classPlural": "Warriors"}},
 	"BasisSimLabel":        {BasisSimLabel, nil},
 	"BasisCooldown":        {BasisCooldown, map[string]string{"Spell": "Bloodthirst", "n": "6", "resource": "rage"}},
 	"BasisPerMin":          {BasisPerMin, map[string]string{"ref": "9.1", "you": "8.0"}},

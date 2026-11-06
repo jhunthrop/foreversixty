@@ -7,8 +7,8 @@ import { join } from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from './support/character-fixture';
+import { expectFixtureNotFound } from './support/character-not-found';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
-import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 const SHOTS = process.env.W8_SHOTS ?? 'test-results/w8';
 const SIZES = [
@@ -90,7 +90,8 @@ for (const size of SIZES) {
       const named = feed.getByTestId('report-row').first();
       await expect(named).toContainText('Blackrock Depths');
       // The credited character is the title; the zone leads the muted line under it (W.9).
-      await expect(named.getByRole('link', { name: 'Bow Jackzon' })).toBeVisible();
+      await expect(named).toHaveAttribute('href', /^\/reports\//);
+      await expect(named).toContainText('Bow Jackzon');
       await expect(named.getByTestId('report-row-summary')).toHaveText(
         'Blackrock Depths · 3 bosses · 14 fights',
       );
@@ -105,20 +106,16 @@ test('an unknown character says so, with the lookup and the addon line', async (
   mkdirSync(SHOTS, { recursive: true });
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
   await page.route(CHARACTER_URL, (route) => route.fulfill(fulfil(null, 404)));
-  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(fulfil(null, 404)));
   await routeCharacterSearch(page);
-  // Only the fixture character's address is prerendered in the preview build; the sentence's own
-  // name, ruleset and region are pinned in CharacterNotFound.test.ts ("Nobody Here" on "PvP US").
+  // Only the fixture character's address is prerendered in the preview build; the line's own
+  // name, region and ruleset are pinned in page-view's unit test.
   await page.goto(CHARACTER_PATH);
-  await expect(page.getByTestId('character-not-found-line')).toHaveText(
-    'No character called Elyra Duskvale on Hardcore US yet.',
-  );
-  await expect(page.getByTestId('character-not-found-form')).toBeVisible();
-  await expect(page.getByTestId('character-not-found-next')).toContainText(
-    `Your character? ${ctaCopy.getAddonAndCompanion}`,
-  );
-  await expect(page).toHaveTitle('Character not found');
+  await expectFixtureNotFound(page, { signedIn: false });
+  await expect(page.getByTestId('character-elsewhere')).toHaveCount(0);
   await page.screenshot({ path: join(SHOTS, 'w8-character-not-found.png'), fullPage: true });
+  // C10: Look up takes the name to the lookup page.
+  await page.getByTestId('character-lookup').getByRole('button', { name: 'Look up' }).click();
+  await expect(page).toHaveURL(/\/characters\?q=Elyra%20Duskvale#lookup$/);
 });
 
 test('the planner opens a visitor on the level-60 build, never a "range" line', async ({ page }) => {

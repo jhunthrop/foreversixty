@@ -16,7 +16,7 @@ test('typing a name and submitting lands on the character’s profile', async ({
   await search.getByRole('combobox', { name: 'Character name' }).press('Enter');
 
   await expect(page).toHaveURL(new RegExp(`${CHARACTER_PATH}$`));
-  await expect(page.getByTestId('character-name')).toContainText('Elyra Duskvale');
+  await expect(page.getByTestId('character-head').getByTestId('page-title')).toHaveText('Elyra Duskvale');
 });
 
 test('"Look up another character" lands on the lookup page with the name filled in', async ({ page }) => {

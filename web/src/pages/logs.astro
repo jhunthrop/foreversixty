@@ -1,43 +1,20 @@
 ---
 // web/src/pages/logs.astro
-// The logs landing (design/specs/2026-10-11-logs.md): one job, "upload a log, or open one, and
-// read it". The page head names the page (eyebrow, h1, one job line, no stamp); under it the
-// shared character header (the latest kill, the newest report, the Upload action; signed out its
-// one shared line) and two columns split by verb, reading on the left and ways in on the right.
-// Everything below the band is one island, `LogsLanding`, because the header's action, the order
-// of the ways in and the signed-in panels all follow one session read.
+// The logs landing (design/specs/2026-11-07-logs-reports.md section 4): one job, "upload a log,
+// or open one, and read it". The whole page is one island (components/logs/LogsPage.svelte),
+// because its head's answer, its one Plate and its rail all follow one session read and one
+// list read; the server markup is the signed-out page.
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/ui/PageHead.astro';
-import LogsLanding from '../components/logs/LogsLanding.svelte';
-import { logsBandCopy } from '../lib/reports/copy';
+import LogsPage from '../components/logs/LogsPage.svelte';
 ---
 
 <Base
   title="Logs"
   description="Upload a World of Warcraft: Forever combat log, or log live with the Forever Sixty companion."
   path="/logs"
+  wide
 >
-  <main id="main" tabindex="-1" class="logs-page" data-testid="logs-page">
-    <div class="px-[var(--page-inset)] pt-4 md:pt-7">
-      <PageHead eyebrow={logsBandCopy.eyebrow} title={logsBandCopy.h1} job={logsBandCopy.jobLine} />
-    </div>
-
-    <div class="body">
-      <LogsLanding client:load />
-    </div>
+  <main id="main" tabindex="-1" class="flex w-full flex-col" data-testid="logs-page">
+    <LogsPage client:load />
   </main>
 </Base>
-
-<style>
-  .logs-page {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-  .body {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    padding: 12px var(--page-inset) 40px;
-  }
-</style>

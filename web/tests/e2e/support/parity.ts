@@ -13,7 +13,7 @@
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { Browser, Page } from '@playwright/test';
+import { expect, type Browser, type Page } from '@playwright/test';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 export const REPO_ROOT = path.resolve(WEB_ROOT, '..');
@@ -93,7 +93,19 @@ export async function prepareParityPage(page: Page): Promise<void> {
 }
 
 /** After the page is ready: animations frozen, fonts loaded, scrolled to the top. */
+/**
+ * The site header as a reader sees it once the page has loaded: its one island (the character
+ * selector, `client:idle-after-load`) hydrated, so the pre-rendered chip has given way to the
+ * live control. Astro removes an island's `ssr` attribute when it mounts. A mock's header is the
+ * capture of that hydrated state (chrome-capture.spec.ts waits here too) and has no `ssr` island,
+ * so the wait is immediate there; on the build it closes the race the comparison used to run.
+ */
+export async function waitForChromeHydrated(page: Page): Promise<void> {
+  await expect(page.locator('[data-site-header] astro-island[ssr]')).toHaveCount(0, { timeout: 15_000 });
+}
+
 export async function settleParityPage(page: Page): Promise<void> {
+  await waitForChromeHydrated(page);
   await page.addStyleTag({ content: FREEZE_CSS });
   await page.evaluate(async () => {
     await document.fonts.ready;

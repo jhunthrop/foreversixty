@@ -20,9 +20,9 @@ func TestComparison_Order(t *testing.T) {
 		wantThin   string
 	}{
 		{name: "a pool of 25 is top logs", refs: poolCPM("Bloodthirst", 9.1, 25), simAllowed: true,
-			wantRef: 9.1, wantKind: BasisTopLogs, wantLabel: "Top 25 Fury warriors on Onyxia (40): ", wantN: 25},
+			wantRef: 9.1, wantKind: BasisTopLogs, wantLabel: "Top 25 Fury Warriors on Onyxia (40): ", wantN: 25},
 		{name: "a pool and a sim: the pool wins", refs: withSim(poolCPM("Bloodthirst", 9.1, 30)), simAllowed: true,
-			wantRef: 9.1, wantKind: BasisTopLogs, wantLabel: "Top 25 Fury warriors on Onyxia (40): ", wantN: 25},
+			wantRef: 9.1, wantKind: BasisTopLogs, wantLabel: "Top 25 Fury Warriors on Onyxia (40): ", wantN: 25},
 		{name: "no pool, a validated sim, allowed", refs: withSim(noPool(7)), simAllowed: true,
 			wantRef: 10.2, wantKind: BasisSim, wantLabel: "The written Fury rotation, simulated at level 60: "},
 		{name: "no pool, sim not allowed", refs: withSim(noPool(7)), simAllowed: false,

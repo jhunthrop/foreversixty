@@ -18,14 +18,14 @@ The priority, in words: Bloodthirst first, then Whirlwind, then Heroic Strike wi
 
 ## Drills
 
-- drill.core_casts: On a target dummy, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.
+- drill.core_casts: On trash pulls, press Bloodthirst the moment it comes off cooldown, before anything else; Whirlwind and Heroic Strike wait their turn.
 - drill.uptime: Put Battle Shout where you can see its timer. Recast it with 10 seconds left, and recast it the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and swing the moment you arrive. Practise on trash: the first button after a reposition is Bloodthirst, not a walk to the side.
-- drill.resource: Watch the rage bar on a dummy. At 40 or more spare with Bloodthirst cooling down, queue Heroic Strike; at the cap, it should already be queued.
+- drill.resource: Watch the rage bar on trash pulls. At 40 or more spare with Bloodthirst cooling down, queue Heroic Strike; at the cap, it should already be queued.
 - drill.ranks: Visit your trainer every time you level and read your spellbook after: Bloodthirst, Whirlwind, Execute, Heroic Strike and Battle Shout should all show their top rank.
 - drill.preparation: Before every boss, check four things: flask, food buff, sharpening stone on both weapons, a Mighty Rage Potion on your bars. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot behind the boss, out of its cleave. With Death Wish running, keep a healing potion on a key you can reach without looking.
-- drill.adherence: On a dummy, play only Bloodrage, Death Wish, Battle Shout, Execute, Bloodthirst, Whirlwind and Heroic Strike for three minutes. Anything else on your bars waits.
+- drill.adherence: On trash pulls, play only Bloodrage, Death Wish, Battle Shout, Execute, Bloodthirst, Whirlwind and Heroic Strike for three minutes. Anything else on your bars waits.
 
 ## Voice
 

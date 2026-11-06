@@ -14,6 +14,8 @@
 
   let {
     rank = '',
+    rankColor,
+    label,
     name,
     href,
     classSlug,
@@ -33,6 +35,10 @@
   }: {
     /** "3", "=2", or empty on a list that claims no order. */
     rank?: string;
+    /** The rank's own colour (a log ranking's percentile on the parse scale); muted without. */
+    rankColor?: string;
+    /** The row's accessible name when it stands apart (a pinned "Your best kill"). */
+    label?: string;
     name: string;
     href: string;
     /** The name's and the bar's colour; without one both are the strong text and gold. */
@@ -72,8 +78,13 @@
     title={item.best ? item.bestTitle : undefined}
     ><span class="ui-rr-fig-label" aria-hidden="true">{item.label}</span><span class="sr-only"
       >{`${item.label}: `}</span
-    ><span class="ui-rr-fig-value" data-testid={item.testid}>{item.value}</span><small>{item.unit}</small
-    ></span
+    >{#if item.href}<a
+        class="ui-rr-fig-value ui-rr-fig-link"
+        href={item.href}
+        title={item.title}
+        data-testid={item.testid}>{item.value}</a
+      >{:else}<span class="ui-rr-fig-value" title={item.title} data-testid={item.testid}>{item.value}</span
+      >{/if}<small>{item.unit}</small></span
   >
 {/snippet}
 
@@ -81,10 +92,11 @@
   class="ui-rank-row ui-rank-cols"
   style:--rr-tone={tone}
   aria-current={selected ? 'true' : undefined}
+  aria-label={label}
   data-rank-key={key}
   data-testid={testid}
 >
-  <span class="ui-rr-rank" data-testid="rank-rank">{rank}</span>
+  <span class="ui-rr-rank" style:color={rankColor} data-testid="rank-rank">{rank}</span>
   <span class="ui-rr-lead"
     >{#if lead}{@render lead()}{/if}</span
   >

@@ -4,6 +4,7 @@
 // the API did not send is left out rather than guessed; the list endpoint does not carry the
 // length yet, so it prints when it does.
 import { bossCountLabel } from '../boss-count';
+import { formatDayMonthYear } from '../dates';
 import { reportCredit } from '../report/credit';
 
 const MS_PER_MINUTE = 60_000;
@@ -129,10 +130,17 @@ export function publicReportRow(facts: PublicRowFacts): { title: string; summary
   };
 }
 
-/** The row's badge: "Live" while the log is still being written, "Processing" while it is read. Nothing once complete. */
+/** The statuses a row names: a report still being written, read or sent. A finished one
+ *  ("complete", "ready") carries no Tag (logs spec 2026-11-07 MUST 4). */
+const UNFINISHED_STATUS: Readonly<Record<string, string>> = {
+  live: 'Live',
+  processing: 'Processing',
+  uploading: 'Uploading',
+};
+
+/** The row's Tag: "Live" while the log is still being written, "Processing" while it is read. Nothing once finished. */
 export function reportStatusLabel(status: string): string {
-  if (status === '' || status === 'complete') return '';
-  return status.charAt(0).toUpperCase() + status.slice(1);
+  return UNFINISHED_STATUS[status] ?? '';
 }
 
 export const NOT_CREDITED_LABEL = 'Not credited';
@@ -146,3 +154,37 @@ export function creditedName(
   const credit = reportCredit({ logging_character: loggingCharacter });
   return credit.credited ? credit.name : null;
 }
+
+export interface OwnReportRowFacts {
+  title: string;
+  zone: string;
+  /** When the night began (its first pull), else the upload. */
+  startedAt: string;
+  fightCount: number;
+  killCount: number;
+  bossCount?: number;
+  loggingCharacter?: string | { key?: string; name?: string } | null;
+}
+
+/**
+ * A report row in "Your reports" (logs spec 2026-11-07 section 5): the title falls back to the
+ * zone, then to the night it logged ("Report, 17 Sep 2026"; production's first report had
+ * neither); the line under it is the zone when known, the bosses, the fights and who it is
+ * credited to.
+ */
+export function ownReportRow(facts: OwnReportRowFacts): { title: string; sub: string } {
+  const zone = facts.zone.trim();
+  const night = formatDayMonthYear(new Date(facts.startedAt));
+  const title = facts.title.trim() || zone || (night === '' ? UNTITLED_REPORT : `Report, ${night}`);
+  return {
+    title,
+    sub: join([
+      zone === '' ? undefined : zone,
+      bossCountLabel(facts.bossCount ?? facts.killCount),
+      plural(facts.fightCount, 'fight', 'fights'),
+      creditedName(facts.loggingCharacter) ?? NOT_CREDITED_LABEL,
+    ]),
+  };
+}
+
+const UNTITLED_REPORT = 'Report';

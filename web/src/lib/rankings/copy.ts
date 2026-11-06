@@ -49,6 +49,8 @@ export const rankingsCopy = {
 
   answerLabel: 'Your rank',
   action: 'See your parses →',
+  /** The board's answer link (the arrow is the link's own chevron). */
+  parsesLink: 'See your parses',
   answerFailed: 'Your rank did not load.',
   /** "of 212 Fury Warriors" once the API ranks each character's best kill; "kills" until then. */
   answerUnit: (total: number, cohort: string, deduped: boolean) =>

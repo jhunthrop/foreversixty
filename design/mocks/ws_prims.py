@@ -8,7 +8,7 @@ import re
 from html import escape
 
 from mocklib import emblem
-from ws_lib import CSS as BASE_CSS, page as _page, header as _header, control_bar, seg, sel, crest_img, icon, QCOL, write, REGION, region_slug
+from ws_lib import CSS as BASE_CSS, page as _page, control_bar, seg, sel, crest_img, icon, QCOL, write, REGION, region_slug
 
 PRIM_CSS = '''
 /* ---- Page: one column, four layouts ---- */
@@ -37,6 +37,7 @@ PRIM_CSS = '''
 .row .b{min-width:0}.row .ttl{font:700 15px/20px var(--font-body);color:var(--strong)}
 .row .sub{font-size:13px;line-height:18px;color:var(--muted)}
 .row .trail{display:flex;gap:12px;align-items:center;justify-self:end}
+.row .foot{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding-top:8px}
 a.row:hover,.row.hov{background:var(--hover)}
 .row.cur{background:#e5b9551a;box-shadow:inset 3px 0 0 var(--gold)}
 .row .rank{width:24px;text-align:right;font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
@@ -103,7 +104,7 @@ def Field(label: str, grow: bool = False) -> str:
     return f'<span class="field{" grow" if grow else ""}">{label}</span>'
 
 
-def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False) -> str:
+def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False, foot: str = '') -> str:
     cls = 'row' + ('' if lead or rank else ' nolead') + (' cur' if selected else '')
     tag = 'a' if link else 'div'
     href = ' href="#"' if link else ''
@@ -111,7 +112,8 @@ def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color:
     lead_html = (f'<span class="rank">{rank}</span>' if rank else '') + lead
     lead_cell = f'<span style="display:flex;gap:12px;align-items:center">{lead_html}</span>' if (lead or rank) else ''
     return (f'<{tag} class="{cls}"{href}>{lead_cell}<div class="b"><div class="ttl"{color}>{title}</div>' + (f'<div class="sub">{sub}</div>' if sub else '') + f'</div>'
-            + (f'<div class="trail">{trail}</div>' if trail else '<span></span>') + f'</{tag}>')
+            + (f'<div class="trail">{trail}</div>' if trail else '<span></span>')
+            + (f'<div class="foot">{foot}</div>' if foot else '') + f'</{tag}>')
 
 
 def Rows(rows: list[str], open_: bool = False) -> str:
@@ -262,7 +264,7 @@ PRIM_CSS += '''
 .rg-l .bd{grid-area:bd;font-size:13px;line-height:18px;color:var(--text)}
 .rg-rows{min-width:0}
 .rr{position:relative;align-items:center;min-height:var(--row-h);padding:8px 16px;border-bottom:1px solid var(--line-soft)}
-.rg-rows>.rr:last-child,.rl>.rr:last-child{border-bottom:0}
+.rg-rows>.rr:last-child,.rl>.rr:last-child,.rl>[role=list]>.rr:last-child{border-bottom:0}
 .rr::before{content:"";position:absolute;top:0;bottom:0;left:calc(-1 * var(--grp-w));width:3px;background:transparent;z-index:1}
 .rr:hover,.rr.hov{background:var(--hover)}.rr:hover::before,.rr.hov::before{background:var(--c)}.rr:hover .meter>i,.rr.hov .meter>i{filter:brightness(1.18)}
 .rr.cur{background:#e5b9551a}.rr.cur::before{background:var(--gold)}
@@ -325,7 +327,7 @@ def RankRow(rank: str, crest: str, color: str, name: str, sub: str, frac: float,
     you_html = f'<span class="pill tag you">{you}</span>' if you else ''
     lk = ''.join(f'<a href="#" class="{"p" if p else ""}{" " + state.split(":")[1] if state.startswith("link:") and i == 0 else ""}">{t}</a>' for i, (t, p) in enumerate(links))
     cls = 'rr cols' + (' cur' if selected else '') + (' hov' if state == 'hover' else '')
-    return (f'<div class="{cls}" style="--c:{color}"><span class="rk">{rank}</span><span class="ld">{crest}</span>'
+    return (f'<div class="{cls}" role="listitem" style="--c:{color}"><span class="rk">{rank}</span><span class="ld">{crest}</span>'
             f'<div class="nm"><span class="ttl"><a href="#">{name}</a>{you_html}</span><span class="sub">{sub}</span>{low_html}</div>'
             f'<span class="br">{MeterClass(frac, color)}</span>{first}<span class="x">{extra}</span>'
             f'<span class="gp{" top" if gap_top else ""}">{gap}{tie_html}</span><span class="lk">{lk}</span></div>')
@@ -339,7 +341,8 @@ def RankGroup(letter: str, color: str, band: str, count: str, rows: list[str]) -
 
 def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, links3: bool = False, tank: bool = False) -> str:
     cls = 'rl' + (' grouped' if grouped else '') + (' links3' if links3 else '') + (' tank' if tank else '')
-    return f'<div class="{cls}" style="--n:{n_figs}">{heads}{body}</div>'
+    # the built RankList's semantics: the heads are hidden from assistive tech, the rows an ordered list
+    return f'<div class="{cls}" style="--n:{n_figs}">{heads}<div role="list">{body}</div></div>'
 
 
 # ------------------------------------------------ primitives added by the sim round (2026-11-06; design/specs/2026-11-06-sim.md section 4)
@@ -613,3 +616,131 @@ def ItemRow(name: str, quality: int, icon_html: str, source: str, slot: str = ''
 
 def RowGrid(rows: list[str], cols: int = 3) -> str:
     return f'<div class="rgrid" style="--cols:{cols}">' + ''.join(rows) + '</div>'
+
+
+# ------------------------------------------------ primitives added by the logs round (2026-11-07; design/specs/2026-11-07-logs-reports.md section 3)
+# Additive only. TabStrip gains overflow (`TabStripMore`: the shipped ModeBar "More" menu as a TabStrip mode: the first `md`
+# tabs below 1760, the first `xl` from 1760, the rest behind "More"; the More item names the active tab when it is one of
+# them). `LineChart` is the shipped report TimeChart (and the threat chart) as SVG on S0: a legend list, phase bands, death
+# marks, an x axis; no surface. `Spark` is a 1-line series in a table cell (resources, a cast sequence). `Menu` is the
+# Overlay of kind 'menu' (the fight picker): a panel anchored under its control, grouped rows. `DropZone` is the upload
+# target (dashed socket, the one dashed surface, like the empty doll socket). `Disclosure` is the shipped one (summary +
+# body), used for the phone chart and the death recap.
+PRIM_CSS += '''
+.strip-tabs .tm{display:none}.strip-tabs .more{display:inline-flex;gap:6px}
+@media(max-width:1759px){.strip-tabs a.xmd{display:none}}
+@media(min-width:1760px){.strip-tabs a.xxl{display:none}.strip-tabs .more.nmd{display:none}}
+.strip-tabs .more.cur{color:var(--strong);border-bottom-color:var(--gold)}
+@media(max-width:767px){.strip-tabs a.xmd{display:none}}
+.lc{min-width:0}.lc .lg{display:flex;flex-wrap:wrap;gap:4px 18px;padding:2px 0 8px;font-size:13px;line-height:20px;color:var(--muted)}
+.lc .lg li{display:inline-flex;align-items:center;gap:6px}.lc .lg b{font-weight:600;color:var(--c)}.lc .lg i{display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--c)}
+.lc svg{display:block;width:100%;overflow:visible}.lc .ax{display:flex;justify-content:space-between;font:600 12px/16px var(--font-body);color:var(--muted);font-variant-numeric:tabular-nums;padding-top:4px}
+.spark{display:block;width:100%;height:24px}
+.menu{position:absolute;z-index:40;width:min(480px,calc(100vw - 24px));max-height:70vh;overflow:auto;background:var(--raised);border:1px solid var(--line);border-radius:6px;box-shadow:0 18px 40px #000a}
+.menu .mg{padding:10px 16px 4px;font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.menu .mi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:8px 16px;border-bottom:1px solid var(--line-soft)}
+.menu .mi b{font:700 15px/20px var(--font-body);color:var(--strong)}.menu .mi span{font-size:13px;line-height:18px;color:var(--muted)}
+.menu .mi .r{text-align:right}.menu .mi.cur{background:#e5b9551a;box-shadow:inset 3px 0 0 var(--gold)}.menu .mi:hover{background:var(--hover)}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:168px;padding:20px;border:1px dashed var(--line);border-radius:6px;text-align:center;color:var(--muted);font-size:14px}
+.drop.off{opacity:.55}
+.disc>summary{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;list-style:none;font:600 14px/20px var(--font-body);color:var(--strong)}
+.disc>summary::-webkit-details-marker{display:none}.disc>summary .chg{margin-left:auto;color:var(--gold);font-size:13px}
+.crest.none{display:inline-block;box-shadow:0 0 0 2px var(--line)}
+.st-h .st-sort{all:unset;cursor:pointer}.st-h .st-sort:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.skel{max-width:100%}.ph-title>div{min-width:0}
+.lc-only-d{display:none}@media(min-width:768px){.lc-only-d{display:block}.lc-only-m{display:none}}
+'''
+
+
+def TabStripMore(tabs: list[str], active: str, md: int, xl: int) -> str:
+    """TabStrip with the shipped "More" overflow: tabs[:md] always (below 1760), tabs[:xl] from 1760, the rest in More."""
+    out = ''
+    for i, t in enumerate(tabs[:xl]):
+        cls = ('cur' if t == active else '') + (' xmd' if i >= md else '')
+        out += f'<a href="#" class="{cls.strip()}"{" aria-current=\"page\"" if t == active else ""}>{t}</a>'
+    rest_md, rest_xl = tabs[md:], tabs[xl:]
+    def more(rest, cls):
+        on = active in rest
+        lab = f'More: {active}' if on else 'More'
+        return f'<a href="#" class="more {cls}{" cur" if on else ""}" aria-haspopup="menu" aria-expanded="false">{lab} &#9662;</a>'
+    return '<nav class="strip-tabs ph-tabs" aria-label="Report tabs">' + out + more(rest_md, 'nmd') + more(rest_xl, 'nxl') + '</nav>'
+
+
+PRIM_CSS += '@media(max-width:1759px){.strip-tabs .more.nxl{display:none}}\n'
+
+
+def LineChart(series: list[tuple[str, str, list[float], str]], duration_s: float, height: int = 180, phases: list[tuple] = (),
+              marks: list[tuple[float, str]] = (), ymax: float | None = None, unit: str = '', label: str = 'Chart', step_ms: float = 0) -> str:
+    """series: (name, colour, values per bucket, legend figure). phases: (name, start_s, end_s). marks: (at_s, colour) death marks."""
+    n = max((len(v) for _, _, v, _ in series), default=1)
+    top = ymax or max((max(v) for _, _, v, _ in series if v), default=1) or 1
+    W = 1000
+    def x(i, cnt): return i * W / max(cnt - 1, 1)
+    svg = ''
+    for _, start, end in [(p[0], p[1], p[2]) for p in phases]:
+        svg += f'<line x1="{start / duration_s * W:.1f}" x2="{start / duration_s * W:.1f}" y1="0" y2="{height}" stroke="#3a4256" stroke-dasharray="3 4"/>'
+    for i in range(1, 4):
+        svg += f'<line x1="0" x2="{W}" y1="{height * i / 4:.0f}" y2="{height * i / 4:.0f}" stroke="#1c2230"/>'
+    for name, col, vals, _ in series:
+        if not vals:
+            continue
+        # step_ms: the summary's series are one value per second from the pull (lib/report/types.ts), so x is time, not index
+        xs = (lambda i: i * step_ms / 1000 / duration_s * W) if step_ms else (lambda i: x(i, len(vals)))
+        pts = ' '.join(f'{xs(i):.1f},{height - v / top * (height - 8):.1f}' for i, v in enumerate(vals))
+        svg += f'<polyline fill="none" stroke="{col}" stroke-width="2" vector-effect="non-scaling-stroke" points="{pts}"/>'
+    for at, col in marks:
+        svg += f'<line x1="{at / duration_s * W:.1f}" x2="{at / duration_s * W:.1f}" y1="0" y2="{height}" stroke="{col}" stroke-width="2" vector-effect="non-scaling-stroke"/>'
+    ph = ''.join(f'<text x="{p[1] / duration_s * W + 6:.0f}" y="14" fill="#9a9484" font-size="11" font-weight="700" letter-spacing="1.5">{escape(p[0].upper())}</text>' for p in phases)
+    lg = '<ul class="lg">' + ''.join(f'<li style="--c:{c}"><i></i><b>{escape(nm)}</b> {fig}</li>' for nm, c, _, fig in series) + '</ul>'
+    m = int(duration_s // 60)
+    ticks = [f'{int(t // 60)}:{int(t % 60):02d}' for t in (0, duration_s / 4, duration_s / 2, duration_s * 3 / 4, duration_s)]
+    return (f'<div class="lc">{lg}<svg viewBox="0 0 {W} {height}" preserveAspectRatio="none" style="height:{height}px" role="img" aria-label="{escape(label)}">{svg}{ph}</svg>'
+            f'<div class="ax">' + ''.join(f'<span>{t}</span>' for t in ticks) + '</div></div>')
+
+
+def Spark(values: list[float], color: str = '#e5b955', marks: list[float] | None = None, total: float | None = None) -> str:
+    """A one-line series (resources) or, with `marks` (0..1 positions), a tick strip (a cast sequence)."""
+    if marks is not None:
+        ticks = ''.join(f'<rect x="{p * 996:.1f}" y="4" width="4" height="16" rx="1" fill="{color}"/>' for p in marks)
+        return f'<svg class="spark" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="11" width="1000" height="2" fill="#1c2230"/>{ticks}</svg>'
+    top = total or max(values or [1]) or 1
+    pts = ' '.join(f'{i * 1000 / max(len(values) - 1, 1):.1f},{22 - v / top * 20:.1f}' for i, v in enumerate(values))
+    return f'<svg class="spark" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="{color}" stroke-width="2" vector-effect="non-scaling-stroke" points="{pts}"/></svg>'
+
+
+def Menu(label: str, groups: list[tuple[str, list[tuple[str, str, str, str, bool]]]]) -> str:
+    """Overlay kind 'menu': groups of (title, sub, right_top, right_sub, current) rows; one is current."""
+    body = ''
+    for g, rows in groups:
+        body += f'<div class="mg" role="presentation">{g}</div>' + ''.join(
+            f'<a href="#" class="mi{" cur" if cur else ""}" role="menuitemradio" aria-checked="{"true" if cur else "false"}"><b>{t}</b><span class="r">{rt}</span><span>{s}</span><span class="r">{rs}</span></a>'
+            for t, s, rt, rs, cur in rows)
+    return f'<div class="menu" role="menu" aria-label="{escape(label)}">{body}</div>'
+
+
+def DropZone(lines: str, action: str, off: bool = False) -> str:
+    return f'<div class="drop{" off" if off else ""}" role="group" aria-label="Choose a combat log">{lines}{action}</div>'
+
+
+def Disclosure(summary: str, body: str, open_: bool = False, cls: str = '') -> str:
+    return f'<details class="disc {cls}"{" open" if open_ else ""}><summary>{summary}<span class="chg">{"Hide" if open_ else "Show"} &#9662;</span></summary>{body}</details>'
+
+
+def EmptyCrest(px: int) -> str:
+    """A character whose class the log does not carry: the ringed empty disc of the one crest language."""
+    return f'<span class="crest none" style="width:{px}px;height:{px}px"></span>'
+
+# ------------------------------------------------ primitives added by the character round (2026-11-06; design/specs/2026-11-06-character.md)
+# Disclosure is the shipped ui/Disclosure.svelte: a summary line (the body face 600, a caret) that opens its body in place,
+# no box. Additive only.
+PRIM_CSS += '''
+.disc>summary{display:flex;align-items:center;gap:8px;min-height:44px;cursor:pointer;list-style:none;font:600 14px/20px var(--font-body);color:var(--nav)}
+.disc>summary::-webkit-details-marker{display:none}.disc>summary::before{content:'\\25B8';font-size:11px;color:var(--muted)}
+.disc[open]>summary::before{content:'\\25BE'}.disc>summary .t-small{margin-left:4px}
+.disc>.disc-b{padding:4px 0 8px}
+'''
+
+
+def Disclosure(summary: str, body: str, open_: bool = False, meta: str = '') -> str:
+    m = f'<span class="t-small">{meta}</span>' if meta else ''
+    return f'<details class="disc"{" open" if open_ else ""}><summary>{summary}{m}</summary><div class="disc-b">{body}</div></details>'

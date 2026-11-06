@@ -36,11 +36,14 @@ describe('rankListStyle', () => {
     expect(rankListStyle({ figures: 1, links: 4 })).toBe('--rl-n: 1; --rl-fig: 112px; --rl-links: 206px');
     expect(rankListStyle({ figures: 3, links: 3 })).toBe('--rl-n: 3; --rl-fig: 112px; --rl-links: 156px');
     expect(rankListStyle({ figures: 1, links: 0 })).toContain('--rl-links: 0px');
+    expect(rankListStyle({ figures: 4, links: 2, figureWidth: 96 })).toBe(
+      '--rl-n: 4; --rl-fig: 96px; --rl-links: 106px',
+    );
   });
 
   it('fails fast on a shape the grid cannot hold', () => {
-    expect(() => rankListStyle({ figures: 0, links: 4 })).toThrow(/figures must be 1 to 3/);
-    expect(() => rankListStyle({ figures: 4, links: 4 })).toThrow(/figures/);
+    expect(() => rankListStyle({ figures: 0, links: 4 })).toThrow(/figures must be 1 to 4/);
+    expect(() => rankListStyle({ figures: 5, links: 4 })).toThrow(/figures/);
     expect(() => rankListStyle({ figures: 1, links: 5 })).toThrow(/links must be 0 to 4/);
     expect(() => rankListStyle({ figures: 1.5, links: 2 })).toThrow(/figures/);
   });

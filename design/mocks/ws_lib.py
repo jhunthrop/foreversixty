@@ -5,10 +5,13 @@ scale, one page column. Tokens are the shipped ones (web/src/styles/tokens.css);
 marked `proposed`. Content is sample text for layout; the build renders from data.
 """
 import base64
+import json
 import os
+import re
+from html import escape
 from pathlib import Path
 
-from mocklib import ROOT, SEAL, CLASS_COLOR, crest
+from mocklib import ROOT, CLASS_COLOR, crest
 from wide_lib import icon, crest_img, QCOL  # same real-icon helpers
 
 # Where write() puts a mock: the committed design/mocks/web, or FS_MOCK_OUT (the parity specs render their mocks at test
@@ -17,7 +20,7 @@ OUT = Path(os.environ.get('FS_MOCK_OUT') or Path(__file__).resolve().parent / 'w
 
 # The parity gate's region names (design/parity.md; web/src/lib/ui/regions.ts is the same list). The mock
 # emits them as data-region, the built primitives emit the same, and web/tests/e2e/support/parity.ts pairs them.
-REGION = {'head': 'head', 'head_title': 'head-title', 'head_meta': 'head-meta', 'head_answer': 'head-answer',
+REGION = {'site_header': 'site-header', 'site_footer': 'site-footer', 'head': 'head', 'head_title': 'head-title', 'head_meta': 'head-meta', 'head_answer': 'head-answer',
           'controls': 'controls', 'summary': 'summary', 'notes': 'notes', 'plate': 'plate', 'slots': 'slots',
           'inspector': 'inspector', 'inspector_inline': 'inspector-inline', 'footer_note': 'footer-note'}
 
@@ -38,7 +41,8 @@ CSS = '''
 @media(min-width:768px){:root{--page-inset:0px}}
 @media(min-width:1760px){:root{--page-max:clamp(1600px,calc(100vw - 160px),1792px);--page-gutter:64px;--section-gap:64px;--gap:32px;--rail-w:400px}}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:24px}
+html{font-size:16px}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body)}body{font-size:15px;line-height:24px}
 a{color:var(--gold);text-decoration:none}a:hover{color:var(--gold-hover)}
 h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
@@ -60,20 +64,6 @@ h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 .pc{width:100%;max-width:var(--page-max);margin-inline:auto;padding-inline:var(--page-inset)}
 @media(min-width:768px){.pc{padding-inline:var(--page-gutter)}}
 .full-bleed{width:100%}
-/* header: 64px, hairline, no band art below it */
-.hdr{border-bottom:1px solid var(--line-soft);background:linear-gradient(180deg,#0e1624,var(--bg))}
-.hdr .pc{display:flex;align-items:center;gap:28px;height:64px}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:20px;letter-spacing:.1em;color:var(--strong);white-space:nowrap}.logo img{width:28px;height:28px}
-.navl{display:none;gap:26px;margin-left:40px;flex:1}
-.navl a{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--nav)}.navl a.cur{color:var(--gold)}
-.hsp{margin-left:auto;display:flex;gap:12px;align-items:center}
-.srch{width:44px;height:44px;border:1px solid var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--gold)}
-.who{display:flex;align-items:center;gap:10px;height:44px;padding:0 14px 0 6px;border:1px solid var(--line-warm);border-radius:22px;color:var(--strong)}
-.who b{display:block;font-size:14px;line-height:16px}.who small{display:block;font-size:12px;line-height:14px;color:var(--muted)}
-.who .out{width:32px;height:32px;border-radius:50%;background:#26405c55;border:1px solid var(--line)}
-.who small{display:none}
-@media(max-width:479px){.srch{display:none}.logo{font-size:15px;letter-spacing:.06em}.who{padding-right:10px}.who b{white-space:nowrap}.hdr .pc{gap:12px}}
-@media(min-width:1024px){.navl{display:flex}.who small{display:block}}
 /* surfaces: S0 page, S1 plate (the page's one primary object), S2 hover. Nothing else has a box. */
 .plate{background:var(--raised);border:1px solid var(--line);border-radius:6px;min-width:0}
 .rule{border-top:1px solid var(--line-soft)}
@@ -121,32 +111,9 @@ h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 .bar-m .stack{display:flex;flex-direction:column;gap:12px;padding-bottom:12px}
 .bar-m .seg{display:flex}.bar-m .seg a{flex:1;justify-content:center;height:44px}.bar-m .sel{height:44px;width:100%;justify-content:space-between}
 .cbar.static{position:static;background:none;border-top:0}
-/* footer */
-.ftr{border-top:1px solid var(--line-soft);margin-top:var(--section-gap);background:#060810}
-.ftr .pc{display:flex;gap:40px;padding-block:32px;flex-wrap:wrap}
-.ftr .col{display:flex;flex-direction:column;gap:8px;font-size:14px;min-width:120px}.ftr .col a{color:var(--nav)}
 .mocknote{margin-block:32px 0;font-size:12px;color:var(--muted)}
 .ic.fit,.fit>.ic{width:100%!important;height:auto!important;aspect-ratio:1}
 '''
-
-NAV = ['Tools', 'Logs', 'Guild', 'Guides', 'Get set up']
-
-
-def header(current: str = '', who: tuple | None = None) -> str:
-    links = ''.join(f'<a class="{"cur" if n == current else ""}" href="#">{n}</a>' for n in NAV)
-    if who:
-        chip = f'<span class="who">{crest_img(who[1], 32)}<span class="txt"><b>{who[0]}</b><small>{who[2]}</small></span></span>'
-    else:
-        chip = '<span class="who"><i class="out"></i><span class="txt"><b>Sign in</b><small>to see your characters</small></span></span>'
-    return (f'<header class="hdr full-bleed"><div class="pc"><a class="logo" href="#"><img src="{SEAL}" alt="">FOREVER SIXTY</a><nav class="navl">{links}</nav>'
-            f'<div class="hsp"><span class="srch">&#x2315;</span>{chip}</div></div></header>')
-
-
-def footer() -> str:
-    cols = {'Play': ['Get set up', 'Guides', 'Best in slot', 'Simulator'], 'Logs': ['Upload a log', 'Rankings'], 'Guilds': ['Find a guild', 'Claim your guild'], 'About': ['Premium', 'Changelog', 'Data sources']}
-    out = ''.join('<div class="col"><span class="t-label">%s</span>%s</div>' % (k, ''.join(f'<a href="#">{i}</a>' for i in v)) for k, v in cols.items())
-    return f'<footer class="ftr full-bleed"><div class="pc"><div class="col" style="min-width:280px"><a class="logo" href="#"><img src="{SEAL}" alt="">FOREVER SIXTY</a><span class="t-small">Play your class better.</span></div>{out}</div></footer>'
-
 
 def seg(items: list[tuple], extra: str = '', label: str = '') -> str:
     """items: (label, on, count|None, icon_html). A radiogroup of radios, as the built ControlBar and Segmented are."""
@@ -169,16 +136,84 @@ def control_bar(groups: list[tuple[str, str]], summary: str, end: str = '', open
             f'<details class="bar-m"{" open" if open_m else ""}><summary><span>{summary}</span><span class="chg">Change &#9662;</span></summary><div class="stack">{m}</div></details></div></div>')
 
 
-def page(title: str, body: str, nav: str = '', who: tuple | None = None, note: str = '') -> str:
+# ---- the site chrome: the shipped header and footer, captured from the build ----------------------------------
+# web/tests/e2e/chrome-capture.spec.ts writes data/chrome/: chrome.css (the site CSS that styles them, scoped under
+# .fs-chrome) and one <mock>.json per parity state (the exact header and footer the build draws in that state) plus
+# four templates. A mock with no capture of its own takes a template: signed out, or signed in with its `who`.
+CHROME = Path(__file__).resolve().parent / 'data' / 'chrome'
+_CHROME_MARK = '<!--fs-chrome:%s-->'
+_TEMPLATE_WHO = ('Felsnap', 'hunter', '34')
+# Base.astro's body: a full-height column with the footer pushed to the bottom of a short page.
+_BODY_CSS = 'body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:auto}'   # the character template-in.json was captured with (home fixtures)
+
+
+def _chrome_file(name: str) -> dict:
+    return json.loads((CHROME / f'{name}.json').read_text())
+
+
+def _with_who(chrome: dict, who: tuple) -> dict:
+    """template-in with another character: the chip's name, class crest and "Class · level" line."""
+    name, cls, sub = who
+    level = (re.findall(r'\d+', sub) or [_TEMPLATE_WHO[2]])[-1]
+    tname, tcls, tlevel = _TEMPLATE_WHO
+    swap = {tname: name, f'{tcls.capitalize()} · {tlevel}': f'{cls.capitalize()} · {level}',
+            f'{tcls.capitalize()}, level {tlevel}': f'{cls.capitalize()}, level {level}'}
+    header = chrome['header']
+    for old, new in swap.items():
+        header = header.replace(old, new)
+    # the chip's own crest(s) come before the menu panels' nine
+    head, cut, tail = header.partition('class="site-menu"')
+    head = head.replace(f'crests/{tcls}.webp', f'crests/{cls}.webp')
+    html = {**chrome['html'], 'data-pointer-class': cls}
+    return {**chrome, 'header': head + cut + tail, 'html': html}
+
+
+def chrome_for(mock: str, who: tuple | None, state: str = '') -> dict:
+    """The capture for this mock when the parity gate checks it, else a template (state: '', 'new' or 'pending')."""
+    own = CHROME / f'{mock.removesuffix(".html")}.json'
+    if own.exists():
+        return json.loads(own.read_text())
+    if state:
+        return _chrome_file(f'template-{state}')
+    return _with_who(_chrome_file('template-in'), who) if who else _chrome_file('template-out')
+
+
+def page(title: str, body: str, nav: str = '', who: tuple | None = None, note: str = '', chrome_state: str = '') -> str:
+    """The mock's page. Its header and footer are filled in by `write`, which knows the mock's name."""
     n = note or 'Layout mock. Sample content for layout only; the build renders every figure from data. Spec: design/specs/2026-11-05-web-layout.md.'
-    return ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>%s</title>'
+    mark = _CHROME_MARK % json.dumps({'who': list(who) if who else None, 'state': chrome_state, 'nav': nav})
+    return ('<!doctype html><html lang="en"%%HTML_ATTRS%%><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>%s</title>'
             '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
             '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Cinzel:wght@700&family=Marcellus&display=swap">'
-            '<style>%s</style></head><body>%s<main>%s</main><!-- %s -->%s</body></html>' % (title, CSS, header(nav, who), body, n, footer()))
+            '<style>%%CHROME_CSS%%</style><style>%s%s</style></head><body>%s<div class="fs-chrome"><div data-fs-body%%BODY_ATTRS%%>%%HEADER%%</div></div>'
+            '<main>%s</main><!-- %s --><div class="fs-chrome fs-foot"><div data-fs-body%%BODY_ATTRS%%>%%FOOTER%%</div></div></body></html>'
+            % (title, CSS, _BODY_CSS, mark, body, n))
+
+
+def _fill_chrome(name: str, html: str) -> str:
+    found = re.search(r'<!--fs-chrome:(\{.*?\})-->', html)
+    if found is None:
+        return html
+    spec = json.loads(found.group(1))
+    chrome = chrome_for(name, tuple(spec['who']) if spec['who'] else None, spec['state'])
+    if spec.get('nav') and not (CHROME / f'{name.removesuffix(".html")}.json').exists():
+        # a template marks no door: mark the mock's own, as the build does for its path
+        door = f'data-door="{spec["nav"].lower()}"'
+        chrome = {**chrome, 'header': chrome['header'].replace(door, f'{door} aria-current="page"', 1)}
+    attrs = ''.join(f' {k}="{escape(v, quote=True)}"' for k, v in chrome['html'].items())
+    body_attrs = ''.join(f' {k}="{escape(v, quote=True)}"' for k, v in chrome.get('body', {}).items())
+    css = (CHROME / 'chrome.css').read_text()
+    # The captures point images at the site's files from design/mocks/web; a mock rendered elsewhere
+    # (FS_MOCK_OUT, the parity specs' test-time mocks) gets the path from its own folder.
+    public = os.path.relpath(Path(__file__).resolve().parents[2] / 'web' / 'public', OUT)
+    header, footer = (chrome[k].replace('../../../web/public', public) for k in ('header', 'footer'))
+    chrome = {**chrome, 'header': header, 'footer': footer}
+    return (html.replace(found.group(0), '').replace('%HTML_ATTRS%', attrs).replace('%BODY_ATTRS%', body_attrs).replace('%CHROME_CSS%', css)
+            .replace('%HEADER%', chrome['header']).replace('%FOOTER%', chrome['footer']))
 
 
 def write(name: str, html: str) -> Path:
     OUT.mkdir(parents=True, exist_ok=True)
     p = OUT / name
-    p.write_text(html)
+    p.write_text(_fill_chrome(name, html))
     return p

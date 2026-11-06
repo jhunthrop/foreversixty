@@ -34,7 +34,7 @@ func TestLinks_OnlyWhenWindowsMeet(t *testing.T) {
 
 func TestLinks_ReadTheTypedResourceNotTheTitle(t *testing.T) {
 	// a title that reads like a cap does not make one; the outcome's kind does
-	fs := []Finding{{ID: "f1", Code: CodeCoreCasts}, {ID: "f2", Code: CodeResource, Title: "Rage full for 9 seconds"}}
+	fs := []Finding{{ID: "f1", Code: CodeCoreCasts}, {ID: "f2", Code: CodeResource, Title: "Rage full for 9 seconds in total"}}
 	ev := map[string]outcome{"f1": {Windows: win(160_000, 171_000)}, "f2": oom(win(161_000, 170_000))}
 	if got := computeLinks(fs, ev); len(got) != 0 {
 		t.Fatalf("out of mana is no cap: %+v", got)

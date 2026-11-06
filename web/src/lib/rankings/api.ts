@@ -22,7 +22,7 @@ import type { CharacterRating, ReportRatings } from '../rating/types';
 import type { CharacterGear } from '../gear/types';
 import type { ForeverScore, ScorePoint } from '../score/score';
 
-export const RANKINGS_FAILED = 'Rankings did not load';
+export const RANKINGS_FAILED = 'Rankings did not load.';
 
 export class RankingsError extends Error {
   constructor(

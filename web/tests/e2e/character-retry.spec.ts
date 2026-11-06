@@ -24,14 +24,16 @@ test('a failed character page retries the same fetch in place', async ({ page })
   });
 
   await page.goto(CHARACTER_PATH);
-  await expect(page.getByTestId('character-error')).toBeVisible();
+  await expect(page.getByTestId('character-failed')).toBeVisible();
+  await expect(page.getByTestId('character-error')).toContainText('We could not load this character.');
   await expect(page.getByTestId('character')).toHaveCount(0);
 
   failing = false;
   await page.getByTestId('character-error-retry').click();
 
   await expect(page.getByTestId('character')).toBeVisible();
-  await expect(page.getByTestId('character')).toContainText('Elyra Duskvale');
+  await expect(page.getByTestId('character-head').getByTestId('page-title')).toHaveText('Elyra Duskvale');
+  await expect(page.getByTestId('character-best')).toContainText('Warden Kelthas');
   await expect(page.getByTestId('character-error')).toHaveCount(0);
   // The retry re-fetched in place: a reload would have left the URL untouched too, so the
   // proof is that the failing stub was never navigated past -- the page is the same one.

@@ -93,8 +93,8 @@ describe('ageWords', () => {
   });
 
   it('is a short date from 14 days on', () => {
-    expect(ageWords(new Date('2026-10-10T12:00:00Z'), NOW)).toBe('Oct 10');
-    expect(ageWords(new Date('2026-09-25T12:00:00Z'), NOW)).toBe('Sep 25');
+    expect(ageWords(new Date('2026-10-10T12:00:00Z'), NOW)).toBe('10 Oct');
+    expect(ageWords(new Date('2026-09-25T12:00:00Z'), NOW)).toBe('25 Sept');
   });
 });
 

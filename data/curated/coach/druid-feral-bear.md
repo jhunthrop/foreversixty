@@ -47,14 +47,14 @@ This is the best Feral Bear Druid on Forever. The bear tanks on health and armor
 
 ## Drills
 
-- drill.core_casts: On a dummy with a friend hitting you, press the first button of the priority list the moment it is ready. Fillers wait their turn.
+- drill.core_casts: On trash pulls, press the first button of the priority list the moment it is ready. Fillers wait their turn.
 - drill.uptime: Watch the debuffs on the boss and the buff on you. Refresh each where its line says, before it drops: a stacking debuff that falls off takes its stacks with it.
 - drill.idle: When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.
-- drill.resource: Watch the rage bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
+- drill.resource: Watch the rage bar on trash pulls. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for.
 - drill.preparation: Before every boss, check a flask from fifty-five, food from thirty-five, a weapon enchant from fifty, a combat potion from forty-six and a healing potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
-- drill.death: Put your emergency cooldown on a key you can hit without looking, and press it on a dummy pull the moment your health falls past half.
-- drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
+- drill.death: Put your emergency cooldown on a key you can hit without looking, and press it on trash pulls the moment your health falls past half.
+- drill.adherence: On trash pulls, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
 ## Voice
 

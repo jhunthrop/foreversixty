@@ -113,7 +113,7 @@ test('pairing: code shown, polls while waiting, then shows the success line once
   );
 
   await page.goto('/logs');
-  await page.getByRole('button', { name: 'Show pairing code' }).click();
+  await page.getByRole('button', { name: 'Get a pairing code' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
 
   // Still polling, code still on screen, no success yet -- well before PAIR_AFTER_MS.

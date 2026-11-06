@@ -10,13 +10,11 @@ export const myReportsCopy = {
   uploadAction: 'Upload a log',
 } as const;
 
-/** The /reports page ("Your reports"): its head, its card, and the words its three states add. */
+/** The /reports page ("Your reports"): its head and the words its states add. */
 export const yourReportsPageCopy = {
-  eyebrow: 'Logs',
   title: 'Your reports',
   job: 'Every fight you logged, newest first.',
-  cardTitle: 'Reports',
-  empty: 'No logs yet.',
+  empty: 'No logs yet. Upload a log, or let the companion send your next raid.',
   signedOut: 'Sign in to see every report you logged.',
   sessionFailed: 'Your account did not load.',
   sampleAction: 'Open the sample report',
