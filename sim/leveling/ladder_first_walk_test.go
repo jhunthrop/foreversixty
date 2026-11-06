@@ -24,7 +24,9 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 		{"hunter-survival", "hunter", "survival", 2, 30, "Strider Kick", "0000000000000000-0000000000000000-500230231040000100"},
 		{"mage-fire", "mage", "fire", 1, 20, "Pyroblast", "000000000000000000-51400001000000000-000000000000000000"},
 		{"rogue-assassination", "rogue", "assassination", 0, 40, "Mutilate", "32530200251511001-0000000000000000000-000000000000000000"},
-		{"rogue-subtlety", "rogue", "subtlety", 2, 30, "Ghostly Strike and Hemorrhage", "00000000000000000-0000000000000000000-035230011311000100"},
+		// Sim-accuracy round 26 (melee): Initiative 3 now comes before Camouflage's last
+		// two points and Elusiveness (TestSubtletyTakesInitiativeBeforeTheTollPoints).
+		{"rogue-subtlety", "rogue", "subtlety", 2, 30, "Ghostly Strike and Hemorrhage", "00000000000000000-0000000000000000000-035220031301000100"},
 		{"shaman-restoration", "shaman", "restoration", 2, 30, "Mana Tide Totem", "0000000000000000-000000000000000000-5530003310010000"},
 		// Sim-accuracy round 15 (shaman): Stormstrike sits in the 15-point row and beta
 		// logs show Enhancement shamans of level 25 to 35 casting it; band 30 left it out.
