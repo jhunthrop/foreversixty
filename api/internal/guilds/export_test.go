@@ -79,12 +79,17 @@ func TestExportAttendance_HeaderAndRows(t *testing.T) {
 	raid := f.seedRaid("Onyxia night")
 	f.seedAttendance(raid, "us/hardcore/zed", "Zed", "mage", "present")
 	f.seedAttendance(raid, "us/hardcore/amy", "Amy", "hunter", "late")
+	if _, err := f.h.pool.Exec(t.Context(), `
+		insert into guild_raid_attendance_overrides (raid_id, character_key, status, auto_outcome)
+		values ($1, 'us/hardcore/amy', 'bench', 'late')`, raid); err != nil {
+		t.Fatal(err)
+	}
 
 	rows := f.rows("attendance")
 	want := [][]string{
-		{"date", "raid", "character", "class", "signed", "outcome", "excused", "pulls_present", "pulls_total"},
-		{"2026-10-20", "Onyxia night", "Amy", "hunter", "in", "late", "true", "4", "5"},
-		{"2026-10-20", "Onyxia night", "Zed", "mage", "in", "present", "true", "4", "5"},
+		{"date", "raid", "character", "class", "signed", "outcome", "excused", "pulls_present", "pulls_total", "fixed"},
+		{"2026-10-20", "Onyxia night", "Amy", "hunter", "in", "late", "true", "4", "5", "bench"},
+		{"2026-10-20", "Onyxia night", "Zed", "mage", "in", "present", "true", "4", "5", ""},
 	}
 	if fmt.Sprint(rows) != fmt.Sprint(want) {
 		t.Fatalf("rows = %v, want %v", rows, want)
@@ -94,7 +99,7 @@ func TestExportAttendance_HeaderAndRows(t *testing.T) {
 func TestExportLoot_HeaderOnlyWhenEmpty(t *testing.T) {
 	f := newExportFixture(t, "Export Empty")
 	rows := f.rows("loot")
-	want := "date,raid,boss,item_id,item,character"
+	want := "date,raid,boss,item_id,item,character,class,ms_os,votes_yes,votes_no,reason,awarded_by"
 	if len(rows) != 1 || strings.Join(rows[0], ",") != want {
 		t.Fatalf("rows = %v, want header only %q", rows, want)
 	}
@@ -158,10 +163,10 @@ func TestExportAttendance_LoggedNightWithNoPlannedRaid(t *testing.T) {
 	}
 	rows := f.rows("attendance")
 	want := [][]string{
-		{"date", "raid", "character", "class", "signed", "outcome", "excused", "pulls_present", "pulls_total"},
-		{"2026-10-20", "Onyxia night", "Zed", "mage", "in", "present", "true", "4", "5"},
-		{"2026-10-27", "Onyxia's Lair", "Amy", "hunter", "", "present", "false", "1", "1"},
-		{"2026-10-27", "Onyxia's Lair", "Bo", "priest", "", "present", "false", "1", "1"},
+		{"date", "raid", "character", "class", "signed", "outcome", "excused", "pulls_present", "pulls_total", "fixed"},
+		{"2026-10-20", "Onyxia night", "Zed", "mage", "in", "present", "true", "4", "5", ""},
+		{"2026-10-27", "Onyxia's Lair", "Amy", "hunter", "", "present", "false", "1", "1", ""},
+		{"2026-10-27", "Onyxia's Lair", "Bo", "priest", "", "present", "false", "1", "1", ""},
 	}
 	if fmt.Sprint(rows) != fmt.Sprint(want) {
 		t.Fatalf("rows = %v, want %v", rows, want)

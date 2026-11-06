@@ -3,11 +3,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { forgetPrivate, invalidate } from '../data/query';
 import { GuildApiError } from './api';
 import {
+  clearAttendanceOverride,
   clearMatch,
   fetchGuildReadiness,
   fetchMatchCandidates,
   postReport,
-  setExcused,
+  setAttendanceOverride,
   setMatch,
 } from './attendance-api';
 
@@ -78,24 +79,39 @@ describe('match writes', () => {
   });
 });
 
-describe('setExcused', () => {
-  it('puts the flag at the character key, one segment each', async () => {
+describe('the attendance fix', () => {
+  const URL = `${API}/v1/guilds/7/raids/12/attendance/us/classic/Pyre%20wisp/override`;
+
+  it('puts the status at the character key, one segment each', async () => {
     const upstream = stub(() => envelope({ id: 12 }));
-    await setExcused(7, 12, 'us/classic/Pyre wisp', true, API);
+    await setAttendanceOverride(7, 12, 'us/classic/Pyre wisp', 'bench', API);
     const request = sent(upstream);
     expect(request.method).toBe('PUT');
-    expect(request.url).toBe(`${API}/v1/guilds/7/raids/12/attendance/us/classic/Pyre%20wisp`);
-    expect(await request.clone().json()).toEqual({ excused: true });
+    expect(request.url).toBe(URL);
+    expect(await request.clone().json()).toEqual({ status: 'bench' });
+  });
+
+  it('clears it with a DELETE', async () => {
+    const upstream = stub(() => envelope({ id: 12 }));
+    await clearAttendanceOverride(7, 12, 'us/classic/Pyre wisp', API);
+    expect(sent(upstream).method).toBe('DELETE');
+    expect(sent(upstream).url).toBe(URL);
   });
 });
 
 describe('postReport', () => {
   it('posts and answers posted_at', async () => {
     const upstream = stub(() => envelope({ posted_at: '2026-12-11T05:58:00Z' }));
-    const result = await postReport(7, 12, API);
+    const result = await postReport(7, 12, false, API);
     expect(result.posted_at).toBe('2026-12-11T05:58:00Z');
     expect(sent(upstream).url).toBe(`${API}/v1/guilds/7/raids/12/report/post`);
     expect(sent(upstream).method).toBe('POST');
+  });
+
+  it('asks for a repost in the body', async () => {
+    const upstream = stub(() => envelope({ posted_at: '2026-12-11T05:58:00Z' }));
+    await postReport(7, 12, true, API);
+    expect(await sent(upstream).clone().json()).toEqual({ repost: true });
   });
 
   it.each([
@@ -104,7 +120,7 @@ describe('postReport', () => {
     [502, 'post_failed'],
   ])('rethrows %i %s', async (status, code) => {
     stub(() => errorEnvelope(status, code));
-    const error = await postReport(7, 12, API).catch((caught: unknown) => caught);
+    const error = await postReport(7, 12, false, API).catch((caught: unknown) => caught);
     expect((error as GuildApiError).code).toBe(code);
     expect((error as GuildApiError).status).toBe(status);
   });
@@ -115,7 +131,7 @@ describe('postReport cache', () => {
     const upstream = stub(() => envelope({ id: 12 }));
     await fetchGuildReadiness(7, 12, API);
     upstream.mockImplementation(async () => errorEnvelope(409, 'already_posted'));
-    await postReport(7, 12, API).catch(() => undefined);
+    await postReport(7, 12, false, API).catch(() => undefined);
     upstream.mockClear();
     upstream.mockImplementation(async () => envelope({ id: 12 }));
     await fetchGuildReadiness(7, 12, API);
@@ -126,7 +142,7 @@ describe('postReport cache', () => {
     const upstream = stub(() => envelope({ id: 12 }));
     await fetchGuildReadiness(7, 12, API);
     upstream.mockImplementation(async () => errorEnvelope(502, 'post_failed'));
-    await postReport(7, 12, API).catch(() => undefined);
+    await postReport(7, 12, false, API).catch(() => undefined);
     upstream.mockClear();
     await fetchGuildReadiness(7, 12, API);
     expect(upstream).not.toHaveBeenCalled();

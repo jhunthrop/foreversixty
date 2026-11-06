@@ -27,20 +27,14 @@
   import {
     approveAllRoster,
     approveCharacter,
-    awardLoot,
-    unawardLoot,
     contestClaim,
     fetchGuildHome,
-    fetchGuildLoot,
     fetchGuildProgression,
     fetchGuildRaids,
     fetchGuildReadiness,
     removeCharacter,
     removeMember,
-    GuildApiError,
     type GuildHome,
-    type GuildLootItem,
-    type GuildLootPage,
     type GuildProgressionPage,
     type GuildRaidsPage,
     type GuildRosterEntry,
@@ -49,12 +43,7 @@
     type GuildViewerRole,
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
-  import {
-    officerToolsOn,
-    raidGuildToolsOn,
-    refusalGate,
-    type GuildPlanRefusal,
-  } from '../lib/guild/officer-tools';
+  import { officerToolsOn, raidGuildToolsOn } from '../lib/guild/officer-tools';
   import { plannedReserveRows, rememberPlannedRows } from '../lib/guild/planned-reserve';
   import { browserStorage } from '../lib/guild/reserve-keys';
   import {
@@ -104,8 +93,6 @@
   } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
-  import LoadError from './ui/LoadError.svelte';
-  import { LOOT_LOAD_ERROR } from '../lib/guild/loot-view';
   import PageHeader from './ui/PageHeader.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
@@ -320,7 +307,6 @@
   let officerToolsEnded = $state(false);
   /** `raid_guild_required` on an Award/Undo: the guild is Guild tier, so Loot and Readiness gate to Raid guild. */
   let raidGuildEnded = $state(false);
-  let planRefusal = $state<GuildPlanRefusal | null>(null);
   const officerTools = $derived(officerToolsOn(role, home?.viewer?.officer_tools, officerToolsEnded));
   const raidGuildTools = $derived(
     raidGuildToolsOn(role, home?.viewer?.raid_guild_tools ?? true, raidGuildEnded),
@@ -753,102 +739,6 @@
         readinessStatus = 'missing';
       });
   });
-
-  let loot = $state<GuildLootPage | null>(null);
-  // Live-fix round, defect 5: unlike raids/progression/readiness above, Loot distinguishes
-  // a real 404 (the api lane has not deployed this endpoint yet -- 'missing', the honest
-  // "not live yet" copy) from every other failure ('failed' -- a network blip, a 5xx, a
-  // parse error): those must surface their own message (lootError below), never the 404
-  // copy, so an officer debugging a real outage is not told to wait for a deploy that
-  // already happened. If the query cache already holds the page GuildOverview's own
-  // summary-card prefetch resolved (fetchGuildLoot's shared cache key, data/query.ts), this
-  // read returns it instantly rather than refetching.
-  let lootStatus = $state<'idle' | 'loading' | 'ready' | 'missing' | 'failed'>('idle');
-  let lootBusyItemId = $state<number | null>(null);
-  let lootError = $state('');
-  $effect(() => {
-    if (activeTab !== 'loot' || guildId === null || lootStatus !== 'idle') return;
-    lootStatus = 'loading';
-    void fetchGuildLoot(guildId)
-      .then((page) => {
-        loot = page;
-        lootStatus = 'ready';
-      })
-      .catch((thrown: unknown) => {
-        if (thrown instanceof GuildApiError && thrown.status === 404) {
-          lootStatus = 'missing';
-          return;
-        }
-        lootStatus = 'failed';
-        lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
-      });
-  });
-
-  /** §4: a `guild_plan_required` refusal flips both tabs to officer-read-only and says so once,
-   *  in the clicked item's card, never in the tab-bottom error line. `raid_guild_required` flips
-   *  them to the Raid guild gate sentence instead. True when it handled it. */
-  function planRefused(thrown: unknown, item: GuildLootItem, kind: 'award' | 'undo'): boolean {
-    if (!(thrown instanceof GuildApiError)) return false;
-    const gate = refusalGate(thrown.code);
-    if (gate === null) return false;
-    if (gate === 'raid-guild') {
-      raidGuildEnded = true;
-      return true;
-    }
-    officerToolsEnded = true;
-    if (loot !== null && loot.selected !== null) {
-      planRefusal = { encounterId: loot.selected, itemId: item.item_id, kind };
-    }
-    return true;
-  }
-
-  /** `itemId` names the copy of the drop when it is not the row's own (a side's Head of Onyxia). */
-  async function onAward(item: GuildLootItem, charKey: string, itemId = item.item_id): Promise<void> {
-    if (guildId === null || loot === null || loot.selected === null) return;
-    lootBusyItemId = item.item_id;
-    lootError = '';
-    try {
-      await awardLoot(guildId, {
-        encounter_id: loot.selected,
-        item_id: itemId,
-        character_key: charKey,
-      });
-      loot = await fetchGuildLoot(guildId, loot.selected);
-    } catch (thrown) {
-      if (planRefused(thrown, item, 'award')) return;
-      lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
-    } finally {
-      lootBusyItemId = null;
-    }
-  }
-
-  /** The boss chooser: reads that encounter's loot. */
-  async function onBoss(encounterId: number): Promise<void> {
-    if (guildId === null) return;
-    lootError = '';
-    try {
-      loot = await fetchGuildLoot(guildId, encounterId);
-    } catch (thrown) {
-      lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
-    }
-  }
-
-  /** Undo: removes the award the item shows, then reads the page again (the invalidation in
-   *  `unawardLoot` clears the cached loot, so the read is fresh). */
-  async function onUndo(item: GuildLootItem): Promise<void> {
-    if (guildId === null || loot === null || loot.selected === null || item.awarded_to === null) return;
-    lootBusyItemId = item.item_id;
-    lootError = '';
-    try {
-      await unawardLoot(guildId, item.awarded_to.award_id);
-      loot = await fetchGuildLoot(guildId, loot.selected);
-    } catch (thrown) {
-      if (planRefused(thrown, item, 'undo')) return;
-      lootError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
-    } finally {
-      lootBusyItemId = null;
-    }
-  }
 </script>
 
 {#snippet bandLine()}
@@ -1206,48 +1096,24 @@
           {gateFacts}
         />
       {/if}
-    {:else if activeTab === 'loot'}
-      {#if lootStatus === 'loading' || (lootStatus === 'ready' && !lootLazy.current)}
-        <Skeleton lines={5} minHeight="min-h-[240px]" testid="guild-loot-skeleton" />
-        <Skeleton lines={3} minHeight="min-h-[168px]" testid="guild-loot-item-skeleton" />
-        <Skeleton lines={3} minHeight="min-h-[168px]" testid="guild-loot-item-skeleton" />
-        {@render lazyFallback(lootLazy)}
-      {:else if lootStatus === 'missing'}
-        <EmptyState
-          message="Loot ranking is not available yet. Check back after the next sync."
-          testid="guild-loot-missing"
-        />
-      {:else if lootStatus === 'failed'}
-        <!-- Live-fix round, defect 5: a network/parse/5xx failure is never the 404 "not
-             live yet" copy above -- its own message, rendered without waiting on the lazy
-             GuildLoot.svelte chunk (which a slow connection may not have finished loading
-             yet when the fetch itself has already failed). -->
-        <LoadError
-          message={LOOT_LOAD_ERROR}
-          testid="guild-loot-error"
-          onRetry={() => {
-            lootError = '';
-            lootStatus = 'idle';
-          }}
-        />
-      {:else if lootLazy.current}
+    {:else if activeTab === 'loot' && guildId !== null}
+      {#if lootLazy.current}
         <lootLazy.current
-          loot={lootStatus === 'ready' ? loot : null}
+          {guildId}
           officer={officerView}
           {officerTools}
           {raidGuildTools}
-          memberReadOnly={role === 'member'}
           ownKeys={[...myCharacterKeys]}
-          busyItemId={lootBusyItemId}
-          refusal={planRefusal}
           {gateFacts}
-          onAward={(item, charKey, itemId) => void onAward(item, charKey, itemId)}
-          onUndo={(item) => void onUndo(item)}
-          onBoss={(encounterId) => void onBoss(encounterId)}
+          timeZone={home?.next_raid?.guild_timezone ?? undefined}
+          onRefused={(gate) => {
+            if (gate === 'raid-guild') raidGuildEnded = true;
+            else officerToolsEnded = true;
+          }}
         />
-        {#if lootError !== ''}<p class="text-[13px]" role="alert" data-testid="guild-loot-error">
-            {lootError}
-          </p>{/if}
+      {:else}
+        <Skeleton lines={6} minHeight="min-h-[360px]" testid="guild-loot-skeleton" />
+        {@render lazyFallback(lootLazy)}
       {/if}
     {:else if activeTab === 'settings' && officerView && home !== null}
       {#if settingsLazy.current}

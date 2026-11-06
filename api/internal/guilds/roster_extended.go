@@ -71,21 +71,21 @@ func (s *Store) enrichRoster(ctx context.Context, guildID int64, source string, 
 	return nil
 }
 
-// attendanceReports is the attendance window: the guild's own last attendanceWindow reports
+// attendanceReports is the attendance window: the guild's own last window reports
 // that are evidence (presence.EvidenceReport: not private, not flagged as tampered or
 // unverified) and carry at least one ranked row (fight_metrics, not removed) or rated row
 // (rating_scores), newest first.
 // Presence (presence.In) is read from those rows, so a night nobody can be present in (a
 // private, flagged or trash-only report, or one not ranked yet) is never everyone's
 // absence. Fewer when the guild has not logged that many yet.
-func (s *Store) attendanceReports(ctx context.Context, guildID int64) ([]string, error) {
+func (s *Store) attendanceReports(ctx context.Context, guildID int64, window int) ([]string, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select r.id from reports r
 		where r.guild_id = $1 and `+presence.EvidenceReport("r")+`
 		  and (exists (select 1 from fight_metrics m where m.report_id = r.id and m.state <> 'removed')
 		       or exists (select 1 from rating_scores rs where rs.report_id = r.id))
 		order by r.created_at desc, r.id desc
-		limit $2`, guildID, attendanceWindow)
+		limit $2`, guildID, window)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: attendance window: %w", err)
 	}
@@ -100,8 +100,8 @@ func (s *Store) attendanceReports(ctx context.Context, guildID int64) ([]string,
 // many of its reports that character was present in (presence.In, by key - never
 // fights.players, which holds the log's GUIDs). A character in more than one fight of a
 // report is still counted once.
-func (s *Store) attendance(ctx context.Context, guildID int64, keys []string) (int, map[string]int, error) {
-	ids, err := s.attendanceReports(ctx, guildID)
+func (s *Store) attendance(ctx context.Context, guildID int64, keys []string, window int) (int, map[string]int, error) {
+	ids, err := s.attendanceReports(ctx, guildID, window)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -400,7 +400,7 @@ func (s *Store) fillAttendance(ctx context.Context, guildID int64, source string
 	if source == AttendanceSourceRaids {
 		return s.fillRaidAttendance(ctx, guildID, out, keys)
 	}
-	nights, present, err := s.attendance(ctx, guildID, keys)
+	nights, present, err := s.attendance(ctx, guildID, keys, attendanceWindow)
 	if err != nil {
 		return err
 	}

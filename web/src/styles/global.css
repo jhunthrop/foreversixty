@@ -38,9 +38,8 @@
   h2,
   h3 {
     font-family: var(--font-heading);
-    /* 800, the heading face's one loaded weight: a bare h1-h3 would otherwise ask for 700 and
-       fetch a second file (Barlow Condensed 700 stays declared for a deliberate use). */
-    font-weight: 800;
+    /* 700, the heaviest Barlow weight the site loads (fonts.css declares no 800). */
+    font-weight: 700;
     color: var(--color-strong);
   }
   :focus-visible {
@@ -139,8 +138,8 @@ label:has(input[type='checkbox']:disabled) {
   }
 }
 
-/* The heading face (polish spec 2026-10-28 section 4.4, direction B Forge): Barlow Condensed
-   800, uppercase, .01em, at the B scale in tokens.css. Each utility is a whole recipe, never
+/* The heading face (fonts lane 2026-11-06, no condensed face anywhere): Barlow 700, the body
+   face's heaviest loaded weight, uppercase, .01em, at the B scale in tokens.css. Each utility is a whole recipe, never
    stacked on another, so two font-sizes never compete for one element:
    - heading-hero: the home hero, 40px phone / 52px from md;
    - heading-page: a page's h1, 34 / 44;
@@ -152,11 +151,11 @@ label:has(input[type='checkbox']:disabled) {
    - heading-name: a name or label set in the heading face inline at its own size, the case its
      copy has (talent, roster, spec and class names; the size comes from the call
      site's text-[*] class).
-   Headline figures take figure-stat (28) and figure-price (44 / 52), the same face at 800 with
+   Headline figures take figure-stat (28) and figure-price (44 / 52), the same face at 700 with
    tabular numerals. Every other number, date, count or stat is `numeric` (below). */
 @utility heading-hero {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: var(--tracking-heading);
   text-transform: uppercase;
   font-size: var(--text-hero-phone);
@@ -168,7 +167,7 @@ label:has(input[type='checkbox']:disabled) {
 
 @utility heading-page {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: var(--tracking-heading);
   text-transform: uppercase;
   font-size: var(--text-h1-phone);
@@ -181,7 +180,7 @@ label:has(input[type='checkbox']:disabled) {
 
 @utility heading-section {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: var(--tracking-heading);
   text-transform: uppercase;
   font-size: var(--text-h2);
@@ -191,7 +190,7 @@ label:has(input[type='checkbox']:disabled) {
 
 @utility section-title {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: var(--tracking-heading);
   text-transform: uppercase;
   font-size: var(--text-card-title);
@@ -200,7 +199,7 @@ label:has(input[type='checkbox']:disabled) {
 
 @utility heading-plan {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: var(--tracking-heading);
   font-size: var(--text-plan-name);
   line-height: 1;
@@ -209,13 +208,13 @@ label:has(input[type='checkbox']:disabled) {
 
 @utility heading-name {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: var(--tracking-heading);
 }
 
 @utility figure-stat {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   font-size: var(--text-stat);
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -223,7 +222,7 @@ label:has(input[type='checkbox']:disabled) {
 
 @utility figure-price {
   font-family: var(--font-heading);
-  font-weight: 800;
+  font-weight: 700;
   font-size: var(--text-price-phone);
   line-height: 1;
   font-variant-numeric: tabular-nums;

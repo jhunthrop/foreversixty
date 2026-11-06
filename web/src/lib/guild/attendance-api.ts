@@ -10,6 +10,7 @@ import {
   GuildApiError,
   call,
   invalidateGuild,
+  type AttendanceOverrideStatus,
   type GuildRaidView,
   type MatchCandidates,
   type PostReportResult,
@@ -62,30 +63,46 @@ export function clearMatch(
   return raidWrite(guildId, `${raidPath(guildId, raidId)}/match`, apiBase, { method: 'DELETE' });
 }
 
-export function setExcused(
+function overridePath(guildId: number, raidId: RaidId, characterKey: string): string {
+  return `${raidPath(guildId, raidId)}/attendance/${characterKeyPath(characterKey)}/override`;
+}
+
+/** An officer's fix over the log: present, absent, bench or excused; the effective value moves. */
+export function setAttendanceOverride(
   guildId: number,
   raidId: RaidId,
   characterKey: string,
-  excused: boolean,
+  status: AttendanceOverrideStatus,
   apiBase: string = API_BASE_URL,
 ): Promise<GuildRaidView> {
-  return raidWrite(
-    guildId,
-    `${raidPath(guildId, raidId)}/attendance/${characterKeyPath(characterKey)}`,
-    apiBase,
-    { method: 'PUT', body: { excused } },
-  );
+  return raidWrite(guildId, overridePath(guildId, raidId, characterKey), apiBase, {
+    method: 'PUT',
+    body: { status },
+  });
 }
 
-/** 409 `conflict` (raid not done), 409 `already_posted`, 502 `post_failed` (retryable). */
+/** Back to what the log said; clearing a row with no fix is a no-op. */
+export function clearAttendanceOverride(
+  guildId: number,
+  raidId: RaidId,
+  characterKey: string,
+  apiBase: string = API_BASE_URL,
+): Promise<GuildRaidView> {
+  return raidWrite(guildId, overridePath(guildId, raidId, characterKey), apiBase, { method: 'DELETE' });
+}
+
+/** 409 `conflict` (raid not done), 409 `already_posted` (a first post of a posted report),
+ *  409 `not_posted` (a repost of one never posted), 502 `post_failed` (retryable). */
 export async function postReport(
   guildId: number,
   raidId: RaidId,
+  repost = false,
   apiBase: string = API_BASE_URL,
 ): Promise<PostReportResult> {
   try {
     const result = await call<PostReportResult>(`${raidPath(guildId, raidId)}/report/post`, apiBase, {
       method: 'POST',
+      ...(repost ? { body: { repost: true } } : {}),
     });
     invalidateGuild(guildId, apiBase);
     return result;

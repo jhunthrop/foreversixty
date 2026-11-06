@@ -1,17 +1,19 @@
 # Font subsets
 
-`glyphs.txt` in this directory is the explicit glyph inventory for the eight self-hosted font
-subsets committed under `web/src/assets/fonts/`: Cinzel 700 (the wordmark), Marcellus 400 (the page
-title, web layout spec 2026-11-05), Barlow
-400/600/700 (body), Barlow Condensed 700/800 (headings, added by the 2026-10-28 polish lane)
-and JetBrains Mono 500. `web/src/styles/fonts.css` declares `@font-face` rules against those subset files
+`glyphs.txt` in this directory is the explicit glyph inventory for the five self-hosted font
+subsets committed under `web/src/assets/fonts/`: Marcellus 400 (the page title, web layout spec
+2026-11-05), Barlow 400/600/700 (body and headings) and JetBrains Mono 500 (literal code only).
+The fonts lane (2026-11-06) removed Barlow Condensed 700/800 (no condensed face anywhere) and
+Cinzel 700: the wordmark is now an SVG path, `src/components/wordmark-path.generated.ts`, drawn
+from `@fontsource/cinzel` by `scripts/wordmark-svg.py` (needs fontTools and HarfBuzz's
+`hb-shape`; `--check` fails if the committed path is stale). `web/src/styles/fonts.css` declares `@font-face` rules against those subset files
 directly (no more `@import '@fontsource/...'`); see that file's header comment for why.
 
 ## Why
 
 Lighthouse's simulated-throttling LCP budgets in `web/lighthouserc.json` charge for every
-byte fetched before the hero text paints. On every page that was these five font files, ~105
-KB total (seven files and ~144 KB since the heading face), because `fonts.css` declares every
+byte fetched before the hero text paints. On every page that was these font files (seven and
+~128 KB before the fonts lane; Barlow 400/600/700 plus Marcellus on wide pages since), because `fonts.css` declares every
 face for every page. Fontsource's `latin`
 subsets already drop non-Latin scripts, but still carry glyphs this English-only site never
 renders (combining diacritics, the OE ligature, guillemets, the Euro and trademark signs,
@@ -57,14 +59,10 @@ python3 -m venv /tmp/fonts-venv
 /tmp/fonts-venv/bin/pip install fonttools==4.61.1 brotli
 ```
 
-Then, from `web/`, for each of the eight faces:
+Then, from `web/`, for each of the five faces:
 
 ```sh
 VENV=/tmp/fonts-venv/bin
-$VENV/pyftsubset node_modules/@fontsource/cinzel/files/cinzel-latin-700-normal.woff2 \
-  --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
-  --output-file=src/assets/fonts/cinzel-700-subset.woff2
-
 $VENV/pyftsubset node_modules/@fontsource/barlow/files/barlow-latin-400-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
   --output-file=src/assets/fonts/barlow-400-subset.woff2
@@ -76,14 +74,6 @@ $VENV/pyftsubset node_modules/@fontsource/barlow/files/barlow-latin-600-normal.w
 $VENV/pyftsubset node_modules/@fontsource/barlow/files/barlow-latin-700-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
   --output-file=src/assets/fonts/barlow-700-subset.woff2
-
-$VENV/pyftsubset node_modules/@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2 \
-  --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
-  --output-file=src/assets/fonts/barlow-condensed-700-subset.woff2
-
-$VENV/pyftsubset node_modules/@fontsource/barlow-condensed/files/barlow-condensed-latin-800-normal.woff2 \
-  --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
-  --output-file=src/assets/fonts/barlow-condensed-800-subset.woff2
 
 $VENV/pyftsubset node_modules/@fontsource/marcellus/files/marcellus-latin-400-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
@@ -102,8 +92,8 @@ Notes on the flags:
   would save more bytes but was explicitly out of scope for this subsetting pass.
 - No `--no-hinting`: Barlow's `glyf` table carries real per-glyph TrueType hinting
   instructions (verified with fontTools — 212 of 252 glyphs in the 400 subset have a
-  non-empty instruction program); Cinzel and JetBrains Mono do not (0 instructed glyphs in
-  either source file, confirmed before subsetting), so there is nothing for them to lose
+  non-empty instruction program); JetBrains Mono does not (0 instructed glyphs in
+  its source file, confirmed before subsetting), so there is nothing for them to lose
   either way. `--no-hinting` would have silently discarded Barlow's.
 - No explicit `--unicodes`: `--text-file` takes literal characters, which is what
   `glyphs.txt` is, and avoids a lossy round-trip through code-point lists for anyone
@@ -120,19 +110,19 @@ npx vitest run src/assets/fonts/fonts.generated.test.ts
 `web/src/assets/fonts/fonts.generated.test.ts` pins each subset's cmap against
 `glyphs.txt`, with one documented exception list for characters absent from the _source_
 `@fontsource` files themselves (`→` `←` `†` and the narrow no-break space `U+202F` — none of
-Cinzel/Barlow/JetBrains Mono's `latin` files have ever had these glyphs, subsetting or not).
+Barlow/JetBrains Mono/Marcellus's `latin` files have ever had these glyphs, subsetting or not).
 
 ## The heading hero subset and the fallback metrics
 
-`scripts/hero-font.py` cuts the home hero's capitals out of the committed Barlow Condensed 800
+`scripts/hero-font.py` cuts the home hero's capitals out of the committed Barlow 700
 subset into the inline `src/styles/hero-font.css` (rerun it after regenerating that subset or
 changing the hero headline). `scripts/fallback-metrics.mjs` computes the size-adjusted
 fallback descriptors in `src/styles/fonts.css` from a subset and a system face; rerun it after
-regenerating Barlow or Barlow Condensed and compare against the committed numbers:
+regenerating Barlow or Marcellus and compare against the committed numbers:
 
 ```sh
 node scripts/fallback-metrics.mjs src/assets/fonts/barlow-400-subset.woff2 \
   /System/Library/Fonts/HelveticaNeue.ttc HelveticaNeue
-node scripts/fallback-metrics.mjs src/assets/fonts/barlow-condensed-800-subset.woff2 \
-  "/System/Library/Fonts/Supplemental/Arial Narrow Bold.ttf"
+node scripts/fallback-metrics.mjs src/assets/fonts/marcellus-400-subset.woff2 \
+  /System/Library/Fonts/Supplemental/Georgia.ttf
 ```

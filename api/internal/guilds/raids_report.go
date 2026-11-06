@@ -45,8 +45,8 @@ type ReportDeathView struct {
 	own          bool
 }
 
-// ConsumableRow is one roster character's Before pill. The log carries no buff events yet,
-// so flask, food and potions are null.
+// ConsumableRow is one roster character's Before pill (bags). Flask, food and potions stay
+// null here: the log's reading is per pull, in ReportConsumablesView.ByPull.
 type ConsumableRow struct {
 	CharacterKey string `json:"character_key"`
 	Name         string `json:"name"`
@@ -58,10 +58,13 @@ type ConsumableRow struct {
 	own          bool
 }
 
-// ReportConsumablesView is the night's consumables: LogHasBuffs is false until buff events are stored.
+// ReportConsumablesView is the night's consumables. Rows are the bags pills (the readiness
+// board's rule); ByPull is what each boss pull's log shows each raider brought, read from the
+// pull's character sheet. LogHasBuffs is true when at least one boss pull could be read.
 type ReportConsumablesView struct {
-	LogHasBuffs bool            `json:"log_has_buffs"`
-	Rows        []ConsumableRow `json:"rows"`
+	LogHasBuffs bool                  `json:"log_has_buffs"`
+	Rows        []ConsumableRow       `json:"rows"`
+	ByPull      []PullConsumablesView `json:"by_pull"`
 }
 
 // ReportLootAward is one award made for this raid.
@@ -107,6 +110,9 @@ type MovesView struct {
 
 // ReportView is the raid-night report.
 type ReportView struct {
+	Headline    ReportHeadline        `json:"headline"`
+	Pulls       []PullView            `json:"pulls"`
+	Parses      []ParseRow            `json:"parses"`
 	KillOrder   []KillOrderView       `json:"kill_order"`
 	Unnamed     *UnnamedView          `json:"unnamed"`
 	Deaths      []ReportDeathView     `json:"deaths"`
@@ -116,8 +122,8 @@ type ReportView struct {
 	PostedAt    *time.Time            `json:"posted_at"`
 }
 
-// ownOnly is the report a member sees: every kill, unnamed and loot row, and only their own
-// characters' deaths, consumables and moves. Nil stays nil.
+// ownOnly is the report a member sees: the headline, every pull, kill, unnamed and loot row, and
+// only their own characters' deaths (with causes), consumables, parses and moves. Nil stays nil.
 func (r *ReportView) ownOnly() *ReportView {
 	if r == nil {
 		return nil
@@ -126,6 +132,21 @@ func (r *ReportView) ownOnly() *ReportView {
 	out.Deaths = keepOwn(r.Deaths, func(d ReportDeathView) bool { return d.own })
 	out.Consumables.Rows = keepOwn(r.Consumables.Rows, func(c ConsumableRow) bool { return c.own })
 	out.Moves.Rows = keepOwn(r.Moves.Rows, func(m MoveRow) bool { return m.own })
+	out.Parses = keepOwn(r.Parses, func(p ParseRow) bool { return p.own })
+	out.Pulls = make([]PullView, len(r.Pulls))
+	for i, p := range r.Pulls {
+		if p.DeathCauses != nil {
+			p.DeathCauses = keepOwn(p.DeathCauses, func(d PullDeathView) bool { return d.own })
+		}
+		out.Pulls[i] = p
+	}
+	out.Consumables.ByPull = make([]PullConsumablesView, len(r.Consumables.ByPull))
+	for i, bp := range r.Consumables.ByPull {
+		if bp.Rows != nil {
+			bp.Rows = keepOwn(bp.Rows, func(c PullConsumableRow) bool { return c.own })
+		}
+		out.Consumables.ByPull[i] = bp
+	}
 	return &out
 }
 
@@ -158,6 +179,12 @@ func (s *Store) buildReport(ctx context.Context, vc raidViewContext, v RaidView,
 		return nil, err
 	}
 	if rep.Moves, err = s.reportMoves(ctx, vc, v, reportID, kills); err != nil {
+		return nil, err
+	}
+	if rep.Parses, err = s.reportParses(ctx, vc, reportID); err != nil {
+		return nil, err
+	}
+	if err := s.fillPulls(ctx, vc, rep, reportID, fights); err != nil {
 		return nil, err
 	}
 	return rep, nil

@@ -58,9 +58,25 @@ export interface RaidAttendanceRow {
   first_seen_offset_s: number | null;
   pulls_present: number;
   pulls_total: number;
+  /** The effective excused flag (an officer's fix included). */
   excused: boolean;
   /** The viewer's own character. */
   own: boolean;
+  /** What the log and the sign-ups said, before any officer's fix; `outcome` is the effective one. */
+  auto_outcome: RaidAttendanceOutcome;
+  auto_excused: boolean;
+  /** An officer's manual fix of this night, or null. */
+  override: RaidAttendanceOverride | null;
+}
+
+/** The statuses an officer can set over the log (bench counts as attended). */
+export type AttendanceOverrideStatus = 'present' | 'absent' | 'bench' | 'excused';
+
+export interface RaidAttendanceOverride {
+  status: AttendanceOverrideStatus;
+  /** The officer's main character name, or `an officer`. */
+  by_name: string;
+  at: string;
 }
 
 export interface RaidKill {
@@ -98,10 +114,102 @@ export interface RaidConsumableRow {
   potions: number | null;
 }
 
+/** Why a pull's consumables cannot be read: no character sheet in the log, or not read yet. */
+export type PullConsumablesReason = 'no_character_sheet' | 'not_read';
+
+/** One raider at one boss pull: true up (or applied within 10 s), false proven missing (flasks
+ *  only today), null the log cannot say. */
+export interface RaidPullConsumable {
+  character_key: string;
+  name: string;
+  class: string;
+  flask: boolean | null;
+  food: boolean | null;
+  weapon_enchant: boolean | null;
+  /** Combat potions used in the pull. */
+  potions: number;
+  /** The names of what was up. */
+  brought: string[];
+}
+
+export interface RaidPullConsumables {
+  fight_index: number;
+  name: string;
+  attempt: number;
+  reason: PullConsumablesReason | null;
+  /** Null with a reason: nothing can be said (unknown, never missing). */
+  rows: RaidPullConsumable[] | null;
+}
+
 export interface RaidConsumables {
-  /** Always false today: the log carries no buff events. */
+  /** True when at least one boss pull carried a character sheet to read. */
   log_has_buffs: boolean;
   rows: RaidConsumableRow[];
+  by_pull: RaidPullConsumables[];
+}
+
+/** The night's answer figures; they name nobody. */
+export interface RaidReportHeadline {
+  kills: number;
+  wipes: number;
+  /** Boss pulls: kills plus wipes. */
+  attempts: number;
+  /** Every pull's deaths, trash included. */
+  deaths: number;
+}
+
+export type PullResult = 'kill' | 'wipe' | 'clear';
+
+/** One damage event on a raider before their death. */
+export interface RaidReportHit {
+  /** Time into the pull. */
+  at_ms: number;
+  /** 1 is a melee swing. */
+  spell_id: number;
+  ability: string;
+  source: string;
+  amount: number;
+  overkill: number;
+}
+
+export interface RaidReportDeath {
+  /** Empty when the log name maps to no character of the night. */
+  character_key: string;
+  name: string;
+  class: string;
+  /** Time into the pull. */
+  at_ms: number;
+  killing_blow: RaidReportHit | null;
+  /** Up to the last 3 hits before the death, oldest first. */
+  last_hits: RaidReportHit[];
+}
+
+export interface RaidReportPull {
+  fight_index: number;
+  /** Null on trash. */
+  encounter_id: number | null;
+  name: string;
+  /** The boss pull's number; null on trash. */
+  attempt: number | null;
+  result: PullResult;
+  duration_ms: number;
+  deaths: number;
+  /** Null until the fight's summary has been read; a member reads their own only. */
+  death_causes: RaidReportDeath[] | null;
+}
+
+/** One raider on one boss kill: DPS, HPS for a healer, and the fight's rating when computed. */
+export interface RaidReportParse {
+  character_key: string;
+  name: string;
+  class: string;
+  role: string;
+  encounter_id: number;
+  encounter: string;
+  fight_index: number;
+  metric: MoveMetric;
+  value: number;
+  rating: number | null;
 }
 
 export interface RaidLootAward {
@@ -140,13 +248,17 @@ export interface RaidMoves {
 
 /** `null` on the raid view until a log is matched. */
 export interface RaidReport {
+  headline: RaidReportHeadline;
+  /** Every fight of the night in order. */
+  pulls: RaidReportPull[];
+  parses: RaidReportParse[];
   kill_order: RaidKill[];
   unnamed: RaidUnnamed | null;
   deaths: RaidDeathRow[];
   consumables: RaidConsumables;
   loot: RaidLootGroup[];
   moves: RaidMoves;
-  /** RFC 3339 once an officer posted it to Discord; never posts twice. */
+  /** RFC 3339: when the summary was last posted to Discord. */
   posted_at: string | null;
 }
 

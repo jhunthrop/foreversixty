@@ -161,7 +161,7 @@
 
   /** Fix round 1 item B.4 (ux-designer): the card's own answer is the one primary element and
    *  reads at the design system's headline-figure treatment (`design/DESIGN-SYSTEM.md`'s type
-   *  table; polish spec 2026-10-28 §4.4 moved figures to Barlow Condensed 800) -- 22px here,
+   *  table; figures are the heading face, Barlow 700) -- 22px here,
    *  not the `text-[15px] font-semibold` body-text size the mock's own three cards never use
    *  for their headline number. The line underneath it stays Barlow 12px muted, unchanged. */
   /** The character's own sim is showing, so the link opens the simulator rather than asking for a first run. */

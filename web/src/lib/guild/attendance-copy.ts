@@ -2,16 +2,7 @@
 // Every string of design/specs/2026-10-27-guild-attendance.md 6.1, in one module: constants where
 // the words are fixed, functions where the data fills them. No number is typed into prose;
 // attendance-copy.test.ts reads the spec table itself, so a drift in either file fails.
-import type {
-  ConsumableBefore,
-  MoveMetric,
-  RaidConsumableRow,
-  RaidKill,
-  RaidMatch,
-  RaidNight,
-  RaidRef,
-  RaidUnnamed,
-} from './attendance-contract';
+import type { ConsumableBefore, MoveMetric, RaidMatch, RaidNight, RaidRef } from './attendance-contract';
 import { NO_RAID_NIGHTS, nightsLabel } from './nights';
 import { SEP } from './raid-copy';
 import { DEFAULT_LOCALE, clockText, dateLabel, stampParts } from './raid-time';
@@ -31,8 +22,6 @@ const MINUTES_PER_HOUR = 60;
 export const ENDED_MATCH_WINDOW_MS = 6 * HOUR_MS;
 /** Discord's copied report is at most this many lines (spec 4 "Copy for Discord"). */
 export const DISCORD_REPORT_MAX_LINES = 12;
-/** A death or consumables list shows this many rows before `Show all` (spec 7). */
-export const REPORT_ROWS_BEFORE_SHOW_ALL = 10;
 export const BIGGEST_CHANGES_ROWS = 5;
 export const PICKER_MAX_ROWS = 20;
 /** How long `Copied` stays up. */
@@ -276,65 +265,12 @@ export function postedTime(postedAt: string, tz: string, locale: string = DEFAUL
   return clockText(new Date(postedAt), tz, locale, true);
 }
 
-/** `since Thu 3 Dec`: the heading's tail, which breaks as one unit (UX N3). */
-export const changesSince = (date: string): string => `since ${date}`;
-export const changesHead = (date: string): string => `${attendanceCopy.report.changes} ${changesSince(date)}`;
-export const firstRaidLine = (zoneName: string): string =>
-  `First ${zoneName} raid logged. Changes show from the next one.`;
-
-export const showAllRaiders = (n: number): string => `Show all ${n} raiders`;
-
-export const deathSplit = (onWipes: number, onKills: number): string =>
-  `${onWipes} on wipes${SEP}${onKills} on kills`;
-
 /** `after 3 wipes`, or `first pull` for a kill with no wipe before it. */
 export function killAfter(wipesBefore: number): string {
   return wipesBefore === 0 ? attendanceCopy.report.firstPull : `after ${wipes(wipesBefore)}`;
 }
 
-/** ` · 2 deaths`; empty when nobody died on the kill. */
-export function killDeaths(n: number): string {
-  return n === 0 ? '' : `${SEP}${deaths(n)}`;
-}
-
-export const notKilled = (wipesBefore: number): string => `Not killed${SEP}${wipes(wipesBefore)}`;
-
-/** The pulls no boss is named for, in the night header's own words: `2 trash packs`. Like the
- *  header, a pack that went badly is not counted; null when no pack died. */
-export function unnamedLine(unnamed: RaidUnnamed): string | null {
-  return unnamed.kills > 0 ? unit(unnamed.kills, 'trash pack') : null;
-}
-
-/** The kill-order row's words, by boss. */
-export interface KillRowText {
-  /** `1:42`, or `null` for a boss never killed. */
-  time: string | null;
-  /** `after 3 wipes` / `first pull`, or `Not killed · 4 wipes`. */
-  note: string;
-  /** ` · 2 deaths` or empty. */
-  deaths: string;
-  /** Only `first pull` reads in `--kill`. */
-  firstPull: boolean;
-}
-
-export function killRowText(entry: RaidKill): KillRowText {
-  if (!entry.killed || entry.kill_ms === null) {
-    return { time: null, note: notKilled(entry.wipes_before), deaths: '', firstPull: false };
-  }
-  return {
-    time: killTimeLabel(entry.kill_ms),
-    note: killAfter(entry.wipes_before),
-    deaths: killDeaths(entry.deaths),
-    firstPull: entry.wipes_before === 0,
-  };
-}
-
 export const metricLabel = (metric: MoveMetric): string => metric.toUpperCase();
-
-/** `DPS 238 → 291`. */
-export function moveFigures(metric: MoveMetric, before: number, after: number): string {
-  return `${metricLabel(metric)} ${before} → ${after}`;
-}
 
 export const onBoss = (boss: string): string => `on ${boss}`;
 
@@ -345,24 +281,6 @@ export function moveDelta(before: number, after: number): { text: string; rising
   return delta >= 0
     ? { text: `+${size}`, rising: delta > 0, size }
     : { text: `${MINUS}${size}`, rising: false, size };
-}
-
-/** The consumables chips and muted words for one row (`log_has_buffs` true only). */
-export interface UsedChip {
-  text: string;
-  used: boolean;
-}
-
-export function usedChips(row: Pick<RaidConsumableRow, 'flask' | 'food' | 'potions'>): UsedChip[] {
-  const chips: UsedChip[] = [];
-  if (row.flask !== null) chips.push({ text: row.flask ? 'Flask' : 'No flask', used: row.flask });
-  if (row.food !== null) chips.push({ text: row.food ? 'Food' : 'No food', used: row.food });
-  if (row.potions !== null) {
-    chips.push(
-      row.potions > 0 ? { text: `Potions ${row.potions}`, used: true } : { text: 'No potions', used: false },
-    );
-  }
-  return chips;
 }
 
 /** `22 of 23 came · 1 late · 1 not in the log · 2 more joined · 1 excused`; zero clauses are left out. */
@@ -380,9 +298,6 @@ export const lateOutcome = (minutes: number): string =>
   `Late, first seen ${minutes} min after the first pull`;
 
 export const cameAsOutcome = (alt: string): string => `Came as ${alt}`;
-
-/** `9/11`. */
-export const pullsRatio = (present: number, total: number): string => `${present}/${total}`;
 
 /** The roster chip, the bot's own (api guilds attendanceChip): `7 of 8 raid nights · 26 of the
  *  last 30`, or `1 of 1 raid night` alone while the longer window adds nothing; `No raid nights

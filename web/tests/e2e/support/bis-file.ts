@@ -65,6 +65,8 @@ export interface BisFileData {
   bands: BisBandFile[];
   presets?: Partial<Record<BisPresetId, PresetFile>>;
   heal_profile?: { label: string };
+  /** The ranker's run block (target, fight length, iterations), once the nightly publishes it. */
+  run?: { target_type: string; duration_sec: number; iterations: { set: number } };
 }
 
 /** The published file for a spec, from the active build or, before the nightly has ranked
@@ -106,9 +108,11 @@ export function bisPreset(spec: string, preset: BisPresetId): PresetFile {
 
 /** "Hit to cap: 7% for specials[, 27% for white swings]" for a whole-percent melee cap. */
 export function hitCapText(hitToCap: BisHitToCapFile): string {
-  const white = hitToCap.white === undefined ? '' : `, ${hitToCap.white}% for white swings`;
-  const spell = hitToCap.spell === undefined ? '' : `, ${hitToCap.spell}% for spells`;
-  return `Hit to cap: ${hitToCap.specials}% for specials${white}${spell}`;
+  // One decimal, trailing zero dropped: the page's own formatCapPercent (lib/bis/hit-cap.ts).
+  const pct = (value: number): string => String(Number(value.toFixed(1)));
+  const white = hitToCap.white === undefined ? '' : `, ${pct(hitToCap.white)}% for white swings`;
+  const spell = hitToCap.spell === undefined ? '' : `, ${pct(hitToCap.spell)}% for spells`;
+  return `Hit to cap: ${pct(hitToCap.specials)}% for specials${white}${spell}`;
 }
 
 const WHOLE = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });

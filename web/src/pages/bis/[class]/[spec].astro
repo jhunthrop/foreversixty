@@ -1,61 +1,28 @@
 ---
 // web/src/pages/bis/[class]/[spec].astro
-// Rebuild (bis rebuild spec, 2026-09-30, ux-designer, mock `Bis.dc.html`): replaces the
-// character-panel redesign's two-column paperdoll (lane bis-character-panel, 2026-09-29)
-// with the mock's single-column "The list", a real `ArtPanel`/`ClassHeader`, the shared
-// character header, and computed "Where to get it"/"New at this band" sections. See this
-// lane's own report for what was kept unchanged (`lib/bis/load.ts`, `types.ts`,
-// `source-cell.ts`, the tooltip-host island, the faction/band CSS toggle mechanism) and
-// what changed (`GearRow.astro`'s layout, `panel-view.ts`'s row/empty-copy computation, the
-// weight rail's own markup).
-//
-// Faction toggle, widened (still the same two hidden radios + CSS `~` sibling display this
-// page has always used, `.faction-panel`'s own convention): EVERYTHING below the header now
-// differs by faction (the header's own suffix/summary sentence too, once this rebuild adds
-// them), so the toggle now hides/shows one `.page-body > .header-row .header-faction.<X>`
-// and one `.page-body > .faction-content.<X>` per faction, via `~ .page-body <descendant>`
-// (a sibling combinator followed by a descendant one), rather than the OLD page's own
-// direct-sibling-only rule. The character header sits beside the header, outside the toggle
-// entirely -- it shows the signed-in visitor's own character, which has nothing to do with
-// which faction's BiS list is on screen.
+// The Best in slot page (web layout spec 2026-11-05 §5, mock web-bis rev 3): one island
+// (components/bis/BisSpecPage.svelte) server-rendered at the default state, so first paint needs
+// no script. The page builds the compact per-band view models once (lib/bis/page-data.ts),
+// registers them for the server render and inlines them as one JSON script for the island; the
+// raw BiS file never ships. Tooltips stay with BisTooltipHost (cells carry data-bis-item).
 import Base from '../../../layouts/Base.astro';
-import ArtPanel from '../../../components/ArtPanel.astro';
-import ClassHeader from '../../../components/ClassHeader.astro';
-import BisSpecCharacterHeader from '../../../components/bis/BisSpecCharacterHeader.svelte';
-import BandPanelBody from '../../../components/bis/BandPanelBody.astro';
-import PresetControl from '../../../components/bis/PresetControl.astro';
-import PresetCaption from '../../../components/bis/PresetCaption.astro';
-import GlyphSheet from '../../../components/bis/GlyphSheet.astro';
+import PageHeader from '../../../components/ui/PageHeader.svelte';
+import Notice from '../../../components/ui/Notice.svelte';
+import BisSpecPage from '../../../components/bis/BisSpecPage.svelte';
 import BisTooltipHost from '../../../components/BisTooltipHost.svelte';
-import { readItemTooltipModel } from '../../../lib/items/lookup-node';
-import type { ItemTooltipModel } from '../../../lib/items/tooltip';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
 import { bisCopy } from '../../../lib/bis/copy';
-import {
-  bandEntry,
-  bandLevels,
-  itemDetails,
-  loadBisFile,
-  loadLootFile,
-  readSpecCatalog,
-} from '../../../lib/bis/load';
-import { bandInfosFor, collectModelsInto, type BandInfo } from '../../../lib/bis/panel-view';
-import { rateUnitForRole } from '../../../lib/bis/heal-view';
-import { newAtBandLinesFor, sourceGroupsFor } from '../../../lib/bis/footer-view';
-import {
-  bandTopLevel,
-  loadRotations,
-  rotationEntryFor,
-  rotationLinesFor,
-} from '../../../lib/bis/rotation-view';
+import { readSpecCatalog } from '../../../lib/bis/load';
+import { bisServerPage, defaultSlice } from '../../../lib/bis/page-server';
+import { BIS_PAGE_DATA_ID, bisPageDataJson, registerBisPageData } from '../../../lib/bis/page-registry';
+import { BIS_PENDING_SCRIPT } from '../../../lib/bis/page-pending';
+import { publishedIcon } from '../../../lib/bis/spec-icon';
+import { classCrestSrc } from '../../../lib/class-crest';
+import { classColorVar } from '../../../lib/report/format';
 import { classRows, racesForClass } from '../../../lib/planner/reference';
-import { bandPresets, BARE_PRESET, presetMeta, RAID_PRESET } from '../../../lib/bis/presets';
-import { bisSimHref, rankingSimHrefFor } from '../../../lib/bis/sim-link';
-import { loadTalentFile } from '../../../lib/guides/build-tree';
-import { indexTalents } from '../../../lib/planner/rules';
-import type { BandView } from '../../../lib/bis/band-view';
-import type { BisPresetId, Faction } from '../../../lib/bis/types';
+import type { Faction } from '../../../lib/bis/types';
+import type { ControlOption } from '../../../lib/ui/primitives';
 
 export async function getStaticPaths() {
   return readSpecCatalog().map((spec) => ({
@@ -65,329 +32,75 @@ export async function getStaticPaths() {
 }
 
 const { spec: specEntry } = Astro.props;
-const className = classes.find((c) => c.slug === specEntry.class_slug)?.name ?? specEntry.class_slug;
+const classSlug = specEntry.class_slug;
+const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
 const title = `${className} ${specEntry.name} leveling BiS`;
 const description = bisCopy.metaDescription(specEntry.name, className);
-const path = `/bis/${specEntry.class_slug}/${specEntry.spec_slug}`;
-const guideHref = `/guides/${specEntry.class_slug}/${specEntry.spec_slug}`;
+const path = `/bis/${classSlug}/${specEntry.spec_slug}`;
+const guideHref = `/guides/${classSlug}/${specEntry.spec_slug}`;
 const build = activeBuild.build;
-const unit = rateUnitForRole(specEntry.role);
 
-const file = loadBisFile(specEntry.spec, build);
-const bands = file ? bandLevels(file) : [];
-const details = itemDetails(build, specEntry.class_slug);
-const loot = loadLootFile(build);
-const factions: Faction[] = ['alliance', 'horde'];
-const rotationEntries = loadRotations(build, specEntry.spec) ?? [];
-const talentFile = loadTalentFile(build, specEntry.class_slug);
-if (talentFile === undefined) {
-  throw new Error(
-    `data/builds/${build}/talents/${specEntry.class_slug}.json is missing; the sim link needs the trees`,
-  );
-}
-const talentIndex = indexTalents(talentFile);
+const server = bisServerPage(specEntry.spec, classSlug) ?? undefined;
+// Only the default state ships in the HTML (and the server renders from the same slice, so
+// hydration matches it); the island fetches the rest from the JSON endpoint after mount.
+const inlineData = server === undefined ? undefined : defaultSlice(server.data);
+if (inlineData !== undefined) registerBisPageData(inlineData);
+const tooltipModelsJson = JSON.stringify(server?.tooltips ?? {}).replace(/</g, '\\u003c');
 
-function tooltipFor(itemId: number): ItemTooltipModel | undefined {
-  return readItemTooltipModel(build, specEntry.class_slug, itemId) ?? undefined;
-}
-
-// `preset` undefined is the headline view (raid-ready where a band has it, bare otherwise);
-// 'bare' is the alternative a level-60 panel offers beside it.
-function bandInfosForFaction(faction: Faction, preset?: BisPresetId): BandInfo[] {
-  if (file === null) return [];
-  return bandInfosFor(file, bands, faction, {
-    itemDetails: details,
-    loot,
-    tooltipFor,
-    spec: specEntry.spec,
-    preset,
-  });
-}
-
-const bandInfosByFaction: Readonly<Record<Faction, BandInfo[]>> = {
-  alliance: bandInfosForFaction('alliance'),
-  horde: bandInfosForFaction('horde'),
-};
-const bareBandInfosByFaction: Readonly<Record<Faction, BandInfo[]>> = {
-  alliance: bandInfosForFaction('alliance', BARE_PRESET),
-  horde: bandInfosForFaction('horde', BARE_PRESET),
-};
-
-const tooltipModels = new Map<number, ItemTooltipModel>();
-if (file !== null) {
-  collectModelsInto(tooltipModels, bandInfosByFaction.alliance, tooltipFor);
-  collectModelsInto(tooltipModels, bandInfosByFaction.horde, tooltipFor);
-  collectModelsInto(tooltipModels, bareBandInfosByFaction.alliance, tooltipFor);
-  collectModelsInto(tooltipModels, bareBandInfosByFaction.horde, tooltipFor);
-}
-const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).replace(/</g, '\\u003c');
-
-// SpecTabs: every spec of this class, in the talent tree's own left-to-right order.
-const specTabs = readSpecCatalog()
-  .filter((s) => s.class_slug === specEntry.class_slug)
+const specOptions: ControlOption[] = readSpecCatalog()
+  .filter((s) => s.class_slug === classSlug)
   .sort((a, b) => a.tree_index - b.tree_index)
-  .map((s) => ({
-    specSlug: s.spec_slug,
-    name: s.name,
-    icon: s.icon,
-    href: `/bis/${s.class_slug}/${s.spec_slug}`,
-    active: s.spec_slug === specEntry.spec_slug,
-  }));
-
-// Race select (spec §4.A/§4.G -- the spec's own §4.G is missing from the written doc; the
-// build lane's own defensible default, named in its report: the active faction's first
-// race in this build's own race list, never a guess at a specific one).
-const classRow = classRows.find((c) => c.slug === specEntry.class_slug);
-const racesForThisClass = classRow ? racesForClass(classRow.id) : [];
-function raceOptionsFor(faction: Faction): { slug: string; name: string }[] {
-  return racesForThisClass.filter((r) => r.faction === faction).map((r) => ({ slug: r.slug, name: r.name }));
-}
-
-function bandViewsFor(faction: Faction, infos: readonly BandInfo[], preset?: BisPresetId): BandView[] {
-  if (file === null) return [];
-  return bands.map((band, bandIndex): BandView => {
-    const info = infos[bandIndex]!;
-    const rawBand = bandEntry(file, band, faction, preset);
-    const nextBand = bandIndex + 1 < bands.length ? bands[bandIndex + 1] : undefined;
-    const nextInfo = nextBand === undefined ? undefined : infos[bandIndex + 1];
-    const nextRawBand = nextBand === undefined ? undefined : bandEntry(file, nextBand, faction, preset);
-    const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(band));
+  .map((s) => {
+    const icon = publishedIcon(build, s.icon);
     return {
-      band,
-      bandIndex,
-      bandLabel: bisCopy.bandRangeLabel(band),
-      info,
-      simHref: rawBand === undefined ? '/sim' : bisSimHref(rawBand, talentIndex, build),
-      rankingSimHref: rawBand === undefined ? undefined : rankingSimHrefFor(rawBand, talentIndex, build),
-      plannerHref: `/planner?spec=${specEntry.spec}&talents=${encodeURIComponent(rawBand?.talents ?? '')}`,
-      generatedAtDate: file.generated_at.slice(0, 10),
-      rotationLines:
-        rotationEntry === undefined
-          ? []
-          : rotationLinesFor(
-              rotationEntry,
-              build,
-              specEntry.class_slug,
-              specEntry.spec,
-              bandTopLevel(band),
-              undefined,
-              rawBand?.race,
-            ),
-      sourceGroups: sourceGroupsFor(info.rows),
-      newAtBand: newAtBandLinesFor(
-        info,
-        band,
-        rawBand?.new_at_band ?? [],
-        nextInfo,
-        nextBand === undefined ? undefined : bisCopy.bandRangeLabel(nextBand),
-        nextRawBand?.new_at_band,
-      ),
-      nextBandLabel: nextBand === undefined ? undefined : bisCopy.bandRangeLabel(nextBand),
-      nextBand,
+      value: s.spec,
+      label: s.name,
+      href: `/bis/${s.class_slug}/${s.spec_slug}`,
+      ...(icon === undefined ? {} : { icon: `/data/${build}/icons/${icon}.webp` }),
     };
   });
-}
 
-const bandViewsByFaction: Readonly<Record<Faction, BandView[]>> = {
-  alliance: bandViewsFor('alliance', bandInfosByFaction.alliance),
-  horde: bandViewsFor('horde', bandInfosByFaction.horde),
+const classRow = classRows.find((c) => c.slug === classSlug);
+const races = classRow ? racesForClass(classRow.id) : [];
+const raceOptionsFor = (faction: Faction) =>
+  races.filter((r) => r.faction === faction).map((r) => ({ value: r.slug, label: r.name }));
+const raceOptions: Record<Faction, { value: string; label: string }[]> = {
+  alliance: raceOptionsFor('alliance'),
+  horde: raceOptionsFor('horde'),
 };
-const bareBandViewsByFaction: Readonly<Record<Faction, BandView[]>> = {
-  alliance: bandViewsFor('alliance', bareBandInfosByFaction.alliance, BARE_PRESET),
-  horde: bandViewsFor('horde', bareBandInfosByFaction.horde, BARE_PRESET),
-};
-
-/** Whether this band + faction publishes both presets, so its panel carries the control. */
-function offersPresetChoice(faction: Faction, band: number): boolean {
-  return file !== null && bandPresets(file, band, faction).length > 1;
-}
-const raidMeta = file === null ? undefined : presetMeta(file, RAID_PRESET);
-
-/**
- * CSS that must NOT go through Astro's own scoped `<style>` (hence `set:html` below, raw
- * and unscoped): every rule here reaches from a page-level element (the two faction radios,
- * `.page-body`) into an element a CHILD component (`ClassHeader.astro`) rendered, which
- * carries that component's own, different scope id -- a scoped page rule silently never
- * matches it (confirmed by reading the rendered HTML: `#faction-alliance` carries the
- * page's own `data-astro-cid-*`, `[data-testid="bis-faction-toggle-alliance"]` carries
- * `ClassHeader`'s own, different one). Two concerns share this one unscoped block:
- *
- * 1. `ClassHeader`'s own band text (the h1's " · 20 to 29" suffix and the summary sentence)
- *    renders one hidden variant per band; shows the first band's by default, or whichever
- *    band's own panel is `:target` (either faction's id: the inactive faction's whole
- *    header is already `display:none` from the faction toggle, so this never needs to know
- *    which faction is active, only which band). `:has()` reaches from `.page-body` down
- *    into both the header (band text) and the band panels (`:target`) at once, which a
- *    forward-only `~` sibling combinator cannot do since the header comes BEFORE the band
- *    panels in the DOM. Built once, server-side, from the same `bands` array and `bisCopy`
- *    strings the header itself rendered from -- never a second, drifting copy of that
- *    wording in a client script (spec's own band-60 "at 60, no to X" acceptance screenshot
- *    requires this text to actually track the open band, not just the pill).
- * 2. The FactionToggle pill is a plain `<label for=...>`, not the radio itself (the radio
- *    stays `sr-only`, the existing mechanism) -- a keyboard tab lands on the radio, so its
- *    own focus ring must be projected onto the visible pill rather than show on nothing a
- *    player can see (ux-designer review round 1's own focus-visible screenshot surfaced
- *    this: the rule silently never matched while it lived in the page's scoped `<style>`
- *    below). Same sibling-then-descendant reach as concern 1, since the radios sit at the
- *    top of `<main>`, before `.page-body`, and every pill is a later descendant of it. */
-const crossScopeCss =
-  '[data-band-text-for],[data-band-summary-for]{display:none}' +
-  (bands[0] === undefined
-    ? ''
-    : `.page-body:not(:has(.band-panel:target)) [data-band-text-for="${bands[0]}"]{display:inline-block}` +
-      `.page-body:not(:has(.band-panel:target)) [data-band-summary-for="${bands[0]}"]{display:block}`) +
-  bands
-    .map(
-      (b) =>
-        `.page-body:has(#band-alliance-${b}:target,#band-horde-${b}:target) [data-band-text-for="${b}"]{display:inline-block}` +
-        `.page-body:has(#band-alliance-${b}:target,#band-horde-${b}:target) [data-band-summary-for="${b}"]{display:block}`,
-    )
-    .join('') +
-  `#faction-alliance:focus-visible ~ .page-body [data-testid="bis-faction-toggle-alliance"],` +
-  `#faction-horde:focus-visible ~ .page-body [data-testid="bis-faction-toggle-horde"]` +
-  `{outline:2px solid var(--color-gold);outline-offset:2px}`;
 ---
 
-<Base title={title} description={description} path={path}>
+<Base title={title} description={description} path={path} wide>
+  <script is:inline set:html={BIS_PENDING_SCRIPT} />
   <main id="main" tabindex="-1" class="bis-page">
-    <GlyphSheet />
-
-    {file === null ? (
-      <Fragment>
-        <ArtPanel classSlug={specEntry.class_slug}>
-          <ClassHeader
-            classSlug={specEntry.class_slug}
-            className={className}
-            specName={specEntry.name}
-            specTabs={specTabs}
-            bands={[]}
-            build={build}
-            minimal
-          />
-        </ArtPanel>
-        <div class="bis-empty-wrap">
-          <div class="rounded-control bg-raised border-line border p-6" data-testid="bis-empty-state">
-            <p class="font-semibold">{bisCopy.noDataYet}</p>
-            <p class="text-muted mt-2 text-[14px]">{bisCopy.noDataYetBody}</p>
-            <p class="mt-3 text-[14px]">
-              <a href={guideHref}>{specEntry.name} guide</a>
-            </p>
-          </div>
-        </div>
-      </Fragment>
+    {server === undefined ? (
+      <div class="bis-empty" data-testid="bis-empty-state">
+        <PageHeader title={`${specEntry.name} ${className}`} tone={{ classSlug } as never} />
+        <Notice text={`${bisCopy.noDataYet} ${bisCopy.noDataYetBody}`} action={{ label: `${specEntry.name} guide`, href: guideHref }} tone="neutral" />
+      </div>
     ) : (
       <Fragment>
-        <script
-          is:inline
-          type="application/json"
-          id="bis-tooltip-models"
-          set:html={tooltipModelsJson}
-        ></script>
-        {/* Both islands on this page hydrate with `client:idle-after-load`, not `client:idle`: a
-            plain idle callback can land before the header's first paint in the trace Lighthouse
-            records, and its module fetches (the island runtime, the character header's chunks)
-            then count toward the simulated LCP, which flipped this page between ~1.95 s and
-            ~2.7 s run to run against the 1.9 s budget. See src/directives/idle-after-load.ts. */}
+        {/* Both islands hydrate with `client:idle-after-load` (src/directives/idle-after-load.ts):
+            a plain idle callback can land before first paint in the Lighthouse trace and its
+            module fetches then count toward the simulated LCP. */}
         <BisTooltipHost client:idle-after-load build={build} />
-
-        <input type="radio" name="faction" id="faction-alliance" class="sr-only" checked />
-        <input type="radio" name="faction" id="faction-horde" class="sr-only" />
-        <style set:html={crossScopeCss}></style>
-
-        <div class="page-body" data-bis-spec={specEntry.spec}>
-          <ArtPanel classSlug={specEntry.class_slug}>
-            <div class="header-row">
-              {factions.map((faction) => (
-                <div class={`header-faction ${faction}`}>
-                  <ClassHeader
-                    classSlug={specEntry.class_slug}
-                    className={className}
-                    specName={specEntry.name}
-                    specTabs={specTabs.map((tab) => ({
-                      ...tab,
-                      href: tab.active ? `${tab.href}?faction=${faction}` : tab.href,
-                    }))}
-                    bands={bands}
-                    unit={unit}
-                    faction={faction}
-                    asHeading={faction === factions[0]}
-                    race={raceOptionsFor(faction)[0]?.slug ?? ''}
-                    raceOptions={raceOptionsFor(faction)}
-                    build={build}
-                  />
-                </div>
-              ))}
-              <div class="header-character-card">
-                <BisSpecCharacterHeader
-                  client:idle-after-load
-                  specKey={specEntry.spec}
-                  classSlug={specEntry.class_slug}
-                  specName={specEntry.name}
-                  build={build}
-                  plannerHref={
-                    bandViewsByFaction.alliance.at(-1)?.plannerHref ?? `/planner?spec=${specEntry.spec}`
-                  }
-                />
-              </div>
-            </div>
-          </ArtPanel>
-
-          {factions.map((faction) => (
-            <div class={`faction-content ${faction}`} data-testid={`bis-faction-panel-${faction}`}>
-              <div class="band-panels" id={`bands-${faction}`}>
-                {bandViewsByFaction[faction].map((view, viewIndex) => (
-                  <div
-                    id={`band-${faction}-${view.band}`}
-                    class:list={['band-panel', view.bandIndex === 0 && 'band-panel-default']}
-                    data-testid={`bis-band-${faction}-${view.band}`}
-                  >
-                    {offersPresetChoice(faction, view.band) ? (
-                      <Fragment>
-                        <PresetControl testId={`bis-preset-${faction}-${view.band}`} />
-                        <div class="preset-view" data-preset-view={RAID_PRESET}>
-                          <PresetCaption
-                            preset={RAID_PRESET}
-                            meta={raidMeta}
-                            testId={`bis-preset-caption-${faction}-${view.band}-${RAID_PRESET}`}
-                          />
-                          <BandPanelBody
-                            view={view}
-                            faction={faction}
-                            specName={specEntry.name}
-                            guideHref={guideHref}
-                            build={build}
-                          />
-                        </div>
-                        <div class="preset-view" data-preset-view={BARE_PRESET}>
-                          <PresetCaption
-                            preset={BARE_PRESET}
-                            testId={`bis-preset-caption-${faction}-${view.band}-${BARE_PRESET}`}
-                          />
-                          <BandPanelBody
-                            view={bareBandViewsByFaction[faction][viewIndex]!}
-                            faction={faction}
-                            specName={specEntry.name}
-                            guideHref={guideHref}
-                            build={build}
-                            testSuffix={`-${BARE_PRESET}`}
-                          />
-                        </div>
-                      </Fragment>
-                    ) : (
-                      <BandPanelBody
-                        view={view}
-                        faction={faction}
-                        specName={specEntry.name}
-                        guideHref={guideHref}
-                        build={build}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <BisSpecPage
+          client:idle-after-load
+          spec={specEntry.spec}
+          classSlug={classSlug}
+          className={className}
+          specName={specEntry.name}
+          crestSrc={classCrestSrc(classSlug)}
+          crestColor={classColorVar(className)}
+          specOptions={specOptions}
+          raceOptions={raceOptions}
+          guideHref={guideHref}
+          dataHref={`${path}.json`}
+        />
+        {/* The data the islands read at hydration sits after the markup, so the first paint never
+            waits on it streaming in (the default state is already server-rendered above). */}
+        <script is:inline type="application/json" id="bis-tooltip-models" set:html={tooltipModelsJson} />
+        <script is:inline type="application/json" id={BIS_PAGE_DATA_ID} set:html={bisPageDataJson(inlineData!)} />
       </Fragment>
     )}
   </main>
@@ -395,151 +108,21 @@ const crossScopeCss =
 
 <style>
   .bis-page {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
     padding-bottom: 40px;
   }
-  .bis-empty-wrap {
-    padding: 28px var(--page-inset);
-  }
-
-  .header-row {
+  .bis-empty {
     display: grid;
-    grid-template-columns: 1fr 440px;
-    gap: 24px;
-    padding: 28px var(--page-inset) 24px var(--page-inset);
-    align-items: end;
-  }
-  .header-faction {
-    display: none;
-    min-width: 0;
-  }
-  .header-character-card {
-    min-width: 0;
-  }
-
-  .faction-content {
-    display: none;
-  }
-  #faction-alliance:checked ~ .page-body .alliance {
-    display: block;
-  }
-  #faction-horde:checked ~ .page-body .horde {
-    display: block;
-  }
-  .page-body:not([data-preset='bare']) .preset-view[data-preset-view='bare'],
-  .page-body[data-preset='bare'] .preset-view[data-preset-view='raid'] {
-    display: none;
-  }
-  .band-panel {
-    display: none;
-  }
-  .band-panel:target {
-    display: block;
-  }
-  .band-panels:not(:has(.band-panel:target)) .band-panel-default {
-    display: block;
-  }
-
-  @media (max-width: 1023px) {
-    .header-row {
-      grid-template-columns: 1fr;
-      padding: 22px var(--page-inset) 18px var(--page-inset);
-    }
+    gap: 16px;
+    padding: 28px var(--page-inset);
   }
 </style>
 
-<script is:inline>
-  // Not an island: a plain inline script, no framework, so `?faction=horde` opens on the
-  // right panel without paying for a hydrated component the way the rest of this page
-  // (server-rendered rows plus a CSS radio toggle) never does either.
-  (function () {
-    const faction = new URLSearchParams(window.location.search).get('faction');
-    if (faction === 'horde') {
-      const input = document.getElementById('faction-horde');
-      if (input) input.checked = true;
-    }
-  })();
-
-  // Preset choice (level 60's "Raid-ready · Bare" control): the page-body's data-preset
-  // attribute drives which variant shows (CSS above), `?preset=` carries the choice in the
-  // URL, and every copy of the control follows the one value. No parameter means the
-  // default, raid-ready where a band has it.
-  (function () {
-    const body = document.querySelector('.page-body');
-    if (!body) return;
-    function apply(preset) {
-      body.setAttribute('data-preset', preset);
-      document.querySelectorAll('[data-preset-option]').forEach(function (button) {
-        button.setAttribute('aria-checked', String(button.getAttribute('data-preset-option') === preset));
-      });
-    }
-    const initial = new URLSearchParams(window.location.search).get('preset');
-    apply(initial === 'bare' ? 'bare' : 'raid');
-    document.querySelectorAll('[data-preset-option]').forEach(function (button) {
-      button.addEventListener('click', function () {
-        const preset = button.getAttribute('data-preset-option');
-        apply(preset);
-        const url = new URL(window.location.href);
-        url.searchParams.set('preset', preset);
-        window.history.replaceState(null, '', url);
-      });
-    });
-  })();
-
-  // Arrow-key band navigation: focus never leaves the band strip's own links, and moving
-  // focus also follows the link (the same `#band-<faction>-<band>` CSS `:target` toggle a
-  // click already drives), so the keyboard path and the pointer path land on the exact same
-  // state rather than two behaviours to keep in sync.
-  (function () {
-    document.querySelectorAll('[data-band-strip]').forEach(function (strip) {
-      strip.addEventListener('keydown', function (event) {
-        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-        const links = Array.prototype.slice.call(strip.querySelectorAll('[data-band-link]'));
-        const index = links.indexOf(document.activeElement);
-        if (index === -1) return;
-        const nextIndex =
-          event.key === 'ArrowRight' ? Math.min(index + 1, links.length - 1) : Math.max(index - 1, 0);
-        const next = links[nextIndex];
-        if (!next) return;
-        event.preventDefault();
-        next.focus();
-        next.click();
-      });
-    });
-  })();
-
-  // The band strip's own live "which one is open" highlight (ClassHeader's own note): kept
-  // as a plain inline script, the same convention the two scripts above already use, rather
-  // than a `:has()` selector per band -- this covers any number of bands with one listener
-  // set instead of one generated CSS rule per band/faction pair.
-  (function () {
-    function syncActive() {
-      document.querySelectorAll('[data-band-strip]').forEach(function (strip) {
-        const links = Array.prototype.slice.call(strip.querySelectorAll('[data-band-link]'));
-        if (links.length === 0) return;
-        const current =
-          links.find(function (link) {
-            return link.getAttribute('href') === window.location.hash;
-          }) || links[0];
-        links.forEach(function (link) {
-          link.classList.toggle('is-current', link === current);
-        });
-      });
-    }
-    window.addEventListener('hashchange', syncActive);
-    syncActive();
-  })();
-</script>
-
 <script>
-  // The header selector is the one way to switch character: follow it (a bundled script, so
-  // the inline ones above stay framework-free).
-  // With no band in the URL it opens on ?band= or the selected character's band.
+  // The header selector is the one way to switch character: follow it. With no band in the URL
+  // the page opens on the selected character's band (the island applies it via `bis:show`).
   import { applyBisDefaultBand, mountBisFollow } from '../../../lib/bis/follow-selector-client';
 
-  const root = document.querySelector<HTMLElement>('.page-body[data-bis-spec]');
+  const root = document.querySelector<HTMLElement>('[data-testid="bis-page"][data-bis-spec]');
   if (root !== null) {
     mountBisFollow(root);
     applyBisDefaultBand(root);

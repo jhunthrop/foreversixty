@@ -53,6 +53,9 @@ test.describe('the sim card on a 390 phone', () => {
 
   test('a tap opens the item, a second tap closes it', async ({ page }) => {
     await loadSim(page);
+    // loadSim's Run is a mouse click, and the card can land under where that mouse rests: its
+    // hover would open the panel before the first tap. Park the mouse off the card first.
+    await page.mouse.move(0, 0);
     const head = page.getByTestId('paperdoll-item-head');
     await head.tap();
     await expect(page.getByTestId('item-tooltip')).toBeVisible();

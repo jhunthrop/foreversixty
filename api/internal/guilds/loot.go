@@ -19,7 +19,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
-	"github.com/jhunthrop/foreversixty/api/internal/refusal"
 )
 
 // onyxiaEncounterID/onyxiaZone are progression.go's own constants, reused here under this
@@ -171,6 +170,8 @@ type LootCandidate struct {
 
 	// tankFirst is a tank on a drop with Defense: it ranks ahead of the rest of its tier.
 	tankFirst bool
+	// bisPick is a tier-0 candidate whose band's pick for the slot is the item itself.
+	bisPick bool
 }
 
 // LootWornItem is the item a candidate wears in the drop's slot.
@@ -280,41 +281,20 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 		Items:    []LootItemView{},
 	}
 
-	g, err := s.getGuild(ctx, guildID)
+	lr, err := s.lootRoster(ctx, guildID)
 	if err != nil {
 		return LootView{}, err
 	}
-	roster, err := s.HomeRoster(ctx, guildID, g, 0, false, false)
-	if err != nil {
-		return LootView{}, err
-	}
-	// An account that joined by invite has no character row of the guild's, but its gear is on the
-	// site and it takes part in the raid, so it is a candidate like any member.
-	invited, err := s.invitedRosterRows(ctx, guildID, g)
-	if err != nil {
-		return LootView{}, err
-	}
-	roster = append(roster, invited...)
+	g, roster := lr.guild, lr.roster
 	all, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)
 	if err != nil {
 		return LootView{}, err
 	}
+	lr.nameInvited(all)
 	now := time.Now()
 	night, err := s.resolveAwardNight(ctx, guildID, onyxiaEncounterID, nil, now)
 	if err != nil {
 		return LootView{}, err
-	}
-
-	// An award to an invited member names the account's synthetic row, which no export carries a
-	// name for; the picked character's name stands in for it.
-	invitedName := make(map[string]string, len(invited))
-	for _, row := range invited {
-		invitedName[row.awardKey] = row.Name
-	}
-	for _, a := range all {
-		if name, ok := invitedName[a.to.CharacterKey]; ok && a.to.Name == "" {
-			a.to.Name = name
-		}
 	}
 
 	awards := tonightsAwards(all, night, now)
@@ -382,81 +362,6 @@ func (s *Store) lootItemView(roster []RosterRow, group []lootItem, guildFaction 
 		iv.Eligible = questEligible(roster, item, kind)
 	}
 	return iv
-}
-
-// lootAward is one award row as the Loot tab reads it: the item, the raid (or, for a logged
-// night with no planned raid, the report) it was filed under (nil for none yet) and when, with
-// the line the page shows.
-type lootAward struct {
-	itemID    int
-	raidID    *int64
-	reportID  *string
-	awardedAt time.Time
-	to        *AwardedTo
-}
-
-// raidlessAwardNight is how long an award filed under no raid still marks its item awarded on
-// the Loot tab: one raid night (the longest raid's match window, an hour before to six after a
-// four-hour raid, is eleven hours).
-const raidlessAwardNight = 12 * time.Hour
-
-// lootAwards reads every award row for guildID's encounterID, oldest first, with the claimant's
-// and the awarding officer's own names resolved. Every row is kept: the tier's count reads them
-// all, and tonightsAwards picks the ones that mark an item awarded now.
-func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) ([]lootAward, error) {
-	rows, err := s.Pool.Query(ctx, `
-		select la.item_id, la.raid_id, la.report_id, la.id, la.character_key, coalesce(ae.name, ''), la.awarded_at, la.awarded_by
-		from loot_awards la left join addon_exports ae on ae.character_key = la.character_key
-		where la.guild_id = $1 and la.encounter_id = $2
-		order by la.awarded_at, la.id`, guildID, encounterID)
-	if err != nil {
-		return nil, fmt.Errorf("guilds: loot awards: %w", err)
-	}
-	defer rows.Close()
-	var out []lootAward
-	for rows.Next() {
-		var row lootAward
-		var awardedBy *int64
-		a := &AwardedTo{}
-		if err := rows.Scan(&row.itemID, &row.raidID, &row.reportID, &a.AwardID, &a.CharacterKey, &a.Name, &row.awardedAt, &awardedBy); err != nil {
-			return nil, fmt.Errorf("guilds: loot awards: %w", err)
-		}
-		a.At = row.awardedAt.UTC().Format(time.RFC3339)
-		if awardedBy != nil && s.Accounts != nil {
-			a.ByName = s.awarderName(ctx, guildID, *awardedBy)
-		}
-		row.to = a
-		out = append(out, row)
-	}
-	return out, rows.Err()
-}
-
-// tonightsAwards is each item's award on the night being played, keyed by item id: an award
-// filed under night (resolveAwardNight with no named raid: the raid in play, else the latest
-// night that killed the boss this week), or one filed under no night within the last
-// raidlessAwardNight. Last week's award leaves the item free to award again; the latest award of
-// an item wins.
-func tonightsAwards(awards []lootAward, night awardNight, now time.Time) map[int]*AwardedTo {
-	out := map[int]*AwardedTo{}
-	for _, a := range awards {
-		if awardOnNight(a, night, now) {
-			out[a.itemID] = a.to
-		}
-	}
-	return out
-}
-
-// awardOnNight is whether a is filed under night: the same raid, else (both raid-less) the same
-// logged night, else a raid-less, report-less award made within raidlessAwardNight.
-func awardOnNight(a lootAward, night awardNight, now time.Time) bool {
-	switch {
-	case a.raidID != nil:
-		return night.raidID != nil && *a.raidID == *night.raidID
-	case a.reportID != nil:
-		return night.raidID == nil && night.reportID != nil && *a.reportID == *night.reportID
-	default:
-		return now.Sub(a.awardedAt) <= raidlessAwardNight
-	}
 }
 
 // anOfficer is what an award line says when it cannot name the officer's character.
@@ -533,26 +438,31 @@ func validOnyxiaItem(itemID int) bool {
 // CreateLootAward records an officer's loot decision. A second Award of the same drop on the same
 // night (a raid, or a logged night with no planned raid) replaces the first; an award with no night
 // yet is its own row, so the same item awarded on two such nights keeps both (migration 0071).
-// raidID names the done raid it was for; nil files it under the raid being played now
-// (loot_raid.go), else the latest night that killed the boss, else no night until a match attaches it.
-func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, raidID *int64) (int64, error) {
-	if encounterID != onyxiaEncounterID || !validOnyxiaItem(itemID) {
+// d.Night names the council night it was for; else raidID names the done raid; nil for both files
+// it under the raid being played now (loot_raid.go), else the latest night that killed the boss,
+// else no night until a match attaches it. The award keeps its decision record (decisionSnapshot).
+func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, raidID *int64, d AwardDecision) (int64, error) {
+	if encounterID != onyxiaEncounterID {
 		return 0, ErrInvalidAward
 	}
-	var exists bool
-	if err := s.Pool.QueryRow(ctx,
-		`select exists(select 1 from guild_characters where guild_id = $1 and character_key = $2)`,
-		guildID, characterKey).Scan(&exists); err != nil {
-		return 0, fmt.Errorf("guilds: create loot award: %w", err)
+	if err := s.checkDropTarget(ctx, guildID, itemID, characterKey); err != nil {
+		return 0, err
 	}
-	if !exists {
-		return 0, ErrInvalidAward
+	now := time.Now()
+	night := awardNight{}
+	if d.Night != nil {
+		night = *d.Night
+	} else {
+		var err error
+		if night, err = s.resolveAwardNight(ctx, guildID, encounterID, raidID, now); err != nil {
+			return 0, err
+		}
 	}
-	night, err := s.resolveAwardNight(ctx, guildID, encounterID, raidID, time.Now())
+	rec, err := s.decisionSnapshot(ctx, guildID, night, itemID, characterKey, d, now)
 	if err != nil {
 		return 0, err
 	}
-	return s.upsertAward(ctx, guildID, encounterID, itemID, characterKey, awardedBy, night)
+	return s.upsertAward(ctx, guildID, encounterID, itemID, characterKey, awardedBy, night, rec)
 }
 
 // DeleteLootAward removes one award, scoped to guildID so one guild can never delete
@@ -604,6 +514,11 @@ type lootAwardInput struct {
 	CharacterKey string `json:"character_key"`
 	// RaidID optionally names the done raid the award was for.
 	RaidID *int64 `json:"raid_id"`
+	// Night optionally names the council night (a night key) instead of RaidID.
+	Night string `json:"night"`
+	// MsOs ("ms" or "os") and Reason (at most 200 characters) are the decision record.
+	MsOs   *string `json:"ms_os"`
+	Reason *string `json:"reason"`
 }
 
 // requireGuildPlan writes the refusal and returns false unless the officer's guild holds
@@ -639,33 +554,21 @@ func (s *Service) requireGuildPlan(w http.ResponseWriter, r *http.Request, guild
 }
 
 func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
-	guildID, ok := guildIDFrom(r)
-	if !ok {
-		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+	guildID, ok := s.councilGuild(w, r, "loot_award", "could not record that award just now",
+		"you must be a verified officer of this guild to award loot")
+	if !ok || !s.councilOfficerWrite(w, r, guildID, "loot_award", "could not record that award just now") {
 		return
 	}
 	actor := auth.ActorFrom(r.Context())
-	allowed, err := s.verifiedOfficerOrLeader(r, guildID)
-	if err != nil {
-		s.fail(w, r, "loot_award", err, "could not record that award just now")
-		return
-	}
-	if !allowed {
-		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
-			"you must be a verified officer of this guild to award loot", nil)
-		return
-	}
-	if !s.requireGuildPlan(w, r, guildID, actor.UserID, entitlements.FeatureRaidGuildTools, refusal.AwardPlanRequired, "loot_award", "could not record that award just now") {
-		return
-	}
-	if !s.officerNotFrozen(w, r, guildID, "loot_award", "could not record that award just now") {
-		return
-	}
 	var in lootAwardInput
 	if err := decodeJSON(w, r, &in); err != nil {
 		return
 	}
-	id, err := s.Store.CreateLootAward(r.Context(), guildID, in.EncounterID, in.ItemID, in.CharacterKey, actor.UserID, in.RaidID)
+	d, ok := s.awardDecisionFrom(w, r, guildID, in)
+	if !ok {
+		return
+	}
+	id, err := s.Store.CreateLootAward(r.Context(), guildID, in.EncounterID, in.ItemID, in.CharacterKey, actor.UserID, in.RaidID, d)
 	var badRaid *AwardRaidError
 	switch {
 	case errors.As(err, &badRaid):
@@ -673,6 +576,8 @@ func (s *Service) createLootAward(w http.ResponseWriter, r *http.Request) {
 			fmt.Sprintf("raid %d is not a done Onyxia raid of this guild", badRaid.RaidID), nil)
 	case errors.Is(err, ErrInvalidAward):
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a valid encounter/item/character for this guild", nil)
+	case errors.Is(err, ErrInvalidNight):
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", invalidNightText, nil)
 	case err != nil:
 		s.fail(w, r, "loot_award", err, "could not record that award just now")
 	default:
@@ -694,23 +599,11 @@ func (s *Service) deleteLootAward(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such award", nil)
 		return
 	}
+	if !s.councilOfficerGate(w, r, guildID, "loot_award_delete", "could not remove that award just now",
+		"you must be a verified officer of this guild to remove a loot award") {
+		return
+	}
 	actor := auth.ActorFrom(r.Context())
-	allowed, err := s.verifiedOfficerOrLeader(r, guildID)
-	if err != nil {
-		s.fail(w, r, "loot_award_delete", err, "could not remove that award just now")
-		return
-	}
-	if !allowed {
-		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
-			"you must be a verified officer of this guild to remove a loot award", nil)
-		return
-	}
-	if !s.requireGuildPlan(w, r, guildID, actor.UserID, entitlements.FeatureRaidGuildTools, refusal.AwardPlanRequired, "loot_award_delete", "could not remove that award just now") {
-		return
-	}
-	if !s.officerNotFrozen(w, r, guildID, "loot_award_delete", "could not remove that award just now") {
-		return
-	}
 	switch err := s.Store.DeleteLootAward(r.Context(), guildID, awardID); {
 	case errors.Is(err, ErrNotFound):
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such award", nil)

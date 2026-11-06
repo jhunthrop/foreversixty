@@ -3,11 +3,12 @@
 // addressed fight) is a rounded band whose content sits at least 12 px inside both sides, at
 // 1440 and 390; an unlit row keeps square corners so its hairline runs straight; a link row's
 // hover band is a raised ground with a ring. (The roster's handoff slot: guild-roster-handoff.spec.ts.)
+// The raid report is built from the ui/ primitives, whose own rows are Row's `selected` ground, not
+// row bands (web layout spec 2026-11-05 §3A.2), so it is no longer measured here.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { CHARACTER_PATH } from './support/character-fixture';
-import { AFTER_END, DONE, stubGuildAttendance } from './support/guild-attendance';
-import { CHICAGO, NOW, ONYXIA_ID, raidUrl, stubGuildRaids, threePlanned } from './support/guild-raids';
+import { CHICAGO, NOW, stubGuildRaids, threePlanned } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';
 import { GUILD_PAGE, litBandRooms, stubCharacter, stubGuild } from './support/row-band-pages';
 
@@ -42,18 +43,6 @@ for (const width of WIDTHS) {
       await stubGuild(page, 'member');
       await gotoHydrated(page, `${GUILD_PAGE}#readiness`, 'guild-readiness-rows');
       await expectRoomyBands(page, 1);
-    });
-
-    test('the raid report own rows are rounded bands holding their content', async ({ page }) => {
-      await stubGuildAttendance(page, { viewer: 'officer', nights: DONE });
-      await page.clock.install({ time: AFTER_END });
-      await gotoHydrated(page, raidUrl(ONYXIA_ID), 'raid-report');
-      // Kraggor's own rows: deaths, loot, consumables, the attendance Present grid and, opened,
-      // the sign-ups (an officer's row carries its state select).
-      await expectRoomyBands(page, 4);
-      await page.getByTestId('raid-roster-disclosure-summary').click();
-      await expect(page.getByTestId('raid-roster')).toBeVisible();
-      await expectRoomyBands(page, 5);
     });
 
     test('the addressed fight is a rounded band; the rows beside it keep square rules', async ({ page }) => {
