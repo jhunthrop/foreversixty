@@ -1,7 +1,8 @@
 // web/tests/e2e/support/parity-data-paths.mjs
 // The files of data/builds/<active build> that the simulator parity spec serves to the fixture
-// build (support/sim-parity.ts: the mocks are drawn from them), and the inputs its derived names
-// read (scripts/sync-data.mjs `writeSimNames`). The CI parity job checks out only these
+// build (support/sim-parity.ts) and that design/mocks/ws_sim.py draws its mocks from at test time
+// (support/parity-mocks.ts), and the inputs the derived names read (scripts/sync-data.mjs
+// `writeSimNames`). The CI parity job checks out only these
 // (`git sparse-checkout add $(node tests/e2e/support/parity-data-paths.mjs)`), so the job keeps
 // its light checkout and the spec reads the same files it reads locally.
 import { readFileSync } from 'node:fs';
@@ -20,9 +21,13 @@ const FILES = [
   'spellicons.json',
   'stat-weights.json',
   'talents/',
-  // Read by writeSimNames for the derived simnames files.
+  // Read by writeSimNames for the derived simnames files (spells.json by ws_sim.py too).
   'items.json',
   'spells.json',
+  // Read by ws_sim.py alone.
+  'racialicons.json',
+  'simconsumes.json',
+  'spelltips/',
 ];
 
 const { build } = JSON.parse(

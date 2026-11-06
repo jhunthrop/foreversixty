@@ -161,9 +161,11 @@ jobs:
     timeout-minutes: 20
     defaults: { run: { working-directory: web } }
     steps:
-      # As e2e's checkout (the committed mocks included), without data/builds: the BiS spec and
-      # the served dist read none. The simulator spec serves the mocks' own data files to the
-      # fixture build, so the next step adds just those files of the active build.
+      # As e2e's checkout (the committed mocks and their generators, design/mocks/*.py and
+      # *.mjs, included), without data/builds: the BiS spec and the served dist read none. The
+      # specs render their mocks at test time (tests/e2e/support/parity-mocks.ts) with the
+      # runner's own python3 (standard library only); the simulator's are drawn from data files
+      # the spec also serves to the fixture build, so the next step adds just those files.
       - uses: actions/checkout@v4
         with:
           sparse-checkout-cone-mode: false
@@ -174,6 +176,8 @@ jobs:
             !/design/reviews/
             !/design/mocks/
             /design/mocks/web/
+            /design/mocks/*.py
+            /design/mocks/*.mjs
             !/docs/superpowers/reviews/
             !/apps/ios/
             !/apps/android/
@@ -206,6 +210,14 @@ jobs:
         env:
           FOREVER_DATA: fixture
           E2E_SKIP_BUILD: '1'
+      # The committed reference mocks against the ones the specs just rendered: a warning and the
+      # regen commands in the job summary, never a red job (design/parity.md, "The reference
+      # mocks"): the gate above compared against the test-time mocks, so a data refresh lands
+      # without a hand regen.
+      - name: the reference mocks against the build (a report, not a gate)
+        if: success() || failure()
+        continue-on-error: true
+        run: node scripts/check-parity-mocks.mjs
       # The mock | build side-by-sides, red or green: the review starts from them.
       - if: always()
         uses: actions/upload-artifact@v4
@@ -272,6 +284,8 @@ jobs:
             !/design/reviews/
             !/design/mocks/
             /design/mocks/web/
+            /design/mocks/*.py
+            /design/mocks/*.mjs
             !/docs/superpowers/reviews/
             !/apps/ios/
             !/apps/android/
