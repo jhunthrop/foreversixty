@@ -97,9 +97,11 @@ test('weights and slot figures say score, never DPS, on a tank band', async ({ p
   const weights = page.getByTestId('bis-weights-alliance-60');
   await expect(weights).toContainText('score per point');
   await expect(weights).not.toContainText('DPS');
+  // A tied slot with no different alternative carries no figure ("No close alternative"), so the
+  // unit is asserted over the doll's figures, not one slot's.
   const head = page.getByTestId('bis-doll-slot-head');
-  await expect(head).toContainText('score');
   await expect(head).not.toContainText('DPS');
+  await expect(page.getByTestId('bis-doll')).toContainText(/score vs next best|[−+]\d[\d,.]* score/);
   await expect(page.getByTestId('bis-doll')).not.toContainText('DPS');
   await head.click();
   const runners = page.locator('[data-testid="bis-detail-runners"]:visible');
