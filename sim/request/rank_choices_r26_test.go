@@ -48,6 +48,9 @@ func TestRound26BalanceRankRows(t *testing.T) {
 func TestRound26RestorationDruidRankRows(t *testing.T) {
 	const rj1, rj2, rj3, ht1, ht2 = 774, 1058, 1430, 5185, 5186
 	checkRankRows(t, "druid-restoration", "druid", []rankRowCase{
+		{"10 tauren tank rank 1, party rank 2", "tauren", 10, []int32{rj1, rj2, ht2}, []int32{ht1}},
+		{"10 night elf rank 1 of everything", "night-elf", 10, []int32{rj1, ht1}, []int32{rj2}},
+		{"11 keeps rank 2 Rejuvenation", "night-elf", 11, []int32{rj2}, []int32{rj1}},
 		{"12 keeps rank 2 Rejuvenation", "tauren", 12, []int32{rj2}, []int32{rj1}},
 		{"13 tank rank 1, party rank 2 (tauren)", "tauren", 13, []int32{rj1, rj2}, nil},
 		{"13 tank rank 1, party rank 2 (night elf)", "night-elf", 13, []int32{rj1, rj2}, nil},
