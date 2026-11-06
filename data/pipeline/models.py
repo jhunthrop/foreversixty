@@ -530,8 +530,14 @@ class LootSource(BaseModel):
     #: (`pipeline.classic_sources._world_drop_records`' own doc). Either
     #: side is `None` when the dump names no level for the pool at all --
     #: never invented.
+    #: `dungeon` and `raid` kinds (2026-11-05): the instance's level range,
+    #: the client's own Group Finder row (`pipeline.loot.instance_levels`).
     level_min: int | None = None
     level_max: int | None = None
+    #: `crafted` kind only (2026-11-05): item id (string key) -> the
+    #: profession skill its recipe needs (`pipeline.loot.crafted_skill`).
+    #: An item with no skill in the pinned classic-db dump is absent.
+    required_skill: dict[str, int] | None = None
     #: "wowhead" or "classic-db" when this source exists ONLY because a
     #: scrape/dump named it for an item the engine fork's own database
     #: named no source for at all (night-item-sources lane, 2026-09-28;
@@ -662,6 +668,14 @@ class QuestSource(BaseModel):
     #: guessed" policy as `required_rep_faction` above.
     profession: str | None = None
     skill: int | None = None
+    #: 2026-11-05: the zone the quest log files this quest under, from
+    #: classic-db's `quest_template.ZoneOrSort` (`pipeline.classic_sources.
+    #: ClassicDbQuestInfo.zone_id`), named from the build's zones.json.
+    #: `None` for a quest the dump does not cover (Forever-new), one filed
+    #: under a category rather than a zone (class, profession, holiday
+    #: quests), or a zone id zones.json does not name.
+    zone_id: int | None = None
+    zone: str | None = None
 
 
 class LootFile(BaseModel):

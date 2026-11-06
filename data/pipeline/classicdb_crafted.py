@@ -88,6 +88,16 @@ class ClassicDbCraftedRecipe(BaseModel):
 
     recipe_item_ids: list[int] = []
     reagent_item_ids: list[int] = []
+    #: The profession skill the recipe needs (`Crafted · Leatherworking
+    #: (skill 40)`): the lowest of the trainer's `reqskillvalue` for the
+    #: craft spell or a spell that teaches it, and each recipe item's own
+    #: `RequiredSkillRank`, since any one way in is enough. `None` when the
+    #: dump states neither (a starting recipe every character knows, or a
+    #: craft no trainer or recipe item in the dump teaches). These are
+    #: 1.12's server numbers: the client carries no learn requirement
+    #: (SkillLineAbility.MinSkillLineRank is 1 for every craft; its trivial
+    #: ranks are the yellow and grey thresholds, not the requirement).
+    required_skill: int | None = None
 
 
 def extract_records(sql_text: str) -> dict[int, ClassicDbCraftedRecipe]:
@@ -118,6 +128,8 @@ def extract_records(sql_text: str) -> dict[int, ClassicDbCraftedRecipe]:
     spell_effects = dump.spell_effects
     item_template_spell_ids = dump.item_template_spell_ids
     spell_reagents = dump.spell_reagents
+    trainer_skill_values = dump.trainer_skill_values
+    item_required_skill_ranks = dump.item_required_skill_ranks
 
     # spell id -> every OTHER spell id that LEARNS it (SPELL_EFFECT_
     # LEARN_SPELL's own EffectTriggerSpell naming it) -- built once,
@@ -140,13 +152,20 @@ def extract_records(sql_text: str) -> dict[int, ClassicDbCraftedRecipe]:
     for item_id, craft_spells in sorted(created_item_to_spells.items()):
         recipe_item_ids: set[int] = set()
         reagent_item_ids: set[int] = set()
+        taught_by: set[int] = set(craft_spells)
         for craft_spell_id in craft_spells:
             for learn_spell_id in learn_spell_for.get(craft_spell_id, []):
+                taught_by.add(learn_spell_id)
                 recipe_item_ids.update(items_with_spell.get(learn_spell_id, []))
             for reagent_item_id, _count in spell_reagents.get(craft_spell_id, []):
                 reagent_item_ids.add(reagent_item_id)
+        skills = [trainer_skill_values[s] for s in taught_by if s in trainer_skill_values] + [
+            item_required_skill_ranks[i] for i in recipe_item_ids if i in item_required_skill_ranks
+        ]
         out[item_id] = ClassicDbCraftedRecipe(
-            recipe_item_ids=sorted(recipe_item_ids), reagent_item_ids=sorted(reagent_item_ids)
+            recipe_item_ids=sorted(recipe_item_ids),
+            reagent_item_ids=sorted(reagent_item_ids),
+            required_skill=min(skills, default=None),
         )
     return out
 
@@ -173,7 +192,9 @@ def write_extract(
                 "license": "GPL-3.0",
                 "note": "item_template.spellid_1-5 + spell_template's own SPELL_EFFECT_"
                 "LEARN_SPELL/SPELL_EFFECT_CREATE_ITEM effects and Reagent1-8/"
-                "ReagentCount1-8 columns -- see pipeline.classicdb_crafted's own doc.",
+                "ReagentCount1-8 columns; required_skill from npc_trainer(_template)."
+                "reqskillvalue and item_template.RequiredSkillRank -- see "
+                "pipeline.classicdb_crafted's own doc.",
             },
         },
         "items": {

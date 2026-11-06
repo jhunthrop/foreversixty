@@ -3,11 +3,13 @@
 // `sim_export` (api sims.ExportIsInputSQL): a row whose export the simulator reads holds the slot
 // from the start and keeps its height when the links land; a row without one never holds it, so
 // no phone row carries a blank line and nothing moves when a lookup finishes.
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { GUILD_ID, VIEWER_MEMBER, buildMockHome } from '../../src/fixtures/guild/mock-guild';
 import { gotoHydrated } from './support/hydrated';
 import { heldRoute } from './support/held-route';
 import { GUILD_PAGE, envelope, stubGuild } from './support/row-band-pages';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const PHONE = { width: 390, height: 900 };
 const FS1_CODE = 'FS1:1.60.1.70009:hunter:orc:0/0/0:head=12640';

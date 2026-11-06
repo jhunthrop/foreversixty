@@ -115,3 +115,35 @@ Source: `out/after.tsv`, matching `$R/before.tsv`.
 - Maelstrom Weapon's flat chance (needs a log of a 37+ Enhancement shaman on a weapon faster than 3.0 s).
 - Sub-20 damage penalty (needs a level 25 to 30 shaman's Lightning Bolt 3 tooltip at two spell damage values).
 - Live logs: none anywhere at 00:09 UTC 6 Nov (B6).
+
+## Second pass (re-judging rank rows on the fixed tool)
+
+Method: int/r24 merged into both lane branches (site f58452d09, fork 215970648), `sb` rebuilt. Every row was judged with plain `spec-breakdown -preset bare -band <floor> -level N -rank <authored>=<rank>`. The tool now gives the talents the leveling order has at N, and a forced `-rank` beats every row. Scripts: `$R/shaman/rj.sh` (3,000-iteration screen, seed 1, horde) and `$R/shaman/rjc.sh` (10,000 iterations, seeds 1 and 50001, both factions; DPS read from `-json` at full precision). The race-keyed rows ran for orc, troll, tauren, Windshaper Skyborne and dwarf. Outputs: `screen.tsv`, `conf.tsv`, `conf23.tsv`, `conf4.tsv`, `race10k.tsv`, `es.tsv` in `$R/shaman/`.
+
+Levels judged per row: the floor, the top, floor +3/+6/+9, and the first two levels after each new rank inside the row. Candidates: the row rank, one rank below, up to two ranks above, and the top rank.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| P1 | **TestRoundNineteenShamanRowsByLevel (Lightning Bolt at 25).** Re-judged: rank 3 beats rank 4 at 25 (+0.3% horde, +4.5% to +4.6% alliance, both seeds). The row stands. The test now pins the measured truth (25 is rank 3). | `conf.tsv` | test updated to truth | R24 08434b177 | S 3b78f3963 |
+| P2 | **Elemental Lightning Bolt filler at 28 and 29 cast the top rank 5.** Rank 3 does more: +5.4% to +6.7% over rank 5 and +2.1% to +2.9% over rank 4 (28 horde seed 1: 42.05 to 44.76), both factions, both seeds. Round 19 judged 28 on band-floor talents. The row is now one span, 20 to 33. | `screen.tsv`, `conf.tsv` | CONFIRMED-BUG (rank row) | old (round 19, band-floor talents) | S 3b78f3963 |
+| P3 | **Elemental bolt filler at 39 for every race but an orc.** At 39 rank 4 beats rank 5 for a dwarf (+0.3%), a tauren (+0.3% to +0.4%), a troll (+0.45%) and a Windshaper Skyborne (+1.2%). An orc keeps rank 5 (+0.35%, Blood Fury). From 40 rank 5 wins for everyone (+1.0% to +1.4%). New race-keyed rows at 39. | `conf.tsv`, `conf23.tsv`, `conf4.tsv` | CONFIRMED-BUG (rank row) | old (round 16, band-floor talents) | S 3b78f3963 |
+| P4 | **A troll's Flame Shock at 18 cast rank 2.** Rank 1 does more: +0.27% at both seeds. Other races at 18 keep rank 2: orc -0.4%, tauren -0.7% to -0.8%, dwarf -1.4%, Windshaper Skyborne -4%. The first pass called 18 a tie, and the orc row at 19 holds (+0.36% to +0.41%). A Windshaper Skyborne keeps rank 2 at 19 (-3.3%). | `race10k.tsv`, `conf4.tsv` | CONFIRMED-BUG (rank row) | R24 08434b177 | S 3b78f3963 |
+| P5 | **Enhancement Earth Shock at 25 and 26: the first pass's race split was wrong on the merged int/r24.** At 25, rank 3 beats rank 4 for a dwarf (+0.9%), a tauren (+1.0%), a troll (+0.85%) and a Windshaper Skyborne (+0.9%). An orc keeps rank 4 (+0.5%). At 26, rank 3 wins for every race (+0.6% to +0.9%). From 27, rank 4 wins (+1.5% to +2.0%) through 35, and rank 5 wins at 36 and 37. Enhancement at 25 moved about +3% between passes, on the int/r24 merges. That flipped the race split. With `-talents` from my first-pass ladder script the numbers match the fixed tool, so the talents are not the cause. | `race10k.tsv`, `es.tsv`, `conf4.tsv` | CONFIRMED-BUG (rank row) | R24 08434b177 | S 3b78f3963 |
+| P6 | **Restoration tank Healing Wave at 20 to 25.** The row cast rank 2. The measured best is:<br>- rank 1 at 20 and 21 (+0.6% to +4.1% over rank 2; 20 horde seed 1: 68.64 to 71.57);<br>- at 22, rank 1 for a tauren, orc or troll (+0.1% to +0.3%) and rank 2 for a dwarf (+0.25%) or a Windshaper Skyborne (+0.03% to +0.07%);<br>- rank 3 at 23 and 24 (+0.2% for a dwarf, and for the horde at 24; the horde ties at 23);<br>- at 25, rank 2 for a tauren or troll (+0.15% to +0.2%; orc and Windshaper Skyborne tie) and rank 3 for a dwarf (+0.1%).<br>At 18 and 19 rank 3 holds (+4.6% to +9.1% over rank 1). At 26 and 27 rank 3 holds (+0.04% to +0.33% over rank 2). | `screen.tsv`, `conf.tsv`, `conf23.tsv`, `conf4.tsv` | CONFIRMED-BUG (rank row) | old (round 16, band-floor talents) | S 3b78f3963 |
+| P7 | **Restoration tank Healing Wave at 46 cast rank 5.** Rank 6 heals 0.2% to 0.35% more (both factions, both seeds). The rank 5 row now ends at 45 and rank 6 starts at 46. | `conf.tsv` | CONFIRMED-BUG (rank row) | old (round 17, band-floor talents) | S 3b78f3963 |
+| P8 | Held, on the fixed tool:<br>- the bolt filler at 20 to 27, 30 to 38, 40 to 44 (39 for an orc), 45 to 50 (45: +0.6% over rank 5, +0.9% over rank 7), 51 to 56, and 57 to 59 (57: +0.4% to +0.8% over rank 7);<br>- Healing Wave at 18 and 19, 26 to 36, 37 to 41 (37: +0.1% over rank 3), 42 to 45 (42: +0.1% to +0.3% over rank 4), 47 to 55, 56 to 58 and 59 (+0.1% over rank 7);<br>- Chain Heal rank 1 at 46 to 59 (46: +0.4% to +0.5% over rank 2, 10,000 iterations; the screen puts rank 1 ahead at every level).<br>Rows not on the suspect list for bare 60 were not re-run: the tool's bare-60 path did not change their talents. | as above | Aligned | - | - |
+
+Guide text shipped in the same commit:
+- the Elemental filler note and elemental.md:118 now read "3 from 20 to 33, 4 until 38 (39 unless an orc)";
+- the Restoration tank Healing Wave note and restoration.md:120 now read "rank 1 at 20 and 21 and at 22 (a dwarf takes rank 2), rank 3 at 23 and 24, rank 2 at 25 (a dwarf stays on 3), ... rank 5 from 42 to 45, rank 6 from 46 to 55".
+
+The Earth Shock and Flame Shock notes name no rank, so the card carries those rows as race ids. `_prose.test.ts` passes.
+
+Second-pass files to regenerate (add to the list above): addon-data.json and Data.lua. The shaman card bands change at:
+- Elemental 18, 28, 29 and 39;
+- Enhancement 25 and 26;
+- Restoration 20 to 25 and 46.
+
+Also regenerate the ladder goldens for shaman-elemental, shaman-enhancement and shaman-restoration. The fork APL copies (ui/elemental_shaman, ui/restoration_shaman) carry the old note text; sync them at landing.
+
+For other lanes (second pass): on int/r24 f58452d09 these tests fail without any shaman change. They are TestPriestGreaterHealRankOneBelowFiftyEight and TestHolyFillsWithGreaterHealAheadOfHeal (priest), TestBuildCastsTheRacesRankChoice and TestRound13RaceRankChoicesCastTheWinningRank (priest Mind Blast race rows), and TestCuratedRankChoicesAreCastableDownranks (paladin-protection Consecration 49 and 58).

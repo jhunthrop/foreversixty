@@ -122,6 +122,9 @@ type Message struct {
 	// ReplyTo, on a create, makes the message a reply to that message in the same channel;
 	// the reply survives the original's deletion and, with the empty mention list, pings no one.
 	ReplyTo string
+	// MentionUsers, on a create, are the only Discord users the message may ping (a raid's
+	// "Ping on Discord"); empty, it pings no one.
+	MentionUsers []string
 	// echo, when set, makes an edit put a pressed card back as it was (the card failure).
 	echo *sourceMessage
 	// sourceV2, on an edit, says the message being replaced already has the V2 flag, so the
@@ -193,9 +196,11 @@ type messageReference struct {
 
 type mentions struct {
 	Parse []string `json:"parse"`
+	Users []string `json:"users,omitempty"`
 }
 
-// MarshalJSON always writes an empty mention list, so a message pings no one. A V2 message
+// MarshalJSON writes an empty parse list, so a message pings no one but the MentionUsers it
+// names (never a role, @everyone or @here). A V2 message
 // with content or embeds fails here: Discord answers it 400.
 func (m Message) MarshalJSON() ([]byte, error) {
 	if len([]rune(m.Nonce)) > maxNonceRunes {
@@ -217,7 +222,7 @@ func (m Message) MarshalJSON() ([]byte, error) {
 			Nonce           string            `json:"nonce,omitempty"`
 			EnforceNonce    bool              `json:"enforce_nonce,omitempty"`
 			Reference       *messageReference `json:"message_reference,omitempty"`
-		}{m.flags(), m.topLevel(), m.attachmentsJSON(), mentions{Parse: []string{}}, m.Nonce, m.Nonce != "", reference})
+		}{m.flags(), m.topLevel(), m.attachmentsJSON(), m.mentions(), m.Nonce, m.Nonce != "", reference})
 	}
 	return json.Marshal(struct {
 		Content         string            `json:"content,omitempty"`
@@ -231,9 +236,14 @@ func (m Message) MarshalJSON() ([]byte, error) {
 		Reference       *messageReference `json:"message_reference,omitempty"`
 	}{
 		Content: m.Content, Embeds: m.Embeds, Components: m.Components, Flags: m.flags(),
-		Attachments: m.attachmentsJSON(), AllowedMentions: mentions{Parse: []string{}},
+		Attachments: m.attachmentsJSON(), AllowedMentions: m.mentions(),
 		Nonce: m.Nonce, EnforceNonce: m.Nonce != "", Reference: reference,
 	})
+}
+
+// mentions is a create's mention list: no parsing, only MentionUsers.
+func (m Message) mentions() mentions {
+	return mentions{Parse: []string{}, Users: m.MentionUsers}
 }
 
 // edit is the body of an edit. Discord leaves an omitted field unchanged, so a legacy edit

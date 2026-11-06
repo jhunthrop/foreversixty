@@ -37,7 +37,7 @@ func toSlug(s string) string {
 // curatedTablesFor selects the curated data one roster row's rating needs: the fight's
 // own encounter mechanics table (nil if none curated yet - Score handles that by
 // excluding Survival/Mechanics, §1.1), this player's spec's utility table, and this
-// player's role's consumable catalogue.
+// player's consumable catalogue (preparationCatalogue).
 func curatedTablesFor(row summary.RosterRow, encounterID int64) ratingengine.CuratedTables {
 	var out ratingengine.CuratedTables
 	if m, ok := mechanics.Load(encounterID); ok {
@@ -46,8 +46,18 @@ func curatedTablesFor(row summary.RosterRow, encounterID int64) ratingengine.Cur
 	if u, ok := utility.Load(SpecSlug(row.Class, row.Spec)); ok {
 		out.Utility = &u
 	}
-	if rc, ok := consumables.Load().For(row.Role); ok {
-		out.Consumables = &rc
-	}
+	out.Consumables = preparationCatalogue(row)
 	return out
+}
+
+// preparationCatalogue is the consumable catalogue Preparation weighs row's player against:
+// the role's, narrowed to what the spec's raid preset carries at the row's level
+// (consumables.Catalogue.ForPlayer, the coach's pull check reads the same), so a flask a
+// feral cat or a level 30 druid never carries costs no points. nil when the role has none.
+func preparationCatalogue(row summary.RosterRow) *consumables.RoleCatalogue {
+	rc, ok := consumables.Load().ForPlayer(row.Role, DataSpecSlug(row.Class, row.Spec), row.Level)
+	if !ok {
+		return nil
+	}
+	return &rc
 }

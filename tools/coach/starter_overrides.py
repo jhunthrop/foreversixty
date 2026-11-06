@@ -16,6 +16,13 @@ from starter_text import short_sentences
 
 Entry = tuple[str, str]
 
+# Shared by the rogue specs: Kidney Shot trains at thirty, rank two at fifty; Feint at sixteen.
+ROGUE_KIDNEY_SHOT = (
+    "Kidney Shot trains at thirty. It costs twenty-five energy, sits on a twenty second cooldown and stuns "
+    "a second longer per combo point. Five seconds at five, six once rank two trains at fifty."
+)
+ROGUE_FEINT = "Feint from sixteen on cooldown on bosses where you sit near the tank's threat."
+
 # ability -> line. A listed ability is added when the generator left it out. A line that names a
 # spell, talent or rank the player gains during leveling says from when (round 25: the coach reads a
 # boss pull at whatever level the log records, dungeon bosses from the low teens included).
@@ -68,7 +75,7 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         ),
         "Swipe": (
             "Swipe only with two or more targets in front of you, above forty rage. "
-            "On a single boss, put the rage into Maul, Lacerate and Primal Bite."
+            "On a single boss, put the rage into Maul, and into Lacerate from twenty-five and Primal Bite from forty."
         ),
     },
     "hunter-beast-mastery": {
@@ -129,6 +136,23 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Bane of Doom": "Bane of Doom at sixty, while a minute or more of the fight is left.",
         "Siphon Life": "Siphon Life from thirty whenever it has fallen off.",
         "Wrack": "Wrack from forty with your DoTs up. Before forty, Shadow Bolt fills instead.",
+        # affliction.md: the raid build sacrifices the Imp at fifty-five and takes Nightfall at thirty-four;
+        # Curse of the Elements and Demon Armor train at twenty, Amplify Curse is the twenty-ninth point
+        # (twenty-fourth in the raid build).
+        "Demonic Sacrifice": (
+            "Demonic Sacrifice in the raid build, from fifty-five: summon the Imp and sacrifice it before the pull "
+            "for Burning Shadow. Then summon nothing, since any demon ends it."
+        ),
+        "Demon Armor": "Demon Armor on from twenty before the pull, with a Healthstone in your bag and Life Tap to full.",
+        "Curse of the Elements": "Curse of the Elements from twenty when it is not already on the target.",
+        "Amplify Curse": (
+            "Amplify Curse from twenty-nine, or twenty-four in the raid build, before each Bane of Agony below sixty. "
+            "At sixty, press it before the first Agony after your last Doom fires."
+        ),
+        "Shadow Bolt": (
+            "Shadow Bolt in the raid build, from thirty-four, the moment Nightfall makes it instant with a Shadow "
+            "Trance. From forty it goes ahead of your next Wrack. At sixty its crits put up Improved Shadow Bolt."
+        ),
         # affliction.md: Immolate restarted with about three seconds left; one curse per warlock, so the
         # raid leader's curse only when another warlock holds Curse of the Elements.
         "Immolate": (
@@ -146,7 +170,16 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Bane of Doom": "Bane of Doom at sixty, the moment the last one fires, with a minute or more of the fight left.",
         # demonology.md: the five-step setup; "Your curse slot is then free" after another warlock's Elements.
         "Demonic Sacrifice": "Demonic Sacrifice only with the raid build's Demonic Pact, from forty. Sacrifice the Imp about a minute before the pull, then summon the Succubus. Without Pact, never sacrifice: keep the Succubus out.",
-        "Soul Link": "Soul Link a couple of seconds before the pull, and again after every resummon.",
+        # Soul Link is the thirtieth point; Demon Armor and Curse of the Elements train at twenty; Soul Fire
+        # trains at forty-eight, and the raid build casts it in Decimation only from rank two, fifty-six to
+        # fifty-nine.
+        "Soul Link": "Soul Link from thirty, a couple of seconds before the pull, and again after every resummon.",
+        "Demon Armor": "Demon Armor from twenty: put it on, make a Healthstone and Life Tap back to full.",
+        "Curse of the Elements": "Curse of the Elements from twenty when no warlock's is on the target.",
+        "Soul Fire": (
+            "Soul Fire from forty-eight, every six seconds while Decimation is up below thirty-five percent. "
+            "The raid build casts it only from rank two at fifty-six, and never at sixty."
+        ),
         "Curse of Recklessness": (
             "Curse of Recklessness, Tongues or Weakness only if your raid leader asks. "
             "That is only when another warlock holds Curse of the Elements."
@@ -156,6 +189,18 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         # Bane of Doom trains at sixty; Shadowburn and Incinerate are talents (Incinerate at forty).
         "Bane of Doom": "Bane of Doom at sixty, the moment the last one fires, with a minute or more of the fight left.",
         "Shadowburn": "Shadowburn on cooldown once you have it, at any boss health.",
+        # Demon Armor, the Succubus and Curse of the Elements come at twenty; Conflagrate is the
+        # thirty-fourth point (thirty-second in the raid build).
+        "Demon Armor": (
+            "Demon Armor and the Succubus out from twenty, before the pull. "
+            "Keep a Healthstone, and a spare shard once you have Shadowburn. "
+            "Life Tap to full while the healers top you off."
+        ),
+        "Curse of the Elements": "Curse of the Elements from twenty when no warlock's is on the target.",
+        "Conflagrate": (
+            "Conflagrate from thirty-four, or thirty-two in the raid build, once Immolate has six seconds or less left. "
+            "Once you take Shadow and Flame, cast it on cooldown while Immolate is up."
+        ),
         "Incinerate": "Incinerate from forty for every other cast. Before forty, Shadow Bolt fills instead.",
         "Curse of Recklessness": (
             "Curse of Recklessness, Tongues or Weakness only if your raid leader asks. "
@@ -177,7 +222,10 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         ),
         "Mortal Strike": "Mortal Strike on cooldown from forty, and from fifty-seven in the raid build Reckless Swings right behind it.",
         "Slam": "Slam only with Improved Slam, between Mortal Strikes from forty: the talent keeps your swing timer running through the cast.",
-        "Spearing Strike": "Spearing Strike in the raid build, on any free global in Battle Stance. It stops at the execute swap.",
+        "Spearing Strike": (
+            "Spearing Strike from twenty-five in the raid build, on any free global in Battle Stance. "
+            "It stops at the execute swap."
+        ),
         "Heroic Strike": (
             "Heroic Strike only when you are about to cap at ninety or more. "
             "Below that, keep the rage for Overpower from twelve, Execute from twenty-four and Mortal Strike from forty."
@@ -198,28 +246,79 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Sweeping Strikes only with two or more targets, from thirty-six. "
             "Press it in Battle Stance, then Berserker Stance and Whirlwind, and back for Overpower and Rend."
         ),
+        # arms.md puts Cleave under "Two or more targets"; it trains at twenty.
+        "Cleave": "Cleave from twenty instead of Heroic Strike when two mobs are in front of you.",
     },
     "mage-arcane": {
         # arcane.md: "Blast to 3 stacks ... Past 3, keep blasting only while your mana bar is fuller than the
         # boss's health bar and you are above 20% mana"; Missiles on Missile Barrage; the raid build's
         # Pyroblast on three Heating Up stacks and Arcane Wrath; Frostbolt the leveling filler.
+        # Blast is the twentieth point on both orders (round 26).
         "Arcane Blast": (
-            "Arcane Blast to three stacks. Past three, keep blasting only while your mana bar is fuller than the "
-            "boss's health bar. Stop below a fifth of your mana."
+            "Arcane Blast to three stacks, from twenty. Past three, keep blasting only while your mana bar is fuller "
+            "than the boss's health bar. Stop below a fifth of your mana."
         ),
-        "Arcane Missiles": "Arcane Missiles the moment Missile Barrage lights up: the proc makes it free and halves the channel.",
-        "Pyroblast": "Pyroblast with the raid build, on three Heating Up stacks, when it is a one and a half second cast.",
+        # arcane.md: "From 20 to 22, until both ranks of Missile Barrage are in, Arcane Missiles still does
+        # more damage for its mana than Blast, so lead with Missiles"; both ranks at 23 leveling, 24 raid.
+        "Arcane Missiles": (
+            "Arcane Missiles is your main spell until both ranks of Missile Barrage are in. "
+            "That is twenty-three with the leveling build, twenty-four with the raid build. "
+            "After that, Missiles only the moment Missile Barrage lights up: the proc makes it free and halves the channel."
+        ),
+        # The card: Pyroblast the moment Presence of Mind is up from 54 on the raid build; Heating Up at 57.
+        "Pyroblast": (
+            "Pyroblast with the raid build: instant off Presence of Mind from fifty-four. "
+            "From fifty-seven, also on three Heating Up stacks, when it is a one and a half second cast."
+        ),
         "Arcane Wrath": "Arcane Wrath with the raid build, every time it is ready while you hold three Blast stacks.",
         "Frostbolt": "Frostbolt is the filler with the leveling build. In a raid, cast it only when you are too low on mana for a Fireball.",
+        # Arcane Power is the fortieth point, Presence of Mind the thirty-first; arcane.md:56 and :84 spend
+        # Presence of Mind on Pyroblast (raid, 54) or Frostbolt, "Never spend it on an Arcane Blast".
+        "Arcane Power": (
+            "Arcane Power from forty on cooldown, with Presence of Mind and your on-use trinkets. "
+            "Add your damage racial if your race has one."
+        ),
+        "Presence of Mind": (
+            "Presence of Mind from thirty-one on cooldown, with Arcane Power once you have it. "
+            "Spend it on Pyroblast with the raid build from fifty-four. "
+            "Before that, and with the leveling build, spend it on Frostbolt. Never spend it on an Arcane Blast."
+        ),
     },
     "mage-fire": {
-        # fire.md: "Everything else is Scorch" from thirty, with Fireball the filler below thirty.
+        # fire.md:75: "Keep 5 Improved Scorch stacks rolling: refresh them with one Scorch when 5 seconds or
+        # less are left ... Everything else is Fireball, except when Fire Blast comes back in less than a
+        # Scorch's cast: then cast Scorch". fire.md:119: one point at 27 only on a mob that lives a minute or
+        # more, from 28 on anything that lives 20 seconds; "From 30, with Heating Up in, Scorch and Fire
+        # Blast take over".
         "Scorch": (
-            "Scorch is the filler from thirty with the leveling build. Cast it on every global not spent on a three-stack Pyroblast, Fire Blast or Combustion. "
-            "Every Scorch also renews your Improved Scorch stacks. Below thirty, Fireball is the filler."
+            "Scorch to five Improved Scorch stacks, and again whenever five seconds or less are left on them. "
+            "With one point of the talent, build them only on a boss that lives a minute or more. "
+            "With the raid build, also Scorch when Fire Blast is back before a Scorch would finish. "
+            "With the raid build, every other free global is Fireball. "
+            "With the leveling build Scorch is the filler once you have Heating Up. "
+            "Cast it on every global not spent on a three-stack Pyroblast or Fire Blast. Before that, Fireball is the filler."
+        ),
+        # fire.md:73 and :119: the pre-pull Pyroblast and the leveling pull from range.
+        "Pyroblast": (
+            "Pyroblast before the pull, started six seconds out, and on a mob from range while leveling. "
+            "After that only on three stacks of Heating Up, when it is a one and a half second cast."
+        ),
+        # Arcane Blast is a raid build talent only (round 26).
+        "Arcane Blast": (
+            "Arcane Blast with the raid build, once whenever its buff has dropped, then back to Fire. "
+            "Its spell damage lasts eighteen seconds, and a second cast on top doubles its cost."
+        ),
+        # The raid order takes Heating Up at 33, the leveling order at 30: name the talent, not the level.
+        "Fire Blast": "Fire Blast every time it is off cooldown. It is instant, and once you have Heating Up every hit is a stack.",
+        # Combustion is the fortieth point.
+        "Combustion": (
+            "Combustion from forty, once the boss carries five Improved Scorch stacks, with your on-use trinkets. "
+            "Add your damage racial if your race has one."
         ),
     },
     "mage-frost": {
+        # Ice Barrier is the fortieth point.
+        "Ice Barrier": "Ice Barrier from forty whenever the shield is down.",
         # frost.md: Cone of Cold on a boss within ten yards, above half mana, on five Winter's Chill stacks.
         "Cone of Cold": (
             "Cone of Cold on a boss only within ten yards, above half mana, on five Winter's Chill stacks. "
@@ -232,9 +331,19 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
         "Oath of Light": "Oath of Light from twenty-five, sworn on the tank a second or two before the pull.",
         "Divine Favor": "Divine Favor from twenty-one, then Holy Light, when the tank drops below forty percent.",
         "Holy Shock": "Holy Shock from thirty-two, only while your mana is keeping pace with the fight.",
+        "Holy Light": (
+            "Holy Light on the tank below seventy percent, and from thirty-two Holy Shock on anyone below seventy percent. "
+            "Only with mana to spare: keep your mana no more than five points under the fight left."
+        ),
+        "Concentration Aura": "Concentration Aura from twenty-two if nobody else in your group runs it.",
+        "Voice of Truth": (
+            "Voice of Truth from twenty makes you immune to silences and interrupts for six seconds, every three minutes. "
+            "Save it for the caster pack or boss that would lock you out."
+        ),
         "Flash of Light": (
             "Flash of Light from twenty is your staple, on the tank below ninety percent. "
-            "Everyone else gets it below eighty percent. When your mana falls behind the fight, heal with it alone until you catch up."
+            "Everyone else gets it below eighty percent. When your mana falls behind the fight, heal with it alone until you catch up. "
+            "At sixty in a raid that is rank five on everyone; without raid buffs, rank four on the party."
         ),
         "Light's Vigil": (
             "Light's Vigil from forty, only for a fight where your whole party takes big damage at once. "
@@ -257,19 +366,26 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Holy Strike on cooldown, twenty mana at sixty. "
             "From forty Shieldsworn brings it back every six seconds, and each one keeps up your Iron Creed damage reduction."
         ),
-        "Consecration": "Consecration only above half mana, to spend mana you will not need.",
+        "Consecration": "Consecration from twenty, only above half mana, to spend mana you will not need.",
+        "Exorcism": "Exorcism from twenty, on Undead and Demons.",
+        "Templar's Bulwark": "Templar's Bulwark from twenty, first, at about a third of your health. It absorbs a full health bar for eight seconds.",
+        "Judgement": (
+            "Judgement to pull: under Seal of Fury it taunts, so the boss comes straight to you. "
+            "After that, Judgement on cooldown, and from thirty only while Holy Shield's mana is safe."
+        ),
         "Greater Blessing of Kings": (
-            "Greater Blessing of Kings on yourself at sixty, Blessing of Kings before then. "
+            "Greater Blessing of Kings on yourself at sixty, Blessing of Kings from twenty before then. "
             "With a hunter's Heart of the Lion in the raid, take Might instead."
         ),
         "Swift Judgement": "Swift Judgement from twenty-nine whenever it is ready, unless a tank swap is coming: then hold it for the swap.",
-        "Divine Shield": "Divine Shield and Divine Protection come after Templar's Bulwark, once Forbearance is gone.",
+        "Divine Shield": "Divine Shield from thirty-four and Divine Protection come after Templar's Bulwark, once Forbearance is gone.",
     },
     "paladin-retribution": {
         # retribution.md: with Unsealed Wrath, Seal of Command is the main Seal for the twist.
         "Seal of Command": (
             "Seal of Command once you have Unsealed Wrath, in a dungeon or a raid. "
-            "Three swings store three Commands and the twist is under way."
+            "Three swings store three Commands and the twist is under way. "
+            "Twist only while your mana is at least four fifths of the fight left."
         ),
         # retribution.md: "Judgement on cooldown. It is off the global cooldown"; Seal of the Crusader up
         # before the pull, Seal of Righteousness straight after its Judgement; Exorcism and Consecration
@@ -280,8 +396,8 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Skip it if another paladin's Crusader Judgement is up."
         ),
         "Seal of Righteousness": (
-            "Seal of Righteousness at the top rank you have trained, straight after the opening Crusader Judgement. "
-            "Recast it in its last second."
+            "Seal of Righteousness while leveling, at the top rank you have trained, straight after the opening Crusader Judgement. "
+            "Recast it in its last second. With Unsealed Wrath it is your Seal whenever your mana falls behind the fight."
         ),
         "Exorcism": "Exorcism from twenty, on cooldown, against Undead and Demons only.",
         "Hammer of Wrath": "Hammer of Wrath from forty-four, below twenty percent target health, at its highest rank.",
@@ -304,10 +420,12 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Your mana has to keep pace with the fight."
         ),
         "Inner Focus": (
-            "Inner Focus on your most expensive heal, from forty a Greater Heal. "
-            "Its crit leaves the biggest Divine Aegis you can make. It makes the spell free and adds twenty-five percent crit chance."
+            "Inner Focus on a Prayer of Healing from thirty or a Greater Heal from forty. "
+            "It makes the spell free and adds twenty-five percent crit chance. "
+            "A Greater Heal crit leaves the biggest Divine Aegis you can make."
         ),
         "Dark Sacrifice": "Dark Sacrifice if you are Undead, once your mana is down enough.",
+        "Lightwell": "Lightwell from forty, dropped before the pull, and tell the raid it is up.",
     },
     "priest-shadow": {
         # shadow.md: "Keep Shadow Word: Pain up. Keep Devouring Plague up ... Mind Blast on cooldown. Shadow
@@ -342,25 +460,28 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Deadly Poison on the main hand and Instant on the off hand from thirty to fifty-nine. "
             "At sixty swap them: the off hand then holds Deadly at five stacks on its own."
         ),
-        "Kidney Shot": (
-            "Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per "
-            "combo point. Five seconds at five, six once rank two trains at fifty. Use it on casters and on "
-            "whatever is hitting your healer."
+        "Kidney Shot": ROGUE_KIDNEY_SHOT + " Use it on casters and on whatever is hitting your healer.",
+        # Trainer levels (round 26): Shank twenty-four, Venom thirty, Blind thirty-four, Feint sixteen.
+        "Shank": (
+            "Shank from twenty-four on cooldown: it cannot miss and pays back more energy than it costs. "
+            "Venom, from thirty, adds thirty percent to your poison damage for six seconds, on top of Vile Poisons. "
+            "It also makes your poisons land more often."
         ),
+        "Kick": "Kick, Gouge and, from thirty-four, Blind handle the rest.",
+        "Feint": ROGUE_FEINT,
     },
     "rogue-combat": {
         # combat.md: Flash of Steel full only on the raid build at sixty; Adrenaline Rush (forty), Blade
-        # Flurry (thirty-three); Kidney Shot rank two at fifty.
+        # Flurry (thirty-three); Kidney Shot rank two at fifty; Shank twenty-four, Kick twelve, Feint sixteen.
         "Shank": (
-            "Shank on cooldown, right behind any damage racial and your trinket. "
+            "Shank from twenty-four on cooldown, right behind any damage racial and your trinket. "
             "It is an off-hand stab for five energy that cannot miss and pays back more than it costs."
         ),
         "Adrenaline Rush": "Adrenaline Rush from forty on cooldown, with your damage racial if your race has one, a trinket and a potion.",
         "Blade Flurry": "Blade Flurry from thirty-three, at any energy, for its twenty-five.",
-        "Kidney Shot": (
-            "Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per "
-            "combo point. Five seconds at five, six once rank two trains at fifty."
-        ),
+        "Kidney Shot": ROGUE_KIDNEY_SHOT,
+        "Kick": "Kick from twelve stops a cast for twenty-five energy.",
+        "Feint": "Feint from sixteen on cooldown on any boss where you sit near the tank's threat.",
     },
     "rogue-subtlety": {
         # subtlety.md: Garrote after every Ghostly Strike (twenty-six); Rupture at four or more whenever it
@@ -377,23 +498,33 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "It comes back every ten seconds, so a mark now beats a bigger one later."
         ),
         "Slice and Dice": "Slice and Dice at three or more combo points while Rupture ticks, when it is down or nearly down.",
-        "Cheap Shot": "Cheap Shot opens on trash that will die fast, three combo points once Initiative is full, then Eviscerate.",
+        # Trainer and talent levels (round 26): Shank twenty-four, Cheap Shot twenty-six, Preparation
+        # thirty-four, Blind thirty-four, Feint sixteen; Hemorrhage at four points or fewer (sim round 22).
+        "Shank": (
+            "Shank from twenty-four on cooldown at three combo points or fewer, or under fifty energy. "
+            "It is an off-hand stab that cannot miss and pays back more energy than it costs."
+        ),
+        "Cheap Shot": "Cheap Shot from twenty-six opens on trash that will die fast, three combo points once Initiative is full, then Eviscerate.",
+        "Preparation": "Preparation from thirty-four finishes every other rogue cooldown, once every ten minutes.",
+        "Kick": (
+            "Kick, Gouge and, from thirty-four, Blind handle the rest; "
+            "with Elusiveness, Blind comes back every three and a half minutes."
+        ),
+        "Feint": ROGUE_FEINT,
         "Backstab": (
             "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage at thirty. "
             "Sinister Strike only when you cannot get behind or hold no dagger."
         ),
         "Hemorrhage": (
-            "Hemorrhage from thirty builds. "
-            "It waits a moment when Ghostly Strike is about to come back, unless you are close to full energy."
+            "Hemorrhage from thirty builds, at four combo points or fewer: at five the point is wasted. "
+            "It waits a moment when Ghostly Strike is about to come back, unless you are close to full energy. "
+            "After a Ghostly Strike, it waits until the Garrote is in."
         ),
         "Premeditation": (
-            "Premeditation a couple of seconds before the pull for two combo points. "
+            "Premeditation from twenty, a couple of seconds before the pull, for two combo points. "
             "Press it again every two minutes in the fight whenever you have three or fewer. Spend them inside twenty seconds."
         ),
-        "Kidney Shot": (
-            "Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per "
-            "combo point. Five seconds at five, six once rank two trains at fifty."
-        ),
+        "Kidney Shot": ROGUE_KIDNEY_SHOT,
     },
     "shaman-elemental": {
         # elemental.md and the card: Mana Spring (twenty-six) a few seconds before the pull, skipped when a
@@ -404,7 +535,10 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Mana Spring Totem from twenty-six, a few seconds before the pull and whenever your Water slot is empty. "
             "Skip it if a Restoration shaman already has one down for your group."
         ),
-        "Lightning Mastery": "Lightning Mastery from forty with your trinkets and any damage racial on the pull, and again every three minutes.",
+        "Lightning Mastery": (
+            "Lightning Mastery from forty with your trinkets and Blood Fury on the pull, and again every three minutes. "
+            "A Troll presses Berserking after it ends."
+        ),
         "Flame Shock": "Flame Shock the moment it falls off, ahead of everything but your cooldowns.",
         "Searing Totem": (
             "Searing Totem on a single target, and on packs until Magma Totem at twenty-six. "
@@ -444,7 +578,17 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "Stormstrike on cooldown from twenty-five. "
             "It makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder."
         ),
-        "Earth Shock": "Earth Shock last, on cooldown while your mana is above a quarter. Keep that last quarter for Stormstrike and your totems.",
+        "Earth Shock": (
+            "Earth Shock last, on cooldown while your mana is above a quarter. "
+            "Keep that last quarter for your totems, and from twenty-five for Stormstrike."
+        ),
+        # enhancement.md: Mana Spring and Magma Totem train at twenty-six; Magma and Fire Nova are the big-pack
+        # buttons ("On a big pack, drop Magma Totem, use Fire Nova on its 10 second cooldown and Chain Lightning").
+        "Mana Spring Totem": "Mana Spring Totem from twenty-six in your Water slot when your party has no other shaman.",
+        "Magma Totem": (
+            "Magma Totem from twenty-six on a big pack, with Fire Nova on cooldown and Chain Lightning while mana lasts. "
+            "Both totems' bursts reach a few yards, and in melee you stand at the totem."
+        ),
     },
     "shaman-restoration": {
         # restoration.md and the card: Water Shield and Healing Stream at twenty, Mana Tide (twenty-five)
@@ -472,12 +616,88 @@ GUIDE_LINES: dict[str, dict[str, str]] = {
             "When your mana falls behind, drop a rank, but never below rank eight at sixty."
         ),
         "Lesser Healing Wave": "Lesser Healing Wave from twenty when the tank is down to thirty percent and the next hit could kill it.",
+        # Trainer: Cure Poison sixteen, Poison Cleansing Totem and Cure Disease twenty-two, Disease Cleansing Totem thirty-eight.
+        "Poison Cleansing Totem": (
+            "Poison Cleansing Totem from twenty-two in the Water slot on fights that poison. "
+            "Disease Cleansing Totem from thirty-eight on fights that disease."
+        ),
+        "Cure Poison": "Cure Poison from sixteen and Cure Disease from twenty-two reach anyone the totems do not.",
         "Nature's Swiftness": (
             "Nature's Swiftness from forty-four when the tank drops below twenty-five percent, into your highest rank "
             "of Healing Wave."
         ),
     },
 }
+
+# Round 26: hunter buttons named with the level they arrive (the generator's own rule).
+GUIDE_LINES["hunter-beast-mastery"].update(
+    {
+        "Rapid Fire": (
+            "Rapid Fire from twenty-six on the pull, as an auto shot leaves. "
+            "Press it as the shared cooldown is about to come back, and from forty with Bestial Wrath."
+        ),
+        "Feign Death": (
+            "Feign Death from thirty, before you reach the tank's threat, not after the boss turns. "
+            "If it says Resisted, you still have all your threat."
+        ),
+        "Volley": "Volley from forty is a mana-heavy channel, worth it only on a big pack that lives through it.",
+        "Freezing Trap": "Freezing Trap from twenty is your crowd control, laid before the pull. Any damage breaks it.",
+        "Explosive Trap": (
+            "Explosive Trap from thirty-four under a pack the tank is holding hits everything within ten yards. "
+            "At sixty it costs more than Volley, so save it for the same big packs."
+        ),
+    }
+)
+GUIDE_LINES["hunter-marksmanship"].update(
+    {
+        "Rapid Fire": (
+            "Rapid Fire from twenty-six on the pull, as an auto shot leaves. "
+            "Press it as the shared cooldown is about to come back."
+        ),
+        "Sniper Shot": "Sniper Shot with the raid build from forty, whenever it is ready and the shared cooldown is not.",
+        "Feign Death": (
+            "Feign Death from thirty, before you reach the tank's threat, not after the boss turns. "
+            "If it says Resisted, you still have all your threat."
+        ),
+        "Volley": "Volley from forty is a mana-heavy channel, worth it only on a big pack that lives through it.",
+        "Freezing Trap": "Freezing Trap from twenty is your crowd control, laid before the pull.",
+        "Explosive Trap": (
+            "Explosive Trap from thirty-four under a pack the tank is holding hits everything within ten yards. "
+            "At sixty it costs more than Volley, so save it for the same big packs."
+        ),
+    }
+)
+GUIDE_LINES["hunter-survival"].update(
+    {
+        "Counterattack": (
+            "Counterattack from thirty-two the moment it lights up after you parry. It cannot be blocked, dodged or parried."
+        ),
+        "Lacerate": "Lacerate from thirty whenever its bleed has fallen off.",
+        "Strider Kick": "Strider Kick from thirty on its own short cooldown, ahead of Immolation Trap.",
+        "Rapid Fire": (
+            "Rapid Fire from twenty-six on the pull with your trinkets. "
+            "Add Elune's Light, Blood Fury or Berserking if your race has one."
+        ),
+        "Disengage": (
+            "Disengage from twenty trims some threat on a five second cooldown. "
+            "It turns off your auto attack, so start swinging again the moment it lands."
+        ),
+        "Feign Death": (
+            "Feign Death from thirty drops all of your threat if it lands. Check the message, because it can be resisted."
+        ),
+        "Deterrence": "Deterrence from twenty-five is your emergency button when something turns on you.",
+        "Explosive Trap": "Explosive Trap from thirty-four under the pack is your AoE, and Engineering's explosives are the rest.",
+        "Freezing Trap": "Freezing Trap from twenty is your crowd control, laid before the pull.",
+    }
+)
+
+# Round 26: the mage pre-pull line names when each buff trains (Mage Armor 34, Arcane Brilliance 56).
+for _mage_spec in ("mage-arcane", "mage-fire", "mage-frost"):
+    GUIDE_LINES[_mage_spec]["Mage Armor"] = (
+        "Mage Armor from thirty-four before the pull, with your food buff and Arcane Intellect, "
+        "or Arcane Brilliance from fifty-six. Before thirty-four, wear Frost Armor or Ice Armor."
+    )
+
 
 # The guide's own order statements, which win over the order of first mention. Listed abilities lead.
 GUIDE_ORDER: dict[str, tuple[str, ...]] = {
@@ -510,6 +730,10 @@ GUIDE_ORDER: dict[str, tuple[str, ...]] = {
     "mage-arcane": (
         "Arcane Blast", "Arcane Missiles", "Pyroblast", "Fire Blast", "Arcane Wrath", "Fireball", "Frostbolt",
         "Arcane Power", "Presence of Mind",
+    ),
+    # fire.md:75 and the card: the stacks, Combustion, Pyroblast, Fire Blast, Missiles, Arcane Blast, Fireball.
+    "mage-fire": (
+        "Scorch", "Combustion", "Pyroblast", "Fire Blast", "Arcane Missiles", "Arcane Blast", "Fireball",
     ),
     # protection.md list items in order.
     "paladin-protection": (
@@ -551,16 +775,17 @@ GUIDE_ORDER: dict[str, tuple[str, ...]] = {
         "Water Shield", "Healing Stream Totem", "Mana Tide Totem", "Riptide", "Chain Heal", "Healing Wave",
         "Lesser Healing Wave", "Nature's Swiftness",
     ),
-    # affliction.md: "Then Corruption, Bane of Doom, Siphon Life and Immolate, and Wrack".
+    # affliction.md: the sacrifice and setup, then "Corruption, Bane of Doom and Siphon Life, and Wrack";
+    # the card puts the Shadow Trance bolt ahead of Wrack.
     "warlock-affliction": (
-        "Demon Armor", "Curse of the Elements", "Corruption", "Bane of Doom", "Amplify Curse", "Bane of Agony",
-        "Siphon Life", "Immolate", "Wrack", "Life Tap",
+        "Demonic Sacrifice", "Demon Armor", "Curse of the Elements", "Corruption", "Bane of Doom", "Amplify Curse",
+        "Bane of Agony", "Siphon Life", "Immolate", "Shadow Bolt", "Wrack", "Life Tap",
     ),
     # demonology.md: the setup, then "Curse of the Elements ..., then Corruption, then Bane of Doom, then
     # Immolate, then Shadow Bolt".
     "warlock-demonology": (
         "Demonic Sacrifice", "Demon Armor", "Soul Link", "Curse of the Elements", "Corruption", "Bane of Doom",
-        "Bane of Agony", "Immolate", "Shadow Bolt", "Life Tap",
+        "Bane of Agony", "Immolate", "Soul Fire", "Shadow Bolt", "Life Tap",
     ),
 }
 
@@ -572,6 +797,8 @@ EXCLUDED: dict[str, frozenset[str]] = {
     "hunter-marksmanship": frozenset({"Aspect of the Falcon"}),
     # feral.md: Pounce is for trash; on a boss, Ravage.
     "druid-feral": frozenset({"Pounce"}),
+    # holy.md: the paladin's own blessing goes on the raid, never a rotation button.
+    "paladin-holy": frozenset({"Blessing of Wisdom"}),
     # survival.md: "From 30 to 59 Beast is the only melee aspect you have".
     "hunter-survival": frozenset({"Aspect of the Falcon"}),
     # arcane.md: "the build has no spare point for Ice Block".
@@ -580,10 +807,12 @@ EXCLUDED: dict[str, frozenset[str]] = {
     "shaman-enhancement": frozenset({"Flame Shock"}),
     # The raid leader's curse is one line with its condition (Curse of Recklessness).
     "warlock-affliction": frozenset({"Curse of Tongues", "Curse of Weakness"}),
-    # demonology.md: Soul Fire "Skip it anyway ... never cast it in a raid"; Searing Pain "Keep it off your bars in raids".
-    "warlock-demonology": frozenset({"Soul Fire", "Searing Pain", "Curse of Tongues", "Curse of Weakness"}),
+    # demonology.md: Searing Pain "Keep it off your bars in raids".
+    "warlock-demonology": frozenset({"Searing Pain", "Curse of Tongues", "Curse of Weakness"}),
     # destruction.md: Searing Pain off the raid bars; Hellfire burns you.
     "warlock-destruction": frozenset({"Searing Pain", "Hellfire", "Curse of Tongues", "Curse of Weakness"}),
+    # arms.md: Whirlwind is a two-or-more-targets button, already in the Sweeping Strikes line.
+    "warrior-arms": frozenset({"Whirlwind"}),
 }
 
 # The short names the guides use for a button, by full name. The generator reads the short name
@@ -612,8 +841,8 @@ DRILL_LINES: dict[str, dict[str, str]] = {
     # "if it is behind, heal with Flash of Light alone".
     "paladin-holy": {
         "ranks": (
-            "Bind the ranks you use: at sixty, Flash of Light rank five on the tank, rank four on everyone else, "
-            "and Holy Light at its top rank. Rank one is a trap at sixty."
+            "Bind the ranks you use: at sixty, Flash of Light rank five on the tank, and in a raid on everyone else too; "
+            "without raid buffs, rank four on the party. Holy Light at its top rank. Rank one is a trap at sixty."
         ),
         "resource": (
             "Before the pull, note the mana you should have at the halfway mark. If you are behind it, heal with "
@@ -623,17 +852,21 @@ DRILL_LINES: dict[str, dict[str, str]] = {
     # protection.md: "Templar's Bulwark first, at about a third of your health"; Forbearance.
     "paladin-protection": {
         "death": (
-            "Put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health "
+            "From twenty, put Templar's Bulwark on a key you can hit without looking, and press it on a dummy pull when your health "
             "falls to about a third. Divine Shield and Divine Protection wait for Forbearance to fade."
         ),
     },
     # discipline.md: Greater Heal top rank on the tank, rank one on everyone else; "When your bar falls
     # behind the fight, stop topping off the party and heal only real holes."
     "priest-discipline": {
-        "ranks": "Before forty, bind the Heal rank your level calls for. From forty, bind Greater Heal rank one for the party's small holes, and keep the top rank for the tank, who takes the big hits.",
+        "ranks": (
+            "Before forty, bind the Heal rank your level calls for. From forty, bind Greater Heal rank one: "
+            "it is the party's small-hole heal, and the tank's filler too until you learn rank four at fifty-eight. "
+            "From then the tank gets the top rank."
+        ),
         "resource": (
-            "Before the pull, note the mana you should have at the halfway mark. If you are behind it, keep Penance "
-            "and the shield on the tank, let the filler wait for a deeper hole, and save Flash Heal for the emergency."
+            "Before the pull, note your halfway mana. If you are behind it, keep Penance on cooldown, "
+            "hold the shield until you are back on pace, let the filler wait and save Flash Heal for the emergency."
         ),
     },
     # restoration.md: Mana Tide under a quarter of your mana; Healing Wave never below rank eight at sixty.

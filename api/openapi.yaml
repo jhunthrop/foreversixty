@@ -2219,6 +2219,11 @@ components:
         dps: { type: integer, description: Kept for the readiness page and older clients; melee plus ranged. }
         melee: { type: integer }
         ranged: { type: integer }
+        late_groups:
+          $ref: '#/components/schemas/RaidGroupCounts'
+          description: >-
+            Late rows by roster group, beside the In-only tanks, healers, melee and ranged, so the
+            comp against the target can add the late arrivals. On a raid view only.
         classes:
           type: object
           description: >-
@@ -2342,13 +2347,273 @@ components:
         post_default: { type: boolean }
         remind_default: { type: boolean }
         channel_name: { type: [string, "null"] }
+    RaidGroupCounts:
+      type: object
+      description: A count per roster group (Go raidspec.Group).
+      required: [tanks, healers, melee, ranged]
+      properties:
+        tanks: { type: integer }
+        healers: { type: integer }
+        melee: { type: integer }
+        ranged: { type: integer }
+    RaidCompTarget:
+      type: object
+      description: >-
+        A raid's comp target (Go guilds.CompTarget). Defaults: Onyxia's Lair 2 tanks, 8 healers,
+        10 melee, 20 ranged; any other 40-player raid 4, 10, 12, 14.
+      required: [tanks, healers, melee, ranged, source]
+      properties:
+        tanks: { type: integer }
+        healers: { type: integer }
+        melee: { type: integer }
+        ranged: { type: integer }
+        source: { type: string, enum: [default, raid] }
+    RaidCompTargetInput:
+      type: object
+      description: All four counts, each 0 or more; together at least 1 and no more than the zone's size.
+      required: [tanks, healers, melee, ranged]
+      properties:
+        tanks: { type: integer, minimum: 0 }
+        healers: { type: integer, minimum: 0 }
+        melee: { type: integer, minimum: 0 }
+        ranged: { type: integer, minimum: 0 }
+    RaidNotSignedRaider:
+      type: object
+      required: [character_key, name, class, account_key, discord_linked]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string, x-name: className }
+        account_key: { type: string, description: 'The account handle, "u:42".' }
+        discord_linked: { type: boolean, description: True when the account linked Discord, so a ping mentions it. }
+    RaidPingState:
+      type: object
+      required: [last_pinged_at, next_allowed_at]
+      properties:
+        last_pinged_at: { type: [string, "null"], format: date-time }
+        next_allowed_at: { type: [string, "null"], format: date-time, description: last_pinged_at plus 6 hours; null before the first ping. }
+    RaidPingResult:
+      type: object
+      required: [posted, mentioned, no_discord, no_discord_names, next_allowed_at]
+      properties:
+        posted: { type: boolean, description: False when no non-signer has linked Discord (nothing posted, the throttle unspent). }
+        mentioned: { type: integer }
+        no_discord: { type: integer }
+        no_discord_names: { type: array, items: { type: string } }
+        next_allowed_at: { type: [string, "null"], format: date-time }
+    MemberChecklist:
+      type: object
+      description: >-
+        The signed-in member's private pre-raid checklist (Go guilds.ChecklistView). verdict is
+        getting_started when level fails or is unknown or attunement fails, ready when every
+        tracked item is ok (gear the member does not share reads almost), else almost. The web
+        hides not_tracked rows.
+      required: [character, raid, verdict, items]
+      properties:
+        character:
+          type: object
+          title: MemberChecklistCharacter
+          required: [character_key, name, class, spec, level]
+          properties:
+            character_key: { type: string }
+            name: { type: string }
+            class: { type: string, x-name: className }
+            spec: { type: string }
+            level: { type: [integer, "null"] }
+        raid:
+          type: [object, "null"]
+          title: MemberChecklistRaid
+          required: [id, zone_key, zone_name]
+          properties:
+            id: { type: integer, format: int64 }
+            zone_key: { type: string }
+            zone_name: { type: string }
+        verdict: { type: string, enum: [ready, almost, getting_started] }
+        items:
+          type: array
+          description: >-
+            In order: level, attunement (only for a run whose zone has a key item), gear_gap,
+            enchants, flask_food, fire_resistance. flask_food and fire_resistance are not_tracked
+            until the addon export carries named consumables and resistance totals. Attunement is
+            ok or not_tracked, never fail: the export lists only gear in bags, never the keyring.
+          items:
+            type: object
+            title: MemberChecklistItem
+            required: [key, state]
+            properties:
+              key: { type: string, enum: [level, attunement, gear_gap, enchants, flask_food, fire_resistance] }
+              state: { type: string, enum: [ok, fail, not_tracked] }
+              reason:
+                type: string
+                enum: [no_level, keys_not_in_export, gear_not_shared, no_bis_list, leveling, needs_named_consumables, needs_resistance_totals]
+                description: Why a not_tracked item has no reading.
+              level: { type: integer }
+              required_level: { type: integer }
+              key_item: { $ref: '#/components/schemas/ZoneKeyItem' }
+              upgrades: { type: integer, description: The Readiness board's gear_gap.upgrades. }
+              gain_dps: { type: number, description: Only with unit dps. }
+              unit: { type: string, enum: [dps] }
+              slots: { type: array, items: { type: string }, description: The slots the BiS list names an upgrade for, in its order. }
+              missing_slots: { type: array, items: { type: string } }
+    ZoneKeyItem:
+      type: object
+      required: [id, name, quality]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        quality: { type: integer }
+        door: { type: string }
+    RecentAttendance:
+      type: object
+      description: >-
+        The guild's last n logged raids (oldest first) and one row per verified account; cells
+        follow raids. A night is expected when the account signed In or Late and was not
+        excused; slipping is 2 or more expected nights missed.
+      required: [raids, rows]
+      properties:
+        raids:
+          type: array
+          items:
+            type: object
+            title: RecentAttendanceRaid
+            required: [id, starts_at, zone_name]
+            properties:
+              id: { type: integer, format: int64 }
+              starts_at: { type: string, format: date-time }
+              zone_name: { type: string }
+        rows:
+          type: array
+          items:
+            type: object
+            title: RecentAttendanceRow
+            required: [name, class, account_key, cells, slipping]
+            properties:
+              name: { type: string }
+              class: { type: string, x-name: className }
+              account_key: { type: string }
+              cells:
+                type: array
+                description: present (any character came), bench, none (before the account joined), else absent.
+                items: { type: string, enum: [present, absent, bench, none] }
+              slipping: { type: boolean }
+    OfficerActions:
+      type: object
+      required: [approvals, not_signed, drops_to_award]
+      properties:
+        approvals:
+          type: object
+          title: OfficerActionApprovals
+          required: [count, names]
+          properties:
+            count: { type: integer, description: Characters waiting for an officer's approval. }
+            names: { type: array, items: { type: string } }
+        not_signed:
+          type: object
+          title: OfficerActionNotSigned
+          required: [raid_id, count, names]
+          properties:
+            raid_id: { type: [integer, "null"], format: int64, description: The next raid (else the next run); null with none planned. }
+            count: { type: integer }
+            names: { type: array, items: { type: string }, description: The raid view's not_signed_raiders names. }
+        drops_to_award:
+          type: [object, "null"]
+          title: OfficerActionDrops
+          description: >-
+            The last logged raid night; null with none. The logs carry no loot, so what dropped
+            is unknown: tracked is false and count null until a drop record exists. awarded is
+            the awards filed under that night.
+          required: [tracked, count, raid_id, label, awarded]
+          properties:
+            tracked: { type: boolean }
+            count: { type: [integer, "null"] }
+            raid_id: { type: [integer, "null"], format: int64 }
+            label: { type: string, description: 'Zone and day in the guild''s raid timezone, "Onyxia''s Lair, Tue 8 Dec".' }
+            awarded: { type: integer }
+    GuildReadiness:
+      type: object
+      description: >-
+        GET /v1/guilds/{id}/readiness (Go guilds.ReadinessView): one row per verified roster
+        character. next_raid is on the unfiltered board only; raid on the ?raid= board only.
+      required: [median_item_level, generated_at, rows]
+      properties:
+        median_item_level: { type: [integer, "null"] }
+        generated_at: { type: string, format: date-time }
+        raid:
+          type: object
+          title: GuildReadinessRaid
+          required: [id, title, starts_at, cutoff_at]
+          properties:
+            id: { type: integer, format: int64 }
+            title: { type: string }
+            starts_at: { type: string, format: date-time }
+            cutoff_at: { type: string, format: date-time }
+        next_raid:
+          type: [object, "null"]
+          title: GuildReadinessNextRaid
+          required: [id, title, zone_name, starts_at]
+          properties:
+            id: { type: integer, format: int64 }
+            title: { type: string }
+            zone_name: { type: string }
+            starts_at: { type: string, format: date-time }
+        rows:
+          type: array
+          items:
+            type: object
+            title: GuildReadinessRow
+            required: [character_key, name, class, spec, consent, level, gear_gap, enchants, consumables, talent_points_unspent, talent_points_read, item_level, item_level_delta, logged_at, failing, synced_before_cutoff, no_export, attuned]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              spec: { type: string }
+              consent: { type: string, enum: [roster, gear, gear_bags] }
+              level: { type: [integer, "null"] }
+              gear_gap:
+                type: [object, "null"]
+                title: GuildReadinessGearGap
+                required: [upgrades, gain_dps, not_sim_checked, unit]
+                properties:
+                  upgrades: { type: integer }
+                  gain_dps: { type: number }
+                  not_sim_checked: { type: integer }
+                  unit: { type: [string, "null"], enum: [dps, null] }
+              enchants:
+                type: object
+                title: GuildReadinessEnchants
+                required: [missing_slots, checked]
+                properties:
+                  missing_slots: { type: array, items: { type: string } }
+                  checked: { type: boolean }
+              consumables:
+                type: object
+                title: GuildReadinessConsumables
+                required: [state]
+                properties:
+                  state: { type: string, enum: [stocked, short, unknown] }
+              talent_points_unspent: { type: integer }
+              talent_points_read: { type: boolean }
+              item_level: { type: [integer, "null"] }
+              item_level_delta: { type: [integer, "null"] }
+              logged_at: { type: string, format: date-time }
+              failing: { type: integer }
+              synced_before_cutoff: { type: [boolean, "null"] }
+              no_export: { type: boolean }
+              nudge_text: { type: string, description: Officers only. }
+              attuned:
+                type: [boolean, "null"]
+                description: >-
+                  Officers only (null for everyone else): true when the key of the board's raid
+                  (the ?raid= raid, else the next raid) is in the export's bags or worn; null when
+                  the run needs no key or it cannot be read (the export lists only gear in bags,
+                  never the keyring). Never false.
     RaidView:
       type: object
       description: >-
         One raid (Go guilds.RaidView). A locked raid takes no sign-up from a member; an officer
         may still write. match, night, attendance and report fill after the night (null before a
         log is matched).
-      required: [id, zone, zone_name, title, starts_at, duration_minutes, status, size, guild_timezone, notes, notes_html, counts, signups, not_signed, viewer, discord, discord_post, pre_done_status, match, night, attendance, report]
+      required: [id, zone, zone_name, title, starts_at, duration_minutes, status, size, guild_timezone, notes, notes_html, counts, signups, not_signed, viewer, discord, discord_post, pre_done_status, match, night, attendance, report, cover]
       properties:
         id: { type: integer, format: int64 }
         zone: { type: string }
@@ -2482,6 +2747,26 @@ components:
                 True when GET /v1/me/raid-nights/{raid} has a summary for the viewer (a done raid
                 whose log has one of the viewer's characters). Lane F4 contract, handler pending.
         discord: { $ref: '#/components/schemas/RaidDiscord' }
+        comp_target:
+          oneOf:
+            - $ref: '#/components/schemas/RaidCompTarget'
+            - { type: "null" }
+          description: >-
+            The raid's comp target: the zone's default (source default) or the officer's own
+            (source raid). Null for a run with none: dungeon runs, guild events and raids with no
+            sourced size. Every member reads it.
+        not_signed_raiders:
+          type: array
+          description: >-
+            Officers only (absent for everyone else): one row per verified account that has not
+            answered, the account's main among its characters (else its highest level, else the
+            first by name), left out when every character's known level is under the zone's
+            (zone min level, 60 for a raid). not_signed keeps every unanswered character for the
+            raid page.
+          items: { $ref: '#/components/schemas/RaidNotSignedRaider' }
+        ping:
+          $ref: '#/components/schemas/RaidPingState'
+          description: Officers only (absent for everyone else). When the non-signers were last pinged.
         discord_post:
           type: [object, "null"]
           title: RaidDiscordPost
@@ -2542,6 +2827,41 @@ components:
               excused: { type: boolean }
               own: { type: boolean }
         report: { $ref: '#/components/schemas/OpenObject', description: "Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web." }
+        cover:
+          type: [array, "null"]
+          description: >-
+            The buff and debuff cover of the sign-ups (owner decision D15), one row per entry of
+            data/curated/raid-cover.json in its order (party buffs, raid buffs, debuffs); null
+            for a dungeon or an event.
+          items: { $ref: '#/components/schemas/RaidCoverRow' }
+    RaidCoverRow:
+      type: object
+      description: >-
+        One cover row (Go guilds.CoverRow). providers_in, providers_late and providers_bench are
+        the players signed so who can provide it; rows that share players (a paladin's one
+        blessing, a warlock's one curse, a shaman's one air totem) hand each player to one row,
+        in catalogue order. likely is how many of the In and Late providers are counted on a
+        talent their sign-up cannot show (an MM hunter for Trueshot Aura). state reads In plus
+        Late against need: ok when it meets it, short when some, missing when none.
+      required: [key, name, kind, spell_id, icon, need, per, providers_in, providers_late, providers_bench, likely, state]
+      properties:
+        key: { type: string, description: 'The catalogue key, e.g. "windfury_totem".' }
+        name: { type: string, description: "The spell's name in the client." }
+        kind: { type: string, enum: [buff, debuff] }
+        spell_id: { type: integer, description: The top rank a level 60 player learns. }
+        icon: { type: string, description: "The icon stem, /data/{build}/icons/{stem}.webp." }
+        need:
+          type: integer
+          description: >-
+            Providers the raid wants: per raid a fixed count, per melee_group or caster_group
+            that count for every five In or Late raiders who fight in melee (tanks too) or at
+            range (healers too), at least the count.
+        per: { type: string, enum: [raid, melee_group, caster_group] }
+        providers_in: { type: integer }
+        providers_late: { type: integer }
+        providers_bench: { type: integer }
+        likely: { type: integer }
+        state: { type: string, enum: [ok, short, missing] }
     SignupRequest:
       type: object
       required: [state]
@@ -3508,8 +3828,9 @@ components:
         faction_source: { type: string }
         title: { type: string }
         title_rank: { type: integer, description: "Era honor rank the item's title implies, on a pvp source with no rank lock (rank absent); eligibility only, not a lock." }
-        level_min: { type: integer }
+        level_min: { type: integer, description: "world_drop: the pool's level range. dungeon and raid: the instance's level range, the client's Group Finder row." }
         level_max: { type: integer }
+        required_skill: { type: object, additionalProperties: { type: integer }, description: "crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent." }
         rare_spawn: { type: boolean }
         source_origin: { type: string }
         source_note: { type: string }
@@ -3544,6 +3865,8 @@ components:
         required_rep_standing: { type: string }
         profession: { type: string }
         skill: { type: integer }
+        zone_id: { type: integer, description: "The zone the quest log files the quest under (AreaTable id); absent when unknown or filed under a category." }
+        zone: { type: string, description: "That zone's name." }
     SearchIndex:
       type: object
       description: /data/{build}/search.json (W3-C8), the apps' offline search.
@@ -6308,6 +6631,198 @@ paths:
         '404':
           description: "No matched log, not in it, or not yours to see"
           x-fixtures: [me.raid-night.error-not-found]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/comp-target:
+    put:
+      summary: An officer sets the raid's own comp target
+      description: >-
+        Verified officer or leader of a guild with the plan, claim not frozen, the raid planned or
+        locked and its zone one with a default. Shares the officer raid write budget.
+      operationId: setGuildRaidCompTarget
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/RaidCompTargetInput' } } }
+      responses:
+        '200':
+          description: "The raid view, comp_target.source raid"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403':
+          description: "forbidden or guild_plan_required"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such raid"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict (the raid is over), no_comp_target (a run with none) or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid, with fields tanks, healers, melee, ranged or total"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      summary: An officer returns the raid to its zone's default comp target
+      operationId: clearGuildRaidCompTarget
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The raid view, comp_target.source default"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403':
+          description: "forbidden or guild_plan_required"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such raid"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict, no_comp_target or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/ping:
+    post:
+      summary: An officer pings the raid's non-signers on Discord
+      description: >-
+        The bot posts one message, a reply under the raid's live post (else in its channel),
+        mentioning the not_signed_raiders who linked Discord: the raid's title, its start as
+        <t:unix:F>, and the raid page's link. No DMs, no other pings (allowed_mentions names only
+        them). One ping per raid per 6 hours; a ping with no one to mention posts nothing and
+        spends nothing. Verified officer, the plan, claim not frozen, the raid planned or locked.
+      operationId: pingGuildRaid
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "What was posted"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidPingResult' } } }
+        '403':
+          description: "forbidden or guild_plan_required"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such raid"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict (the raid is over), discord_not_connected or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "ping_throttled: fields.next_allowed_at (RFC 3339) and Retry-After say when the next may go"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '502':
+          description: "discord_refused: Discord did not take the message; the throttle is given back"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/me/checklist:
+    get:
+      summary: The signed-in member's private pre-raid checklist
+      description: >-
+        For the raid named by ?raid= (default the next raid, else the next run; raid null with
+        none planned), for the character the member signed with (best place), else their main,
+        else their first verified character by name. Only ever the viewer's own; verified
+        members only.
+      operationId: getGuildMeChecklist
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: query, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The checklist"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/MemberChecklist' } } }
+        '403':
+          description: "Not a verified member of the guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild, or ?raid= is not a raid of it"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/attendance/recent:
+    get:
+      summary: An officer's attendance grid of the last n raid nights
+      description: >-
+        Verified officer or leader (any plan state). By default only slipping rows and rows with
+        a bench night; all=1 lists every verified account.
+      operationId: getGuildRecentAttendance
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: n, in: query, schema: { type: integer, minimum: 1, maximum: 12, default: 4 } }
+        - { name: all, in: query, schema: { type: string, enum: ['1'] } }
+      responses:
+        '200':
+          description: "The grid"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RecentAttendance' } } }
+        '403':
+          description: "Not a verified officer of the guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid n"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/officer/actions:
+    get:
+      summary: The officer Overview's Action needed counts
+      description: Verified officer or leader (any plan state). Applications arrive with their own slice.
+      operationId: getGuildOfficerActions
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "Approvals, the next raid's non-signers and the last night's drops"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/OfficerActions' } } }
+        '403':
+          description: "Not a verified officer of the guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/readiness:
+    get:
+      summary: The readiness board (verified members)
+      description: >-
+        One row per verified roster character; an officer's rows add nudge_text and attuned.
+        ?raid= cuts the board to the raid's In and Late sign-ups (members of the raid only).
+      operationId: getGuildReadiness
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: query, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The board"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/GuildReadiness' } } }
+        '403':
+          description: "Not a verified member of the guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such guild or raid"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{id}/loot:
     get:

@@ -60,6 +60,8 @@ type Service struct {
 	Bot DiscordBot
 	// RaidEvents posts the raid embeds to the guild's channel; nil posts nothing.
 	RaidEvents RaidEvents
+	// RaidPings posts a raid's "Ping on Discord" (the bot); nil answers discord_not_connected.
+	RaidPings RaidPinger
 	// CoachHolders tells whether any raider in a log holds log_coach; nil: never.
 	CoachHolders CoachHolders
 	// PublicBaseURL is the site origin the raid posts link to.
@@ -135,6 +137,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	}
 	mountRaidMatchRoutes(mux, s, officerLimit)
 	mountRaidReportRoutes(mux, s, officerLimit)
+	mountRaidOverviewRoutes(mux, s, officerLimit)
 	mux.Handle("PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}",
 		s.signupRateLimit()(s.signupAuth()(s.putSignup)))
 	// Progression is public (design spec §4.0) - no RequireSession wrap - and its counts
@@ -145,6 +148,10 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// Readiness is member/officer only (design spec §4.0: "Not shown" to the public).
 	// With ?raid= it is a raid route and keeps R1 (readinessRoute).
 	mux.HandleFunc("GET /v1/guilds/{id}/readiness", s.readinessRoute)
+	// The member's own pre-raid checklist (private to the viewer) and the officer Overview's reads.
+	mux.HandleFunc("GET /v1/guilds/{id}/me/checklist", auth.RequireSession(s.meChecklist))
+	mux.HandleFunc("GET /v1/guilds/{id}/attendance/recent", auth.RequireSession(s.recentAttendance))
+	mux.HandleFunc("GET /v1/guilds/{id}/officer/actions", auth.RequireSession(s.officerActions))
 	// CSV exports are officer reads by rank in any plan state (history is never locked).
 	mux.HandleFunc("GET /v1/guilds/{id}/export/attendance.csv", auth.RequireSession(s.exportAttendance))
 	mux.HandleFunc("GET /v1/guilds/{id}/export/loot.csv", auth.RequireSession(s.exportLoot))

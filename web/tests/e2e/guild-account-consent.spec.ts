@@ -1,6 +1,8 @@
 // web/tests/e2e/guild-account-consent.spec.ts
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { choose } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 function envelope(data: unknown, status = 200) {
   return {

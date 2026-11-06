@@ -636,7 +636,7 @@
             }
           }
         },
-        "notes": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 57, then rank 3 or your top trainer rank, which heal about the same for their mana."
+        "notes": "Greater Heal is the filler while your mana keeps pace with the fight: rank 1 until 60, then rank 3 or your top trainer rank, which heal about the same for their mana."
       },
       {
         "action": {
@@ -1093,7 +1093,7 @@
             }
           }
         },
-        "notes": "When the top rank would overheal or your mana runs short, since it costs far less and still keeps most of your healing bonus at 60."
+        "notes": "Once you have higher ranks, when the top rank would overheal or your mana runs short: it costs far less and still keeps most of your healing bonus at 60."
       },
       {
         "action": {

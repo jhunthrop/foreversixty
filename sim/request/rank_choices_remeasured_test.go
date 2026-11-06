@@ -74,9 +74,9 @@ func TestRound12RankChoicesCastTheWinningRank(t *testing.T) {
 }
 
 // A request's rank choices follow its character's race: the same Shadow priest at 40 casts
-// Mind Blast rank 4 as an Undead and the top rank (6) as a Gnome (round 18).
+// Mind Blast rank 4 as a Dwarf and rank 5 as a Gnome (round 24).
 func TestBuildCastsTheRacesRankChoice(t *testing.T) {
-	for race, want := range map[string]string{"undead": `"spellId":8104`, "gnome": `"spellId":8106`} {
+	for race, want := range map[string]string{"dwarf": `"spellId":8104`, "gnome": `"spellId":8105`} {
 		req := api.SimRequest{
 			EngineVersion: enginever.Version, Spec: "priest-shadow",
 			Source:    api.CharacterSource{Kind: api.SourceManual},
@@ -109,12 +109,13 @@ func TestRound13RaceRankChoicesCastTheWinningRank(t *testing.T) {
 	}{
 		// Mind Blast at 40: rank 4 (8104) for a Dwarf or a Night Elf too, whom rank 3 (8103)
 		// never beats; a Gnome casts the top rank, 6 (8106). Re-judged level by level at
-		// sim-accuracy round 18.
-		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8106, 8104},
+		// sim-accuracy round 18. Round 24, on the talents at 40: a Gnome casts rank 5 (8105).
+		{"Gnome Mind Blast at 40", "priest-shadow", "priest", BarePreset, "gnome", 40, 8105, 8106},
 		{"Dwarf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "dwarf", 40, 8104, 8103},
 		{"Night Elf Mind Blast at 40", "priest-shadow", "priest", BarePreset, "night-elf", 40, 8104, 8103},
 		// Round 15 wave 2 (level-gap rule): Mind Blast at 50 is the highest rank learned for every race.
-		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 10945, 8102},
+		// Round 24: a Night Elf casts rank 5 (8105) at 50 and 51.
+		{"Night Elf Mind Blast at 50", "priest-shadow", "priest", BarePreset, "night-elf", 50, 8105, 10945},
 		{"Human Mind Blast at 50", "priest-shadow", "priest", BarePreset, "human", 50, 10945, 8103},
 		// Devouring Plague at 50: rank 2 (19276) for every race since sim-accuracy round 18
 		// (rank 1 for most races until then).
@@ -278,7 +279,8 @@ func TestRound20DevouringPlagueRankOneAt28ForGnomeAndTroll(t *testing.T) {
 		{"Gnome Devouring Plague at 28", "gnome", 28, 2944, 19276},
 		{"Gnome Devouring Plague at 29", "gnome", 29, 2944, 19276},
 		{"Troll Devouring Plague at 28", "troll", 28, 2944, 19276},
-		{"Troll Devouring Plague at 29", "troll", 29, 2944, 19276},
+		// Round 24, on the talents at 29: a Troll casts rank 2 (+0.3% / +0.4%).
+		{"Troll Devouring Plague at 29", "troll", 29, 19276, 2944},
 		{"Human Devouring Plague at 28 is the top rank", "human", 28, 19276, 2944},
 		{"Undead Devouring Plague at 29 is the top rank", "undead", 29, 19276, 2944},
 		{"Gnome Devouring Plague at 30 is rank 1 as before", "gnome", 30, 2944, 19276},

@@ -24,18 +24,18 @@ This is the best Combat Rogue on Forever. Combat is the steadiest rogue in a rai
 - Garrote: Stealth before the pull, walk in behind the boss, and open with Garrote once the tank has the boss.
 - Ambush and Backstab from stealth both hit into armor that has no shred on it yet, and neither leaves a bleed behind.
 - Cheap Shot is for trash: bosses are immune to stuns.
-- Shank on cooldown, right behind any damage racial and your trinket. It is an off-hand stab for five energy that cannot miss and pays back more than it costs.
+- Shank from twenty-four on cooldown, right behind any damage racial and your trinket. It is an off-hand stab for five energy that cannot miss and pays back more than it costs.
 - Slice and Dice whenever it drops, at one or two combo points.
 - Eviscerate at five combo points.
 - Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder.
 - Sinister Strike only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you.
 - Adrenaline Rush from forty on cooldown, with your damage racial if your race has one, a trinket and a potion.
 - Blade Flurry from thirty-three, at any energy, for its twenty-five.
-- Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per combo point. Five seconds at five, six once rank two trains at fifty.
-- Kick stops a cast for twenty-five energy.
+- Kidney Shot trains at thirty. It costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per combo point. Five seconds at five, six once rank two trains at fifty.
+- Kick from twelve stops a cast for twenty-five energy.
 - Gouge buys a few seconds on a loose add.
 - Redirect lifts your combo points off a target and hands them to the next enemy you hit within fifteen seconds.
-- Feint on cooldown on any boss where you sit near the tank's threat.
+- Feint from sixteen on cooldown on any boss where you sit near the tank's threat.
 
 **The mistakes to look for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -47,7 +47,7 @@ This is the best Combat Rogue on Forever. Combat is the steadiest rogue in a rai
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want food (Poached Sunscale Salmon); a combat potion (Major Frenzy Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want food (Poached Sunscale Salmon) from thirty-five; a combat potion (Major Frenzy Potion) from fifty-five, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -55,8 +55,8 @@ This is the best Combat Rogue on Forever. Combat is the steadiest rogue in a rai
 - drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each when its line says, never earlier, and again the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the energy bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
-- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for.
+- drill.preparation: Before every boss, check food from thirty-five and a combat potion from twenty-five on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

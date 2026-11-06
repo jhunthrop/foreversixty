@@ -5,7 +5,7 @@
 // in through `MatchPickerDeps`, so the tests drive it with fakes.
 import type { MatchCandidate, MatchCandidates } from './attendance-contract';
 import { PICKER_MAX_ROWS } from './attendance-copy';
-import { segmentKeyAction, type SegmentKeyAction } from './segments-keys';
+import { segmentKeyAction, type SegmentKeyAction } from '../ui/segmented';
 
 /** The API's refusal when another raid already holds the log. */
 export const REPORT_MATCHED = 'report_matched';

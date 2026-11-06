@@ -13,6 +13,7 @@
     error,
     grow = false,
     autocomplete,
+    inputmode,
     required = false,
     testid,
   }: {
@@ -25,6 +26,8 @@
     error?: string;
     grow?: boolean;
     autocomplete?: HTMLInputElement['autocomplete'];
+    /** The phone keyboard: `numeric` for a count. */
+    inputmode?: 'numeric' | 'text';
     required?: boolean;
     testid?: string;
   } = $props();
@@ -38,6 +41,7 @@
     {type}
     {placeholder}
     {autocomplete}
+    {inputmode}
     {required}
     bind:value
     class={[

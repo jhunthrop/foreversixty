@@ -5,7 +5,7 @@
 // 403 that ends the officer tools, the switched-off fill, a non-officer's nothing, the raid form's
 // line after a remove, axe in every state, 44 px controls at 360 and the §3.8 height caps.
 import type { Locator, Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';
 import { GUILD_ID } from '../../src/fixtures/guild/mock-guild';
@@ -25,6 +25,8 @@ import {
 import { gotoHydrated } from './support/hydrated';
 import { envelope, expectNoAxeViolations } from './support/officer-tools';
 import { fieldBox } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/billing'));

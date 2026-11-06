@@ -24,15 +24,15 @@ This is the best Enhancement Shaman on Forever. Enhancement is the shaman's mele
 - Windfury Weapon on your weapon from thirty, before the pull and whenever it falls off. Before thirty, and in a raid where a Windfury Totem reaches you, use Rockbiter Weapon.
 - Windfury Totem from thirty-two in your Air slot when no other shaman has it down near the melee.
 - Strength of Earth Totem whenever it is down. It is Strength for every melee player near you, and in Forever the totem reaches the whole raid within thirty yards.
-- If your party has no other shaman, put Mana Spring Totem in your Water slot as well.
+- Mana Spring Totem from twenty-six in your Water slot when your party has no other shaman.
 - Totemic Call from twenty-two when the boss moves away from your totems: follow it, and it brings them to you.
 - Rage of the Farseer from forty, with your trinkets and any damage racial, on the pull and again on cooldown.
 - Stormstrike on cooldown from twenty-five. It makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
 - Lightning Bolt at five Maelstrom Weapon stacks once you have all five points: it is instant and free then.
 - Searing Totem when it is down, unless the boss is about to die.
 - Fire Nova on a Clearcasting proc, with the raid build. It is free then, and in melee your Searing Totem stands within its ten yards of the boss.
-- Earth Shock last, on cooldown while your mana is above a quarter. Keep that last quarter for Stormstrike and your totems.
-- Magma Totem and Fire Nova both hit within a few yards of your Fire totem, and in melee you are standing at it.
+- Earth Shock last, on cooldown while your mana is above a quarter. Keep that last quarter for your totems, and from twenty-five for Stormstrike.
+- Magma Totem from twenty-six on a big pack, with Fire Nova on cooldown and Chain Lightning while mana lasts. Both totems' bursts reach a few yards, and in melee you stand at the totem.
 - Lightning Shield only fires when something hits you, which behind a boss is never.
 
 **The mistakes to look for, by finding.**
@@ -45,7 +45,7 @@ This is the best Enhancement Shaman on Forever. Enhancement is the shaman's mele
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want food (Smoked Desert Dumplings); a combat potion (Major Frenzy Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want food (Smoked Desert Dumplings) from forty-five; a combat potion (Major Frenzy Potion) from fifty-five, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -54,7 +54,7 @@ This is the best Enhancement Shaman on Forever. Enhancement is the shaman's mele
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check food from thirty-five and a combat potion from forty-nine on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

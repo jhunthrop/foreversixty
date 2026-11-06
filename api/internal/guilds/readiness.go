@@ -66,7 +66,11 @@ type ReadinessRow struct {
 	SyncedBeforeCutoff *bool   `json:"synced_before_cutoff"`
 	NoExport           bool    `json:"no_export"`
 	NudgeText          *string `json:"nudge_text,omitempty"`
-	readinessScore     float64
+	// Attuned is an officer's only: true when the raid's key (the filtered raid's, else the next
+	// raid's) is in the export's bags or worn; null when the run needs no key or it cannot be
+	// read (the export lists only gear in bags, never the keyring), never false.
+	Attuned        *bool `json:"attuned"`
+	readinessScore float64
 }
 
 // ReadinessView is the body of GET /v1/guilds/{id}/readiness.
@@ -132,8 +136,12 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 		return ReadinessView{}, err
 	}
 	nudgeDay := ""
+	var key *KeyItem
 	if officerView {
 		if nudgeDay, err = s.nudgeDay(ctx, guildID, raid); err != nil {
+			return ReadinessView{}, err
+		}
+		if key, err = s.readinessKeyItem(ctx, guildID, raid); err != nil {
 			return ReadinessView{}, err
 		}
 	}
@@ -157,6 +165,9 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 		if officerView && !cr.Leveling {
 			text := nudgeText(row.Name, cr, nudgeDay, staleFailure(rr, now)...)
 			rr.NudgeText = &text
+		}
+		if key != nil {
+			rr.Attuned = attunedOf(*key, row)
 		}
 		view.Rows = append(view.Rows, rr)
 	}

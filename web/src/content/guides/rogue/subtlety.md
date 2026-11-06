@@ -73,7 +73,7 @@ Every rogue learns **Poised** at 18: at full energy out of combat, your next abi
 
 ### The priority
 
-**Shank** on cooldown, right behind your racial and trinket, while you have three combo points or fewer: with Boot Knife it is two points for 5 energy. At four or five with 50 energy or more, finish first and Shank right after; a 10 second cooldown loses nothing to one global. Below 50 energy, Shank anyway: the energy it hands back is worth more than a point Boot Knife might spill.
+**Shank** on cooldown, right behind any damage racial and your trinket, while you have three combo points or fewer: with Boot Knife it is two points for 5 energy. At four or five with 50 energy or more, finish first and Shank right after; a 10 second cooldown loses nothing to one global. Below 50 energy, Shank anyway: the energy it hands back is worth more than a point Boot Knife might spill.
 
 Ghostly Strike goes on cooldown too, just never at five points. Every Ghostly Strike that lands is followed by a **Garrote** at four points or fewer, even with the old one still ticking: the strike lets it in without Stealth, a fresh Garrote is worth more than the ticks it replaces, and with Initiative it gives two combo points, which Hemorrhage does not. At exactly four with a Ghostly Strike just landed, Garrote first: its window is 7 seconds and Rupture can wait one global.
 
@@ -83,11 +83,11 @@ Rupture before Death Mark, always: Hemorrhage's debuff and Serrated Blades both 
 
 ### Energy
 
-Shank is your energy: 5 to press, 25 back, and two combo points with Boot Knife, so a Shank left on cooldown costs you energy and points at once. Efficient Strikes keeps Hemorrhage cheap. Do not cap energy. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when empty.
+Shank is your energy: 5 to press, 25 back, and two combo points with Boot Knife, so a Shank left sitting ready costs you energy and points at once. Efficient Strikes keeps Hemorrhage cheap. Do not cap energy. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when empty.
 
 ### Cooldowns
 
-Death Mark is your only damage cooldown and it comes back every 10 seconds, so there is nothing to hold: line your racial, trinket and potion up at the pull, where the first mark stores Garrote and Rupture together. **Preparation** finishes every other rogue cooldown, once every 10 minutes. On a boss, spend Premeditation, Shank and Ghostly Strike first, then Preparation and press all three again for another five combo points. Keep it for a second Vanish only when the fight needs one.
+Death Mark is your only damage cooldown and it comes back every 10 seconds, so there is nothing to hold: line any damage racial, your trinket and potion up at the pull, where the first mark stores Garrote and Rupture together. **Preparation** finishes every other rogue cooldown, once every 10 minutes. On a boss, spend Premeditation, Shank and Ghostly Strike first, then Preparation and press all three again for another five combo points. Keep it for a second Vanish only when the fight needs one.
 
 ### Trash, threat and survival
 
@@ -102,7 +102,7 @@ Hit counts until your attacks stop missing, and adds nothing past that. Your whi
 
 ## Best in slot
 
-Subtlety does not need daggers at 60. Hemorrhage and Ghostly Strike hit harder with a dagger, but most of your damage comes from Rupture, Garrote, Death Mark, Shank and your white swings, and none of them care what kind of weapon you hold. Take the weapons in the table above, dagger or not. The off hand carries your Instant Poison and every Shank, so it wants to hit hard too.
+Subtlety does not need daggers at 60. Hemorrhage and Ghostly Strike pay a bigger weapon percentage with a dagger, but a slow sword's bigger hits make up for it, and most of your damage comes from Rupture, Garrote, Death Mark, Shank and your white swings, and none of them care what kind of weapon you hold. Take the weapons in the table above, dagger or not. The off hand carries your Instant Poison and every Shank, so it wants to hit hard too.
 
 ## Enchants and consumables
 
@@ -132,4 +132,4 @@ Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for t
 
 ### Levels 20 to 60
 
-Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage, from 24, keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown. Until Hemorrhage, Backstab with a dagger is your builder whenever you are behind the target, and Sinister Strike when you are not. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five on mobs. On anything bigger, Rupture at four and Eviscerate at three while it ticks, until Death Mark comes at 40. From 26, follow every Ghostly Strike with a Garrote on anything that will live through it: the strike lets it in without Stealth. From 40, keep Rupture ticking on anything that will live, and put four or more points into Death Mark while it ticks; Eviscerate a mob that will die before the mark goes off.
+Premeditation comes at 20, Ghostly Strike at 26, Hemorrhage at 30, Boot Knife from 35 and Death Mark at 40. Stealth and Camouflage, from 24, keep you out of trouble on the way. Shank comes at 24 for every rogue: press it on cooldown, and once Boot Knife comes at 35, finish first when you sit on four or five combo points with 50 energy or more. Until Hemorrhage, Backstab with a dagger is your builder whenever you are behind the target, and Sinister Strike when you are not. Open with Garrote, or Cheap Shot from 26, keep Slice and Dice up on anything that lives, and Eviscerate at five on mobs. On anything bigger, Rupture at four and Eviscerate at three while it ticks, until Death Mark comes at 40. From 26, follow every Ghostly Strike with a Garrote on anything that will live through it: the strike lets it in without Stealth. From 40, keep Rupture ticking on anything that will live, and put four or more points into Death Mark while it ticks; Eviscerate a mob that will die before the mark goes off.

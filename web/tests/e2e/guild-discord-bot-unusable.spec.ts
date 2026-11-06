@@ -4,7 +4,7 @@
 // permissions notices, precedence, fixing by picking and by saving the same channel, the read-only
 // and frozen gates, axe, 44 px targets at 360, the height caps and no layout shift.
 import type { Locator, Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import type { GuildChannelPermission, GuildChannelUnusable } from '../../src/lib/guild/api';
 import { guildBotCopy, joinPermissions } from '../../src/lib/guild/discord-bot-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';
@@ -21,6 +21,8 @@ import {
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { choose, fieldControl } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const SECTION = '#discord';
 const PHONE = { width: 360, height: 800 };

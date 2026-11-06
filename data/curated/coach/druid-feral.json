@@ -1,16 +1,7 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70790",
-  "core": [
-    {
-      "family": "Shifting Power",
-      "spell_ids": [
-        1322605
-      ],
-      "talent": true,
-      "verified": "1.60.1.70790/spellconst/druid.json#1322605"
-    }
-  ],
+  "core": [],
   "auras": [
     {
       "spell_id": 9896,

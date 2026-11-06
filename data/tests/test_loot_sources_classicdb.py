@@ -269,6 +269,29 @@ def test_a_quest_reward_carries_classic_dbs_own_profession_and_skill():
     assert matching[0].skill == 50
 
 
+def test_a_quest_reward_names_its_zone_from_zones_json_and_drops_one_it_does_not_name():
+    classic_sources = {
+        100: [
+            ClassicDbSourceRecord(
+                kind="quest_reward", name="Deadmines Quest",
+                quest=ClassicDbQuestInfo(
+                    quest_id=57, min_level=17, level=22, faction="both", zone_id=1581
+                ),
+            ),
+            ClassicDbSourceRecord(
+                kind="quest_reward", name="Unknown Zone Quest",
+                quest=ClassicDbQuestInfo(
+                    quest_id=58, min_level=17, level=22, faction="both", zone_id=99999
+                ),
+            ),
+        ]
+    }
+    document, _ = built(classic_sources)
+    by_quest = {entry.quest_id: entry for entry in document.quests[str(100)]}
+    assert (by_quest[57].zone_id, by_quest[57].zone) == (1581, "The Deadmines")
+    assert (by_quest[58].zone_id, by_quest[58].zone) == (None, None)
+
+
 def test_fork_stays_primary_when_classic_db_names_the_same_bucket():
     """Item 104 ("World Boss Drop") already sources `zone:16` via the
     fork's own npc 903 drop. A classic-db creature_drop for the SAME

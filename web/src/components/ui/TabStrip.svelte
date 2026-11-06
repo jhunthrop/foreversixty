@@ -29,6 +29,7 @@
     onSelect,
     idPrefix,
     testid,
+    wrap = false,
   }: {
     tabs: readonly TabItem[];
     /** The current tab's id. */
@@ -39,6 +40,8 @@
     onSelect?: (id: string) => void;
     idPrefix?: string;
     testid?: string;
+    /** Wrap to two lines below 768 instead of scrolling (a strip whose every tab must show). */
+    wrap?: boolean;
   } = $props();
 
   let strip = $state<HTMLElement | undefined>(undefined);
@@ -85,7 +88,7 @@
     <div
       bind:this={strip}
       use:scrollFade
-      class={TAB_STRIP.strip}
+      class={wrap ? TAB_STRIP.stripWrap : TAB_STRIP.strip}
       role="tablist"
       aria-label={label}
       aria-orientation="horizontal"
@@ -128,7 +131,13 @@
       {/each}
     </div>
   {:else}
-    <nav bind:this={strip} use:scrollFade class={TAB_STRIP.strip} aria-label={label} data-testid={testid}>
+    <nav
+      bind:this={strip}
+      use:scrollFade
+      class={wrap ? TAB_STRIP.stripWrap : TAB_STRIP.strip}
+      aria-label={label}
+      data-testid={testid}
+    >
       {#each tabs as tab (tab.id)}
         {@const current = tab.id === active}
         {#if tab.href !== undefined && tab.disabled !== true}

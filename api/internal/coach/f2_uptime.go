@@ -79,6 +79,7 @@ func judgeAura(in Input, c Counted, rule AuraRule, o *outcome) (auraReading, boo
 		addUptimeCannot(o, Fill(CannotOthersDebuff, map[string]string{"Aura": rule.Name}))
 		return auraReading{}, false
 	}
+	track = withCover(in, rule, track)
 	anchor := Anchor{Kind: AnchorAura, SpellID: rule.SpellID}
 	up, den, ok := int64(0), c.CountedMS, c.CountedMS > 0 // never applied: up for none of it
 	if track != nil {
@@ -103,6 +104,25 @@ func judgeAura(in Input, c Counted, rule AuraRule, o *outcome) (auraReading, boo
 		return auraReading{}, false
 	}
 	return auraReading{rule: rule, upMS: up, denMS: den, pct: float64(up) / float64(den) * 100, ref: ref, basis: *basis, anchor: anchor}, true
+}
+
+// withCover is own joined with the rule's covering aura (CoveredBy) on the same target, from
+// any applier: while another aura that holds the slot is up, the slot is filled (a druid's
+// Roar for a warrior's Demoralizing Shout). With no own track it is the covering aura's
+// longest track; with no cover it is own unchanged. own is never modified.
+func withCover(in Input, rule AuraRule, own *summary.AuraTrack) *summary.AuraTrack {
+	if len(rule.CoveredBy) == 0 {
+		return own
+	}
+	sameTarget := func(a *summary.AuraTrack) bool { return own == nil || a.TargetGUID == own.TargetGUID }
+	cover := longestTrack(in, rule.CoveredBy, sameTarget)
+	if cover == nil {
+		return own
+	}
+	if own == nil {
+		return cover
+	}
+	return unionTrack(unionTrack(nil, own), cover)
 }
 
 // appliedByOthers reports whether a debuff-route aura (a DoT, a debuff, or a defensive that

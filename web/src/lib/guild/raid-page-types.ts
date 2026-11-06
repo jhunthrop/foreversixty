@@ -7,6 +7,7 @@ import type { CharacterPath } from '../characters';
 import type { GuildPage } from '../rankings/api';
 import type { GuildHome, GuildRaidView, GuildZoneView } from './api';
 import type { MatchCandidates, PostReportResult } from './attendance-contract';
+import type { GuildCompRole, GuildPingResult } from './overview-api';
 import type { RaidInput, RaidStatusAction, RaidStatusBody, SignupInput, SignupResult } from './raids-api';
 
 export interface RaidRoute {
@@ -46,6 +47,15 @@ export interface RaidPageDeps {
   ) => Promise<GuildRaidView>;
   /** Post to Discord: 409 already_posted, 502 post_failed. */
   postReport: (guildId: number, raidId: string) => Promise<PostReportResult>;
+  /** The planner's comp target (officers); each answers the raid view. */
+  putCompTarget: (
+    guildId: number,
+    raidId: string,
+    target: Readonly<Record<GuildCompRole, number>>,
+  ) => Promise<GuildRaidView>;
+  deleteCompTarget: (guildId: number, raidId: string) => Promise<GuildRaidView>;
+  /** Ping on Discord: one message under the raid's post naming the non-signers. */
+  pingRaid: (guildId: number, raidId: string) => Promise<GuildPingResult>;
   /** The edit form's Raid list (the raids page carries it). */
   loadZones: (guildId: number) => Promise<GuildZoneView[]>;
   isVisible: () => boolean;

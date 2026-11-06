@@ -10,6 +10,7 @@ Spellblasting Potion (round 25).
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from functools import cache
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,12 @@ FOOD_PREFIX = "food_"
 FLASK_PREFIX = "flask_"
 POTION_SUFFIX = "_potion"
 IMBUE_MARK = "_imbue:"
+MATCHERS: dict[str, Callable[[str], bool]] = {
+    "food": lambda c: c.startswith(FOOD_PREFIX),
+    "flask": lambda c: c.startswith(FLASK_PREFIX),
+    "combat_potion": lambda c: c.endswith(POTION_SUFFIX),
+    "weapon_enchant": lambda c: IMBUE_MARK in c,
+}
 
 
 def _load(path: Path) -> Any:
@@ -38,23 +45,39 @@ def _labels() -> dict[str, str]:
     return {entry["id"]: entry["label"] for entry in entries}
 
 
-def top_band(slug: str) -> list[str]:
-    """The consumable ids of the spec's top raid band; fails loudly when it has none."""
+def _bands(slug: str) -> list[dict[str, Any]]:
+    """The spec's raid bands, lowest first; fails loudly when it has none."""
     rows = _load(RAID_CONSUMES_PATH)["specs"].get(slug)
     if not rows:
         raise SystemExit(f"{slug!r} has no rows in {RAID_CONSUMES_PATH}")
-    return list(rows[-1]["consumes"])
+    return list(rows)
+
+
+def top_band(slug: str) -> list[str]:
+    """The consumable ids of the spec's top raid band."""
+    return list(_bands(slug)[-1]["consumes"])
+
+
+def first_level(slug: str, labels: set[str]) -> int:
+    """The first band level whose consumables include one of these labels (round 26: the coach
+    expects only the band's items, so a starter names the level each one arrives at)."""
+    for band in _bands(slug):
+        if any(_labels().get(c) in labels for c in band["consumes"]):
+            return int(band["from_level"])
+    raise SystemExit(f"{slug!r} brings none of {sorted(labels)} in any raid band")
+
+
+def band_labels(slug: str, kind: str) -> set[str]:
+    """Every label of this kind (food, flask, combat_potion, weapon_enchant) across all bands."""
+    match = MATCHERS[kind]
+    return {_labels()[c] for band in _bands(slug) for c in band["consumes"] if match(c) and c in _labels()}
 
 
 def preset_labels(slug: str, kind: str) -> list[str]:
     """The labels of the top band's flasks, combat potions or weapon enchants, in preset order,
     each once (a stone on both hands is one name). An id with no label (a poison, an imbue spell)
     is not a consumable the starter names."""
-    matches = {
-        "flask": lambda c: c.startswith(FLASK_PREFIX),
-        "combat_potion": lambda c: c.endswith(POTION_SUFFIX),
-        "weapon_enchant": lambda c: IMBUE_MARK in c,
-    }[kind]
+    matches = MATCHERS[kind]
     labels = [_labels().get(c) for c in top_band(slug) if matches(c)]
     return list(dict.fromkeys(label for label in labels if label))
 

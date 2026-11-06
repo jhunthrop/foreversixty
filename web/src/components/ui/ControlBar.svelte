@@ -12,6 +12,7 @@
   import { checkRadio } from '../../lib/ui/control-bar';
   import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
   import Glyph from './Glyph.svelte';
+  import './segmented.css';
   import Select from './Select.svelte';
 
   let {
@@ -196,62 +197,11 @@
     gap: 4px;
     min-width: 0;
   }
-  .ui-seg {
-    display: flex;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-field);
-    overflow: hidden;
-  }
-  .ui-seg-item {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 44px;
-    padding: 0 14px;
-    font-size: 14px;
-    line-height: 16px;
-    font-weight: 600;
-    color: var(--color-nav);
-    white-space: nowrap;
-    border-left: 1px solid var(--color-line-soft);
-  }
-  .ui-seg-item:first-child {
-    border-left: 0;
-  }
-  .ui-seg-item:active {
-    background: var(--color-pressed);
-  }
-  .ui-seg-item:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: -2px;
-  }
-  .ui-seg-item[aria-checked='true'] {
-    background: var(--color-selected);
-    color: var(--color-gold);
-    box-shadow: inset 0 -2px 0 var(--color-gold);
-  }
-  .ui-seg-item[aria-disabled='true'] {
-    opacity: 0.5;
-    color: var(--color-muted);
-    cursor: not-allowed;
-  }
-  .ui-seg-count {
-    font-size: 12px;
-    color: var(--color-muted);
-  }
-  .ui-seg-item[aria-checked='true'] .ui-seg-count {
-    color: var(--color-gold);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .ui-seg-item:not([aria-checked='true']):not([aria-disabled='true']):hover {
-      background: var(--color-hover);
-      color: var(--color-strong);
-    }
-  }
+
   @media (min-width: 768px) {
     .ui-cbar-inner {
+      /* The page column's own gutter: the phone inset above would otherwise replace it. */
+      padding-inline: var(--page-gutter);
       display: flex;
       align-items: center;
       min-height: var(--bar-h);

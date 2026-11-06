@@ -87,7 +87,8 @@
       "Talents and race: Forever logs don't record them.",
       "Range and movement: the log doesn't say where you stood.",
       "Weapon oils and stones: the coach can't read them from your log yet.",
-      "Combat potions: the coach's potion list isn't complete yet."
+      "Combat potions: the coach's potion list isn't complete yet.",
+      "Defensive cooldowns: the coach doesn't know your spec's list yet."
     ]
   },
   "anchors": {
