@@ -61,6 +61,10 @@
     {guildHomeCopy.notFound(`${path.region.toUpperCase()} ${rulesetLabel(path.ruleset)}`)}
     <a class={INLINE_LINK} href="/guild">{guildHomeCopy.lookUpAgain}</a>
   </p>
+  <p class="text-muted text-[14px]" data-testid="guild-not-here-yet">
+    {guildHomeCopy.notHereYet}
+    <a class={INLINE_LINK} href={guildHomeCopy.notHereYetHref}>{guildHomeCopy.notHereYetAction}</a>
+  </p>
   {#if suggestions.length > 0}
     <p class="text-[14px]" data-testid="guild-not-found-suggestion">
       {guildHomeCopy.didYouMean}{#each suggestions as suggestion, index (suggestion.href)}{guildHomeCopy.suggestionJoin(

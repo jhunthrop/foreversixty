@@ -17,6 +17,12 @@ export const guildHomeCopy = {
   notFound: (where: string): string =>
     `No guild by that name on ${where}. Check the spelling and the ruleset.`,
   lookUpAgain: 'Look it up again',
+  /** Day one: a guild exists on the site only once a member's character brings it (an addon
+   *  sync or a Battle.net import names the guild), so a right name can still miss. */
+  notHereYet:
+    'Spelled right? Then it is not on Forever Sixty yet. A guild shows up once one of its members signs in and imports a character, or syncs the addon.',
+  notHereYetAction: 'Get set up',
+  notHereYetHref: '/setup',
   /** `Did you mean ` + up to three links `{Guild} ({where})`, joined `, ` and ` or `, + `?`
    *  (guild loop round 3). */
   didYouMean: 'Did you mean ',
@@ -343,7 +349,8 @@ export const guildLandingCopy = {
   submit: 'Open guild',
   emptyName: "Type the guild's name as the game writes it.",
   topHeading: 'Top guilds',
-  officerLine: 'Run a guild? Open its page and choose Claim this guild.',
+  officerLine:
+    'Run a guild? Sign in and import your character, then open the guild page and choose Claim this guild.',
   /** In the officer line's place for a player who already holds a claim (guild loop round 3). */
   holdsClaim: (guildName: string): string => `You hold ${possessive(guildName)} claim.`,
 } as const;
