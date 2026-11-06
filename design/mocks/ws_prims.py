@@ -440,30 +440,41 @@ def Histogram(counts: list[int], start: float, bin_dps: float, mean: float, lo: 
     return f'<div class="hist"><svg viewBox="0 0 100 168" preserveAspectRatio="none" role="img" aria-label="{label}">{bars}</svg><div class="ax">{ax}</div></div>'
 
 
-def Lanes(svg: str, legend: list[tuple[str, str]]) -> str:
-    """The legend is a list (the shipped SimTimeline's `ul`); the caller's plot carries the shipped plot's role."""
-    lg = ''.join(f'<li><i style="--k:{c}" class="k"></i>{t}</li>' for c, t in legend)
-    return f'<div class="lanes"><ul class="lg">{lg}</ul>{svg}</div>'
+def LanesLegend(legend: list[tuple]) -> str:
+    """The lanes' legend, a list (the shipped SimTimeline's `ul`): (colour, label) or (colour, label, width, height) for a
+    swatch drawn at the mark's own size."""
+    def item(c, t, *size):
+        dim = f';width:{size[0]}px;height:{size[1]}px' if size else ''
+        return f'<li><i style="--k:{c}{dim}" class="k"></i>{t}</li>'
+    return '<ul class="lg">' + ''.join(item(*x) for x in legend) + '</ul>'
+
+
+def Lanes(svg: str, legend: list[tuple[str, str]] | None = None) -> str:
+    """The caller's plot carries the shipped plot's role. No legend: the caller places LanesLegend itself (the sim's tool line)."""
+    return f'<div class="lanes">{LanesLegend(legend) if legend else ""}{svg}</div>'
 
 
 PRIM_CSS += '.lanes .lg i.k{background:var(--k)}\n'
 
 
 def Trees(trees: list[tuple[str, int, list[tuple]]]) -> str:
-    """Read-only talent trees: (name, points, cells (tier, column, icon_html, rank, max)). The planner's tooltips on hover."""
+    """Read-only talent trees: (name, points, cells (tier, column, icon_html, rank, max)). The planner's tooltips on hover.
+    The built TreeGrid's semantics: a grid per tree, a row per tier, a gridcell per column, a group per talent."""
     out = ''
     for name, pts, cells in trees:
         grid = ''
         for tier in range(7):
+            row = ''
             for col in range(4):
                 c = next((x for x in cells if x[0] == tier and x[1] == col), None)
                 if c is None:
-                    grid += '<span></span>'
+                    row += '<span role="gridcell"></span>'
                     continue
                 _, _, ic, rk, mx = c
                 st = 'full' if rk == mx else ('part' if rk else 'off')
-                grid += f'<span class="tc {st}">{ic}' + (f'<b>{rk}/{mx}</b>' if rk else '') + '</span>'
-        out += f'<div class="tr"><h3>{name} <b class="num">{pts}</b></h3><div class="tg">{grid}</div></div>'
+                row += f'<span role="gridcell"><span class="tc {st}" role="group">{ic}' + (f'<b>{rk}/{mx}</b>' if rk else '') + '</span></span>'
+            grid += f'<div role="row">{row}</div>'
+        out += f'<div class="tr"><h3>{name} <b class="num">{pts}</b></h3><div class="tg" role="grid" aria-label="{name} talents">{grid}</div></div>'
     return f'<div class="trees">{out}</div>'
 PRIM_CSS += '''
 .tl{display:grid;grid-template-columns:200px minmax(0,1fr);min-width:0}

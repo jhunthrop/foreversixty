@@ -15,6 +15,8 @@ error band is computed from the fixture's own spread (band()).
   python3 design/mocks/ws_sim.py compare
 """
 import base64
+import decimal
+import hashlib
 import json
 import os
 import re
@@ -22,7 +24,7 @@ import sys
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, Link, Meter, Notice,
+from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
                       Page, PageHeader, Plate, Row, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
                       control_bar, crest_img, seg, sel, write, Paperdoll)
 import ws_compose
@@ -65,8 +67,9 @@ LIVE = (905.3, 1357)                                                    # SAMPLE
 HANDS = {'other:attack/1': ('Main hand', 'main_hand'), 'other:attack/2': ('Off hand', 'off_hand'), 'other:attack/3': ('Extra attacks', 'main_hand')}
 OFF_HAND_SPELLS = {462891}   # Whirlwind's off-hand strike, as lib/report/ability-table.ts and lib/sim/timeline.ts (Forever's
                              # Whirlwind hits with both weapons: spelltips/warrior.json 1680)
-HISTORY = [('Thandrel', 'Fury, raid buffs', '3 Nov', '899.6'), ('Thandrel', 'Fury, no buffs', '1 Nov', '402.3'),
-           ('Thandrel, Top Gear', '+41.2 DPS from Ironfoe', '31 Oct', '')]  # SAMPLE rows of GET /v1/sims
+# SAMPLE rows of GET /v1/sims?mine=1, the three the parity gate stubs (web/tests/e2e/support/sim-parity.ts), drawn as SimYourSims
+# draws a run: the title, then the spec and the day, the DPS grouped to a whole number
+HISTORY = [('Raid buffs', SPEC_ROW['name'], '3 Nov', '900'), ('No buffs', SPEC_ROW['name'], '1 Nov', '402'), ('Raid buffs', SPEC_ROW['name'], '29 Oct', '881')]
 
 _icache: dict[str, str] = {}
 
@@ -198,6 +201,7 @@ ERR_LINE = f'<b>&plusmn; {BAND:.1f} (95%)</b> &middot; {BAND / MEAN * 100:.2f}% 
 PRECISION = {500: 'Fast', 3000: 'Normal', 10000: 'High'}[REQ['iterations']]          # lib/sim/precision.ts PRECISION_ITERATIONS
 PRECISION_LABEL = f"{PRECISION}, {REQ['iterations']:,} runs"
 LANE_LABEL = {'server': 'run on our servers', 'browser': 'run in your browser'}[RES['lane']]
+DAMAGE_KEYS = {a['name'] for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 DAMAGE_SCHOOLS = {'physical' if (a.get('school') or 1) & 1 else 'other' for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 SPLIT = '/'.join(str(sum(int(c) for c in part)) for part in CHAR['talents'].split('-'))
 RACE = CHAR['race'].replace('-', ' ').title()
@@ -239,10 +243,10 @@ def ability_rows(state: str = '') -> tuple[list[str], str]:
             deb = AURAS.get(a['name'])
             sub = [f'{a["ticks"]} ticks', f'tick crit {crit:.1f}%'] + ([f"up {deb['uptime_ms'] / SUM['duration_ms'] * 100:.1f}% of the fight"] if deb else [])
         else:
-            casts = attempts if kind == 'other' else (CASTS.get(a['name']) or a['hits'])   # a proc strike with no cast row counts its landings
+            casts = attempts if kind == 'other' else (CASTS.get(a['name']) or attempts)   # a proc strike with no cast row counts its attempts (ability-table.ts)
             avg = a['total'] / a['hits'] if a['hits'] else 0
             crit = a['crits'] / a['hits'] * 100 if a['hits'] else 0
-            sub = [f'{lab} {m[k] / attempts * 100:.1f}%' for k, lab in (('MISS', 'Miss'), ('DODGE', 'Dodge'), ('PARRY', 'Parry'), ('GLANCING', 'Glance'), ('BLOCK', 'Block')) if m.get(k)]
+            sub = [f'{lab} {fixed1(m[k] / attempts * 100)}%' for k, lab in (('MISS', 'Miss'), ('DODGE', 'Dodge'), ('PARRY', 'Parry'), ('GLANCING', 'Glance'), ('BLOCK', 'Block')) if m.get(k)]
             if kind == 'other' and tag == 1 and hs:
                 sub.append(f'{hs} swings became Heroic Strike')
             if kind == 'other' and tag == 3:
@@ -337,6 +341,11 @@ def consume_items() -> list[tuple[str, str, bool]]:
     return out
 
 
+def fixed1(x: float) -> str:
+    """JavaScript's toFixed(1), which the build formats with: half away from zero on the double's exact value (6.25 -> 6.3)."""
+    return str(decimal.Decimal(x).quantize(decimal.Decimal('0.1'), rounding=decimal.ROUND_HALF_UP))
+
+
 def apm() -> float:
     return sum(v for k, v in CASTS.items() if not k.startswith('other:') and '/' not in k) / (DUR / 60)
 
@@ -366,10 +375,25 @@ def this_run_section() -> str:
              + IconList(cons, f'Consumables &middot; {len(cons)}'))
     acts = (f'<div class="rail-acts">{Button("Copy for the game", small=True)}{Button("Copy JSON", small=True)}{Button("Download JSON", small=True)}</div>'
             '<p class="t-small rail-cap">The JSON is this whole result, request included.</p>')
-    return Section('This run', f'<div class="rail-body">{facts}{lists}<p class="t-small rail-cap">Dimmed: no effect on your damage.</p>{acts}</div>', meta='Inputs and engine')
+    return Section('This run', f'<div class="rail-body flow">{facts}{lists}<p class="t-small rail-cap">Dimmed: no effect on your damage.</p>{acts}</div>', meta='Inputs and engine')
+
+
+def rotation_drifted() -> bool:
+    """lib/sim/rotation-card's drift rule: the run's rotation_sha against the hash a run stamps today (sync-rotations.mjs)."""
+    apl = ROOT / 'sim' / 'request' / 'apl' / f'{SPEC}.apl.json'
+    sha = RES.get('rotation_sha')
+    return bool(sha) and apl.exists() and hashlib.sha256(apl.read_bytes()).hexdigest()[:12] != sha
+
+
+def rot_title(key: str, name: str, rank: int = 0) -> str:
+    """The built rotation title (ActionMark): the 24 px icon, then the name and its rank."""
+    rk = f' <span class="rk-s">Rank {rank}</span>' if rank else ''
+    return f'<span class="am">{act_icon(key, 24) if key else ""}<span>{name}{rk}</span></span>'
 
 
 def rotation_section(ran: bool = True) -> str:
+    """The shipped rows (lib/sim/rotation-card.ts): a prepull line by its time, a priority line by its number; the icon sits
+    in the title; Other cooldowns carries the first one's icon and their summed casts."""
     rot = APL['rotation']
     notes = {n['step']: n['notes'] for n in APL.get('level_notes', []) if n['from_level'] <= CHAR['level']}
     sample_pre = {e['action'] for e in RES['sample'] if e['at_ms'] < 0}
@@ -378,28 +402,34 @@ def rotation_section(ran: bool = True) -> str:
         sid = p['action']['castSpell']['spellId']['spellId']
         key = f'spell:{sid}'
         cast = key in sample_pre
-        r = Row(spell_name(sid), '', lead=f'<span class="pre-t num">{p["doAtValue"]["const"]["val"].replace("s", " s")}</span>{act_icon(key, 24)}',
+        r = Row(rot_title(key, spell_name(sid), rank_of(sid)), '', lead=f'<span class="pre-t num">{p["doAtValue"]["const"]["val"].replace("s", " s")}</span>',
                 trail=(f'<span class="cnt">{"Cast" if cast else "Not cast in this run"}</span>' if ran else ''), link=False)
         pre.append(r if cast or not ran else f'<div class="dim">{r}</div>')
     named = {f"spell:{(p['action'].get('castSpell') or {}).get('spellId', {}).get('spellId')}" for p in rot['priorityList']}
-    other = [act_name(k) for k, v in CASTS.items() if v and not k.startswith('other:') and '/' not in k and k not in named]
+    named |= {f"spell:{p['action']['castSpell']['spellId']['spellId']}" for p in rot['prepullActions']}
+    other = [k for k, v in CASTS.items() if v and not k.startswith('other:') and '/' not in k and k not in named]
     lines = []
     for i, p in enumerate(rot['priorityList']):
         a = p['action']
         if 'autocastOtherCooldowns' in a:
-            lines.append(Row('Other cooldowns as they come up', f'This run: {", ".join(other)}.' if ran else 'Trinkets, racials and potions, as each comes off cooldown.', rank=str(i + 1), link=False))
+            total = round(sum(CASTS[k] for k in other))
+            sub = f'This run: {", ".join(act_name(k) for k in other)}.' if ran else 'Trinkets, racials and potions, as each comes off cooldown.'
+            cnt = (f'{total} cast{"s" if total != 1 else ""}' if total else 'Not cast in this run')
+            r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub, rank=str(i + 1),
+                    trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
+            lines.append(r if total or not ran else f'<div class="dim">{r}</div>')
             continue
         sid = a['castSpell']['spellId']['spellId']
         key = f'spell:{sid}'
         n = CASTS.get(key, 0)
         cnt = f'{n} cast{"s" if n != 1 else ""}' if n else 'Not cast in this run'
-        rk = rank_of(sid)
-        r = Row(spell_name(sid) + (f' <span class="rk-s">Rank {rk}</span>' if rk else ''), notes.get(i, p.get('notes', '')),
-                lead=f'<span class="rank">{i + 1}</span>{act_icon(key, 24)}', trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
+        r = Row(rot_title(key, spell_name(sid), rank_of(sid)), notes.get(i, p.get('notes', '')),
+                rank=str(i + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
         lines.append(r if n or not ran else f'<div class="dim">{r}</div>')
-    body = (f'<h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
-            f'{Rows(lines, open_=True)}<p class="t-small rail-cap">The {SPEC_ROW["name"]} rotation the engine follows.{" A line with no cast in this run is dimmed." if ran else ""}</p>')
-    return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'), meta=f'{SPEC_ROW["name"]}, at {CHAR["level"]}' + (' &middot; casts per fight' if ran else ''))
+    body = (f'<div class="rot"><h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
+            f'{Rows(lines, open_=True)}<p class="t-small rail-cap tl-foot">The {SPEC_ROW["name"]} rotation the engine follows.{" A line with no cast in this run is dimmed." if ran else ""}</p></div>')
+    meta = f'{SPEC_ROW["name"]}, at {CHAR["level"]}' + (' &middot; casts per fight' if ran else '') + (' &middot; today&rsquo;s rotation' if ran and rotation_drifted() else '')
+    return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'), meta=meta)
 
 
 def history_section(state: str = 'ready') -> str:
@@ -426,6 +456,8 @@ def timeline_section(swings_and_ticks: bool = False) -> str:
             continue
         if not swings_and_ticks and (k.startswith('other:') or k in ticking):
             continue
+        if not swings_and_ticks and CASTS and k not in CASTS and k in DAMAGE_KEYS:
+            continue   # a hit no one pressed (the off-hand Whirlwind) lands on Swings and ticks (lib/sim/timeline-lanes.ts placeEvent)
         cast_keys.append(k)
     whole = lambda a: len(a['segments']) == 1 and a['segments'][0][0] <= 0 and a['segments'][0][1] >= T1 * .99
     auras = [a for a in RES['sample_auras'] if a['on'] == 'player' and not whole(a) and a['action'] not in ('spell:11567/1', 'spell:11585')]
@@ -489,15 +521,19 @@ def timeline_section(swings_and_ticks: bool = False) -> str:
     tl = (f'<div class="tl"><div class="lbl"><span style="height:30px"></span>{"".join(labels)}</div>'
           f'<div class="plot" role="application" aria-label="Fight timeline, {clock(T1 / 1000)} long. Arrow keys move between casts.">'
           f'<div class="axis">{ticks}</div>{washlab}{svg}</div></div>')
-    legend = [('#c79c6e', 'Damage'), ('#f5d27a', 'Crit'), ('#9a9484', 'Missed'), ('#e9e4d8', 'Cooldown'), ('#e9e4d859', 'On you'), ('#8a6a2ac7', 'On the target'), ('#e5b955', 'Rage')]
+    # the shipped legend's swatches at each mark's size (SimTimeline: a 3 x 12 cast, a 4 x 16 crit, 16 x 8 auras, a 16 x 2 line)
+    legend = [('#c79c6e', 'Damage', 3, 12), ('#f5d27a', 'Crit', 4, 16), ('#9a9484', 'Missed', 3, 12), ('#e9e4d8', 'Cooldown', 3, 12),
+              ('#e9e4d859', 'On you', 16, 8), ('#8a6a2ac7', 'On the target', 16, 8), ('#e5b955', 'Rage', 16, 2)]
     tools = (f'<div class="tl-tools">{seg([("Whole fight", True, None, ""), ("Close up", False, None, "")], "sm")}'
-             f'<span class="t-small">Swings and ticks</span>{seg([("Off", not swings_and_ticks, None, ""), ("On", swings_and_ticks, None, "")], "sm")}</div>')
+             f'<span class="tl-sw"><span class="t-small">Swings and ticks</span>{seg([("Off", not swings_and_ticks, None, ""), ("On", swings_and_ticks, None, "")], "sm")}</span>'
+             f'{LanesLegend(legend)}</div>')
+    brush = '<div class="tl-brush" aria-hidden="true"><span></span><span class="tr"></span></div>'   # the shipped TimelineBrush strip
     n = sum(1 for e in ev if e['action'] in cast_keys and e['action'] not in HANDS and e['action'] not in ticking and parse(e['action'])[1] not in OFF_HAND_SPELLS)
     hidden = ' and '.join(['white swings'] + [display_name(k) + ' ticks' for k in sorted(ticking)])
     foot = (f'<p class="t-small tl-foot">{n} casts in this run. '
             + ('' if swings_and_ticks else f'Turn Swings and ticks on to add {hidden} as their own lanes. ')
             + '<button type="button" class="tl-list" aria-expanded="false">List every cast &rsaquo;</button></p><p class="sr" aria-live="polite"></p>')
-    return Section('Timeline', tools + Lanes(tl, legend) + foot, meta=f'The median run &middot; {clock(T1 / 1000)} long')
+    return Section('Timeline', tools + Lanes(tl) + brush + foot, meta=f'The median run &middot; {clock(T1 / 1000)} long')
 
 
 DOLL_LEFT = ['head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'main_hand', 'off_hand', 'ranged']
@@ -580,7 +616,22 @@ def rage_section() -> str:
     return Section('Rage', figs + f'<div class="two">{lst(src["gained"], "Gained from")}{lst(src["spent"], "Spent on")}</div>', meta='Average fight')
 
 
+def suppressed(key: str, requested: list[str]) -> bool:
+    """A buff of an exclusive group that a lower rank in the same request holds off (lib/sim/aura-card.ts `isSuppressed`)."""
+    own = (BUFFS.get(key.partition(':')[0]) or {}).get('exclusive_with')
+    if not own:
+        return False
+    return any((t := (BUFFS.get(o.partition(':')[0]) or {}).get('exclusive_with')) and t['group'] == own['group'] and t['rank'] < own['rank']
+               for o in requested)
+
+
 def buffs_section() -> str:
+    """The two columns as lib/sim/aura-card.ts files them: the engine's tracks, then every buff the request named that has no
+    track (up all fight, build rulings R1 and R2 of spec 2026-11-04), the no-effect entries dimmed and last."""
+    requested = CHAR['buffs']
+    tracked = {act_name(a['name']) for a in SUM['auras']}
+    untracked = [k for k in requested if (BUFFS.get(k.partition(':')[0]) or {}).get('name') not in tracked and not suppressed(k, requested)]
+
     def col(kind, title):
         rows, upall = [], []
         for a in SUM['auras']:
@@ -593,10 +644,14 @@ def buffs_section() -> str:
                               bool(entry) and no_damage_effect(entry)))
             else:
                 rows.append((up, StatRow(act_icon(a['name'], 24), f'<b>{display_name(a["name"])}</b>', '', [f'{up * 100:.1f}%', f'{a["applications"]:.0f}&times;'], Meter(up, 'muted'))))
+        on_target = kind == 'DEBUFF'
+        upall += [(gicon(e['icon'], 20), e['name'] + (', improved' if k.endswith(':improved') else ''), no_damage_effect(e))
+                  for k in untracked if (e := BUFFS.get(k.partition(':')[0])) and bool(e.get('target')) == on_target]
         upall.sort(key=lambda x: x[2])
         rows.sort(key=lambda x: -x[0])
         t = StatTable([('', False)] * 3 + [('', True), ('', True)], [r for _, r in rows], 2, open_=True) if rows else ''
-        return f'<div><h3 class="t-label rot-l">{title} &middot; {len(rows)} that come and go</h3>{t}{IconList(upall, "Up all fight") if upall else ""}</div>'
+        come = '1 that comes and goes' if len(rows) == 1 else f'{len(rows)} that come and go'
+        return f'<div><h3 class="t-label rot-l">{title} &middot; {come}</h3>{t}{IconList(upall, "Up all fight") if upall else ""}</div>'
     return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>'
                    '<p class="t-small rail-cap tl-foot">Dimmed: no effect on your damage.</p>', meta='Uptime, then times applied')
 
@@ -641,7 +696,7 @@ FIGHT_STYLE = 'Patchwerk'   # the request's profile is empty: the shipped styleL
 
 def you_header(answer: str) -> str:
     meta = [f'{RACE} {SPEC_LABEL} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; item level {ilvl():.1f}',
-            'Gear from the addon, 4 Nov']
+            'Gear from a pasted export, 6 Nov']   # the parity gate's character: a code link (source "manual"), dated the day it loads
     return PageHeader('Thandrel', crest=crest_img(CLS, 56), meta=meta, answer=answer, tabs=TabStrip(TOOLS, 'Quick sim'))
 
 
@@ -715,10 +770,9 @@ PAGE_CSS = '''<style>
 .st-h .st-sort{all:unset;cursor:pointer}
 .tl-list{all:unset;cursor:pointer;color:var(--gold);font-weight:600}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .lanes ul.lg{list-style:none;margin:0}
-.rail .rows.open .row{align-items:start}.rail .row .sub{color:var(--text);font-size:13px;line-height:20px}
 .two{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);padding-top:8px}@media(min-width:1024px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .layout-split .main>section>.figs{padding-top:12px}
-.tl-tools{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-top:12px}.tl-foot{padding-top:10px}
+.tl-tools{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;min-height:56px;padding:10px 0;margin-top:12px}.tl-sw{display:inline-flex;gap:12px;align-items:center}.tl-tools .lg{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;font-size:13px;line-height:20px;color:var(--muted);list-style:none;margin:0 0 0 auto;padding:0}.tl-tools .lg li{display:inline-flex;align-items:center;gap:6px}.tl-tools .lg i{display:inline-block;border-radius:1px;background:var(--k)}.tl-brush{display:grid;grid-template-columns:200px minmax(0,1fr);height:44px;align-items:center}.tl-brush .tr{height:20px;border-radius:4px;background:#ffffff08}.tl-foot{padding-top:10px}
 .gear-stats{display:flex;flex-direction:column;gap:8px;padding-top:16px}.gear-foot{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-top:12px}
 .empty-open{padding:12px 0;color:var(--muted);font-size:14px}
 .btn.is-off{opacity:.45;pointer-events:none}
@@ -733,6 +787,23 @@ input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field:
 .bar-end{display:flex;gap:20px;align-items:center}.bar-end .link{font-size:14px}
 .bar-d.is-run .grp,.bar-d.is-run .bar-end .link{opacity:.5;pointer-events:none}
 .fig.muted .v{color:var(--muted)}
+/* the built Figure sm (ui/Figure.svelte, also BiS weights and the guild pages): 16/20 */
+body .fig.sm .v{font-size:16px;line-height:20px}
+/* the built histogram's axis: 8 px under the plot, 13/20 (DpsDistribution) */
+body .hist .ax{padding-top:8px;line-height:20px}
+/* Trees (ws_prims) with the built TreeGrid's roles: the row boxes take no part in the grid, the talent box is a block */
+.trees .tg>[role=row]{display:contents}.trees .tc{display:block}
+/* the built Section's body starts 12 px under its hairline (ui/Section.svelte); a Plate already has it, open blocks take it here */
+.sec-h+.doll,.sec-h+.trees{margin-top:12px}.sec-h+.two{padding-top:12px}
+.gear-foot{line-height:20px}
+/* the built Section head wraps its action under a long meta (gap-y 4 px); a Row is --row-h, 58 px (spec 2026-11-05 P4) */
+body .sec-h{flex-wrap:wrap;row-gap:4px}body .sec-h .act{line-height:21px}body .row{min-height:58px}body .sec-h+.rows{margin-top:12px}
+/* Rotation as the built rows draw it: the icon in the title (ActionMark) */
+.am{display:flex;align-items:center;gap:10px;min-width:0}.am>span:last-child{min-width:0}
+/* This run spaces its blocks as the built primitives do (IconList's own 16 px label margin), not by the rail's 12 px gap */
+.rail-body.flow{gap:0}.rail-body.flow>.rail-cap{padding-top:12px}.rail-body.flow>.rail-acts{margin-top:20px}
+/* spec 4.7: the row's name line is 15/20 (the body's 24 px strut made it 25 and the row 60) */
+.st-r .nm{line-height:20px}
 .sheet .kv dd{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 </style>'''
 

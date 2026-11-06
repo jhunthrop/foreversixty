@@ -1,6 +1,6 @@
 <!-- web/src/components/sim/DpsDistribution.svelte -->
 <!-- The run's DPS spread (spec 2026-11-04-sim-results 3.6; sim spec 2026-11-06 §4.5): the engine's
-     real bins as at most 40 bars, the mean line, the two-thirds caption, then six small Figures in
+     real bins as at most 40 bars, the mean line (its figure is the Mean tile, as the mock's `Histogram`), the two-thirds caption, then six small Figures in
      three columns. A result saved before the engine kept the bins draws a range strip instead, and
      says so: a drawn shape the run did not produce would break the accuracy tenet. No chart
      library: the bars are spans. It draws no frame: the caller's open Section holds it. Error is
@@ -75,7 +75,7 @@
 <div class="flex flex-col gap-3" data-testid="sim-distribution">
   <div class="flex min-w-0 flex-col gap-3">
     {#if spread !== null}
-      <div class="pt-6">
+      <div>
         <!-- One image with a readout: hover or arrow keys step the bars (spec 3.6). -->
         <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
         <div
@@ -118,10 +118,6 @@
             style:left={`${meanAt}%`}
             data-testid="sim-distribution-mean"
           ></span>
-          <span
-            class="text-gold-light numeric pointer-events-none absolute -top-6 -translate-x-1/2 text-[13px] font-semibold"
-            style:left={`${meanAt}%`}>{oneDecimal(estimate.mean)}</span
-          >
         </div>
         <div class="text-muted numeric mt-2 flex justify-between text-[13px]">
           <span>{grouped(estimate.min)}</span>

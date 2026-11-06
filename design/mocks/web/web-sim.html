@@ -113,10 +113,9 @@ h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 .st-h .st-sort{all:unset;cursor:pointer}
 .tl-list{all:unset;cursor:pointer;color:var(--gold);font-weight:600}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .lanes ul.lg{list-style:none;margin:0}
-.rail .rows.open .row{align-items:start}.rail .row .sub{color:var(--text);font-size:13px;line-height:20px}
 .two{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);padding-top:8px}@media(min-width:1024px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .layout-split .main>section>.figs{padding-top:12px}
-.tl-tools{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-top:12px}.tl-foot{padding-top:10px}
+.tl-tools{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;min-height:56px;padding:10px 0;margin-top:12px}.tl-sw{display:inline-flex;gap:12px;align-items:center}.tl-tools .lg{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;font-size:13px;line-height:20px;color:var(--muted);list-style:none;margin:0 0 0 auto;padding:0}.tl-tools .lg li{display:inline-flex;align-items:center;gap:6px}.tl-tools .lg i{display:inline-block;border-radius:1px;background:var(--k)}.tl-brush{display:grid;grid-template-columns:200px minmax(0,1fr);height:44px;align-items:center}.tl-brush .tr{height:20px;border-radius:4px;background:#ffffff08}.tl-foot{padding-top:10px}
 .gear-stats{display:flex;flex-direction:column;gap:8px;padding-top:16px}.gear-foot{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-top:12px}
 .empty-open{padding:12px 0;color:var(--muted);font-size:14px}
 .btn.is-off{opacity:.45;pointer-events:none}
@@ -131,6 +130,23 @@ input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field:
 .bar-end{display:flex;gap:20px;align-items:center}.bar-end .link{font-size:14px}
 .bar-d.is-run .grp,.bar-d.is-run .bar-end .link{opacity:.5;pointer-events:none}
 .fig.muted .v{color:var(--muted)}
+/* the built Figure sm (ui/Figure.svelte, also BiS weights and the guild pages): 16/20 */
+body .fig.sm .v{font-size:16px;line-height:20px}
+/* the built histogram's axis: 8 px under the plot, 13/20 (DpsDistribution) */
+body .hist .ax{padding-top:8px;line-height:20px}
+/* Trees (ws_prims) with the built TreeGrid's roles: the row boxes take no part in the grid, the talent box is a block */
+.trees .tg>[role=row]{display:contents}.trees .tc{display:block}
+/* the built Section's body starts 12 px under its hairline (ui/Section.svelte); a Plate already has it, open blocks take it here */
+.sec-h+.doll,.sec-h+.trees{margin-top:12px}.sec-h+.two{padding-top:12px}
+.gear-foot{line-height:20px}
+/* the built Section head wraps its action under a long meta (gap-y 4 px); a Row is --row-h, 58 px (spec 2026-11-05 P4) */
+body .sec-h{flex-wrap:wrap;row-gap:4px}body .sec-h .act{line-height:21px}body .row{min-height:58px}body .sec-h+.rows{margin-top:12px}
+/* Rotation as the built rows draw it: the icon in the title (ActionMark) */
+.am{display:flex;align-items:center;gap:10px;min-width:0}.am>span:last-child{min-width:0}
+/* This run spaces its blocks as the built primitives do (IconList's own 16 px label margin), not by the rail's 12 px gap */
+.rail-body.flow{gap:0}.rail-body.flow>.rail-cap{padding-top:12px}.rail-body.flow>.rail-acts{margin-top:20px}
+/* spec 4.7: the row's name line is 15/20 (the body's 24 px strut made it 25 and the row 60) */
+.st-r .nm{line-height:20px}
 .sheet .kv dd{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 </style><style>
 /* ---- Page: one column, four layouts ---- */

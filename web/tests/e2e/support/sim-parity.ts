@@ -84,7 +84,8 @@ async function openFuryWarrior(page: Page): Promise<void> {
     .locator('[data-region="section-sim-a-best-in-slot-set"] a', { hasText: 'Fury' })
     .getAttribute('href');
   expect(href).not.toBeNull();
-  await page.goto((href ?? '').replace(/[&?]run=1\b/, ''));
+  // The mock's Troll: the rail carries the alliance set, so the race in the code is swapped.
+  await page.goto((href ?? '').replace(/[&?]run=1\b/, '').replace(/(%3A|:)night-elf(%3A|:)/, '$1troll$2'));
   await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 15_000 });
   await expect(page.locator('[data-region="slots"]')).toBeVisible();
 }

@@ -1,9 +1,11 @@
 <!-- web/src/components/sim/SimTalentsSection.svelte -->
-<!-- The character's talents as the planner's own read-only trees (sim spec 2026-11-06 §4.5; spec
-     2026-11-04-sim-results 3.9, 4.7): an open Section with the split as its meta and Open in
-     planner as its action, three trees (one tab at a time on a phone), the game tooltip on every
-     cell. It reads the request only, so the landing shows it before a run. A string that does not
-     fit today's trees keeps its split and says why nothing is drawn. -->
+<!-- The character's talents as three flat read-only trees (sim spec 2026-11-06 §4.5 item 4, the
+     mock's `Trees`; spec 2026-11-04-sim-results 4.7): an open Section with the split as its meta
+     and Open in planner as its action, each tree its name and points over the planner's own grid
+     (36 px cells, gold ring full, green ring partial, greyscale untaken, rank badge), one column
+     below 768 (§8), the game tooltip on every cell. It reads the request only, so the landing shows
+     it before a run. A string that does not fit today's trees keeps its split and says why nothing
+     is drawn. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
   import { guideTreeStore } from '../../lib/guides/tree-store';
@@ -11,15 +13,14 @@
   import { loadOptional, dataUrl, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
-  import { treeRowColumnsClass } from '../../lib/planner/styles';
   import type { TalentFile } from '../../lib/planner/types';
   import { plannerHrefForSpec, ranksFromTalentsString } from '../../lib/sim/character';
   import { talentsCardCopy as copy } from '../../lib/sim/input-cards-copy';
   import { SPACED_SPLIT, talentSplit } from '../../lib/sim/result-band';
   import { setResultTalentTips } from '../../lib/sim/result-tips';
-  import { fullestTree, talentsFit } from '../../lib/sim/talents-fit';
+  import { talentsFit } from '../../lib/sim/talents-fit';
   import type { SimRequest } from '../../lib/sim/types';
-  import TreeTabs from '../planner/TreeTabs.svelte';
+  import TreeGrid from '../planner/TreeGrid.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -33,7 +34,6 @@
     | { kind: 'unfit' }
     | { kind: 'ready'; store: PlannerStore; index: TalentIndex; treeVersion: string };
   let view = $state.raw<View>({ kind: 'loading' });
-  let activeTree = $state(0);
 
   /** The build the request names when that build is still published, else today's. */
   async function talentFile(): Promise<{ file: TalentFile; treeVersion: string }> {
@@ -82,7 +82,6 @@
         talentFile: file,
         order,
       });
-      activeTree = fullestTree(character.talents);
       view = { kind: 'ready', store, index, treeVersion };
     } catch (error) {
       console.error('sim talents: the trees did not load', error);
@@ -107,7 +106,7 @@
   <div>
     {#if view.kind === 'loading'}
       <div>
-        <Skeleton lines={3} rowHeight="h-12" minHeight="min-h-[440px]" testid="sim-talents-skeleton" />
+        <Skeleton lines={3} rowHeight="h-12" minHeight="min-h-[328px]" testid="sim-talents-skeleton" />
       </div>
     {:else if view.kind === 'failed'}
       <div>
@@ -116,14 +115,18 @@
     {:else if view.kind === 'unfit'}
       <p class="text-text text-[15px]" data-testid="sim-talents-unfit">{copy.doesNotFit}</p>
     {:else}
-      <div class="sim-trees flex flex-col gap-3" data-testid="sim-talents-trees">
-        <TreeTabs
-          store={view.store}
-          talentIndex={view.index}
-          bind:activeTree
-          treeColumnsClass={treeRowColumnsClass(view.index.trees.length)}
-          readOnly
-        />
+      <div class="sim-trees grid grid-cols-1 gap-[var(--gap)] md:grid-cols-3" data-testid="sim-talents-trees">
+        {#each view.index.trees as tree, i (tree.id)}
+          <div class="min-w-0" data-testid={`tree-panel-${tree.id}`}>
+            <h3 class="text-strong flex items-baseline gap-2 pb-2 text-[15px] leading-5 font-bold">
+              {tree.name}
+              <span class="text-gold numeric" data-testid={`tree-points-${tree.id}`}
+                >{view.store.split[i] ?? 0}</span
+              >
+            </h3>
+            <TreeGrid store={view.store} {tree} readOnly plain />
+          </div>
+        {/each}
       </div>
     {/if}
   </div>
@@ -135,28 +138,24 @@
 </Section>
 
 <style>
-  /* Phone tabs read "Fury 32" (spec 3.9): the spec icons leave no room for three names at 360 px. */
-  .sim-trees :global([role='tab'] img) {
-    display: none;
+  /* The mock's `Trees` cells (spec §4.5 item 4): 36 px at every width, the ring outside the icon
+     (gold when full, green when partial), an untaken talent greyed with no badge. The planner's
+     and the guides' own cells are untouched. */
+  .sim-trees :global([role='gridcell']),
+  .sim-trees :global([data-game-tip][data-state]) {
+    width: 36px;
+    height: 36px;
+    border-width: 0;
   }
-  /* The saved run's cells (spec 3.9): 40 px from tablet up, a taken talent lit, an untaken one
-     greyed with no badge. The planner's and the guides' own cells are untouched. */
-  @media (min-width: 768px) {
-    .sim-trees :global([role='gridcell']),
-    .sim-trees :global([data-game-tip][data-state]) {
-      width: 40px;
-      height: 40px;
-    }
-    .sim-trees :global([data-game-tip][data-state] img) {
-      width: 36px;
-      height: 36px;
-    }
+  .sim-trees :global([data-game-tip][data-state] img) {
+    width: 36px;
+    height: 36px;
   }
-  .sim-trees :global([data-game-tip][data-state='maxed']) {
-    border: 2px solid var(--color-gold);
+  .sim-trees :global([data-game-tip][data-state='maxed'] img) {
+    box-shadow: 0 0 0 2px var(--color-gold);
   }
-  .sim-trees :global([data-game-tip][data-state='filled']) {
-    border: 2px solid var(--color-kill);
+  .sim-trees :global([data-game-tip][data-state='filled'] img) {
+    box-shadow: 0 0 0 2px var(--color-kill);
   }
   .sim-trees :global([data-game-tip][data-state='locked'] img) {
     opacity: 1;

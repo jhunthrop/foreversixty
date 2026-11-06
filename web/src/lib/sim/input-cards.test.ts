@@ -15,7 +15,7 @@ import { enchantNames, gearMeta, gearSlots, setLines, statsBlock } from './gear-
 import { resourceCard } from './resource-card';
 import { rotationRows } from './rotation-card';
 import type { SimBuffRow } from './sim-buffs';
-import { fullestTree, talentsFit } from './talents-fit';
+import { talentsFit } from './talents-fit';
 import type { EnchantRow } from './enchants';
 import type { SimResult } from './types';
 
@@ -338,9 +338,6 @@ describe('talentsFit', () => {
     ['not digits', '5x0-3'],
   ])('refuses %s', (_why, talents) => {
     expect(talentsFit(talents, index)).toBe(false);
-  });
-  it('opens the phone on the fullest tree', () => {
-    expect(fullestTree('30323013002000000-051531025120100231-200000000000000000')).toBe(1);
   });
 });
 
