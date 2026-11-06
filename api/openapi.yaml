@@ -2498,7 +2498,7 @@ components:
               slipping: { type: boolean }
     OfficerActions:
       type: object
-      required: [approvals, not_signed, drops_to_award]
+      required: [approvals, applications, not_signed, drops_to_award]
       properties:
         approvals:
           type: object
@@ -2507,6 +2507,13 @@ components:
           properties:
             count: { type: integer, description: Characters waiting for an officer's approval. }
             names: { type: array, items: { type: string } }
+        applications:
+          type: object
+          title: OfficerActionApplications
+          required: [count, names]
+          properties:
+            count: { type: integer, description: Applications waiting for an officer's decision (GET .../applications pending). }
+            names: { type: array, items: { type: string }, description: "The applicants' character names, oldest application first." }
         not_signed:
           type: object
           title: OfficerActionNotSigned

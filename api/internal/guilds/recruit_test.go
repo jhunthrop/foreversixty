@@ -424,3 +424,38 @@ func TestOfficerWritesStopWhileTheClaimIsContested(t *testing.T) {
 		t.Fatalf("the officer list while contested = %d, want 200 (reads stay open)", got)
 	}
 }
+
+// Action needed counts the pending applications and names their characters, oldest first; a
+// withdrawn one leaves the count.
+func TestOfficerActionsCountTheApplications(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid, officer := recruitGuild(t, h, "Actions")
+	openRecruiting(t, h, gid, officer)
+	actions := fmt.Sprintf("/v1/guilds/%d/officer/actions", gid)
+	var a OfficerActions
+	h.data(h.do(http.MethodGet, actions, ""), &a)
+	if a.Applications.Count != 0 || a.Applications.Names == nil || len(a.Applications.Names) != 0 {
+		t.Fatalf("no applications = %+v", a.Applications)
+	}
+	first, firstKey := applicant(t, h, "actions-first@example.com", "firstapp")
+	second, secondKey := applicant(t, h, "actions-second@example.com", "secondapp")
+	var withdrawn Application
+	h.as(first)
+	h.data(h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/applications", gid), applyBody(firstKey, false)), &withdrawn)
+	h.as(second)
+	h.data(h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/applications", gid), applyBody(secondKey, false)), &Application{})
+	h.as(officer)
+	h.data(h.do(http.MethodGet, actions, ""), &a)
+	if a.Applications.Count != 2 || fmt.Sprint(a.Applications.Names) != "[firstapp secondapp]" {
+		t.Fatalf("two pending = %+v", a.Applications)
+	}
+	h.as(first)
+	if got := h.status(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/applications/%d/withdraw", gid, withdrawn.ID), ""); got != http.StatusOK {
+		t.Fatalf("withdraw = %d", got)
+	}
+	h.as(officer)
+	h.data(h.do(http.MethodGet, actions, ""), &a)
+	if a.Applications.Count != 1 || fmt.Sprint(a.Applications.Names) != "[secondapp]" {
+		t.Fatalf("after a withdraw = %+v", a.Applications)
+	}
+}
