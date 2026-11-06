@@ -21,13 +21,13 @@ This is the best Destruction Warlock on Forever. Destruction keeps Immolate up a
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Before the pull: Demon Armor on, Succubus out, at least one shard spare for Shadowburn, a Healthstone, and Life Tap to full while the healers top you off.
-- Curse of the Elements when no warlock's is on the target.
+- Demon Armor and the Succubus out from twenty, before the pull. Keep a Healthstone, and a spare shard once you have Shadowburn. Life Tap to full while the healers top you off.
+- Curse of the Elements from twenty when no warlock's is on the target.
 - Corruption whenever it has fallen off.
 - Bane of Doom at sixty, the moment the last one fires, with a minute or more of the fight left.
 - Bane of Agony whenever Bane of Doom is not on the target: all fight before sixty, and the last minute at sixty, once Doom has fired.
 - Immolate with three seconds or less left on it.
-- Conflagrate once Immolate has six seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.
+- Conflagrate from thirty-four, or thirty-two in the raid build, once Immolate has six seconds or less left. Once you take Shadow and Flame, cast it on cooldown while Immolate is up.
 - Shadowburn on cooldown once you have it, at any boss health.
 - Incinerate from forty for every other cast. Before forty, Shadow Bolt fills instead.
 - Curse of Recklessness, Tongues or Weakness only if your raid leader asks. That is only when another warlock holds Curse of the Elements.
@@ -46,7 +46,7 @@ This is the best Destruction Warlock on Forever. Destruction keeps Immolate up a
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want a flask (Flask of Supreme Power); food (Baked Salmon); a weapon enchant (Brilliant Wizard Oil); a combat potion (Major Mana Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want a flask (Flask of Supreme Power) from fifty; food (Baked Salmon) from forty-five; a weapon enchant (Brilliant Wizard Oil) from forty-five; a combat potion (Major Mana Potion) from forty-nine, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -55,7 +55,7 @@ This is the best Destruction Warlock on Forever. Destruction keeps Immolate up a
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.
 - drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check a flask, food, a weapon enchant and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask from fifty, food from thirty-five, a weapon enchant from forty-five and a combat potion from forty-nine on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 

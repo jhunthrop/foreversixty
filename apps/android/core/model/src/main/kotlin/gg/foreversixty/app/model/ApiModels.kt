@@ -1584,6 +1584,10 @@ data class LootQuest(
     @SerialName("required_rep_standing") val requiredRepStanding: String? = null,
     @SerialName("profession") val profession: String? = null,
     @SerialName("skill") val skill: Int? = null,
+    /** The zone the quest log files the quest under (AreaTable id); absent when unknown or filed under a category. */
+    @SerialName("zone_id") val zoneId: Int? = null,
+    /** That zone's name. */
+    @SerialName("zone") val zone: String? = null,
 )
 
 @Serializable
@@ -1610,8 +1614,11 @@ data class LootSource(
     @SerialName("title") val title: String? = null,
     /** Era honor rank the item's title implies, on a pvp source with no rank lock (rank absent); eligibility only, not a lock. */
     @SerialName("title_rank") val titleRank: Int? = null,
+    /** world_drop: the pool's level range. dungeon and raid: the instance's level range, the client's Group Finder row. */
     @SerialName("level_min") val levelMin: Int? = null,
     @SerialName("level_max") val levelMax: Int? = null,
+    /** crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent. */
+    @SerialName("required_skill") val requiredSkill: Map<String, Int>? = null,
     @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
     @SerialName("source_origin") val sourceOrigin: String? = null,
     @SerialName("source_note") val sourceNote: String? = null,

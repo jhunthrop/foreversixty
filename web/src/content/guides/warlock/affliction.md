@@ -24,7 +24,7 @@ sources:
 
 ## Overview
 
-Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps with Wrack, and every one of those ticks can crit in Forever.
+Affliction keeps Corruption, Siphon Life and a bane rolling on the boss and fills the gaps with Wrack, and every one of those ticks can crit in Forever.
 
 ### Strengths
 
@@ -34,7 +34,7 @@ Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps wi
 
 ### Weaknesses
 
-- Slow start: your first four globals, five when you hold Curse of the Elements, go into putting DoTs up
+- Slow start: your first three globals, four when you hold Curse of the Elements, go into putting DoTs up
 - Short fights and targets that die fast waste the DoTs you put up
 - Life Tap costs health, and a long fight drains it
 
@@ -45,7 +45,7 @@ Affliction keeps three DoTs and a bane rolling on the boss and fills the gaps wi
 
 ## Talents and builds
 
-The leveling build is a real Affliction tree: Soul Siphon and Wrack make the drains carry you while you quest, and two points of Malevolence add crit to every Shadow spell. The raid build is a Wrack build too: it goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice for 15% more Shadow damage, and spends its Destruction points on Improved Shadow Bolt, so the instant bolts from Nightfall keep your Wrack and DoTs 20% stronger.
+The leveling build is a real Affliction tree: Soul Siphon and Wrack make the drains carry you while you quest, and two points of Malevolence add crit to every Shadow spell. The raid build is a Wrack build too: it goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice for 15% more Shadow damage, and spends its Destruction points on Improved Shadow Bolt: when a Nightfall bolt crits, your Wrack and DoTs take 20% more for 12 seconds.
 
 - **Suppression** (5 points): 5% hit on every spell and 20% less threat. Every warlock build takes all five.
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
@@ -63,7 +63,7 @@ The raid build drops Soul Harvest and the three points of Improved Drains (a rai
 
 ## Rotation and priority
 
-Before the pull, get set up: Demon Armor on and a Healthstone in your bag. Summon the Imp and sacrifice it for Burning Shadow, then Life Tap to full mana while the healers top you off. Summoning any demon after that ends Burning Shadow, so leave the pet slot empty, and sacrifice a fresh Imp after a wipe.
+Before the pull, get set up: Demon Armor on and a Healthstone in your bag. Summon the Imp and sacrifice it with Demonic Sacrifice for Burning Shadow, then Life Tap to full mana while the healers top you off. Summoning any demon after that ends Burning Shadow, so leave the pet slot empty, and sacrifice a fresh Imp after a wipe.
 
 Once the tank has the boss: Curse of the Elements first if you hold it, since every spell the raid casts hits harder from that global on, and it lasts five minutes. Then Corruption, Bane of Doom and Siphon Life, and Wrack from then on. Curses and banes have their own slots in Forever, so Curse of the Elements and your bane sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two of them on one boss do not stack. Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid (505 armor), Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard. Amplify Curse also strengthens Curse of Weakness and goes to whichever of the two you cast first, so if you hold Weakness, put your last Bane of Agony up before you refresh Weakness.
 

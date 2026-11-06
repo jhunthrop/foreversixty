@@ -130,14 +130,17 @@ func sizeSeverity(size int) Severity {
 }
 
 // categoryIssues checks flask, weapon oil and food. A category absent from the sheet is
-// missing only when the catalogue's list for it is complete; else it is couldn't-check.
-// have is the names present.
+// nothing when the spec's raid preset does not carry it at the player's level, missing
+// only when the catalogue's list for it is complete, else couldn't-check. have is the
+// names present.
 func categoryIssues(in Input, pull consumables.Pull) (issues []prepIssue, have, couldNot []string) {
 	for _, c := range prepCategories() {
 		present := pull.Present[c.category]
 		switch {
 		case len(present) > 0:
 			have = append(have, entryNames(present)...)
+		case !in.Tables.Consumables.Expects(c.category):
+			continue
 		case !in.Tables.Consumables.IsComplete(c.category):
 			couldNot = append(couldNot, c.incomplete)
 		case in.Tables.Consumables.MissedAtPull(pull, c.category):
@@ -185,10 +188,14 @@ func gearIssue(size, slot int, label string) prepIssue {
 }
 
 // potionIssue is the combat potions used against what the fight could hold, a seeded
-// pre-pull potion counting as one use. A list the catalogue calls incomplete is
+// pre-pull potion counting as one use. Nothing when the spec's raid preset carries no
+// combat potion at the player's level; a list the catalogue calls incomplete is
 // couldn't-check.
 func potionIssue(in Input, pull consumables.Pull) ([]prepIssue, []string) {
 	rc := in.Tables.Consumables
+	if !rc.Expects(consumables.CategoryCombatPotion) {
+		return nil, nil
+	}
 	if !rc.IsComplete(consumables.CategoryCombatPotion) {
 		return nil, []string{Fill(prepIncomplete, map[string]string{"Category": "Combat potions", "list": "potion"})}
 	}

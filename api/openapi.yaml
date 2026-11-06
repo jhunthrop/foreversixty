@@ -3828,8 +3828,9 @@ components:
         faction_source: { type: string }
         title: { type: string }
         title_rank: { type: integer, description: "Era honor rank the item's title implies, on a pvp source with no rank lock (rank absent); eligibility only, not a lock." }
-        level_min: { type: integer }
+        level_min: { type: integer, description: "world_drop: the pool's level range. dungeon and raid: the instance's level range, the client's Group Finder row." }
         level_max: { type: integer }
+        required_skill: { type: object, additionalProperties: { type: integer }, description: "crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent." }
         rare_spawn: { type: boolean }
         source_origin: { type: string }
         source_note: { type: string }
@@ -3864,6 +3865,8 @@ components:
         required_rep_standing: { type: string }
         profession: { type: string }
         skill: { type: integer }
+        zone_id: { type: integer, description: "The zone the quest log files the quest under (AreaTable id); absent when unknown or filed under a category." }
+        zone: { type: string, description: "That zone's name." }
     SearchIndex:
       type: object
       description: /data/{build}/search.json (W3-C8), the apps' offline search.

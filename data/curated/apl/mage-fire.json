@@ -128,7 +128,7 @@
         }
       },
       {
-        "notes": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left. A Fireball takes 3 seconds, so a later refresh can land after the stacks are gone. The debuff only boosts your own Fire damage, so every Fire mage keeps their own stacks, and a Scorch that misses adds none. At 27, with one point, a Scorch lands a stack only one time in three, so build them only on a mob that lives a minute or more; from 28 they pay on anything that lives 20 seconds.",
+        "notes": "Scorch to build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left. A Fireball takes 3 seconds or more, so a later refresh can land after the stacks are gone. The debuff only boosts your own Fire damage, so every Fire mage keeps their own stacks, and a Scorch that misses adds none. With one point of Improved Scorch a Scorch lands a stack only one time in three, so build them only on a mob that lives a minute or more; from the second point they pay on anything that lives 20 seconds.",
         "action": {
           "condition": {
             "and": {
@@ -256,7 +256,7 @@
         }
       },
       {
-        "notes": "Fire Blast every time it is off cooldown: it is instant, and from Heating Up at 30 every hit is a stack. Both points of Improved Fire Blast, by 26, make it a 6 second cooldown. From Improved Scorch at 27, the Scorches that build your 5 stacks go ahead of it, and from Heating Up at 30 so does a Pyroblast on 3 stacks. In raid gear it costs more mana for its damage than Scorch, Fireball or Pyroblast, but skipping it to save mana costs more damage than the mana buys.",
+        "notes": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack. Both points of Improved Fire Blast make it a 6 second cooldown. Once you have Improved Scorch, the Scorches that build your 5 stacks go ahead of it, and once you have Heating Up so does a Pyroblast on 3 stacks. In raid gear it costs more mana for its damage than Scorch, Fireball or Pyroblast, but skipping it to save mana costs more damage than the mana buys.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -267,7 +267,7 @@
         }
       },
       {
-        "notes": "Arcane Missiles the moment Missile Barrage procs, while the proc is up. It is free and takes half the time, a missile every half second. Every Fireball has a 20% chance to give it and Arcane Blast 40%.",
+        "notes": "Arcane Missiles the moment Missile Barrage procs, while the proc is up. It is free and takes half the time, a missile every half second. Every Fireball has a 20% chance to give it with both ranks of Missile Barrage, half that with one, and once you have Arcane Blast it procs it 40% of the time.",
         "action": {
           "condition": {
             "and": {
@@ -435,7 +435,7 @@
         }
       },
       {
-        "notes": "Below 30, Fireball is the filler. At the ranks you have in the 20s it does more damage per point of mana than Scorch, and mana is what runs out first, so Scorch waits for Improved Scorch at 27 and then only builds and refreshes the stacks.",
+        "notes": "Until you have Heating Up, Fireball is the filler. At the ranks you have in the 20s it does more damage per point of mana than Scorch, and mana is what runs out first, so Scorch waits for Improved Scorch and then only builds and refreshes the stacks.",
         "action": {
           "condition": {
             "not": {

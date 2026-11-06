@@ -104,7 +104,8 @@ func furyNight(t *testing.T, ss seeds, bloodthirst []int64, capped ...summary.Se
 	return in
 }
 
-// furyWorked is the §5.3 Fury example: Bloodthirst gaps, no flask, rage capped 14 s.
+// furyWorked is the §5.3 Fury example: Bloodthirst gaps and rage capped 14 s. Fury's raid
+// preset carries no flask, so the missing flask is not a finding (round 26).
 func furyWorked(t *testing.T) Input {
 	t.Helper()
 	return furyNight(t, seededAt(food("Grilled Squid")), bloodthirstWithGaps(webFuryGaps), span(40_000, 45_000), span(165_000, 174_000))
@@ -198,7 +199,7 @@ func thenFrom(f Finding, why string, links []string) ThenItem {
 // furyModelDoc is the §5.3 Fury review, written from the worked pack.
 func furyModelDoc(t *testing.T, p Pack, persona Persona) ReviewDoc {
 	t.Helper()
-	core, prep, res := packFindingBy(t, p, CodeCoreCasts), packFindingBy(t, p, CodePreparation), packFindingBy(t, p, CodeResource)
+	core, res := packFindingBy(t, p, CodeCoreCasts), packFindingBy(t, p, CodeResource)
 	alive, shout := packStrength(t, p, "Alive the whole fight."), packStrength(t, p, "Battle Shout up 100% of the fight. Top 25: 97%.")
 	return ReviewDoc{
 		Opening: "Solid kill: you were alive the whole fight and Battle Shout was up 100% of it. Almost everything you left behind sits in one button.",
@@ -206,7 +207,6 @@ func furyModelDoc(t *testing.T, p Pack, persona Persona) ReviewDoc {
 			"longest at 1:12–1:25. At 2:44–2:55 you sat on a full bar instead, so that one gap cost you twice.",
 			persona, slices.Concat(core.Anchors, res.Anchors), linkBetween(p, core.ID, res.ID)),
 		ThenFix: []ThenItem{
-			thenFrom(prep, "A flask is the cheapest damage you will ever buy; bring one to every 40-player boss.", []string{}),
 			thenFrom(res, "When the bar is full, Heroic Strike turns rage into damage instead of losing it.", linkBetween(p, core.ID, res.ID)),
 		},
 		DoingWell: []WellItem{

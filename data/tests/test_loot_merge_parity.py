@@ -186,6 +186,7 @@ def test_loot_places_the_classicdb_only_trash_mob_inside_the_dungeon(tmp_path: P
     curated = tmp_path / "curated"
     curated.mkdir()
     shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
+    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
     for name in ("content-phases.json", "phases.json"):
         shutil.copy(Path("curated") / name, curated / name)
     write_loot_files(
@@ -211,6 +212,7 @@ def test_loot_merge_agrees_with_loot_on_the_same_committed_caches(tmp_path: Path
     curated = tmp_path / "curated"
     curated.mkdir()
     shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
+    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
     for name in ("content-phases.json", "phases.json"):
         shutil.copy(Path("curated") / name, curated / name)
     write_loot_files(
@@ -252,6 +254,7 @@ def test_loot_merge_agrees_on_source_shape_and_origin_labels(tmp_path: Path):
     curated = tmp_path / "curated"
     curated.mkdir()
     shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
+    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
     for name in ("content-phases.json", "phases.json"):
         shutil.copy(Path("curated") / name, curated / name)
     write_loot_files(
@@ -347,6 +350,7 @@ def _curated_dir(tmp_path: Path) -> Path:
     curated = tmp_path / "curated"
     curated.mkdir()
     shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
+    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
     for name in ("content-phases.json", "phases.json"):
         shutil.copy(Path("curated") / name, curated / name)
     return curated

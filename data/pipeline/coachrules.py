@@ -26,28 +26,32 @@ SPECS = {
     "druid-balance": dict(
         core=[], auras=[("Insect Swarm", DOT)], downranks=[], defensives=["Barkskin"]
     ),
+    # Shifting Power is mana-limited (55% of base mana) and held above 60 energy; F1 cannot read
+    # either, so a ready one is not judged as a lost cast (round 26).
     "druid-feral": dict(
-        core=["Shifting Power"],
+        core=[],
         auras=[("Rip", DOT)],
         downranks=[],
         defensives=["Barkskin"],
     ),
     # Aimed Shot takes the cooldown it shares with Multi-Shot every time it comes up; Multi-Shot is
     # for packs and moving (round 25), so a ready Multi-Shot is never a lost cast.
+    # Aimed Shot shares its cooldown with Multi-Shot, which F1 does not restart on (round 26).
     "hunter-beast-mastery": dict(
-        core=["Bestial Wrath", "Rapid Fire", "Aimed Shot"],
+        core=["Bestial Wrath", "Rapid Fire"],
         auras=[("Serpent Sting", DOT), ("Aspect of the Hawk", SELF)],
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
     ),
     "hunter-marksmanship": dict(
-        core=["Rapid Fire", "Aimed Shot"],
+        core=["Rapid Fire"],
         auras=[("Aspect of the Hawk", SELF)],
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
     ),
+    # Immolation Trap is 18 s from 38 (Survivalist's Discipline); F1 reads 30 s (round 26).
     "hunter-survival": dict(
-        core=["Raptor Strike", "Strider Kick", "Immolation Trap"],
+        core=["Raptor Strike", "Strider Kick"],
         auras=[("Lacerate", DOT)],
         downranks=[],
         defensives=["Feign Death", "Deterrence"],
@@ -79,7 +83,8 @@ SPECS = {
         core=["Shadow Word: Death", "Devouring Plague", "Inner Focus"],
         auras=[("Shadow Word: Pain", DOT), ("Shadowform", SELF)],
         downranks=[],
-        defensives=["Desperate Prayer"],
+        # Desperate Prayer is the Dwarf priest spell (race mask 4): no defensive every priest has.
+        defensives=[],
     ),
     "rogue-assassination": dict(
         core=["Cold Blood"],
@@ -105,18 +110,18 @@ SPECS = {
     "shaman-enhancement": dict(core=["Stormstrike"], auras=[], downranks=[], defensives=[]),
     # The rotation keeps its DoTs and bane up (DoTs crit in Forever) and fills with Wrack; Amplify
     # Curse is saved for the Agony after the last Doom at sixty, so it is not judged as a cooldown.
+    # Immolate is not judged: the raid build sacrifices the Imp and drops it (round 26).
     "warlock-affliction": dict(
         core=[],
         auras=[
             ("Corruption", DOT),
             ("Bane of Agony", DOT),
             ("Siphon Life", DOT),
-            ("Immolate", DOT),
         ],
         downranks=[],
         defensives=["Death Coil"],
     ),
-    # Soul Fire is skipped in the raid build ("never cast it in a raid", round 25).
+    # Soul Fire stays out of core: Decimation cuts its cooldown by 90%, which F1 reads at base.
     "warlock-demonology": dict(
         core=["Bane of Doom"],
         auras=[("Corruption", DOT), ("Bane of Doom", DOT), ("Immolate", DOT)],
@@ -146,34 +151,43 @@ SPECS = {
     # ---- tanks (3)
     "druid-feral-bear": dict(
         core=["Primal Bite"],
-        auras=[("Demoralizing Roar", DEF)],
+        # A warrior's Demoralizing Shout holds the same slot (feral-bear.md), so its time counts.
+        auras=[("Demoralizing Roar", DEF, ("warrior", "Demoralizing Shout"))],
         downranks=[],
         defensives=["Barkskin", "Frenzied Regeneration"],
     ),
+    # Hammer of the Righteous and Judgement are held for Holy Shield's mana reserve (protection.md),
+    # which F1 cannot see, so a ready one is not a lost cast (round 26).
     "paladin-protection": dict(
         core=[
             "Holy Shield",
             "Holy Strike",
-            "Hammer of the Righteous",
-            "Judgement",
         ],
-        # Swift Judgement is held for a tank swap (protection.md), so a ready one is not a lost cast.
+        # Swift Judgement is held for a tank swap (protection.md): a ready one is no lost cast.
         auras=[("Holy Shield", DEF)],
         downranks=[],
         defensives=["Templar's Bulwark", "Divine Shield", "Divine Protection", "Lay on Hands"],
     ),
     "warrior-protection": dict(
         core=["Bloodrage", "Shield Slam"],
-        # Demoralizing Shout is left to a druid's Roar or another warrior's Shout when one holds it
-        # (protection.md); a Roar reads as a gap, so its uptime is not judged (round 25).
-        auras=[("Shield Block", DEF), ("Thunder Clap", DEF)],
+        # Demoralizing Shout is left to a druid's Roar when one holds the slot (protection.md): the
+        # Roar's time counts as the slot filled (covered_by), so it is judged again (round 26).
+        auras=[
+            ("Shield Block", DEF),
+            ("Demoralizing Shout", DEF, ("druid", "Demoralizing Roar")),
+            ("Thunder Clap", DEF),
+        ],
         downranks=[],
         defensives=["Shield Wall", "Last Stand"],
     ),
     # ---- healers (5)
     "druid-restoration": dict(
         # Nature's Swiftness is saved for a tank about to die, never rolled on cooldown (round 25).
-        core=[], efficiency=[], auras=[], downranks=[], defensives=["Barkskin"]
+        core=[],
+        efficiency=[],
+        auras=[],
+        downranks=[],
+        defensives=["Barkskin"],
     ),
     "paladin-holy": dict(
         core=[],
@@ -187,14 +201,16 @@ SPECS = {
         efficiency=["Inner Focus"],
         auras=[("Inner Fire", SELF)],
         downranks=["Power Word: Shield", "Prayer of Healing"],
-        defensives=["Desperate Prayer"],
+        # Desperate Prayer is the Dwarf priest spell (race mask 4): no defensive every priest has.
+        defensives=[],
     ),
     "priest-holy": dict(
         core=[],
         efficiency=["Inner Focus"],
         auras=[("Inner Fire", SELF)],
         downranks=["Renew"],
-        defensives=["Desperate Prayer"],
+        # Desperate Prayer is the Dwarf priest spell (race mask 4): no defensive every priest has.
+        defensives=[],
     ),
     "shaman-restoration": dict(
         core=[],
@@ -286,11 +302,25 @@ def _entries(names, ctx):
     return out
 
 
-def _auras(pairs, ctx):
-    if pairs is None:
+def _cover_ids(cover, ctx):
+    """Every ranked id of another class's aura that holds the same slot (cover is
+    (class, name)), so F2 counts its time as the slot filled."""
+    cls, name = cover
+    spells = json.loads(
+        (ctx.builds / ctx.build / "spellconst" / f"{cls}.json").read_text(encoding="utf-8")
+    )["spells"]
+    ids = sorted(int(k) for k, v in spells.items() if v["name"] == name and v["rank"] >= 1)
+    if not ids:
+        raise SystemExit(f"coach-rules: no ranked {name} in {cls} spellconst")
+    return ids
+
+
+def _auras(entries, ctx):
+    if entries is None:
         return None
     out = []
-    for name, kind in pairs:
+    for entry in entries:
+        name, kind = entry[0], entry[1]
         ids = _family_ids(name, ctx.sc, ctx.tr, ctx.apl_ids)
         top = _top_id(ids, ctx.sc, ctx.apl_ids, ctx.books)
         aura = {
@@ -301,6 +331,8 @@ def _auras(pairs, ctx):
         }
         if name in ctx.talents:
             aura["talent"] = True
+        if len(entry) > 2:
+            aura["covered_by"] = _cover_ids(entry[2], ctx)
         aura["verified"] = ctx.stamp(top)
         out.append(aura)
     return out
@@ -309,10 +341,11 @@ def _auras(pairs, ctx):
 class _Context:
     """One spec's resolved tables: what every list is built against."""
 
-    def __init__(self, build, cls, sc, tr, talents, apl_ids, books=frozenset()):
+    def __init__(self, build, cls, sc, tr, talents, apl_ids, books=frozenset(), builds=Path()):
         self.build, self.cls = build, cls
         self.sc, self.tr, self.talents, self.apl_ids = sc, tr, talents, apl_ids
         self.books = books
+        self.builds = builds
 
     def stamp(self, spell_id: int) -> str:
         return f"{self.build}/spellconst/{self.cls}.json#{spell_id}"
@@ -326,7 +359,16 @@ def render_spec(spec: str, build: str, data_root: Path = Path()) -> str:
     apl_ids: set[int] = set()
     apl = json.loads((data_root / "curated" / "apl" / f"{spec}.json").read_text(encoding="utf-8"))
     _walk_apl(apl["rotation"], apl_ids)
-    ctx = _Context(build, cls, sc, tr, talents, apl_ids, load_book_ids(data_root / "curated"))
+    ctx = _Context(
+        build,
+        cls,
+        sc,
+        tr,
+        talents,
+        apl_ids,
+        load_book_ids(data_root / "curated"),
+        data_root / "builds",
+    )
     doc: dict = {"spec": spec, "build": build}
     for key, value in (
         ("core", _entries(lists.get("core"), ctx)),

@@ -24,8 +24,8 @@ This is the best Assassination Rogue on Forever. Assassination is the Forever ro
 - Garrote: Stealth, get behind the boss and open with Garrote once the tank has the boss.
 - Ambush hits harder on paper, but it lands into unshredded armor and gets none of Lethality's bonus.
 - Cheap Shot is for trash only: bosses are immune to stuns.
-- Shank on cooldown. It cannot miss, pays back more energy than it costs and, with Venom, adds thirty percent to your poison damage on top of Vile Poisons and makes them land more often for six seconds.
-- At four or more combo points, Slice and Dice first if it is down or about to fall off, and a three-point Slice and Dice once it has dropped: with Improved Slice and Dice even three points keep it up for over twenty seconds.
+- Shank from twenty-four on cooldown: it cannot miss and pays back more energy than it costs. Venom, from thirty, adds thirty percent to your poison damage for six seconds, on top of Vile Poisons. It also makes your poisons land more often.
+- At four or more combo points, Slice and Dice first if it is down or about to fall off, and a three-point Slice and Dice once it has dropped: even three points keep it up for fifteen seconds or more, over twenty with the raid build's Improved Slice and Dice.
 - Cold Blood from thirty-three, at four or more combo points, right before the Eviscerate.
 - Eviscerate at four or more combo points.
 - Mutilate from forty is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.
@@ -34,10 +34,10 @@ This is the best Assassination Rogue on Forever. Assassination is the Forever ro
 - Instant Poison on the main hand and Deadly Poison on the off hand at sixty, with a sharpening stone beside each.
 - Deadly Poison on the main hand and Instant on the off hand from thirty to fifty-nine. At sixty swap them: the off hand then holds Deadly at five stacks on its own.
 - Backstab from behind with a dagger in your main hand is the builder until Mutilate. It hits far harder than Sinister Strike.
-- Kidney Shot costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per combo point. Five seconds at five, six once rank two trains at fifty. Use it on casters and on whatever is hitting your healer.
-- Kick, Gouge and Blind handle the rest.
+- Kidney Shot trains at thirty. It costs twenty-five energy, sits on a twenty second cooldown and stuns a second longer per combo point. Five seconds at five, six once rank two trains at fifty. Use it on casters and on whatever is hitting your healer.
+- Kick, Gouge and, from thirty-four, Blind handle the rest.
 - Redirect lifts your combo points off a dying mob and hands them to the next enemy you hit within fifteen seconds.
-- Feint on cooldown on bosses where you sit near the tank's threat.
+- Feint from sixteen on cooldown on bosses where you sit near the tank's threat.
 
 **The mistakes to look for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.
@@ -49,7 +49,7 @@ This is the best Assassination Rogue on Forever. Assassination is the Forever ro
 - Death review: dying, which ends your contribution for the rest of the pull.
 - Rotation adherence: buttons outside the priority list taking globals the list would have used.
 
-**Consumables and world buffs.** Before a boss you want food (Poached Sunscale Salmon); a combat potion (Major Frenzy Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want food (Poached Sunscale Salmon) from thirty-five; a combat potion (Major Frenzy Potion) from fifty-five, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -57,8 +57,8 @@ This is the best Assassination Rogue on Forever. Assassination is the Forever ro
 - drill.uptime: Put the timers of your buffs and debuffs where you can see them. Recast each when its line says, never earlier, and again the moment you are back up after a death or a phase change.
 - drill.idle: On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.
 - drill.resource: Watch the energy bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.
-- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for. Sometimes the right one is a lower, cheaper rank.
-- drill.preparation: Before every boss, check food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.ranks: Visit your trainer every time you level, then check each button on the priority list against the rank your level calls for.
+- drill.preparation: Before every boss, check food from thirty-five and a combat potion from twenty-five on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.
 - drill.adherence: On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.
 
