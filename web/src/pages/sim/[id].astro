@@ -9,7 +9,6 @@ import { FIXTURE_FULL_SIM_ID, FIXTURE_SIM_ID, fixtureSimPaths } from '../../lib/
 import fixtureResult from '../../fixtures/sim/result.json';
 import fixtureFullResult from '../../fixtures/sim/result-full.json';
 import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
-import SimTabs from '../../components/sim/SimTabs.astro';
 import IslandScript from '../../components/IslandScript.astro';
 
 export function getStaticPaths() {
@@ -31,8 +30,7 @@ const inline = fixture === undefined ? undefined : JSON.stringify(fixture);
   path={`/sim/${id}`}
 >
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
-  <main id="main" tabindex="-1" class="flex flex-col pb-10">
-    <SimTabs currentPath="/sim" />
+  <main id="main" tabindex="-1" class="sim-page">
     <!--
       Reserves the saved sim's space before the island mounts, the same reason and the same
       pattern reports/[id].astro uses: without it the shell is one line tall, the footer sits
@@ -60,3 +58,10 @@ const inline = fixture === undefined ? undefined : JSON.stringify(fixture);
     <IslandScript src="/sim-island.js" />
   </main>
 </Base>
+
+<style>
+  /* No tool tabs and no run line on a saved run (spec 2026-11-06-sim, ruling S5). */
+  .sim-page {
+    padding-bottom: 40px;
+  }
+</style>

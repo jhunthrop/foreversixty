@@ -1,12 +1,13 @@
 <!-- web/src/components/sim/SimView.svelte -->
-<!-- The simulator island's root. It owns the URL state and the page frame; every section
-     below it is a component that takes data and raises events, so this file stays a
-     composition and never a place where a layout decision hides.
+<!-- The simulator island's root (spec 2026-11-06-sim). It owns the URL state and the page frame:
+     /sim with no character (SimLandingPage), /sim with a character (the head with its answer, the
+     run line, then the gear and talents before a run or the report after one), /sim/<id>
+     (SavedSim) and /sim/specs (SpecGrid). Every section below is a component that takes data and
+     raises events, so this file stays a composition.
 
-     The store reads its own URL bootstrap (a "Sim this build" link's `?code=`, or a saved
-     build's `?source=build&ref=`) from init, not from a `$effect` here: `createSimStore`
-     stays DOM-free and unit-testable, and this component's only job is to read
-     `window.location` once and hand the values across. -->
+     The store reads its own URL bootstrap (a "Sim this build" link's `?code=`, or a saved build's
+     `?source=build&ref=`) from init, not from a `$effect` here: `createSimStore` stays DOM-free
+     and unit-testable, and this component's only job is to read `window.location` once. -->
 <script lang="ts">
   import { onMount, tick, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
@@ -16,40 +17,33 @@
   import { sessionHinted } from '../../lib/data/query';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { API_BASE_URL } from '../../lib/planner/config';
-  import { SIM_LANDING_SKELETON_MIN_H } from '../../lib/sim/layout';
   import type { CharacterPath } from '../../lib/characters';
   import { parseCharacterPath } from '../../lib/characters';
   import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../../lib/current-character';
-  import { VIEW_GAP } from '../../lib/current-character-layout';
-  import { readLastUpgrade, upgradeKeyOf } from '../../lib/sim/last-upgrade';
-  import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
+  import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
+  import { simAnswer, type StoppedSnapshot } from '../../lib/sim/answer';
   import { fetchSpecs, listMySims } from '../../lib/sim/api';
+  import type { BisSetClass } from '../../lib/sim/bis-set-rail';
   import { codeForCharacterSpec } from '../../lib/sim/character';
   import { followCurrentCharacter, simHoldsWork } from '../../lib/sim/follow-current-character';
   import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
-  import type { KindFilter } from '../../lib/sim/history';
-  import { SIM_LAZY_MIN_H } from '../../lib/sim/lazy-layout';
+  import { averageWornItemLevel, characterMeta } from '../../lib/sim/head-meta';
+  import { landingCopy } from '../../lib/sim/landing-copy';
   import { createServerRunsController } from '../../lib/sim/server-runs-controller.svelte';
   import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
   import { askToFocusRun, takeFocusRun } from '../../lib/sim/focus-run';
+  import { simPageCopy as pageCopy } from '../../lib/sim/page-copy';
   import { createSavedSimState } from '../../lib/sim/saved-sim-state.svelte';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
-  import { isSimulatedSpec } from '../../lib/sim/spec-label';
-  import {
-    mergeSpecRows,
-    needsFidelityNote,
-    specPillClass,
-    specStateLabel,
-    specStateNote,
-  } from '../../lib/sim/spec-state';
+  import { isSimulatedSpec, specLabel } from '../../lib/sim/spec-label';
+  import { mergeSpecRows, needsFidelityNote, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
-  import { syncTabHrefs } from '../../lib/sim/tabs';
-  import { landingCopy } from '../../lib/sim/landing-copy';
+  import { SIM_TABS, tabHref, tabStateFor } from '../../lib/sim/tabs';
   import {
     decodeRequestParam,
     defaultSimState,
@@ -58,54 +52,44 @@
     simSearch,
     withSimState,
   } from '../../lib/sim/url';
-  import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
   import type { SimListRow, SimRequest, SimResult, SpecFidelity } from '../../lib/sim/types';
-  import BuffPanel from './BuffPanel.svelte';
-  import CharacterStrip from './CharacterStrip.svelte';
-  import ColdPasteHero from './ColdPasteHero.svelte';
-  import LandingState from './LandingState.svelte';
-  import ReportOptions from './ReportOptions.svelte';
-  import RequestDrawer from './RequestDrawer.svelte';
-  import RunControl from './RunControl.svelte';
+  import LoadError from '../ui/LoadError.svelte';
+  import Notice from '../ui/Notice.svelte';
+  import Skeleton from '../ui/Skeleton.svelte';
+  import Tag from '../ui/Tag.svelte';
   import RunReport from './RunReport.svelte';
   import SavedSim from './SavedSim.svelte';
   import SavedSimLoadFailed from './SavedSimLoadFailed.svelte';
-  import SettingsBar from './SettingsBar.svelte';
-  import SimRunBlock from './SimRunBlock.svelte';
-  import SimSavePanel from './SimSavePanel.svelte';
-  import SourceSwitcher from './SourceSwitcher.svelte';
-  import SpecGrid from './SpecGrid.svelte';
-  import LoadError from '../ui/LoadError.svelte';
-  import Skeleton from '../ui/Skeleton.svelte';
+  import SimAnswer from './SimAnswer.svelte';
+  import SimCharacterHead from './SimCharacterHead.svelte';
+  import SimLandingPage from './SimLandingPage.svelte';
+  import SimRacePick from './SimRacePick.svelte';
+  import SimRunBar from './SimRunBar.svelte';
+  import SimSaveActions from './SimSaveActions.svelte';
+  import SimToolTabs from './SimToolTabs.svelte';
+  import SimYourSims from './SimYourSims.svelte';
 
-  let { simId = '', inlineResult = null }: { simId?: string; inlineResult?: SimResult | null } = $props();
+  let {
+    simId = '',
+    inlineResult = null,
+    bisSets = [],
+  }: { simId?: string; inlineResult?: SimResult | null; bisSets?: readonly BisSetClass[] } = $props();
 
-  // True on /sim/<id> -- a saved sim, `sim-island.ts`'s own `simIdFor` already resolved off
-  // the mount's data or the path -- and on the prerendered fixture page, which inlines its
-  // result. Task 17 renders that view; the character strip, the source switcher and the
-  // empty prompt below stay out of the way rather than showing a builder under it.
+  // /sim/<sim_id>, or the prerendered fixture page that inlines its result.
   const hasSavedSimId = untrack(() => simId !== '' || inlineResult !== null);
 
-  // Read once, like simId and inlineResult above: these are the page's own one-shot
-  // bootstrap values, not bindings this island keeps synced against a changing URL.
+  // The page's one-shot bootstrap values, read once (not bindings kept in sync with the URL).
   const bootstrap = untrack(() => {
-    const search = window.location.search;
-    const { source, ref, code, req, mode, run } = parseSimState(search);
-    // The mount element the shell can stamp a build id onto, the way planner-island.ts
-    // reads `data-tree-version` off its own mount -- no /sim page stamps one yet, so this
-    // falls back to the site's active build rather than an empty string no fetch would
-    // resolve.
+    const { source, ref, code, req, mode, run } = parseSimState(window.location.search);
     const mount = document.getElementById('sim');
     const treeVersion = mount?.dataset.treeVersion ?? activeBuild.build;
-    // specs.astro stamps `data-sim-view="specs"`; sim.astro and [id].astro stamp neither,
-    // so an absent or unrecognised value reads as the ordinary simulator.
+    // specs.astro stamps `data-sim-view="specs"`; every other page is the ordinary simulator.
     const view: 'sim' | 'specs' = mount?.dataset.simView === 'specs' ? 'specs' : 'sim';
     return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view, run };
   });
 
-  // Compare mode loads its character through `enterCompare` below, never through the
-  // store's own URL bootstrap: a second, redundant bootstrap racing `enterCompare`'s own
-  // could land after `store.run()` and null out the result `comparison` was built from.
+  // Compare mode loads its character through `enterCompare`, never through the store's own URL
+  // bootstrap: a second bootstrap racing it could land after `store.run()` and null the result.
   const store = untrack(() =>
     createSimStore({
       treeVersion: bootstrap.treeVersion,
@@ -116,16 +100,10 @@
     }),
   );
 
-  // Compare mode's own state: `actual` is the logged fight's raw summary, and `comparing`
-  // gates every compare-only branch below so plain /sim never has to think about either.
   let actual = $state<Summary | null>(null);
   let comparing = $state(false);
 
-  /**
-   * Compare mode's whole entry path, called once from the same place the other `?source=`
-   * loaders are called -- never from a `$effect`, which would re-fetch the fight whenever
-   * anything unrelated in the store changed.
-   */
+  /** Compare mode's whole entry path, called once (never from an effect). */
   async function enterCompare(ref: string): Promise<void> {
     const parsed = parseFightRef(ref);
     if (parsed === null) {
@@ -133,43 +111,28 @@
       return;
     }
     comparing = true;
-    // loadFight gives us the character; fromLoggedFight is what it calls underneath.
     await store.loadFight(ref);
     try {
       const meta = await fetchReportMeta(parsed.reportId);
       actual = await fetchSummary(meta.data_base_url, parsed.fightIndex);
     } catch {
-      // A dead page helps nobody: keep the character, drop back to plain sim mode.
       actual = null;
       comparing = false;
       store.setMessage(simCopy.fightNoCombatant);
       return;
     }
-    // The one place a sim starts without a press: the player already pressed something to
-    // get here, and a compare with nothing to compare against is not a page.
+    // The one place a sim starts without a press: the player already asked for the comparison.
     if (store.character !== null) await store.run();
   }
 
   if (bootstrap.mode === 'compare') void enterCompare(bootstrap.ref);
 
-  // /sim/<sim_id>'s own entry path (Task 17), the saved-sim counterpart to `enterCompare`
-  // above: a prerendered fixture page already carries its result (`inlineResult`), so only
-  // the id-only case fetches. Called once, here, rather than from an `$effect` -- the same
-  // reason `enterCompare` is not one.
   const savedSim = createSavedSimState(untrack(() => inlineResult));
-
-  // One-time init read, the same reason bootstrap and store above are wrapped: the
-  // .then/.catch callbacks run later, as ordinary reactive writes.
   untrack(() => {
     if (hasSavedSimId && savedSim.result === null && simId !== '') savedSim.load(simId);
   });
 
-  /**
-   * "Run this yourself": opens /sim with a character loaded, via the same `sim/url.ts`
-   * vocabulary this file's own bootstrap uses. `addon`/`manual` sources persist no `ref`
-   * (H4, final whole-branch review), so those fall back to the saved result's own
-   * `request.character`, converted to an FS1 code and handed to `?code=` instead.
-   */
+  /** "Open in the sim": /sim with this saved run's character and setup. */
   function onRerunSaved(): void {
     if (savedSim.result === null) return;
     const { kind, ref } = savedSim.result.request.source;
@@ -177,8 +140,6 @@
       ref !== ''
         ? withSimState(defaultSimState(), { source: kind, ref })
         : withSimState(defaultSimState(), {
-            // codeForCharacterSpec carries the saved result's own gear list, enchants and
-            // suffixes included (contract 10.5) -- character.ts's own reason.
             code: codeForCharacterSpec(savedSim.result.request.character, bootstrap.treeVersion),
           });
     askToFocusRun();
@@ -193,7 +154,7 @@
     void tick().then(() => document.querySelector<HTMLElement>('[data-testid="sim-run-button"]')?.focus());
   });
 
-  /** Design 8: a share URL of an edited request is a full reproduction. Null past the budget. */
+  /** A share URL of an edited request is a full reproduction. Null past the URL budget. */
   function shareUrlFor(request: SimRequest): string | null {
     const encoded = encodeRequestParam(request);
     if (encoded === null) return null;
@@ -205,35 +166,27 @@
       ? compareSummaries(store.result.summary, actual, store.character.name, store.actionNames)
       : null,
   );
-
-  // CompareView is never needed for /sim's first paint -- it only exists once a compare
-  // link is followed -- so it ships as its own chunk.
   const compareViewLazy = createLazyComponent(() => import('./CompareView.svelte'));
+  // Chunks a page loads only when it needs them, so the island's boot bundle stays what the
+  // landing and a saved run draw first (scripts/check-island-size.mjs): More settings on its first
+  // open, the before-a-run body once a character is loaded, the spec grid on /sim/specs.
+  const moreSheetLazy = createLazyComponent(() => import('./MoreSettingsSheet.svelte'));
+  const preRunLazy = createLazyComponent(() => import('./SimPreRun.svelte'));
+  const specGridLazy = createLazyComponent(() => import('./SpecGrid.svelte'));
   $effect(() => {
     if (comparison !== null) compareViewLazy.load();
   });
 
-  // One `/v1/me` read, shared with every other island through the client cache
-  // (web/src/lib/data/query.ts) -- the same call Account.svelte, SessionNav.svelte and
-  // HomeAccountPanel.svelte make. Read by the history panel, the landing state and the
-  // source switcher's signed-in card.
+  // One `/v1/me` read, shared with every other island through the client cache.
   const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
     scope: 'private',
     ttlMs: 10 * 60 * 1000,
   });
   const me = $derived(session.data);
-  // The landing skeleton shows only for a visitor who has a session to load (the cookie's
-  // readable half is present) and no snapshot yet; a signed-out visitor gets the source
-  // switcher at once, as before, rather than a skeleton for a read that answers "nobody".
   const sessionPending = $derived(session.status === 'loading' && session.data === null && sessionHinted());
-  // The history panel (Task 17), for a signed-in player on plain /sim only.
   const signedIn = $derived(me !== null);
 
-  // 2026-09-26 layout pass, Finding 1: the Run block's own character, resolved with the
-  // pointer-then-main precedence the header selector uses (`heroCharacter`/`mainCharacter`),
-  // so the block and the header can never name a different character. Read once, then
-  // again on every pointer write (`CURRENT_CHARACTER_CHANGED`), since a choice in the header
-  // selector should move this block along with it.
+  // The header selector's character (pointer, then main): the page loads the same one.
   let currentPointer = $state<CurrentCharacter | null>(null);
   $effect(() => {
     const read = (): void => {
@@ -242,54 +195,30 @@
     read();
     return onCurrentCharacterChange(read);
   });
-  const runBlockCharacter = $derived.by(() => {
+  const headerCharacter = $derived.by(() => {
     if (me === null) return null;
     const pointerCharacter = heroCharacter(currentPointer, me.characters);
     const main = mainCharacter(me.characters, me.main_character_key);
     return pointerCharacter ?? (currentPointer === null ? main : null);
   });
-  // `MeCharacter.key` is always `<region>/<ruleset>/<slug>` (`characters.ts`'s own shape,
-  // the same one LandingState.svelte's `pathOf` parses) -- validated at this boundary
-  // rather than assumed, the same rule every other source in this lane follows.
-  const runBlockPath = $derived(
-    runBlockCharacter === null ? null : parseCharacterPath(`/character/${runBlockCharacter.key}`),
+  const headerPath = $derived(
+    headerCharacter === null ? null : parseCharacterPath(`/character/${headerCharacter.key}`),
   );
 
   let historyRows = $state<SimListRow[] | null>(null);
   let historyError = $state<string | null>(null);
-  // The history filter (Task 18). "all" sends no `kind=` at all -- see api.ts's listMySims.
-  let historyKind = $state<KindFilter>('all');
 
   async function loadHistory(): Promise<void> {
     historyError = null;
     try {
-      const page = await listMySims(1, undefined, historyKind);
-      historyRows = page.rows;
+      historyRows = (await listMySims(1, undefined, 'all')).rows;
     } catch (error) {
       historyRows = null;
       historyError = error instanceof Error ? error.message : simCopy.loadFailed;
     }
   }
 
-  function setHistoryKind(next: KindFilter): void {
-    historyKind = next;
-    historyRows = null;
-    void loadHistory();
-  }
-
-  // Loaded lazily (Task 17): the history panel is empty weight for every signed-out
-  // visitor and for /sim/<id>, where it never renders at all, and this file's compiled
-  // bundle is shared by all three /sim routes.
-  const simHistoryLazy = createLazyComponent(() => import('./SimHistory.svelte'));
-  $effect(() => {
-    if (signedIn) simHistoryLazy.load();
-  });
-
-  // Spec 2026-10-24 §3: "Your server runs", for payers only. The list, its ten-second poll
-  // and the localStorage hints live in the controller; the component loads lazily like
-  // SimHistory. The list renders only on the /sim landing, so a free member, /sim/<id> and
-  // /sim/specs neither download it nor start the controller (which would poll and mark runs
-  // seen for a list nobody is looking at).
+  // "Your server runs", payers only, on the /sim landing only (spec 2026-10-24 §3).
   const serverRuns = createServerRunsController();
   const hasServerSims = $derived(effectiveServerSims(me));
   const showsServerRuns = $derived(hasServerSims && !hasSavedSimId && bootstrap.view !== 'specs');
@@ -307,54 +236,29 @@
     wasServerRunning = running;
   });
 
-  // Design 5.4: the finish notification. `notifier` is the real Notification API, or null
-  // where the browser has none, read once. Permission is asked only from `toggleNotify`.
+  // The finish notification (design 5.4): asked for only from More settings, server runs only.
   const notifier = untrack(() => browserNotifier());
-
-  // Spec 2026-09-25 §6: the after-sim sentence's data source -- the last Droptimizer
-  // upgrade recorded for the character on screen, never another character's or spec's.
-  const topUpgrade = $derived(
-    store.character === null ? null : readLastUpgrade(upgradeKeyOf(store.character)),
-  );
   let notifyWanted = $state(false);
-  // The id of the last result a notification was raised for, so a re-render never raises a
-  // second one for the same run.
   let notifiedFor = $state('');
-
   async function toggleNotify(wanted: boolean): Promise<void> {
     notifyWanted = wanted && (await enableNotifications(notifier));
   }
-
-  // Server runs only, per design 5.4: a browser run finishes on the tab you are looking at.
   $effect(() => {
     const finished = store.result;
-    if (finished !== null && finished.lane === 'server') {
-      // The key is the wall clock plus the figure, which no two runs of one session share.
-      const key = `${finished.duration_ms}-${finished.iterations_run}`;
-      if (key !== notifiedFor) {
-        notifiedFor = key;
-        notifyFinished(
-          notifier,
-          notifyWanted,
-          store.reportTitle,
-          simCopy.notifyBody(Math.round(finished.dps.mean).toLocaleString('en-US')),
-        );
-      }
-    }
+    if (finished === null || finished.lane !== 'server') return;
+    const key = `${finished.duration_ms}-${finished.iterations_run}`;
+    if (key === notifiedFor) return;
+    notifiedFor = key;
+    notifyFinished(
+      notifier,
+      notifyWanted,
+      store.reportTitle,
+      simCopy.notifyBody(Math.round(finished.dps.mean).toLocaleString('en-US')),
+    );
   });
 
-  // 2026-09-26 layout pass: the save form's own state and handlers moved to
-  // SimSavePanel.svelte (extracted to keep this file under the lane's line ceiling) -- this
-  // file only ever passed it `store.result`/`store.reportTitle` and `store.save` anyway.
-
-  // effectiveServerSims(me) on GET /v1/me -- the server lane renders only once this answers
-  // true. A signed-out visitor and an unreachable API read the same way (`me` stays null
-  // whether the session read answered null or failed; the sim never shows a session error,
-  // spec 2026-09-23 §3). The same answer gates the history panel, the landing state and the
-  // source switcher's signed-in card: `signedIn` above is `me !== null`, and the history
-  // panel's own `GET /v1/sims?mine=1` fires only then. Keyed on `me`'s reference and guarded
-  // against re-running for the same object (the 2026-09-23 account-page loop); it never
-  // starts a session read itself, only reacts to the one `createQueryState` made above.
+  // The session decides the server lane and the history read; guarded against re-running for
+  // the same `me` object (the 2026-09-23 account-page loop).
   let lastMe: Me | null = null;
   $effect(() => {
     if (me === lastMe) return;
@@ -364,7 +268,6 @@
   });
 
   onMount(() => {
-    // Never on /sim/<id>: a saved sim never restores the visitor's own current character.
     if (!hasSavedSimId) void restoreFromPointer();
     // The header selector moves this page along: a character chosen there loads in place.
     const stopFollowing = followCurrentCharacter({
@@ -380,11 +283,9 @@
     };
   });
 
-  // The spec support list: /sim/specs renders it as a grid, and /sim needs it too, to know
-  // whether the loaded character's own spec is one the engine models -- both share it.
+  // The spec support list: /sim/specs renders it, /sim reads the loaded spec's fidelity from it.
   let specRows = $state<SpecFidelity[] | null>(null);
   let specsError = $state<string | null>(null);
-
   async function loadSpecs(): Promise<void> {
     specsError = null;
     try {
@@ -394,76 +295,33 @@
       specsError = error instanceof Error ? error.message : simCopy.specsFailed;
     }
   }
-
-  // No reactive read inside, so this fires once, on mount -- the effect form Task 15's
-  // brief calls for, since /sim/specs' own grid needs exactly this one-shot load.
   $effect(() => {
     void loadSpecs();
   });
-
-  /**
-   * The loaded character's own row, once the spec list has answered. Null while the list is
-   * still loading or failed, or before a character is on screen -- `null` reads as "unknown
-   * yet", not as "unsupported", so the run control stays up rather than flashing the
-   * unsupported card ahead of the real answer.
-   */
   const characterSpecRow = $derived.by((): SpecFidelity | null => {
     if (store.character === null || specRows === null) return null;
     return mergeSpecRows(specRows).find((row) => row.spec === store.character?.spec) ?? null;
   });
 
-  // False until the player explicitly asks for the switcher. Design 4.6: a signed-in
-  // member with characters opens on the landing state instead, so defaulting this to
-  // `store.character === null` would show the switcher on every first paint instead.
-  let switcherOpen = $state(false);
-
-  $effect(() => {
-    if (store.character !== null) switcherOpen = false;
-  });
-
-  // Persona review 2026-10-06, §5/§8 item 1: no character loaded, session settled -- signed
-  // out, or signed in with nothing tracked ("Change source" is excluded by `character === null` alone).
-  const showColdPasteHero = $derived(
-    store.character === null && !sessionPending && (me === null || me.characters.length === 0),
-  );
-
-  /**
-   * A fresh FS1 v2 code for the loaded character, the same conversion "Run this yourself"
-   * above falls back to. Only reached when `store.character.source.ref` is empty (fix
-   * round 1, Finding A) -- an addon paste or a `?code=` link -- so `store.buildRequest()`
-   * runs only then, not on every character.
-   */
-  function fallbackTabCode(): string | null {
+  /** An FS1 code for a character with no ref (a paste), so the tool tabs carry it. */
+  const fallbackCode = $derived.by(() => {
     if (store.character === null || store.character.source.ref !== '') return null;
     const request = store.buildRequest();
     return request === null ? null : codeForCharacterSpec(request.character, bootstrap.treeVersion);
-  }
-
-  // Keeps the loaded character on every tab in SimTabs.astro's strip (task-1-brief.md):
-  // whenever the character this island holds changes -- loaded, changed source, or cleared
-  // -- every tab's href is rewritten to carry the same query its own destination can
-  // actually bootstrap from (`?source=&ref=`, or the `?code=` fallback every tab now reads,
-  // `SIM_TABS`' own `supportsCode` -- current-character spec, 2026-09-21). The strip lives
-  // above this island's own mount point (SimTabs.astro's own comment), so `syncTabHrefs`
-  // reaches it through `document` rather than this component's own root.
-  $effect(() => {
-    const source = store.character === null ? null : store.character.source;
-    syncTabHrefs(source, fallbackTabCode());
   });
+  const tabSource = $derived(store.character === null ? null : store.character.source);
+  const topGearHref = $derived(
+    tabHref(
+      SIM_TABS.find((tab) => tab.id === 'gear')?.href ?? '/sim/gear',
+      tabStateFor(tabSource, fallbackCode),
+    ),
+  );
 
   function onSignIn(): void {
     window.location.href = battlenetStartUrl(`${window.location.pathname}${window.location.search}`);
   }
 
-  // ColdPasteHero.svelte already decoded `code` before calling this (persona review
-  // 2026-10-06 §5/§8 item 1), so the only step left beyond a landing pick (pickCharacter
-  // above) is running it with no second click, the instant the character lands.
-  //
-  // sim-one-paste lane fix round 1: `store.run()` carries no `isSimulatedSpec` guard of its
-  // own -- that check lives at the UI layer, in RunControl's own `disabled` (task-3,
-  // healer review) -- so an unguarded call here would run a healer or tank character the
-  // instant it lands, the exact bug Task 3 disabled the button for, just reached through a
-  // click that never touched the button. Same guard, same spec-label.ts predicate.
+  /** The paste box's Run: load the export, then run it if the sim runs its spec. */
   async function runPastedInput(code: string): Promise<void> {
     await store.loadAddon(code);
     runLoadedIfSimulated();
@@ -473,14 +331,9 @@
     if (store.character !== null && isSimulatedSpec(store.character.spec)) void store.run();
   }
 
-  // The landing state's own busy key (Task 18): the row a pick is in flight for, so its
-  // button reads "Loading…" while every other row disables rather than reads it too.
+  // The key of the character a load is in flight for, and of the one whose load failed for want
+  // of a build (the sim-input 404, `landingCopy.buildMissingFallback`).
   let landingBusyKey = $state<string | null>(null);
-  // Finding 2, 2026-09-24 landing pass: the key of the character a pick just failed for,
-  // want of a build (the sim-input 404) -- set only then, never for the race refusal, which
-  // keeps its own hint below (the `sim-landing-message` paragraph, gated on this being
-  // null). `store.message` carries no status code, so this compares it against
-  // `fetchSimInput`'s own 404 sentinel (`sim/api.ts`) rather than guessing from the text.
   let landingFailedKey = $state<string | null>(null);
 
   async function pickCharacter(path: CharacterPath): Promise<void> {
@@ -492,18 +345,7 @@
     landingFailedKey = store.message === landingCopy.buildMissingFallback ? key : null;
   }
 
-  // The Run block's "Run sim" says what it does: it loads the current character and runs it,
-  // the way the paste hero's Run does. The list's own picks below only load.
-  async function runStoredCharacter(path: CharacterPath): Promise<void> {
-    await pickCharacter(path);
-    runLoadedIfSimulated();
-  }
-
-  // `store.ready` already ran the URL's own bootstrap; `runBootstrapRestore` (shared with
-  // ToolsView.svelte) only fires the stored-pointer fallback once that settled with
-  // nothing. `landingBusyKey` is held for the same window (fix round 1): `LandingState`
-  // disables its picks off that prop alone, never off `store.phase`, and `adopt()` has no
-  // per-load generation guard, so a fast pick could otherwise race this background load.
+  /** The URL's own bootstrap first; the stored pointer only when that settled with nothing. */
   async function restoreFromPointer(): Promise<void> {
     await store.ready;
     const url = {
@@ -522,352 +364,334 @@
     }
   }
 
-  // The stale-engine banner describes a *settled* result: while either lane is running,
-  // `store.result` still holds the old result, so this gate keeps its "Run again" from
-  // rendering alongside a live "Loading engine…"/"Stop".
-  const staleVersion = $derived(
-    store.result !== null &&
-      isStale(store.result.engine_version) &&
-      store.phase !== 'running' &&
-      store.phase !== 'loading-engine' &&
-      !store.serverRunning
-      ? store.result.engine_version
-      : null,
+  // Signed in with characters and nothing loaded: the header's character loads (spec §4.3, the
+  // landing is that character, not a list). Once per character key, so a failed load is not
+  // retried in a loop; the selector or Try again asks again.
+  let headerTried = $state<string | null>(null);
+  $effect(() => {
+    if (hasSavedSimId || bootstrap.view === 'specs' || comparing) return;
+    if (
+      store.character !== null ||
+      landingBusyKey !== null ||
+      headerPath === null ||
+      headerCharacter === null
+    )
+      return;
+    if (headerTried === headerCharacter.key) return;
+    headerTried = headerCharacter.key;
+    const path = headerPath;
+    void store.ready.then(() => {
+      if (store.character === null) void pickCharacter(path);
+    });
+  });
+  const headerLoadFailed = $derived(
+    headerCharacter !== null &&
+      headerTried === headerCharacter.key &&
+      store.character === null &&
+      landingBusyKey === null,
   );
 
-  // `run=1` ("View ranking sim" on the tier list and the BiS band): the link opens a published
-  // number to see it reproduced, so the run starts once the code's character has loaded, under
-  // the same damage-spec guard the Run button has. Once only: a later character never auto-runs.
+  // `run=1` (the tier list's and BiS page's "View ranking sim"): run once the code's character
+  // has loaded, under the damage-spec guard. Once only.
   let pendingAutoRun = untrack(() => bootstrap.run && !hasSavedSimId && bootstrap.mode !== 'compare');
   $effect(() => {
     if (!pendingAutoRun || store.character === null) return;
     pendingAutoRun = false;
     runLoadedIfSimulated();
   });
+
+  // The run's own page state: the lane the last run went to (a failure's label), the partial
+  // number kept when the player pressed Stop (§5.1), the More settings sheet.
+  let lastLane = $state<'browser' | 'server'>('browser');
+  let stopped = $state<StoppedSnapshot | null>(null);
+  let moreOpen = $state(false);
+  $effect(() => {
+    if (moreOpen) moreSheetLazy.load();
+  });
+  $effect(() => {
+    if (bootstrap.view === 'specs') specGridLazy.load();
+    else if (store.character !== null && store.result === null) preRunLazy.load();
+  });
+  let savedUrl = $state<string | null>(null);
+
+  function runBrowser(): void {
+    stopped = null;
+    lastLane = 'browser';
+    void store.run();
+  }
+  function runServer(): void {
+    stopped = null;
+    lastLane = 'server';
+    void store.runOnServer();
+  }
+  function stop(): void {
+    stopped = { estimate: store.estimate, done: store.iterationsDone, total: store.iterationsTotal };
+    store.stop();
+  }
+
+  const busy = $derived(store.phase === 'running' || store.phase === 'loading-engine' || store.serverRunning);
+  const simulated = $derived(store.character !== null && isSimulatedSpec(store.character.spec));
+  const answerModel = $derived(
+    simAnswer({
+      phase: store.phase,
+      simulated,
+      specName: store.character === null ? '' : specLabel(store.character.spec),
+      estimate: store.estimate,
+      iterationsDone: store.iterationsDone,
+      iterationsTotal: store.iterationsTotal,
+      serverRunning: store.serverRunning,
+      result: store.result,
+      message: store.message === simCopy.stopped ? null : store.message,
+      detail: store.detail,
+      stopped: store.message === simCopy.stopped ? stopped : null,
+      lastLane,
+    }),
+  );
+
+  function onPrimary(): void {
+    const { primary } = answerModel;
+    if (primary === 'stop') stop();
+    else if (primary === 'run' || primary === 'run-again' || primary === 'try-again') runBrowser();
+  }
+
+  const request = $derived(store.character === null ? null : store.buildRequest());
+  const headLines = $derived.by(() => {
+    const character = store.character;
+    if (character === null || request === null) return [];
+    const ids = Object.values(character.gear).filter((id): id is number => id !== undefined && id > 0);
+    const itemLevel = averageWornItemLevel(ids, (id) => store.items.get(id)?.item_level);
+    return characterMeta(
+      {
+        race: character.race_slug,
+        spec: character.spec,
+        level: character.level,
+        talents: request.character.talents,
+        source: character.source,
+      },
+      itemLevel,
+    );
+  });
+  const showFidelity = $derived(characterSpecRow !== null && needsFidelityNote(characterSpecRow));
 </script>
 
-{#snippet lazyFallback(lazy: LazyLoadState, minHeight: string)}
-  {#if lazy.error !== ''}
-    <!-- LoadError has no class-passthrough prop, so the phone gutter the paragraph it
-         replaces carried (px-[18px] md:px-0) lives on this wrapper instead of the shared
-         primitive -- the same fix the report island's top-level error needed. -->
-    <div class="px-[18px] md:px-0">
-      <LoadError message={lazy.error} onRetry={() => lazy.load()} testid="sim-results-error" />
+<!-- The rail's tail with a character: Your sims, then a payer's server runs (their list sits
+     off the main column, so the head, the bar and the body keep the mock's geometry). -->
+{#snippet yourSims()}
+  {#if signedIn}<SimYourSims
+      rows={historyRows}
+      error={historyError}
+      onretry={() => void loadHistory()}
+    />{/if}
+  {@render serverRunsList()}
+{/snippet}
+
+{#snippet serverRunsList()}
+  {#if hasServerSims}
+    <div class="sim-server-runs">
+      {#if serverRunsLazy.current}
+        <serverRunsLazy.current
+          rows={serverRuns.rows}
+          failed={serverRuns.failed}
+          now={new Date(serverRuns.nowMs)}
+          onretry={() => void serverRuns.reload()}
+          onstarted={() => serverRuns.runStarted()}
+        />
+      {:else}
+        <div class="server-runs-reserve" data-testid="server-runs-reserve"></div>
+      {/if}
     </div>
-  {:else}
-    <Skeleton {minHeight} testid="sim-lazy-skeleton" />
   {/if}
 {/snippet}
 
-<div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
+<div class="flex flex-col" data-testid="sim-view">
   {#if hasSavedSimId}
-    <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
-         no settings bar, no run control. SavedSim composes its own heading. -->
     {#if savedSim.result !== null}
-      <!-- `.reveal` goes on the wrapper of the ready state only (design 2026-09-22 spec
-           section 1.4), and SavedSim takes no class prop -- so this one-child div carries
-           it. A single stretched flex item in place of the component's own root: the
-           column's gap sits outside it either way, so nothing moves. -->
       <div class="reveal">
         <SavedSim result={savedSim.result} onrerun={onRerunSaved} {simId} />
       </div>
     {:else if savedSim.error === simCopy.notFound}
-      <!-- Same reason as the lazyFallback wrapper above: LoadError has no class-passthrough prop. -->
-      <div class="px-[18px] pt-[22px] md:px-0 md:pt-8">
+      <div class="sim-pad">
         <LoadError message={savedSim.error} onRetry={() => savedSim.load(simId)} testid="sim-saved-error" />
       </div>
     {:else if savedSim.error !== null}
       <SavedSimLoadFailed onRetry={() => savedSim.load(simId)} />
     {:else}
-      <!-- Between mounting and a real, non-prerendered id's fetch resolving. Static,
-           trusted markup of our own (skeleton.ts): no data goes into it, and it is the
-           same string sim/[id].astro's own shell renders before hydration, so nothing
-           shifts between the two moments -- report/skeleton.ts's own reason. -->
+      <!-- The same static string sim/[id].astro renders before hydration (skeleton.ts). -->
       <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       {@html SIM_SAVED_SKELETON_HTML}
     {/if}
-  {:else}
-    <!-- No <h1> here: sim.astro and sim/specs.astro each carry their own, in the static
-         HTML, ahead of this island entirely -- an island-mounted heading is invisible to
-         Lighthouse's LCP measurement and, before this, was "Simulator" on both pages (M7,
-         final whole-branch review), which the spec-support page's own title disagreed
-         with. -->
-    <!-- Finding 6, 2026-09-24 landing pass: the engine-version hash used to render here,
-         unconditionally, ahead of every state below -- including the landing state, which
-         it preceded with a lone right-aligned hash before a signed-in member had even
-         loaded a character. It now renders once a character is loaded, right after
-         SettingsBar below -- not inside SettingsBar.svelte itself, which TopGear.svelte's
-         bulk tool pages (/sim/gear, /sim/talents, /sim/drops, /sim/weights) also render:
-         putting it there leaked a sub-44px control onto pages that never budgeted for it
-         (sim-tools-phone.spec.ts's own audit). This keeps it scoped to plain /sim, where
-         "the engine matters" actually means something. -->
-
-    {#if bootstrap.view === 'specs'}
-      <!-- Round 2 (Lighthouse): specs-intro is static now, in sim/specs.astro, ahead of
-           this island -- it was the measured LCP element and this branch used to render a
-           second, redundant copy of the exact same paragraph. Nothing here replaces it. -->
-      <SpecGrid rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
+  {:else if bootstrap.view === 'specs'}
+    {#if specGridLazy.current}
+      <specGridLazy.current rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
     {:else}
-      {#if hasServerSims}
-        {#if serverRunsLazy.current}
-          <serverRunsLazy.current
-            rows={serverRuns.rows}
-            failed={serverRuns.failed}
-            now={new Date(serverRuns.nowMs)}
-            onretry={() => void serverRuns.reload()}
-            onstarted={() => serverRuns.runStarted()}
-          />
-        {:else}
-          <div class="server-runs-reserve" data-testid="server-runs-reserve"></div>
-        {/if}
-      {:else if sessionPending}
-        <!-- Shown only under the pre-paint hints (global.css), so a free or signed-out
-             visitor reserves nothing; a hinted payer keeps the box the list will fill. -->
-        <div class="server-runs-reserve server-runs-shell-reserve" data-testid="server-runs-reserve"></div>
-      {/if}
-      {#if showColdPasteHero}
-        <!-- Persona review 2026-10-06, §5/§8 item 1: ahead of the Battle.net hero, the
-             intro line and the static example below -- the one action that gets a DPS
-             number on screen with no sign-in and no wait. -->
-        <ColdPasteHero
-          busy={store.phase === 'loading-character'}
-          onrun={(code) => void runPastedInput(code)}
-        />
-      {/if}
-      {#if store.character !== null && !switcherOpen}
-        <CharacterStrip
-          character={store.character}
-          items={store.items}
-          itemsStatus={store.itemsStatus}
-          races={store.races}
-          onchange={() => (switcherOpen = true)}
-          onrace={(slug) => store.setRace(slug)}
-        />
-      {:else if sessionPending && !switcherOpen}
-        <!-- Spec 2026-09-23 §3: a cold cache shows a reserved skeleton while the session read
-             is in flight; a returning signed-in visitor's snapshot skips this entirely. -->
-        <Skeleton lines={4} minHeight={SIM_LANDING_SKELETON_MIN_H} testid="sim-landing-skeleton" />
-      {:else if me !== null && me.characters.length > 0 && !switcherOpen}
-        <!-- Design 4.6: a signed-in member sees their characters and one button each, and
-             no form until they ask for one -- so this replaces the switcher entirely rather
-             than sitting above it. -->
-        {#if runBlockCharacter !== null}
-          <!-- 2026-09-26 layout pass, Finding 1: one action for the character the header calls
-               current, matching whichever affordance (Sim vs. Paste export) the list below
-               offers that same character. -->
-          <SimRunBlock
-            character={runBlockCharacter}
-            path={runBlockPath}
-            busy={landingBusyKey !== null}
-            onrun={(path) => void runStoredCharacter(path)}
-          />
-        {/if}
-        <LandingState
-          characters={me.characters}
-          currentKey={runBlockCharacter?.key ?? null}
-          busyKey={landingBusyKey}
-          failedKey={landingFailedKey}
-          onpick={(path) => void pickCharacter(path)}
-          onother={() => (switcherOpen = true)}
-        />
-        {#if store.message !== null && landingFailedKey === null}
-          <!-- The race refusal (sources.ts's "no race recorded", a combat log carries none
-               and the API has not started sending one for a stored character either) is the
-               one failure this paragraph still shows -- the sim-input 404 (Finding 2, 2026-
-               09-24 landing pass) has its own alert inside LandingState now, and
-               `landingFailedKey` gates this one off whenever that is the failure on
-               screen, so the two never both render for the same pick. -->
-          <p class="text-muted px-[18px] text-[14px] md:px-0" role="alert" data-testid="sim-landing-message">
-            {store.message}
-            {simCopy.landingNoRace}
-          </p>
-        {/if}
-      {:else if me !== null && me.characters.length === 0}
-        <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-no-characters">
-          {simCopy.noCharactersYet}
-          <a class="text-nav underline" href={simCopy.noCharactersYetHref}>{simCopy.noCharactersYetLink}</a>
-        </p>
-        <SourceSwitcher
-          busy={store.phase === 'loading-character'}
-          message={store.message}
-          signedIn
-          hasCharacters={false}
-          showAddonCard={!showColdPasteHero}
-          onaddon={(code) => void store.loadAddon(code)}
-          onbuild={(id) => void store.loadBuild(id)}
-          onfight={(ref) => void store.loadFight(ref)}
-          onsignin={onSignIn}
-          onback={() => (switcherOpen = false)}
-        />
-      {:else}
-        <!-- 2026-09-26 layout pass, Finding 2/3/5: the signed-out hero -- Battle.net sign-in
-             first, the DPS-only restriction as its caption, and the intro line/example card
-             ahead of it. `heroSignIn` has no effect once `switcherOpen` is reached signed in
-             (Back/Change source), which keeps today's plain grid there. -->
-        <SourceSwitcher
-          busy={store.phase === 'loading-character'}
-          message={store.message}
-          signedIn={me !== null}
-          heroSignIn
-          showAddonCard={!showColdPasteHero}
-          onaddon={(code) => void store.loadAddon(code)}
-          onbuild={(id) => void store.loadBuild(id)}
-          onfight={(ref) => void store.loadFight(ref)}
-          onsignin={onSignIn}
-          onback={() => (switcherOpen = false)}
-        />
-      {/if}
-
-      {#if store.character !== null}
-        <!-- Everything a loaded character brings with it, under the one wrapper `.reveal`
-             is allowed to sit on (design 2026-09-22 spec section 1.4). The wrapper repeats
-             the view's own `flex flex-col VIEW_GAP` so these panels keep the exact spacing
-             they had as direct children of `sim-view`; none of them sets an `align-self`
-             or a flex ratio, so nesting them one level deeper changes nothing else. -->
-        <div class={`reveal flex flex-col ${VIEW_GAP}`}>
-          <!-- 2026-09-28 layout pass: the run control and everything a run produces come
-               FIRST under the character -- the page's one job once a character is loaded is
-               to run it, and the result belongs beside the button that made it. The fight
-               settings, request drawer and engine hash follow as the secondary panel. -->
-          <RunControl
-            spec={store.character.spec}
-            phase={store.phase}
-            estimate={store.estimate}
-            iterationsDone={store.iterationsDone}
-            iterationsTotal={store.iterationsTotal}
-            precisionId={store.precisionId}
-            relativeError={store.relativeError}
-            lane={store.lane}
-            premium={store.premium}
-            signedIn={me !== null}
-            message={store.message}
-            detail={store.detail}
-            racePending={store.needsRace}
-            {staleVersion}
-            serverRunning={store.serverRunning}
-            onrun={() => void store.run()}
-            onstop={() => store.stop()}
-            onprecision={(value) => store.setPrecisionId(value)}
-            onserver={() => void store.runOnServer()}
-            onrerun={() => void store.run()}
-          />
-          {#if comparing}
-            <!-- Replaces the sentence and the results, per Design 4.2 -- the strip, the
-                 settings bar and the run control above stay exactly where they are. -->
-            {#if actual === null}
-              <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="compare-loading">
-                {simCopy.compareLoading}
-              </p>
-            {:else if comparison !== null}
-              {#if compareViewLazy.current}
-                <compareViewLazy.current
-                  {comparison}
-                  simDuration={store.result?.summary.duration_ms ?? 0}
-                  actualDuration={actual.duration_ms}
+      <div class="sim-pad"><Skeleton lines={6} testid="sim-lazy-skeleton" /></div>
+    {/if}
+  {:else if store.character === null}
+    {#if sessionPending || (landingBusyKey !== null && signedIn)}
+      <div class="sim-pad">
+        <Skeleton lines={4} minHeight="280px" testid="sim-landing-skeleton" />
+      </div>
+    {:else}
+      <SimLandingPage
+        {bisSets}
+        busy={store.phase === 'loading-character'}
+        message={store.message}
+        onpaste={(code) => void runPastedInput(code)}
+        onbuild={(id) => void store.loadBuild(id)}
+        onfight={(ref) => void store.loadFight(ref)}
+        onsignin={onSignIn}
+      >
+        {#snippet notice()}
+          {#if me !== null && me.characters.length === 0}
+            <div class="sim-pad" data-testid="sim-no-characters">
+              <Notice
+                text={pageCopy.noCharacters}
+                tone="neutral"
+                action={{ label: pageCopy.noCharactersLink, href: pageCopy.noCharactersHref }}
+              />
+            </div>
+          {:else if headerLoadFailed && headerCharacter !== null}
+            <div class="sim-pad" data-testid="sim-landing-build-missing">
+              {#if landingFailedKey !== null}
+                <Notice
+                  text={`${landingCopy.buildMissingLead(headerCharacter.name)} ${landingCopy.buildMissingPasteLink}, ${landingCopy.buildMissingMiddle}`}
+                  tone="neutral"
+                  action={{
+                    label: landingCopy.buildMissingAccountLink,
+                    href: landingCopy.buildMissingAccountHref,
+                  }}
                 />
               {:else}
-                {@render lazyFallback(compareViewLazy, SIM_LAZY_MIN_H.compare)}
+                <Notice text={simCopy.characterFailed} tone="neutral" />
               {/if}
+            </div>
+          {/if}
+          {@render serverRunsList()}
+        {/snippet}
+      </SimLandingPage>
+    {/if}
+  {:else}
+    {@const character = store.character}
+    <SimCharacterHead name={character.name} classSlug={character.class_slug} lines={headLines}>
+      {#snippet tabs()}<SimToolTabs source={tabSource} {fallbackCode} />{/snippet}
+      {#snippet answer()}
+        <SimAnswer model={answerModel}>
+          {#snippet extra()}
+            {#if showFidelity && characterSpecRow !== null && answerModel.state !== 'result'}
+              <span class="text-muted text-[13px] leading-5" data-testid="spec-fidelity-note">
+                <a href="/sim/specs"><Tag tone="muted">{specStateLabel(characterSpecRow.state)}</Tag></a>
+                {specStateNote(characterSpecRow.state)}
+              </span>
             {/if}
-          {:else if store.result !== null}
-            <!-- The saved page's report (RunReport.svelte), fed from this run: the band and the
-                 damage table draw first, every deeper card is its own chunk loaded as it nears
-                 the viewport, so the island's boot bundle carries only what /sim/<id> already
-                 needs. -->
-            <RunReport result={store.result} live {topUpgrade} />
-          {/if}
-
-          {#if store.result !== null}
-            <!-- Design 5.4: the report title and the finish notification. The title feeds
-               the save form, the notification and the saved link (openSaveForm reads
-               store.reportTitle below); the notification checkbox only appears where the
-               browser actually has a Notification API to ask (`notifier`, owned by this
-               file since the $effect above needs it in component scope). -->
-            <ReportOptions
-              title={store.reportTitle}
-              notifierAvailable={notifier !== null}
-              {notifyWanted}
-              ontitlechange={(value) => store.setReportTitle(value)}
-              onnotifychange={(wanted) => void toggleNotify(wanted)}
-            />
-          {/if}
-
-          <!-- The save form (Task 17), extracted to SimSavePanel.svelte in the 2026-09-26
-               layout pass: disabled until there is a result, an inline title field
-               pre-filled with the report title rather than a dialog, and the saved link
-               shown in place -- the page never navigates away from the result it just
-               saved. -->
-          {#if store.result !== null}
-            <!-- Shown only once there is something to save: with the run control first, a
-                 disabled Save sat alone between the run bar and the fight settings. -->
-            <SimSavePanel
-              result={store.result}
-              reportTitle={store.reportTitle}
-              onsave={(title) => store.save(title)}
-              signedIn={me !== null}
-            />
-          {/if}
-          <SettingsBar
-            settings={store.settings}
-            spec={store.character.spec}
-            disabled={store.phase === 'running' || store.serverRunning}
-            onchange={(next) => store.setSettings(next)}
-            names={store.buffNames}
-            characterLevel={store.character.level}
-          />
-          <!-- Finding 6: the engine hash, right after the settings bar it used to sit above
-               every state -- same anchor, same classes, same test id and href, now visible
-               only once a character has actually reached the engine. -->
-          <div class="flex justify-end px-[18px] md:px-0">
-            <a class="text-muted numeric text-[12px]" href="/sim/specs" data-testid="sim-engine-version"
-              >{engineLabel(ENGINE_VERSION)}</a
-            >
-          </div>
-          {#if store.settings.preset === 'custom'}
-            <BuffPanel
-              settings={store.settings}
-              build={store.character.tree_version}
-              classSlug={store.character.class_slug}
-              names={store.buffNames}
-              disabled={store.phase === 'running' || store.serverRunning}
-              onchange={(next) => store.setSettings(next)}
-            />
-          {/if}
-          <RequestDrawer
-            request={store.buildRequest()}
-            disabled={store.phase === 'running' || store.serverRunning}
-            onvalidate={(json) => store.validateRequest(json)}
-            onapply={(request) => void store.applyRequest(request)}
-            onrun={(request) => void store.runRequest(request)}
-            onshare={(request) => shareUrlFor(request)}
-          />
-          {#if characterSpecRow !== null && needsFidelityNote(characterSpecRow)}
-            <!-- A fidelity state labels, it never blocks: the run control below always
-               renders once a character is loaded, and this is the one-line footnote
-               linking to the full card on /sim/specs. -->
-            <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="spec-fidelity-note">
-              <a href="/sim/specs" class={specPillClass(characterSpecRow.state)}
-                >{specStateLabel(characterSpecRow.state)}</a
+            {#if savedUrl !== null}<span class="text-kill text-[13px] font-semibold"
+                >{pageCopy.answer.saved}</span
+              >{/if}
+            {#if store.message !== null && answerModel.state !== 'failed' && store.message !== simCopy.stopped}
+              <span class="text-muted text-[13px] leading-5" role="alert" data-testid="sim-message"
+                >{store.message}</span
               >
-              {specStateNote(characterSpecRow.state)}
-            </p>
+            {/if}
+          {/snippet}
+          {#snippet actions()}
+            {#if answerModel.state === 'result' && store.result !== null}
+              <SimSaveActions
+                result={store.result}
+                reportTitle={store.reportTitle}
+                {signedIn}
+                {topGearHref}
+                onsave={(title) => store.save(title)}
+                onsignin={onSignIn}
+                onsaved={(url) => (savedUrl = url)}
+              />
+            {:else if answerModel.state === 'not-simulated'}
+              <a class="text-gold text-[14px] font-semibold" href={pageCopy.answer.specSupportHref}
+                >{pageCopy.answer.specSupport}</a
+              >
+            {/if}
+          {/snippet}
+        </SimAnswer>
+      {/snippet}
+    </SimCharacterHead>
+    <SimRunBar
+      settings={store.settings}
+      precisionId={store.precisionId}
+      spec={character.spec}
+      level={character.level}
+      primary={store.needsRace && !busy ? 'disabled' : answerModel.primary}
+      {busy}
+      premium={store.premium}
+      onsettings={(next) => store.setSettings(next)}
+      onprecision={(value) => store.setPrecisionId(value)}
+      onprimary={onPrimary}
+      onserver={runServer}
+      onmore={() => (moreOpen = true)}
+    />
+    {#if moreSheetLazy.current}
+      <moreSheetLazy.current
+        open={moreOpen}
+        settings={store.settings}
+        spec={character.spec}
+        level={character.level}
+        build={character.tree_version}
+        classSlug={character.class_slug}
+        names={store.buffNames}
+        {request}
+        disabled={busy}
+        notifier={notifier !== null && store.premium}
+        {notifyWanted}
+        onclose={() => (moreOpen = false)}
+        onchange={(next) => store.setSettings(next)}
+        onnotify={(wanted) => void toggleNotify(wanted)}
+        onvalidate={(json) => store.validateRequest(json)}
+        onapply={(next) => void store.applyRequest(next)}
+        onrun={(next) => {
+          moreOpen = false;
+          stopped = null;
+          lastLane = 'browser';
+          void store.runRequest(next);
+        }}
+        onshare={(next) => shareUrlFor(next)}
+      />
+    {/if}
+    {#if store.needsRace}
+      <div class="sim-pad">
+        <SimRacePick {character} races={store.races} onrace={(slug) => store.setRace(slug)} />
+      </div>
+    {/if}
+    {#if comparing}
+      <div class="sim-pad pt-7">
+        {#if actual === null}
+          <p class="text-muted text-[14px]" data-testid="compare-loading">{simCopy.compareLoading}</p>
+        {:else if comparison !== null}
+          {#if compareViewLazy.current}
+            <compareViewLazy.current
+              {comparison}
+              simDuration={store.result?.summary.duration_ms ?? 0}
+              actualDuration={actual.duration_ms}
+            />
+          {:else}
+            <Skeleton lines={6} testid="sim-lazy-skeleton" />
           {/if}
-        </div>
-      {:else if me === null || me.characters.length === 0}
-        <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
-          {simCopy.emptyPrompt}
-        </p>
-      {/if}
-
-      <!-- Saved sims last: history is what you come back to, not what you came for. -->
-      {#if signedIn && simHistoryLazy.current}
-        <simHistoryLazy.current
-          rows={historyRows}
-          error={historyError}
-          kind={historyKind}
-          onkind={setHistoryKind}
-        />
+        {/if}
+      </div>
+    {:else if store.result !== null && answerModel.state === 'result'}
+      <div class="reveal">
+        <RunReport result={store.result} live railTail={yourSims} />
+      </div>
+    {:else if request !== null}
+      {#if preRunLazy.current}
+        <preRunLazy.current {request} running={busy} railTail={yourSims} />
+      {:else}
+        <!-- The doll's Plate at its ready height (17 rows of 58 over two columns, the heads). -->
+        <div class="sim-pad pt-7"><Skeleton lines={9} minHeight="560px" testid="sim-lazy-skeleton" /></div>
       {/if}
     {/if}
   {/if}
 </div>
+
+<style>
+  .sim-pad {
+    padding-inline: var(--page-inset);
+    padding-top: 16px;
+  }
+</style>

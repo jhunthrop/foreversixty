@@ -18,6 +18,7 @@
     maxlength,
     rows,
     hint,
+    labelHidden = false,
     testid,
   }: {
     label: string;
@@ -38,6 +39,8 @@
     rows?: number;
     /** One muted line under the field. */
     hint?: string;
+    /** The label for assistive tech only: a field whose row already names it ("From a build"). */
+    labelHidden?: boolean;
     testid?: string;
   } = $props();
 
@@ -50,7 +53,9 @@
 </script>
 
 <label class={['ui-field flex min-w-0 flex-col gap-[6px]', grow ? 'min-w-[220px] flex-1' : '']} for={id}>
-  <span class="text-label tracking-label text-muted font-bold uppercase">{label}</span>
+  <span class={labelHidden ? 'sr-only' : 'text-label tracking-label text-muted font-bold uppercase'}
+    >{label}</span
+  >
   {#if rows === undefined}
     <input
       {id}
