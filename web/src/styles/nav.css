@@ -54,10 +54,9 @@
     align-self: stretch;
     margin: -18px 0;
     gap: 22px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    /* Sentence case like the rest of the system (owner 2026-11-06): Barlow 600, no tracking. */
+    font-size: 15px;
+    font-weight: 600;
     white-space: nowrap;
   }
   /* One door: the link, its chevron toggle and its panel. The group is the full 80px bar
@@ -258,7 +257,6 @@
     }
     .site-doors {
       gap: 20px;
-      letter-spacing: 0.1em;
     }
   }
   @media (max-width: 1279px) {
@@ -278,8 +276,7 @@
     }
     .site-doors {
       gap: 14px;
-      font-size: 12px;
-      letter-spacing: 0.08em;
+      font-size: 14px;
     }
     .site-right {
       gap: 4px;
@@ -288,7 +285,6 @@
   @media (max-width: 1099px) {
     .site-doors {
       gap: 13px;
-      letter-spacing: 0.06em;
     }
   }
 
@@ -389,10 +385,8 @@
     .site-menu-heading {
       display: block;
       margin: 0 0 4px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-size: 13px;
+      font-weight: 600;
       color: var(--color-muted);
     }
     .site-menu-list {
@@ -943,10 +937,8 @@
   }
   .csel-head-title {
     margin-right: auto;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 600;
     color: var(--color-muted);
   }
   .csel-manage {

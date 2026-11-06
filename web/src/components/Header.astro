@@ -19,6 +19,7 @@ import HeaderPanel from './HeaderPanel.astro';
 import HeaderSearch from './HeaderSearch.astro';
 import Wordmark from './Wordmark.astro';
 import Seal from './Seal.astro';
+import { REGION } from '../lib/ui/regions';
 
 interface Props {
   /** The current page's path, e.g. `/sim/gear` -- Base.astro's own `path` prop, passed
@@ -48,7 +49,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
 // below the markup that toggle the menu through `data-menu-open`.
 ---
 
-<header class="site-header" data-site-header>
+<header class="site-header" data-site-header data-region={REGION.siteHeader}>
   <script is:inline define:vars={{ key: PREMIUM_SOURCE_KEY, sources: STORED_SOURCES }}>
     // Who pays for Premium, before the doors are parsed (spec 2026-10-29-premium-entry section 4).
     // It lives in the header, not the site's head, so the API's /b/{id} page (which wears this
