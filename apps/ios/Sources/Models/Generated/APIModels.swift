@@ -4849,6 +4849,24 @@ public struct RaidAlsoSignup: Codable, Sendable, Equatable {
     }
 }
 
+/// An officer's manual fix of this night (PUT …/attendance/{region}/{ruleset}/{name}/override), null for none. present and bench earn the night; absent is a no-show for a raider signed In or Late, else absent; excused keeps the log's outcome and counts the night for nobody.
+public struct RaidAttendanceOverride: Codable, Sendable, Equatable {
+    public let status: String
+    /// The officer's main character name, or "an officer".
+    public let byName: String
+    public let at: Date
+
+    public init(
+        status: String,
+        byName: String,
+        at: Date
+    ) {
+        self.status = status
+        self.byName = byName
+        self.at = at
+    }
+}
+
 public struct RaidAttendanceRow: Codable, Sendable, Equatable {
     public let characterKey: String
     public let name: String
@@ -4862,8 +4880,15 @@ public struct RaidAttendanceRow: Codable, Sendable, Equatable {
     public let firstSeenOffsetS: Int
     public let pullsPresent: Int
     public let pullsTotal: Int
+    /// The effective excused flag (an officer's fix included).
     public let excused: Bool
     public let own: Bool
+    /// What the log and the sign-ups said, before any officer's fix; outcome is the effective value every count reads (the roster's nights, the CSV export, the night's figures). Equal to outcome when there is no fix.
+    public let autoOutcome: String?
+    /// The excused flag under the fix; equal to excused when there is no fix.
+    public let autoExcused: Bool?
+    /// An officer's manual fix of this night (PUT …/attendance/{region}/{ruleset}/{name}/override), null for none. present and bench earn the night; absent is a no-show for a raider signed In or Late, else absent; excused keeps the log's outcome and counts the night for nobody.
+    public let override: RaidAttendanceOverride?
 
     public init(
         characterKey: String,
@@ -4878,7 +4903,10 @@ public struct RaidAttendanceRow: Codable, Sendable, Equatable {
         pullsPresent: Int,
         pullsTotal: Int,
         excused: Bool,
-        own: Bool
+        own: Bool,
+        autoOutcome: String? = nil,
+        autoExcused: Bool? = nil,
+        override: RaidAttendanceOverride? = nil
     ) {
         self.characterKey = characterKey
         self.name = name
@@ -4893,6 +4921,9 @@ public struct RaidAttendanceRow: Codable, Sendable, Equatable {
         self.pullsTotal = pullsTotal
         self.excused = excused
         self.own = own
+        self.autoOutcome = autoOutcome
+        self.autoExcused = autoExcused
+        self.override = override
     }
 
     enum CodingKeys: String, CodingKey {
@@ -4909,6 +4940,9 @@ public struct RaidAttendanceRow: Codable, Sendable, Equatable {
         case pullsTotal
         case excused
         case own
+        case autoOutcome
+        case autoExcused
+        case override
     }
 }
 
@@ -5770,7 +5804,7 @@ public struct RaidView: Codable, Sendable, Equatable {
     public let night: RaidNight?
     /// Every row for an officer, your own characters for a member.
     public let attendance: [RaidAttendanceRow]?
-    /// Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web.
+    /// The night's report, shaped as RaidReport (Go guilds.ReportView); the apps carry it and open the full report on the web.
     public let report: JSONValue?
 
     public init(

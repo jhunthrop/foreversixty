@@ -3,7 +3,11 @@ package guilds
 import (
 	"encoding/json"
 	"net/http"
+	"os"
+	"slices"
 	"testing"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -166,4 +170,66 @@ func TestADigestIsReadOnce(t *testing.T) {
 	if res := w.h.do(http.MethodGet, w.path("/raids/%d", raid.ID), ""); res.StatusCode != http.StatusOK {
 		t.Fatalf("get = %d", res.StatusCode)
 	}
+}
+
+// The report's JSON carries exactly the fields openapi.yaml's RaidReport requires, at the top and
+// on each pull, death and hit.
+func TestTheReportMatchesItsOpenAPISchema(t *testing.T) {
+	raw, err := os.ReadFile("../../openapi.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var doc struct {
+		Components struct {
+			Schemas map[string]struct {
+				Required   []string                  `yaml:"required"`
+				Properties map[string]map[string]any `yaml:"properties"`
+			} `yaml:"schemas"`
+		} `yaml:"components"`
+	}
+	if err := yaml.Unmarshal(raw, &doc); err != nil {
+		t.Fatal(err)
+	}
+	w, raid, _ := digestedNight(t)
+	w.as(w.officer)
+	data := rawData(t, w.h.do(http.MethodGet, w.path("/raids/%d", raid.ID), ""))
+	var rep map[string]json.RawMessage
+	if err := json.Unmarshal(data["report"], &rep); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := sortedJSONKeys(rep), sorted(doc.Components.Schemas["RaidReport"].Required); !slices.Equal(got, want) {
+		t.Fatalf("report keys = %v, schema requires %v", got, want)
+	}
+	var pulls []map[string]json.RawMessage
+	if err := json.Unmarshal(rep["pulls"], &pulls); err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"attempt", "death_causes", "deaths", "duration_ms", "encounter_id", "fight_index", "name", "result"}
+	if got := sortedJSONKeys(pulls[1]); !slices.Equal(got, want) {
+		t.Fatalf("pull keys = %v", got)
+	}
+	hit := doc.Components.Schemas["RaidReportHit"].Required
+	var causes []struct {
+		KillingBlow map[string]json.RawMessage `json:"killing_blow"`
+	}
+	if err := json.Unmarshal(pulls[1]["death_causes"], &causes); err != nil {
+		t.Fatal(err)
+	}
+	if got := sortedJSONKeys(causes[0].KillingBlow); !slices.Equal(got, sorted(hit)) {
+		t.Fatalf("hit keys = %v, schema requires %v", got, hit)
+	}
+}
+
+func sortedJSONKeys(m map[string]json.RawMessage) []string {
+	out := make([]string, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	return sorted(out)
+}
+
+func sorted(s []string) []string {
+	out := append([]string{}, s...)
+	slices.Sort(out)
+	return out
 }
