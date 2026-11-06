@@ -4863,7 +4863,89 @@
         ]
       },
       {
+        "level": 11,
+        "lines": [
+          {
+            "spell_id": 8924,
+            "name": "Moonfire",
+            "condition": "Below level 20, before Cat Form, when Moonfire is not ticking on the target.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {
+              "high-order-skyborne": 8921,
+              "tauren": 8921,
+              "windshaper-skyborne": 8921
+            }
+          },
+          {
+            "spell_id": 5176,
+            "name": "Wrath",
+            "condition": "Below level 20, before Cat Form, once Moonfire is ticking.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 12,
+        "lines": [
+          {
+            "spell_id": 8921,
+            "name": "Moonfire",
+            "condition": "Below level 20, before Cat Form, when Moonfire is not ticking on the target.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5177,
+            "name": "Wrath",
+            "condition": "Below level 20, before Cat Form, once Moonfire is ticking.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 13,
+        "lines": [
+          {
+            "spell_id": 8924,
+            "name": "Moonfire",
+            "condition": "Below level 20, before Cat Form, when Moonfire is not ticking on the target.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5177,
+            "name": "Wrath",
+            "condition": "Below level 20, before Cat Form, once Moonfire is ticking.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 14,
+        "lines": [
+          {
+            "spell_id": 8924,
+            "name": "Moonfire",
+            "condition": "Below level 20, before Cat Form, when Moonfire is not ticking on the target.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5178,
+            "name": "Wrath",
+            "condition": "Below level 20, before Cat Form, once Moonfire is ticking.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {
+              "night-elf": 5177
+            }
+          }
+        ]
+      },
+      {
+        "level": 16,
         "lines": [
           {
             "spell_id": 8924,
@@ -9460,6 +9542,58 @@
         ]
       },
       {
+        "level": 14,
+        "lines": [
+          {
+            "spell_id": 1130,
+            "name": "Hunter's Mark",
+            "condition": "Hunter's Mark whenever the target is not marked.",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13549,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 3044,
+            "name": "Arcane Shot",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 17,
+        "lines": [
+          {
+            "spell_id": 1130,
+            "name": "Hunter's Mark",
+            "condition": "Hunter's Mark whenever the target is not marked.",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13549,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14281,
+            "name": "Arcane Shot",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 18,
         "lines": [
           {
@@ -9477,14 +9611,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13550,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14281,
+            "spell_id": 3044,
             "name": "Arcane Shot",
             "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
@@ -10202,6 +10336,86 @@
         ]
       },
       {
+        "level": 13,
+        "lines": [
+          {
+            "spell_id": 1130,
+            "name": "Hunter's Mark",
+            "condition": "Hunter's Mark whenever the target is not marked.",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13549,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14281,
+            "name": "Arcane Shot",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {
+              "troll": 3044
+            }
+          }
+        ]
+      },
+      {
+        "level": 14,
+        "lines": [
+          {
+            "spell_id": 1130,
+            "name": "Hunter's Mark",
+            "condition": "Hunter's Mark whenever the target is not marked.",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13549,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 3044,
+            "name": "Arcane Shot",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 16,
+        "lines": [
+          {
+            "spell_id": 1130,
+            "name": "Hunter's Mark",
+            "condition": "Hunter's Mark whenever the target is not marked.",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 13549,
+            "name": "Serpent Sting",
+            "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
+            "icon": "ability_hunter_quickshot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14281,
+            "name": "Arcane Shot",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
+            "icon": "ability_impalingbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 18,
         "lines": [
           {
@@ -10219,14 +10433,14 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 13550,
+            "spell_id": 1978,
             "name": "Serpent Sting",
             "condition": "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana.",
             "icon": "ability_hunter_quickshot",
             "race_spell_ids": {}
           },
           {
-            "spell_id": 14281,
+            "spell_id": 3044,
             "name": "Arcane Shot",
             "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
@@ -148161,7 +148375,6 @@
     "13032": 40,
     "13033": 40,
     "13549": 4,
-    "13550": 4,
     "13551": 4,
     "13552": 4,
     "13553": 4,

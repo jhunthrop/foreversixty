@@ -796,7 +796,23 @@ ns.Data = {
 				{ spellId = 8921, name = "Moonfire", condition = "Below level 20, before Cat Form, when Moonfire is not ticking on the target." },
 				{ spellId = 5176, name = "Wrath", condition = "Below level 20, before Cat Form, once Moonfire is ticking." },
 			} },
+			{ level = 11, lines = {
+				{ spellId = 8924, name = "Moonfire", condition = "Below level 20, before Cat Form, when Moonfire is not ticking on the target.", raceSpellId = { ["high-order-skyborne"] = 8921, ["tauren"] = 8921, ["windshaper-skyborne"] = 8921 } },
+				{ spellId = 5176, name = "Wrath", condition = "Below level 20, before Cat Form, once Moonfire is ticking." },
+			} },
+			{ level = 12, lines = {
+				{ spellId = 8921, name = "Moonfire", condition = "Below level 20, before Cat Form, when Moonfire is not ticking on the target." },
+				{ spellId = 5177, name = "Wrath", condition = "Below level 20, before Cat Form, once Moonfire is ticking." },
+			} },
+			{ level = 13, lines = {
+				{ spellId = 8924, name = "Moonfire", condition = "Below level 20, before Cat Form, when Moonfire is not ticking on the target." },
+				{ spellId = 5177, name = "Wrath", condition = "Below level 20, before Cat Form, once Moonfire is ticking." },
+			} },
 			{ level = 14, lines = {
+				{ spellId = 8924, name = "Moonfire", condition = "Below level 20, before Cat Form, when Moonfire is not ticking on the target." },
+				{ spellId = 5178, name = "Wrath", condition = "Below level 20, before Cat Form, once Moonfire is ticking.", raceSpellId = { ["night-elf"] = 5177 } },
+			} },
+			{ level = 16, lines = {
 				{ spellId = 8924, name = "Moonfire", condition = "Below level 20, before Cat Form, when Moonfire is not ticking on the target." },
 				{ spellId = 5178, name = "Wrath", condition = "Below level 20, before Cat Form, once Moonfire is ticking." },
 			} },
@@ -1540,11 +1556,21 @@ ns.Data = {
 				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
 				{ spellId = 14281, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
 			} },
+			{ level = 14, lines = {
+				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
+				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
+				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
+			} },
+			{ level = 17, lines = {
+				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
+				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
+				{ spellId = 14281, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
+			} },
 			{ level = 18, lines = {
 				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
 				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot on cooldown at 18 and 19, while you are above a quarter of your mana." },
-				{ spellId = 13550, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
-				{ spellId = 14281, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
+				{ spellId = 1978, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
+				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
@@ -1667,11 +1693,26 @@ ns.Data = {
 				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
 				{ spellId = 14281, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
 			} },
+			{ level = 13, lines = {
+				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
+				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
+				{ spellId = 14281, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.", raceSpellId = { ["troll"] = 3044 } },
+			} },
+			{ level = 14, lines = {
+				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
+				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
+				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
+			} },
+			{ level = 16, lines = {
+				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
+				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
+				{ spellId = 14281, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
+			} },
 			{ level = 18, lines = {
 				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
 				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot on cooldown at 18 and 19, while you are above a quarter of your mana." },
-				{ spellId = 13550, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
-				{ spellId = 14281, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
+				{ spellId = 1978, name = "Serpent Sting", condition = "Serpent Sting when it has under 1.5 seconds left, and from 18 never while the shared cooldown is about to come back, unless you are under a quarter of your mana." },
+				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana." },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 1130, name = "Hunter's Mark", condition = "Hunter's Mark whenever the target is not marked." },
@@ -16851,7 +16892,6 @@ ns.Data = {
 		[13032] = 40,
 		[13033] = 40,
 		[13549] = 4,
-		[13550] = 4,
 		[13551] = 4,
 		[13552] = 4,
 		[13553] = 4,

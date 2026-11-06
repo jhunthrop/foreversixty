@@ -100,7 +100,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 27.4 | 2 | other:shoot=80.2, spell:1130=2.5, other:move=1.0, spell:13165=1.0 | {SpellID: 2643} |
+| 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 37.2 | 4 | other:shoot=80.2, spell:3044=22.5, spell:13549=10.9, spell:1130=2.4, other:move=1.0 | {SpellID: 2643} |
 | 20 | 0000000000000000-0050510000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 63.3 | 5 | other:shoot=74.3, spell:3044=22.6, spell:1978=12.6, spell:19434=10.2, spell:1130=2.5 | - |
 | 30 | 0000000000000000-0050552001300000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 95.8 | 6 | other:shoot=75.5, spell:14282=17.6, spell:19434=12.7, spell:13551=4.7, spell:14323=2.4 | - |
 | 38 | 0000000000000000-0050552001521030-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 128.7 | 6 | other:shoot=78.2, spell:19434=19.8, spell:14284=9.4, spell:13552=5.4, spell:14323=2.4 | - |
@@ -113,14 +113,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 10
 
-- Arcane Shot (spell 3044)
 - Bite (spell 17255)
 - Claw (spell 16828)
 - Lightning Breath (spell 24844)
 - Mine! (spell 1265054)
 - Raptor Strike (spell 14260)
 - Scorpid Poison (spell 24640)
-- Serpent Sting (spell 13549)
 - Widow Bite (spell 26226)
 - Wyvern Strike (spell 458482)
 
@@ -283,8 +281,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-marksmanship level=10 kind=zero_casts spell="Arcane Shot" id=3044 authored=14287
-- hunter-marksmanship level=10 kind=zero_casts spell="Serpent Sting" id=13549 authored=13555
 - hunter-marksmanship level=20 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
 - hunter-marksmanship level=30 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
 - hunter-marksmanship level=38 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
