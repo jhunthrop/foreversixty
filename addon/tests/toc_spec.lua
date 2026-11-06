@@ -11,6 +11,8 @@ describe("the TOC", function()
 		-- The raid-prep reads (D14): Export writes them into the code.
 		"RaidPrep.lua", "Export.lua", "Follow.lua", "Gear.lua",
 		"Progress.lua", "Rotation.lua",
+		-- The raid jobs (guild assignments): read Codec, Theme and the inbox; /fs job prints them.
+		"RaidAssign.lua",
 		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
 		"Score.lua", "Comms.lua", "Inspect.lua",
 		-- The loot council helper (L5.3): reads Comms, Gear, Progress and the inbox; the group panel shows it.

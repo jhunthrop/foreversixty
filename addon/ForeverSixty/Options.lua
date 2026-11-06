@@ -23,6 +23,7 @@ local ChatBadges = ns.ChatBadges or require("ChatBadges")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
+local RaidAssign = ns.RaidAssign or require("RaidAssign")
 local Recorder = ns.Recorder or require("Recorder")
 local Theme = ns.Theme or require("Theme")
 local Comms = ns.Comms or require("Comms")
@@ -182,6 +183,9 @@ function Options.handle(input)
 			return { message or L.inboxEmpty }
 		end
 		return { string.format(L.inboxCount, count) }
+	elseif command == "job" or command == "jobs" then
+		-- The raid jobs the raid leader set on the site for this character's next raid.
+		return RaidAssign.command(ForeverSixtyInbox, Export.characterKey(), RaidAssign.now())
 	elseif command == "build" then
 		-- Switch the active build slot (L3.7 item 32): a paste leaves the raid build in its slot.
 		return Options.buildCommand(rest)
