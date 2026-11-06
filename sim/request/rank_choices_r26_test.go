@@ -84,3 +84,19 @@ func TestRound26DisciplineLesserHealAtSeventeen(t *testing.T) {
 		{"18 rank 3", "human", 18, []int32{lh3}, []int32{lh2}},
 	})
 }
+
+func TestRound26DisciplineShieldRankRows(t *testing.T) {
+	const pw1, pw2, pw3 = 17, 592, 600
+	checkRankRows(t, "priest-discipline", "priest", []rankRowCase{
+		{"12 rank 1", "undead", 12, []int32{pw1}, []int32{pw2}},
+		{"13 human keeps rank 2", "human", 13, []int32{pw2}, []int32{pw1}},
+		{"13 troll keeps rank 2", "troll", 13, []int32{pw2}, []int32{pw1}},
+		{"14 rank 1", "troll", 14, []int32{pw1}, []int32{pw2}},
+		{"15 dwarf rank 1", "dwarf", 15, []int32{pw1}, []int32{pw2}},
+		{"15 undead keeps rank 2", "undead", 15, []int32{pw2}, []int32{pw1}},
+		{"16 rank 1", "human", 16, []int32{pw1}, []int32{pw2}},
+		{"17 keeps rank 2", "human", 17, []int32{pw2}, []int32{pw1}},
+		{"18 human rank 1", "human", 18, []int32{pw1}, []int32{pw3}},
+		{"19 night elf keeps rank 3", "night-elf", 19, []int32{pw3}, []int32{pw1}},
+	})
+}

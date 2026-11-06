@@ -113,7 +113,7 @@ Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes h
 
 ### Levels 1 to 19
 
-Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18. When you heal a group from 10, until you learn Heal at 16, put Lesser Heal rank 3 on the tank as well as on the party: your shield and Renew alone will not keep him up. Once Heal takes the tank at 16, Lesser Heal stays on the party at rank 3, except at 17, where rank 2 heals more for its mana.
+Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18. When you heal a group from 10, until you learn Heal at 16, put Lesser Heal rank 3 on the tank as well as on the party: your shield and Renew alone will not keep him up. Once Heal takes the tank at 16, Lesser Heal stays on the party at rank 3, except at 17, where rank 2 heals more for its mana. Keep shield rank 1 on your bar when rank 2 arrives at 12: it soaks the early hits for less than half the mana through 16, except at 13 and, for an Undead, at 15, and a Human keeps it at 18 and 19 over rank 3.
 
 Twin Disciplines takes your points from 10 to 14: 5% more damage and healing on your instants, which at this level means Shadow Word: Pain and Renew. Mental Strength takes 15 to 19 for 10% more Intellect, a bigger mana bar between drinks.
 
