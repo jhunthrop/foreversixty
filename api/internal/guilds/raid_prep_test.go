@@ -114,26 +114,6 @@ func TestOnyxiaAttunementReadsTheQuestFlags(t *testing.T) {
 	}
 }
 
-func TestMoltenCoreAttunementIsItsQuestFlag(t *testing.T) {
-	mc := zoneOf("raid:molten-core")
-	cases := map[string]attunementReading{
-		"":               {State: CheckNotTracked, Reason: reasonQuestsNotInExport},
-		"|quests=7848:1": {State: CheckOK},
-		"|quests=7848:0": {State: CheckFail},
-		"|quests=6502:1": {State: CheckNotTracked, Reason: reasonQuestsNotInExport},
-		"|owned=16309:1": {State: CheckNotTracked, Reason: reasonQuestsNotInExport},
-	}
-	for sections, want := range cases {
-		if got := attunementOf(mc, prepRow(t, "gear", sections)); got != want {
-			t.Errorf("%q: %+v, want %+v", sections, got, want)
-		}
-	}
-	items, _ := buildChecklist(checklistInput{zone: &mc, row: prepRow(t, "gear", "|quests=7848:1"), onRoster: true})
-	if a := itemOf(items, CheckAttunement); a.State != CheckOK || a.KeyItem != nil || a.AttunementKind != attunementQuest {
-		t.Fatalf("molten core attunement = %+v", a)
-	}
-}
-
 func TestChecklistFlaskFoodAndFireResistance(t *testing.T) {
 	sixty := 60
 	ony, _ := ZoneByKey(raidZoneOny)

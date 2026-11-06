@@ -21,11 +21,11 @@ RaidPrep.RESISTANCE_SCHOOLS = { 2, 3, 4, 5, 6 }
 --- The attunement quests the export asks the client about, each the last quest of its chain.
 --- Onyxia's Lair: Drakefire Amulet (6502, Alliance: Stormwind Rendezvous 6402, The Great
 --- Masquerade 6403, The Dragon's Eye 6501, then 6502) and Blood of the Black Dragon Champion
---- (6602, Horde, after Ascension... 6601). Molten Core: Attunement to the Core (7848). Every id
+--- (6602, Horde, after Ascension... 6601). Every id
 --- is a row of the 1.60.1.70790 client's QuestV2 table (wago.tools db2/QuestV2, which carries no
 --- titles); titles and chain order are cmangos classic-db quest_template's (PrevQuestId).
 --- Spike check 101 confirms them in game.
-RaidPrep.ATTUNEMENT_QUESTS = { 6502, 6602, 7848 }
+RaidPrep.ATTUNEMENT_QUESTS = { 6502, 6602 }
 
 --- The items an attunement chain hands out that the export says are held or not, worn or in
 --- the carried bags: the Drakefire Amulet (16309), which both Onyxia chains reward.

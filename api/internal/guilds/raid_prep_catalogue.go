@@ -104,12 +104,11 @@ var raidSupplies = map[int]raidSupply{
 	287974: {"Grilled Squid", supplyFood},
 }
 
-// fireResistanceZones are the zones whose checklist shows the fire resistance total: the
-// fire raids. Molten Core is not on Forever's schedule yet; its key is listed so the check
-// follows the day the catalogue adds it.
+// fireResistanceZones are the raids whose checklist shows the fire resistance total: only a raid
+// that asks for it. Of Forever's first tier (Barrow Deeps, Hyjal Summit, Onyxia's Lair) that is
+// Onyxia's breath and Flame Breath; a later raid joins by its key.
 var fireResistanceZones = map[string]bool{
 	"raid:onyxias-lair": true,
-	"raid:molten-core":  true,
 }
 
 // Attunement is a zone's attunement by quest: done when the client flags any of Quests
@@ -124,7 +123,7 @@ type Attunement struct {
 // table (wago.tools db2/QuestV2?build=1.60.1.70790, fetched 2026-11-06; the table carries no
 // titles), and its title and chain order are cmangos classic-db quest_template's
 // (PrevQuestId), the source data/builds/1.60.1.70790/raw/quests/quest-levels.json names.
-// RaidPrep.ATTUNEMENT_QUESTS asks the client about the same three.
+// RaidPrep.ATTUNEMENT_QUESTS asks the client about the same two.
 const (
 	// questDrakefireAmulet ends the Alliance chain: Stormwind Rendezvous 6402, The Great
 	// Masquerade 6403, The Dragon's Eye 6501, Drakefire Amulet 6502.
@@ -132,8 +131,6 @@ const (
 	// questBlackDragonChampion ends the Horde chain: Ascension... 6601, Blood of the Black
 	// Dragon Champion 6602.
 	questBlackDragonChampion = 6602
-	// questAttunementToTheCore is Molten Core's.
-	questAttunementToTheCore = 7848
 )
 
 // drakefireAmulet is the item both Onyxia chains reward (items.json: 16309, a neck item of
@@ -141,12 +138,10 @@ const (
 var drakefireAmulet = KeyItem{ID: 16309, Name: "Drakefire Amulet", Quality: 3}
 
 // zoneAttunements is zone key -> its attunement by quest. Kept beside the zone catalogue
-// rather than on Zone: first-tier.json, which the raid zones mirror, carries no quests.
-// Molten Core is not in the curated tier data, so its zone is not schedulable yet; its entry
-// is read the day the catalogue adds it.
+// rather than on Zone: first-tier.json, which the raid zones mirror, carries no quests. Of the
+// first tier only Onyxia's Lair has an attunement.
 var zoneAttunements = map[string]Attunement{
 	"raid:onyxias-lair": {Quests: []int{questDrakefireAmulet, questBlackDragonChampion}, Item: &drakefireAmulet},
-	"raid:molten-core":  {Quests: []int{questAttunementToTheCore}},
 }
 
 // attunementFor is the zone's attunement by quest, ok false when it has none.

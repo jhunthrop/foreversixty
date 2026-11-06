@@ -141,7 +141,7 @@ describe("RaidPrep", function()
 				return id == 6502
 			end } } })
 			assert.are.same(
-				{ { questId = 6502, done = true }, { questId = 6602, done = false }, { questId = 7848, done = false } },
+				{ { questId = 6502, done = true }, { questId = 6602, done = false } },
 				RaidPrep.quests())
 		end)
 
@@ -150,7 +150,7 @@ describe("RaidPrep", function()
 				return id == 6602
 			end } })
 			assert.are.same(
-				{ { questId = 6502, done = false }, { questId = 6602, done = true }, { questId = 7848, done = false } },
+				{ { questId = 6502, done = false }, { questId = 6602, done = true } },
 				RaidPrep.quests())
 		end)
 	end)
@@ -193,7 +193,7 @@ describe("RaidPrep", function()
 			withStacks({ [0] = { [1] = 5 } })
 			local code = assert(Export.string(DATA))
 			local want = "|level=60|school=52:0:0:0:0|supplies=20452:5|locks=13704"
-				.. "|quests=6502:0,6602:0,7848:0|owned=16309:0|who="
+				.. "|quests=6502:0,6602:0|owned=16309:0|who="
 			assert.is_truthy(code:find(want,
 				1, true), code)
 		end)

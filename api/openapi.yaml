@@ -2433,9 +2433,9 @@ components:
           type: array
           description: >-
             In order: level, attunement (only for a run whose zone has a key item or an attunement
-            quest chain: Onyxia's Lair, its last quest or the Drakefire Amulet held; Molten Core,
-            Attunement to the Core), gear_gap, enchants, flask_food, fire_resistance (only for
-            Onyxia's Lair and Molten Core). Read from the addon export's raid-prep sections
+            quest chain: Onyxia's Lair, its last quest or the Drakefire Amulet held), gear_gap,
+            enchants, flask_food, fire_resistance (only for a raid that asks for it: Onyxia's
+            Lair). Read from the addon export's raid-prep sections
             (school=, supplies=, locks=, quests=, owned=); an export without them reads
             not_tracked, never fail. flask_food is ok with a flask or raid elixir and buff food in the bags, else fail
             with missing. fire_resistance is ok whenever read: the total, with no target.
