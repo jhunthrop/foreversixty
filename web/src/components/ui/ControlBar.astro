@@ -1,0 +1,29 @@
+---
+// web/src/components/ui/ControlBar.astro
+// ControlBar.svelte's static twin (web layout spec 2026-11-05 §3.4): the same markup rendered at
+// build time with no Svelte runtime, wired by lib/ui/control-bar.ts after first paint (the links
+// already work before it). A page listens for `controlbar:change` on the document.
+import type { ComponentProps } from 'svelte';
+import ControlBar from './ControlBar.svelte';
+
+type Props = Omit<ComponentProps<typeof ControlBar>, 'staticField' | 'onchange' | 'end'>;
+
+const props = Astro.props as Props;
+---
+
+{Astro.slots.has('end') ? (
+  <ControlBar {...props} staticField>
+    <slot name="end" slot="end" />
+  </ControlBar>
+) : (
+  <ControlBar {...props} staticField />
+)}
+
+<script>
+  import { afterPaint } from '../../lib/after-paint';
+
+  afterPaint(() => {
+    void import('../../lib/ui/control-bar').then((m) => m.bootControlBars());
+    void import('../../lib/ui/select-boot').then((m) => m.bootStaticFields());
+  });
+</script>

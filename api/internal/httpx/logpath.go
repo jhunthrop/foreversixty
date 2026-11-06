@@ -10,6 +10,10 @@ import (
 var secretPathPrefixes = []string{
 	// The calendar link (guilds.CalendarFeedPrefix): the path is the token.
 	"/v1/calendar/",
+	// The guild invite link's preview and redemption (guilds.Mount): the token is the segment
+	// after the prefix, so "/v1/guilds/invite/{token}/accept" logs as ".../invite/:redacted".
+	"/v1/guild-invites/",
+	"/v1/guilds/invite/",
 }
 
 // redactedSegment stands in for a secret path segment in the logs.

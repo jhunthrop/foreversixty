@@ -1,0 +1,145 @@
+---
+// web/src/components/ui/FlatSheet.astro
+// The flat primitives on the design sheet (web layout spec 2026-11-05 §3A): every primitive in its
+// states, rendered at build time from Astro with no hydration, the way the BiS page uses them. It
+// is the living reference for the contract and the page the primitives' captures are taken from.
+import activeBuild from '../../data/active-build.json';
+import ControlBar from './ControlBar.astro';
+import Figure from './Figure.svelte';
+import ItemRow from './ItemRow.svelte';
+import Meter from './Meter.svelte';
+import Notice from './Notice.svelte';
+import Page from './Page.svelte';
+import PageHeader from './PageHeader.svelte';
+import Plate from './Plate.svelte';
+import Row from './Row.svelte';
+import Section from './Section.svelte';
+import Tag from './Tag.svelte';
+
+const build = activeBuild.build;
+const shoulders = { id: 5404, name: "Serpent's Shoulders", quality: 3, icon: 'inv_shoulder_08' };
+const bow = { id: 6469, name: 'Venomstrike', quality: 3, icon: 'inv_weapon_bow_10' };
+const flask = { id: 744, name: "Thunderbrew's Boot Flask", quality: 2, icon: 'inv_drink_01' };
+const gloves = { id: 10413, name: 'Gloves of the Fang', quality: 3, icon: 'inv_gauntlets_18' };
+const groups = [
+  {
+    label: 'Level',
+    param: 'sheet-band',
+    kind: 'segmented' as const,
+    value: '20',
+    options: [
+      { value: '20', label: '20-29' },
+      { value: '30', label: '30-39' },
+      { value: '40', label: '40-49', disabled: true },
+      { value: '60', label: '60' },
+    ],
+  },
+  {
+    label: 'Faction',
+    param: 'sheet-faction',
+    kind: 'segmented' as const,
+    value: 'alliance',
+    options: [
+      { value: 'alliance', label: 'Alliance' },
+      { value: 'horde', label: 'Horde' },
+    ],
+  },
+  {
+    label: 'Race',
+    param: 'sheet-race',
+    kind: 'select' as const,
+    value: 'dwarf',
+    options: [
+      { value: 'dwarf', label: 'Dwarf' },
+      { value: 'night-elf', label: 'Night Elf' },
+    ],
+  },
+];
+---
+
+<section class="-mx-[18px] flex flex-col gap-6 md:mx-0" data-testid="flat-sheet" aria-label="Flat primitives">
+  <Page layout="split">
+    <PageHeader slot="header" title="Beast Mastery Hunter" tone={{ classSlug: 'hunter' }}>
+      <span slot="meta">Best in slot · levels 20 to 29 · Alliance Dwarf</span>
+      <Figure slot="answer" label="This set, simmed 5 Nov" value="110.9" unit="DPS" size="big" align="end" />
+    </PageHeader>
+    <ControlBar slot="bar" id="sheet-bar" label="Sheet choices" groups={groups} sticky={false}>
+      <a slot="end" class="text-gold font-semibold" href="#flat-sheet">
+        Where to go ›
+      </a>
+    </ControlBar>
+    <Notice
+      text="Raids open on 9 December."
+      action={{ label: 'Plan the first night', href: '#flat-sheet' }}
+    />
+    <Plate label="Sample gear">
+      <ItemRow
+        item={shoulders}
+        build={build}
+        slotLabel="Shoulder"
+        source="Wailing Caverns · Lady Anacondra · 40%"
+        gain={{ value: '+1.8', caption: 'DPS vs next best' }}
+      />
+      <ItemRow
+        item={gloves}
+        build={build}
+        slotLabel="Hands"
+        source="Crafted · Leatherworking"
+        badge="upgrade"
+        worn={flask}
+        gain={{ value: '+0.8', caption: 'DPS', tone: 'gold' }}
+      />
+      <ItemRow
+        item={bow}
+        build={build}
+        slotLabel="Ranged"
+        source="Wailing Caverns · Lord Serpentis · 18%"
+        badge="worn"
+        gain={{ value: 'Worn', tone: 'kill' }}
+      />
+      <ItemRow item={null} build={build} slotLabel="Trinket" emptyDetail="First trinket comes at 40" />
+      <ItemRow
+        item={{ id: 288887, name: 'Item 288887', quality: 1 }}
+        build={build}
+        slotLabel="Neck"
+        unknown
+        source="Not in our item data yet"
+      />
+    </Plate>
+    <Section
+      title="Stat weights"
+      meta="Normalized to Agility = 1.00"
+      action={{ label: 'Use these weights in the addon', href: '#flat-sheet' }}
+    >
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="flex flex-col gap-2">
+          <Figure value="1.00" label="Agility" />
+          <Meter value={1} />
+        </div>
+        <div class="flex flex-col gap-2">
+          <Figure value="0.42" label="Attack power" />
+          <Meter value={0.42} />
+        </div>
+        <div class="flex flex-col gap-2">
+          <Figure value="0.18" label="Stamina" tone="muted" />
+          <Meter value={0.18} tone="muted" />
+        </div>
+      </div>
+    </Section>
+    <Section slot="rail" title="Roster" level={3} action={{ label: 'See all', href: '#flat-sheet' }}>
+      <Row
+        title="Felsnap"
+        titleTone={{ classSlug: 'hunter' }}
+        sub="Beast Mastery · 25"
+        open
+        href="#flat-sheet"
+      >
+        <Tag slot="trail" tone="gold">
+          Main
+        </Tag>
+      </Row>
+      <Row title="Dunmaro" titleTone={{ classSlug: 'warrior' }} sub="Fury · 60" open selected />
+      <Row title="Pinefeather" titleTone={{ classSlug: 'druid' }} sub="Restoration · 60" rank="3" open />
+    </Section>
+  </Page>
+</section>

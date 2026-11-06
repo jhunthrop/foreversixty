@@ -56,7 +56,7 @@ function guildSettingsFixture(): GuildSettingsData {
     claimed_by: null,
     claim_pending: null,
     claim: { state: 'claimed', frozen: false },
-    invite: { rotated_at: null },
+    invite: { rotated_at: null, url: null, made_by: null },
   };
 }
 
@@ -203,7 +203,7 @@ describe('settings', () => {
           expires_at: '2026-10-01T00:00:00Z',
         },
         claim: { state: 'pending', since: '2026-09-17T00:00:00Z', frozen: false },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     );
     vi.stubGlobal('fetch', upstream);

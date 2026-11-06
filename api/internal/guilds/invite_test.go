@@ -21,7 +21,7 @@ func TestRotateInviteOnlyAVerifiedOfficerCanReadItAfterwards(t *testing.T) {
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Forever")
 
-	token, rotatedAt, err := s.RotateInvite(ctx, gid)
+	token, rotatedAt, err := s.RotateInvite(ctx, gid, nil)
 	if err != nil || !strings.HasPrefix(token, InviteTokenPrefix) || rotatedAt.IsZero() {
 		t.Fatalf("RotateInvite = %q, %v, %v", token, rotatedAt, err)
 	}
@@ -37,7 +37,7 @@ func TestAcceptInviteCreatesAVerifiedSyntheticRow(t *testing.T) {
 	s := &Store{Pool: pool}
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Forever")
-	token, _, err := s.RotateInvite(ctx, gid)
+	token, _, err := s.RotateInvite(ctx, gid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,8 +62,8 @@ func TestAcceptInviteAnswersTheSame404ForUnknownAndRotatedTokens(t *testing.T) {
 	s := &Store{Pool: pool}
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Forever")
-	oldToken, _, _ := s.RotateInvite(ctx, gid)
-	if _, _, err := s.RotateInvite(ctx, gid); err != nil {
+	oldToken, _, _ := s.RotateInvite(ctx, gid, nil)
+	if _, _, err := s.RotateInvite(ctx, gid, nil); err != nil {
 		t.Fatal(err)
 	}
 	uid := seedUser(t, pool, "trying-old@example.com")
@@ -81,8 +81,8 @@ func TestAcceptInviteTwiceForDifferentGuildsTransfersTheSyntheticRow(t *testing.
 	ctx := context.Background()
 	g1 := seedGuild(t, pool, "First")
 	g2 := seedGuild(t, pool, "Second")
-	token1, _, _ := s.RotateInvite(ctx, g1)
-	token2, _, _ := s.RotateInvite(ctx, g2)
+	token1, _, _ := s.RotateInvite(ctx, g1, nil)
+	token2, _, _ := s.RotateInvite(ctx, g2, nil)
 	uid := seedUser(t, pool, "double-invite@example.com")
 
 	if _, err := s.AcceptInvite(ctx, token1, uid); err != nil {
@@ -108,7 +108,7 @@ func TestAcceptInviteRecordsVerifiedByInvite(t *testing.T) {
 	s := &Store{Pool: pool}
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Forever")
-	token, _, err := s.RotateInvite(ctx, gid)
+	token, _, err := s.RotateInvite(ctx, gid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -148,7 +148,7 @@ func TestPeekInviteNamesTheGuildWithoutJoiningAndRefusesBadTokens(t *testing.T) 
 	h := newHTTPHarness(t)
 	ctx := context.Background()
 	gid := seedGuild(t, h.pool, "Forever")
-	token, _, err := h.store.RotateInvite(ctx, gid)
+	token, _, err := h.store.RotateInvite(ctx, gid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -174,7 +174,7 @@ func TestPeekInviteNamesTheGuildWithoutJoiningAndRefusesBadTokens(t *testing.T) 
 	}
 
 	// Rotated-away and invented tokens answer the same 404.
-	if _, _, err := h.store.RotateInvite(ctx, gid); err != nil {
+	if _, _, err := h.store.RotateInvite(ctx, gid, nil); err != nil {
 		t.Fatal(err)
 	}
 	for _, bad := range []string{token, "fsg_totallymadeup"} {
@@ -214,7 +214,7 @@ func TestPeekInviteSaysWhichCharacterJoins(t *testing.T) {
 	if _, err := h.pool.Exec(ctx, `update guilds set region = 'us', ruleset = 'hardcore' where id = $1`, gid); err != nil {
 		t.Fatal(err)
 	}
-	token, _, err := h.store.RotateInvite(ctx, gid)
+	token, _, err := h.store.RotateInvite(ctx, gid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -299,7 +299,7 @@ func TestAcceptInviteLeavesAnOfficerRankWaiting(t *testing.T) {
 
 func acceptAFreshInvite(t *testing.T, s *Store, gid, uid int64) {
 	t.Helper()
-	token, _, err := s.RotateInvite(context.Background(), gid)
+	token, _, err := s.RotateInvite(context.Background(), gid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -64,7 +64,7 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
         claimed_by: null,
         claim_pending: null,
         claim: { state: 'unclaimed', frozen: false },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );
@@ -97,7 +97,7 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
         claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
         claim_pending: null,
         claim: { state: 'claimed', since: '2026-09-21T00:00:00Z', frozen: false, yours: true },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );
@@ -161,7 +161,7 @@ test("someone else's claim names the holder and offers Contest, with its confirm
         claimed_by: { name: 'Otherofficer', class: 'mage', character_key: 'us/hardcore/otherofficer' },
         claim_pending: null,
         claim: { state: 'claimed', since: '2026-09-20T00:00:00Z', frozen: false },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );
@@ -190,7 +190,7 @@ test('a signed-out visitor sees a sign-in prompt, not a claim button', async ({ 
         claimed_by: null,
         claim_pending: null,
         claim: { state: 'unclaimed', frozen: false },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );
@@ -216,7 +216,7 @@ test('a signed-in visitor with no membership in this guild is told so, and sees 
         claimed_by: null,
         claim_pending: null,
         claim: { state: 'unclaimed', frozen: false },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );
@@ -249,7 +249,7 @@ const unclaimedSettings = {
   claimed_by: null,
   claim_pending: null,
   claim: { state: 'unclaimed', frozen: false },
-  invite: { rotated_at: null },
+  invite: { rotated_at: null, url: null, made_by: null },
 };
 const heldSettings = {
   ...unclaimedSettings,
@@ -434,7 +434,7 @@ test('a pending claim shows who is confirming it and lets a second officer confi
           expires_at: '2026-09-28T00:00:00Z',
         },
         claim: { state: 'pending', since: '2026-09-21T00:00:00Z', frozen: false },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );
@@ -467,7 +467,7 @@ test('the claiming rules render alongside the claim state', async ({ page }) => 
         claimed_by: null,
         claim_pending: null,
         claim: { state: 'unclaimed', frozen: false },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );
@@ -491,7 +491,7 @@ test('a contested claim shows the dedicated contested notice alongside the claim
         claimed_by: { name: 'Otherofficer', class: 'mage', character_key: 'us/hardcore/otherofficer' },
         claim_pending: null,
         claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: true },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );
@@ -520,7 +520,7 @@ test('release stays visible and enabled for the claim holder even while their cl
         claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
         claim_pending: null,
         claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: true, yours: true },
-        invite: { rotated_at: null },
+        invite: { rotated_at: null, url: null, made_by: null },
       }),
     ),
   );

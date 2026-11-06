@@ -18,7 +18,7 @@ func joinByInviteAndSync(t *testing.T, h *harness, rankIndex string) int64 {
 		t.Fatal(err)
 	}
 	gs := &guilds.Store{Pool: h.pool}
-	token, _, err := gs.RotateInvite(ctx, guildID)
+	token, _, err := gs.RotateInvite(ctx, guildID, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +112,7 @@ func removeAndRejoin(t *testing.T, h *harness, guildID int64) {
 	if n := placeholderRows(t, h, guildID); n != 0 {
 		t.Fatalf("placeholder rows after removal = %d", n)
 	}
-	token, _, err := gs.RotateInvite(ctx, guildID)
+	token, _, err := gs.RotateInvite(ctx, guildID, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -168,7 +168,7 @@ func TestAcceptInviteLeavesExportsNamingAnotherGuild(t *testing.T) {
 		t.Fatal(err)
 	}
 	gs := &guilds.Store{Pool: h.pool, Exports: h.store}
-	token, _, err := gs.RotateInvite(ctx, guildID)
+	token, _, err := gs.RotateInvite(ctx, guildID, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
