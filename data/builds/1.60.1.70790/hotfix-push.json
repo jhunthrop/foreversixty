@@ -1,12 +1,12 @@
 {
  "build": "1.60.1.70790",
  "search_totals": {
-  "AreaTable": 0,
+  "AreaTable": 660,
   "ArmorLocation": 0,
   "ChrClasses": 0,
-  "ChrRaces": 0,
-  "CurvePoint": 0,
-  "Faction": 0,
+  "ChrRaces": 190,
+  "CurvePoint": 12060,
+  "Faction": 10,
   "ItemArmorQuality": 0,
   "ItemArmorShield": 0,
   "ItemArmorTotal": 0,
@@ -15,28 +15,29 @@
   "ItemDamageThrown": 0,
   "ItemDamageTwoHand": 0,
   "ItemDamageWand": 0,
-  "ItemEffect": 0,
-  "ItemSet": 0,
+  "ItemEffect": 418,
+  "ItemSet": 370,
   "JournalInstance": 0,
   "ManifestInterfaceData": 0,
-  "Map": 0,
+  "Map": 50,
   "RandPropPoints": 0,
-  "SkillLine": 0,
-  "Spell": 0,
+  "SkillLine": 630,
+  "SkillRaceClassInfo": 0,
+  "Spell": 79741,
   "Talent": 0,
-  "TraitCond": 0,
-  "TraitCurrency": 0,
-  "TraitDefinition": 0,
-  "TraitEdge": 0,
-  "TraitNode": 0
+  "TraitCond": 10,
+  "TraitCurrency": 10,
+  "TraitDefinition": 640,
+  "TraitEdge": 240,
+  "TraitNode": 4270
  },
  "tables": {
   "AreaTable": {
-   "added": 0,
+   "added": 12,
    "changed": 0,
    "removed": 0,
-   "sha256": "e7ccbde2cd084329ff0cccaa5af7f33facc42079d410bb1d2569dc9bce10a379",
-   "withheld": 0
+   "sha256": "1cd3b2209c32bb595da2ebe0e72d9f81573ec67f4e9b656d516cd20b16f0085a",
+   "withheld": 2
   },
   "ArmorLocation": {
    "added": 0,
@@ -61,10 +62,10 @@
   },
   "CurvePoint": {
    "added": 0,
-   "changed": 0,
+   "changed": 3,
    "removed": 0,
-   "sha256": "446ddf976af01c2758fd9d8099469cfdd2ceab28ad662a45d14bb5d23735bcf1",
-   "withheld": 0
+   "sha256": "45cacf1a7544d1640df8aeb265868fb1bdcebf14c00acf327e464f7573170c3d",
+   "withheld": 26
   },
   "Faction": {
    "added": 0,
@@ -130,11 +131,11 @@
    "withheld": 0
   },
   "ItemEffect": {
-   "added": 0,
-   "changed": 0,
+   "added": 18,
+   "changed": 2,
    "removed": 0,
-   "sha256": "33a684bf6cf3c2d7447a16ef99647d62604dce511cb1b76219e3634d5c7f3ec2",
-   "withheld": 0
+   "sha256": "4a8a227c7c8fc3d36bce88937f111973931f7eda6e2eec0c94f2c56c07eda9e2",
+   "withheld": 1
   },
   "ItemSet": {
    "added": 0,
@@ -206,19 +207,26 @@
    "sha256": "e6774240ba1fda84bef060fda0d0b23e42d5ae9b4d8ae3323f7ccb31f38c5760",
    "withheld": 0
   },
-  "Spell": {
+  "SkillRaceClassInfo": {
    "added": 0,
    "changed": 0,
    "removed": 0,
-   "sha256": "bfe5ed9d1403f04c431f74af2f0ddc91002ebc07208883da999efc5d0e7e5b77",
+   "sha256": "2193908c90f65d38fa9bc68907217fd759c132ccdc9f882cd3bc5acecabba322",
    "withheld": 0
   },
+  "Spell": {
+   "added": 60,
+   "changed": 3,
+   "removed": 0,
+   "sha256": "bb1d9dfc46d6639e9080ba025ad06e9f89cd01fe4f77df6a49fa9318db2d29c3",
+   "withheld": 34
+  },
   "SpellAuraOptions": {
-   "added": 0,
+   "added": 9,
    "changed": 0,
    "removed": 0,
-   "sha256": "b06b01ba50324e57bd5b51e8ccf03cfde64fffbf1e9f0e247dffcca56b6d4e70",
-   "withheld": 0
+   "sha256": "aecc911e6aec0686159eb0636a1e19e9e15a426b8f2d4eb0999bbd0f2bc356d2",
+   "withheld": 1
   },
   "SpellCastTimes": {
    "added": 0,
@@ -232,14 +240,14 @@
    "changed": 0,
    "removed": 0,
    "sha256": "90ca94f9683ee55c7c179634782efaacf47623cc783e526901904ebda75b6fe0",
-   "withheld": 0
+   "withheld": 2
   },
   "SpellCooldowns": {
-   "added": 0,
+   "added": 3,
    "changed": 0,
    "removed": 0,
-   "sha256": "d08bb4238048e193aead2806450220dbd21644fb6b5d50ff17ac77d4d54e0c85",
-   "withheld": 0
+   "sha256": "3c073431f4ac2b7267a4b1218410bc943377e69c492303768292f35119c2ff2f",
+   "withheld": 5
   },
   "SpellDuration": {
    "added": 0,
@@ -249,18 +257,18 @@
    "withheld": 0
   },
   "SpellEffect": {
-   "added": 0,
-   "changed": 0,
-   "removed": 0,
-   "sha256": "52724739763341c79e941a9a7b2071d138ae98cc8e4f1e88c4dfbc68408dcd8e",
-   "withheld": 0
+   "added": 93,
+   "changed": 33,
+   "removed": 4,
+   "sha256": "882afedd815c896413060e09391c943603a217b7b32e869d76cf7e221b093e26",
+   "withheld": 26
   },
   "SpellEquippedItems": {
-   "added": 0,
+   "added": 1,
    "changed": 0,
    "removed": 0,
-   "sha256": "24d687596f9adc17e1af5b9d24e8c92a4a667c92b8d1c743343f1e4466be2776",
-   "withheld": 0
+   "sha256": "d42a8ff79cf90870c843ad23a43ddfef4cc869cb92d94a392b8c331fe3cc8616",
+   "withheld": 21
   },
   "SpellItemEnchantment": {
    "added": 0,
@@ -270,38 +278,38 @@
    "withheld": 0
   },
   "SpellLevels": {
-   "added": 0,
-   "changed": 0,
+   "added": 18,
+   "changed": 3,
    "removed": 0,
-   "sha256": "54ccf6e7fbd72153fbf4856b90d08ea9ddced02902678db82a39c60b411dad75",
-   "withheld": 0
+   "sha256": "b241c91fc7ebdb90e082d26816db383e102e350d7dda6b627d65ca2f5ab8dad2",
+   "withheld": 7
   },
   "SpellMisc": {
-   "added": 0,
-   "changed": 0,
+   "added": 51,
+   "changed": 12,
    "removed": 0,
-   "sha256": "04496faca714b6eef1654b4493289a150a65c287e30d4033b7f7ceb5076141f4",
-   "withheld": 0
+   "sha256": "52552837d2bd61a9ebee3c318761145ffc78f538c1eaefd66d8262f40c09b151",
+   "withheld": 20
   },
   "SpellName": {
-   "added": 0,
-   "changed": 0,
+   "added": 60,
+   "changed": 1,
    "removed": 0,
-   "sha256": "7c4193359dab5dd805819f5f8765439195639582511479353378cdc5e556a0d6",
-   "withheld": 0
+   "sha256": "9e93482a551143ec75d656dce6a5120c869ecdab1d34a0513e057465bf06a930",
+   "withheld": 34
   },
   "SpellPower": {
-   "added": 0,
+   "added": 2,
    "changed": 0,
-   "removed": 0,
-   "sha256": "39d0e78afed09db8f7c220e72032103363fdd92a5febad1eb714437009cf3310",
-   "withheld": 0
+   "removed": 1,
+   "sha256": "251dfe18ce8257e875e8d92e116405e0c828eaa9add70493e5791e77ff18639e",
+   "withheld": 24
   },
   "SpellRadius": {
-   "added": 0,
+   "added": 1,
    "changed": 0,
    "removed": 0,
-   "sha256": "c45efa9792d9be30af61aac2e2499493834bc030f6a29d0c119be76f9fe336ed",
+   "sha256": "ae97b1f91868aa7b4414c3e26c5d15f6981921b2f6aa1694adc7a0c3e821826b",
    "withheld": 0
   },
   "SpellRange": {
@@ -316,14 +324,14 @@
    "changed": 0,
    "removed": 0,
    "sha256": "6483dee545c28c9f11fbabc5897e381f697c9d193c5ec5910ce4d4730c4ec776",
-   "withheld": 0
+   "withheld": 1
   },
   "SpellTargetRestrictions": {
-   "added": 0,
-   "changed": 0,
-   "removed": 0,
-   "sha256": "771ee61840826d8a9c2ea3afe8e2cb59b5196c5290f72a9bc7f59e9ef3379e15",
-   "withheld": 0
+   "added": 12,
+   "changed": 3,
+   "removed": 2,
+   "sha256": "5a6c2278aef22562993afc431f54d8c00a0d986bce4d07080282c830684719a8",
+   "withheld": 1
   },
   "Talent": {
    "added": 0,

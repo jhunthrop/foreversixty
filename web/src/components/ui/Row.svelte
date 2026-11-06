@@ -4,7 +4,8 @@
      body a title (body face 700, a class colour from a prop) and a muted sub line; the trail a
      Figure, a Tag or one Button. A row is a link (`href`) or holds an action in its trail, never
      both. Hover is the S2 ground; `selected` the gold ground and a 3 px gold bar. `open` drops the
-     side padding for rows in an open Section on S0. -->
+     side padding for rows in an open Section on S0. `foot` is a full-width line of controls under
+     the body, for a row in a narrow rail (a link row never takes one). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { rowElement, titleColor, type TitleTone } from '../../lib/ui/primitives';
@@ -24,6 +25,7 @@
     testid,
     titleContent,
     subContent,
+    foot,
   }: {
     title: string;
     titleTone?: TitleTone;
@@ -42,6 +44,8 @@
     titleContent?: Snippet;
     /** Replaces the sub line (a source line with a glyph). */
     subContent?: Snippet;
+    /** A line of controls under the body, full width (a narrow rail: tags, votes, a button). */
+    foot?: Snippet;
   } = $props();
 
   const element = $derived(rowElement(href));
@@ -87,4 +91,7 @@
     ]}
     >{#if trail}{@render trail()}{/if}</span
   >
+  {#if foot}<span class="col-span-full flex flex-wrap items-center gap-x-3 gap-y-2 pt-2"
+      >{@render foot()}</span
+    >{/if}
 </svelte:element>

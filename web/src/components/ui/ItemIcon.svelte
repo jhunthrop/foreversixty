@@ -1,8 +1,9 @@
 <!-- web/src/components/ui/ItemIcon.svelte -->
 <!-- An item's icon (web layout spec 2026-11-05 §4.3): the HD icon in a 1 px frame of its quality
-     hue, 5 px radius, width and height always set (no layout shift). With no icon it draws the
-     dark socket, never a broken image; `unknown` tints it red (an id missing from our data). A
-     badge disc sits on the lower right: gold ▲ for an upgrade, green ✓ for the worn pick. -->
+     hue, 5 px radius, width and height always set (no layout shift). With no icon, or one whose
+     file fails to load, it draws the dark socket, never a broken image; `unknown` tints it red (an
+     id missing from our data). A badge disc sits on the lower right: gold ▲ for an upgrade, green
+     ✓ for the worn pick. -->
 <script lang="ts">
   import { rarityBorderColorFor } from '../../lib/planner/items';
   import { dataUrl } from '../../lib/planner/load';
@@ -30,6 +31,9 @@
     testid?: string;
   } = $props();
 
+  /** The icon whose file failed to load: the socket shows instead of a broken image. */
+  let failed = $state<string | null>(null);
+
   const BADGE = {
     upgrade: { glyph: 'upgrade', title: 'Upgrade', tone: 'bg-gold text-bg' },
     worn: { glyph: 'check', title: 'You wear the pick', tone: 'bg-kill text-bg' },
@@ -42,7 +46,7 @@
   style:height="{size}px"
   data-testid={testid}
 >
-  {#if icon}
+  {#if icon && icon !== failed}
     <img
       src={dataUrl(build, `icons/${icon}.webp`)}
       alt=""
@@ -50,6 +54,7 @@
       height={size}
       loading={eager ? 'eager' : 'lazy'}
       decoding="async"
+      onerror={() => (failed = icon ?? null)}
       class="h-full w-full rounded-[5px] border object-cover"
       style:border-color={rarityBorderColorFor(quality)}
     />

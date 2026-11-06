@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -24,8 +23,9 @@ const (
 
 var (
 	attendanceExportHeader = []string{"date", "raid", "character", "class", "signed", "outcome", "excused", "pulls_present", "pulls_total", "fixed"}
-	lootExportHeader       = []string{"date", "raid", "boss", "item_id", "item", "character"}
-	nonAlphanumeric        = regexp.MustCompile(`[^a-z0-9]+`)
+	lootExportHeader       = []string{"date", "raid", "boss", "item_id", "item", "character", "class", "ms_os",
+		"votes_yes", "votes_no", "reason", "awarded_by"}
+	nonAlphanumeric = regexp.MustCompile(`[^a-z0-9]+`)
 )
 
 // fallbackExportSlug names the file of a guild whose name has no ASCII letters or digits.
@@ -70,39 +70,15 @@ func (s *Service) exportAttendance(w http.ResponseWriter, r *http.Request) {
 	s.serveExport(w, r, "attendance", attendanceExportHeader, s.Store.streamAttendance)
 }
 
-// exportLoot is GET /v1/guilds/{id}/export/loot.csv.
-func (s *Service) exportLoot(w http.ResponseWriter, r *http.Request) {
-	s.serveExport(w, r, "loot", lootExportHeader, s.Store.streamLoot)
-}
-
 // serveExport answers an officer-rank CSV read. Like the rest of the officer reads it never
 // consults the plan, so a lapsed guild keeps its history; anyone below officer rank gets 404.
 func (s *Service) serveExport(w http.ResponseWriter, r *http.Request, kind string, header []string,
 	stream rowStream) {
-	guildID, ok := guildIDFrom(r)
+	guildID, guild, ok := s.exportGuild(w, r, kind)
 	if !ok {
-		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
 		return
 	}
-	allowed, err := s.verifiedOfficerOrLeader(r, guildID)
-	if err != nil {
-		s.fail(w, r, "export_"+kind, err, exportFailText)
-		return
-	}
-	if !allowed && !auth.ActorFrom(r.Context()).IsModerator() {
-		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
-		return
-	}
-	guild, err := s.Store.getGuild(r.Context(), guildID)
-	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
-			return
-		}
-		s.fail(w, r, "export_"+kind, err, exportFailText)
-		return
-	}
-	err = writeExport(r.Context(), w, guildID, header, stream, func() {
+	err := writeExport(r.Context(), w, guildID, header, stream, func() {
 		httpx.CachePrivate(w)
 		w.Header().Set("Content-Type", csvContentType)
 		w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s-%s.csv"`, exportSlug(guild.Name), kind))
@@ -115,6 +91,35 @@ func (s *Service) serveExport(w http.ResponseWriter, r *http.Request, kind strin
 		// The status line is already sent; all that is left is to say so in the log.
 		s.logger().Warn("guilds", "id", httpx.RequestIDFrom(r.Context()), "op", "export_"+kind, "guild_id", guildID, "err", err)
 	}
+}
+
+// exportGuild is the export routes' gate: an officer by rank (or a moderator) of an existing
+// guild, else 404. It writes the refusal and returns false.
+func (s *Service) exportGuild(w http.ResponseWriter, r *http.Request, kind string) (int64, Guild, bool) {
+	guildID, ok := guildIDFrom(r)
+	if !ok {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+		return 0, Guild{}, false
+	}
+	allowed, err := s.verifiedOfficerOrLeader(r, guildID)
+	if err != nil {
+		s.fail(w, r, "export_"+kind, err, exportFailText)
+		return 0, Guild{}, false
+	}
+	if !allowed && !auth.ActorFrom(r.Context()).IsModerator() {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+		return 0, Guild{}, false
+	}
+	guild, err := s.Store.getGuild(r.Context(), guildID)
+	if err != nil {
+		if errors.Is(err, ErrNotFound) {
+			httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+			return 0, Guild{}, false
+		}
+		s.fail(w, r, "export_"+kind, err, exportFailText)
+		return 0, Guild{}, false
+	}
+	return guildID, guild, true
 }
 
 // heldError is a failure before any byte of the file reached the client, so
@@ -184,68 +189,6 @@ func (h *heldWriter) flush(out *csv.Writer) error {
 
 // rowStream feeds each CSV row of a guild's export to emit as it is read.
 type rowStream func(ctx context.Context, guildID int64, emit func([]string) error) error
-
-// lootNightUnknown is the raid cell of an award that names no raid and was made from no
-// report: its date cell is then the day it was awarded.
-const lootNightUnknown = "No raid night recorded (date is the award date)"
-
-// streamLoot names each award's character by its export. An award to an invited member names
-// the account's synthetic row (syntheticKey), which has no export: it reads as the account's
-// main (else first) character, else the stand-in, the rule inviteeName applies on the roster.
-// Each award is dated by the raid night it belongs to: its own raid's, else the raid holding the
-// report it was made from, else that report's night; with neither, the award date, said so.
-func (s *Store) streamLoot(ctx context.Context, guildID int64, emit func([]string) error) error {
-	rows, err := s.Pool.Query(ctx, `
-		select coalesce(r.starts_at, rr.starts_at, `+logAnchorSQL("rp")+`, la.awarded_at) as night,
-		       coalesce(r.title, rr.title, nullif(rp.zone, ''), nullif(rp.log_zone, ''), nullif(rp.title, ''), '`+lootNightUnknown+`'),
-		       la.encounter_id, la.item_id,
-		       coalesce(nullif(ae.name, ''), inv.name,
-		                case when u.id is not null then '`+invitedStandIn+` ' || u.id end, la.character_key)
-		from loot_awards la
-		left join guild_raids r on r.id = la.raid_id
-		left join reports rp on rp.id = la.report_id
-		left join lateral (
-		  select g.starts_at, g.title from guild_raids g
-		  where g.report_id = la.report_id and g.guild_id = la.guild_id
-		  order by g.starts_at desc limit 1
-		) rr on true
-		left join addon_exports ae on ae.character_key = la.character_key
-		left join users u on la.character_key like 'account:%'
-		  and u.id = nullif(substring(la.character_key from '^account:([0-9]+)$'), '')::bigint
-		left join lateral (
-		  select c.name from characters c where c.user_id = u.id
-		  order by (c.key = u.main_character_key) desc, c.name limit 1
-		) inv on true
-		where la.guild_id = $1
-		order by night, la.awarded_at, la.id`, guildID)
-	if err != nil {
-		return fmt.Errorf("guilds: export loot: %w", err)
-	}
-	defer rows.Close()
-	loc, err := s.exportLocation(ctx, guildID)
-	if err != nil {
-		return err
-	}
-	for rows.Next() {
-		var (
-			night             time.Time
-			raid, character   string
-			encounterID, item int64
-		)
-		if err := rows.Scan(&night, &raid, &encounterID, &item, &character); err != nil {
-			return fmt.Errorf("guilds: export loot: %w", err)
-		}
-		boss := ""
-		if encounterID == onyxiaEncounterID {
-			boss = encounterName
-		}
-		if err := emit(safeRow(night.In(loc).Format(exportDateLayout), raid, boss,
-			strconv.FormatInt(item, 10), itemNames[int(item)], character)); err != nil {
-			return err
-		}
-	}
-	return rows.Err()
-}
 
 // exportLocation is the zone both CSVs write night dates in: the guild's raid zone, the one
 // every planned raid is posted and shown in, so a Wednesday 7 pm raid in Chicago is dated

@@ -17,6 +17,11 @@ import {
   buildMockRaids,
   buildMockReadiness,
 } from '../../../src/fixtures/guild/mock-guild';
+import {
+  MOCK_CURRENT_NIGHT,
+  buildMockCouncilDrop,
+  buildMockLootNights,
+} from '../../../src/fixtures/guild/mock-loot-council';
 import type { GuildBillingView } from '../../../src/lib/account/api';
 import {
   CLAIM_HOLDER_CAN,
@@ -111,6 +116,34 @@ export async function stubGuildCentre(page: Page, stub: GuildCentreStub): Promis
     route.fulfill(envelope(buildMockReadiness())),
   );
   await page.route(`**/v1/guilds/${GUILD_ID}/loot*`, (route) => route.fulfill(envelope(loot)));
+  await stubLootCouncil(page, stub.viewer, stub.emptyLoot === true);
+}
+
+/** The loot council's reads (nights, a drop's candidates, the viewer's flags) and its vote and flag
+ *  writes, echoed back the way the API answers them. Awards are left to each test. */
+export async function stubLootCouncil(page: Page, viewer: Viewer, empty = false): Promise<void> {
+  const nights = buildMockLootNights(viewer === 'officer');
+  const view = empty ? { ...nights, nights: [{ ...nights.nights[0], drops: [], decisions: [] }] } : nights;
+  await page.route(`**/v1/guilds/${GUILD_ID}/loot/nights*`, (route) => route.fulfill(envelope(view)));
+  await page.route(`**/v1/guilds/${GUILD_ID}/loot/drops/*/candidates*`, (route) => {
+    const url = new URL(route.request().url());
+    const itemId = Number(url.pathname.split('/').at(-2));
+    return route.fulfill(
+      envelope(buildMockCouncilDrop(itemId, url.searchParams.get('night') ?? MOCK_CURRENT_NIGHT)),
+    );
+  });
+  await page.route(`**/v1/guilds/${GUILD_ID}/loot/interest*`, (route) => {
+    if (route.request().method() === 'GET')
+      return route.fulfill(envelope({ night: MOCK_CURRENT_NIGHT, flags: [] }));
+    const body = route.request().postDataJSON() as Record<string, unknown>;
+    return route.fulfill(envelope(body));
+  });
+  await page.route(`**/v1/guilds/${GUILD_ID}/loot/votes`, (route) => {
+    const body = route.request().postDataJSON() as { vote: 'yes' | 'no' | null };
+    const yes = body.vote === 'yes' ? 1 : 0;
+    const no = body.vote === 'no' ? 1 : 0;
+    return route.fulfill(envelope({ ...body, votes: { yes, no, voters: 4, mine: body.vote } }));
+  });
 }
 
 /** Answers every Award and Undo with the 403 `guild_plan_required`; returns the requests seen.
@@ -124,23 +157,32 @@ export async function refuseAwards(page: Page): Promise<string[]> {
   return seen;
 }
 
-/** The mock loot's first item with a candidate and no award, and its first candidate. */
+/** The current night's first open drop and its first candidate. */
 export function unawardedItem(): { itemId: number; characterKey: string } {
-  const item = buildMockLoot().items.find((i) => i.awarded_to === null && i.candidates.length > 0);
-  if (item === undefined) throw new Error('the mock loot lost its unawarded items');
-  return { itemId: item.item_id, characterKey: item.candidates[0].character_key };
+  const drop = buildMockLootNights().nights[0].drops.find((d) => d.state === 'open');
+  if (drop === undefined) throw new Error('the mock nights lost their open drops');
+  return {
+    itemId: drop.item_id,
+    characterKey: buildMockCouncilDrop(drop.item_id).candidates[0].character_key,
+  };
 }
 
-/** The mock loot's awarded item (its winner row carries the one Undo). */
+/** The current night's awarded drop (its rail carries the one Undo). */
 export function awardedItemId(): number {
-  const item = buildMockLoot().items.find((i) => i.awarded_to !== null);
-  if (item === undefined) throw new Error('the mock loot lost its awarded item');
-  return item.item_id;
+  const drop = buildMockLootNights().nights[0].drops.find((d) => d.state === 'awarded');
+  if (drop === undefined) throw new Error('the mock nights lost their awarded drop');
+  return drop.item_id;
 }
 
-export const awardButtons = (page: Page): Locator => page.locator('button[data-testid^="guild-loot-award-"]');
-export const undoButtons = (page: Page): Locator =>
-  page.locator('button[data-testid^="guild-loot-row-undo-"]');
+/** Opens a drop of the current night in the council's rail. */
+export async function pickDrop(page: Page, itemId: number): Promise<void> {
+  await page.getByTestId(`guild-loot-drop-${itemId}`).click();
+  await expect(page.getByTestId('guild-loot-candidates-skeleton')).toHaveCount(0);
+  await expect(page.locator('[data-testid^="guild-loot-candidate-"]').first()).toBeVisible();
+}
+
+export const awardButtons = (page: Page): Locator => page.locator('button[data-testid="guild-loot-award"]');
+export const undoButtons = (page: Page): Locator => page.locator('button[data-testid="guild-loot-undo"]');
 export const nudgeButtons = (page: Page): Locator =>
   page.locator('button[data-testid^="guild-readiness-nudge-"]');
 

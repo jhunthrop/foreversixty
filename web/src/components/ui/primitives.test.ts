@@ -118,6 +118,12 @@ describe('Row', () => {
       'var(--color-class-hunter)',
     );
   });
+
+  it('puts a foot of controls on its own full-width line under the body', () => {
+    const body = html(Row, { title: 'Seraphine', foot: text('<button>Award</button>') });
+    expect(body).toMatch(/<span class="col-span-full[^"]*"><button>Award<\/button><\/span>/);
+    expect(html(Row, { title: 'Seraphine' })).not.toContain('col-span-full');
+  });
 });
 
 describe('ItemIcon', () => {
@@ -176,6 +182,18 @@ describe('ItemRow', () => {
 
   it('keeps the name out of the tab order inside a roving container', () => {
     expect(html(ItemRow, { item: HOOD, build: BUILD, focusableName: false })).not.toContain('tabindex="0"');
+  });
+
+  it('is one pressed button when it picks its item, its name no tab stop of its own', () => {
+    const body = html(ItemRow, { item: HOOD, build: BUILD, onselect: () => {}, selected: true });
+    expect(body).toMatch(/<button[^>]*type="button"[^>]*aria-pressed="true"/);
+    expect(body).toContain('bg-selected');
+    expect(body).not.toContain('tabindex="0"');
+    expect(html(ItemRow, { item: HOOD, build: BUILD })).not.toContain('<button');
+  });
+
+  it('takes a trail in place of the gain', () => {
+    expect(html(ItemRow, { item: HOOD, build: BUILD, trail: text('<b>Open</b>') })).toContain('<b>Open</b>');
   });
 });
 

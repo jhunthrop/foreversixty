@@ -1,318 +1,218 @@
 <!-- web/src/components/guild/GuildLoot.svelte -->
-<!-- Guild loot spec 2026-11-05, on the control-centre spec §4.F/§12.1: the loot council helper. Each
-     drop anyone can take is a card with up to five ranked candidates, then Show {n} more: tier 0 (on
-     their BiS list) first, tier 1 (item level only) under its own label. The rest collapse into one
-     line (LootUnranked). An awarded item says who got it, when and from whom once, on the item
-     itself; every other candidate row reads "Already awarded" and has no button. Member sees every
-     drop and ranking read-only (§10.1, proposed); only an officer sees the Award control. Award asks
-     first ("Award Stormrage Cover to Rootbound?" with Award and Cancel, focus on Cancel) and an
-     awarded item offers the officer Undo (lifecycle round 6, R2). Officer tools gate §3/§4: with the
-     guild's officer tools off (officer-read-only) the plan sentence leads the tab, the controls stay
-     on screen disabled, and a server refusal of a click says so once, in the item's card. -->
+<!-- The Loot tab as the loot council (web layout spec 2026-11-05 §7.2): "This dropped. Who gets it,
+     and why?" Page split, built only from the ui/ primitives. Main: the raid night chooser, then
+     the one Plate of that night's drops (Open or Awarded), and on the current night a picker that
+     opens any drop of the loot table. Rail, officers: the picked drop's candidates with gain, what
+     it replaces, BiS for them, attendance, loot this tier, MS/OS, Votes and Award; members: their
+     own MS / OS / None per character that can use it (never anyone's votes). Then the night's
+     decision record, with Export history for officers. Votes and Award take the Raid guild plan:
+     without it the shipped gate sentence leads and the controls stay on screen, disabled. -->
 <script lang="ts">
-  import type { GuildLootItem, GuildLootPage } from '../../lib/guild/api';
-  import type { RaidLootAward } from '../../lib/guild/attendance-contract';
-  import { guildGateCopy } from '../../lib/guild/copy';
+  import activeBuild from '../../data/active-build.json';
+  import { fetchItemTooltipModel } from '../../lib/items/lookup';
   import type { GateFacts } from '../../lib/guild/plan-gate';
+  import { LootCouncilState, type LootCouncilDeps } from '../../lib/guild/loot-council-state.svelte';
   import {
-    LOOT_FOOTNOTE,
-    NOBODY_AT_60,
-    NO_CANDIDATES_AT_60,
-    TIER_ONE_LABEL,
-    TIER_ONE_SHORT,
-    UNDO_AWARD,
-    awardQuestion,
-    awardedLine,
-    bossPickerLabel,
-    candidateAction,
-    rankedDrops,
-    showsAttendance,
-    unrankedDrops,
-  } from '../../lib/guild/loot-view';
-  import { slotLine } from '../../lib/items/slot-words';
-  import { button } from '../../lib/ui/button';
-  import Card from '../ui/Card.svelte';
-  import EmptyState from '../ui/EmptyState.svelte';
+    NO_DROPS_MEMBER,
+    NO_DROPS_OFFICER,
+    NO_DROPS_PAST,
+    PICK_PROMPT,
+    dropRows,
+    nightDay,
+    nightOptions,
+    nightSummary,
+    openable,
+    ownUsers,
+    type DropRow,
+  } from '../../lib/guild/loot-council-view';
+  import { LOOT_LOAD_ERROR } from '../../lib/guild/loot-view';
+  import { classSlugFromName } from '../../lib/report/tree-sizes';
+  import BisTooltipHost from '../BisTooltipHost.svelte';
+  import LoadError from '../ui/LoadError.svelte';
+  import Page from '../ui/Page.svelte';
+  import Section from '../ui/Section.svelte';
+  import Segmented from '../ui/Segmented.svelte';
   import Select from '../ui/Select.svelte';
-  import LootCandidateRow from './LootCandidateRow.svelte';
-  import LootUnranked from './LootUnranked.svelte';
-  import RaidLootItem from './RaidLootItem.svelte';
-  import type { GuildPlanRefusal } from '../../lib/guild/officer-tools';
+  import Skeleton from '../ui/Skeleton.svelte';
   import GuildPlanGate from './GuildPlanGate.svelte';
+  import DecisionRecord from './loot/DecisionRecord.svelte';
+  import LootCandidates from './loot/LootCandidates.svelte';
+  import LootDrops from './loot/LootDrops.svelte';
+  import MemberFlag from './loot/MemberFlag.svelte';
 
   let {
-    loot,
+    guildId,
     officer,
     officerTools,
     raidGuildTools,
-    memberReadOnly,
     ownKeys = [],
-    busyItemId,
-    refusal,
     gateFacts,
-    onAward,
-    onUndo,
-    onBoss,
+    timeZone,
+    onRefused,
+    deps,
   }: {
-    loot: GuildLootPage | null;
+    guildId: number;
     officer: boolean;
-    /** False when the guild's officer tools are off (gate spec §3.1, officer-read-only). */
+    /** False when the guild's officer tools are off (gate spec §3.1). */
     officerTools: boolean;
-    /** False for an officer of a Guild-tier guild: Loot is part of Raid guild (pricing spec §3.2.8). */
+    /** False for an officer of a Guild-tier guild: Loot is part of Raid guild. */
     raidGuildTools: boolean;
-    memberReadOnly: boolean;
-    /** `raids`: the candidate line counts raids (`7 of 8 raids`). */
-    /** The viewer's own characters: their rows carry the wash and `(you)`. */
+    /** The viewer's own characters: a member flags only these. */
     ownKeys?: readonly string[];
-    busyItemId: number | null;
-    /** The Award or Undo the server refused with `guild_plan_required` (§4), per boss and item. */
-    refusal: GuildPlanRefusal | null;
-    /** Where the plan sentence's link goes: the guild's settings tab. */
-    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
     gateFacts: GateFacts;
-    /** `itemId` names the copy when it is not the row's own (a side's Head of Onyxia). */
-    onAward: (item: GuildLootItem, characterKey: string, itemId?: number) => void;
-    /** Remove the item's award (the award's id is on `item.awarded_to`). */
-    onUndo: (item: GuildLootItem) => void;
-    /** The boss chooser changed: read that encounter's loot. */
-    onBoss: (encounterId: number) => void;
+    /** The guild's raid zone, for the decision record's day. */
+    timeZone?: string;
+    onRefused: (gate: 'plan' | 'raid-guild') => void;
+    /** Tests and captures inject the API. */
+    deps?: LootCouncilDeps;
   } = $props();
 
-  /** The candidate whose Award is asking first; one at a time. */
-  let confirming = $state<{ itemId: number; key: string } | null>(null);
+  const build = activeBuild.build;
+  /** Up to this many nights read as a Segmented; more take the dropdown. */
+  const SEGMENTED_NIGHTS = 3;
+  const GATE_ID = 'officer-tools-gate-loot';
 
-  function confirmAward(item: GuildLootItem, key: string): void {
-    confirming = null;
-    onAward(item, key);
-  }
-  /** Focus lands on Cancel, so a stray Enter backs out rather than awards; the §4 refused
-   *  line takes focus the same way, since the button that held it is now disabled. */
-  function focusOnMount(node: HTMLElement): void {
-    node.focus();
-  }
-
-  /** The refusal that already took focus: switching boss and back remounts the line, not the focus. */
-  let focusedRefusal: GuildPlanRefusal | null = null;
-  function focusRefusalOnce(node: HTMLElement): void {
-    if (focusedRefusal === refusal) return;
-    focusedRefusal = refusal;
-    node.focus();
-  }
-  const refusedHere = $derived(
-    refusal !== null && loot !== null && loot.selected === refusal.encounterId ? refusal : null,
-  );
-
-  const bossOptions = $derived(
-    (loot?.encounters ?? []).map((e) => ({ value: String(e.encounter_id), label: bossPickerLabel(e) })),
-  );
-  /** The item as the shared item hover reads it: the candidates' class opens the tooltip's class file. */
-  const awardOf = (item: GuildLootItem): RaidLootAward => ({
-    item_id: item.item_id,
-    item_name: item.name,
-    quality: item.quality,
-    icon: item.icon,
-    character_key: '',
-    name: '',
-    class: item.candidates[0]?.class ?? '',
-    by_name: '',
-    at: '',
+  // The tab mounts once per guild and role; the controller keeps its own state from there.
+  // svelte-ignore state_referenced_locally
+  const council = new LootCouncilState({ guildId, officer, onRefused: (gate) => onRefused(gate), deps });
+  $effect(() => {
+    void council.load();
   });
-  const ranked = $derived(loot === null ? [] : rankedDrops(loot.items));
-  const unranked = $derived(loot === null ? [] : unrankedDrops(loot.items));
-  const showAttendance = $derived(loot !== null && showsAttendance(loot.items));
-  /** Candidates shown before `Show {n} more`. */
-  const FIRST_ROWS = 5;
-  /** The cards whose `Show {n} more` was pressed. */
-  let expanded = $state<ReadonlySet<number>>(new Set());
-  function showAll(itemId: number): void {
-    expanded = new Set([...expanded, itemId]);
+
+  const canAct = $derived(officerTools && raidGuildTools);
+  const night = $derived(council.night);
+  const rows = $derived(night === null ? [] : dropRows(night, council.table));
+  const picks = $derived(night === null ? [] : openable(night, council.table, officer ? null : ownKeys));
+  const options = $derived(council.nights === null ? [] : nightOptions(council.nights.nights));
+  const tableItem = (itemId: number) => council.table.find((item) => item.item_id === itemId);
+  const shipsIcon = (itemId: number): boolean => tableItem(itemId)?.kind === 'gear';
+  const emptyText = $derived(
+    night === null || !night.current ? NO_DROPS_PAST : officer ? NO_DROPS_OFFICER : NO_DROPS_MEMBER,
+  );
+  const memberFlags = $derived.by(() => {
+    const itemId = council.selected?.itemId;
+    const out: Record<string, 'ms' | 'os'> = {};
+    for (const [key, value] of Object.entries(council.flags)) {
+      const [item, character] = key.split(/:(.*)/s);
+      if (Number(item) === itemId && character !== undefined) out[character] = value;
+    }
+    return out;
+  });
+
+  /** The class whose item file carries the drop, for its tooltip. */
+  function classOf(itemId: number): string {
+    const item = tableItem(itemId);
+    return classSlugFromName(item?.candidates[0]?.class ?? item?.eligible[0]?.class ?? 'warrior');
   }
-  const shownRows = (item: GuildLootItem) =>
-    expanded.has(item.item_id) ? item.candidates : item.candidates.slice(0, FIRST_ROWS);
-  /** The first card showing a tier-1 row says the label in full; every later card marks its tier-1
-   *  group with the short label, so the sentence is read once per tab (guild round 2). */
-  const fullTierOneItem = $derived(
-    ranked.find((item) => shownRows(item).some((candidate) => candidate.tier === 1))?.item_id,
-  );
-  const officerReadOnly = $derived(officer && !(officerTools && raidGuildTools));
-  /** Native disabled plus the sentence as description (§3.4); undefined leaves no attribute. */
-  const gateDescribedBy = $derived(officerReadOnly ? 'officer-tools-gate-loot' : undefined);
-  const refusedLine = $derived(
-    refusedHere?.kind === 'undo' ? guildGateCopy.undoRefused : guildGateCopy.awardRefused,
-  );
+
+  /** Below 1024 the rail follows the Plate: bring the picked drop's rail into view. */
+  function pick(row: DropRow): void {
+    council.select(row);
+    if (typeof window !== 'undefined' && window.innerWidth < 1024)
+      requestAnimationFrame(() =>
+        document.getElementById('guild-loot-rail')?.scrollIntoView({ block: 'start' }),
+      );
+  }
 </script>
 
-{#snippet itemIcon(item: GuildLootItem)}
-  <RaidLootItem award={awardOf(item)} iconSize={40} nameSize="" show="icon" />
-{/snippet}
-
-{#snippet itemName(item: GuildLootItem)}
-  <RaidLootItem award={awardOf(item)} iconSize={40} nameSize="text-[24px]" show="name" />
-{/snippet}
-
-<section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-loot-tab">
-  {#if officerReadOnly}<GuildPlanGate tab="loot" facts={gateFacts} />{/if}
-
-  <Card glyph="star" title="Loot" meta={memberReadOnly ? guildGateCopy.readOnly : undefined} body="none">
-    {#snippet aside()}
-      {#if loot !== null && loot.items.length > 0}
-        <div class="w-56 text-left" data-testid="guild-loot-boss-picker">
-          <Select
-            id="guild-loot-boss"
-            size="compact"
-            label="Boss"
-            options={bossOptions}
-            value={String(loot.selected ?? '')}
-            onchange={(event) => onBoss(Number((event.currentTarget as HTMLSelectElement).value))}
+<div data-testid="guild-loot-tab">
+  {#if officer && !canAct}<GuildPlanGate tab="loot" facts={gateFacts} />{/if}
+  {#if council.status === 'loading'}
+    <Skeleton lines={6} minHeight="min-h-[360px]" testid="guild-loot-skeleton" />
+  {:else if council.status === 'failed' || night === null}
+    <LoadError message={LOOT_LOAD_ERROR} testid="guild-loot-error" onRetry={() => void council.load()} />
+  {:else}
+    <Page layout="split" testid="guild-loot-page">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-testid="guild-loot-nights">
+        <span class="text-label tracking-label text-muted font-bold uppercase" id="guild-loot-night-label"
+          >Raid night</span
+        >
+        {#if options.length <= SEGMENTED_NIGHTS}
+          <Segmented
+            {options}
+            value={council.nightKey}
+            label="Raid night"
+            onChange={council.chooseNight}
+            testid="guild-loot-night"
+          />
+        {:else}
+          <div class="w-48">
+            <Select
+              id="guild-loot-night"
+              size="compact"
+              label="Raid night"
+              {options}
+              value={council.nightKey ?? ''}
+              onchange={(event) => council.chooseNight((event.currentTarget as HTMLSelectElement).value)}
+            />
+          </div>
+        {/if}
+      </div>
+      <LootDrops
+        heading="Onyxia drops"
+        meta={`${nightDay(night.date)} · ${nightSummary(night)}`}
+        {rows}
+        openable={picks}
+        selected={council.selected?.itemId ?? null}
+        {build}
+        {emptyText}
+        onSelect={pick}
+        onOpen={council.open}
+      />
+      {#snippet rail()}
+        <div id="guild-loot-rail" class="flex scroll-mt-[96px] flex-col gap-8">
+          {#if council.selected === null}
+            <Section title={officer ? 'Candidates' : 'Your call'} testid="guild-loot-prompt">
+              <p class="text-muted text-[14px]">{PICK_PROMPT}</p>
+            </Section>
+          {:else if officer}
+            <LootCandidates
+              itemName={council.selected.name}
+              drop={council.drop}
+              status={council.dropStatus}
+              {build}
+              shipsIcon={council.selected.kind === 'gear'}
+              {timeZone}
+              {canAct}
+              describedBy={canAct ? undefined : GATE_ID}
+              busy={council.busy}
+              confirmingKey={council.confirmingKey}
+              notice={council.notice}
+              onVote={(key, vote) => void council.vote(key, vote)}
+              onAsk={council.ask}
+              onAward={(key, msOs, reason) => void council.award(key, msOs, reason)}
+              onCancel={council.cancel}
+              onUndo={() => void council.undo()}
+              onRetry={() => void council.readDrop()}
+            />
+          {:else}
+            <MemberFlag
+              itemName={council.selected.name}
+              award={council.selected.award}
+              users={ownUsers(tableItem(council.selected.itemId), ownKeys)}
+              flags={memberFlags}
+              pendingKey={council.flagPending}
+              {build}
+              shipsIcon={council.selected.kind === 'gear'}
+              {timeZone}
+              notice={council.notice}
+              onFlag={(key, msOs) => void council.flag(key, msOs)}
+            />
+          {/if}
+          <DecisionRecord
+            decisions={night.decisions}
+            {build}
+            {shipsIcon}
+            {timeZone}
+            exportFor={officer ? guildId : null}
           />
         </div>
-      {/if}
-    {/snippet}
-    {#if ranked.length === 0}
-      <div class="border-line-soft border-t px-5 py-4">
-        <EmptyState
-          message={loot === null || loot.at_level_cap === 0 ? NOBODY_AT_60 : NO_CANDIDATES_AT_60}
-          testid="guild-loot-empty"
-        />
-      </div>
-    {/if}
-  </Card>
-
-  {#if ranked.length > 0}
-    <div class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-loot-items">
-      {#each ranked as item (item.item_id)}
-        {@const firstTierOne = item.candidates.findIndex((candidate) => candidate.tier === 1)}
-        {@const rows = shownRows(item)}
-        <Card
-          label={slotLine(item.inventory_type, item.item_class, item.item_subclass)}
-          title={item.name}
-          body="none"
-          testid={`guild-loot-item-${item.item_id}`}
-        >
-          {#snippet lead()}{@render itemIcon(item)}{/snippet}
-          {#snippet titleContent()}{@render itemName(item)}{/snippet}
-          {#snippet aside()}
-            {#if item.awarded_to !== null}
-              <span
-                class="inline-block rounded-md border border-[rgba(30,255,0,.25)] bg-[rgba(30,255,0,.10)] px-3 py-2 text-left text-[14px] leading-snug text-[#7bff5c]"
-                data-testid={`guild-loot-awarded-${item.item_id}`}>{awardedLine(item.awarded_to)}</span
-              >
-            {/if}
-          {/snippet}
-          <div class="flex flex-col">
-            {#each rows as candidate, index (candidate.character_key)}
-              {@const awardState = candidateAction(item, candidate.character_key)}
-              {#if index === firstTierOne}
-                <p
-                  class="border-line-soft text-muted border-t px-5 py-2 text-[12px]"
-                  data-testid={`guild-loot-tier-one-${item.item_id}`}
-                >
-                  {item.item_id === fullTierOneItem ? TIER_ONE_LABEL : TIER_ONE_SHORT}
-                </p>
-              {/if}
-              <LootCandidateRow {candidate} own={ownKeys.includes(candidate.character_key)} {showAttendance}>
-                {#snippet action()}
-                  {#if awardState.kind === 'awarded'}
-                    <span class="text-muted text-[12px]" data-testid="guild-loot-winner-slot">
-                      Awarded{#if officer}
-                        &nbsp;·
-                        <button
-                          class="inline-flex h-11 items-center underline disabled:cursor-default disabled:no-underline lg:h-7"
-                          onclick={() => onUndo(item)}
-                          disabled={officerReadOnly || busyItemId === item.item_id}
-                          aria-describedby={gateDescribedBy}
-                          aria-label={`Undo the award of ${item.name} to ${candidate.name}`}
-                          data-testid={`guild-loot-row-undo-${item.item_id}`}>{UNDO_AWARD}</button
-                        >{/if}
-                    </span>
-                  {:else if awardState.kind === 'awarded-to-other'}
-                    <span class="text-muted text-[12px]">{awardState.label}</span>
-                  {:else if officer}
-                    <button
-                      class={button('secondary', 'sm')}
-                      onclick={() => (confirming = { itemId: item.item_id, key: candidate.character_key })}
-                      disabled={officerReadOnly || busyItemId === item.item_id || confirming !== null}
-                      aria-describedby={gateDescribedBy}
-                      aria-label={`Award ${item.name} to ${candidate.name}`}
-                      data-testid={`guild-loot-award-${item.item_id}-${candidate.character_key}`}
-                    >
-                      Award
-                    </button>
-                  {/if}
-                {/snippet}
-              </LootCandidateRow>
-              <!-- Escape backs out of the confirm from either button; the group itself takes no action. -->
-              <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-              {#if officer && !officerReadOnly && confirming !== null && confirming.itemId === item.item_id && confirming.key === candidate.character_key}
-                <div
-                  class="border-line-soft bg-surface flex flex-wrap items-center gap-x-4 gap-y-2 border-t px-5 py-3"
-                  role="group"
-                  aria-label={awardQuestion(item.name, candidate.name)}
-                  onkeydown={(event) => {
-                    if (event.key === 'Escape') confirming = null;
-                  }}
-                  data-testid={`guild-loot-award-confirm-${item.item_id}`}
-                >
-                  <span class="basis-full text-[13px] md:basis-auto"
-                    >{awardQuestion(item.name, candidate.name)}</span
-                  >
-                  <button
-                    class={button('primary', 'sm')}
-                    onclick={() => confirmAward(item, candidate.character_key)}
-                    data-testid={`guild-loot-award-yes-${item.item_id}`}
-                  >
-                    Award
-                  </button>
-                  <button
-                    class="{button('ghost', 'sm')} focus:outline-gold focus:outline-2 focus:outline-offset-2"
-                    onclick={() => (confirming = null)}
-                    use:focusOnMount
-                    data-testid={`guild-loot-award-cancel-${item.item_id}`}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              {/if}
-            {/each}
-            {#if rows.length < item.candidates.length}
-              <button
-                class="border-line-soft min-h-11 border-t px-5 text-left text-[13px] underline"
-                onclick={() => showAll(item.item_id)}
-                data-testid={`guild-loot-show-more-${item.item_id}`}
-              >
-                Show {item.candidates.length - rows.length} more
-              </button>
-            {/if}
-          </div>
-          {#if refusedHere !== null && refusedHere.itemId === item.item_id}
-            <p
-              class="border-line-soft text-wipe border-t px-5 py-3 text-[13px] leading-5"
-              role="alert"
-              tabindex="-1"
-              use:focusRefusalOnce
-              data-testid={`guild-loot-plan-refused-${item.item_id}`}
-            >
-              {refusedLine}
-            </p>
-          {/if}
-        </Card>
-      {/each}
-    </div>
+      {/snippet}
+    </Page>
   {/if}
-
-  {#if unranked.length > 0}
-    <LootUnranked
-      items={unranked}
-      {officer}
-      readOnly={officerReadOnly}
-      {gateDescribedBy}
-      {busyItemId}
-      {onAward}
-      {onUndo}
-    />
-  {/if}
-
-  {#if loot !== null}
-    <p class="text-muted max-w-[720px] text-[13px]" data-testid="guild-loot-footnote">{LOOT_FOOTNOTE}</p>
-  {/if}
-</section>
+  <BisTooltipHost
+    {build}
+    modelsElementId="guild-loot-tooltip-models"
+    resolve={(id) => fetchItemTooltipModel(build, classOf(id), id)}
+  />
+</div>

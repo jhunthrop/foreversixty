@@ -15,13 +15,16 @@
     autocomplete,
     inputmode,
     required = false,
+    maxlength,
     testid,
   }: {
     label: string;
     value?: string;
     name?: string;
     id: string;
-    type?: 'text' | 'search' | 'email' | 'url';
+    type?: 'text' | 'search' | 'email' | 'url' | 'date';
+    /** The most characters the field takes. */
+    maxlength?: number;
     placeholder?: string;
     error?: string;
     grow?: boolean;
@@ -43,6 +46,7 @@
     {autocomplete}
     {inputmode}
     {required}
+    {maxlength}
     bind:value
     class={[
       'rounded-field bg-bg text-strong placeholder:text-muted h-10 w-full border px-3 text-[14px]',

@@ -2519,14 +2519,14 @@ components:
           type: [object, "null"]
           title: OfficerActionDrops
           description: >-
-            The last logged raid night; null with none. The logs carry no loot, so what dropped
-            is unknown: tracked is false and count null until a drop record exists. awarded is
-            the awards filed under that night.
+            The newest loot council night with drops (GET .../loot/nights: what the council
+            awarded, voted on or flagged); null when no night has any. count is its drops still
+            open; awarded is the awards filed under that night. tracked is always true.
           required: [tracked, count, raid_id, label, awarded]
           properties:
             tracked: { type: boolean }
             count: { type: [integer, "null"] }
-            raid_id: { type: [integer, "null"], format: int64 }
+            raid_id: { type: [integer, "null"], format: int64, description: The night's planned raid; null for a log or the live night. }
             label: { type: string, description: 'Zone and day in the guild''s raid timezone, "Onyxia''s Lair, Tue 8 Dec".' }
             awarded: { type: integer }
     GuildReadiness:
@@ -3361,6 +3361,212 @@ components:
                         icon: { type: string }
                         quality: { type: integer, minimum: 0, maximum: 5 }
                     items_won: { type: integer }
+
+    LootCouncilVotes:
+      type: object
+      description: One candidate's officer votes. voters is the guild's verified officers and leaders; mine is the viewing officer's own vote.
+      required: ["yes", "no", voters, mine]
+      properties:
+        "yes": { type: integer }
+        "no": { type: integer }
+        voters: { type: integer }
+        mine: { type: [string, "null"], enum: ["yes", "no", null] }
+    LootDecision:
+      type: object
+      description: >-
+        An award's decision record. ms_os, reason and the votes are what the award kept when it was
+        made (votes snapshotted at award time; votes_officers is how many officers could vote); all
+        null on an award made before the council recorded them. awarded_by is the officer's
+        character in the guild, "an officer" when it cannot be named, "" when no officer is recorded.
+      required: [award_id, item_id, item_name, icon, quality, character_key, name, class, ms_os, reason, votes_yes, votes_no, votes_officers, awarded_by, at]
+      properties:
+        award_id: { type: integer, format: int64 }
+        item_id: { type: integer }
+        item_name: { type: string }
+        icon: { type: string }
+        quality: { type: integer, minimum: 0, maximum: 5 }
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string }
+        ms_os: { type: [string, "null"], enum: [ms, os, null] }
+        reason: { type: [string, "null"], maxLength: 200 }
+        votes_yes: { type: [integer, "null"] }
+        votes_no: { type: [integer, "null"] }
+        votes_officers: { type: [integer, "null"] }
+        awarded_by: { type: string }
+        at: { type: string, format: date-time }
+    LootNights:
+      type: object
+      description: >-
+        GET /v1/guilds/{id}/loot/nights: the guild's Onyxia nights, newest first. A night's drops are
+        the items the council awarded, voted on or flagged on it (no record of what dropped exists
+        beyond that); the current night (where an award made now is filed) is always listed, first
+        when nothing else holds it, and the page offers the whole loot table on it (GET .../loot).
+      required: [officers, nights]
+      properties:
+        officers: { type: integer }
+        nights:
+          type: array
+          items:
+            type: object
+            title: LootNight
+            required: [night, raid_id, report_id, date, at, zone, current, drops, decisions]
+            properties:
+              night: { type: string, description: 'The key every council call takes: "raid:<id>", "report:<id>" or "live" (no night yet).' }
+              raid_id: { type: [integer, "null"], format: int64 }
+              report_id: { type: [string, "null"] }
+              date: { type: string, format: date, description: "The night's day in the guild's raid zone (UTC without one)." }
+              at: { type: string, format: date-time }
+              zone: { type: string }
+              current: { type: boolean }
+              drops:
+                type: array
+                items:
+                  type: object
+                  title: LootNightDrop
+                  required: [item_id, name, icon, quality, kind, encounter_id, boss, state, award]
+                  properties:
+                    item_id: { type: integer }
+                    name: { type: string }
+                    icon: { type: string }
+                    quality: { type: integer, minimum: 0, maximum: 5 }
+                    kind: { type: string, enum: [gear, quest, bag, skinned] }
+                    encounter_id: { type: integer, format: int64 }
+                    boss: { type: string }
+                    state: { type: string, enum: [open, awarded] }
+                    award: { oneOf: [{ $ref: '#/components/schemas/LootDecision' }, { type: "null" }] }
+              decisions:
+                type: array
+                description: The night's decision record, oldest first.
+                items: { $ref: '#/components/schemas/LootDecision' }
+    LootCouncilDrop:
+      type: object
+      description: >-
+        GET /v1/guilds/{id}/loot/drops/{item_id}/candidates. candidates are the Loot tab's (tier 0
+        with gain_dps, tier 1 with ilvl_delta; a quest drop or the bag lists its eligible characters
+        as tier 1) with: attendance over the last 4 raids (the last 4 reports before the guild has a
+        logged raid); items_won is loot this tier (every Onyxia award: the current raid phase);
+        bis_for_them, the drop is the pick for the slot in their BiS band (not an alternative);
+        ms_os, their declared flag (ms_os_source declared) else derived (ms when their spec's BiS
+        band names the drop, i.e. tier 0, os otherwise), null for a quest drop or the bag; votes.
+        closed is true once the drop is awarded on the night: votes and flags then answer 409.
+      required: [night, item_id, name, icon, quality, kind, officers, closed, award, candidates]
+      properties:
+        night: { type: string }
+        item_id: { type: integer }
+        name: { type: string }
+        icon: { type: string }
+        quality: { type: integer, minimum: 0, maximum: 5 }
+        kind: { type: string, enum: [gear, quest, bag, skinned] }
+        officers: { type: integer }
+        closed: { type: boolean }
+        award: { oneOf: [{ $ref: '#/components/schemas/LootDecision' }, { type: "null" }] }
+        candidates:
+          type: array
+          items:
+            type: object
+            title: LootCouncilCandidate
+            required: [character_key, name, class, spec, gain_dps, gain_unit, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, replaces_item, items_won, tier, fills_empty_slot, bis_for_them, ms_os, ms_os_source, votes]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string }
+              spec: { type: string }
+              gain_dps: { type: [number, "null"] }
+              gain_unit: { type: [string, "null"], enum: [dps, hps, tps, null] }
+              tier: { type: integer }
+              not_sim_checked: { type: boolean }
+              ilvl_delta: { type: [integer, "null"] }
+              attendance: { $ref: '#/components/schemas/GuildAttendance' }
+              already_equivalent: { type: boolean }
+              fills_empty_slot: { type: boolean }
+              replaces: { type: string }
+              replaces_item:
+                type: [object, "null"]
+                required: [item_id, name, icon, quality]
+                properties:
+                  item_id: { type: integer }
+                  name: { type: string }
+                  icon: { type: string }
+                  quality: { type: integer, minimum: 0, maximum: 5 }
+              items_won: { type: integer }
+              bis_for_them: { type: boolean }
+              ms_os: { type: [string, "null"], enum: [ms, os, null] }
+              ms_os_source: { type: [string, "null"], enum: [declared, derived, null] }
+              votes: { $ref: '#/components/schemas/LootCouncilVotes' }
+    LootDropTarget:
+      type: object
+      required: [item_id, character_key]
+      properties:
+        night: { type: string, description: 'A night key; omitted or "" is the current night.' }
+        item_id: { type: integer }
+        character_key: { type: string }
+    LootVoteRequest:
+      allOf:
+        - $ref: '#/components/schemas/LootDropTarget'
+        - type: object
+          required: [vote]
+          properties:
+            vote: { type: [string, "null"], enum: ["yes", "no", null], description: null removes the officer's vote. }
+    LootInterestRequest:
+      allOf:
+        - $ref: '#/components/schemas/LootDropTarget'
+        - type: object
+          required: [ms_os]
+          properties:
+            ms_os: { type: [string, "null"], enum: [ms, os, null], description: null removes the flag. }
+    LootInterest:
+      type: object
+      required: [night, flags]
+      properties:
+        night: { type: string }
+        flags:
+          type: array
+          items:
+            type: object
+            title: LootInterestFlag
+            required: [item_id, character_key, ms_os, set_by_officer]
+            properties:
+              item_id: { type: integer }
+              character_key: { type: string }
+              ms_os: { type: string, enum: [ms, os] }
+              set_by_officer: { type: boolean }
+    LootAwardRequest:
+      type: object
+      required: [encounter_id, item_id, character_key]
+      properties:
+        encounter_id: { type: integer, format: int64 }
+        item_id: { type: integer }
+        character_key: { type: string }
+        raid_id: { type: [integer, "null"], format: int64, description: A done raid of the guild. }
+        night: { type: string, description: A council night key, instead of raid_id. }
+        ms_os: { type: [string, "null"], enum: [ms, os, null], description: 'Omitted: the candidate''s flag, else the derivation rule.' }
+        reason: { type: [string, "null"], maxLength: 200 }
+    LootHistory:
+      type: object
+      required: [from, to, rows]
+      properties:
+        from: { type: [string, "null"], format: date }
+        to: { type: [string, "null"], format: date }
+        rows:
+          type: array
+          items:
+            type: object
+            title: LootHistoryRow
+            required: [date, raid, boss, item_id, item, character, class, ms_os, votes_yes, votes_no, reason, awarded_by]
+            properties:
+              date: { type: string, format: date }
+              raid: { type: string }
+              boss: { type: string }
+              item_id: { type: integer }
+              item: { type: string }
+              character: { type: string }
+              class: { type: string }
+              ms_os: { type: [string, "null"], enum: [ms, os, null] }
+              votes_yes: { type: [integer, "null"] }
+              votes_no: { type: [integer, "null"] }
+              reason: { type: [string, "null"] }
+              awarded_by: { type: string }
 
     # Reports and builds -------------------------------------------------------------------
     ReportList:
@@ -7233,6 +7439,198 @@ paths:
         '404':
           description: "No such guild"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/loot/nights:
+    get:
+      summary: The loot council's raid nights, newest first (verified members; officers see vote counts)
+      operationId: getGuildLootNights
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 30, default: 8 } }
+      responses:
+        '200':
+          description: "Nights with their drops (open or awarded) and decision record. Not plan-gated: history is never locked. A member's copy has votes_yes, votes_no and votes_officers null on every decision."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LootNights' } } }
+        '400': { description: "invalid limit", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "Not a verified member", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such guild", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/loot/drops/{item_id}/candidates:
+    get:
+      summary: The council's candidates for one drop of one night (verified officers)
+      operationId: getGuildLootDropCandidates
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: item_id, in: path, required: true, schema: { type: integer } }
+        - { name: night, in: query, schema: { type: string }, description: 'A night key ("raid:<id>", "report:<id>", "live"); omitted is the current night.' }
+      responses:
+        '200':
+          description: "The drop, whether it is awarded, and its ranked candidates with votes and MS/OS"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LootCouncilDrop' } } }
+        '400': { description: "invalid night", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "Not a verified officer", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such guild, or not an Onyxia drop", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/loot/votes:
+    put:
+      summary: An officer's yes or no on a candidate for a drop (verified officers, Raid guild plan)
+      description: One vote per officer per candidate per drop of a night; a new vote replaces the officer's earlier one, null removes it. Stops while the claim is contested.
+      operationId: putGuildLootVote
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/LootVoteRequest' } } }
+      responses:
+        '200':
+          description: "The candidate's tally after the vote"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [night, item_id, character_key, votes]
+                        properties:
+                          night: { type: string }
+                          item_id: { type: integer }
+                          character_key: { type: string }
+                          votes: { $ref: '#/components/schemas/LootCouncilVotes' }
+        '400': { description: "invalid (body, night, item or character)", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden (not an officer), guild_plan_required or raid_guild_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "voting_closed (the drop is awarded on that night) or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/loot/interest:
+    get:
+      summary: The viewer's own MS/OS flags on a night (verified members)
+      operationId: getGuildLootInterest
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: night, in: query, schema: { type: string }, description: Omitted is the current night. }
+      responses:
+        '200':
+          description: "The flags on the viewer's own characters only"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LootInterest' } } }
+        '400': { description: "invalid night", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "Not a verified member", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+    put:
+      summary: Flag a drop main spec or off spec (own character; an officer for anyone)
+      description: A member sets their own characters' flags, no plan needed. Setting another character's flag takes a verified officer, the Raid guild plan and no contested claim. null removes the flag.
+      operationId: putGuildLootInterest
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/LootInterestRequest' } } }
+      responses:
+        '200':
+          description: "The flag as stored"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [night, item_id, character_key, ms_os]
+                        properties:
+                          night: { type: string }
+                          item_id: { type: integer }
+                          character_key: { type: string }
+                          ms_os: { type: [string, "null"], enum: [ms, os, null] }
+        '400': { description: "invalid", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden (not a member, or another's character), guild_plan_required or raid_guild_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "voting_closed or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/loot/awards:
+    post:
+      summary: Award a drop with its decision record (verified officers, Raid guild plan)
+      description: Snapshots the candidate's votes and the officer count onto the award and closes voting on the drop for that night. Re-awarding the drop on the same night replaces the award.
+      operationId: createGuildLootAward
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/LootAwardRequest' } } }
+      responses:
+        '200':
+          description: "Awarded"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [award_id, status]
+                        properties:
+                          award_id: { type: integer, format: int64 }
+                          status: { type: string, enum: [awarded] }
+        '400': { description: "invalid (item, character, raid, night, ms_os or a reason over 200 characters)", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden, guild_plan_required or raid_guild_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/export/loot.csv:
+    get:
+      summary: Loot history as CSV (officers by rank, any plan state)
+      description: >-
+        Columns date, raid, boss, item_id, item, character, class, ms_os, votes_yes, votes_no,
+        reason, awarded_by. date is the night's day in the guild's raid zone; from and to filter on
+        it, inclusive. Cells starting with a formula character get a leading apostrophe; a field an
+        award never recorded is empty. Anyone below officer rank gets 404.
+      operationId: exportGuildLootCSV
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200': { description: "The CSV file", content: { text/csv: { schema: { type: string } } } }
+        '400': { description: "invalid from or to", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such guild, or not an officer", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/export/loot.json:
+    get:
+      summary: Loot history as JSON (officers by rank, any plan state)
+      description: The CSV's rows, with null for a field an award never recorded.
+      operationId: exportGuildLootJSON
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: "The history in range"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LootHistory' } } }
+        '400': { description: "invalid from or to", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such guild, or not an officer", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
   /v1/auth/app/start:
     get:
       summary: Begin app sign-in in the system browser (dark, APP_SIGN_IN)
