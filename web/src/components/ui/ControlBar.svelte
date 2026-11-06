@@ -21,6 +21,9 @@
     label,
     summary,
     end,
+    action,
+    busy = false,
+    busyTitle,
     tail,
     sticky = true,
     labelsFrom = 1280,
@@ -35,6 +38,13 @@
     /** The phone line; defaults to each group's chosen label joined with a middle dot. */
     summary?: string;
     end?: Snippet;
+    /** The page's one primary (the sim's Run). One element: on phone it sits on the summary line
+     *  beside "Change", from 768 after the groups and `end`, so a run is never behind the toggle. */
+    action?: Snippet;
+    /** A run is in flight: every group and `end` at 50% and inert; `action` stays live (Stop). */
+    busy?: boolean;
+    /** The busy groups' title ("Stop the run to change it"). */
+    busyTitle?: string;
     /** Groups the bar's own kinds do not cover (a multi-select), after the groups. */
     tail?: Snippet;
     sticky?: boolean;
@@ -75,7 +85,7 @@
   data-testid={testid}
   data-region={REGION.controls}
 >
-  <div class="page-column ui-cbar-inner">
+  <div class="page-column ui-cbar-inner" data-has-action={action ? '' : undefined}>
     <button
       type="button"
       class="ui-cbar-toggle"
@@ -89,7 +99,13 @@
         >Change <Glyph name="chevron" size={14} class="rotate-90" /></span
       >
     </button>
-    <div class="ui-cbar-groups" id={`${id}-groups`}>
+    <div
+      class="ui-cbar-groups"
+      id={`${id}-groups`}
+      data-busy={busy ? '' : undefined}
+      inert={busy}
+      title={busy ? busyTitle : undefined}
+    >
       {#each groups as group (group.param)}
         <div class="ui-cbar-group" data-kind={group.kind}>
           <span
@@ -150,6 +166,7 @@
                 options={group.options.map((option) => ({
                   value: option.value,
                   label: option.label,
+                  description: option.description,
                   disabled: option.disabled,
                 }))}
                 testid={`control-${group.param}`}
@@ -167,6 +184,7 @@
       {#if tail}{@render tail()}{/if}
       {#if end}<div class="ui-cbar-end">{@render end()}</div>{/if}
     </div>
+    {#if action}<div class="ui-cbar-action">{@render action()}</div>{/if}
   </div>
 </div>
 
@@ -217,6 +235,29 @@
     gap: 4px;
     min-width: 0;
   }
+  .ui-cbar-groups[data-busy] {
+    opacity: 0.5;
+  }
+  /* With a primary: the summary line and the primary share the phone's first row, the groups open
+     under them. */
+  .ui-cbar-inner[data-has-action] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 12px;
+    align-items: center;
+  }
+  .ui-cbar-inner[data-has-action] > .ui-cbar-toggle {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .ui-cbar-inner[data-has-action] > .ui-cbar-action {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .ui-cbar-inner[data-has-action] > .ui-cbar-groups {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
 
   @media (min-width: 768px) {
     .ui-cbar-inner {
@@ -262,6 +303,17 @@
     }
     .ui-cbar-select[data-fixed-width='true'] {
       width: var(--cbar-field-w);
+    }
+    .ui-cbar-inner[data-has-action] {
+      display: flex;
+    }
+    .ui-cbar-inner[data-has-action] > .ui-cbar-groups {
+      flex: 1;
+      width: auto;
+      min-width: 0;
+    }
+    .ui-cbar-action {
+      margin-left: 20px;
     }
     .ui-cbar-end {
       margin-left: auto;

@@ -6,7 +6,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { CHARACTER_PATH, CHARACTER_URL } from './support/character-fixture';
+import { CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from './support/character-fixture';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const SHOTS = process.env.W8_SHOTS ?? 'test-results/w8';
@@ -105,6 +105,7 @@ test('an unknown character says so, with the lookup and the addon line', async (
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
   await page.route(CHARACTER_URL, (route) => route.fulfill(fulfil(null, 404)));
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(fulfil(null, 404)));
+  await routeCharacterSearch(page);
   // Only the fixture character's address is prerendered in the preview build; the sentence's own
   // name, ruleset and region are pinned in CharacterNotFound.test.ts ("Nobody Here" on "PvP US").
   await page.goto(CHARACTER_PATH);

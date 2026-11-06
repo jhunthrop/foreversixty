@@ -27,10 +27,6 @@ const SETTLED_PX = 4;
 
 // design/DESIGN-SYSTEM.md: 44px minimum hit targets, 18px phone gutter. 360x800 is the
 // narrowest phone the site designs for; design/Mobile.dc.html is the reference artboard.
-// The phone header is a 56px bar, so the summary starts about 360px down the page; scrolling
-// further than that would take it off the top of the screen on any page that has one.
-const SCROLL_PX = 300;
-
 test.describe('planner on a phone', () => {
   test.use({ viewport: { width: 360, height: 800 } });
 
@@ -74,12 +70,19 @@ test.describe('planner on a phone', () => {
   test('a tab strip that overflows fades the clipped edge and scrolls the open tab into view', async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 200, height: 800 });
+    // Narrow enough that the last tab itself is clipped: the fade is measured against the last
+    // tab, not the scroll width (lib/scroll-fade.ts), and at 200 the two tabs now just fit.
+    await page.setViewportSize({ width: 160, height: 800 });
     await page.goto('/planner');
     const tablist = page.getByTestId('tree-tablist');
     const wrap = tablist.locator('..');
     await expect(page.getByRole('tab')).toHaveCount(2);
-    expect(await tablist.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+    expect(
+      await tablist.evaluate(
+        (el) =>
+          (el.lastElementChild?.getBoundingClientRect().right ?? 0) > el.getBoundingClientRect().right + 1,
+      ),
+    ).toBe(true);
     await expect(wrap).toHaveAttribute('data-fade-end', '');
     await expect(wrap).not.toHaveAttribute('data-fade-start', '');
     await page.getByRole('tab').nth(1).click();
@@ -116,23 +119,20 @@ test.describe('planner on a phone', () => {
     await expect(page.getByRole('grid', { name: 'Fury talents' })).toBeVisible();
   });
 
-  test('keeps the summary bar in view while the trees scroll', async ({ page }) => {
+  // The sticky summary bar this used to hold in view is gone from the standalone planner (site
+  // alignment 5.5: the head is a PageHead on the page ground, SummaryBar is the inline embed's
+  // only). What stands: points left is on the first screen, and loading the trees never moves
+  // the page -- the open tab scrolls the strip only (it used to pull the page down 95 px).
+  test('opens on the first screen with points left, and loading the trees never scrolls the page', async ({
+    page,
+  }) => {
     await page.goto('/planner');
     await page.getByRole('grid', { name: 'Arms talents' }).waitFor();
-    // `mouse.wheel` starts a scroll and returns before it lands, so the position has to be
-    // waited for -- reading it straight after measures the unscrolled page. A phone shows one
-    // tree, so the scroll may be further than the page goes; wait for as far as it does go.
-    const target = await page.evaluate(
-      (scrollPx) => Math.min(scrollPx, document.documentElement.scrollHeight - window.innerHeight),
-      SCROLL_PX,
-    );
-    await page.mouse.wheel(0, SCROLL_PX);
-    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(target - 1);
-
-    // Points left is always present in the summary bar row.
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
     const box = await page.getByTestId('planner-remaining').boundingBox();
+    const viewport = page.viewportSize();
     expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
-    expect(box?.y ?? 9999).toBeLessThan(200);
+    expect((box?.y ?? 9999) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport?.height ?? 0);
   });
 
   test('never scrolls sideways, with or without points spent', async ({ page }) => {

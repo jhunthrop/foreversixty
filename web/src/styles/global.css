@@ -489,34 +489,6 @@ html[data-session='1'] [data-session-hide] {
   visibility: hidden;
 }
 
-/* "Your server runs" on /sim reserves its box before data (experience spec 2026-10-24
-   section 3.7): the card head (48px) and its rule (1px), then the rows at the height they last
-   rendered. Base.astro sets --server-runs-reserve from fs.serverRuns.reserve (px) and
-   data-server-sims from the cached /v1/me; a first visit falls back to one row, 64px on
-   desktop and 100px on phone (a done row is 99.5px at 390). The static shell's copy of the
-   box is hidden unless both the session and the entitlement are hinted, so a free member or
-   a signed-out visitor reserves nothing. */
-.server-runs-reserve {
-  min-height: calc(49px + var(--server-runs-reserve, 100px));
-}
-.server-runs-rows-reserve {
-  min-height: var(--server-runs-reserve, 100px);
-}
-@media (min-width: 768px) {
-  .server-runs-reserve {
-    min-height: calc(49px + var(--server-runs-reserve, 64px));
-  }
-  .server-runs-rows-reserve {
-    min-height: var(--server-runs-reserve, 64px);
-  }
-}
-.server-runs-shell-reserve {
-  display: none;
-}
-html[data-session='1'][data-server-sims='1'] .server-runs-shell-reserve {
-  display: block;
-}
-
 /* The owner's History section on the character page holds its box before data (experience
    spec 2026-10-24-character-history 3.11). Base.astro sets data-history only for an owner on a
    plan with history, and --history-reserve from fs.history.reserve (px); a first visit falls
@@ -678,7 +650,7 @@ html[data-session='1'] .account-header-reserve {
   min-height: 110px;
 }
 .account-left-skeleton {
-  min-height: max(var(--account-left-reserve, 0px), 550px);
+  min-height: max(var(--account-left-reserve, 0px), 500px);
 }
 .account-devices-skeleton {
   min-height: 290px;
@@ -748,7 +720,7 @@ html[data-discord='lapsed'] .account-discord-skeleton {
     min-height: 60px;
   }
   .account-left-skeleton {
-    min-height: max(var(--account-left-reserve, 0px), 410px);
+    min-height: max(var(--account-left-reserve, 0px), 355px);
   }
   .account-devices-skeleton {
     min-height: 270px;
@@ -959,5 +931,37 @@ details:not([open]) > summary .when-open {
     animation-timing-function: linear;
     animation-fill-mode: both;
     animation-timeline: scroll(self inline);
+  }
+}
+
+/* The account's Characters card (account/CharacterList.svelte): the Battle.net refresh bar.
+   Here, not in the component's <style>: /logs imports Account.svelte lazily for its pairing
+   block, and with inlined stylesheets the build emits no file for a lazily imported island's
+   scoped CSS, so the import's CSS preload fails and the block never draws (scripts/chunk-css.mjs
+   now fails the build on that). */
+/* A thin bar on the card's top edge while Battle.net is asked; still under reduced motion. */
+.refresh-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  overflow: hidden;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: refresh-slide 1.2s linear infinite;
+}
+@keyframes refresh-slide {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .refresh-bar {
+    animation: none;
+    background: var(--color-gold);
+    opacity: 0.4;
   }
 }

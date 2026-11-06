@@ -9,15 +9,15 @@
   "meta": "Best in slot",
   "answer": {
    "figure": {
-    "label": "This set, simmed 5 nov",
-    "value": "1063.2",
+    "label": "This set, simmed 6 nov",
+    "value": "1083.6",
     "unit": "DPS",
     "caption": ""
    },
    "tank": [],
    "tankLine": "",
    "healer": [],
-   "trust": "Level 60 Night-elf · 51 talent points · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 5 consumables.",
+   "trust": "Level 60 Night-elf · 51 talent points · level 63 unknown, 180 s · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 6 consumables. · 3,000 runs",
    "rankingSim": "View ranking sim ›",
    "simLink": "Open in simulator",
    "plannerLink": "Talents in planner"
@@ -167,7 +167,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −1.6 vs",
+      "prefix": "next: −1.8 vs",
       "item": "Lieutenant Commander's Chain Helm",
       "quality": "rare"
      },
@@ -193,7 +193,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −1.7 vs",
+      "prefix": "next: −1.8 vs",
       "item": "Skibi's Pendant",
       "quality": "rare"
      },
@@ -220,8 +220,8 @@
      },
      "basis": {
       "prefix": "next: −7.9 vs",
-      "item": "Lieutenant Commander's Chain Shoulders",
-      "quality": "rare"
+      "item": "Field Marshal's Chain Spaulders",
+      "quality": "epic"
      },
      "icon": "inv_shoulder_06"
     },
@@ -237,10 +237,10 @@
      "name": "Cape of the Black Baron",
      "quality": "rare",
      "stats": "+15 Agi · +20 AP",
-     "line2": "Baron Rivendare · Stratholme",
+     "line2": "Baron Rivendare · Stratholme (58-60)",
      "gain": {
       "label": "",
-      "value": "+3.8",
+      "value": "+4.0",
       "unit": "DPS",
       "caption": ""
      },
@@ -271,7 +271,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −25.8 vs",
+      "prefix": "next: −26.3 vs",
       "item": "Savage Gladiator Chain",
       "quality": "epic"
      },
@@ -297,7 +297,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −1.7 vs",
+      "prefix": "next: −1.8 vs",
       "item": "Knight-Captain's Chain Armguards",
       "quality": "rare"
      },
@@ -323,7 +323,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −0.5 vs",
+      "prefix": "next: −1.0 vs",
       "item": "Grand Marshal's Stave",
       "quality": "epic"
      },
@@ -363,7 +363,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −19.4 vs",
+      "prefix": "next: −20.0 vs",
       "item": "Hyper Deluxe Sniper Rifle Mk XVII",
       "quality": "epic"
      },
@@ -412,7 +412,7 @@
      "line2": "Vendor: Pix Xizzix",
      "gain": {
       "label": "",
-      "value": "+4.0",
+      "value": "+4.1",
       "unit": "DPS",
       "caption": ""
      },
@@ -438,7 +438,7 @@
      "line2": "Vendor: Illiyana Moonblaze",
      "gain": {
       "label": "",
-      "value": "+7.3",
+      "value": "+7.2",
       "unit": "DPS",
       "caption": ""
      },
@@ -461,7 +461,7 @@
      "name": "Beaststalker's Boots",
      "quality": "rare",
      "stats": "+21 Agi · +9 Sta",
-     "line2": "Nerub'enkan · Stratholme",
+     "line2": "Nerub'enkan · Stratholme (58-60)",
      "gain": {
       "label": "",
       "value": "Same",
@@ -521,7 +521,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −1.7 vs",
+      "prefix": "next: −1.5 vs",
       "item": "Cutthroat's Signet",
       "quality": "rare"
      },
@@ -570,7 +570,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −5.3 vs",
+      "prefix": "next: −6.3 vs",
       "item": "Heart of Wyrmthalak",
       "quality": "rare"
      },
@@ -581,34 +581,34 @@
   "weights": {
    "title": "What to stack",
    "sentence": "Stack agility, then crit rating, then intellect.",
-   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 6.64 per 1%, not in the table because no item at this level range has it",
+   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 6.83 per 1%, not in the table because no item at this level range has it",
    "rows": [
     {
      "name": "Agility",
      "scale": "1.00",
      "bar": 1,
-     "line": "0.874 DPS per point",
+     "line": "0.891 DPS per point",
      "faint": false
     },
     {
      "name": "Crit rating",
-     "scale": "0.84",
-     "bar": 0.836,
-     "line": "0.731 DPS per point",
+     "scale": "0.82",
+     "bar": 0.8170000000000001,
+     "line": "0.728 DPS per point",
      "faint": false
     },
     {
      "name": "Intellect",
      "scale": "0.36",
-     "bar": 0.363,
-     "line": "0.317 DPS per point",
+     "bar": 0.36200000000000004,
+     "line": "0.323 DPS per point",
      "faint": false
     },
     {
      "name": "Ranged attack power",
      "scale": "0.30",
      "bar": 0.303,
-     "line": "0.264 DPS per point",
+     "line": "0.270 DPS per point",
      "faint": false
     },
     {
@@ -672,7 +672,7 @@
      "line": "6.6 healing per mana"
     }
    ],
-   "trust": "Level 60 Human · 51 talent points · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 10 consumables.",
+   "trust": "Level 60 Human · 51 talent points · level 63 unknown, 180 s · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 10 consumables. · 3,003 runs",
    "rankingSim": "",
    "simLink": "",
    "plannerLink": "Talents in planner"
@@ -943,7 +943,7 @@
      "name": "Devout Bracers",
      "quality": "rare",
      "stats": "+8 Int · +10 Spi",
-     "line2": "Thuzadin Shadowcaster · Stratholme · 1%",
+     "line2": "Thuzadin Shadowcaster · Stratholme (58-60) · 1%",
      "gain": {
       "label": "",
       "value": "Same",
@@ -1037,7 +1037,7 @@
      "name": "Devout Gloves",
      "quality": "rare",
      "stats": "+17 Spi · +10 Int",
-     "line2": "Archivist Galford · Stratholme",
+     "line2": "Archivist Galford · Stratholme (58-60)",
      "gain": {
       "label": "",
       "value": "Same",
@@ -1089,7 +1089,7 @@
      "name": "Devout Skirt",
      "quality": "rare",
      "stats": "+23 Spi · +15 Int",
-     "line2": "Baron Rivendare · Stratholme",
+     "line2": "Baron Rivendare · Stratholme (58-60)",
      "gain": {
       "label": "",
       "value": "Same",
@@ -1115,7 +1115,7 @@
      "name": "Devout Sandals",
      "quality": "rare",
      "stats": "+17 Spi · +10 Int",
-     "line2": "Maleki the Pallid · Stratholme",
+     "line2": "Maleki the Pallid · Stratholme (58-60)",
      "gain": {
       "label": "",
       "value": "Same",
@@ -1167,7 +1167,7 @@
      "name": "Band of Mending",
      "quality": "rare",
      "stats": "+7 Sta · +7 Int",
-     "line2": "Balnazzar · Stratholme",
+     "line2": "Balnazzar · Stratholme (58-60)",
      "gain": {
       "label": "",
       "value": "Same",
@@ -1299,12 +1299,12 @@
     {
      "id": "effective-health",
      "label": "Effective health",
-     "value": "49,794"
+     "value": "45,441"
     },
     {
      "id": "dtps",
      "label": "Damage taken per second",
-     "value": "245.0"
+     "value": "240.5"
     },
     {
      "id": "chance-of-death",
@@ -1314,12 +1314,12 @@
     {
      "id": "tps",
      "label": "Threat per second",
-     "value": "1,633.4"
+     "value": "1,777.7"
     }
    ],
-   "tankLine": "TMI 21 · own damage 435.3 DPS",
+   "tankLine": "TMI 23 · own damage 455.4 DPS",
    "healer": [],
-   "trust": "Level 60 Night-elf · 51 talent points · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 12 consumables.",
+   "trust": "Level 60 Night-elf · 51 talent points · level 63 unknown, 180 s · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 12 consumables. · 3,000 runs",
    "rankingSim": "",
    "simLink": "Open in simulator",
    "plannerLink": "Talents in planner"
@@ -1489,13 +1489,13 @@
      "line2": "Silverwing Sentinels reputation · Honored",
      "gain": {
       "label": "",
-      "value": "+19.2",
+      "value": "+125.9",
       "unit": "score",
       "caption": ""
      },
      "basis": {
       "prefix": "vs",
-      "item": "Talisman of Evasion",
+      "item": "Medallion of Grand Marshal Morris",
       "quality": "rare"
      },
      "icon": "inv_jewelry_necklace_13"
@@ -1520,9 +1520,9 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −665.4 vs",
-      "item": "Highlander's Lamellar Spaulders",
-      "quality": "epic"
+      "prefix": "next: −641.4 vs",
+      "item": "Lieutenant Commander's Plate Shoulders",
+      "quality": "rare"
      },
      "icon": "inv_shoulder_01"
     },
@@ -1546,7 +1546,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −66.4 vs",
+      "prefix": "next: −63.3 vs",
       "item": "Sergeant's Cape",
       "quality": "rare"
      },
@@ -1572,7 +1572,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −427.4 vs",
+      "prefix": "next: −303.0 vs",
       "item": "Breastplate of the Chromatic Flight",
       "quality": "epic"
      },
@@ -1598,7 +1598,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −176.5 vs",
+      "prefix": "next: −298.8 vs",
       "item": "Sentinel's Wristguards",
       "quality": "rare"
      },
@@ -1624,9 +1624,9 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −1969.9 vs",
-      "item": "Ironwood Blade",
-      "quality": "epic"
+      "prefix": "No close alternative",
+      "item": "",
+      "quality": "common"
      },
      "icon": "inv_mace_1h_raidhyjalc60_d_01"
     },
@@ -1650,7 +1650,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −1136.0 vs",
+      "prefix": "next: −1095.6 vs",
       "item": "Evergreen Shield",
       "quality": "epic"
      },
@@ -1671,7 +1671,7 @@
      "line2": "Silverwing Sentinels reputation · Revered",
      "gain": {
       "label": "",
-      "value": "+133.1",
+      "value": "+137.7",
       "unit": "score",
       "caption": ""
      },
@@ -1704,9 +1704,9 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −893.2 vs",
-      "item": "Sentinel's Gloves",
-      "quality": "rare"
+      "prefix": "next: −592.7 vs",
+      "item": "Stronghold Gauntlets",
+      "quality": "epic"
      },
      "icon": "inv_gauntlets_28"
     },
@@ -1725,7 +1725,7 @@
      "line2": "Vendor: Pix Xizzix",
      "gain": {
       "label": "",
-      "value": "+341.7",
+      "value": "+259.3",
       "unit": "score",
       "caption": ""
      },
@@ -1751,7 +1751,7 @@
      "line2": "Vendor: Illiyana Moonblaze",
      "gain": {
       "label": "",
-      "value": "+210.4",
+      "value": "+213.2",
       "unit": "score",
       "caption": ""
      },
@@ -1782,9 +1782,9 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −988.0 vs",
-      "item": "Depleted Thorium Sabatons",
-      "quality": "epic"
+      "prefix": "No close alternative",
+      "item": "",
+      "quality": "common"
      },
      "icon": "inv_boots_plate_03"
     },
@@ -1803,14 +1803,14 @@
      "line2": "Vendor: Pix Xizzix",
      "gain": {
       "label": "",
-      "value": "+81.4",
-      "unit": "score",
+      "value": "Same",
+      "unit": "",
       "caption": ""
      },
      "basis": {
-      "prefix": "vs",
-      "item": "Myrmidon's Signet",
-      "quality": "epic"
+      "prefix": "next: −377.2 vs",
+      "item": "Innervating Band",
+      "quality": "rare"
      },
      "icon": "inv_jewelry_ring_01"
     },
@@ -1834,7 +1834,7 @@
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −115.4 vs",
+      "prefix": "next: −87.4 vs",
       "item": "Innervating Band",
       "quality": "rare"
      },
@@ -1855,13 +1855,13 @@
      "line2": "Vendor: Pix Xizzix",
      "gain": {
       "label": "",
-      "value": "Same",
-      "unit": "",
+      "value": "+118.1",
+      "unit": "score",
       "caption": ""
      },
      "basis": {
-      "prefix": "next: −713.5 vs",
-      "item": "Talisman of Arathor",
+      "prefix": "vs",
+      "item": "Defender's Grip Stabilizer",
       "quality": "rare"
      },
      "icon": "inv_engineering_90_lightningbox"
@@ -1881,14 +1881,14 @@
      "line2": "Quest: The Eye of Command · requires level 51",
      "gain": {
       "label": "",
-      "value": "+1526.7",
+      "value": "+1127.1",
       "unit": "score",
       "caption": ""
      },
      "basis": {
       "prefix": "vs",
-      "item": "Smotts' Compass",
-      "quality": "uncommon"
+      "item": "Talisman of Arathor",
+      "quality": "rare"
      },
      "icon": "inv_jewelry_stormpiketrinket_05"
     }
@@ -1896,84 +1896,84 @@
   },
   "weights": {
    "title": "What to stack",
-   "sentence": "Stack defense rating, then stamina, then dodge rating.",
-   "caption": "Normalized to Defense rating = 1.00. Per point of stat, normalized to Defense = 1.00, with score per point and the sim error. Expertise: 5.77 per 1%",
+   "sentence": "Stack defense rating, then stamina, then block value.",
+   "caption": "Normalized to Defense rating = 1.00. Per point of stat, normalized to Defense = 1.00, with score per point and the sim error. Expertise: 6.82 per 1%",
    "rows": [
     {
      "name": "Defense rating",
      "scale": "1.00",
      "bar": 1,
-     "line": "200.065 score per point",
+     "line": "182.498 score per point",
      "faint": false
     },
     {
      "name": "Stamina",
-     "scale": "0.67",
-     "bar": 0.665,
-     "line": "133.084 score per point",
+     "scale": "0.75",
+     "bar": 0.755,
+     "line": "137.730 score per point",
+     "faint": false
+    },
+    {
+     "name": "Block value",
+     "scale": "0.64",
+     "bar": 0.64,
+     "line": "116.711 score per point",
      "faint": false
     },
     {
      "name": "Dodge rating",
-     "scale": "0.64",
-     "bar": 0.636,
-     "line": "127.223 score per point",
+     "scale": "0.63",
+     "bar": 0.635,
+     "line": "115.829 score per point",
      "faint": false
     },
     {
      "name": "Agility",
-     "scale": "0.54",
-     "bar": 0.5379999999999999,
-     "line": "107.543 score per point",
+     "scale": "0.56",
+     "bar": 0.562,
+     "line": "102.513 score per point",
      "faint": false
     },
     {
      "name": "Parry rating",
      "scale": "0.51",
-     "bar": 0.51,
-     "line": "101.934 score per point",
-     "faint": false
-    },
-    {
-     "name": "Block value",
-     "scale": "0.50",
-     "bar": 0.499,
-     "line": "99.856 score per point",
+     "bar": 0.509,
+     "line": "92.966 score per point",
      "faint": false
     },
     {
      "name": "Hit rating",
      "scale": "0.18",
-     "bar": 0.17800000000000002,
-     "line": "35.598 score per point",
+     "bar": 0.18,
+     "line": "32.759 score per point",
      "faint": false
     },
     {
      "name": "Strength",
      "scale": "0.09",
-     "bar": 0.087,
-     "line": "17.389 score per point",
+     "bar": 0.092,
+     "line": "16.836 score per point",
      "faint": false
     },
     {
      "name": "Crit rating",
      "scale": "0.06",
-     "bar": 0.057999999999999996,
+     "bar": 0.063,
      "line": "11.565 score per point",
      "faint": false
     },
     {
      "name": "Armor",
      "scale": "0.04",
-     "bar": 0.04,
-     "line": "7.506 score per point",
+     "bar": 0.043,
+     "line": "7.824 score per point",
      "faint": false
     },
     {
      "name": "Attack power",
      "scale": "0.03",
      "bar": 0.04,
-     "line": "5.395 score per point",
+     "line": "4.931 score per point",
      "faint": false
     },
     {
@@ -1984,8 +1984,8 @@
      "faint": true
     }
    ],
-   "expertise": "Expertise to cap: 4.5% for dodge, 12% for parry",
-   "addon": "Expertise to cap: 4.5% for dodge, 12% for parry",
+   "expertise": "Expertise to cap: 2.5% for dodge, 10% for parry",
+   "addon": "Expertise to cap: 2.5% for dodge, 10% for parry",
    "addonLink": "Use these weights in the addon ›"
   },
   "guide": {
@@ -2003,15 +2003,15 @@
   "meta": "Best in slot",
   "answer": {
    "figure": {
-    "label": "Best set, all sources",
-    "value": "88.8",
+    "label": "This set, simmed 6 nov",
+    "value": "90.4",
     "unit": "DPS",
-    "caption": "Your sources change 2 slots; that set has not been simmed yet"
+    "caption": ""
    },
    "tank": [],
    "tankLine": "",
    "healer": [],
-   "trust": "Level 29 Night-elf · 11 talent points · Bare character: no raid buffs, debuffs or consumables.",
+   "trust": "Level 29 Night-elf · 11 talent points · level 23 unknown, 180 s · Bare character: no raid buffs, debuffs or consumables. · 3,000 runs",
    "rankingSim": "",
    "simLink": "Open in simulator",
    "plannerLink": "Talents in planner"
@@ -2143,7 +2143,7 @@
        "line2": "Lady Anacondra · Wailing Caverns (15-24) · 40%",
        "gain": {
         "label": "",
-        "value": "+0.8",
+        "value": "+0.1",
         "unit": "DPS",
         "caption": ""
        },
@@ -2200,7 +2200,7 @@
         "caption": ""
        },
        "basis": {
-        "prefix": "next: −0.2 vs",
+        "prefix": "next: −0.1 vs",
         "item": "Trapper's Leather Gloves",
         "quality": "rare"
        },
@@ -2227,7 +2227,7 @@
        },
        "basis": {
         "prefix": "next: −0.3 vs",
-        "item": "Bluegill Breeches",
+        "item": "Duty Bound Leggings",
         "quality": "uncommon"
        },
        "icon": "inv_pants_11"
@@ -2253,13 +2253,13 @@
        "line2": "Captain Greenskin · The Deadmines (17-26) · 30%",
        "gain": {
         "label": "",
-        "value": "+0.2",
+        "value": "+0.1",
         "unit": "DPS",
         "caption": ""
        },
        "basis": {
         "prefix": "vs",
-        "item": "Deviate Scale Belt",
+        "item": "Trapper's Leather Belt",
         "quality": "rare"
        },
        "icon": "inv_belt_26"
@@ -2279,13 +2279,13 @@
        "line2": "Gilnid · The Deadmines (17-26) · 45%",
        "gain": {
         "label": "",
-        "value": "+1.0",
+        "value": "+1.1",
         "unit": "DPS",
         "caption": ""
        },
        "basis": {
         "prefix": "vs",
-        "item": "The 1 Ring",
+        "item": "Volcanic Rock Ring",
         "quality": "uncommon"
        },
        "icon": "inv_jewelry_ring_09"
@@ -2305,7 +2305,7 @@
        "line2": "Captain Greenskin · The Deadmines (17-26) · 30%",
        "gain": {
         "label": "",
-        "value": "+0.8",
+        "value": "+0.4",
         "unit": "DPS",
         "caption": ""
        },
@@ -2337,7 +2337,7 @@
        "line2": "Crafted · Leatherworking",
        "gain": {
         "label": "",
-        "value": "+1.5",
+        "value": "+1.0",
         "unit": "DPS",
         "caption": ""
        },
@@ -2351,7 +2351,7 @@
      ]
     },
     {
-     "title": "Quest",
+     "title": "Silverwing Sentinels reputation",
      "count": "2 pieces",
      "cells": [
       {
@@ -2359,27 +2359,59 @@
        "state": "item",
        "label": "Neck",
        "flag": {
-        "text": "Level 1",
+        "text": "Level 18",
         "tone": "muted"
        },
-       "item": 277204,
-       "name": "Erudite's Amulet",
-       "quality": "uncommon",
-       "stats": "+3 Sta · +2 Agi",
-       "line2": "Quest: Friend of the Library · requires level 1",
+       "item": 20444,
+       "name": "Sentinel's Medallion",
+       "quality": "rare",
+       "stats": "+6 Agi · +2 Sta",
+       "line2": "Silverwing Sentinels reputation · Honored",
        "gain": {
         "label": "",
-        "value": "−1.1",
+        "value": "+1.2",
         "unit": "DPS",
         "caption": ""
        },
        "basis": {
-        "prefix": "vs best:",
-        "item": "Sentinel's Medallion",
-        "quality": "rare"
+        "prefix": "vs",
+        "item": "Erudite's Amulet",
+        "quality": "uncommon"
        },
-       "icon": "inv_jewelry_necklace_01"
+       "icon": "inv_jewelry_necklace_13"
       },
+      {
+       "slot": "finger2",
+       "state": "item",
+       "label": "Ring",
+       "flag": {
+        "text": "Level 18",
+        "tone": "muted"
+       },
+       "item": 20439,
+       "name": "Protector's Band",
+       "quality": "rare",
+       "stats": "+4 Str · +4 Agi",
+       "line2": "Silverwing Sentinels reputation · Honored",
+       "gain": {
+        "label": "",
+        "value": "+0.8",
+        "unit": "DPS",
+        "caption": ""
+       },
+       "basis": {
+        "prefix": "vs",
+        "item": "Volcanic Rock Ring",
+        "quality": "uncommon"
+       },
+       "icon": "inv_jewelry_ring_10"
+      }
+     ]
+    },
+    {
+     "title": "Quest",
+     "count": "1 piece",
+     "cells": [
       {
        "slot": "chest",
        "state": "item",
@@ -2395,7 +2427,7 @@
        "line2": "Quest: The Defias Brotherhood · requires level 14",
        "gain": {
         "label": "",
-        "value": "+1.1",
+        "value": "+0.3",
         "unit": "DPS",
         "caption": ""
        },
@@ -2410,7 +2442,7 @@
     },
     {
      "title": "World / BoE",
-     "count": "4 pieces",
+     "count": "3 pieces",
      "cells": [
       {
        "slot": "wrist",
@@ -2453,42 +2485,16 @@
        "line2": "World drop (20-27) · BoE · on the AH",
        "gain": {
         "label": "",
-        "value": "+0.6",
+        "value": "+0.3",
         "unit": "DPS",
         "caption": ""
        },
        "basis": {
         "prefix": "vs",
-        "item": "Blackened Defias Boots",
+        "item": "Trapper's Leather Boots",
         "quality": "rare"
        },
        "icon": "inv_boots_wolf"
-      },
-      {
-       "slot": "finger2",
-       "state": "item",
-       "label": "Ring",
-       "flag": {
-        "text": "Level 10",
-        "tone": "muted"
-       },
-       "item": 8350,
-       "name": "The 1 Ring",
-       "quality": "uncommon",
-       "stats": "+1 Str · +1 Agi",
-       "line2": "Fishing · 0.1% · BoE · on the AH",
-       "gain": {
-        "label": "",
-        "value": "−0.7",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs best:",
-        "item": "Protector's Band",
-        "quality": "rare"
-       },
-       "icon": "inv_jewelry_ring_03"
       },
       {
        "slot": "ranged",
@@ -2524,42 +2530,42 @@
   },
   "weights": {
    "title": "What to stack",
-   "sentence": "Stack agility, then intellect, then hit rating.",
-   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 1.68 per 1%, not in the table because no item at this level range has it",
+   "sentence": "Stack agility, then intellect, then ranged attack power.",
+   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 1.41 per 1%, not in the table because no item at this level range has it",
    "rows": [
     {
      "name": "Agility",
      "scale": "1.00",
      "bar": 1,
-     "line": "0.290 DPS per point",
+     "line": "0.315 DPS per point",
      "faint": false
     },
     {
      "name": "Intellect",
-     "scale": "0.49",
-     "bar": 0.491,
-     "line": "0.142 DPS per point",
-     "faint": false
-    },
-    {
-     "name": "Hit rating",
-     "scale": "0.35",
-     "bar": 0.34600000000000003,
-     "line": "0.101 DPS per point",
+     "scale": "0.51",
+     "bar": 0.514,
+     "line": "0.162 DPS per point",
      "faint": false
     },
     {
      "name": "Ranged attack power",
+     "scale": "0.32",
+     "bar": 0.318,
+     "line": "0.100 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Hit rating",
      "scale": "0.31",
-     "bar": 0.312,
-     "line": "0.091 DPS per point",
+     "bar": 0.307,
+     "line": "0.097 DPS per point",
      "faint": false
     },
     {
      "name": "Crit rating",
-     "scale": "0.22",
-     "bar": 0.221,
-     "line": "0.064 DPS per point",
+     "scale": "0.21",
+     "bar": 0.209,
+     "line": "0.066 DPS per point",
      "faint": false
     },
     {

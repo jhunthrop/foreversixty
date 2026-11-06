@@ -13,6 +13,7 @@ import {
   CHARACTER_URL,
   GEAR,
   GEAR_ITEMS,
+  routeCharacterSearch,
   routeGearIcons,
 } from './support/character-fixture';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
@@ -272,6 +273,7 @@ test.describe('the not-found character page', () => {
   test('reads at full strength once settled', async ({ page }) => {
     await signedOut(page);
     await page.route(CHARACTER_URL, (route) => route.fulfill(fulfil(null, 404)));
+    await routeCharacterSearch(page);
     await page.goto(CHARACTER_PATH);
     await settle(page);
     await expect(page.getByTestId('character-not-found')).toBeVisible();

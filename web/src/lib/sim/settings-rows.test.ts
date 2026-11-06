@@ -7,7 +7,7 @@ import {
   chipName,
   settingsChipGroups,
   settingsRows,
-  targetLabel,
+  targetFact,
   type SettingsBuffs,
 } from './settings-rows';
 import type { SimResult } from './types';
@@ -45,21 +45,27 @@ describe('settingsRows', () => {
   });
 
   it('prints the fight, the target and the Execute phase in the spec words', () => {
-    const rows = Object.fromEntries(settingsRows(result).map((row) => [row.id, row.value]));
-    expect(rows.fight).toBe('3:00, ± 20% (2:24 to 3:36)');
-    expect(rows.target).toBe('Level 63 boss · 3,731 armor, 471 after debuffs');
-    expect(rows.execute).toBe('Last 25% of the fight, standing in for the boss under 20% health');
+    const all = settingsRows(result);
+    const rows = Object.fromEntries(all.map((row) => [row.id, row.value]));
+    const subs = Object.fromEntries(all.map((row) => [row.id, row.sub]));
+    expect(rows.fight).toBe('3:00, ± 20%');
+    expect(subs.fight).toBe('2:24 to 3:36');
+    expect(rows.target).toBe('Level 63 boss');
+    expect(subs.target).toBe('3,731 armor, 471 after debuffs');
+    expect(rows.execute).toBe('Last 25% of the fight');
+    expect(subs.execute).toBe('0:45 of a 3:00 fight');
     expect(rows.race).toBe('Troll');
     expect(rows.runs).toBe('10,000');
   });
 
   it('adds only the armor parts the run knows (build ruling R4)', () => {
     expect(
-      targetLabel({ ...result, target_stats: { level: 63, armor: 3731, armor_after_debuffs: 1471 } }),
-    ).toBe('Level 63 boss · 3,731 armor, 1,471 after debuffs');
-    expect(targetLabel({ ...result, target_stats: { level: 62, armor: 3400 } })).toBe(
-      'Level 62 boss · 3,400 armor',
-    );
+      targetFact({ ...result, target_stats: { level: 63, armor: 3731, armor_after_debuffs: 1471 } }),
+    ).toEqual({ value: 'Level 63 boss', sub: '3,731 armor, 1,471 after debuffs' });
+    expect(targetFact({ ...result, target_stats: { level: 62, armor: 3400 } })).toEqual({
+      value: 'Level 62 boss',
+      sub: '3,400 armor',
+    });
   });
 });
 

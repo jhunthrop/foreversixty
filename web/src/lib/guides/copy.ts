@@ -85,7 +85,9 @@ export const guidesCopy = {
     'Raid build only: needs a talent only the raid build takes. Not on the raid build? Skip that row.',
   bestInSlot: 'Best in slot',
   levelRange: 'Level range',
-  bisCaption: (race: string, faction: string): string => `Picks for a ${race} (${faction}).`,
+  /** "Picks for a Human (Alliance).", "Picks for an Undead (Horde)." */
+  bisCaption: (race: string, faction: string): string =>
+    `Picks for ${/^[AEIOU]/i.test(race) ? 'an' : 'a'} ${race} (${faction}).`,
   fullListLink: 'Full list and alternatives',
   preRaidNote:
     'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',

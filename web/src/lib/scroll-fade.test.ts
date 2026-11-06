@@ -1,7 +1,7 @@
 // web/src/lib/scroll-fade.test.ts
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
-import { updateScrollFade } from './scroll-fade';
+import { revealInStrip, updateScrollFade } from './scroll-fade';
 
 function rect(left: number, right: number): DOMRect {
   return {
@@ -48,5 +48,30 @@ describe('updateScrollFade', () => {
     updateScrollFade(fits);
     expect(fits.parentElement?.hasAttribute('data-fade-start')).toBe(false);
     expect(fits.parentElement?.hasAttribute('data-fade-end')).toBe(false);
+  });
+});
+
+describe('revealInStrip', () => {
+  const tabAt = (edge: [number, number], tab: [number, number], scrollLeft = 0) => {
+    const scroller = strip(edge, tab, tab);
+    scroller.scrollLeft = scrollLeft;
+    const target = scroller.lastElementChild as HTMLElement;
+    target.scrollIntoView = () => {
+      throw new Error('scrollIntoView moves the page; the strip scrolls itself');
+    };
+    revealInStrip(scroller, target);
+    return scroller.scrollLeft;
+  };
+
+  it('scrolls the strip right by what the tab overhangs its end', () => {
+    expect(tabAt([0, 100], [80, 140])).toBe(40);
+  });
+
+  it('scrolls the strip left by what the tab overhangs its start', () => {
+    expect(tabAt([0, 100], [-30, 40], 50)).toBe(20);
+  });
+
+  it('leaves a tab that is already in the strip where it is', () => {
+    expect(tabAt([0, 100], [10, 60], 5)).toBe(5);
   });
 });

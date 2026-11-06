@@ -9,8 +9,10 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { closeMoreSettings, gotoSim, openMoreSettings, pasteAndRun, gotoSavedSim } from './support/sim-page';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { fieldBox } from './support/select';
+import { answerRaceQuestion } from './support/sim-race';
 
 test.describe.configure({ mode: 'serial' });
 // No test.use({ viewport }): the phone audit runs under --project=mobile (Pixel 7, 412px),
@@ -100,8 +102,8 @@ async function targetsAreBigEnough(page: Page): Promise<void> {
 }
 
 /**
- * Every bordered card on the page -- `.rounded-panel` is the one class every such card
- * carries, from CharacterStrip's strip to CompareView's two tables -- keeps the page's 18px
+ * Every bordered card on the page -- the flat pages' Plate (`.ui-plate`, spec 2026-11-06-sim
+ * §4.1) and `.rounded-panel` (CompareView's two tables) -- keeps the page's 18px
  * gutter on both edges, either through its own `mx-[18px]` or a parent's. Scoped to `#sim`,
  * the island's own mount point on all three /sim routes, the same way report-phone.spec.ts
  * scopes its own island-only checks to `#report`: the shared header and footer are every
@@ -110,7 +112,11 @@ async function targetsAreBigEnough(page: Page): Promise<void> {
 async function sectionsKeepGutter(page: Page): Promise<void> {
   const { width } = page.viewportSize() ?? { width: 0 };
   const edges = await page.evaluate(() =>
-    [...document.querySelectorAll('#sim .rounded-panel, #sim .card-surface, #sim .card-surface-quiet')]
+    [
+      ...document.querySelectorAll(
+        '#sim .ui-plate, #sim .rounded-panel, #sim .card-surface, #sim .card-surface-quiet',
+      ),
+    ]
       .filter((element) => {
         const box = element.getBoundingClientRect();
         return box.width > 0 && box.height > 0;
@@ -139,29 +145,25 @@ async function gearGridIsOneColumn(page: Page): Promise<void> {
   // One read of all three, so a scroll still settling cannot move one between them.
   const [head, neck, hands] = await page.evaluate(() =>
     ['head', 'neck', 'hands'].map((slot) => {
-      const box = document.querySelector(`[data-testid="paperdoll-slot-${slot}"]`)?.getBoundingClientRect();
+      const box = document
+        .querySelector(`[data-testid="sim-gear-doll-slot-${slot}"]`)
+        ?.getBoundingClientRect();
       return box === undefined ? null : { x: box.x, y: box.y };
     }),
   );
-  expect(head, 'paperdoll-slot-head missing').not.toBeNull();
-  expect(neck, 'paperdoll-slot-neck missing').not.toBeNull();
-  expect(hands, 'paperdoll-slot-hands missing').not.toBeNull();
+  expect(head, 'sim-gear-doll-slot-head missing').not.toBeNull();
+  expect(neck, 'sim-gear-doll-slot-neck missing').not.toBeNull();
+  expect(hands, 'sim-gear-doll-slot-hands missing').not.toBeNull();
 
   expect(Math.round(neck!.x), 'neck is not in the head column').toBe(Math.round(head!.x));
   expect(neck!.y, 'neck is not under head').toBeGreaterThan(head!.y);
   expect(hands!.y, 'hands is not under the left column').toBeGreaterThan(neck!.y);
 }
 
-// sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface and pastes and
-// runs in one click (SimView.svelte's `runPastedInput`), so `loadFury` now waits out that
-// run rather than stopping at "loaded" -- callers that press `sim-run-button` themselves
-// (the viewport test below) start it a second time, same as sim-run.spec.ts's own helper.
+// The landing's paste Plate pastes and runs in one click (SimView.svelte's `runPastedInput`),
+// so `loadFury` waits out that run.
 async function loadFury(page: Page): Promise<void> {
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
+  await pasteAndRun(page, FURY);
 }
 
 async function runFury(page: Page): Promise<void> {
@@ -170,95 +172,41 @@ async function runFury(page: Page): Promise<void> {
 }
 
 test('nothing scrolls sideways and every target clears 44px on an empty /sim', async ({ page }) => {
-  await page.goto('/sim');
+  await gotoSim(page);
   await expect(page.getByTestId('sim-view')).toBeVisible();
-  await expect(page.getByTestId('sim-empty')).toBeVisible();
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
 
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);
   await sectionsKeepGutter(page);
 });
 
-// Finding 1, 2026-09-24 landing pass: a character with no build gets a "Paste export" text
-// link, in place of the Sim button, and it still clears the 44px hit target.
-test('a signed-in member with an unbuilt character clears 44px on the Paste export link', async ({
+test('a loaded character reaches the run button and the DPS figure without a scroll after pressing run, in a one-column gear grid, with no sideways scroll', async ({
   page,
 }) => {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        ok: true,
-        data: {
-          user: {
-            id: 7,
-            battletag: 'Fixture#1234',
-            email: null,
-            role: 'user',
-            anonymize: false,
-            premium: false,
-          },
-          characters: [
-            { key: 'us/normal/roland', region: 'us', ruleset: 'normal', name: 'Roland', class: 'Mage' },
-          ],
-          guilds: [],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    }),
-  );
-  await page.route('**/v1/sims?mine=1*', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        ok: true,
-        data: { rows: [], total: 0, page: 1, per_page: 100 },
-        error: null,
-        request_id: 'r',
-      }),
-    }),
-  );
+  // A code link loads the character without running it: the doll is the page's one Plate.
+  await gotoSim(page, `/sim?code=${encodeURIComponent(FURY)}`);
+  await expect(page.getByTestId('sim-gear-doll-slot-head')).toBeVisible();
 
-  await page.goto('/sim');
-  await expect(page.getByTestId('sim-landing')).toBeVisible();
-  await expect(page.getByTestId('sim-paste-us/normal/roland')).toBeVisible();
-  await expect(page.getByTestId('sim-pick-us/normal/roland')).toHaveCount(0);
-
-  await noHorizontalScroll(page);
-  await targetsAreBigEnough(page);
-});
-
-test('a loaded character reaches the run button and the DPS figure in one scroll after pressing run, in a one-column gear grid, with no sideways scroll', async ({
-  page,
-}) => {
-  await loadFury(page);
-
-  // Every disclosure this lane adds is closed on arrival. An open one would add height
-  // after hydration, which is the shift the shell's own min-h reservation exists to stop.
-  for (const testid of ['sim-settings-more', 'sim-request-drawer']) {
-    await expect(page.getByTestId(testid)).toBeVisible();
-    await expect(page.getByTestId(testid)).not.toHaveAttribute('open', '');
-  }
-
-  // The secondary encounter controls only exist while the disclosure is open; the audit
-  // has to measure them, so it opens it the way a player does.
-  await page.getByTestId('sim-settings-more').locator('summary').click();
-  await expect(fieldBox(page, 'sim-variation')).toBeVisible();
+  // More settings is closed on arrival: an open sheet would cover the page.
+  await expect(page.getByTestId('sim-more-settings')).toHaveCount(0);
 
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);
   await sectionsKeepGutter(page);
   await gearGridIsOneColumn(page);
 
-  // A player on a phone has to press run and see the number without moving. CharacterStrip
-  // and SettingsBar are both taller than the phone viewport by design (Task 11: "nothing is
-  // hidden" on phone), so reaching the button at all takes a scroll -- `.click()`'s own
-  // actionability check is that scroll, the same way a player's thumb would reach it. What
-  // this proves is the part that is not a given: once there, the figure sits right beside
-  // the button rather than a second scroll away.
+  // The secondary controls are in More settings; the audit measures them open, as a player
+  // opens them.
+  await openMoreSettings(page);
+  await expect(fieldBox(page, 'sim-target-level')).toBeVisible();
+  await targetsAreBigEnough(page);
+  await closeMoreSettings(page);
+
+  // A player on a phone presses run and sees the number without moving: the answer sits in
+  // the head above the run line (spec 2026-11-06-sim §4.4, "the answer is in the first
+  // screen"), and the bar is sticky.
+  await page.evaluate(() => window.scrollTo(0, 0));
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-run-button')).toBeInViewport();
   await expect(page.getByTestId('sim-dps')).toBeInViewport();
@@ -294,6 +242,7 @@ test('compare mode stacks the ability table into one figure per row, with no sid
     }),
   );
   await page.goto(`/sim?source=fight&ref=${encodeURIComponent(COMPARE_REF)}&mode=compare`);
+  await answerRaceQuestion(page);
   await expect(page.getByTestId('compare-headline')).toBeVisible({ timeout: 10_000 });
 
   await noHorizontalScroll(page);
@@ -330,8 +279,8 @@ test('/sim/specs has no sideways scroll and every card clears 44px', async ({ pa
 test('a saved sim at /sim/simfixtureab has no sideways scroll and every target clears 44px', async ({
   page,
 }) => {
-  await page.goto('/sim/simfixtureab');
-  await expect(page.getByTestId('sim-result-band')).toBeVisible();
+  await gotoSavedSim(page, '/sim/simfixtureab');
+  await expect(page.getByTestId('sim-saved')).toBeVisible();
   await expect(page.getByTestId('sim-damage-card')).toBeVisible();
 
   await noHorizontalScroll(page);

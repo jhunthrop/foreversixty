@@ -7,6 +7,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { addonCopy } from '../../src/lib/addon/copy';
 import {
   CHARACTER,
   CHARACTER_PATH,
@@ -157,15 +158,11 @@ for (const size of SIZES) {
       await settle(page);
       expect(await goldSteps(page)).toEqual(['1']);
       await chipRowIsOneLine(page);
-      await expect(page.getByTestId('setup-how-it-arrives')).toHaveText(
-        'The addon saves your character when you log out; the companion sends it to the site. No companion? Paste an export instead (see Try an export below).',
-      );
+      await expect(page.getByTestId('setup-how-it-arrives')).toHaveText(addonCopy.setupHowItArrives);
       await page.getByTestId('setup-how-it-arrives').getByRole('link', { name: 'Try an export' }).click();
       await expect(page.getByTestId('setup-try-export')).toHaveJSProperty('open', true);
       await expect(page.getByTestId('setup-try-export')).toBeInViewport();
-      await expect(page.getByTestId('setup-companion-note')).toHaveText(
-        'Sends your character automatically and logs live. Without it, paste an export after each change.',
-      );
+      await expect(page.getByTestId('setup-companion-note')).toHaveText(addonCopy.setupCompanionNote);
       await pictureShowsPhoneCrop(page, phone);
       await expect(page.getByTestId('setup-companion-capture-label')).toHaveText('Example');
       await expect(page.getByTestId('setup-companion-capture-label')).toBeVisible();
@@ -177,9 +174,7 @@ for (const size of SIZES) {
       await signedIn(page, ME_NEW, []);
       await page.goto('/setup');
       await settle(page);
-      await expect(page.getByTestId('setup-line-addon')).toHaveText(
-        'No character yet. Log out once with the addon on and the companion running, or paste an export.',
-      );
+      await expect(page.getByTestId('setup-line-addon')).toHaveText(addonCopy.setupAddonWaiting);
       expect(await goldSteps(page)).toEqual(['2']);
       await chipRowIsOneLine(page);
       await pictureShowsPhoneCrop(page, phone);

@@ -1,0 +1,29 @@
+{
+  "comment": "The simulator states the parity gate checks (web/tests/e2e/parity-sim.spec.ts) at 1440 x 1000. ws_sim.py renders each mock from web/src/fixtures/sim/result-full.json; the spec loads the same run (a signed-in server run that returns the fixture, and the prerendered /sim/simfullfixt1).",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "states": [
+    {
+      "id": "landing-out",
+      "path": "/sim",
+      "mock": "web-sim.html"
+    },
+    {
+      "id": "landing-in",
+      "path": "/sim",
+      "mock": "web-sim-you.html"
+    },
+    {
+      "id": "result",
+      "path": "/sim",
+      "mock": "web-sim-result.html"
+    },
+    {
+      "id": "saved",
+      "path": "/sim/simfullfixt1",
+      "mock": "web-sim-saved.html"
+    }
+  ]
+}

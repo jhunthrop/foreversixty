@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { curatedRotationNotes } from './support/rotation-notes';
+import { gotoSim, simCharacter, gotoSavedSim } from './support/sim-page';
 import { expect, test } from './support/test';
 import type { CharacterSpec } from '../../src/lib/sim/types';
 
@@ -69,9 +70,12 @@ const SHELL_HTML = `<!doctype html>
 <script type="module" src="/sim-island.js"></script>
 </main></body></html>`;
 
+// The saved page (spec 2026-11-06-sim §4.5, rulings S1 and S5): the head carries the title, the
+// run's facts in its meta line, "Saved {date}", and the answer; then the report body. No tool
+// tabs, no run line, no section nav (ruling S4).
 test.describe('a saved sim from the prerendered fixture', () => {
-  test('renders read-only: the band, the nav and every section on one page, no tabs', async ({ page }) => {
-    await page.goto('/sim/simfixtureab');
+  test('renders read-only: the head, the answer and every section on one page, no tabs', async ({ page }) => {
+    await gotoSavedSim(page, '/sim/simfixtureab');
 
     // Read from the fixture rather than a literal (fixture values drift as the engine
     // golden is refreshed).
@@ -79,15 +83,19 @@ test.describe('a saved sim from the prerendered fixture', () => {
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
     });
-    await expect(page.getByTestId('sim-dps')).toHaveText(figure);
-    await expect(page.getByTestId('sim-fact-fight')).toContainText('3:00');
-    await expect(page.getByTestId('sim-fact-runs')).toContainText(
-      fixtureResult.iterations_run.toLocaleString('en-US'),
+    await expect(page.getByTestId('sim-dps')).toHaveText(
+      new RegExp(`^\\s*${figure.replace('.', '\\.')}\\s*DPS\\s*$`),
+    );
+    await expect(page.getByTestId('sim-head-meta')).toContainText('3:00');
+    await expect(page.getByTestId('sim-answer-label')).toHaveText(
+      `Saved sim · ${fixtureResult.iterations_run.toLocaleString('en-US')} runs`,
     );
 
-    await expect(page.getByTestId('sim-section-nav')).toBeVisible();
     await expect(page.getByTestId('sim-damage-card')).toBeVisible();
+    await expect(page.getByTestId('sim-section-nav')).toHaveCount(0);
     await expect(page.getByTestId('sim-tab-damage')).toHaveCount(0);
+    await expect(page.getByTestId('sim-nav-tabs')).toHaveCount(0);
+    await expect(page.getByTestId('sim-settings')).toHaveCount(0);
     await expect(page.getByTestId('sim-change-source')).toHaveCount(0);
 
     // An older result: the range strip stands in for the bins, and says so.
@@ -103,35 +111,25 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-copy-json')).toBeVisible();
   });
 
-  test('the full fixture draws the real bins, Worth knowing and the current section', async ({
+  test('the full fixture draws the real bins, the saved date and a sortable table', async ({
     page,
     isMobile,
   }) => {
-    await page.goto('/sim/simfullfixt1');
+    await gotoSavedSim(page, '/sim/simfullfixt1');
     await expect(page.getByTestId('sim-spread-plot')).toBeVisible();
     await expect(page.getByTestId('sim-spread-bar').first()).toBeVisible();
     await expect(page.getByTestId('sim-spread-caption')).toContainText('Two runs in three');
-    await expect(page.getByTestId('sim-fact-saved')).toHaveText(/4 Nov 2026/);
+    await expect(page.getByTestId('sim-head-source')).toHaveText(/4 Nov 2026/);
 
-    // A phone's table is two columns, so DPS is its one sort header: a press there flips the order.
-    const header = (column: string) =>
-      page.locator('th', { has: page.getByTestId(`ability-sort-${column}`) });
-    const column = isMobile ? 'dps' : 'crit';
-    await page.getByTestId(`ability-sort-${column}`).click();
-    await expect(header(column)).toHaveAttribute('aria-sort', isMobile ? 'ascending' : 'descending');
-    await page.getByTestId(`ability-sort-${column}`).click();
-    await expect(header(column)).toHaveAttribute('aria-sort', isMobile ? 'descending' : 'ascending');
-
-    // Scrolling by hand moves the current link too, not only a click on it.
-    await page.locator('#timeline').scrollIntoViewIfNeeded();
-    await page.evaluate(() => document.getElementById('timeline')?.scrollIntoView());
-    await expect(page.locator('[data-section="timeline"]')).toHaveAttribute('aria-current', 'location');
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await expect(page.locator('[data-section="damage"]')).toHaveAttribute('aria-current', 'location');
-
-    await page.locator('[data-section="settings"]').click();
-    await expect(page.locator('[data-section="settings"]')).toHaveAttribute('aria-current', 'location');
-    await expect(page.locator('#settings h2')).toBeFocused();
+    // Below 1024 the table is three columns with no heads (spec §4.7, phone), so the sort
+    // heads are a desktop control: a press on Crit sorts it, a second press flips it.
+    if (!isMobile) {
+      const header = page.locator('[role="columnheader"]', { has: page.getByTestId('stat-sort-crit') });
+      await page.getByTestId('stat-sort-crit').click();
+      await expect(header).toHaveAttribute('aria-sort', 'descending');
+      await page.getByTestId('stat-sort-crit').click();
+      await expect(header).toHaveAttribute('aria-sort', 'ascending');
+    }
   });
 
   // D48 (dps-minmaxer review round 2, BLOCKER): a saved run loaded cold used to hardcode
@@ -154,12 +152,12 @@ test.describe('a saved sim from the prerendered fixture', () => {
       }),
     );
 
-    await page.goto('/sim/simfixtureab');
+    await gotoSavedSim(page, '/sim/simfixtureab');
 
     await expect(page.getByTestId('ability-row-spell:1680').getByTestId('ability-name')).toHaveText(
       'Whirlwind',
     );
-    await expect(page.getByTestId('ability-table')).not.toContainText(/\bspell:/);
+    await expect(page.getByTestId('sim-damage-card')).not.toContainText(/\bspell:/);
   });
 
   // H4 (final whole-branch review): the fixture's saved sim is addon-sourced with an empty
@@ -170,13 +168,13 @@ test.describe('a saved sim from the prerendered fixture', () => {
   test('Open in the sim opens /sim with the saved request’s own character, not a dead ref', async ({
     page,
   }) => {
-    await page.goto('/sim/simfixtureab');
+    await gotoSavedSim(page, '/sim/simfixtureab');
     await page.getByTestId('sim-run-yourself').click();
     await expect(page).toHaveURL(/\/sim\?code=/);
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(simCharacter(page)).toBeVisible();
     // The stored request's own character, not a guess: the same class and gear the saved
     // sim ran with (src/fixtures/sim/result.json's request.character).
-    await expect(page.getByTestId('paperdoll-slot-head')).toBeVisible();
+    await expect(page.getByTestId('sim-gear-doll-slot-head')).toBeVisible();
   });
 });
 
@@ -185,13 +183,13 @@ test.describe('a saved sim from the prerendered fixture', () => {
 // tab also carried the log viewer's note about other players' rows, which a one-player
 // simulated fight does not have. Neither the old chip nor the retired spine bar is on the page.
 test('a saved sim opened cold says nothing about a missing character or other players', async ({ page }) => {
-  await page.goto('/sim/simfixtureab');
+  await gotoSavedSim(page, '/sim/simfixtureab');
   await expect(page.getByTestId('sim-dps')).toBeVisible();
 
   await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
 
-  await expect(page.getByTestId('sim-result-band')).toBeVisible();
+  await expect(page.getByTestId('sim-saved')).toBeVisible();
   await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
 });
@@ -213,20 +211,21 @@ function fidelityRoute(state: 'validated' | 'in_progress') {
   });
 }
 
-// Spec 2026-11-04-sim-results 3.11: the saved page's Rotation card is an always-open list (no
+// Spec 2026-11-04-sim-results 3.11: the saved page's Rotation section is an always-open list (no
 // drawer). It names the rotation the run used with the run's spec and level, prints each line's
-// note in place and links the spec's guide. Under its head it carries the spec's fidelity note
-// when the sim has not validated the spec (tenet 8). The prerendered fixture's own client-side
-// fetch of /v1/specs is stubbed, as sim-specs.spec.ts stubs it, so the note has a row to read.
+// note in place and links the spec's guide. The spec's fidelity note, when the sim has not
+// validated the spec (tenet 8), is the answer's caption now (spec 2026-11-06-sim §4.6). The
+// prerendered fixture's own client-side fetch of /v1/specs is stubbed, as sim-specs.spec.ts
+// stubs it, so the note has a row to read.
 test('a saved sim names the rotation it used, prints its notes in place, and carries its fidelity', async ({
   page,
 }) => {
   await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('in_progress')));
-  await page.goto('/sim/simfixtureab');
+  await gotoSavedSim(page, '/sim/simfixtureab');
   await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
   const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
-  await expect(card).toContainText('FURY, AT 60');
+  await expect(card).toContainText('Fury, at 60');
   await expect(card).toContainText('Then, from the top at every decision');
 
   const notes = curatedRotationNotes('warrior-fury');
@@ -237,29 +236,31 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
   await expect(card).toContainText(bloodthirst!);
 
   const url = page.url();
-  const guide = card.getByRole('link', { name: 'Read the Fury guide' });
+  const guide = card.getByRole('link', { name: /Fury guide/ });
   await expect(guide).toHaveAttribute('href', '/guides/warrior/fury');
   expect(page.url()).toBe(url);
 
   // The fixture's warrior-fury row is not validated, so the note is there, pill linking the spec list.
-  const note = card.getByTestId('sim-rotation-card-note');
+  const note = page.getByTestId('sim-answer').getByTestId('spec-fidelity-note');
   await expect(note).toBeVisible();
   await expect(note.getByRole('link')).toHaveAttribute('href', '/sim/specs');
 });
 
 // A validated spec renders no note at all, rather than a green "all is well" line: dropping the
 // `!== 'validated'` clause in needsFidelityNote would break nothing without this.
-test('a saved sim for a validated spec carries the rotation card with no fidelity note', async ({ page }) => {
+test('a saved sim for a validated spec carries the rotation section with no fidelity note', async ({
+  page,
+}) => {
   await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('validated')));
-  await page.goto('/sim/simfixtureab');
+  await gotoSavedSim(page, '/sim/simfixtureab');
   await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
   const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
   await expect(card.getByTestId('rotation-line').first()).toBeVisible();
-  await expect(card.getByTestId('sim-rotation-card-note')).toHaveCount(0);
+  await expect(page.getByTestId('spec-fidelity-note')).toHaveCount(0);
 });
 
-test('a saved sim whose stored request has no gear drops the nav link', async ({ page }) => {
+test('a saved sim whose stored request has no gear says so and draws no doll', async ({ page }) => {
   const id = 'simnogearabc';
   const noGearResult = {
     ...fixtureResult,
@@ -273,9 +274,10 @@ test('a saved sim whose stored request has no gear drops the nav link', async ({
 
   await page.goto(`/sim/${id}`);
 
-  await expect(page.getByTestId('sim-section-nav')).toBeVisible();
-  await expect(page.locator('[data-section="gear"]')).toHaveCount(0);
-  await expect(page.getByTestId('paperdoll-slot-head')).toHaveCount(0);
+  await expect(page.getByTestId('sim-saved')).toBeVisible();
+  await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('sim-gear-empty')).toBeVisible();
+  await expect(page.getByTestId('sim-gear-doll-slot-head')).toHaveCount(0);
 });
 
 // Defect fix: the name typed into "Name this sim" (SaveSimForm.svelte) used to be discarded
@@ -295,7 +297,7 @@ test('a saved sim heads with the name a member gave it, not the composed spec li
 
   await page.goto(`/sim/${id}`);
 
-  await expect(page.getByTestId('sim-saved-title')).toHaveText(named);
+  await expect(page.getByTestId('page-title')).toHaveText(named);
 });
 
 test.describe('a saved sim renders the results view its own kind calls for', () => {
@@ -363,11 +365,11 @@ test('a saved sim shows the loading skeleton until the fetch resolves, then the 
   await page.goto(`/sim/${id}`);
 
   await expect(page.getByTestId('sim-saved-skeleton')).toBeVisible();
-  await expect(page.getByTestId('sim-result-band')).toHaveCount(0);
+  await expect(page.getByTestId('sim-saved')).toHaveCount(0);
 
   release?.();
 
-  await expect(page.getByTestId('sim-result-band')).toBeVisible();
+  await expect(page.getByTestId('sim-saved')).toBeVisible();
   await expect(page.getByTestId('sim-saved-skeleton')).toHaveCount(0);
 });
 
@@ -396,7 +398,7 @@ test('a failed saved-sim fetch offers a retry that re-fires the same request', a
   await expect(page.getByTestId('sim-saved-error')).not.toBeVisible();
 });
 
-test('a stale engine version raises the note and the tag, and is never re-run automatically', async ({
+test('a stale engine version raises the note and names the engine, and is never re-run automatically', async ({
   page,
 }) => {
   const id = 'simstaleabcd';
@@ -414,7 +416,8 @@ test('a stale engine version raises the note and the tag, and is never re-run au
 
   await expect(page.getByTestId('sim-note-stale')).toBeVisible();
   await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
-  await expect(page.getByTestId('sim-stale-tag')).toBeVisible();
+  // This run's Engine fact names the old build (the stale tag beside it retired).
+  await expect(page.getByTestId('sim-settings-engine')).toContainText('6a1c2d9');
 
   // No auto re-run: the remedy is the "Open in the sim" link, never a second fetch fired
   // on its own.
@@ -438,10 +441,10 @@ test.describe('saving a browser run from /sim', () => {
   // separate `sim-run-button` click this helper used to make after Load is gone.
   async function runFury(page: import('@playwright/test').Page): Promise<void> {
     await page.route('**/v1/me', (route) => route.fulfill(envelope(SIGNED_IN_ME)));
-    await page.goto('/sim');
+    await gotoSim(page);
     await page.getByTestId('sim-cold-paste-input').fill(FURY);
     await page.getByTestId('sim-cold-paste-run').click();
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(simCharacter(page)).toBeVisible();
     await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   }
 
@@ -455,8 +458,10 @@ test.describe('saving a browser run from /sim', () => {
     await page.route('**/v1/sims', (route) => route.fulfill(envelope({ sim_id: 'simnew234567' }, 201)));
     await page.getByTestId('sim-save-confirm').click();
 
-    await expect(page.getByTestId('sim-save-link')).toBeVisible();
-    await expect(page.getByTestId('sim-save-link')).toHaveValue(/\/sim\/simnew234567$/);
+    // The Button becomes Copy link, the answer says Saved, and the link is the new sim's.
+    await expect(page.getByTestId('sim-save-copy')).toHaveText('Copy link');
+    await expect(page.getByTestId('sim-answer')).toContainText('Saved');
+    await expect(page.getByTestId('sim-save-link')).toHaveAttribute('href', /\/sim\/simnew234567$/);
     await expect(page).toHaveURL(/\/sim(\?.*)?$/);
     await expect(page.getByTestId('sim-view')).toBeVisible();
   });

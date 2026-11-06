@@ -1,14 +1,16 @@
 <!-- web/src/components/sim/SimCastList.svelte -->
-<!-- The timeline's cast list (spec 2026-11-04-sim-results 3.7): the presses in view, five rows
-     until "Show all". It is the table a screen reader reads, on /sim/<id> and after a run on /sim alike. -->
+<!-- The timeline's cast list (spec 2026-11-04-sim-results 3.7; sim spec 2026-11-06 §6 Timeline foot):
+     one line that counts the casts, says what Swings and ticks adds while it is Off, and opens the
+     presses in view as open Rows ("List every cast"). It is the table a screen reader reads, on
+     /sim/<id> and after a run on /sim alike. -->
 <script lang="ts">
-  import { button } from '../../lib/ui/button';
+  import { LINK } from '../../lib/ui/primitives';
+  import Row from '../ui/Row.svelte';
   import type { ActionNames } from '../../lib/sim/action-names';
   import { resolveActionName } from '../../lib/sim/action-names';
   import type { ActionVisuals } from '../../lib/sim/action-visuals';
   import {
     baseActionKey,
-    COLLAPSED_CAST_ROWS,
     preciseClock,
     pressesInView,
     type TimelineEvent,
@@ -22,6 +24,7 @@
     model,
     window: view,
     closeUp,
+    swings,
     names,
     visuals,
     visualsLoaded,
@@ -29,6 +32,8 @@
     model: TimelineModel;
     window: ZoomWindow;
     closeUp: boolean;
+    /** Swings and ticks is On: the line has nothing to add about them. */
+    swings: boolean;
     names: ActionNames | null;
     visuals: ActionVisuals;
     visualsLoaded: boolean;
@@ -38,10 +43,8 @@
 
   const inView = $derived(pressesInView(model, view));
   const total = $derived(model.presses.length);
-  const shown = $derived(expanded ? inView : inView.slice(0, COLLAPSED_CAST_ROWS));
-  const canToggle = $derived(inView.length > COLLAPSED_CAST_ROWS);
   const countLine = $derived(
-    closeUp ? timelineCopy.castsInView(inView.length, total) : timelineCopy.castsAll(inView.length, total),
+    closeUp ? timelineCopy.castsInView(inView.length, total) : timelineCopy.castsInRun(total),
   );
   const resourceLabel = $derived(model.resource?.label ?? '');
 
@@ -51,37 +54,33 @@
   }
 </script>
 
-<div class="border-line-soft border-t" data-testid="sim-cast-list">
-  <div class="flex min-h-[52px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-2">
-    <p class="quiet-label !normal-case" data-testid="sim-cast-count">
-      {countLine}. {timelineCopy.castsTail(model.periodicName)}
-    </p>
-    {#if canToggle}
-      <button
+<div data-testid="sim-cast-list">
+  <p class="text-muted pt-[10px] text-[13px] leading-5" data-testid="sim-cast-count">
+    {swings ? countLine : `${countLine} ${timelineCopy.castsTail(model.periodicName)}`}
+    {#if inView.length > 0}<button
         type="button"
-        class={button('secondary', 'sm')}
+        class="{LINK} text-[13px]"
+        aria-expanded={expanded}
         onclick={() => (expanded = !expanded)}
-        data-testid="sim-cast-toggle"
-      >
-        {expanded ? timelineCopy.showFewer : timelineCopy.showAll(inView.length)}
-      </button>
-    {/if}
-  </div>
-  <ol class="flex flex-col">
-    {#each shown as press, index (`${press.atMs}-${press.action}-${index}`)}
-      <li
-        class="border-line-soft grid h-10 grid-cols-[72px_24px_minmax(0,1fr)_auto] items-center gap-x-[10px] border-t px-5 text-[14px]"
-        data-testid="sim-cast-row"
-      >
-        <span class="numeric text-muted">{preciseClock(press.atMs)}</span>
-        <span class="inline-flex h-6 w-6"
-          ><ActionIcon url={visuals(press.action).icon} loaded={visualsLoaded} size={24} /></span
-        >
-        <span class="text-text truncate">{pressName(press)}</span>
-        {#if press.resource !== null}
-          <span class="numeric text-muted">{resourceLabel} {Math.round(press.resource)}</span>
-        {/if}
-      </li>
-    {/each}
-  </ol>
+        data-testid="sim-cast-toggle">{expanded ? timelineCopy.hideList : timelineCopy.listEvery} ›</button
+      >{/if}
+  </p>
+  {#if expanded}
+    <ol class="flex flex-col pt-2">
+      {#each inView as press, index (`${press.atMs}-${press.action}-${index}`)}
+        <li data-testid="sim-cast-row">
+          <Row title={pressName(press)} density="slim" open>
+            {#snippet lead()}<span class="text-muted w-[72px] text-[14px] tabular-nums"
+                >{preciseClock(press.atMs)}</span
+              ><span class="inline-flex h-6 w-6"
+                ><ActionIcon url={visuals(press.action).icon} loaded={visualsLoaded} size={24} /></span
+              >{/snippet}
+            {#snippet trail()}{#if press.resource !== null}<span class="text-muted text-[14px] tabular-nums"
+                  >{resourceLabel} {Math.round(press.resource)}</span
+                >{/if}{/snippet}
+          </Row>
+        </li>
+      {/each}
+    </ol>
+  {/if}
 </div>
