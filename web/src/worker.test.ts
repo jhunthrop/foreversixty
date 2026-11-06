@@ -4,10 +4,13 @@ import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import worker, { type Env } from './worker';
 import {
+  guildApplicationsHref,
   guildClaimHref,
   guildHref,
   guildInviteHref,
+  guildMemberHref,
   guildRaidHref,
+  guildRecruitHref,
   guildSettingsHref,
 } from './lib/characters';
 import { DUCKDB_WASM_VERSION, duckdbRuntimeUrl } from './lib/report/duckdb-runtime';
@@ -1121,6 +1124,10 @@ describe('every guild route the site and the API link to is served', () => {
     guildSettingsHref('us', 'pvp', 'Olympus XXVII'),
     guildClaimHref('us', 'pvp', 'Olympus XXVII'),
     guildInviteHref('fsg_abc123'),
+    guildRecruitHref(guild),
+    guildApplicationsHref(guild),
+    guildMemberHref(guild, 'me'),
+    guildMemberHref(guild, 'u:12'),
   ];
 
   it('finds the raid links the API sends (the Discord post and pushes)', () => {
