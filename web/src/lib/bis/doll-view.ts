@@ -7,7 +7,7 @@
 import type { DollCell, DollFlag, DollNote } from '../ui/paperdoll';
 import type { GainFigure, ItemRef } from '../ui/primitives';
 import { signedFigure } from '../ui/primitives';
-import type { BisBandModel, BisItem, BisRowModel, GainUnit } from './page-model';
+import type { BisBandModel, BisCandidate, BisItem, BisRowModel, GainUnit } from './page-model';
 import { filterKindOfSource, filteredBand, pickKinds, type FilteredPick } from './source-filter';
 import type { BisByKindEntry, SourceFilterKind } from './types';
 
@@ -19,6 +19,10 @@ export const TIE_DPS = 0.05;
 export function isTie(delta: number): boolean {
   return Math.abs(delta) < TIE_DPS;
 }
+
+/** Stats on a row's line 2: two keep a desktop row to two lines next to the full source; the detail
+ *  lists them all. */
+export const ROW_STATS = 2;
 
 /** The game's stat words, shortened the way the mock does (`+8 Agi · +10 Sta`). */
 const STAT_ABBR: Readonly<Record<string, string>> = {
@@ -141,16 +145,23 @@ function leadGain(row: BisRowModel, unit: GainUnit): GainFigure {
   return { value: signedFigure(lead), caption: `${unitWord(unit)} vs next best`, tone: 'strong' };
 }
 
+function gapNote(lead: string, alt: BisCandidate, deps: DollViewDeps): DollNote {
+  return { lead, item: itemRef(alt.id, deps), tail: `${signedFigure(alt.delta)} ${unitWord(deps.unit)}`, tone: 'wipe' };
+}
+
+/**
+ * Line 2's lead-out, signed out. A runner-up that ties says nothing here (the gain column already
+ * reads "Same as next best"): the line names the nearest alternative that does not tie instead.
+ */
 function nextBestNote(row: BisRowModel, deps: DollViewDeps): DollNote | undefined {
   const next = row.alts[0];
   if (next === undefined) return undefined;
-  const tie = isTie(next.delta);
-  return {
-    lead: 'Next best:',
-    item: itemRef(next.id, deps),
-    tail: tie ? `(same ${unitWord(deps.unit)})` : `${signedFigure(next.delta)} ${unitWord(deps.unit)}`,
-    tone: tie ? 'muted' : 'wipe',
-  };
+  if (!isTie(next.delta)) return gapNote('Next best:', next, deps);
+  const different = row.alts
+    .filter((alt) => !isTie(alt.delta))
+    .reduce<BisCandidate | undefined>((best, alt) => (best === undefined || alt.delta > best.delta ? alt : best), undefined);
+  if (different === undefined) return { lead: 'No close alternative', tone: 'muted' };
+  return gapNote('Next different:', different, deps);
 }
 
 interface Compare {
@@ -221,8 +232,7 @@ function pickCell(row: BisRowModel, pickId: number, deps: DollViewDeps): DollCel
     flag: levelFlag(item?.req, deps.character),
     item: itemRef(pickId, deps),
     badge: compare?.badge,
-    stats: shortStats(item?.stats),
-    enchant: row.enchant,
+    stats: shortStats(item?.stats, ROW_STATS),
     source: row.sources[pickId]?.line,
     sourceKind: row.sources[pickId]?.kind,
     note: compare?.note ?? nextBestNote(row, deps),
@@ -252,7 +262,7 @@ function repickedCell(row: BisRowModel, pick: FilteredPick, choiceLabel: string,
     label: row.label,
     flag: levelFlag(item?.req, deps.character),
     item: itemRef(pick.item_id, deps),
-    stats: shortStats(item?.stats),
+    stats: shortStats(item?.stats, ROW_STATS),
     source: row.sources[pick.item_id]?.line,
     sourceKind: row.sources[pick.item_id]?.kind ?? pick.source_kind,
     note:

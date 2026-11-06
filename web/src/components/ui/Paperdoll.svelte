@@ -160,9 +160,6 @@
             >{/if}
           {#if cell.stats}<span class="ui-doll-sep" aria-hidden="true"> · </span><span>{cell.stats}</span
             >{/if}
-          {#if cell.enchant}<span class="ui-doll-sep" aria-hidden="true"> · </span><span
-              class="text-rarity-uncommon">{cell.enchant}</span
-            >{/if}
           {#if cell.note}
             <span class="ui-doll-note" data-testid={`${testid}-note-${cell.slot}`}>
               {cell.note.lead}

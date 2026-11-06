@@ -34,10 +34,8 @@ export interface DollCell {
   /** The worn id is missing from our data. */
   unknown?: boolean;
   badge?: 'upgrade' | 'worn';
-  /** Short stats after the name on line 1's tail: `+8 Agi · +10 Sta`. */
+  /** Short stats on line 2, after the source: `+8 Agi · +10 Sta`. */
   stats?: string;
-  /** The enchant, in the enchant green after the stats. */
-  enchant?: string;
   /** Line 2: where it comes from, in full; it wraps on a phone and is never truncated. */
   source?: string;
   /** A source-kind key for the line's glyph (`dungeon`, `crafted`, ...). */

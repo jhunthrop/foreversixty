@@ -92,9 +92,44 @@ describe('dollCellFor, signed out', () => {
 
   it('says "Same as next best", never "Tie"', () => {
     const tie = dollCellFor({ ...ROW, alts: [{ id: 2, delta: -0.02 }] }, OUT);
-    expect(tie.gain?.caption).toBe('Same as next best');
-    expect(tie.note?.tail).toBe('(same DPS)');
+    expect(tie.gain).toEqual({ value: '=', caption: 'Same as next best', tone: 'muted' });
     expect(JSON.stringify(tie)).not.toMatch(/\bTie\b/);
+  });
+
+  it('drops a tied next best from line 2 and names the nearest alternative that does not tie', () => {
+    const tie = dollCellFor(
+      { ...ROW, alts: [{ id: 2, delta: -0.02 }, { id: 3, delta: -0.04 }, { id: 4, delta: -1.1 }, { id: 5, delta: -0.4 }] },
+      OUT,
+    );
+    expect(tie.note).toEqual({
+      lead: 'Next different:',
+      item: { id: 5, name: 'Item 5', quality: 1, icon: undefined },
+      tail: '−0.4 DPS',
+      tone: 'wipe',
+    });
+    expect(JSON.stringify(tie.note)).not.toContain("Trapper's Leather Hood");
+  });
+
+  it('keeps the gap of the next different in the band unit', () => {
+    const tie = dollCellFor({ ...ROW, alts: [{ id: 2, delta: 0 }, { id: 4, delta: -2.25 }] }, { ...OUT, unit: 'score' });
+    expect(tie.note?.item?.name).toBe("Serpent's Shoulders");
+    expect(tie.note?.tail).toBe('−2.3 score');
+    expect(tie.gain?.caption).toBe('Same as next best');
+  });
+
+  it('says "No close alternative" when every runner-up ties', () => {
+    const tie = dollCellFor({ ...ROW, alts: [{ id: 2, delta: -0.01 }, { id: 3, delta: 0.03 }] }, OUT);
+    expect(tie.note).toEqual({ lead: 'No close alternative', tone: 'muted' });
+    expect(tie.gain?.caption).toBe('Same as next best');
+  });
+
+  it('keeps the row to two stats and leaves the enchant to the detail', () => {
+    const enchanted = dollCellFor(
+      { ...ROW, enchant: 'Lesser Arcanum of Voracity' },
+      { ...OUT, items: { ...ITEMS, 1: item('Hood', 20, { stamina: 10, agility: 8, spirit: 2 }) } },
+    );
+    expect(enchanted.stats).toBe('+10 Sta · +8 Agi');
+    expect(JSON.stringify(enchanted)).not.toContain('Voracity');
   });
 
   it('keeps a tank band in its own unit', () => {

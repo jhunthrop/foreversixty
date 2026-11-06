@@ -1,7 +1,7 @@
 <!-- web/src/components/bis/BisSlotDetail.svelte -->
 <!-- The selected slot's detail (web layout spec 2026-11-05 §4.5, §5.5): the side inspector from
      1760 px, the in-place expansion below. Everything the two-line row leaves out lives here:
-     stats and effect, the worn item, where to get it, every runner-up with its gap to the pick,
+     stats, enchant and effect, the worn item, where to get it, every runner-up with its gap to the pick,
      the trinket ranking and the simulator link. All of it is in the page's data (R2). -->
 <script lang="ts">
   import Inspector, { type InspectorSection } from '../ui/Inspector.svelte';
@@ -93,10 +93,11 @@
   {#if cell.item}
     <p class={['bis-detail-title', rarityClassFor(cell.item.quality)]} data-bis-item={cell.item.id}>{cell.item.name}</p>
     <p class="bis-detail-text text-muted">
-      {[shown?.ilvl ? `Item level ${shown.ilvl}` : undefined, shortStats(shown?.stats, 6), cell.enchant]
-        .filter(Boolean)
-        .join(' · ')}
+      {[shown?.ilvl ? `Item level ${shown.ilvl}` : undefined, shortStats(shown?.stats, 6)].filter(Boolean).join(' · ')}
     </p>
+    {#if row?.enchant}<p class="bis-detail-text" data-testid="bis-detail-enchant">
+        <span class="text-muted">Enchant</span> <span class="text-rarity-uncommon">{row.enchant}</span>
+      </p>{/if}
     {#if shown?.effect}<p class="bis-detail-text">{shown.effect}</p>{/if}
     {#if row?.setBonus}<p class="bis-detail-text text-muted" data-testid="bis-row-set-bonus">{row.setBonus}</p>{/if}
     {#if simHref}<p class="bis-detail-text"><a href={simHref} class="bis-detail-link">Compare in the simulator ›</a></p>{/if}
