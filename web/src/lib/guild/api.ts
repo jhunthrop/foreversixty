@@ -4,6 +4,12 @@
 // reconciliation record). Follows rankings/api.ts's pattern: the shared transport
 // (account/api.ts's requestEnvelope), a module-local error class, and typed reads/writes
 // with no bespoke fetch() call anywhere else in this lane's own code.
+import type {
+  GuildCompTarget,
+  GuildNotSignedRaider,
+  GuildRaidPingState,
+  GuildRoleCounts,
+} from './overview-api';
 import { AccountError, invalidateMe, requestEnvelope, type EnvelopeResult } from '../account/api';
 import { invalidate, query, refetch, setQueryData } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
@@ -874,6 +880,8 @@ export interface GuildRaidCounts {
   ranged?: number;
   /** In plus Late by class slug, one key per class the guild plays (zeros included). */
   classes?: Readonly<Record<string, number>>;
+  /** Late rows by role (the role counts above are In only). */
+  late_groups?: GuildRoleCounts;
 }
 
 /** A row's place in the roster and its catalogue spec (raid comp spec 4.1). Absent from an API
@@ -965,6 +973,12 @@ export interface GuildRaidView extends RaidAttendanceFields {
   /** The buff and debuff cover (D15), catalogue order; `null` for a dungeon or an event,
    *  absent from older fixtures. */
   cover?: GuildRaidCoverRow[] | null;
+  /** Seats per role for this raid; `null` for a run with no size (dungeons, events). */
+  comp_target?: GuildCompTarget | null;
+  /** Officers only: raiders with no sign-up, one per account. */
+  not_signed_raiders?: GuildNotSignedRaider[];
+  /** Officers only: the Discord ping's throttle. */
+  ping?: GuildRaidPingState;
 }
 
 /** How a cover row's need is counted: per raid, or per five raiders in melee or at range. */
