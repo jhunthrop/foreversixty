@@ -6,37 +6,17 @@ druid-balance Starfire 92a85f985675  the row's own condition; the next clause co
 druid-feral Cat Form 0c5cb3ccea51  conditional: "in Cat Form" applies only once you have it
 druid-feral Rend and Tear 50b0dc7e4762  the clause says "once you have Rend and Tear"; the comma inside its parentheses splits it
 druid-feral-bear Primal Bite 0521f76d6f72  the clause opens "in your forties and early fifties", after Primal Bite at 40
-hunter-survival Immolation Trap eaef922367ed  a rank table: "at 26 to 29" and "at 46 and 47" scope the rank advice
 hunter-survival Mongoose Bite ef096649bb13  Hunter's Mark mechanic: why marking matters, true whenever Mongoose Bite is trained
 mage-arcane Arcane Power 6db11e38d193  conditional: "inside Arcane Power" applies only once you have it
-mage-arcane Heating Up 232c54717f03  says what the cast does not feed; no instruction to the player
-mage-arcane Heating Up 41dc1f3996e2  the row's own condition: it waits for Heating Up stacks
-mage-arcane Heating Up a87aa78729b5  mechanic of the cast, true once the talents are in; the lead sentence scopes the row
-mage-arcane Ignite 232c54717f03  says what the cast does not feed; no instruction to the player
-mage-arcane Ignite a87aa78729b5  mechanic of the cast, true once the talents are in; the lead sentence scopes the row
-mage-arcane Improved Fire Blast 8dfccf3855e5  the sentence opens "with the raid build, once Heating Up is in"
-mage-arcane Missile Barrage 232c54717f03  mechanic of the cast, true once Missile Barrage is in
-mage-arcane Missile Barrage 4f3d589fd01c  the row's own condition: it waits for the Missile Barrage proc
-mage-arcane Missile Barrage a87aa78729b5  mechanic of the cast, true once the talents are in; the lead sentence scopes the row
 mage-fire Accelerant 323d14f0d30a  the lead sentence scopes the row to Arcane Blast at 57
 mage-fire Heating Up 16d1a9b10d81  the lead sentence scopes the row to Arcane Blast at 57
-mage-fire Heating Up 600d342af93b  the lead sentence scopes the row: "From Heating Up at 30"
 mage-fire Heating Up 8ac1afc59d40  mechanic: why Scorch goes first, true once Heating Up is in
-mage-fire Heating Up dafb243685cf  the row's own condition: it waits for Heating Up stacks
 mage-fire Ignite 16d1a9b10d81  the lead sentence scopes the row to Arcane Blast at 57
-mage-fire Improved Scorch 2cf1902f447c  the row's own condition: it builds the Improved Scorch debuff
-mage-fire Improved Scorch 600d342af93b  the lead sentence scopes the row: "From Heating Up at 30"
 mage-fire Improved Scorch f387656aaba3  "Scorch waits for Improved Scorch": says not to cast it before the talent
 mage-fire Missile Barrage 323d14f0d30a  the lead sentence scopes the row to Arcane Blast at 57
-mage-fire Missile Barrage fcffd537e159  the row's own condition: it waits for the Missile Barrage proc
 mage-fire Pyroblast ecf5186bd4a5  "in raid gear": a level 60 comparison
-mage-fire Scorch b1cd08a58d60  mechanic of Heating Up stacks; the row waits for the stacks
 mage-fire Scorch ecf5186bd4a5  "in raid gear": a level 60 comparison
 mage-fire Scorch f387656aaba3  a comparison that tells you to hold Scorch back
-mage-frost Fingers of Frost 5ffeb7ed4675  mechanic of the stacks the row waits for
-mage-frost Fingers of Frost a52195dbb4a3  the row's own condition: it waits for the Fingers of Frost proc
-mage-frost Missile Barrage 4f3d589fd01c  the row's own condition: it waits for the Missile Barrage proc
-mage-frost Winter's Chill 4ab0ce3f0b42  the row's own condition: it waits for 5 Winter's Chill stacks
 priest-holy Greater Heal 3bf926504ba7  the sentence ends "before Greater Heal at 40"
 priest-holy Greater Heal 6332a7a54608  the sentence opens "From 40"
 priest-shadow Inner Focus b746edd00ae8  the sentence opens "with Inner Focus first whenever it is up"

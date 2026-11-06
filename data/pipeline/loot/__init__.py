@@ -411,36 +411,68 @@ def merge_loot_files(
     classification = load_classification(build_dir)
     fork = load_fork_database(engine_dir)
     run = _build_and_write_loot(build_dir, fork, classification, overlay_dir, curated_dir)
-    # An engine buff id IDS.md gained since the last full rebuild (a raid
-    # aura the fork added) must be named before the site can show it, and
-    # the full rebuild only runs on a night wowhead fetched; name it from
-    # the fork's own tables here, keeping every committed entry as it is.
-    committed_simbuffs = load_simbuffs(build_dir)
-    if committed_simbuffs:
-        name_tables = fork_tables(fork)
-        item_tables = [fork_item_table(fork)]
-        if all((build_dir / "raw" / name).exists() for name in CLIENT_NAME_TABLES):
-            client = client_tables(build_dir, build_dir / "raw")[0]
-            name_tables += client
-            item_tables.append(client[1])
-        ids_text = IDS_MD.read_text(encoding="utf-8")
-        simbuffs = with_effects(
-            merge_simbuffs(
-                ids_md_ids(ids_text),
-                name_tables,
-                committed_simbuffs,
-                load_overrides(curated_dir),
-                item_tables=item_tables,
-                consumables=consumable_ids(ids_text),
-            ),
-            load_effects(curated_dir),
-            debuff_ids(ids_text),
-        )
-        write_document(simbuffs, build_dir / SIMBUFFS)
+    simbuffs_written = _merge_committed_simbuffs(build_dir, fork, curated_dir, IDS_MD)
     _log_loot_run("loot-merge", run)
     refresh_manifest(build_dir)
     return [
         build_dir / LOOT,
-        *([build_dir / SIMBUFFS] if committed_simbuffs else []),
+        *simbuffs_written,
         *(_class_item_files(build_dir) if run.superseded or run.quest_class_gate_dropped else []),
     ]
+
+
+def _merge_committed_simbuffs(
+    build_dir: Path, fork: ForkDatabase, curated_dir: Path, ids_md: Path
+) -> list[Path]:
+    """Name every engine buff id IDS.md gained since the last full rebuild
+    (a raid aura or flask the fork added), keeping every committed entry as
+    it is. The full rebuild only runs on a night wowhead fetched, and the
+    site cannot show an id until it has a name, so the merge names it from
+    the fork's own tables (plus the client's, when raw/ has them). Returns
+    the file it wrote: none when no simbuffs.json is committed yet."""
+    committed_simbuffs = load_simbuffs(build_dir)
+    if not committed_simbuffs:
+        return []
+    name_tables = fork_tables(fork)
+    item_tables = [fork_item_table(fork)]
+    if all((build_dir / "raw" / name).exists() for name in CLIENT_NAME_TABLES):
+        client = client_tables(build_dir, build_dir / "raw")[0]
+        name_tables += client
+        item_tables.append(client[1])
+    ids_text = ids_md.read_text(encoding="utf-8")
+    simbuffs = with_effects(
+        merge_simbuffs(
+            ids_md_ids(ids_text),
+            name_tables,
+            committed_simbuffs,
+            load_overrides(curated_dir),
+            item_tables=item_tables,
+            consumables=consumable_ids(ids_text),
+        ),
+        load_effects(curated_dir),
+        debuff_ids(ids_text),
+    )
+    write_document(simbuffs, build_dir / SIMBUFFS)
+    return [build_dir / SIMBUFFS]
+
+
+def merge_simbuffs_file(
+    build: str,
+    engine_dir: Path,
+    root: Path = Path("builds"),
+    curated_dir: Path = Path("curated"),
+    ids_md: Path = IDS_MD,
+) -> list[Path]:
+    """`python -m pipeline loot-merge --buffs-only`: simbuffs.json alone.
+
+    The same naming step `loot-merge` runs, without rebuilding loot.json,
+    for a lane that added an engine buff id (IDS.md changed) but must not
+    touch the nightly-owned loot.json. Re-hashes the manifest."""
+    build_dir = root / build
+    if not load_simbuffs(build_dir):
+        raise SystemExit(f"no {build_dir / SIMBUFFS}; run the full `loot` command first")
+    written = _merge_committed_simbuffs(
+        build_dir, load_fork_database(engine_dir), curated_dir, ids_md
+    )
+    refresh_manifest(build_dir)
+    return written

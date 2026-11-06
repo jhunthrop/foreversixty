@@ -194,6 +194,8 @@ export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   elixir_of_shadow_power: 'Shadow spell damage',
   elixir_of_the_mongoose: 'Agility and critical strike',
   flask_of_distilled_wisdom: 'A large pool of mana for the whole fight',
+  flask_of_natural_aggression: 'Stamina and critical strike',
+  flask_of_natural_precision: 'Stamina, and fewer of your attacks dodged or parried',
   flask_of_supreme_power: 'Spell power',
   flask_of_the_titans: '1200 health for two hours',
   food_baked_salmon: 'Spell damage (well fed)',
