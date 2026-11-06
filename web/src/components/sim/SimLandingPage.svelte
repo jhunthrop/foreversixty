@@ -21,7 +21,7 @@
     onfight,
     onsignin,
     notice,
-    shell = false,
+    railTail,
   }: {
     bisSets: readonly BisSetClass[];
     busy?: boolean;
@@ -33,8 +33,8 @@
     onsignin?: () => void;
     /** A line between the head and the body (signed in with no characters yet). */
     notice?: Snippet;
-    /** The static render in sim.astro: carries the payer's reserve box. */
-    shell?: boolean;
+    /** The rail's tail (Your sims, signed in). */
+    railTail?: Snippet;
   } = $props();
 </script>
 
@@ -42,9 +42,5 @@
   {#snippet meta()}<span>{copy.landingMeta}</span>{/snippet}
   {#snippet tabs()}<SimToolTabs />{/snippet}
 </PageHeader>
-<!-- Hidden unless html[data-session='1'][data-server-sims='1'] (global.css): a payer's "Your
-     server runs" box, reserved before the island paints (spec 2026-10-24 3.7). The island's own
-     list takes this place. -->
-{#if shell}<div class="server-runs-reserve server-runs-shell-reserve" aria-hidden="true"></div>{/if}
 {#if notice}{@render notice()}{/if}
-<SimLanding {bisSets} {busy} {pasteError} {message} {onpaste} {onbuild} {onfight} {onsignin} />
+<SimLanding {bisSets} {busy} {pasteError} {message} {onpaste} {onbuild} {onfight} {onsignin} {railTail} />

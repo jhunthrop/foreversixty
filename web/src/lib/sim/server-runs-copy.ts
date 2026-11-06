@@ -2,7 +2,6 @@
 // Every string of experience spec 2026-10-24 section 6 for "Your server runs" and the band's
 // "done while away" line. Functions take the data and return the string; no number is typed
 // into prose. The shared retry word is `uiCopy.retry`, not repeated here.
-import { simCopy } from './copy';
 import { estimateWords, isOverdue } from './server-runs';
 
 function formatCount(value: number): string {
@@ -11,10 +10,9 @@ function formatCount(value: number): string {
 
 export const serverRunsCopy = {
   heading: 'Server runs',
-  empty: `No server runs yet. Choose ${simCopy.runOnServers} when you start a sim, and it keeps going after you close this tab.`,
-  loadingSr: 'Reading your server runs…',
+  /** A server run's mark in Your sims. */
+  serverMark: 'On our servers',
   loadFailed: 'Your server runs did not load.',
-  overflow: 'Older finished runs are in Your sims below.',
   unreadSr: 'Not opened yet',
 
   queued: 'Starting',

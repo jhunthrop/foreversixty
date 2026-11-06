@@ -24,7 +24,7 @@ const bisSets = loadBisSetRail(activeBuild.build);
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
   <main id="main" tabindex="-1" class="sim-page">
     <div id="sim" data-sim-mount data-bis-sets={JSON.stringify(bisSets)}>
-      <SimLandingPage bisSets={bisSets} shell />
+      <SimLandingPage bisSets={bisSets} />
       <noscript>
         <p class="text-muted px-[18px] text-[14px] md:px-0">
           The simulator needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}

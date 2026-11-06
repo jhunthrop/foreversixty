@@ -69,6 +69,7 @@ OFF_HAND_SPELLS = {462891}   # Whirlwind's off-hand strike, as lib/report/abilit
                              # Whirlwind hits with both weapons: spelltips/warrior.json 1680)
 # SAMPLE rows of GET /v1/sims?mine=1, the three the parity gate stubs (web/tests/e2e/support/sim-parity.ts), drawn as SimYourSims
 # draws a run: the title, then the spec and the day, the DPS grouped to a whole number
+SERVER_AGES = ['3 days ago', '5 days ago', '8 days ago']   # SAMPLE: the gate's runs finished 3, 1 Nov and 29 Oct, seen on 6 Nov
 HISTORY = [('Raid buffs', SPEC_ROW['name'], '3 Nov', '900'), ('No buffs', SPEC_ROW['name'], '1 Nov', '402'), ('Raid buffs', SPEC_ROW['name'], '29 Oct', '881')]
 
 _icache: dict[str, str] = {}
@@ -432,11 +433,17 @@ def rotation_section(ran: bool = True) -> str:
     return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'), meta=meta)
 
 
-def history_section(state: str = 'ready') -> str:
+def history_section(state: str = 'ready', server: bool = False) -> str:
+    """Your sims. `server`: a payer's list, where server runs are rows of the same list (no panel of their own), each marked
+    "On our servers" with its kind and age (SimYourSims + ServerRunRow); the gate's three runs are server runs."""
     if state == 'empty':
         return Section('Your sims', '<p class="empty-open">Nothing saved yet. Run a sim and press Save.</p>')
     if state == 'failed':
         return Section('Your sims', f'<p class="empty-open">Your sims did not load. {Link("Try again")}</p>')
+    if server:
+        rows = [Row(t, f'{SPEC_LABEL} &middot; Sim &middot; On our servers &middot; <time>Finished {a}</time>', trail=(Figure(f'{v} DPS', size='sm') if v else ''))
+                for (t, _, _, v), a in zip(HISTORY, SERVER_AGES)]
+        return Section('Your sims', Rows(rows, open_=True), Link('All &rsaquo;'))
     rows = [Row(t, f'{s} &middot; {d}', trail=(Figure(v, unit='DPS', size='sm') if v else '')) for t, s, d, v in HISTORY]
     return Section('Your sims', Rows(rows, open_=True), Link('All &rsaquo;'))
 
@@ -696,7 +703,7 @@ FIGHT_STYLE = 'Patchwerk'   # the request's profile is empty: the shipped styleL
 
 def you_header(answer: str) -> str:
     meta = [f'{RACE} {SPEC_LABEL} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; item level {ilvl():.1f}',
-            'Gear from a pasted export, 6 Nov']   # the parity gate's character: a code link (source "manual"), dated the day it loads
+            'Gear from the addon']   # the parity gate's character: a linked addon export (`who=`), which claims no capture date
     return PageHeader('Thandrel', crest=crest_img(CLS, 56), meta=meta, answer=answer, tabs=TabStrip(TOOLS, 'Quick sim'))
 
 
@@ -750,7 +757,7 @@ def answer_failed(label: str, reason: str, fix: str = '') -> str:
 def result_page_body(saved: bool) -> str:
     _, meta = ability_rows()
     main = Section('Damage by ability', Plate(ability_table()), meta=meta) + timeline_section() + gear_section() + talents_section() + rage_section() + buffs_section()
-    rail = spread_section() + this_run_section() + rotation_section() + ('' if saved else history_section())
+    rail = spread_section() + this_run_section() + rotation_section() + ('' if saved else history_section(server=True))
     return Page('split', main, rail)
 
 
@@ -776,6 +783,7 @@ PAGE_CSS = '''<style>
 .gear-stats{display:flex;flex-direction:column;gap:8px;padding-top:16px}.gear-foot{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-top:12px}
 .empty-open{padding:12px 0;color:var(--muted);font-size:14px}
 .btn.is-off{opacity:.45;pointer-events:none}
+button.link{background:none;border:0;padding:0;cursor:pointer;font:600 14px/20px var(--font-body);color:var(--gold)}
 input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field::placeholder{color:var(--muted)}
 .bar-m summary{gap:8px}.bar-m summary>span:first-child{display:contents}.bar-m summary .sum-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar-m summary .chg{order:2;flex:none;margin-left:0}.bar-m summary .run-m{order:3;flex:none}.bar-m summary .run-m .btn{height:36px;padding:0 12px;font-size:12px}
 .paste{display:flex;flex-direction:column;gap:12px;padding:16px}

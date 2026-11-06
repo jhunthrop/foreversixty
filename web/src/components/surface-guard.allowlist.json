@@ -172,8 +172,6 @@
     "components/sim/SavedCombos.svelte": 5,
     "components/sim/SavedKind.svelte": 5,
     "components/sim/SavedWeights.svelte": 2,
-    "components/sim/ServerRunRow.svelte": 3,
-    "components/sim/ServerRuns.svelte": 5,
     "components/sim/SettingsBar.svelte": 7,
     "components/sim/SettingsSheet.svelte": 4,
     "components/sim/SourceSwitcher.svelte": 3,

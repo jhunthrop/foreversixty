@@ -1,6 +1,7 @@
 import type { Page, Route } from '@playwright/test';
 import { expect, test } from './support/test';
 import { serverRunsCopy } from '../../src/lib/sim/server-runs-copy';
+import { simPageCopy } from '../../src/lib/sim/page-copy';
 import { readLayoutShift, trackLayoutShift } from './support/cls';
 
 // "Your server runs" on /sim (experience spec 2026-10-24 sections 3 and 4), with the API
@@ -126,8 +127,11 @@ test('a payer sees every row state with the spec words', async ({ page }) => {
   await stubServerRuns(page, [RUNNING_WITH_ESTIMATE, RUNNING_NO_ESTIMATE, DONE_UNSEEN, DONE_SEEN, FAILED]);
   await page.goto('/sim');
 
-  await expect(page.getByTestId('server-runs')).toBeVisible();
-  await expect(page.getByRole('heading', { name: serverRunsCopy.heading })).toBeVisible();
+  // The server runs are rows of the rail's Your sims (spec 2026-11-06-sim), no panel of their own.
+  await expect(page.getByTestId('sim-history')).toBeVisible();
+  await expect(page.getByRole('heading', { name: simPageCopy.sections.yourSims })).toBeVisible();
+  await expect(page.getByRole('heading', { name: serverRunsCopy.heading })).toHaveCount(0);
+  await expect(page.getByTestId('server-run-run-estimate')).toContainText(serverRunsCopy.serverMark);
 
   const estimate = page.getByTestId('server-run-run-estimate');
   await expect(estimate).toContainText('Running · takes about 3 minutes');
@@ -143,7 +147,6 @@ test('a payer sees every row state with the spec words', async ({ page }) => {
   await expect(unseen).toContainText('Finished 14 minutes ago');
   await expect(unseen).toContainText(serverRunsCopy.unreadSr);
   await expect(unseen).toHaveAttribute('href', '/sim/done-unseen');
-  await expect(unseen).toHaveClass(/server-run-unseen/);
 
   const seen = page.getByTestId('server-run-done-seen');
   await expect(seen).toContainText('+41 DPS from Viskag');
@@ -210,7 +213,7 @@ for (const route of ['/sim/simfixtureab', '/sim/specs']) {
       if (new URL(request.url()).searchParams.get('lane') === 'server') laneRequests.push(request.url());
     });
     await page.goto(route);
-    await expect(page.getByTestId('server-runs')).toHaveCount(0);
+    await expect(page.locator('[data-testid^="server-run-"]')).toHaveCount(0);
     await page.waitForTimeout(1000);
     expect(laneRequests).toEqual([]);
   });
@@ -222,17 +225,17 @@ test('a free member sees no list, no heading and no empty state', async ({ page 
   await page.goto('/sim');
 
   await expect(page.getByTestId('sim-view')).toBeVisible();
-  await expect(page.getByTestId('server-runs')).toHaveCount(0);
+  await expect(page.locator('[data-testid^="server-run-"]')).toHaveCount(0);
   await expect(page.getByText(serverRunsCopy.heading)).toHaveCount(0);
-  await expect(page.getByTestId('server-runs-reserve')).toHaveCount(0);
 });
 
-test('a payer with no runs sees the one-line empty state', async ({ page }) => {
+test('a payer with no runs and no saved sims sees Your sims\u2019 one empty line', async ({ page }) => {
   await stubSignedIn(page, true);
   await stubServerRuns(page, []);
   await page.goto('/sim');
 
-  await expect(page.getByTestId('server-runs-empty')).toContainText(serverRunsCopy.empty);
+  await expect(page.getByTestId('sim-history-empty')).toBeVisible();
+  await expect(page.locator('[data-testid^="server-run-"]')).toHaveCount(0);
 });
 
 test('a run that finishes under a visible tab is marked seen at once', async ({ page }) => {

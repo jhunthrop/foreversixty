@@ -32,6 +32,8 @@ const DERIVED_DIR = path.join(WEB_ROOT, 'test-results', 'sim-parity-data', BUILD
 /** The saved run the mocks draw, prerendered under FOREVER_DATA=fixture. */
 export const SAVED_SIM_PATH = '/sim/simfullfixt1';
 const SERVER_RUN_ID = 'parityrun001';
+/** The mocks' signed-in character (design/mocks/ws_sim.py `YOU`). */
+const MOCK_CHARACTER = 'Thandrel';
 
 function envelope(data: unknown): { status: number; contentType: string; body: string } {
   return {
@@ -46,7 +48,15 @@ const HISTORY = [
   { sim_id: 'aaaaaaaaaaaa', title: 'Raid buffs', dps: 899.6, created_at: '2026-11-03T20:00:00Z' },
   { sim_id: 'bbbbbbbbbbbb', title: 'No buffs', dps: 402.3, created_at: '2026-11-01T20:00:00Z' },
   { sim_id: 'cccccccccccc', title: 'Raid buffs', dps: 881.2, created_at: '2026-10-29T20:00:00Z' },
-].map((row) => ({ ...row, spec: FIXTURE.request.spec, engine_version: 'bf72769', kind: 'run' }));
+].map((row) => ({
+  ...row,
+  spec: FIXTURE.request.spec,
+  engine_version: 'bf72769',
+  kind: 'run',
+  state: 'done',
+  seen: true,
+  finished_at: row.created_at,
+}));
 
 async function stubSession(page: Page, serverSims: boolean): Promise<void> {
   const port = process.env.E2E_PORT ?? '4321';
@@ -84,8 +94,15 @@ async function openFuryWarrior(page: Page): Promise<void> {
     .locator('[data-region="section-sim-a-best-in-slot-set"] a', { hasText: 'Fury' })
     .getAttribute('href');
   expect(href).not.toBeNull();
-  // The mock's Troll: the rail carries the alliance set, so the race in the code is swapped.
-  await page.goto((href ?? '').replace(/[&?]run=1\b/, '').replace(/(%3A|:)night-elf(%3A|:)/, '$1troll$2'));
+  // The mock's character: the rail carries the alliance set, so the race is swapped to the mock's
+  // Troll, and the code names its character as the addon's export does (`who=`), so the title is
+  // the character's name (ruling S1) and the source a linked addon export.
+  const url = new URL(href ?? '', 'http://localhost');
+  const code = (url.searchParams.get('code') ?? '').replace(':night-elf:', ':troll:');
+  url.searchParams.set('code', `${code}|who=${MOCK_CHARACTER}:Forever`);
+  url.searchParams.set('source', 'addon');
+  url.searchParams.delete('run');
+  await page.goto(`${url.pathname}${url.search}`);
   await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 15_000 });
   await expect(page.locator('[data-region="slots"]')).toBeVisible();
 }
@@ -163,6 +180,8 @@ export async function openSimState(page: Page, state: SimParityState): Promise<v
   await openFuryWarrior(page);
   await expect(page.getByTestId('sim-history')).toBeVisible();
   if (state === 'result') {
+    // The fixture ran 10,000 runs: High, so the bar and the result read one run count (M3).
+    await page.getByTestId('control-precision').selectOption('high', { force: true });
     await page.getByTestId('sim-settings-more').click();
     await page.getByTestId('sim-server-run').click();
     await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result', { timeout: 15_000 });

@@ -5,6 +5,7 @@
      the island mounts the same component in its place, so nothing moves on hydration. Without
      handlers (the static render) every form still submits to /sim the plain way. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { classTone } from '../../lib/ui/primitives';
   import { validateColdPaste } from '../../lib/sim/cold-paste';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
@@ -27,6 +28,7 @@
     onbuild,
     onfight,
     onsignin,
+    railTail,
   }: {
     bisSets: readonly BisSetClass[];
     /** A character is loading: Run reads busy. */
@@ -39,6 +41,8 @@
     onbuild?: (ref: string) => void;
     onfight?: (ref: string) => void;
     onsignin?: () => void;
+    /** The rail's tail after the best-in-slot sets (Your sims, signed in). */
+    railTail?: Snippet;
   } = $props();
 
   let paste = $state('');
@@ -178,5 +182,6 @@
         {/each}
       </div>
     </Section>
+    {#if railTail}{@render railTail()}{/if}
   {/snippet}
 </Page>

@@ -4,19 +4,16 @@
 // (experience spec 2026-10-24 sections 3.5 and 3.7) the pre-paint script in Base.astro reads
 // back. Pure functions plus guarded storage access; the reactive wrapper is
 // server-runs-controller.svelte.ts.
-import { MAX_RESERVE_PX, storage, writeReserve } from '../layout-reserve';
+import { storage } from '../layout-reserve';
 import type { SimListRow } from './types';
 
 /** How often the list re-reads while a run is queued or running and the tab is visible. */
 export const POLL_INTERVAL_MS = 10_000;
 /** After this page starts a server run, how long before the list first looks for the new row. */
 export const RUN_START_REFRESH_MS = 2_000;
-/** The list panel's last rendered height in px (heading excluded); sizes the reserved box on the next visit. */
-export const RESERVE_STORAGE_KEY = 'fs.serverRuns.reserve';
 /** When a run was last started or seen in flight (epoch ms); the band's reserve hint. */
 export const LIVE_STORAGE_KEY = 'fs.serverRuns.live';
 export const LIVE_TTL_MS = 2 * 60 * 60 * 1000;
-export { MAX_RESERVE_PX };
 
 /** What the `Run again` button on a failed row is showing. */
 export type RerunStatus = 'idle' | 'pending' | 'started' | 'failed' | 'lapsed';
@@ -42,10 +39,6 @@ export function newlyFinished(
 /** `rows` with the given ids marked seen; the input is not changed. */
 export function withSeen(rows: readonly SimListRow[], ids: readonly string[]): SimListRow[] {
   return rows.map((row) => (ids.includes(row.sim_id) ? { ...row, seen: true } : row));
-}
-
-export function writeReserveHeight(pixels: number): void {
-  writeReserve(RESERVE_STORAGE_KEY, pixels);
 }
 
 export function markLive(now: number = Date.now()): void {

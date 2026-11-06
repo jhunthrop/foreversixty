@@ -8,10 +8,8 @@
 import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { createPageContainer } from '../test-support/page-container';
-import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { VIEW_GAP } from '../lib/current-character-layout';
-import { RESERVE_STORAGE_KEY } from '../lib/sim/server-runs-poll';
 import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
 import Sim from './sim.astro';
 import SimById from './sim/[id].astro';
@@ -111,29 +109,13 @@ describe('the shells', () => {
   });
 });
 
-// Experience spec 2026-10-24 section 3.7: a payer's "Your server runs" box is reserved before
-// the island paints, and only for a hinted payer.
-describe('the server runs reserve', () => {
-  it('sim.astro reserves the hidden box under the head, ahead of the paste box', async () => {
-    const html = await container.renderToString(Sim);
-    const head = html.indexOf('data-region="head"');
-    const reserve = html.indexOf('server-runs-shell-reserve');
-    expect(reserve).toBeGreaterThan(head);
-    expect(reserve).toBeLessThan(html.indexOf('id="sim-cold-paste-input"'));
-  });
-
-  it('the stylesheet shows the shell box only under the session and server-sims hints', () => {
-    const css = readFileSync(new URL('../styles/global.css', import.meta.url), 'utf8');
-    expect(css).toMatch(/\.server-runs-shell-reserve\s*\{\s*display: none;/);
-    expect(css).toMatch(
-      /html\[data-session='1'\]\[data-server-sims='1'\] \.server-runs-shell-reserve\s*\{\s*display: block;/,
-    );
-  });
-
-  it('the pre-paint script stamps data-server-sims from the cached /v1/me and the stored list height', async () => {
+// The server runs list now sits in the rail's Your sims (spec 2026-11-06-sim), which moves
+// nothing in the main column: no reserved box. The hint stays for the header's Premium door.
+describe('the server sims hint', () => {
+  it('the pre-paint script stamps data-server-sims from the cached /v1/me', async () => {
     const html = await container.renderToString(Sim);
     expect(html).toContain("root.dataset.serverSims = '1'");
     expect(html).toContain('entitlements.server_sims === true');
-    expect(html).toContain(`data-server-runs-reserve-key="${RESERVE_STORAGE_KEY}"`);
+    expect(html).not.toContain('server-runs-shell-reserve');
   });
 });

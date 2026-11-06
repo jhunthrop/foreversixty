@@ -219,14 +219,12 @@
     }
   }
 
-  // "Your server runs", payers only, on the /sim landing only (spec 2026-10-24 §3).
+  // A payer's server runs (spec 2026-10-24 §3), folded into the rail's Your sims.
   const serverRuns = createServerRunsController();
   const hasServerSims = $derived(effectiveServerSims(me));
   const showsServerRuns = $derived(hasServerSims && !hasSavedSimId && bootstrap.view !== 'specs');
-  const serverRunsLazy = createLazyComponent(() => import('./ServerRuns.svelte'));
   $effect(() => {
     if (!showsServerRuns) return;
-    serverRunsLazy.load();
     return serverRuns.start();
   });
   let wasServerRunning = false;
@@ -486,33 +484,18 @@
   });
 </script>
 
-<!-- The rail's tail with a character: Your sims, then a payer's server runs (their list sits
-     off the main column, so the head, the bar and the body keep the mock's geometry). -->
+<!-- The rail's tail: Your sims, a payer's server runs among them (spec 2026-11-06-sim). -->
 {#snippet yourSims()}
   {#if signedIn}<SimYourSims
       rows={historyRows}
       error={historyError}
       onretry={() => void loadHistory()}
+      serverRows={hasServerSims ? serverRuns.rows : null}
+      serverFailed={hasServerSims && serverRuns.failed}
+      now={new Date(serverRuns.nowMs)}
+      onserverretry={() => void serverRuns.reload()}
+      onstarted={() => serverRuns.runStarted()}
     />{/if}
-  {@render serverRunsList()}
-{/snippet}
-
-{#snippet serverRunsList()}
-  {#if hasServerSims}
-    <div class="sim-server-runs">
-      {#if serverRunsLazy.current}
-        <serverRunsLazy.current
-          rows={serverRuns.rows}
-          failed={serverRuns.failed}
-          now={new Date(serverRuns.nowMs)}
-          onretry={() => void serverRuns.reload()}
-          onstarted={() => serverRuns.runStarted()}
-        />
-      {:else}
-        <div class="server-runs-reserve" data-testid="server-runs-reserve"></div>
-      {/if}
-    </div>
-  {/if}
 {/snippet}
 
 <div class="flex flex-col" data-testid="sim-view">
@@ -586,8 +569,8 @@
               {/if}
             </div>
           {/if}
-          {@render serverRunsList()}
         {/snippet}
+        {#snippet railTail()}{@render yourSims()}{/snippet}
       </SimLandingPage>
     {/if}
   {:else}
