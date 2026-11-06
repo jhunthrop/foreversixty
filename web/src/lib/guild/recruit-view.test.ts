@@ -83,6 +83,8 @@ describe('the public card', () => {
       'Protection Warrior · Guild master',
       'Combat Rogue · Officer',
     ]);
+    const hunter = officerRows([{ name: 'Bow', class: 'hunter', spec: 'BeastMastery', rank: 'leader' }]);
+    expect(hunter[0].sub).toBe('Beast Mastery Hunter · Guild master');
   });
 });
 

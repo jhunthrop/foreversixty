@@ -8,6 +8,7 @@ import { classDisplayName } from '../sim/spec-label';
 import { GuildApiError } from './api';
 import { clockText, dateLabel } from './raid-time';
 import { recruitCopy as copy } from './recruit-copy';
+import { specClassName } from './spec-name';
 import type { GuildApplication, RecruitCard, RecruitOfficer, RecruitWanted } from './recruit-api';
 
 const SEP = ' · ';
@@ -70,8 +71,11 @@ export interface OfficerRow {
 /** "Holy Paladin · Guild master": the spec word joins the class; the rank in words. */
 export function officerRows(officers: readonly RecruitOfficer[]): OfficerRow[] {
   return officers.map((officer) => {
-    const className = officer.class === null ? '' : classDisplayName(officer.class);
-    const spec = [officer.spec ?? '', className].filter((part) => part !== '').join(' ');
+    // The kill's spec word as the export wrote it ("BeastMastery") reads as a player says it.
+    const spec = specClassName(
+      officer.spec ?? '',
+      officer.class === null ? undefined : classDisplayName(officer.class),
+    );
     const rank = officer.rank === 'leader' ? copy.card.leader : copy.card.officer;
     return {
       key: officer.name,

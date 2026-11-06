@@ -161,7 +161,8 @@ export const profileCopy = {
   lastFour: 'Last 4 raids',
   lastThirty: (present: number, nights: number) => `${present} of the last ${nights} raids`,
   noNights: 'No raid nights logged yet.',
-  reportsMode: (present: number, nights: number) => `${present} of the last ${nights} logged nights`,
+  reportsMode: (present: number, nights: number) =>
+    nights === 1 ? `${present} of 1 logged night` : `${present} of the last ${nights} logged nights`,
   loot: 'Loot this tier',
   noLoot: 'Nothing awarded this tier.',
   awarded: (day: string) => `Awarded ${day}`,

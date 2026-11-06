@@ -64,6 +64,7 @@
     >
     <Select
       id="guild-recruit-character"
+      size="compact"
       bind:value={characterKey}
       {options}
       placeholder={copy.apply.pickCharacter}

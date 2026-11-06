@@ -47,7 +47,7 @@
         <Row
           title={line.title}
           titleTone={classTone(line.classSlug)}
-          sub={line.note === '' ? copy.card.lookingFor : line.note}
+          sub={line.note === '' ? undefined : line.note}
           testid="guild-recruit-wanted"
         >
           {#snippet lead()}<ClassCrestRing characterClass={line.classSlug} size={32} />{/snippet}
