@@ -20,6 +20,7 @@ import {
   routeCharacterSearch,
   routeOwner,
 } from './support/character-fixture';
+import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 const NOT_FOUND = {
   status: 404,
@@ -840,7 +841,10 @@ test('a visitor on the 404 page gets "Get the addon" and "Upload logs"; the owne
   await page.goto(CHARACTER_PATH);
   const next = page.getByTestId('character-not-found-next');
   await expect(next).toBeVisible();
-  await expect(next.getByRole('link', { name: 'Get the addon' })).toHaveAttribute('href', '/setup');
+  await expect(next.getByRole('link', { name: ctaCopy.getAddonAndCompanion })).toHaveAttribute(
+    'href',
+    '/setup',
+  );
   await expect(next.getByRole('link', { name: 'Upload logs' })).toHaveAttribute('href', '/logs#upload');
 
   await page.route('**/v1/me', (route) => route.fulfill(ok(ownerMe())));

@@ -16,6 +16,7 @@ import {
   storePointer,
   type FixtureCharacter,
 } from './support/selector';
+import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/encounters*'));
@@ -604,7 +605,7 @@ test.describe('signed out and expired', () => {
     await expect(panel(page).getByText('Sign in to Forever Sixty')).toBeVisible();
     await expect(panel(page).getByTestId('selector-manage')).toHaveCount(0);
     await expect(panel(page).getByTestId('selector-paste')).toContainText('Paste an export');
-    await expect(panel(page).getByTestId('selector-addon')).toContainText('Get the addon');
+    await expect(panel(page).getByTestId('selector-addon')).toContainText(ctaCopy.getAddonAndCompanion);
     await expect(panel(page).getByTestId('selector-signed-out-body')).toHaveText(
       'Sign in and your characters arrive with their gear, talents and guild.',
     );

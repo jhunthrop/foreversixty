@@ -1,3 +1,4 @@
+import { ctaCopy } from '../addon/cta-copy';
 // web/src/lib/account/account-page-copy.ts
 // Every visible string /account's page header and rail panels use (brief 2026-09-22 §B1,
 // §B2) that character-list-copy.ts and signin-copy.ts do not already carry.
@@ -42,7 +43,7 @@ export const accountPageCopy = {
   signedInBannerEmpty: (who: string, viaBattlenet: boolean): string =>
     viaBattlenet
       ? `Signed in as ${who}. Battle.net lists no Forever character on this account yet; make one in game, then refresh from Battle.net.`
-      : `Signed in as ${who}. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.`,
+      : `Signed in as ${who}. Sign in with Battle.net to bring your Forever characters here, or ${ctaCopy.installAddonAndCompanionInline}.`,
   /** "Your ratings" panel heading (spec §3.1). */
   yourRatingsLabel: 'Your ratings',
 } as const;

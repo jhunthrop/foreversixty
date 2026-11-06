@@ -5,6 +5,7 @@ import { sendActionFor, sendBuildToAddon, type SendDeps } from './send-build';
 import { plannerCharacterCardCopy } from './copy';
 import { characterPointsSpent } from './send-state';
 import type { BuildDraft } from './types';
+import { ctaCopy } from '../addon/cta-copy';
 
 const DRAFT = { class_id: 1, race_id: 1, tree_version: 'b', point_order: [1], gear: {} } as BuildDraft;
 const KEY = 'us/hardcore/obnoxious-yell';
@@ -97,7 +98,7 @@ describe('sendBuildToAddon', () => {
 describe('sendActionFor', () => {
   it('is a link to the addon setup, never a promise of sending, without a current character', () => {
     expect(sendActionFor(null, { kind: 'idle' })).toEqual({
-      label: 'Get the addon to use this build in game',
+      label: `${ctaCopy.getAddonAndCompanion} to use this build in game`,
       href: '/setup#addon',
     });
   });

@@ -8,6 +8,7 @@
 // docs/contracts/fixtures/score-labels.json that addon/tests/score_labels_spec.lua pins.
 import labels from '../../../../docs/contracts/fixtures/score-labels.json';
 import type { ScoreComponentKey } from './score';
+import { ctaCopy } from '../addon/cta-copy';
 
 /** What moves each component, in plain words (api/openapi.yaml's `ForeverScore` descriptions,
  *  rewritten for a player: how your fights rank, never "percentile"). The fifth part's key
@@ -142,7 +143,7 @@ export const scoreCopy = {
   notFoundNowhere: 'Not on any other ruleset or region either.',
   /** A character the site holds with nothing on it, shown to a visitor who does not hold it (P.1). */
   noDataLine: (name: string): string => `${name} is here, with no gear, talents or logs yet.`,
-  noDataAddon: 'Get the addon',
+  noDataAddon: ctaCopy.getAddonAndCompanion,
 
   /** The no-logs card (fix round 2 item 4). */
   noLogsTitle: 'No logs yet',
@@ -166,7 +167,7 @@ export const scoreCopy = {
    *  folded into it) and the logs page's upload panel. */
   noLogsNext: {
     lead: 'Your character?',
-    addon: 'Get the addon',
+    addon: ctaCopy.getAddonAndCompanion,
     addonHref: '/setup',
     upload: 'Upload logs',
     uploadHref: '/logs#upload',

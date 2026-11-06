@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import CharacterList from './CharacterList.svelte';
 import { characterListCopy } from '../../lib/account/character-list-copy';
 import type { MeCharacter } from '../../lib/account/api';
+import { ctaCopy } from '../../lib/addon/cta-copy';
 
 const GUILDED: MeCharacter = {
   key: 'us/hardcore/elyra-duskvale',
@@ -162,7 +163,7 @@ describe('CharacterList', () => {
     );
     expect(body).toContain(characterListCopy.pasteHref);
     expect(characterListCopy.empty).toBe(
-      'No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.',
+      `No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? ${ctaCopy.installAddonAndCompanion}, or paste an export.`,
     );
   });
 

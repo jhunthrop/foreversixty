@@ -17,6 +17,7 @@ import {
   routeGearIcons,
 } from './support/character-fixture';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
+import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 const SHOTS = process.env.W9_SHOTS ?? 'test-results/w9';
 const SIZES = [
@@ -127,7 +128,7 @@ for (const size of SIZES) {
       await settle(page);
       await expect(page.getByTestId('setup-line-signin')).toHaveText('Signed in as hunthrop#1894');
       await expect(page.getByTestId('setup-line-addon')).toHaveText(
-        'No character yet. Refresh from Battle.net, or install the addon and paste an export.',
+        `No character yet. Refresh from Battle.net, or ${ctaCopy.installAddonAndCompanionInline}, then paste an export.`,
       );
       await expect(page.getByTestId('setup-line-companion')).toHaveText('No companion signed in yet');
       await expect(page.locator('.setup-chip[data-done="true"]')).toHaveCount(1);

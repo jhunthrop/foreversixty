@@ -16,6 +16,7 @@ import {
   GEAR_ITEMS,
   routeGearIcons,
 } from './support/character-fixture';
+import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 const SHOTS = process.env.W10_SHOTS ?? 'test-results/w10';
 const SIZES = [
@@ -218,7 +219,7 @@ for (const size of SIZES) {
       );
       await expect(page.getByTestId('character-not-found-form')).toBeVisible();
       await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveText(
-        'Get the addon',
+        ctaCopy.getAddonAndCompanion,
       );
       await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveCount(1);
       // The empty score bars and the tooltip lookalike are the holder's, not a visitor's.

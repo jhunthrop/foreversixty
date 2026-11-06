@@ -14,6 +14,7 @@ import {
 } from './landing-answer';
 import * as hover from './hover';
 import type { BisBand, BisFile, BisSlot } from './types';
+import { ctaCopy } from '../addon/cta-copy';
 
 const NOW = new Date('2026-10-10T12:00:00Z');
 const minutesAgo = (minutes: number): string => new Date(NOW.getTime() - minutes * 60_000).toISOString();
@@ -237,6 +238,6 @@ describe('bisAnswerSpec', () => {
     expect(spec.levelFloor).toBe(20);
     expect(spec.needsGear).toBe(true);
     expect(spec.strings.belowLevelFloor).toBe('Best in slot starts at 20.');
-    expect(spec.strings.noGear?.link).toEqual({ label: 'Get the addon', href: '/setup' });
+    expect(spec.strings.noGear?.link).toEqual({ label: ctaCopy.getAddonAndCompanion, href: '/setup' });
   });
 });
