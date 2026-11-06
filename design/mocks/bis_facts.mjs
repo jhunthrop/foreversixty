@@ -1,6 +1,9 @@
-// The data the BiS parity mocks show, read from a built BiS page: node design/mocks/bis_facts.mjs [base URL]
-// (default http://localhost:4321, a running `npm run preview` in web/). Writes design/mocks/data/bis-facts.json,
-// which ws_bis.py renders the mocks from.
+// The data the BiS parity mocks show, read from a built BiS page:
+//   node design/mocks/bis_facts.mjs <base URL> [out file]
+// The base URL is required: the build to read, e.g. http://localhost:4500 for `npm run preview -- --port 4500` in web/.
+// Writes the facts to [out file], by default design/mocks/data/bis-facts.json, which ws_bis.py renders the mocks from
+// (FS_BIS_FACTS points ws_bis.py at another file). The parity spec runs this against its own preview at test time
+// (web/tests/e2e/support/parity-mocks.ts, design/parity.md).
 //
 // Facts only: names, numbers, sources, labels, which slot sits in which group. The mock owns which blocks a
 // region holds and where they sit (ws_bis.py); nothing structural is read here, so a block the build grows
@@ -8,12 +11,32 @@
 // show the same data, so the parity gate compares like with like.
 import { createRequire } from "node:module";
 import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+const USAGE = [
+  "usage: node design/mocks/bis_facts.mjs <base URL> [out file]",
+  "  in web/:          npm run build && npm run preview -- --port 4500",
+  "  then, repo root:  node design/mocks/bis_facts.mjs http://localhost:4500 && python3 design/mocks/ws_bis.py",
+].join("\n");
+
+/** Stops with the usage: the exact command, never a guess at which build to read. */
+function fail(why) {
+  console.error(`bis_facts.mjs: ${why}\n${USAGE}`);
+  process.exit(2);
+}
+
+/** The base URL, required and absolute: never whatever happens to hold a default port. */
+function baseUrl(arg) {
+  if (arg === undefined) fail("the base URL of a running build is required.");
+  if (!URL.canParse(arg) || !/^https?:$/.test(new URL(arg).protocol)) fail(`"${arg}" is not an http(s) URL.`);
+  return new URL(arg).href.replace(/\/$/, "");
+}
 
 const require = createRequire(new URL("../../web/package.json", import.meta.url));
 const { chromium } = require("@playwright/test");
-const base = process.argv[2] ?? "http://localhost:4321";
+const base = baseUrl(process.argv[2]);
 const config = JSON.parse(readFileSync(new URL("./web/bis-parity.json", import.meta.url), "utf8"));
-const OUT = new URL("./data/bis-facts.json", import.meta.url);
+const OUT = process.argv[3] ? resolve(process.argv[3]) : new URL("./data/bis-facts.json", import.meta.url);
 
 /** Runs in the page: every fact the mock renders. */
 function readFacts() {

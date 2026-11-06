@@ -1,7 +1,10 @@
 // web/tests/e2e/parity-bis.spec.ts
-// The BiS page against its committed mocks (design/parity.md): four states at 1440 x 1000, each
-// region's blocks and box compared (support/parity.ts). A side-by-side per state lands in
-// test-results/parity/. Desktop project only: the mocks are 1440 captures.
+// The BiS page against its mocks (design/parity.md): four states at 1440 x 1000, each region's
+// blocks and box compared (support/parity.ts). The mocks are rendered before the tests from this
+// run's own preview (support/parity-mocks.ts: bis_facts.mjs reads the facts, ws_bis.py decides the
+// blocks), so new picks or a longer line never fail the gate and a block the build grows always
+// does. A side-by-side per state lands in test-results/parity/. Desktop project only: the mocks
+// are 1440 captures.
 import { test, expect } from './support/test';
 import { openBis } from './support/bis-page';
 import {
@@ -17,6 +20,7 @@ import {
   type ParityFailure,
   type RegionSnapshot,
 } from './support/parity';
+import { renderBisMocks } from './support/parity-mocks';
 
 const CONFIG = readParityConfig('bis-parity.json');
 
@@ -70,11 +74,19 @@ test.describe('BiS mock parity at 1440', () => {
   test.skip(({ isMobile }) => isMobile, 'the parity mocks are desktop captures');
   test.use({ viewport: CONFIG.viewport });
 
+  let mocks = '';
+  test.beforeAll(async ({ baseURL }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'the parity mocks are desktop captures');
+    testInfo.setTimeout(120_000);
+    if (baseURL === undefined) throw new Error('parity-bis: the spec needs its preview baseURL');
+    mocks = renderBisMocks(baseURL);
+  });
+
   for (const state of CONFIG.states) {
     test(`${state.id} matches ${state.mock}`, async ({ page, browser }) => {
       test.slow();
       const mockPage = await browser.newPage({ viewport: CONFIG.viewport });
-      await openMock(mockPage, state.mock);
+      await openMock(mockPage, mocks, state.mock);
       const mock = await captureRegions(mockPage);
 
       await prepareParityPage(page);

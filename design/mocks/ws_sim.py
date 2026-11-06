@@ -27,7 +27,6 @@ from mocklib import CLASS_COLOR
 from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
                       Page, PageHeader, Plate, Row, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
                       control_bar, crest_img, seg, sel, write, Paperdoll)
-import ws_compose
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_ROOT = Path(os.environ.get('FS_DATA_ROOT', ROOT))
@@ -947,7 +946,9 @@ PAGES = {'web-sim': landing_out, 'web-sim-you': landing_you, 'web-sim-running': 
 
 
 def compare() -> None:
-    """Before/after at the same scale against the 2026-11-06 captures (production for /sim, the fixture build for /sim/<id>)."""
+    """Before/after at the same scale against the 2026-11-06 captures (production for /sim, the fixture build for /sim/<id>).
+    Pillow only here: the parity spec renders the mocks with the standard library alone."""
+    import ws_compose
     ws_compose.BEFORE = ROOT / 'design/reviews/2026-11-06-sim/before'
     for w, sc in ((1440, .5), (2000, .45), (390, .8)):
         print(ws_compose.compose('sim-landing', 'sim-landing', 'web-sim', w, sc, max_h=3600))
