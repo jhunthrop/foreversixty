@@ -42,7 +42,7 @@ test('Dungeon only re-picks every slot from dungeons, hides none, and labels the
       await expect(cell).toContainText(/vs best: \S|as \S/);
   }
   await expect(page.getByTestId('bis-answer-figure')).toContainText(
-    /Set: Dungeon only|Best set, all sources/,
+    /Set: dungeon only|Best set, all sources/i,
   );
 });
 
