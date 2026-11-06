@@ -1,0 +1,79 @@
+{
+  "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+  },
+  "characters": [
+    {
+      "key": "us/normal/thandrel",
+      "region": "us",
+      "ruleset": "normal",
+      "name": "Thandrel",
+      "class": "Warrior",
+      "spec": "Fury",
+      "race": "Human",
+      "realm": "Skyborne",
+      "level": 60,
+      "faction": "alliance",
+      "item_level": 61,
+      "source": "bnet",
+      "build": {
+        "source": "addon",
+        "captured_at": "2026-11-04T19:30:00Z",
+        "level": 60,
+        "data_build": "1.60.1.70790",
+        "gear": {
+          "head": 23314,
+          "neck": 13089,
+          "shoulder": 20057,
+          "back": 20073,
+          "chest": 11726,
+          "wrist": 19587,
+          "hands": 867,
+          "waist": 272403,
+          "legs": 231540,
+          "feet": 275618,
+          "finger1": 272408,
+          "finger2": 272408,
+          "trinket1": 249470,
+          "trinket2": 249469,
+          "main_hand": 279259,
+          "off_hand": 12939,
+          "ranged": 19107
+        },
+        "talents": {
+          "trees": ["0000000000000000", "00000000000000000", "000000000000000000"],
+          "points": [17, 34, 0]
+        }
+      },
+      "guild": {
+        "id": 2,
+        "name": "Olympus XXVII",
+        "rank": "Officer",
+        "verified": true,
+        "attendance": {
+          "present": 3,
+          "nights": 4
+        }
+      }
+    }
+  ],
+  "guilds": [
+    {
+      "id": 2,
+      "region": "us",
+      "ruleset": "normal",
+      "name": "Olympus XXVII",
+      "slug": "olympus-xxvii",
+      "rank": "Officer",
+      "verified": true,
+      "verified_count": 18,
+      "faction": "alliance"
+    }
+  ],
+  "bnet_imported_at": "2026-11-06T09:00:00Z",
+  "main_character_key": "us/normal/thandrel"
+}

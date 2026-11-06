@@ -2,7 +2,6 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { mockEntitlements, NO_PRICE_FACTS } from '../../src/test-support/billing-fixtures';
-import { ownerMeAnswer } from './support/character-fixture';
 import type { Me } from '../../src/lib/account/me-types';
 import { accountPlanCopy } from '../../src/lib/billing/account-plan-copy';
 import { fittingGuildPlan } from '../../src/lib/billing/checkout-params';
@@ -197,26 +196,6 @@ test('without the Supporter mark the hero carries no chip', async ({ page }) => 
   await page.goto('/account');
   await expect(page.getByTestId('account-hero')).toContainText('Elyra Duskvale');
   await expect(page.getByTestId('supporter-chip')).toHaveCount(0);
-});
-
-test('the home header keeps the whole name beside the Supporter chip', async ({ page }) => {
-  const me = ownerMeAnswer();
-  const data = me.data as Record<string, unknown>;
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({ ...me, data: { ...data, entitlements: mockEntitlements({ supporter_mark: true }) } }),
-    ),
-  );
-  await page.route('**/v1/devices', (route) =>
-    route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
-  );
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto('/');
-  const name = page.getByTestId('character-header-name');
-  await expect(name).toHaveText('Elyra Duskvale');
-  // The name box is as wide as it is without the chip (about 114px in this column): never squeezed to a letter.
-  expect((await name.boundingBox())!.width).toBeGreaterThanOrEqual(100);
-  await expect(page.getByTestId('character-header').getByTestId('supporter-chip')).toBeVisible();
 });
 
 // --- the Plan panel by source, and the guild rows (subscribe-and-join spec §4.3, §6.5; cases 15) ---

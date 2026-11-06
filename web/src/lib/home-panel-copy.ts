@@ -6,31 +6,6 @@
 // under it (no switcher: the header selector is the one way to change character).
 import { itemIdLabel, itemNotInDataPhrase } from './items/unknown-item-copy';
 
-/** The signed-out block's `id` in `index.astro`: `HomeAccountPanel.svelte` reaches outside
- *  its own root to find it (same cross-island DOM-reach pattern as `SIM_TAB_ATTR` /
- *  `syncTabHrefs` in `lib/sim/tabs.ts`) and mark it `inert`/`aria-hidden` once signed in, so
- *  the duplicate "Sign in with Battle.net" link the grid-overlay CLS trick leaves behind it
- *  is never focusable or announced. One id, exported once, so the producer (index.astro)
- *  and the consumer (HomeAccountPanel.svelte) can never drift apart. */
-export const HOME_SIGNED_OUT_ID = 'home-signed-out';
-
-/** The attribute `HomeAccountPanel.svelte` puts on <html> when the pre-paint session hint
- *  turned out wrong, so global.css's hint-only collapse of the signed-out hero's cells
- *  (`html[data-session='1']:not([data-home-signed-out])`) stops applying. One name, exported
- *  once, shared with that stylesheet by its comment. */
-export const HOME_SIGNED_OUT_ATTR = 'data-home-signed-out';
-
-/** On <html> when someone is signed in but the page has no account character to speak to (none
- *  imported yet, or the pointer names a pasted export): the hero swaps its sign-in row for
- *  `homeNoCharacterCopy`'s, since a signed-in visitor never sees a sign-in call to action. Set
- *  before first paint from the cached /v1/me (index.astro) and kept by HomeAccountPanel.svelte. */
-export const HOME_NO_HERO_ATTR = 'data-home-no-hero';
-
-/** The hero's "Check again" button and its result note (index.astro), wired by
- *  HomeAccountPanel.svelte. */
-export const HOME_CHECK_AGAIN_ID = 'home-check-again';
-export const HOME_CHECK_AGAIN_NOTE_ID = 'home-check-again-note';
-
 export const homePanelCopy = {
   signInButton: 'Sign in with Battle.net',
   /** The signed-in Simulator card's own empty/loading fallback (§3.B.2) -- reused verbatim

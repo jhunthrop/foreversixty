@@ -1,0 +1,19 @@
+{
+  "rows": [
+    {
+      "sim_id": "p8d3q",
+      "spec": "warrior-fury",
+      "dps": 948.6,
+      "engine_version": "fixture",
+      "created_at": "2026-11-05T22:40:00Z",
+      "title": "Fury Warrior, raid-ready",
+      "kind": "run",
+      "band": 60,
+      "faction": "alliance",
+      "preset": "raid"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 20
+}

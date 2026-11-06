@@ -216,46 +216,8 @@ for (const size of SIZES) {
       await expect(page.getByText('(Player)')).toHaveCount(0);
       await page.screenshot({ path: join(SHOTS, `w9-character-no-logs-${size.name}.png`), fullPage: true });
     });
-
-    test('the landing hero card follows the clock, and no stale This site row is shown', async ({ page }) => {
-      await page.clock.install({ time: new Date('2026-10-23T12:00:00Z') });
-      await signedOut(page);
-      await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await page.route('**/v1/rankings/guilds?**', (route) => route.fulfill(fulfil({ rows: [] })));
-      await routeSampleReportMeta(page);
-      await page.goto('/');
-      await page.clock.resume();
-      await settle(page);
-      const card = page.getByTestId('home-hero-card');
-      await expect(card).toContainText('Launch Nov 4 · 15:00 PST');
-      await expect(page.getByTestId('home-hero-countdown-days')).toContainText('12');
-      await expect(page.getByTestId('home-hero-countdown')).toContainText('Minutes');
-      await expect(card).not.toContainText('Beta is live');
-      await expect(
-        page.getByTestId('home-news-item').filter({ has: page.locator('[href*="simulator-tools"]') }),
-      ).toBeHidden();
-      await page.screenshot({ path: join(SHOTS, `w9-landing-after-beta-${size.name}.png`), fullPage: false });
-    });
   });
 }
-
-test.describe('the beta card while the beta runs', () => {
-  test.use({ viewport: { width: 1280, height: 900 } });
-  test('reads live with its cap on Oct 20', async ({ page }) => {
-    await page.clock.install({ time: new Date('2026-10-20T12:00:00Z') });
-    await signedOut(page);
-    await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
-    await page.route('**/v1/rankings/guilds?**', (route) => route.fulfill(fulfil({ rows: [] })));
-    await page.goto('/');
-    await page.clock.resume();
-    await settle(page);
-    const card = page.getByTestId('home-hero-card');
-    await expect(card).toContainText('Beta is live');
-    await expect(card).toContainText('level cap 30');
-    await mkdirSync(SHOTS, { recursive: true });
-    await page.screenshot({ path: join(SHOTS, 'w9-landing-beta-live-1280.png') });
-  });
-});
 
 test.describe('the sample report on a phone', () => {
   test.use({ viewport: { width: 390, height: 844 } });

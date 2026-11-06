@@ -1,5 +1,5 @@
 // The band's "your server sim finished" line (experience spec 2026-10-24 section 3.4) on the
-// signed-in home page, with /v1/me stubbed.
+// signed-in best-in-slot index (home no longer draws the character header, design/specs/2026-11-06-home.md), with /v1/me stubbed.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { mockEntitlements } from '../../src/test-support/billing-fixtures';
@@ -48,7 +48,7 @@ test('one unseen run: the line sits inside the band, links to the result, and di
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   const seen = await stubMe(page, [run('sim-1', 1204)]);
-  await page.goto('/');
+  await page.goto('/bis');
   const band = page.getByTestId('character-header');
   const line = page.getByTestId('finished-sim-line');
   await expect(line).toBeVisible();
@@ -73,7 +73,7 @@ test('one unseen run: the line sits inside the band, links to the result, and di
 test('three unseen runs: and 2 more, and dismiss marks all three seen', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   const seen = await stubMe(page, [run('sim-3', 1300), run('sim-2', 1250), run('sim-1', 1204)]);
-  await page.goto('/');
+  await page.goto('/bis');
   await expect(page.getByTestId('finished-sim-link')).toHaveAttribute('href', '/sim/sim-3');
   await expect(page.getByTestId('finished-sim-more')).toHaveText('and 2 more');
   await expect(page.getByTestId('finished-sim-more')).toHaveAttribute('href', '/sim#server-runs');
@@ -84,7 +84,7 @@ test('three unseen runs: and 2 more, and dismiss marks all three seen', async ({
 
 test('no unseen runs, or no server sims: no line', async ({ page }) => {
   await stubMe(page, []);
-  await page.goto('/');
+  await page.goto('/bis');
   await expect(page.getByTestId('character-header')).toBeVisible();
   await expect(page.getByTestId('finished-sim-line')).toHaveCount(0);
 
@@ -106,7 +106,7 @@ test('a failed dismiss swaps the text for four seconds, then the sentence return
       body: JSON.stringify({ data: null, error: { code: 'x', message: 'no' } }),
     }),
   );
-  await page.goto('/');
+  await page.goto('/bis');
   await page.getByTestId('finished-sim-dismiss').click();
   const failure = page.getByTestId('finished-sim-failed');
   await expect(failure).toHaveText('Could not dismiss that. Try again.');
@@ -133,7 +133,7 @@ test('while the seen call is in flight the dismiss is busy and the line stays, t
     await route.fulfill({ status: 204, body: '' });
   });
   try {
-    await page.goto('/');
+    await page.goto('/bis');
     const dismiss = page.getByTestId('finished-sim-dismiss');
     await dismiss.click();
     await expect(dismiss).toHaveAttribute('aria-busy', 'true');
@@ -150,7 +150,7 @@ test('phone: the arrow replaces Open result, the line is at least 56 px, the dis
 }) => {
   await page.setViewportSize({ width: 390, height: 900 });
   await stubMe(page, [run('sim-1', 1204)]);
-  await page.goto('/');
+  await page.goto('/bis');
   await expect(page.getByTestId('finished-sim-open-phone')).toBeVisible();
   await expect(page.getByTestId('finished-sim-open')).toBeHidden();
   expect((await page.getByTestId('finished-sim-line').boundingBox())!.height).toBeGreaterThanOrEqual(56);
@@ -167,7 +167,7 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await stubMe(page, [run('sim-1', 1204)]);
     // The first visit stores the /v1/me snapshot the pre-paint script reads on the second.
-    await page.goto('/');
+    await page.goto('/bis');
     await expect(page.getByTestId('finished-sim-line')).toBeVisible();
 
     await trackLayoutShift(page);

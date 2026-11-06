@@ -1,0 +1,19 @@
+{
+  "rows": [
+    {
+      "sim_id": "k2h9f",
+      "spec": "hunter-beast-mastery",
+      "dps": 61.2,
+      "engine_version": "fixture",
+      "created_at": "2026-11-04T20:10:00Z",
+      "title": "Beast Mastery Hunter, 30 to 39",
+      "kind": "run",
+      "band": 30,
+      "faction": "alliance",
+      "preset": "bare"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 20
+}

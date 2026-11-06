@@ -228,7 +228,8 @@ def Checklist(items: list[tuple]) -> str:
     rows = []
     for st, title, sub, fix in items:
         mark = {'ok': '&#10003;', 'warn': '!', 'miss': '&times;', 'gap': '?'}[st]
-        rows.append(Row(title, sub, lead=f'<span class="ck {st}">{mark}</span>', trail=(f'<span class="link">{fix}</span>' if fix else ''), link=bool(fix)))
+        word = {'ok': 'Done', 'warn': 'To do', 'miss': 'Missing', 'gap': 'Not tracked'}[st]
+        rows.append(Row(title, sub, lead=f'<span class="ck {st}" role="img" aria-label="{word}">{mark}</span>', trail=(f'<span class="link">{fix}</span>' if fix else ''), link=bool(fix)))
     return Rows(rows, open_=True)
 
 
@@ -564,3 +565,41 @@ def Paperdoll(label: str, view: str, columns: tuple[list[dict], list[dict]] = ([
         inner = ''.join(f'<div class="doll-col">{"".join(PaperdollCell(c) for c in side)}</div>' for side in columns)
     return (f'<div class="doll" data-view="{view}" data-region="{REGION["slots"]}">'
             f'<div class="doll-cols" role="listbox" aria-label="{escape(label)}">{inner}</div></div>')
+
+
+# ------------------------------------------------ primitives added by the home round (2026-11-06; design/specs/2026-11-06-home.md section 2)
+# ItemRow is the shipped ui/ItemRow (slot label | icon | name and source | the gain Figure), without a hairline (the shipped
+# row's box makes every row its own last child). RowGrid is the shipped ui/RowGrid: open Rows in columns (one below 768,
+# two to 1023, `cols` from 1024), the class picker first. Additive only: no earlier mock changes.
+PRIM_CSS += '''
+.irow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:12px;align-items:center;min-height:58px;padding:8px 16px}
+.irow.slot{grid-template-columns:60px auto minmax(0,1fr) auto}
+.irow .lbl{font:600 13px/18px var(--font-body);color:var(--muted)}
+.irow .bd{min-width:0}.irow .nm{display:block;font:700 15px/20px var(--font-body)}.irow .src{display:block;font-size:13px;line-height:18px;color:var(--muted)}
+.irow .tr{display:flex;gap:12px;align-items:center;justify-self:end}
+.irow .g{display:inline-flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
+.irow .g .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.irow .g .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.irow .g .c{font-size:12px;line-height:16px;color:var(--muted)}
+.irow-box{container-type:inline-size;min-width:0}
+@container (max-width:399px){.irow.slot{grid-template-columns:auto minmax(0,1fr) auto}.irow.slot .lbl{grid-column:2/-1;grid-row:1;font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase}.irow.slot>:nth-child(2){grid-row:1/span 2;grid-column:1}}
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr);column-gap:var(--gap)}
+@media(min-width:768px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1024px){.rgrid{grid-template-columns:repeat(var(--cols),minmax(0,1fr))}}
+.rgrid>.row{border-bottom:1px solid var(--line-soft)}
+'''
+
+
+def ItemRow(name: str, quality: int, icon_html: str, source: str, slot: str = '', gain: tuple[str, str, str] | None = None) -> str:
+    """One item: slot label, icon, the name in its quality colour (a tooltip trigger), its source, the gain (value, unit, caption)."""
+    lbl = f'<span class="lbl">{slot}</span>' if slot else ''
+    g = ''
+    if gain:
+        v, u, c = gain
+        g = f'<span class="g"><span class="v">{v}{f"<small>{u}</small>" if u else ""}</span>' + (f'<span class="c">{c}</span>' if c else '') + '</span>'
+    return (f'<div class="irow-box"><div class="irow{" slot" if slot else ""}">{lbl}<span>{icon_html}</span><span class="bd">'
+            f'<span class="nm" style="color:{QCOL.get(quality, QCOL[1])}" role="button" tabindex="0">{name}</span>'
+            f'<span class="src">{source}</span></span><span class="tr">{g}</span></div></div>')
+
+
+def RowGrid(rows: list[str], cols: int = 3) -> str:
+    return f'<div class="rgrid" style="--cols:{cols}">' + ''.join(rows) + '</div>'
