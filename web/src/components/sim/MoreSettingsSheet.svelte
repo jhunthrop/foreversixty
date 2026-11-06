@@ -21,7 +21,8 @@
     withTargetLevel,
     type SimSettings,
   } from '../../lib/sim/settings';
-  import { specDisplayName } from '../../lib/sim/spec-label';
+  import { simCopy } from '../../lib/sim/copy';
+  import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
   import { fightStyle } from '../../lib/sim/styles';
   import type { SimRequest } from '../../lib/sim/types';
   import Button from '../ui/Button.svelte';
@@ -80,6 +81,14 @@
   } = $props();
 
   let showRequest = $state(false);
+  // A spec the sim does not run has no rotation to name and nothing to send to our servers
+  // (healer review, MAJOR: "Default for Restoration" was a false statement).
+  const simulated = $derived(isSimulatedSpec(spec));
+  const rotationValue = $derived(
+    simulated
+      ? copy.more.rotationValue(specDisplayName(spec))
+      : simCopy.rotationNotSimulated(specDisplayName(spec)),
+  );
   const executeOn = $derived(executePhaseOn(settings));
   const executePct = $derived(Math.round(settings.encounter.execute_ratio * 100));
   // The target resolved for this character (a level-33 export fights a level-36 target), and the
@@ -150,7 +159,7 @@
             ? undefined
             : copy.more.armorSub(TARGET_ARMOR_BY_LEVEL[targetLevel].toLocaleString('en-US')),
       },
-      { id: 'rotation', label: copy.more.rotation, value: copy.more.rotationValue(specDisplayName(spec)) },
+      { id: 'rotation', label: copy.more.rotation, value: rotationValue, testid: 'sim-rotation' },
     ]}
   />
 
@@ -188,7 +197,7 @@
     </div>
   {/if}
 
-  {#if premium && onserver}
+  {#if premium && onserver && simulated}
     <div class="flex items-center justify-between gap-4 pt-5">
       <span class="text-text text-[14px]"
         >{copy.more.serverLine(LANE_ITERATION_CEILING.server.toLocaleString('en-US'))}</span
