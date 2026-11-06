@@ -16,15 +16,20 @@ local QUALITY = {
 	[4] = { r = 0.64, g = 0.21, b = 0.93 }, [5] = { r = 1, g = 0.5, b = 0 },
 }
 
+-- The rows are dated today and yesterday, inside Score.STALE_AFTER_SECONDS (3 days): fixed dates
+-- went stale as the calendar moved and muted a badge this spec expects in its tier colour.
+local TODAY = os.date("!%Y-%m-%d")
+local YESTERDAY = os.date("!%Y-%m-%d", os.time() - 24 * 60 * 60)
+
 local function record()
 	return {
 		format = 2,
 		generated = os.date("!%Y-%m-%d"),
 		characters = {
-			["Bow Jackzon-ClassicBetaPvP"] = { score = 1240, tier = "rare", as_of = "2026-11-04", fights = 9 },
-			["Smoke Gouda-ClassicBetaPvP"] = { score = 1610, tier = "epic", as_of = "2026-11-04", fights = 14 },
-			["Facep Alm-ClassicBetaPvP"] = { score = 0, tier = "common", as_of = "2026-11-04", fights = 0 },
-			["Bob-Whitemane"] = { score = 700, tier = "mythic", as_of = "2026-11-03", fights = 2 },
+			["Bow Jackzon-ClassicBetaPvP"] = { score = 1240, tier = "rare", as_of = TODAY, fights = 9 },
+			["Smoke Gouda-ClassicBetaPvP"] = { score = 1610, tier = "epic", as_of = TODAY, fights = 14 },
+			["Facep Alm-ClassicBetaPvP"] = { score = 0, tier = "common", as_of = TODAY, fights = 0 },
+			["Bob-Whitemane"] = { score = 700, tier = "mythic", as_of = YESTERDAY, fights = 2 },
 		},
 		guilds = {},
 	}

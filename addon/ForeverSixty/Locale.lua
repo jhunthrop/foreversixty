@@ -15,7 +15,8 @@ local L = {
 	-- and the Settings page all print it (Options.helpLines, L3.5 ruling 3); /fs help alone
 	-- adds the testers' two lines after it, muted (fix round 1, item 16; fix round 3, item 5:
 	-- one line read as options of /fs diag; /fs record's arguments are in its own usage,
-	-- recorderHelp).
+	-- recorderHelp). Guild redesign 2026-11-06 (owner): /fs job joins as the fourteenth, because a
+	-- command players cannot find does not exist; the raid entry line alone is not enough.
 	settingsCommands = {
 		"/fs: paste or copy a build",
 		"/fs copy: copy my character for the site",
@@ -25,6 +26,7 @@ local L = {
 		"/fs link: copy a player's site page",
 		"/fs group: your group's specs, gear and buffs",
 		"/fs ready: check flasks, food and buffs now",
+		"/fs job: your jobs for the next raid",
 		"/fs loot: what an item is worth to you",
 		"/fs floor N: tag members scored under N",
 		"/fs options: open the settings page",
