@@ -1,9 +1,0 @@
-{
- "_source": "The GET /v1/reports?mine=1 rows web/tests/e2e/reports-page.spec.ts serves (report('newreport2ab', 'Tuesday raid', 2) and report('oldreport2ab', 'Sunday dungeons', 50)), copied with hours_ago in place of the spec's Date.now() arithmetic. Spec 2026-11-07-logs-reports G8: move this stub to web/src/fixtures/reports/mine.json so the parity spec and the mock read one file.",
- "signed_in": {"user": {"id": 1, "battletag": "Fixture#1234", "email": null, "role": "user", "anonymize": false}, "characters": [], "guilds": []},
- "rows": [
-  {"id": "newreport2ab", "title": "Tuesday raid", "zone": "Sanguine Depths", "status": "ready", "visibility": "public", "hours_ago": 2, "fight_count": 12, "kill_count": 2, "boss_count": 2, "logging_character": null},
-  {"id": "oldreport2ab", "title": "Sunday dungeons", "zone": "Sanguine Depths", "status": "ready", "visibility": "public", "hours_ago": 50, "fight_count": 12, "kill_count": 2, "boss_count": 2, "logging_character": null}
- ],
- "recent_public": []
-}

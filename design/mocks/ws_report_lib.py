@@ -17,18 +17,24 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_ROOT = Path(os.environ.get('FS_DATA_ROOT', ROOT))
 BUILD = json.loads((DATA_ROOT / 'web/src/data/active-build.json').read_text())['build']
 B = DATA_ROOT / 'data/builds' / BUILD
-FIX = ROOT / 'web/src/fixtures/report'
+# D1 (ruled 2026-11-07): every report mock reads a REAL Forever log. The only one reachable is the 17 Sept 2026 beta night on
+# Zephras Isle (client 1.60.1, 79 trash pulls, anonymised names), committed as the bundled sample and served at
+# /sample-report/sample; production's one public report (z2opt2x2gs5u) is the same log's first 42 pulls. It has no boss pull.
 SAMPLE_DIR = ROOT / 'web/public/sample-report/sample'
 MOCKDATA = Path(__file__).resolve().parent / 'data'
 FACTS = json.loads((MOCKDATA / 'logs-facts.json').read_text())
 COPY = FACTS['copy']
-RATING = json.loads((MOCKDATA / 'logs-rating-fight3.json').read_text())
-COACH = json.loads((ROOT / 'web/src/fixtures/coach/fury-model.json').read_text())
+_COACH_GO = (ROOT / 'api/internal/coach/copy.go').read_text()
+COACH_TRASH = _COACH_GO.split('NotReviewableTrash = "', 1)[1].split('"', 1)[0]   # api/internal/coach/copy.go, verbatim
 SPELL_NAME = {s['id']: s['name'] for s in json.loads((B / 'spells.json').read_text())}
 SPELL_ICON = json.loads((B / 'spellicons.json').read_text())
 POWER = {0: 'Mana', 1: 'Rage', 2: 'Focus', 3: 'Energy'}
-ONYXIA = {'zone': "Onyxia's Lair", 'boss': 'Onyxia', 'size': 40, 'duration_ms': 232000}   # coach-stubs.ts ONYXIA
-VIEWER = 'Player-4184-000000A1'   # SAMPLE: the signed-in owner of Baelgrim (coach-stubs.ts premium viewer)
+DEFAULT_PULL = 6       # the sample's default pull as the live page opens it (Trash, 12:43, 177 mobs died)
+EMPTY_PULL = 13        # 4 s, nobody of the group in it: the pull with no data
+COMPARE_PULL = 3       # the other pull the whole group is in
+VIEWER = 'Player-4184-00000038'   # SAMPLE (typed, marked): a signed-in owner of Soren Everhart, for the Coach tab only
+# The parse ladder, exactly lib/report/format.ts percentileToken over web/src/styles/tokens.css --color-parse-*.
+PARSE_TOKENS = {'gold': '#e5cc80', 'pink': '#e268a8', 'orange': '#ff8000', 'purple': '#a335ee', 'blue': '#0070ff', 'green': '#1eff00', 'grey': '#8c8c8c'}
 
 # The report's navigation (spec 6.3, decision R3): one TabStrip. Below 1760 the first 7, from 1760 the first 13, the rest in More.
 TABS = ['Summary', 'Damage done', 'Healing', 'Damage taken', 'Deaths', 'Mechanics', 'Timeline', 'Threat', 'Casts', 'Buffs',
@@ -37,43 +43,37 @@ TAB_MD, TAB_XL = 7, 13
 _ic: dict[str, str] = {}
 
 
+def parse_colour(p: float) -> str:
+    """percentileToken: grey under 25, green 25, blue 50, purple 75, orange 95, pink 99, gold at 100 (floored, so 99.5 is pink)."""
+    p = int(p)
+    for floor, key in ((100, 'gold'), (99, 'pink'), (95, 'orange'), (75, 'purple'), (50, 'blue'), (25, 'green')):
+        if p >= floor:
+            return PARSE_TOKENS[key]
+    return PARSE_TOKENS['grey']
+
+
 # ------------------------------------------------------------------------------------------------ data
 class Report:
-    def __init__(self, base: Path, onyxia: bool = False):
+    def __init__(self, base: Path = SAMPLE_DIR):
         self.base = base
         self.meta = json.loads((base / 'meta.json').read_text())
-        self.onyxia = onyxia
         self._s: dict[int, dict] = {}
-        self.realms = {}
-        for f in self.meta['fights']:
-            pass
 
     def summary(self, i: int) -> dict:
         if i not in self._s:
-            s = json.loads((self.base / f'fights/{i}/summary.json').read_text())
-            if self.onyxia and i == 3:   # coach-stubs.ts onyxiaSummary: the boss named, the warriors Fury, 3:52
-                s = json.loads(json.dumps(s).replace('Warden Kelthas', ONYXIA['boss']))
-                s['duration_ms'] = ONYXIA['duration_ms']
-                for r in s['roster'] + s['combatants']:
-                    if r['guid'] in ('Player-4184-000000A1', 'Player-4184-000000A3'):
-                        r['class'], r['spec'] = 'Warrior', 'Fury'
-            self._s[i] = s
+            self._s[i] = json.loads((self.base / f'fights/{i}/summary.json').read_text())
         return self._s[i]
 
     def fight(self, i: int) -> dict:
-        f = dict(next(x for x in self.meta['fights'] if x['index'] == i))
-        if self.onyxia and i == 3:
-            f.update(name=ONYXIA['boss'], size=ONYXIA['size'], duration_ms=ONYXIA['duration_ms'], zone=ONYXIA['zone'])
-        return f
+        return next(x for x in self.meta['fights'] if x['index'] == i)
 
     @property
     def title(self) -> str:
-        t = self.meta['title']
-        return t.replace('Sanguine Depths', ONYXIA['zone']) if self.onyxia else t
+        return self.meta['title']
 
     @property
     def zone(self) -> str:
-        return ONYXIA['zone'] if self.onyxia else self.meta['zone']
+        return self.meta['zone']
 
 
 def split_name(full: str) -> tuple[str, str]:
@@ -139,9 +139,14 @@ def n1(v: float) -> str:
     return f'{v:,.1f}'
 
 
+def rate(v: float) -> str:
+    """A per-second figure: one decimal under 100 (a levelling pull's 1.8 DPS), whole above (1,374 DPS)."""
+    return f'{v:,.1f}' if v < 100 else f'{v:,.0f}'
+
+
 def mmss(ms: float) -> str:
-    s = ms / 1000
-    return f'{int(s // 60)}:{int(s % 60):02d}' if s >= 60 or s == int(s) else f'{s:.1f}s'
+    s = int(ms // 1000)
+    return f'{s // 60}:{s % 60:02d}'
 
 
 def at(ms: float) -> str:
@@ -161,16 +166,28 @@ def outcome(f: dict) -> str:
     return 'Kill' if f.get('kill') else 'Wipe'
 
 
+def plural(n: int, one: str, many: str = '') -> str:
+    return f'{n:,} {one if n == 1 else (many or one + "s")}'
+
+
+SOURCES = ('All friendlies', 'Your group', 'Everyone in range')
+
+
 def friendlies(R: Report, s: dict, source: str) -> set[str]:
     if source == 'Your group':   # lib/report/group.ts: the pull's own `group` (engine 0.6.0), else the report's
-        f = R.fight(s['fight_index']) if 'fight_index' in s else {}
+        f = R.fight(s['fight_index'])
         return set(f.get('group') or R.meta.get('group') or [])
     return {r['guid'] for r in s.get('roster', [])}
 
 
+def in_scope(R: Report, s: dict, source: str) -> list[dict]:
+    fr = friendlies(R, s, source)
+    return [r for r in s['roster'] if r['guid'] in fr]
+
+
 def group_dps(R: Report, s: dict, source: str) -> float:
     fr = friendlies(R, s, source)
-    return sum(a['total'] for a in s['damage_done'] if a['guid'] in fr) / (s['duration_ms'] / 1000)
+    return sum(a['effective'] for a in s['damage_done'] if a['guid'] in fr) / (s['duration_ms'] / 1000)
 
 
 # ------------------------------------------------------------------------------------------------ frame
@@ -178,36 +195,61 @@ def Button(label: str, primary: bool = False, small: bool = False) -> str:
     return _Button(label, primary, small).replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
 
 
-def head(R: Report, fi: int, tab: str, source: str, viewer: bool = False, sample: bool = False, tabs: bool = True) -> str:
+def answer(R: Report, fi: int, source: str, viewer: str = '') -> str:
+    """Decision R1 as ruled: a trash pull leads with its mobs and length ("177 mobs · 12:43"), never a DPS figure. A boss pull
+    (none in the real log: blocked on D1) leads with the viewer's DPS and parse when their character is in it, else the group's DPS."""
     f, s = R.fight(fi), R.summary(fi)
-    date = f['start'][:10]
-    y, m, d = date.split('-')
+    nd = sum(1 for d in s['deaths'] if d['guid'] in friendlies(R, s, source))
+    scope = 'Your group' if source == 'Your group' else ('Everyone in range' if source == 'Everyone in range' else 'Group')
+    n = len(in_scope(R, s, source))
+    if f['kind'] == 'trash':
+        label = f'Trash pull &middot; started {clock(f["start"])}'
+        fig = Figure(f'{f.get("mob_deaths", 0):,}', unit=f'{"mob" if f.get("mob_deaths") == 1 else "mobs"} &middot; {mmss(f["duration_ms"])}', size='big')
+        cap = f'{scope} &middot; {plural(n, "player")} &middot; {"no deaths" if nd == 0 else plural(nd, "death")}'
+    else:   # spec 6.1; not rendered from real data until a real boss pull exists (D1)
+        label = f'{escape(f["name"])} #{f.get("attempt", 1)} &middot; {"Kill" if f.get("kill") else "Wipe"} &middot; {mmss(f["duration_ms"])}'
+        fig = Figure(n0(group_dps(R, s, source)), unit='DPS', size='big')
+        cap = f'{scope} damage &middot; {plural(nd, "death")}'
+    acts = (f'<span class="ans-act">{Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</span>'
+            f'<span class="ans-more"><button type="button" class="btn sm" aria-haspopup="menu" aria-expanded="false" aria-label="Report actions">&middot;&middot;&middot;</button></span>')
+    return f'<span class="t-label">{label}</span>{fig}<span class="t-small">{cap}</span>{acts}'
+
+
+def head(R: Report, fi: int, tab: str, source: str, viewer: str = '', sample: bool = False, tabs: bool = True) -> str:
+    f = R.fight(fi)
+    y, m, d = f['start'][:10].split('-')
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
     nf = len(R.meta['fights'])
     tag = Tag(COPY['reportCopy']['sampleBadge'], 'muted') if sample else Tag(COPY['reportCopy']['notCreditedTag'], 'muted')
-    meta = [f'{escape(R.zone)} &middot; {int(d)} {months[int(m) - 1]} {y} &middot; {nf} fights', tag]
+    meta = [f'{escape(R.zone)} &middot; {int(d)} {months[int(m) - 1]} {y}<span class="ph-fights"> &middot; {nf} fights</span>', tag]
     if sample:
-        meta.append(escape(COPY['reportCopy']['sampleNote']))
-    deaths = sum(1 for d in s['deaths'] if d['guid'] in friendlies(R, s, source))
-    label = fight_label(f)
-    ros = roster(s)
-    if viewer and VIEWER in ros:
-        me = ros[VIEWER]
-        fig = Figure(n1(me['dps']), unit='DPS', tone='gold', size='big')
-        cap = f'{pname(me)} &middot; {escape(me.get("spec", ""))} {escape(me.get("class", ""))} &middot; {n0(me["damage_done"])} damage'
-    else:
-        fig = Figure(n0(group_dps(R, s, source)), unit='DPS', size='big')
-        cap = f'{"Your group" if source == "Your group" else "Group"} damage &middot; {deaths} death{"" if deaths == 1 else "s"}'
-    ans = (f'<span class="t-label">{label}</span>{fig}<span class="t-small">{cap}</span>'
-           f'<span class="ans-act">{Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</span>')
+        meta.append(f'<span class="ph-note">{escape(COPY["reportCopy"]["sampleNote"])}</span>')
     strip = TabStripMore([t for t in TABS if t != 'Coach' or viewer], tab, TAB_MD, TAB_XL - (0 if viewer else 1)) if tabs else ''
-    return PageHeader(escape(R.title), meta=meta, answer=ans, tabs=strip)
+    return PageHeader(escape(R.title), meta=meta, answer=answer(R, fi, source, viewer), tabs=strip)
 
 
 def fight_label(f: dict) -> str:
     if f['kind'] == 'trash':   # "Trash · 12:43", never "Trash · Trash"
         return f'{f["name"]} &middot; {mmss(f["duration_ms"])}'
-    return f'{f["name"]} &middot; {outcome(f)} &middot; {mmss(f["duration_ms"])}'
+    return f'{f["name"]} #{f.get("attempt", 1)} &middot; {outcome(f)} &middot; {mmss(f["duration_ms"])}'
+
+
+def fight_menu(R: Report, fi: int) -> str:
+    """The Fight menu (R2 as ruled): Boss pulls numbered per boss ("{boss} #2 · Wipe 34%"); trash rows that killed nothing sit
+    behind a toggle; "1 mob died", never "1 mobs died". The real log has no boss pull, so its Boss pulls group is the empty line."""
+    fights = R.meta['fights']
+    bosses = [(fight_label(f), f'{clock(f["start"])} &middot; {plural(f.get("deaths", 0), "death")}', '', '', f['index'] == fi) for f in fights if f['kind'] == 'encounter']
+    killed = [f for f in fights if f['kind'] == 'trash' and f.get('mob_deaths', 0) > 0]
+    idle = [f for f in fights if f['kind'] == 'trash' and not f.get('mob_deaths', 0)]
+    trash = [(fight_label(f), f'{clock(f["start"])} &middot; {plural(f["mob_deaths"], "mob")} died', '', '', f['index'] == fi) for f in killed]
+    boss_group = ([('All boss pulls', plural(len(bosses), 'pull'), '', '', False)] + bosses) if bosses else []
+    menu = Menu('Fights', [('Boss pulls', boss_group), (f'Trash &middot; {plural(len(killed), "pull")}', trash)])
+    if not bosses:
+        menu = menu.replace('<div class="mg" role="presentation">Boss pulls</div>',
+                            '<div class="mg" role="presentation">Boss pulls</div><p class="mi-empty">No boss pulls in this report.</p>', 1)
+    toggle = (f'<label class="mi-toggle"><input type="checkbox"> Show {plural(len(idle), "pull")} that killed nothing</label>' if idle else '')
+    assert menu.endswith('</div>')
+    return '<div class="pc menu-at">' + menu[:-len('</div>')] + toggle + '</div></div>'
 
 
 TABLE_FILTERS = {'Damage done', 'Damage taken', 'Healing'}
@@ -228,14 +270,18 @@ def bar(R: Report, fi: int, tab: str, source: str, open_m: bool = False, compare
 
 
 def this_pull(R: Report, fi: int, source: str = 'All friendlies') -> str:
+    """Decision R7 as ruled: a trash pull reads Mobs died, never "Result: Trash"; Result and Phases are a boss pull's."""
     f, s = R.fight(fi), R.summary(fi)
     fr = friendlies(R, s, source)
-    phases = ' &middot; '.join(f'{escape(p["name"])} {mmss(p["start_ms"])}&ndash;{mmss(p["end_ms"])}' for p in s.get('phases', []))
-    items = [('Pull', escape(f['name'])), ('Result', outcome(f)), ('Length', mmss(f['duration_ms'])),
-             ('Players', str(len(fr))), ('Deaths', str(sum(1 for d in s['deaths'] if d['guid'] in fr)))]
+    items = [('Pull', escape(f['name']))]
+    if f['kind'] != 'trash':
+        items.append(('Result', outcome(f)))
+    items += [('Length', mmss(f['duration_ms']))]
     if f['kind'] == 'trash':
-        items.append(('Mobs died', str(f.get('mob_deaths', 0))))
-    if phases and not (R.onyxia and fi == 3):   # the Onyxia re-read keeps the fixture's 60 s phases: not shown against 3:52
+        items.append(('Mobs died', f'{f.get("mob_deaths", 0):,}'))
+    items += [('Players', f'{len(in_scope(R, s, source)):,}'), ('Deaths', str(sum(1 for d in s['deaths'] if d['guid'] in fr)))]
+    phases = ' &middot; '.join(f'{escape(p["name"])} {mmss(p["start_ms"])}&ndash;{mmss(p["end_ms"])}' for p in s.get('phases', []))
+    if phases:
         items.append(('Phases', phases))
     return Section('This pull', Facts(items), meta=f'Started {clock(f["start"])}')
 
@@ -248,10 +294,10 @@ def chart(R: Report, fi: int, metric: str, source: str) -> str:
     rows = sorted([a for a in s[key] if a['guid'] in fr and a['total'] > 0], key=lambda a: -a['total'])[:5]
     dur = s['duration_ms'] / 1000
     unit = {'damage': 'DPS', 'healing': 'HPS', 'taken': 'taken / s'}[metric]
-    series = [(split_name(a['name'])[0], colour(ros.get(a['guid'])), a['series'], f'<span class="num">{a["total"] / dur:,.0f}</span> {unit}') for a in rows]
-    total = sum(a['total'] for a in s[key] if a['guid'] in fr) / dur
+    series = [(split_name(a['name'])[0], colour(ros.get(a['guid'])), a['series'], f'<span class="num">{rate(a["effective"] / dur)}</span> {unit}') for a in rows]
+    total = sum(a['effective'] for a in s[key] if a['guid'] in fr) / dur
     title = {'damage': 'Damage over the fight', 'healing': 'Healing over the fight', 'taken': 'Damage taken over the fight'}[metric]
-    meta = f'Group {total:,.0f} {unit} over the whole fight'
+    meta = f'{"Your group" if source == "Your group" else "Group"} {rate(total)} {unit} over the whole fight'
     if not rows:
         return Section(title, f'<p class="empty">Nothing in this window.</p>', meta=meta)
     phases = [(p['name'], p['start_ms'] / 1000, p['end_ms'] / 1000) for p in s.get('phases', [])]
@@ -267,7 +313,8 @@ def notices(lines: list[str]) -> str:
     return '<div data-region="summary">' + ''.join(Notice(l, tone='neutral') for l in lines) + '</div>'
 
 
-PARSES_MISSING = ('The rankings could not be reached, so the Parse column is unknown; every other figure is from the log. '
-                  '<a class="link" href="#">Try again</a>')
+# Boss pulls only. The phone reads one line (ruled SHOULD): the short form; 768 px and up the full sentence.
+PARSES_MISSING = ('<span class="lc-only-d">The rankings could not be reached, so the Parse column is unknown; every other figure is from the log.</span>'
+                  '<span class="lc-only-m">Parses unknown: the rankings did not answer.</span> <a class="link" href="#">Try again</a>')
 
 

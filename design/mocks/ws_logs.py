@@ -4,7 +4,8 @@ The report itself (/reports/<id>, every tab, /reports/sample) is ws_report.py.
 Spec: design/specs/2026-11-07-logs-reports.md. Data and copy, read at render time, never retyped:
   - design/mocks/data/logs-facts.json (node design/mocks/logs_facts.mjs): the page copy modules (lib/reports, lib/report,
     lib/rankings, lib/score, lib/rating) and the e2e rankings stubs (tests/e2e/support/rankings-fixture.ts);
-  - design/mocks/data/logs-reports-stub.json: the /v1/reports?mine=1 rows reports-page.spec.ts serves (gap G8);
+  - design/mocks/data/logs-reports-real.json: production's one public report (the 17 Sept beta night), standing in for
+    the signed-in player's own list until G8 serves a fixture (decision D1: no retail-shaped stub rows);
   - web/public/sample-report/sample/meta.json: the sample report row;
   - web/src/pages/ratings.astro: the ratings page's own prose, weight table and sample score (parsed from the source).
 SAMPLE (typed, marked): none beyond what the stubs carry; the signed-in character on /rankings is the stub's own
@@ -29,7 +30,8 @@ ROOT = Path(__file__).resolve().parents[2]
 MOCKDATA = Path(__file__).resolve().parent / 'data'
 FACTS = json.loads((MOCKDATA / 'logs-facts.json').read_text())
 COPY = FACTS['copy']
-MINE = json.loads((MOCKDATA / 'logs-reports-stub.json').read_text())
+MINE = json.loads((MOCKDATA / 'logs-reports-real.json').read_text())
+NOW = datetime.strptime(MINE['now'], '%Y-%m-%d')
 SAMPLE_META = json.loads((ROOT / 'web/public/sample-report/sample/meta.json').read_text())
 RATINGS_SRC = (ROOT / 'web/src/pages/ratings.astro').read_text()
 ACCOUNT = ('Fixture#1234', None, 'No characters yet')
@@ -46,11 +48,19 @@ def day(d: datetime) -> str:
     return f'{d.day} {MONTHS[d.month - 1]}'
 
 
-def ago(hours: float) -> str:
-    if hours < 24:
-        return 'today' if hours >= 1 else 'just now'
-    days = int(hours // 24)
-    return f'{days} day{"s" if days != 1 else ""} ago'
+def ago(iso_day: str) -> str:
+    """The /reports age rule (spec 5): today, then {n} days ago inside two weeks, then the date."""
+    d = datetime.strptime(iso_day, '%Y-%m-%d')
+    days = (NOW - d).days
+    if days < 1:
+        return 'today'
+    return f'{days} day{"s" if days != 1 else ""} ago' if days < 14 else day(d)
+
+
+def report_title(r: dict) -> str:
+    """The report's title, else its zone, else the night it logged (production's z2opt2x2gs5u carries neither title nor zone)."""
+    d = datetime.strptime(r['first_pull'], '%Y-%m-%d')
+    return r['title'] or r['zone'] or f'Report, {day(d)} {d.year}'
 
 
 PAGE_CSS = '''<style>
@@ -63,18 +73,33 @@ code{font:13px/20px ui-monospace,Menlo,monospace;color:var(--strong)}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;font-size:13px;color:var(--muted)}.legend b{font:700 13px/20px var(--font-body)}
 .pager{display:flex;gap:16px;align-items:center;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--line-soft);font-size:14px}
 .pinned{border-bottom:1px solid var(--line)}
-.score-fig .v{color:var(--c)}
-.tiers .row .ttl{color:var(--c)}
+.fig.score-fig .v{color:var(--c)}
+/* MUST 6 as ruled: the tier names in the game's item quality colours exactly (tokens.css --color-rarity-*), at 19 px 700 so
+   Rare (#0070dd, 3.9:1) and Epic (#a335ee, 3.6:1) pass AA as large text; the selected tier is tinted in its own colour with a
+   3 px rail of it, never the gold selection ground (which hid Epic). */
+.tiers .row .ttl{font:700 19px/24px var(--font-body)}
+.tiers .rows.open .row{padding-inline:14px}
+.tiers .row.cur{background:color-mix(in srgb,var(--c) 12%,transparent);box-shadow:inset 3px 0 0 var(--c)}
+/* K3 as ruled: a single-class board has no crest column */
+.rl.nocrest .cols{grid-template-columns:28px var(--rr-name) var(--rr-bar) repeat(var(--n),var(--rr-fig)) var(--rr-gap) var(--rr-links)}
+.rl.nocrest .rr .ld{display:none}
+@media(max-width:1023px){.rl.nocrest .rr.cols{grid-template-columns:22px minmax(0,1fr) auto;grid-template-areas:"rk nm f1" "rk nm gp" ". xx xx" ". br br" ". lk lk"}}
+.rl{--rr-fig:96px}
+@media(max-width:1023px){.rr .fg.unk{display:none}}
 .parts .st-r .f.p{color:var(--strong)}
 .empty .act{display:flex;gap:16px;align-items:center;margin-top:12px;flex-wrap:wrap}
 </style>'''
 
 
 # ------------------------------------------------------------------------------------------------ shared pieces
+# MUST 4 as ruled: a status Tag only while a report is not finished; a finished report ("complete", "ready") carries none.
+UNFINISHED = {'live': 'Live', 'processing': 'Processing', 'uploading': 'Uploading'}
+
+
 def report_row(r: dict) -> str:
-    sub = ' &middot; '.join([escape(r['zone']), f'{r["boss_count"]} bosses', f'{r["fight_count"]} fights', 'Not credited'])
-    status = '' if r['status'] in ('', 'complete') else Tag(r['status'].capitalize(), 'muted')
-    return Row(escape(r['title']), sub, trail=f'{status}<span class="t-small">{ago(r["hours_ago"])}</span>')
+    bits = ([escape(r['zone'])] if r['zone'] else []) + [f'{r["boss_count"]} bosses', f'{r["fight_count"]} fights', 'Not credited']
+    status = Tag(UNFINISHED[r['status']], 'muted') if r['status'] in UNFINISHED else ''
+    return Row(escape(report_title(r)), ' &middot; '.join(bits), trail=f'{status}<span class="t-small">{ago(r["created_at"])}</span>')
 
 
 def sample_row() -> str:
@@ -85,7 +110,8 @@ def sample_row() -> str:
 
 def recent_section() -> str:
     rc = COPY['recentReportsCopy']
-    body = (f'<p class="empty">{escape(rc["empty"])}</p>' if not MINE['recent_public'] else '') + Rows([sample_row()], open_=True)
+    feed = [report_row(r) for r in MINE['rows'] if r['id'] in MINE['recent_public']]
+    body = (f'<p class="empty">{escape(rc["empty"])}</p>' if not feed else '') + Rows(feed + [sample_row()], open_=True)
     return Section(rc['heading'], body, action=Link('All public reports &rsaquo;'))
 
 
@@ -118,8 +144,9 @@ def logs_page(state: str) -> str:
     answer = ''
     if state == 'some':
         r = MINE['rows'][0]
-        answer = (f'<span class="t-label">Your latest report &middot; {ago(r["hours_ago"])}</span>'
-                  f'{Figure(escape(r["title"]), size="big")}<span class="t-small">{escape(r["zone"])} &middot; {r["boss_count"]} bosses &middot; {r["fight_count"]} fights</span>'
+        where = ([escape(r['zone'])] if r['zone'] else []) + [f'{r["boss_count"]} bosses', f'{r["fight_count"]} fights']
+        answer = (f'<span class="t-label">Your latest report &middot; {ago(r["created_at"])}</span>'
+                  f'{Figure(escape(report_title(r)), size="big")}<span class="t-small">{" &middot; ".join(where)}</span>'
                   f'<span class="ans-links">{Link("Open it &rsaquo;")}</span>')
     head = PageHeader(escape(bc['h1']), meta=[escape(bc['jobLine'])], answer=answer)
     if state == 'out':
@@ -130,20 +157,22 @@ def logs_page(state: str) -> str:
                 + Section('Your reports', f'<p class="empty">{escape(COPY["myReportsCopy"]["empty"])}</p>') + recent_section())
         rail = companion_section(True)
     else:
+        n = len(MINE['rows'])
         main = (Section('Your reports', Plate(Rows([report_row(r) for r in MINE['rows']]), 'Your reports'), action=Link('All your reports &rsaquo;'),
-                        meta=f'{len(MINE["rows"])} reports, newest first')
+                        meta=f'{n} report{"s" if n != 1 else ""}, newest first')
                 + Section('Upload a log', upload_body('open'), meta='For a night already logged') + recent_section())
         rail = companion_section(True)
     body = head + Page('split', main, rail) + PAGE_CSS
     who = ACCOUNT if state != 'out' else None
-    return build_page('Logs', body, 'Logs', who, f'/logs mock, {state}. Data: logs-reports-stub.json (reports-page.spec.ts rows), the sample meta, lib/reports copy.')
+    return build_page('Logs', body, 'Logs', who, f'/logs mock, {state}. Data: logs-reports-real.json (production z2opt2x2gs5u), the sample meta, lib/reports copy.')
 
 
 # ------------------------------------------------------------------------------------------------ /reports
 def reports_page(state: str) -> str:
     """state: out | empty | list | failed."""
     yc, mc = COPY['yourReportsPageCopy'], COPY['myReportsCopy']
-    meta = [escape(yc['job'])] + ([f'{len(MINE["rows"])} reports'] if state == 'list' else [])
+    n = len(MINE['rows'])
+    meta = [escape(yc['job'])] + ([f'{n} report{"s" if n != 1 else ""}'] if state == 'list' else [])
     head = PageHeader(escape(yc['title']), meta=meta, actions=Button(mc['uploadAction']) if state in ('list', 'empty') else '')
     if state == 'out':
         inner = f'<div class="empty"><p>{escape(yc["signedOut"])}</p><div class="act">{Button(mc["signInAction"], primary=True)}{Link(yc["sampleAction"] + " &rsaquo;")}</div></div>'
@@ -154,21 +183,29 @@ def reports_page(state: str) -> str:
     else:
         inner = Rows([report_row(r) for r in MINE['rows']])
     body = head + Page('ledger', Plate(inner, 'Your reports')) + PAGE_CSS
-    return build_page('Your reports', body, 'Logs', ACCOUNT if state != 'out' else None, f'/reports mock, {state}. Data: logs-reports-stub.json.')
+    return build_page('Your reports', body, 'Logs', ACCOUNT if state != 'out' else None, f'/reports mock, {state}. Data: logs-reports-real.json (production z2opt2x2gs5u).')
 
 
 # ------------------------------------------------------------------------------------------------ rankings
+# MUST 3 as ruled: the Warcraft Logs parse scale exactly (tokens.css --color-parse-*; grey is the -text variant, as
+# percentileToken returns it). The percentile is floored, never rounded: rank 1 of 212 is 100 (gold), rank 2 is 99.53 and
+# rank 3 99.06 (pink), rank 4 98.58 (orange). The shipped rankColor clamps at 99 and percentileToken rounds: bug B4.
+PARSE_SCALE = ((100, '#e5cc80', '100'), (99, '#e268a8', '99+'), (95, '#ff8000', '95+'), (75, '#a335ee', '75+'), (50, '#0070ff', '50+'), (25, '#1eff00', '25+'))
+PARSE_GREY = '#8c8c8c'
+
+
+def rank_percentile(rank: int, total: int) -> float:
+    return 100 - (rank - 1) / max(total, 1) * 100   # lib/rankings/row-view.ts rankPercentile
+
+
 def pct_colour(rank: int, total: int) -> str:
-    p = min(99, 100 - (rank - 1) / max(total, 1) * 100)
-    for floor, key in ((99, 'pink'), (95, 'orange'), (75, 'purple'), (50, 'blue'), (25, 'green')):
-        if p >= floor:
-            return PARSE[key]
-    return PARSE['grey']
+    p = int(rank_percentile(rank, total))
+    return next((c for floor, c, _ in PARSE_SCALE if p >= floor), PARSE_GREY)
 
 
 def legend() -> str:
-    steps = [('99+', 'pink'), ('95+', 'orange'), ('75+', 'purple'), ('50+', 'blue'), ('25+', 'green'), (COPY['rankingsCopy']['legendUnderLast'], 'grey')]
-    return '<p class="legend">' + escape(COPY['rankingsCopy']['legendLead']) + ''.join(f' <b style="color:{PARSE[k]}">{t}</b>' for t, k in steps) + '</p>'
+    steps = [(t, c) for _, c, t in PARSE_SCALE] + [(COPY['rankingsCopy']['legendUnderLast'], PARSE_GREY)]
+    return '<p class="legend">' + escape(COPY['rankingsCopy']['legendLead']) + ''.join(f' <b style="color:{c}">{t}</b>' for t, c in steps) + '</p>'
 
 
 def ranking_row(row: dict, total: int, newest: datetime, multi: bool, you: bool = False) -> str:
@@ -180,9 +217,13 @@ def ranking_row(row: dict, total: int, newest: datetime, multi: bool, you: bool 
     top = 900 - 12   # the board's first value (the stub's rank-1 row); the bar is value over it
     rank = f'<span style="color:{pct_colour(row["rank"], total)}">{row["rank"]}</span>'
     secs = row['duration_ms'] // 1000
-    figs = [(f'{row["value"]:,}', 'DPS', '', False), (f'{row["execution_score"] * 100:.0f}%', '', 'Executed', False), (f'{secs // 60}:{secs % 60:02d}', '', 'Length', False)]
-    return RankRow(rank, crest_img(sl, 32), CLASS_COLOR[sl], escape(p['name']), sub, row['value'] / top, figs, f'{days} day{"s" if days != 1 else ""} ago',
-                   [('Report', True), ('Build', False)], you='You' if you else '', selected=you)
+    ilvl = str(row['item_level']) if row.get('item_level') else '&ndash;'   # G12: no board row carries an item level yet
+    figs = [(f'{row["value"]:,}', 'DPS', '', False), (ilvl, '', 'Item level', False), (f'{row["execution_score"] * 100:.0f}%', '', 'Executed', False),
+            (f'{secs // 60}:{secs % 60:02d}', '', 'Length', False)]
+    rr = RankRow(rank, crest_img(sl, 32) if multi else '', CLASS_COLOR[sl], escape(p['name']), sub, row['value'] / top, figs, f'{days} day{"s" if days != 1 else ""} ago',
+                 [('Report', True), ('Build', False)], you='You' if you else '', selected=you)
+    # an unknown figure keeps its desktop column (a dash under its head) and is left out of the phone row's figure line
+    return rr.replace('<span class="fg"><span class="lbl">Item level</span>&ndash;', '<span class="fg unk"><span class="lbl">Item level</span>&ndash;', 1)
 
 
 def board(data: dict, own_key: str = '', off_page: bool = False) -> str:
@@ -190,7 +231,8 @@ def board(data: dict, own_key: str = '', off_page: bool = False) -> str:
     total = data['total']
     newest = max(datetime.strptime(r['fought_at'][:10], '%Y-%m-%d') for r in rows)
     multi = len({r['player']['class'] for r in rows}) > 1
-    heads = ColumnHeads([('#', True), ('', False), ('Character', False), ('Share of the top', False), ('DPS', True), ('Executed', True), ('Length', True), ('Date', True), ('', False)])
+    heads = ColumnHeads([('#', True)] + ([('', False)] if multi else []) + [('Character', False), ('Share of the top', False), ('DPS', True), ('Item level', True),
+                         ('Executed', True), ('Length', True), ('Date', True), ('', False)])
     body = ''
     if off_page and data.get('character_rank'):
         cr = data['character_rank']
@@ -198,7 +240,10 @@ def board(data: dict, own_key: str = '', off_page: bool = False) -> str:
     body += ''.join(ranking_row(r, total, newest, multi, you=(r['player']['key'] == own_key and not off_page)) for r in rows)
     pages = -(-total // data['per_page'])
     pager = f'<div class="pager"><span class="t-small">Page 1 of {pages}</span><span class="muted">Previous</span><a class="link" href="#">Next</a></div>' if pages > 1 else ''
-    return Plate(RankList(heads, body, 3, links3=True) + pager, 'Rankings')
+    rl = RankList(heads, body, 4, links3=True)
+    if not multi:   # K3 NO (ruled): a single-class board draws no crest; the class-coloured name carries the class
+        rl = rl.replace('<div class="rl links3"', '<div class="rl links3 nocrest"', 1)
+    return Plate(rl + pager, 'Rankings')
 
 
 def rankings_bar(encounter: str, cls: str, spec: str, open_m: bool = False) -> str:
@@ -281,7 +326,7 @@ def ratings_page() -> str:
     maxes = FACTS['score']['component_max']
     total = sum(maxes.values())
     tiers = FACTS['score']['tiers']
-    tcol = {'common': '#ffffff', 'uncommon': '#1eff00', 'rare': '#3d94f0', 'epic': '#b866f5', 'legendary': '#ff8000'}
+    tcol = {'common': '#ffffff', 'uncommon': '#1eff00', 'rare': '#0070dd', 'epic': '#a335ee', 'legendary': '#ff8000'}   # --color-rarity-*, exactly
     tier = next(t for t, f in reversed(list(zip(['common', 'uncommon', 'rare', 'epic', 'legendary'], [0, 500, 1000, 1500, 2000]))) if score >= f)
     labels = {c['key']: c for c in sc['components']}
     gaps = sorted(((maxes[k] - v, k) for k, v in sample.items()), reverse=True)
@@ -309,8 +354,10 @@ def ratings_page() -> str:
                  + f'<div class="prose"><p class="muted">{astro_testid_para("ratings-roles")}</p><p class="muted">{astro_testid_para("ratings-adjustable")}</p></div>')
     s5 = Section('Ranked against your spec, or absolute', '<div class="prose">' + ''.join(f'<p>{p}</p>' for p in astro_paras('Ranked against your spec, or absolute')) + '</div>')
     s6 = Section('The cap', f'<div class="prose"><p>{escape(rc["cappedRule"])}</p></div>')
-    trows = [Row(escape(t['tier'].capitalize()), escape(fs['tierShort'][t['tier']]), link=False, title_color=tcol[t['tier']], selected=t['tier'] == tier) for t in tiers]
-    rail = (Section(sc['tierColumn'] + 's', Rows(trows, open_=True) + f'<p class="t-small" style="margin-top:10px">{escape(sc["tiersNote"])}</p>')
+    trows = [Row(escape(t['tier'].capitalize()), escape(fs['tierShort'][t['tier']]), link=False, title_color=tcol[t['tier']], selected=t['tier'] == tier,
+                 trail='<span class="t-small">The sample</span>' if t['tier'] == tier else '').replace('<div class="row', f'<div style="--c:{tcol[t["tier"]]}" class="row', 1)
+             for t in tiers]
+    rail = (Section(sc['tierColumn'] + 's', f'<div class="tiers">{Rows(trows, open_=True)}</div>' + f'<p class="t-small" style="margin-top:10px">{escape(sc["tiersNote"])}</p>')
             + Section(sc['explainerLogsHeading'], f'<p class="t-small" style="margin-top:10px">{escape(sc["explainerLogsBody"])}</p><p style="margin-top:12px">{Button(sc["explainerLogsButton"])}</p>'))
     body = head + Page('split', s1 + s2 + s3 + s4 + s5 + s6, rail) + PAGE_CSS
     return build_page(sc['explainerPageTitle'], body, 'Logs', None, '/ratings mock. Data: ratings.astro sample score, trend, weights and prose; lib/score and lib/rating copy.')
