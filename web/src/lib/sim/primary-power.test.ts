@@ -6,7 +6,7 @@ import fullFixture from '../../fixtures/sim/result-full.json';
 import olderFixture from '../../fixtures/sim/result.json';
 import { primaryPower, primaryPowerTrack } from './primary-power';
 import { resourceCard } from './resource-card';
-import { resourceLabel, resultSections } from './result-sections';
+import { resourceLabel } from './result-sections';
 import type { SimResult } from './types';
 import { simWarnings } from './warnings';
 
@@ -42,7 +42,7 @@ describe('an older warrior result (track power_type 3, the engine enum before 20
     expect(primaryPowerTrack(older)?.power).toBe('rage');
     expect(resourceLabel(older)).toBe('Rage');
     expect(resourceCard(older, null)?.title).toBe('Rage');
-    expect(resultSections(older).find((section) => section.id === 'resource')?.label).toBe('Rage');
+    expect(resourceLabel(older)).toBe('Rage');
   });
 
   it('names rage in the cap note', () => {
@@ -76,6 +76,6 @@ describe('primaryPowerTrack', () => {
     expect(primaryPowerTrack(both)?.track.power_type).toBe(3);
     const none: SimResult = { ...base, summary: { ...base.summary, resources: [] } };
     expect(resourceLabel(none)).toBeNull();
-    expect(resultSections(none).some((section) => section.id === 'resource')).toBe(false);
+    expect(resourceLabel(none)).toBeNull();
   });
 });

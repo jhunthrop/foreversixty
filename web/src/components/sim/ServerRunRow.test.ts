@@ -68,22 +68,21 @@ describe('ServerRunRow states', () => {
     expect(text(body)).not.toContain('taking longer');
   });
 
-  it('done and opened: a whole-row link to the result with the arrow, no dot', () => {
+  it('done and opened: a whole-row link to the result, marked as a server run, no dot', () => {
     const body = renderRow(
       row({ state: 'done', seen: true, headline: '1,204 DPS', finished_at: '2026-10-24T11:46:00Z' }),
     );
     expect(body).toContain('href="/sim/sim-1"');
     expect(text(body)).toContain('1,204 DPS');
     expect(text(body)).toContain('Finished 14 minutes ago');
-    expect(body).toContain('server-run-arrow');
+    expect(text(body)).toContain(serverRunsCopy.serverMark);
     expect(body).not.toContain(serverRunsCopy.unreadSr);
     expect(body).not.toContain('<button');
   });
 
-  it('done and unopened: the gold dot with its screen reader text and the tint class', () => {
+  it('done and unopened: the gold dot with its screen reader text', () => {
     const body = renderRow(row({ state: 'done', seen: false, finished_at: '2026-10-24T11:46:00Z' }));
     expect(body).toContain(serverRunsCopy.unreadSr);
-    expect(body).toContain('server-run-unseen');
     expect(text(body)).toContain('1,204 DPS');
   });
 
@@ -103,7 +102,7 @@ describe('ServerRunRow states', () => {
 
   it('error without a reason reads Failed alone', () => {
     const body = renderRow(row({ state: 'error', finished_at: '2026-10-24T10:00:00Z' }));
-    expect(text(body)).toContain('Failed Ended');
+    expect(text(body)).toContain('Failed · Ended');
   });
 
   it('titled rows show the title and the spec in the meta line', () => {
@@ -129,23 +128,22 @@ describe('ServerRunRow states', () => {
 describe('Run again', () => {
   const failed = row({ state: 'error', finished_at: '2026-10-24T10:00:00Z' });
 
-  it('pending: Starting…, disabled and busy', () => {
+  it('pending: Starting…, disabled', () => {
     const body = renderRow(failed, 'pending');
     expect(text(body)).toContain('Starting…');
-    expect(body).toContain('disabled');
-    expect(body).toContain('aria-busy="true"');
+    expect(body).toMatch(/<button[^>]*\sdisabled(=""|[\s>])/);
   });
 
   it('started: Started, disabled', () => {
     const body = renderRow(failed, 'started');
     expect(text(body)).toContain('Started');
-    expect(body).toContain('disabled');
+    expect(body).toMatch(/<button[^>]*\sdisabled(=""|[\s>])/);
   });
 
   it('failed: the could-not-start line, the button back at rest', () => {
     const body = renderRow(failed, 'failed');
     expect(text(body)).toContain(serverRunsCopy.runAgainFailed);
-    expect(body).not.toContain('disabled');
+    expect(body).not.toMatch(/<button[^>]*\sdisabled(=""|[\s>])/);
     expect(body).not.toContain('/premium');
   });
 

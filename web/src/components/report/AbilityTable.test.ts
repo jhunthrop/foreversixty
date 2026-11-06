@@ -23,10 +23,11 @@ const decorate: AbilityDecorate = (row) => ({
   sources: row.hand === 'extra' ? [{ name: 'Windfury Totem', count: null }] : [],
   swingsBecame: row.hand === 'main' ? 32 : 0,
   tip: row.spellId === 20662,
+  targets: row.spellId === 1680 ? 1 : null,
 });
 const { body } = render(AbilityTable, { props: { table, decorate } });
 const rowHtml = (key: string): string => {
-  const match = new RegExp(`data-testid="ability-row-${key}"[\\s\\S]*?</tr>`).exec(body);
+  const match = new RegExp(`data-testid="ability-row-${key}"[\\s\\S]*?(?=role="row"|$)`).exec(body);
   if (match === null) throw new Error(`no row ${key}`);
   return match[0];
 };
@@ -71,7 +72,12 @@ describe('AbilityTable', () => {
     const wounds = text(rowHtml('spell:12867'));
     expect(wounds).toContain('59 ticks');
     expect(wounds).toContain('tick crit 37.3%');
-    expect(wounds).toContain('98.9%');
+    expect(wounds).toContain('up 98.9% of the fight');
+  });
+
+  it("says a multi-target spell's hits a cast, and draws no Uptime column", () => {
+    expect(text(rowHtml('spell:1680'))).toContain('hits a cast, 1 target');
+    expect(body).not.toContain('Uptime');
   });
 
   it('spaces the separators and a source count as the page reads them', () => {
@@ -93,8 +99,8 @@ describe('AbilityTable', () => {
   });
 
   it('marks the sorted column and totals the table', () => {
-    expect(body).toMatch(/aria-sort="descending"[\s\S]*?ability-sort-dps/);
-    const total = /data-testid="ability-total"[\s\S]*?<\/tr>/.exec(body)?.[0] ?? '';
+    expect(body).toMatch(/aria-sort="descending"[^>]*>(?:<!--[^>]*-->|\s)*<button[^>]*stat-sort-dps/);
+    const total = /data-testid="ability-total"[\s\S]*/.exec(body)?.[0] ?? '';
     expect(text(total)).toContain('Total, 9 sources');
     expect(text(total)).toContain('904.4');
     expect(text(total)).toContain('162,715 damage a fight');

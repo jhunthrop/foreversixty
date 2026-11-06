@@ -1,15 +1,16 @@
 <!-- web/src/components/sim/RunReport.svelte -->
-<!-- One `run` result on one scrolling page (spec 2026-11-04-sim-results): the band and its
-     answer, the sticky section nav, Worth knowing, Damage by ability beside the DPS spread, then
-     each deeper card in its own chunk, mounted as it nears the viewport with a skeleton holding
-     its ready height. Every file it reads is optional: a row without its icon or name still
-     reads, nothing here can stop the figure from drawing.
+<!-- The body of one `run` result (sim spec 2026-11-06 §4.5): everything under the page head and the
+     control bar. Worth knowing as Notice lines, then the split page: Damage by ability on the
+     page's one Plate, Timeline, Gear, Talents, the resource and Buffs and debuffs in main; the DPS
+     spread, This run and Rotation in the rail, then whatever the page adds (`railTail`: Your sims).
+     Every Section is open. Each one under the fold is its own chunk, mounted as it nears the
+     viewport with its head and a skeleton holding its ready height, so nothing shifts. Every file
+     it reads is optional: a row without its icon or name still reads.
 
-     The one report for a saved run (/sim/<id>, SavedSim.svelte) and a finished run on /sim
-     (SimView.svelte, `live`). Live, the page's own run control, title and save panel are the
-     actions, so the band carries none and its heading is not the page's h1. -->
+     The one body for a saved run (/sim/<id>, SavedSim.svelte) and a finished run on /sim
+     (SimView.svelte, `live`). The head and its answer are the page's own. -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, type Snippet } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { dataUrl, loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
@@ -22,93 +23,114 @@
     withShardNames,
     type ActionNames,
   } from '../../lib/sim/action-names';
-  import { fetchSpecs } from '../../lib/sim/api';
   import { loadBuffNames, type BuffNames } from '../../lib/sim/buff-names';
   import { plannerHrefForSpec } from '../../lib/sim/character';
   import { extraAttackLines } from '../../lib/sim/extra-attacks';
+  import { gearMeta } from '../../lib/sim/gear-card';
+  import {
+    aurasCardCopy,
+    gearCardCopy,
+    resourceCardCopy,
+    rotationCardCopy,
+    talentsCardCopy,
+  } from '../../lib/sim/input-cards-copy';
   import { withoutAbsentPets } from '../../lib/sim/pet-rows';
-  import { loadPresetSets, raidSetAt } from '../../lib/sim/preset-sets';
+  import { SPACED_SPLIT, talentSplit } from '../../lib/sim/result-band';
   import {
     clock,
     damageCopy,
     grouped,
     oneDecimal,
-    sectionHeadCopy,
     spreadCopy,
+    warningsCopy,
   } from '../../lib/sim/result-copy';
-  import { resultSections } from '../../lib/sim/result-sections';
-  import { sectionReserves } from '../../lib/sim/section-reserve';
+  import { resourceLabel } from '../../lib/sim/result-sections';
   import { resultTip } from '../../lib/sim/result-tips';
+  import { sectionReserves } from '../../lib/sim/section-reserve';
   import { summaryActionKeys } from '../../lib/sim/sentence';
-  import { timelineHeadMeta } from '../../lib/sim/timeline-lanes';
+  import { settingsCopy } from '../../lib/sim/settings-copy';
   import { specDisplayName } from '../../lib/sim/spec-label';
-  import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { NO_SPELL_INFO, loadSpellInfo, type SpellInfo } from '../../lib/sim/spell-info';
-  import type { SimResult, SpecFidelity } from '../../lib/sim/types';
+  import { timelineCopy } from '../../lib/sim/timeline-copy';
+  import { timelineHeadMeta } from '../../lib/sim/timeline-lanes';
+  import type { SimResult } from '../../lib/sim/types';
+  import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import { simWarnings } from '../../lib/sim/warnings';
-  import type { LastUpgrade } from '../../lib/sim/last-upgrade';
+  import { REGION } from '../../lib/ui/regions';
+  import { LINK } from '../../lib/ui/primitives';
   import { yieldToMain } from '../../lib/yield';
   import AbilityTable, { type AbilityDecoration, type AbilityWeapon } from '../report/AbilityTable.svelte';
-  import Card from '../ui/Card.svelte';
+  import Notice from '../ui/Notice.svelte';
+  import Page from '../ui/Page.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
   import DpsDistribution from './DpsDistribution.svelte';
   import LazySection from './LazySection.svelte';
-  import ResultBand from './ResultBand.svelte';
-  import SectionNav from './SectionNav.svelte';
-  import WorthKnowing from './WorthKnowing.svelte';
 
   let {
     result,
+    live = false,
+    railTail,
     onrerun,
     simId = '',
-    live = false,
-    topUpgrade = null,
+    initialNotes,
   }: {
     result: SimResult;
-    /** Saved: "Open in the sim". Live: absent, the run control above is the way to run again. */
-    onrerun?: () => void;
-    simId?: string;
     /** A finished run on /sim rather than a saved one. */
     live?: boolean;
-    /** A Top Gear upgrade on record for this character, for the band's next step. */
-    topUpgrade?: LastUpgrade | null;
+    /** The rail's last sections, the page's own (Your sims on /sim). */
+    railTail?: Snippet;
+    /** Saved: a Worth knowing line's "Open in the sim". Absent on /sim, where the bar runs again. */
+    onrerun?: () => void;
+    /** The saved sim's id, for the downloaded file's name. */
+    simId?: string;
+    /** Worth knowing computed at build time for a prerendered run (lib/sim/prerender-notes.ts):
+     *  drawn until the names and spell facts load here, so the lines never arrive late. */
+    initialNotes?: readonly PrerenderedNote[];
   } = $props();
 
   const build = activeBuild.build;
+  const WARNING_ICON = 20;
+  /** The spell names Heroic Strike's ranks carry: a main-hand swing it replaced is counted on that row. */
+  const HEROIC_STRIKE_RANKS: readonly number[] = [78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286];
+  /** A tooltip that hits several enemies: its row says the hits a cast (spec 4.7). */
+  const MULTI_TARGET = /up to \d+ enemies/i;
+
   // svelte-ignore state_referenced_locally
   const classSlug = result.request.character.class;
 
   let names = $state<ActionNames | null>(null);
   let spells = $state<SpellInfo>(NO_SPELL_INFO);
+  let spellsLoaded = $state(false);
+  let namesSettled = $state(false);
   let items = $state<ReadonlyMap<number, Item>>(new Map());
   let buffNames = $state<BuffNames | null>(null);
-  let raidBuffs = $state<readonly string[] | null>(null);
-  let fidelity = $state<SpecFidelity | null>(null);
 
   const summary = $derived(withoutAbsentPets(result.summary));
-  const sections = $derived(resultSections(result));
-  const resourceTitle = $derived(sections.find((section) => section.id === 'resource')?.label ?? '');
-  const reserves = $derived(sectionReserves(result, fidelity));
+  const reserves = $derived(sectionReserves(result));
+  const request = $derived(result.request);
+  const character = $derived(request.character);
+  const spec = $derived(specDisplayName(request.spec));
+  const powerTitle = $derived(resourceLabel(result));
 
-  // One load each, for this component's one unchanging result. Each failure leaves the page
-  // standing on its fallback: unnamed rows, empty icon boxes, no weapon names.
   /** Runs one optional load; a failure is logged and the page keeps its fallback. */
   function loadQuietly(what: string, load: () => Promise<void>): void {
     load().catch((error: unknown) => console.error(`sim result: ${what} did not load`, error));
   }
 
-  // A live page runs the same character again into this component, so these follow the result;
-  // another character or class clears the result first, which remounts it.
-  const spec = $derived(result.request.spec);
-  const character = $derived(result.request.character);
-
   onMount(() => {
     loadQuietly('the action names', async () => {
-      const loaded = await loadActionNames(build, classSlug);
-      names = loaded;
-      names = await withShardNames(loaded, summaryActionKeys(summary));
+      try {
+        const loaded = await loadActionNames(build, classSlug);
+        names = loaded;
+        names = await withShardNames(loaded, summaryActionKeys(summary));
+      } finally {
+        namesSettled = true;
+      }
     });
     loadQuietly('the spell data', async () => {
       spells = await loadSpellInfo(build, classSlug);
+      spellsLoaded = true;
     });
     loadQuietly('the item file', async () => {
       const file = await loadItems(build, classSlug);
@@ -117,17 +139,17 @@
     loadQuietly('the buff table', async () => {
       buffNames = await loadBuffNames(build);
     });
-    const { spec: specKey, character: who } = result.request;
-    loadQuietly('the preset table', async () => {
-      await loadPresetSets();
-      raidBuffs = raidSetAt(specKey, who.level)?.buffs ?? [];
-    });
-    loadQuietly('the fidelity row', async () => {
-      fidelity = mergeSpecRows(await fetchSpecs()).find((row) => row.spec === specKey) ?? null;
-    });
   });
 
-  const notes = $derived(simWarnings({ result, names, fact: spells.fact }));
+  const computedNotes = $derived(
+    simWarnings({ result, names, fact: spells.fact }).map((note) => ({
+      ...note,
+      iconUrl: note.actionKey === undefined ? null : spells.iconUrl(note.actionKey),
+    })),
+  );
+  const notes = $derived(
+    initialNotes !== undefined && (!namesSettled || !spellsLoaded) ? initialNotes : computedNotes,
+  );
   const plannerHref = $derived(plannerHrefForSpec(character, build));
   const table = $derived(
     abilityTable({
@@ -141,9 +163,7 @@
   const damageMeta = $derived(
     damageCopy.meta(oneDecimal(result.dps.mean), clock(summary.duration_ms / 1000)),
   );
-  const figure = $derived(oneDecimal(result.dps.mean));
 
-  const HEROIC_STRIKE_RANKS: readonly number[] = [78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286];
   const swingsBecame = $derived(
     summary.casts
       .filter((row) => {
@@ -186,32 +206,22 @@
       sources: row.hand === 'extra' ? extraSources : [],
       swingsBecame: row.hand === 'main' ? swingsBecame : 0,
       tip: fact !== undefined,
+      targets:
+        fact !== undefined && MULTI_TARGET.test(fact.tip.description) ? request.encounter.targets : null,
     };
   }
 
-  // The band's figure scrolling out brings the nav's compact figure in.
-  let figureElement = $state<HTMLElement | undefined>(undefined);
-  let figureGone = $state(false);
-  $effect(() => {
-    if (figureElement === undefined || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver((entries) => {
-      figureGone = entries.every((entry) => !entry.isIntersecting);
-    });
-    observer.observe(figureElement);
-    return () => observer.disconnect();
-  });
-
-  // Below the fold each card is its own chunk; the shared tooltip host loads after first paint.
+  // Below the fold each section is its own chunk; the shared tooltip host loads after first paint.
   const timelineLazy = createLazyComponent(() => import('./SimTimeline.svelte'));
-  const gearLazy = createLazyComponent(() => import('./SimGearCard.svelte'));
-  const talentsLazy = createLazyComponent(() => import('./SimTalentsCard.svelte'));
-  const resourceLazy = createLazyComponent(() => import('./SimResourceCard.svelte'));
-  const aurasLazy = createLazyComponent(() => import('./SimAurasCard.svelte'));
-  const rotationLazy = createLazyComponent(() => import('./RotationCard.svelte'));
-  const settingsLazy = createLazyComponent(() => import('./SimSettingsCard.svelte'));
+  const gearLazy = createLazyComponent(() => import('./SimGearSection.svelte'));
+  const talentsLazy = createLazyComponent(() => import('./SimTalentsSection.svelte'));
+  const resourceLazy = createLazyComponent(() => import('./SimResourceSection.svelte'));
+  const buffsLazy = createLazyComponent(() => import('./SimBuffsSection.svelte'));
+  const rotationLazy = createLazyComponent(() => import('./SimRotationSection.svelte'));
+  const thisRunLazy = createLazyComponent(() => import('./SimThisRunSection.svelte'));
   const tooltipHostLazy = createLazyComponent(() => import('../BisTooltipHost.svelte'));
 
-  // The page draws in two tasks: the band and the answer first, then everything under them. One
+  // The page draws in two tasks: the table and the spread first, then everything under them. One
   // task here is most of /sim/<id>'s Total Blocking Time under Lighthouse's 4x CPU profile.
   let drawnRest = $state(typeof window === 'undefined');
   onMount(() => {
@@ -226,9 +236,6 @@
     };
   });
 
-  // The saved Rotation card: the run and its names, and the spec's fidelity for its note (tenet 8).
-  const rotationProps = $derived({ fidelity, result, names });
-
   const resolveTip = (key: string) => Promise.resolve(resultTip(key, spells));
   const resolveItem = async (id: number) => {
     const { fetchItemTooltipModel } = await import('../../lib/items/lookup');
@@ -236,53 +243,87 @@
   };
 </script>
 
-<div class="sim-result flex flex-col" data-testid={live ? 'sim-live-report' : 'sim-saved-run'}>
-  <ResultBand {result} {onrerun} {raidBuffs} {topUpgrade} {live} bind:figureElement />
-  <SectionNav {sections} {figure} figureVisible={figureGone} drawn={drawnRest} />
+{#snippet rail()}
+  <Section
+    title={spreadCopy.title}
+    meta={spreadCopy.meta(grouped(result.iterations_run))}
+    testid="sim-spread-card"
+  >
+    <DpsDistribution
+      estimate={result.dps}
+      iterationsRun={result.iterations_run}
+      histogram={result.dps_histogram}
+    />
+  </Section>
+  {#if drawnRest}
+    <LazySection
+      id="settings"
+      title={settingsCopy.title}
+      meta={settingsCopy.meta}
+      lazy={thisRunLazy}
+      ready={thisRunLazy.current !== null}
+      reserve={reserves.settings}
+    >
+      {#if thisRunLazy.current}<thisRunLazy.current {result} {simId} />{/if}
+    </LazySection>
+    <LazySection
+      id="rotation"
+      title={rotationCardCopy.title}
+      meta={rotationCardCopy.metaRan(spec, character.level)}
+      lazy={rotationLazy}
+      ready={rotationLazy.current !== null}
+      reserve={reserves.rotation}
+    >
+      {#if rotationLazy.current}<rotationLazy.current {request} {result} {names} />{/if}
+    </LazySection>
+  {/if}
+  {@render railTail?.()}
+{/snippet}
 
-  <div class="flex flex-col gap-[22px] pt-[22px] md:gap-8 md:pt-8">
-    {#if notes.length > 0}
-      <WorthKnowing {notes} {spells} {plannerHref} {onrerun} />
-    {/if}
-
-    <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,8fr)_minmax(0,4fr)]">
-      <Card
-        id="damage"
-        glyph="chart"
-        label={damageCopy.label}
-        title={damageCopy.title}
-        meta={damageMeta}
-        body="none"
-        class="mx-[18px] scroll-mt-16 md:mx-0"
-        testid="sim-damage-card"
-      >
-        <AbilityTable {table} {decorate} />
-      </Card>
-      <Card
-        glyph="spark"
-        label={spreadCopy.label(grouped(result.iterations_run))}
-        title={spreadCopy.title}
-        body="none"
-        class="mx-[18px] md:mx-0"
-        testid="sim-spread-card"
-      >
-        <div class="border-line-soft border-t">
-          <DpsDistribution
-            estimate={result.dps}
-            iterationsRun={result.iterations_run}
-            histogram={result.dps_histogram}
-          />
-        </div>
-      </Card>
+<div class="sim-body" data-testid={live ? 'sim-live-report' : 'sim-saved-run'}>
+  {#if notes.length > 0}
+    <div class="px-[var(--page-inset)]" data-region={REGION.summary} data-testid="sim-worth-knowing">
+      {#each notes as note (`${note.id}:${note.actionKey ?? ''}`)}
+        {@const icon = note.iconUrl}
+        <Notice
+          text={note.text}
+          tone="neutral"
+          action={note.action === 'planner'
+            ? { label: warningsCopy.openInPlanner, href: plannerHref }
+            : undefined}
+          testid={`sim-note-${note.id}`}
+        >
+          {#snippet lead()}
+            <span class="block h-5 w-5 overflow-hidden rounded-[4px]"
+              >{#if icon !== null}<img
+                  src={icon}
+                  alt=""
+                  width={WARNING_ICON}
+                  height={WARNING_ICON}
+                />{/if}</span
+            >
+          {/snippet}
+          {#snippet tail()}{#if note.action === 'sim' && onrerun !== undefined}<button
+                type="button"
+                class="{LINK} whitespace-nowrap"
+                onclick={onrerun}>{warningsCopy.openInSim} ›</button
+              >{/if}{/snippet}
+        </Notice>
+      {/each}
     </div>
+  {/if}
 
+  <Page layout="split" {rail}>
+    <Section title={damageCopy.title} meta={damageMeta} testid="sim-damage-card">
+      <Plate>
+        <AbilityTable {table} {decorate} />
+      </Plate>
+    </Section>
     {#if drawnRest}
-      <!-- A run with no sample or no gear keeps the card (its head and one line); only the nav drops
-           the link, so these two carry no reservation then. The timeline's loading head is its
-           ready head, glyph and meta included. -->
       <LazySection
         id="timeline"
-        head={{ glyph: 'clock', ...sectionHeadCopy.timeline, meta: timelineHeadMeta(result) }}
+        title={timelineCopy.title}
+        meta={timelineHeadMeta(result)}
         lazy={timelineLazy}
         ready={timelineLazy.current !== null}
         reserve={reserves.timeline}
@@ -291,26 +332,29 @@
       </LazySection>
       <LazySection
         id="gear"
-        head={{ glyph: 'guild', ...sectionHeadCopy.gear }}
+        title={gearCardCopy.title}
+        meta={character.gear.length > 0 ? gearMeta(character.gear) : undefined}
         lazy={gearLazy}
         ready={gearLazy.current !== null}
         reserve={reserves.gear}
       >
-        {#if gearLazy.current}<gearLazy.current {result} {names} />{/if}
+        {#if gearLazy.current}<gearLazy.current {request} {result} />{/if}
       </LazySection>
       <LazySection
         id="talents"
-        head={{ glyph: 'tree', ...sectionHeadCopy.talents }}
+        title={talentsCardCopy.title}
+        meta={talentSplit(character.talents, SPACED_SPLIT)}
         lazy={talentsLazy}
         ready={talentsLazy.current !== null}
         reserve={reserves.talents}
       >
-        {#if talentsLazy.current}<talentsLazy.current {result} {names} />{/if}
+        {#if talentsLazy.current}<talentsLazy.current {request} />{/if}
       </LazySection>
-      {#if sections.some((section) => section.id === 'resource')}
+      {#if powerTitle !== null}
         <LazySection
           id="resource"
-          head={{ glyph: 'bolt', ...sectionHeadCopy.resource, title: resourceTitle }}
+          title={powerTitle}
+          meta={resourceCardCopy.meta}
           lazy={resourceLazy}
           ready={resourceLazy.current !== null}
           reserve={reserves.resource}
@@ -320,37 +364,16 @@
       {/if}
       <LazySection
         id="buffs"
-        head={{ glyph: 'spark', ...sectionHeadCopy.buffs }}
-        lazy={aurasLazy}
-        ready={aurasLazy.current !== null}
+        title={aurasCardCopy.title}
+        meta={aurasCardCopy.meta}
+        lazy={buffsLazy}
+        ready={buffsLazy.current !== null}
         reserve={reserves.buffs}
       >
-        {#if aurasLazy.current}<aurasLazy.current {result} {names} />{/if}
-      </LazySection>
-      <LazySection
-        id="rotation"
-        head={{
-          glyph: 'list',
-          title: sectionHeadCopy.rotation.title,
-          label: sectionHeadCopy.rotation.label(specDisplayName(spec), character.level),
-        }}
-        lazy={rotationLazy}
-        ready={rotationLazy.current !== null}
-        reserve={reserves.rotation}
-      >
-        {#if rotationLazy.current}<rotationLazy.current {...rotationProps} />{/if}
-      </LazySection>
-      <LazySection
-        id="settings"
-        head={{ glyph: 'gear', ...sectionHeadCopy.settings }}
-        lazy={settingsLazy}
-        ready={settingsLazy.current !== null}
-        reserve={reserves.settings}
-      >
-        {#if settingsLazy.current}<settingsLazy.current {result} {simId} />{/if}
+        {#if buffsLazy.current}<buffsLazy.current {result} {names} />{/if}
       </LazySection>
     {/if}
-  </div>
+  </Page>
 </div>
 
 {#if tooltipHostLazy.current}
@@ -363,11 +386,27 @@
 {/if}
 
 <style>
-  /* The result page's card heads (spec 3.2): the gold micro label over the title in caps. */
-  .sim-result :global([data-card-label]) {
-    color: var(--color-gold);
-  }
-  .sim-result :global(.heading-plan) {
-    text-transform: uppercase;
+  /* Phone and tablet (spec 8): the rail interleaves, so the spread follows the damage table and
+     This run and Rotation close the page. Main and rail give their sections to one column. */
+  @media (max-width: 1023px) {
+    .sim-body :global(.ui-page) {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--section-gap);
+    }
+    .sim-body :global(.ui-page-main),
+    .sim-body :global(.ui-page-rail) {
+      display: contents;
+    }
+    .sim-body :global([data-testid='sim-spread-card']) {
+      order: 1;
+    }
+    .sim-body :global(.ui-page-main > *:not(:first-child)) {
+      order: 2;
+    }
+    .sim-body :global(.ui-page-rail > *:not(:first-child)) {
+      order: 3;
+    }
   }
 </style>

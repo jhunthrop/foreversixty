@@ -15,6 +15,8 @@ error band is computed from the fixture's own spread (band()).
   python3 design/mocks/ws_sim.py compare
 """
 import base64
+import decimal
+import hashlib
 import json
 import os
 import re
@@ -22,9 +24,9 @@ import sys
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import (Button, Doll, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, Link, Meter, Notice,
+from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
                       Page, PageHeader, Plate, Row, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
-                      control_bar, crest_img, seg, sel, write)
+                      control_bar, crest_img, seg, sel, write, Paperdoll)
 import ws_compose
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -65,13 +67,31 @@ LIVE = (905.3, 1357)                                                    # SAMPLE
 HANDS = {'other:attack/1': ('Main hand', 'main_hand'), 'other:attack/2': ('Off hand', 'off_hand'), 'other:attack/3': ('Extra attacks', 'main_hand')}
 OFF_HAND_SPELLS = {462891}   # Whirlwind's off-hand strike, as lib/report/ability-table.ts and lib/sim/timeline.ts (Forever's
                              # Whirlwind hits with both weapons: spelltips/warrior.json 1680)
-HISTORY = [('Thandrel', 'Fury, raid buffs', '3 Nov', '899.6'), ('Thandrel', 'Fury, no buffs', '1 Nov', '402.3'),
-           ('Thandrel, Top Gear', '+41.2 DPS from Ironfoe', '31 Oct', '')]  # SAMPLE rows of GET /v1/sims
+# SAMPLE rows of GET /v1/sims?mine=1, the three the parity gate stubs (web/tests/e2e/support/sim-parity.ts), drawn as SimYourSims
+# draws a run: the title, then the spec and the day, the DPS grouped to a whole number
+SERVER_AGES = ['3 days ago', '5 days ago', '8 days ago']   # SAMPLE: the gate's runs finished 3, 1 Nov and 29 Oct, seen on 6 Nov
+HISTORY = [('Raid buffs', SPEC_ROW['name'], '3 Nov', '900'), ('No buffs', SPEC_ROW['name'], '1 Nov', '402'), ('Raid buffs', SPEC_ROW['name'], '29 Oct', '881')]
 
 _icache: dict[str, str] = {}
 
 
 # ------------------------------------------------------------------------------------------------ data helpers
+def Button(label: str, primary: bool = False, small: bool = False) -> str:
+    """The system Button as the build renders it, a <button> (ws_prims draws an <a>): the parity gate counts roles. Its case is the
+    system's (decision 2026-11-06: no page-level case override)."""
+    return _Button(label, primary, small).replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
+
+
+def Form(label: str, fields: list[tuple[str, str, bool]], submit: str) -> str:
+    """ws_prims.FormRow as the build renders it (ui/FormRow, ui/Field): a named <form> whose fields are text inputs."""
+    return FormRow(fields, submit).replace('<div class="formrow">', f'<form class="formrow" aria-label="{label}">', 1)[:-len('</div>')] + '</form>'
+
+
+def Input(placeholder: str, label: str, grow: bool = False) -> str:
+    """ws_prims.Field as a real <input> (the build's ui/Field): the parity gate counts a textbox."""
+    return f'<input class="field{" grow" if grow else ""}" placeholder="{placeholder}" aria-label="{label}">'
+
+
 def gicon(name, size: int = 28, q=None) -> str:
     """A real game icon from the build's icon set; the dark socket (never an invented icon) when the data has none."""
     cls = f'ic q{q}' if q else 'ic'
@@ -182,6 +202,7 @@ ERR_LINE = f'<b>&plusmn; {BAND:.1f} (95%)</b> &middot; {BAND / MEAN * 100:.2f}% 
 PRECISION = {500: 'Fast', 3000: 'Normal', 10000: 'High'}[REQ['iterations']]          # lib/sim/precision.ts PRECISION_ITERATIONS
 PRECISION_LABEL = f"{PRECISION}, {REQ['iterations']:,} runs"
 LANE_LABEL = {'server': 'run on our servers', 'browser': 'run in your browser'}[RES['lane']]
+DAMAGE_KEYS = {a['name'] for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 DAMAGE_SCHOOLS = {'physical' if (a.get('school') or 1) & 1 else 'other' for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 SPLIT = '/'.join(str(sum(int(c) for c in part)) for part in CHAR['talents'].split('-'))
 RACE = CHAR['race'].replace('-', ' ').title()
@@ -193,6 +214,7 @@ FIGHT_LEN = f"{clock(FIGHT['duration_sec'])} &plusmn; {FIGHT['variation'] * 100:
 TABLE_HEADS = [('', False), ('Ability', False), ('Share of damage', False), ('DPS', True), ('Share', True), ('Casts', True),
                ('Avg hit', True), ('Crit', True)]
 N_FIGS = len(TABLE_HEADS) - 3
+SORTABLE = tuple(t for t, _ in TABLE_HEADS[3:])   # the shipped table sorts by every figure column (heads are buttons)
 MULTI = re.compile(r'up to (\d+) enemies')   # a tooltip that hits several enemies earns "hits a cast" on its row
 
 
@@ -222,10 +244,10 @@ def ability_rows(state: str = '') -> tuple[list[str], str]:
             deb = AURAS.get(a['name'])
             sub = [f'{a["ticks"]} ticks', f'tick crit {crit:.1f}%'] + ([f"up {deb['uptime_ms'] / SUM['duration_ms'] * 100:.1f}% of the fight"] if deb else [])
         else:
-            casts = attempts if kind == 'other' else (CASTS.get(a['name']) or a['hits'])   # a proc strike with no cast row counts its landings
+            casts = attempts if kind == 'other' else (CASTS.get(a['name']) or attempts)   # a proc strike with no cast row counts its attempts (ability-table.ts)
             avg = a['total'] / a['hits'] if a['hits'] else 0
             crit = a['crits'] / a['hits'] * 100 if a['hits'] else 0
-            sub = [f'{lab} {m[k] / attempts * 100:.1f}%' for k, lab in (('MISS', 'Miss'), ('DODGE', 'Dodge'), ('PARRY', 'Parry'), ('GLANCING', 'Glance'), ('BLOCK', 'Block')) if m.get(k)]
+            sub = [f'{lab} {fixed1(m[k] / attempts * 100)}%' for k, lab in (('MISS', 'Miss'), ('DODGE', 'Dodge'), ('PARRY', 'Parry'), ('GLANCING', 'Glance'), ('BLOCK', 'Block')) if m.get(k)]
             if kind == 'other' and tag == 1 and hs:
                 sub.append(f'{hs} swings became Heroic Strike')
             if kind == 'other' and tag == 3:
@@ -245,12 +267,12 @@ def ability_rows(state: str = '') -> tuple[list[str], str]:
 
 
 def ability_table(state: str = '') -> str:
-    return StatTable(TABLE_HEADS, ability_rows(state)[0], N_FIGS, sort='DPS')
+    return StatTable(TABLE_HEADS, ability_rows(state)[0], N_FIGS, sort='DPS', sortable=SORTABLE)
 
 
 def table_skeleton(n: int = 11) -> str:
     row = StatRow(Skeleton(28, 28), Skeleton(160, 16), Skeleton(200, 12), [Skeleton(56, 16)] + [Skeleton(44, 14)] * (N_FIGS - 1), Skeleton(120, 8))
-    return StatTable(TABLE_HEADS, [row] * n, N_FIGS, sort='DPS')
+    return StatTable(TABLE_HEADS, [row] * n, N_FIGS, sort='DPS', sortable=SORTABLE)
 
 
 # ------------------------------------------------------------------------------------------------ the rail
@@ -320,6 +342,11 @@ def consume_items() -> list[tuple[str, str, bool]]:
     return out
 
 
+def fixed1(x: float) -> str:
+    """JavaScript's toFixed(1), which the build formats with: half away from zero on the double's exact value (6.25 -> 6.3)."""
+    return str(decimal.Decimal(x).quantize(decimal.Decimal('0.1'), rounding=decimal.ROUND_HALF_UP))
+
+
 def apm() -> float:
     return sum(v for k, v in CASTS.items() if not k.startswith('other:') and '/' not in k) / (DUR / 60)
 
@@ -349,10 +376,25 @@ def this_run_section() -> str:
              + IconList(cons, f'Consumables &middot; {len(cons)}'))
     acts = (f'<div class="rail-acts">{Button("Copy for the game", small=True)}{Button("Copy JSON", small=True)}{Button("Download JSON", small=True)}</div>'
             '<p class="t-small rail-cap">The JSON is this whole result, request included.</p>')
-    return Section('This run', f'<div class="rail-body">{facts}{lists}<p class="t-small rail-cap">Dimmed: no effect on your damage.</p>{acts}</div>', meta='Inputs and engine')
+    return Section('This run', f'<div class="rail-body flow">{facts}{lists}<p class="t-small rail-cap">Dimmed: no effect on your damage.</p>{acts}</div>', meta='Inputs and engine')
+
+
+def rotation_drifted() -> bool:
+    """lib/sim/rotation-card's drift rule: the run's rotation_sha against the hash a run stamps today (sync-rotations.mjs)."""
+    apl = ROOT / 'sim' / 'request' / 'apl' / f'{SPEC}.apl.json'
+    sha = RES.get('rotation_sha')
+    return bool(sha) and apl.exists() and hashlib.sha256(apl.read_bytes()).hexdigest()[:12] != sha
+
+
+def rot_title(key: str, name: str, rank: int = 0) -> str:
+    """The built rotation title (ActionMark): the 24 px icon, then the name and its rank."""
+    rk = f' <span class="rk-s">Rank {rank}</span>' if rank else ''
+    return f'<span class="am">{act_icon(key, 24) if key else ""}<span>{name}{rk}</span></span>'
 
 
 def rotation_section(ran: bool = True) -> str:
+    """The shipped rows (lib/sim/rotation-card.ts): a prepull line by its time, a priority line by its number; the icon sits
+    in the title; Other cooldowns carries the first one's icon and their summed casts."""
     rot = APL['rotation']
     notes = {n['step']: n['notes'] for n in APL.get('level_notes', []) if n['from_level'] <= CHAR['level']}
     sample_pre = {e['action'] for e in RES['sample'] if e['at_ms'] < 0}
@@ -361,35 +403,47 @@ def rotation_section(ran: bool = True) -> str:
         sid = p['action']['castSpell']['spellId']['spellId']
         key = f'spell:{sid}'
         cast = key in sample_pre
-        r = Row(spell_name(sid), '', lead=f'<span class="pre-t num">{p["doAtValue"]["const"]["val"].replace("s", " s")}</span>{act_icon(key, 24)}',
+        r = Row(rot_title(key, spell_name(sid), rank_of(sid)), '', lead=f'<span class="pre-t num">{p["doAtValue"]["const"]["val"].replace("s", " s")}</span>',
                 trail=(f'<span class="cnt">{"Cast" if cast else "Not cast in this run"}</span>' if ran else ''), link=False)
         pre.append(r if cast or not ran else f'<div class="dim">{r}</div>')
     named = {f"spell:{(p['action'].get('castSpell') or {}).get('spellId', {}).get('spellId')}" for p in rot['priorityList']}
-    other = [act_name(k) for k, v in CASTS.items() if v and not k.startswith('other:') and '/' not in k and k not in named]
+    named |= {f"spell:{p['action']['castSpell']['spellId']['spellId']}" for p in rot['prepullActions']}
+    other = [k for k, v in CASTS.items() if v and not k.startswith('other:') and '/' not in k and k not in named]
     lines = []
     for i, p in enumerate(rot['priorityList']):
         a = p['action']
         if 'autocastOtherCooldowns' in a:
-            lines.append(Row('Other cooldowns as they come up', f'This run: {", ".join(other)}.' if ran else 'Trinkets, racials and potions, as each comes off cooldown.', rank=str(i + 1), link=False))
+            total = round(sum(CASTS[k] for k in other))
+            sub = f'This run: {", ".join(act_name(k) for k in other)}.' if ran else 'Trinkets, racials and potions, as each comes off cooldown.'
+            cnt = (f'{total} cast{"s" if total != 1 else ""}' if total else 'Not cast in this run')
+            r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub, rank=str(i + 1),
+                    trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
+            lines.append(r if total or not ran else f'<div class="dim">{r}</div>')
             continue
         sid = a['castSpell']['spellId']['spellId']
         key = f'spell:{sid}'
         n = CASTS.get(key, 0)
         cnt = f'{n} cast{"s" if n != 1 else ""}' if n else 'Not cast in this run'
-        rk = rank_of(sid)
-        r = Row(spell_name(sid) + (f' <span class="rk-s">Rank {rk}</span>' if rk else ''), notes.get(i, p.get('notes', '')),
-                lead=f'<span class="rank">{i + 1}</span>{act_icon(key, 24)}', trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
+        r = Row(rot_title(key, spell_name(sid), rank_of(sid)), notes.get(i, p.get('notes', '')),
+                rank=str(i + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
         lines.append(r if n or not ran else f'<div class="dim">{r}</div>')
-    body = (f'<h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
-            f'{Rows(lines, open_=True)}<p class="t-small rail-cap">The {SPEC_ROW["name"]} rotation the engine follows.{" A line with no cast in this run is dimmed." if ran else ""}</p>')
-    return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'), meta=f'{SPEC_ROW["name"]}, at {CHAR["level"]}' + (' &middot; casts per fight' if ran else ''))
+    body = (f'<div class="rot"><h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
+            f'{Rows(lines, open_=True)}<p class="t-small rail-cap tl-foot">The {SPEC_ROW["name"]} rotation the engine follows.{" A line with no cast in this run is dimmed." if ran else ""}</p></div>')
+    meta = f'{SPEC_ROW["name"]}, at {CHAR["level"]}' + (' &middot; casts per fight' if ran else '') + (' &middot; today&rsquo;s rotation' if ran and rotation_drifted() else '')
+    return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'), meta=meta)
 
 
-def history_section(state: str = 'ready') -> str:
+def history_section(state: str = 'ready', server: bool = False) -> str:
+    """Your sims. `server`: a payer's list, where server runs are rows of the same list (no panel of their own), each marked
+    "On our servers" with its kind and age (SimYourSims + ServerRunRow); the gate's three runs are server runs."""
     if state == 'empty':
         return Section('Your sims', '<p class="empty-open">Nothing saved yet. Run a sim and press Save.</p>')
     if state == 'failed':
         return Section('Your sims', f'<p class="empty-open">Your sims did not load. {Link("Try again")}</p>')
+    if server:
+        rows = [Row(t, f'{SPEC_LABEL} &middot; Sim &middot; On our servers &middot; <time>Finished {a}</time>', trail=(Figure(f'{v} DPS', size='sm') if v else ''))
+                for (t, _, _, v), a in zip(HISTORY, SERVER_AGES)]
+        return Section('Your sims', Rows(rows, open_=True), Link('All &rsaquo;'))
     rows = [Row(t, f'{s} &middot; {d}', trail=(Figure(v, unit='DPS', size='sm') if v else '')) for t, s, d, v in HISTORY]
     return Section('Your sims', Rows(rows, open_=True), Link('All &rsaquo;'))
 
@@ -409,6 +463,8 @@ def timeline_section(swings_and_ticks: bool = False) -> str:
             continue
         if not swings_and_ticks and (k.startswith('other:') or k in ticking):
             continue
+        if not swings_and_ticks and CASTS and k not in CASTS and k in DAMAGE_KEYS:
+            continue   # a hit no one pressed (the off-hand Whirlwind) lands on Swings and ticks (lib/sim/timeline-lanes.ts placeEvent)
         cast_keys.append(k)
     whole = lambda a: len(a['segments']) == 1 and a['segments'][0][0] <= 0 and a['segments'][0][1] >= T1 * .99
     auras = [a for a in RES['sample_auras'] if a['on'] == 'player' and not whole(a) and a['action'] not in ('spell:11567/1', 'spell:11585')]
@@ -466,19 +522,25 @@ def timeline_section(swings_and_ticks: bool = False) -> str:
     grid = ''.join(f'<line x1="{X(t * 1000):.1f}" x2="{X(t * 1000):.1f}" y1="0" y2="{y}" stroke="#1c2230" vector-effect="non-scaling-stroke"/>' for t in secs)
     wash = f'<rect x="{X(exe):.1f}" y="0" width="{1000 - X(exe):.1f}" height="{y}" fill="#d66e2812"/>' if exe else ''
     pull = f'<line x1="{X(0):.1f}" x2="{X(0):.1f}" y1="0" y2="{y}" stroke="#e5b955" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>'
-    svg = f'<svg viewBox="0 0 1000 {y}" preserveAspectRatio="none" style="height:{y}px">{wash}{grid}{pull}{"".join(rows)}</svg>'
+    svg = f'<svg viewBox="0 0 1000 {y}" preserveAspectRatio="none" aria-hidden="true" style="height:{y}px">{wash}{grid}{pull}{"".join(rows)}</svg>'
     ticks = ''.join(f'<span class="{"pull" if t == 0 else ""}" style="left:{X(t * 1000) / 10:.2f}%">{"Pull" if t == 0 else clock(t)}</span>' for t in secs)
     washlab = f'<span class="wash" style="left:{X(exe) / 10:.2f}%">EXECUTE PHASE</span>' if exe else ''
     tl = (f'<div class="tl"><div class="lbl"><span style="height:30px"></span>{"".join(labels)}</div>'
-          f'<div class="plot"><div class="axis">{ticks}</div>{washlab}{svg}</div></div>')
-    legend = [('#c79c6e', 'Damage'), ('#f5d27a', 'Crit'), ('#9a9484', 'Missed'), ('#e9e4d8', 'Cooldown'), ('#e9e4d859', 'On you'), ('#8a6a2ac7', 'On the target'), ('#e5b955', 'Rage')]
+          f'<div class="plot" role="application" aria-label="Fight timeline, {clock(T1 / 1000)} long. Arrow keys move between casts.">'
+          f'<div class="axis">{ticks}</div>{washlab}{svg}</div></div>')
+    # the shipped legend's swatches at each mark's size (SimTimeline: a 3 x 12 cast, a 4 x 16 crit, 16 x 8 auras, a 16 x 2 line)
+    legend = [('#c79c6e', 'Damage', 3, 12), ('#f5d27a', 'Crit', 4, 16), ('#9a9484', 'Missed', 3, 12), ('#e9e4d8', 'Cooldown', 3, 12),
+              ('#e9e4d859', 'On you', 16, 8), ('#8a6a2ac7', 'On the target', 16, 8), ('#e5b955', 'Rage', 16, 2)]
     tools = (f'<div class="tl-tools">{seg([("Whole fight", True, None, ""), ("Close up", False, None, "")], "sm")}'
-             f'<span class="t-small">Swings and ticks</span>{seg([("Off", not swings_and_ticks, None, ""), ("On", swings_and_ticks, None, "")], "sm")}</div>')
+             f'<span class="tl-sw"><span class="t-small">Swings and ticks</span>{seg([("Off", not swings_and_ticks, None, ""), ("On", swings_and_ticks, None, "")], "sm")}</span>'
+             f'{LanesLegend(legend)}</div>')
+    brush = '<div class="tl-brush" aria-hidden="true"><span></span><span class="tr"></span></div>'   # the shipped TimelineBrush strip
     n = sum(1 for e in ev if e['action'] in cast_keys and e['action'] not in HANDS and e['action'] not in ticking and parse(e['action'])[1] not in OFF_HAND_SPELLS)
     hidden = ' and '.join(['white swings'] + [display_name(k) + ' ticks' for k in sorted(ticking)])
     foot = (f'<p class="t-small tl-foot">{n} casts in this run. '
-            + ('' if swings_and_ticks else f'Turn Swings and ticks on to add {hidden} as their own lanes. ') + f'{Link("List every cast &rsaquo;")}</p>')
-    return Section('Timeline', tools + Lanes(tl, legend) + foot, meta=f'The median run &middot; {clock(T1 / 1000)} long')
+            + ('' if swings_and_ticks else f'Turn Swings and ticks on to add {hidden} as their own lanes. ')
+            + '<button type="button" class="tl-list" aria-expanded="false">List every cast &rsaquo;</button></p><p class="sr" aria-live="polite"></p>')
+    return Section('Timeline', tools + Lanes(tl) + brush + foot, meta=f'The median run &middot; {clock(T1 / 1000)} long')
 
 
 DOLL_LEFT = ['head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'main_hand', 'off_hand', 'ranged']
@@ -488,13 +550,20 @@ SLOT_LABEL = {'head': 'Head', 'neck': 'Neck', 'shoulder': 'Shoulder', 'back': 'B
               'finger2': 'Finger 2', 'trinket1': 'Trinket 1', 'trinket2': 'Trinket 2'}
 
 
-def doll(open_: bool) -> str:
+RARITY_NAME = {0: 'poor', 1: 'common', 2: 'uncommon', 3: 'rare', 4: 'epic', 5: 'legendary'}
+
+
+def doll() -> str:
+    """The shared Paperdoll (ws_prims, the built ui/Paperdoll) in `worn` mode: inputs only, no gain column figures; line 2 the
+    client enchant or the item level (lib/gear/doll-cells.ts). In a Plate on the landing, open under a Section on a result."""
     def cell(slot):
         it = gear_item(slot)
+        base = {'label': SLOT_LABEL[slot], 'flag': None, 'stats': '', 'gain': None, 'basis': None}
         if not it:
-            return (SLOT_LABEL[slot], '', 'Nothing worn', 'var(--muted)', '', False)
-        return (SLOT_LABEL[slot], gicon(it['icon'], 40, it['quality']), it['name'], QUALITY[it['quality']], f"Item level {it['item_level']}", False)
-    return Doll([cell(s) for s in DOLL_LEFT], [cell(s) for s in DOLL_RIGHT], open_)
+            return {**base, 'state': 'empty', 'name': 'Nothing worn', 'line2': '', 'quality': 'common', 'icon': ''}
+        return {**base, 'state': 'item', 'name': it['name'], 'quality': RARITY_NAME[it['quality']], 'icon': it['icon'],
+                'line2': f"Item level {it['item_level']}"}
+    return Paperdoll('Gear', 'slot', ([cell(s) for s in DOLL_LEFT], [cell(s) for s in DOLL_RIGHT]))
 
 
 def ilvl() -> float:
@@ -524,7 +593,7 @@ def gear_section(with_stats: bool = True) -> str:
                 f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
     foot = f'<div class="gear-foot"><span class="t-small">No set bonus is active: no two pieces share a set.</span>{Link("Upgrades for this character on Best in slot &rsaquo;")}</div>'
     extra = f'<div class="gear-stats">{stats}{measured}</div>' if with_stats else ''
-    return Section('Gear', doll(True) + extra + foot, meta=GEAR_META)
+    return Section('Gear', doll() + extra + foot, meta=GEAR_META)
 
 
 def talents_section() -> str:
@@ -554,7 +623,22 @@ def rage_section() -> str:
     return Section('Rage', figs + f'<div class="two">{lst(src["gained"], "Gained from")}{lst(src["spent"], "Spent on")}</div>', meta='Average fight')
 
 
+def suppressed(key: str, requested: list[str]) -> bool:
+    """A buff of an exclusive group that a lower rank in the same request holds off (lib/sim/aura-card.ts `isSuppressed`)."""
+    own = (BUFFS.get(key.partition(':')[0]) or {}).get('exclusive_with')
+    if not own:
+        return False
+    return any((t := (BUFFS.get(o.partition(':')[0]) or {}).get('exclusive_with')) and t['group'] == own['group'] and t['rank'] < own['rank']
+               for o in requested)
+
+
 def buffs_section() -> str:
+    """The two columns as lib/sim/aura-card.ts files them: the engine's tracks, then every buff the request named that has no
+    track (up all fight, build rulings R1 and R2 of spec 2026-11-04), the no-effect entries dimmed and last."""
+    requested = CHAR['buffs']
+    tracked = {act_name(a['name']) for a in SUM['auras']}
+    untracked = [k for k in requested if (BUFFS.get(k.partition(':')[0]) or {}).get('name') not in tracked and not suppressed(k, requested)]
+
     def col(kind, title):
         rows, upall = [], []
         for a in SUM['auras']:
@@ -567,10 +651,14 @@ def buffs_section() -> str:
                               bool(entry) and no_damage_effect(entry)))
             else:
                 rows.append((up, StatRow(act_icon(a['name'], 24), f'<b>{display_name(a["name"])}</b>', '', [f'{up * 100:.1f}%', f'{a["applications"]:.0f}&times;'], Meter(up, 'muted'))))
+        on_target = kind == 'DEBUFF'
+        upall += [(gicon(e['icon'], 20), e['name'] + (', improved' if k.endswith(':improved') else ''), no_damage_effect(e))
+                  for k in untracked if (e := BUFFS.get(k.partition(':')[0])) and bool(e.get('target')) == on_target]
         upall.sort(key=lambda x: x[2])
         rows.sort(key=lambda x: -x[0])
         t = StatTable([('', False)] * 3 + [('', True), ('', True)], [r for _, r in rows], 2, open_=True) if rows else ''
-        return f'<div><h3 class="t-label rot-l">{title} &middot; {len(rows)} that come and go</h3>{t}{IconList(upall, "Up all fight") if upall else ""}</div>'
+        come = '1 that comes and goes' if len(rows) == 1 else f'{len(rows)} that come and go'
+        return f'<div><h3 class="t-label rot-l">{title} &middot; {come}</h3>{t}{IconList(upall, "Up all fight") if upall else ""}</div>'
     return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>'
                    '<p class="t-small rail-cap tl-foot">Dimmed: no effect on your damage.</p>', meta='Uptime, then times applied')
 
@@ -597,15 +685,16 @@ def run_bar(state: str = 'ready', open_m: bool = False) -> str:
     running (Stop), engine (Loading engine...), server (Running on our servers...), disabled (a spec the sim does not run)."""
     btn = {'ready': Button('Run sim', primary=True), 'done': Button('Run again', primary=True), 'retry': Button('Try again', primary=True),
            'running': Button('Stop'), 'engine': Button('Loading engine&hellip;'), 'server': Button('Running on our servers&hellip;'),
-           'disabled': '<span class="btn primary is-off" aria-disabled="true">Run sim</span>'}[state]
+           'disabled': '<button type="button" class="btn primary is-off" aria-disabled="true">Run sim</button>'}[state]
     off = state in ('running', 'engine', 'server')
     buffs = seg([('Raid', True, None, ''), ('None', False, None, ''), ('Custom', False, None, '')])
     summary = (f'<span class="sum-t"><b>{FIGHT_STYLE} {clock(FIGHT["duration_sec"])}</b> &middot; Raid</span>'
                f'<span class="run-m">{btn}</span>')
-    end = f'<span class="bar-end">{Link("More settings")}{btn}</span>'
+    more = '<button type="button" class="link">More settings</button>'   # it opens the sheet: a button, as the build
+    end = f'<span class="bar-end">{more}{btn}</span>'
     bar = control_bar([('Fight', sel(FIGHT_STYLE)), ('Length', sel(clock(FIGHT['duration_sec']))), ('Targets', sel(str(FIGHT['targets']))), ('Buffs', buffs),
                        ('Precision', sel(PRECISION_LABEL))], summary, end=end, open_m=open_m)
-    bar = bar.replace('</div></details>', f'<span class="more-m">{Link("More settings")}</span></div></details>', 1)
+    bar = bar.replace('</div></details>', f'<span class="more-m">{more}</span></div></details>', 1)
     return bar.replace('<div class="bar-d">', '<div class="bar-d is-run">', 1) if off else bar
 
 
@@ -614,7 +703,7 @@ FIGHT_STYLE = 'Patchwerk'   # the request's profile is empty: the shipped styleL
 
 def you_header(answer: str) -> str:
     meta = [f'{RACE} {SPEC_LABEL} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; item level {ilvl():.1f}',
-            'Gear from the addon, 4 Nov']
+            'Gear from the addon']   # the parity gate's character: a linked addon export (`who=`), which claims no capture date
     return PageHeader('Thandrel', crest=crest_img(CLS, 56), meta=meta, answer=answer, tabs=TabStrip(TOOLS, 'Quick sim'))
 
 
@@ -629,11 +718,18 @@ def since_last(last: tuple = LAST_SIM) -> str:
     return f'<span class="fig-cap {"kill" if d > 0 else "wipe"}">{sign}{abs(d):.1f} &plusmn; {b:.1f} DPS since your last sim ({last[1]})</span>'
 
 
-def answer_result(signed_in: bool = True, last: tuple = LAST_SIM) -> str:
+def answer_result(signed_in: bool = True, last: tuple | None = None) -> str:
+    """The live result. `last` draws the change since the character's last sim: hidden on the shipped page (gaps G1 and G15,
+    no character key and no error on a saved-sim row), so only the states sheet passes it."""
     save = Button('Save this sim', small=True) if signed_in else Button('Sign in to save', small=True)
     return (f'<span class="t-label">{SPEC_LABEL} &middot; {LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
-            f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in else ""}'
+            f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in and last else ""}'
             f'<span class="ans-acts">{save}{Link("Find upgrades in Top Gear &rsaquo;")}</span>')
+
+
+def answer_none() -> str:
+    """Signed in, the character loaded, not run: the shipped answer while G1 is open (no saved sim can be matched to a character)."""
+    return '<span class="t-label">No sim yet</span><span class="fig-cap">Press Run sim. It runs here, in your browser.</span>'
 
 
 def answer_last() -> str:
@@ -661,7 +757,7 @@ def answer_failed(label: str, reason: str, fix: str = '') -> str:
 def result_page_body(saved: bool) -> str:
     _, meta = ability_rows()
     main = Section('Damage by ability', Plate(ability_table()), meta=meta) + timeline_section() + gear_section() + talents_section() + rage_section() + buffs_section()
-    rail = spread_section() + this_run_section() + rotation_section() + ('' if saved else history_section())
+    rail = spread_section() + this_run_section() + rotation_section() + ('' if saved else history_section(server=True))
     return Page('split', main, rail)
 
 
@@ -678,13 +774,17 @@ PAGE_CSS = '''<style>
 .rail .figs{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px 16px}
 .rot-l{padding:16px 0 4px}.dim{opacity:.5}.pre-t{width:40px;font-size:13px;color:var(--muted)}.cnt{font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap}
 .rk-s{font-size:13px;color:var(--muted);font-weight:400}
-.rail .rows.open .row{align-items:start}.rail .row .sub{color:var(--text);font-size:13px;line-height:20px}
+.st-h .st-sort{all:unset;cursor:pointer}
+.tl-list{all:unset;cursor:pointer;color:var(--gold);font-weight:600}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.lanes ul.lg{list-style:none;margin:0}
 .two{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);padding-top:8px}@media(min-width:1024px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .layout-split .main>section>.figs{padding-top:12px}
-.tl-tools{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-top:12px}.tl-foot{padding-top:10px}
+.tl-tools{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;min-height:56px;padding:10px 0;margin-top:12px}.tl-sw{display:inline-flex;gap:12px;align-items:center}.tl-tools .lg{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;font-size:13px;line-height:20px;color:var(--muted);list-style:none;margin:0 0 0 auto;padding:0}.tl-tools .lg li{display:inline-flex;align-items:center;gap:6px}.tl-tools .lg i{display:inline-block;border-radius:1px;background:var(--k)}.tl-brush{display:grid;grid-template-columns:200px minmax(0,1fr);height:44px;align-items:center}.tl-brush .tr{height:20px;border-radius:4px;background:#ffffff08}.tl-foot{padding-top:10px}
 .gear-stats{display:flex;flex-direction:column;gap:8px;padding-top:16px}.gear-foot{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-top:12px}
 .empty-open{padding:12px 0;color:var(--muted);font-size:14px}
 .btn.is-off{opacity:.45;pointer-events:none}
+button.link{background:none;border:0;padding:0;cursor:pointer;font:600 14px/20px var(--font-body);color:var(--gold)}
+input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field::placeholder{color:var(--muted)}
 .bar-m summary{gap:8px}.bar-m summary>span:first-child{display:contents}.bar-m summary .sum-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar-m summary .chg{order:2;flex:none;margin-left:0}.bar-m summary .run-m{order:3;flex:none}.bar-m summary .run-m .btn{height:36px;padding:0 12px;font-size:12px}
 .paste{display:flex;flex-direction:column;gap:12px;padding:16px}
 .way{display:flex;flex-direction:column;gap:10px;padding:16px 0}
@@ -692,32 +792,35 @@ PAGE_CSS = '''<style>
 @media(max-width:1023px){.pc .layout-split{display:flex;flex-direction:column;align-items:stretch;gap:var(--section-gap)}.pc .layout-split section{min-width:0;max-width:100%}.pc .layout-split>.main,.pc .layout-split>.rail{display:contents}[data-region=section-damage-by-ability]{order:1}[data-region=section-dps-spread]{order:2}[data-region=section-timeline]{order:3}[data-region=section-gear]{order:4}[data-region=section-talents]{order:5}[data-region=section-rage]{order:6}[data-region=section-buffs-and-debuffs]{order:7}[data-region=section-this-run]{order:8}[data-region=section-rotation]{order:9}[data-region=section-your-sims]{order:10}}
 .statesheet{display:grid;gap:40px;grid-template-columns:minmax(0,1fr)}.statesheet>section{min-width:0}.statesheet>section>h2{margin-bottom:8px}
 .cls-links{display:flex;gap:4px 16px;flex-wrap:wrap;padding-top:2px}.cls-links .link{font-size:14px}
-/* ruling SHOULD 3: one button case on the page, sentence case as the tabs (the system Button is caps; see spec section 13) */
-.btn{text-transform:none;letter-spacing:0;font-size:14px;font-weight:700}
 .bar-end{display:flex;gap:20px;align-items:center}.bar-end .link{font-size:14px}
 .bar-d.is-run .grp,.bar-d.is-run .bar-end .link{opacity:.5;pointer-events:none}
 .fig.muted .v{color:var(--muted)}
+/* the built Figure sm (ui/Figure.svelte, also BiS weights and the guild pages): 16/20 */
+body .fig.sm .v{font-size:16px;line-height:20px}
+/* the built histogram's axis: 8 px under the plot, 13/20 (DpsDistribution) */
+body .hist .ax{padding-top:8px;line-height:20px}
+/* Trees (ws_prims) with the built TreeGrid's roles: the row boxes take no part in the grid, the talent box is a block */
+.trees .tg>[role=row]{display:contents}.trees .tc{display:block}
+/* the built Section's body starts 12 px under its hairline (ui/Section.svelte); a Plate already has it, open blocks take it here */
+.sec-h+.doll,.sec-h+.trees{margin-top:12px}.sec-h+.two{padding-top:12px}
+.gear-foot{line-height:20px}
+/* the built Section head wraps its action under a long meta (gap-y 4 px); a Row is --row-h, 58 px (spec 2026-11-05 P4) */
+body .sec-h{flex-wrap:wrap;row-gap:4px}body .sec-h .act{line-height:21px}body .row{min-height:58px}body .sec-h+.rows{margin-top:12px}
+/* Rotation as the built rows draw it: the icon in the title (ActionMark) */
+.am{display:flex;align-items:center;gap:10px;min-width:0}.am>span:last-child{min-width:0}
+/* This run spaces its blocks as the built primitives do (IconList's own 16 px label margin), not by the rail's 12 px gap */
+.rail-body.flow{gap:0}.rail-body.flow>.rail-cap{padding-top:12px}.rail-body.flow>.rail-acts{margin-top:20px}
+/* spec 4.7: the row's name line is 15/20 (the body's 24 px strut made it 25 and the row 60) */
+.st-r .nm{line-height:20px}
 .sheet .kv dd{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 </style>'''
 
 
 def regions(html: str) -> str:
-    """data-region hooks for the mock-to-build parity spec: head, head-title, head-meta, head-answer, head-tabs, controls, summary,
-    plate, slots, rail, section-<slug>. Added here because ws_prims does not emit them yet (the parity lane owns that)."""
-    for a, b in (('<div class="pc ph-wrap">', '<div class="pc ph-wrap" data-region="head">'),
-                 ('<h1 class="t-title"', '<h1 data-region="head-title" class="t-title"'),
-                 ('<div class="ph-meta">', '<div class="ph-meta" data-region="head-meta">'),
-                 ('<div class="ans">', '<div class="ans" data-region="head-answer">'),
-                 ('<nav class="strip-tabs ph-tabs">', '<nav class="strip-tabs ph-tabs" data-region="head-tabs">'),
-                 ('<div class="cbar full-bleed', '<div data-region="controls" class="cbar full-bleed'),
-                 ('<div class="pc"><p class="notice', '<div class="pc" data-region="summary"><p class="notice'),
-                 ('<div class="plate">', '<div class="plate" data-region="plate">'),
-                 ('<aside class="rail', '<aside data-region="rail" class="rail'),
-                 ('<div class="sdoll', '<div data-region="slots" class="sdoll')):
-        html = html.replace(a, b, 1)
-    slug = lambda t: re.sub(r'[^a-z0-9]+', '-', t.lower()).strip('-')
-    return re.sub(r'<section><div class="sec-h"><h2 class="t-h3">([^<&]+)',
-                  lambda m: f'<section data-region="section-{slug(m.group(1))}"><div class="sec-h"><h2 class="t-h3">{m.group(1)}', html)
+    """The one region ws_prims leaves to the page: `summary` (Worth knowing, the Notice lines under the bar). Every other region
+    (head, head-title, head-meta, head-answer, controls, plate, slots, section-<slug>) is emitted by the primitives themselves,
+    once, as the built ui/ components emit it (design/parity.md)."""
+    return html.replace('<div class="pc"><p class="notice', '<div class="pc"><p data-region="summary" class="notice', 1)
 
 
 NOTE = (f'Simulator mock (design/specs/2026-11-06-sim.md), built only from ws_prims. Run: web/src/fixtures/sim/result-full.json '
@@ -733,11 +836,11 @@ def finish(title: str, body: str, who) -> str:
 def landing_out() -> str:
     head = PageHeader('Simulator', meta=['Your character&rsquo;s DPS, simmed in your browser. Damage specs only; nothing is uploaded until you save.'],
                       tabs=TabStrip(TOOLS, 'Quick sim'))
-    paste = Plate('<div class="paste">' + FormRow([('Addon export or build code', Field('FS1:&hellip;', grow=True), True)], Button('Run', primary=True))
-                  + f'<p class="t-small">In game, type /fs copy, press Ctrl+C, then paste it here. {Link("Get set up &rsaquo;")}</p></div>')
+    paste = Plate('<div class="paste">' + Form('Addon export or build code', [('Addon export or build code', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
+                  + f'<p class="t-small">In game, type /fs copy, press Ctrl+C, then paste it here. {Link("Get set up &rsaquo;")}</p></div>', label='Sim your character')
     ways = Rows([Row('Your characters', 'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.', trail=Button('Sign in with Battle.net'), link=False),
-                 Row('From a build', 'A planner link, saved or not, or a saved build id.', trail=FormRow([('', Field('foreversixty.gg/b/&hellip;'), False)], Button('Load')), link=False),
-                 Row('From a logged fight', 'A report link, or open a fight from a report and choose Sim this fight.', trail=FormRow([('', Field('foreversixty.gg/reports/&hellip;?fight=2'), False)], Button('Load')), link=False)], open_=True)
+                 Row('From a build', 'A planner link, saved or not, or a saved build id.', trail=Form('From a build', [('', Input('foreversixty.gg/b/&hellip;', 'From a build'), False)], Button('Load')), link=False),
+                 Row('From a logged fight', 'A report link, or open a fight from a report and choose Sim this fight.', trail=Form('From a logged fight', [('', Input('foreversixty.gg/reports/&hellip;?fight=2', 'From a logged fight'), False)], Button('Load')), link=False)], open_=True)
     main = Section('Sim your character', paste) + Section('Other ways in', ways)
     rows = []
     for c in CLASSES:
@@ -751,8 +854,8 @@ def landing_out() -> str:
 
 # ---- 2. /sim, signed in, the header's character loaded, not run yet
 def landing_you() -> str:
-    main = Section('Gear', Plate(doll(False)), Link('Upgrades on Best in slot &rsaquo;'), meta=GEAR_META) + talents_section()
-    return finish('Simulator', you_header(answer_last()) + run_bar() + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
+    main = Section('Gear', Plate(doll()), Link('Upgrades on Best in slot &rsaquo;'), meta=GEAR_META) + talents_section()
+    return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
 
 
 # ---- 3. running in the browser
@@ -770,15 +873,15 @@ def result_live() -> str:
 def result_saved() -> str:
     meta = [f'{RACE} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; {FIGHT_LEN} fight, raid buffs, {len(CHAR["consumes"])} consumables', 'Saved 4 Nov 2026']
     ans = (f'<span class="t-label">Saved sim &middot; {RES["iterations_run"]:,} runs</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
-           f'<span class="fig-cap">{ERR_LINE}</span><span class="ans-acts">{Button("Open in the sim", primary=True)}{Button("Copy link")}</span>')
+           f'<span class="fig-cap">{ERR_LINE}</span><span class="ans-acts">{_Button("Open in the sim", primary=True)}{Button("Copy link")}</span>')
     head = PageHeader(SPEC_LABEL, crest=crest_img(CLS, 56), meta=meta, answer=ans)
     return finish(f'{SPEC_LABEL}, saved sim', head + worth_knowing() + result_page_body(saved=True), None)
 
 
 # ---- 6. phone: the bar's choices open
 def bar_open() -> str:
-    main = Section('Gear', Plate(doll(False)), meta=GEAR_META)
-    return finish('Simulator, choices', you_header(answer_last()) + run_bar(open_m=True) + Page('split', main, history_section()), YOU)
+    main = Section('Gear', Plate(doll()), meta=GEAR_META)
+    return finish('Simulator, choices', you_header(answer_none()) + run_bar(open_m=True) + Page('split', main, history_section()), YOU)
 
 
 # ---- 7. every other state on one sheet
@@ -800,7 +903,9 @@ def states() -> str:
             hdr(answer_failed('In your browser &middot; failed', 'The engine could not run this character: Finger 1 holds item 999999, which the engine does not know.', 'Paste a fresh addon export, or swap that item in Top gear, then press Run again.')) + run_bar('done')),
         blk('Stopped by the player (the partial number stays, greyed)', hdr(answer_stopped()) + run_bar('done')),
         blk('Result, signed out (Save needs an account)', hdr(answer_result(signed_in=False))),
-        blk('Result, the change since the last sim inside the noise', hdr(answer_result(last=LAST_SIM_CLOSE))),
+        blk('Later (G1, G15): the last sim on the landing', hdr(answer_last()) + run_bar()),
+        blk('Later (G1, G15): the change since the last sim', hdr(answer_result(last=LAST_SIM))),
+        blk('Later (G1, G15): the change since the last sim inside the noise', hdr(answer_result(last=LAST_SIM_CLOSE))),
         blk('A spec the sim does not run (Holy Priest)', hdr('<span class="t-label">Not simulated yet</span><span class="fig-cap">Holy Priest is not simulated yet; there is nothing to run.</span><span class="ans-acts"><a class="link" href="#">Spec support &rsaquo;</a></span>', 'Lightwell', 'priest', 'Human Holy Priest &middot; Level 60') + run_bar('disabled')),
         blk('Signed in, no characters yet', PageHeader('Simulator', meta=['Your character&rsquo;s DPS, simmed in your browser.']) + Notice('<span>' + 'No characters yet: they are on their way from Battle.net. Paste an export below meanwhile, or check <a class="link" href="#">your account.</a>' + '</span>', tone='neutral')),
         blk('The character could not be read', Notice('<span>' + 'That character could not be read. <a class="link" href="#">Try again</a>' + '</span>', tone='neutral')),

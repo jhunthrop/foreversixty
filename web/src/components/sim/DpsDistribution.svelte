@@ -1,15 +1,17 @@
 <!-- web/src/components/sim/DpsDistribution.svelte -->
-<!-- The run's DPS spread (spec 2026-11-04-sim-results 3.6): the engine's real bins as at most 40
-     bars, the mean line, the two-thirds caption and six tiles. A result saved before the engine
-     kept the bins draws a range strip instead, and says so: a drawn shape the run did not produce
-     would break the accuracy tenet. No chart library: the bars are spans, the tiles are the data.
-     Tiles sit under the plot, or beside it where the card is full width (1024 to 1279). -->
+<!-- The run's DPS spread (spec 2026-11-04-sim-results 3.6; sim spec 2026-11-06 §4.5): the engine's
+     real bins as at most 40 bars, the mean line (its figure is the Mean tile, as the mock's `Histogram`), the two-thirds caption, then six small Figures in
+     three columns. A result saved before the engine kept the bins draws a range strip instead, and
+     says so: a drawn shape the run did not produce would break the accuracy tenet. No chart
+     library: the bars are spans. It draws no frame: the caller's open Section holds it. Error is
+     the page's one ± (ruling S2: the 95% band, unlabelled here); Std dev carries no ±. -->
 <script lang="ts">
+  import { confidenceBand } from '../../lib/sim/estimate';
   import { grouped, oneDecimal, spreadCopy } from '../../lib/sim/result-copy';
   import { spreadOf, type SpreadBar } from '../../lib/sim/spread';
   import type { DpsHistogram, Estimate } from '../../lib/sim/types';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
-  import StatTile from '../ui/StatTile.svelte';
+  import Figure from '../ui/Figure.svelte';
 
   let {
     estimate,
@@ -32,8 +34,8 @@
 
   const tiles = $derived([
     { id: 'mean', label: spreadCopy.tiles.mean, value: oneDecimal(estimate.mean) },
-    { id: 'error', label: spreadCopy.tiles.error, value: `± ${oneDecimal(estimate.error)}` },
-    { id: 'spread', label: spreadCopy.tiles.spread, value: `± ${oneDecimal(estimate.stddev)}` },
+    { id: 'error', label: spreadCopy.tiles.error, value: `± ${oneDecimal(confidenceBand(estimate))}` },
+    { id: 'stddev', label: spreadCopy.tiles.stddev, value: oneDecimal(estimate.stddev) },
     { id: 'lowest', label: spreadCopy.tiles.lowest, value: grouped(estimate.min) },
     { id: 'highest', label: spreadCopy.tiles.highest, value: grouped(estimate.max) },
     { id: 'runs', label: spreadCopy.tiles.runs, value: grouped(iterationsRun) },
@@ -70,15 +72,15 @@
   });
 </script>
 
-<div class="grid grid-cols-1 gap-4 p-5 lg:grid-cols-[7fr_5fr] xl:grid-cols-1" data-testid="sim-distribution">
+<div class="flex flex-col gap-3" data-testid="sim-distribution">
   <div class="flex min-w-0 flex-col gap-3">
     {#if spread !== null}
-      <div class="pt-6">
+      <div>
         <!-- One image with a readout: hover or arrow keys step the bars (spec 3.6). -->
         <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
         <div
           bind:this={plot}
-          class="focus-visible:outline-gold border-line relative flex h-[168px] items-end gap-[2px] border-b focus-visible:outline-2 focus-visible:outline-offset-2"
+          class="focus-visible:outline-gold relative flex h-[168px] items-end gap-[2px] focus-visible:outline-2 focus-visible:outline-offset-2"
           role="img"
           tabindex="0"
           aria-label={spreadCopy.image(
@@ -116,10 +118,6 @@
             style:left={`${meanAt}%`}
             data-testid="sim-distribution-mean"
           ></span>
-          <span
-            class="text-gold-light numeric pointer-events-none absolute -top-6 -translate-x-1/2 text-[13px] font-semibold"
-            style:left={`${meanAt}%`}>{oneDecimal(estimate.mean)}</span
-          >
         </div>
         <div class="text-muted numeric mt-2 flex justify-between text-[13px]">
           <span>{grouped(estimate.min)}</span>
@@ -170,9 +168,9 @@
       <p class="text-muted text-[13px]" data-testid="sim-spread-caption">{spreadCopy.rangeCaption}</p>
     {/if}
   </div>
-  <div class="grid grid-cols-2 gap-2 self-start sm:grid-cols-3" data-testid="sim-spread-tiles">
+  <div class="grid grid-cols-3 gap-x-4 gap-y-[14px]" data-testid="sim-spread-tiles">
     {#each tiles as tile (tile.id)}
-      <StatTile label={tile.label} value={tile.value} testid={`sim-spread-tile-${tile.id}`} />
+      <Figure label={tile.label} value={tile.value} size="sm" testid={`sim-spread-tile-${tile.id}`} />
     {/each}
   </div>
 </div>

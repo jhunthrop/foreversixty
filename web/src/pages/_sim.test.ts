@@ -8,10 +8,8 @@
 import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { createPageContainer } from '../test-support/page-container';
-import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { VIEW_GAP } from '../lib/current-character-layout';
-import { RESERVE_STORAGE_KEY } from '../lib/sim/server-runs-poll';
 import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
 import Sim from './sim.astro';
 import SimById from './sim/[id].astro';
@@ -78,64 +76,46 @@ describe('the spec support shell', () => {
 // md:gap-8`, so each shell wraps its blocks in that identical gap or everything paints higher
 // before hydration than after. 2026-10-31: the "Jump to" spine bar is gone, so no shell
 // reserves a band for it any more.
-describe('the shells’ gap wrapper', () => {
-  const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
-
-  it('sim.astro wraps its blocks in the view’s own flex gap, with no spine bar slot', async () => {
+describe('the shells', () => {
+  // Spec 2026-11-06-sim §4.2: the static shell is the signed-out landing itself (the head, the
+  // paste Plate, the best-in-slot rail), the island's first render of the same component.
+  it('sim.astro renders the landing: the head, the paste box and the best-in-slot rail, with no spine bar', async () => {
     const html = await container.renderToString(Sim);
-    expect(html).toContain(wrapper);
+    expect(html).toContain('data-region="head"');
+    expect(html).toContain('id="sim-cold-paste-input"');
+    expect(html).toContain('data-region="section-sim-a-best-in-slot-set"');
+    expect(html).toContain('data-bis-sets=');
     expect(html).not.toContain('current-character-bar');
   });
 
-  it('sim/specs.astro wraps the grids in the identical gap, with no spine bar slot', async () => {
+  it('sim/specs.astro wraps the grids in the view gap, with no spine bar slot', async () => {
     const html = await container.renderToString(Specs);
-    expect(html).toContain(wrapper);
+    expect(html).toContain(`<div class="flex flex-col ${VIEW_GAP}">`);
     expect(html).not.toContain('current-character-bar');
   });
 
-  // sim/[id].astro is the page this repo actually measures with Lighthouse (the Round 3
-  // comment on that file), so the same invariant is asserted for it too. Its own
-  // `getStaticPaths` only yields a path under `FOREVER_DATA=fixture`, but the container
-  // API renders the component directly from `params` -- the same object `getStaticPaths`
-  // would have supplied -- without going through routing or that env var at all. The cast
-  // below is only for `astro check`: a dynamic route's default export types its `props`
-  // parameter from its own `getStaticPaths` return, which this route never uses (it reads
-  // `Astro.params`, not `Astro.props`) and which `astro check` cannot narrow from the
-  // conditional `FOREVER_DATA` check inside `fixtureSimPaths()` -- so it falls back to
-  // `never`. `renderToString` never passes a `props` value for this route, so the cast
-  // changes nothing about what actually renders.
-  it('sim/[id].astro wraps the saved-sim skeleton in the identical gap, with no spine bar slot', async () => {
-    const html = await container.renderToString(SimById as unknown as AstroComponentFactory, {
-      params: { id: FIXTURE_SIM_ID },
-    });
-    expect(html).toContain(wrapper);
-    expect(html).not.toContain('current-character-bar');
+  // The cast is only for `astro check`: the route types its props from `getStaticPaths`, which
+  // it never reads (it reads `Astro.params`).
+  it('sim/[id].astro renders a prerendered run itself, and the skeleton for any other id', async () => {
+    const render = (id: string) =>
+      container.renderToString(SimById as unknown as AstroComponentFactory, { params: { id } });
+    const fixture = await render(FIXTURE_SIM_ID);
+    expect(fixture).toContain('data-testid="sim-saved"');
+    expect(fixture).toContain('data-sim-notes=');
+    expect(fixture).not.toContain('data-sim-tab');
+    expect(fixture).not.toContain('current-character-bar');
+    const other = await render('abcdefghijkl');
+    expect(other).toContain('data-testid="sim-saved-skeleton"');
   });
 });
 
-// Experience spec 2026-10-24 section 3.7: a payer's "Your server runs" box is reserved before
-// the island paints, and only for a hinted payer.
-describe('the server runs reserve', () => {
-  it('sim.astro opens its view with a hidden reserve box, ahead of the paste hero', async () => {
-    const html = await container.renderToString(Sim);
-    const wrapper = html.indexOf(`<div class="flex flex-col ${VIEW_GAP}">`);
-    const reserve = html.indexOf('server-runs-shell-reserve');
-    expect(reserve).toBeGreaterThan(wrapper);
-    expect(reserve).toBeLessThan(wrapper + 400);
-  });
-
-  it('the stylesheet shows the shell box only under the session and server-sims hints', () => {
-    const css = readFileSync(new URL('../styles/global.css', import.meta.url), 'utf8');
-    expect(css).toMatch(/\.server-runs-shell-reserve\s*\{\s*display: none;/);
-    expect(css).toMatch(
-      /html\[data-session='1'\]\[data-server-sims='1'\] \.server-runs-shell-reserve\s*\{\s*display: block;/,
-    );
-  });
-
-  it('the pre-paint script stamps data-server-sims from the cached /v1/me and the stored list height', async () => {
+// The server runs list now sits in the rail's Your sims (spec 2026-11-06-sim), which moves
+// nothing in the main column: no reserved box. The hint stays for the header's Premium door.
+describe('the server sims hint', () => {
+  it('the pre-paint script stamps data-server-sims from the cached /v1/me', async () => {
     const html = await container.renderToString(Sim);
     expect(html).toContain("root.dataset.serverSims = '1'");
     expect(html).toContain('entitlements.server_sims === true');
-    expect(html).toContain(`data-server-runs-reserve-key="${RESERVE_STORAGE_KEY}"`);
+    expect(html).not.toContain('server-runs-shell-reserve');
   });
 });

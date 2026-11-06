@@ -180,7 +180,65 @@ export async function captureRegions(page: Page): Promise<RegionSnapshot[]> {
       inventory: { ...inventoryOf(aria), ...region.disclosures },
     });
   }
+  snapshots.push({
+    name: OUTSIDE_REGIONS,
+    box: { x: 0, y: 0, width: 0, height: 0 },
+    inventory: await outsideInventory(page),
+  });
   return snapshots;
+}
+
+/**
+ * The blocks of <main> that belong to no region, as one pseudo-region: a panel, a line or a
+ * control the build grows between or beside the named regions would otherwise be compared by
+ * nothing. Counted by kind (text runs, links, buttons, fields, images, drawn surfaces); the mock
+ * and the build must hold the same, which for a page fully covered by regions is none.
+ */
+export const OUTSIDE_REGIONS = 'outside-regions';
+
+async function outsideInventory(page: Page): Promise<Record<string, number>> {
+  return page.evaluate(() => {
+    const main = document.querySelector('main');
+    const counts: Record<string, number> = {};
+    if (main === null) return counts;
+    const add = (key: string) => (counts[`outside:${key}`] = (counts[`outside:${key}`] ?? 0) + 1);
+    const outside = (el: Element) => el.closest('[data-region]') === null;
+    const shown = (el: Element) => {
+      if (!(el instanceof HTMLElement || el instanceof SVGElement)) return false;
+      const rect = el.getBoundingClientRect();
+      return (
+        rect.width > 0 &&
+        rect.height > 0 &&
+        el.checkVisibility({ visibilityProperty: true, opacityProperty: true })
+      );
+    };
+    const kindOf = (el: Element): string | null => {
+      const tag = el.tagName.toLowerCase();
+      if (tag === 'a') return 'link';
+      if (tag === 'button' || el.getAttribute('role') === 'button') return 'button';
+      if (tag === 'input' || tag === 'select' || tag === 'textarea') return 'field';
+      if (tag === 'img' || tag === 'svg') return 'image';
+      const style = getComputedStyle(el);
+      const border = ['Top', 'Right', 'Bottom', 'Left'].some(
+        (side) => parseFloat(style.getPropertyValue(`border-${side.toLowerCase()}-width`)) > 0,
+      );
+      const ground = style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor !== 'transparent';
+      return border || ground ? 'surface' : null;
+    };
+    main.querySelectorAll('*').forEach((el) => {
+      if (!outside(el) || !shown(el) || (el.closest('svg') !== el && el.closest('svg') !== null)) return;
+      const kind = kindOf(el);
+      if (kind !== null) add(kind);
+    });
+    const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+      const parent = node.parentElement;
+      if (parent === null || (node.textContent ?? '').trim() === '') continue;
+      if (!outside(parent) || !shown(parent) || parent.closest('noscript, script, style') !== null) continue;
+      add('text');
+    }
+    return counts;
+  });
 }
 
 function sizeOff(mock: number, build: number): boolean {

@@ -1,5 +1,6 @@
 // web/tests/e2e/handoffs-setup.spec.ts
 import { apiUnreachable, expect, test } from './support/test';
+import { gotoSim, simCharacter } from './support/sim-page';
 import { ACTIVE_BUILD } from './support/active-build';
 import { addonCopy } from '../../src/lib/addon/copy';
 
@@ -120,7 +121,8 @@ test('an export pasted on /setup becomes the current character on the simulator 
 
   // A bare simulator URL (no ?code=) restores it and says so; so does a tool tab.
   await page.goto('/sim');
-  await expect(page.getByTestId('sim-character')).toBeVisible({ timeout: 15_000 });
+  await expect(simCharacter(page)).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('page-title')).toHaveText('Simfury');
   await page.goto('/sim/gear');
   await expect(page.getByTestId('selector-name')).toHaveText('Simfury', { timeout: 15_000 });
 
@@ -130,8 +132,9 @@ test('an export pasted on /setup becomes the current character on the simulator 
     .getByTestId('current-character-chip')
     .getByRole('button', { name: /forget/i })
     .click();
-  await page.goto('/sim');
-  await expect(page.getByTestId('sim-character')).toHaveCount(0);
+  await gotoSim(page);
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
+  await expect(simCharacter(page)).toHaveCount(0);
 });
 
 // The planner/sim links (data-testid="addon-paste-planner") sit ABOVE the reserved

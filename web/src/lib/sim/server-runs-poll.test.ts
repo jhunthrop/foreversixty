@@ -1,16 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest';
-import {
-  LIVE_TTL_MS,
-  MAX_RESERVE_PX,
-  hasInFlight,
-  isLive,
-  markLive,
-  newlyFinished,
-  RESERVE_STORAGE_KEY,
-  withSeen,
-  writeReserveHeight,
-} from './server-runs-poll';
+import { LIVE_TTL_MS, hasInFlight, isLive, markLive, newlyFinished, withSeen } from './server-runs-poll';
 import type { SimListRow } from './types';
 
 function row(id: string, state: SimListRow['state'], seen?: boolean): SimListRow {
@@ -50,22 +40,7 @@ describe('in flight and newly finished', () => {
   });
 });
 
-describe('the reserve hints', () => {
-  it('stores the rendered height rounded, and ignores nonsense', () => {
-    writeReserveHeight(318.4);
-    expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBe('318');
-    writeReserveHeight(0);
-    writeReserveHeight(Number.NaN);
-    expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBe('318');
-  });
-
-  it('refuses an absurd reserve', () => {
-    writeReserveHeight(MAX_RESERVE_PX + 1);
-    expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBeNull();
-    writeReserveHeight(MAX_RESERVE_PX);
-    expect(localStorage.getItem(RESERVE_STORAGE_KEY)).toBe(String(MAX_RESERVE_PX));
-  });
-
+describe('the live hint', () => {
   it('does not count a future-dated live flag as live', () => {
     markLive(2_000_000);
     expect(isLive(1_999_999)).toBe(false);

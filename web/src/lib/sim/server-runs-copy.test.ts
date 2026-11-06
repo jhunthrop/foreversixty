@@ -5,12 +5,8 @@ import { serverRunsCopy } from './server-runs-copy';
 describe('serverRunsCopy', () => {
   it('carries the fixed strings of spec section 6', () => {
     expect(serverRunsCopy.heading).toBe('Server runs');
-    expect(serverRunsCopy.empty).toBe(
-      'No server runs yet. Choose Run on our servers when you start a sim, and it keeps going after you close this tab.',
-    );
-    expect(serverRunsCopy.loadingSr).toBe('Reading your server runs…');
     expect(serverRunsCopy.loadFailed).toBe('Your server runs did not load.');
-    expect(serverRunsCopy.overflow).toBe('Older finished runs are in Your sims below.');
+    expect(serverRunsCopy.serverMark).toBe('On our servers');
     expect(serverRunsCopy.queued).toBe('Starting');
     expect(serverRunsCopy.running).toBe('Running');
     expect(serverRunsCopy.unreadSr).toBe('Not opened yet');
