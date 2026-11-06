@@ -16,6 +16,15 @@ describe('GuildNotFound', () => {
     expect(body).not.toContain('Try again');
   });
 
+  it('tells a guild master how a guild that is not on the site yet gets here (day one)', () => {
+    const { body } = render(GuildNotFound, {
+      props: { path: { region: 'us', ruleset: 'normal', slug: 'knights-of-the-old-forest' } },
+    });
+    expect(body).toContain('Then it is not on Forever Sixty yet.');
+    expect(body).toContain('signs in and imports a character, or syncs the addon.');
+    expect(body).toMatch(/href="\/setup"[^>]*>Get set up</);
+  });
+
   it('offers a guild it knows whose name starts with what was typed (guild loop round 3)', () => {
     const { body } = render(GuildNotFound, {
       props: {
