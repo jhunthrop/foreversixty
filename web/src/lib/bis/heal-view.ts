@@ -3,7 +3,7 @@
 // stated incoming-damage profile, so every figure here is built together with that profile's
 // name and never on its own. Pure and node-free; all wording lives in `copy.ts`.
 import { bisCopy } from './copy';
-import type { BisBand, BisHealBandRow, BisHealMetrics, BisHealProfile, RateUnit } from './types';
+import type { BisBand, BisHealMetrics, BisHealProfile, RateUnit } from './types';
 
 /** `HPS` for a healer band, `DPS` for every other band. */
 export function rateUnitOf(band: BisBand): RateUnit {
@@ -30,19 +30,6 @@ export interface HealMetricCell {
   line: string;
 }
 
-export interface HealProfileRow {
-  heading: string;
-  figures: string;
-  reason: string;
-}
-
-export interface HealProfileDisclosure {
-  summary: string;
-  profileSummary: string;
-  rows: HealProfileRow[];
-  notes: string;
-}
-
 export interface HealerSetView {
   /** Effective healing per second, one decimal. */
   figure: string;
@@ -52,8 +39,6 @@ export interface HealerSetView {
   /** "Effective healing per second under <profile>". */
   caption: string;
   metrics: HealMetricCell[];
-  /** Absent when the file carries no `heal_profile` object. */
-  disclosure: HealProfileDisclosure | undefined;
 }
 
 function isHealMetrics(metrics: BisBand['metrics']): metrics is BisHealMetrics {
@@ -106,101 +91,6 @@ function metricCells(metrics: BisHealMetrics | undefined, durationSec: number | 
   ];
 }
 
-/** The profile's row for a band below its reference band, or `undefined` where the
- *  top-level figures stand (the reference band, or a file with no band table). */
-function bandRowFor(profile: BisHealProfile, level: number): BisHealBandRow | undefined {
-  const bands = profile.bands;
-  if (bands === undefined || level >= bands.reference_level) return undefined;
-  return bands.rows.find((row) => row.level === level);
-}
-
-/** The band's hard trash pull, when its row states one (files from 2026-11-04 on). */
-function pullRows(row: BisHealBandRow): HealProfileRow[] {
-  const { pulls, pull_multiplier: multiplier } = row;
-  if (pulls === undefined || multiplier === undefined) return [];
-  return [
-    {
-      heading: bisCopy.healerProfilePullHeading,
-      figures: bisCopy.healerProfilePullLine(
-        pulls.pull_size,
-        pulls.pull.dungeon,
-        pulls.pull.mobs,
-        multiplier,
-      ),
-      reason: bisCopy.healerProfilePullReason,
-    },
-  ];
-}
-
-/** The band's logged tank-and-group split, when its row states one (files from 2026-11-04 on). */
-function splitRows(row: BisHealBandRow): HealProfileRow[] {
-  const { tank_share: share, split } = row;
-  if (share === undefined || split === undefined) return [];
-  return [
-    {
-      heading: bisCopy.healerProfileSplitHeading,
-      figures: bisCopy.healerProfileSplitLine(share, split.fights, split.pooled),
-      reason: bisCopy.healerProfileSplitReason,
-    },
-  ];
-}
-
-function disclosureFor(profile: BisHealProfile, level: number): HealProfileDisclosure {
-  const { tank, members, pulse } = profile;
-  const row = bandRowFor(profile, level);
-  const fight: HealProfileRow = {
-    heading: bisCopy.healerProfileFightHeading,
-    figures: bisCopy.healerProfileFightLine(clockLabel(profile.duration_sec)),
-    reason: '',
-  };
-  const content: HealProfileRow[] =
-    row === undefined
-      ? []
-      : [
-          {
-            heading: bisCopy.healerProfileContentHeading,
-            figures: bisCopy.healerProfileContentLine(row.content),
-            reason: profile.bands?.rule ?? '',
-          },
-          ...pullRows(row),
-          ...splitRows(row),
-        ];
-  // A band row's reasons are the band rule's (the Content row); the top-level reasons
-  // describe the reference band's figures and would misstate a band's.
-  return {
-    summary: bisCopy.healerProfileSummary,
-    profileSummary: profile.summary,
-    rows: [
-      fight,
-      ...content,
-      {
-        heading: bisCopy.healerProfileTankHeading,
-        figures: bisCopy.healerProfileTankLine(
-          row?.tank_health ?? tank.health,
-          row?.tank_hit_damage ?? tank.hit_damage,
-          tank.swing_seconds,
-        ),
-        reason: row === undefined ? tank.reason : '',
-      },
-      {
-        heading: bisCopy.healerProfileMembersHeading,
-        figures: bisCopy.healerProfileMembersLine(row?.member_health ?? members.health),
-        reason: row === undefined ? members.reason : '',
-      },
-      {
-        heading: bisCopy.healerProfilePulseHeading,
-        figures: bisCopy.healerProfilePulseLine(
-          row?.pulse_damage ?? pulse.damage,
-          pulse.interval_seconds,
-          pulse.members,
-        ),
-        reason: row === undefined ? pulse.reason : '',
-      },
-    ],
-    notes: profile.notes,
-  };
-}
-
 /** The healer "This set" panel's data for `band`, or `undefined` for a band that is not a
  *  healer's. `profile` is the file's `heal_profile`; without it the panel still names the
  *  band's own `profile` id, or says the profile is unstated -- never a bare figure. */
@@ -217,6 +107,5 @@ export function healerSetViewFor(
     profileLabel,
     caption: bisCopy.healerFigureCaption(profileLabel),
     metrics: metricCells(metrics, profile?.duration_sec),
-    disclosure: profile === undefined ? undefined : disclosureFor(profile, band.band),
   };
 }

@@ -28,10 +28,6 @@ function outcomeNoun(unit: RateUnit): string {
   return unit === 'HPS' ? 'healing' : 'damage';
 }
 
-/** The levels the beta's public logs cover (foreverlogs.gg, beta), which the heal profile's
- *  tank-and-group split is taken from (sim-accuracy round 12). */
-const BETA_LOG_LEVELS = '13 to 30';
-
 export const bisCopy = {
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
@@ -377,7 +373,6 @@ export const bisCopy = {
   presetRaidCaption: (label: string, buffs: number, debuffs: number, consumes: number): string =>
     `${label}: ${countOf(buffs, 'buff')}, ${countOf(debuffs, 'debuff')} and ${countOf(consumes, 'consumable')}.`,
   presetBareCaption: 'Bare character: no raid buffs, debuffs or consumables.',
-  presetDetailsSummary: 'What is included',
   presetBuffsHeading: 'Buffs',
   presetDebuffsHeading: 'Debuffs',
   presetConsumesHeading: 'Consumables',
@@ -482,40 +477,6 @@ export const bisCopy = {
   healerHpmLabel: 'Healing per mana',
   healerHpmValue: (hpm: number): string => hpm.toFixed(1),
   healerHpmLine: (hpm: number): string => `${hpm.toFixed(1)} healing per mana`,
-  healerProfileSummary: 'What this profile assumes',
-  healerProfileTankHeading: 'Tank',
-  healerProfileTankLine: (health: number, hit: number, swingSeconds: number): string =>
-    `${health.toLocaleString('en-US')} health, a ${hit.toLocaleString('en-US')} hit every ${swingSeconds} seconds`,
-  healerProfileMembersHeading: 'Raid members',
-  healerProfileMembersLine: (health: number): string => `${health.toLocaleString('en-US')} health each`,
-  healerProfilePulseHeading: 'Raid pulses',
-  healerProfilePulseLine: (damage: number, intervalSeconds: number, members: number): string =>
-    `${damage.toLocaleString('en-US')} damage to ${members} members every ${intervalSeconds} seconds`,
-  healerProfileContentHeading: 'Content',
-  healerProfileContentLine: (
-    content: readonly { name: string; last_boss: string; boss_level: number }[],
-  ): string => content.map((c) => `${c.name} (${c.last_boss}, level ${c.boss_level})`).join(', '),
-  healerProfilePullHeading: 'Hard pull',
-  healerProfilePullReason:
-    "A modelled hard pull, not an average one: a quarter of the dungeons' mobs come in pulls at least this hard.",
-  healerProfilePullLine: (
-    size: number,
-    dungeon: string,
-    mobs: readonly { name: string; count: number }[],
-    multiplier: number,
-  ): string =>
-    `${size} mobs in ${dungeon} (${mobs.map((m) => `${m.count} ${m.name}`).join(', ')}), ` +
-    `${multiplier.toFixed(2)} times the last boss`,
-  healerProfileSplitHeading: 'Tank and group',
-  healerProfileSplitReason:
-    "From beta logs: in each five-man fight, the share of the group's damage taken that lands on its tank.",
-  healerProfileSplitLine: (share: number, fights: number, pooled: boolean): string =>
-    (pooled ? 'No fights are logged at this band yet. ' : '') +
-    `The tank takes ${Math.round(share * 100)}% of the damage: the median of ${fights.toLocaleString('en-US')} ` +
-    `logged beta fights (levels ${BETA_LOG_LEVELS}) ` +
-    (pooled ? 'across every dungeon' : 'in these dungeons'),
-  healerProfileFightHeading: 'Fight',
-  healerProfileFightLine: (duration: string): string => `${duration} long`,
 } as const;
 
 /** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner
