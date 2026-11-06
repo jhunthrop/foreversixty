@@ -2,7 +2,8 @@
 -- The character, as the string the planner reads.
 --
 -- Version 2 (parity contract 7, corrected by 10.5): the version-1 head plus
--- bags, bank and professions. `sets` and `loadouts` are left out -- nothing
+-- bags, bank and professions, and the raid-prep sections RaidPrep.lua reads
+-- (D14). `sets` and `loadouts` are left out -- nothing
 -- in the API this addon targets states either, and inventing one would be a
 -- lie the planner would then display. Codec.encodeFS1 encodes both sections
 -- already, so the day the beta shows an API for them this file grows two
@@ -14,6 +15,7 @@ local Codec = ns.Codec or require("Codec")
 local Talents = ns.Talents or require("Talents")
 local Compat = ns.Compat or require("Compat")
 local Theme = ns.Theme or require("Theme")
+local RaidPrep = ns.RaidPrep or require("RaidPrep")
 
 local Export = {}
 
@@ -342,7 +344,13 @@ function Export.string(data, fallbackGuild)
 	if treeRanks == nil then
 		return nil, string.format(L.codecUnknownClass, tostring(classSlug))
 	end
+	-- Resistances, consumables, keyring and attunement quests (D14): RaidPrep reads the client.
+	local prep = RaidPrep.read(Export.CARRIED_BAGS, { size = Export.containerSize, link = Export.containerLink })
 	return Codec.encodeFS1({
+		resistances = prep.resistances,
+		supplies = prep.supplies,
+		keyring = prep.keyring,
+		quests = prep.quests,
 		dataBuild = data.build,
 		classSlug = classSlug,
 		raceSlug = Compat.playerRaceSlug(),

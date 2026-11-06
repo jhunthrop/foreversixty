@@ -58,10 +58,11 @@ describe("Export", function()
 		})
 		local code = assert(Export.string(DATA))
 		-- The head is exact; the level section (the mock's default UnitLevel, 60) comes
-		-- first; the trailing name section carries whatever the client says the player is
-		-- called, url-encoded, so the site can show it.
+		-- first; supplies= is read (and empty: nothing in the bags); the trailing name section
+		-- carries whatever the client says the player is called, url-encoded, so the site can
+		-- show it.
 		local head, level, name =
-			code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|level=(%d+)|who=(.+)$")
+			code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|level=(%d+)|supplies=|who=(.+)$")
 		assert.are.equal("FS1:1.60.1.69893:paladin:human:2/0/0:head=12640", head)
 		assert.are.equal("60", level)
 		assert.is_truthy(name and name:find(":", 1, true), code)
@@ -199,7 +200,7 @@ describe("Export", function()
 			guild = { name = "Iron Vanguard", rankName = "Officer", rankIndex = 2 },
 		})
 		local code = assert(Export.string(DATA))
-		assert.is_truthy(code:find("|professions=enchanting|guild=Iron%20Vanguard:2", 1, true))
+		assert.is_truthy(code:find("|professions=enchanting|supplies=|guild=Iron%20Vanguard:2", 1, true), code)
 	end)
 
 	it("exports a character with no points spent, as an all-zero tree", function()
