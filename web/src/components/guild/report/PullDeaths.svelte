@@ -28,9 +28,7 @@
     <SpellIcon url={iconOf(model.spellId)} size={20} name={model.ability} />
     <span class="min-w-0">
       <span class={strong ? 'text-strong font-bold' : 'text-text'}>{model.ability}</span><span
-        class="text-muted"
-      >
-        from {model.source}</span
+        class="text-muted">{` from ${model.source}`}</span
       ><span class="text-text tabular-nums">, {model.amount}</span>
     </span>
   </span>

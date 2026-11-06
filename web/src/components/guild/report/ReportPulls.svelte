@@ -71,6 +71,7 @@
   {/if}
 {/snippet}
 
+<h2 class="sr-only">{copy.pulls.head}</h2>
 <Plate label={copy.pulls.caption} testid="raid-pulls">
   {#if rows.length === 0}
     <p class="text-muted p-4 text-[14px]" data-testid="raid-pulls-empty">{copy.pulls.none}</p>

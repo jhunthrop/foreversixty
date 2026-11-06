@@ -269,7 +269,7 @@
     data-testid={`signup-row-${key}`}
   >
     <div
-      class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-x-2 gap-y-1.5 md:min-h-[68px] md:gap-4 {asksSpec
+      class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-x-2 gap-y-1 md:min-h-[68px] md:gap-4 {asksSpec
         ? 'md:grid-cols-[minmax(180px,1fr)_auto_220px_minmax(200px,1.4fr)]'
         : 'md:grid-cols-[minmax(180px,1fr)_auto_minmax(200px,1.4fr)]'}"
       data-testid={`signup-grid-${key}`}
@@ -284,7 +284,10 @@
           <p class="heading-name truncate text-[14px]" style={`color:${classColorVar(character.class)}`}>
             {character.name}
           </p>
-          <p class="text-muted text-[12px] md:truncate" data-testid={`signup-who-${key}`}>
+          <p
+            class="text-muted text-[12px] leading-4 md:truncate md:leading-normal"
+            data-testid={`signup-who-${key}`}
+          >
             {who}
           </p>
         </div>

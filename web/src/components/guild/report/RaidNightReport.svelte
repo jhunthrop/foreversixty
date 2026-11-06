@@ -8,6 +8,7 @@
      output and consumables (the API scopes it), and nothing here lists other raiders worst first.
      A matched log that turned private keeps the head and the match line and draws nothing else. -->
 <script lang="ts">
+  import { onMount } from 'svelte';
   import type { GuildRaidView } from '../../../lib/guild/api';
   import { attendanceCopy } from '../../../lib/guild/attendance-copy';
   import { discordReportText } from '../../../lib/guild/night';
@@ -60,6 +61,7 @@
     gateId: string;
   } = $props();
 
+  const OPEN_NIGHT_ID = 'raid-open-night';
   const officer = $derived(c.role === 'officer');
   const kind = $derived(kindOf(raid));
   const when = $derived(raidWhen(raid, now, viewerTimezone, locale));
@@ -70,6 +72,14 @@
   const night = $derived(raid.night);
   /** Your night is a member's: officers read their rows in the full report. */
   const showYourNight = $derived(!officer && (raid.attendance ?? []).some((row) => row.own));
+
+  // A poll that matched the log while the officer was in the match picker swaps the planner for
+  // this page; focus would fall to the body, so it goes to the match line's link instead.
+  onMount(() => {
+    if (c.logMatched && document.activeElement === document.body) {
+      document.getElementById(OPEN_NIGHT_ID)?.focus();
+    }
+  });
 
   function copyText(): string {
     if (report === null || night === null) return '';
@@ -153,7 +163,11 @@
     <div id="report" class="scroll-mt-4" data-testid="raid-report">
       <ReportPulls {report} />
     </div>
-    <ReportOutput parses={report.parses} {officer} />
+    <ReportOutput
+      parses={report.parses}
+      {officer}
+      ownKeys={(raid.attendance ?? []).filter((row) => row.own).map((row) => row.character_key)}
+    />
     <ReportConsumables byPull={report.consumables.by_pull} />
   {/if}
 

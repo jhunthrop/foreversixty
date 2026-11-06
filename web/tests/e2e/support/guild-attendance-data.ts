@@ -424,9 +424,8 @@ export function fixtureCandidates(extra: Partial<MatchCandidates> = {}): MatchCa
 export function expectedDiscordText(reportUrl: string): string {
   return [
     "Onyxia's Lair · Thu 10 Dec · Olympus XXVII",
-    '1 kill, 3 wipes, 2 h 41 min. 13 of 14 came.',
+    '1 kill, 3 wipes, 2 h 41 min. 13 of 14 came. 17 deaths.',
     'Kills: Onyxia 4:12 (after 3 wipes)',
-    'Most deaths: Pyrewisp 4, Windtalon 3, Vexlash 2',
     "Loot: Onyxia: Head of Onyxia to Kraggor; Vis'kag the Bloodletter to Vexlash; Netherwind Crown to Pyrewisp; Ring of Binding to Thornhide",
     `Biggest changes: Pyrewisp DPS +53, Lightbrand HPS +41, Vexlash DPS +19, ${MEMBER_ALT} DPS +16`,
     `Report: ${reportUrl}`,

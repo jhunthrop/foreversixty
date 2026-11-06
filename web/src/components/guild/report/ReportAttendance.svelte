@@ -59,7 +59,13 @@
         {@const saving = key in fixing}
         {@const shown = saving ? (fixing[key] ?? '') : model.value}
         <li aria-busy={saving} data-testid="raid-attendance-row" data-fixed={model.auto !== null}>
-          <Row title={model.row.name} titleTone={classTone(model.row.class)} open density="slim">
+          <Row
+            title={model.row.name}
+            titleTone={classTone(model.row.class)}
+            selected={model.row.own}
+            open
+            density="slim"
+          >
             {#snippet lead()}<ClassCrestRing characterClass={model.row.class} size={24} />{/snippet}
             {#snippet subContent()}
               <span class="text-text block" data-testid="raid-attendance-outcome">{model.effective}</span>

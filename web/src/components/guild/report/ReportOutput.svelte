@@ -14,7 +14,16 @@
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
 
-  let { parses, officer }: { parses: readonly RaidReportParse[]; officer: boolean } = $props();
+  let {
+    parses,
+    officer,
+    ownKeys = [],
+  }: {
+    parses: readonly RaidReportParse[];
+    officer: boolean;
+    /** The viewer's own characters: their rows take the selected ground, as the planner's do. */
+    ownKeys?: readonly string[];
+  } = $props();
 
   const groups = $derived(outputGroups(parses));
 </script>
@@ -34,7 +43,14 @@
           <ul>
             {#each group.rows as row (`${row.character_key}-${row.metric}`)}
               <li data-testid="raid-output-row">
-                <Row title={row.name} titleTone={classTone(row.class)} sub={row.sub} open density="slim">
+                <Row
+                  title={row.name}
+                  titleTone={classTone(row.class)}
+                  sub={row.sub}
+                  selected={ownKeys.includes(row.character_key)}
+                  open
+                  density="slim"
+                >
                   {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
                   {#snippet trail()}<Figure
                       value={row.figure}

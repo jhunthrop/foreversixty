@@ -2,13 +2,7 @@
 // Every string of design/specs/2026-10-27-guild-attendance.md 6.1, in one module: constants where
 // the words are fixed, functions where the data fills them. No number is typed into prose;
 // attendance-copy.test.ts reads the spec table itself, so a drift in either file fails.
-import type {
-  ConsumableBefore,
-  MoveMetric,
-  RaidMatch,
-  RaidNight,
-  RaidRef,
-} from './attendance-contract';
+import type { ConsumableBefore, MoveMetric, RaidMatch, RaidNight, RaidRef } from './attendance-contract';
 import { NO_RAID_NIGHTS, nightsLabel } from './nights';
 import { SEP } from './raid-copy';
 import { DEFAULT_LOCALE, clockText, dateLabel, stampParts } from './raid-time';
