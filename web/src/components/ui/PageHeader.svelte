@@ -29,6 +29,8 @@
     actions?: Snippet;
     tabs?: Snippet;
     testid?: string;
+    /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
+    children?: Snippet;
   } = $props();
 </script>
 

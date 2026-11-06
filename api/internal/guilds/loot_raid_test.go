@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/jackc/pgx/v5"
 )
 
 func (w raidWorld) postAward(raidID *int64, key string) *http.Response {
@@ -14,6 +16,21 @@ func (w raidWorld) postAward(raidID *int64, key string) *http.Response {
 	}
 	return w.h.do(http.MethodPost, w.path("/loot/awards"),
 		fmt.Sprintf(`{"encounter_id":1084,"item_id":%d,"character_key":%q%s}`, onyxiaLoot[0].ItemID, key, raid))
+}
+
+// awardHolders is the award rows' character keys for the guild, oldest first.
+func (w raidWorld) awardHolders(t *testing.T) []string {
+	t.Helper()
+	rows, err := w.h.pool.Query(t.Context(),
+		`select character_key from loot_awards where guild_id = $1 order by id`, w.gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	keys, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		t.Fatal(err)
+	}
+	return keys
 }
 
 // awardRaids is the award rows' raid ids for the guild, oldest first (-1 for no raid).
@@ -181,7 +198,10 @@ func countReportLoot(bosses []ReportLootBoss) int {
 	return n
 }
 
-func TestAnAwardWithNoRecentRaidHasNone(t *testing.T) {
+// Two awards of the same item with no night (no raid matched, no log) are two rows: the item
+// dropped twice, on nights the site never saw, and neither award overwrites the other
+// (migration 0071; before it the second replaced the first).
+func TestTwoAwardsOfOneItemWithNoNightBothSurvive(t *testing.T) {
 	w := newRaidWorld(t, true)
 	w.as(w.officer)
 	if res := w.postAward(nil, officerKey); res.StatusCode != http.StatusOK {
@@ -191,9 +211,28 @@ func TestAnAwardWithNoRecentRaidHasNone(t *testing.T) {
 		t.Fatalf("raid = %v, want none", got)
 	}
 	if res := w.postAward(nil, memberKeyA); res.StatusCode != http.StatusOK {
-		t.Fatalf("second award = %d", res.StatusCode)
+		t.Fatalf("second award = %d: %s", res.StatusCode, readBody(res))
 	}
-	if got := w.awardRaids(t); len(got) != 1 {
-		t.Fatalf("a second raid-less award for one drop left %v", got)
+	if got := w.awardRaids(t); len(got) != 2 || got[0] != -1 || got[1] != -1 {
+		t.Fatalf("two raid-less awards of one item left %v, want both with no raid", got)
+	}
+	if got := w.awardHolders(t); len(got) != 2 || got[0] != officerKey || got[1] != memberKeyA {
+		t.Fatalf("award holders = %v, want %s then %s", got, officerKey, memberKeyA)
+	}
+}
+
+// A second award of the same drop on the same logged night (a log with no planned raid) is a
+// correction, like one on a raid: it replaces the first (loot_awards_drop_night_idx).
+func TestASecondAwardOnTheSameLoggedNightReplacesTheFirst(t *testing.T) {
+	w := newRaidWorld(t, true)
+	w.oneFightNight(t, "logged", onyLogZone, time.Now().UTC().Add(-14*time.Hour))
+	w.as(w.officer)
+	for _, key := range []string{officerKey, memberKeyA} {
+		if res := w.postAward(nil, key); res.StatusCode != http.StatusOK {
+			t.Fatalf("award to %s = %d: %s", key, res.StatusCode, readBody(res))
+		}
+	}
+	if got := w.awardHolders(t); len(got) != 1 || got[0] != memberKeyA {
+		t.Fatalf("award holders = %v, want only %s", got, memberKeyA)
 	}
 }

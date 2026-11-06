@@ -75,6 +75,31 @@ func TestClearingTheMatchDetachesOnlyWhatTheMatchAttached(t *testing.T) {
 	}
 }
 
+// A clear sends an attached award with no log back to no raid even when another raid-less award
+// of the same drop stands: the two are separate drops (migration 0071).
+func TestClearingTheMatchDetachesBesideAnotherRaidLessAwardOfTheDrop(t *testing.T) {
+	w := newRaidWorld(t, false)
+	start := pastStart()
+	raid := w.raidAt(t, raidZoneOny, start)
+	w.oneFightNight(t, "log1", onyLogZone, start.Add(30*time.Minute))
+	lastWeek := w.seedAward(t, 0, memberKeyA, start.Add(-7*24*time.Hour), nil)
+	mid := w.seedAward(t, 0, officerKey, start.Add(20*time.Minute), nil)
+	if _, err := w.h.store.SetMatch(t.Context(), w.gid, raid.ID, "log1", MatchedHand); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := w.awardRaid(t, mid); !onRaid(got, raid.ID) {
+		t.Fatalf("hand match left the mid-raid award on %v", got)
+	}
+	if _, err := w.h.store.ClearMatch(t.Context(), w.gid, raid.ID, w.officer); err != nil {
+		t.Fatal(err)
+	}
+	for name, id := range map[string]int64{"mid-raid": mid, "last week's": lastWeek} {
+		if got, _ := w.awardRaid(t, id); got != nil {
+			t.Errorf("after clear the %s award is on raid %v, want no raid", name, *got)
+		}
+	}
+}
+
 func TestAnAttachCollisionKeepsTheNewerAwardOnTheRaid(t *testing.T) {
 	w := newRaidWorld(t, false)
 	start := pastStart()
