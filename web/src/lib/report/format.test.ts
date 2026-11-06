@@ -75,6 +75,13 @@ describe('report formatting', () => {
     expect(percentileToken(100)).toBe('var(--color-parse-gold)');
   });
 
+  it('floors a percentile onto the scale: 99.53 is pink, 94.9 orange is not, gold only at 100 (B4)', () => {
+    expect(percentileToken(99.53)).toBe('var(--color-parse-pink)');
+    expect(percentileToken(99.99)).toBe('var(--color-parse-pink)');
+    expect(percentileToken(94.9)).toBe('var(--color-parse-purple)');
+    expect(percentileToken(24.6)).toBe('var(--color-parse-grey-text)');
+  });
+
   it('keeps tenths past a minute in the precise form, and names spell schools', () => {
     expect(formatDurationPrecise(61_400)).toBe('1:01.4');
     expect(formatDurationPrecise(6400)).toBe('6.4s');

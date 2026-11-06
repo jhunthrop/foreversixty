@@ -16,11 +16,10 @@ export function rankPercentile(rank: number, total: number): number {
   return 100 - ((rank - 1) / Math.max(total, 1)) * 100;
 }
 
-/** The top of the legend; the first rank of a board is its 100th percentile and still reads pink. */
-const TOP_LEGEND_PERCENTILE = 99;
-
+/** A rank's colour on the Warcraft Logs scale, the percentile floored: the first rank of a board is
+ *  its 100th percentile and gold, the next ones pink while they stay at 99 or above. */
 export function rankColor(rank: number, total: number): string {
-  return percentileToken(Math.min(TOP_LEGEND_PERCENTILE, Math.max(0, rankPercentile(rank, total))));
+  return percentileToken(Math.max(0, rankPercentile(rank, total)));
 }
 
 export interface LegendStep {
@@ -31,6 +30,7 @@ export interface LegendStep {
 }
 
 const LEGEND_FLOORS: readonly { label: string; floor: number }[] = [
+  { label: '100', floor: 100 },
   { label: '99+', floor: 99 },
   { label: '95+', floor: 95 },
   { label: '75+', floor: 75 },

@@ -332,8 +332,9 @@ export function parseTitle(value: number | string, ranked = 0): string {
 
 export function percentileToken(percentile: number): string {
   // The ladder every log reader already knows: grey under 25, green from 25, blue from
-  // 50, purple from 75, orange from 95, pink at 99, gold at 100.
-  const p = Number.isFinite(percentile) ? Math.round(percentile) : 0;
+  // 50, purple from 75, orange from 95, pink at 99, gold at 100. Floored, never rounded
+  // (Warcraft Logs' own rule): 99.53 is pink, and only a whole 100 is gold.
+  const p = Number.isFinite(percentile) ? Math.floor(percentile) : 0;
   if (p >= 100) return 'var(--color-parse-gold)';
   if (p >= 99) return 'var(--color-parse-pink)';
   if (p >= 95) return 'var(--color-parse-orange)';

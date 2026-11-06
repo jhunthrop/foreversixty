@@ -1,5 +1,5 @@
 // The served data and copy the logs mocks render (design/specs/2026-11-07-logs-reports.md):
-//   node design/mocks/logs_facts.mjs  ->  design/mocks/data/logs-facts.json
+//   node design/mocks/logs_facts.mjs [out.json]  ->  design/mocks/data/logs-facts.json (or out.json)
 // Reads, by bundling the TypeScript modules themselves (esbuild from web/node_modules), never by retyping them:
 //  - the e2e rankings stubs (web/tests/e2e/support/rankings-fixture.ts): the encounters, the signed-out board
 //    (every class), the signed-in Fury Warrior board with the character's place, and the character page, i.e. what
@@ -17,7 +17,8 @@ import { pathToFileURL } from "node:url";
 const WEB = new URL("../../web/", import.meta.url).pathname;
 const require = createRequire(join(WEB, "package.json"));
 const esbuild = require("esbuild");
-const OUT = new URL("./data/logs-facts.json", import.meta.url);
+// The output: argv[2] (the parity specs render into test-results), else the committed data file.
+const OUT = process.argv[2] ? pathToFileURL(process.argv[2]) : new URL("./data/logs-facts.json", import.meta.url);
 
 const entry = `
 import { boardFor, characterPage, ONYXIA, KELTHAS, OWN_KEY } from ${JSON.stringify(WEB + "tests/e2e/support/rankings-fixture.ts")};

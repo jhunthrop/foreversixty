@@ -4,8 +4,8 @@ The report itself (/reports/<id>, every tab, /reports/sample) is ws_report.py.
 Spec: design/specs/2026-11-07-logs-reports.md. Data and copy, read at render time, never retyped:
   - design/mocks/data/logs-facts.json (node design/mocks/logs_facts.mjs): the page copy modules (lib/reports, lib/report,
     lib/rankings, lib/score, lib/rating) and the e2e rankings stubs (tests/e2e/support/rankings-fixture.ts);
-  - design/mocks/data/logs-reports-real.json: production's one public report (the 17 Sept beta night), standing in for
-    the signed-in player's own list until G8 serves a fixture (decision D1: no retail-shaped stub rows);
+  - web/src/fixtures/reports/{mine,recent}.json: production's one public report (the 17 Sept beta night) as the signed-in
+    player's own list and the public feed (G8 folded; decision D1: no retail-shaped stub rows), the files the parity spec serves;
   - web/public/sample-report/sample/meta.json: the sample report row;
   - web/src/pages/ratings.astro: the ratings page's own prose, weight table and sample score (parsed from the source).
 SAMPLE (typed, marked): none beyond what the stubs carry; the signed-in character on /rankings is the stub's own
@@ -15,6 +15,7 @@ SAMPLE (typed, marked): none beyond what the stubs carry; the signed-in characte
   for p in $(python3 design/mocks/ws_logs.py --list); do node design/mocks/ws_shoot.mjs $p 390,1440,1920,2000; done
 """
 import json
+import os
 import re
 import sys
 from datetime import datetime
@@ -28,10 +29,15 @@ from ws_prims import (Button as _Button, DropZone, Facts, Figure, Link, Meter, M
 
 ROOT = Path(__file__).resolve().parents[2]
 MOCKDATA = Path(__file__).resolve().parent / 'data'
-FACTS = json.loads((MOCKDATA / 'logs-facts.json').read_text())
+FACTS = json.loads(Path(os.environ.get('FS_LOGS_FACTS') or MOCKDATA / 'logs-facts.json').read_text())   # FS_LOGS_FACTS: the parity specs' test-time facts
 COPY = FACTS['copy']
-MINE = json.loads((MOCKDATA / 'logs-reports-real.json').read_text())
-NOW = datetime.strptime(MINE['now'], '%Y-%m-%d')
+# The signed-in list and the public feed: web/src/fixtures/reports (G8 folded, decision D1), the files parity-logs.spec.ts serves.
+_FIX = ROOT / 'web/src/fixtures/reports'
+_MINE = json.loads((_FIX / 'mine.json').read_text())
+_RECENT = json.loads((_FIX / 'recent.json').read_text())
+MINE = {'rows': [dict(r, first_pull=(r.get('started_at') or r['created_at'])[:10], created_at=r['created_at'][:10]) for r in _MINE['page']['rows']],
+        'recent': [dict(r, status='complete', created_at=r['created_at'][:10], first_pull=r['created_at'][:10]) for r in _RECENT['page']['rows']]}
+NOW = datetime.strptime(_MINE['now'][:10], '%Y-%m-%d')
 SAMPLE_META = json.loads((ROOT / 'web/public/sample-report/sample/meta.json').read_text())
 RATINGS_SRC = (ROOT / 'web/src/pages/ratings.astro').read_text()
 ACCOUNT = ('Fixture#1234', None, 'No characters yet')
@@ -110,7 +116,9 @@ def sample_row() -> str:
 
 def recent_section() -> str:
     rc = COPY['recentReportsCopy']
-    feed = [report_row(r) for r in MINE['rows'] if r['id'] in MINE['recent_public']]
+    # lib/reports/recent.ts isPublicListable: the feed lists a report that names a zone or killed a boss (production's one
+    # public report has neither, so the feed is its empty line and the sample row)
+    feed = [report_row(r) for r in MINE['recent'] if r['kill_count'] > 0 or (r.get('zone') or '').strip()]
     body = (f'<p class="empty">{escape(rc["empty"])}</p>' if not feed else '') + Rows(feed + [sample_row()], open_=True)
     return Section(rc['heading'], body, action=Link('All public reports &rsaquo;'))
 
@@ -164,7 +172,7 @@ def logs_page(state: str) -> str:
         rail = companion_section(True)
     body = head + Page('split', main, rail) + PAGE_CSS
     who = ACCOUNT if state != 'out' else None
-    return build_page('Logs', body, 'Logs', who, f'/logs mock, {state}. Data: logs-reports-real.json (production z2opt2x2gs5u), the sample meta, lib/reports copy.')
+    return build_page('Logs', body, 'Logs', who, f'/logs mock, {state}. Data: web/src/fixtures/reports (production z2opt2x2gs5u), the sample meta, lib/reports copy.')
 
 
 # ------------------------------------------------------------------------------------------------ /reports
@@ -183,7 +191,7 @@ def reports_page(state: str) -> str:
     else:
         inner = Rows([report_row(r) for r in MINE['rows']])
     body = head + Page('ledger', Plate(inner, 'Your reports')) + PAGE_CSS
-    return build_page('Your reports', body, 'Logs', ACCOUNT if state != 'out' else None, f'/reports mock, {state}. Data: logs-reports-real.json (production z2opt2x2gs5u).')
+    return build_page('Your reports', body, 'Logs', ACCOUNT if state != 'out' else None, f'/reports mock, {state}. Data: web/src/fixtures/reports (production z2opt2x2gs5u).')
 
 
 # ------------------------------------------------------------------------------------------------ rankings

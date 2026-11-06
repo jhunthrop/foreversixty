@@ -22,7 +22,7 @@ B = DATA_ROOT / 'data/builds' / BUILD
 # /sample-report/sample; production's one public report (z2opt2x2gs5u) is the same log's first 42 pulls. It has no boss pull.
 SAMPLE_DIR = ROOT / 'web/public/sample-report/sample'
 MOCKDATA = Path(__file__).resolve().parent / 'data'
-FACTS = json.loads((MOCKDATA / 'logs-facts.json').read_text())
+FACTS = json.loads(Path(os.environ.get('FS_LOGS_FACTS') or MOCKDATA / 'logs-facts.json').read_text())   # FS_LOGS_FACTS: the parity specs' test-time facts
 COPY = FACTS['copy']
 _COACH_GO = (ROOT / 'api/internal/coach/copy.go').read_text()
 COACH_TRASH = _COACH_GO.split('NotReviewableTrash = "', 1)[1].split('"', 1)[0]   # api/internal/coach/copy.go, verbatim
