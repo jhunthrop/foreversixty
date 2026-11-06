@@ -11106,6 +11106,24 @@
     "level_max": null
   },
   {
+    "id": 16550,
+    "name": "The Drowned City",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": null,
+    "level_min": null,
+    "level_max": null
+  },
+  {
+    "id": 16554,
+    "name": "Blackmaw Hold",
+    "map_id": 2974,
+    "map_name": "",
+    "parent_id": null,
+    "level_min": null,
+    "level_max": null
+  },
+  {
     "id": 16558,
     "name": "Dalaran",
     "map_id": 2959,
@@ -11547,6 +11565,15 @@
     "level_max": null
   },
   {
+    "id": 16667,
+    "name": "The Shaper's Terrace",
+    "map_id": 3001,
+    "map_name": "",
+    "parent_id": null,
+    "level_min": null,
+    "level_max": null
+  },
+  {
     "id": 16672,
     "name": "Shriekling Den",
     "map_id": 2991,
@@ -11925,6 +11952,15 @@
     "level_max": null
   },
   {
+    "id": 16842,
+    "name": "Krol'dok Stronghold",
+    "map_id": 3039,
+    "map_name": "",
+    "parent_id": null,
+    "level_min": null,
+    "level_max": null
+  },
+  {
     "id": 16848,
     "name": "Elderwild",
     "map_id": 1,
@@ -12087,6 +12123,69 @@
     "level_max": null
   },
   {
+    "id": 17037,
+    "name": "Sunken Hollow",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": 16550,
+    "level_min": null,
+    "level_max": null
+  },
+  {
+    "id": 17038,
+    "name": "Flooded Shrine",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": 16550,
+    "level_min": null,
+    "level_max": null
+  },
+  {
+    "id": 17039,
+    "name": "Deep Archives",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": 16550,
+    "level_min": null,
+    "level_max": null
+  },
+  {
+    "id": 17040,
+    "name": "Altar of the Serpent",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": 16550,
+    "level_min": null,
+    "level_max": null
+  },
+  {
+    "id": 17041,
+    "name": "Eternal Amphitheater",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": 16550,
+    "level_min": null,
+    "level_max": null
+  },
+  {
+    "id": 17042,
+    "name": "Abyssal Dais",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": 16550,
+    "level_min": null,
+    "level_max": null
+  },
+  {
+    "id": 17043,
+    "name": "The Unsinkable",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": 16550,
+    "level_min": null,
+    "level_max": null
+  },
+  {
     "id": 17044,
     "name": "Gloomrise",
     "map_id": 1,
@@ -12102,6 +12201,15 @@
     "map_name": "Kalimdor",
     "parent_id": 215,
     "level_min": 10,
+    "level_max": null
+  },
+  {
+    "id": 17046,
+    "name": "Ataal'Byzal",
+    "map_id": 2970,
+    "map_name": "",
+    "parent_id": 16550,
+    "level_min": null,
     "level_max": null
   },
   {
