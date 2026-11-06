@@ -15,6 +15,7 @@ import {
   buildMockReadiness,
 } from '../../../src/fixtures/guild/mock-guild';
 import { CHARACTER, CHARACTER_URL, GEAR, GEAR_ITEMS, routeGearIcons } from './character-fixture';
+import { apiUnreachable, GUILD_OVERVIEW_READS } from './test';
 
 export const GUILD_PAGE = '/guild/us/pvp/olympus-xxvii';
 
@@ -48,9 +49,12 @@ export function guildMe(viewer: string, rank: GuildViewerRank) {
   };
 }
 
-/** The mock guild's every read, as its member (Zulmara) or its leader (Kraggor). */
+/** The mock guild's every read, as its member (Zulmara) or its leader (Kraggor). The Overview's
+ *  own reads go unanswered (the row bands are on Roster and Readiness): left unrouted, whether
+ *  one fires before the test ends is a race the hermetic guard then fails on. */
 export async function stubGuild(page: Page, rank: GuildViewerRank): Promise<void> {
   const viewer = rank === 'leader' ? VIEWER_OFFICER : VIEWER_MEMBER;
+  await apiUnreachable(page, ...GUILD_OVERVIEW_READS);
   await page.route('**/v1/guilds/us/pvp/olympus-xxvii', (route) =>
     route.fulfill(envelope(buildMockGuildPage())),
   );
