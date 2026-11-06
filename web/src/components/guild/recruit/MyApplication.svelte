@@ -46,6 +46,7 @@
     titleTone={classTone(application.character.class ?? '')}
     sub={`${applicationLine(application, guildName)} ${applicationStamp(application, viewerTimezone, locale)}.`}
     open
+    wrapTrail
     testid="guild-recruit-mine-row"
   >
     {#snippet lead()}<ClassCrestRing characterClass={application.character.class ?? ''} size={32} />{/snippet}
