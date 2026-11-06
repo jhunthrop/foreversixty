@@ -97,3 +97,12 @@ func TestZoneEncounterPairsAreParallel(t *testing.T) {
 		t.Error("dropEncounter does not read the table")
 	}
 }
+
+// TestMembersNightsKeepEmptyListsAsArrays keeps a quiet night's drops and decisions [] in the
+// member's copy, never null (the page maps over them).
+func TestMembersNightsKeepEmptyListsAsArrays(t *testing.T) {
+	v := LootNightsView{Nights: []LootNight{{Night: "live", Drops: []LootNightDrop{}, Decisions: []LootDecision{}}}}.withoutVotes()
+	if v.Nights[0].Drops == nil || v.Nights[0].Decisions == nil {
+		t.Fatalf("member nights = %+v", v.Nights[0])
+	}
+}

@@ -299,8 +299,8 @@ func nightZone(zone *string, drops []LootNightDrop) string {
 func (v LootNightsView) withoutVotes() LootNightsView {
 	out := LootNightsView{Officers: v.Officers, Nights: make([]LootNight, len(v.Nights))}
 	for i, n := range v.Nights {
-		n.Drops = append([]LootNightDrop(nil), n.Drops...)
-		n.Decisions = append([]LootDecision(nil), n.Decisions...)
+		n.Drops = append([]LootNightDrop{}, n.Drops...)
+		n.Decisions = append([]LootDecision{}, n.Decisions...)
 		for j := range n.Drops {
 			if n.Drops[j].Award != nil {
 				d := n.Drops[j].Award.withoutVotes()
