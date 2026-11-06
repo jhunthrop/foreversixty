@@ -11,7 +11,7 @@ import type { HealerSetView } from './heal-view';
 import type { HitCapLine } from './hit-cap';
 import type { ExpertiseCapLine } from './expertise-cap';
 import type { BandInfo, RowView } from './panel-view';
-import { raidCaptionFor, effectGroupsFor, type PresetEffectGroup } from './preset-caption';
+import { raidCaptionFor, effectLineFor } from './preset-caption';
 import { presetOf } from './presets';
 import { bandModelKey } from './model-key';
 import { bandTopLevel } from './rotation-view';
@@ -109,9 +109,8 @@ export interface BisAnswerModel {
   simHref?: string;
   rankingSimHref?: string;
   plannerHref: string;
-  /** The raid preset's buffs, debuffs and consumes, for the disclosure. */
-  presetGroups?: PresetEffectGroup[];
-  presetNotes?: string;
+  /** The raid preset's effect names as one plain line, for the trust line's hover title. */
+  trustTitle?: string;
 }
 
 export interface BisWeightsModel {
@@ -347,9 +346,7 @@ function answerModel(file: BisFile, raw: BisBand, info: BandInfo, deps: PageMode
     simHref: info.healer === undefined ? deps.simHrefFor(raw) : undefined,
     rankingSimHref: deps.rankingSimHrefFor(raw),
     plannerHref: deps.plannerHrefFor(raw),
-    ...(meta === undefined
-      ? {}
-      : { presetGroups: effectGroupsFor(meta), ...(meta.notes ? { presetNotes: meta.notes } : {}) }),
+    ...(meta === undefined ? {} : { trustTitle: effectLineFor(meta) }),
   };
 }
 

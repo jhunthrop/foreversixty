@@ -11,6 +11,7 @@
      `data-bis-item`, so the page's one tooltip host opens the real item. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { REGION } from '../../lib/ui/regions';
   import { onMount } from 'svelte';
   import { rarityClassFor } from '../../lib/planner/items';
   import { basisText } from '../../lib/ui/primitives';
@@ -234,6 +235,7 @@
   data-view={groups ? 'where' : 'slot'}
   data-wide={wide && detail !== undefined ? 'true' : undefined}
   data-testid={testid}
+  data-region={REGION.slots}
   aria-busy={loading ? 'true' : undefined}
 >
   {#if failed}
@@ -341,6 +343,11 @@
     color: var(--color-gold);
   }
   /* A two-hander covering the off hand: greyed in the socket, as the game's pane draws it. */
+  /* A flex box, so the 40 px icon is the cell's height and not a line box with a descender under
+     it (the strut added 7 px to every row; spec 5.13 rows sit on --row-h). */
+  .ui-doll-icon {
+    display: flex;
+  }
   .ui-doll-icon[data-covered='true'] {
     filter: grayscale(1);
     opacity: 0.45;

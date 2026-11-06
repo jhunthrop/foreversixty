@@ -6,6 +6,7 @@
      A TabStrip may sit under it. No eyebrow, no job paragraph, no band art. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { REGION } from '../../lib/ui/regions';
   import { titleColor, type TitleTone } from '../../lib/ui/primitives';
 
   let {
@@ -16,6 +17,7 @@
     answer,
     actions,
     tabs,
+    minRowHeight,
     testid,
   }: {
     title: string;
@@ -28,24 +30,31 @@
     /** The page's buttons, when it has no answer. */
     actions?: Snippet;
     tabs?: Snippet;
+    /** A CSS length: the row's floor from 1024 px, so a page whose answer changes height
+     *  (one spec's figure, another's four) keeps its title and controls at the same y. The
+     *  title block sits at the bottom of that area. */
+    minRowHeight?: string;
     testid?: string;
     /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
     children?: Snippet;
   } = $props();
 </script>
 
-<header class="ui-page-header" data-testid={testid}>
-  <div class="ui-page-header-row">
-    <div class="flex min-w-0 items-center gap-4">
+<header class="ui-page-header" data-region={REGION.head} data-testid={testid}>
+  <div class="ui-page-header-row" style:--row-min={minRowHeight}>
+    <div class="flex min-w-0 items-center gap-4" data-region={REGION.headTitle}>
       {#if crest}{@render crest()}{/if}
       <div class="min-w-0">
         <h1 class="ui-title" style:color={titleColor(tone)} data-testid="page-title">{title}</h1>
-        {#if meta}<div class="text-small text-muted mt-[6px] flex flex-wrap items-center gap-x-4 gap-y-[6px]">
+        {#if meta}<div
+            data-region={REGION.headMeta}
+            class="text-small text-muted mt-[6px] flex flex-wrap items-center gap-x-4 gap-y-[6px]"
+          >
             {@render meta()}
           </div>{/if}
       </div>
     </div>
-    {#if answer}<div class="ui-page-header-answer">{@render answer()}</div>
+    {#if answer}<div class="ui-page-header-answer" data-region={REGION.headAnswer}>{@render answer()}</div>
     {:else if actions}<div class="flex flex-wrap items-center gap-[10px]">{@render actions()}</div>{/if}
   </div>
   {#if tabs}<div class="mt-2">{@render tabs()}</div>{/if}
@@ -79,6 +88,11 @@
     .ui-title {
       font-size: var(--text-title);
       line-height: var(--text-title--line-height);
+    }
+  }
+  @media (min-width: 1024px) {
+    .ui-page-header-row {
+      min-height: var(--row-min, auto);
     }
   }
   @media (min-width: 900px) {
