@@ -103,7 +103,7 @@
         }
       },
       {
-        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute. Improved Bloodrage raises both by a quarter at 1/2 and by half at 2/2, to 15 and 15.",
+        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute. With Improved Bloodrage both are a quarter more at 1/2 and half more at 2/2, to 15 and 15.",
         "action": {
           "condition": {
             "cmp": {
