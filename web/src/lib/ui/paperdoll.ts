@@ -14,8 +14,10 @@ export interface DollFlag {
   tone: 'muted' | 'kill' | 'gold';
 }
 
-/** Line 2's lead-out: the next best item and its gap, or the worn item and its delta. */
+/** A note the slot's detail shows (the worn item's facts, why a slot was re-picked). */
 export interface DollNote {
+  /** The detail section's label ("You wear", "Re-picked"). */
+  label: string;
   /** Words before the item ("Next best:", "You wear"). */
   lead: string;
   item?: ItemRef;
@@ -40,6 +42,7 @@ export interface DollCell {
   source?: string;
   /** A source-kind key for the line's glyph (`dungeon`, `crafted`, ...). */
   sourceKind?: string;
+  /** Detail only: line 2 of the cell is the source alone (owner decision, option C). */
   note?: DollNote;
   gain?: GainFigure;
   /** The worn item's small icon beside the gain (compare mode). */

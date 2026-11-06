@@ -127,6 +127,21 @@ export interface ItemRef {
 /** A gain or lead shown at a row's right: the figure, its unit line and its tone. */
 export interface GainFigure {
   value: string;
+  /** The unit after the figure (`DPS`). */
+  unit?: string;
   caption?: string;
+  /** What the figure is measured against, under it: `vs <item>`, `next: −1.7 vs <item>`. One line
+   *  that may ellipsize (its full words in the title); the item carries its tooltip hook. */
+  basis?: GainBasis;
   tone?: FigureTone;
+}
+
+export interface GainBasis {
+  prefix: string;
+  item?: ItemRef;
+}
+
+/** A basis line's full words, for its title when the column ellipsizes it. */
+export function basisText(basis: GainBasis): string {
+  return basis.item ? `${basis.prefix} ${basis.item.name}` : basis.prefix;
 }

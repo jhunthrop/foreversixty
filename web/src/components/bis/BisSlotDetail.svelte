@@ -33,7 +33,9 @@
   const shownId = $derived(cell.item?.id);
   const shown = $derived(shownId === undefined ? undefined : items[shownId]);
   const source = $derived(shownId === undefined ? undefined : row?.sources[shownId]?.line);
-  const pickRows = $derived<BisCandidate[]>(row?.id === undefined ? [] : [{ id: row.id, delta: 0 }, ...row.alts]);
+  const pickRows = $derived<BisCandidate[]>(
+    row?.id === undefined ? [] : [{ id: row.id, delta: 0 }, ...row.alts],
+  );
 
   function gapText(delta: number): string {
     return isTie(delta) ? `same ${unit}` : `${signedFigure(delta)} ${unit}`;
@@ -41,12 +43,22 @@
 
   const sections = $derived.by(() => {
     const list: InspectorSection[] = [];
+    if (cell.note && cell.note.label !== 'You wear')
+      list.push({ label: cell.note.label, body: noteLine, testid: 'bis-detail-repick' });
     if (cell.worn) list.push({ label: 'You wear', body: worn, testid: 'bis-detail-worn' });
     if (source) list.push({ label: 'Where to get it', body: where, testid: 'bis-detail-source' });
     if (pickRows.length > 1)
-      list.push({ label: `Runners-up · ${unit} against the pick`, body: runners, testid: 'bis-detail-runners' });
+      list.push({
+        label: `Runners-up · ${unit} against the pick`,
+        body: runners,
+        testid: 'bis-detail-runners',
+      });
     if (row?.ranking && row.ranking.length > 0)
-      list.push({ label: `Trinkets ranked · ${unit} against the pick`, body: ranking, testid: 'bis-detail-ranking' });
+      list.push({
+        label: `Trinkets ranked · ${unit} against the pick`,
+        body: ranking,
+        testid: 'bis-detail-ranking',
+      });
     return list;
   });
 </script>
@@ -61,13 +73,30 @@
       >{item?.name ?? `Item ${entry.id}`}</span
     >
     <span class="bis-detail-gap">{tag}</span>
-    {#if row?.sources[entry.id]}<span class="bis-detail-src text-muted">{row.sources[entry.id]!.line}</span>{/if}
+    {#if row?.sources[entry.id]}<span class="bis-detail-src text-muted">{row.sources[entry.id]!.line}</span
+      >{/if}
   </li>
 {/snippet}
 
 {#snippet worn()}
   {#if cell.worn}
-    <ul class="bis-detail-list">{@render candidate({ id: cell.worn.id, delta: 0 }, cell.gain?.value ?? '')}</ul>
+    <ul class="bis-detail-list">
+      {@render candidate({ id: cell.worn.id, delta: 0 }, cell.gain?.value ?? '')}
+    </ul>
+  {/if}
+  {#if cell.note?.label === 'You wear'}{@render noteLine()}{/if}
+{/snippet}
+
+{#snippet noteLine()}
+  {#if cell.note}
+    <p class="bis-detail-note text-muted" data-testid="bis-detail-note">
+      {cell.note.lead}
+      {#if cell.note.item}<span
+          class={rarityClassFor(cell.note.item.quality)}
+          data-bis-item={cell.note.item.id}>{cell.note.item.name}</span
+        >{/if}
+      {#if cell.note.tail}{cell.note.tail}{/if}
+    </p>
   {/if}
 {/snippet}
 
@@ -91,16 +120,24 @@
 
 {#snippet head()}
   {#if cell.item}
-    <p class={['bis-detail-title', rarityClassFor(cell.item.quality)]} data-bis-item={cell.item.id}>{cell.item.name}</p>
+    <p class={['bis-detail-title', rarityClassFor(cell.item.quality)]} data-bis-item={cell.item.id}>
+      {cell.item.name}
+    </p>
     <p class="bis-detail-text text-muted">
-      {[shown?.ilvl ? `Item level ${shown.ilvl}` : undefined, shortStats(shown?.stats, 6)].filter(Boolean).join(' · ')}
+      {[shown?.ilvl ? `Item level ${shown.ilvl}` : undefined, shortStats(shown?.stats, 6)]
+        .filter(Boolean)
+        .join(' · ')}
     </p>
     {#if row?.enchant}<p class="bis-detail-text" data-testid="bis-detail-enchant">
         <span class="text-muted">Enchant</span> <span class="text-rarity-uncommon">{row.enchant}</span>
       </p>{/if}
     {#if shown?.effect}<p class="bis-detail-text">{shown.effect}</p>{/if}
-    {#if row?.setBonus}<p class="bis-detail-text text-muted" data-testid="bis-row-set-bonus">{row.setBonus}</p>{/if}
-    {#if simHref}<p class="bis-detail-text"><a href={simHref} class="bis-detail-link">Compare in the simulator ›</a></p>{/if}
+    {#if row?.setBonus}<p class="bis-detail-text text-muted" data-testid="bis-row-set-bonus">
+        {row.setBonus}
+      </p>{/if}
+    {#if simHref}<p class="bis-detail-text">
+        <a href={simHref} class="bis-detail-link">Compare in the simulator ›</a>
+      </p>{/if}
   {:else if cell.empty}
     <p class="bis-detail-text">{cell.empty}</p>
   {/if}

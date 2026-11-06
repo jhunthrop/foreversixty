@@ -136,32 +136,36 @@ function levelFlag(required: number | undefined, character: DollCharacter | unde
     : { text: `At ${required}`, tone: 'gold' };
 }
 
-/** Signed out: the pick's lead over its best runner-up (§5.10 item 1). */
-function leadGain(row: BisRowModel, unit: GainUnit): GainFigure {
-  const next = row.alts[0];
-  if (next === undefined) return { value: '—', caption: 'Only option', tone: 'muted' };
-  const lead = -next.delta;
-  if (isTie(lead)) return { value: '=', caption: 'Same as next best', tone: 'muted' };
-  return { value: signedFigure(lead), caption: `${unitWord(unit)} vs next best`, tone: 'strong' };
-}
-
-function gapNote(lead: string, alt: BisCandidate, deps: DollViewDeps): DollNote {
-  return { lead, item: itemRef(alt.id, deps), tail: `${signedFigure(alt.delta)} ${unitWord(deps.unit)}`, tone: 'wipe' };
-}
-
 /**
- * Line 2's lead-out, signed out. A runner-up that ties says nothing here (the gain column already
- * reads "Same as next best"): the line names the nearest alternative that does not tie instead.
+ * Signed out: the pick's lead over its best runner-up, with the runner-up named under it (§5.10
+ * items 1 and 5, option C). A tied runner-up names the nearest alternative that does not tie.
  */
-function nextBestNote(row: BisRowModel, deps: DollViewDeps): DollNote | undefined {
+function leadGain(row: BisRowModel, deps: DollViewDeps): GainFigure {
+  const unit = unitWord(deps.unit);
   const next = row.alts[0];
-  if (next === undefined) return undefined;
-  if (!isTie(next.delta)) return gapNote('Next best:', next, deps);
+  if (next === undefined) return { value: '\u2014', basis: { prefix: 'Only option' }, tone: 'muted' };
+  if (!isTie(next.delta)) {
+    return {
+      value: signedFigure(-next.delta),
+      unit,
+      basis: { prefix: 'vs', item: itemRef(next.id, deps) },
+      tone: 'strong',
+    };
+  }
   const different = row.alts
     .filter((alt) => !isTie(alt.delta))
-    .reduce<BisCandidate | undefined>((best, alt) => (best === undefined || alt.delta > best.delta ? alt : best), undefined);
-  if (different === undefined) return { lead: 'No close alternative', tone: 'muted' };
-  return gapNote('Next different:', different, deps);
+    .reduce<BisCandidate | undefined>(
+      (best, alt) => (best === undefined || alt.delta > best.delta ? alt : best),
+      undefined,
+    );
+  if (different === undefined)
+    return { value: 'Same', basis: { prefix: 'No close alternative' }, tone: 'muted' };
+  return {
+    value: 'Same',
+
+    basis: { prefix: `next: ${signedFigure(different.delta)} vs`, item: itemRef(different.id, deps) },
+    tone: 'muted',
+  };
 }
 
 interface Compare {
@@ -172,17 +176,30 @@ interface Compare {
 }
 
 /** Signed in: the pick against the worn item (§5.10 item 8). Undefined when nothing is worn there. */
-function compareWith(pickId: number, slot: string, character: DollCharacter, deps: DollViewDeps): Compare | undefined {
+function compareWith(
+  pickId: number,
+  slot: string,
+  character: DollCharacter,
+  deps: DollViewDeps,
+): Compare | undefined {
   const wornId = character.worn[slot];
   if (wornId === undefined) return undefined;
   const gain = character.gains[slot];
   const worn = itemRef(wornId, deps);
   if (wornId === pickId || (gain !== null && gain !== undefined && isTie(gain))) {
-    return { gain: { value: 'Worn', caption: 'You have this', tone: 'kill' }, badge: 'worn', worn: undefined, note: undefined };
+    return {
+      gain: { value: 'Worn', basis: { prefix: 'You have this' }, tone: 'kill' },
+      badge: 'worn',
+      worn: undefined,
+      note: undefined,
+    };
   }
   const wornItem = itemOf(wornId, deps);
   const delta = statDelta(itemOf(pickId, deps)?.stats, wornItem?.stats);
-  const facts = [wornItem?.ilvl === undefined ? undefined : `item level ${wornItem.ilvl}`, shortStats(wornItem?.stats, 2)]
+  const facts = [
+    wornItem?.ilvl === undefined ? undefined : `item level ${wornItem.ilvl}`,
+    shortStats(wornItem?.stats, 2),
+  ]
     .filter(Boolean)
     .join(', ');
   const pickLine =
@@ -192,11 +209,17 @@ function compareWith(pickId: number, slot: string, character: DollCharacter, dep
   return {
     gain:
       gain === null || gain === undefined
-        ? { value: '—', caption: 'Not sim-checked', tone: 'muted' }
-        : { value: signedFigure(gain), caption: `${unitWord(deps.unit)} vs your ${worn.name}`, tone: 'gold' },
+        ? { value: '\u2014', basis: { prefix: 'Not sim-checked' }, tone: 'muted' }
+        : {
+            value: signedFigure(gain),
+            unit: unitWord(deps.unit),
+            basis: { prefix: 'vs your', item: worn },
+            tone: 'gold',
+          },
     badge: 'upgrade',
     worn,
     note: {
+      label: 'You wear',
       lead: 'You wear',
       item: worn,
       tail: [facts && `(${facts}).`, pickLine].filter(Boolean).join(' ') || undefined,
@@ -235,8 +258,8 @@ function pickCell(row: BisRowModel, pickId: number, deps: DollViewDeps): DollCel
     stats: shortStats(item?.stats, ROW_STATS),
     source: row.sources[pickId]?.line,
     sourceKind: row.sources[pickId]?.kind,
-    note: compare?.note ?? nextBestNote(row, deps),
-    gain: compare?.gain ?? leadGain(row, deps.unit),
+    note: compare?.note,
+    gain: compare?.gain ?? leadGain(row, deps),
     worn: compare?.worn,
   };
 }
@@ -252,7 +275,12 @@ function emptyCell(row: BisRowModel, deps: DollViewDeps, reason: string | undefi
 }
 
 /** A slot re-picked under the source filter (§5.11): its own gap to the best pick and why. */
-function repickedCell(row: BisRowModel, pick: FilteredPick, choiceLabel: string, deps: DollViewDeps): DollCell {
+function repickedCell(
+  row: BisRowModel,
+  pick: FilteredPick,
+  choiceLabel: string,
+  deps: DollViewDeps,
+): DollCell {
   const item = itemOf(pick.item_id, deps);
   const best = row.id === undefined ? undefined : itemRef(row.id, deps);
   const bestKind = row.id === undefined ? undefined : row.sources[row.id]?.kind;
@@ -269,14 +297,20 @@ function repickedCell(row: BisRowModel, pick: FilteredPick, choiceLabel: string,
       best === undefined
         ? undefined
         : {
+            label: 'Re-picked',
             lead: `Re-picked (${choiceLabel}). Best overall:`,
             item: best,
             tail: `(${kindWord(bestKind)})${isTie(gap) ? ', same ' + unitWord(deps.unit) : `, ${signedFigure(gap)} ${unitWord(deps.unit)}`}.`,
             tone: 'muted',
           },
     gain: isTie(gap)
-      ? { value: '=', caption: 'Same as the best pick', tone: 'muted' }
-      : { value: signedFigure(-gap), caption: `${unitWord(deps.unit)} vs the best pick`, tone: 'wipe' },
+      ? { value: 'Same', basis: best && { prefix: 'as', item: best }, tone: 'muted' }
+      : {
+          value: signedFigure(-gap),
+          unit: unitWord(deps.unit),
+          basis: best && { prefix: 'vs best:', item: best },
+          tone: 'wipe',
+        },
   };
 }
 
@@ -334,7 +368,9 @@ function cappedSlot(row: BisRowModel, cap: 'friendly'): BisRowModel['filter'] {
     else byKind.rep = kept;
   }
   if (!pickCapped) return { ...filter, by_kind: byKind };
-  return rest.length > 0 ? { ...filter, kinds: rest, by_kind: byKind } : { ...filter, item_id: 0, by_kind: byKind };
+  return rest.length > 0
+    ? { ...filter, kinds: rest, by_kind: byKind }
+    : { ...filter, item_id: 0, by_kind: byKind };
 }
 
 /** Every row's answer under a source choice; empty when every kind is on (the published set). */
@@ -419,7 +455,17 @@ export interface WhereGroup {
   slots: string[];
 }
 
-const GROUP_ORDER: readonly string[] = ['dungeon', 'raid', 'crafted', 'rep', 'quest', 'vendor', 'world', 'pvp', 'other'];
+const GROUP_ORDER: readonly string[] = [
+  'dungeon',
+  'raid',
+  'crafted',
+  'rep',
+  'quest',
+  'vendor',
+  'world',
+  'pvp',
+  'other',
+];
 const GROUP_KIND: Readonly<Record<string, string>> = {
   dungeon: 'dungeon',
   raid: 'raid',
@@ -449,7 +495,8 @@ export function whereGroups(model: BisBandModel, cells: readonly DollCell[]): Wh
     if (cell.item === null) continue;
     const info = rows.get(cell.slot)?.sources[cell.item.id];
     const kind = GROUP_KIND[info?.kind ?? ''] ?? 'other';
-    const place = kind === 'dungeon' || kind === 'raid' || kind === 'crafted' || kind === 'rep' ? info?.place : undefined;
+    const place =
+      kind === 'dungeon' || kind === 'raid' || kind === 'crafted' || kind === 'rep' ? info?.place : undefined;
     const key = place === undefined ? kind : `${kind}:${place}`;
     const title =
       place === undefined

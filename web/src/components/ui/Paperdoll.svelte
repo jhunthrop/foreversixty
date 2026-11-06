@@ -12,6 +12,7 @@
   import type { Snippet } from 'svelte';
   import { onMount } from 'svelte';
   import { rarityClassFor } from '../../lib/planner/items';
+  import { basisText } from '../../lib/ui/primitives';
   import {
     defaultSelection,
     dollColumns,
@@ -148,7 +149,8 @@
             data-bis-item={cell.unknown ? undefined : cell.item.id}
             data-testid={`item-hover-${cell.item.id}`}>{cell.item.name}</span
           >
-          {#if cell.stats}<span class="ui-doll-stats text-muted text-[13px] leading-5">{cell.stats}</span>{/if}
+          {#if cell.stats}<span class="ui-doll-stats text-muted text-[13px] leading-5">{cell.stats}</span
+            >{/if}
         {:else}
           <span class="text-muted text-[15px] leading-5">Nothing better yet</span>
         {/if}
@@ -159,22 +161,6 @@
         {:else}
           {#if cell.source}<span class="ui-doll-src" data-source-kind={cell.sourceKind}>{cell.source}</span
             >{/if}
-          {#if cell.note}
-            <span class="ui-doll-note" data-testid={`${testid}-note-${cell.slot}`}>
-              {cell.note.lead}
-              {#if cell.note.item}<span
-                  class="font-semibold {rarityClassFor(cell.note.item.quality)}"
-                  data-bis-item={cell.note.item.id}>{cell.note.item.name}</span
-                >{/if}
-              {#if cell.note.tail}<span
-                  class={cell.note.tone === 'wipe'
-                    ? 'text-wipe'
-                    : cell.note.tone === 'kill'
-                      ? 'text-kill'
-                      : ''}>{cell.note.tail}</span
-                >{/if}
-            </span>
-          {/if}
         {/if}
       </span>
     </span>
@@ -185,13 +171,28 @@
         </span>
       {/if}
       {#if cell.gain}
-        <Figure
-          value={cell.gain.value}
-          caption={cell.gain.caption}
-          tone={cell.gain.tone ?? 'strong'}
-          size="sm"
-          align="end"
-        />
+        <span class="ui-doll-figure">
+          <Figure
+            value={cell.gain.value}
+            unit={cell.gain.unit}
+            caption={cell.gain.basis ? undefined : cell.gain.caption}
+            tone={cell.gain.tone ?? 'strong'}
+            size="sm"
+            align="end"
+          />
+          {#if cell.gain.basis}
+            <span
+              class="ui-doll-basis"
+              title={basisText(cell.gain.basis)}
+              data-testid={`${testid}-basis-${cell.slot}`}
+              >{cell.gain.basis.prefix}{#if cell.gain.basis.item}
+                <span
+                  class={rarityClassFor(cell.gain.basis.item.quality)}
+                  data-bis-item={cell.gain.basis.item.id}>{cell.gain.basis.item.name}</span
+                >{/if}</span
+            >
+          {/if}
+        </span>
       {/if}
     </span>
   </div>
@@ -346,14 +347,31 @@
   .ui-doll-line2 {
     overflow-wrap: anywhere;
   }
-  .ui-doll-note::before {
-    content: ' · ';
-  }
   .ui-doll-gain {
     display: flex;
     align-items: center;
     gap: 10px;
     justify-self: end;
+    min-width: 0;
+  }
+  /* The gain column (option C): the figure, then what it is against on one line that may
+     ellipsize, its full words in the title. The cheapest width on the row. */
+  .ui-doll-figure {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: var(--doll-gain-w, 168px);
+    min-width: 0;
+  }
+  .ui-doll-basis {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-muted);
+    text-align: right;
   }
   .ui-doll-inline {
     border-bottom: 1px solid var(--color-line-soft);
@@ -395,6 +413,9 @@
     .ui-doll-gain {
       grid-column: 3;
       grid-row: 2;
+    }
+    .ui-doll-figure {
+      width: 112px;
     }
   }
   @media (min-width: 1024px) {

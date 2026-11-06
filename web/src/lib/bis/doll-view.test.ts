@@ -35,7 +35,11 @@ const ROW: BisRowModel = {
   alts: [{ id: 2, delta: -1.52 }],
   sources: {
     1: { line: 'Crafted · Leatherworking', kind: 'crafted', place: 'Leatherworking' },
-    2: { line: 'Lady Anacondra · Wailing Caverns (levels 17-24) · 40% drop', kind: 'dungeon', place: 'Wailing Caverns' },
+    2: {
+      line: 'Lady Anacondra · Wailing Caverns (levels 17-24) · 40% drop',
+      kind: 'dungeon',
+      place: 'Wailing Caverns',
+    },
   },
   filter: {
     slot: 'head',
@@ -65,7 +69,9 @@ describe('isTie', () => {
 
 describe('shortStats and statDelta', () => {
   it('abbreviates the first three stats in order', () => {
-    expect(shortStats({ stamina: 10, agility: 8, spirit: 2, intellect: 1 })).toBe('+10 Sta · +8 Agi · +2 Spi');
+    expect(shortStats({ stamina: 10, agility: 8, spirit: 2, intellect: 1 })).toBe(
+      '+10 Sta · +8 Agi · +2 Spi',
+    );
     expect(shortStats({})).toBeUndefined();
   });
 
@@ -77,11 +83,13 @@ describe('shortStats and statDelta', () => {
 describe('dollCellFor, signed out', () => {
   const cell = dollCellFor(ROW, OUT);
 
-  it('reads the gain in plain units against the next best, and names it on line 2', () => {
-    expect(cell.gain).toEqual({ value: '+1.5', caption: 'DPS vs next best', tone: 'strong' });
-    expect(cell.note?.lead).toBe('Next best:');
-    expect(cell.note?.item?.name).toBe("Trapper's Leather Hood");
-    expect(cell.note?.tail).toBe('−1.5 DPS');
+  it('reads the gain in plain units and names the next best under it, leaving line 2 to the source', () => {
+    expect(cell.gain?.value).toBe('+1.5');
+    expect(cell.gain?.unit).toBe('DPS');
+    expect(cell.gain?.tone).toBe('strong');
+    expect(cell.gain?.basis?.prefix).toBe('vs');
+    expect(cell.gain?.basis?.item?.name).toBe("Trapper's Leather Hood");
+    expect(cell.note).toBeUndefined();
   });
 
   it('flags the required level and carries the short stats and full source', () => {
@@ -92,35 +100,59 @@ describe('dollCellFor, signed out', () => {
 
   it('says "Same as next best", never "Tie"', () => {
     const tie = dollCellFor({ ...ROW, alts: [{ id: 2, delta: -0.02 }] }, OUT);
-    expect(tie.gain).toEqual({ value: '=', caption: 'Same as next best', tone: 'muted' });
+    expect(tie.gain?.value).toBe('Same');
     expect(JSON.stringify(tie)).not.toMatch(/\bTie\b/);
   });
 
-  it('drops a tied next best from line 2 and names the nearest alternative that does not tie', () => {
+  it('names the nearest alternative that does not tie when the runner-up ties', () => {
     const tie = dollCellFor(
-      { ...ROW, alts: [{ id: 2, delta: -0.02 }, { id: 3, delta: -0.04 }, { id: 4, delta: -1.1 }, { id: 5, delta: -0.4 }] },
+      {
+        ...ROW,
+        alts: [
+          { id: 2, delta: -0.02 },
+          { id: 3, delta: -0.04 },
+          { id: 4, delta: -1.1 },
+          { id: 5, delta: -0.4 },
+        ],
+      },
       OUT,
     );
-    expect(tie.note).toEqual({
-      lead: 'Next different:',
+    expect(tie.gain?.basis).toEqual({
+      prefix: 'next: −0.4 vs',
       item: { id: 5, name: 'Item 5', quality: 1, icon: undefined },
-      tail: '−0.4 DPS',
-      tone: 'wipe',
     });
-    expect(JSON.stringify(tie.note)).not.toContain("Trapper's Leather Hood");
+    expect(JSON.stringify(tie.gain)).not.toContain("Trapper's Leather Hood");
   });
 
   it('keeps the gap of the next different in the band unit', () => {
-    const tie = dollCellFor({ ...ROW, alts: [{ id: 2, delta: 0 }, { id: 4, delta: -2.25 }] }, { ...OUT, unit: 'score' });
-    expect(tie.note?.item?.name).toBe("Serpent's Shoulders");
-    expect(tie.note?.tail).toBe('−2.3 score');
-    expect(tie.gain?.caption).toBe('Same as next best');
+    const tie = dollCellFor(
+      {
+        ...ROW,
+        alts: [
+          { id: 2, delta: 0 },
+          { id: 4, delta: -2.25 },
+        ],
+      },
+      { ...OUT, unit: 'score' },
+    );
+    expect(tie.gain?.basis?.item?.name).toBe("Serpent's Shoulders");
+    expect(tie.gain?.basis?.prefix).toBe('next: −2.3 vs');
+    expect(tie.gain?.value).toBe('Same');
   });
 
   it('says "No close alternative" when every runner-up ties', () => {
-    const tie = dollCellFor({ ...ROW, alts: [{ id: 2, delta: -0.01 }, { id: 3, delta: 0.03 }] }, OUT);
-    expect(tie.note).toEqual({ lead: 'No close alternative', tone: 'muted' });
-    expect(tie.gain?.caption).toBe('Same as next best');
+    const tie = dollCellFor(
+      {
+        ...ROW,
+        alts: [
+          { id: 2, delta: -0.01 },
+          { id: 3, delta: 0.03 },
+        ],
+      },
+      OUT,
+    );
+    expect(tie.gain?.basis).toEqual({ prefix: 'No close alternative' });
+    expect(tie.gain?.value).toBe('Same');
   });
 
   it('keeps the row to two stats and leaves the enchant to the detail', () => {
@@ -133,12 +165,19 @@ describe('dollCellFor, signed out', () => {
   });
 
   it('keeps a tank band in its own unit', () => {
-    expect(dollCellFor(ROW, { ...OUT, unit: 'score' }).gain?.caption).toBe('score vs next best');
+    expect(dollCellFor(ROW, { ...OUT, unit: 'score' }).gain?.unit).toBe('score');
   });
 
   it("explains an empty slot with the row's own copy", () => {
     const empty = dollCellFor(
-      { slot: 'trinket1', label: 'Trinket', empty: 'The first comes at 40.', alts: [], sources: {}, filter: { slot: 'trinket1', item_id: 0, source_kind: '' } },
+      {
+        slot: 'trinket1',
+        label: 'Trinket',
+        empty: 'The first comes at 40.',
+        alts: [],
+        sources: {},
+        filter: { slot: 'trinket1', item_id: 0, source_kind: '' },
+      },
       OUT,
     );
     expect(empty.item).toBeNull();
@@ -151,25 +190,34 @@ describe('dollCellFor, signed in', () => {
   const cell = dollCellFor(ROW, { ...OUT, character });
 
   it('compares with the worn item by name, in gold, with its item level and stat delta', () => {
-    expect(cell.gain).toEqual({ value: '+0.8', caption: 'DPS vs your Slime-encrusted Pads', tone: 'gold' });
+    expect(cell.gain?.value).toBe('+0.8');
+    expect(cell.gain?.tone).toBe('gold');
+    expect(cell.gain?.basis?.prefix).toBe('vs your');
+    expect(cell.gain?.basis?.item?.name).toBe('Slime-encrusted Pads');
     expect(cell.badge).toBe('upgrade');
-    expect(cell.note?.lead).toBe('You wear');
-    expect(cell.note?.tail).toBe('(item level 25, +3 Mp5 · +3 Agi). The pick is +0.8 DPS, +10 Sta, +5 Agi, −3 Mp5.');
+    expect(cell.note?.label).toBe('You wear');
+    expect(cell.note?.tail).toBe(
+      '(item level 25, +3 Mp5 · +3 Agi). The pick is +0.8 DPS, +10 Sta, +5 Agi, −3 Mp5.',
+    );
   });
 
   it('flags the level against the character', () => {
     expect(cell.flag).toEqual({ text: 'At 20', tone: 'gold' });
-    expect(dollCellFor(ROW, { ...OUT, character: { ...character, level: 24 } }).flag?.text).toBe('Usable now');
+    expect(dollCellFor(ROW, { ...OUT, character: { ...character, level: 24 } }).flag?.text).toBe(
+      'Usable now',
+    );
   });
 
   it('ticks a slot that already wears the pick', () => {
     const worn = dollCellFor(ROW, { ...OUT, character: { ...character, worn: { head: 1 } } });
     expect(worn.badge).toBe('worn');
-    expect(worn.gain?.caption).toBe('You have this');
+    expect(worn.gain?.basis).toEqual({ prefix: 'You have this' });
   });
 
   it('counts the upgrades and their sum in the summary line', () => {
-    expect(dollSummary([cell], character, 'DPS')).toBe('Felsnap (level 19) has 0 of 1 picks. 1 upgrade, +0.8 DPS available.');
+    expect(dollSummary([cell], character, 'DPS')).toBe(
+      'Felsnap (level 19) has 0 of 1 picks. 1 upgrade, +0.8 DPS available.',
+    );
     expect(dollSummary([cell], undefined, 'DPS')).toBe('1 of 1 slots have a pick at this level.');
     expect(dollSummary([cell], { ...character, gains: { [cell.slot]: null } }, 'DPS')).toBe(
       'Felsnap (level 19) has 0 of 1 picks. 1 upgrade, not sim-checked yet.',
@@ -182,7 +230,10 @@ describe('source filters re-pick, never hide', () => {
     const picks = filteredPicks(MODEL, { on: ['dungeon'] });
     const cells = dollCellsFor(MODEL, OUT, picks, 'dungeon only');
     expect(cells[0]!.item?.id).toBe(2);
-    expect(cells[0]!.gain).toEqual({ value: '−1.5', caption: 'DPS vs the best pick', tone: 'wipe' });
+    expect(cells[0]!.gain?.value).toBe('−1.5');
+    expect(cells[0]!.gain?.tone).toBe('wipe');
+    expect(cells[0]!.gain?.basis?.prefix).toBe('vs best:');
+    expect(cells[0]!.note?.label).toBe('Re-picked');
     expect(cells[0]!.note?.lead).toBe('Re-picked (dungeon only). Best overall:');
     expect(changedCount(MODEL, picks)).toBe(1);
   });
@@ -191,7 +242,9 @@ describe('source filters re-pick, never hide', () => {
     const picks = filteredPicks(MODEL, { on: ['quest'] });
     const cell = dollCellsFor(MODEL, OUT, picks)[1]!;
     expect(cell.item).toBeNull();
-    expect(cell.empty).toMatch(/^No option from the sources you chose\. Best overall: Serpent's Shoulders \(dungeon\)\.$/);
+    expect(cell.empty).toMatch(
+      /^No option from the sources you chose\. Best overall: Serpent's Shoulders \(dungeon\)\.$/,
+    );
   });
 
   it('counts slots with an option per kind', () => {
@@ -204,6 +257,13 @@ describe('whereGroups', () => {
   it('groups by instance first, most pieces first', () => {
     const picks = filteredPicks(MODEL, { on: ['dungeon'] });
     const groups = whereGroups(MODEL, dollCellsFor(MODEL, OUT, picks));
-    expect(groups).toEqual([{ key: 'dungeon:Wailing Caverns', title: 'Wailing Caverns', count: '2 pieces', slots: ['head', 'shoulder'] }]);
+    expect(groups).toEqual([
+      {
+        key: 'dungeon:Wailing Caverns',
+        title: 'Wailing Caverns',
+        count: '2 pieces',
+        slots: ['head', 'shoulder'],
+      },
+    ]);
   });
 });

@@ -13,13 +13,11 @@ const CELLS: DollCell[] = [
     item: { id: 1, name: "Brawler's Leather Hood", quality: 3, icon: 'a' },
     source: 'Crafted · Leatherworking (skill 100)',
     stats: '+10 Sta · +8 Agi',
-    note: {
-      lead: 'Next best:',
-      item: { id: 2, name: "Trapper's Leather Hood", quality: 2 },
-      tail: '−1.5 DPS',
-      tone: 'wipe',
+    gain: {
+      value: '+1.5',
+      unit: 'DPS',
+      basis: { prefix: 'vs', item: { id: 2, name: "Trapper's Leather Hood", quality: 2 } },
     },
-    gain: { value: '+1.5', caption: 'DPS vs next best' },
   },
   {
     slot: 'trinket1',
@@ -38,15 +36,18 @@ function doll(props: Record<string, unknown> = {}): string {
 }
 
 describe('Paperdoll', () => {
-  it('draws each slot as a two-line option: name, then source, stats and next best', () => {
+  it('draws each slot as two lines: name and stats, then the source alone; the next best under the gain', () => {
     const body = doll();
     expect(body).toContain('role="listbox"');
     expect(body).toContain('data-testid="paperdoll-slot-head"');
     expect(body).toContain("Brawler's Leather Hood");
     expect(body).toContain('Crafted · Leatherworking (skill 100)');
     expect(body).toContain('+10 Sta · +8 Agi');
-    expect(body).toContain('Next best:');
-    expect(body).toContain('DPS vs next best');
+    expect(body).toContain('title="vs Trapper\'s Leather Hood"');
+    expect(body).toContain('data-testid="paperdoll-basis-head"');
+    expect(body).toMatch(
+      /ui-doll-line2[^>]*>\s*<span class="ui-doll-src"[^>]*>Crafted · Leatherworking \(skill 100\)<\/span>\s*<\/span>/,
+    );
     expect(body).toContain('Level 20');
   });
 
