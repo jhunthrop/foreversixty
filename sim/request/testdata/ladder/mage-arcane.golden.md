@@ -230,25 +230,18 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ## Violations found in this run
 
 - mage-arcane level=10 kind=unresolved_id action={SpellID: 400588, Tag: 2}
-- mage-arcane level=10 kind=unresolved_id action={SpellID: 400625}
 - mage-arcane level=10 kind=zero_casts spell="Fire Blast" id=2136 authored=10199
 - mage-arcane level=10 kind=zero_casts spell="Fireball" id=143 authored=10151
 - mage-arcane level=20 kind=unresolved_id action={SpellID: 400588, Tag: 2}
-- mage-arcane level=20 kind=unresolved_id action={SpellID: 400625}
 - mage-arcane level=20 kind=zero_casts spell="Fire Blast" id=2137 authored=10199
 - mage-arcane level=20 kind=zero_casts spell="Fireball" id=3140 authored=10151
-- mage-arcane level=30 kind=unresolved_id action={SpellID: 400625}
 - mage-arcane level=30 kind=zero_casts spell="Fire Blast" id=8412 authored=10199
 - mage-arcane level=30 kind=zero_casts spell="Fireball" id=8401 authored=10151
-- mage-arcane level=38 kind=unresolved_id action={SpellID: 400625}
 - mage-arcane level=38 kind=zero_casts spell="Fire Blast" id=8413 authored=10199
 - mage-arcane level=38 kind=zero_casts spell="Fireball" id=8402 authored=10151
-- mage-arcane level=40 kind=unresolved_id action={SpellID: 400625}
 - mage-arcane level=40 kind=zero_casts spell="Fire Blast" id=8413 authored=10199
 - mage-arcane level=40 kind=zero_casts spell="Fireball" id=8402 authored=10151
-- mage-arcane level=50 kind=unresolved_id action={SpellID: 400625}
 - mage-arcane level=50 kind=zero_casts spell="Fire Blast" id=10197 authored=10199
 - mage-arcane level=50 kind=zero_casts spell="Fireball" id=10149 authored=10151
-- mage-arcane level=60 kind=unresolved_id action={SpellID: 400625}
 - mage-arcane level=60 kind=zero_casts spell="Fire Blast" id=10199 authored=10199
 - mage-arcane level=60 kind=zero_casts spell="Fireball" id=10151 authored=10151

@@ -176,17 +176,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - shaman-enhancement level=10 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=10 kind=zero_casts spell="Lightning Bolt" id=529 authored=15208
-- shaman-enhancement level=20 kind=unresolved_id action={SpellID: 16246}
 - shaman-enhancement level=20 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=20 kind=zero_casts spell="Lightning Bolt" id=915 authored=15208
-- shaman-enhancement level=30 kind=unresolved_id action={SpellID: 16246}
 - shaman-enhancement level=30 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=30 kind=zero_casts spell="Lightning Bolt" id=943 authored=15208
-- shaman-enhancement level=38 kind=unresolved_id action={SpellID: 16246}
 - shaman-enhancement level=38 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=38 kind=zero_casts spell="Lightning Bolt" id=10391 authored=15208
-- shaman-enhancement level=40 kind=unresolved_id action={SpellID: 16246}
 - shaman-enhancement level=40 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=40 kind=zero_casts spell="Lightning Bolt" id=10391 authored=15208
-- shaman-enhancement level=50 kind=unresolved_id action={SpellID: 16246}
-- shaman-enhancement level=60 kind=unresolved_id action={SpellID: 16246}
