@@ -1,8 +1,8 @@
 {
-  "notes": "The first raid tier (opens 9 December 2026). size and log_zone are sourced facts: Onyxia's Lair is 40 and the combat log names it \"Onyxia's Lair\"; the other two stay null until the client data names them (tenet 8). opens is the phases.json phase each raid opens with (forever-raid-phases.json patches raid:onyxias-lair to raids-1; Blizzard's What's Next recap names all three for 9 December); a guild can post a raid only on or after that day. Dungeon runs and guild events live in events.json.",
+  "notes": "The first raid tier (opens 9 December 2026). size and log_zone are sourced facts: Blizzard's What's Next recap names Barrow Deeps a 10-player and Hyjal Summit a 20-player raid and Onyxia's Lair is 40; the combat log names Onyxia \"Onyxia's Lair\" and the other two log zones stay null until a log names them (tenet 8). Molten Core is not in this tier: it stays gated with the other Era raids (content-phases.json). opens is the phases.json phase each raid opens with (forever-raid-phases.json patches raid:onyxias-lair to raids-1; Blizzard's What's Next recap names all three for 9 December); a guild can post a raid only on or after that day. Dungeon runs and guild events live in events.json.",
   "zones": [
-    { "key": "raid:barrow-deeps", "name": "Barrow Deeps", "kind": "raid", "size": null, "log_zone": null, "opens": "raids-1" },
-    { "key": "raid:hyjal-summit", "name": "Hyjal Summit", "kind": "raid", "size": null, "log_zone": null, "opens": "raids-1" },
+    { "key": "raid:barrow-deeps", "name": "Barrow Deeps", "kind": "raid", "size": 10, "log_zone": null, "opens": "raids-1" },
+    { "key": "raid:hyjal-summit", "name": "Hyjal Summit", "kind": "raid", "size": 20, "log_zone": null, "opens": "raids-1" },
     { "key": "raid:onyxias-lair", "name": "Onyxia's Lair", "kind": "raid", "size": 40, "log_zone": "Onyxia's Lair", "opens": "raids-1" }
   ]
 }
