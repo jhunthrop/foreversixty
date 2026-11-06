@@ -92,6 +92,35 @@ Feral bear: no change (note text only).
 
 Raid 60 is unchanged for every druid spec: no row at 60 moved and the fork commits carry only APL note text.
 
+## Second pass (re-judging the band-floor rank rows)
+
+All 40 druid rows in `platform-suspect-rank-rows.tsv` (Balance 12, Feral 3, Restoration 25, this round's first-pass rows included) re-judged on int/r24's fixed tool: plain `spec-breakdown -level N -rank id=r` (the talents the player has at level N; a forced rank beats every row), band gear from `$R/bis-frozen`, bare preset, 10,000 iterations, seeds 1 and 50001, night elf and tauren. Levels: each row's floor, +3, +6, +9 and last level; candidates: the row's rank, the ranks either side and the newest rank learned. Then every level of a row that lost, and the levels next to it. "Beyond error" = the gap is more than twice the combined error at both seeds. 1,348 + 176 runs; data in `$R/druid/p2/` (out.tsv, f1.out, f2.out; an.py, cmp.py). Every forced rank was confirmed cast (per-spell ids in the breakdown).
+
+34 rows hold. Six lost beyond error at one or more levels and are fixed (S below). Origin: all six were judged on band-floor talents (the old `-level` kept the band entry's talents), tagged with the round that set the row.
+
+| # | finding | evidence and source | confirmed? | origin | fix sha |
+|---|---|---|---|---|---|
+| P1 | Balance Moonfire rank 2 at 20 to 28 loses at 26 | rank 3 beats rank 2 by 0.26/0.21% (tauren, beyond error) and 0.11/0.05% (night elf, ahead at both seeds) at 26; rank 2 wins by 1.0 to 1.8% at 23 to 25, 27 and 28 | CONFIRMED-BUG | R20 (round 16 row, re-judged round 20) | S 14c33aa48 |
+| P2 | Balance Insect Swarm rank 3 at 54 to 58 loses at 57 and 58 | rank 4 beats rank 3 by 0.34 to 0.59% at 57 and 0.77 to 0.89% at 58, both races; rank 3 still wins at 54 to 56 (night elf beyond error) | CONFIRMED-BUG | old (round 19 row) | S 14c33aa48 |
+| P3 | Restoration tank Rejuvenation rank 2 at 20 to 28 loses at 20 to 22 | rank 1 heals 0.38% more at 20 (tauren; night elf level), 0.39% / 0.08 to 0.11% more at 21, 0.2% more at 22 (night elf; tauren level); rank 2 wins from 23 (+0.04% tauren) to 28 (+0.3 to 0.7%) | CONFIRMED-BUG | R20 (round 16 row, re-judged round 20) | S 14c33aa48 |
+| P4 | Restoration party Rejuvenation rank 1 at 17 to 26 loses at 25 (Alliance) and 26 | rank 2 heals 0.26/0.29% more at 25 for a night elf, 0.25% less for a tauren (a race split), and 0.09 to 0.17% more at 26 for both; rank 1 still wins at 17 to 24 (a night elf level at 24) | CONFIRMED-BUG | R24 (this round's first pass extended the row from 17) on a round-20 row | S 14c33aa48 |
+| P5 | Restoration Healing Touch rank 2 at 14 to 16 loses for a night elf | rank 1 heals 0.06/0.12% more at 14 and 0.58/0.62% more at 16 (beyond error), level at 15; a tauren heals 1.0 to 2.6% more with rank 2 | CONFIRMED-BUG | R24 (this round's first pass) | S 14c33aa48 |
+| P6 | Restoration Healing Touch rank 6 at 46 to 49 loses at 49 | the top rank (8) beats rank 6 by 0.10/0.11% for a night elf (beyond error) and 0.07/0.08% for a tauren at 49; rank 6 wins at 47, ties at 48 | CONFIRMED-BUG | old (round 19 row) | S 14c33aa48 |
+
+New rows (data/curated/rank-choices.json, `make rank-choices-sync`):
+- Balance Moonfire: 20-25 rank 2, 26 rank 3, 27-28 rank 2. Insect Swarm: 54-56 rank 3 (rank 4 at 57 and 58 by the default rule).
+- Restoration tank Rejuvenation (9841): 17-22 rank 1, 23-28 rank 2. Party Rejuvenation (8910): 17-24 rank 1; 25 rank 2 for night elf and High-Order Skyborne, rank 1 for tauren and Windshaper Skyborne; 26-29 rank 2. Healing Touch: 14-16 rank 1 for night elf and High-Order Skyborne, rank 2 for tauren and Windshaper Skyborne; 46-48 rank 6 (the top rank from 49).
+- The Skyborne races follow their faction's measured race (the split comes from the faction's band-20 gear); not simmed separately.
+
+Rows that hold (closest margins): Feral Moonfire 16 (night elf rank 1 +0.04/+0.20%, within error); Restoration tank Rejuvenation 29 (tauren rank 3 level); Rejuvenation 43 and 49 (rank 5 within error); Healing Touch 34 (rank 3 within error), 45 (rank 6 level); Balance Wrath 23 and 48 (rank 4 and rank 7 level), Moonfire 29 (rank 2 within error). At every other level judged the row's rank leads, ties within error, or both.
+
+Test first: `TestDruidRankRowsSecondPassRound24` (sim/request/druid_audit_rotation_test.go) failed on the old rows, passes on the new; the older tests that pinned the moved levels (Moonfire 26, Insect Swarm 58, tank Rejuvenation 20, party Rejuvenation 26, Healing Touch 14 to 16 and 49) were updated to the re-judged ranks. Guide text and card notes: balance.md (leveling Moonfire and Insect Swarm ranks), restoration.md (Ranks while leveling, Healing Touch filler, Levels 1 to 19, leveling summary) and the Restoration APL notes (tank and party Rejuvenation, Healing Touch filler) in the site, sim/request and fork copies (E 1a040687b). `_prose.test.ts` passes.
+
+Second-pass notes:
+- Files to regenerate: `data/builds/1.60.1.70790/addon-data.json` (druid-balance and druid-restoration rows and notes).
+- For other lanes: on int/r24 `go test ./rankchoices/` fails on shaman (`TestRoundNineteenShamanRowsByLevel`, Lightning Bolt at 25) and `TestCuratedRankChoicesAreCastableDownranks` fails on paladin-protection Consecration (49, 58), both before this commit. Nothing here moves DPS or healing outside the druid class, and nothing at 60.
+- Logs: api.foreversixty.gg/v1/reports/recent at 08:50 UTC 6 Nov still lists only the 20 Oct report.
+
 ## Files to regenerate
 
 - `data/builds/1.60.1.70790/addon-data.json` (rotations/druid-balance, druid-feral, druid-feral-bear, druid-restoration: new rank rows and note text).
