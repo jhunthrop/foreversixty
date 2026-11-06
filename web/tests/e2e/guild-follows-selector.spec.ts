@@ -6,7 +6,7 @@
 // and your character's own page moves to the newly chosen character. The guild and character
 // addresses are the ones the fixture build prerenders (lib/report/shell-paths.ts).
 import type { Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { buildMockGuildPage } from '../../src/fixtures/guild/mock-guild';
 import {
   armoryPointer,
@@ -16,6 +16,8 @@ import {
   type FixtureCharacter,
   type StoredPointer,
 } from './support/selector';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const LAST_WATCH = { id: 11, name: 'The Last Watch', verified: true };
 const IRON_VANGUARD = { id: 12, name: 'Iron Vanguard', verified: true };

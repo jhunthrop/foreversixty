@@ -9,9 +9,10 @@
      island passes `onchange`. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { controlSummary, type ControlGroup } from '../../lib/ui/primitives';
+  import { checkRadio } from '../../lib/ui/control-bar';
+  import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
   import Glyph from './Glyph.svelte';
-  import Segmented from './Segmented.svelte';
+  import './segmented.css';
   import Select from './Select.svelte';
 
   let {
@@ -45,6 +46,18 @@
   let open = $state(false);
   const line = $derived(summary ?? controlSummary(groups));
 
+  function href(group: ControlGroup, option: ControlOption): string {
+    return option.href ?? `?${new URLSearchParams({ [group.param]: option.value }).toString()}`;
+  }
+
+  function choose(event: MouseEvent, option: ControlOption): void {
+    if (onchange === undefined || option.href !== undefined) return;
+    event.preventDefault();
+    if (option.disabled) return;
+    const change = checkRadio(event.currentTarget as HTMLElement);
+    if (change) onchange(change.param, change.value);
+    open = false;
+  }
 </script>
 
 <div
@@ -77,19 +90,41 @@
             id={`${id}-${group.param}-label`}>{group.label}</span
           >
           {#if group.kind === 'segmented'}
-            <Segmented
-              param={group.param}
-              options={group.options}
-              value={group.value}
-              labelledby={`${id}-${group.param}-label`}
-              fill
-              onchange={onchange === undefined
-                ? undefined
-                : (param, value) => {
-                    onchange(param, value);
-                    open = false;
-                  }}
-            />
+            <div
+              class="ui-seg"
+              role="radiogroup"
+              aria-labelledby={`${id}-${group.param}-label`}
+              data-param={group.param}
+              data-testid={`control-${group.param}`}
+            >
+              {#each group.options as option (option.value)}
+                {@const checked = option.value === group.value}
+                <a
+                  class="ui-seg-item"
+                  role="radio"
+                  href={href(group, option)}
+                  aria-checked={checked}
+                  aria-disabled={option.disabled ? 'true' : undefined}
+                  title={option.disabled ? (option.disabledReason ?? 'No data yet at this level') : undefined}
+                  tabindex={checked ? 0 : -1}
+                  data-value={option.value}
+                  data-navigate={option.href !== undefined ? 'true' : undefined}
+                  data-testid={`control-${group.param}-${option.value}`}
+                  onclick={(event) => choose(event, option)}
+                >
+                  {#if option.icon}<img
+                      src={option.icon}
+                      alt=""
+                      width="22"
+                      height="22"
+                      class="rounded-[4px]"
+                    />{/if}
+                  <span>{option.label}</span>
+                  {#if option.count !== undefined}<span class="ui-seg-count tabular-nums">{option.count}</span
+                    >{/if}
+                </a>
+              {/each}
+            </div>
           {:else}
             <div class="ui-cbar-select" data-param={group.param}>
               <Select
@@ -166,6 +201,7 @@
     gap: 4px;
     min-width: 0;
   }
+
   @media (min-width: 768px) {
     .ui-cbar-inner {
       display: flex;
@@ -193,6 +229,13 @@
     }
     .ui-cbar-label {
       display: none;
+    }
+    .ui-seg {
+      display: inline-flex;
+    }
+    .ui-seg-item {
+      flex: none;
+      height: 40px;
     }
     .ui-cbar-end {
       margin-left: auto;

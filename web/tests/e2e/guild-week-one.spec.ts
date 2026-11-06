@@ -3,7 +3,7 @@
 // Overview and Progression print one set of numbers, the page never prints NaN, a level 58 row has
 // no Nudge and no gear figure, and a healer row never says DPS.
 import type { Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -20,6 +20,8 @@ import type {
   GuildReadinessPage,
   GuildReadinessRow,
 } from '../../src/lib/guild/api';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
 /** Set to capture the spec's acceptance screenshots into a directory. */
@@ -162,6 +164,11 @@ async function stub(page: Page, s: Stub): Promise<void> {
   await page.route('**/v1/rankings/guilds*', (route) => route.fulfill(envelope({ rows: [] })));
 }
 
+/** The Overview's progression line, the meta of its Last raid section, matched whole. */
+function lastRaidLine(page: Page, line: string) {
+  return page.getByTestId('guild-overview-last-raid').getByText(line, { exact: true });
+}
+
 async function capture(page: Page, name: string): Promise<void> {
   if (SHOTS === undefined) return;
   const width = page.viewportSize()?.width ?? 0;
@@ -201,9 +208,8 @@ test.describe('zero logs', () => {
     expect(band.split('is level 52.').length - 1).toBe(1);
     await expect(page.getByTestId('guild-standing-rank')).toHaveCount(0);
     await expect(page.getByTestId('guild-overview-needs')).toHaveCount(0);
-    await expect(page.getByTestId('guild-overview-progression-line')).toHaveText(
-      'No boss down this tier yet.',
-    );
+    // Progression is the Last raid section's one line (web layout spec 7.1).
+    await expect(lastRaidLine(page, 'No boss down this tier yet.')).toBeVisible();
     await capture(page, 'overview-raider-52');
 
     await page.getByRole('tab', { name: 'Progression' }).click();
@@ -255,9 +261,7 @@ test.describe('after a kill', () => {
     const { down, named_encounters: named, pulls_total: pulls } = progression.tier;
     await expect(page.getByTestId('guild-header-facts')).toContainText(`${down} boss down`);
     await expect(page.getByTestId('guild-header-facts')).toContainText(`${pulls} pulls`);
-    await expect(page.getByTestId('guild-overview-progression-line')).toHaveText(
-      `${down} of ${named} named bosses down: Onyxia.`,
-    );
+    await expect(lastRaidLine(page, `${down} of ${named} named bosses down: Onyxia.`)).toBeVisible();
     await capture(page, 'overview-after-kill');
 
     await page.getByRole('tab', { name: 'Progression' }).click();

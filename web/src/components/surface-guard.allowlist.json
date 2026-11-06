@@ -106,7 +106,6 @@
     "components/guild/RaidSignupStrip.svelte": 3,
     "components/guild/RaidYourNight.svelte": 3,
     "components/guild/SignupRow.svelte": 5,
-    "components/guild/SignupSegments.svelte": 4,
     "components/GuildClaim.svelte": 3,
     "components/GuildJoin.svelte": 3,
     "components/GuildLanding.svelte": 3,

@@ -4,6 +4,12 @@
 // reconciliation record). Follows rankings/api.ts's pattern: the shared transport
 // (account/api.ts's requestEnvelope), a module-local error class, and typed reads/writes
 // with no bespoke fetch() call anywhere else in this lane's own code.
+import type {
+  GuildCompTarget,
+  GuildNotSignedRaider,
+  GuildRaidPingState,
+  GuildRoleCounts,
+} from './overview-api';
 import { AccountError, invalidateMe, requestEnvelope, type EnvelopeResult } from '../account/api';
 import { invalidate, query, refetch, setQueryData } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
@@ -886,6 +892,8 @@ export interface GuildRaidCounts {
   ranged?: number;
   /** In plus Late by class slug, one key per class the guild plays (zeros included). */
   classes?: Readonly<Record<string, number>>;
+  /** Late rows by role (the role counts above are In only). */
+  late_groups?: GuildRoleCounts;
 }
 
 /** A row's place in the roster and its catalogue spec (raid comp spec 4.1). Absent from an API
@@ -974,6 +982,37 @@ export interface GuildRaidView extends RaidAttendanceFields {
   discord: GuildRaidDiscord;
   /** `null` while no post is scheduled for this raid. */
   discord_post: GuildRaidDiscordPost | null;
+  /** The buff and debuff cover (D15), catalogue order; `null` for a dungeon or an event,
+   *  absent from older fixtures. */
+  cover?: GuildRaidCoverRow[] | null;
+  /** Seats per role for this raid; `null` for a run with no size (dungeons, events). */
+  comp_target?: GuildCompTarget | null;
+  /** Officers only: raiders with no sign-up, one per account. */
+  not_signed_raiders?: GuildNotSignedRaider[];
+  /** Officers only: the Discord ping's throttle. */
+  ping?: GuildRaidPingState;
+}
+
+/** How a cover row's need is counted: per raid, or per five raiders in melee or at range. */
+export type GuildRaidCoverPer = 'raid' | 'melee_group' | 'caster_group';
+
+/** One buff or debuff of `GuildRaidView.cover` (Go guilds.CoverRow). The provider counts are the
+ *  players signed In, Late and Bench who can provide it; `likely` is how many of the In and Late
+ *  ones count on a talent their sign-up cannot show. `state` reads In plus Late against `need`. */
+export interface GuildRaidCoverRow {
+  key: string;
+  name: string;
+  kind: 'buff' | 'debuff';
+  spell_id: number;
+  /** The icon stem: `/data/{build}/icons/{stem}.webp`. */
+  icon: string;
+  need: number;
+  per: GuildRaidCoverPer;
+  providers_in: number;
+  providers_late: number;
+  providers_bench: number;
+  likely: number;
+  state: 'ok' | 'short' | 'missing';
 }
 
 /** The guild channel as the raid view carries it (raids spec §9): `available` is whether the

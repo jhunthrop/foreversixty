@@ -221,6 +221,9 @@ func (s *Service) raidViews(ctx context.Context, guildID, viewerID int64, raids 
 	if err := s.scopeAttendance(ctx, guildID, viewerID, views); err != nil {
 		return nil, err
 	}
+	if err := s.fillOverview(ctx, guildID, viewerID, views); err != nil {
+		return nil, err
+	}
 	schedules, err := s.Store.SchedulesOf(ctx, raidIDsOf(views))
 	if err != nil {
 		return nil, err

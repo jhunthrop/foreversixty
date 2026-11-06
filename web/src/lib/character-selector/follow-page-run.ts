@@ -5,7 +5,7 @@
 // out of the islands' entry chunks.
 import { fetchMeOnce, type Me } from '../account/api';
 import { parseCurrentCharacter, readCurrentRaw, type CurrentCharacterSwitch } from '../current-character';
-import { characterFollowHref, guildFollowHref, pointerCharacterHref } from './follow-page';
+import { characterFollowHref, guildFollowHref, landingGuildHref, pointerCharacterHref } from './follow-page';
 import { currentGuildOf } from './session-guild';
 
 /** A failed `/v1/me` reads as signed out: the page stays where it is. */
@@ -42,13 +42,14 @@ export async function followGuildPage(
   );
 }
 
-/** The guild landing on load: the current character's guild page when it has one. Answers the
+/** The guild landing on load: the current character's guild page, else the account's only guild (D17). Answers the
  *  session it read (null signed out), so the landing lists the account's guilds from the same
  *  `/v1/me` (guild round 3). */
 export async function openCurrentGuild(): Promise<Me | null> {
-  const raw = readCurrentRaw();
-  await followGuildPage({ previousRaw: raw, nextRaw: raw }, (href) => window.location.replace(href));
-  return sessionOrNull();
+  const me = await sessionOrNull();
+  const href = landingGuildHref(currentGuildOf(me, parseCurrentCharacter(readCurrentRaw())), me);
+  if (href !== null) window.location.replace(href);
+  return me;
 }
 
 /** A character page after a choice of character (`onCurrentCharacterSwitch`). */

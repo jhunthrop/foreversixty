@@ -137,7 +137,7 @@ describe('RaidBandLine controls', () => {
   it('draws the band-size segments for the current character, checked from its own sign-up', () => {
     const body = html({ nextRaid: raid({ own: { character_key: KEY, state: 'late', role: 'dps' } }) });
     expect(body).toContain('data-testid="guild-raid-line-segments"');
-    expect(body).toContain('md:h-9');
+    expect(body).toContain('ui-seg--sm');
     expect(body).toMatch(/aria-checked="true"[^>]*data-testid="guild-raid-line-segments-late"/);
   });
 

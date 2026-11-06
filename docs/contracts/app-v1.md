@@ -338,6 +338,12 @@ pre_done_status, match, night, attendance, report }`.
   character is listed but cannot sign up. When `raid_spec` is null, ask "Which spec tonight?" and
   send the answer as `spec`.
 - `notes_html` is sanitised HTML of `notes`; render the HTML.
+- `cover`: the buff and debuff cover grid (owner decision D15), null for a dungeon or an event.
+  One row per entry of `data/curated/raid-cover.json`, in its order (party buffs, raid buffs,
+  debuffs): `{ key, name, kind, spell_id, icon, need, per, providers_in, providers_late,
+  providers_bench, likely, state }`. `state` is `ok`, `short` or `missing` from In plus Late
+  against `need`; `likely` counts the providers taken on a talent the sign-up cannot show. Draw
+  `icon` as `/data/{build}/icons/{icon}.webp`.
 - **Lane F4 additions** (the app's raid page, spec 2026-10-30-mobile-apps C2; the handler adds
   them after launch, and the apps read each as absent until then):
   - `invite_at`: when invites go out, before `starts_at` (the pull); null when the guild sets none.

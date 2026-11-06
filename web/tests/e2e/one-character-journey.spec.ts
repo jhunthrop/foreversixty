@@ -9,9 +9,11 @@
 // island and the character and guild shells exist only in a build). W11_CAPTURES=<dir> writes a
 // 1280px capture of each stop.
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { API, devLogin, pointerOf, serveShells, signInThroughProxy } from './support/local-stack';
 import { nativeSelect } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const WEB = process.env.W11_WEB ?? 'http://localhost:4331';
 const CAPTURES = process.env.W11_CAPTURES;

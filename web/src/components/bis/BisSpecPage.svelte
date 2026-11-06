@@ -262,15 +262,14 @@
           {/if}
         </p>
         <Segmented
-          param="view"
           label="View"
           options={[
             { value: 'slot', label: 'By slot' },
             { value: 'where', label: 'Where to go' },
           ]}
           value={state.view}
-          onchange={(_, value) => apply({ ...state, view: value === 'where' ? 'where' : 'slot' })}
-          testid="bis-view"
+          onChange={(value) => apply({ ...state, view: value === 'where' ? 'where' : 'slot' })}
+          testid="control-view"
         />
       </div>
       {#if ruleLine}<p class="bis-note" data-testid="bis-default-rule">{ruleLine}</p>{/if}
