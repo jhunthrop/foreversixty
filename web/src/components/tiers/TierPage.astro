@@ -314,8 +314,13 @@ const linkCount = role === 'dps' ? 4 : 3;
     set:html={JSON.stringify(clientConfig)}
   ></script>
   <script>
-    import { mountTierPage } from '../../lib/tiers/tier-client';
-    mountTierPage();
+    // After first paint (lib/after-paint.ts): the lists, both factions and the bar's links work
+    // without it, so its module chain stays out of the first paint's critical path.
+    import { afterPaint } from '../../lib/after-paint';
+
+    afterPaint(() => {
+      void import('../../lib/tiers/tier-client').then((m) => m.mountTierPage());
+    });
   </script>
 </Base>
 

@@ -4,7 +4,7 @@
 // answer in the PageHeader (the visitor's spec, its place and its row marked, or a pointer to
 // the role list that has it). The lists are static HTML; nothing here is needed to read them.
 import type { Faction } from '../bis/types';
-import { onCurrentCharacterChange } from '../current-character';
+import { onCurrentCharacterChange } from '../current-character-events';
 import { afterLoad, hasSessionHint } from '../page-load';
 import { CONTROL_BAR_EVENT, type ControlBarChange } from '../ui/control-bar';
 import { hrefWithFaction } from './tier-controls';
@@ -42,6 +42,13 @@ function readConfig(): ClientConfig | null {
 
 function currentFaction(config: ClientConfig): Faction {
   return document.documentElement.getAttribute(config.factionAttribute) === 'horde' ? 'horde' : 'alliance';
+}
+
+function checkedFaction(config: ClientConfig): Faction | null {
+  const value = document.querySelector<HTMLElement>(
+    `[data-param="${config.factionParam}"] [role="radio"][aria-checked="true"]`,
+  )?.dataset.value;
+  return value === 'horde' || value === 'alliance' ? value : null;
 }
 
 function markRows(key: string | undefined): void {
@@ -150,7 +157,8 @@ export function mountTierPage(): void {
   const config = readConfig();
   if (config === null) return;
   let me: TierMe = { kind: 'none' };
-  applyFaction(config, currentFaction(config));
+  // The bar may have booted first and taken a choice already: its checked radio is the truth.
+  applyFaction(config, checkedFaction(config) ?? currentFaction(config));
   document.addEventListener(CONTROL_BAR_EVENT, (event) => {
     const change = (event as CustomEvent<ControlBarChange>).detail;
     if (change.param !== config.factionParam) return;
