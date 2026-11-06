@@ -81,8 +81,12 @@ type Decoded struct {
 	HasQuests bool
 	// Owned is attunement item id -> worn or in the carried bags (owned=: the Drakefire
 	// Amulet); HasOwned false when the addon predates the section.
-	Owned                map[int]bool
-	HasOwned             bool
+	Owned    map[int]bool
+	HasOwned bool
+	// Drops is the boss corpses the character's loot window read in raids (drops=, drops.go);
+	// HasDrops false when the export carries no such section.
+	Drops                []DropCorpse
+	HasDrops             bool
 	CharacterName, Realm string
 	HasWho               bool
 }
@@ -129,6 +133,7 @@ func Decode(export string) (Decoded, bool) {
 		Keyring:     []int{},
 		Quests:      map[int]bool{},
 		Owned:       map[int]bool{},
+		Drops:       []DropCorpse{},
 	}
 
 	for _, section := range pipes[1:] {
@@ -147,6 +152,8 @@ func Decode(export string) (Decoded, bool) {
 			d.Bags, d.HasBags = parseBagItemIDs(field), true
 		case "bank":
 			d.Bank = parseBagItemIDs(field)
+		case "drops":
+			d.Drops, d.HasDrops = parseDrops(field), true
 		default:
 			d.decodePrep(name, field)
 		}
