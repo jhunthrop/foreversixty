@@ -57609,15 +57609,15 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 253949,
+              "item_id": 252507,
               "source_kind": "crafted",
-              "source": "Tailoring",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252507,
+                  "item_id": 253949,
                   "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "source": "Tailoring"
                 },
                 {
                   "item_id": 252506,
@@ -57687,9 +57687,9 @@
                   "source": "The Deadmines: Edwin VanCleef"
                 },
                 {
-                  "item_id": 2034,
-                  "source_kind": "dungeon",
-                  "source": "Blackfathom Deeps: Twilight Acolyte"
+                  "item_id": 252493,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -57712,15 +57712,15 @@
               ]
             },
             "hands": {
-              "item_id": 253913,
+              "item_id": 252499,
               "source_kind": "crafted",
-              "source": "Tailoring",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252499,
+                  "item_id": 253913,
                   "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "source": "Tailoring"
                 },
                 {
                   "item_id": 12977,
@@ -57790,9 +57790,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1449,
-                  "source_kind": "quest",
-                  "source": "WANTED: Chok'sul"
+                  "item_id": 20431,
+                  "source_kind": "rep",
+                  "source": "Silverwing Sentinels"
                 },
                 {
                   "item_id": 1156,
@@ -57802,15 +57802,15 @@
               ]
             },
             "finger2": {
-              "item_id": 20431,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
+              "item_id": 1449,
+              "source_kind": "quest",
+              "source": "WANTED: Chok'sul",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1449,
-                  "source_kind": "quest",
-                  "source": "WANTED: Chok'sul"
+                  "item_id": 20431,
+                  "source_kind": "rep",
+                  "source": "Silverwing Sentinels"
                 },
                 {
                   "item_id": 1156,
@@ -57871,15 +57871,15 @@
               ]
             },
             "shoulder": {
-              "item_id": 12998,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
+              "item_id": 5404,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lady Anacondra",
+              "chance": 0.4,
               "alternatives": [
                 {
-                  "item_id": 5404,
-                  "source_kind": "dungeon",
-                  "source": "Wailing Caverns: Lady Anacondra"
+                  "item_id": 12998,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 4315,
@@ -57918,22 +57918,22 @@
                   "source": "The Deadmines: Edwin VanCleef"
                 },
                 {
-                  "item_id": 2034,
-                  "source_kind": "dungeon",
-                  "source": "Blackfathom Deeps: Twilight Acolyte"
+                  "item_id": 252493,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
             "wrist": {
-              "item_id": 1974,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep",
+              "item_id": 12999,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12999,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 1974,
+                  "source_kind": "dungeon",
+                  "source": "Shadowfang Keep"
                 },
                 {
                   "item_id": 14148,
@@ -58026,9 +58026,9 @@
                   "source": "The Deadmines: Gilnid"
                 },
                 {
-                  "item_id": 281673,
-                  "source_kind": "quest",
-                  "source": "The Offering of Blood"
+                  "item_id": 12054,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -58044,9 +58044,9 @@
                   "source": "The Deadmines: Gilnid"
                 },
                 {
-                  "item_id": 281673,
-                  "source_kind": "quest",
-                  "source": "The Offering of Blood"
+                  "item_id": 12054,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -58072,27 +58072,27 @@
         },
         "new_at_band": {
           "alliance": [
-            253949,
+            252507,
             277203,
             5404,
             20428,
             6465,
             12999,
-            253913,
+            252499,
             253925,
             252503,
             252444,
             12996,
-            20431,
+            1449,
             2042
           ],
           "horde": [
             253949,
             281265,
-            12998,
+            5404,
             20427,
             6465,
-            1974,
+            12999,
             253913,
             253925,
             252503,
@@ -58104,9 +58104,9 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 0.702,
-          "spirit": 1.744,
-          "mp5": 1.987,
+          "intellect": 0.665,
+          "spirit": 1.68,
+          "mp5": 1.94,
           "crit": 0.043
         }
       },
@@ -87270,14 +87270,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6461,
-                  "source_kind": "dungeon",
-                  "source": "Wailing Caverns: Mutanus the Devourer"
-                },
-                {
                   "item_id": 4315,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 6461,
+                  "source_kind": "dungeon",
+                  "source": "Wailing Caverns: Mutanus the Devourer"
                 }
               ]
             },
@@ -87342,14 +87342,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 5970,
+                  "source_kind": "dungeon",
+                  "source": "Wailing Caverns: Lord Serpentis"
+                },
+                {
                   "item_id": 892,
                   "source_kind": "world",
                   "source": "Mosshide Mistweaver"
-                },
-                {
-                  "item_id": 12977,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -87555,14 +87555,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6465,
-                  "source_kind": "dungeon",
-                  "source": "Wailing Caverns: Lord Cobrahn"
-                },
-                {
                   "item_id": 5202,
                   "source_kind": "dungeon",
                   "source": "The Deadmines: Edwin VanCleef"
+                },
+                {
+                  "item_id": 6465,
+                  "source_kind": "dungeon",
+                  "source": "Wailing Caverns: Lord Cobrahn"
                 }
               ]
             },
@@ -87578,9 +87578,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 15452,
+                  "item_id": 16981,
                   "source_kind": "quest",
-                  "source": "Returning the Lost Satchel"
+                  "source": "Earthen Arise"
                 }
               ]
             },
@@ -87591,14 +87591,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12977,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 5970,
+                  "source_kind": "dungeon",
+                  "source": "Wailing Caverns: Lord Serpentis"
                 },
                 {
-                  "item_id": 3066,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 892,
+                  "source_kind": "world",
+                  "source": "Mosshide Mistweaver"
                 }
               ]
             },
@@ -87614,9 +87614,9 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 2911,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 253885,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -87632,7 +87632,7 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 253939,
+                  "item_id": 10048,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -87663,14 +87663,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1156,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Gilnid"
-                },
-                {
                   "item_id": 281673,
                   "source_kind": "quest",
                   "source": "The Offering of Blood"
+                },
+                {
+                  "item_id": 12053,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -87681,14 +87681,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1156,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Gilnid"
-                },
-                {
                   "item_id": 281673,
                   "source_kind": "quest",
                   "source": "The Offering of Blood"
+                },
+                {
+                  "item_id": 12053,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -87704,9 +87704,9 @@
                   "source": "Blackfathom Deeps"
                 },
                 {
-                  "item_id": 251534,
+                  "item_id": 15443,
                   "source_kind": "quest",
-                  "source": "The Wrath of Rath'mael"
+                  "source": "Hidden Enemies"
                 }
               ]
             },
@@ -87717,14 +87717,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5252,
+                  "item_id": 5240,
                   "source_kind": "quest",
-                  "source": "Beren's Peril"
+                  "source": "The Coastal Menace"
                 },
                 {
-                  "item_id": 5326,
-                  "source_kind": "quest",
-                  "source": "The Escape"
+                  "item_id": 11288,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             }
@@ -87766,10 +87766,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 0.785,
-          "spirit": 0.439,
-          "mp5": 2.23,
-          "crit": 0.051
+          "intellect": 0.7,
+          "spirit": 0.609,
+          "mp5": 2.069,
+          "crit": 0.056
         }
       },
       {
@@ -87914,7 +87914,7 @@
                   "source": "The League of Arathor"
                 },
                 {
-                  "item_id": 253925,
+                  "item_id": 253887,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -87927,12 +87927,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 253999,
+                  "item_id": 253937,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 253937,
+                  "item_id": 253999,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -88022,9 +88022,9 @@
                   "source": "Cleansing the Eye"
                 },
                 {
-                  "item_id": 249394,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 13031,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -88114,9 +88114,9 @@
                   "source": "Blackfathom Deeps: Old Serra'kis"
                 },
                 {
-                  "item_id": 272078,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 15468,
+                  "source_kind": "quest",
+                  "source": "Free at Last"
                 }
               ]
             },
@@ -88199,12 +88199,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 253999,
+                  "item_id": 253937,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 253937,
+                  "item_id": 253999,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -88289,14 +88289,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 249394,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
-                },
-                {
                   "item_id": 13031,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 249394,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -88358,10 +88358,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 0.837,
-          "spirit": 1.139,
-          "mp5": 2.561,
-          "crit": 0.086
+          "intellect": 0.715,
+          "spirit": 1.155,
+          "mp5": 2.499,
+          "crit": 0.087
         }
       },
       {
@@ -88380,9 +88380,9 @@
                   "source": "Scarlet Monastery: High Inquisitor Whitemane"
                 },
                 {
-                  "item_id": 2721,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9429,
+                  "source_kind": "dungeon",
+                  "source": "Uldaman"
                 }
               ]
             },
@@ -88393,14 +88393,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1714,
-                  "source_kind": "dungeon",
-                  "source": "Zul'Farrak: Witch Doctor's Chest"
-                },
-                {
                   "item_id": 7722,
                   "source_kind": "dungeon",
                   "source": "Scarlet Monastery: High Inquisitor Whitemane"
+                },
+                {
+                  "item_id": 10824,
+                  "source_kind": "quest",
+                  "source": "Bring the Light"
                 }
               ]
             },
@@ -88416,7 +88416,7 @@
                   "source": "Scarlet Monastery: Arcanist Doan"
                 },
                 {
-                  "item_id": 7057,
+                  "item_id": 7059,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -88429,14 +88429,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 271922,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
-                },
-                {
                   "item_id": 6901,
                   "source_kind": "dungeon",
                   "source": "Blackfathom Deeps: Old Serra'kis"
+                },
+                {
+                  "item_id": 6789,
+                  "source_kind": "quest",
+                  "source": "Khan Hratha"
                 }
               ]
             },
@@ -88447,32 +88447,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10021,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 4746,
+                  "source_kind": "quest",
+                  "source": "Solution to Doom"
                 },
                 {
-                  "item_id": 7054,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 9623,
+                  "source_kind": "quest",
+                  "source": "The Grand Betrayal"
                 }
               ]
             },
             "wrist": {
-              "item_id": 9448,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Electrocutioner 6000",
-              "chance": 0.4,
+              "item_id": 254019,
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "chance": null,
               "alternatives": [
+                {
+                  "item_id": 9448,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
+                },
                 {
                   "item_id": 1974,
                   "source_kind": "dungeon",
                   "source": "Shadowfang Keep"
-                },
-                {
-                  "item_id": 254019,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
                 }
               ]
             },
@@ -88483,14 +88483,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10011,
+                  "item_id": 254017,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 254017,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 14431,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -88501,14 +88501,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13105,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 10771,
                   "source_kind": "dungeon",
                   "source": "Razorfen Downs: Mordresh Fire Eye"
-                },
-                {
-                  "item_id": 14435,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -88519,21 +88519,21 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 253987,
+                  "item_id": 10010,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 10010,
+                  "item_id": 253987,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
               ]
             },
             "feet": {
-              "item_id": 254001,
-              "source_kind": "crafted",
-              "source": "Tailoring",
+              "item_id": 13100,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
@@ -88542,45 +88542,45 @@
                   "source": "Razorfen Downs"
                 },
                 {
-                  "item_id": 254013,
+                  "item_id": 254001,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
               ]
             },
             "finger1": {
-              "item_id": 19524,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 273031,
-                  "source_kind": "world",
-                  "source": "Arcane Anomaly"
-                },
-                {
-                  "item_id": 281635,
-                  "source_kind": "quest",
-                  "source": "Greater Friend of the Library"
-                }
-              ]
-            },
-            "finger2": {
               "item_id": 9447,
               "source_kind": "dungeon",
               "source": "Gnomeregan: Electrocutioner 6000",
               "chance": 0.4,
               "alternatives": [
                 {
-                  "item_id": 273031,
-                  "source_kind": "world",
-                  "source": "Arcane Anomaly"
+                  "item_id": 5011,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
-                  "item_id": 281635,
-                  "source_kind": "quest",
-                  "source": "Greater Friend of the Library"
+                  "item_id": 13094,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 273031,
+              "source_kind": "world",
+              "source": "Arcane Anomaly",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 13094,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
+                  "item_id": 5011,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -88605,14 +88605,14 @@
               "chance": 0.2,
               "alternatives": [
                 {
-                  "item_id": 873,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 3415,
                   "source_kind": "dungeon",
                   "source": "Blackfathom Deeps"
+                },
+                {
+                  "item_id": 6318,
+                  "source_kind": "dungeon",
+                  "source": "Shadowfang Keep: Odo the Blindwatcher"
                 }
               ]
             },
@@ -88628,9 +88628,9 @@
                   "source": "In the Name of the Light"
                 },
                 {
-                  "item_id": 249395,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 15964,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -88646,9 +88646,9 @@
                   "source": "Arcanic Enigma"
                 },
                 {
-                  "item_id": 16789,
+                  "item_id": 5248,
                   "source_kind": "quest",
-                  "source": "Claim Rackmore's Treasure!"
+                  "source": "Pearl Diving"
                 }
               ]
             }
@@ -88666,9 +88666,9 @@
                   "source": "Scarlet Monastery: High Inquisitor Whitemane"
                 },
                 {
-                  "item_id": 2721,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9429,
+                  "source_kind": "dungeon",
+                  "source": "Uldaman"
                 }
               ]
             },
@@ -88715,9 +88715,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272077,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 6832,
+                  "source_kind": "quest",
+                  "source": "Nothing But The Truth"
                 },
                 {
                   "item_id": 6901,
@@ -88738,9 +88738,9 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 7054,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 4746,
+                  "source_kind": "quest",
+                  "source": "Solution to Doom"
                 }
               ]
             },
@@ -88769,12 +88769,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10011,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 9395,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
-                  "item_id": 254017,
+                  "item_id": 10019,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -88787,12 +88787,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10771,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Downs: Mordresh Fire Eye"
+                  "item_id": 14435,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
-                  "item_id": 14435,
+                  "item_id": 13105,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -88805,12 +88805,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 253987,
+                  "item_id": 10010,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 10010,
+                  "item_id": 253987,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -88823,14 +88823,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13100,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 10578,
                   "source_kind": "dungeon",
                   "source": "Razorfen Downs"
+                },
+                {
+                  "item_id": 13100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -88859,14 +88859,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 5011,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 9447,
                   "source_kind": "dungeon",
                   "source": "Gnomeregan: Electrocutioner 6000"
-                },
-                {
-                  "item_id": 273031,
-                  "source_kind": "world",
-                  "source": "Arcane Anomaly"
                 }
               ]
             },
@@ -88914,9 +88914,9 @@
                   "source": "Enchanting"
                 },
                 {
-                  "item_id": 7749,
-                  "source_kind": "quest",
-                  "source": "Compendium of the Fallen"
+                  "item_id": 15964,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -88927,14 +88927,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 273043,
+                  "source_kind": "world",
+                  "source": "Arcanic Enigma"
+                },
+                {
                   "item_id": 16789,
                   "source_kind": "quest",
                   "source": "Claim Rackmore's Treasure!"
-                },
-                {
-                  "item_id": 6806,
-                  "source_kind": "quest",
-                  "source": "Final Passage"
                 }
               ]
             }
@@ -88947,11 +88947,11 @@
             19507,
             19532,
             10020,
+            254019,
             10019,
             254037,
             9407,
-            19524,
-            9447,
+            13100,
             1713,
             271905,
             7721,
@@ -88978,10 +88978,11 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.445,
-          "spirit": 1.282,
-          "mp5": 3.723,
-          "crit": 0.402
+          "intellect": 1.687,
+          "spirit": 2.653,
+          "mp5": 4.469,
+          "crit": 0.499,
+          "spell_haste": 4.567
         }
       },
       {
@@ -89000,27 +89001,27 @@
                   "source": "PvP reward · Alliance"
                 },
                 {
-                  "item_id": 10751,
-                  "source_kind": "quest",
-                  "source": "The God Hakkar"
+                  "item_id": 13102,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
             "neck": {
-              "item_id": 13085,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 10769,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Mordresh Fire Eye",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 11196,
-                  "source_kind": "quest",
-                  "source": "Tremors of the Earth"
-                },
                 {
                   "item_id": 17707,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
+                },
+                {
+                  "item_id": 13085,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -89043,38 +89044,38 @@
               ]
             },
             "back": {
-              "item_id": 11623,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "item_id": 19531,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19532,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 11623,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: High Interrogator Gerstahn "
                 },
                 {
-                  "item_id": 271921,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
+                  "item_id": 10802,
+                  "source_kind": "dungeon",
+                  "source": "Sunken Temple: Spawn of Hakkar"
                 }
               ]
             },
             "chest": {
-              "item_id": 10020,
+              "item_id": 14141,
               "source_kind": "crafted",
               "source": "Tailoring",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 220892,
-                  "source_kind": "vendor",
-                  "source": "Captain Dirgehammer"
+                  "item_id": 12462,
+                  "source_kind": "world",
+                  "source": "Avatar of Hakkar"
                 },
                 {
-                  "item_id": 14141,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 10806,
+                  "source_kind": "dungeon",
+                  "source": "Sunken Temple: Jammal'an the Prophet"
                 }
               ]
             },
@@ -89090,9 +89091,9 @@
                   "source": "Blackrock Depths"
                 },
                 {
-                  "item_id": 11469,
-                  "source_kind": "quest",
-                  "source": "The Captain's Chest"
+                  "item_id": 9448,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
@@ -89103,30 +89104,30 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 254075,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 10808,
+                  "source_kind": "dungeon",
+                  "source": "Sunken Temple: Jammal'an the Prophet"
                 },
                 {
-                  "item_id": 13863,
+                  "item_id": 254075,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
               ]
             },
             "waist": {
-              "item_id": 254037,
+              "item_id": 254077,
               "source_kind": "crafted",
               "source": "Tailoring",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12466,
-                  "source_kind": "dungeon",
-                  "source": "Sunken Temple: Morphaz"
+                  "item_id": 254037,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 },
                 {
-                  "item_id": 254077,
+                  "item_id": 254073,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -89144,9 +89145,9 @@
                   "source": "Sunken Temple: Jammal'an the Prophet"
                 },
                 {
-                  "item_id": 9407,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman: Ironaya"
+                  "item_id": 11123,
+                  "source_kind": "quest",
+                  "source": "Jammal'an the Prophet"
                 }
               ]
             },
@@ -89157,39 +89158,39 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 220895,
-                  "source_kind": "vendor",
-                  "source": "PvP reward · Alliance"
+                  "item_id": 13100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
-                  "item_id": 254001,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 17748,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Razorlash"
                 }
               ]
             },
             "finger1": {
-              "item_id": 19523,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
+              "item_id": 5266,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11824,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Ok'thor the Breaker"
+                  "item_id": 11868,
+                  "source_kind": "quest",
+                  "source": "Ogre Head On A Stick = Party"
                 },
                 {
-                  "item_id": 281635,
-                  "source_kind": "quest",
-                  "source": "Greater Friend of the Library"
+                  "item_id": 6440,
+                  "source_kind": "dungeon",
+                  "source": "Zul'Farrak"
                 }
               ]
             },
             "finger2": {
-              "item_id": 5266,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 19523,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
               "chance": null,
               "alternatives": [
                 {
@@ -89211,9 +89212,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11302,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 271903,
+                  "source_kind": "rep",
+                  "source": "Theramore Expeditionary Force"
                 },
                 {
                   "item_id": 18951,
@@ -89223,15 +89224,15 @@
               ]
             },
             "trinket2": {
-              "item_id": 271903,
-              "source_kind": "rep",
-              "source": "Theramore Expeditionary Force",
+              "item_id": 11302,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11302,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 744,
+                  "source_kind": "quest",
+                  "source": "Sweet Amber"
                 },
                 {
                   "item_id": 18951,
@@ -89247,9 +89248,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17743,
-                  "source_kind": "quest",
-                  "source": "Corruption of Earth and Seed"
+                  "item_id": 249454,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 },
                 {
                   "item_id": 17710,
@@ -89265,14 +89266,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 273043,
+                  "source_kind": "world",
+                  "source": "Arcanic Enigma"
+                },
+                {
                   "item_id": 13064,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 11860,
-                  "source_kind": "quest",
-                  "source": "Ledger from Tanaris"
                 }
               ]
             }
@@ -89285,14 +89286,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 220899,
-                  "source_kind": "vendor",
-                  "source": "PvP reward · Horde"
-                },
-                {
                   "item_id": 9431,
                   "source_kind": "dungeon",
                   "source": "Uldaman"
+                },
+                {
+                  "item_id": 10751,
+                  "source_kind": "quest",
+                  "source": "The God Hakkar"
                 }
               ]
             },
@@ -89303,14 +89304,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13085,
+                  "item_id": 1315,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 11196,
-                  "source_kind": "quest",
-                  "source": "Broken Alliances"
+                  "item_id": 17707,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Princess Theradras"
                 }
               ]
             },
@@ -89339,14 +89340,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 10843,
+                  "source_kind": "world",
+                  "source": "Avatar of Hakkar"
+                },
+                {
                   "item_id": 11623,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: High Interrogator Gerstahn "
-                },
-                {
-                  "item_id": 19121,
-                  "source_kind": "quest",
-                  "source": "Wanted: Vile Priestess Hexx and Her Minions"
                 }
               ]
             },
@@ -89357,9 +89358,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14141,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 10806,
+                  "source_kind": "dungeon",
+                  "source": "Sunken Temple: Jammal'an the Prophet"
                 },
                 {
                   "item_id": 12462,
@@ -89380,9 +89381,9 @@
                   "source": "Blackrock Depths"
                 },
                 {
-                  "item_id": 11469,
-                  "source_kind": "quest",
-                  "source": "The Captain's Chest"
+                  "item_id": 9448,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
@@ -89393,14 +89394,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19116,
-                  "source_kind": "quest",
-                  "source": "Separation Anxiety"
-                },
-                {
                   "item_id": 254075,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 10808,
+                  "source_kind": "dungeon",
+                  "source": "Sunken Temple: Jammal'an the Prophet"
                 }
               ]
             },
@@ -89416,9 +89417,9 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 12466,
-                  "source_kind": "dungeon",
-                  "source": "Sunken Temple: Morphaz"
+                  "item_id": 254073,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -89429,14 +89430,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13008,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 10807,
                   "source_kind": "dungeon",
                   "source": "Sunken Temple: Jammal'an the Prophet"
-                },
-                {
-                  "item_id": 9407,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman: Ironaya"
                 }
               ]
             },
@@ -89447,14 +89448,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 220900,
-                  "source_kind": "vendor",
-                  "source": "PvP reward · Horde"
+                  "item_id": 10629,
+                  "source_kind": "dungeon",
+                  "source": "Sunken Temple: Atal'ai Warrior"
                 },
                 {
-                  "item_id": 254001,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 13100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -89465,14 +89466,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11824,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Ok'thor the Breaker"
-                },
-                {
                   "item_id": 5266,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 6440,
+                  "source_kind": "dungeon",
+                  "source": "Zul'Farrak"
                 }
               ]
             },
@@ -89483,14 +89484,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 5266,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 6440,
                   "source_kind": "dungeon",
                   "source": "Zul'Farrak"
-                },
-                {
-                  "item_id": 11824,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Ok'thor the Breaker"
                 }
               ]
             },
@@ -89501,14 +89502,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11302,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 18951,
                   "source_kind": "quest",
                   "source": "Look at the Size of It!"
+                },
+                {
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -89519,14 +89520,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11302,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 18951,
                   "source_kind": "quest",
                   "source": "Look at the Size of It!"
+                },
+                {
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -89542,9 +89543,9 @@
                   "source": "Corruption of Earth and Seed"
                 },
                 {
-                  "item_id": 17710,
-                  "source_kind": "dungeon",
-                  "source": "Maraudon: Princess Theradras"
+                  "item_id": 249454,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -89555,9 +89556,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11860,
+                  "item_id": 10704,
                   "source_kind": "quest",
-                  "source": "Ledger from Tanaris"
+                  "source": "Challenge Overlord Mok'Morokk"
                 },
                 {
                   "item_id": 13064,
@@ -89570,16 +89571,17 @@
         },
         "new_at_band": {
           "alliance": [
-            13085,
             254049,
-            11623,
+            19531,
+            14141,
             254061,
             254095,
+            254077,
             11841,
             254093,
-            19523,
             5266,
-            271903,
+            19523,
+            11302,
             812,
             9654
           ],
@@ -89601,10 +89603,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.253,
-          "spirit": 0.883,
-          "mp5": 2.839,
-          "crit": 0.514
+          "intellect": 1.3,
+          "spirit": 2.718,
+          "mp5": 6.029,
+          "crit": 0.393
         }
       },
       {
@@ -89641,9 +89643,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 13960,
+                  "item_id": 18723,
                   "source_kind": "dungeon",
-                  "source": "Scholomance: Kirtonos the Herald"
+                  "source": "Stratholme: Ramstein the Gorger"
                 }
               ]
             },
@@ -89672,14 +89674,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10843,
-                  "source_kind": "world",
-                  "source": "Avatar of Hakkar"
-                },
-                {
                   "item_id": 19530,
                   "source_kind": "rep",
                   "source": "Silverwing Sentinels"
+                },
+                {
+                  "item_id": 10843,
+                  "source_kind": "world",
+                  "source": "Avatar of Hakkar"
                 }
               ]
             },
@@ -89726,22 +89728,22 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 12554,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Princess Moira Bronzebeard "
+                },
+                {
                   "item_id": 275607,
                   "source_kind": "crafted",
                   "source": "Tailoring"
-                },
-                {
-                  "item_id": 16684,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Doctor Theolen Krastinov"
                 }
               ]
             },
             "waist": {
-              "item_id": 16696,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Blackhand Summoner",
-              "chance": 0.0762,
+              "item_id": 272394,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "chance": null,
               "alternatives": [
                 {
                   "item_id": 17609,
@@ -89749,9 +89751,9 @@
                   "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 272394,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 16696,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Blackhand Summoner"
                 }
               ]
             },
@@ -89774,20 +89776,20 @@
               ]
             },
             "feet": {
-              "item_id": 15802,
-              "source_kind": "crafted",
-              "source": "Tailoring",
+              "item_id": 16691,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Maleki the Pallid",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 22247,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Warchief Rend Blackhand"
+                  "item_id": 15802,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 },
                 {
-                  "item_id": 16691,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Maleki the Pallid"
+                  "item_id": 231627,
+                  "source_kind": "vendor",
+                  "source": "PvP reward · Alliance"
                 }
               ]
             },
@@ -89798,9 +89800,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13178,
+                  "item_id": 22334,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Urok Doomhowl"
+                  "source": "Stratholme: Balnazzar"
                 },
                 {
                   "item_id": 13392,
@@ -89810,20 +89812,20 @@
               ]
             },
             "finger2": {
-              "item_id": 22334,
+              "item_id": 13178,
               "source_kind": "dungeon",
-              "source": "Stratholme: Balnazzar",
+              "source": "Blackrock Spire: Urok Doomhowl",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13178,
+                  "item_id": 22334,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Urok Doomhowl"
+                  "source": "Stratholme: Balnazzar"
                 },
                 {
-                  "item_id": 13096,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 13392,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Postmaster Malown"
                 }
               ]
             },
@@ -89839,9 +89841,9 @@
                   "source": "Heroes of Old"
                 },
                 {
-                  "item_id": 271903,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
+                  "item_id": 18951,
+                  "source_kind": "quest",
+                  "source": "Look at the Size of It!"
                 }
               ]
             },
@@ -89857,9 +89859,9 @@
                   "source": "Heroes of Old"
                 },
                 {
-                  "item_id": 271903,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
+                  "item_id": 18951,
+                  "source_kind": "quest",
+                  "source": "Look at the Size of It!"
                 }
               ]
             },
@@ -89875,9 +89877,9 @@
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 },
                 {
-                  "item_id": 2243,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 17743,
+                  "source_kind": "quest",
+                  "source": "Corruption of Earth and Seed"
                 }
               ]
             },
@@ -89888,14 +89890,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 9654,
-                  "source_kind": "quest",
-                  "source": "The Morrow Stone"
-                },
-                {
                   "item_id": 249385,
                   "source_kind": "crafted",
                   "source": "Enchanting"
+                },
+                {
+                  "item_id": 13064,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             }
@@ -89931,9 +89933,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 13960,
+                  "item_id": 18723,
                   "source_kind": "dungeon",
-                  "source": "Scholomance: Kirtonos the Herald"
+                  "source": "Stratholme: Ramstein the Gorger"
                 }
               ]
             },
@@ -89962,14 +89964,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10843,
-                  "source_kind": "world",
-                  "source": "Avatar of Hakkar"
-                },
-                {
                   "item_id": 19526,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
+                },
+                {
+                  "item_id": 10843,
+                  "source_kind": "world",
+                  "source": "Avatar of Hakkar"
                 }
               ]
             },
@@ -90082,15 +90084,15 @@
               ]
             },
             "finger1": {
-              "item_id": 13178,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl",
+              "item_id": 272407,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272068,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 22334,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Balnazzar"
                 },
                 {
                   "item_id": 13392,
@@ -90100,20 +90102,20 @@
               ]
             },
             "finger2": {
-              "item_id": 22334,
+              "item_id": 13178,
               "source_kind": "dungeon",
-              "source": "Stratholme: Balnazzar",
+              "source": "Blackrock Spire: Urok Doomhowl",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 22334,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Balnazzar"
+                },
                 {
                   "item_id": 13392,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Postmaster Malown"
-                },
-                {
-                  "item_id": 272407,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -90129,9 +90131,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 272061,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 18951,
+                  "source_kind": "quest",
+                  "source": "Look at the Size of It!"
                 }
               ]
             },
@@ -90147,9 +90149,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 272061,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 18951,
+                  "source_kind": "quest",
+                  "source": "Look at the Size of It!"
                 }
               ]
             },
@@ -90178,14 +90180,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 273043,
-                  "source_kind": "world",
-                  "source": "Arcanic Enigma"
-                },
-                {
                   "item_id": 13064,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 13938,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
                 }
               ]
             }
@@ -90200,11 +90202,11 @@
             14154,
             16697,
             16692,
-            16696,
+            272394,
             16694,
-            15802,
+            16691,
             272407,
-            22334,
+            13178,
             272439,
             279246
           ],
@@ -90219,8 +90221,8 @@
             272394,
             16694,
             16691,
+            272407,
             13178,
-            22334,
             10659,
             272439,
             279246
@@ -90228,10 +90230,10 @@
         },
         "weights": {
           "healing_power": 1.0,
-          "intellect": 1.601,
-          "spirit": 3.066,
-          "mp5": 6.371,
-          "crit": 0.392
+          "intellect": 1.517,
+          "spirit": 2.679,
+          "mp5": 5.318,
+          "crit": 0.549
         }
       }
     ],
@@ -148671,6 +148673,7 @@
     "5214": "Wand of Eventide",
     "5216": "Umbral Wand",
     "5240": "Torchlight Wand",
+    "5248": "Flash Wand",
     "5249": "Burning Sliver",
     "5252": "Wand of Decay",
     "5266": "Eye of Adaegus",
@@ -148748,6 +148751,7 @@
     "6773": "Kolkar Marauder Chain",
     "6784": "Braced Handguards",
     "6788": "Kolkar Hunter's Belt",
+    "6789": "Ceremonial Centaur Blanket",
     "6790": "Ring of Calm",
     "6802": "Sword of Omen",
     "6806": "Dancing Flame",
@@ -148775,6 +148779,7 @@
     "7054": "Robe of Power",
     "7055": "Crimson Silk Belt",
     "7057": "Green Silken Shoulders",
+    "7059": "Crimson Silk Shoulders",
     "7062": "Crimson Silk Pantaloons",
     "7064": "Crimson Silk Gloves",
     "7065": "Green Silk Armor",
@@ -148976,6 +148981,7 @@
     "10634": "Mindseye Circle",
     "10654": "Jutebraid Gloves",
     "10659": "Shard of the Splithooves",
+    "10704": "Chillnail Splinter",
     "10711": "Dragon's Blood Necklace",
     "10740": "Centurion Legplates",
     "10749": "Avenguard Helm",
@@ -149154,6 +149160,7 @@
     "13100": "Furen's Boots",
     "13101": "Wolfrunner Shoes",
     "13102": "Cassandra's Grace",
+    "13105": "Sutarn's Ring",
     "13106": "Glowing Magical Bracelets",
     "13108": "Tigerstrike Mantle",
     "13110": "Wolffear Harness",
@@ -149242,6 +149249,7 @@
     "14417": "Silksand Tunic",
     "14425": "Silksand Wraps",
     "14429": "Windchaser Cuffs",
+    "14431": "Windchaser Handguards",
     "14432": "Windchaser Amice",
     "14435": "Windchaser Cinch",
     "14502": "Frostbite Girdle",
@@ -149297,6 +149305,7 @@
     "15200": "Senior Sergeant's Insignia",
     "15411": "Mark of Fordring",
     "15413": "Ornate Adamantium Breastplate",
+    "15443": "Kris of Orgrimmar",
     "15444": "Staff of Orgrimmar",
     "15452": "Featherbead Bracers",
     "15468": "Windsong Drape",
@@ -150521,6 +150530,7 @@
     "5214": 25.8,
     "5216": 35.7,
     "5240": 15.8,
+    "5248": 30.4,
     "5249": 32.7,
     "5252": 15.7,
     "5309": 7.8,
@@ -150585,6 +150595,7 @@
     "9680": 25.0,
     "10572": 35.8,
     "10624": 24.5,
+    "10704": 37.1,
     "10750": 35.9,
     "10761": 29.0,
     "10823": 30.0,
@@ -150632,6 +150643,7 @@
     "13937": 58.5,
     "13938": 62.6,
     "14555": 45.4,
+    "15443": 8.0,
     "15444": 11.8,
     "16004": 28.3,
     "16789": 29.7,
