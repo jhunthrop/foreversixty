@@ -135,7 +135,7 @@
   </Card>
 
   <Card glyph="trophy" title={copy.topHeading} body="none" testid="guild-landing-top">
-    <div class="border-line-soft border-t px-5 py-2"><HomeTopGuilds /></div>
+    <div class="border-line-soft border-t px-5 py-2"><HomeTopGuilds emptyAction={false} /></div>
     {#snippet foot()}
       <p id="claim" class="text-muted scroll-mt-24 text-[13px]" data-testid="guild-landing-claim">
         {held === null ? copy.officerLine : copy.holdsClaim(held.name)}
