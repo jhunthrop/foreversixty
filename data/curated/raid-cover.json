@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "label": "Client build 1.60.1.70790: data/builds/1.60.1.70790/trainables/<class>.json (SkillLineAbility trainer and talent rows), talents/<class>.json, spellranks.json and spells.json",
+      "url": "https://wago.tools/db2/SkillLineAbility?build=1.60.1.70790",
+      "kind": "datamined"
+    }
+  ],
+  "notes": "The buff and debuff cover a raid leader checks before the pull (owner decision D15): the guild Overview and the raid planner draw one row per entry, in this order (party buffs, raid buffs, debuffs), each with its spell's own icon. spell_id is the top rank a level 60 Forever player learns from a trainer or a talent (AQ book ranks left out: Battle Shout 11551 not 25289, Strength of Earth 10442 not 25361, Grace of Air 10627 not 25359, Blessing of Might 19838 not 25291, Blessing of Wisdom 19854 not 25290). A provider is a class, optionally a specs.json spec key, optionally a talent by its client name; spell is the id the provider learns when it is not spell_id (a judgement debuff comes from its seal, Demoralizing Roar is the druid's Demoralizing Shout), and the row's icon falls back to it. need: count providers for the raid (per raid), or count for every five raiders signed In or Late who fight in melee (tanks and melee, per melee_group) or at range (ranged and healers, per caster_group), at least count. pool: rows that draw on the same players, filled in this order; a paladin gives one blessing and judges one seal, a warlock keeps one curse up, a shaman holds one air totem. Forever specifics read off the client: Blessing of Kings and Divine Spirit are trainer spells, not talents; paladins and shamans are both factions' (Undead paladins, Dwarf shamans); Curse of the Elements is Forever's 1311680 (all magic resistances and +10% magic damage taken). Left out: Blessing of Salvation and Blessing of Light and Tranquil Air Totem (no trainer or talent row), Curse of Shadow (no spell family), Improved Scorch, Winter's Chill and Shadow Weaving (Forever's talents raise only the caster's own damage), Expose Armor (it does not stack with Sunder Armor, which the warriors keep up), Improved Battle Shout (not a talent in Forever's warrior trees). api/cmd/genraidcover writes the API's Go twin, api/internal/guilds/raids_cover_catalogue.go; raids_cover_catalogue_test.go pins the two together and checks every id against the build; data/pipeline/addonrotation.py adds every spell here to spellicons.json.",
+  "entries": [
+    { "key": "windfury_totem", "name": "Windfury Totem", "kind": "buff", "spell_id": 10614, "need": { "count": 1, "per": "melee_group" }, "pool": "shaman-air", "providers": [{ "class": "shaman" }] },
+    { "key": "grace_of_air_totem", "name": "Grace of Air Totem", "kind": "buff", "spell_id": 10627, "need": { "count": 1, "per": "melee_group" }, "pool": "shaman-air", "providers": [{ "class": "shaman" }] },
+    { "key": "strength_of_earth_totem", "name": "Strength of Earth Totem", "kind": "buff", "spell_id": 10442, "need": { "count": 1, "per": "melee_group" }, "providers": [{ "class": "shaman" }] },
+    { "key": "mana_spring_totem", "name": "Mana Spring Totem", "kind": "buff", "spell_id": 10497, "need": { "count": 1, "per": "caster_group" }, "providers": [{ "class": "shaman" }] },
+    { "key": "battle_shout", "name": "Battle Shout", "kind": "buff", "spell_id": 11551, "need": { "count": 1, "per": "melee_group" }, "providers": [{ "class": "warrior" }] },
+    { "key": "trueshot_aura", "name": "Trueshot Aura", "kind": "buff", "spell_id": 20906, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "hunter", "spec": "hunter-marksmanship", "talent": "Trueshot Aura" }] },
+    { "key": "leader_of_the_pack", "name": "Leader of the Pack", "kind": "buff", "spell_id": 17007, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "druid", "spec": "druid-feral", "talent": "Leader of the Pack" }, { "class": "druid", "spec": "druid-feral-bear", "talent": "Leader of the Pack" }] },
+    { "key": "moonkin_aura", "name": "Moonkin Aura", "kind": "buff", "spell_id": 24858, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "druid", "spec": "druid-balance", "talent": "Moonkin Form" }] },
+    { "key": "fortitude", "name": "Power Word: Fortitude", "kind": "buff", "spell_id": 10938, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "priest" }] },
+    { "key": "shadow_protection", "name": "Shadow Protection", "kind": "buff", "spell_id": 10958, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "priest" }] },
+    { "key": "divine_spirit", "name": "Divine Spirit", "kind": "buff", "spell_id": 27841, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "priest" }] },
+    { "key": "arcane_intellect", "name": "Arcane Intellect", "kind": "buff", "spell_id": 10157, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "mage" }] },
+    { "key": "mark_of_the_wild", "name": "Mark of the Wild", "kind": "buff", "spell_id": 9885, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "druid" }] },
+    { "key": "blessing_of_kings", "name": "Blessing of Kings", "kind": "buff", "spell_id": 20217, "need": { "count": 1, "per": "raid" }, "pool": "paladin-blessing", "providers": [{ "class": "paladin" }] },
+    { "key": "blessing_of_might", "name": "Blessing of Might", "kind": "buff", "spell_id": 19838, "need": { "count": 1, "per": "raid" }, "pool": "paladin-blessing", "providers": [{ "class": "paladin" }] },
+    { "key": "blessing_of_wisdom", "name": "Blessing of Wisdom", "kind": "buff", "spell_id": 19854, "need": { "count": 1, "per": "raid" }, "pool": "paladin-blessing", "providers": [{ "class": "paladin" }] },
+    { "key": "sunder_armor", "name": "Sunder Armor", "kind": "debuff", "spell_id": 11597, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "warrior" }] },
+    { "key": "faerie_fire", "name": "Faerie Fire", "kind": "debuff", "spell_id": 9907, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "druid" }] },
+    { "key": "curse_of_recklessness", "name": "Curse of Recklessness", "kind": "debuff", "spell_id": 11717, "need": { "count": 1, "per": "raid" }, "pool": "warlock-curse", "providers": [{ "class": "warlock" }] },
+    { "key": "curse_of_the_elements", "name": "Curse of the Elements", "kind": "debuff", "spell_id": 1311680, "need": { "count": 1, "per": "raid" }, "pool": "warlock-curse", "providers": [{ "class": "warlock" }] },
+    { "key": "demoralizing_shout", "name": "Demoralizing Shout", "kind": "debuff", "spell_id": 11556, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "warrior" }, { "class": "druid", "spell": 9898 }] },
+    { "key": "thunder_clap", "name": "Thunder Clap", "kind": "debuff", "spell_id": 11581, "need": { "count": 1, "per": "raid" }, "providers": [{ "class": "warrior" }] },
+    { "key": "judgement_of_wisdom", "name": "Judgement of Wisdom", "kind": "debuff", "spell_id": 20355, "need": { "count": 1, "per": "raid" }, "pool": "paladin-judgement", "providers": [{ "class": "paladin", "spell": 20357 }] },
+    { "key": "judgement_of_light", "name": "Judgement of Light", "kind": "debuff", "spell_id": 20346, "need": { "count": 1, "per": "raid" }, "pool": "paladin-judgement", "providers": [{ "class": "paladin", "spell": 20349 }] }
+  ]
+}

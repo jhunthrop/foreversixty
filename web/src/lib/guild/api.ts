@@ -962,6 +962,31 @@ export interface GuildRaidView extends RaidAttendanceFields {
   discord: GuildRaidDiscord;
   /** `null` while no post is scheduled for this raid. */
   discord_post: GuildRaidDiscordPost | null;
+  /** The buff and debuff cover (D15), catalogue order; `null` for a dungeon or an event,
+   *  absent from older fixtures. */
+  cover?: GuildRaidCoverRow[] | null;
+}
+
+/** How a cover row's need is counted: per raid, or per five raiders in melee or at range. */
+export type GuildRaidCoverPer = 'raid' | 'melee_group' | 'caster_group';
+
+/** One buff or debuff of `GuildRaidView.cover` (Go guilds.CoverRow). The provider counts are the
+ *  players signed In, Late and Bench who can provide it; `likely` is how many of the In and Late
+ *  ones count on a talent their sign-up cannot show. `state` reads In plus Late against `need`. */
+export interface GuildRaidCoverRow {
+  key: string;
+  name: string;
+  kind: 'buff' | 'debuff';
+  spell_id: number;
+  /** The icon stem: `/data/{build}/icons/{stem}.webp`. */
+  icon: string;
+  need: number;
+  per: GuildRaidCoverPer;
+  providers_in: number;
+  providers_late: number;
+  providers_bench: number;
+  likely: number;
+  state: 'ok' | 'short' | 'missing';
 }
 
 /** The guild channel as the raid view carries it (raids spec §9): `available` is whether the
