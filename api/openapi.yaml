@@ -2432,10 +2432,14 @@ components:
         items:
           type: array
           description: >-
-            In order: level, attunement (only for a run whose zone has a key item), gear_gap,
-            enchants, flask_food, fire_resistance. flask_food and fire_resistance are not_tracked
-            until the addon export carries named consumables and resistance totals. Attunement is
-            ok or not_tracked, never fail: the export lists only gear in bags, never the keyring.
+            In order: level, attunement (only for a run whose zone has a key item or an attunement
+            quest chain: Onyxia's Lair), gear_gap, enchants, flask_food, fire_resistance (only for
+            Onyxia's Lair and Molten Core). Read from the addon export's raid-prep sections
+            (school=, supplies=, locks=, quests=); an export without them reads not_tracked, never
+            fail. flask_food is ok with a flask or raid elixir and buff food in the bags, else fail
+            with missing. fire_resistance is ok whenever read: the total, with no target.
+            Attunement fails only once the export lists the keys carried (locks=) or answers every
+            quest of the chain.
           items:
             type: object
             title: MemberChecklistItem
@@ -2445,7 +2449,7 @@ components:
               state: { type: string, enum: [ok, fail, not_tracked] }
               reason:
                 type: string
-                enum: [no_level, keys_not_in_export, gear_not_shared, no_bis_list, leveling, needs_named_consumables, needs_resistance_totals]
+                enum: [no_level, keys_not_in_export, quests_not_in_export, gear_not_shared, bags_not_shared, no_bis_list, leveling, needs_named_consumables, needs_resistance_totals]
                 description: Why a not_tracked item has no reading.
               level: { type: integer }
               required_level: { type: integer }
@@ -2455,6 +2459,27 @@ components:
               unit: { type: string, enum: [dps] }
               slots: { type: array, items: { type: string }, description: The slots the BiS list names an upgrade for, in its order. }
               missing_slots: { type: array, items: { type: string } }
+              attuned_by:
+                type: string
+                enum: [item, quest]
+                description: An ok attunement's source, the key or chain item carried, or the quest flag.
+              supplies:
+                type: array
+                description: flask_food's counted stacks in the bags, flasks, then elixirs, then food.
+                items: { $ref: '#/components/schemas/SupplyStack' }
+              missing:
+                type: array
+                description: What a failing flask_food lacks.
+                items: { type: string, enum: [flask_or_elixir, food] }
+              resistance: { type: integer, description: fire_resistance's total. }
+    SupplyStack:
+      type: object
+      required: [id, name, kind, count]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        kind: { type: string, enum: [flask, elixir, food] }
+        count: { type: integer }
     ZoneKeyItem:
       type: object
       required: [id, name, quality]
@@ -2561,7 +2586,7 @@ components:
           items:
             type: object
             title: GuildReadinessRow
-            required: [character_key, name, class, spec, consent, level, gear_gap, enchants, consumables, talent_points_unspent, talent_points_read, item_level, item_level_delta, logged_at, failing, synced_before_cutoff, no_export, attuned]
+            required: [character_key, name, class, spec, consent, level, gear_gap, enchants, consumables, talent_points_unspent, talent_points_read, item_level, item_level_delta, logged_at, failing, synced_before_cutoff, no_export, attuned, resistances, flask_food]
             properties:
               character_key: { type: string }
               name: { type: string }
@@ -2603,10 +2628,32 @@ components:
               attuned:
                 type: [boolean, "null"]
                 description: >-
-                  Officers only (null for everyone else): true when the key of the board's raid
-                  (the ?raid= raid, else the next raid) is in the export's bags or worn; null when
-                  the run needs no key or it cannot be read (the export lists only gear in bags,
-                  never the keyring). Never false.
+                  Officers only (null for everyone else): the attunement of the board's raid (the
+                  ?raid= raid, else the next raid), its key carried, banked or worn or its quest
+                  chain done (Onyxia's Lair); false once the export lists the keys carried or
+                  answers the chain's quests and neither shows it; null when the run needs none or
+                  the export cannot say.
+              resistances:
+                type: [object, "null"]
+                title: GuildReadinessResistances
+                description: Officers only. The export's resistance totals at gear consent; null without them.
+                required: [fire, nature, frost, shadow, arcane]
+                properties:
+                  fire: { type: integer }
+                  nature: { type: integer }
+                  frost: { type: integer }
+                  shadow: { type: integer }
+                  arcane: { type: integer }
+              flask_food:
+                type: [object, "null"]
+                title: GuildReadinessFlaskFood
+                description: >-
+                  Officers only. Whether the bags hold a flask or raid elixir and buff food; null
+                  without the bags share or an export that names its consumables.
+                required: [flask_or_elixir, food]
+                properties:
+                  flask_or_elixir: { type: boolean }
+                  food: { type: boolean }
     RaidView:
       type: object
       description: >-
