@@ -136,12 +136,16 @@ async function sectionsKeepGutter(page: Page): Promise<void> {
  * panel's reading order -- head, then neck under it, the right column's hands further down.
  */
 async function gearGridIsOneColumn(page: Page): Promise<void> {
-  const head = await page.getByTestId('paperdoll-slot-head').boundingBox();
-  const hands = await page.getByTestId('paperdoll-slot-hands').boundingBox();
-  const neck = await page.getByTestId('paperdoll-slot-neck').boundingBox();
+  // One read of all three, so a scroll still settling cannot move one between them.
+  const [head, neck, hands] = await page.evaluate(() =>
+    ['head', 'neck', 'hands'].map((slot) => {
+      const box = document.querySelector(`[data-testid="paperdoll-slot-${slot}"]`)?.getBoundingClientRect();
+      return box === undefined ? null : { x: box.x, y: box.y };
+    }),
+  );
   expect(head, 'paperdoll-slot-head missing').not.toBeNull();
-  expect(hands, 'paperdoll-slot-hands missing').not.toBeNull();
   expect(neck, 'paperdoll-slot-neck missing').not.toBeNull();
+  expect(hands, 'paperdoll-slot-hands missing').not.toBeNull();
 
   expect(Math.round(neck!.x), 'neck is not in the head column').toBe(Math.round(head!.x));
   expect(neck!.y, 'neck is not under head').toBeGreaterThan(head!.y);
@@ -227,7 +231,7 @@ test('a signed-in member with an unbuilt character clears 44px on the Paste expo
   await targetsAreBigEnough(page);
 });
 
-test('a loaded character reaches the run button and the DPS figure in one scroll after pressing run, in a two-column gear grid, with no sideways scroll', async ({
+test('a loaded character reaches the run button and the DPS figure in one scroll after pressing run, in a one-column gear grid, with no sideways scroll', async ({
   page,
 }) => {
   await loadFury(page);

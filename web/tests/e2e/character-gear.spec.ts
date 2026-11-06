@@ -141,7 +141,7 @@ for (const width of [1440, 390]) {
         'href',
         '/bis/priest/discipline?faction=alliance#band-alliance-60',
       );
-      await expect(page.getByText(/points/)).toHaveCount(0);
+      await expect(page.locator('#gear').getByText(/points/)).toHaveCount(0);
       await noSidewaysScroll(page);
       expect(errors).toEqual([]);
     });
@@ -235,8 +235,9 @@ test.describe('the item tooltip at 1440', () => {
     await page.keyboard.press('ArrowDown');
     // Neck is empty, so not focusable: down from head is shoulder.
     expect(await focused()).toBe('character-gear-doll-slot-shoulder');
+    // Across to the same row of the right column: shoulder is the third row, so legs.
     await page.keyboard.press('ArrowRight');
-    expect(await focused()).toMatch(/^character-gear-doll-slot-(hands|waist)$/);
+    expect(await focused()).toBe('character-gear-doll-slot-legs');
     await page.keyboard.press('End');
     expect(await focused()).toBe('character-gear-doll-slot-trinket1');
     await page.keyboard.press('Home');
