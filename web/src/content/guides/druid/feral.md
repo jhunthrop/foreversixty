@@ -108,7 +108,7 @@ Enchanting is the one profession your raid set asks for: Molten Heart of the Mou
 
 ### Levels 1 to 19
 
-Until 20 you are a caster: Moonfire from 4, then Wrath. Your mana runs out before a long fight does, so keep the cheap ranks: Wrath and Moonfire rank 1 from 10 to 13, the new Wrath from 14, and Moonfire rank 2 from 16 to 19. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, with Maul and Demoralizing Roar; shift when a pull gets heavy. Bash trains at 14, Swipe at 16.
+Until 20 you are a caster: Moonfire from 4, then Wrath. Your mana runs out before a long fight does, so keep the cheap ranks: Wrath rank 1 at 10 and 11, then rank 2 through 15 even after rank 3 trains at 14; Moonfire rank 1 from 10 to 12 (a Night Elf does a little better with rank 2 at 11), then rank 2 through 19 even after rank 3 trains at 16. Take the newest Wrath at 16. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, with Maul and Demoralizing Roar; shift when a pull gets heavy. Bash trains at 14, Swipe at 16.
 
 Ferocity takes your points from 10 to 14: Maul and Swipe cost 5 less Rage now, Claw and Rake less Energy later. Feral Swiftness at 15 and 16 adds 4% dodge now, and Cat Form run speed once you learn Cat Form at 20, Feral Instinct at 17 adds 10% to Swipe, and Brutal Impact at 18 and 19 makes Bash stun longer and come back 30 seconds sooner.
 
