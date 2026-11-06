@@ -1,8 +1,14 @@
 package main
 
 import (
+	"maps"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/jhunthrop/foreversixty/sim/request"
 )
+
+func slotsEqual(a, b map[string]int) bool { return maps.Equal(a, b) }
 
 // Below the lowest published band (20) there is no entry, so -level 10 to 19
 // runs the band-20 entry at that level on the gear the level can wear: every
@@ -22,17 +28,21 @@ func TestLevelBelowTheLowestBandWearsOnlyWhatTheLevelAllows(t *testing.T) {
 	if req.Character.Level != 12 {
 		t.Fatalf("level = %d, want 12", req.Character.Level)
 	}
-	required, err := itemRequiredLevels(o.repoRoot)
+	build, err := leveling.ReadActiveBuild(o.repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fit, err := request.LoadLevelGear(o.repoRoot, build, o.spec)
 	if err != nil {
 		t.Fatal(err)
 	}
 	for _, g := range req.Character.Gear {
-		if required[g.ItemID] > 12 {
-			t.Errorf("level 12 wears %s %d, which requires %d", g.Slot, g.ItemID, required[g.ItemID])
+		if need := fit.RequiredLevel(g.ItemID); need > 12 {
+			t.Errorf("level 12 wears %s %d, which requires %d", g.Slot, g.ItemID, need)
 		}
 	}
-	if len(req.Character.Gear) >= len(full.Character.Gear) {
-		t.Errorf("level 12 kept %d of the band's %d slots; the band-20 entry has items above 12", len(req.Character.Gear), len(full.Character.Gear))
+	if slotsEqual(slotItems(req.Character.Gear), slotItems(full.Character.Gear)) {
+		t.Error("level 12 wears the band-20 set; it has items above 12")
 	}
 	for _, bad := range []int{9, 30} {
 		o.level = bad
