@@ -22,6 +22,7 @@ import { bisCopy } from './copy';
 import { selectBand } from './presets';
 import { DEFAULT_BIS_ROLE, TANK_ROLE } from './tank-view';
 import { hasKnownSource } from './source-cell';
+import type { InstanceLevels } from './source-line';
 import type {
   BisBand,
   BisFile,
@@ -217,10 +218,22 @@ export function itemDetails(build: string, classSlug: string): Map<number, ItemD
   const parsed = itemsFile<{ items: ({ id: number } & ItemDetail)[] }>(build, classSlug);
   if (parsed === undefined) return new Map();
   return new Map(
-    parsed.items.map(({ id, name, quality, item_level, required_level, icon, stats }) => [
-      id,
-      { name, quality, item_level, required_level, icon, stats },
-    ]),
+    parsed.items.map(
+      ({ id, name, quality, item_level, required_level, icon, stats, bonding, effect_text, two_hand }) => [
+        id,
+        {
+          name,
+          quality,
+          item_level,
+          required_level,
+          icon,
+          stats,
+          ...(bonding ? { bonding } : {}),
+          ...(effect_text ? { effect_text } : {}),
+          ...(two_hand ? { two_hand } : {}),
+        },
+      ],
+    ),
   );
 }
 
@@ -283,6 +296,33 @@ const EMPTY_LOOT: LootFile & LootQuestsFile = { sources: [], quests: {} };
 export function loadLootFile(build: string): LootFile & LootQuestsFile {
   const file = path.join(REPO_ROOT, 'data/builds', build, 'loot.json');
   return existsSync(file) ? readJson<LootFile & LootQuestsFile>(file) : EMPTY_LOOT;
+}
+
+interface CuratedZone {
+  kind?: string;
+  name?: string;
+  min_level?: number;
+  max_level?: number;
+}
+
+const INSTANCE_ZONES_FILE = 'data/curated/raids/events.json';
+
+/** Each dungeon and raid's level range by display name, from the client's dungeon finder rows
+ *  curated in data/curated/raids/events.json. The fallback for a loot.json generated before its
+ *  sources carried `level_min`/`level_max` (source-line.ts prefers the source's own range).
+ *  A missing file or a zone without both levels is left out, never guessed. */
+export function instanceLevels(file = path.join(REPO_ROOT, INSTANCE_ZONES_FILE)): InstanceLevels {
+  if (!existsSync(file)) return new Map();
+  const raw = readJson<{ zones?: CuratedZone[] }>(file);
+  const entries = (raw.zones ?? []).flatMap((zone) =>
+    (zone.kind === 'dungeon' || zone.kind === 'raid') &&
+    zone.name !== undefined &&
+    zone.min_level !== undefined &&
+    zone.max_level !== undefined
+      ? [[zone.name, { min: zone.min_level, max: zone.max_level }] as const]
+      : [],
+  );
+  return new Map(entries);
 }
 
 /** The band immediately before this one in `bandLevels(file)`'s own order (the contract's

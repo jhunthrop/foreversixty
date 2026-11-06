@@ -45,6 +45,12 @@ const PAIR_FIRST: Readonly<Record<string, string>> = {
   off_hand: 'main_hand',
 };
 
+/** The fields of a slot the filter reads. */
+export type FilterableSlot = Pick<
+  BisSlot,
+  'slot' | 'item_id' | 'source_kind' | 'kinds' | 'two_hand' | 'not_with' | 'by_kind'
+>;
+
 /** A slot's answer under a filter. `source`/`source_kind` are absent when it is the pick. */
 export interface FilteredPick {
   item_id: number;
@@ -83,7 +89,7 @@ function usable(entry: BisByKindEntry | undefined, mateId: number | undefined): 
  * (`null` when that slot resolved to nothing).
  */
 export function filteredPick(
-  slot: BisSlot,
+  slot: FilterableSlot,
   allowedKinds: ReadonlySet<SourceFilterKind>,
   mate?: PairMateChoice | null,
 ): FilteredPick | null {
@@ -112,7 +118,7 @@ export function filteredPick(
 
 /** Every slot of a band under a filter, pairs resolved in order (first slot, then second). */
 export function filteredBand(
-  slots: readonly BisSlot[],
+  slots: readonly FilterableSlot[],
   allowedKinds: ReadonlySet<SourceFilterKind>,
 ): Map<string, FilteredPick | null> {
   const out = new Map<string, FilteredPick | null>();

@@ -135,7 +135,7 @@
         }
       },
       {
-        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage. The level 60 build takes two points at 54 and 55, the raid build one at 60.",
+        "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage. The level 60 build takes two points at 54 and 55, the raid build one at 60.",
         "action": {
           "condition": {
             "cmp": {

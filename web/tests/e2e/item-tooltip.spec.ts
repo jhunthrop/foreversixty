@@ -20,7 +20,7 @@ import { expect, test } from './support/test';
  *  fix round 1: real bands now publish alternatives, so the page's own `[data-testid^=
  *  "item-hover-"]` hosts are no longer main picks exclusively). */
 async function rowItemName(row: Locator): Promise<string> {
-  return (await row.locator('.gear-row-name, .gear-row-alt-name').first().innerText()).trim();
+  return (await row.innerText()).trim();
 }
 
 /** The band table the BiS page shows first (the nightly's lowest band, alliance). */
@@ -48,7 +48,7 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     // Hover the name text itself, not the host's own bounding-box centre (fix round 1: a
     // pick's host can carry alternatives below it, so its centre is not a safe hover point
     // to assume).
-    await icon.locator('.gear-row-name, .gear-row-alt-name').first().hover();
+    await icon.hover();
     const tooltip = page.getByTestId('item-tooltip');
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toContainText(itemName);
@@ -66,7 +66,8 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     // The shared host is a client:idle island; it opens for an already-focused row on
     // mount, but waiting for its ready marker keeps this test free of that race entirely.
     await page.locator('html[data-tooltip-host="ready"]').waitFor({ state: 'attached' });
-    const icon = firstVisibleBand(page).locator('[data-testid^="item-hover-"]').first();
+    // The doll is one tab stop: focusing its cell opens the tooltip of the item it holds.
+    const icon = firstVisibleBand(page).locator('[data-doll-slot][tabindex="0"]');
 
     await icon.focus();
     const tooltip = page.getByTestId('item-tooltip');
@@ -88,11 +89,11 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     const secondName = await rowItemName(secondIcon);
     expect(secondName).not.toBe(firstName);
 
-    await firstIcon.locator('.gear-row-name, .gear-row-alt-name').first().hover();
+    await firstIcon.hover();
     await expect(page.getByTestId('item-tooltip')).toBeVisible();
     await expect(page.getByTestId('item-tooltip')).toContainText(firstName);
 
-    await secondIcon.locator('.gear-row-name, .gear-row-alt-name').first().hover();
+    await secondIcon.hover();
     await expect(page.getByTestId('item-tooltip')).toHaveCount(1);
     await expect(page.getByTestId('item-tooltip')).toContainText(secondName);
   });

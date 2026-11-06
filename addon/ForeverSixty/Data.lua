@@ -6926,14 +6926,14 @@ ns.Data = {
 		},
 		["warrior-arms"] = {
 			{ level = 10, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 6673, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6546, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 1715, name = "Hamstring", condition = "Only with a Windfury Totem on you, on a free global, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's extra attack." },
 				{ spellId = 284, name = "Heroic Strike", condition = "Only above 90 rage, so a full bar does not waste what your swings make." },
 			} },
 			{ level = 12, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 5242, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6546, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7384, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -6941,7 +6941,7 @@ ns.Data = {
 				{ spellId = 284, name = "Heroic Strike", condition = "Only above 90 rage, so a full bar does not waste what your swings make." },
 			} },
 			{ level = 16, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 5242, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6546, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7384, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -6949,7 +6949,7 @@ ns.Data = {
 				{ spellId = 285, name = "Heroic Strike", condition = "Only above 90 rage, so a full bar does not waste what your swings make." },
 			} },
 			{ level = 20, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 5242, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6547, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7384, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -6958,7 +6958,7 @@ ns.Data = {
 				{ spellId = 285, name = "Heroic Strike", condition = "Only above 90 rage, so a full bar does not waste what your swings make." },
 			} },
 			{ level = 22, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6547, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7384, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -6967,7 +6967,7 @@ ns.Data = {
 				{ spellId = 285, name = "Heroic Strike", condition = "Only above 90 rage, so a full bar does not waste what your swings make." },
 			} },
 			{ level = 24, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6547, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7384, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -6977,7 +6977,7 @@ ns.Data = {
 				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 90 rage, so a full bar does not waste what your swings make." },
 			} },
 			{ level = 25, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6547, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7384, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -6988,7 +6988,7 @@ ns.Data = {
 				{ spellId = 1608, name = "Heroic Strike", condition = "Only above 90 rage, so a full bar does not waste what your swings make." },
 			} },
 			{ level = 28, lines = {
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6547, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7000,7 +7000,7 @@ ns.Data = {
 			} },
 			{ level = 30, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 6192, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6548, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7012,7 +7012,7 @@ ns.Data = {
 			} },
 			{ level = 32, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11549, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6548, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7024,7 +7024,7 @@ ns.Data = {
 			} },
 			{ level = 38, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11549, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 6548, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7036,7 +7036,7 @@ ns.Data = {
 			} },
 			{ level = 40, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11549, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11572, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7049,7 +7049,7 @@ ns.Data = {
 			} },
 			{ level = 42, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11550, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11572, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 7887, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7062,7 +7062,7 @@ ns.Data = {
 			} },
 			{ level = 44, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11550, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11572, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7075,7 +7075,7 @@ ns.Data = {
 			} },
 			{ level = 46, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11550, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11572, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7088,7 +7088,7 @@ ns.Data = {
 			} },
 			{ level = 48, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11550, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11572, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7101,7 +7101,7 @@ ns.Data = {
 			} },
 			{ level = 50, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11550, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11573, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7114,7 +7114,7 @@ ns.Data = {
 			} },
 			{ level = 52, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11551, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11573, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7127,7 +7127,7 @@ ns.Data = {
 			} },
 			{ level = 54, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11551, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11573, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7140,7 +7140,7 @@ ns.Data = {
 			} },
 			{ level = 56, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11551, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11573, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7153,7 +7153,7 @@ ns.Data = {
 			} },
 			{ level = 57, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11551, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11573, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11584, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
@@ -7167,7 +7167,7 @@ ns.Data = {
 			} },
 			{ level = 60, lines = {
 				{ spellId = 2458, name = "Berserker Stance", condition = "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness." },
-				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, a quarter more for each point of Improved Bloodrage." },
+				{ spellId = 2687, name = "Bloodrage", condition = "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage." },
 				{ spellId = 11551, name = "Battle Shout", condition = "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included." },
 				{ spellId = 11574, name = "Rend", condition = "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too." },
 				{ spellId = 11585, name = "Overpower", condition = "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time." },
