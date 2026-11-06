@@ -23,7 +23,7 @@ import {
   type AttendanceStub,
   type AttendanceStubOptions,
 } from '../../e2e/support/guild-attendance';
-import { GUILD_URL, NOW, ONYXIA_ID, raidUrl } from '../../e2e/support/guild-raids';
+import { GUILD_URL, NOW, ONYXIA_ID, keyOf, raidUrl } from '../../e2e/support/guild-raids';
 import { heldRoute } from '../../e2e/support/held-route';
 import { gotoHydrated } from '../../e2e/support/hydrated';
 import { GUILD, GUILD_ID } from '../../../src/fixtures/guild/mock-guild';
@@ -186,7 +186,9 @@ atWidths('5 clear confirm', PAIR, async (page, width) => {
 
 atWidths('6 attendance', ALL, async (page, width) => {
   await openRaid(page, width, { viewer: 'officer', nights: DONE });
-  await page.getByLabel('Excused, Mendwhisper').check();
+  await page
+    .locator(`select[data-testid="raid-attendance-fix-${keyOf('Mendwhisper')}"]`)
+    .selectOption('excused', { force: true });
   await page.getByTestId('raid-attendance-summary').getByText('1 excused').waitFor();
   await settle(page);
   await shoot(page, 6, 'attendance', width, page.getByTestId('raid-attendance'));
@@ -212,23 +214,6 @@ atWidths('8 read-only', PAIR, async (page, width) => {
     page,
     page.getByTestId('raid-attendance'),
     `guild-attendance-08-read-only-attendance-${width}.png`,
-    TOP_CROP_PX,
-  );
-});
-
-// ---- 8b: Notes and Sign-ups opened on a done raid, read-only (WP 6) --------------------------
-
-atWidths('8b notes and sign-ups opened', PAIR, async (page, width) => {
-  await openRaid(page, width, { viewer: 'officer', nights: DONE });
-  await page.getByTestId('raid-notes-disclosure-summary').click();
-  await page.getByTestId('raid-roster-disclosure-summary').click();
-  await page.getByTestId('raid-roster').waitFor();
-  await settle(page);
-  await shoot(page, 8, 'sections-open', width, page.getByTestId('raid-notes-disclosure'));
-  await cropOf(
-    page,
-    page.getByTestId('raid-roster-disclosure'),
-    `guild-attendance-08-sections-open-roster-${width}.png`,
     TOP_CROP_PX,
   );
 });

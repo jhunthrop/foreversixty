@@ -77,7 +77,6 @@
       id: tab.id,
       label: tab.label,
       href: `${hrefBase ?? ''}#${tab.id}`,
-      suffix: tab.id === 'loot' && role === 'member' ? ' · read-only' : undefined,
       testid: `guild-tab-${tab.id}`,
     })),
   );

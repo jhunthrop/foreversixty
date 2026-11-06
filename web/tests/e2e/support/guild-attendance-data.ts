@@ -11,6 +11,7 @@ import type {
   RaidMatch,
   RaidNight,
   RaidReport,
+  RaidReportDeath,
 } from '../../../src/lib/guild/attendance-contract';
 import { MEMBER_ALT, ONYXIA_SIGNUPS, keyOf } from './guild-raids';
 
@@ -79,6 +80,9 @@ function attendanceRow(name: string, seen: Seen): RaidAttendanceRow {
     pulls_total: PULLS,
     excused: false,
     own: false,
+    auto_outcome: seen.outcome,
+    auto_excused: false,
+    override: null,
   };
 }
 
@@ -201,8 +205,111 @@ function consumableRows() {
     });
 }
 
-export function fixtureReport(extra: Partial<RaidReport> = {}): RaidReport {
+const WIPES = 3;
+const ONYXIA = 1084;
+const FLAME_BREATH = 18435;
+const PULL_MS = [212_000, 198_000, 240_000, 252_000];
+
+/** The deaths on boss pull `attempt` (1-based): a raider's wipe deaths fall on the first wipes,
+ *  their kill deaths on the kill, so every pull's count adds up to the Deaths section's. */
+function deathsOnPull(attempt: number): string[] {
+  return DEATHS.filter(([, onWipes, onKills]) => (attempt <= WIPES ? onWipes >= attempt : onKills > 0)).map(
+    ([name]) => name,
+  );
+}
+
+function deathCause(name: string, index: number): RaidReportDeath {
+  const at = 60_000 + index * 9_000;
+  const blow = {
+    at_ms: at,
+    spell_id: FLAME_BREATH,
+    ability: 'Flame Breath',
+    source: 'Onyxia',
+    amount: 4_210,
+    overkill: 1_050,
+  };
   return {
+    ...ref(name),
+    at_ms: at,
+    killing_blow: blow,
+    last_hits: [
+      { at_ms: at - 3_000, spell_id: 1, ability: 'Melee', source: 'Onyxian Whelp', amount: 310, overkill: 0 },
+      blow,
+    ],
+  };
+}
+
+function fixturePulls(): RaidReport['pulls'] {
+  return PULL_MS.map((duration, index) => {
+    const attempt = index + 1;
+    const died = deathsOnPull(attempt);
+    return {
+      fight_index: attempt,
+      encounter_id: ONYXIA,
+      name: 'Onyxia',
+      attempt,
+      result: attempt <= WIPES ? ('wipe' as const) : ('kill' as const),
+      duration_ms: duration,
+      deaths: died.length,
+      death_causes: died.map(deathCause),
+    };
+  });
+}
+
+function fixtureParses(): RaidReport['parses'] {
+  return MOVES.map(([name, metric, , after]) => ({
+    ...ref(name),
+    role: metric === 'hps' ? 'healer' : 'dps',
+    encounter_id: ONYXIA,
+    encounter: 'Onyxia',
+    fight_index: WIPES + 1,
+    metric,
+    value: after,
+    rating: name === MEMBER_ALT ? null : 70 + (after % 25),
+  }));
+}
+
+/** The first wipe carried no character sheet; the other pulls read every raider's consumes. */
+function fixtureByPull(): RaidReport['consumables']['by_pull'] {
+  return PULL_MS.map((_, index) => {
+    const attempt = index + 1;
+    if (attempt === 1) {
+      return {
+        fight_index: attempt,
+        name: 'Onyxia',
+        attempt,
+        reason: 'no_character_sheet' as const,
+        rows: null,
+      };
+    }
+    const rows = consumableRows().map((row) => ({
+      character_key: row.character_key,
+      name: row.name,
+      class: row.class,
+      flask: row.flask,
+      food: row.food,
+      weapon_enchant: row.before === 'unknown' ? null : true,
+      potions: row.potions,
+      brought: [
+        row.flask ? 'Flask of Supreme Power' : null,
+        row.food ? 'Runn Tum Tuber Surprise' : null,
+      ].filter((item): item is string => item !== null),
+    }));
+    return { fight_index: attempt, name: 'Onyxia', attempt, reason: null, rows };
+  });
+}
+
+export function fixtureReport(extra: Partial<RaidReport> = {}): RaidReport {
+  const pulls = fixturePulls();
+  return {
+    headline: {
+      kills: 1,
+      wipes: WIPES,
+      attempts: pulls.length,
+      deaths: pulls.reduce((sum, pull) => sum + pull.deaths, 0),
+    },
+    pulls,
+    parses: fixtureParses(),
     kill_order: [
       {
         encounter_id: 1084,
@@ -219,6 +326,7 @@ export function fixtureReport(extra: Partial<RaidReport> = {}): RaidReport {
     consumables: {
       log_has_buffs: true,
       rows: consumableRows(),
+      by_pull: fixtureByPull(),
     },
     loot: [
       {
@@ -255,7 +363,15 @@ export function bareReport(): RaidReport {
   const full = fixtureReport();
   return {
     ...full,
-    consumables: { log_has_buffs: false, rows: full.consumables.rows },
+    consumables: {
+      log_has_buffs: false,
+      rows: full.consumables.rows,
+      by_pull: full.consumables.by_pull.map((pull) => ({
+        ...pull,
+        reason: 'no_character_sheet' as const,
+        rows: null,
+      })),
+    },
     loot: [],
     moves: { previous: null, rows: [] },
   };
@@ -308,9 +424,8 @@ export function fixtureCandidates(extra: Partial<MatchCandidates> = {}): MatchCa
 export function expectedDiscordText(reportUrl: string): string {
   return [
     "Onyxia's Lair · Thu 10 Dec · Olympus XXVII",
-    '1 kill, 3 wipes, 2 h 41 min. 13 of 14 came.',
+    '1 kill, 3 wipes, 2 h 41 min. 13 of 14 came. 17 deaths.',
     'Kills: Onyxia 4:12 (after 3 wipes)',
-    'Most deaths: Pyrewisp 4, Windtalon 3, Vexlash 2',
     "Loot: Onyxia: Head of Onyxia to Kraggor; Vis'kag the Bloodletter to Vexlash; Netherwind Crown to Pyrewisp; Ring of Binding to Thornhide",
     `Biggest changes: Pyrewisp DPS +53, Lightbrand HPS +41, Vexlash DPS +19, ${MEMBER_ALT} DPS +16`,
     `Report: ${reportUrl}`,

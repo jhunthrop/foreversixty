@@ -4,7 +4,9 @@
      AA-safe quality colour) over a muted source line, and at the right the worn item's 28 px icon
      and a gain Figure. One level of emphasis: the name; then the gain; the source is muted. The icon
      and name carry `data-bis-item`, so the page's one tooltip host (BisTooltipHost) opens the real
-     item on hover, focus and long-press. With no item it reads the empty slot's reason. -->
+     item on hover, focus and long-press. With no item it reads the empty slot's reason. With
+     `onselect` the whole row is one button (aria-pressed, the gold selected ground), its name no
+     longer a tab stop of its own. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { rarityClassFor } from '../../lib/planner/items';
@@ -30,6 +32,9 @@
     eager = false,
     focusableName = true,
     bare = false,
+    onselect,
+    selected = false,
+    trail,
     testid,
   }: {
     item: ItemRef | null;
@@ -57,16 +62,31 @@
     focusableName?: boolean;
     /** No row padding or hairline: the caller (a paperdoll cell, an inspector list) draws its own. */
     bare?: boolean;
+    /** The row picks its item (a list beside an inspector): the whole row is one button. */
+    onselect?: () => void;
+    selected?: boolean;
+    /** Replaces the worn icon and gain at the right (a state Tag). */
+    trail?: Snippet;
     testid?: string;
   } = $props();
+
+  /** The name is a tab stop of its own only when the row is not itself the button. */
+  const nameStop = $derived(focusableName && !unknown && onselect === undefined);
 </script>
 
 <div class="ui-item-row-box min-w-0">
-  <div
+  <svelte:element
+    this={onselect ? 'button' : 'div'}
+    type={onselect ? 'button' : undefined}
+    aria-pressed={onselect ? (selected ? 'true' : 'false') : undefined}
+    onclick={onselect}
     class={[
-      'ui-item-row grid min-w-0 items-center gap-x-3',
+      'ui-item-row grid w-full min-w-0 items-center gap-x-3 text-left',
       !bare && 'border-line-soft min-h-[var(--row-h)] border-b px-4 py-2 last:border-b-0',
       slotLabel ? 'ui-item-row--slot' : 'grid-cols-[auto_minmax(0,1fr)_auto]',
+      onselect &&
+        'hover:bg-hover active:bg-pressed focus-visible:outline-gold cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2',
+      selected && 'bg-selected shadow-[inset_3px_0_0_var(--color-gold)]',
     ]}
     data-testid={testid}
     data-item-id={item?.id}
@@ -85,9 +105,9 @@
             : rarityClassFor(item.quality)}"
           data-bis-item={unknown ? undefined : item.id}
           data-testid={`item-hover-${item.id}`}
-          tabindex={focusableName && !unknown ? 0 : undefined}
-          role={focusableName && !unknown ? 'button' : undefined}
-          aria-haspopup={focusableName && !unknown ? 'true' : undefined}>{item.name}</span
+          tabindex={nameStop ? 0 : undefined}
+          role={nameStop ? 'button' : undefined}
+          aria-haspopup={nameStop ? 'true' : undefined}>{item.name}</span
         >
       {:else}
         <span class="text-muted block text-[15px] leading-5">{emptyText}</span>
@@ -106,6 +126,7 @@
       {#if detail}<span class="text-muted block text-[13px] leading-[18px]">{@render detail()}</span>{/if}
     </span>
     <span class="flex items-center gap-3 justify-self-end">
+      {#if trail}{@render trail()}{/if}
       {#if worn}
         <span data-bis-item={worn.id} title={`You wear ${worn.name}`} data-testid="item-row-worn">
           <ItemIcon icon={worn.icon} quality={worn.quality} {build} size={28} />
@@ -119,7 +140,7 @@
           align="end"
         />{/if}
     </span>
-  </div>
+  </svelte:element>
 </div>
 
 <style>

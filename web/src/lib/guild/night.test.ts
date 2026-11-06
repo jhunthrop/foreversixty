@@ -4,11 +4,9 @@ import { specString } from '../../test-support/spec-table';
 import type { RaidAttendanceRow, RaidNight, RaidReport } from './attendance-contract';
 import {
   attendanceGroupOf,
-  canExcuse,
   daysBeforeRaid,
   discordReportText,
   groupAttendance,
-  visibleRows,
   yourNightFacts,
   yourNightRows,
   yourNightSentence,
@@ -33,6 +31,9 @@ function row(extra: Partial<RaidAttendanceRow> = {}): RaidAttendanceRow {
     pulls_total: 11,
     excused: false,
     own: false,
+    auto_outcome: extra.outcome ?? 'present',
+    auto_excused: extra.excused ?? false,
+    override: null,
     ...extra,
   };
 }
@@ -85,19 +86,6 @@ describe('groupAttendance', () => {
       row({ name: 'Bob', class: 'rogue', role: 'dps' }),
     ]);
     expect(group?.rows.map((r) => r.name)).toEqual(['Tank', 'Amy', 'Bob', 'Zed']);
-  });
-
-  it('offers Excused on not-in-log and late rows only', () => {
-    expect(canExcuse(row({ outcome: 'no_show' }))).toBe(true);
-    expect(canExcuse(row({ outcome: 'late' }))).toBe(true);
-    expect(canExcuse(row({ outcome: 'present' }))).toBe(false);
-    expect(canExcuse(row({ outcome: 'absent' }))).toBe(false);
-  });
-
-  it('caps a list at ten until expanded', () => {
-    const items = Array.from({ length: 14 }, (_, i) => i);
-    expect(visibleRows(items, false)).toHaveLength(10);
-    expect(visibleRows(items, true)).toHaveLength(14);
   });
 });
 
@@ -165,12 +153,15 @@ describe('yourNightRows and facts', () => {
   });
 
   const report: RaidReport = {
+    headline: { kills: 0, wipes: 0, attempts: 0, deaths: 2 },
+    pulls: [],
+    parses: [],
     kill_order: [],
     unnamed: null,
     deaths: [
       { character_key: 'us/classic/pyrewisp', name: 'Pyrewisp', class: 'mage', on_wipes: 1, on_kills: 1 },
     ],
-    consumables: { log_has_buffs: false, rows: [] },
+    consumables: { log_has_buffs: false, rows: [], by_pull: [] },
     loot: [],
     moves: {
       previous: { id: 3, title: 'Onyxia A', starts_at: '2026-12-04T02:00:00Z' },
@@ -260,6 +251,9 @@ describe('discordReportText', () => {
     at: '',
   });
   const full: RaidReport = {
+    headline: { kills: 1, wipes: 2, attempts: 3, deaths: 9 },
+    pulls: [],
+    parses: [],
     kill_order: [
       {
         encounter_id: 1,
@@ -288,7 +282,7 @@ describe('discordReportText', () => {
       { character_key: 'd', name: 'Quiet', class: 'hunter', on_wipes: 0, on_kills: 0 },
       { character_key: 'e', name: 'Fifth', class: 'hunter', on_wipes: 1, on_kills: 0 },
     ],
-    consumables: { log_has_buffs: false, rows: [] },
+    consumables: { log_has_buffs: false, rows: [], by_pull: [] },
     loot: [
       {
         encounter_id: 1,
@@ -340,12 +334,11 @@ describe('discordReportText', () => {
     reportUrl: 'https://foreversixty.gg/guild/olympus/raids/12#report',
   };
 
-  it('writes the spec lines in order, rises only, no absentees', () => {
+  it('writes the spec lines in order, rises only, no absentees, nobody named for dying', () => {
     expect(discordReportText(input).split('\n')).toEqual([
       "Onyxia's Lair · Thu 10 Dec · Olympus XXVII",
-      '1 kill, 3 wipes, 2 h 41 min. 22 of 23 came.',
+      '1 kill, 3 wipes, 2 h 41 min. 22 of 23 came. 9 deaths.',
       'Kills: Onyxia 1:42 (after 3 wipes)',
-      'Most deaths: Pyrewisp 4, Windtalon 3, Vexlash 2',
       'Loot: Onyxia: Drake Fang Talisman to Pyrewisp; Head of Onyxia to Vexlash',
       'Biggest changes: Pyrewisp DPS +53, Lightbrand HPS +41',
       'Report: https://foreversixty.gg/guild/olympus/raids/12#report',
@@ -366,16 +359,15 @@ describe('discordReportText', () => {
     const lines = discordReportText({ ...input, report: { ...full, loot: bosses } }).split('\n');
     expect(lines).toHaveLength(12);
     expect(lines[2]).toMatch(/^Kills:/);
-    expect(lines[3]).toMatch(/^Most deaths:/);
-    expect(lines.filter((l) => l.startsWith('Loot:'))).toHaveLength(5);
-    expect(lines[9]).toBe('+15 more');
+    expect(lines.filter((l) => l.startsWith('Loot:'))).toHaveLength(6);
+    expect(lines[9]).toBe('+14 more');
     expect(lines[10]).toMatch(/^Biggest changes:/);
     expect(lines[11]).toMatch(/^Report: /);
   });
 
   it('writes the labels the spec shows', () => {
     const spec = readFileSync(SPEC, 'utf8');
-    for (const label of ['Kills:', 'Most deaths:', 'Loot:', 'Biggest changes:', 'Report:']) {
+    for (const label of ['Kills:', 'Loot:', 'Biggest changes:', 'Report:']) {
       expect(spec).toContain(`\`${label}`);
     }
   });

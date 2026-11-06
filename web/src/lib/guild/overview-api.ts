@@ -81,7 +81,8 @@ export interface GuildRecentAttendance {
 export interface GuildOfficerActions {
   approvals: { count: number; names: string[] };
   not_signed: { raid_id: number | null; count: number; names: string[] };
-  /** `tracked: false` while logs carry no loot: the count is then null and the row is hidden. */
+  /** The loot council's newest night with drops (null with none): `count` is its drops still open.
+   *  `tracked` is always true now; the row hides at a count of 0. */
   drops_to_award: {
     tracked: boolean;
     count: number | null;

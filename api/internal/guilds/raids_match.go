@@ -173,7 +173,8 @@ func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, err
 }
 
 // finishMatch is the rest of every match, in the match's own transaction: the raid's
-// attendance against its new log and the loot awarded during it. A failure rolls the match back.
+// attendance against its new log, the loot awarded during it and the council's votes and flags. A
+// failure rolls the match back.
 func (s *Store) finishMatch(ctx context.Context, tx pgx.Tx, raid Raid) error {
 	rows, err := attendanceRowsOf(ctx, tx, raid.GuildID, raid.ID, *raid.ReportID)
 	if err != nil {
@@ -182,7 +183,10 @@ func (s *Store) finishMatch(ctx context.Context, tx pgx.Tx, raid Raid) error {
 	if err := writeAttendanceRows(ctx, tx, raid.ID, rows); err != nil {
 		return err
 	}
-	return attachMatchLoot(ctx, tx, raid.ID)
+	if err := attachMatchLoot(ctx, tx, raid.ID); err != nil {
+		return err
+	}
+	return attachCouncilRows(ctx, tx, raid.ID)
 }
 
 func isUniqueViolation(err error) bool {
@@ -318,6 +322,9 @@ func releaseLog(ctx context.Context, tx pgx.Tx, raidID int64, reportID string, b
 		insert into guild_raid_rejected_reports (raid_id, report_id, rejected_by) values ($1, $2, $3)
 		on conflict (raid_id, report_id) do nothing`, raidID, reportID, by); err != nil {
 		return Raid{}, fmt.Errorf("guilds: clear match: reject: %w", err)
+	}
+	if err := dropOverrides(ctx, tx, raidID); err != nil {
+		return Raid{}, err
 	}
 	if _, err := tx.Exec(ctx, `delete from guild_raid_attendance where raid_id = $1`, raidID); err != nil {
 		return Raid{}, fmt.Errorf("guilds: clear match: attendance: %w", err)

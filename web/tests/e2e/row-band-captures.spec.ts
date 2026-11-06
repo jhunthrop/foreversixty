@@ -12,7 +12,6 @@ import { expect, test } from './support/test';
 import { VIEWER_MEMBER } from '../../src/fixtures/guild/mock-guild';
 import { CHARACTER_PATH } from './support/character-fixture';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
-import { AFTER_END, DONE, stubGuildAttendance } from './support/guild-attendance';
 import { CHICAGO, NOW, ONYXIA_ID, raidUrl, stubGuildRaids, threePlanned } from './support/guild-raids';
 import { stubRankingsApi } from './support/rankings-fixture';
 import { envelope, guildMe, stubCharacter, stubGuild } from './support/row-band-pages';
@@ -97,17 +96,6 @@ const SHOTS: Shot[] = [
       await expect(page.getByTestId('raid-page')).toBeVisible();
     },
     focus: ['raid-roster'],
-  },
-  {
-    name: 'raid-report',
-    path: raidUrl(ONYXIA_ID),
-    at: AFTER_END,
-    setup: (page) => stubGuildAttendance(page, { viewer: 'officer', nights: DONE }),
-    ready: async (page) => {
-      await expect(page.getByTestId('raid-report')).toBeVisible();
-    },
-    act: hoverFirst('[data-testid="raid-kill-row"]'),
-    focus: ['raid-kill-order', 'raid-deaths', 'raid-loot', 'raid-consumables', 'raid-attendance'],
   },
   {
     name: 'rankings',

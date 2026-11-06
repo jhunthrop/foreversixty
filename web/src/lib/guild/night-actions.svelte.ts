@@ -1,17 +1,22 @@
 // web/src/lib/guild/night-actions.svelte.ts
-// The raid page's two officer writes on a done raid (attendance spec 3.4, 3.5, 4 "States"): the
-// Excused tick (optimistic, reverting with the row's line on a refusal) and `Post to Discord` (once;
-// 409 `already_posted` re-reads the raid so the posted line shows; 502 `post_failed` leaves the
-// button live). Both run through the controller's officer-action pattern: `host.write` (the writeSeq
-// guard that drops a spanning poll) and `host.refusalLine` (the plan flip).
-import { GuildApiError, type GuildRaidView } from './api';
+// The raid page's officer writes on a done raid (web layout spec 2026-11-05 §7.2 "Raid report"):
+// the attendance fix (present, absent, bench or excused over the log, or back to the log; the
+// control shows the pick while it saves and a refusal puts the row back with its line) and the
+// Discord summary (`Post to Discord`, then `Post again`; 409 `already_posted` re-reads the raid so
+// the posted line shows; 502 `post_failed` leaves the button live). Both run through the
+// controller's officer-action pattern: `host.write` (the writeSeq guard that drops a spanning
+// poll) and `host.refusalLine` (the plan flip).
+import { GuildApiError, type AttendanceOverrideStatus, type GuildRaidView } from './api';
 import { attendanceCopy } from './attendance-copy';
-import { withExcused, withPosted } from './night-patch';
+import { withPosted } from './night-patch';
 import type { RaidPageDeps, RaidRoute } from './raid-page-types';
 
 const ALREADY_POSTED = 'already_posted';
 
-type NightDeps = Pick<RaidPageDeps, 'putExcused' | 'postReport' | 'refetchRaid'>;
+type NightDeps = Pick<RaidPageDeps, 'putOverride' | 'deleteOverride' | 'postReport' | 'refetchRaid'>;
+
+/** An officer's choice for one row: a status over the log, or `null` for back to the log. */
+export type AttendanceFix = AttendanceOverrideStatus | null;
 
 /** What the controller lends: its raid, its guarded write, its raid setter and the plan flip. */
 export interface NightActionHost {
@@ -22,16 +27,14 @@ export interface NightActionHost {
 }
 
 export class NightActions {
-  /** Characters whose Excused write is in flight. */
-  excuseBusy = $state<Readonly<Record<string, boolean>>>({});
-  /** A refused Excused write's line, by character. */
-  excuseLines = $state<Readonly<Record<string, string>>>({});
+  /** The fix each row is saving, by character (`null` is back to the log). */
+  fixing = $state<Readonly<Record<string, AttendanceFix>>>({});
+  /** A refused fix's line, by character. */
+  fixLines = $state<Readonly<Record<string, string>>>({});
   posting = $state(false);
-  /** `Could not post. Try again.` (or the plan sentence) under the header buttons. */
+  /** `Could not post. Try again.` (or the plan sentence) under the Discord buttons. */
   postLine = $state<string | null>(null);
 
-  /** Excused writes in flight: only the last to settle applies the server's raid. */
-  private excusesInFlight = 0;
   private readonly host: NightActionHost;
   private readonly deps: NightDeps;
   private readonly raidId: string;
@@ -42,51 +45,49 @@ export class NightActions {
     this.raidId = route.raidId;
   }
 
-  private setBusy(key: string, busy: boolean): void {
-    const { [key]: _dropped, ...rest } = this.excuseBusy;
-    this.excuseBusy = busy ? { ...rest, [key]: true } : rest;
+  private setFixing(key: string, fix: AttendanceFix | undefined): void {
+    const { [key]: _dropped, ...rest } = this.fixing;
+    this.fixing = fix === undefined ? rest : { ...rest, [key]: fix };
   }
 
   private setLine(key: string, line: string | null): void {
-    const { [key]: _dropped, ...rest } = this.excuseLines;
-    this.excuseLines = line === null ? rest : { ...rest, [key]: line };
+    const { [key]: _dropped, ...rest } = this.fixLines;
+    this.fixLines = line === null ? rest : { ...rest, [key]: line };
   }
 
-  /** Ticks or unticks Excused: the row and the summary move at once; a refusal moves them back. */
-  excuse = async (characterKey: string, excused: boolean): Promise<boolean> => {
+  /** Saves one row's fix; the server's raid (every count moved) replaces the page's. */
+  fix = async (characterKey: string, fix: AttendanceFix): Promise<boolean> => {
+    if (characterKey in this.fixing) return false;
     this.setLine(characterKey, null);
-    this.setBusy(characterKey, true);
-    this.excusesInFlight += 1;
+    this.setFixing(characterKey, fix);
     try {
-      const fresh = await this.host.write((id) => {
-        const raid = this.host.raid();
-        if (raid !== null) this.host.applyRaid(withExcused(raid, characterKey, excused));
-        return this.deps.putExcused(id, this.raidId, characterKey, excused);
-      });
-      // Another tick still in flight owns the optimistic state; its answer will follow.
-      if (this.excusesInFlight === 1) this.host.applyRaid(fresh);
+      const fresh = await this.host.write((id) =>
+        fix === null
+          ? this.deps.deleteOverride(id, this.raidId, characterKey)
+          : this.deps.putOverride(id, this.raidId, characterKey, fix),
+      );
+      this.host.applyRaid(fresh);
       return true;
     } catch (thrown) {
-      const raid = this.host.raid();
-      if (raid !== null) this.host.applyRaid(withExcused(raid, characterKey, !excused));
       this.setLine(
         characterKey,
         this.host.refusalLine(thrown, attendanceCopy.errors.officerToolsEnded, attendanceCopy.errors.rows),
       );
       return false;
     } finally {
-      this.excusesInFlight -= 1;
-      this.setBusy(characterKey, false);
+      this.setFixing(characterKey, undefined);
     }
   };
 
-  /** Posts the report once; a press while one is in flight does nothing. */
-  post = async (): Promise<void> => {
+  /** Posts the summary (again, with `repost`); a press while one is in flight does nothing. */
+  post = async (repost = false): Promise<void> => {
     if (this.posting) return;
     this.posting = true;
     this.postLine = null;
     try {
-      const { posted_at: postedAt } = await this.host.write((id) => this.deps.postReport(id, this.raidId));
+      const { posted_at: postedAt } = await this.host.write((id) =>
+        this.deps.postReport(id, this.raidId, repost),
+      );
       const raid = this.host.raid();
       if (raid !== null) this.host.applyRaid(withPosted(raid, postedAt));
     } catch (thrown) {
