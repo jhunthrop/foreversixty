@@ -851,6 +851,9 @@ export function buildMockLoot(): GuildLootPage {
       quest_label: QUEST_LABELS[itemId] ?? '',
       eligible: handTo,
       copies: 1,
+      encounter_id: ONYXIA_ENCOUNTER_ID,
+      boss: 'Onyxia',
+      raid: "Onyxia's Lair",
       awarded_to: isAwarded
         ? {
             award_id: 1,
@@ -877,6 +880,12 @@ export function buildMockLoot(): GuildLootPage {
     encounters: [{ encounter_id: ONYXIA_ENCOUNTER_ID, name: 'Onyxia', zone: "Onyxia's Lair", killed: true }],
     selected: ONYXIA_ENCOUNTER_ID,
     items,
+    // The API's first tier: the 1.60.1.70790 client carries Onyxia's Lair only.
+    raids: [
+      { key: 'raid:barrow-deeps', name: 'Barrow Deeps', in_client: false, encounters: [] },
+      { key: 'raid:hyjal-summit', name: 'Hyjal Summit', in_client: false, encounters: [] },
+      { key: 'raid:onyxias-lair', name: "Onyxia's Lair", in_client: true, encounters: [ONYXIA_ENCOUNTER_ID] },
+    ],
     at_level_cap: roster.filter((r) => r.verified).length,
   };
 }

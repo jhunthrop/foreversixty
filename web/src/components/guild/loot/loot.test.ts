@@ -67,6 +67,7 @@ describe('LootDrops', () => {
     meta: 'Tue 15 Dec · 3 drops, 2 open',
     rows,
     openable: openable(current, table, null),
+    raids: buildMockLoot().raids,
     selected: rows[0].itemId,
     build: BUILD,
     emptyText: 'Nothing',
@@ -82,6 +83,9 @@ describe('LootDrops', () => {
     expect(body.match(/>Awarded</g)).toHaveLength(1);
     expect(body).toContain(`data-testid="guild-loot-drop-${rows[0].itemId}"`);
     expect(body).toContain('Open a drop from the loot table');
+    expect(body).toContain('<optgroup label="Onyxia\'s Lair · Onyxia">');
+    expect(body).toContain('<optgroup label="Barrow Deeps">');
+    expect(body).toContain('Not in the game client yet');
   });
 
   it('says the empty night and offers no picker on a past night', () => {

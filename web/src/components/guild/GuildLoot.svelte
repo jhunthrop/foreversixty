@@ -153,6 +153,7 @@
         meta={`${nightDay(night.date)} · ${nightSummary(night)}`}
         {rows}
         openable={picks}
+        raids={council.raids}
         selected={council.selected?.itemId ?? null}
         {build}
         {emptyText}

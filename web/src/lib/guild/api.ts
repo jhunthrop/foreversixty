@@ -1319,12 +1319,27 @@ export interface GuildLootItem {
   candidates: GuildLootCandidate[];
   /** How many of the table's drops this row stands for (two items can share a name). */
   copies: number;
+  /** The boss the drop falls from, and that boss's raid. */
+  encounter_id: number;
+  boss: string;
+  raid: string;
+}
+
+/** A first-tier raid of the drop picker; `in_client` false while the game client lacks it. */
+export interface GuildLootRaid {
+  key: string;
+  name: string;
+  in_client: boolean;
+  /** Its bosses' encounter ids, in the table's order. */
+  encounters: number[];
 }
 
 export interface GuildLootPage {
   encounters: GuildLootEncounter[];
   selected: number | null;
+  /** Every boss's drops, boss by boss. */
   items: GuildLootItem[];
+  raids: GuildLootRaid[];
   /** Verified roster characters whose level on file is 60. */
   at_level_cap: number;
 }

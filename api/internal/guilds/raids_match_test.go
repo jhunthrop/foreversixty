@@ -110,7 +110,7 @@ func TestAutoMatchRefusals(t *testing.T) {
 		zone string
 		at   time.Time
 	}{
-		{"zone differs", "", "Molten Core", start},
+		{"zone differs", "", "Blackrock Depths", start},
 		{"before the window", "", onyLogZone, start.Add(-90 * time.Minute)},
 		{"after the window", "", onyLogZone, start.Add(10 * time.Hour)},
 		{"private log", `update reports set visibility = 'private' where id = 'log1'`, onyLogZone, start},
@@ -232,7 +232,7 @@ func TestMatchCandidates(t *testing.T) {
 	w.oneFightNight(t, "near", onyLogZone, start.Add(20*time.Minute))
 	w.oneFightNight(t, "far", onyLogZone, start.Add(-20*time.Hour))
 	w.oneFightNight(t, "held", onyLogZone, start.Add(-24*time.Hour))
-	w.oneFightNight(t, "elsewhere", "Molten Core", start)
+	w.oneFightNight(t, "elsewhere", "Blackrock Depths", start)
 	w.oneFightNight(t, "old", onyLogZone, time.Now().Add(-20*24*time.Hour))
 	w.oneFightNight(t, "hidden", onyLogZone, start)
 	w.exec(t, `update reports set visibility = 'private' where id = 'hidden'`)
@@ -287,7 +287,7 @@ func TestMatchCandidatesForAnUnknownZoneListEveryZone(t *testing.T) {
 	start := pastStart()
 	raid := w.raidAt(t, "raid:barrow-deeps", start)
 	w.oneFightNight(t, "ony", onyLogZone, start)
-	w.oneFightNight(t, "mc", "Molten Core", start.Add(time.Hour))
+	w.oneFightNight(t, "brd", "Blackrock Depths", start.Add(time.Hour))
 	res, err := w.h.store.MatchCandidates(t.Context(), w.gid, raid.ID, time.Now())
 	if err != nil || res.ZoneKnown || len(res.Rows) != 2 || !res.Rows[0].Closest || res.Rows[0].ReportID != "ony" {
 		t.Fatalf("result = %+v %v", res, err)

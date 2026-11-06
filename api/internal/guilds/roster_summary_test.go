@@ -85,7 +85,7 @@ func TestEncountersDownAgreesWithProgression(t *testing.T) {
 
 	if _, err := h.pool.Exec(ctx,
 		`insert into reports (id, guild_id, visibility, status, zone, created_at)
-		 values ('down-night', $1, 'guild', 'complete', 'Molten Core', now())`, gid); err != nil {
+		 values ('down-night', $1, 'guild', 'complete', 'Blackrock Depths', now())`, gid); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := h.pool.Exec(ctx,
