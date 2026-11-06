@@ -223,6 +223,36 @@ func LookupEnchant(id int) (Enchant, bool) {
 	return e, ok
 }
 
+// enchantStatTable is effect id -> the planner stats enchants.json states,
+// the first sharer's where rows share an id (the package doc comment says
+// why they are not on Enchant: the engine applies simdb.bin's own stats).
+var enchantStatTable = sync.OnceValues(func() (map[int]map[string]float64, error) {
+	var rows []struct {
+		ID    int                `json:"id"`
+		Stats map[string]float64 `json:"stats"`
+	}
+	if err := json.Unmarshal(rawEnchants, &rows); err != nil {
+		return nil, fmt.Errorf("simdb: the enchant table is not readable: %w", err)
+	}
+	out := make(map[int]map[string]float64, len(rows))
+	for _, row := range rows {
+		if _, ok := out[row.ID]; !ok {
+			out[row.ID] = row.Stats
+		}
+	}
+	return out, nil
+})
+
+// EnchantStats is an enchant's planner stats, for an estimate made before any
+// sim runs. nil for an unknown id or a table that will not read.
+func EnchantStats(id int) map[string]float64 {
+	table, err := enchantStatTable()
+	if err != nil {
+		return nil
+	}
+	return table[id]
+}
+
 // EnchantFits reports whether an enchant may go on this item in this
 // slot for this class, and says why not when it may not.
 func EnchantFits(effectID int, slot string, item Item, class string) error {

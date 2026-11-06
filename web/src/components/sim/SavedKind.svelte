@@ -1,5 +1,5 @@
 <!-- web/src/components/sim/SavedKind.svelte -->
-<!-- /sim/<sim_id> for a bulk or weights result, read-only (the `run` kind is SavedRun.svelte).
+<!-- /sim/<sim_id> for a bulk or weights result, read-only (the `run` kind is RunReport.svelte).
      A saved result is not the sim page with a result in it: no run control, no switcher, no
      settings bar -- one result header in their place, the strip built from the stored request
      rather than a live store, and the same results below. Task 17.

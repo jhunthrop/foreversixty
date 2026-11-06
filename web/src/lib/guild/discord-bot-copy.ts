@@ -79,7 +79,9 @@ export const guildBotCopy = {
       if (linked === 0)
         return 'No member has linked Discord yet. Members get a link when they press a button.';
       if (linked === 1) return `1 of ${members} members has linked Discord.`;
-      return `${linked} of ${members} members have linked Discord. The others get a link when they press a button.`;
+      const line = `${linked} of ${members} members have linked Discord.`;
+      // With nobody left to link, there are no others to tell about (spec §6.2, round 3).
+      return linked >= members ? line : `${line} The others get a link when they press a button.`;
     },
   },
 

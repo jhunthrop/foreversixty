@@ -447,7 +447,7 @@ func rankByMeasuredGain(runner engineRunner, spec specInfo, race, classSlug stri
 		best.MeasuredGainStdErr = stdErr
 		best.GainMeasured = true
 	}
-	sp := slotPick{Item: &best}
+	sp := slotPick{Item: &best, Tournament: tournamentOf(len(results), func(i int) (scored, float64) { return results[i].item, results[i].dps })}
 	if runnerUpIdx != -1 {
 		runnerUp := results[runnerUpIdx].item
 		runnerUp.MeasuredDPS = results[runnerUpIdx].dps
@@ -472,7 +472,7 @@ func rankByMeasuredGain(runner engineRunner, spec specInfo, race, classSlug stri
 			notes = append(notes, slot+": re-measuring the shortlist at the ceiling failed: "+err.Error())
 		case found && fallback.ID != best.ID:
 			demoted := best
-			sp = slotPick{Item: &fallback, RunnerUp: &demoted}
+			sp = slotPick{Item: &fallback, RunnerUp: &demoted, Tournament: sp.Tournament}
 			notes = append(notes, fmt.Sprintf("%s: %s had no gain beyond its error; %s gains %.2f +/- %.2f at %d iterations", slot, best.Name, fallback.Name, fallback.MeasuredGainDPS, fallback.MeasuredGainStdErr, trinketGainAdaptiveIterationCeiling))
 		case found:
 			sp.Item = &fallback

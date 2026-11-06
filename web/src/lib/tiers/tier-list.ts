@@ -15,6 +15,9 @@ const PERCENT = 100;
 export interface TierInput {
   entry: SpecCatalogEntry;
   band: BisBand;
+  /** "View ranking sim": the band opened and run in the simulator. Absent where /sim cannot
+   *  rerun the figure (tank and healer bands: the browser sim runs damage specs only). */
+  simHref?: string;
 }
 
 export type TierTie = 'above' | 'below' | 'both';
@@ -46,6 +49,8 @@ export interface TierRow {
   lowConfidence: boolean;
   /** The planner link's talent string. */
   talents: string;
+  /** The ranking sim behind the number (`TierInput.simHref`); absent on tank and healer rows. */
+  simHref?: string;
   /** Tank only. */
   effectiveHealth?: number;
   threat?: number;
@@ -246,6 +251,7 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
       tier: roleHasTiers(role) ? tierOf(gap) : null,
       lowConfidence: band.weights_low_confidence === true,
       talents: band.talents,
+      ...(input.simHref === undefined ? {} : { simHref: input.simHref }),
     };
     if (!tank) return row;
     const metrics = tankMetricsOf(band);
@@ -282,14 +288,20 @@ export interface TierRowHrefs {
   bis: string;
   guide: string;
   planner: string;
+  /** `undefined` where the row's number cannot be rerun on /sim. */
+  sim: string | undefined;
 }
 
-/** Where a row's three next steps go: its BiS page, its guide and its level 60 build in the planner. */
-export function hrefsFor(row: Pick<TierRow, 'classSlug' | 'specSlug' | 'spec' | 'talents'>): TierRowHrefs {
+/** Where a row's next steps go: its BiS page, its guide, its level 60 build in the planner and,
+ *  on a DPS row, the ranking sim behind its number. */
+export function hrefsFor(
+  row: Pick<TierRow, 'classSlug' | 'specSlug' | 'spec' | 'talents' | 'simHref'>,
+): TierRowHrefs {
   const path = `${row.classSlug}/${row.specSlug}`;
   return {
     bis: `/bis/${path}`,
     guide: `/guides/${path}`,
     planner: `/planner?spec=${row.spec}&talents=${encodeURIComponent(row.talents)}`,
+    sim: row.simHref,
   };
 }

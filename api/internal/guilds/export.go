@@ -185,45 +185,30 @@ func (h *heldWriter) flush(out *csv.Writer) error {
 // rowStream feeds each CSV row of a guild's export to emit as it is read.
 type rowStream func(ctx context.Context, guildID int64, emit func([]string) error) error
 
-func (s *Store) streamAttendance(ctx context.Context, guildID int64, emit func([]string) error) error {
-	rows, err := s.Pool.Query(ctx, `
-		select r.starts_at, r.title, a.name, a.class, coalesce(a.signed, ''), a.outcome, a.excused,
-		       a.pulls_present, a.pulls_total
-		from guild_raid_attendance a join guild_raids r on r.id = a.raid_id
-		where r.guild_id = $1
-		order by r.starts_at, a.name, a.character_key`, guildID)
-	if err != nil {
-		return fmt.Errorf("guilds: export attendance: %w", err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var (
-			startsAt                         time.Time
-			title, name, class, signed, kind string
-			excused                          bool
-			present, total                   int
-		)
-		if err := rows.Scan(&startsAt, &title, &name, &class, &signed, &kind, &excused, &present, &total); err != nil {
-			return fmt.Errorf("guilds: export attendance: %w", err)
-		}
-		if err := emit(safeRow(startsAt.UTC().Format(exportDateLayout), title, name, class, signed, kind,
-			strconv.FormatBool(excused), strconv.Itoa(present), strconv.Itoa(total))); err != nil {
-			return err
-		}
-	}
-	return rows.Err()
-}
+// lootNightUnknown is the raid cell of an award that names no raid and was made from no
+// report: its date cell is then the day it was awarded.
+const lootNightUnknown = "No raid night recorded (date is the award date)"
 
 // streamLoot names each award's character by its export. An award to an invited member names
 // the account's synthetic row (syntheticKey), which has no export: it reads as the account's
 // main (else first) character, else the stand-in, the rule inviteeName applies on the roster.
+// Each award is dated by the raid night it belongs to: its own raid's, else the raid holding the
+// report it was made from, else that report's night; with neither, the award date, said so.
 func (s *Store) streamLoot(ctx context.Context, guildID int64, emit func([]string) error) error {
 	rows, err := s.Pool.Query(ctx, `
-		select la.awarded_at, coalesce(r.title, ''), la.encounter_id, la.item_id,
+		select coalesce(r.starts_at, rr.starts_at, `+logAnchorSQL("rp")+`, la.awarded_at) as night,
+		       coalesce(r.title, rr.title, nullif(rp.zone, ''), nullif(rp.log_zone, ''), nullif(rp.title, ''), '`+lootNightUnknown+`'),
+		       la.encounter_id, la.item_id,
 		       coalesce(nullif(ae.name, ''), inv.name,
 		                case when u.id is not null then '`+invitedStandIn+` ' || u.id end, la.character_key)
 		from loot_awards la
 		left join guild_raids r on r.id = la.raid_id
+		left join reports rp on rp.id = la.report_id
+		left join lateral (
+		  select g.starts_at, g.title from guild_raids g
+		  where g.report_id = la.report_id and g.guild_id = la.guild_id
+		  order by g.starts_at desc limit 1
+		) rr on true
 		left join addon_exports ae on ae.character_key = la.character_key
 		left join users u on la.character_key like 'account:%'
 		  and u.id = nullif(substring(la.character_key from '^account:([0-9]+)$'), '')::bigint
@@ -232,30 +217,47 @@ func (s *Store) streamLoot(ctx context.Context, guildID int64, emit func([]strin
 		  order by (c.key = u.main_character_key) desc, c.name limit 1
 		) inv on true
 		where la.guild_id = $1
-		order by la.awarded_at, la.id`, guildID)
+		order by night, la.awarded_at, la.id`, guildID)
 	if err != nil {
 		return fmt.Errorf("guilds: export loot: %w", err)
 	}
 	defer rows.Close()
+	loc, err := s.exportLocation(ctx, guildID)
+	if err != nil {
+		return err
+	}
 	for rows.Next() {
 		var (
-			awardedAt         time.Time
+			night             time.Time
 			raid, character   string
 			encounterID, item int64
 		)
-		if err := rows.Scan(&awardedAt, &raid, &encounterID, &item, &character); err != nil {
+		if err := rows.Scan(&night, &raid, &encounterID, &item, &character); err != nil {
 			return fmt.Errorf("guilds: export loot: %w", err)
 		}
 		boss := ""
 		if encounterID == onyxiaEncounterID {
 			boss = encounterName
 		}
-		if err := emit(safeRow(awardedAt.UTC().Format(exportDateLayout), raid, boss,
+		if err := emit(safeRow(night.In(loc).Format(exportDateLayout), raid, boss,
 			strconv.FormatInt(item, 10), itemNames[int(item)], character)); err != nil {
 			return err
 		}
 	}
 	return rows.Err()
+}
+
+// exportLocation is the zone both CSVs write night dates in: the guild's raid zone, the one
+// every planned raid is posted and shown in, so a Wednesday 7 pm raid in Chicago is dated
+// Wednesday. A logged night with no planned raid uses the same zone. A guild that never set a
+// raid zone gets UTC: a report stores no time zone of its own (reports.zone is the instance),
+// so there is nothing closer to the players' clock to read.
+func (s *Store) exportLocation(ctx context.Context, guildID int64) (*time.Location, error) {
+	tz, err := s.GuildRaidTimezone(ctx, guildID)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: export zone: %w", err)
+	}
+	return zoneOrUTC(tz), nil
 }
 
 // safeRow escapes every cell of a row against formula injection.

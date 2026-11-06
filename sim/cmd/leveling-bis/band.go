@@ -174,10 +174,16 @@ func classAllowed(classes []string, classSlug string) bool {
 }
 
 func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIndex) (itemSource, bool) {
+	return preferredSource(obtainableSources(id, level, faction, itemFactionRestriction, idx))
+}
+
+// obtainableSources is every source of item id a character of this level
+// and faction can use (sourceObtainable, no raid below 60), with rare
+// spawns dropped whenever any other pickable source exists. sourceFor
+// names the preferred one; sourcesByFilterKind (source_kinds.go) groups
+// them all by filter kind, so the two can never disagree on what counts.
+func obtainableSources(id, level int, faction, itemFactionRestriction string, idx lootIndex) []itemSource {
 	srcs := idx[id]
-	if len(srcs) == 0 {
-		return itemSource{}, false
-	}
 	obtainable := make([]itemSource, 0, len(srcs))
 	for _, s := range srcs {
 		if !sourceObtainable(s, level, faction, itemFactionRestriction) {
@@ -188,7 +194,12 @@ func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIn
 		}
 		obtainable = append(obtainable, s)
 	}
-	obtainable = withoutRareSpawnsWhenAnyOther(obtainable)
+	return withoutRareSpawnsWhenAnyOther(obtainable)
+}
+
+// preferredSource is sourceFor's choice among already-obtainable
+// sources: a quest first, then a boss, then sourceKindPriority's order.
+func preferredSource(obtainable []itemSource) (itemSource, bool) {
 	if quest, ok := bestOfKind(obtainable, "quest"); ok {
 		return quest, true
 	}
@@ -566,7 +577,8 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 			}
 			continue
 		}
-		src, ok := sourceFor(c.ID, level, faction, c.FactionRestriction, idx)
+		obtainable := obtainableSources(c.ID, level, faction, c.FactionRestriction, idx)
+		src, ok := preferredSource(obtainable)
 		// This lane's brief, item 3: a class-restricted quest reward is
 		// never obtainable by a class the quest excludes, whatever
 		// loot.json's own faction/level gates already say - see
@@ -595,6 +607,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 			Score:         roundScore(score(c, c.Slots[0], weights, wandCredit)),
 			Source:        src,
 			HasSource:     true,
+			KindSources:   sourcesByFilterKind(obtainable, classSlug),
 			DeadStatCount: deadStatCount(c, weights),
 		})
 	}
@@ -902,7 +915,7 @@ type bandPicks struct {
 // pickBand scores the band's candidates (buildBandPool, wandCredit as
 // score() takes it), builds the per-slot pools and picks the set.
 func pickBand(items []candidate, lootIdx lootIndex, spec specInfo, band int, faction string, weights map[string]float64, wandCredit float64, weaponSubclasses map[int]bool, requiresDagger bool) bandPicks {
-	pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, wandCredit)
+	pool := buildBandPool(withWeaponEnchantCredit(items, spec), lootIdx, spec.ClassSlug, band, faction, weights, wandCredit)
 	// The weapon limits, then the rare-spawn rule over what they
 	// leave (band.go's bandSlotPools).
 	bySlot := bandSlotPools(&pool, spec, weaponSubclasses, requiresDagger)

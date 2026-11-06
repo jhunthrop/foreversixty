@@ -135,9 +135,9 @@ func (s *Service) charSheet(d charData) *sheetPost {
 	if d.card.Character.Guild != nil {
 		guild = d.card.Character.Guild.Name
 	}
-	average, _ := averageItemLevel(d.card.Gear)
-	model := sheet.Sheet{Kind: sheet.KindChar, Class: d.class, Spec: d.spec.Name, Faction: d.faction,
-		Title: d.card.Character.Name, Kicker: cardLineWith(d.card, d.spec, d.class, func(s string) string { return s }),
+	average, _ := charItemLevel(d)
+	model := sheet.Sheet{Kind: sheet.KindChar, Class: d.class, Spec: d.named.Name, Faction: d.faction,
+		Title: d.card.Character.Name, Kicker: cardLineWith(d.card, d.named, d.class, func(s string) string { return s }),
 		Subtitle: average, Level: level, Guild: guild, Slots: s.charSheetCells(d)}
 	model.TwoHand = s.wearsTwoHander(d)
 	post := &sheetPost{model: model, accent: classColorOf(d.class), head: s.charHeader(d, false),

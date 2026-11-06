@@ -174,7 +174,8 @@ describe('kill order', () => {
     expect(text(body)).toContain('Lucifron 1:01 first pull');
     expect(body).toContain('text-kill');
     expect(text(body)).toContain('Magmadar Not killed · 4 wipes');
-    expect(text(body)).toContain('7 pulls with no named encounter published: 5 kills, 2 wipes.');
+    expect(text(body)).toContain('5 trash packs');
+    expect(text(body)).not.toContain('named encounter');
   });
 });
 

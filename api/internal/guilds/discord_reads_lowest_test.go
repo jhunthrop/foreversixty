@@ -25,7 +25,7 @@ func TestLowestAttendanceIsOfficersOnlyLowestFirst(t *testing.T) {
 				t.Fatalf("order = %+v, want %v", got, want)
 			}
 		}
-		if got[0].Chip != "3 of 8 nights" {
+		if got[0].Chip != "3 of 8 raid nights" {
 			t.Fatalf("chip = %q", got[0].Chip)
 		}
 		if two := lowestOf(roster, AttendanceSourceReports, 2); len(two) != 2 || two[1].Name != "Anna" {

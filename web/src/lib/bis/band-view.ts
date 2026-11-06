@@ -10,6 +10,9 @@ export interface BandView {
   bandLabel: string;
   info: BandInfo;
   simHref: string;
+  /** "View ranking sim": the band opened and run at once, on the level 60 raid band of a damage
+   *  spec only (`rankingSimHrefFor`); `undefined` everywhere else. */
+  rankingSimHref: string | undefined;
   plannerHref: string;
   generatedAtDate: string;
   rotationLines: ReturnType<typeof rotationLinesFor>;

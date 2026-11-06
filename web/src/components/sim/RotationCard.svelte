@@ -1,8 +1,8 @@
 <!-- web/src/components/sim/RotationCard.svelte -->
 <!-- What the engine was told to press, in words (spec 2026-11-04-sim-results 3.11): always open, the
      curated APL's own notes, this run's casts per fight beside each line, and a line the run never
-     cast dimmed, and under the head the spec's fidelity when the sim has not validated it. The live
-     /sim page keeps LiveRotationCard and its drawer. -->
+     cast dimmed, and under the head the spec's fidelity when the sim has not validated it. Bulk and weights results keep
+     LiveRotationCard and its drawer. -->
 <script lang="ts">
   import type { ActionNames } from '../../lib/sim/action-names';
   import { createCardTables } from '../../lib/sim/card-tables.svelte';

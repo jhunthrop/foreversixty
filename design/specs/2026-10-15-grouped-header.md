@@ -36,7 +36,22 @@ href by `isNavItemCurrent`).
 When a Guild row's page is not resolvable (no session, no guild), the panel still shows the
 four rows and `/guild` is the guild landing: a guild lookup (name, region, ruleset), the top
 guilds, and a line for officers on claiming; a signed-in member of a verified guild is sent on
-to their guild's page from it. The Guild door itself carries `data-guild-tab="overview"`, so
+to their guild's page from it. (Amended 2026-11-05, guild round 3: a signed-in player whose
+current character has no guild sees a `Your guilds` card above the lookup listing every guild in
+`/v1/me` `guilds`, each row the guild name linking to its page and `{REGION} {Ruleset}` muted on
+the right, and the lookup's region and ruleset start on the first of those guilds. A lookup that
+names no guild lands on `No guild by that name on {REGION} {Ruleset}. Check the spelling and the
+ruleset.` with the inline link `Look it up again` to `/guild`, never the API's message and a
+retry. Under it, when one of the account's guilds (`/v1/me` `guilds`) or the Top guilds board
+(`/v1/rankings/guilds?kind=progress`) has a name that starts with, else contains, the typed words
+(three letters or more, the typed region and ruleset first), then `GET /v1/guilds/search?q=&region=`
+(public, at most 5 rows; asked only from three typed letters, its failure silent), up to 3 names:
+`Did you mean ` + the inline links `{Guild} ({REGION} {Ruleset})`, joined `, ` and ` or `, + `?`
+(amended 2026-11-05, guild loop round 3: "lifecycle" missed "Lifecycle Test"; the search reaches
+a stranger, who has no guilds of their own and may find the guild on no board). The name field
+still suggests nothing as you type.) Under those, always: `Spelled right? Then it is not on Forever Sixty yet. A guild shows up once one of its members signs in and imports a character, or syncs the addon.` + the inline link `Get set up` (`/setup`), because on day one a right name can still miss; the claim page for such an address shows the same panel, never `That did not load` (amended 2026-11-05, guild loop walk #5 on production, which has no guilds yet). The empty Top guilds board reads `No guild has a boss kill logged yet.`, and on the guild landing it has no `Open the guild page` button (it is that page). A player who holds a guild's claim (`/v1/me` `guilds[].claim.yours`)
+reads `You hold {Guild}'s claim.` in the landing's `Run a guild? Sign in and import your character, then open the guild page and choose Claim this
+guild.` place (amended 2026-11-05, guild loop round 3). The Guild door itself carries `data-guild-tab="overview"`, so
 the session rewrite below points it at the member's guild too. When the session
 resolves with a verified guild (`Me.guilds[0]`), the header fills the first row's title with the
 guild's name and rewrites the four hrefs to `guildHref(region, ruleset, name)` plus the tab

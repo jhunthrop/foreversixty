@@ -32,7 +32,9 @@ func TestCharacterReadinessWord(t *testing.T) {
 		key, want string
 	}{
 		{seed("stocked", "gear_bags", spent+"|bags=13510|level=60"), "Stocked"},
-		{seed("unshared", "gear", spent+"|level=60"), "Not shared"},
+		// Talents read, nothing failing, no bags: the board's Ready, not Not shared.
+		{seed("unshared", "gear", spent+"|level=60"), "Ready"},
+		{seed("rosteronly", "roster", spent+"|level=60"), "Not shared"},
 		{seed("short", "gear_bags", "FS1:1.60.1.70009:warrior:human:0/0/0:|bags=13510|level=60"), "Short: 51 unspent talent points"},
 		{"us/hardcore/nobody", "Not shared"},
 	}
@@ -48,5 +50,19 @@ func TestCharacterReadinessWord(t *testing.T) {
 	}
 	if facts, _ := svc.CharacterReadinessFacts(ctx, gid, "us/hardcore/nobody"); facts.OnRoster || facts.SyncedAt != nil {
 		t.Fatalf("off-roster facts = %+v", facts)
+	}
+}
+
+// The word follows the board's per-row rule: nothing read reads by consent, never as passing.
+func TestReadinessWordWithNothingRead(t *testing.T) {
+	nothing := CharacterReadiness{ConsumablesState: consumablesUnknown}
+	if got := readinessWord(nothing, "gear"); got != readinessNotChecked {
+		t.Errorf("gear consent, nothing read = %q", got)
+	}
+	if got := readinessWord(nothing, "roster"); got != readinessNotShared {
+		t.Errorf("roster consent = %q", got)
+	}
+	if got := readinessWord(CharacterReadiness{ConsumablesState: consumablesUnknown, TalentsRead: true}, "gear"); got != readinessReady {
+		t.Errorf("talents read, nothing failing = %q", got)
 	}
 }

@@ -1,30 +1,5 @@
 [
   {
-    "id": 2,
-    "name": "Enchant Cloak - Minor Resistance",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "back"
-    ],
-    "item_types": [
-      "normal"
-    ],
-    "classes": [],
-    "stats": {
-      "arcane_res": 1.0,
-      "fire_res": 1.0,
-      "frost_res": 1.0,
-      "nature_res": 1.0,
-      "shadow_res": 1.0
-    },
-    "phase": 0,
-    "spell_id": 7454,
-    "item_id": 0,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 31,
-    "equipped_inventory_type_mask": 65536
-  },
-  {
     "id": 15,
     "name": "Light Armor Kit",
     "icon": "inv_misc_armorkit_17",
@@ -44,78 +19,6 @@
     "phase": 0,
     "spell_id": 2831,
     "item_id": 2304,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 30,
-    "equipped_inventory_type_mask": 1050016
-  },
-  {
-    "id": 16,
-    "name": "Medium Armor Kit",
-    "icon": "inv_misc_armorkit_15",
-    "slots": [
-      "chest",
-      "feet",
-      "hands",
-      "legs"
-    ],
-    "item_types": [
-      "kit"
-    ],
-    "classes": [],
-    "stats": {
-      "bonus_armor": 16.0
-    },
-    "phase": 0,
-    "spell_id": 2832,
-    "item_id": 2313,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 30,
-    "equipped_inventory_type_mask": 1050016
-  },
-  {
-    "id": 17,
-    "name": "Heavy Armor Kit",
-    "icon": "inv_misc_armorkit_16",
-    "slots": [
-      "chest",
-      "feet",
-      "hands",
-      "legs"
-    ],
-    "item_types": [
-      "kit"
-    ],
-    "classes": [],
-    "stats": {
-      "bonus_armor": 24.0
-    },
-    "phase": 0,
-    "spell_id": 2833,
-    "item_id": 4265,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 30,
-    "equipped_inventory_type_mask": 1050016
-  },
-  {
-    "id": 18,
-    "name": "Thick Armor Kit",
-    "icon": "inv_misc_armorkit_07",
-    "slots": [
-      "chest",
-      "feet",
-      "hands",
-      "legs"
-    ],
-    "item_types": [
-      "kit"
-    ],
-    "classes": [],
-    "stats": {
-      "bonus_armor": 32.0
-    },
-    "phase": 0,
-    "spell_id": 10344,
-    "item_id": 8173,
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 30,
     "equipped_inventory_type_mask": 1050016
@@ -321,6 +224,31 @@
     "equipped_inventory_type_mask": 1048608
   },
   {
+    "id": 65,
+    "name": "Enchant Cloak - Minor Resistance",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "back"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "arcane_res": 2.0,
+      "fire_res": 2.0,
+      "frost_res": 2.0,
+      "nature_res": 2.0,
+      "shadow_res": 2.0
+    },
+    "phase": 0,
+    "spell_id": 7454,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 65536
+  },
+  {
     "id": 66,
     "name": "Enchant Bracer - Minor Stamina",
     "icon": "spell_holy_greaterheal",
@@ -361,26 +289,6 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 31,
     "equipped_inventory_type_mask": 256
-  },
-  {
-    "id": 241,
-    "name": "Enchant 2H Weapon - Minor Impact",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "main_hand",
-      "off_hand"
-    ],
-    "item_types": [
-      "two_hand"
-    ],
-    "classes": [],
-    "stats": {},
-    "phase": 0,
-    "spell_id": 7745,
-    "item_id": 0,
-    "equipped_item_class": 2,
-    "equipped_item_subclass_mask": 1378,
-    "equipped_inventory_type_mask": 0
   },
   {
     "id": 241,
@@ -611,8 +519,8 @@
     "equipped_inventory_type_mask": 1048608
   },
   {
-    "id": 255,
-    "name": "Enchant Bracer - Lesser Spirit",
+    "id": 254,
+    "name": "Enchant Bracer - Lesser Stamina",
     "icon": "spell_holy_greaterheal",
     "slots": [
       "wrist"
@@ -622,40 +530,18 @@
     ],
     "classes": [],
     "stats": {
-      "spirit": 3.0
+      "stamina": 4.0
     },
     "phase": 0,
-    "spell_id": 7859,
+    "spell_id": 13501,
     "item_id": 0,
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 31,
     "equipped_inventory_type_mask": 512
   },
   {
-    "id": 255,
-    "name": "Enchant 2H Weapon - Lesser Spirit",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "main_hand",
-      "off_hand"
-    ],
-    "item_types": [
-      "two_hand"
-    ],
-    "classes": [],
-    "stats": {
-      "spirit": 3.0
-    },
-    "phase": 0,
-    "spell_id": 13380,
-    "item_id": 0,
-    "equipped_item_class": 2,
-    "equipped_item_subclass_mask": 1378,
-    "equipped_inventory_type_mask": 0
-  },
-  {
-    "id": 255,
-    "name": "Enchant Boots - Lesser Spirit",
+    "id": 254,
+    "name": "Enchant Boots - Lesser Stamina",
     "icon": "spell_holy_greaterheal",
     "slots": [
       "feet"
@@ -665,10 +551,10 @@
     ],
     "classes": [],
     "stats": {
-      "spirit": 3.0
+      "stamina": 4.0
     },
     "phase": 0,
-    "spell_id": 13687,
+    "spell_id": 13644,
     "item_id": 0,
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 30,
@@ -756,69 +642,6 @@
     "equipped_inventory_type_mask": 0
   },
   {
-    "id": 723,
-    "name": "Enchant Bracer - Lesser Intellect",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "wrist"
-    ],
-    "item_types": [
-      "normal"
-    ],
-    "classes": [],
-    "stats": {
-      "intellect": 3.0
-    },
-    "phase": 0,
-    "spell_id": 13622,
-    "item_id": 0,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 31,
-    "equipped_inventory_type_mask": 512
-  },
-  {
-    "id": 724,
-    "name": "Enchant Bracer - Lesser Stamina",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "wrist"
-    ],
-    "item_types": [
-      "normal"
-    ],
-    "classes": [],
-    "stats": {
-      "stamina": 3.0
-    },
-    "phase": 0,
-    "spell_id": 13501,
-    "item_id": 0,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 31,
-    "equipped_inventory_type_mask": 512
-  },
-  {
-    "id": 724,
-    "name": "Enchant Boots - Lesser Stamina",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "feet"
-    ],
-    "item_types": [
-      "normal"
-    ],
-    "classes": [],
-    "stats": {
-      "stamina": 3.0
-    },
-    "phase": 0,
-    "spell_id": 13644,
-    "item_id": 0,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 30,
-    "equipped_inventory_type_mask": 256
-  },
-  {
     "id": 744,
     "name": "Enchant Cloak - Lesser Protection",
     "icon": "spell_holy_greaterheal",
@@ -900,6 +723,26 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 31,
     "equipped_inventory_type_mask": 65536
+  },
+  {
+    "id": 805,
+    "name": "Enchant 2H Weapon - Minor Impact",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "main_hand",
+      "off_hand"
+    ],
+    "item_types": [
+      "two_hand"
+    ],
+    "classes": [],
+    "stats": {},
+    "phase": 0,
+    "spell_id": 7745,
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 805,
@@ -1090,27 +933,6 @@
   },
   {
     "id": 849,
-    "name": "Enchant Boots - Lesser Agility",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "feet"
-    ],
-    "item_types": [
-      "normal"
-    ],
-    "classes": [],
-    "stats": {
-      "agility": 3.0
-    },
-    "phase": 0,
-    "spell_id": 13637,
-    "item_id": 0,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 31,
-    "equipped_inventory_type_mask": 256
-  },
-  {
-    "id": 849,
     "name": "Enchant Cloak - Lesser Agility",
     "icon": "spell_holy_greaterheal",
     "slots": [
@@ -1150,6 +972,28 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 30,
     "equipped_inventory_type_mask": 1048608
+  },
+  {
+    "id": 851,
+    "name": "Enchant 2H Weapon - Lesser Spirit",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "main_hand",
+      "off_hand"
+    ],
+    "item_types": [
+      "two_hand"
+    ],
+    "classes": [],
+    "stats": {
+      "spirit": 5.0
+    },
+    "phase": 0,
+    "spell_id": 13380,
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
   },
   {
     "id": 851,
@@ -1213,28 +1057,6 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 30,
     "equipped_inventory_type_mask": 512
-  },
-  {
-    "id": 852,
-    "name": "Enchant Shield - Stamina",
-    "icon": "inv_misc_note_01",
-    "slots": [
-      "main_hand",
-      "off_hand"
-    ],
-    "item_types": [
-      "shield"
-    ],
-    "classes": [],
-    "stats": {
-      "stamina": 5.0
-    },
-    "phase": 0,
-    "spell_id": 13817,
-    "item_id": 11202,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 64,
-    "equipped_inventory_type_mask": 0
   },
   {
     "id": 852,
@@ -1320,10 +1142,10 @@
   },
   {
     "id": 856,
-    "name": "Enchant Gloves - Strength",
+    "name": "Enchant Necklace - Strength",
     "icon": "spell_holy_greaterheal",
     "slots": [
-      "hands"
+      "neck"
     ],
     "item_types": [
       "normal"
@@ -1333,11 +1155,11 @@
       "strength": 5.0
     },
     "phase": 0,
-    "spell_id": 13887,
+    "spell_id": 1249019,
     "item_id": 0,
     "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 31,
-    "equipped_inventory_type_mask": 1024
+    "equipped_item_subclass_mask": 1,
+    "equipped_inventory_type_mask": 4
   },
   {
     "id": 857,
@@ -1474,27 +1296,6 @@
   },
   {
     "id": 904,
-    "name": "Enchant Gloves - Agility",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "hands"
-    ],
-    "item_types": [
-      "normal"
-    ],
-    "classes": [],
-    "stats": {
-      "agility": 5.0
-    },
-    "phase": 0,
-    "spell_id": 13815,
-    "item_id": 0,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 31,
-    "equipped_inventory_type_mask": 1024
-  },
-  {
-    "id": 904,
     "name": "Enchant Boots - Agility",
     "icon": "spell_holy_greaterheal",
     "slots": [
@@ -1513,6 +1314,27 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 30,
     "equipped_inventory_type_mask": 256
+  },
+  {
+    "id": 904,
+    "name": "Enchant Necklace - Agility",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "neck"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "agility": 5.0
+    },
+    "phase": 0,
+    "spell_id": 1249059,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 1,
+    "equipped_inventory_type_mask": 4
   },
   {
     "id": 905,
@@ -1781,6 +1603,27 @@
   },
   {
     "id": 927,
+    "name": "Enchant Gloves - Strength",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "hands"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "strength": 7.0
+    },
+    "phase": 0,
+    "spell_id": 13887,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
+  },
+  {
+    "id": 927,
     "name": "Enchant Bracer - Greater Strength",
     "icon": "spell_holy_greaterheal",
     "slots": [
@@ -1799,27 +1642,6 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 30,
     "equipped_inventory_type_mask": 512
-  },
-  {
-    "id": 927,
-    "name": "Enchant Gloves - Greater Strength",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "hands"
-    ],
-    "item_types": [
-      "normal"
-    ],
-    "classes": [],
-    "stats": {
-      "strength": 7.0
-    },
-    "phase": 0,
-    "spell_id": 20013,
-    "item_id": 0,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 31,
-    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 928,
@@ -1848,6 +1670,28 @@
   },
   {
     "id": 929,
+    "name": "Enchant Shield - Stamina",
+    "icon": "inv_misc_note_01",
+    "slots": [
+      "main_hand",
+      "off_hand"
+    ],
+    "item_types": [
+      "shield"
+    ],
+    "classes": [],
+    "stats": {
+      "stamina": 7.0
+    },
+    "phase": 0,
+    "spell_id": 13817,
+    "item_id": 11202,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 64,
+    "equipped_inventory_type_mask": 0
+  },
+  {
+    "id": 929,
     "name": "Enchant Bracer - Greater Stamina",
     "icon": "spell_holy_greaterheal",
     "slots": [
@@ -1866,28 +1710,6 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 30,
     "equipped_inventory_type_mask": 512
-  },
-  {
-    "id": 929,
-    "name": "Enchant Shield - Greater Stamina",
-    "icon": "inv_misc_note_01",
-    "slots": [
-      "main_hand",
-      "off_hand"
-    ],
-    "item_types": [
-      "shield"
-    ],
-    "classes": [],
-    "stats": {
-      "stamina": 7.0
-    },
-    "phase": 0,
-    "spell_id": 20017,
-    "item_id": 16217,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 64,
-    "equipped_inventory_type_mask": 0
   },
   {
     "id": 929,
@@ -1949,26 +1771,6 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 31,
     "equipped_inventory_type_mask": 1024
-  },
-  {
-    "id": 943,
-    "name": "Enchant 2H Weapon - Lesser Impact",
-    "icon": "spell_holy_greaterheal",
-    "slots": [
-      "main_hand",
-      "off_hand"
-    ],
-    "item_types": [
-      "two_hand"
-    ],
-    "classes": [],
-    "stats": {},
-    "phase": 0,
-    "spell_id": 13529,
-    "item_id": 0,
-    "equipped_item_class": 2,
-    "equipped_item_subclass_mask": 1378,
-    "equipped_inventory_type_mask": 0
   },
   {
     "id": 943,
@@ -2209,30 +2011,6 @@
     "equipped_inventory_type_mask": 130
   },
   {
-    "id": 1843,
-    "name": "Rugged Armor Kit",
-    "icon": "inv_misc_armorkit_09",
-    "slots": [
-      "chest",
-      "feet",
-      "hands",
-      "legs"
-    ],
-    "item_types": [
-      "kit"
-    ],
-    "classes": [],
-    "stats": {
-      "bonus_armor": 40.0
-    },
-    "phase": 0,
-    "spell_id": 19057,
-    "item_id": 15564,
-    "equipped_item_class": 4,
-    "equipped_item_subclass_mask": 30,
-    "equipped_inventory_type_mask": 1050016
-  },
-  {
     "id": 1883,
     "name": "Enchant Bracer - Greater Intellect",
     "icon": "spell_holy_greaterheal",
@@ -2317,8 +2095,30 @@
     "equipped_inventory_type_mask": 512
   },
   {
+    "id": 1886,
+    "name": "Enchant Shield - Greater Stamina",
+    "icon": "inv_misc_note_01",
+    "slots": [
+      "main_hand",
+      "off_hand"
+    ],
+    "item_types": [
+      "shield"
+    ],
+    "classes": [],
+    "stats": {
+      "stamina": 9.0
+    },
+    "phase": 0,
+    "spell_id": 20017,
+    "item_id": 16217,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 64,
+    "equipped_inventory_type_mask": 0
+  },
+  {
     "id": 1887,
-    "name": "Enchant Gloves - Greater Agility",
+    "name": "Enchant Gloves - Agility",
     "icon": "spell_holy_greaterheal",
     "slots": [
       "hands"
@@ -2331,7 +2131,7 @@
       "agility": 7.0
     },
     "phase": 0,
-    "spell_id": 20012,
+    "spell_id": 13815,
     "item_id": 0,
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 31,
@@ -2535,7 +2335,7 @@
   },
   {
     "id": 1897,
-    "name": "Enchant 2H Weapon - Impact",
+    "name": "Enchant 2H Weapon - Lesser Impact",
     "icon": "spell_holy_greaterheal",
     "slots": [
       "main_hand",
@@ -2547,7 +2347,7 @@
     "classes": [],
     "stats": {},
     "phase": 0,
-    "spell_id": 13695,
+    "spell_id": 13529,
     "item_id": 0,
     "equipped_item_class": 2,
     "equipped_item_subclass_mask": 1378,
@@ -2632,6 +2432,27 @@
     "equipped_item_class": 2,
     "equipped_item_subclass_mask": 189939,
     "equipped_inventory_type_mask": 0
+  },
+  {
+    "id": 1901,
+    "name": "Enchant Bracer - Superior Intellect",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "wrist"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "intellect": 9.0
+    },
+    "phase": 0,
+    "spell_id": 1248661,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 512
   },
   {
     "id": 1903,
@@ -2894,6 +2715,27 @@
     "equipped_item_class": 2,
     "equipped_item_subclass_mask": 58867,
     "equipped_inventory_type_mask": 0
+  },
+  {
+    "id": 2563,
+    "name": "Enchant Gloves - Superior Strength",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "hands"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "strength": 15.0
+    },
+    "phase": 0,
+    "spell_id": 1248640,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
   },
   {
     "id": 2564,
@@ -3697,5 +3539,487 @@
     "equipped_item_class": 4,
     "equipped_item_subclass_mask": 64,
     "equipped_inventory_type_mask": 0
+  },
+  {
+    "id": 7646,
+    "name": "Enchant Gloves - Holy Power",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "hands"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "holy_power": 20.0
+    },
+    "phase": 0,
+    "spell_id": 1213622,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
+  },
+  {
+    "id": 7647,
+    "name": "Enchant Gloves - Arcane Power",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "hands"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "arcane_power": 20.0
+    },
+    "phase": 0,
+    "spell_id": 1213626,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
+  },
+  {
+    "id": 7662,
+    "name": "Enchant 2H Weapon - Spellblasting",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "main_hand",
+      "off_hand"
+    ],
+    "item_types": [
+      "two_hand"
+    ],
+    "classes": [],
+    "stats": {
+      "spell_power": 65.0
+    },
+    "phase": 0,
+    "spell_id": 1219580,
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
+  },
+  {
+    "id": 7665,
+    "name": "Enchant Bracer - Greater Spellpower",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "wrist"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "spell_power": 16.0
+    },
+    "phase": 0,
+    "spell_id": 1220624,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 0,
+    "equipped_inventory_type_mask": 512
+  },
+  {
+    "id": 7667,
+    "name": "Enchant Cloak - Agility",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "back"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "agility": 5.0
+    },
+    "phase": 0,
+    "spell_id": 1219587,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 0,
+    "equipped_inventory_type_mask": 65536
+  },
+  {
+    "id": 8203,
+    "name": "Enchant Bracer - Lesser Spirit",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "wrist"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {},
+    "phase": 0,
+    "spell_id": 7859,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
+  },
+  {
+    "id": 8203,
+    "name": "Enchant Boots - Lesser Spirit",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "feet"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {},
+    "phase": 0,
+    "spell_id": 13687,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 256
+  },
+  {
+    "id": 8204,
+    "name": "Enchant Boots - Lesser Agility",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "feet"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "agility": 4.0
+    },
+    "phase": 0,
+    "spell_id": 13637,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 256
+  },
+  {
+    "id": 8205,
+    "name": "Enchant 2H Weapon - Impact",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "main_hand",
+      "off_hand"
+    ],
+    "item_types": [
+      "two_hand"
+    ],
+    "classes": [],
+    "stats": {},
+    "phase": 0,
+    "spell_id": 13695,
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
+  },
+  {
+    "id": 8206,
+    "name": "Enchant Gloves - Greater Agility",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "hands"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "agility": 10.0
+    },
+    "phase": 0,
+    "spell_id": 20012,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
+  },
+  {
+    "id": 8207,
+    "name": "Enchant Gloves - Greater Strength",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "hands"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "strength": 10.0
+    },
+    "phase": 0,
+    "spell_id": 20013,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
+  },
+  {
+    "id": 8211,
+    "name": "Enchant 2H Weapon - Mighty Spell Power",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "main_hand",
+      "off_hand"
+    ],
+    "item_types": [
+      "two_hand"
+    ],
+    "classes": [],
+    "stats": {
+      "spell_power": 55.0
+    },
+    "phase": 0,
+    "spell_id": 1248607,
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
+  },
+  {
+    "id": 8212,
+    "name": "Enchant 2H Weapon - Mighty Healing Power",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "main_hand",
+      "off_hand"
+    ],
+    "item_types": [
+      "two_hand"
+    ],
+    "classes": [],
+    "stats": {
+      "spell_power": 34.0,
+      "healing": 100.0
+    },
+    "phase": 0,
+    "spell_id": 1248636,
+    "item_id": 0,
+    "equipped_item_class": 2,
+    "equipped_item_subclass_mask": 1378,
+    "equipped_inventory_type_mask": 0
+  },
+  {
+    "id": 8213,
+    "name": "Enchant Gloves - Natural Power",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "hands"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "nature_power": 20.0
+    },
+    "phase": 0,
+    "spell_id": 1248645,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 1024
+  },
+  {
+    "id": 8218,
+    "name": "Enchant Necklace - Spell Power",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "neck"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "spell_power": 6.0
+    },
+    "phase": 0,
+    "spell_id": 1249057,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 1,
+    "equipped_inventory_type_mask": 4
+  },
+  {
+    "id": 8219,
+    "name": "Enchant Necklace - Healing Power",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "neck"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "spell_power": 4.0,
+      "healing": 11.0
+    },
+    "phase": 0,
+    "spell_id": 1249058,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 1,
+    "equipped_inventory_type_mask": 4
+  },
+  {
+    "id": 8481,
+    "name": "Medium Armor Kit",
+    "icon": "inv_misc_armorkit_15",
+    "slots": [
+      "chest",
+      "feet",
+      "hands",
+      "legs"
+    ],
+    "item_types": [
+      "kit"
+    ],
+    "classes": [],
+    "stats": {
+      "stamina": 2.0,
+      "armor": 16.0
+    },
+    "phase": 0,
+    "spell_id": 2832,
+    "item_id": 2313,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
+  },
+  {
+    "id": 8484,
+    "name": "Heavy Armor Kit",
+    "icon": "inv_misc_armorkit_16",
+    "slots": [
+      "chest",
+      "feet",
+      "hands",
+      "legs"
+    ],
+    "item_types": [
+      "kit"
+    ],
+    "classes": [],
+    "stats": {
+      "stamina": 3.0,
+      "armor": 24.0
+    },
+    "phase": 0,
+    "spell_id": 2833,
+    "item_id": 4265,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
+  },
+  {
+    "id": 8487,
+    "name": "Thick Armor Kit",
+    "icon": "inv_misc_armorkit_07",
+    "slots": [
+      "chest",
+      "feet",
+      "hands",
+      "legs"
+    ],
+    "item_types": [
+      "kit"
+    ],
+    "classes": [],
+    "stats": {
+      "stamina": 4.0,
+      "armor": 32.0
+    },
+    "phase": 0,
+    "spell_id": 10344,
+    "item_id": 8173,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
+  },
+  {
+    "id": 8490,
+    "name": "Rugged Armor Kit",
+    "icon": "inv_misc_armorkit_09",
+    "slots": [
+      "chest",
+      "feet",
+      "hands",
+      "legs"
+    ],
+    "item_types": [
+      "kit"
+    ],
+    "classes": [],
+    "stats": {
+      "stamina": 5.0,
+      "armor": 40.0
+    },
+    "phase": 0,
+    "spell_id": 19057,
+    "item_id": 15564,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
+  },
+  {
+    "id": 8492,
+    "name": "Mystic Rugged Armor Kit",
+    "icon": "inv_misc_armorkit_09",
+    "slots": [
+      "chest",
+      "feet",
+      "hands",
+      "legs"
+    ],
+    "item_types": [
+      "kit"
+    ],
+    "classes": [],
+    "stats": {
+      "spell_power": 6.0,
+      "armor": 40.0
+    },
+    "phase": 0,
+    "spell_id": 1254770,
+    "item_id": 252487,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 30,
+    "equipped_inventory_type_mask": 1050016
+  },
+  {
+    "id": 8734,
+    "name": "Enchant Bracer - Lesser Intellect",
+    "icon": "spell_holy_greaterheal",
+    "slots": [
+      "wrist"
+    ],
+    "item_types": [
+      "normal"
+    ],
+    "classes": [],
+    "stats": {
+      "intellect": 3.0
+    },
+    "phase": 0,
+    "spell_id": 13622,
+    "item_id": 0,
+    "equipped_item_class": 4,
+    "equipped_item_subclass_mask": 31,
+    "equipped_inventory_type_mask": 512
   }
 ]

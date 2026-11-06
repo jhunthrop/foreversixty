@@ -10,6 +10,7 @@ import {
   nightDateOnly,
   relativeDay,
   relativeTime,
+  syncedWord,
   utcDayMonth,
   utcDayMonthYear,
   viewerZone,
@@ -133,6 +134,18 @@ describe("the guild pages' day words, in a zone west of Greenwich", () => {
     expect(dayWord(new Date('2026-10-16T18:00:00Z'), eveningTuesday)).toBe('Friday');
     expect(dayWord(new Date('2026-10-04T18:00:00Z'), eveningTuesday)).toBe('4 Oct');
     expect(dayWord(new Date('2025-12-31T18:00:00Z'), eveningTuesday)).toBe('31 Dec 2025');
+  });
+
+  it('writes Last synced in one format: words for 7 days, then the date', () => {
+    expect(syncedWord(new Date('2026-10-20T15:00:00Z'), eveningTuesday)).toBe('today');
+    expect(syncedWord(new Date('2026-10-19T15:00:00Z'), eveningTuesday)).toBe('yesterday');
+    expect(syncedWord(new Date('2026-10-16T18:00:00Z'), eveningTuesday)).toBe('4 days ago');
+    expect(syncedWord(new Date('2026-10-13T18:00:00Z'), eveningTuesday)).toBe('7 days ago');
+    expect(syncedWord(new Date('2026-10-12T18:00:00Z'), eveningTuesday)).toBe('12 Oct');
+    expect(syncedWord(new Date('2025-12-31T18:00:00Z'), eveningTuesday)).toBe('31 Dec 2025');
+    expect(syncedWord(new Date('2026-12-28T18:00:00Z'), new Date('2027-01-08T18:00:00Z'))).toBe('28 Dec');
+    expect(syncedWord(new Date('2026-10-22T18:00:00Z'), eveningTuesday)).toBe('today');
+    expect(syncedWord(new Date('nope'), eveningTuesday)).toBe('');
   });
 
   it('never reads a future moment as a negative age', () => {

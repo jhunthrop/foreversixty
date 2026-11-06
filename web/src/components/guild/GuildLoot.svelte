@@ -11,7 +11,7 @@
      on screen disabled, and a server refusal of a click says so once, in the item's card. -->
 <script lang="ts">
   import type { GuildLootItem, GuildLootPage } from '../../lib/guild/api';
-  import type { AttendanceSource, RaidLootAward } from '../../lib/guild/attendance-contract';
+  import type { RaidLootAward } from '../../lib/guild/attendance-contract';
   import { guildGateCopy } from '../../lib/guild/copy';
   import type { GateFacts } from '../../lib/guild/plan-gate';
   import {
@@ -46,7 +46,6 @@
     officerTools,
     raidGuildTools,
     memberReadOnly,
-    attendanceSource = 'reports',
     ownKeys = [],
     busyItemId,
     refusal,
@@ -63,7 +62,6 @@
     raidGuildTools: boolean;
     memberReadOnly: boolean;
     /** `raids`: the candidate line counts raids (`7 of 8 raids`). */
-    attendanceSource?: AttendanceSource;
     /** The viewer's own characters: their rows carry the wash and `(you)`. */
     ownKeys?: readonly string[];
     busyItemId: number | null;
@@ -212,12 +210,7 @@
                   {item.item_id === fullTierOneItem ? TIER_ONE_LABEL : TIER_ONE_SHORT}
                 </p>
               {/if}
-              <LootCandidateRow
-                {candidate}
-                own={ownKeys.includes(candidate.character_key)}
-                {showAttendance}
-                {attendanceSource}
-              >
+              <LootCandidateRow {candidate} own={ownKeys.includes(candidate.character_key)} {showAttendance}>
                 {#snippet action()}
                   {#if awardState.kind === 'awarded'}
                     <span class="text-muted text-[12px]" data-testid="guild-loot-winner-slot">

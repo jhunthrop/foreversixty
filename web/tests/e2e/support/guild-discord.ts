@@ -112,7 +112,7 @@ export function settingsBody(discord: GuildSettingsDiscord | null, frozen: boole
     claim: frozen
       ? { state: 'contested', since: '2026-09-01T00:00:00Z', frozen: true }
       : { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
-    invite: { rotated_at: null },
+    invite: { rotated_at: null, url: null, made_by: null },
     ...(discord === null ? {} : { discord }),
   };
 }

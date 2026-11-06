@@ -6,7 +6,7 @@ import {
   announcePageLoadedCharacter,
   announceSessionHeal,
 } from '../current-character-events';
-import { mountBisFollow } from './follow-selector-client';
+import { applyBisDefaultBand, mountBisFollow } from './follow-selector-client';
 
 const follow = vi.fn<(root: HTMLElement) => Promise<void>>(() => Promise.resolve());
 // The run module is the heavy half; a mock factory is only evaluated when something imports it,
@@ -49,5 +49,23 @@ describe('mountBisFollow', () => {
     stop = mountBisFollow(root);
     announceSessionHeal();
     await vi.waitFor(() => expect(follow).toHaveBeenCalledWith(root));
+  });
+});
+
+describe('applyBisDefaultBand', () => {
+  afterEach(() => {
+    window.history.replaceState(null, '', '/');
+  });
+
+  it('turns ?band=60 into the band hash the tabs use', () => {
+    window.history.replaceState(null, '', '/bis/hunter/beast-mastery?band=60');
+    applyBisDefaultBand(document.createElement('div'));
+    expect(window.location.hash).toBe('#band-alliance-60');
+  });
+
+  it('leaves a band already in the URL alone', () => {
+    window.history.replaceState(null, '', '/bis/hunter/beast-mastery?band=60#band-alliance-30');
+    applyBisDefaultBand(document.createElement('div'));
+    expect(window.location.hash).toBe('#band-alliance-30');
   });
 });

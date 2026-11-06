@@ -1,6 +1,12 @@
 // web/src/lib/bis/follow-selector.test.ts
 import { describe, expect, it } from 'vitest';
-import { decideBisFollow, defaultSpecKeyFor, type BisPageState } from './follow-selector';
+import {
+  bandFromParam,
+  decideBisDefault,
+  decideBisFollow,
+  defaultSpecKeyFor,
+  type BisPageState,
+} from './follow-selector';
 
 const PAGE: BisPageState = { specKey: 'hunter-beast-mastery', faction: 'alliance', band: 20 };
 
@@ -72,5 +78,55 @@ describe('decideBisFollow', () => {
       kind: 'navigate',
       href: '/bis/warrior/fury?faction=alliance#band-alliance-20',
     });
+  });
+});
+
+describe('decideBisDefault', () => {
+  it('opens on the selected character’s band and faction when it is this spec', () => {
+    expect(
+      decideBisDefault(PAGE, {
+        classSlug: 'hunter',
+        specKey: 'hunter-beast-mastery',
+        level: 34,
+        faction: 'horde',
+      }),
+    ).toEqual({ kind: 'update', faction: 'horde', band: 30 });
+  });
+
+  it('keeps the band 20 list for a character under 20', () => {
+    expect(
+      decideBisDefault(PAGE, {
+        classSlug: 'hunter',
+        specKey: 'hunter-beast-mastery',
+        level: 12,
+        faction: 'alliance',
+      }),
+    ).toEqual({ kind: 'stay' });
+  });
+
+  it('never leaves a page the player opened for another spec', () => {
+    expect(
+      decideBisDefault(PAGE, {
+        classSlug: 'hunter',
+        specKey: 'hunter-marksmanship',
+        level: 45,
+        faction: 'alliance',
+      }),
+    ).toEqual({ kind: 'stay' });
+    expect(decideBisDefault(PAGE, { classSlug: 'warrior', level: 45 })).toEqual({ kind: 'stay' });
+  });
+});
+
+describe('bandFromParam', () => {
+  it('reads ?band=60 and a raw level as their band', () => {
+    expect(bandFromParam('60')).toBe(60);
+    expect(bandFromParam('34')).toBe(30);
+    expect(bandFromParam('5')).toBe(20);
+  });
+
+  it('ignores anything that is not a level', () => {
+    expect(bandFromParam(null)).toBeNull();
+    expect(bandFromParam('raid')).toBeNull();
+    expect(bandFromParam('600')).toBeNull();
   });
 });

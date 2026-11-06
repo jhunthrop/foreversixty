@@ -209,7 +209,7 @@ func signupRows(raids []guilds.Raid, views map[int64]guilds.RaidView, verified [
 		rows = append(rows, ActionRow{raidSelect(raids, views, p)})
 	}
 	if len(verified) > 1 {
-		rows = append(rows, ActionRow{signupCharSelect(verified, p)})
+		rows = append(rows, ActionRow{signupCharSelect(verified, p, pickedNoRoles(raids, p))})
 	}
 	buttons := make(ActionRow, 0, len(signUpStates)+1)
 	for _, st := range signUpStates {
@@ -257,10 +257,20 @@ func raidOptionDescription(starts time.Time, zone string, v guilds.RaidView) str
 	return strings.Replace(count, "{Guild time}", starts.In(raidLocation(zone)).Format(signupGuildTimeLayout), 1)
 }
 
-func signupCharSelect(verified []guilds.SignupCandidate, p signupPicks) Component {
+// pickedNoRoles is whether the card's picked raid is a guild event, whose options name no role.
+func pickedNoRoles(raids []guilds.Raid, p signupPicks) bool {
+	for _, r := range raids {
+		if r.ID == p.RaidID {
+			return r.NoRoles()
+		}
+	}
+	return false
+}
+
+func signupCharSelect(verified []guilds.SignupCandidate, p signupPicks, noRoles bool) Component {
 	options := make([]SelectOption, 0, min(len(verified), maxSelectOptions))
 	for _, c := range verified[:min(len(verified), maxSelectOptions)] {
-		o := characterOption(c)
+		o := characterOption(c, noRoles)
 		o.Default = c.CharacterKey == p.CharacterKey
 		options = append(options, o)
 	}

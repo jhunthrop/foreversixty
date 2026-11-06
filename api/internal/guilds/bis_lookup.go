@@ -6,6 +6,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
+	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
 // BisBuild is the client build every BiS read of this service uses (the guild control
@@ -52,7 +53,8 @@ func (s *Service) BisBuild() string { return s.Store.BisBuild() }
 // characters read it for readiness; one under 60 is not graded (computeReadiness).
 const bisBandLevel = raidLevel
 
-// loadBandFor is FileSlugFor+LoadBand, folded into "do we have a band for this character at
+// loadBandFor is FileSlugFor+LoadPresetBand under the preset the site and /char read at the band
+// (upgrades.PresetFor: raid at 60), folded into "do we have a band for this character at
 // all" - any failure (unknown spec, missing file, read/parse error) reads as false, never an
 // error: a BiS data gap must never fail the roster, standing, readiness or loot endpoints,
 // the same "a data gap is an honest null, not a 500" rule fs1.Decode's own package comment
@@ -65,7 +67,7 @@ func (s *Store) loadBandFor(classSlug, specName, faction string) (bis.Band, bool
 	if !ok {
 		return bis.Band{}, false
 	}
-	band, ok, err := bis.LoadBand(s.DataDir, s.BisBuild(), fileSlug, bisBandLevel, faction)
+	band, ok, err := bis.LoadPresetBand(s.DataDir, s.BisBuild(), fileSlug, bisBandLevel, faction, upgrades.PresetFor(bisBandLevel))
 	if err != nil || !ok {
 		return bis.Band{}, false
 	}

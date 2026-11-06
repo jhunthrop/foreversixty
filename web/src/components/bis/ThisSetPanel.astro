@@ -8,6 +8,7 @@
 import { bisCopy, tankCopy } from '../../lib/bis/copy';
 import { button } from '../../lib/ui/button';
 import StatTile from '../ui/StatTile.svelte';
+import ActionLink from '../ui/ActionLink.svelte';
 import type { TankHeadline } from '../../lib/bis/tank-view';
 import Card from '../ui/Card.astro';
 
@@ -18,13 +19,25 @@ interface Props {
   talentPoints: number;
   generatedAtDate: string;
   simHref: string;
+  /** "View ranking sim" under the figure: the run that produced it. Only the level 60 raid band
+   *  of a damage spec carries one (`rankingSimHrefFor`). */
+  rankingSimHref?: string | undefined;
   plannerHref: string;
   /** A tank band's headline: shown in place of the DPS figure when present. */
   tank?: TankHeadline | undefined;
 }
 
-const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, plannerHref, tank } =
-  Astro.props;
+const {
+  setDps,
+  characterLevel,
+  race,
+  talentPoints,
+  generatedAtDate,
+  simHref,
+  rankingSimHref,
+  plannerHref,
+  tank,
+} = Astro.props;
 ---
 
 <Card
@@ -36,11 +49,18 @@ const { setDps, characterLevel, race, talentPoints, generatedAtDate, simHref, pl
 >
   <div class="this-set-panel">
     {tank === undefined ? (
-      <StatTile
-        value={setDps.toFixed(1)}
-        label={bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
-        figureTestid="bis-this-set-figure"
-      />
+      <>
+        <StatTile
+          value={setDps.toFixed(1)}
+          label={bisCopy.thisSetFigureLine(characterLevel, race, talentPoints)}
+          figureTestid="bis-this-set-figure"
+        />
+        {rankingSimHref !== undefined && (
+          <ActionLink href={rankingSimHref} data-testid="bis-ranking-sim-link">
+            {bisCopy.viewRankingSim}
+          </ActionLink>
+        )}
+      </>
     ) : (
       <>
         <span class="tank-figures">

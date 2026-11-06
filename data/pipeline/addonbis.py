@@ -23,8 +23,9 @@ Four decisions are load-bearing:
   SOURCE_KIND_CODES' single-letter codes in the rendered Lua -- see
   pipeline.addonlua.
 * CLIENT-CONFIRMED ONLY (task L1.4). A candidate items.json marks
-  `client_unconfirmed` is never a pick or an alternative: the client may
-  never resolve its id, and the slot falls silent. Since task L1.6
+  `client_unconfirmed` is never a pick or an alternative: the client's own
+  tables do not name it in classic-db's shape (pipeline.client_evidence), so
+  its id may not resolve and the slot falls silent. Since task L1.6
   leveling-bis drops such items before it ranks, so a regenerated build
   has nothing to skip; this stays as a safety net. The next confirmed
   candidate in leveling-bis's own order that the band's pair and
@@ -330,8 +331,9 @@ def _faction_picks(
     """One (band, faction)'s packed picks, decided for the band as a whole.
 
     Task L1.4: a candidate items.json marks `client_unconfirmed` is never a
-    pick or an alternative -- the client may never resolve its id, and the
-    slot would fall silent. A slot whose own pick is confirmed keeps it.
+    pick or an alternative -- the client's own tables do not name it in
+    classic-db's shape, so its id may not resolve and the slot would fall
+    silent. A slot whose own pick is confirmed keeps it.
     Every other slot, in leveling-bis's slot order (pick.go's slotOrder),
     promotes its first confirmed candidate that _usable allows beside the
     picks already final, so a promotion never breaks the pair or two-hand

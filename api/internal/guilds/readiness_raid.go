@@ -18,8 +18,9 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
-// readinessFreshDays is READINESS_FRESH_DAYS: an export synced longer than this before the
-// raid's start is stale and counts as one failing check.
+// readinessFreshDays is READINESS_FRESH_DAYS: an export synced longer than this ago is stale and
+// counts as one failing check. Judged against now, never the raid's date (guild round 3: data
+// synced today read "Synced 35 days before the raid" for an Onyxia five weeks out).
 const readinessFreshDays = 7
 
 const hoursPerDay = 24
@@ -27,8 +28,8 @@ const hoursPerDay = 24
 // noExportScore sorts a no_export row below every row that has an export.
 const noExportScore = -1
 
-// ReadinessRaid is the raid a filtered board is cut to. CutoffAt is the raid's start: the
-// moment each export is judged against.
+// ReadinessRaid is the raid a filtered board is cut to. CutoffAt is now minus
+// readinessFreshDays: an export synced before it is stale.
 type ReadinessRaid struct {
 	ID       int64     `json:"id"`
 	Title    string    `json:"title"`
@@ -55,6 +56,7 @@ type readinessWithNext struct {
 type readinessScope struct {
 	raid   Raid
 	signed map[string]Signup
+	now    time.Time
 }
 
 func (s *Store) newReadinessScope(ctx context.Context, raid *Raid) (*readinessScope, error) {
@@ -65,7 +67,7 @@ func (s *Store) newReadinessScope(ctx context.Context, raid *Raid) (*readinessSc
 	if err != nil {
 		return nil, err
 	}
-	sc := &readinessScope{raid: *raid, signed: map[string]Signup{}}
+	sc := &readinessScope{raid: *raid, signed: map[string]Signup{}, now: time.Now()}
 	for _, sg := range signups {
 		if sg.State == SignupIn || sg.State == SignupLate {
 			sc.signed[sg.CharacterKey] = sg
@@ -87,34 +89,36 @@ func (sc *readinessScope) view() *ReadinessRaid {
 		return nil
 	}
 	start := sc.raid.StartsAt.UTC()
-	return &ReadinessRaid{ID: sc.raid.ID, Title: sc.raid.Title, StartsAt: start, CutoffAt: start}
+	return &ReadinessRaid{ID: sc.raid.ID, Title: sc.raid.Title, StartsAt: start, CutoffAt: freshCutoff(sc.now).UTC()}
 }
 
-// fresh reports whether an export synced at loggedAt is within the fresh window of the raid.
-func (sc *readinessScope) fresh(loggedAt time.Time) bool {
-	return !loggedAt.Before(sc.raid.StartsAt.AddDate(0, 0, -readinessFreshDays))
-}
+// freshCutoff is the moment an export must be synced after to be fresh: now minus
+// readinessFreshDays.
+func freshCutoff(now time.Time) time.Time { return now.AddDate(0, 0, -readinessFreshDays) }
 
-// apply judges the row's export against the raid: a stale one adds a failing check, except on
-// a leveling row, which is never graded.
-func (sc *readinessScope) apply(rr *ReadinessRow) {
-	if sc == nil {
-		return
-	}
-	fresh := sc.fresh(rr.LoggedAt)
-	rr.SyncedBeforeCutoff = &fresh
-	if !fresh && !leveling(rr.Level) {
+// markFreshness judges the row's export against now, on the filtered and the unfiltered board
+// alike (the spec judges freshness against now, never the raid): a stale one is marked
+// synced_before_cutoff and adds a failing check, except on a leveling row, which is never graded.
+func markFreshness(rr *ReadinessRow, now time.Time) {
+	stale := rr.LoggedAt.Before(freshCutoff(now))
+	rr.SyncedBeforeCutoff = &stale
+	if stale && !leveling(rr.Level) {
 		rr.Failing++
 	}
 }
 
 // staleFailure is the failure an officer's nudge gains for a stale export: none, or one phrase.
-func (sc *readinessScope) staleFailure(rr ReadinessRow) []string {
-	if sc == nil || rr.SyncedBeforeCutoff == nil || *rr.SyncedBeforeCutoff {
+func staleFailure(rr ReadinessRow, now time.Time) []string {
+	if rr.SyncedBeforeCutoff == nil || !*rr.SyncedBeforeCutoff {
 		return nil
 	}
-	days := int(sc.raid.StartsAt.Sub(rr.LoggedAt).Hours() / hoursPerDay)
-	return []string{fmt.Sprintf("last sync was %d days before the raid", days)}
+	days := daysSince(now, rr.LoggedAt)
+	return []string{fmt.Sprintf("last sync was %d day%s ago", days, plural(days))}
+}
+
+// daysSince is the whole days from then to now, the age a stale sync is told in.
+func daysSince(now, then time.Time) int {
+	return int(now.Sub(then).Hours() / hoursPerDay)
 }
 
 // noExportRows lists the signed characters the board had no export row for, last.

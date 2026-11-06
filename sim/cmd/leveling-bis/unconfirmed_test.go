@@ -212,3 +212,39 @@ func TestThePublishedCheckRefusesAnOffHandAlternativeOfTheWrongShape(t *testing.
 		}
 	}
 }
+
+// The active build's client tables name these Phase 1 staples in classic-db's
+// shape, so the ranker may pick them, held to the doubt margin; the reworked
+// ones (the client's item effects name new spells) stay out.
+func TestActiveBuildRanksTheConfirmedStaplesAndNotTheReworkedOnes(t *testing.T) {
+	cases := []struct {
+		class     string
+		confirmed []int
+		reworked  []int
+	}{
+		{"rogue", []int{11815 /* Hand of Justice */, 12590 /* Felstriker */}, []int{13965 /* Blackhand's Breadth */}},
+		{"warrior", []int{11815, 15411 /* Mark of Fordring */}, []int{13965}},
+		{"mage", []int{11832 /* Burst of Knowledge */}, []int{12930 /* Briarwood Reed */}},
+	}
+	buildDir := activeBuildDir(t)
+	for _, tc := range cases {
+		items, _, _, err := loadCandidates(buildDir, tc.class)
+		if err != nil {
+			t.Fatalf("loadCandidates(%s): %v", tc.class, err)
+		}
+		byID := make(map[int]candidate, len(items))
+		for _, c := range items {
+			byID[c.ID] = c
+		}
+		for _, id := range tc.confirmed {
+			if _, ok := byID[id]; !ok {
+				t.Errorf("%s: item %d is not a candidate", tc.class, id)
+			}
+		}
+		for _, id := range tc.reworked {
+			if c, ok := byID[id]; ok && c.StatsFromClassicDB {
+				t.Errorf("%s: reworked item %d is a candidate on 1.12 numbers", tc.class, id)
+			}
+		}
+	}
+}

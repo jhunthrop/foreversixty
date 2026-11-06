@@ -115,6 +115,8 @@ func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
 			Tanks: v.Counts.Tanks, Healers: v.Counts.Healers, DPS: v.Counts.DPS,
 		},
 		Roster: rosterLines(v.Signups),
+		// A guild event counts no roles (events spec §3.5): its post lists one plain list.
+		NoRoles: v.ZoneKind == ZoneEvent,
 	}
 	if v.GuildTimezone != nil {
 		in.Timezone = *v.GuildTimezone

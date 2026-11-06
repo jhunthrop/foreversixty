@@ -16,4 +16,10 @@ describe('GuildRosterHandoff', () => {
     expect(body).not.toContain('href="/sim');
     expect(body).not.toContain('href="/planner');
   });
+
+  it('keeps each link on one line, so the stacked pair never wraps beside Remove (guild round 3)', () => {
+    const { body } = render(GuildRosterHandoff, { props: { path: PATH, stacked: true } });
+    expect(body).toMatch(/class="invisible text-\[13px\] whitespace-nowrap"/);
+    expect(body).toContain('lg:flex-col');
+  });
 });

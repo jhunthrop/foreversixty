@@ -180,7 +180,7 @@ Desktop (from 768): grid `minmax(0,1fr) 320px`, gap 24, `items-start`.
 Left column, three lines:
 1. **Identity row**, flex, gap 12, items centred. The guild crest is a 40 px circle with a 2 px `--gold` ring holding the `guildMarkSrc` image at 40 x 40 `object-cover` (the render `GuildCrestSettings` uses). With no crest, `FactionMark` at 24 px sits centred in the ring. With no faction either, the ring is empty. Then the name, Cinzel 700 16 px `--strong`, truncating; under it the ruleset and region, 13 px muted (`Forever · US`).
 2. **You row**, 8 px below, flex wrap, gap 8, 14 px. One entry per character of the viewer in this guild (`me.characters` whose `guild.id` matches), main character first, at most two, then `+{n} more` muted. Each entry: `ClassCrestRing` at 20 px; the character name in its class colour (Barlow 600); the rank word (`Guild master`, `Officer`, `Member`) in `--text`; the verify mark. Verified: a 12 px `--kill` tick (the plans page tick glyph, `aria-hidden`) and `Verified` in `--kill`. Not verified: `Not verified` in `--muted`. Separator ` · ` muted. The name and the rank word never break inside (`white-space: nowrap`); on a narrow phone the verify mark, with its separator, drops to its own line (gate round 2, row 1b at 360).
-3. **Guild facts**, 6 px below, 13 px muted, numbers in JetBrains Mono: `{n} verified` (or `No one verified yet` at 0), then `{m} on the roster` (left out when the guild has no addon snapshot), then the plan word (§9.1), joined by ` · `.
+3. **Guild facts**, 6 px below, 13 px muted, numbers in JetBrains Mono: `{n} verified members` (or `No one verified yet` at 0), then `{m} characters on the roster` (left out when the guild has no addon snapshot), then the plan word (§9.1), joined by ` · `.
 
 Right column, the **step block**, flex column, gap 10:
 - The step sentence, 14 px `--text`, at most four lines at 320 px.
@@ -393,7 +393,7 @@ Touch: every control is at least 44 px tall at 360. Keyboard: tab order follows 
 ### 6.2 Claim page (`GuildClaim.svelte`) changes
 
 - **With `plan`**: a 14 px `--text` line under the heading, on a 2 px `--gold` left rule, padding-left 14 (§9.3), only while the viewer does not hold the claim (gate fix, row 16: "Claim the guild first" is never shown to the player who just claimed it).
-- **After a confirmed claim with `plan`**: the `Next` list gains, first, the §5.3 `ready` button (`Start the 7-day trial` or `Subscribe · {price}`) as the page's one fill. `Approve your officers and members` and `Make an invite link` follow, as today, 12 px apart (the button's failure line is drawn only after a failed click).
+- **After a confirmed claim with `plan`**: the `Next` list gains, first, the §5.3 `ready` button (`Start the 7-day trial` or `Subscribe · {price}`) as the page's one fill. `Approve your officers and members`, `Make an invite link`, `Plan an event` (to the guild's `#raids`) and `Add the Discord bot` (to Settings `#discord`) follow, 12 px apart (the button's failure line is drawn only after a failed click). A guild with no plan gets one 13 px `--muted` line under the row, `Events and the Discord bot are part of the Guild and Raid guild plans.`, the gate sentence's part 1 with no link (guild round 3).
 - **Signed in, no character of theirs in the guild**: `notAMember` gains the inline link `Get set up`, with `next` set to this claim URL. `/setup` accepts `next` (validated by `safeNextPath`) and, after a save, shows `Back to {Guild}'s claim` as its one primary.
 - **A member viewer**: `memberCannotClaim` is replaced by the §9.3 sentence and a `CopyLinkField` holding the claim URL with the same `plan` it was opened with (sr-only label, max 640 px, full-width buttons below 768; §5.5).
 - **Signed out**: today's `signInLine`; the sign-in keeps `next`.
@@ -402,7 +402,7 @@ Touch: every control is at least 44 px tall at 360. Keyboard: tab order follows 
 
 - The unverified note (`Guild.svelte`, `guildHomeCopy.notVerifiedNote`) picks by `viewer.verify.has_approver` (§8). With an approver: today's sentence. Without one: the §9.3 sentence and the inline gold link `Send your guild master a link` to the claim page.
 - The header claim slot for a member of an unclaimed guild reads `Get the guild claimed` and links to the claim page. It no longer offers `Claim this guild` to someone who cannot claim.
-- Invite link, joined state: under `You joined the guild.`, 13 px muted, the guild's plan sentence (§9.3), then `Open the guild`.
+- Invite link, joined state: under `You joined the guild.`, 13 px muted, the guild's plan sentence (§9.3), then `Open the guild`. The plan sentence is for an officer or the guild master only; a member who joins reads no plan line (amended 2026-11-05, guild loop round 3: a raider has nothing to do about the plan).
 
 ### 6.4 Guild settings `#billing`, an officer who does not hold the claim
 
@@ -441,7 +441,7 @@ No state on these paths ends on a page without a next step. The one wait we cann
 ## 8. API this spec needs
 
 `GET /v1/me`, per `guilds[]` entry. These keys are new. The web treats an older response as unknown, and draws a card with only the identity rows and `Open the guild`.
-- `ruleset_label` (the ruleset word: Normal, PvP, Hardcore — shipped in place of the `realm` the first draft named; the web renders `{ruleset} · {REGION}`), `slug` (the guild page's URL slug, sent raw; the web escapes it), `crest_url` (string or null), `faction` (`alliance`, `horde` or null), `roster_count` (the home's `counts.on_roster + counts.in_game_no_account`; null without a snapshot).
+- `ruleset_label` (the ruleset word: Normal, PvP, Hardcore — shipped in place of the `realm` the first draft named; the web renders `{ruleset} · {REGION}`), `slug` (the guild page's URL slug, sent raw; the web escapes it), `crest_url` (string or null), `faction` (`alliance`, `horde` or null), `roster_count` (everyone on the guild: the home's `counts.on_roster + counts.waiting`, amended 2026-11-05 guild round 3 when `on_roster` became the Roster list's own count; null without a snapshot).
 - `claim`: `{ state: 'unclaimed'|'pending'|'claimed'|'contested', yours: boolean, pending_yours: boolean, holder_name: string|null }`. `holder_name` is the claim holder's or pending claimant's character in the guild, sent only to a verified officer of the guild; null otherwise.
 - `verify`: `{ has_approver: boolean }`, true when the guild has at least one verified officer or leader.
 - `covered`: null, or `{ tier, state: 'trial'|'active'|'ending'|'past_due'|'lapsed', ends_at: string|null, billed_by: string, you_pay: boolean, you_hold_seat: boolean, seats_given: number, seats_total: number }`, for any account with a character in the guild. `billed_by` is empty for a grant, and for a viewer with no verified character there. `lapsed` stays for 90 days after the end. This is separate from today's officer-only `plan`, which keeps its shape.
@@ -482,14 +482,14 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | Rank words | `Guild master`; `Officer`; `Member` |
 | Verify mark | `Verified`; `Not verified` |
 | More characters | `+{n} more` |
-| Facts | `{n} verified`; `No one verified yet`; `{m} on the roster`; `No plan`; `Guild plan`; `Raid guild plan`; `{Tier} plan · trial`; `{Tier} plan · ends {date}`; `Plan ended {date}` |
+| Facts | `{n} verified members`; `No one verified yet`; `{m} characters on the roster` (each names what it counts, singular at 1; amended 2026-11-05, guild loop round 3); `No plan`; `Guild plan`; `Raid guild plan`; `{Tier} plan · trial`; `{Tier} plan · ends {date}`; `Plan ended {date}` |
 | `ready`, trial unused | `You hold {Guild}'s claim.`; button `Start the 7-day trial` |
 | `ready`, trial used | `You hold {Guild}'s claim.`; button `Subscribe · {price}` |
 | `ready`, lapsed | `{Guild}'s plan ended {date}. You hold its claim.`; button `Subscribe again · {price}` |
 | `ready`, Guild chosen, over 25 verified | `{n} verified members, more than Guild's 25.` + `Switch to Raid guild` |
 | `ready`, Raid guild chosen, 25 or fewer verified | `{n} verified members. Guild covers up to 25 for less.` + `Switch to Guild` |
 | `claim` | `You lead {Guild}. Claim it here, then subscribe it.`; button `Claim {Guild}` |
-| `claim` confirm | `Claim {Guild}? You may attempt one claim every 30 days, hold one claimed guild at a time, and a claim can be contested.`; `Yes, claim it`; `Cancel` |
+| `claim` confirm | `Claim {Guild}? You may attempt one claim every 30 days, hold one claimed guild at a time, and a claim can be contested.`; `Yes, claim it`; `Cancel` (the checkout card has no rules card, so its question carries them; the guild's own claim page asks just `Claim {Guild}?` because its rules card sits right below, guild round 3) |
 | `claim` done | `Claimed. You hold {Guild}.` |
 | `claim_link_bnet` | `You lead {Guild}. Claiming as guild master needs your Battle.net account linked.`; button `Link Battle.net` |
 | `start_claim` | `Nobody holds {Guild}'s claim yet. As an officer you can start one; a second officer or the guild master confirms it.`; button `Start a claim` |
@@ -524,7 +524,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | Share sheet | title `Subscribe {Guild} on Forever Sixty`; text, claim link: `{Guild} could use the {Plan} plan on Forever Sixty. Claim the guild here, then subscribe it.`; text, settings link: `{Guild} could use the {Plan} plan on Forever Sixty. Subscribe it from the guild's billing.` |
 | Busy | `Redirecting to secure checkout…`; `Claiming…`; `Starting…`; `Confirming…` |
 | Claim errors (from the API's error codes, never its sentence) | already claimed: `Someone claimed {Guild} a moment ago.` (the card re-reads); pending: `An officer started a claim on {Guild} a moment ago.` (re-reads); not eligible: `Your character in {Guild} is not an officer or the guild master.`; (no-Battle.net line removed 2026-10-27: the API answers 403 forbidden for both cases; the claim_link_bnet step covers it); rate limited: `You made a claim in the last 30 days.`; holds another: `You already hold another guild's claim.`; same account: `You started this claim, so a second officer confirms it.`; anything else: `That did not work; try again.` |
-| Checkout errors | 503: `Purchases are not open yet. Check back soon — nothing was charged.`; 409 on a guild: `{Guild} is already on a plan.` (the card re-reads); 403: the card re-reads `/v1/me` and shows its new step, never the API sentence; anything else: `That did not work; try again.` + `Try again` |
+| Checkout errors | 503: `Purchases are not open yet. Nothing was charged. Check back soon.`; 409 on a guild: `{Guild} is already on a plan.` (the card re-reads); 403: the card re-reads `/v1/me` and shows its new step, never the API sentence; anything else: `That did not work; try again.` + `Try again` |
 | Portal error | `Billing did not open. Try again.` |
 | Loading | sr `Loading your guilds` |
 | Load error | `Your guilds did not load.` + `Try again` |
@@ -559,7 +559,7 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | Guild page claim slot, member of an unclaimed guild | `Get the guild claimed` |
 | Settings, not the claim holder, no plan | today's sentence + `Send them this link.` |
 | Account guild row | `Not verified`; `{Guild} has no plan.`; `See the next step` |
-| Invite joined | `{Guild} is on the {Tier} plan.`; `{Guild} has no plan yet.` |
+| Invite joined | `{Guild} is on the {Tier} plan.`; `{Guild} is on the free plan.` |
 
 ## 10. Hierarchy
 

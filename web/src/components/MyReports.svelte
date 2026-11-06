@@ -9,7 +9,13 @@
      between `listMyReports` and `listGuildReports(guild.id)`. `heading` is off where the
      page already titles the block, as /logs' panel does. -->
 <script lang="ts">
-  import { REPORTS_PER_PAGE, listGuildReports, listMyReports, type MyReport } from '../lib/account/api';
+  import {
+    REPORTS_PER_PAGE,
+    listGuildReports,
+    listMyReports,
+    reportNightAt,
+    type MyReport,
+  } from '../lib/account/api';
   import { LOG_OUT_HINT, accountReportSummary, creditedName } from '../lib/logs/report-summary';
   import { logsCopy } from '../lib/reports/copy';
   import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
@@ -155,8 +161,8 @@
         <ReportRow
           href={`/reports/${report.id}`}
           title={report.title === '' ? report.zone : report.title}
-          createdAt={report.created_at}
-          dateLabel={nightDates ? nightDate(new Date(report.created_at)) : ''}
+          createdAt={reportNightAt(report)}
+          dateLabel={nightDates ? nightDate(new Date(reportNightAt(report))) : ''}
           summary={accountReportSummary({
             zone: report.zone,
             fightCount: report.fight_count,

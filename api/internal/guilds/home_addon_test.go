@@ -135,14 +135,14 @@ func TestHomeRosterCarriesTheNewestAddonSnapshot(t *testing.T) {
 		t.Fatalf("roster = %d rows, want 3 (an unmatched snapshot member is never a row)", len(byName))
 	}
 	thorgrim := byName["Thorgrim"].Addon
-	if thorgrim == nil || thorgrim.Level == nil || *thorgrim.Level != 52 || thorgrim.Spec == nil || *thorgrim.Spec != "warrior-arms" || thorgrim.GearGap == nil || *thorgrim.GearGap != 3 ||
+	if thorgrim == nil || thorgrim.Level == nil || *thorgrim.Level != 52 || thorgrim.Spec == nil || *thorgrim.Spec != "warrior-arms" || thorgrim.GearGap != nil ||
 		thorgrim.Build == nil || *thorgrim.Build != "Arms raid" || thorgrim.SeenAt != "2026-11-04 14:01" ||
 		!thorgrim.SnapshotAt.Equal(newer) {
 		t.Fatalf("Thorgrim's addon = %+v, want the newer snapshot's line", thorgrim)
 	}
 	healbot := byName["Healbot"].Addon
-	if healbot == nil || healbot.Level == nil || *healbot.Level != 40 || healbot.GearGap == nil || *healbot.GearGap != -2 || healbot.Build != nil || healbot.SeenAt != "2026-11-04 13:55" {
-		t.Fatalf("Healbot's addon = %+v, want level 40, gear gap -2 and a null build (matched by name, any case)", healbot)
+	if healbot == nil || healbot.Level == nil || *healbot.Level != 40 || healbot.GearGap != nil || healbot.Build != nil || healbot.SeenAt != "2026-11-04 13:55" {
+		t.Fatalf("Healbot's addon = %+v, want level 40, no gear gap (the addon's own figure never shows; these rows have no gear for the site to measure) and a null build (matched by name, any case)", healbot)
 	}
 	if loner := byName["Loner"].Addon; loner != nil {
 		t.Fatalf("Loner's addon = %+v, want null: only the older snapshot carried him", loner)

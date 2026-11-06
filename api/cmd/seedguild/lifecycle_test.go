@@ -9,7 +9,29 @@ import (
 	"context"
 	"strings"
 	"testing"
+	"time"
 )
+
+// The seeded log is yesterday's 7:30 pm in the guild's raid zone, never an afternoon hour set in
+// UTC (guild round 3: the log read 1:25 pm beside a 7 pm raid). Across the DST change too.
+func TestLifecycleReportIsYesterdayEveningInTheRaidZone(t *testing.T) {
+	clock, err := time.LoadLocation(lifecycleRaidZone)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, now := range []time.Time{
+		time.Date(2026, 11, 5, 15, 0, 0, 0, time.UTC), // 9 am Thursday in Chicago, CST
+		time.Date(2026, 11, 5, 3, 0, 0, 0, time.UTC),  // 9 pm Wednesday in Chicago: UTC's day is ahead
+		time.Date(2026, 7, 15, 15, 0, 0, 0, time.UTC), // CDT
+	} {
+		createdAt, _, starts := lifecycleReport(clock).schedule(now)
+		local, today := createdAt.In(clock), now.In(clock)
+		yesterday := today.AddDate(0, 0, -1)
+		if local.Hour() != 19 || local.Minute() != 30 || local.Day() != yesterday.Day() || !starts[0].Equal(createdAt) {
+			t.Errorf("now %s: first pull %s, want 7:30 pm on %s in %s", now, local, yesterday.Format("Mon 2 Jan"), lifecycleRaidZone)
+		}
+	}
+}
 
 func TestLifecycleCastHasOneMasterOneOfficerAndThreeMembers(t *testing.T) {
 	var master, officer, members, outside int
@@ -62,7 +84,7 @@ func TestLifecycleExportCarriesTheGuildSectionOnlyForMembers(t *testing.T) {
 // two trash packs - "1 boss (Onyxia) · 1 kill · 2 trash packs · 1 wipe", two Onyxia pulls with one
 // KILL on Progression, and two pulls in the header (round 8, F8-8).
 func TestLifecycleReportIsOneKillAfterOneWipe(t *testing.T) {
-	plan := lifecycleReport()
+	plan := lifecycleReport(nil)
 	if plan.kills() != 1 || plan.wipes() != 1 {
 		t.Fatalf("report has %d boss kills and %d wipes, want 1 and 1", plan.kills(), plan.wipes())
 	}
@@ -146,6 +168,11 @@ func TestApplyLifecycleThenRemoveRoundTrips(t *testing.T) {
 	}
 	if n := count(`select count(*) from reports where status = 'complete' and owner_id = (select id from users where battletag = 'hunthrop#1894')`); n != 1 {
 		t.Errorf("%d complete reports owned by the guild master, want 1", n)
+	}
+	// The match picker filters a raid's logs by log_zone; a seeded night without one never
+	// shows up for the Onyxia raid (guild round 3, item 13).
+	if n := count(`select count(*) from reports where log_zone = 'Onyxia''s Lair'`); n != 1 {
+		t.Errorf("%d seeded reports with the Onyxia log zone, want 1", n)
 	}
 	if n := count(`select count(*) from fights where kill and encounter_id is not null`); n != 1 {
 		t.Errorf("%d boss kills, want 1", n)

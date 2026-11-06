@@ -34,8 +34,9 @@ type AttendanceLine struct {
 	CameAs   string
 }
 
-// AttendanceRecord is one character's attendance. Chip is the Roster tab's chip ("Came 7 of 8 ·
-// 26 of 30 raids", report mode "5 of 8 nights"), "" when the character has no night yet.
+// AttendanceRecord is one character's attendance. Chip is the bot's one attendance wording
+// (attendanceChip: "7 of 8 raid nights · 26 of the last 30"), "" when the character has no
+// night yet.
 type AttendanceRecord struct {
 	Name, Class, Chip string
 	Last              []AttendanceLine
@@ -156,22 +157,21 @@ func (s *Service) attendanceKeys(ctx context.Context, guildID, viewerID int64, o
 	return nil, ErrNoSuchMember
 }
 
-// attendanceChip is the Roster tab's chip verbatim (web/src/lib/guild/roster-facts.ts
-// attendanceChip): report mode nightsLabel ("5 of 8 nights"), raid mode rosterChip ("Came 7 of
-// 8 · 26 of 30 raids"); "" with no night yet.
+// attendanceChip is the bot's one attendance wording, in both attendance modes (guild round 3:
+// the bot read "1 of 1 night", "1 of 1 raid" and "Came 1 of 1 raids" for one night): "{p} of
+// {n} raid night(s)" over the last 8, the singular for one, then " · {p} of the last {n}" when
+// the 30-raid window holds more nights than the 8. The Loot tab says "1 of 1 raid night" too.
+// "" with no night yet.
 func attendanceChip(row RosterRow, source string) string {
 	last8 := row.Attendance
 	if last8.Nights == 0 {
 		return ""
 	}
-	if source != AttendanceSourceRaids {
-		return fmt.Sprintf("%d of %d night%s", last8.Present, last8.Nights, plural(last8.Nights))
+	chip := fmt.Sprintf("%d of %d raid night%s", last8.Present, last8.Nights, plural(last8.Nights))
+	if source != AttendanceSourceRaids || row.Attendance30 == nil || row.Attendance30.Nights <= last8.Nights {
+		return chip
 	}
-	head := fmt.Sprintf("Came %d of %d", last8.Present, last8.Nights)
-	if row.Attendance30 == nil || row.Attendance30.Nights <= last8.Nights {
-		return head + " raids"
-	}
-	return fmt.Sprintf("%s%s%d of %d raids", head, chipJoin, row.Attendance30.Present, row.Attendance30.Nights)
+	return fmt.Sprintf("%s%s%d of the last %d", chip, chipJoin, row.Attendance30.Present, row.Attendance30.Nights)
 }
 
 // lastAttendance is key's rows over the guild's logged raids that count a night (signed In or

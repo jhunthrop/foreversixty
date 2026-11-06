@@ -264,9 +264,10 @@ class GearItem(BaseModel):
     stats_source: Literal["wowhead", "classic-db"] | None = None
     set_id: int | None
     unique: bool
-    #: True for a `stats_source == "classic-db"` row: real 1.12 itemization
-    #: the Forever client has not (yet) confirmed by shipping it as a hotfix
-    #: -- see `data/README.md`, "classic-db-only items and client_unconfirmed".
+    #: True for a `stats_source == "classic-db"` row the client's own `Item`
+    #: and item-effect tables do not name in classic-db's shape
+    #: (`pipeline.client_evidence`; `data/README.md`, "classic-db-only items
+    #: and client_unconfirmed"). A cleared row keeps `stats_source`.
     #: A future hotfix refresh that adds the id to `raw/hotfixes/ItemSparse.csv`
     #: promotes the row to client stats (`stats_source` reverts to `None`) the
     #: next time `normalize` runs, the same way any other hotfix promotion

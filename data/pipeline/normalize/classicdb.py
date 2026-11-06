@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import logging
 from collections import Counter
+from collections.abc import Container
 from pathlib import Path
 
 from pipeline.classicdb_items import (
@@ -50,7 +51,9 @@ def load_classicdb_supplement(
     return supplement(records, known_ids), spells
 
 
-def merge_items(items: list[Item], picked: list[ClassicDbItem]) -> list[Item]:
+def merge_items(
+    items: list[Item], picked: list[ClassicDbItem], confirmed: Container[int] = frozenset()
+) -> list[Item]:
     """`items` plus a flat `Item` for every picked supplement item -- REPLACING,
     not duplicating, any existing row with the same id.
 
@@ -63,11 +66,15 @@ def merge_items(items: list[Item], picked: list[ClassicDbItem]) -> list[Item]:
     broken `inventory_type: 0`); appending a second one would leave two rows
     for the same id, so the stale one is dropped in favour of classic-db's
     real data.
+
+    `confirmed` names the picked ids the client confirms
+    (`pipeline.client_evidence.confirmed_ids`); their rows are not
+    `client_unconfirmed`.
     """
     picked_ids = {item.id for item in picked}
     kept = [item for item in items if item.id not in picked_ids]
     logger.info("classic-db items: merged %d supplement items into items.json", len(picked))
-    return [*kept, *(to_item(item) for item in picked)]
+    return [*kept, *(to_item(item, client_confirmed=item.id in confirmed) for item in picked)]
 
 
 def merge_class_items(
@@ -81,6 +88,7 @@ def merge_class_items(
     client_spell_names: dict[int, str] | None = None,
     client_icon_file_ids: dict[int, int] | None = None,
     icon_names: dict[int, str] | None = None,
+    confirmed: Container[int] = frozenset(),
 ) -> list[ClassItems]:
     """Each class's `items/<class-slug>.json` plus the classic-db supplement
     gear that class may equip (classic-db's own `AllowableClass` mask and the
@@ -97,6 +105,8 @@ def merge_class_items(
     (`pipeline.classicdb_items._classicdb_client_icon`'s doc); `None` for a
     caller with neither and every supplement row's icon falls straight to
     the fork/wowhead chain, exactly as before that lane existed.
+
+    `confirmed` is `merge_items`' own: the ids the client confirms.
     """
     spells = spells or {}
     class_id_by_slug = {slugify(row["Name_lang"]): int(row["ID"]) for row in class_rows}
@@ -121,6 +131,7 @@ def merge_class_items(
                 client_spell_names,
                 client_icon_file_ids,
                 icon_names,
+                client_confirmed=item.id in confirmed,
             )
             for item in allowed
         ]

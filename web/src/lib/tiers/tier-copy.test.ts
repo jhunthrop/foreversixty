@@ -123,7 +123,7 @@ describe('how to read this', () => {
   it('carries the spec bullets, with the preset and the fight length from the data and constants', () => {
     const dps = howToReadBullets('dps', 'Raid-ready, Phase 1');
     expect(dps).toEqual([
-      'Every spec is simmed in its best Raid-ready, Phase 1 gear with raid buffs and consumables.',
+      'Every spec is simmed in its best Raid-ready, Phase 1 gear, with enchants a fresh level 60 can buy, raid buffs and consumables.',
       'One target for 180 seconds. Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid.',
     ]);
     for (const role of ['tank', 'healer'] as const) {

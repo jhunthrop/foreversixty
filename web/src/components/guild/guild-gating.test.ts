@@ -5,6 +5,7 @@ import { gateFactsFixture, GATE_CLAIM_HREF, GATE_SETTINGS_HREF } from '../../tes
 import GuildClaimRow from './GuildClaimRow.svelte';
 import GuildClaimedBy from './GuildClaimedBy.svelte';
 import GuildInviteLink from './GuildInviteLink.svelte';
+import GuildJoinInvited from './GuildJoinInvited.svelte';
 import GuildPlanGate from './GuildPlanGate.svelte';
 
 const text = (markup: string): string =>
@@ -24,6 +25,17 @@ describe('GuildPlanGate', () => {
     expect(text(body)).toBe('Awarding loot is part of Raid guild. Start the 7-day trial.');
     expect(body).toContain(`href="${GATE_SETTINGS_HREF}?plan=raid_guild#billing"`);
     expect(body).toContain('id="officer-tools-gate-loot"');
+  });
+
+  it('on a granted Guild plan reads as a note asking us, never the dead Move link (guild round 3)', () => {
+    const body = gate('loot', { guildTier: true, granted: true });
+    expect(text(body)).toBe(
+      'Awarding loot is part of Raid guild. Your plan was granted by Forever Sixty. Ask us on Discord to move it to Raid guild.',
+    );
+    expect(body).not.toContain('upgrade=1');
+    expect(body).toMatch(
+      /<a[^>]*href="https:\/\/discord\.gg\/[^"]+"[^>]*target="_blank"[^>]*>Ask us on Discord<\/a>/,
+    );
   });
 
   it('asks the claim holder by crest and class colour, with no link', () => {
@@ -114,7 +126,7 @@ describe('GuildInviteLink', () => {
     expect(body).toContain('id="invite"');
     expect(body).toContain('scroll-mt-20');
     expect(text(body)).toContain(
-      'Anyone with this link joins Olympus as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once.',
+      'Anyone with this link joins Olympus as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once. A character with an officer rank in game still waits for an officer.',
     );
   });
 
@@ -142,5 +154,58 @@ describe('GuildInviteLink', () => {
   it('a contested claim disables the press', () => {
     expect(link('2026-11-12T10:00:00Z', true)).toMatch(/data-testid="guild-invite-rotate"|disabled/);
     expect(link(null, true)).toMatch(/\sdisabled/);
+  });
+
+  const kept = (madeBy: typeof holder | null, disabled = false): string =>
+    render(GuildInviteLink, {
+      props: {
+        guildId: 7,
+        guildName: 'Olympus',
+        rotatedAt: '2026-11-12T10:00:00Z',
+        keptUrl: '/guild/invite/fsg_kept',
+        madeBy,
+        disabled,
+      },
+    }).body;
+  const holder = { name: 'Thornhide', class: 'druid', character_key: 'us/pvp/thornhide' };
+
+  it('a kept link on a later visit: the field, who made it in class colour, and Make a new link', () => {
+    const body = kept(holder);
+    expect(body).toMatch(
+      /data-testid="guild-invite-url"[^>]*value="https?:\/\/[^"]+\/guild\/invite\/fsg_kept"|value="https?:\/\/[^"]+\/guild\/invite\/fsg_kept"[^>]*data-testid="guild-invite-url"/,
+    );
+    expect(text(body)).toContain('Made 12 Nov by Thornhide.');
+    expect(body).toContain('font-semibold');
+    expect(body).toContain('Make a new link');
+    expect(text(body)).not.toContain('cannot be shown again');
+    expect(body).not.toContain('data-testid="guild-invite-shown-once"');
+  });
+
+  it('a kept link with no maker on the roster says only the date', () => {
+    expect(text(kept(null))).toContain('Made 12 Nov.');
+    expect(text(kept(null))).not.toContain(' by ');
+  });
+
+  it('a kept link under a contested claim disables Make a new link', () => {
+    expect(kept(holder, true)).toMatch(
+      /<button[^>]*disabled[^>]*data-testid="guild-invite-rotate"|<button[^>]*data-testid="guild-invite-rotate"[^>]*disabled/,
+    );
+  });
+});
+
+describe('GuildJoinInvited', () => {
+  it('names the inviter by crest and character in class colour', () => {
+    const body = render(GuildJoinInvited, {
+      props: { guildName: 'Olympus', inviter: { name: 'Thornhide', class: 'druid', character_key: 'k' } },
+    }).body;
+    expect(text(body)).toBe('Thornhide invited you to join.');
+    expect(body).toContain('/crests/druid');
+    expect(body).toContain('font-semibold');
+  });
+
+  it('with no inviter known invites to the guild by name', () => {
+    expect(text(render(GuildJoinInvited, { props: { guildName: 'Olympus', inviter: null } }).body)).toBe(
+      'You are invited to join Olympus.',
+    );
   });
 });
