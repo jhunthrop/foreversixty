@@ -136,6 +136,9 @@ describe('dollCellFor, signed in', () => {
   it('counts the upgrades and their sum in the summary line', () => {
     expect(dollSummary([cell], character, 'DPS')).toBe('Felsnap (level 19) has 0 of 1 picks. 1 upgrade, +0.8 DPS available.');
     expect(dollSummary([cell], undefined, 'DPS')).toBe('1 of 1 slots have a pick at this level.');
+    expect(dollSummary([cell], { ...character, gains: { [cell.slot]: null } }, 'DPS')).toBe(
+      'Felsnap (level 19) has 0 of 1 picks. 1 upgrade, not sim-checked yet.',
+    );
   });
 });
 

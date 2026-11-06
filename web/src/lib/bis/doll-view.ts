@@ -389,11 +389,16 @@ export function dollSummary(
   const worn = filled.filter((cell) => cell.badge === 'worn').length;
   const upgrades = filled.filter((cell) => cell.badge === 'upgrade');
   if (upgrades.length === 0) return `${character.name} wears every pick for this level.`;
-  const total = upgrades.reduce((sum, cell) => sum + (character.gains[cell.slot] ?? 0), 0);
-  return (
-    `${character.name} (level ${character.level}) has ${worn} of ${filled.length} picks. ` +
-    `${upgrades.length} ${upgrades.length === 1 ? 'upgrade' : 'upgrades'}, ${signedFigure(total)} ${unitWord(unit)} available.`
-  );
+  // Only sim-checked gains add up; an upgrade with no measured gain is counted, never priced at 0.
+  const measured = upgrades.filter((cell) => typeof character.gains[cell.slot] === 'number');
+  const total = measured.reduce((sum, cell) => sum + (character.gains[cell.slot] ?? 0), 0);
+  const unchecked = upgrades.length - measured.length;
+  const noun = `${upgrades.length} ${upgrades.length === 1 ? 'upgrade' : 'upgrades'}`;
+  const worth =
+    measured.length === 0
+      ? `${noun}, not sim-checked yet.`
+      : `${noun}, ${signedFigure(total)} ${unitWord(unit)} available${unchecked > 0 ? ` from ${measured.length} sim-checked` : ''}.`;
+  return `${character.name} (level ${character.level}) has ${worn} of ${filled.length} picks. ${worth}`;
 }
 
 /** A Where to go group (§4.7): an instance, a profession, a faction, or a kind. */
