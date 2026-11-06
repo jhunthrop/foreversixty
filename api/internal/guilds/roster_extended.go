@@ -71,19 +71,14 @@ func (s *Store) enrichRoster(ctx context.Context, guildID int64, source string, 
 	return nil
 }
 
-// attendanceReports is the attendance window: the guild's own last attendanceWindow reports
+// attendanceReports is an attendance window: the guild's own last window reports (attendanceWindow for the roster)
 // that are evidence (presence.EvidenceReport: not private, not flagged as tampered or
 // unverified) and carry at least one ranked row (fight_metrics, not removed) or rated row
 // (rating_scores), newest first.
 // Presence (presence.In) is read from those rows, so a night nobody can be present in (a
 // private, flagged or trash-only report, or one not ranked yet) is never everyone's
 // absence. Fewer when the guild has not logged that many yet.
-func (s *Store) attendanceReports(ctx context.Context, guildID int64) ([]string, error) {
-	return s.attendanceReportsN(ctx, guildID, attendanceWindow)
-}
-
-// attendanceReportsN is attendanceReports over the guild's last window reports.
-func (s *Store) attendanceReportsN(ctx context.Context, guildID int64, window int) ([]string, error) {
+func (s *Store) attendanceReports(ctx context.Context, guildID int64, window int) ([]string, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select r.id from reports r
 		where r.guild_id = $1 and `+presence.EvidenceReport("r")+`
@@ -111,7 +106,7 @@ func (s *Store) attendance(ctx context.Context, guildID int64, keys []string) (i
 
 // attendanceN is attendance over the guild's last window reports.
 func (s *Store) attendanceN(ctx context.Context, guildID int64, keys []string, window int) (int, map[string]int, error) {
-	ids, err := s.attendanceReportsN(ctx, guildID, window)
+	ids, err := s.attendanceReports(ctx, guildID, window)
 	if err != nil {
 		return 0, nil, err
 	}
