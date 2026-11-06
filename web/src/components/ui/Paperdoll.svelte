@@ -5,7 +5,8 @@
      short stats, the gain at the right. Line 2: the full source and the next best (or the worn item).
      One cell is selected; below 1760 px the selected cell expands in place under itself, from 1760
      the detail sits in the side inspector. Four modes (pick, compare, worn, report) differ only in
-     the cells the caller maps (lib/ui/paperdoll.ts); the frame, cell, states and keyboard are one.
+     the cells the caller maps (lib/bis/doll-view.ts for BiS, lib/gear/doll-cells.ts for the worn
+     and report dolls); the frame, cell, states and keyboard are one.
      It draws no box of its own: the page's Plate holds it. Every icon and name carries
      `data-bis-item`, so the page's one tooltip host opens the real item. -->
 <script lang="ts">
@@ -128,7 +129,11 @@
           data-testid={`${testid}-flag-${cell.slot}`}>{cell.flag.text}</span
         >{/if}
     </span>
-    <span class="ui-doll-icon" data-bis-item={cell.item && !cell.unknown ? cell.item.id : undefined}>
+    <span
+      class="ui-doll-icon"
+      data-bis-item={cell.item && !cell.unknown ? cell.item.id : undefined}
+      data-covered={cell.item === null && cell.coveredBy ? 'true' : undefined}
+    >
       <ItemIcon
         icon={cell.item?.icon ?? cell.coveredBy?.icon}
         quality={cell.item?.quality ?? cell.coveredBy?.quality}
@@ -153,14 +158,18 @@
               >{cell.stats}</span
             >{/if}
         {:else}
-          <span class="text-muted text-[15px] leading-5">Nothing better yet</span>
+          <span class="text-muted text-[15px] leading-5">{cell.emptyTitle ?? 'Nothing better yet'}</span>
         {/if}
       </span>
       <span class="ui-doll-line2 text-muted text-[13px] leading-[18px]">
         {#if cell.item === null}
           {cell.empty ?? ''}
         {:else}
-          {#if cell.source}<span class="ui-doll-src" data-source-kind={cell.sourceKind}>{cell.source}</span
+          {#if cell.source}<span
+              class="ui-doll-src"
+              class:text-rarity-uncommon={cell.sourceTone === 'enchant'}
+              data-source-kind={cell.sourceKind}
+              data-testid={`${testid}-line2-${cell.slot}`}>{cell.source}</span
             >{/if}
         {/if}
       </span>
@@ -328,6 +337,11 @@
   }
   .ui-doll-flag[data-tone='gold'] {
     color: var(--color-gold);
+  }
+  /* A two-hander covering the off hand: greyed in the socket, as the game's pane draws it. */
+  .ui-doll-icon[data-covered='true'] {
+    filter: grayscale(1);
+    opacity: 0.45;
   }
   .ui-doll-body {
     display: flex;

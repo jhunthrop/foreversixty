@@ -165,7 +165,7 @@ export function upgradesFor(
 
     const wornItem = wornItemId === undefined ? undefined : items.get(wornItemId);
     const wornUnknown = wornItemId !== undefined && wornItem === undefined;
-    const { gainDps, notSimChecked } = gainFor(slot, pick, wornItemId, wornItem, wornUnknown, band, weights);
+    const { gainDps, notSimChecked } = slotGainFor(slot, pick, wornItemId, wornItem, band, weights);
     if (gainDps !== null) totalGainDps += gainDps;
     if (notSimChecked) notSimCheckedCount += 1;
 
@@ -189,16 +189,18 @@ export function upgradesFor(
  *  second-guessed by `scoreItem`; (c) otherwise, for a non-weapon slot, the `scoreItem`
  *  stat-weight diff; (d) otherwise (a weapon slot with no alternative match), the gain is
  *  unknown -- never diff a full-sim `score` (which bakes in weapon DPS) against a
- *  `scoreItem` approximation (which cannot). */
-function gainFor(
-  slot: Slot,
+ *  `scoreItem` approximation (which cannot). The one gain rule: the home panels and the worn
+ *  paperdoll (lib/gear/doll-cells.ts) both price a slot here. A worn id with no `wornItem` is
+ *  unknown to the item table. */
+export function slotGainFor(
+  slot: string,
   pick: BisSlot,
   wornItemId: number | undefined,
   wornItem: Item | undefined,
-  wornUnknown: boolean,
   band: BisBand,
-  weights: SpecWeights,
+  weights: SpecWeights = weightsRecordFor(band),
 ): { gainDps: number | null; notSimChecked: boolean } {
+  const wornUnknown = wornItemId !== undefined && wornItem === undefined;
   const alternative = alternativeFor(pick, wornItemId);
   if (alternative !== undefined) {
     // tiesWithPick already filtered out dps_delta === 0; every alternative reaching here is a

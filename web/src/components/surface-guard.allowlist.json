@@ -17,7 +17,7 @@
     "components/Character.svelte": 1,
     "components/character/BossPicker.svelte": 2,
     "components/character/CharacterFightTable.svelte": 2,
-    "components/character/CharacterGearPanel.svelte": 4,
+    "components/character/CharacterGearPanel.svelte": 3,
     "components/character/CharacterHeader.svelte": 4,
     "components/character/CharacterHeaderSignedOut.svelte": 1,
     "components/character/CharacterHistory.svelte": 3,

@@ -36,7 +36,6 @@
   } from '../lib/character-profile';
   import { onCurrentCharacterChange, onCurrentCharacterSwitch, readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
-  import { sourcePill } from '../lib/sim/sources';
   import { foreverOf, hasScore, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
   import { slotsHaveGear } from '../lib/addon-export';
@@ -381,18 +380,8 @@
         first={gearFirst}
         planner={prompt?.primary === 'planner'}
         capturedAt={own?.build?.captured_at ?? null}
-        identity={{
-          name: data.character.name,
-          classSlug:
-            data.character.class === undefined || data.character.class === ''
-              ? ''
-              : classSlugFromName(data.character.class),
-          race: data.character.race ?? '',
-          spec: resolvedProfileSpec(data, own) ?? '',
-          level: typeof data.character.level === 'number' ? data.character.level : null,
-          faction: factionOfRace(data.character.race),
-          source: sourcePill({ kind: 'addon', ref: '', captured_at: own?.build?.captured_at ?? '' }),
-        }}
+        gearSpec={data.gear_spec ?? null}
+        faction={factionOfRace(data.character.race)}
         {owned}
       />
     {/if}
