@@ -1646,17 +1646,17 @@
         "spell": "Lightning Bolt",
         "authored": 15208,
         "lines": [
-          8
+          9
         ],
         "prepull": [
           1
         ],
         "bands": [
           {
-            "from_level": 26,
+            "from_level": 20,
             "to_level": 27,
             "rank": 3,
-            "note": "Sim-accuracy round 19 (guide round 15 Sims requested 1): judged level by level 20 to 29 (10,000 iterations, seeds 1 and 50001, both factions). At 26 and 27 rank 3 beats the just-learned rank 5 by 3.7% to 4.9% (rank 4 ties or trails rank 3); at 20 to 25 rank 3 ties the top rank, and from 28 the top rank wins."
+            "note": "Sim-accuracy round 19 (guide round 15 Sims requested 1): judged level by level 20 to 29 (10,000 iterations, seeds 1 and 50001, both factions). At 26 and 27 rank 3 beats the just-learned rank 5 by 3.7% to 4.9% (rank 4 ties or trails rank 3); at 20 to 25 rank 3 ties the top rank, and from 28 the top rank wins. Round 24: rank 3 now also beats the newest rank 4 at 20 to 25 (+0.3% to +4.3%, both factions, seeds 1 and 50001), so the row starts at 20."
           },
           {
             "from_level": 30,
@@ -1695,6 +1695,45 @@
             "preset": "bare"
           }
         ]
+      },
+      {
+        "spell": "Flame Shock",
+        "authored": 29228,
+        "lines": [
+          3
+        ],
+        "bands": [
+          {
+            "from_level": 19,
+            "to_level": 19,
+            "rank": 1,
+            "races": [
+              "orc"
+            ],
+            "note": "Sim-accuracy round 24 (rank sweep at the first two levels after each new rank): 10,000 iterations, seeds 1 and 50001, band-20 gear, the leveling order's talents at the level. An orc's Flame Shock rank 1 beats the new rank 2 at 19 (+0.36% and +0.41%); a troll (-0.3%), a tauren (-0.7% to -0.8%) and a dwarf (-2.6%) keep rank 2, and at 18 every race ties."
+          }
+        ]
+      }
+    ],
+    "shaman-enhancement": [
+      {
+        "spell": "Earth Shock",
+        "authored": 10414,
+        "lines": [
+          7
+        ],
+        "bands": [
+          {
+            "from_level": 25,
+            "to_level": 25,
+            "rank": 3,
+            "races": [
+              "orc",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 24 (rank sweep at the first two levels after each new rank): 10,000 iterations, seeds 1 and 50001, band-20 gear, the leveling order's talents at the level. At 25, the level Stormstrike arrives, Earth Shock rank 3 beats rank 4 for an orc (+0.72% to +0.74%) and a troll (+0.32% to +0.34%); a tauren (-0.3%) keeps rank 4 and a dwarf ties. From 26 rank 4 wins again."
+          }
+        ]
       }
     ],
     "shaman-restoration": [
@@ -1705,6 +1744,12 @@
           17
         ],
         "bands": [
+          {
+            "from_level": 18,
+            "to_level": 19,
+            "rank": 3,
+            "note": "Sim-accuracy round 24 (rank sweep at the first two levels after each new rank): 10,000 iterations, seeds 1 and 50001, band-20 gear, the leveling order's talents at the level. On the tank, Healing Wave rank 3 heals more than the new rank 4 at 18 and 19 (+3.4% to +5.4%, both factions, seeds 1 and 50001) and more than rank 2 (3,000-iteration screen); rank 2 wins from 20 (next row)."
+          },
           {
             "from_level": 20,
             "to_level": 25,

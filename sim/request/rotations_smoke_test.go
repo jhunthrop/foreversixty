@@ -175,6 +175,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"priest-holy": {
 		"{SpellID: 1240827}": "Prayer of Mending is a talent (sim/priest/prayer_of_mending.go); this build takes none.",
 	},
+	"shaman-elemental": {
+		"{SpellID: 16166}": "Lightning Mastery is a talent (sim/shaman/talents.go); this build takes none, and the Berserking line's not-auraIsActive gate reads an unknown aura as down.",
+		"{SpellID: 20554}": "Berserking is the Troll racial (sim/core/racials.go); this build is not a Troll.",
+	},
 	"shaman-restoration": {
 		"{SpellID: 1239243}": "Riptide is a talent (sim/shaman/riptide.go); this build takes none.",
 		"{SpellID: 16188}":   "Nature's Swiftness is a talent (sim/shaman/talents.go); this build takes none.",
