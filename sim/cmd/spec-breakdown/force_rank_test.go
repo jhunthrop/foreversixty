@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"strings"
 	"testing"
 
@@ -30,5 +31,36 @@ func TestRankFlagForcesTheRankOnEveryReference(t *testing.T) {
 		if _, err := parseForcedRanks(bad); err == nil {
 			t.Errorf("parseForcedRanks(%q) accepted", bad)
 		}
+	}
+}
+
+// Round 24 hunter: forcing the authored rank itself at bare 60 left the
+// authored id in place, so the bare-60 rank row (Marksmanship's Aimed Shot
+// rank 1) rewrote it again and "authored against row" ran the row twice.
+// A forced rank wins over every row on that spell.
+func TestForcedAuthoredRankWinsOverTheRankRow(t *testing.T) {
+	const aimedRank1, aimedRank6 = 19434, 20904
+	o := options{repoRoot: repoRoot, spec: "hunter-marksmanship", preset: "bare"}
+	row, err := rotationFor(o, nil, "hunter", "troll", 60)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if row != nil {
+		t.Fatal("no -rank and no -rotation must keep the spec's own rotation (nil)")
+	}
+	forced, err := parseForcedRanks("20904=6")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rot, err := rotationFor(o, forced, "hunter", "troll", 60)
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := protojson.Format(rot)
+	if strings.Contains(text, strconv.Itoa(aimedRank1)) {
+		t.Errorf("-rank 20904=6 at bare 60 still casts Aimed Shot rank 1 (the row)")
+	}
+	if !strings.Contains(text, strconv.Itoa(aimedRank6)) {
+		t.Errorf("-rank 20904=6 at bare 60 lost Aimed Shot rank 6")
 	}
 }

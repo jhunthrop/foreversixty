@@ -194,6 +194,11 @@ func decodeRotation(raw []byte, path, spec, class, preset, race string, level in
 	if err != nil {
 		return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
 	}
+	return parseRotation(raw, path)
+}
+
+// parseRotation parses a rotation whose ranks are already rewritten.
+func parseRotation(raw []byte, path string) (*proto.APLRotation, error) {
 	rotation := &proto.APLRotation{}
 	if err := protojson.Unmarshal(raw, rotation); err != nil {
 		return nil, fmt.Errorf("decoding the rotation in %s: %w", path, err)
@@ -229,7 +234,8 @@ func parseForcedRanks(list string) ([]forcedRank, error) {
 // rotationFor is the rotation a run uses: -rotation's file, or with -rank the
 // spec's own curated rotation when -rotation is not given, with each forced
 // rank on every reference to its spell (request.ForceRotationRank) before
-// the ordinary rank rewrite.
+// the ordinary rank rewrite, which skips the rows on a forced spell
+// (request.RewriteForcedRotationRanks): a forced rank always wins.
 func rotationFor(o options, forced []forcedRank, class, race string, level int) (*proto.APLRotation, error) {
 	if len(forced) == 0 {
 		return loadRotation(o.rotation, o.spec, class, o.preset, race, level)
@@ -242,12 +248,17 @@ func rotationFor(o options, forced []forcedRank, class, race string, level int) 
 	if err != nil {
 		return nil, err
 	}
+	authored := make([]int32, 0, len(forced))
 	for _, f := range forced {
 		if raw, err = request.ForceRotationRank(raw, class, f.authored, f.rank, level); err != nil {
 			return nil, fmt.Errorf("-rank %d=%d: %w", f.authored, f.rank, err)
 		}
+		authored = append(authored, f.authored)
 	}
-	return decodeRotation(raw, path, o.spec, class, o.preset, race, level)
+	if raw, err = request.RewriteForcedRotationRanks(raw, o.spec, class, o.preset, race, level, authored); err != nil {
+		return nil, fmt.Errorf("rewriting %s to level %d: %w", path, level, err)
+	}
+	return parseRotation(raw, path)
 }
 
 type bisEntry struct {
