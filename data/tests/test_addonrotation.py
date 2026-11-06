@@ -1080,7 +1080,9 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
     ("spec", "note", "first"),
     [
         ("shaman-restoration", "Your highest rank of Healing Wave right after Nature's", 44),
-        ("shaman-enhancement", "Lightning Bolt at five Maelstrom Weapon stacks", 37),
+        # Round 24 (platform, second pass): the gate names Maelstrom Weapon's rank 5 (tag 5),
+        # so the row starts at the fifth point (42 on the leveling order), not the first (37).
+        ("shaman-enhancement", "Lightning Bolt at five Maelstrom Weapon stacks", 42),
         # Round 24 (platform): the gate is on Clearcasting (16246), the aura Elemental Focus
         # (16164) gives; the raid order takes the talent at 52, the leveling build never does.
         ("shaman-enhancement", "Fire Nova on a Clearcasting proc", 52),
@@ -1103,6 +1105,35 @@ def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec,
     assert min(levels) == first
 
 
+# Round 24 (platform, second pass): a negated rank-tagged gate (not auraIsKnown of the
+# talent's rank N) ends the row where the published build takes rank N: Arcane's Missiles
+# "until you have both ranks of Missile Barrage" printed on every band to 60, and
+# Destruction's line for a character without Shadow and Flame kept printing after it.
+@pytest.mark.parametrize(
+    ("spec", "note", "last"),
+    [
+        ("mage-arcane", "Arcane Missiles until you have both ranks of Missile Barrage", 22),
+    ],
+)
+def test_a_row_gated_on_lacking_a_talent_rank_ends_where_the_build_takes_it(spec, note, last):
+    levels = [
+        band.level
+        for band in _active_build_bands(spec)
+        if any(line.condition.startswith(note) for line in band.lines)
+    ]
+    assert levels, f"{note!r} is on no {spec} band"
+    assert max(levels) == last
+
+
+def test_rank_levels_count_each_point_of_a_talent():
+    from pipeline.talent_levels import build_rank_levels, first_point_levels
+
+    trees = [{"talents": [{"tier": 0, "column": 0, "ranks": [{"spell_id": 7}, {"spell_id": 7}]}]}]
+    levels = build_rank_levels([[1, 1, 1], [1, 1, 1]], trees)
+    assert levels == {(7, 1): 10, (7, 2): 11}
+    assert first_point_levels(levels) == {7: 10}
+
+
 def _active_build_bands(spec):
     """`spec`'s card on the active build's spellranks as the talent-level fix writes them
     (built here, not read: the committed file waits for the data job's regeneration)."""
@@ -1115,7 +1146,7 @@ def _active_build_bands(spec):
     )
     from pipeline.manifest import newest_build
     from pipeline.talent_levels import (
-        load_spec_point_levels,
+        load_spec_rank_levels,
         load_talent_owned_auras,
         load_talent_spell_levels,
     )
@@ -1141,9 +1172,7 @@ def _active_build_bands(spec):
         None,
         load_trainable_ids(build_dir, cls),
         load_talent_spells(build_dir, cls),
-        load_spec_point_levels(
-            build_dir, spec, cls, load_talent_owned_auras(data / "curated", cls)
-        ),
+        load_spec_rank_levels(build_dir, spec, cls, load_talent_owned_auras(data / "curated", cls)),
     )
 
 
