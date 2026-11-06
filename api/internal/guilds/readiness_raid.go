@@ -29,12 +29,16 @@ const hoursPerDay = 24
 const noExportScore = -1
 
 // ReadinessRaid is the raid a filtered board is cut to. CutoffAt is now minus
-// readinessFreshDays: an export synced before it is stale.
+// readinessFreshDays: an export synced before it is stale. Attunement is true when the raid's
+// zone has one (a key or a quest chain: attunementOf), FireResistance when the raid asks for fire
+// resistance (fireResistanceZones): what an officer's Raid-ready reads from the rows.
 type ReadinessRaid struct {
-	ID       int64     `json:"id"`
-	Title    string    `json:"title"`
-	StartsAt time.Time `json:"starts_at"`
-	CutoffAt time.Time `json:"cutoff_at"`
+	ID             int64     `json:"id"`
+	Title          string    `json:"title"`
+	StartsAt       time.Time `json:"starts_at"`
+	CutoffAt       time.Time `json:"cutoff_at"`
+	Attunement     bool      `json:"attunement"`
+	FireResistance bool      `json:"fire_resistance"`
 }
 
 // ReadinessNextRaid is the unfiltered board's pointer to the guild's next raid.
@@ -89,7 +93,13 @@ func (sc *readinessScope) view() *ReadinessRaid {
 		return nil
 	}
 	start := sc.raid.StartsAt.UTC()
-	return &ReadinessRaid{ID: sc.raid.ID, Title: sc.raid.Title, StartsAt: start, CutoffAt: freshCutoff(sc.now).UTC()}
+	view := &ReadinessRaid{ID: sc.raid.ID, Title: sc.raid.Title, StartsAt: start, CutoffAt: freshCutoff(sc.now).UTC(),
+		FireResistance: fireResistanceZones[sc.raid.Zone]}
+	if zone, ok := ZoneByKey(sc.raid.Zone); ok {
+		_, chain := attunementFor(zone)
+		view.Attunement = zone.KeyItem != nil || chain
+	}
+	return view
 }
 
 // freshCutoff is the moment an export must be synced after to be fresh: now minus

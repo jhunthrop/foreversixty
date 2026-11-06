@@ -2432,10 +2432,15 @@ components:
         items:
           type: array
           description: >-
-            In order: level, attunement (only for a run whose zone has a key item), gear_gap,
-            enchants, flask_food, fire_resistance. flask_food and fire_resistance are not_tracked
-            until the addon export carries named consumables and resistance totals. Attunement is
-            ok or not_tracked, never fail: the export lists only gear in bags, never the keyring.
+            In order: level, attunement (only for a run whose zone has a key item or an attunement
+            quest chain: Onyxia's Lair, its last quest or the Drakefire Amulet held), gear_gap,
+            enchants, flask_food, fire_resistance (only for a raid that asks for it: Onyxia's
+            Lair). Read from the addon export's raid-prep sections
+            (school=, supplies=, locks=, quests=, owned=); an export without them reads
+            not_tracked, never fail. flask_food is ok with a flask or raid elixir and buff food in the bags, else fail
+            with missing. fire_resistance is ok whenever read: the total, with no target.
+            Attunement fails only once the export lists the keys carried (locks=) or answers every
+            quest of the chain.
           items:
             type: object
             title: MemberChecklistItem
@@ -2445,7 +2450,7 @@ components:
               state: { type: string, enum: [ok, fail, not_tracked] }
               reason:
                 type: string
-                enum: [no_level, keys_not_in_export, gear_not_shared, no_bis_list, leveling, needs_named_consumables, needs_resistance_totals]
+                enum: [no_level, keys_not_in_export, quests_not_in_export, gear_not_shared, bags_not_shared, no_bis_list, leveling, needs_named_consumables, needs_resistance_totals]
                 description: Why a not_tracked item has no reading.
               level: { type: integer }
               required_level: { type: integer }
@@ -2455,6 +2460,30 @@ components:
               unit: { type: string, enum: [dps] }
               slots: { type: array, items: { type: string }, description: The slots the BiS list names an upgrade for, in its order. }
               missing_slots: { type: array, items: { type: string } }
+              attunement_kind:
+                type: string
+                enum: [key, quest]
+                description: >-
+                  What attunement asks for: the zone's key (key_item), or its quest chain (quest;
+                  key_item is then the item the chain hands out, Drakefire Amulet for Onyxia, and
+                  absent for a chain that hands out none).
+              supplies:
+                type: array
+                description: flask_food's counted stacks in the bags, flasks, then elixirs, then food.
+                items: { $ref: '#/components/schemas/SupplyStack' }
+              missing:
+                type: array
+                description: What a failing flask_food lacks.
+                items: { type: string, enum: [flask_or_elixir, food] }
+              resistance: { type: integer, description: fire_resistance's total. }
+    SupplyStack:
+      type: object
+      required: [id, name, kind, count]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        kind: { type: string, enum: [flask, elixir, food] }
+        count: { type: integer }
     ZoneKeyItem:
       type: object
       required: [id, name, quality]
@@ -2548,12 +2577,14 @@ components:
         raid:
           type: object
           title: GuildReadinessRaid
-          required: [id, title, starts_at, cutoff_at]
+          required: [id, title, starts_at, cutoff_at, attunement, fire_resistance]
           properties:
             id: { type: integer, format: int64 }
             title: { type: string }
             starts_at: { type: string, format: date-time }
             cutoff_at: { type: string, format: date-time }
+            attunement: { type: boolean, description: "The raid's zone has an attunement (a key or a quest chain), which each row's attuned reads." }
+            fire_resistance: { type: boolean, description: "The raid asks for fire resistance (Onyxia's Lair), the total each row's resistances carries." }
         next_raid:
           type: [object, "null"]
           title: GuildReadinessNextRaid
@@ -2568,7 +2599,7 @@ components:
           items:
             type: object
             title: GuildReadinessRow
-            required: [character_key, name, class, spec, consent, level, gear_gap, enchants, consumables, talent_points_unspent, talent_points_read, item_level, item_level_delta, logged_at, failing, synced_before_cutoff, no_export, attuned]
+            required: [character_key, name, class, spec, consent, level, gear_gap, enchants, consumables, talent_points_unspent, talent_points_read, item_level, item_level_delta, logged_at, failing, synced_before_cutoff, no_export, attuned, resistances, flask_food]
             properties:
               character_key: { type: string }
               name: { type: string }
@@ -2610,10 +2641,32 @@ components:
               attuned:
                 type: [boolean, "null"]
                 description: >-
-                  Officers only (null for everyone else): true when the key of the board's raid
-                  (the ?raid= raid, else the next raid) is in the export's bags or worn; null when
-                  the run needs no key or it cannot be read (the export lists only gear in bags,
-                  never the keyring). Never false.
+                  Officers only (null for everyone else): the attunement of the board's raid (the
+                  ?raid= raid, else the next raid), its key carried, banked or worn, or its quest
+                  chain done (Onyxia's Lair: the last quest or the Drakefire Amulet held); false once the export lists the keys carried or
+                  answers the chain's quests and neither shows it; null when the run needs none or
+                  the export cannot say.
+              resistances:
+                type: [object, "null"]
+                title: GuildReadinessResistances
+                description: Officers only. The export's resistance totals at gear consent; null without them.
+                required: [fire, nature, frost, shadow, arcane]
+                properties:
+                  fire: { type: integer }
+                  nature: { type: integer }
+                  frost: { type: integer }
+                  shadow: { type: integer }
+                  arcane: { type: integer }
+              flask_food:
+                type: [object, "null"]
+                title: GuildReadinessFlaskFood
+                description: >-
+                  Officers only. Whether the bags hold a flask or raid elixir and buff food; null
+                  without the bags share or an export that names its consumables.
+                required: [flask_or_elixir, food]
+                properties:
+                  flask_or_elixir: { type: boolean }
+                  food: { type: boolean }
     RaidView:
       type: object
       description: >-
@@ -3275,9 +3328,27 @@ components:
         post_to_discord: { type: boolean }
     GuildLoot:
       type: object
-      required: [encounters, selected, items, at_level_cap]
+      description: >-
+        The first tier's loot table: every boss the game client carries (the generated boss table),
+        raid by raid, with its drops. raids lists every first-tier raid for the picker's grouping, a
+        raid the client does not carry yet with in_client false and no encounters.
+      required: [encounters, selected, items, raids, at_level_cap]
       properties:
         at_level_cap: { type: integer, description: Verified roster characters whose level on file is 60. }
+        raids:
+          type: array
+          items:
+            type: object
+            title: LootRaidGroup
+            required: [key, name, in_client, encounters]
+            properties:
+              key: { type: string, description: "The zone key, e.g. raid:onyxias-lair." }
+              name: { type: string }
+              in_client: { type: boolean, description: "False while the game client does not carry the raid: no bosses or loot yet." }
+              encounters:
+                type: array
+                description: The raid's bosses' encounter ids, in the table's order.
+                items: { type: integer, format: int64 }
         encounters:
           type: array
           items:
@@ -3301,9 +3372,12 @@ components:
           items:
             type: object
             title: LootItem
-            required: [item_id, name, icon, quality, slot, copies, awarded_to, candidates, inventory_type, item_class, item_subclass, kind, quest_label, eligible]
+            required: [item_id, name, icon, quality, slot, copies, awarded_to, candidates, inventory_type, item_class, item_subclass, kind, quest_label, eligible, encounter_id, boss, raid]
             properties:
               item_id: { type: integer }
+              encounter_id: { type: integer, format: int64, description: The boss the drop falls from. }
+              boss: { type: string }
+              raid: { type: string, description: The boss's raid name. }
               name: { type: string }
               icon: { type: string }
               quality: { type: integer, minimum: 0, maximum: 5 }
@@ -3405,7 +3479,7 @@ components:
     LootNights:
       type: object
       description: >-
-        GET /v1/guilds/{id}/loot/nights: the guild's Onyxia nights, newest first. A night's drops are
+        GET /v1/guilds/{id}/loot/nights: the guild's loot nights, newest first. A night's drops are
         the items the council awarded, voted on or flagged on it (no record of what dropped exists
         beyond that); the current night (where an award made now is filed) is always listed, first
         when nothing else holds it, and the page offers the whole loot table on it (GET .../loot).

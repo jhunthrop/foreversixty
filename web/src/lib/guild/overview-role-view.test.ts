@@ -43,6 +43,39 @@ describe('checklistRows', () => {
     expect(rows.map((row) => row.key)).toEqual(['level']);
   });
 
+  it('reads Onyxia attunement as the quest chain, flask and food by name, and the fire total', () => {
+    const rows = checklistRows(
+      checklist([
+        {
+          key: 'attunement',
+          state: 'fail',
+          attunement_kind: 'quest',
+          key_item: { id: 16309, name: 'Drakefire Amulet', quality: 3 },
+        },
+        {
+          key: 'flask_food',
+          state: 'fail',
+          supplies: [{ id: 13510, name: 'Flask of the Titans', kind: 'flask', count: 1 }],
+          missing: ['food'],
+        },
+        { key: 'fire_resistance', state: 'ok', resistance: 85 },
+      ]),
+    );
+    expect(rows).toEqual([
+      expect.objectContaining({
+        tone: 'miss',
+        title: "Attuned to Onyxia's Lair",
+        sub: "Finish the attunement chain for Onyxia's Lair and keep the Drakefire Amulet in your bags.",
+      }),
+      expect.objectContaining({
+        tone: 'warn',
+        title: 'No buff food in your bags',
+        sub: 'You have Flask of the Titans.',
+      }),
+      expect.objectContaining({ tone: 'ok', title: 'Fire resistance 85' }),
+    ]);
+  });
+
   it('asks the member to share gear the checklist cannot see, so the verdict never reads ready for it', () => {
     const rows = checklistRows(
       checklist([{ key: 'gear_gap', state: 'not_tracked', reason: 'gear_not_shared' }]),
@@ -55,6 +88,72 @@ describe('checklistRows', () => {
       }),
     ]);
     expect(verdictLine('almost', rows, 'Thursday')).toBe('Almost there: one thing before Thursday.');
+  });
+
+  it('asks the member to share quests and bags the export cannot see, each linking the setup', () => {
+    const rows = checklistRows(
+      checklist([
+        { key: 'attunement', state: 'not_tracked', reason: 'quests_not_in_export', attunement_kind: 'quest' },
+        { key: 'flask_food', state: 'not_tracked', reason: 'bags_not_shared' },
+      ]),
+    );
+    expect(rows).toEqual([
+      expect.objectContaining({
+        key: 'attunement',
+        tone: 'warn',
+        title: 'Share your quests',
+        fix: { label: 'How', href: '/setup' },
+      }),
+      expect.objectContaining({
+        key: 'flask_food',
+        tone: 'warn',
+        title: 'Share your bags',
+        fix: { label: 'How', href: '/setup' },
+      }),
+    ]);
+  });
+
+  it('says a done attunement keeps the amulet on you, and names what the bags carry', () => {
+    const rows = checklistRows(
+      checklist([
+        {
+          key: 'attunement',
+          state: 'ok',
+          attunement_kind: 'quest',
+          key_item: { id: 16309, name: 'Drakefire Amulet', quality: 3 },
+        },
+        {
+          key: 'flask_food',
+          state: 'ok',
+          supplies: [
+            { id: 13510, name: 'Flask of the Titans', kind: 'flask', count: 1 },
+            { id: 13931, name: 'Nightfin Soup', kind: 'food', count: 5 },
+          ],
+        },
+      ]),
+    );
+    expect(rows.map((row) => row.sub)).toEqual([
+      'Attunement chain done. Keep the Drakefire Amulet on you.',
+      'You carry Flask of the Titans and Nightfin Soup.',
+    ]);
+  });
+
+  it('never words a row with an em dash or a floor', () => {
+    const rows = checklistRows(
+      checklist([
+        {
+          key: 'attunement',
+          state: 'fail',
+          attunement_kind: 'quest',
+          key_item: { id: 16309, name: 'Drakefire Amulet', quality: 3 },
+        },
+        { key: 'flask_food', state: 'fail', missing: ['flask_or_elixir', 'food'] },
+        { key: 'fire_resistance', state: 'ok', resistance: 0 },
+        { key: 'attunement', state: 'not_tracked', reason: 'quests_not_in_export' },
+        { key: 'flask_food', state: 'not_tracked', reason: 'bags_not_shared' },
+      ]),
+    );
+    for (const row of rows) expect(`${row.title} ${row.sub}`).not.toMatch(/\u2014|floor/i);
   });
 
   it('names the gear gap in the client’s slot words and links the BiS list', () => {

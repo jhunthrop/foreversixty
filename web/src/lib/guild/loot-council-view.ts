@@ -6,7 +6,8 @@
 import { counted } from '../plural';
 import { slotLine } from '../items/slot-words';
 import { raidsAttended } from './attendance-copy';
-import type { GuildLootItem } from './api';
+import type { GuildLootItem, GuildLootRaid } from './api';
+import type { SelectOption } from '../ui/listbox-model';
 import type {
   DropKind,
   LootCouncilCandidate,
@@ -150,15 +151,39 @@ export function openable(
   );
 }
 
+/** The picker's line for a raid the game client does not carry yet. */
+export const NOT_IN_CLIENT = 'Not in the game client yet';
+
+/**
+ * The drop picker's options: a prompt, then the openable drops grouped by raid then boss in the
+ * table's order ("Onyxia's Lair · Onyxia"). A raid the game client does not carry yet keeps its
+ * group with one disabled "Not in the game client yet" line, never hidden.
+ */
+export function pickOptions(open: readonly GuildLootItem[], raids: readonly GuildLootRaid[]): SelectOption[] {
+  const out: SelectOption[] = [{ value: '', label: 'Pick a drop' }];
+  for (const raid of raids) {
+    if (!raid.in_client) {
+      out.push({ value: `raid:${raid.key}`, label: NOT_IN_CLIENT, group: raid.name, disabled: true });
+      continue;
+    }
+    for (const encounter of raid.encounters) {
+      for (const item of open.filter((row) => row.encounter_id === encounter)) {
+        out.push({ value: String(item.item_id), label: item.name, group: `${raid.name} · ${item.boss}` });
+      }
+    }
+  }
+  return out;
+}
+
 /** A loot table item as a drop row, before anything happened to it on the night. */
-export function tableDrop(item: GuildLootItem, encounterId: number): DropRow {
+export function tableDrop(item: GuildLootItem): DropRow {
   return {
     itemId: item.item_id,
     name: item.name,
     icon: item.icon,
     quality: item.quality,
     kind: item.kind,
-    encounterId,
+    encounterId: item.encounter_id,
     state: 'open',
     award: null,
     sub: dropSub({ kind: item.kind, award: null }, item),

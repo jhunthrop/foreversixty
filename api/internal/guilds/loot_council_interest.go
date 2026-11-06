@@ -30,12 +30,12 @@ func (s *Store) interestOn(ctx context.Context, guildID int64, night awardNight,
 		         select 1 from guild_characters own
 		         where own.guild_id = i.guild_id and own.character_key = i.character_key and own.user_id = i.set_by)
 		from loot_interest i
-		where i.guild_id = $1 and i.encounter_id = $5 and ($6 = 0 or i.item_id = $6)
+		where i.guild_id = $1 and i.encounter_id = any($5) and ($6 = 0 or i.item_id = $6)
 		  and ($7::bigint = 0 or exists (select 1 from guild_characters gc
 		                                 where gc.guild_id = i.guild_id and gc.character_key = i.character_key and gc.user_id = $7))
 		  and `+nightMatchSQL("i", "$2", "$3", "$4", "set_at")+`
 		order by i.item_id, i.character_key`,
-		append([]any{guildID}, append(night.args(now), onyxiaEncounterID, itemID, userID)...)...)
+		append([]any{guildID}, append(night.args(now), allLoot.encounters, itemID, userID)...)...)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: loot interest: %w", err)
 	}
@@ -86,7 +86,7 @@ func (s *Store) SetLootInterest(ctx context.Context, guildID int64, night awardN
 			delete from loot_interest
 			where guild_id = $1 and coalesce(raid_id, 0) = coalesce($2::bigint, 0) and coalesce(report_id, '') = coalesce($3::text, '')
 			  and encounter_id = $4 and item_id = $5 and character_key = $6`,
-			guildID, night.raidID, night.reportID, onyxiaEncounterID, itemID, characterKey)
+			guildID, night.raidID, night.reportID, dropEncounter(itemID), itemID, characterKey)
 		if err != nil {
 			return fmt.Errorf("guilds: loot interest: %w", err)
 		}
@@ -97,7 +97,7 @@ func (s *Store) SetLootInterest(ctx context.Context, guildID int64, night awardN
 		values ($1, $2, $3, $4, $5, $6, $7, $8)
 		on conflict (guild_id, (coalesce(raid_id, 0)), (coalesce(report_id, '')), encounter_id, item_id, character_key)
 		do update set ms_os = excluded.ms_os, set_by = excluded.set_by, set_at = now()`,
-		guildID, night.raidID, night.reportID, onyxiaEncounterID, itemID, characterKey, msOs, setBy)
+		guildID, night.raidID, night.reportID, dropEncounter(itemID), itemID, characterKey, msOs, setBy)
 	if err != nil {
 		return fmt.Errorf("guilds: loot interest: %w", err)
 	}

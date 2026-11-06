@@ -188,7 +188,7 @@ test.describe('officer-read-only', () => {
     page,
   }) => {
     await page.setViewportSize(PHONE);
-    await open(page, { discord: NOT_CONNECTED, officerTools: false });
+    await open(page, { discord: NOT_CONNECTED, officerTools: false, claimHolder: true });
     const connect = section(page).getByTestId('discord-connect');
     await expect(connect).toHaveAttribute('aria-disabled', 'true');
     expect(await connect.getAttribute('href')).toBeNull();
@@ -209,7 +209,7 @@ test.describe('officer-read-only', () => {
     };
     await page.route('**/v1/me', (route) => route.fulfill(envelope(billingMe)));
     await page.route(`**/v1/guilds/${GUILD_ID}/settings`, (route) =>
-      route.fulfill(envelope(settingsBody(NOT_CONNECTED, false))),
+      route.fulfill(envelope(settingsBody(NOT_CONNECTED, false, true))),
     );
     await gotoHydrated(page, `${GUILD_URL}#settings`, 'guild-settings-tab');
     await page.locator('#officer-tools-gate-discord a').click();

@@ -48,7 +48,7 @@ since (per the original report below) no BiS band in this repo names a raid-tier
 7. **`data/curated/specs.json` is read via the generated `sim/specs` Go package**, not a runtime file read — same reason as #6 (not in the Docker image), and the same pattern `api/internal/sims/score.go` already uses.
 8. **The BiS build is the site BiS page's own rule, not a config.** `Store.BisBuild` is `bis.SourceBuild` of the newest loaded build (the newest with BiS files when it has none), kept per Store; the readiness bands, race factions, the loot table's per-class item lookups, the Discord bot and `api/cmd/seedguild` all read it, so nothing pins a build.
 9. **Onyxia's loot table is a hand-curated Go literal**, not a per-request read of `loot.json`/`items.json`/`items/<class>.json` — those three files total over 40MB for this one build; a per-request scan for 22 fixed ids would have defeated the latency goal for no reason.
-10. **Consumables "stocked"/"short" is presence-of-any-bagged-item**, not flask/food/potion identification — no curated consumables-by-item-id catalogue exists in this repo (the one that does, `logs/engine/mechanics/consumables`, is keyed by spell id for buff/cast matching, not item id, so it can't resolve an FS1 `bags=` item list).
+10. **Consumables "stocked"/"short"** reads the export's `supplies=` section when it has one (D14, `raid_prep.go`: stocked with a flask or raid elixir and buff food from `raid_prep_catalogue.go`, else short). An export from an addon older than that section keeps the old proxy, presence of any bagged item (`bags=` lists gear only, so it was never flask/food identification).
 
 ## Readiness latency (measured, local harness, 25 raiders)
 

@@ -3,7 +3,7 @@
      one Plate (the next raid, with the viewer's own sign-up row), open Sections around it.
      Member: the verdict Notice, the private checklist (D12), their numbers, the raid's comp.
      Officer: Action needed, the next raid with its counts, comp against the target, and in the rail
-     buff and debuff cover (D15) and the last four raids' attendance. Everyone: the last raid, with
+     buff and debuff cover (D15), Raid-ready and the last four raids' attendance. Everyone: the last raid, with
      progression as its one line. A module whose data has no source yet is not drawn (7.4). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -11,10 +11,11 @@
     GuildHomeSummary,
     GuildRaidView,
     GuildRaidsPage,
+    GuildReadinessPage,
     GuildRosterRow,
     NextRaidView,
   } from '../../lib/guild/api';
-  import { fetchGuildProgression, fetchGuildRaids } from '../../lib/guild/api';
+  import { fetchGuildProgression, fetchGuildRaids, fetchGuildReadiness } from '../../lib/guild/api';
   import { guildRaidHref } from '../../lib/characters';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import {
@@ -39,6 +40,7 @@
     raidNightDay,
   } from '../../lib/guild/overview-view';
   import { fetchGuildRaid } from '../../lib/guild/raids-api';
+  import { raidReadyView } from '../../lib/guild/raid-ready-view';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import { counted } from '../../lib/plural';
   import Notice from '../ui/Notice.svelte';
@@ -49,6 +51,7 @@
   import MemberChecklist from './overview/MemberChecklist.svelte';
   import NextRaidPlate from './overview/NextRaidPlate.svelte';
   import OfficerActions from './overview/OfficerActions.svelte';
+  import RaidReady from './overview/RaidReady.svelte';
   import RecruitLine from './overview/RecruitLine.svelte';
   import RecentAttendance from './overview/RecentAttendance.svelte';
   import YourNumbers from './overview/YourNumbers.svelte';
@@ -111,6 +114,7 @@
   let checklist = $state<GuildChecklist | null>(null);
   let actions = $state<GuildOfficerActions | null>(null);
   let attendance = $state<GuildRecentAttendance | null>(null);
+  let readiness = $state<GuildReadinessPage | null>(null);
 
   $effect(() => {
     if (guildId === null) return;
@@ -137,6 +141,13 @@
     void fetchMyChecklist(guildId, nextRaid?.id ?? null)
       .then((list) => (checklist = list))
       .catch(() => (checklist = null));
+  });
+
+  $effect(() => {
+    if (guildId === null || !officer || nextRaid === null) return;
+    void fetchGuildReadiness(guildId, nextRaid.id)
+      .then((page) => (readiness = page))
+      .catch(() => (readiness = null));
   });
 
   $effect(() => {
@@ -170,6 +181,7 @@
   });
   const planHref = $derived(nextRaid === null ? '#raids' : guildRaidHref(guildPath, nextRaid.id));
   const canPing = $derived(raid !== null && pingAllowed(raid, clock.now));
+  const ready = $derived(raid !== null && readiness !== null ? raidReadyView(readiness, raid.signups) : null);
 </script>
 
 {#snippet lastRaid()}
@@ -211,6 +223,7 @@
       {/if}
       {#snippet rail()}
         {#if raid?.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
+        {#if ready !== null}<RaidReady {ready} />{/if}
         {#if attendance !== null && attendance.raids.length > 0}
           <RecentAttendance page={attendance} rosterHref="#roster" timezone={guildTz} />
         {/if}

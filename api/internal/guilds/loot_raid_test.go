@@ -15,7 +15,7 @@ func (w raidWorld) postAward(raidID *int64, key string) *http.Response {
 		raid = fmt.Sprintf(`,"raid_id":%d`, *raidID)
 	}
 	return w.h.do(http.MethodPost, w.path("/loot/awards"),
-		fmt.Sprintf(`{"encounter_id":1084,"item_id":%d,"character_key":%q%s}`, onyxiaLoot[0].ItemID, key, raid))
+		fmt.Sprintf(`{"encounter_id":1084,"item_id":%d,"character_key":%q%s}`, testOnyxiaLoot[0].ItemID, key, raid))
 }
 
 // awardHolders is the award rows' character keys for the guild, oldest first.
@@ -71,10 +71,10 @@ func TestAnAwardNamesADoneRaid(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if item := view.Items[0]; item.ItemID != onyxiaLoot[0].ItemID || item.AwardedTo == nil {
+	if item := view.Items[0]; item.ItemID != testOnyxiaLoot[0].ItemID || item.AwardedTo == nil {
 		t.Fatalf("the latest night's award does not mark the drop: %+v", item.AwardedTo)
 	}
-	all, err := w.h.store.lootAwards(t.Context(), w.gid, onyxiaEncounterID)
+	all, err := w.h.store.lootAwards(t.Context(), w.gid, []int64{testOnyxiaEncounter})
 	if err != nil {
 		t.Fatal(err)
 	}

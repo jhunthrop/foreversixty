@@ -119,7 +119,7 @@ func TestExportLoot_RowsResolveNames(t *testing.T) {
 	seedExport(t, f.h.pool, f.officer, "us/hardcore/zed", "us", "hardcore", "Zed")
 	rows := f.rows("loot")
 	if len(rows) != 2 || rows[1][0] != "2026-10-20" || rows[1][1] != "Onyxia night" ||
-		rows[1][2] != encounterName || rows[1][3] != "16963" || rows[1][4] != "Helm of Wrath" || rows[1][5] != "Zed" {
+		rows[1][2] != "Onyxia" || rows[1][3] != "16963" || rows[1][4] != "Helm of Wrath" || rows[1][5] != "Zed" {
 		t.Fatalf("rows = %v", rows)
 	}
 }

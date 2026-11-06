@@ -3,10 +3,11 @@
      ItemRows (icon in its quality frame, quality-coloured name, what it is and who can use it or
      who got it, an Open or Awarded Tag). A row is one button: it opens the drop's candidates (or,
      for a member, their own MS/OS call). On the current night a picker under the Plate opens any
-     drop of the loot table that is not on the night yet. -->
+     drop of the loot table that is not on the night yet, grouped by raid then boss; a raid the
+     game client does not carry yet reads "Not in the game client yet". -->
 <script lang="ts">
-  import type { GuildLootItem } from '../../../lib/guild/api';
-  import type { DropRow } from '../../../lib/guild/loot-council-view';
+  import type { GuildLootItem, GuildLootRaid } from '../../../lib/guild/api';
+  import { pickOptions, type DropRow } from '../../../lib/guild/loot-council-view';
   import ItemRow from '../../ui/ItemRow.svelte';
   import Plate from '../../ui/Plate.svelte';
   import Select from '../../ui/Select.svelte';
@@ -17,6 +18,7 @@
     meta,
     rows,
     openable,
+    raids,
     selected,
     build,
     emptyText,
@@ -28,6 +30,8 @@
     rows: readonly DropRow[];
     /** The loot table's drops the current night can still open; empty on a past night. */
     openable: readonly GuildLootItem[];
+    /** The first tier's raids, for the picker's raid then boss grouping. */
+    raids: readonly GuildLootRaid[];
     selected: number | null;
     build: string;
     emptyText: string;
@@ -35,10 +39,7 @@
     onOpen: (itemId: number) => void;
   } = $props();
 
-  const pickOptions = $derived([
-    { value: '', label: 'Pick a drop' },
-    ...openable.map((item) => ({ value: String(item.item_id), label: item.name })),
-  ]);
+  const options = $derived(pickOptions(openable, raids));
 </script>
 
 <section class="flex flex-col gap-3" aria-labelledby="guild-loot-drops-head" data-testid="guild-loot-drops">
@@ -77,7 +78,7 @@
       <Select
         id="guild-loot-open-drop"
         size="compact"
-        options={pickOptions}
+        {options}
         value=""
         onchange={(event) => {
           const value = (event.currentTarget as HTMLSelectElement).value;

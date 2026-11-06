@@ -11,7 +11,7 @@ func TestMatchZoneNameIsTheLogsZone(t *testing.T) {
 	w := newRaidWorld(t, true)
 	start := pastStart()
 	raid := w.raidAt(t, raidZoneOny, start)
-	seedNight(t, w.h.pool, w.gid, "elsewhere", "Molten Core", start.Add(time.Hour), []seedFight{
+	seedNight(t, w.h.pool, w.gid, "elsewhere", "Blackrock Depths", start.Add(time.Hour), []seedFight{
 		{encounterID: 1084, kill: true, duration: 5 * time.Minute},
 	})
 	if _, err := w.h.store.SetMatch(t.Context(), w.gid, raid.ID, "elsewhere", MatchedHand); err != nil {
@@ -19,8 +19,8 @@ func TestMatchZoneNameIsTheLogsZone(t *testing.T) {
 	}
 	w.as(w.officer)
 	v := w.getRaid(t, raid.ID)
-	if v.Match == nil || v.Match.ZoneName != "Molten Core" {
-		t.Fatalf("match = %+v, want the log's zone Molten Core (raid zone %q)", v.Match, v.ZoneName)
+	if v.Match == nil || v.Match.ZoneName != "Blackrock Depths" {
+		t.Fatalf("match = %+v, want the log's zone Blackrock Depths (raid zone %q)", v.Match, v.ZoneName)
 	}
 }
 

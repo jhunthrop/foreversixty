@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// seedAward stores an Onyxia award of onyxiaLoot[item] to key at awardedAt, under raidID (nil
+// seedAward stores an Onyxia award of testOnyxiaLoot[item] to key at awardedAt, under raidID (nil
 // for none), and returns its id.
 func (w raidWorld) seedAward(t *testing.T, item int, key string, awardedAt time.Time, raidID *int64) int64 {
 	t.Helper()
@@ -13,7 +13,7 @@ func (w raidWorld) seedAward(t *testing.T, item int, key string, awardedAt time.
 	if err := w.h.pool.QueryRow(t.Context(), `
 		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by, awarded_at, raid_id)
 		values ($1, $2, $3, $4, $5, $6, $7) returning id`,
-		w.gid, onyxiaEncounterID, onyxiaLoot[item].ItemID, key, w.officer, awardedAt, raidID).Scan(&id); err != nil {
+		w.gid, testOnyxiaEncounter, testOnyxiaLoot[item].ItemID, key, w.officer, awardedAt, raidID).Scan(&id); err != nil {
 		t.Fatal(err)
 	}
 	return id

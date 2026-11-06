@@ -199,6 +199,6 @@ func (s *Store) nightDrops(ctx context.Context, guildID int64, n LootNight) (*Ac
 	if err != nil {
 		return nil, fmt.Errorf("guilds: last night drops: %w", err)
 	}
-	label := zoneOnyxia + ", " + raidDay(at, tz)
+	label := n.Zone + ", " + raidDay(at, tz)
 	return &ActionDrops{Tracked: true, Count: &open, RaidID: n.RaidID, Label: label, Awarded: len(n.Decisions)}, nil
 }

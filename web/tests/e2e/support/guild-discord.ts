@@ -68,6 +68,8 @@ export interface GuildDiscordStubOptions {
   /** `home.viewer.officer_tools`. */
   officerTools?: boolean;
   frozen?: boolean;
+  /** This officer's account holds the claim (`settings.claim.yours`): the gate links to Billing. */
+  claimHolder?: boolean;
   /** The test route answers this instead of 204. */
   testRefusal?: Refusal;
 }
@@ -103,15 +105,20 @@ export function refused({ status, code, message }: Refusal): {
 
 const NO_CONTENT = { status: 204, body: '' };
 
-export function settingsBody(discord: GuildSettingsDiscord | null, frozen: boolean): Record<string, unknown> {
+export function settingsBody(
+  discord: GuildSettingsDiscord | null,
+  frozen: boolean,
+  claimHolder = false,
+): Record<string, unknown> {
+  const yours = claimHolder ? { yours: true } : {};
   return {
     default_visibility: 'guild',
     officer_max_rank_index: 1,
     claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
     claim_pending: null,
     claim: frozen
-      ? { state: 'contested', since: '2026-09-01T00:00:00Z', frozen: true }
-      : { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
+      ? { state: 'contested', since: '2026-09-01T00:00:00Z', frozen: true, ...yours }
+      : { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false, ...yours },
     invite: { rotated_at: null, url: null, made_by: null },
     ...(discord === null ? {} : { discord }),
   };
@@ -149,7 +156,7 @@ export async function stubGuildDiscord(
   );
   await page.route(`**/v1/guilds/${id}/settings`, (route) => {
     seen.settingsReads += 1;
-    const body = settingsBody(discord, options.frozen ?? false);
+    const body = settingsBody(discord, options.frozen ?? false, options.claimHolder);
     if (options.after !== undefined) discord = options.after;
     return route.fulfill(envelope(body));
   });

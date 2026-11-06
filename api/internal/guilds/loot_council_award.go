@@ -19,7 +19,7 @@ import (
 // awardReasonMax is the longest reason an award keeps, in characters.
 const awardReasonMax = 200
 
-// invalidNightText is the refusal for a night key that names no Onyxia night of the guild.
+// invalidNightText is the refusal for a night key that names no loot night of the guild.
 const invalidNightText = "that is not a raid night of this guild"
 
 // AwardDecision is what an officer adds to an award: the council night it is for (nil for the

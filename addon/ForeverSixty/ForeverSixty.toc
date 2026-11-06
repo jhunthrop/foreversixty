@@ -20,6 +20,7 @@ Prefs.lua
 Theme.lua
 Widgets.lua
 Cards.lua
+RaidPrep.lua
 Export.lua
 Follow.lua
 Gear.lua

@@ -108,7 +108,7 @@ func TestNightsGroupTheCouncilsDropsPerNight(t *testing.T) {
 		t.Fatalf("vote = %d: %s", res.StatusCode, readBody(res))
 	}
 	if res := w.h.do(http.MethodPost, w.path("/loot/awards"), fmt.Sprintf(
-		`{"encounter_id":1084,"item_id":%d,"character_key":%q,"night":%q,"ms_os":"ms"}`, onyxiaLoot[1].ItemID, memberKeyB, pastKey)); res.StatusCode != http.StatusOK {
+		`{"encounter_id":1084,"item_id":%d,"character_key":%q,"night":%q,"ms_os":"ms"}`, testOnyxiaLoot[1].ItemID, memberKeyB, pastKey)); res.StatusCode != http.StatusOK {
 		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
 	}
 	var view LootNightsView
@@ -125,7 +125,7 @@ func TestNightsGroupTheCouncilsDropsPerNight(t *testing.T) {
 	for _, d := range n.Drops {
 		states[d.ItemID] = d.State
 	}
-	if states[councilItem] != dropOpen || states[onyxiaLoot[1].ItemID] != dropAwarded {
+	if states[councilItem] != dropOpen || states[testOnyxiaLoot[1].ItemID] != dropAwarded {
 		t.Fatalf("drop states = %v", states)
 	}
 	if len(n.Decisions) != 1 || n.Decisions[0].Name != "Sunderfel" || n.Decisions[0].MsOs == nil {

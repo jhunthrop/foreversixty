@@ -34,7 +34,7 @@ const ALLOWED = new Map<string, number>([
   ['components/sim/RunControl.svelte', 1], // the engine's own error sentence
   ['components/sim/tools/BulkRunBar.svelte', 1], // the engine's own error sentence
   ['components/sim/RequestDrawer.svelte', 3], // the request JSON, a field id, the buff ids
-  ['components/guild/RaidReport.svelte', 1], // the copy fallback box
+  ['components/guild/report/ReportDiscord.svelte', 1], // the copy fallback box
   ['components/guild/RaidOfficerRow.svelte', 1], // the copy fallback box
   ['components/guild/GuildDiscordChannel.svelte', 1], // the channel id
   ['pages/setup.astro', 1], // the slash commands to type

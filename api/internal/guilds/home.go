@@ -202,8 +202,10 @@ type RosterRow struct {
 	gear, enchants     map[string]int
 	bags               []int
 	hasBagsSection     bool
-	talentPointsSpent  int
-	hasTalents         bool
+	// prep is the export's raid-prep sections (raid_prep.go).
+	prep              exportPrep
+	talentPointsSpent int
+	hasTalents        bool
 }
 
 // AddonMemberView is one roster row's member line from the guild's newest roster
@@ -514,7 +516,7 @@ func (s *Store) scanRosterRow(rows pgx.Rows, g Guild, actorID int64, moderator, 
 		decoded, ok := fs1.Decode(*export)
 		if ok {
 			row.gear, row.enchants = decoded.Gear, decoded.Enchants
-			row.bags, row.hasBagsSection = decoded.Bags, hasBagsSection(*export)
+			row.bags, row.hasBagsSection, row.prep = decoded.Bags, decoded.HasBags, prepOf(decoded)
 			row.Professions = decoded.Professions
 			row.talentPointsSpent, row.hasTalents = sumPoints(decoded.Talents.Points), true
 			if decoded.HasLevel {
@@ -665,13 +667,6 @@ func sumPoints(points []int) int {
 		total += p
 	}
 	return total
-}
-
-// hasBagsSection reports whether export's pipe sections include a bags= entry at all
-// (distinguishing "no bags= section" from "an empty one," both of which fs1.Decode reads as
-// an empty slice) - the consumables check's own "unknown" vs "short" distinction needs this.
-func hasBagsSection(export string) bool {
-	return strings.Contains(export, "|bags=") || strings.HasPrefix(export, "bags=")
 }
 
 // Home assembles the signed-in guild home shell: identity, claim state,

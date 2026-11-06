@@ -75,7 +75,7 @@ func nightIDs(ep EncounterProgress) []string {
 
 func barrowDeeps(view ProgressionView) UnnamedZoneProgress {
 	for _, u := range view.Unnamed {
-		if u.Zone == zoneBarrowDeeps {
+		if u.Zone == "Barrow Deeps" {
 			return u
 		}
 	}

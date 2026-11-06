@@ -22,8 +22,8 @@ const (
 )
 
 // CouncilCandidate is a Loot tab candidate as the council sees it. Attendance counts the last
-// lootAttendanceWindow raids here; ItemsWon is loot this tier (every Onyxia award: Onyxia's Lair is
-// the current raid phase, the only raid an award can name).
+// lootAttendanceWindow raids here; ItemsWon is loot this tier (every award
+// of a loot table boss).
 type CouncilCandidate struct {
 	LootCandidate
 	// BisForThem is true when the drop is the pick for the slot in the candidate's BiS band, not a
@@ -53,10 +53,12 @@ type CouncilDropView struct {
 
 // lootGroupOf is the table's group (items sharing a name) holding itemID.
 func lootGroupOf(itemID int) ([]lootItem, bool) {
-	for _, group := range lootGroups(onyxiaLoot) {
-		for _, it := range group {
-			if it.ItemID == itemID {
-				return group, true
+	for _, b := range lootBosses {
+		for _, group := range lootGroups(b.Items) {
+			for _, it := range group {
+				if it.ItemID == itemID {
+					return group, true
+				}
 			}
 		}
 	}
@@ -98,7 +100,7 @@ func eligibleCandidates(eligible []LootEligible) []LootCandidate {
 // fillCouncil reads the night's awards, flags, votes and attendance and decorates cands.
 func (s *Store) fillCouncil(ctx context.Context, guildID int64, night awardNight, itemID int, viewer int64, now time.Time,
 	lr lootRosterSet, cands []LootCandidate, view *CouncilDropView) error {
-	all, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)
+	all, err := s.lootAwards(ctx, guildID, allLoot.encounters)
 	if err != nil {
 		return err
 	}

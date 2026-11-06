@@ -59,7 +59,10 @@
         "item_subclass": 2,
         "kind": "gear",
         "quest_label": "",
-        "eligible": []
+        "eligible": [],
+        "encounter_id": 1084,
+        "boss": "Onyxia",
+        "raid": "Onyxia's Lair"
       },
       {
         "item_id": 15410,
@@ -75,7 +78,10 @@
         "item_subclass": 6,
         "kind": "skinned",
         "quest_label": "",
-        "eligible": []
+        "eligible": [],
+        "encounter_id": 1084,
+        "boss": "Onyxia",
+        "raid": "Onyxia's Lair"
       },
       {
         "item_id": 18705,
@@ -98,10 +104,35 @@
             "class": "hunter",
             "item_id": 18705
           }
-        ]
+        ],
+        "encounter_id": 1084,
+        "boss": "Onyxia",
+        "raid": "Onyxia's Lair"
       }
     ],
-    "at_level_cap": 1
+    "at_level_cap": 1,
+    "raids": [
+      {
+        "key": "raid:barrow-deeps",
+        "name": "Barrow Deeps",
+        "in_client": false,
+        "encounters": []
+      },
+      {
+        "key": "raid:hyjal-summit",
+        "name": "Hyjal Summit",
+        "in_client": false,
+        "encounters": []
+      },
+      {
+        "key": "raid:onyxias-lair",
+        "name": "Onyxia's Lair",
+        "in_client": true,
+        "encounters": [
+          1084
+        ]
+      }
+    ]
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"

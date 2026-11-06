@@ -1202,6 +1202,21 @@ export interface GuildReadinessRow extends ReadinessRaidRowFields {
   failing: number;
   /** Officer only. */
   nudge_text?: string;
+  /** Officers only: the board raid's attunement done (true), not done (false), or unknown or
+   *  not asked (null). Absent from an API that predates it. */
+  attuned?: boolean | null;
+  /** Officers only: the export's resistance totals; null without them. */
+  resistances?: GuildReadinessResistances | null;
+  /** Officers only: a flask or raid elixir, and buff food, in the bags; null when unknown. */
+  flask_food?: { flask_or_elixir: boolean; food: boolean } | null;
+}
+
+export interface GuildReadinessResistances {
+  fire: number;
+  nature: number;
+  frost: number;
+  shadow: number;
+  arcane: number;
 }
 
 export interface GuildReadinessPage {
@@ -1319,12 +1334,27 @@ export interface GuildLootItem {
   candidates: GuildLootCandidate[];
   /** How many of the table's drops this row stands for (two items can share a name). */
   copies: number;
+  /** The boss the drop falls from, and that boss's raid. */
+  encounter_id: number;
+  boss: string;
+  raid: string;
+}
+
+/** A first-tier raid of the drop picker; `in_client` false while the game client lacks it. */
+export interface GuildLootRaid {
+  key: string;
+  name: string;
+  in_client: boolean;
+  /** Its bosses' encounter ids, in the table's order. */
+  encounters: number[];
 }
 
 export interface GuildLootPage {
   encounters: GuildLootEncounter[];
   selected: number | null;
+  /** Every boss's drops, boss by boss. */
   items: GuildLootItem[];
+  raids: GuildLootRaid[];
   /** Verified roster characters whose level on file is 60. */
   at_level_cap: number;
 }

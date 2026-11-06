@@ -239,7 +239,14 @@ step "the fetched tables for $NEW" \
   "gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=$NEW, then $REDO"
 # spelltips/: every guide's spell, racial and enchant tooltips (70755 went live without it
 # on 2026-11-03 and no spell on a guide opened a tooltip).
-for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json spelltips/shared.json; do
+# raid-bosses.json: the first raid tier's bosses and loot (pipeline raid-bosses), which step 4c
+# copies into the API's boss table.
+# raid-bosses.json is made here when data.yml's fetch did not write it (the refresh hold keeps
+# data.yml off): the step downloads the six client tables it reads into raw/ itself.
+if [ ! -e "$NEW_DIR/raid-bosses.json" ] && [ -e "$NEW_DIR/loot.json" ] && [ -e "$NEW_DIR/items.json" ]; then
+  run in_dir data uv run python -m pipeline raid-bosses --build "$NEW" --fetch
+fi
+for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json spelltips/shared.json raid-bosses.json; do
   [ -e "$NEW_DIR/$f" ] || die "$NEW_DIR/$f is missing: data.yml's fetch has not landed $NEW"
 done
 # The tooltips must read the hotfix-layered tables (2026-11-03: 70755's were written before
@@ -266,7 +273,7 @@ NEW_IFACE=$((10#$MAJOR * 10000 + 10#$MINOR * 100 + 10#$PATCH))
 OLD_IFACE="$(sed -n 's/^## Interface: *\([0-9]*\).*/\1/p' addon/ForeverSixty/ForeverSixty.toc)"
 
 echo "activating $NEW (was $ACTIVE); Interface $OLD_IFACE -> $NEW_IFACE"
-MOVED_PATHS=("$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides apps/shared/fixtures/planner-rules.json api/internal/bnetbuild/testdata/era-kiloz.fs1 sim/specs/specs.go web/src/lib/sim/specs.ts)
+MOVED_PATHS=("$ACTIVE_JSON" "$NEW_DIR" addon/ForeverSixty addon/ForeverSixtyData addon/ForeverSixtyInbox data/curated/coach web/src/content/guides apps/shared/fixtures/planner-rules.json api/internal/bnetbuild/testdata/era-kiloz.fs1 api/internal/guilds/raid_bosses.go api/internal/guilds/raid_bosses_table.go sim/specs/specs.go web/src/lib/sim/specs.ts)
 UNDO="git restore --staged --worktree -- ${MOVED_PATHS[*]} && git clean -fd -- $NEW_DIR"
 FIX_THEN_REDO="fix what the reason names on main, then $REDO"
 
@@ -330,6 +337,23 @@ run in_dir data uv run python -m pipeline specs --build "$NEW"
 step "the API's import fixture stamp" "$FIX_THEN_REDO"
 sed -i.bak "s/^FS1:$ACTIVE:/FS1:$NEW:/" api/internal/bnetbuild/testdata/era-kiloz.fs1 && rm -f api/internal/bnetbuild/testdata/era-kiloz.fs1.bak
 grep -q "^FS1:$NEW:" api/internal/bnetbuild/testdata/era-kiloz.fs1 || die "api/internal/bnetbuild/testdata/era-kiloz.fs1 does not start FS1:$ACTIVE:, so it was not re-stamped"
+
+# 4c. The API's first-tier boss table (the guild loot picker and raid assignment templates),
+#     from the new build's raid-bosses.json, which data.yml's fetch wrote from the client's own
+#     Map, DungeonEncounter and Journal rows. A raid the new client names for the first time
+#     (Barrow Deeps and Hyjal Summit were absent from 1.60.1.70790) enters the table here.
+step "the API's first-tier boss table (cmd/genraidbosses)" "$FIX_THEN_REDO"
+RAID_BOSSES_GO=api/internal/guilds/raid_bosses.go
+GENERATE_LINE="//go:generate go run ../../cmd/genraidbosses -build"
+sed -i.bak "s#^$GENERATE_LINE .*#$GENERATE_LINE $NEW#" "$RAID_BOSSES_GO" && rm -f "$RAID_BOSSES_GO.bak"
+grep -qx "$GENERATE_LINE $NEW" "$RAID_BOSSES_GO" || die "$RAID_BOSSES_GO has no '$GENERATE_LINE <build>' line, so it was not re-stamped"
+run in_dir api/internal/guilds go run ../../cmd/genraidbosses -build "$NEW"
+run python3 - "$NEW_DIR/raid-bosses.json" "$NEW" <<'PY'
+import json, sys
+path, build = sys.argv[1:3]
+for raid in json.load(open(path, encoding="utf-8")).get("raids", []):
+    print(f"first tier on {build}: {raid['name']} {raid['status']}, {len(raid['bosses'])} bosses")
+PY
 
 # 5. The addon: Interface, version, changelog.
 step "the addon's TOCs, version and changelog" "$FIX_THEN_REDO"

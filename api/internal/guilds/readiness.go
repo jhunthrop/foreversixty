@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
@@ -66,11 +67,44 @@ type ReadinessRow struct {
 	SyncedBeforeCutoff *bool   `json:"synced_before_cutoff"`
 	NoExport           bool    `json:"no_export"`
 	NudgeText          *string `json:"nudge_text,omitempty"`
-	// Attuned is an officer's only: true when the raid's key (the filtered raid's, else the next
-	// raid's) is in the export's bags or worn; null when the run needs no key or it cannot be
-	// read (the export lists only gear in bags, never the keyring), never false.
-	Attuned        *bool `json:"attuned"`
+	// Attuned is an officer's only: the attunement of the board's raid (the filtered raid's,
+	// else the next raid's; raid_prep.go attunementOf), its key carried or its quest chain done:
+	// true or false when read, null when the run needs none or the export cannot say.
+	Attuned *bool `json:"attuned"`
+	// Resistances is an officer's only (D14): the export's resistance totals at gear consent,
+	// null without them.
+	Resistances *fs1.Resistances `json:"resistances"`
+	// FlaskFood is an officer's only (D14): whether the bags hold a flask or raid elixir and
+	// buff food, null without the bags share or an export that names them.
+	FlaskFood      *FlaskFoodView `json:"flask_food"`
 	readinessScore float64
+}
+
+// FlaskFoodView is a Readiness row's flask and food on hand.
+type FlaskFoodView struct {
+	FlaskOrElixir bool `json:"flask_or_elixir"`
+	Food          bool `json:"food"`
+}
+
+// flaskFoodViewOf is the row's flask and food, nil when it cannot be read.
+func flaskFoodViewOf(row RosterRow) *FlaskFoodView {
+	r, ok := suppliesOf(row)
+	if !ok {
+		return nil
+	}
+	return &FlaskFoodView{
+		FlaskOrElixir: hasKind(r.Stacks, supplyFlask) || hasKind(r.Stacks, supplyElixir),
+		Food:          hasKind(r.Stacks, supplyFood),
+	}
+}
+
+// officerPrep fills a row's officer-only raid-prep fields for the board's zone (nil: no raid).
+func officerPrep(rr *ReadinessRow, row RosterRow, zone *Zone) {
+	if zone != nil {
+		rr.Attuned = attunedFlag(attunementOf(*zone, row))
+	}
+	rr.Resistances = resistancesOf(row)
+	rr.FlaskFood = flaskFoodViewOf(row)
 }
 
 // ReadinessView is the body of GET /v1/guilds/{id}/readiness.
@@ -136,12 +170,12 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 		return ReadinessView{}, err
 	}
 	nudgeDay := ""
-	var key *KeyItem
+	var zone *Zone
 	if officerView {
 		if nudgeDay, err = s.nudgeDay(ctx, guildID, raid); err != nil {
 			return ReadinessView{}, err
 		}
-		if key, err = s.readinessKeyItem(ctx, guildID, raid); err != nil {
+		if zone, err = s.readinessZone(ctx, guildID, raid); err != nil {
 			return ReadinessView{}, err
 		}
 	}
@@ -166,8 +200,8 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 			text := nudgeText(row.Name, cr, nudgeDay, staleFailure(rr, now)...)
 			rr.NudgeText = &text
 		}
-		if key != nil {
-			rr.Attuned = attunedOf(*key, row)
+		if officerView {
+			officerPrep(&rr, row, zone)
 		}
 		view.Rows = append(view.Rows, rr)
 	}

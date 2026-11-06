@@ -1070,10 +1070,12 @@ data class GuildHomeViewer(
     @SerialName("character_key") val characterKey: String? = null,
 )
 
+/** The first tier's loot table: every boss the game client carries (the generated boss table), raid by raid, with its drops. raids lists every first-tier raid for the picker's grouping, a raid the client does not carry yet with in_client false and no encounters. */
 @Serializable
 data class GuildLoot(
     /** Verified roster characters whose level on file is 60. */
     @SerialName("at_level_cap") val atLevelCap: Int,
+    @SerialName("raids") val raids: List<LootRaidGroup> = emptyList(),
     @SerialName("encounters") val encounters: List<LootEncounter> = emptyList(),
     @SerialName("selected") val selected: Long,
     @SerialName("items") val items: List<LootItem> = emptyList(),
@@ -1546,6 +1548,11 @@ data class LootFile(
 @Serializable
 data class LootItem(
     @SerialName("item_id") val itemId: Int,
+    /** The boss the drop falls from. */
+    @SerialName("encounter_id") val encounterId: Long,
+    @SerialName("boss") val boss: String,
+    /** The boss's raid name. */
+    @SerialName("raid") val raid: String,
     @SerialName("name") val name: String,
     @SerialName("icon") val icon: String,
     @SerialName("quality") val quality: Int,
@@ -1588,6 +1595,17 @@ data class LootQuest(
     @SerialName("zone_id") val zoneId: Int? = null,
     /** That zone's name. */
     @SerialName("zone") val zone: String? = null,
+)
+
+@Serializable
+data class LootRaidGroup(
+    /** The zone key, e.g. raid:onyxias-lair. */
+    @SerialName("key") val key: String,
+    @SerialName("name") val name: String,
+    /** False while the game client does not carry the raid: no bosses or loot yet. */
+    @SerialName("in_client") val inClient: Boolean,
+    /** The raid's bosses' encounter ids, in the table's order. */
+    @SerialName("encounters") val encounters: List<Long> = emptyList(),
 )
 
 @Serializable
