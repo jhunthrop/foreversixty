@@ -87,7 +87,8 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
   });
   await page.getByTestId('guild-claim-button').click();
   await expect(page.getByTestId('guild-claim-confirm-box')).toContainText('Claim The Last Watch?');
-  await expect(page.getByTestId('guild-claim-confirm-box')).toContainText('one claim every 30 days');
+  // The confirm asks and nothing more: the 30-day rule is no longer repeated in it (a2512133d).
+  await expect(page.getByTestId('guild-claim-confirm-box')).not.toContainText('30 days');
   await page.getByTestId('guild-claim-confirm-box').getByRole('button', { name: 'Cancel' }).click();
   await expect(page.getByTestId('guild-claim-confirm-box')).toHaveCount(0);
   expect(claimPosts).toBe(0);
@@ -321,22 +322,34 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
   const order = await next
     .locator('[data-testid^="guild-claim-next-"]')
     .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-testid')));
-  expect(order).toEqual(['guild-claim-next-subscribe', 'guild-claim-next-roster', 'guild-claim-next-invite']);
+  // Plan a raid and Discord follow the first three; the gated line closes a guild with no plan.
+  expect(order).toEqual([
+    'guild-claim-next-subscribe',
+    'guild-claim-next-roster',
+    'guild-claim-next-invite',
+    'guild-claim-next-plan',
+    'guild-claim-next-discord',
+    'guild-claim-next-gated',
+  ]);
   // The viewer now holds the claim: "Claim the guild first" is no longer theirs to read (row 16).
   await expect(page.getByTestId('guild-claim-plan-line')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveText(checkoutGuildCopy.ready.startTrial);
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(guildClaimCopy.nextRoster);
 
-  // One fill: the subscribe button is gold, the roster link and the invite link are ghosts.
+  // One fill: the subscribe button is gold, every other step is a ghost.
+  const ghosts = ['roster', 'invite', 'plan', 'discord'];
   await page.mouse.move(0, 0);
   await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveCSS(
     'background-color',
     'rgb(229, 185, 85)',
   );
-  for (const ghost of ['guild-claim-next-roster', 'guild-claim-next-invite']) {
-    await expect(page.getByTestId(ghost)).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  for (const ghost of ghosts) {
+    await expect(page.getByTestId(`guild-claim-next-${ghost}`)).toHaveCSS(
+      'background-color',
+      'rgba(0, 0, 0, 0)',
+    );
   }
-  for (const control of ['subscribe', 'roster', 'invite']) {
+  for (const control of ['subscribe', ...ghosts]) {
     await expectTapHeight(page.getByTestId(`guild-claim-next-${control}`));
   }
   await expectNoAxeViolations(page, '[data-testid="guild-claim"]');

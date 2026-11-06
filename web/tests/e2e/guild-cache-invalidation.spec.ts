@@ -5,7 +5,6 @@
 // persisted by the first page, and the page a mutation lands on must still show the new state.
 import type { Page } from '@playwright/test';
 import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
-import { guildJoinCopy } from '../../src/lib/guild/copy';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -116,8 +115,10 @@ test('joining by invite lands on the member view, not the cached stranger view',
   // 2. Join through the invite, then open the guild from the joined state.
   await page.goto(`/guild/invite/${INVITE_TOKEN}`);
   await page.getByTestId('guild-join-button').click();
-  // The joined state reads the guild's plan from the fresh /v1/me (the entry carries no plan here).
-  await expect(page.getByTestId('guild-join-plan')).toHaveText(guildJoinCopy.noPlanYet('Olympus XXVII'));
+  // The joined state, from the fresh /v1/me: a member's plan line stays empty (join-plan.ts:
+  // officers only; the block keeps the line's height).
+  await expect(page.getByTestId('guild-join-open')).toBeVisible();
+  await expect(page.getByTestId('guild-join-plan')).toHaveText('');
   await expect(page.getByTestId('guild-join-button')).toHaveCount(0);
   await page.getByTestId('guild-join-open').click();
   await expect(page).toHaveURL(/\/guild\/us\/pvp\/olympus-xxvii/);

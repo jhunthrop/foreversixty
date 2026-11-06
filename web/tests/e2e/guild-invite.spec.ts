@@ -89,18 +89,31 @@ test('a signed-in visitor sees the guild that invited them, joins, and is sent t
 });
 
 // The joined state (subscribe-and-join spec §6.3): focus on the sentence, the guild's plan line
-// from a fresh /v1/me, then `Open the guild`; the join button is gone.
+// from a fresh /v1/me, then `Open the guild`; the join button is gone. The plan line is for
+// officers and the guild master only (lib/guild/join-plan.ts): a member has nothing to do about it.
 const JOINED_PLANS = [
   {
-    name: 'a guild on a plan',
+    name: 'a guild on a plan as an officer',
+    rank: 'officer',
     covered: coveredView({ tier: 'guild' }),
     line: guildJoinCopy.onPlan('The Last Watch', PLANS.guild.name),
   },
-  { name: 'a guild with no plan', covered: null, line: guildJoinCopy.noPlanYet('The Last Watch') },
+  {
+    name: 'a guild with no plan as an officer',
+    rank: 'officer',
+    covered: null,
+    line: guildJoinCopy.noPlanYet('The Last Watch'),
+  },
+  {
+    name: 'a guild on a plan as a member',
+    rank: 'member',
+    covered: coveredView({ tier: 'guild' }),
+    line: null,
+  },
 ] as const;
 
-for (const { name, covered, line } of JOINED_PLANS) {
-  test(`joining ${name}: the joined sentence is focused, the plan line reads, no join button`, async ({
+for (const { name, rank, covered, line } of JOINED_PLANS) {
+  test(`joining ${name}: the joined sentence is focused, the plan line ${line === null ? 'stays empty' : 'reads'}, no join button`, async ({
     page,
   }) => {
     let joined = false;
@@ -114,7 +127,7 @@ for (const { name, covered, line } of JOINED_PLANS) {
                 region: 'us',
                 ruleset: 'hardcore',
                 slug: 'the-last-watch',
-                rank: 'member',
+                rank,
                 verified: true,
                 covered,
               }),
@@ -128,7 +141,7 @@ for (const { name, covered, line } of JOINED_PLANS) {
       return route.fulfill(
         envelope({
           guild: { id: 501, region: 'us', ruleset: 'hardcore', name: 'The Last Watch' },
-          rank: 'member',
+          rank,
         }),
       );
     });
@@ -136,7 +149,8 @@ for (const { name, covered, line } of JOINED_PLANS) {
     await page.getByTestId('guild-join-button').click();
     await expect(page.getByTestId('guild-join-joined')).toHaveText(guildJoinCopy.joined);
     await expect(page.getByTestId('guild-join-joined')).toBeFocused();
-    await expect(page.getByTestId('guild-join-plan')).toHaveText(line);
+    if (line === null) await expect(page.getByTestId('guild-join-plan')).toHaveText('');
+    else await expect(page.getByTestId('guild-join-plan')).toHaveText(line);
     await expect(page.getByTestId('guild-join-button')).toHaveCount(0);
     const open = page.getByTestId('guild-join-open');
     await expect(open).toHaveText(guildJoinCopy.openGuild);
@@ -151,7 +165,9 @@ test('a signed-out visitor sees the same card with a sign-in button, not a join 
   await page.route(`**/v1/guild-invites/${INVITE_TOKEN}`, (route) => route.fulfill(envelope(PEEK)));
   await page.goto(`/guild/invite/${INVITE_TOKEN}`);
   await expect(page.getByTestId('guild-join-invited')).toHaveText('You are invited to join Lifecycle Test.');
-  await expect(page.getByTestId('guild-join-consequence')).toBeVisible();
+  // Signed out reads the sign-in line; the consequence line is for a signed-in visitor about to join.
+  await expect(page.getByTestId('guild-join-signin-line')).toHaveText(guildJoinCopy.signInLine);
+  await expect(page.getByTestId('guild-join-consequence')).toHaveCount(0);
   await expect(page.getByTestId('guild-join-signin')).toHaveText('Sign in with Battle.net to join');
   // Signing in brings them back to this same invite.
   await expect(page.getByTestId('guild-join-signin')).toHaveAttribute(
