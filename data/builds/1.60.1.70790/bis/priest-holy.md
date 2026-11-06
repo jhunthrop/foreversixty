@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 000000000000000000-33500000000000000-00000000000000000)
 
-Set DPS (verified): 41.9. Weights run: 18.8s. Verify run: 99.5s. 186 eligible items had no known source.
+Set DPS (verified): 41.9. Weights run: 15.4s. Verify run: 82.6s. 186 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.048, intellect=0.941 ± 0.010, spirit=0.947 ± 0.011, mp5=1.827 ± 0.013, crit=0.064 ± 0.004 per rating point (14 rating = 1%, 0.893 per %), spell_haste=not significant (-0.028 ± 0.086)
 
@@ -17,7 +17,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | head | Pristine Circlet (253949) | Tailoring [crafted] | 18.0 healing_power points (1.71 DPS) | yes | Flying Tiger Goggles (4368, -1.35 DPS) [crafted]; Shadow Goggles (4373, -1.48 DPS, sim-verified) [crafted] |
 | neck | Scholarly Pendant (277203) | Friend of the Library [quest] | 1.9 healing_power points (0.18 DPS) | yes | Tarnished Locket (279870, -0.65 DPS, sim-verified) [quest] |
 | shoulder | Magician's Mantle (12998) | World drop [world_drop] | 13.5 healing_power points (1.28 DPS) | yes | Slime-encrusted Pads (6461, -0.76 DPS) [dungeon]; Double-Stitched Woolen Shoulders (4314, -0.90 DPS) [crafted]; Reinforced Woolen Shoulders (4315, -1.14 DPS, sim-verified) [crafted] |
-| back | Caretaker's Cape (20428) | Silverwing Sentinels [rep] | sim-verified (41.9 DPS) | yes | Heavy Woolen Cloak (4311, -0.51 DPS, sim-verified) [crafted]; Pearl-clasped Cloak (5542, -0.58 DPS) [crafted]; Spirit Cloak (4792, -0.68 DPS) [vendor] |
+| back | Caretaker's Cape (20428) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Heavy Woolen Cloak (4311, -0.51 DPS, sim-verified) [crafted]; Pearl-clasped Cloak (5542, -0.58 DPS) [crafted]; Spirit Cloak (4792, -0.68 DPS) [vendor] |
 | chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 20.5 healing_power points (1.96 DPS) | yes | Robe of the Moccasin (6465, -0.20 DPS) [dungeon]; Scholarly Robes (2034, -0.59 DPS) [dungeon]; Corsair's Overshirt (5202, -0.79 DPS, sim-verified) [dungeon] |
 | wrist | Mindthrust Bracers (1974) | Shadowfang Keep [dungeon] | 10.2 healing_power points (0.97 DPS) | yes | Bright Bracers (3647, -0.61 DPS) [world_drop]; Seer's Cuffs (3645, -0.70 DPS) [dungeon]; Repurposed Hair Band (281256, -1.98 DPS, sim-verified) [quest] |
 | hands | Pristine Gloves (253913) | Tailoring [crafted] | 13.8 healing_power points (1.32 DPS) | yes | Bright Gloves (3066, -0.60 DPS) [world_drop]; Serpent Gloves (5970, -0.65 DPS) [dungeon]; Magefist Gloves (12977, -1.02 DPS, sim-verified) [world_drop] |
@@ -38,7 +38,7 @@ No-known-source sample (15 of 186, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 000000000000000000-33505003020000000-00000000000000000)
 
-Set DPS (verified): 66.2. Weights run: 18.6s. Verify run: 115.3s. 308 eligible items had no known source.
+Set DPS (verified): 66.2. Weights run: 15.0s. Verify run: 96.3s. 308 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.028, intellect=0.802 ± 0.011, spirit=0.458 ± 0.015, mp5=1.845 ± 0.027, crit=0.081 ± 0.004 per rating point (14 rating = 1%, 1.130 per %), spell_haste=not significant (0.060 ± 0.052)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 308, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 000000000000000000-33505003030121131-00000000000000000)
 
-Set DPS (verified): 168.2. Weights run: 34.8s. Verify run: 226.1s. 402 eligible items had no known source.
+Set DPS (verified): 168.2. Weights run: 26.8s. Verify run: 174.8s. 402 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.316, intellect=0.699 ± 0.042, spirit=0.914 ± 0.040, mp5=1.696 ± 0.047, crit=0.191 ± 0.033 per rating point (14 rating = 1%, 2.670 per %), spell_haste=not significant (0.197 ± 0.389)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 402, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 005002000000000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 247.5. Weights run: 37.0s. Verify run: 310.3s. 517 eligible items had no known source.
+Set DPS (verified): 247.5. Weights run: 28.4s. Verify run: 243.3s. 517 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -116,7 +116,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Gilded Waistcord (254081) | Tailoring [crafted] | 38.0 healing_power points (10.14 DPS) | yes | Gilded Cord (254037, -0.49 DPS, sim-verified) [crafted]; Dawnspire Cord (12466, -1.86 DPS) [dungeon]; Earthenweave Cord (254077, -1.93 DPS) [crafted] |
 | legs | Knight's Satin Leggings (220893) | Captain Dirgehammer [vendor] | 43.6 healing_power points (11.64 DPS) | yes | Senior Designer's Pantaloons (11841, -1.19 DPS, sim-verified) [dungeon]; Stoneweaver Leggings (9407, -2.78 DPS) [dungeon]; Spellshock Leggings (9484, -2.83 DPS) [dungeon] |
 | feet | Gilded Sandals (254107) | Tailoring [crafted] | 40.0 healing_power points (10.67 DPS) | yes | Sergeant Major's Satin Boots (220895, -1.48 DPS, sim-verified) [vendor]; Earthenweave Boots (254093, -2.46 DPS) [crafted]; Gilded Slippers (254001, -3.00 DPS) [crafted] |
-| finger1 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | sim-verified (247.6 DPS) | yes | Cyclopean Band (11824, +0.00 DPS) [dungeon]; Philanthropist's Ring (281635, -0.13 DPS) [quest]; Band of the Unicorn (7553, -0.66 DPS) [world_drop] |
+| finger1 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cyclopean Band (11824, +0.00 DPS) [dungeon]; Philanthropist's Ring (281635, -0.13 DPS) [quest]; Band of the Unicorn (7553, -0.66 DPS) [world_drop] |
 | finger2 | Brainlash (6440) | Zul'Farrak [dungeon] | 17.2 healing_power points (4.59 DPS) | yes | Cyclopean Band (11824, +0.00 DPS) [dungeon]; Philanthropist's Ring (281635, -0.58 DPS) [quest]; Band of the Unicorn (7553, -1.12 DPS) [world_drop] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+6.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -0.23 DPS) [quest]; Thunderbrew's Boot Flask (744, -0.46 DPS) [quest] |
 | trinket2 | Enriched Seal (271903) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Evonice's Landin' Pilla (18951, -0.00 DPS) [quest]; Thunderbrew's Boot Flask (744, -0.24 DPS) [quest]; Uther's Strength (11302, -0.60 DPS, sim-verified) [world_drop] |
@@ -130,7 +130,7 @@ No-known-source sample (15 of 517, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 403.8. Weights run: 34.4s. Verify run: 1125.9s. 1359 eligible items had no known source.
+Set DPS (verified): 403.8. Weights run: 27.1s. Verify run: 895.7s. 1359 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -148,7 +148,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | 48.2 healing_power points (12.57 DPS) | yes | Devout Belt (16696, -3.52 DPS) [dungeon]; Gilded Waistcord (254081, -3.80 DPS, sim-verified) [crafted]; Dawnspire Cord (12466, -4.08 DPS) [dungeon] |
 | legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Satin Pants (17603, +0.00 DPS) [vendor]; Marshal's Satin Legguards (231626, +0.00 DPS) [vendor]; Sentinel's Silk Leggings (237815, -14.05 DPS, sim-verified) [vendor] |
 | feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Satin Walkers (231627, +0.00 DPS) [vendor]; Swarmtender's Footpads (275609, +0.00 DPS) [crafted]; Mooncloth Boots (15802, -8.14 DPS, sim-verified) [crafted] |
-| finger1 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-verified (403.9 DPS) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; Fordring's Seal (16058, +0.00 DPS) [quest]; Lorekeeper's Ring (19522, -1.25 DPS) [rep] |
+| finger1 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; Fordring's Seal (16058, +0.00 DPS) [quest]; Lorekeeper's Ring (19522, -1.25 DPS) [rep] |
 | finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; Fordring's Seal (16058, -1.70 DPS, sim-verified) [quest]; Lorekeeper's Ring (19522, -3.10 DPS) [rep] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+4.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Shard of the Splithooves (10659, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world_drop]; Second Wind (11819, +0.00 DPS) [dungeon] |
 | trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Second Wind (11819, -5.22 DPS) [dungeon]; Weakness Analyzer (272438, -5.22 DPS) [vendor]; Shard of the Splithooves (10659, -11.90 DPS, sim-verified) [quest] |
@@ -162,7 +162,7 @@ No-known-source sample (15 of 1359, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 867.3. Weights run: 21.7s. Verify run: 610.6s. 1359 eligible items had no known source.
+Set DPS (verified): 867.3. Weights run: 17.6s. Verify run: 487.1s. 1359 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -180,7 +180,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | 44.9 healing_power points (18.72 DPS) | yes | Penitent's Cinch (272394, -3.42 DPS, sim-verified) [vendor]; Earthenweave Cord (254077, -4.46 DPS) [crafted]; Gilded Waistcord (254081, -4.71 DPS) [crafted] |
 | legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Captain's Satin Legguards (227125, +0.00 DPS) [pvp]; Marshal's Satin Legguards (231626, +0.00 DPS) [vendor]; Earthenweave Leggings (254125, -25.70 DPS, sim-verified) [crafted] |
 | feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Satin Walkers (231627, +0.00 DPS) [vendor]; Swarmtender's Footpads (275609, +0.00 DPS) [crafted]; Faith Healer's Boots (22247, -16.13 DPS, sim-verified) [dungeon] |
-| finger1 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-verified (867.3 DPS) | yes | Fordring's Seal (16058, +0.00 DPS) [quest]; Rosewine Circle (13178, -0.48 DPS) [dungeon]; Maiden's Circle (13001, -4.54 DPS) [world_drop] |
+| finger1 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Fordring's Seal (16058, +0.00 DPS) [quest]; Rosewine Circle (13178, -0.48 DPS) [dungeon]; Maiden's Circle (13001, -4.54 DPS) [world_drop] |
 | finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-verified (+3.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Fordring's Seal (16058, +0.00 DPS) [quest]; Rosewine Circle (13178, -1.36 DPS) [dungeon]; Maiden's Circle (13001, -5.42 DPS) [world_drop] |
 | trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Weakness Analyzer (272438, -8.34 DPS) [vendor]; Second Wind (11819, -8.40 DPS, sim-verified) [dungeon]; Uther's Strength (11302, -10.00 DPS) [world_drop] |
 | trinket2 | Dormant Heart of the Mountain (249473) | Enchanting [crafted] | sim-verified (+10.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Second Wind (11819, +0.00 DPS) [dungeon]; Burst of Knowledge (11832, +0.00 DPS) [dungeon] |
@@ -196,14 +196,14 @@ No-known-source sample (15 of 1359, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 000000000000000000-33500000000000000-00000000000000000)
 
-Set DPS (verified): 40.3. Weights run: 18.8s. Verify run: 101.2s. 179 eligible items had no known source.
+Set DPS (verified): 40.3. Weights run: 15.4s. Verify run: 84.3s. 179 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.107, intellect=1.074 ± 0.017, spirit=0.981 ± 0.017, mp5=2.493 ± 0.019, crit=0.110 ± 0.007 per rating point (14 rating = 1%, 1.534 per %), spell_haste=not significant (-0.017 ± 0.150)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Pristine Circlet (253949) | Tailoring [crafted] | 18.0 healing_power points (2.00 DPS) | yes | Shadow Goggles (4373, -1.49 DPS, sim-verified) [crafted]; Flying Tiger Goggles (4368, -1.56 DPS) [crafted] |
-| neck | Scholarly Pendant (277203) | Friend of the Library [quest] | sim-verified (40.3 DPS) | yes | Roadwatcher's Confidence (281265, -0.18 DPS, sim-verified) [quest] |
+| neck | Scholarly Pendant (277203) | Friend of the Library [quest] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Roadwatcher's Confidence (281265, -0.18 DPS, sim-verified) [quest] |
 | shoulder | Magician's Mantle (12998) | World drop [world_drop] | 14.7 healing_power points (1.63 DPS) | yes | Reinforced Woolen Shoulders (4315, -0.68 DPS, sim-verified) [crafted]; Slime-encrusted Pads (6461, -0.80 DPS) [dungeon]; Double-Stitched Woolen Shoulders (4314, -1.18 DPS) [crafted] |
 | back | Battle Healer's Cloak (20427) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Heavy Woolen Cloak (4311, -0.36 DPS, sim-verified) [crafted]; Pearl-clasped Cloak (5542, -0.64 DPS) [crafted]; Sanguine Cape (14376, -0.74 DPS) [world_drop] |
 | chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 21.3 healing_power points (2.37 DPS) | yes | Robe of the Moccasin (6465, -0.28 DPS) [dungeon]; Scholarly Robes (2034, -0.73 DPS) [dungeon]; Corsair's Overshirt (5202, -0.73 DPS, sim-verified) [dungeon] |
@@ -226,7 +226,7 @@ No-known-source sample (15 of 179, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 000000000000000000-33505003020000000-00000000000000000)
 
-Set DPS (verified): 68.4. Weights run: 18.6s. Verify run: 117.0s. 301 eligible items had no known source.
+Set DPS (verified): 68.4. Weights run: 15.0s. Verify run: 97.4s. 301 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.028, intellect=0.802 ± 0.011, spirit=0.458 ± 0.015, mp5=1.845 ± 0.027, crit=0.081 ± 0.004 per rating point (14 rating = 1%, 1.130 per %), spell_haste=not significant (0.060 ± 0.052)
 
@@ -234,7 +234,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 |---|---|---|---|---|---|
 | head | Holy Shroud (2721) | World drop [world_drop] | 35.7 healing_power points (4.04 DPS) | yes | Filigreed Pristine Circlet (253975, -1.55 DPS) [crafted]; Pristine Circlet (253949, -2.01 DPS) [crafted]; Enchanter's Cowl (4322, -2.46 DPS) [crafted] |
 | neck | Archmagister's Faceted Pendant (273049) | Shade of the Archmage [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Kaleidoscope Chain (13084, +0.00 DPS) [world_drop]; Crystal Starfire Medallion (5003, -0.03 DPS) [world_drop]; Darkspear Warding Pendant (272075, -0.09 DPS) [vendor] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | sim-verified (68.4 DPS) | yes | Death Speaker Mantle (6685, -0.16 DPS) [dungeon]; Magician's Mantle (12998, -0.45 DPS) [world_drop]; Invoker's Mantle (215365, -0.59 DPS) [crafted] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Death Speaker Mantle (6685, -0.16 DPS) [dungeon]; Magician's Mantle (12998, -0.45 DPS) [world_drop]; Invoker's Mantle (215365, -0.59 DPS) [crafted] |
 | back | Battle Healer's Cloak (19529) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Thresher Cape (6901, -0.47 DPS) [dungeon]; Darkspear Raider's Cloak (272078, -0.80 DPS) [vendor]; Windsong Drape (15468, -0.90 DPS) [quest] |
 | chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 28.8 healing_power points (3.26 DPS) | yes | Pristine Gown (253961, -0.16 DPS) [crafted]; Beguiler Robes (7728, -0.74 DPS) [dungeon]; Robes of Arugal (6324, -0.91 DPS) [dungeon] |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 14.5 healing_power points (1.64 DPS) | yes | Mindthrust Bracers (1974, -0.56 DPS) [dungeon]; Glowing Magical Bracelets (13106, -0.92 DPS) [world_drop]; Nightsky Wristbands (6407, -0.94 DPS) [world_drop] |
@@ -243,7 +243,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | legs | Pristine Leggings (253987) | Tailoring [crafted] | 29.9 healing_power points (3.38 DPS) | yes | Filigreed Pristine Leggings (253937, -0.59 DPS) [crafted]; Earthen Leggings (253999, -1.11 DPS) [crafted]; Gaze Dreamer Pants (6903, -1.56 DPS) [dungeon] |
 | feet | Gilded Slippers (254001) | Tailoring [crafted] | 27.4 healing_power points (3.10 DPS) | yes | Acidic Walkers (9454, -1.60 DPS) [dungeon]; Pristine Boots (253889, -1.81 DPS) [crafted]; Spidersilk Boots (4320, -1.95 DPS) [crafted] |
 | finger1 | Solid Gold Band (279845) | Opportunistic Education [quest] | 13.3 healing_power points (1.50 DPS) | yes | Electrocutioner Lagnut (9447, -0.12 DPS) [dungeon]; Runemender's Seal (273031, -0.12 DPS) [world]; Advisor's Ring (19521, -0.29 DPS) [rep] |
-| finger2 | Ring of Power Regulation (273030) | Excavation Site: Wetlands: Relic Guardian [dungeon] | sim-verified (68.4 DPS) | yes | Electrocutioner Lagnut (9447, +0.00 DPS) [dungeon]; Runemender's Seal (273031, +0.00 DPS) [world]; Advisor's Ring (19521, -0.10 DPS) [rep] |
+| finger2 | Ring of Power Regulation (273030) | Excavation Site: Wetlands: Relic Guardian [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Electrocutioner Lagnut (9447, +0.00 DPS) [dungeon]; Runemender's Seal (273031, +0.00 DPS) [world]; Advisor's Ring (19521, -0.10 DPS) [rep] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Staff of the Friar (3415, -0.91 DPS) [dungeon]; Odo's Ley Staff (6318, -1.19 DPS) [dungeon]; Living Root (6631, -2.34 DPS) [dungeon] |
@@ -256,7 +256,7 @@ No-known-source sample (15 of 301, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 000000000000000000-33505003030121131-00000000000000000)
 
-Set DPS (verified): 178.1. Weights run: 34.8s. Verify run: 221.7s. 395 eligible items had no known source.
+Set DPS (verified): 178.1. Weights run: 26.8s. Verify run: 172.6s. 395 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.316, intellect=0.699 ± 0.042, spirit=0.914 ± 0.040, mp5=1.696 ± 0.047, crit=0.191 ± 0.033 per rating point (14 rating = 1%, 2.670 per %), spell_haste=not significant (0.197 ± 0.389)
 
@@ -286,7 +286,7 @@ No-known-source sample (15 of 395, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 005002000000000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 260.7. Weights run: 37.0s. Verify run: 320.3s. 510 eligible items had no known source.
+Set DPS (verified): 260.7. Weights run: 28.4s. Verify run: 251.7s. 510 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -304,7 +304,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Gilded Waistcord (254081) | Tailoring [crafted] | 38.0 healing_power points (10.14 DPS) | yes | Gilded Cord (254037, -0.61 DPS, sim-verified) [crafted]; Dawnspire Cord (12466, -1.86 DPS) [dungeon]; Earthenweave Cord (254077, -1.93 DPS) [crafted] |
 | legs | Stone Guard's Satin Leggings (220902) | Lady Palanseer [vendor] | 43.6 healing_power points (11.64 DPS) | yes | Senior Designer's Pantaloons (11841, -1.02 DPS) [dungeon]; Stoneweaver Leggings (9407, -2.78 DPS) [dungeon]; Spellshock Leggings (9484, -2.83 DPS) [dungeon] |
 | feet | Gilded Sandals (254107) | Tailoring [crafted] | 40.0 healing_power points (10.67 DPS) | yes | First Sergeant's Satin Boots (220900, -1.92 DPS, sim-verified) [vendor]; Earthenweave Boots (254093, -2.46 DPS) [crafted]; Gilded Slippers (254001, -3.00 DPS) [crafted] |
-| finger1 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | sim-verified (260.8 DPS) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Cyclopean Band (11824, +0.00 DPS) [dungeon]; Solid Gold Band (279845, -0.49 DPS) [quest] |
+| finger1 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Cyclopean Band (11824, +0.00 DPS) [dungeon]; Solid Gold Band (279845, -0.49 DPS) [quest] |
 | finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Cyclopean Band (11824, +0.00 DPS) [dungeon]; Solid Gold Band (279845, -0.62 DPS) [quest]; Brainlash (6440, -0.68 DPS, sim-verified) [dungeon] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Evonice's Landin' Pilla (18951, -0.23 DPS) [quest]; Alchemist's Stone (13503, -0.93 DPS) [crafted]; Uther's Strength (11302, -1.39 DPS, sim-verified) [world_drop] |
 | trinket2 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -0.00 DPS) [quest]; Alchemist's Stone (13503, -0.70 DPS) [crafted] |
@@ -318,7 +318,7 @@ No-known-source sample (15 of 510, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 426.0. Weights run: 34.4s. Verify run: 1121.9s. 1354 eligible items had no known source.
+Set DPS (verified): 426.0. Weights run: 27.1s. Verify run: 892.5s. 1354 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -336,7 +336,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Devout Belt (16696) | Blackrock Spire: Blackhand Summoner [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gilded Waistcord (254081, +0.00 DPS) [crafted]; Dawnspire Cord (12466, -0.56 DPS) [dungeon]; Wisdom of the Timbermaw (19047, -2.01 DPS, sim-verified) [crafted] |
 | legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Satin Leggings (231614, +0.00 DPS) [pvp]; General's Satin Legguards (231634, +0.00 DPS) [vendor]; Outrider's Silk Leggings (22747, -8.83 DPS, sim-verified) [rep] |
 | feet | Mooncloth Boots (15802) | Tailoring [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Satin Boots (17618, +0.00 DPS) [vendor]; General's Satin Walkers (231630, +0.00 DPS) [vendor]; Swarmtender's Footpads (275609, -4.07 DPS, sim-verified) [crafted] |
-| finger1 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-verified (426.0 DPS) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; Fordring's Seal (16058, +0.00 DPS) [quest]; Darkspear Signet (272068, -0.32 DPS) [vendor] |
+| finger1 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; Fordring's Seal (16058, +0.00 DPS) [quest]; Darkspear Signet (272068, -0.32 DPS) [vendor] |
 | finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; Fordring's Seal (16058, +0.00 DPS) [quest]; Darkspear Signet (272068, -2.18 DPS) [vendor] |
 | trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (+11.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Second Wind (11819, -5.22 DPS) [dungeon]; Weakness Analyzer (272438, -5.22 DPS) [vendor]; Shard of the Splithooves (10659, -5.46 DPS) [quest] |
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, +0.00 DPS) [quest]; Uther's Strength (11302, +0.00 DPS) [world_drop]; Second Wind (11819, -0.93 DPS, sim-verified) [dungeon] |
@@ -350,7 +350,7 @@ No-known-source sample (15 of 1354, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 879.7. Weights run: 21.7s. Verify run: 621.3s. 1354 eligible items had no known source.
+Set DPS (verified): 879.7. Weights run: 17.6s. Verify run: 496.1s. 1354 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -368,7 +368,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | 44.9 healing_power points (18.72 DPS) | yes | Penitent's Cinch (272394, -1.36 DPS, sim-verified) [vendor]; Earthenweave Cord (254077, -4.46 DPS) [crafted]; Gilded Waistcord (254081, -4.71 DPS) [crafted] |
 | legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Legionnaire's Satin Legguards (227123, +0.00 DPS) [pvp]; General's Satin Legguards (231634, +0.00 DPS) [vendor]; Earthenweave Leggings (254125, -28.41 DPS, sim-verified) [crafted] |
 | feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Satin Walkers (231630, +0.00 DPS) [vendor]; Swarmtender's Footpads (275609, +0.00 DPS) [crafted]; Faith Healer's Boots (22247, -17.50 DPS, sim-verified) [dungeon] |
-| finger1 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-verified (879.7 DPS) | yes | Fordring's Seal (16058, +0.00 DPS) [quest]; Rosewine Circle (13178, -0.48 DPS) [dungeon]; Maiden's Circle (13001, -4.54 DPS) [world_drop] |
+| finger1 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Fordring's Seal (16058, +0.00 DPS) [quest]; Rosewine Circle (13178, -0.48 DPS) [dungeon]; Maiden's Circle (13001, -4.54 DPS) [world_drop] |
 | finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-verified (+3.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Fordring's Seal (16058, +0.00 DPS) [quest]; Rosewine Circle (13178, -1.36 DPS) [dungeon]; Maiden's Circle (13001, -5.42 DPS) [world_drop] |
 | trinket1 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dormant Heart of the Mountain (249473, -6.59 DPS, sim-verified) [crafted]; Weakness Analyzer (272438, -8.34 DPS) [vendor]; Uther's Strength (11302, -10.00 DPS) [world_drop] |
 | trinket2 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-verified (+10.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, -1.67 DPS) [world_drop]; Burst of Knowledge (11832, -4.17 DPS) [dungeon]; Ankh of Life (1713, -5.43 DPS) [world_drop] |

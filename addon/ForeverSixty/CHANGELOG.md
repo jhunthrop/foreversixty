@@ -1,5 +1,13 @@
 # Forever Sixty
 
+## 2.0.29
+
+- New best in slot lists for every spec, healers included, all ranked on the same latest sim. Your upgrade order changes.
+- Raid prep: your export now carries your resistance totals, the consumables in your bags, every key you hold, your attunement quests and whether you hold the Drakefire Amulet, so your guild can see who is ready.
+- Raid drops: the addon records what drops from the loot window and adds it to your export.
+- New /fs job command: shows your own raid assignments, and a line names them when you enter the raid.
+- Rotation notes and leveling ranks are updated for every class.
+
 ## 2.0.28
 
 - New best in slot lists for every damage and tank spec, ranked on the launch client with the latest sim fixes. Your upgrade order and the pieces the list points you at change.
