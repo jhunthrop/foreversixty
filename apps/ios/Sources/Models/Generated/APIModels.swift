@@ -5072,6 +5072,55 @@ public struct RaidCounts: Codable, Sendable, Equatable {
     }
 }
 
+/// One cover row (Go guilds.CoverRow). providers_in, providers_late and providers_bench are the players signed so who can provide it; rows that share players (a paladin's one blessing, a warlock's one curse, a shaman's one air totem) hand each player to one row, in catalogue order. likely is how many of the In and Late providers are counted on a talent their sign-up cannot show (an MM hunter for Trueshot Aura). state reads In plus Late against need: ok when it meets it, short when some, missing when none.
+public struct RaidCoverRow: Codable, Sendable, Equatable {
+    /// The catalogue key, e.g. "windfury_totem".
+    public let key: String
+    /// The spell's name in the client.
+    public let name: String
+    public let kind: String
+    /// The top rank a level 60 player learns.
+    public let spellId: Int
+    /// The icon stem, /data/{build}/icons/{stem}.webp.
+    public let icon: String
+    /// Providers the raid wants: per raid a fixed count, per melee_group or caster_group that count for every five In or Late raiders who fight in melee (tanks too) or at range (healers too), at least the count.
+    public let need: Int
+    public let per: String
+    public let providersIn: Int
+    public let providersLate: Int
+    public let providersBench: Int
+    public let likely: Int
+    public let state: String
+
+    public init(
+        key: String,
+        name: String,
+        kind: String,
+        spellId: Int,
+        icon: String,
+        need: Int,
+        per: String,
+        providersIn: Int,
+        providersLate: Int,
+        providersBench: Int,
+        likely: Int,
+        state: String
+    ) {
+        self.key = key
+        self.name = name
+        self.kind = kind
+        self.spellId = spellId
+        self.icon = icon
+        self.need = need
+        self.per = per
+        self.providersIn = providersIn
+        self.providersLate = providersLate
+        self.providersBench = providersBench
+        self.likely = likely
+        self.state = state
+    }
+}
+
 public struct RaidDiscord: Codable, Sendable, Equatable {
     public let available: Bool
     public let connected: Bool
@@ -5772,6 +5821,8 @@ public struct RaidView: Codable, Sendable, Equatable {
     public let attendance: [RaidAttendanceRow]?
     /// Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web.
     public let report: JSONValue?
+    /// The buff and debuff cover of the sign-ups (owner decision D15), one row per entry of data/curated/raid-cover.json in its order (party buffs, raid buffs, debuffs); null for a dungeon or an event.
+    public let cover: [RaidCoverRow]?
 
     public init(
         id: Int64,
@@ -5797,7 +5848,8 @@ public struct RaidView: Codable, Sendable, Equatable {
         match: RaidMatch? = nil,
         night: RaidNight? = nil,
         attendance: [RaidAttendanceRow]? = nil,
-        report: JSONValue? = nil
+        report: JSONValue? = nil,
+        cover: [RaidCoverRow]? = nil
     ) {
         self.id = id
         self.zone = zone
@@ -5823,6 +5875,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         self.night = night
         self.attendance = attendance
         self.report = report
+        self.cover = cover
     }
 
     public init(from decoder: any Decoder) throws {
@@ -5851,6 +5904,7 @@ public struct RaidView: Codable, Sendable, Equatable {
         night = try c.decodeIfPresent(RaidNight.self, forKey: .night)
         attendance = try c.decodeIfPresent([RaidAttendanceRow].self, forKey: .attendance)
         report = try c.decodeIfPresent(JSONValue.self, forKey: .report)
+        cover = try c.decodeIfPresent([RaidCoverRow].self, forKey: .cover)
     }
 }
 

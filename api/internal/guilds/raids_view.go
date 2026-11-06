@@ -154,6 +154,9 @@ type RaidView struct {
 	Attendance    []AttendanceView `json:"attendance"`
 	// Report is the raid-night report, null until a log is matched.
 	Report *ReportView `json:"report"`
+	// Cover is the buff and debuff cover of the sign-ups (raids_cover.go); null for a dungeon
+	// or an event.
+	Cover []CoverRow `json:"cover"`
 }
 
 // ZoneView is one schedulable zone as the form lists it (guild events spec §3.1).
@@ -284,6 +287,7 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 		})
 	}
 	sortSignups(v.Signups)
+	v.Cover = raidCover(zone.Kind, v.Signups)
 	for _, c := range vc.roster {
 		sg, signed := byKey[c.CharacterKey]
 		// An account that has answered with any character is not waiting on an answer.

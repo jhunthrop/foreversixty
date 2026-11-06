@@ -1888,6 +1888,28 @@ data class RaidCounts(
     @SerialName("classes") val classes: Map<String, Int>? = null,
 )
 
+/** One cover row (Go guilds.CoverRow). providers_in, providers_late and providers_bench are the players signed so who can provide it; rows that share players (a paladin's one blessing, a warlock's one curse, a shaman's one air totem) hand each player to one row, in catalogue order. likely is how many of the In and Late providers are counted on a talent their sign-up cannot show (an MM hunter for Trueshot Aura). state reads In plus Late against need: ok when it meets it, short when some, missing when none. */
+@Serializable
+data class RaidCoverRow(
+    /** The catalogue key, e.g. "windfury_totem". */
+    @SerialName("key") val key: String,
+    /** The spell's name in the client. */
+    @SerialName("name") val name: String,
+    @SerialName("kind") val kind: String,
+    /** The top rank a level 60 player learns. */
+    @SerialName("spell_id") val spellId: Int,
+    /** The icon stem, /data/{build}/icons/{stem}.webp. */
+    @SerialName("icon") val icon: String,
+    /** Providers the raid wants: per raid a fixed count, per melee_group or caster_group that count for every five In or Late raiders who fight in melee (tanks too) or at range (healers too), at least the count. */
+    @SerialName("need") val need: Int,
+    @SerialName("per") val per: String,
+    @SerialName("providers_in") val providersIn: Int,
+    @SerialName("providers_late") val providersLate: Int,
+    @SerialName("providers_bench") val providersBench: Int,
+    @SerialName("likely") val likely: Int,
+    @SerialName("state") val state: String,
+)
+
 @Serializable
 data class RaidDiscord(
     @SerialName("available") val available: Boolean,
@@ -2157,6 +2179,8 @@ data class RaidView(
     @SerialName("attendance") val attendance: List<RaidAttendanceRow>? = null,
     /** Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web. */
     @SerialName("report") val report: JsonElement? = null,
+    /** The buff and debuff cover of the sign-ups (owner decision D15), one row per entry of data/curated/raid-cover.json in its order (party buffs, raid buffs, debuffs); null for a dungeon or an event. */
+    @SerialName("cover") val cover: List<RaidCoverRow>? = null,
 )
 
 @Serializable

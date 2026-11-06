@@ -2348,7 +2348,7 @@ components:
         One raid (Go guilds.RaidView). A locked raid takes no sign-up from a member; an officer
         may still write. match, night, attendance and report fill after the night (null before a
         log is matched).
-      required: [id, zone, zone_name, title, starts_at, duration_minutes, status, size, guild_timezone, notes, notes_html, counts, signups, not_signed, viewer, discord, discord_post, pre_done_status, match, night, attendance, report]
+      required: [id, zone, zone_name, title, starts_at, duration_minutes, status, size, guild_timezone, notes, notes_html, counts, signups, not_signed, viewer, discord, discord_post, pre_done_status, match, night, attendance, report, cover]
       properties:
         id: { type: integer, format: int64 }
         zone: { type: string }
@@ -2542,6 +2542,41 @@ components:
               excused: { type: boolean }
               own: { type: boolean }
         report: { $ref: '#/components/schemas/OpenObject', description: "Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web." }
+        cover:
+          type: [array, "null"]
+          description: >-
+            The buff and debuff cover of the sign-ups (owner decision D15), one row per entry of
+            data/curated/raid-cover.json in its order (party buffs, raid buffs, debuffs); null
+            for a dungeon or an event.
+          items: { $ref: '#/components/schemas/RaidCoverRow' }
+    RaidCoverRow:
+      type: object
+      description: >-
+        One cover row (Go guilds.CoverRow). providers_in, providers_late and providers_bench are
+        the players signed so who can provide it; rows that share players (a paladin's one
+        blessing, a warlock's one curse, a shaman's one air totem) hand each player to one row,
+        in catalogue order. likely is how many of the In and Late providers are counted on a
+        talent their sign-up cannot show (an MM hunter for Trueshot Aura). state reads In plus
+        Late against need: ok when it meets it, short when some, missing when none.
+      required: [key, name, kind, spell_id, icon, need, per, providers_in, providers_late, providers_bench, likely, state]
+      properties:
+        key: { type: string, description: 'The catalogue key, e.g. "windfury_totem".' }
+        name: { type: string, description: "The spell's name in the client." }
+        kind: { type: string, enum: [buff, debuff] }
+        spell_id: { type: integer, description: The top rank a level 60 player learns. }
+        icon: { type: string, description: "The icon stem, /data/{build}/icons/{stem}.webp." }
+        need:
+          type: integer
+          description: >-
+            Providers the raid wants: per raid a fixed count, per melee_group or caster_group
+            that count for every five In or Late raiders who fight in melee (tanks too) or at
+            range (healers too), at least the count.
+        per: { type: string, enum: [raid, melee_group, caster_group] }
+        providers_in: { type: integer }
+        providers_late: { type: integer }
+        providers_bench: { type: integer }
+        likely: { type: integer }
+        state: { type: string, enum: [ok, short, missing] }
     SignupRequest:
       type: object
       required: [state]
