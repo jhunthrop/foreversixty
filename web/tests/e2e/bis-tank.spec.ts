@@ -71,7 +71,7 @@ test('the weights table renders the tank stats, rating-family rows labelled as r
   await open(page);
   const weights = page.getByTestId('bis-weights-alliance-60');
   await expect(weights).toBeVisible();
-  await weights.getByText('Show the weights and their error').click();
+  await expect(weights.locator('details')).toHaveCount(0);
   for (const stat of TANK_WEIGHT_STATS) {
     await expect(weights.getByTestId(`bis-weight-row-${stat}`)).toBeAttached();
   }

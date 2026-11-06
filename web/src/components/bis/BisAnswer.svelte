@@ -2,10 +2,10 @@
 <!-- The page head's answer (web layout spec 2026-11-05 §5.3 item 2, §5.10 item 6, §5.11): the
      set's figure for the chosen sources, the trust line under it, and the two links. A tank band
      shows its four figures instead of one; a healer band its HPS with the mana and overheal
-     cells and the profile disclosure. -->
+     cells. Nothing collapses: the healer caption and the raid preset's effect names ride on
+     hover titles (the figure's wrapper, the trust line). -->
 <script lang="ts">
   import Figure from '../ui/Figure.svelte';
-  import { bisCopy } from '../../lib/bis/copy';
   import type { BisAnswerModel, GainUnit } from '../../lib/bis/page-model';
   import type { SetFigure } from '../../lib/bis/source-choice';
 
@@ -22,6 +22,10 @@
     /** "Simmed as a Night Elf" when the race control names another race. */
     raceNote?: string;
   } = $props();
+
+  /** Between the trust line's facts and between the links: one space each side (Svelte trims the
+   *  whitespace at a block's edges, so the separator is an expression, never literal text). */
+  const SEPARATOR = ' · ';
 </script>
 
 <div class="bis-answer" data-testid="bis-this-set">
@@ -38,7 +42,7 @@
       {answer.tank.secondaryLine}
     </p>
   {:else if figure}
-    <div data-testid={answer.healer ? 'bis-healer-figure' : 'bis-set-figure'}>
+    <div title={answer.healer?.caption} data-testid={answer.healer ? 'bis-healer-figure' : 'bis-set-figure'}>
       <Figure
         value={figure.value}
         {unit}
@@ -50,7 +54,6 @@
       />
     </div>
     {#if answer.healer}
-      <p class="bis-answer-line" data-testid="bis-healer-caption">{answer.healer.caption}</p>
       {#if answer.healer.metrics.length > 0}
         <dl class="bis-healer-metrics" data-testid="bis-healer-metrics">
           {#each answer.healer.metrics as metric (metric.key)}
@@ -64,40 +67,17 @@
       {/if}
     {/if}
   {/if}
-  <p class="bis-answer-line" data-testid="bis-trust-line">
-    {answer.trust.join(' · ')}{#if raceNote}
-      · {raceNote}{/if}{#if answer.rankingSimHref}
-      · <a href={answer.rankingSimHref} data-testid="bis-ranking-sim-link">View ranking sim ›</a>{/if}
+  <p class="bis-answer-line" title={answer.trustTitle} data-testid="bis-trust-line">
+    {answer.trust.join(
+      SEPARATOR,
+    )}{#if raceNote}{SEPARATOR}{raceNote}{/if}{#if answer.rankingSimHref}{SEPARATOR}<a
+        href={answer.rankingSimHref}
+        data-testid="bis-ranking-sim-link">View ranking sim ›</a
+      >{/if}
   </p>
-  {#if answer.healer?.disclosure}
-    <details class="bis-answer-profile" data-testid="bis-healer-profile">
-      <summary>{answer.healer.disclosure.summary}</summary>
-      <p>{answer.healer.disclosure.profileSummary}</p>
-      <dl>
-        {#each answer.healer.disclosure.rows as row (row.heading)}
-          <dt>{row.heading}</dt>
-          <dd>{row.figures}</dd>
-          {#if row.reason !== ''}<dd class="text-muted">{row.reason}</dd>{/if}
-        {/each}
-      </dl>
-      <p class="text-muted">{answer.healer.disclosure.notes}</p>
-    </details>
-  {/if}
-  {#if answer.presetGroups && answer.presetGroups.length > 0}
-    <details class="bis-answer-profile" data-testid="bis-preset-effects">
-      <summary>{bisCopy.presetDetailsSummary}</summary>
-      <dl>
-        {#each answer.presetGroups as group (group.heading)}
-          <dt>{group.heading}</dt>
-          <dd>{group.labels.join(', ')}</dd>
-        {/each}
-      </dl>
-      {#if answer.presetNotes}<p class="text-muted">{answer.presetNotes}</p>{/if}
-    </details>
-  {/if}
   <p class="bis-answer-links">
-    {#if answer.simHref}<a href={answer.simHref} data-testid="bis-sim-link">Open in simulator</a> ·
-    {/if}<a href={answer.plannerHref} data-testid="bis-planner-link">Talents in planner</a>
+    {#if answer.simHref}<a href={answer.simHref} data-testid="bis-sim-link">Open in simulator</a
+      >{SEPARATOR}{/if}<a href={answer.plannerHref} data-testid="bis-planner-link">Talents in planner</a>
   </p>
 </div>
 
@@ -142,14 +122,6 @@
     font-size: 24px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
-  }
-  .bis-answer-profile {
-    font-size: 13px;
-    color: var(--color-muted);
-  }
-  .bis-answer-profile summary {
-    cursor: pointer;
-    color: var(--color-gold);
   }
   @media (max-width: 767px) {
     .bis-answer {

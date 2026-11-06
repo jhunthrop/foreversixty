@@ -5,6 +5,7 @@
      `flush` drops the inner padding for content that runs its own rows edge to edge. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { REGION } from '../../lib/ui/regions';
 
   let {
     flush = true,
@@ -26,6 +27,7 @@
   role={label ? 'region' : undefined}
   aria-label={label}
   data-testid={testid}
+  data-region={REGION.plate}
 >
   {@render children()}
 </div>

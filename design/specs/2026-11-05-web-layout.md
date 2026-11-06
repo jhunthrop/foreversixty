@@ -165,6 +165,9 @@ Rules inside the primitives:
 A lint-style test, `web/src/components/surface-guard.test.ts`, in the manner of `site-column.test.ts`. It scans every `.astro`, `.svelte` and `styles/*.css` file. Outside `web/src/components/ui/` it fails on any of: `card-surface`, `rounded-panel`, `border-line`, `border-line-soft`, `border-line-warm`, `bg-raised`, `bg-card-top`, `bg-tile`, `shadow-card`, `border-[var(--color-line`, and `background` or `border` declarations that read `--color-raised`, `--color-card-top` or `--color-line*` in a `<style>` block. Allowed always: SVG strokes in charts (they read the colour by `var`, not by class), and the overlays through `Overlay`.
 Because 213 files use `border-line*` today, the test ships as a **ratchet**: `surface-guard.allowlist.json` lists the files that still break the rule, the test fails if a file not on the list breaks it and if the list ever grows, and each page lane deletes its files from the list as it adopts the primitives. By the end of the page-by-page work the list is empty and the allowance becomes a hard fail. `site-column.test.ts` keeps guarding the one container.
 
+### 3A.3a Parity regions
+Every primitive above carries a `data-region` (`head`, `head-title`, `head-meta`, `head-answer`, `controls`, `summary`, `notes`, `plate`, `slots`, `inspector`, `inspector-inline`, `section-<slug>`, `footer-note`), the same names the mock library emits; the table, the tolerance and the gate are in `design/parity.md` (names in code: `web/src/lib/ui/regions.ts`). A page region lands only when its parity spec matches the mock (tenet 15).
+
 ### 3A.4 What each page is, in primitives
 | Page | Page layout | PageHeader | ControlBar | Plate holds | Sections (open) |
 |---|---|---|---|---|---|
@@ -356,6 +359,7 @@ Mocks: `web-bis` (band 20, signed out), `web-bis-slots`, `web-bis-you` (signed i
 - **Inspector 360 px from 1760** (was 440): rows beat inspector width.
 - **Sources** is a compact `All sources` / `Sources (N)` button opening a popover (Overlay) at desktop; chips on phone. The BiS bar's group labels show from 1920.
 - **Type:** no condensed face anywhere; every heading is Barlow 700; the wordmark is an SVG (Cinzel no longer loads); the site loads Barlow 400/600/700 and, on primitive pages, Marcellus 400.
+- **Healer and tank heads kept (supersedes 5.3 item 2's one figure for those roles).** A healer's head shows its HPS figure and, under it, Overheal, Mana lasts and Healing per mana; a tank's head shows four figures (Effective health, Damage taken per second, Chance of death, Threat per second) and the TMI line in place of the one figure. Both shipped and `bis-healer` / `bis-tank` e2e assert them; the parity mocks (`ws_bis.py`, `web-bis-healer-60`, `web-bis-tank-60`) carry the same blocks, order and words, no disclosures.
 
 ## 6. The other pages: direction, mocks to follow one at a time
 Each keeps the system above. None is mocked in this round.

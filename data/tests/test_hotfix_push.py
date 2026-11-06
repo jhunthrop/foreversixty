@@ -239,6 +239,35 @@ def test_fetch_push_splits_a_record_with_more_than_a_page_of_entries_by_push_id(
     assert "0 451 70790 spell" in wago.searches
 
 
+class IngestingWago(FakeWago):
+    """wago still ingesting a live push while the crawl runs: the first search
+    for one record's exact entries finds copies that landed after its parent's
+    count was read."""
+
+    def __init__(self, entries: list[dict], trigger: str, late: list[dict]) -> None:
+        super().__init__(entries)
+        self.trigger, self.late = trigger, late
+
+    def handler(self, request: httpx.Request) -> httpx.Response:
+        if request.url.params["search"].strip().lower() == self.trigger and self.late:
+            self.entries, self.late = self.entries + self.late, []
+        return super().handler(request)
+
+
+def test_fetch_push_keeps_entries_that_land_while_the_record_is_split():
+    """Record 9823 at 1.60.1.70790: push 112414 kept gaining copies (16 when the
+    parent was counted, 18 by its exact-id search). The later copies are kept;
+    only a shortfall fails the fetch."""
+    entries = [wago_entry(n, 9823, "Spell", push_id=112414, build=70790) for n in range(16)]
+    entries += [wago_entry(100 + n, 10000 * (n % 9 + 1) + 9823, "Spell", build=70790)
+                for n in range(20)]  # fmt: skip
+    late = [wago_entry(50 + n, 9823, "Spell", push_id=112414, build=70790) for n in range(2)]
+    wago = IngestingWago(entries, "4 9823 70790 spell", late)
+    pushed = fetch_push("1.60.1.70790", ("Spell",), wago.client())
+    got = sorted(e.entry_id for e in pushed["Spell"])
+    assert got == sorted(e["id"] for e in entries + late)
+
+
 def test_fetch_push_splits_one_push_of_one_record_by_locale():
     """Record 451 at 1.60.1.70790: two pushes, each carrying the row in every
     locale, 30 entries a push that no push-id digit can split. Once the push id is
