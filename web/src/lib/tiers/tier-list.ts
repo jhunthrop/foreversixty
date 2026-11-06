@@ -22,6 +22,16 @@ export interface TierInput {
 
 export type TierTie = 'above' | 'below' | 'both';
 
+/** A spec a row ties with: enough to name it ("≈ tie with Arms") and to say when the two sit
+ *  in different letters. */
+export interface TierTieMate {
+  classSlug: string;
+  specSlug: string;
+  /** "Arms" */
+  name: string;
+  tier: TierLetter | null;
+}
+
 export interface TierRow {
   /** 1-based. Healers the error cannot tell apart share the rank of the first of them. */
   rank: number;
@@ -44,6 +54,10 @@ export interface TierRow {
   /** The neighbour(s) within the tie margin (a healer: within error), or `null`. Always
    *  `null` on a tank list. */
   tie: TierTie | null;
+  /** The specs this row ties with, best first: on a DPS list every spec within the tie margin
+   *  of this one (no chain carries a mark past the margin); on a healer list the neighbours the
+   *  error cannot order it against. Empty when `tie` is `null`. */
+  tiedWith: readonly TierTieMate[];
   /** S to D from the gap to the top. `null` on tank and healer lists, which carry no letters. */
   tier: TierLetter | null;
   lowConfidence: boolean;
@@ -131,6 +145,24 @@ function tieMarks(metrics: readonly number[], enabled: boolean): (TierTie | null
     if (above) return 'above';
     return below ? 'below' : null;
   });
+}
+
+/** The indexes a DPS row ties with: every other row within the margin of it, never one only
+ *  chained to it through a third spec. Sorted best first, so the margin is read off the higher one. */
+function marginMates(metrics: readonly number[], index: number): number[] {
+  const metric = metrics[index]!;
+  return metrics.flatMap((other, j) => {
+    if (j === index) return [];
+    const [lower, higher] = j < index ? [metric, other] : [other, metric];
+    return withinTieMargin(lower, higher) ? [j] : [];
+  });
+}
+
+/** The neighbours a mark names: above for 'above', below for 'below', both for 'both'. */
+function neighbourMates(tie: TierTie | null, index: number): number[] {
+  if (tie === null) return [];
+  if (tie === 'both') return [index - 1, index + 1];
+  return [tie === 'above' ? index - 1 : index + 1];
 }
 
 /** One measurement of a healer: effective HPS and its standard error. */
@@ -228,6 +260,20 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
   // A healer list published without the measured error claims neither an order nor a tie.
   const ranked = role !== 'healer' || healerOrderMeasured(pool);
   const { ties, ranks } = tiesAndRanks(sorted, role, ranked);
+  const sortedMetrics = sorted.map((scored) => scored.metric);
+  const tiers = sortedMetrics.map((metric) =>
+    roleHasTiers(role) ? tierOf(gapAndFraction(metric, top, tank).gap) : null,
+  );
+  const mateOf = (j: number): TierTieMate => {
+    const { entry } = sorted[j]!.input;
+    return { classSlug: entry.class_slug, specSlug: entry.spec_slug, name: entry.name, tier: tiers[j] ?? null };
+  };
+  const matesOf = (index: number): TierTieMate[] => {
+    const tie = ties[index] ?? null;
+    if (tie === null) return [];
+    const indexes = role === 'healer' ? neighbourMates(tie, index) : marginMates(sortedMetrics, index);
+    return indexes.map(mateOf);
+  };
   const bestEffectiveHealth = tank
     ? bestOf(sorted.map((s) => tankMetricsOf(s.input.band).effective_health))
     : 0;
@@ -248,7 +294,8 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
       gapPercent: index === 0 ? 0 : gap,
       fraction,
       tie: ties[index] ?? null,
-      tier: roleHasTiers(role) ? tierOf(gap) : null,
+      tiedWith: matesOf(index),
+      tier: tiers[index] ?? null,
       lowConfidence: band.weights_low_confidence === true,
       talents: band.talents,
       ...(input.simHref === undefined ? {} : { simHref: input.simHref }),
