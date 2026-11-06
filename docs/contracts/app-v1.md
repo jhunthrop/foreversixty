@@ -674,8 +674,10 @@ neutral placeholder. Tree art is `/data/<build>/trees/<background>.webp`.
 `{ sources[], quests?, factions? }`: the site's loot file, now an app contract. A source is
 `{ id, kind, name, items?, trash?, bosses?[{ id, name, npc_id?, items, item_chances? }],
 item_chances?, … }` with `kind` one of `raid|dungeon|world|world_drop|zone|vendor|crafted|rep|pvp|quest`.
+A dungeon or raid carries `level_min`/`level_max` (the client's Group Finder range); a crafted
+source carries `required_skill` (item id -> recipe skill, absent when unknown).
 `quests` maps an item id (string key) to the quests that reward it (`{ quest_id, name, faction,
-min_level, level, … }`). Drop chances are percents, absent when unknown, never 0 for unknown.
+min_level, level, zone_id?, zone?, … }`). Drop chances are percents, absent when unknown, never 0 for unknown.
 The item page reads `item-uses` instead; this is for anything that needs the raw sources. Fixture
 `cdn.loot`, held to the generator's file by `TestCDNLootFixtureMatchesTheGenerator`.
 

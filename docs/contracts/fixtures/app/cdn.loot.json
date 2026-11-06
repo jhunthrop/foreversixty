@@ -5,6 +5,8 @@
       "kind": "dungeon",
       "name": "Blackrock Depths",
       "zone_id": 1584,
+      "level_min": 52,
+      "level_max": 60,
       "bosses": [
         {
           "id": "dungeon:blackrock-depths:9018",
@@ -103,6 +105,9 @@
       "items": [
         13503
       ],
+      "required_skill": {
+        "13503": 300
+      },
       "source_origin": "wowhead"
     },
     {

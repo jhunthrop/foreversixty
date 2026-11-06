@@ -1,0 +1,33 @@
+{
+  "notes": "Test fixture: the loot fixture builds' instances (5001 is test_loot_merge_parity's synthetic Test Depths), with made-up but plausible ranges.",
+  "build": "1.60.1.69893",
+  "zones": {
+    "1581": {
+      "name": "The Deadmines",
+      "map_id": 36,
+      "activity_ids": [
+        799
+      ],
+      "level_min": 17,
+      "level_max": 26
+    },
+    "2717": {
+      "name": "Molten Core",
+      "map_id": 409,
+      "activity_ids": [
+        839
+      ],
+      "level_min": 60,
+      "level_max": 60
+    },
+    "5001": {
+      "name": "Test Depths",
+      "map_id": 5001,
+      "activity_ids": [
+        5001
+      ],
+      "level_min": 20,
+      "level_max": 28
+    }
+  }
+}

@@ -24,8 +24,9 @@ CREATE_HAMMER_SPELL = 21161
 SULFURON_INGOT = 17203
 DARK_IRON_BAR = 11371
 
-# A trainer-taught recipe with no item at all: item 900 is created
-# directly by spell 8002 (no "learn" spell/item precedes it).
+# A trainer-taught recipe with no item at all: item 900 is created by
+# spell 8002, which the trainer teaches through learn spell 8001 (the 1.12
+# shape); no item carries 8001.
 TRAINER_ITEM = 900
 TRAINER_CREATE_SPELL = 8002
 
@@ -38,7 +39,16 @@ DUAL_LEARN_SPELL = 8101
 DUAL_RECIPE_A = 951
 DUAL_RECIPE_B = 952
 
-_ITEM_TEMPLATE_COLUMNS = ["entry", "spellid_1", "spellid_2", "spellid_3", "spellid_4", "spellid_5"]
+_ITEM_TEMPLATE_COLUMNS = [
+    "entry", "spellid_1", "spellid_2", "spellid_3", "spellid_4", "spellid_5", "RequiredSkillRank",
+]  # fmt: skip
+_TRAINER_COLUMNS = ["entry", "spell", "spellcost", "reqskill", "reqskillvalue", "reqlevel"]
+
+# A trainer teaches TRAINER_CREATE_SPELL's own learn spell at skill 40 in
+# npc_trainer and at 45 in npc_trainer_template: the lower one is the need.
+TRAINER_LEARN_SPELL = 8001
+# Plans: Sulfuron Hammer needs Blacksmithing 300 to learn.
+PLANS_SKILL = 300
 _SPELL_TEMPLATE_COLUMNS = [
     "Id", "ProcChance",
     "Effect1", "Effect2", "Effect3",
@@ -55,8 +65,8 @@ _SPELL_TEMPLATE_COLUMNS = [
 ]  # fmt: skip
 
 
-def _item_row(entry: int, spellid_1: int = 0) -> str:
-    return f"({entry},{spellid_1},0,0,0,0)"
+def _item_row(entry: int, spellid_1: int = 0, required_skill_rank: int = 0) -> str:
+    return f"({entry},{spellid_1},0,0,0,0,{required_skill_rank})"
 
 
 def _spell_row(
@@ -83,7 +93,7 @@ def _spell_row(
 
 _ITEM_ROWS = ",\n  ".join(
     [
-        _item_row(PLANS_SULFURON_HAMMER, LEARN_PLANS_SPELL),
+        _item_row(PLANS_SULFURON_HAMMER, LEARN_PLANS_SPELL, PLANS_SKILL),
         _item_row(DUAL_RECIPE_A, DUAL_LEARN_SPELL),
         _item_row(DUAL_RECIPE_B, DUAL_LEARN_SPELL),
     ]
@@ -101,6 +111,11 @@ _SPELL_ROWS = ",\n  ".join(
             effect_item_type1=SULFURON_HAMMER,
             reagent1=SULFURON_INGOT,
             reagent_count1=8,
+        ),
+        _spell_row(
+            TRAINER_LEARN_SPELL,
+            effect1=ClassicDbDump.LEARN_SPELL_EFFECT,
+            trigger_spell1=TRAINER_CREATE_SPELL,
         ),
         _spell_row(
             TRAINER_CREATE_SPELL,
@@ -123,6 +138,7 @@ _SPELL_ROWS = ",\n  ".join(
 )
 _ITEM_TEMPLATE_SCHEMA = ",\n  ".join(f"`{c}`" for c in _ITEM_TEMPLATE_COLUMNS)
 _SPELL_TEMPLATE_SCHEMA = ",\n  ".join(f"`{c}`" for c in _SPELL_TEMPLATE_COLUMNS)
+_TRAINER_SCHEMA = ",\n  ".join(f"`{c}`" for c in _TRAINER_COLUMNS)
 
 SAMPLE_SQL = f"""
 CREATE TABLE `item_template` (
@@ -136,23 +152,38 @@ CREATE TABLE `spell_template` (
 ) ENGINE=MyISAM;
 INSERT INTO `spell_template` VALUES
   {_SPELL_ROWS};
+
+CREATE TABLE `npc_trainer` (
+  {_TRAINER_SCHEMA}
+) ENGINE=MyISAM;
+INSERT INTO `npc_trainer` VALUES
+  (3000,{TRAINER_LEARN_SPELL},100,164,40,0),
+  (3001,{TRAINER_LEARN_SPELL},100,164,0,0);
+
+CREATE TABLE `npc_trainer_template` (
+  {_TRAINER_SCHEMA}
+) ENGINE=MyISAM;
+INSERT INTO `npc_trainer_template` VALUES
+  (4000,{TRAINER_LEARN_SPELL},100,164,45,0);
 """
 
 
 def test_sulfuron_hammer_shaped_chain_resolves_recipe_item_and_reagent():
     records = extract_records(SAMPLE_SQL)
     assert records[SULFURON_HAMMER] == ClassicDbCraftedRecipe(
-        recipe_item_ids=[PLANS_SULFURON_HAMMER], reagent_item_ids=[SULFURON_INGOT]
+        recipe_item_ids=[PLANS_SULFURON_HAMMER],
+        reagent_item_ids=[SULFURON_INGOT],
+        required_skill=PLANS_SKILL,
     )
 
 
 def test_trainer_taught_recipe_has_no_recipe_item_at_all():
     """No item's own `spellid_1..5` names `TRAINER_CREATE_SPELL`'s
-    "learn" spell (there isn't one) -- `recipe_item_ids` is empty, the
+    "learn" spell (only a trainer teaches it) -- `recipe_item_ids` is empty, the
     trainer-taught contract `ClassicDbCraftedRecipe`'s own doc states."""
     records = extract_records(SAMPLE_SQL)
     assert records[TRAINER_ITEM] == ClassicDbCraftedRecipe(
-        recipe_item_ids=[], reagent_item_ids=[DARK_IRON_BAR]
+        recipe_item_ids=[], reagent_item_ids=[DARK_IRON_BAR], required_skill=40
     )
 
 
@@ -184,3 +215,25 @@ def test_load_extract_returns_empty_when_nothing_was_fetched_yet(tmp_path):
     from pipeline.classicdb_crafted import load_extract
 
     assert load_extract(tmp_path / "1.60.1.99999") == {}
+
+
+def test_the_lowest_trainer_skill_is_the_need_and_a_zero_row_says_nothing():
+    """npc_trainer asks 40 (and one row 0, no requirement stated),
+    npc_trainer_template 45: a character can learn it at 40."""
+    assert extract_records(SAMPLE_SQL)[TRAINER_ITEM].required_skill == 40
+
+
+def test_a_recipe_no_trainer_or_recipe_item_states_a_skill_for_has_none():
+    assert extract_records(SAMPLE_SQL)[DUAL_RECIPE_ITEM].required_skill is None
+
+
+def test_an_extract_written_before_required_skill_loads_with_none(tmp_path):
+    import json
+
+    from pipeline.classicdb_crafted import load_extract, raw_path
+
+    build_dir = tmp_path / "1.60.1.99999"
+    path = raw_path(build_dir)
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({"items": {"1": {"recipe_item_ids": [], "reagent_item_ids": []}}}))
+    assert load_extract(build_dir)[1].required_skill is None

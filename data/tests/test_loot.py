@@ -104,6 +104,7 @@ def prepare_curated(tmp_path: Path) -> Path:
     curated.mkdir()
     shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
     shutil.copy(FIXTURES / "curated-client-enchants.json", curated / "client-enchants.json")
+    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
     # The real content-phase gates, and the phase calendar they are read against.
     for name in ("content-phases.json", "phases.json"):
         shutil.copy(Path("curated") / name, curated / name)

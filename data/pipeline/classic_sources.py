@@ -400,6 +400,11 @@ class ClassicDbQuestInfo(BaseModel):
     #: rather than guessed at (tenet 8), same policy as `classes` above.
     profession: str | None = None
     skill: int | None = None
+    #: `quest_template.ZoneOrSort` when positive: the AreaTable zone the
+    #: quest log files the quest under (`Quest name · Zone`). A negative
+    #: value is a QuestSort category (a class, a profession, a holiday),
+    #: not a place, and 0 is none; both stay `None`.
+    zone_id: int | None = None
 
 
 class ClassicDbSourceRecord(BaseModel):
@@ -1025,6 +1030,12 @@ def _quest_chain_turn_in_items(
     return sorted(ids)
 
 
+def _zone_from_zone_or_sort(zone_or_sort: int) -> int | None:
+    """`quest_template.ZoneOrSort` as a zone id: positive is an AreaTable
+    id, anything else is a QuestSort category or nothing."""
+    return zone_or_sort if zone_or_sort > 0 else None
+
+
 def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceRecord]]) -> None:
     rows = list(iter_table_records(sql_text, "quest_template"))
     # Two passes: the chain walk below needs EVERY quest's own turn-in
@@ -1073,6 +1084,7 @@ def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceReco
             classes=_classes_from_required_classes(int(row.get("RequiredClasses", "0"))),
             profession=profession,
             skill=int(row.get("RequiredSkillValue", "0")) or None if profession else None,
+            zone_id=_zone_from_zone_or_sort(int(row.get("ZoneOrSort", "0"))),
         )
         reward_ids = {
             int(row[f"RewChoiceItemId{n}"]) for n in range(1, 7)
@@ -1159,6 +1171,20 @@ def quest_profession_from_classic_sources(
                     record.quest.skill,
                 )
     return professions
+
+
+def quest_zones_from_classic_sources(
+    items: dict[int, list[ClassicDbSourceRecord]],
+) -> dict[int, int]:
+    """Quest id -> `ClassicDbQuestInfo.zone_id`, for the quests the dump
+    files under a zone, recovered the same way as the other `quest_*`
+    helpers here rather than re-reading `quest_template`."""
+    zones: dict[int, int] = {}
+    for records in items.values():
+        for record in records:
+            if record.kind == "quest_reward" and record.quest and record.quest.zone_id:
+                zones[record.quest.quest_id] = record.quest.zone_id
+    return zones
 
 
 def quest_turn_in_items_from_classic_sources(

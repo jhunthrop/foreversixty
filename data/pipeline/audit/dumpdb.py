@@ -255,6 +255,37 @@ class ClassicDbDump:
             for row in iter_table_records(self._text, "item_template")
         }
 
+    #: The two trainer tables: `npc_trainer` per trainer, `npc_trainer_
+    #: template` shared by every trainer of a kind. Both carry `reqskillvalue`.
+    TRAINER_TABLES = ("npc_trainer", "npc_trainer_template")
+
+    @functools.cached_property
+    def trainer_skill_values(self) -> dict[int, int]:
+        """Spell id a trainer teaches -> the lowest non-zero `reqskillvalue`
+        any trainer row asks for it: the profession skill a trainer-taught
+        recipe needs. In 1.12 the taught spell is the recipe's "learn"
+        spell (Embossed Leather Vest's create spell 2160 is taught as 2883,
+        Leatherworking 40), so a caller looks up the learn spells too."""
+        out: dict[int, int] = {}
+        for table in self.TRAINER_TABLES:
+            for row in iter_table_records(self._text, table):
+                value = int(row["reqskillvalue"])
+                if value:
+                    spell_id = int(row["spell"])
+                    out[spell_id] = min(value, out.get(spell_id, value))
+        return out
+
+    @functools.cached_property
+    def item_required_skill_ranks(self) -> dict[int, int]:
+        """Item id -> `item_template.RequiredSkillRank`, non-zero only: the
+        profession skill a recipe item (Plans: Sulfuron Hammer, 300) needs
+        before it can be learned."""
+        return {
+            int(row["entry"]): int(row["RequiredSkillRank"])
+            for row in iter_table_records(self._text, "item_template")
+            if int(row.get("RequiredSkillRank", "0"))
+        }
+
     @functools.cached_property
     def spell_reagents(self) -> dict[int, list[tuple[int, int]]]:
         """spell id -> every non-zero `(Reagent<n>, ReagentCount<n>)`

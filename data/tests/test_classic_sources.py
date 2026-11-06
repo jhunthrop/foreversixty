@@ -156,6 +156,7 @@ INSERT INTO `conditions` VALUES (1,5,76,7,0,0,0,'Has Minimum Rank Exalted With F
 
 CREATE TABLE `quest_template` (
   `entry` mediumint,
+  `ZoneOrSort` smallint,
   `MinLevel` tinyint,
   `QuestLevel` smallint,
   `RequiredRaces` smallint,
@@ -177,11 +178,11 @@ CREATE TABLE `quest_template` (
   `RewItemId4` mediumint
 ) ENGINE=MyISAM;
 INSERT INTO `quest_template` VALUES
-  (53,40,44,77,0,0,0,0,0,'Sweet Amber',744,0,0,0,0,0,0,0,0,0),
-  (8,1,5,178,8,0,0,0,0,'A Rogues Deal',0,0,0,0,0,0,159,0,0,0),
-  (8573,60,60,255,0,0,0,609,42000,'Champion\\'s Battlegear',21180,0,0,0,0,0,0,0,0,0),
-  (8253,50,52,255,128,0,0,0,0,'Destroy Morphaz',20036,0,0,0,0,0,0,0,0,0),
-  (100,10,12,255,0,164,50,0,0,'Novice Smith',9999,0,0,0,0,0,0,0,0,0);
+  (53,47,40,44,77,0,0,0,0,0,'Sweet Amber',744,0,0,0,0,0,0,0,0,0),
+  (8,-162,1,5,178,8,0,0,0,0,'A Rogues Deal',0,0,0,0,0,0,159,0,0,0),
+  (8573,0,60,60,255,0,0,0,609,42000,'Champion\\'s Battlegear',21180,0,0,0,0,0,0,0,0,0),
+  (8253,0,50,52,255,128,0,0,0,0,'Destroy Morphaz',20036,0,0,0,0,0,0,0,0,0),
+  (100,0,10,12,255,0,164,50,0,0,'Novice Smith',9999,0,0,0,0,0,0,0,0,0);
 """  # noqa: E501
 
 
@@ -491,6 +492,22 @@ def test_quest_classes_from_classic_sources_extracts_every_quest():
     classes = cs.quest_classes_from_classic_sources(items)
     assert classes[8253] == ["mage"]
     assert classes[53] is None
+
+
+def test_quest_reward_reads_a_positive_zone_or_sort_as_its_zone():
+    """`ZoneOrSort` 47 (synthetic) is an AreaTable zone; -162 is the Rogue
+    QuestSort category, not a place; 0 is none."""
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    by_quest = {
+        r.quest.quest_id: r.quest.zone_id
+        for records in items.values()
+        for r in records
+        if r.kind == "quest_reward"
+    }
+    assert by_quest[53] == 47
+    assert by_quest[8] is None
+    assert by_quest[100] is None
+    assert cs.quest_zones_from_classic_sources(items) == {53: 47}
 
 
 def test_quest_profession_from_classic_sources_only_covers_profession_quests():
