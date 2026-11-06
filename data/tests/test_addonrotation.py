@@ -1188,6 +1188,24 @@ def test_compute_spell_icons_lets_an_engine_id_take_another_rows_icon(tmp_path):
     assert 12867 in compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
 
 
+# The engine reports Deep Wounds under one id per talent rank
+# (sim/warrior/talents.go deepWoundsSpellIDs): 12834, 12849, 12867. Round 26
+# platform: only rank 3 (12867) had an icon, so a leveling warrior with one or
+# two points showed its bleed with none. 12834 is a client row (Deep Wounds,
+# icon 132090, ability_backstab); 12849 is not and takes the bleed's (12162).
+DEEP_WOUNDS_ENGINE_IDS = (12834, 12849, 12867)
+
+
+def test_every_deep_wounds_rank_the_engine_reports_has_an_icon_source():
+    extra = json.loads(
+        (Path(__file__).resolve().parents[1] / "curated" / "extra-spell-icons.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    sources = set(extra["spell_ids"]) | {int(k) for k in extra["icon_rows"]}
+    assert [i for i in DEEP_WOUNDS_ENGINE_IDS if i not in sources] == []
+
+
 def test_raid_cover_spell_ids_reads_rows_and_provider_spells(tmp_path):
     (tmp_path / "raid-cover.json").write_text(
         json.dumps(

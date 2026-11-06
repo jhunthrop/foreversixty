@@ -455,8 +455,7 @@ func checkArmorProficiencyGate(t *testing.T, label, classSlug string, band int, 
 	if c.ClassID != armorClassID {
 		return
 	}
-	key := fmt.Sprintf("%s:%d", classSlug, c.SubclassID)
-	if opens, gated := armorAvailableLevel[key]; gated && band < opens {
+	if opens, gated := armorAvailableLevel(classSlug, c.SubclassID); gated && band < opens {
 		t.Errorf("%s: item %d (%s) is subclass %d, gated to level %d for %s (armorAvailableLevel), published at band %d", label, itemID, itemName, c.SubclassID, opens, classSlug, band)
 	}
 }

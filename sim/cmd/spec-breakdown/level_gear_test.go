@@ -177,3 +177,64 @@ func TestARefillIsOneTheFactionCanEarn(t *testing.T) {
 		t.Error("a level-13 Horde priest holds no wand")
 	}
 }
+
+// armorSlots are the entry slots that hold armor, jewellery or a trinket.
+var armorSlots = []string{"head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist", "legs", "feet", "finger1", "finger2", "trinket1", "trinket2"}
+
+// firstObtainableLevel is the level below which no class can earn anything
+// for the slot (loot.json has no source for a lower one): the first necks are
+// quest rewards floored at 17 (Erudite's Amulet 277204, Roadwatcher's
+// Confidence 281265) and the first shoulders are Double-Stitched Woolen
+// Shoulders (4314, required level 17). Every other armor slot has an item from level 10.
+var firstObtainableLevel = map[string]int{"neck": 17, "shoulder": 17}
+
+// Round 26 platform: below 20 an armor slot the level could not hold, with no
+// runner-up that fit, stayed empty; only weapons, shields and wands were
+// refilled from the class item table. Every armor slot band 20 fills is filled
+// at 10 to 19 with an item the level, the class's armor proficiency and the
+// faction allow.
+func TestNoSpecBelowTheLowestBandHasAnEmptyArmorSlot(t *testing.T) {
+	build, err := leveling.ReadActiveBuild(realRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	kinds := readItemKinds(t)
+	for _, spec := range specs.All {
+		for _, faction := range []string{"horde", "alliance"} {
+			gear, err := request.LoadLevelGear(realRoot, build, spec.Spec, faction)
+			if err != nil {
+				t.Fatal(err)
+			}
+			o := realOptions(spec.Spec)
+			o.band, o.preset, o.faction, o.level = 20, "bare", faction, 20
+			fullReq, err := buildRequest(o)
+			if err != nil {
+				t.Fatal(err)
+			}
+			full := slotItems(fullReq.Character.Gear)
+			for level := levelFloor; level < lowestBand; level++ {
+				o.level = level
+				req, err := buildRequest(o)
+				if err != nil {
+					t.Fatalf("%s %s %d: %v", spec.Spec, faction, level, err)
+				}
+				worn := slotItems(req.Character.Gear)
+				for _, slot := range armorSlots {
+					if full[slot] != 0 && worn[slot] == 0 && level >= firstObtainableLevel[slot] {
+						t.Errorf("%s %s %d: %s is empty (band 20 wears %d)", spec.Spec, faction, level, slot, full[slot])
+					}
+					id := worn[slot]
+					if id == 0 {
+						continue
+					}
+					if k := kinds[id]; k.ClassID == kindArmor && level < leveling.ArmorProficiencyLevel(spec.ClassSlug, k.SubclassID) {
+						t.Errorf("%s %s %d: %s %d is armor subclass %d, which %s wears from %d", spec.Spec, faction, level, slot, id, k.SubclassID, spec.ClassSlug, leveling.ArmorProficiencyLevel(spec.ClassSlug, k.SubclassID))
+					}
+					if gear.OnlyTheOtherFactionEarns(id) {
+						t.Errorf("%s %s %d: %s %d is only the other faction's", spec.Spec, faction, level, slot, id)
+					}
+				}
+			}
+		}
+	}
+}
