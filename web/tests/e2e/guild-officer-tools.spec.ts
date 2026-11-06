@@ -5,7 +5,7 @@
 // 403 `guild_plan_required` mid-session flips both tabs without a reload; guild settings and
 // the account page's guild rows say what the guild has. Members see nothing new.
 import type { Locator, Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { guildGateCopy } from '../../src/lib/guild/copy';
 import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {
@@ -31,6 +31,8 @@ import {
   unawardedItem,
   type GuildCentreStub,
 } from './support/officer-tools';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe your guild.';
 const MASTER_ONLY = 'The subscriber or the guild leader manages billing and seats.';

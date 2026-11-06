@@ -189,8 +189,9 @@ func TestRaidViewShape(t *testing.T) {
 	w.as(w.member)
 	v = w.getRaid(t, raid.ID)
 
-	// The member is one player, Late on Sunderfel: their benched Kraggor is no second body.
-	want := RaidCounts{In: 1, Late: 1, Bench: 1, Out: 0, Tanks: 0, Healers: 1, DPS: 0}
+	// The member is one player, Late on Sunderfel: their benched Kraggor is no second body. The
+	// Late mage counts in late_groups as ranged.
+	want := RaidCounts{In: 1, Late: 1, Bench: 1, Out: 0, Tanks: 0, Healers: 1, DPS: 0, LateGroups: RoleCounts{Ranged: 1}}
 	classes := v.Counts.Classes
 	got := v.Counts
 	got.Classes = nil

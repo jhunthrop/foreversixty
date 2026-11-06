@@ -327,6 +327,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="write nothing; exit non-zero if either output has drifted",
     )
 
+    il = sub.add_parser(
+        "instance-levels",
+        help="write each loot.json dungeon's and raid's level range "
+        "(curated/instance-levels.json) from the client's Group Finder tables",
+    )
+    il.add_argument("--build", required=True, help="the client build the tables are read for")
+    il.add_argument("--raw", required=True, help="a directory of its own for the fetched CSVs")
+    il.add_argument("--fetch", action="store_true", help="download the tables into --raw first")
+    il.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if the committed file has drifted",
+    )
+
     ph = sub.add_parser("phases", help="emit the phase calendar for the web")
     ph.add_argument("--web", default="../web/src/data/phases.json")
     ph.add_argument(
@@ -730,6 +744,26 @@ def main(argv: list[str] | None = None) -> int:
             return 1 if drifted else 0
         for path in guild_events.write(doc):
             print(path)
+    elif args.command == "instance-levels":
+        import json
+        from pathlib import Path
+
+        from pipeline import guild_events
+        from pipeline.loot import instance_levels
+
+        raw = Path(args.raw)
+        if args.fetch:
+            guild_events.fetch(args.build, raw)
+        loot = json.loads(Path("builds", args.build, "loot.json").read_text(encoding="utf-8"))
+        doc = instance_levels.build_instance_levels(raw, args.build, loot)
+        if args.check:
+            if instance_levels.stale(doc):
+                logging.getLogger("pipeline").error(
+                    "%s has drifted; run instance-levels", instance_levels.OUT_JSON
+                )
+                return 1
+            return 0
+        print(instance_levels.write(doc))
     elif args.command == "phases":
         from pathlib import Path
 

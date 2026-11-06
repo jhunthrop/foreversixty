@@ -125,7 +125,9 @@ export function gearGapLabel(row: GuildReadinessRow): string {
  *  `SLOT_LABELS`) -- never a second, drifting slot-name table for this one cell. Falls
  *  back to a bare capitalised slug for a key `SLOT_LABELS` does not carry, the same
  *  fail-open leniency `capitalize` alone already gave an unrecognised value. */
-function enchantSlotLabel(slot: string): string {
+/** A slot key from the API (`main_hand`, `finger_1` or `finger1`) in the client's words. */
+export function enchantSlotLabel(raw: string): string {
+  const slot = raw.replace(/^(finger|trinket)_(\d)$/, '$1$2');
   const label = Object.prototype.hasOwnProperty.call(SLOT_LABELS, slot) ? SLOT_LABELS[slot as Slot] : slot;
   // The client's own tooltip casing ("Main Hand"), the words the loot cards and the bot use.
   return label

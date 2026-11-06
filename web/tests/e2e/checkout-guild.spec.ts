@@ -3,7 +3,7 @@
 // and 18: the checkout guild step, the API stubbed from subscribe-fixtures. Every asserted string
 // comes from the copy modules. The premium owned panel (task 12) and the band reserve (task 15) ride along.
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import communityLinks from '../../src/data/links.json' with { type: 'json' };
 import type { Me } from '../../src/lib/account/me-types';
 import { checkoutGuildCopy as copy } from '../../src/lib/billing/checkout-guild-copy';
@@ -60,6 +60,8 @@ import { envelope } from './support/guild-billing';
 import { drainShifts, recordShifts, sumShifts } from './support/layout-shift';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { shortControls } from './support/short-controls';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // premium-owned.ts's ACCOUNT_PLAN_HREF: that module reaches lib/planner/config.ts, whose
 // import.meta.env does not exist under Playwright's Node loader, so the spec cannot import it.

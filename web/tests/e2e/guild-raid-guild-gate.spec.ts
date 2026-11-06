@@ -3,7 +3,7 @@
 // officer's Loot and Readiness tabs say the Raid guild sentence, its link goes to `#billing`, and
 // Award, Undo and Nudge are in place and disabled. A guild with Raid guild shows no sentence.
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { guildGateCopy } from '../../src/lib/guild/copy';
 import { gotoHydrated } from './support/hydrated';
 import {
@@ -15,6 +15,8 @@ import {
   undoButtons,
   type GuildCentreStub,
 } from './support/officer-tools';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const GUILD_TIER: GuildCentreStub = {
   viewer: 'officer',

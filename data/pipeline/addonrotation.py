@@ -725,6 +725,10 @@ def compute_spell_icons(
         # An engine id the client's tables do not carry takes its own spell's other rank.
         for spell_id, client_row in extra.get("icon_rows", {}).items():
             icons[int(spell_id)] = _resolve_icon(client_row, icon_of)
+    # The raid cover grid's spells (curated/raid-cover.json): each row draws its buff's or
+    # debuff's icon, and the seal a judgement comes from.
+    for spell_id in sorted(raid_cover_spell_ids(curated_dir)):
+        icons.setdefault(spell_id, _resolve_icon(spell_id, icon_of))
     # Spells the log coach names (its rule files' core casts, auras, downranks, defensives):
     # the review's titles and chips show each one's icon, every rank.
     coach_ids = coach_spell_ids(curated_dir) | coach_persona_spell_ids(curated_dir, spellranks)
@@ -769,6 +773,19 @@ def _collect_spell_ids(value: object, into: set[int]) -> None:
     elif isinstance(value, list):
         for inner in value:
             _collect_spell_ids(inner, into)
+
+
+def raid_cover_spell_ids(curated_dir: Path = Path("curated")) -> set[int]:
+    """Every spell id `curated/raid-cover.json` names: each row's `spell_id` and each
+    provider's `spell` (a judgement's seal, Demoralizing Roar). Empty without the file."""
+    path = curated_dir / "raid-cover.json"
+    if not path.exists():
+        return set()
+    ids: set[int] = set()
+    for entry in json.loads(path.read_text(encoding="utf-8"))["entries"]:
+        ids.add(entry["spell_id"])
+        ids.update(p["spell"] for p in entry["providers"] if "spell" in p)
+    return ids
 
 
 def coach_spell_ids(curated_dir: Path = Path("curated")) -> set[int]:

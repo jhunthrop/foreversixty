@@ -5,7 +5,7 @@
 // offer, removed in Discord, officer-read-only and frozen, axe, 44 px targets at 360 and the
 // §3.1 height caps.
 import type { Locator, Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
 import { guildBotCopy } from '../../src/lib/guild/discord-bot-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';
@@ -26,6 +26,8 @@ import {
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { choose, fieldControl } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const SECTION = '#discord';
 const PHONE = { width: 360, height: 800 };

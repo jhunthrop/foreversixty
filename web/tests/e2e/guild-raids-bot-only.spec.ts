@@ -4,10 +4,12 @@
 // offers `Post to Discord` (ticked from the remembered default) instead of the Settings line, and
 // a done raid's report offers its Post button (raids spec §3.5 item 8; attendance spec §3.5).
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { AFTER_END, DONE, stubGuildAttendance } from './support/guild-attendance';
 import { CHICAGO, GUILD_URL, NOW, ONYXIA_ID, raidUrl, stubGuildRaids, writesTo } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 test.use({ timezoneId: CHICAGO });
 

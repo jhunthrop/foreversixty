@@ -11,7 +11,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
-	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
 	"github.com/jhunthrop/foreversixty/api/internal/sheet"
@@ -62,7 +61,7 @@ func sheetRenderer(cfg config.Config, deps server.Deps, log *slog.Logger) discor
 
 // raidRouterFor routes the raid posts: the bot's one edited post where it is installed, the
 // webhook elsewhere. serve and the raid-posts job build the same router.
-func raidRouterFor(bot *discordbot.Service, deps server.Deps) guilds.RaidEvents {
+func raidRouterFor(bot *discordbot.Service, deps server.Deps) *discordbot.RaidRouter {
 	return &discordbot.RaidRouter{Bot: bot, Webhook: deps.Notify.GuildDeliverer()}
 }
 
@@ -89,7 +88,8 @@ func newDiscordBot(stop context.Context, cfg config.Config, pool *pgxpool.Pool, 
 	bot := discordbot.New(d)
 	accounts.DiscordLinks = bot
 	deps.Guilds.Bot = bot
-	deps.Guilds.RaidEvents = raidRouterFor(bot, deps)
+	router := raidRouterFor(bot, deps)
+	deps.Guilds.RaidEvents, deps.Guilds.RaidPings = router, router
 	deps.Guilds.RaidPosts = d.Store
 	// The drainer runs in this process (one warm instance, always-on CPU). It stops claiming
 	// at the stop signal itself, so it does not take rows late in the 9 s shutdown budget;
