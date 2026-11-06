@@ -141,6 +141,23 @@ describe('actionRows', () => {
     ]);
   });
 
+  it('counts the pending applications after approvals, and none when an older API sends none', () => {
+    const rows = actionRows(
+      {
+        ...base,
+        approvals: { count: 1, names: ['Nightlatch'] },
+        applications: { count: 2, names: ['Ashenveil', 'Quillbright'] },
+      },
+      null,
+    );
+    expect(rows.map((row) => row.key)).toEqual(['approvals', 'applications']);
+    expect(rows[1]).toEqual({ key: 'applications', title: '2 applications', sub: 'Ashenveil, Quillbright' });
+    expect(actionRows({ ...base, applications: { count: 1, names: ['Ashenveil'] } }, null)[0].title).toBe(
+      '1 application',
+    );
+    expect(actionRows({ ...base, applications: { count: 0, names: [] } }, null)).toEqual([]);
+  });
+
   it("counts the loot council's open drops of its newest night, and none once all are awarded", () => {
     const drops = { tracked: true, count: 3, raid_id: 3, label: "Onyxia's Lair, Tue 8 Dec", awarded: 2 };
     expect(actionRows({ ...base, drops_to_award: drops }, null)).toEqual([

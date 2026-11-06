@@ -18,6 +18,12 @@ import {
   parseGuildInviteToken,
   parseGuildPath,
   parseGuildRaidPath,
+  parseGuildRecruitPath,
+  parseGuildApplicationsPath,
+  parseGuildMemberPath,
+  guildRecruitHref,
+  guildApplicationsHref,
+  guildMemberHref,
   guildRaidHref,
   parseGuildSettingsPath,
   rulesetFromRealm,
@@ -281,5 +287,28 @@ describe('isGuildLandingPath', () => {
     expect(isGuildLandingPath('/guild/eu/normal/the-last-watch')).toBe(false);
     expect(isGuildLandingPath('/guilds')).toBe(false);
     expect(isGuildLandingPath('')).toBe(false);
+  });
+});
+
+describe('the recruit, applications and member profile paths', () => {
+  const guild = { region: 'us', ruleset: 'pvp', slug: 'olympus-xxvii' };
+  const base = '/guild/us/pvp/olympus-xxvii';
+
+  it('reads the recruit and applications suffixes and builds them back', () => {
+    expect(parseGuildRecruitPath(guildRecruitHref(base))).toEqual(guild);
+    expect(parseGuildApplicationsPath(`${guildApplicationsHref(base)}/`)).toEqual(guild);
+    expect(parseGuildRecruitPath(`${base}/recruits`)).toBeNull();
+    expect(parseGuildApplicationsPath(`${base}/recruit`)).toBeNull();
+  });
+
+  it('reads me and an account key, encoded or not, and refuses anything else', () => {
+    expect(parseGuildMemberPath(guildMemberHref(base, 'u:42'))).toEqual({ guild, account: 'u:42' });
+    expect(guildMemberHref(base, 'u:42')).toBe(`${base}/members/u%3A42`);
+    expect(parseGuildMemberPath(`${base}/members/u:7`)?.account).toBe('u:7');
+    expect(parseGuildMemberPath(`${base}/members/me`)?.account).toBe('me');
+    for (const bad of ['u:0', 'u:', 'x:4', 'u:4a', '..', '%E0%A4%A', 'account:9']) {
+      expect(parseGuildMemberPath(`${base}/members/${bad}`)).toBeNull();
+    }
+    expect(parseGuildMemberPath(`${base}/members`)).toBeNull();
   });
 });

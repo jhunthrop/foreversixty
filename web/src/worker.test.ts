@@ -908,6 +908,28 @@ describe('shell routes with rewritten unfurl tags', () => {
     expect(response.headers.get('x-robots-tag')).toBe('noindex');
   });
 
+  it.each(['raids/42', 'recruit', 'applications', 'members/me', 'members/u%3A42'])(
+    'serves the guild shell at /guild/.../%s with the guild head, not indexed',
+    async (view) => {
+      vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+      vi.stubGlobal(
+        'fetch',
+        vi.fn<GlobalFetch>(async () =>
+          json({ ok: true, data: { guild: { name: 'The Last Watch' }, progression: [] }, error: null }),
+        ),
+      );
+
+      const response = await worker.fetch(
+        new Request(`https://foreversixty.gg/guild/us/hardcore/the-last-watch/${view}`),
+        shellEnv(),
+      );
+      const html = await response.text();
+
+      expect(html).toContain('<title>The Last Watch · ');
+      expect(response.headers.get('x-robots-tag')).toBe('noindex');
+    },
+  );
+
   it('gives the invite shell a generic non-indexable title with no upstream fetch', async () => {
     vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
     const upstream = vi.fn<GlobalFetch>(async () => {
