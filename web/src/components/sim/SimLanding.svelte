@@ -86,6 +86,9 @@
             error={pasteMessage ?? undefined}
             testid="sim-cold-paste-input"
           />
+          <!-- A Run pressed before the island mounts submits the plain way; run=1 makes that
+               arrival run the pasted character too, as the island's Run does. -->
+          <input type="hidden" name="run" value="1" />
           {#snippet submit()}
             <Button tone="primary" type="submit" disabled={busy || pasteBlocked} testid="sim-cold-paste-run"
               >{copy.paste.run}</Button
