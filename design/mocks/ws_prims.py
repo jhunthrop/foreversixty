@@ -345,7 +345,7 @@ def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, link
 # Additive only. Figure gains size 'xl' (the sim's 56 px answer). StatTable is a numeric table on the Plate (lead icon, name and
 # sub line, an optional Meter column, right-aligned figure columns), the shape the shipped report/AbilityTable.svelte adopts and
 # the logs report reuses; in open mode (no Plate) it is the resource and aura lists. Facts is a key/value list. IconList is a
-# wrapping list of icon + name with no chip border (the old 30 px buff chips drew a box each). Doll is the shared Paperdoll in
+# wrapping list of icon + name with no chip border (the old 30 px buff chips drew a box each). The shared Paperdoll (below) is the worn doll in
 # `worn` mode (no gain column: the sim shows inputs only), plated or open. Histogram, Lanes and Trees mirror the shipped chart
 # components (DpsDistribution, SimTimeline, SimTalentsCard over GuideTreeColumns): SVG and icons, no surfaces.
 PRIM_CSS += '''
@@ -376,14 +376,6 @@ PRIM_CSS += '''
 .kv dt{color:var(--muted);padding-right:16px}.kv dd{color:var(--strong);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.kv dd small{display:block;font-weight:400;color:var(--muted);font-size:13px}
 .il{display:flex;flex-wrap:wrap;gap:8px 18px;padding-top:10px}.il span{display:inline-flex;align-items:center;gap:8px;font-size:14px;line-height:20px;color:var(--text);min-height:28px}.il span.dim{color:var(--muted)}.il span.dim img,.il span.dim .ic{opacity:.62}
 .il-l{margin-top:16px}
-.sdoll{display:grid;grid-template-columns:minmax(0,1fr)}
-@media(min-width:1024px){.sdoll{grid-template-columns:repeat(2,minmax(0,1fr))}.sdoll .dcol+.dcol{border-left:1px solid var(--line-soft)}}
-.sdoll .dc{display:grid;grid-template-columns:76px 40px minmax(0,1fr);column-gap:12px;align-items:center;min-height:58px;padding:8px 16px;border-bottom:1px solid var(--line-soft)}
-.sdoll .dcol .dc:last-child{border-bottom:0}.sdoll .dc:hover{background:var(--hover)}
-.sdoll .dc .sl{font:600 13px/18px var(--font-body);color:var(--muted)}.sdoll .dc .it{font:700 15px/20px var(--font-body);min-width:0}.sdoll .dc .ln2{font-size:13px;line-height:18px;color:var(--muted)}.sdoll .dc .ln2.ench{color:#1eff00}
-.sdoll .dc .emp{width:40px;height:40px;border:1px dashed var(--line);border-radius:5px}
-.sdoll.open .dc{padding-inline:0}.sdoll.open .dcol+.dcol .dc{padding-left:16px}
-@media(max-width:1023px){.sdoll .dcol+.dcol .dc:first-child{border-top:1px solid var(--line-soft)}.sdoll.open .dcol+.dcol .dc{padding-left:0}}
 .hist svg{display:block;width:100%;height:168px}.hist .ax{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding-top:6px;font-variant-numeric:tabular-nums}
 .lanes{overflow-x:auto}.lanes svg{display:block}.lanes .lg{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);padding:10px 0}.lanes .lg i{display:inline-block;width:14px;height:8px;margin-right:6px;border-radius:2px;vertical-align:middle}
 .trees{display:grid;gap:var(--gap);grid-template-columns:repeat(3,minmax(0,1fr))}.trees .tr h3{display:flex;gap:8px;align-items:baseline;font:700 15px/20px var(--font-body);color:var(--strong);padding-bottom:8px}.trees .tr h3 b{color:var(--gold)}
@@ -417,17 +409,6 @@ def IconList(items: list[tuple[str, str, bool]], label: str = '') -> str:
     """items: (icon_html, name, dim). A wrapping list; `dim` items are the ones with no effect on this spec."""
     lab = f'<h3 class="t-label il-l">{label}</h3>' if label else ''
     return lab + '<div class="il">' + ''.join(f'<span class="{"dim" if d else ""}">{ic}{n}</span>' for ic, n, d in items) + '</div>'
-
-
-def Doll(left: list[tuple], right: list[tuple], open_: bool = False) -> str:
-    """The shared Paperdoll, `worn` mode: (slot label, icon_html, name, colour, line 2, enchant?). Empty: icon_html ''."""
-    def cell(c):
-        lab, ic, name, col, ln2, ench = c
-        icon_cell = ic or '<span class="emp"></span>'
-        return (f'<div class="dc"><span class="sl">{lab}</span>{icon_cell}<div><div class="it" style="color:{col}">{name}</div>'
-                f'<div class="ln2{" ench" if ench else ""}">{ln2}</div></div></div>')
-    return (f'<div class="sdoll{" open" if open_ else ""}"><div class="dcol">{"".join(cell(c) for c in left)}</div>'
-            f'<div class="dcol">{"".join(cell(c) for c in right)}</div></div>')
 
 
 def Histogram(counts: list[int], start: float, bin_dps: float, mean: float, lo: float, hi: float, label: str, axis: tuple[str, str, str]) -> str:
@@ -546,6 +527,10 @@ def PaperdollCell(c: dict) -> str:
                 f'<span class="l1"><span class="nm muted" style="font-weight:400">{escape(c["name"])}</span></span><span class="l2">{escape(c["line2"])}</span></span><span></span></div>')
     ic = icon(c['icon'], 40, _RARITY_ICON.get(c['quality'], '')) if c['icon'] else '<span class="ic0"></span>'
     stats = f'<span class="st">{escape(c["stats"])}</span>' if c['stats'] else ''
+    if c['gain'] is None and c['basis'] is None:   # `worn` mode (the sim): no gain column, as the built cell's empty auto track
+        return (f'<div class="cell" role="option" aria-selected="false">{lead}{ic}<span class="bd"><span class="l1">'
+                f'<span class="nm" style="color:{RARITY.get(c["quality"], RARITY["common"])}">{escape(c["name"])}</span>{stats}</span>'
+                f'<span class="l2">{escape(c["line2"])}</span></span><span class="gn0"></span></div>')
     g = c['gain'] or {'value': '', 'unit': ''}
     unit = f'<small>{escape(g["unit"])}</small>' if g['unit'] else ''
     b = c['basis']

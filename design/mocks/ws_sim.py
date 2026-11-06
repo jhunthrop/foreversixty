@@ -22,9 +22,9 @@ import sys
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import (Button, Doll, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, Link, Meter, Notice,
+from ws_prims import (Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, Link, Meter, Notice,
                       Page, PageHeader, Plate, Row, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
-                      control_bar, crest_img, seg, sel, write)
+                      control_bar, crest_img, seg, sel, write, Paperdoll)
 import ws_compose
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -488,13 +488,20 @@ SLOT_LABEL = {'head': 'Head', 'neck': 'Neck', 'shoulder': 'Shoulder', 'back': 'B
               'finger2': 'Finger 2', 'trinket1': 'Trinket 1', 'trinket2': 'Trinket 2'}
 
 
-def doll(open_: bool) -> str:
+RARITY_NAME = {0: 'poor', 1: 'common', 2: 'uncommon', 3: 'rare', 4: 'epic', 5: 'legendary'}
+
+
+def doll() -> str:
+    """The shared Paperdoll (ws_prims, the built ui/Paperdoll) in `worn` mode: inputs only, no gain column figures; line 2 the
+    client enchant or the item level (lib/gear/doll-cells.ts). In a Plate on the landing, open under a Section on a result."""
     def cell(slot):
         it = gear_item(slot)
+        base = {'label': SLOT_LABEL[slot], 'flag': None, 'stats': '', 'gain': None, 'basis': None}
         if not it:
-            return (SLOT_LABEL[slot], '', 'Nothing worn', 'var(--muted)', '', False)
-        return (SLOT_LABEL[slot], gicon(it['icon'], 40, it['quality']), it['name'], QUALITY[it['quality']], f"Item level {it['item_level']}", False)
-    return Doll([cell(s) for s in DOLL_LEFT], [cell(s) for s in DOLL_RIGHT], open_)
+            return {**base, 'state': 'empty', 'name': 'Nothing worn', 'line2': '', 'quality': 'common', 'icon': ''}
+        return {**base, 'state': 'item', 'name': it['name'], 'quality': RARITY_NAME[it['quality']], 'icon': it['icon'],
+                'line2': f"Item level {it['item_level']}"}
+    return Paperdoll('Gear', 'slot', ([cell(s) for s in DOLL_LEFT], [cell(s) for s in DOLL_RIGHT]))
 
 
 def ilvl() -> float:
@@ -524,7 +531,7 @@ def gear_section(with_stats: bool = True) -> str:
                 f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
     foot = f'<div class="gear-foot"><span class="t-small">No set bonus is active: no two pieces share a set.</span>{Link("Upgrades for this character on Best in slot &rsaquo;")}</div>'
     extra = f'<div class="gear-stats">{stats}{measured}</div>' if with_stats else ''
-    return Section('Gear', doll(True) + extra + foot, meta=GEAR_META)
+    return Section('Gear', doll() + extra + foot, meta=GEAR_META)
 
 
 def talents_section() -> str:
@@ -629,11 +636,18 @@ def since_last(last: tuple = LAST_SIM) -> str:
     return f'<span class="fig-cap {"kill" if d > 0 else "wipe"}">{sign}{abs(d):.1f} &plusmn; {b:.1f} DPS since your last sim ({last[1]})</span>'
 
 
-def answer_result(signed_in: bool = True, last: tuple = LAST_SIM) -> str:
+def answer_result(signed_in: bool = True, last: tuple | None = None) -> str:
+    """The live result. `last` draws the change since the character's last sim: hidden on the shipped page (gaps G1 and G15,
+    no character key and no error on a saved-sim row), so only the states sheet passes it."""
     save = Button('Save this sim', small=True) if signed_in else Button('Sign in to save', small=True)
     return (f'<span class="t-label">{SPEC_LABEL} &middot; {LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
-            f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in else ""}'
+            f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in and last else ""}'
             f'<span class="ans-acts">{save}{Link("Find upgrades in Top Gear &rsaquo;")}</span>')
+
+
+def answer_none() -> str:
+    """Signed in, the character loaded, not run: the shipped answer while G1 is open (no saved sim can be matched to a character)."""
+    return '<span class="t-label">No sim yet</span><span class="fig-cap">Press Run sim. It runs here, in your browser.</span>'
 
 
 def answer_last() -> str:
@@ -702,22 +716,10 @@ PAGE_CSS = '''<style>
 
 
 def regions(html: str) -> str:
-    """data-region hooks for the mock-to-build parity spec: head, head-title, head-meta, head-answer, head-tabs, controls, summary,
-    plate, slots, rail, section-<slug>. Added here because ws_prims does not emit them yet (the parity lane owns that)."""
-    for a, b in (('<div class="pc ph-wrap">', '<div class="pc ph-wrap" data-region="head">'),
-                 ('<h1 class="t-title"', '<h1 data-region="head-title" class="t-title"'),
-                 ('<div class="ph-meta">', '<div class="ph-meta" data-region="head-meta">'),
-                 ('<div class="ans">', '<div class="ans" data-region="head-answer">'),
-                 ('<nav class="strip-tabs ph-tabs">', '<nav class="strip-tabs ph-tabs" data-region="head-tabs">'),
-                 ('<div class="cbar full-bleed', '<div data-region="controls" class="cbar full-bleed'),
-                 ('<div class="pc"><p class="notice', '<div class="pc" data-region="summary"><p class="notice'),
-                 ('<div class="plate">', '<div class="plate" data-region="plate">'),
-                 ('<aside class="rail', '<aside data-region="rail" class="rail'),
-                 ('<div class="sdoll', '<div data-region="slots" class="sdoll')):
-        html = html.replace(a, b, 1)
-    slug = lambda t: re.sub(r'[^a-z0-9]+', '-', t.lower()).strip('-')
-    return re.sub(r'<section><div class="sec-h"><h2 class="t-h3">([^<&]+)',
-                  lambda m: f'<section data-region="section-{slug(m.group(1))}"><div class="sec-h"><h2 class="t-h3">{m.group(1)}', html)
+    """The one region ws_prims leaves to the page: `summary` (Worth knowing, the Notice lines under the bar). Every other region
+    (head, head-title, head-meta, head-answer, controls, plate, slots, section-<slug>) is emitted by the primitives themselves,
+    once, as the built ui/ components emit it (design/parity.md)."""
+    return html.replace('<div class="pc"><p class="notice', '<div class="pc" data-region="summary"><p class="notice', 1)
 
 
 NOTE = (f'Simulator mock (design/specs/2026-11-06-sim.md), built only from ws_prims. Run: web/src/fixtures/sim/result-full.json '
@@ -751,8 +753,8 @@ def landing_out() -> str:
 
 # ---- 2. /sim, signed in, the header's character loaded, not run yet
 def landing_you() -> str:
-    main = Section('Gear', Plate(doll(False)), Link('Upgrades on Best in slot &rsaquo;'), meta=GEAR_META) + talents_section()
-    return finish('Simulator', you_header(answer_last()) + run_bar() + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
+    main = Section('Gear', Plate(doll()), Link('Upgrades on Best in slot &rsaquo;'), meta=GEAR_META) + talents_section()
+    return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
 
 
 # ---- 3. running in the browser
@@ -777,8 +779,8 @@ def result_saved() -> str:
 
 # ---- 6. phone: the bar's choices open
 def bar_open() -> str:
-    main = Section('Gear', Plate(doll(False)), meta=GEAR_META)
-    return finish('Simulator, choices', you_header(answer_last()) + run_bar(open_m=True) + Page('split', main, history_section()), YOU)
+    main = Section('Gear', Plate(doll()), meta=GEAR_META)
+    return finish('Simulator, choices', you_header(answer_none()) + run_bar(open_m=True) + Page('split', main, history_section()), YOU)
 
 
 # ---- 7. every other state on one sheet
@@ -800,7 +802,9 @@ def states() -> str:
             hdr(answer_failed('In your browser &middot; failed', 'The engine could not run this character: Finger 1 holds item 999999, which the engine does not know.', 'Paste a fresh addon export, or swap that item in Top gear, then press Run again.')) + run_bar('done')),
         blk('Stopped by the player (the partial number stays, greyed)', hdr(answer_stopped()) + run_bar('done')),
         blk('Result, signed out (Save needs an account)', hdr(answer_result(signed_in=False))),
-        blk('Result, the change since the last sim inside the noise', hdr(answer_result(last=LAST_SIM_CLOSE))),
+        blk('Later (G1, G15): the last sim on the landing', hdr(answer_last()) + run_bar()),
+        blk('Later (G1, G15): the change since the last sim', hdr(answer_result(last=LAST_SIM))),
+        blk('Later (G1, G15): the change since the last sim inside the noise', hdr(answer_result(last=LAST_SIM_CLOSE))),
         blk('A spec the sim does not run (Holy Priest)', hdr('<span class="t-label">Not simulated yet</span><span class="fig-cap">Holy Priest is not simulated yet; there is nothing to run.</span><span class="ans-acts"><a class="link" href="#">Spec support &rsaquo;</a></span>', 'Lightwell', 'priest', 'Human Holy Priest &middot; Level 60') + run_bar('disabled')),
         blk('Signed in, no characters yet', PageHeader('Simulator', meta=['Your character&rsquo;s DPS, simmed in your browser.']) + Notice('<span>' + 'No characters yet: they are on their way from Battle.net. Paste an export below meanwhile, or check <a class="link" href="#">your account.</a>' + '</span>', tone='neutral')),
         blk('The character could not be read', Notice('<span>' + 'That character could not be read. <a class="link" href="#">Try again</a>' + '</span>', tone='neutral')),
