@@ -113,3 +113,27 @@ func TestArmsTakesImprovedRendBeforeDeflection(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 27: a leveling Assassination rogue takes Malice (+1% crit a point)
+// at 10 to 14, then Ruthlessness, Improved Slice and Dice and Lethality, before Improved
+// Gouge and Remorseless Attacks. The rotation never casts Gouge, and Remorseless Attacks
+// needs a kill, so neither does anything in a fight; both still come by 28, where the
+// order rejoins the old one.
+func TestAssassinationTakesMaliceBeforeGouge(t *testing.T) {
+	const assassinationTree = 0
+	const rest = "-0000000000000000000-000000000000000000"
+	want := map[int]string{
+		10: "00100000000000000" + rest,
+		14: "00500000000000000" + rest,
+		17: "00530000000000000" + rest,
+		19: "00530200000000000" + rest,
+		20: "00530200100000000" + rest,
+		21: "00530200200000000" + rest,
+		28: "32530200220000000" + rest,
+	}
+	for level, w := range want {
+		if got := ladderAt(t, "rogue", "assassination", assassinationTree, level); got != w {
+			t.Errorf("level %d Assassination build %q, want %q", level, got, w)
+		}
+	}
+}

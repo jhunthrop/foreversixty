@@ -250,8 +250,24 @@
       ]
     },
     "rogue-assassination": {
-      "reason": "The rotation casts Mutilate (the 30-point row since client 1.60.1.70755, behind Venom, learned at 40). The plain walk never reaches Venom on the way down, so Venom and then Mutilate are taken as soon as each fits: Venom at 29, where it also makes every Shank raise your poisons, and Mutilate at 40. Before 70755 Mutilate sat on the 20-point row and was taken at 30 for about 8% at band 30 (sim-accuracy round 13, walk lane).",
+      "reason": "The rotation casts Mutilate (the 30-point row since client 1.60.1.70755, behind Venom, learned at 40). The plain walk never reaches Venom on the way down, so Venom and then Mutilate are taken as soon as each fits: Venom at 29, where it also makes every Shank raise your poisons, and Mutilate at 40. Before 70755 Mutilate sat on the 20-point row and was taken at 30 for about 8% at band 30 (sim-accuracy round 13, walk lane). Malice 5 at 10 to 14, then Ruthlessness 3, Improved Slice and Dice 2 and Lethality 2, come ahead of Improved Gouge and Remorseless Attacks: the rotation never casts Gouge and Remorseless Attacks needs a kill, so neither does anything in a fight. +1.3% at level 10, +6.7% at 14, +3.0% at 20, +0.3% at 25, seeds 1 and 50001, both factions; the order rejoins the old one at 28 (sim-accuracy round 27, orders lane; wowfdb.com and wowforevercompass.com Forever Assassination leveling orders open Malice 10 to 14).",
       "first": [
+        {
+          "talent": "Malice",
+          "rank": 5
+        },
+        {
+          "talent": "Ruthlessness",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Slice and Dice",
+          "rank": 2
+        },
+        {
+          "talent": "Lethality",
+          "rank": 2
+        },
         {
           "talent": "Venom",
           "rank": 1
