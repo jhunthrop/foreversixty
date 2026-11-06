@@ -105,8 +105,9 @@ func TestBalanceRankRowsByLevel(t *testing.T) {
 // 50001, both factions). Round 19: the levels between and after gain beyond
 // error too, and rank rows take no 1% bar: rank 4 beats the top rank by 0.6
 // to 0.9% at 34 to 39, rank 5 by 1.1% at 45 and rank 6 by 0.8 to 0.9% at 46
-// to 49; the top rank wins from 50. The Nature's Swiftness line (4) keeps the
-// top rank.
+// to 49; the top rank wins from 50. Round 24's second pass, on the talents
+// each level has: rank 6 ties at 48 and the top rank wins at 49. The Nature's
+// Swiftness line (4) keeps the top rank.
 func TestRestorationHealingTouchFillerRanksByLevel(t *testing.T) {
 	const (
 		healingTouch3, healingTouch4, healingTouch5 = 5187, 5188, 5189
@@ -125,7 +126,8 @@ func TestRestorationHealingTouchFillerRanksByLevel(t *testing.T) {
 		{"40: rank 5 filler beside the top-rank save", 40, []int32{healingTouch5, healingTouch7}, nil},
 		{"45: rank 5 filler beside the top-rank save", 45, []int32{healingTouch5, healingTouch8}, []int32{healingTouch6}},
 		{"46: rank 6 filler beside the top-rank save", 46, []int32{healingTouch6, healingTouch8}, []int32{healingTouch5}},
-		{"49: rank 6 filler beside the top-rank save", 49, []int32{healingTouch6, healingTouch8}, nil},
+		{"48: rank 6 filler beside the top-rank save", 48, []int32{healingTouch6, healingTouch8}, nil},
+		{"49: top rank only (round 24 second pass)", 49, []int32{healingTouch8}, []int32{healingTouch6}},
 		{"50: top rank only", 50, []int32{healingTouch9}, []int32{healingTouch6}},
 	} {
 		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, "night-elf"))
@@ -193,8 +195,9 @@ func TestRestorationHealingTouchFillerAtTwenty(t *testing.T) {
 
 // Sim-accuracy round 20: the party Rejuvenation re-judged at 20 to 39. Rank 2
 // beats rank 1 at 27 (+0.4% night elf, +0.1% tauren), 28 (+0.4%, +0.1%) and
-// 29 (+0.3%, +0.3%), every seed; rank 1 wins again at 26 (tauren -0.4%) and
-// 30 (-1.2%).
+// 29 (+0.3%, +0.3%), every seed; rank 1 wins again at 30 (-1.2%). Round 24's
+// second pass moved the row's start to 26 (rank 2 +0.1 to 0.2%), with a race
+// split at 25 (TestDruidRankRowsSecondPassRound24).
 func TestRestorationPartyRejuvenationAtTwentySevenToTwentyNine(t *testing.T) {
 	const rejuvenation1, rejuvenation2 = 774, 1058
 	// Rank 2 (1058) is also the tank's rank through the 20s and 30s, so only
@@ -204,7 +207,8 @@ func TestRestorationPartyRejuvenationAtTwentySevenToTwentyNine(t *testing.T) {
 		want  int32
 		not   int32
 	}{
-		{26, rejuvenation1, 0},
+		{24, rejuvenation1, 0},
+		{26, rejuvenation2, rejuvenation1},
 		{27, rejuvenation2, rejuvenation1},
 		{29, rejuvenation2, rejuvenation1},
 		{30, rejuvenation1, 0},
@@ -276,7 +280,9 @@ func TestBalanceRankRowsTwentyToTwentyNine(t *testing.T) {
 		{"Wrath at 26 is rank 4", 26, wrath4, wrath3},
 		{"Wrath at 29 is rank 4", 29, wrath4, wrath3},
 		{"Moonfire at 24 is rank 2", 24, moonfire2, moonfire3},
-		{"Moonfire at 26 is rank 2", 26, moonfire2, moonfire3},
+		{"Moonfire at 25 is rank 2", 25, moonfire2, moonfire3},
+		{"Moonfire at 26 is rank 3", 26, moonfire3, moonfire2},
+		{"Moonfire at 27 is rank 2", 27, moonfire2, moonfire3},
 		{"Moonfire at 28 is rank 2", 28, moonfire2, moonfire3},
 		{"Moonfire at 29 is rank 3", 29, moonfire3, moonfire2},
 		{"Moonfire at 30 is rank 3", 30, moonfire3, moonfire2},
@@ -338,7 +344,9 @@ func TestBalanceRankRowsFortyToFiftyNine(t *testing.T) {
 		{"Wrath at 49 is rank 7", 49, wrath7, wrath6},
 		{"Insect Swarm at 53 is rank 4", 53, insectSwarm4, insectSwarm3},
 		{"Insect Swarm at 54 is rank 3", 54, insectSwarm3, insectSwarm4},
-		{"Insect Swarm at 58 is rank 3", 58, insectSwarm3, insectSwarm4},
+		{"Insect Swarm at 56 is rank 3", 56, insectSwarm3, insectSwarm4},
+		{"Insect Swarm at 57 is rank 4", 57, insectSwarm4, insectSwarm3},
+		{"Insect Swarm at 58 is rank 4", 58, insectSwarm4, insectSwarm3},
 	} {
 		for _, race := range []string{"night-elf", "tauren"} {
 			ids := rotationIDs(t, "druid-balance", "druid", c.level, specRankChoices("druid-balance", BarePreset, race))
@@ -461,7 +469,7 @@ func TestRestorationRankRowsBelowTwenty(t *testing.T) {
 			{10, BarePreset, 2}, {12, BarePreset, 2}, {13, BarePreset, 1}, {16, BarePreset, 1}, {17, BarePreset, 1},
 		})
 		assertRanks(t, tank, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
-			{12, BarePreset, 2}, {13, BarePreset, 1}, {16, BarePreset, 1}, {19, BarePreset, 1}, {20, BarePreset, 2},
+			{12, BarePreset, 2}, {13, BarePreset, 1}, {16, BarePreset, 1}, {19, BarePreset, 1}, {20, BarePreset, 1},
 		})
 	}
 	for _, race := range []string{"tauren", "windshaper-skyborne"} {
@@ -474,8 +482,9 @@ func TestRestorationRankRowsBelowTwenty(t *testing.T) {
 	}
 	for _, race := range []string{"night-elf", "tauren"} {
 		// The Nature's Swiftness line keeps the top rank, so only the filler's
-		// own rank is asserted present.
-		for _, c := range []rankCase{{14, BarePreset, 2}, {16, BarePreset, 2}, {17, BarePreset, 1}, {19, BarePreset, 1}} {
+		// own rank is asserted present. Healing Touch at 14 to 16 splits by
+		// race (TestDruidRankRowsSecondPassRound24).
+		for _, c := range []rankCase{{17, BarePreset, 1}, {19, BarePreset, 1}} {
 			ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, race))
 			if !ids[int32(healingTouch[c.rank])] {
 				t.Errorf("%s at %d: want Healing Touch rank %d cast", race, c.level, c.rank)
@@ -484,5 +493,58 @@ func TestRestorationRankRowsBelowTwenty(t *testing.T) {
 		assertRanks(t, regrowthLine, "druid-restoration", "druid", race, regrowth, []rankCase{
 			{17, BarePreset, 1}, {18, BarePreset, 1}, {19, BarePreset, 1},
 		})
+	}
+}
+
+// Sim-accuracy round 24, second pass: every druid row judged on band-floor
+// talents re-judged with spec-breakdown -level N (the talents the player has
+// at that level) and a forced -rank, 10,000 iterations, seeds 1 and 50001,
+// night elf and tauren (round24/druid.md, "Second pass"). Moonfire rank 3
+// wins at 26 (rank 2 either side); Insect Swarm rank 4 wins at 57 and 58; the
+// tank Rejuvenation keeps rank 1 to 22; the party Rejuvenation splits at 25
+// (rank 2 for a night elf, rank 1 for a tauren) and takes rank 2 from 26;
+// Healing Touch rank 1 at 14 to 16 for a night elf, rank 2 for a tauren; and
+// the top Healing Touch at 49.
+func TestDruidRankRowsSecondPassRound24(t *testing.T) {
+	const moonfire2, moonfire3 = 8924, 8925
+	for _, race := range []string{"night-elf", "tauren"} {
+		for _, c := range []struct {
+			level     int
+			want, not int32
+		}{{25, moonfire2, moonfire3}, {26, moonfire3, moonfire2}, {27, moonfire2, moonfire3}} {
+			ids := rotationIDs(t, "druid-balance", "druid", c.level, specRankChoices("druid-balance", BarePreset, race))
+			if !ids[c.want] || ids[c.not] {
+				t.Errorf("Balance %s at %d: want Moonfire %d cast and %d not", race, c.level, c.want, c.not)
+			}
+		}
+	}
+	tank := linesCasting(t, "druid-restoration", 9841)
+	party := linesCasting(t, "druid-restoration", 8910)
+	for _, race := range []string{"night-elf", "tauren"} {
+		assertRanks(t, tank, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
+			{20, BarePreset, 1}, {22, BarePreset, 1}, {23, BarePreset, 2}, {28, BarePreset, 2},
+		})
+		assertRanks(t, party, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
+			{24, BarePreset, 1}, {26, BarePreset, 2},
+		})
+	}
+	for race, rank := range map[string]int{"night-elf": 2, "high-order-skyborne": 2, "tauren": 1, "windshaper-skyborne": 1} {
+		assertRanks(t, party, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{{25, BarePreset, rank}})
+	}
+	healingTouch := map[int]int32{1: 5185, 2: 5186, 6: 6778, 8: 9758}
+	for _, c := range []struct {
+		race      string
+		level     int
+		want, not int
+	}{
+		{"night-elf", 14, 1, 2}, {"night-elf", 16, 1, 2}, {"high-order-skyborne", 15, 1, 2},
+		{"tauren", 14, 2, 1}, {"tauren", 16, 2, 1}, {"windshaper-skyborne", 15, 2, 1},
+		// The Nature's Swiftness line casts the top rank (8) at 48 too.
+		{"night-elf", 48, 6, 0}, {"night-elf", 49, 8, 6}, {"tauren", 49, 8, 6},
+	} {
+		ids := rotationIDs(t, "druid-restoration", "druid", c.level, specRankChoices("druid-restoration", BarePreset, c.race))
+		if !ids[healingTouch[c.want]] || (c.not != 0 && ids[healingTouch[c.not]]) {
+			t.Errorf("%s at %d: want Healing Touch rank %d cast and rank %d not", c.race, c.level, c.want, c.not)
+		}
 	}
 }
