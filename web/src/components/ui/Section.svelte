@@ -5,6 +5,7 @@
      a Section is never inside a Plate. `reading` sets the 22 px reading-page head. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { sectionRegion } from '../../lib/ui/regions';
   import { LINK } from '../../lib/ui/primitives';
 
   let {
@@ -35,6 +36,7 @@
   {id}
   class="ui-section min-w-0 scroll-mt-[calc(var(--bar-h)+12px)]"
   data-testid={testid}
+  data-region={sectionRegion(title)}
   aria-labelledby={id ? `${id}-title` : undefined}
 >
   <div class="border-line-soft flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b pb-[10px]">

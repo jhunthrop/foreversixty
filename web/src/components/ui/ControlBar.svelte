@@ -9,6 +9,7 @@
      island passes `onchange`. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { REGION } from '../../lib/ui/regions';
   import { checkRadio } from '../../lib/ui/control-bar';
   import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
   import Glyph from './Glyph.svelte';
@@ -72,6 +73,7 @@
   role="group"
   aria-label={label}
   data-testid={testid}
+  data-region={REGION.controls}
 >
   <div class="page-column ui-cbar-inner">
     <button

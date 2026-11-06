@@ -1233,7 +1233,9 @@
         21889,
         21890,
         21891
-      ]
+      ],
+      "level_min": 60,
+      "level_max": 60
     },
     {
       "id": "raid:blackwing-lair",
@@ -2085,7 +2087,9 @@
         19435,
         19436,
         19437
-      ]
+      ],
+      "level_min": 60,
+      "level_max": 60
     },
     {
       "id": "raid:molten-core",
@@ -3427,7 +3431,9 @@
         19145,
         19146,
         19147
-      ]
+      ],
+      "level_min": 60,
+      "level_max": 60
     },
     {
       "id": "raid:naxxramas",
@@ -5403,7 +5409,9 @@
         23666,
         23667,
         23668
-      ]
+      ],
+      "level_min": 60,
+      "level_max": 60
     },
     {
       "id": "raid:onyxias-lair",
@@ -5457,6 +5465,8 @@
           "rank": 3
         }
       ],
+      "level_min": 60,
+      "level_max": 60,
       "source_origin": "classic-db"
     },
     {
@@ -6883,7 +6893,9 @@
       ],
       "trash": [
         21809
-      ]
+      ],
+      "level_min": 60,
+      "level_max": 60
     },
     {
       "id": "raid:zulgurub",
@@ -10471,7 +10483,9 @@
         22720,
         22721,
         22722
-      ]
+      ],
+      "level_min": 60,
+      "level_max": 60
     },
     {
       "id": "dungeon:blackfathom-deeps",
@@ -12426,7 +12440,9 @@
         3415,
         3416,
         3417
-      ]
+      ],
+      "level_min": 24,
+      "level_max": 32
     },
     {
       "id": "dungeon:blackrock-depths",
@@ -17159,7 +17175,9 @@
         12557,
         18043,
         22305
-      ]
+      ],
+      "level_min": 52,
+      "level_max": 60
     },
     {
       "id": "dungeon:blackrock-spire",
@@ -21719,7 +21737,9 @@
         16716,
         16735,
         16736
-      ]
+      ],
+      "level_min": 55,
+      "level_max": 60
     },
     {
       "id": "dungeon:blackrock-spire:tier-0-5",
@@ -21774,7 +21794,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 55,
+      "level_max": 60
     },
     {
       "id": "dungeon:dire-maul",
@@ -25880,7 +25902,9 @@
         18533,
         18534,
         18537
-      ]
+      ],
+      "level_min": 54,
+      "level_max": 60
     },
     {
       "id": "dungeon:dire-maul:scourge-invasion",
@@ -25925,7 +25949,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 54,
+      "level_max": 60
     },
     {
       "id": "dungeon:dire-maul:silithus-abyssal-council",
@@ -25976,7 +26002,9 @@
           },
           "rank": 3
         }
-      ]
+      ],
+      "level_min": 54,
+      "level_max": 60
     },
     {
       "id": "dungeon:dire-maul:tier-0-5",
@@ -26003,7 +26031,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 54,
+      "level_max": 60
     },
     {
       "id": "dungeon:excavation-site:-wetlands",
@@ -26049,6 +26079,8 @@
           }
         }
       ],
+      "level_min": 26,
+      "level_max": 33,
       "source_origin": "wowhead"
     },
     {
@@ -27634,7 +27666,9 @@
         9508,
         9509,
         9510
-      ]
+      ],
+      "level_min": 29,
+      "level_max": 38
     },
     {
       "id": "dungeon:maraudon",
@@ -29237,6 +29271,8 @@
           }
         }
       ],
+      "level_min": 46,
+      "level_max": 55,
       "source_origin": "classic-db"
     },
     {
@@ -29646,6 +29682,8 @@
           "rank": 1
         }
       ],
+      "level_min": 13,
+      "level_max": 18,
       "source_origin": "classic-db"
     },
     {
@@ -30974,7 +31012,9 @@
         10582,
         10583,
         10584
-      ]
+      ],
+      "level_min": 37,
+      "level_max": 46
     },
     {
       "id": "dungeon:razorfen-downs:scourge-invasion",
@@ -31023,7 +31063,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 37,
+      "level_max": 46
     },
     {
       "id": "dungeon:razorfen-kraul",
@@ -33256,7 +33298,9 @@
         2264,
         2549,
         4438
-      ]
+      ],
+      "level_min": 29,
+      "level_max": 38
     },
     {
       "id": "dungeon:ruins-of-lordaeron",
@@ -33342,6 +33386,8 @@
           }
         }
       ],
+      "level_min": 15,
+      "level_max": 22,
       "source_origin": "wowhead"
     },
     {
@@ -36408,7 +36454,9 @@
         10331,
         10332,
         10333
-      ]
+      ],
+      "level_min": 30,
+      "level_max": 46
     },
     {
       "id": "dungeon:scarlet-monastery:scourge-invasion",
@@ -36473,7 +36521,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 30,
+      "level_max": 46
     },
     {
       "id": "dungeon:scholomance",
@@ -39056,7 +39106,9 @@
         18700,
         18701,
         18702
-      ]
+      ],
+      "level_min": 58,
+      "level_max": 60
     },
     {
       "id": "dungeon:scholomance:scourge-invasion",
@@ -39105,7 +39157,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 58,
+      "level_max": 60
     },
     {
       "id": "dungeon:scholomance:tier-0-5",
@@ -39132,7 +39186,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 58,
+      "level_max": 60
     },
     {
       "id": "dungeon:shadowfang-keep",
@@ -40872,7 +40928,9 @@
         2807,
         3194,
         6341
-      ]
+      ],
+      "level_min": 20,
+      "level_max": 30
     },
     {
       "id": "dungeon:shadowfang-keep:scourge-invasion",
@@ -40920,7 +40978,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 20,
+      "level_max": 30
     },
     {
       "id": "dungeon:stratholme",
@@ -44008,7 +44068,9 @@
         22334,
         22406,
         22407
-      ]
+      ],
+      "level_min": 58,
+      "level_max": 60
     },
     {
       "id": "dungeon:stratholme:scourge-invasion",
@@ -44049,7 +44111,9 @@
           },
           "rank": 1
         }
-      ]
+      ],
+      "level_min": 58,
+      "level_max": 60
     },
     {
       "id": "dungeon:stratholme:tier-0-5",
@@ -44075,7 +44139,9 @@
             "22329": "fork"
           }
         }
-      ]
+      ],
+      "level_min": 58,
+      "level_max": 60
     },
     {
       "id": "dungeon:sunken-temple",
@@ -44843,6 +44909,8 @@
           }
         }
       ],
+      "level_min": 50,
+      "level_max": 60,
       "source_origin": "classic-db"
     },
     {
@@ -46215,7 +46283,9 @@
         10400,
         10401,
         11514
-      ]
+      ],
+      "level_min": 17,
+      "level_max": 26
     },
     {
       "id": "dungeon:the-stockade",
@@ -46663,7 +46733,9 @@
       ],
       "trash": [
         1076
-      ]
+      ],
+      "level_min": 24,
+      "level_max": 32
     },
     {
       "id": "dungeon:the-temple-of-atalhakkar",
@@ -46823,7 +46895,9 @@
         12464,
         12465,
         12466
-      ]
+      ],
+      "level_min": 50,
+      "level_max": 60
     },
     {
       "id": "dungeon:uldaman",
@@ -50043,7 +50117,9 @@
         9431,
         9432,
         9465
-      ]
+      ],
+      "level_min": 41,
+      "level_max": 51
     },
     {
       "id": "dungeon:wailing-caverns",
@@ -51691,7 +51767,9 @@
       ],
       "trash": [
         10413
-      ]
+      ],
+      "level_min": 15,
+      "level_max": 24
     },
     {
       "id": "dungeon:zulfarrak",
@@ -53268,7 +53346,9 @@
         9484,
         9511,
         9512
-      ]
+      ],
+      "level_min": 44,
+      "level_max": 54
     },
     {
       "id": "world:\"pretty-boy\"-duncan",

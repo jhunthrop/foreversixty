@@ -6,6 +6,7 @@
      the row; the caller hides the head there, since the row above already shows the item. -->
 <script lang="ts" module>
   import type { Snippet } from 'svelte';
+  import { REGION } from '../../lib/ui/regions';
 
   export interface InspectorSection {
     /** 12 px caps label over the section ("Where to get it"). */
@@ -38,6 +39,7 @@
   {id}
   class="ui-inspector min-w-0"
   data-placement={placement}
+  data-region={placement === 'side' ? REGION.inspector : REGION.inspectorInline}
   aria-label={`${selection} detail`}
   aria-live="polite"
   tabindex={placement === 'side' ? 0 : undefined}

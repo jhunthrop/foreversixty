@@ -15,3 +15,4 @@
 13. **Polish is measurable and part of done.** Lighthouse budgets, no layout shift on hydration, no missing-icon flash, no font swap. They are not a gate to relax in order to ship.
 14. **We help a player play their class better; we are not a reference site.** Every surface leads with the player's class or character and the next thing that makes it better (the BiS gap, the talent build, the sim, the log), never with a slogan or a feature list. The front door is "pick your class" or "your character", and the line above it is "Play your class better." Reference facts (dates, sources, changelog) stay, one level down, in service of that.
 
+15. **Mock first, parity-gated: a page region lands only when the parity spec matches the mock.** The committed mock is the source of truth (`design/parity.md`); a block the mock does not have (a disclosure, a note) fails `web/tests/e2e/parity-*.spec.ts`, and the fix is the build or a reviewed mock, never the tolerance.

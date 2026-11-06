@@ -5,9 +5,10 @@ generator never writes a border, background, radius or shadow itself (`assert_no
 if it does). The names, props and token reads here are the contract the Svelte/Astro components implement.
 """
 import re
+from html import escape
 
 from mocklib import emblem
-from ws_lib import CSS as BASE_CSS, page as _page, header as _header, control_bar, seg, sel, crest_img, icon, QCOL, write
+from ws_lib import CSS as BASE_CSS, page as _page, header as _header, control_bar, seg, sel, crest_img, icon, QCOL, write, REGION, region_slug
 
 PRIM_CSS = '''
 /* ---- Page: one column, four layouts ---- */
@@ -117,14 +118,16 @@ def Rows(rows: list[str], open_: bool = False) -> str:
     return f'<div class="rows{" open" if open_ else ""}">' + ''.join(rows) + '</div>'
 
 
-def Plate(inner: str) -> str:
-    return f'<div class="plate">{inner}</div>'
+def Plate(inner: str, label: str = '') -> str:
+    """label: the Plate's accessible name (role region), as the built Plate's `label` prop."""
+    name = f' role="region" aria-label="{label}"' if label else ''
+    return f'<div class="plate" data-region="{REGION["plate"]}"{name}>{inner}</div>'
 
 
 def Section(title: str, body: str, action: str = '', meta: str = '') -> str:
     a = f'<span class="act">{action}</span>' if action else ''
     m = f'<span class="t-small">{meta}</span>' if meta else ''
-    return f'<section><div class="sec-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>{body}</section>'
+    return f'<section data-region="{region_slug(title)}"><div class="sec-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>{body}</section>'
 
 
 def TabStrip(tabs: list[str], active: str, counts: dict | None = None) -> str:
@@ -132,10 +135,10 @@ def TabStrip(tabs: list[str], active: str, counts: dict | None = None) -> str:
 
 
 def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '') -> str:
-    m = f'<div class="ph-meta">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
+    m = f'<div class="ph-meta" data-region="{REGION["head_meta"]}">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
     color = f' style="color:{title_color}"' if title_color else ''
-    right = f'<div class="ans">{answer}</div>' if answer else (f'<div class="ph-actions">{actions}</div>' if actions else '')
-    return (f'<div class="pc ph-wrap"><div class="head"><div class="ph-title">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div>')
+    right = f'<div class="ans" data-region="{REGION["head_answer"]}">{answer}</div>' if answer else (f'<div class="ph-actions">{actions}</div>' if actions else '')
+    return (f'<div class="pc ph-wrap"><div data-region="{REGION["head"]}"><div class="head"><div class="ph-title" data-region="{REGION["head_title"]}">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div></div>')
 
 
 def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
@@ -336,3 +339,228 @@ def RankGroup(letter: str, color: str, band: str, count: str, rows: list[str]) -
 def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, links3: bool = False, tank: bool = False) -> str:
     cls = 'rl' + (' grouped' if grouped else '') + (' links3' if links3 else '') + (' tank' if tank else '')
     return f'<div class="{cls}" style="--n:{n_figs}">{heads}{body}</div>'
+
+
+# ------------------------------------------------ primitives added by the sim round (2026-11-06; design/specs/2026-11-06-sim.md section 4)
+# Additive only. Figure gains size 'xl' (the sim's 56 px answer). StatTable is a numeric table on the Plate (lead icon, name and
+# sub line, an optional Meter column, right-aligned figure columns), the shape the shipped report/AbilityTable.svelte adopts and
+# the logs report reuses; in open mode (no Plate) it is the resource and aura lists. Facts is a key/value list. IconList is a
+# wrapping list of icon + name with no chip border (the old 30 px buff chips drew a box each). Doll is the shared Paperdoll in
+# `worn` mode (no gain column: the sim shows inputs only), plated or open. Histogram, Lanes and Trees mirror the shipped chart
+# components (DpsDistribution, SimTimeline, SimTalentsCard over GuideTreeColumns): SVG and icons, no surfaces.
+PRIM_CSS += '''
+.fig.xl .v{font-size:56px;line-height:60px;letter-spacing:-.01em}.fig.xl .v small{font-size:18px;margin-left:8px}
+@media(max-width:767px){.fig.xl .v{font-size:44px;line-height:48px}}
+.fig .cap{font-size:13px;line-height:20px;color:var(--muted)}.fig .cap b{color:var(--text);font-weight:600}.fig .cap.kill{color:var(--kill)}.fig .cap.wipe{color:var(--wipe)}
+/* StatTable tracks (fixed 2026-11-06, the buffs grid overlap): the name and the bar share the free space 2 : 1 and may shrink to 0,
+   so no fixed minimum can push a column past the table's own edge; a figure column is never narrower than its widest figure
+   (minmax(max-content, n) resolves to max-content when that is wider), so a figure never spills into the next column. The table
+   clips nothing: it is as wide as its container, at every container width. */
+.st{--st-name:minmax(0,2fr);--st-bar:minmax(0,1fr);--st-fig:minmax(max-content,62px);--n:5;min-width:0;max-width:100%}
+@media(min-width:1760px){.st{--st-name:minmax(0,1fr);--st-bar:minmax(0,280px);--st-fig:minmax(max-content,80px)}}
+.st .br{min-width:0}.st .br .meter{max-width:280px;min-width:0}.st .nm b{overflow-wrap:anywhere}
+.st-h .t-label{letter-spacing:.06em;min-width:0}
+.st .stc{display:grid;column-gap:12px;align-items:center;grid-template-columns:28px var(--st-name) var(--st-bar) repeat(var(--n),var(--st-fig))}
+.st.nobar .stc{grid-template-columns:28px var(--st-name) repeat(var(--n),var(--st-fig))}
+.st-h{padding:12px 16px 10px;border-bottom:1px solid var(--line-soft)}.st-h .r{text-align:right}.st-h .on{color:var(--strong)}.st-h .on::after{content:" \\25BE";color:var(--gold)}
+.st-r{min-height:56px;padding:8px 16px;border-bottom:1px solid var(--line-soft)}.st-r:last-child{border-bottom:0}.st-r:hover,.st-r.hov{background:var(--hover)}
+.st-r .nm{min-width:0}.st-r .nm b{font:700 15px/20px var(--font-body);color:var(--strong)}.st-r .nm .rk{font-size:13px;color:var(--muted);font-weight:400;margin-left:4px}
+.st-r .nm .wpn{font-weight:600;font-size:14px}.st-r .nm .sub{font-size:13px;line-height:18px;color:var(--muted)}.st-r .nm .sub span{white-space:nowrap}.st-r .nm .sub .m{display:none}
+.st-r .f{text-align:right;font:600 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--text);white-space:nowrap}.st-r .f.p{font-weight:700;color:var(--strong)}.st-r .f.d{color:var(--muted);font-weight:400}
+.st-r .f.p .m{display:none}
+.st-r.tot{min-height:44px}.st-r.tot .f,.st-r.tot .nm{font-size:13px;color:var(--muted);font-weight:400}
+.st.open .st-r,.st.open .st-h{padding-inline:0}
+@media(max-width:1023px){.st .st-h{display:none}.st .stc,.st.nobar .stc{grid-template-columns:28px minmax(0,1fr) auto}.st-r .br,.st-r .f:not(.p){display:none}.st-r .f.p .m{display:block;font-size:13px;font-weight:400;color:var(--muted)}.st-r .nm .sub .m{display:inline}.st.open .st-r .br{display:block;grid-column:2/-1;padding-top:6px}.st.open .stc{row-gap:0}}
+.kv{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);margin:0}
+.kv dt,.kv dd{padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:14px;line-height:20px;margin:0}
+.kv dt{color:var(--muted);padding-right:16px}.kv dd{color:var(--strong);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.kv dd small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.il{display:flex;flex-wrap:wrap;gap:8px 18px;padding-top:10px}.il span{display:inline-flex;align-items:center;gap:8px;font-size:14px;line-height:20px;color:var(--text);min-height:28px}.il span.dim{color:var(--muted)}.il span.dim img,.il span.dim .ic{opacity:.62}
+.il-l{margin-top:16px}
+.sdoll{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1024px){.sdoll{grid-template-columns:repeat(2,minmax(0,1fr))}.sdoll .dcol+.dcol{border-left:1px solid var(--line-soft)}}
+.sdoll .dc{display:grid;grid-template-columns:76px 40px minmax(0,1fr);column-gap:12px;align-items:center;min-height:58px;padding:8px 16px;border-bottom:1px solid var(--line-soft)}
+.sdoll .dcol .dc:last-child{border-bottom:0}.sdoll .dc:hover{background:var(--hover)}
+.sdoll .dc .sl{font:600 13px/18px var(--font-body);color:var(--muted)}.sdoll .dc .it{font:700 15px/20px var(--font-body);min-width:0}.sdoll .dc .ln2{font-size:13px;line-height:18px;color:var(--muted)}.sdoll .dc .ln2.ench{color:#1eff00}
+.sdoll .dc .emp{width:40px;height:40px;border:1px dashed var(--line);border-radius:5px}
+.sdoll.open .dc{padding-inline:0}.sdoll.open .dcol+.dcol .dc{padding-left:16px}
+@media(max-width:1023px){.sdoll .dcol+.dcol .dc:first-child{border-top:1px solid var(--line-soft)}.sdoll.open .dcol+.dcol .dc{padding-left:0}}
+.hist svg{display:block;width:100%;height:168px}.hist .ax{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding-top:6px;font-variant-numeric:tabular-nums}
+.lanes{overflow-x:auto}.lanes svg{display:block}.lanes .lg{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);padding:10px 0}.lanes .lg i{display:inline-block;width:14px;height:8px;margin-right:6px;border-radius:2px;vertical-align:middle}
+.trees{display:grid;gap:var(--gap);grid-template-columns:repeat(3,minmax(0,1fr))}.trees .tr h3{display:flex;gap:8px;align-items:baseline;font:700 15px/20px var(--font-body);color:var(--strong);padding-bottom:8px}.trees .tr h3 b{color:var(--gold)}
+.trees .tg{display:grid;grid-template-columns:repeat(4,36px);gap:8px}.trees .tc{position:relative;width:36px;height:36px}.trees .tc img,.trees .tc .ic{width:36px!important;height:36px!important}.trees .tc.off img{filter:grayscale(1) brightness(.45)}
+.trees .tc.full img{box-shadow:0 0 0 2px var(--gold)}.trees .tc.part img{box-shadow:0 0 0 2px var(--kill)}.trees .tc b{position:absolute;right:-4px;bottom:-6px;font:700 11px/14px var(--font-body);color:var(--strong);text-shadow:0 0 3px #000,0 0 3px #000}
+@media(max-width:767px){.trees{grid-template-columns:minmax(0,1fr)}}
+'''
+
+
+def StatTable(heads: list[tuple[str, bool]], rows: list[str], n_figs: int, bar: bool = True, open_: bool = False, sort: str = '') -> str:
+    """A numeric table. heads: (label, right_aligned) for icon, name, [bar], figures; `sort` names the sorted head."""
+    h = ''.join(f'<span class="t-label{" r" if r else ""}{" on" if t == sort and t else ""}">{t}</span>' for t, r in heads)
+    cls = 'st' + ('' if bar else ' nobar') + (' open' if open_ else '')
+    return f'<div class="{cls}" style="--n:{n_figs}" data-n="{n_figs}"><div class="st-h stc" aria-hidden="true">{h}</div>{"".join(rows)}</div>'
+
+
+def StatRow(icon_html: str, name: str, sub: str, figures: list[str], meter: str = '', primary_phone: str = '', state: str = '', total: bool = False) -> str:
+    """One table row. figures: html of each figure cell; the first is the sorted, primary figure (stays on phone with
+    `primary_phone` under it). `sub` may carry `<span class="m">` parts shown only on phone."""
+    figs = ''.join(f'<span class="f{" p" if i == 0 else ""}{" d" if f in ("&ndash;", "") else ""}">{f}{f"<span class=m>{primary_phone}</span>" if i == 0 and primary_phone else ""}</span>' for i, f in enumerate(figures))
+    br = f'<span class="br">{meter}</span>' if meter else ''
+    return (f'<div class="st-r stc{" hov" if state == "hover" else ""}{" tot" if total else ""}">{icon_html or "<span></span>"}'
+            f'<div class="nm">{name}' + (f'<div class="sub">{sub}</div>' if sub else '') + f'</div>{br}{figs}</div>')
+
+
+def Facts(items: list[tuple[str, str]]) -> str:
+    return '<dl class="kv">' + ''.join(f'<dt>{k}</dt><dd>{v}</dd>' for k, v in items) + '</dl>'
+
+
+def IconList(items: list[tuple[str, str, bool]], label: str = '') -> str:
+    """items: (icon_html, name, dim). A wrapping list; `dim` items are the ones with no effect on this spec."""
+    lab = f'<h3 class="t-label il-l">{label}</h3>' if label else ''
+    return lab + '<div class="il">' + ''.join(f'<span class="{"dim" if d else ""}">{ic}{n}</span>' for ic, n, d in items) + '</div>'
+
+
+def Doll(left: list[tuple], right: list[tuple], open_: bool = False) -> str:
+    """The shared Paperdoll, `worn` mode: (slot label, icon_html, name, colour, line 2, enchant?). Empty: icon_html ''."""
+    def cell(c):
+        lab, ic, name, col, ln2, ench = c
+        icon_cell = ic or '<span class="emp"></span>'
+        return (f'<div class="dc"><span class="sl">{lab}</span>{icon_cell}<div><div class="it" style="color:{col}">{name}</div>'
+                f'<div class="ln2{" ench" if ench else ""}">{ln2}</div></div></div>')
+    return (f'<div class="sdoll{" open" if open_ else ""}"><div class="dcol">{"".join(cell(c) for c in left)}</div>'
+            f'<div class="dcol">{"".join(cell(c) for c in right)}</div></div>')
+
+
+def Histogram(counts: list[int], start: float, bin_dps: float, mean: float, lo: float, hi: float, label: str, axis: tuple[str, str, str]) -> str:
+    """DpsDistribution: at most 40 bars, the 16th to 84th percentile in gold, a mean line; real engine bins."""
+    n, top = len(counts), max(counts) or 1
+    w = 100 / n
+    bars = ''
+    for i, c in enumerate(counts):
+        mid = start + (i + .5) * bin_dps
+        fill = '#e5b955b3' if lo <= mid <= hi else '#262e40'
+        h = 150 * c / top
+        bars += f'<rect x="{i * w + .15:.2f}" y="{168 - h:.1f}" width="{w - .3:.2f}" height="{h:.1f}" fill="{fill}"/>'
+    mx = (mean - start) / (n * bin_dps) * 100
+    bars += f'<rect x="{mx - .15:.2f}" y="10" width=".3" height="158" fill="#f5d27a"/>'
+    ax = ''.join(f'<span>{a}</span>' for a in axis)
+    return f'<div class="hist"><svg viewBox="0 0 100 168" preserveAspectRatio="none" role="img" aria-label="{label}">{bars}</svg><div class="ax">{ax}</div></div>'
+
+
+def Lanes(svg: str, legend: list[tuple[str, str]]) -> str:
+    lg = ''.join(f'<span><i style="--k:{c}" class="k"></i>{t}</span>' for c, t in legend)
+    return f'<div class="lanes"><div class="lg">{lg}</div>{svg}</div>'
+
+
+PRIM_CSS += '.lanes .lg i.k{background:var(--k)}\n'
+
+
+def Trees(trees: list[tuple[str, int, list[tuple]]]) -> str:
+    """Read-only talent trees: (name, points, cells (tier, column, icon_html, rank, max)). The planner's tooltips on hover."""
+    out = ''
+    for name, pts, cells in trees:
+        grid = ''
+        for tier in range(7):
+            for col in range(4):
+                c = next((x for x in cells if x[0] == tier and x[1] == col), None)
+                if c is None:
+                    grid += '<span></span>'
+                    continue
+                _, _, ic, rk, mx = c
+                st = 'full' if rk == mx else ('part' if rk else 'off')
+                grid += f'<span class="tc {st}">{ic}' + (f'<b>{rk}/{mx}</b>' if rk else '') + '</span>'
+        out += f'<div class="tr"><h3>{name} <b class="num">{pts}</b></h3><div class="tg">{grid}</div></div>'
+    return f'<div class="trees">{out}</div>'
+PRIM_CSS += '''
+.tl{display:grid;grid-template-columns:200px minmax(0,1fr);min-width:0}
+.tl .lbl{display:flex;flex-direction:column}.tl .lbl>*{display:flex;align-items:center;gap:8px;font-size:14px;line-height:16px;color:var(--text);white-space:nowrap;overflow:hidden}
+.tl .lbl .g{font:600 13px/16px var(--font-body);color:var(--muted)}.tl .lbl .res{flex-direction:column;align-items:flex-start;justify-content:center;gap:0}.tl .lbl .res small{font-size:13px;color:var(--muted)}
+.tl .plot{position:relative;min-width:0}.tl .plot svg{display:block;width:100%}
+.tl .axis{position:relative;height:30px}.tl .axis span{position:absolute;top:6px;transform:translateX(-50%);font:600 13px/16px var(--font-body);color:var(--muted);font-variant-numeric:tabular-nums}.tl .axis span.pull{color:var(--gold)}
+.tl .wash{position:absolute;top:34px;font:700 11px/14px var(--font-body);letter-spacing:.14em;color:#d66e28;padding-left:6px}
+.tl .nmi{display:none}
+@media(max-width:767px){.lanes .lg{padding-inline:var(--page-inset)}.tl .lbl .g{overflow:visible;font-size:12px}}
+@media(max-width:767px){.lanes{margin-inline:calc(-1 * var(--page-inset))}.tl{grid-template-columns:44px minmax(696px,1fr);width:max-content;min-width:100%}.tl .lbl{position:sticky;left:0;z-index:2;background:var(--bg);padding-left:var(--page-inset)}.tl .lbl .t{display:none}.tl .lbl .res small{display:none}}
+'''
+
+
+# ------------------------------------------------ Sheet (added by the sim round, ruling S7, 2026-11-06)
+# The shipped SettingsSheet as a primitive: an overlay panel over a scrim. Desktop (768 and up): a 480 px panel on the right,
+# full height, the page dimmed behind it. Phone: a bottom sheet, 88vh at most, the top 16 px rounded. Its head (title, close)
+# and foot (actions) stay put; the body scrolls. It is the one overlay surface: the page under it never moves (no layout shift).
+PRIM_CSS += '''
+.sheet-scrim{position:fixed;inset:0;background:#05070bcc;z-index:60}
+.sheet{position:fixed;z-index:61;display:flex;flex-direction:column;background:var(--raised);border:1px solid var(--line);
+right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
+@media(min-width:768px){.sheet{top:0;left:auto;width:480px;max-height:none;border-radius:0;border-width:0 0 0 1px}}
+.sheet-h{display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--line-soft)}
+.sheet-h h2{font:700 20px/24px var(--font-body);color:var(--strong);margin:0;flex:1}
+.sheet-h .x{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;color:var(--nav);font-size:22px}
+.sheet-b{flex:1;overflow:auto;padding:8px 24px 16px}
+.sheet-f{display:flex;gap:12px;justify-content:flex-end;padding:16px 24px;border-top:1px solid var(--line-soft)}
+.sheet-f .btn{flex:none}@media(max-width:767px){.sheet-f .btn{flex:1}}
+'''
+
+
+def Sheet(title: str, body: str, actions: str) -> str:
+    """An overlay panel: title and a close control, a scrolling body, a foot of actions. Rendered after the page body."""
+    return (f'<div class="sheet-scrim" aria-hidden="true"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="{title}">'
+            f'<div class="sheet-h"><h2>{title}</h2><a class="x" href="#" aria-label="Close">&times;</a></div>'
+            f'<div class="sheet-b">{body}</div><div class="sheet-f">{actions}</div></div>')
+# ------------------------------------------------ Paperdoll (moved from ws_bis.py 2026-11-06; the shipped `Paperdoll`, web/src/components/ui)
+# The slot cells on the page's one Plate: two columns of slots ("By slot"), or the slots grouped by where they drop
+# ("Where to go"). A cell is line 1 slot label and level flag, icon, name and short stats, the gain figure; line 2 the
+# full source alone (spec 5.13 option C). BiS is the first user; the character gear tab and the sim's gear panel next.
+PRIM_CSS += '''
+.doll-cols{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1024px){.doll-cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.doll-col+.doll-col{border-left:1px solid var(--line-soft)}
+ .doll[data-view="where"] .doll-cols{display:block;columns:2;column-gap:0}}
+.doll-grp{break-inside:avoid}.doll-grp-h{display:flex;align-items:baseline;gap:12px;padding:14px 16px 6px}
+.doll-grp-h b{font:700 18px/24px var(--font-body);color:var(--strong)}.doll-grp-h span{margin-left:auto;font-size:13px;color:var(--muted)}
+.cell{display:grid;grid-template-columns:64px 40px minmax(0,1fr) auto;column-gap:12px;align-items:start;min-height:58px;padding:9px 16px;border-bottom:1px solid var(--line-soft)}
+.cell .lb{display:flex;flex-direction:column;padding-top:1px;font:600 13px/18px var(--font-body);color:var(--muted)}
+.cell .lb .fl{font-size:12px;line-height:16px;font-weight:700}
+.cell .bd{display:flex;flex-direction:column;gap:1px;min-width:0}
+.cell .l1{display:flex;align-items:baseline;column-gap:10px;min-width:0}.cell .l1 .nm{flex:none;max-width:100%;font:700 15px/20px var(--font-body)}
+.cell .l1 .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:20px;color:var(--muted)}
+.cell .l2{font-size:13px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}
+.cell .gn{display:flex;flex-direction:column;align-items:flex-end;width:144px;min-width:0;justify-self:end}
+.cell .gn .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.cell .gn .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.cell .gn .bs{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:16px;color:var(--muted);text-align:right}
+.cell .ic0{width:40px;height:40px;border-radius:5px;border:1px dashed var(--line-soft)}
+'''
+
+RARITY = {'poor': '#9d9d9d', 'common': '#ffffff', 'uncommon': '#1eff00', 'rare': '#3d94f0', 'epic': '#b866f5', 'legendary': '#ff8000'}
+_RARITY_ICON = {'poor': 'q0', 'uncommon': 'q2', 'rare': 'q3', 'epic': 'q4', 'legendary': 'q5'}
+
+
+def _colored(text: str, rarity: str) -> str:
+    return f'<span style="color:{RARITY.get(rarity, RARITY["common"])}">{escape(text)}</span>'
+
+
+def PaperdollCell(c: dict) -> str:
+    """One slot. c: slot facts (label, flag, state, name, quality, icon, stats, line2, gain, basis), as bis_facts.mjs reads them."""
+    flag = f'<span class="fl">{escape(c["flag"]["text"])}</span>' if c['flag'] else ''
+    lead = f'<span class="lb">{escape(c["label"])}{flag}</span>'
+    if c['state'] == 'empty':
+        return (f'<div class="cell" role="option" aria-disabled="true">{lead}<span class="ic0"></span><span class="bd">'
+                f'<span class="l1"><span class="nm muted" style="font-weight:400">{escape(c["name"])}</span></span><span class="l2">{escape(c["line2"])}</span></span><span></span></div>')
+    ic = icon(c['icon'], 40, _RARITY_ICON.get(c['quality'], '')) if c['icon'] else '<span class="ic0"></span>'
+    stats = f'<span class="st">{escape(c["stats"])}</span>' if c['stats'] else ''
+    g = c['gain'] or {'value': '', 'unit': ''}
+    unit = f'<small>{escape(g["unit"])}</small>' if g['unit'] else ''
+    b = c['basis']
+    basis = f'<span class="bs">{escape(b["prefix"])} {_colored(b["item"], b["quality"]) if b["item"] else ""}</span>' if b else ''
+    return (f'<div class="cell" role="option" aria-selected="false">{lead}{ic}<span class="bd"><span class="l1">'
+            f'<span class="nm" style="color:{RARITY.get(c["quality"], RARITY["common"])}">{escape(c["name"])}</span>{stats}</span>'
+            f'<span class="l2">{escape(c["line2"])}</span></span><span class="gn"><span class="v">{escape(g["value"])}{unit}</span>{basis}</span></div>')
+
+
+def Paperdoll(label: str, view: str, columns: tuple[list[dict], list[dict]] = ([], []), groups: list[dict] | None = None) -> str:
+    """The slot listbox. view 'where' renders groups (title, count, cells); any other view the two columns (left, right)."""
+    if view == 'where':
+        inner = ''.join(f'<div class="doll-grp" role="group" aria-label="{escape(g["title"])}"><div class="doll-grp-h"><b>{escape(g["title"])}</b>'
+                        f'<span>{escape(g["count"])}</span></div>{"".join(PaperdollCell(c) for c in g["cells"])}</div>' for g in groups or [])
+    else:
+        inner = ''.join(f'<div class="doll-col">{"".join(PaperdollCell(c) for c in side)}</div>' for side in columns)
+    return (f'<div class="doll" data-view="{view}" data-region="{REGION["slots"]}">'
+            f'<div class="doll-cols" role="listbox" aria-label="{escape(label)}">{inner}</div></div>')
