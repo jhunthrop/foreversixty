@@ -119,7 +119,7 @@ Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damag
 
 ### Levels 1 to 19
 
-Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice at 10 is the big one: from then on, a short one on anything that will live, Eviscerate on the rest.
+Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice trains at 10, but leave it alone while you level: on a single mob your white swings miss too often for the attack speed to pay back its energy and points, so build to five and Eviscerate every time, whether you hold a dagger or a sword.
 
 Poised at 18 takes 10 Energy off your first ability when you start a pull at full Energy out of combat, so never pull half empty.
 
@@ -129,4 +129,4 @@ Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger wi
 
 ### Levels 20 to 60
 
-Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword, which is what your best in slot table lists. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, Slice and Dice at one or two points on anything that will live long enough, Eviscerate at five, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong.
+Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword, which is what your best in slot table lists. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, then Eviscerate at five every time, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong. Slice and Dice joins the rotation at 60, when your gear and the raid's buffs make every white swing count.
