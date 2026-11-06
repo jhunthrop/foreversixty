@@ -1,11 +1,13 @@
 <!-- web/src/components/character/CharacterGearPanel.svelte -->
 <!-- The profile's Gear section (Task L8.6), under the Forever Score card: the slots of the
      character's newest addon export from GET /v1/characters/...'s `gear` (api/openapi.yaml
-     `CharacterGear`), drawn as the shared Paperdoll (design/specs/2026-10-31-paperdoll.md, call
-     site 2) with each slot's upgrade: the pick and its gain, "Best in slot", or "Not scored".
-     The card's compact head is "GEAR" with the gain total in gold; its foot is the spec's BiS
-     link. The section is the anchor the score card's "Most to gain: Gear" opens (#gear), its
-     heading focused on landing.
+     `CharacterGear`), drawn as the shared paperdoll in `worn` mode (web layout spec 2026-11-05
+     §4.2) in the section's one Plate: each worn item with its gain to the band's pick in DPS
+     (`+1.8 DPS` over `vs <pick>`; HPS for a healer, score for a tank), "Best in slot", or "Not
+     scored". The gains are priced from the spec's BiS file (lib/gear/gain-pricer.ts). The head
+     is "Gear" with the gain total in gold; under the plate, the spec's BiS link. The section is
+     the anchor the score card's "Most to gain: Gear" opens (#gear), its heading focused on
+     landing.
 
      The build's items file gives the colours, icons and two-handedness (lib/gear/qualities.ts);
      until it answers the frame shimmers, and when it fails the frame says so in its note.
@@ -15,18 +17,16 @@
   import activeBuild from '../../data/active-build.json';
   import { gearCopy, notReadCopy } from '../../lib/gear/copy';
   import { SvelteSet } from 'svelte/reactivity';
-  import {
-    GEAR_ANCHOR,
-    gearGapCount,
-    gearRows,
-    gearTitleSummary,
-    type GearItemView,
-  } from '../../lib/gear/panel';
-  import type { PaperdollIdentity } from '../../lib/gear/paperdoll';
+  import { GEAR_ANCHOR, gearRows, gearTitleSummary, type GearItemView } from '../../lib/gear/panel';
+  import { averageItemLevel } from '../../lib/gear/paperdoll';
   import { slotsFromCharacterGear } from '../../lib/gear/paperdoll-slots';
-  import { CARD_FOOT } from '../../lib/ui/card';
-  import Card from '../ui/Card.svelte';
-  import Paperdoll from './Paperdoll.svelte';
+  import { wornGainSummary } from '../../lib/gear/doll-cells';
+  import { bandPricer, UNPRICED } from '../../lib/gear/gain-pricer';
+  import { bandEntryFor, fetchBisFile } from '../../lib/bis/hover';
+  import type { BisBand } from '../../lib/bis/types';
+  import type { Faction } from '../../lib/faction-mark';
+  import Plate from '../ui/Plate.svelte';
+  import GearDoll from './GearDoll.svelte';
   import { iconOf, itemFacts, nameClass, type GearItemTable } from '../../lib/gear/qualities';
   import type { CharacterGearSlot } from '../../lib/gear/types';
   import { fetchItemTooltipModel } from '../../lib/items/lookup';
@@ -50,10 +50,16 @@
     owned = true,
     first = false,
     planner = false,
-    identity,
+    gearSpec = null,
+    faction = null,
+    preloadedBand = undefined,
   }: {
-    /** Who wears the set: the frame's centre. */
-    identity: PaperdollIdentity;
+    /** `gear_spec` ("warrior-fury"): the BiS file the gains are priced from. */
+    gearSpec?: string | null;
+    /** The band's faction; null, no band, so no price. */
+    faction?: Faction | null;
+    /** The band already read (or null: none); left out, the section reads the spec's BiS file. */
+    preloadedBand?: BisBand | null;
     /** No gear and a score: the one primary prompt is the planner (lib/character-prompt.ts). */
     planner?: boolean;
     /** The panel goes above the score card (a character with no score yet: the gear picks are the
@@ -105,9 +111,25 @@
       if (slug === classSlug) facts = loaded;
     });
   });
+  /** The band the gains are priced from: undefined while it loads, null when there is none. */
+  let bandRead = $state<BisBand | null | undefined>(undefined);
+  $effect(() => {
+    const spec = gearSpec;
+    if (preloadedBand !== undefined) return;
+    if (spec === null || band === null || faction === null || gear.length === 0) {
+      bandRead = null;
+      return;
+    }
+    const [atBand, atFaction] = [band, faction];
+    void fetchBisFile(build, spec).then((file) => {
+      if (spec === gearSpec)
+        bandRead = file === null ? null : (bandEntryFor(file, atBand, atFaction) ?? null);
+    });
+  });
+  const bisBand = $derived(preloadedBand !== undefined ? preloadedBand : bandRead);
   /** SSR and tests: the preloaded table draws at once. */
   const table = $derived(preloaded !== undefined ? preloaded : facts);
-  const loading = $derived(table === undefined);
+  const loading = $derived(table === undefined || bisBand === undefined);
 
   /** The unread panel's rows and the empty section's title line. */
   const rows = $derived(
@@ -122,24 +144,18 @@
   const brokenIcons = new SvelteSet<number>();
   /** The unread panel's list: the band's picks only, a row for each slot that has one. */
   const pickRows = $derived(rows.filter((row) => row.pick !== null));
-  /** The frame's slots, each with its upgrade (§3.4). */
-  const slots = $derived(slotsFromCharacterGear(gear, table));
-  /** The head's gold meta (§3.2): "+148.8 points across 9 slots"; none with nothing to gain. */
-  const headMeta = $derived(
-    total !== null && total > 0 && gearGapCount(gear) > 0
-      ? gearCopy.summary(total, gearGapCount(gear))
-      : null,
-  );
-  /** The card's own heading, focused on landing at #gear. */
-  let section = $state<HTMLElement | undefined>();
-
+  /** Each slot's gain to the pick, in the band's unit (§4.6). */
+  const pricer = $derived(table && bisBand ? bandPricer(bisBand, (id) => table.get(id)?.item) : UNPRICED);
+  /** The doll's slots, each with its upgrade (§3.4). */
+  const slots = $derived(slotsFromCharacterGear(gear, table, pricer));
+  /** The head's gold meta: "+12.4 DPS across 9 slots"; none with nothing priced to gain. */
+  const headMeta = $derived(loading ? null : wornGainSummary(slots));
+  const itemLevel = $derived(loading || table === null ? null : averageItemLevel(slots));
   /** The landing (fix round 1 ruling 11): when the address is #gear, focus moves to the heading,
    *  whether the link was clicked, pressed or the page opened on it. */
   let heading = $state<HTMLHeadingElement | undefined>();
   $effect(() => {
-    const cardHeading = section?.querySelector<HTMLHeadingElement>('h2') ?? undefined;
-    if (cardHeading !== undefined) cardHeading.tabIndex = -1;
-    const target = heading ?? cardHeading;
+    const target = heading;
     if (target === undefined) return;
     const focusHeading = (): void => {
       if (window.location.hash === `#${GEAR_ANCHOR}`) target.focus({ preventScroll: true });
@@ -302,13 +318,6 @@
       {/if}
     </div>
   </section>
-  {#if classSlug !== null}
-    <BisTooltipHost
-      {build}
-      modelsElementId="gear-tooltip-models"
-      resolve={(id) => fetchItemTooltipModel(build, classSlug ?? '', id)}
-    />
-  {/if}
 {:else if gear.length === 0}
   <section class="-order-2 flex flex-col gap-2" data-testid="character-gear-empty-section">
     {@render title()}
@@ -329,51 +338,55 @@
     {/if}
   </section>
 {:else}
-  {#snippet meta()}
-    {#if headMeta !== null}<span class="text-gold font-semibold" data-testid="character-gear-summary"
-        >{headMeta}</span
-      >{/if}
-  {/snippet}
-  {#snippet titleExtra()}
-    {#if specLine !== null}
-      <span class="text-muted font-body text-[13px] font-normal" data-testid="character-gear-spec"
-        >{specLine}</span
+  <div class="{ORDER} flex scroll-mt-24 flex-col gap-3" id={GEAR_ANCHOR}>
+    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <h2
+        class="{HEADING} text-strong text-section font-bold"
+        tabindex="-1"
+        bind:this={heading}
+        data-testid="character-gear-title"
       >
-    {/if}
-  {/snippet}
-  <div class="{ORDER} scroll-mt-24" id={GEAR_ANCHOR} bind:this={section}>
-    <Card
-      glyph="user"
-      title={gearCopy.heading}
-      compact
-      body="none"
-      aside={meta}
-      titleSnippet={titleExtra}
-      titleTestid="character-gear-title"
-      testid="character-gear"
-    >
-      <div class="border-line-soft border-t p-4 md:p-5">
-        <Paperdoll
-          {identity}
-          {slots}
-          {build}
-          classSlug={classSlug ?? ''}
-          {loading}
-          failed={table === null}
-          testid="character-gear-paperdoll"
-        />
-      </div>
-      {#if bisHref !== null && spec !== null}
-        <div class={CARD_FOOT} data-testid="character-gear-footer">
-          <a class={loading ? `${LINK} invisible` : LINK} href={bisHref} data-testid="character-gear-bis"
-            >{gearCopy.bisLink(spec, band)}{gearCopy.bisGlue}<span aria-hidden="true"
-              >{gearCopy.bisArrow}</span
-            ></a
-          >
-        </div>
+        {gearCopy.heading}
+      </h2>
+      {#if headMeta !== null}<span
+          class="text-gold text-[14px] font-semibold"
+          data-testid="character-gear-summary">{headMeta}</span
+        >{/if}
+      {#if itemLevel !== null}<span class="text-muted text-[13px]" data-testid="character-gear-ilvl"
+          >{gearCopy.paperdoll.averageItemLevel(itemLevel)}</span
+        >{/if}
+      {#if specLine !== null}
+        <span class="text-muted text-[13px]" data-testid="character-gear-spec">{specLine}</span>
       {/if}
-    </Card>
+    </div>
+    <Plate label={gearCopy.heading} testid="character-gear">
+      <GearDoll
+        {slots}
+        mode="worn"
+        {build}
+        classSlug={classSlug ?? ''}
+        {loading}
+        failed={table === null}
+        label={gearCopy.listLabel}
+        testid="character-gear-doll"
+      />
+    </Plate>
+    {#if bisHref !== null && spec !== null}
+      <footer data-testid="character-gear-footer">
+        <a class={loading ? `${LINK} invisible` : LINK} href={bisHref} data-testid="character-gear-bis"
+          >{gearCopy.bisLink(spec, band)}{gearCopy.bisGlue}<span aria-hidden="true">{gearCopy.bisArrow}</span
+          ></a
+        >
+      </footer>
+    {/if}
   </div>
+{/if}
+{#if classSlug !== null && gear.length > 0}
+  <BisTooltipHost
+    {build}
+    modelsElementId="gear-tooltip-models"
+    resolve={(id) => fetchItemTooltipModel(build, classSlug ?? '', id)}
+  />
 {/if}
 
 <style>

@@ -56,10 +56,10 @@ func exportSlug(name string) string {
 	return slug
 }
 
-// itemNames resolves an award's item the way Store.Loot does, from the fixed table.
+// itemNames resolves an award's item the way Store.Loot does, from the loot table.
 var itemNames = func() map[int]string {
-	names := make(map[int]string, len(onyxiaLoot))
-	for _, item := range onyxiaLoot {
+	names := make(map[int]string, len(lootTable))
+	for _, item := range lootTable {
 		names[item.ItemID] = item.Name
 	}
 	return names

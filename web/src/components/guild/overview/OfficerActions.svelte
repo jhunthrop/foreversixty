@@ -4,6 +4,7 @@
      signed (owner decision D16; never a DM); its answer replaces the row's sub line. -->
 <script lang="ts">
   import { GuildApiError } from '../../../lib/guild/api';
+  import { guildApplicationsHref } from '../../../lib/characters';
   import { pingRaid, type GuildOfficerActions } from '../../../lib/guild/overview-api';
   import { actionRows, pingLine } from '../../../lib/guild/overview-role-view';
   import Button from '../../ui/Button.svelte';
@@ -17,8 +18,11 @@
     day,
     canPing,
     onSelectTab,
+    guildPath,
   }: {
     guildId: number;
+    /** The guild page's path: Open goes to its applications. */
+    guildPath: string;
     actions: GuildOfficerActions;
     day: string | null;
     /** The raid has a Discord post and the throttle allows a ping. */
@@ -55,6 +59,10 @@
         {#snippet trail()}
           {#if row.key === 'approvals'}
             <Button size="sm" onclick={() => onSelectTab('roster')}>Review</Button>
+          {:else if row.key === 'applications'}
+            <Button size="sm" href={guildApplicationsHref(guildPath)} testid="guild-open-applications"
+              >Open</Button
+            >
           {:else if row.key === 'not_signed'}
             <Button
               size="sm"

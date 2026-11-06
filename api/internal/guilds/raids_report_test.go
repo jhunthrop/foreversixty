@@ -39,10 +39,10 @@ func (w raidWorld) award(t *testing.T, raidID int64, key string) {
 	w.awardItem(t, raidID, key, 0)
 }
 
-// awardItem awards onyxiaLoot[item] to key for raidID.
+// awardItem awards testOnyxiaLoot[item] to key for raidID.
 func (w raidWorld) awardItem(t *testing.T, raidID int64, key string, item int) {
 	t.Helper()
-	if _, err := w.h.store.CreateLootAward(t.Context(), w.gid, 1084, onyxiaLoot[item].ItemID, key, w.officer, &raidID, AwardDecision{}); err != nil {
+	if _, err := w.h.store.CreateLootAward(t.Context(), w.gid, 1084, testOnyxiaLoot[item].ItemID, key, w.officer, &raidID, AwardDecision{}); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -75,7 +75,7 @@ func TestTheReportFollowsTheLog(t *testing.T) {
 		t.Fatalf("consumables = %+v", c)
 	}
 	if len(rep.Loot) != 1 || rep.Loot[0].Boss != "Onyxia" || len(rep.Loot[0].Awards) != 1 ||
-		rep.Loot[0].Awards[0].ItemName != onyxiaLoot[0].Name || rep.Loot[0].Awards[0].Name != "Thornhide" {
+		rep.Loot[0].Awards[0].ItemName != testOnyxiaLoot[0].Name || rep.Loot[0].Awards[0].Name != "Thornhide" {
 		t.Fatalf("loot = %+v", rep.Loot)
 	}
 	m := rep.Moves

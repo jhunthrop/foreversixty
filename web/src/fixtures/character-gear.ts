@@ -19,6 +19,7 @@
 // + 6.8): a different number from the score card's "88 below its top" on purpose, since the two
 // measure different things (L8.6 ruling 3). The names, item levels and items are the real
 // build's (data/builds/1.60.1.70291/items/priest.json); the picks and sources are a stub.
+import type { BisBand, BisFile, BisSlot } from '../lib/bis/types';
 import type { CharacterGear, CharacterGearSlot } from '../lib/gear/types';
 import type { Item } from '../lib/planner/types';
 
@@ -259,7 +260,53 @@ export const GEAR_FIXTURE: CharacterGearSlot[] = [
 ];
 
 /** Both fields as the API sends them: the gaps' plain sum, one decimal. */
-export const GEAR_PANEL_FIXTURE: CharacterGear = { gear: GEAR_FIXTURE, gear_gap_total: 70 };
+export const GEAR_PANEL_FIXTURE: CharacterGear = {
+  gear: GEAR_FIXTURE,
+  gear_gap_total: 70,
+  gear_spec: 'priest-holy',
+  gear_spec_source: 'fight',
+};
+
+function bandPick(slot: string, id: number, extra: Partial<BisSlot> = {}): BisSlot {
+  return { slot, item_id: id, item_name: '', source: '', source_kind: 'dungeon', verified: true, ...extra };
+}
+
+/** The band the panel prices its gains from (lib/gear/gain-pricer.ts): the head's worn Green Lens
+ *  is a listed runner-up 1.8 DPS behind the pick; the empty neck prices the pick's score (10
+ *  points x 0.2 DPS a point); every other pick is absent, so its gain is "Not sim-checked". */
+export const GEAR_FIXTURE_BAND: BisBand = {
+  spec: 'priest-holy',
+  band: 60,
+  faction: 'alliance',
+  race: 'human',
+  talents: '',
+  talent_points: 51,
+  weights: [{ stat: 'intellect', weight: 1 }],
+  slots: [
+    bandPick('head', 16921, {
+      alternatives: [
+        { item_id: 10504, item_name: 'Green Lens', source_kind: 'dungeon', source: '', dps_delta: -1.8 },
+      ],
+    }),
+    bandPick('neck', 18814, { score: 10 }),
+  ],
+  set_dps: 300,
+  no_source_count: 0,
+  coverage: {},
+  new_at_band: [],
+  weights_run_seconds: 0,
+  verify_run_seconds: 0,
+  reference_dps_per_point: 0.2,
+};
+
+/** The e2e stub of bis/priest-holy.json: the one band above. */
+export const GEAR_FIXTURE_BIS: BisFile = {
+  spec: 'priest-holy',
+  build: 'fixture',
+  engine_version: 'fixture',
+  generated_at: '2026-11-06T00:00:00Z',
+  bands: [GEAR_FIXTURE_BAND],
+};
 
 /** The build's items/priest.json rows for every fixture id (99001 is not in the build): the
  *  e2e stub of that file, so the names take their qualities and icons, the worn staff reads as

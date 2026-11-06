@@ -1,5 +1,18 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import worker, { type Env } from './worker';
+import {
+  guildApplicationsHref,
+  guildClaimHref,
+  guildHref,
+  guildInviteHref,
+  guildMemberHref,
+  guildRaidHref,
+  guildRecruitHref,
+  guildSettingsHref,
+} from './lib/characters';
 import { DUCKDB_WASM_VERSION, duckdbRuntimeUrl } from './lib/report/duckdb-runtime';
 import { fixtureResult } from './test-support/sim-api';
 
@@ -918,6 +931,28 @@ describe('shell routes with rewritten unfurl tags', () => {
     expect(response.headers.get('x-robots-tag')).toBe('noindex');
   });
 
+  it.each(['raids/42', 'recruit', 'applications', 'members/me', 'members/u%3A42'])(
+    'serves the guild shell at /guild/.../%s with the guild head, not indexed',
+    async (view) => {
+      vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+      vi.stubGlobal(
+        'fetch',
+        vi.fn<GlobalFetch>(async () =>
+          json({ ok: true, data: { guild: { name: 'The Last Watch' }, progression: [] }, error: null }),
+        ),
+      );
+
+      const response = await worker.fetch(
+        new Request(`https://foreversixty.gg/guild/us/hardcore/the-last-watch/${view}`),
+        shellEnv(),
+      );
+      const html = await response.text();
+
+      expect(html).toContain('<title>The Last Watch · ');
+      expect(response.headers.get('x-robots-tag')).toBe('noindex');
+    },
+  );
+
   it('gives the invite shell a generic non-indexable title with no upstream fetch', async () => {
     vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
     const upstream = vi.fn<GlobalFetch>(async () => {
@@ -1064,4 +1099,60 @@ describe('/_sim/<artifact>/sim.wasm.gz', () => {
     expect(await response.text()).toBe('glue');
     expect(response.headers.get('content-encoding')).toBeNull();
   });
+});
+
+describe('every guild route the site and the API link to is served', () => {
+  /** Every foreversixty.gg/guild/ link in the API's app fixtures: the Discord raid post, the push
+   *  notifications and the calendar all build theirs with the same Go helpers (raids_discord.go). */
+  function apiGuildLinks(): string[] {
+    const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../docs/contracts/fixtures/app');
+    const found = new Set<string>();
+    for (const file of readdirSync(dir)) {
+      for (const match of readFileSync(path.join(dir, file), 'utf8').matchAll(
+        /https:\/\/foreversixty\.gg(\/guild\/[a-z0-9/._~%-]+)/g,
+      )) {
+        found.add(match[1].replace(/[.,]+$/, ''));
+      }
+    }
+    return [...found];
+  }
+
+  const guild = guildHref('us', 'pvp', 'Olympus XXVII');
+  const siteLinks = [
+    guild,
+    guildRaidHref(guild, 7),
+    guildSettingsHref('us', 'pvp', 'Olympus XXVII'),
+    guildClaimHref('us', 'pvp', 'Olympus XXVII'),
+    guildInviteHref('fsg_abc123'),
+    guildRecruitHref(guild),
+    guildApplicationsHref(guild),
+    guildMemberHref(guild, 'me'),
+    guildMemberHref(guild, 'u:12'),
+  ];
+
+  it('finds the raid links the API sends (the Discord post and pushes)', () => {
+    expect(apiGuildLinks().some((link) => /\/raids\/\d+$/.test(link))).toBe(true);
+  });
+
+  for (const link of [...siteLinks, ...apiGuildLinks()]) {
+    it(`serves the guild shell at ${link}`, async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn<GlobalFetch>(
+          async () =>
+            new Response(
+              JSON.stringify({
+                ok: true,
+                data: { guild: { name: 'Olympus XXVII', region: 'us', ruleset: 'pvp' }, reports: [] },
+                error: null,
+                request_id: 'r',
+              }),
+              { status: 200, headers: { 'content-type': 'application/json' } },
+            ),
+        ),
+      );
+      const response = await worker.fetch(new Request(`https://foreversixty.gg${link}`), shellEnv());
+      expect(response.status).toBe(200);
+    });
+  }
 });

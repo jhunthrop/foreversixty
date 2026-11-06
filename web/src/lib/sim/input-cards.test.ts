@@ -216,7 +216,7 @@ describe('gear card', () => {
           : slot,
   );
   const slotsOf = (gear: typeof enchanted) =>
-    gearSlots({ gear, classSlug: 'warrior', items: new Map(), failed: true, enchants: enchantNames(rows) });
+    gearSlots({ gear, items: new Map(), failed: true, enchants: enchantNames(rows) });
 
   it('prints the client enchant text and never the recipe', () => {
     const slots = slotsOf(enchanted);

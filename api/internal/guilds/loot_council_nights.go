@@ -86,7 +86,7 @@ type LootNightsView struct {
 
 // toDecision is a's decision record.
 func toDecision(a lootAward) LootDecision {
-	it, _ := onyxiaItem(a.itemID)
+	it, _ := lootItemByID(a.itemID)
 	return LootDecision{AwardID: a.to.AwardID, ItemID: a.itemID, ItemName: it.Name, Icon: it.Icon, Quality: it.Quality,
 		CharacterKey: a.to.CharacterKey, Name: a.to.Name, Class: a.class, MsOs: a.decision.msOs, Reason: a.decision.reason,
 		VotesYes: a.decision.votesYes, VotesNo: a.decision.votesNo, VotesOfficers: a.decision.officers,
@@ -109,11 +109,13 @@ func nightAward(awards []lootAward, night awardNight, itemID int, now time.Time)
 type councilNightRow struct {
 	night awardNight
 	at    time.Time
+	// zone is a planned raid's zone key; nil for a logged night with no planned raid.
+	zone *string
 }
 
 // CouncilNights lists the guild's last limit nights, newest first, the current night included.
 func (s *Store) CouncilNights(ctx context.Context, guildID int64, limit int, now time.Time) (LootNightsView, error) {
-	current, err := s.resolveAwardNight(ctx, guildID, onyxiaEncounterID, nil, now)
+	current, err := s.resolveAwardNight(ctx, guildID, allLoot, nil, now)
 	if err != nil {
 		return LootNightsView{}, err
 	}
@@ -152,9 +154,9 @@ func withCurrentNight(found []councilNightRow, current awardNight, now time.Time
 	return append([]councilNightRow{{night: current, at: now}}, found...)
 }
 
-// councilNightRows is the guild's Onyxia nights, newest first: every planned raid (not cancelled)
-// that is done, in play, or holds council activity, and every unflagged log of the guild no
-// planned raid holds that killed Onyxia or holds council activity. A live night with activity
+// councilNightRows is the guild's loot nights, newest first: every planned raid of a loot table
+// zone (not cancelled) that is done, in play, or holds council activity, and every unflagged log of
+// the guild no such planned raid holds that killed a table boss or holds council activity. A live night with activity
 // in the last raid night leads.
 func (s *Store) councilNightRows(ctx context.Context, guildID int64, limit int, now time.Time) ([]councilNightRow, error) {
 	rows, err := s.Pool.Query(ctx, `
@@ -164,25 +166,25 @@ func (s *Store) councilNightRows(ctx context.Context, guildID int64, limit int, 
 		  union all select raid_id, report_id, set_at from loot_interest where guild_id = $1
 		)
 		select * from (
-		  select g.id as raid_id, null::text as report_id, g.starts_at as at from guild_raids g
-		  where g.guild_id = $1 and g.zone = $2 and g.status <> 'cancelled'
+		  select g.id as raid_id, null::text as report_id, g.starts_at as at, g.zone from guild_raids g
+		  where g.guild_id = $1 and g.zone = any($2) and g.status <> 'cancelled'
 		    and g.starts_at - make_interval(hours => $5) <= $4
 		    and (g.status = 'done'
 		         or $4 <= g.starts_at + make_interval(mins => g.duration_minutes) + make_interval(hours => $6)
 		         or exists (select 1 from act where act.raid_id = g.id))
 		  union all
-		  select null, r.id, `+logAnchorSQL("r")+` from reports r
+		  select null, r.id, `+logAnchorSQL("r")+`, null from reports r
 		  where r.guild_id = $1 and `+presence.NotFlagged("r")+`
 		    and not exists (select 1 from guild_raids gr
-		                    where gr.report_id = r.id and gr.guild_id = $1 and gr.zone = $2 and gr.status <> 'cancelled')
-		    and (exists (select 1 from fights f where f.report_id = r.id and f.encounter_id = $3 and f.kill)
+		                    where gr.report_id = r.id and gr.guild_id = $1 and gr.zone = any($2) and gr.status <> 'cancelled')
+		    and (exists (select 1 from fights f where f.report_id = r.id and f.encounter_id = any($3) and f.kill)
 		         or exists (select 1 from act where act.raid_id is null and act.report_id = r.id))
 		  union all
-		  select null, null, max(act.at) from act
+		  select null, null, max(act.at), null from act
 		  where act.raid_id is null and act.report_id is null and act.at >= $7
 		  having count(*) > 0
 		) n order by at desc limit $8`,
-		guildID, onyxiaZoneKey, onyxiaEncounterID, now, matchLeadHours, matchTailHours, liveCutoff(now), limit)
+		guildID, allLoot.zones, allLoot.encounters, now, matchLeadHours, matchTailHours, liveCutoff(now), limit)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: council nights: %w", err)
 	}
@@ -190,7 +192,7 @@ func (s *Store) councilNightRows(ctx context.Context, guildID int64, limit int, 
 	var out []councilNightRow
 	for rows.Next() {
 		var n councilNightRow
-		if err := rows.Scan(&n.night.raidID, &n.night.reportID, &n.at); err != nil {
+		if err := rows.Scan(&n.night.raidID, &n.night.reportID, &n.at, &n.zone); err != nil {
 			return nil, fmt.Errorf("guilds: council nights: %w", err)
 		}
 		out = append(out, n)
@@ -218,16 +220,16 @@ func (s *Store) councilActivity(ctx context.Context, guildID int64) (councilActi
 	if err != nil {
 		return councilActivitySet{}, err
 	}
-	awards, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)
+	awards, err := s.lootAwards(ctx, guildID, allLoot.encounters)
 	if err != nil {
 		return councilActivitySet{}, err
 	}
 	lr.nameInvited(awards)
 	rows, err := s.Pool.Query(ctx, `
-		select raid_id, report_id, item_id, voted_at from loot_votes where guild_id = $1 and encounter_id = $2
+		select raid_id, report_id, item_id, voted_at from loot_votes where guild_id = $1 and encounter_id = any($2)
 		union all
-		select raid_id, report_id, item_id, set_at from loot_interest where guild_id = $1 and encounter_id = $2`,
-		guildID, onyxiaEncounterID)
+		select raid_id, report_id, item_id, set_at from loot_interest where guild_id = $1 and encounter_id = any($2)`,
+		guildID, allLoot.encounters)
 	if err != nil {
 		return councilActivitySet{}, fmt.Errorf("guilds: council activity: %w", err)
 	}
@@ -246,7 +248,7 @@ func (s *Store) councilActivity(ctx context.Context, guildID int64) (councilActi
 // night is the night n with its drops (in the loot table's order) and decision record.
 func (set councilActivitySet) night(n councilNightRow, current awardNight, loc *time.Location, now time.Time) LootNight {
 	out := LootNight{Night: n.night.key(), RaidID: n.night.raidID, ReportID: n.night.reportID,
-		Date: n.at.In(loc).Format(exportDateLayout), At: n.at.UTC().Format(time.RFC3339), Zone: zoneOnyxia,
+		Date: n.at.In(loc).Format(exportDateLayout), At: n.at.UTC().Format(time.RFC3339),
 		Current: n.night.key() == current.key(), Drops: []LootNightDrop{}, Decisions: []LootDecision{}}
 	touched := map[int]bool{}
 	for _, a := range set.awards {
@@ -260,12 +262,12 @@ func (set councilActivitySet) night(n councilNightRow, current awardNight, loc *
 			touched[r.itemID] = true
 		}
 	}
-	for _, it := range onyxiaLoot {
+	for _, it := range lootTable {
 		if !touched[it.ItemID] {
 			continue
 		}
 		drop := LootNightDrop{ItemID: it.ItemID, Name: it.Name, Icon: it.Icon, Quality: it.Quality, Kind: lootKind(it),
-			EncounterID: onyxiaEncounterID, Boss: encounterName, State: dropOpen,
+			EncounterID: it.EncounterID, Boss: bossName(it.EncounterID), State: dropOpen,
 			Award: nightAward(set.awards, n.night, it.ItemID, now)}
 		if drop.Award != nil {
 			drop.State = dropAwarded
@@ -273,7 +275,23 @@ func (set councilActivitySet) night(n councilNightRow, current awardNight, loc *
 		out.Drops = append(out.Drops, drop)
 	}
 	sort.SliceStable(out.Decisions, func(i, j int) bool { return out.Decisions[i].At < out.Decisions[j].At })
+	out.Zone = nightZone(n.zone, out.Drops)
 	return out
+}
+
+// nightZone is the raid a night is in: a planned raid's zone; else, for a logged night, the raid
+// of its first drop; else the loot table's first raid.
+func nightZone(zone *string, drops []LootNightDrop) string {
+	if zone != nil {
+		return lootRaidName(*zone)
+	}
+	if len(drops) > 0 {
+		return bossRaidName(drops[0].EncounterID)
+	}
+	if len(lootBosses) > 0 {
+		return lootBosses[0].RaidName
+	}
+	return ""
 }
 
 // withoutVotes is the member's copy of the nights: every decision keeps who, MS/OS, reason, by whom
@@ -281,8 +299,8 @@ func (set councilActivitySet) night(n councilNightRow, current awardNight, loc *
 func (v LootNightsView) withoutVotes() LootNightsView {
 	out := LootNightsView{Officers: v.Officers, Nights: make([]LootNight, len(v.Nights))}
 	for i, n := range v.Nights {
-		n.Drops = append([]LootNightDrop(nil), n.Drops...)
-		n.Decisions = append([]LootDecision(nil), n.Decisions...)
+		n.Drops = append([]LootNightDrop{}, n.Drops...)
+		n.Decisions = append([]LootDecision{}, n.Decisions...)
 		for j := range n.Drops {
 			if n.Drops[j].Award != nil {
 				d := n.Drops[j].Award.withoutVotes()

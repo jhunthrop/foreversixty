@@ -3,7 +3,14 @@
 // the chosen night and drop, the drop's candidates (officers) or the viewer's own MS/OS flags
 // (members), and the writes (vote, award, undo, flag). The API is injected, so the flow is tested
 // without a page. A plan refusal flips the page's gate through `onRefused` and says so once.
-import { GuildApiError, fetchGuildLoot, unawardLoot, type GuildLootItem, type GuildLootPage } from './api';
+import {
+  GuildApiError,
+  fetchGuildLoot,
+  unawardLoot,
+  type GuildLootItem,
+  type GuildLootPage,
+  type GuildLootRaid,
+} from './api';
 import {
   awardDrop,
   fetchDropCandidates,
@@ -90,7 +97,7 @@ export class LootCouncilState {
   status = $state<Status>('loading');
   nights = $state<LootNights | null>(null);
   table = $state<readonly GuildLootItem[]>([]);
-  encounterId = $state<number | null>(null);
+  raids = $state<readonly GuildLootRaid[]>([]);
   nightKey = $state<string | null>(null);
   selected = $state<DropRow | null>(null);
   drop = $state<LootCouncilDrop | null>(null);
@@ -124,7 +131,7 @@ export class LootCouncilState {
       ]);
       this.nights = nights;
       this.table = table?.items ?? [];
-      this.encounterId = table?.selected ?? null;
+      this.raids = table?.raids ?? [];
       if (this.night === null) this.nightKey = defaultNight(nights.nights)?.night ?? null;
       this.status = 'ready';
       await this.readFlags();
@@ -149,7 +156,7 @@ export class LootCouncilState {
   /** Opens a loot table drop on the current night. */
   open = (itemId: number): void => {
     const item = this.table.find((row) => row.item_id === itemId);
-    if (item !== undefined) this.select(tableDrop(item, this.encounterId ?? 0));
+    if (item !== undefined) this.select(tableDrop(item));
   };
 
   ask = (characterKey: string): void => {

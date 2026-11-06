@@ -13,6 +13,13 @@ TABLES = [
     "Map",
     "AreaTable",
     "JournalInstance",
+    # A raid's bosses and their journal loot (pipeline.raid_bosses, the guild loot
+    # picker's first-tier table). DungeonEncounter names each boss and its map;
+    # the Journal tables tie a boss to its loot where the client ships them.
+    "DungeonEncounter",
+    "MapDifficulty",
+    "JournalEncounter",
+    "JournalEncounterItem",
     "ItemSparse",
     "Item",
     "ItemEffect",
@@ -107,6 +114,10 @@ TABLES = [
 OPTIONAL_TABLES = frozenset(
     {
         "JournalInstance",
+        # The rest of the Dungeon Journal: 1.60.1.70790 answers 400 "Table not
+        # found" for both, as it does for JournalInstance.
+        "JournalEncounter",
+        "JournalEncounterItem",
         "ItemArmorTotal",
         "ItemArmorQuality",
         "ItemArmorShield",

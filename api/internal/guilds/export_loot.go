@@ -192,8 +192,8 @@ func (s *Store) lootHistory(ctx context.Context, guildID int64, rng dateRange) (
 		if !rng.holds(row.Date) {
 			continue
 		}
-		if encounterID == onyxiaEncounterID {
-			row.Boss = encounterName
+		if _, ok := lootBossByEncounter(encounterID); ok {
+			row.Boss = bossName(encounterID)
 		}
 		row.Item = itemNames[row.ItemID]
 		out = append(out, row)

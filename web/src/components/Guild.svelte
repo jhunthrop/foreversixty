@@ -67,6 +67,7 @@
   import type { WeekOneCharacter } from '../lib/guild/week-one';
   import { classSlugFromName } from '../lib/report/tree-sizes';
   import { createRefreshingRead } from '../lib/guild/refreshing-read';
+  import { rosterProfileHref } from '../lib/guild/roster-profile';
   import {
     attendanceSourceOf,
     raidsChangeAction,
@@ -681,9 +682,11 @@
       ? plannedReserveRows(guildId, browserStorage())
       : null,
   );
-  const guildPath = $derived(
-    resolved !== null && home !== null ? guildHref(resolved.region, resolved.ruleset, home.guild.name) : '',
-  );
+  /** The guild page's own path, from the home's name, else the public page's (a visitor has no home). */
+  const guildPath = $derived.by(() => {
+    const name = home?.guild.name ?? data?.guild.name;
+    return resolved !== null && name !== undefined ? guildHref(resolved.region, resolved.ruleset, name) : '';
+  });
 
   /** The band's member lines (and the claim line /v1/me adds) arrive after the band paints; a viewer
    *  last seen verified here gets the band header's last height while /home is in flight, so the
@@ -1009,6 +1012,7 @@
           onDecline={(row) => void onRemove(row)}
           onApproveAll={() => void onApproveAll()}
           {rowPath}
+          profileHref={(row) => rosterProfileHref(row, { officer: officerView, myCharacterKey, guildPath })}
           addonSnapshot={home.addon_snapshot ?? null}
           mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
           attendanceSource={attendanceSourceOf(home)}

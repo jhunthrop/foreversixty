@@ -313,7 +313,7 @@ test.describe('a viewer in Los Angeles', () => {
       page,
       guildBillingRead({ billing: planView({ current_period_end: '2026-12-01T03:00:00Z' }) }),
     );
-    await expect(page.getByTestId('guild-billing-plan')).toContainText('renews 30 Nov 2026');
+    await expect(page.getByTestId('guild-billing-plan')).toContainText('Renews 30 Nov 2026');
   });
 
   test('an operator grant at midnight UTC stays on its day', async ({ page }) => {
@@ -323,6 +323,6 @@ test.describe('a viewer in Los Angeles', () => {
         billing: planView({ current_period_end: '2026-12-01T00:00:00Z', billed_by: '' }),
       }),
     );
-    await expect(page.getByTestId('guild-billing-plan')).toContainText('until 1 Dec 2026');
+    await expect(page.getByTestId('guild-billing-plan')).toContainText('Until 1 Dec 2026');
   });
 });

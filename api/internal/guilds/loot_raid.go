@@ -17,16 +17,11 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
-const (
-	// onyxiaZoneKey is the curated zone every award's encounter belongs to.
-	onyxiaZoneKey = "raid:onyxias-lair"
-)
-
 // AwardRaidError is an award that names a raid that cannot take it. It is an ErrInvalidAward.
 type AwardRaidError struct{ RaidID int64 }
 
 func (e *AwardRaidError) Error() string {
-	return fmt.Sprintf("guilds: raid %d is not a done Onyxia raid of this guild", e.RaidID)
+	return fmt.Sprintf("guilds: raid %d is not a done raid of this guild in the drop's zone", e.RaidID)
 }
 
 func (e *AwardRaidError) Is(target error) bool { return target == ErrInvalidAward }
@@ -45,17 +40,18 @@ type awardNight struct {
 const awardNightLookback = 7 * 24 * time.Hour
 
 // resolveAwardNight is the night an award is filed under: the named done raid of the guild (an
-// *AwardRaidError when it is not a done raid of the Onyxia zone); else the raid being played now
-// (raidInPlay); else the latest matched night (a planned raid holding its log, or a logged night
-// of the guild with no planned raid) whose log killed encounterID within awardNightLookback;
+// *AwardRaidError when it is not a done raid of one of scope's zones); else the raid of scope's
+// zones being played now (raidInPlay); else the latest matched night (a planned raid holding its
+// log, or a logged night of the guild with no planned raid) whose log killed one of scope's
+// encounters within awardNightLookback;
 // else no night, and the award joins its raid when that raid's log matches (attachMatchLoot).
 // The CSV, the raid page and /report all read the night this files the award under.
-func (s *Store) resolveAwardNight(ctx context.Context, guildID, encounterID int64, named *int64, now time.Time) (awardNight, error) {
+func (s *Store) resolveAwardNight(ctx context.Context, guildID int64, scope lootScope, named *int64, now time.Time) (awardNight, error) {
 	if named != nil {
 		var ok bool
 		err := s.Pool.QueryRow(ctx,
-			`select exists(select 1 from guild_raids where id = $1 and guild_id = $2 and zone = $3 and status = 'done')`,
-			*named, guildID, onyxiaZoneKey).Scan(&ok)
+			`select exists(select 1 from guild_raids where id = $1 and guild_id = $2 and zone = any($3) and status = 'done')`,
+			*named, guildID, scope.zones).Scan(&ok)
 		if err != nil {
 			return awardNight{}, fmt.Errorf("guilds: award raid: %w", err)
 		}
@@ -64,25 +60,25 @@ func (s *Store) resolveAwardNight(ctx context.Context, guildID, encounterID int6
 		}
 		return awardNight{raidID: named}, nil
 	}
-	playing, err := s.raidInPlay(ctx, guildID, now)
+	playing, err := s.raidInPlay(ctx, guildID, scope.zones, now)
 	if err != nil || playing != nil {
 		return awardNight{raidID: playing}, err
 	}
-	return s.latestKillNight(ctx, guildID, encounterID, now)
+	return s.latestKillNight(ctx, guildID, scope, now)
 }
 
-// raidInPlay is the raid being played now: the guild's Onyxia raid, of any status but
+// raidInPlay is the raid being played now: the guild's raid in one of zones, of any status but
 // cancelled, whose match window (an hour before the start to six after the end) holds now, the
 // start nearest now winning; nil when none.
-func (s *Store) raidInPlay(ctx context.Context, guildID int64, now time.Time) (*int64, error) {
+func (s *Store) raidInPlay(ctx context.Context, guildID int64, zones []string, now time.Time) (*int64, error) {
 	var id int64
 	err := s.Pool.QueryRow(ctx, `
 		select id from guild_raids
-		where guild_id = $1 and zone = $2 and status <> 'cancelled'
+		where guild_id = $1 and zone = any($2) and status <> 'cancelled'
 		  and $3 >= starts_at - make_interval(hours => $4)
 		  and $3 <= starts_at + make_interval(mins => duration_minutes) + make_interval(hours => $5)
 		order by abs(extract(epoch from (starts_at - $3))), id limit 1`,
-		guildID, onyxiaZoneKey, now, matchLeadHours, matchTailHours).Scan(&id)
+		guildID, zones, now, matchLeadHours, matchTailHours).Scan(&id)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}
@@ -92,10 +88,10 @@ func (s *Store) raidInPlay(ctx context.Context, guildID int64, now time.Time) (*
 	return &id, nil
 }
 
-// latestKillNight is the guild's latest night whose log (never a flagged one) killed encounterID
-// within awardNightLookback of now: the planned Onyxia raid holding that log, else the log
+// latestKillNight is the guild's latest night whose log (never a flagged one) killed one of scope's
+// encounters within awardNightLookback of now: the planned raid of scope's zones holding that log, else the log
 // itself when no planned raid holds it. No night when there is none.
-func (s *Store) latestKillNight(ctx context.Context, guildID, encounterID int64, now time.Time) (awardNight, error) {
+func (s *Store) latestKillNight(ctx context.Context, guildID int64, scope lootScope, now time.Time) (awardNight, error) {
 	var night awardNight
 	err := s.Pool.QueryRow(ctx, `
 		select g.id, r.id
@@ -103,14 +99,14 @@ func (s *Store) latestKillNight(ctx context.Context, guildID, encounterID int64,
 		join reports r on r.id = f.report_id
 		left join lateral (
 		  select g.id from guild_raids g
-		  where g.report_id = r.id and g.guild_id = $1 and g.zone = $3 and g.status <> 'cancelled'
+		  where g.report_id = r.id and g.guild_id = $1 and g.zone = any($3) and g.status <> 'cancelled'
 		  order by g.starts_at desc limit 1
 		) g on true
-		where f.kill and f.encounter_id = $2 and `+presence.NotFlagged("r")+`
+		where f.kill and f.encounter_id = any($2) and `+presence.NotFlagged("r")+`
 		  and (g.id is not null or r.guild_id = $1)
 		  and to_timestamp(f.start_ms / 1000.0) between $4::timestamptz - make_interval(secs => $5) and $4::timestamptz
 		order by f.start_ms desc limit 1`,
-		guildID, encounterID, onyxiaZoneKey, now, awardNightLookback.Seconds()).Scan(&night.raidID, &night.reportID)
+		guildID, scope.encounters, scope.zones, now, awardNightLookback.Seconds()).Scan(&night.raidID, &night.reportID)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return awardNight{}, nil
 	}

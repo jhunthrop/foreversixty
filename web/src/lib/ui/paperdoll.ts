@@ -42,11 +42,15 @@ export interface DollCell {
   source?: string;
   /** A source-kind key for the line's glyph (`dungeon`, `crafted`, ...). */
   sourceKind?: string;
+  /** Line 2 is the worn item's enchant: the game's green. */
+  sourceTone?: 'enchant';
   /** Detail only: line 2 of the cell is the source alone (owner decision, option C). */
   note?: DollNote;
   gain?: GainFigure;
   /** The worn item's small icon beside the gain (compare mode). */
   worn?: ItemRef;
+  /** An empty slot's line 1: "Nothing better yet" (a pick), "Empty" (worn). */
+  emptyTitle?: string;
   /** An empty slot's reason ("First trinket comes at 40"). */
   empty?: string;
   /** A two-hander covers this off hand: the socket shows it greyed. */

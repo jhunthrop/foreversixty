@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { Item } from '../planner/types';
 import type { GearItemTable } from './qualities';
 import type { CharacterGearSlot } from './types';
+import type { GainPricer } from './paperdoll';
 import { slotsFromCharacterGear, slotsFromWorn } from './paperdoll-slots';
 
 const helm: Item = {
@@ -105,8 +106,10 @@ describe('slotsFromCharacterGear (character page)', () => {
     { slot: 'neck', worn: null, pick: null, gap: null },
   ];
 
-  it('draws the worn item with the file’s colour and icon, the API’s name and level, and its upgrade', () => {
-    const [head] = slotsFromCharacterGear(gear, table);
+  const pricer: GainPricer = { unit: 'dps', price: () => 1.8 };
+
+  it('draws the worn item with the file’s colour and icon, the API’s name and level, and its priced upgrade', () => {
+    const [head] = slotsFromCharacterGear(gear, table, pricer);
     expect(head).toEqual({
       slot: 'head',
       state: 'item',
@@ -120,14 +123,15 @@ describe('slotsFromCharacterGear (character page)', () => {
       },
       upgrade: {
         kind: 'gain',
-        points: 60,
+        value: 1.8,
+        unit: 'dps',
         pick: { id: 12640, name: 'Lionheart Helm', icon: 'inv_helmet_36', quality: 4 },
       },
     });
   });
 
   it('draws an item the data lacks as unknown with a "Not scored" pick, and an empty slot as empty', () => {
-    const slots = slotsFromCharacterGear(gear, table);
+    const slots = slotsFromCharacterGear(gear, table, pricer);
     expect(slots[1]).toMatchObject({
       slot: 'waist',
       state: 'unknown',
@@ -138,7 +142,7 @@ describe('slotsFromCharacterGear (character page)', () => {
   });
 
   it('leaves colour and icon out while the file is missing', () => {
-    const [head] = slotsFromCharacterGear(gear, null);
+    const [head] = slotsFromCharacterGear(gear, null, pricer);
     expect(head?.item).toMatchObject({ icon: null, quality: null });
   });
 });

@@ -89,33 +89,47 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 		return InviteAccept{}, ErrNotFound
 	}
 
-	key := syntheticKey(userID)
-	var prevGuildID *int64
-	err = s.Pool.QueryRow(ctx,
-		`select guild_id from guild_characters where character_key = $1`, key).Scan(&prevGuildID)
-	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-		return InviteAccept{}, fmt.Errorf("guilds: accept invite: read previous: %w", err)
-	}
-
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return InviteAccept{}, fmt.Errorf("guilds: accept invite: begin: %w", err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
+	if err := s.joinAsInvited(ctx, tx, g.ID, userID); err != nil {
+		return InviteAccept{}, err
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return InviteAccept{}, fmt.Errorf("guilds: accept invite: commit: %w", err)
+	}
+	return InviteAccept{GuildID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Rank: "member"}, nil
+}
 
-	if prevGuildID != nil && *prevGuildID != g.ID {
+// joinAsInvited is the invite join within tx, the one path an approved join takes (an invite
+// redeemed, an application accepted): a verified, source="invite" row under the synthetic
+// account: key, moved here from another guild when the account held one there, then the
+// account's exported characters naming guildID re-attached and given the invite's
+// verification, and both recomputes run.
+func (s *Store) joinAsInvited(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
+	key := syntheticKey(userID)
+	var prevGuildID *int64
+	err := tx.QueryRow(ctx,
+		`select guild_id from guild_characters where character_key = $1`, key).Scan(&prevGuildID)
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return fmt.Errorf("guilds: join as invited: read previous: %w", err)
+	}
+
+	if prevGuildID != nil && *prevGuildID != guildID {
 		if _, err := tx.Exec(ctx,
 			`delete from guild_characters where character_key = $1 and guild_id = $2`, key, *prevGuildID); err != nil {
-			return InviteAccept{}, fmt.Errorf("guilds: accept invite: clear previous: %w", err)
+			return fmt.Errorf("guilds: join as invited: clear previous: %w", err)
 		}
 		if err := RecomputeMembership(ctx, tx, *prevGuildID, &userID); err != nil {
-			return InviteAccept{}, err
+			return err
 		}
 		if err := RecomputeFaction(ctx, tx, *prevGuildID); err != nil {
-			return InviteAccept{}, err
+			return err
 		}
 		if err := ReleaseClaimIfLost(ctx, tx, *prevGuildID, userID); err != nil {
-			return InviteAccept{}, err
+			return err
 		}
 	}
 	if _, err := tx.Exec(ctx,
@@ -125,27 +139,21 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 		   user_id = excluded.user_id, refreshed_at = now(),
 		   verified_at = coalesce(guild_characters.verified_at, now()),
 		   verified_by = coalesce(guild_characters.verified_by, 'invite')`,
-		g.ID, key, userID); err != nil {
-		return InviteAccept{}, fmt.Errorf("guilds: accept invite: %w", err)
+		guildID, key, userID); err != nil {
+		return fmt.Errorf("guilds: join as invited: %w", err)
 	}
 	if s.Exports != nil {
-		if err := s.Exports.ResyncGuildExports(ctx, tx, userID, g.ID); err != nil {
-			return InviteAccept{}, err
+		if err := s.Exports.ResyncGuildExports(ctx, tx, userID, guildID); err != nil {
+			return err
 		}
 	}
-	if err := AdoptInviteVerification(ctx, tx, g.ID, userID); err != nil {
-		return InviteAccept{}, err
+	if err := AdoptInviteVerification(ctx, tx, guildID, userID); err != nil {
+		return err
 	}
-	if err := RecomputeMembership(ctx, tx, g.ID, &userID); err != nil {
-		return InviteAccept{}, err
+	if err := RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
+		return err
 	}
-	if err := RecomputeFaction(ctx, tx, g.ID); err != nil {
-		return InviteAccept{}, err
-	}
-	if err := tx.Commit(ctx); err != nil {
-		return InviteAccept{}, fmt.Errorf("guilds: accept invite: commit: %w", err)
-	}
-	return InviteAccept{GuildID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name, Rank: "member"}, nil
+	return RecomputeFaction(ctx, tx, guildID)
 }
 
 // AdoptInviteVerification moves an invite's verification from userID's placeholder row

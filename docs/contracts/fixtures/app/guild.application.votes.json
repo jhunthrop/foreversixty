@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "data": {
+    "yes": 2,
+    "no": 0,
+    "voters": 3,
+    "mine": "yes"
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

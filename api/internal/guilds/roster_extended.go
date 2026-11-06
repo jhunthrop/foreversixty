@@ -134,16 +134,22 @@ func (s *Store) attendance(ctx context.Context, guildID int64, keys []string, wi
 // encounter, ordered by the role's own metric), so a raider's roster figure is the largest of
 // the Progression rows against their name - one number, not two (round 8, P8-7).
 func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestParse, error) {
+	return s.bestParsesWhere(ctx, "r.guild_id = $1", guildID)
+}
+
+// bestParsesWhere is bestParses over the reports and rows scope selects ($1 its one argument):
+// the guild's own reports for the roster, every report for an applicant not in the guild yet.
+func (s *Store) bestParsesWhere(ctx context.Context, scope string, arg any) (map[string]BestParse, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select distinct on (m.player_key) m.player_key, coalesce(m.role, ''),
 		       m.metric_dps, m.metric_hps, coalesce(f.name, ''), m.report_id, m.fight_index
 		from fight_metrics m
 		join reports r on r.id = m.report_id
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
-		where r.guild_id = $1 and `+bossKillMetrics+`
+		where `+scope+` and `+bossKillMetrics+`
 		  and `+presence.EvidenceReport("r")+`
 		order by m.player_key, `+roleMetricOrder+` desc`,
-		guildID)
+		arg)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: best parses: %w", err)
 	}

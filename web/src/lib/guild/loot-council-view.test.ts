@@ -23,6 +23,8 @@ import {
   ownUsers,
   reasonError,
   tableDrop,
+  pickOptions,
+  NOT_IN_CLIENT,
 } from './loot-council-view';
 
 const table = buildMockLoot().items;
@@ -76,9 +78,23 @@ describe('drop rows', () => {
     expect(openable(current, table, [])).toEqual([]);
   });
 
-  it('turns a loot table item into an open row', () => {
-    const row = tableDrop(table[0], 1084);
+  it('turns a loot table item into an open row under its own boss', () => {
+    const row = tableDrop(table[0]);
     expect(row).toMatchObject({ itemId: table[0].item_id, state: 'open', award: null, encounterId: 1084 });
+  });
+
+  it('groups the picker by raid then boss and keeps a raid the client lacks', () => {
+    const raids = buildMockLoot().raids;
+    const options = pickOptions(table.slice(0, 2), raids);
+    expect(options[0]).toEqual({ value: '', label: 'Pick a drop' });
+    expect(options.filter((o) => o.disabled).map((o) => [o.group, o.label])).toEqual([
+      ['Barrow Deeps', NOT_IN_CLIENT],
+      ['Hyjal Summit', NOT_IN_CLIENT],
+    ]);
+    const drops = options.filter((o) => o.value !== '' && !o.disabled);
+    expect(drops.map((o) => o.value)).toEqual(table.slice(0, 2).map((item) => String(item.item_id)));
+    expect(drops.every((o) => o.group === "Onyxia's Lair · Onyxia")).toBe(true);
+    expect(NOT_IN_CLIENT).toBe('Not in the game client yet');
   });
 
   it("lists the viewer's own characters once", () => {

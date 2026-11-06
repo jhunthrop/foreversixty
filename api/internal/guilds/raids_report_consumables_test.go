@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"sort"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 )
 
 // consumablesByRoster is the consumables block as it was first built, from the whole home
@@ -26,7 +28,8 @@ func consumablesByRoster(t *testing.T, w raidWorld, vc raidViewContext, reportID
 	for _, row := range roster {
 		if row.Verified && inLog[row.CharacterKey] {
 			out = append(out, ConsumableRow{CharacterKey: row.CharacterKey, Name: row.Name, Class: row.className,
-				Before: consumablesState(row.Consent, row.bags, row.hasBagsSection), own: vc.ownsKey(row.CharacterKey)})
+				Before: consumablesState(row.Consent, fs1.Decoded{Bags: row.bags, HasBags: row.hasBagsSection,
+					Supplies: row.prep.supplies, HasSupplies: row.prep.hasSupplies}), own: vc.ownsKey(row.CharacterKey)})
 		}
 	}
 	sort.SliceStable(out, func(i, j int) bool {

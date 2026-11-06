@@ -141,3 +141,23 @@ func TestATodaysSyncIsFreshForAFarRaid(t *testing.T) {
 		t.Fatalf("today's sync = %+v, want fresh and nothing failing", r)
 	}
 }
+
+// TestReadinessRaidSaysWhatTheZoneAsksFor marks Onyxia's Lair as asking for an attunement and
+// fire resistance, and a raid of Barrow Deeps as asking for neither.
+func TestReadinessRaidSaysWhatTheZoneAsksFor(t *testing.T) {
+	w := newRaidWorld(t, true)
+	ony := w.createRaid(t)
+	barrow := w.raidAt(t, "raid:barrow-deeps", time.Now().Add(9*24*time.Hour).Truncate(time.Minute))
+	w.as(w.officer)
+	for _, c := range []struct {
+		id         int64
+		attunement bool
+		fire       bool
+	}{{ony.ID, true, true}, {barrow.ID, false, false}} {
+		var v ReadinessView
+		w.h.data(w.h.do(http.MethodGet, w.path("/readiness?raid=%d", c.id), ""), &v)
+		if v.Raid == nil || v.Raid.Attunement != c.attunement || v.Raid.FireResistance != c.fire {
+			t.Errorf("raid %d = %+v, want attunement %v, fire_resistance %v", c.id, v.Raid, c.attunement, c.fire)
+		}
+	}
+}

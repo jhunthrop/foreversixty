@@ -203,9 +203,11 @@ EOF
 	chmod +x "$dir/stubs/uv"
 	cp "$ACTIVATE" "$dir/tools/activate-build.sh"
 	printf '{\n  "build": "%s"\n}\n' "$OLD_BUILD" >"$dir/web/src/data/active-build.json"
-	for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json; do
+	for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json raid-bosses.json; do
 		echo '{}' >"$dir/data/builds/$NEW_BUILD/$f"
 	done
+	mkdir -p "$dir/data/builds/$NEW_BUILD/spelltips"
+	echo '{"hotfix_layer": {"SpellEffect": "sha"}}' >"$dir/data/builds/$NEW_BUILD/spelltips/shared.json"
 	printf '## Interface: 16001\n## Version: 2.1.7\n' >"$dir/addon/ForeverSixty/ForeverSixty.toc"
 	cat >"$dir/web/scripts/reencode-guide-builds.mjs" <<'EOF'
 console.error('mage/frost build: Arcane Focus is not in 1.60.1.70707\'s Arcane tree');
@@ -278,6 +280,11 @@ make_full_move_repo() {
 	done
 	printf '# Changelog\n\n## 2.1.7\n\nOlder.\n' >"$dir/addon/ForeverSixty/CHANGELOG.md"
 	printf 'package enginever\n\nconst Version = "abcdef123"\n' >"$dir/sim/enginever/version.go"
+	mkdir -p "$dir/sim/specs" "$dir/web/src/lib/sim" "$dir/api/internal/guilds"
+	echo 'package specs' >"$dir/sim/specs/specs.go"
+	echo 'export {};' >"$dir/web/src/lib/sim/specs.ts"
+	printf 'package guilds\n\n//go:generate go run ../../cmd/genraidbosses -build %s\n' "$OLD_BUILD" >"$dir/api/internal/guilds/raid_bosses.go"
+	echo 'package guilds' >"$dir/api/internal/guilds/raid_bosses_table.go"
 	printf '#!/usr/bin/env bash\nexit 0\n' >"$dir/stubs/go"
 	chmod +x "$dir/stubs/go"
 	git -C "$dir" add -A
@@ -326,6 +333,7 @@ assert "green move: the failed dispatches fail the run" equal "$STATUS" 1
 assert "green move: the apps' planner vectors are regenerated and committed" equal "$(git -C "$d.git" show "main:apps/shared/fixtures/planner-rules.json")" "{}"
 assert "green move: dps-per-point is carried" equal "$(git -C "$d.git" show "main:data/builds/$NEW_BUILD/dps-per-point.json")" '{"warrior-arms": {"dps": 0.2}}'
 assert "green move: with a marker naming the build it was measured on" equal "$(git -C "$d.git" show "main:data/builds/$NEW_BUILD/dps-per-point.carried-from")" "$OLD_BUILD"
+assert "green move: the boss table's generate line names the new build" contains "$(git -C "$d.git" show main:api/internal/guilds/raid_bosses.go)" "genraidbosses -build $NEW_BUILD"
 
 
 # stub_gh <dir>: a gh whose `workflow run` succeeds and is recorded, whose `run list`

@@ -86,6 +86,7 @@ export const GUILD_OVERVIEW_READS: readonly string[] = [
   '**/v1/guilds/*/me/checklist*',
   '**/v1/guilds/*/officer/actions',
   '**/v1/guilds/*/attendance/recent*',
+  '**/v1/guilds/*/recruit',
 ];
 
 export async function apiUnreachable(page: Page, ...globs: readonly string[]): Promise<void> {

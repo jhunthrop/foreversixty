@@ -16,9 +16,9 @@ import (
 // onyxiaRow is the table's row for itemID, failing the test when it is not there.
 func onyxiaRow(t *testing.T, itemID int) lootItem {
 	t.Helper()
-	item, ok := onyxiaItem(itemID)
+	item, ok := lootItemByID(itemID)
 	if !ok {
-		t.Fatalf("no onyxiaLoot row for %d", itemID)
+		t.Fatalf("no testOnyxiaLoot row for %d", itemID)
 	}
 	return item
 }
@@ -179,7 +179,7 @@ func TestViskagNeverListsACaster(t *testing.T) {
 
 func TestALevel58IsOnNoOnyxiaItem(t *testing.T) {
 	s := realTreesStore(t)
-	for _, item := range onyxiaLoot {
+	for _, item := range testOnyxiaLoot {
 		roster := []RosterRow{candidate("Warrior", "warrior", "Fury", 58), candidate("Mage", "mage", "Frost", 58)}
 		if cands := s.lootCandidates(roster, item); len(cands) != 0 {
 			t.Errorf("%s lists a level 58: %+v", item.Name, cands)
@@ -465,7 +465,7 @@ func TestHeadOfOnyxiaListsTheGuildsFaction(t *testing.T) {
 	alliance.faction, horde.faction = "alliance", "horde"
 	roster := []RosterRow{alliance, horde}
 	var group []lootItem
-	for _, g := range lootGroups(onyxiaLoot) {
+	for _, g := range lootGroups(testOnyxiaLoot) {
 		if g[0].Name == "Head of Onyxia" {
 			group = g
 		}
@@ -563,7 +563,7 @@ func TestOnyxiaLootMatchesTheBuild(t *testing.T) {
 	}
 	seen := 0
 	for _, row := range items {
-		item, ok := onyxiaItem(row.ID)
+		item, ok := lootItemByID(row.ID)
 		if !ok {
 			continue
 		}
@@ -573,11 +573,11 @@ func TestOnyxiaLootMatchesTheBuild(t *testing.T) {
 			t.Errorf("%s: table %+v, items.json %+v", item.Name, item, row)
 		}
 	}
-	if seen != len(onyxiaLoot) {
-		t.Errorf("items.json carries %d of the table's %d items", seen, len(onyxiaLoot))
+	if seen != len(testOnyxiaLoot) {
+		t.Errorf("items.json carries %d of the table's %d items", seen, len(testOnyxiaLoot))
 	}
 	for _, row := range template.Items {
-		item, ok := onyxiaItem(row.ID)
+		item, ok := lootItemByID(row.ID)
 		if !ok {
 			continue
 		}

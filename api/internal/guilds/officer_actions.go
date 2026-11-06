@@ -5,7 +5,7 @@
 // not_signed is the next raid's accounts that have not answered (raids_not_signed.go);
 // drops_to_award is the newest loot council night with drops (the loot council nights: what the
 // council awarded, voted on or flagged) and how many of them are still open.
-// Applications arrive with their own slice.
+// applications is the pending applications (recruitment, applications.go), oldest first.
 package guilds
 
 import (
@@ -41,11 +41,18 @@ type ActionDrops struct {
 	Awarded int    `json:"awarded"`
 }
 
+// ActionApplications is the applications waiting for a decision, by the applicant's character.
+type ActionApplications struct {
+	Count int      `json:"count"`
+	Names []string `json:"names"`
+}
+
 // OfficerActions is the body of GET …/officer/actions.
 type OfficerActions struct {
-	Approvals    ActionApprovals `json:"approvals"`
-	NotSigned    ActionNotSigned `json:"not_signed"`
-	DropsToAward *ActionDrops    `json:"drops_to_award"`
+	Approvals    ActionApprovals    `json:"approvals"`
+	Applications ActionApplications `json:"applications"`
+	NotSigned    ActionNotSigned    `json:"not_signed"`
+	DropsToAward *ActionDrops       `json:"drops_to_award"`
 }
 
 func (s *Service) officerActions(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +73,9 @@ func (s *Service) officerActionsOf(ctx context.Context, guildID, viewerID int64)
 	var out OfficerActions
 	var err error
 	if out.Approvals, err = s.Store.waitingApprovals(ctx, guildID); err != nil {
+		return out, err
+	}
+	if out.Applications, err = s.Store.pendingApplications(ctx, guildID); err != nil {
 		return out, err
 	}
 	if out.NotSigned, err = s.nextNotSigned(ctx, guildID, viewerID); err != nil {
@@ -97,6 +107,34 @@ func (s *Store) waitingApprovals(ctx context.Context, guildID int64) (ActionAppr
 		out.Names = append(out.Names, name)
 	}
 	out.Count = len(out.Names)
+	return out, rows.Err()
+}
+
+// pendingApplications is the applications waiting for a decision: the count, and the applicants
+// by their character's name, oldest application first (the order the officer list reads them).
+func (s *Store) pendingApplications(ctx context.Context, guildID int64) (ActionApplications, error) {
+	count, err := s.PendingApplicationsCount(ctx, guildID)
+	if err != nil || count == 0 {
+		return ActionApplications{Count: count, Names: []string{}}, err
+	}
+	rows, err := s.Pool.Query(ctx, `
+		select coalesce(nullif(c.name, ''), split_part(ga.character_key, '/', 3))
+		from guild_applications ga
+		left join characters c on c.key = ga.character_key
+		where ga.guild_id = $1 and ga.status = 'pending'
+		order by ga.created_at, ga.id`, guildID)
+	if err != nil {
+		return ActionApplications{}, fmt.Errorf("guilds: pending applicants: %w", err)
+	}
+	defer rows.Close()
+	out := ActionApplications{Count: count, Names: make([]string, 0, count)}
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return ActionApplications{}, fmt.Errorf("guilds: pending applicants: %w", err)
+		}
+		out.Names = append(out.Names, name)
+	}
 	return out, rows.Err()
 }
 
@@ -161,6 +199,6 @@ func (s *Store) nightDrops(ctx context.Context, guildID int64, n LootNight) (*Ac
 	if err != nil {
 		return nil, fmt.Errorf("guilds: last night drops: %w", err)
 	}
-	label := zoneOnyxia + ", " + raidDay(at, tz)
+	label := n.Zone + ", " + raidDay(at, tz)
 	return &ActionDrops{Tracked: true, Count: &open, RaidID: n.RaidID, Label: label, Awarded: len(n.Decisions)}, nil
 }

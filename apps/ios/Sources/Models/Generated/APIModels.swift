@@ -2864,20 +2864,24 @@ public struct GuildHomeViewer: Codable, Sendable, Equatable {
     }
 }
 
+/// The first tier's loot table: every boss the game client carries (the generated boss table), raid by raid, with its drops. raids lists every first-tier raid for the picker's grouping, a raid the client does not carry yet with in_client false and no encounters.
 public struct GuildLoot: Codable, Sendable, Equatable {
     /// Verified roster characters whose level on file is 60.
     public let atLevelCap: Int
+    public let raids: [LootRaidGroup]
     public let encounters: [LootEncounter]
     public let selected: Int64
     public let items: [LootItem]
 
     public init(
         atLevelCap: Int,
+        raids: [LootRaidGroup] = [],
         encounters: [LootEncounter] = [],
         selected: Int64,
         items: [LootItem] = []
     ) {
         self.atLevelCap = atLevelCap
+        self.raids = raids
         self.encounters = encounters
         self.selected = selected
         self.items = items
@@ -2886,6 +2890,7 @@ public struct GuildLoot: Codable, Sendable, Equatable {
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         atLevelCap = try c.decode(Int.self, forKey: .atLevelCap)
+        raids = try c.decodeIfPresent([LootRaidGroup].self, forKey: .raids) ?? []
         encounters = try c.decodeIfPresent([LootEncounter].self, forKey: .encounters) ?? []
         selected = try c.decode(Int64.self, forKey: .selected)
         items = try c.decodeIfPresent([LootItem].self, forKey: .items) ?? []
@@ -4151,6 +4156,11 @@ public struct LootFile: Codable, Sendable, Equatable {
 
 public struct LootItem: Codable, Sendable, Equatable {
     public let itemId: Int
+    /// The boss the drop falls from.
+    public let encounterId: Int64
+    public let boss: String
+    /// The boss's raid name.
+    public let raid: String
     public let name: String
     public let icon: String
     public let quality: Int
@@ -4175,6 +4185,9 @@ public struct LootItem: Codable, Sendable, Equatable {
 
     public init(
         itemId: Int,
+        encounterId: Int64,
+        boss: String,
+        raid: String,
         name: String,
         icon: String,
         quality: Int,
@@ -4190,6 +4203,9 @@ public struct LootItem: Codable, Sendable, Equatable {
         candidates: [LootCandidate] = []
     ) {
         self.itemId = itemId
+        self.encounterId = encounterId
+        self.boss = boss
+        self.raid = raid
         self.name = name
         self.icon = icon
         self.quality = quality
@@ -4208,6 +4224,9 @@ public struct LootItem: Codable, Sendable, Equatable {
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         itemId = try c.decode(Int.self, forKey: .itemId)
+        encounterId = try c.decode(Int64.self, forKey: .encounterId)
+        boss = try c.decode(String.self, forKey: .boss)
+        raid = try c.decode(String.self, forKey: .raid)
         name = try c.decode(String.self, forKey: .name)
         icon = try c.decode(String.self, forKey: .icon)
         quality = try c.decode(Int.self, forKey: .quality)
@@ -4275,6 +4294,36 @@ public struct LootQuest: Codable, Sendable, Equatable {
         self.skill = skill
         self.zoneId = zoneId
         self.zone = zone
+    }
+}
+
+public struct LootRaidGroup: Codable, Sendable, Equatable {
+    /// The zone key, e.g. raid:onyxias-lair.
+    public let key: String
+    public let name: String
+    /// False while the game client does not carry the raid: no bosses or loot yet.
+    public let inClient: Bool
+    /// The raid's bosses' encounter ids, in the table's order.
+    public let encounters: [Int64]
+
+    public init(
+        key: String,
+        name: String,
+        inClient: Bool,
+        encounters: [Int64] = []
+    ) {
+        self.key = key
+        self.name = name
+        self.inClient = inClient
+        self.encounters = encounters
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        key = try c.decode(String.self, forKey: .key)
+        name = try c.decode(String.self, forKey: .name)
+        inClient = try c.decode(Bool.self, forKey: .inClient)
+        encounters = try c.decodeIfPresent([Int64].self, forKey: .encounters) ?? []
     }
 }
 

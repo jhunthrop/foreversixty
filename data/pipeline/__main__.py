@@ -250,6 +250,25 @@ def build_parser() -> argparse.ArgumentParser:
     es.add_argument("--build", required=True)
     es.add_argument("--raw", type=Path, default=None, help="the three tables' directory")
 
+    rb = sub.add_parser(
+        "raid-bosses",
+        help="write builds/<build>/raid-bosses.json (the first raid tier's bosses and loot, "
+        "tied to the client's Map, DungeonEncounter and Journal rows by name); needs raw/ "
+        "from `fetch`, items.json and loot.json",
+    )
+    rb.add_argument("--build", required=True)
+    rb.add_argument("--raw", type=Path, default=None, help="the client tables' directory")
+    rb.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if the committed file has drifted",
+    )
+    rb.add_argument(
+        "--fetch",
+        action="store_true",
+        help="download the client tables raw/ lacks first (activate-build.sh without data.yml)",
+    )
+
     st = sub.add_parser(
         "spelltips",
         help="write the game's own spell tooltips (builds/<build>/spelltips/) for the site's "
@@ -668,6 +687,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.equip_skills import write_equip_skills
 
         print(write_equip_skills(args.build, raw=args.raw))
+    elif args.command == "raid-bosses":
+        from pipeline.raid_bosses import write_raid_bosses
+
+        print(write_raid_bosses(args.build, raw=args.raw, check=args.check, fetch=args.fetch))
     elif args.command == "spelltips":
         from pipeline.spelltips import write_spell_tips
 

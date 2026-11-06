@@ -185,7 +185,10 @@ export function parseGuildPath(pathname: string): CharacterPath | null {
  * than parseGuildPath's, with a fixed literal suffix rather than a second wildcard, so a
  * mistyped fifth segment refuses cleanly instead of being read as part of the slug.
  */
-function parseGuildSuffixPath(pathname: string, suffix: 'claim' | 'settings'): CharacterPath | null {
+function parseGuildSuffixPath(
+  pathname: string,
+  suffix: 'claim' | 'settings' | 'recruit' | 'applications',
+): CharacterPath | null {
   const parts = pathname
     .replace(/\/+$/, '')
     .split('/')
@@ -202,6 +205,40 @@ export function parseGuildClaimPath(pathname: string): CharacterPath | null {
 
 export function parseGuildSettingsPath(pathname: string): CharacterPath | null {
   return parseGuildSuffixPath(pathname, 'settings');
+}
+
+/** `.../recruit`: the guild's public recruiting card and the application form. */
+export function parseGuildRecruitPath(pathname: string): CharacterPath | null {
+  return parseGuildSuffixPath(pathname, 'recruit');
+}
+
+/** `.../applications`: the officers' applications list. */
+export function parseGuildApplicationsPath(pathname: string): CharacterPath | null {
+  return parseGuildSuffixPath(pathname, 'applications');
+}
+
+/** A member profile's account segment: the roster's account key (`u:42`) or `me`. */
+const MEMBER_ACCOUNT = /^(me|u:[1-9]\d{0,18})$/;
+
+/**
+ * A `/guild/<region>/<ruleset>/<slug>/members/<account>` path: one member's profile, where the
+ * account is `me` or the roster's account key (`u:42`, `u%3A42` once encoded).
+ */
+export function parseGuildMemberPath(pathname: string): { guild: CharacterPath; account: string } | null {
+  const parts = pathname
+    .replace(/\/+$/, '')
+    .split('/')
+    .filter((part) => part !== '');
+  if (parts.length !== 6 || parts[0] !== 'guild' || parts[4] !== 'members') return null;
+  const [, region, ruleset, slug, , raw] = parts;
+  if (!isRegion(region) || !isRuleset(ruleset) || !isCharacterSlug(slug) || raw === undefined) return null;
+  let account: string;
+  try {
+    account = decodeURIComponent(raw);
+  } catch {
+    return null;
+  }
+  return MEMBER_ACCOUNT.test(account) ? { guild: { region, ruleset, slug }, account } : null;
 }
 
 /**
@@ -253,6 +290,21 @@ export function guildClaimHref(region: string, ruleset: string, name: string): s
 
 export function guildSettingsHref(region: string, ruleset: string, name: string): string {
   return `${guildHref(region, ruleset, name)}/settings`;
+}
+
+/** The guild's recruiting card, under the guild page's own path (`guildHref`). */
+export function guildRecruitHref(guildPath: string): string {
+  return `${guildPath}/recruit`;
+}
+
+/** The officers' applications list, under the guild page's own path. */
+export function guildApplicationsHref(guildPath: string): string {
+  return `${guildPath}/applications`;
+}
+
+/** One member's profile, under the guild page's own path; `account` is `me` or `u:42`. */
+export function guildMemberHref(guildPath: string, account: string): string {
+  return `${guildPath}/members/${encodeURIComponent(account)}`;
 }
 
 /** One planned raid's page, under the guild page's own path (`guildHref`). */

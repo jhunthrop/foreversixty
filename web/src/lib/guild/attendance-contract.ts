@@ -300,6 +300,10 @@ export interface ReadinessRaid {
   title: string;
   starts_at: string;
   cutoff_at: string;
+  /** The zone has an attunement (a key or a quest chain), which each row's `attuned` reads. */
+  attunement?: boolean;
+  /** The raid asks for fire resistance (Onyxia's Lair). */
+  fire_resistance?: boolean;
 }
 
 /** The unfiltered readiness read's next raid. */

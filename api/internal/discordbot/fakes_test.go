@@ -9,6 +9,7 @@ import (
 // RESTCall is one recorded FakeREST call.
 type RESTCall struct {
 	Method, ServerID, ChannelID, MessageID, Token string
+	UserID, RoleID                                string
 	Message                                       Message
 	Commands                                      []Command
 }
@@ -98,6 +99,18 @@ func (f *FakeREST) EditOriginal(_ context.Context, token string, m Message) erro
 
 func (f *FakeREST) FollowUp(_ context.Context, token string, m Message) error {
 	return f.record(RESTCall{Method: "FollowUp", Token: token, Message: m})
+}
+
+func (f *FakeREST) AddMemberRole(_ context.Context, serverID, userID, roleID string) error {
+	return f.record(RESTCall{Method: "AddMemberRole", ServerID: serverID, UserID: userID, RoleID: roleID})
+}
+
+// OpenDM answers "dm-" and the user id as the channel.
+func (f *FakeREST) OpenDM(_ context.Context, userID string) (string, error) {
+	if err := f.record(RESTCall{Method: "OpenDM", UserID: userID}); err != nil {
+		return "", err
+	}
+	return "dm-" + userID, nil
 }
 
 // FakeOAuth records codes and returns scripted answers.

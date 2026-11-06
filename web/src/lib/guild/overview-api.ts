@@ -57,11 +57,18 @@ export interface ChecklistItem {
   level?: number;
   required_level?: number;
   key_item?: GuildKeyItem;
+  /** What attunement asks for: the zone's key, or its quest chain (key_item is then the chain's item). */
+  attunement_kind?: 'key' | 'quest';
   upgrades?: number;
   gain_dps?: number;
   unit?: string;
   slots?: string[];
   missing_slots?: string[];
+  /** flask_food: the counted stacks in the bags, and what the minimum lacks. */
+  supplies?: { id: number; name: string; kind: 'flask' | 'elixir' | 'food'; count: number }[];
+  missing?: ('flask_or_elixir' | 'food')[];
+  /** fire_resistance: the total. */
+  resistance?: number;
 }
 
 export interface GuildChecklist {
@@ -80,6 +87,8 @@ export interface GuildRecentAttendance {
 
 export interface GuildOfficerActions {
   approvals: { count: number; names: string[] };
+  /** Pending applications, the applicants' characters oldest first. Absent on an older API. */
+  applications?: { count: number; names: string[] };
   not_signed: { raid_id: number | null; count: number; names: string[] };
   /** The loot council's newest night with drops (null with none): `count` is its drops still open.
    *  `tracked` is always true now; the row hides at a count of 0. */

@@ -40,15 +40,15 @@ const raidlessAwardNight = 12 * time.Hour
 // lootAwards reads every award row for guildID's encounterID, oldest first, with the claimant's
 // and the awarding officer's own names resolved. Every row is kept: the tier's count reads them
 // all, and tonightsAwards picks the ones that mark an item awarded now.
-func (s *Store) lootAwards(ctx context.Context, guildID, encounterID int64) ([]lootAward, error) {
+func (s *Store) lootAwards(ctx context.Context, guildID int64, encounterIDs []int64) ([]lootAward, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select la.item_id, la.raid_id, la.report_id, la.id, la.character_key, coalesce(nullif(ae.name, ''), c.name, ''), la.awarded_at,
 		       la.awarded_by, coalesce(c.class, ''), la.ms_os, la.reason, la.votes_yes, la.votes_no, la.votes_officers
 		from loot_awards la
 		left join addon_exports ae on ae.character_key = la.character_key
 		left join characters c on c.key = la.character_key
-		where la.guild_id = $1 and la.encounter_id = $2
-		order by la.awarded_at, la.id`, guildID, encounterID)
+		where la.guild_id = $1 and la.encounter_id = any($2)
+		order by la.awarded_at, la.id`, guildID, encounterIDs)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: loot awards: %w", err)
 	}

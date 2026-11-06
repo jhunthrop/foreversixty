@@ -112,7 +112,7 @@ func (s *Service) lootDropCandidates(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	itemID, err := strconv.Atoi(r.PathValue("item_id"))
-	if err != nil || !validOnyxiaItem(itemID) {
+	if err != nil || !validLootItem(itemID) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such drop", nil)
 		return
 	}

@@ -179,6 +179,44 @@ local function encodeItems(items)
 	return table.concat(parts, ",")
 end
 
+--- The raid-prep sections (RaidPrep.lua, owner decision D14), each written when its field is
+--- present, even empty: present means the client was read, absent means it could not be.
+---   school=<fire>:<nature>:<frost>:<shadow>:<arcane>
+---   supplies=<item_id>:<count>,...
+---   locks=<item_id>,...
+---   quests=<quest_id>:<0|1>,...
+---   owned=<item_id>:<0|1>,...
+--- No name starts with a letter the font strings read as an escape (see "who" below).
+local function encodePrep(build, sections)
+	if build.resistances then
+		sections[#sections + 1] = "school=" .. table.concat(build.resistances, ":")
+	end
+	if build.supplies then
+		local parts = {}
+		for index, stack in ipairs(build.supplies) do
+			parts[index] = string.format("%d:%d", stack.itemId, stack.count)
+		end
+		sections[#sections + 1] = "supplies=" .. table.concat(parts, ",")
+	end
+	if build.keyring then
+		sections[#sections + 1] = "locks=" .. table.concat(build.keyring, ",")
+	end
+	if build.quests then
+		local parts = {}
+		for index, quest in ipairs(build.quests) do
+			parts[index] = string.format("%d:%d", quest.questId, quest.done and 1 or 0)
+		end
+		sections[#sections + 1] = "quests=" .. table.concat(parts, ",")
+	end
+	if build.owned then
+		local parts = {}
+		for index, item in ipairs(build.owned) do
+			parts[index] = string.format("%d:%d", item.itemId, item.held and 1 or 0)
+		end
+		sections[#sections + 1] = "owned=" .. table.concat(parts, ",")
+	end
+end
+
 --- FS1 version 2: the version-1 head, then the sections in the contract's
 --- fixed order, each omitted when empty.
 function Codec.encodeFS1(build)
@@ -223,6 +261,7 @@ function Codec.encodeFS1(build)
 	if build.professions and #build.professions > 0 then
 		sections[#sections + 1] = "professions=" .. table.concat(build.professions, ",")
 	end
+	encodePrep(build, sections)
 	if build.guild and build.guild.name then
 		sections[#sections + 1] = "guild=" .. urlEncode(build.guild.name) .. ":" .. tostring(build.guild.rankIndex)
 	end
@@ -365,6 +404,59 @@ local function parseNamed(field)
 	return entries
 end
 
+--- The raid-prep sections, read leniently: a malformed entry is dropped and a malformed
+--- school= section is left out, never refusing the code. They are the client's own reading,
+--- not something a player types, and an older reader ignores them altogether.
+--- `<id>:<0|1>,...` as { { [idKey] = id, [flagKey] = bool } }, a malformed entry dropped.
+local function flagList(field, idKey, flagKey)
+	local out = {}
+	for _, entry in ipairs(field == "" and {} or split(field, ",")) do
+		local id, flag = entry:match("^(%d+):([01])$")
+		if id then
+			out[#out + 1] = { [idKey] = tonumber(id), [flagKey] = flag == "1" }
+		end
+	end
+	return out
+end
+
+local PREP_DECODERS = {
+	school = function(field, build)
+		local totals = {}
+		for _, part in ipairs(split(field, ":")) do
+			if not isDigits(part) then
+				return
+			end
+			totals[#totals + 1] = tonumber(part)
+		end
+		if #totals == 5 then
+			build.resistances = totals
+		end
+	end,
+	supplies = function(field, build)
+		build.supplies = {}
+		for _, entry in ipairs(field == "" and {} or split(field, ",")) do
+			local id, count = entry:match("^(%d+):(%d+)$")
+			if id then
+				build.supplies[#build.supplies + 1] = { itemId = tonumber(id), count = tonumber(count) }
+			end
+		end
+	end,
+	locks = function(field, build)
+		build.keyring = {}
+		for _, entry in ipairs(field == "" and {} or split(field, ",")) do
+			if isDigits(entry) then
+				build.keyring[#build.keyring + 1] = tonumber(entry)
+			end
+		end
+	end,
+	quests = function(field, build)
+		build.quests = flagList(field, "questId", "done")
+	end,
+	owned = function(field, build)
+		build.owned = flagList(field, "itemId", "held")
+	end,
+}
+
 function Codec.decodeFS1(code)
 	if #code > Codec.MAX_CODE_LENGTH then
 		return nil, L.codecTooLong
@@ -472,6 +564,8 @@ function Codec.decodeFS1(code)
 			local namePart = colonAt and field:sub(1, colonAt - 1) or field
 			local realmPart = colonAt and field:sub(colonAt + 1) or ""
 			build.character = { name = urlDecode(namePart), realm = urlDecode(realmPart) }
+		elseif PREP_DECODERS[name] then
+			PREP_DECODERS[name](field, build)
 		elseif name ~= "" then
 			-- A site a version ahead of the addon is a thing that will happen;
 			-- refusing its whole string would make the addon useless that day.

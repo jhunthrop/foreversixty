@@ -187,8 +187,8 @@ describe('discordPreview', () => {
   });
 
   it('says no kills on a night without one', () => {
-    expect(discordPreview('MC', raidReport({ kill_order: [], parses: [], loot: [] }), raidNight())[1]).toBe(
-      copy.discord.noKills,
-    );
+    expect(
+      discordPreview('Onyxia', raidReport({ kill_order: [], parses: [], loot: [] }), raidNight())[1],
+    ).toBe(copy.discord.noKills);
   });
 });

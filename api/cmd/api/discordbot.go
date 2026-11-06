@@ -88,6 +88,7 @@ func newDiscordBot(stop context.Context, cfg config.Config, pool *pgxpool.Pool, 
 	bot := discordbot.New(d)
 	accounts.DiscordLinks = bot
 	deps.Guilds.Bot = bot
+	deps.Guilds.ApplicationBot = bot
 	router := raidRouterFor(bot, deps)
 	deps.Guilds.RaidEvents, deps.Guilds.RaidPings = router, router
 	deps.Guilds.RaidPosts = d.Store
