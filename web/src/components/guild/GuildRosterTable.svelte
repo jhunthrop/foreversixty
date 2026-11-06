@@ -281,11 +281,11 @@
   // -- this tab's rows only ever mount after the guild's async roster fetch resolves, so
   // a scoped <style> block's CSS is silently dropped from this build's SSR-critical-CSS
   // inlining pass.
-  const ROW = `guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-t py-2.5 lg:flex-nowrap ${ROW_RULE}`;
+  const ROW = `guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-t py-2.5 xl:flex-nowrap ${ROW_RULE}`;
   // A name with no account row: the same shape, a different class so the account rows stay
   // the only `guild-roster-row`s.
   const ENTRY_ROW =
-    'guild-roster-entry flex flex-wrap items-center gap-x-3 gap-y-2 border-line-soft border-t py-2.5 lg:flex-nowrap';
+    'guild-roster-entry flex flex-wrap items-center gap-x-3 gap-y-2 border-line-soft border-t py-2.5 xl:flex-nowrap';
   const MUTED_WORD = 'text-muted text-[12px]';
 </script>
 
@@ -312,10 +312,11 @@
 {#snippet inGame(row: GuildRosterRow)}
   {@const facts = inGameFacts(row, now)}
   <!-- The slot is the same width on every row, so the row's height never depends on how much
-       the addon knew: its text wraps inside it. Below lg it has a line of its own, and a row
+       the addon knew: its text wraps inside it. Below xl it has a line of its own (at 1024 a 260 px
+       slot beside the actions would leave the stats too little room), and a row
        the snapshot did not carry has none there at all (no lone "—"). -->
   <div
-    class={`min-w-0 basis-full pl-12 text-[12px] break-words max-lg:order-2 lg:shrink-0 lg:basis-[260px] lg:pl-0 ${facts.length === 0 ? 'hidden lg:block' : ''}`}
+    class={`min-w-0 basis-full pl-12 text-[12px] break-words max-xl:order-2 xl:shrink-0 xl:basis-[260px] xl:pl-0 ${facts.length === 0 ? 'hidden xl:block' : ''}`}
     data-testid="guild-roster-ingame-slot"
   >
     <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
@@ -335,7 +336,7 @@
 {#snippet entryInGame(entry: GuildRosterEntry)}
   {@const facts = entryFacts(entry, now)}
   <div
-    class={`text-nav min-w-0 basis-full pl-12 text-[12px] break-words max-lg:order-2 lg:shrink-0 lg:basis-[260px] lg:pl-0 ${facts.length === 0 ? 'hidden lg:block' : ''}`}
+    class={`text-nav min-w-0 basis-full pl-12 text-[12px] break-words max-xl:order-2 xl:shrink-0 xl:basis-[260px] xl:pl-0 ${facts.length === 0 ? 'hidden xl:block' : ''}`}
     data-testid="guild-roster-entry-ingame"
   >
     <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
@@ -605,13 +606,13 @@
               </div>
               <!-- Below lg the row is three blocks under the name (indented past the crest): the stat
                chips, the professions on one line, and the in-game facts; Remove rides the name
-               row. At lg the chips and professions wrap inside their own group, so the In game
-               slot and the actions keep their place at the row's end. -->
+               row. At lg the chips and professions wrap inside their own group, so the actions keep
+               their place at the row's end; the In game slot joins them on the row from xl. -->
               <div
-                class="flex min-w-0 basis-full flex-col gap-1 pl-12 max-lg:order-1 lg:flex-1 lg:basis-auto lg:pl-0"
+                class="flex min-w-0 basis-full flex-col gap-1 pl-12 max-lg:order-1 lg:flex-1 lg:basis-0 lg:pl-0"
                 data-testid="guild-roster-facts"
               >
-                <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+                <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 lg:flex-nowrap">
                   <!-- A 72 px slot at lg, whatever the word, so the stats after it share one left edge. -->
                   <span class="lg:w-[72px] lg:shrink-0">
                     <span
@@ -619,23 +620,30 @@
                       data-testid="guild-roster-rank">{rankWord(row.rank)}</span
                     >
                   </span>
-                  {#if chips.length > 0}
-                    <!-- The stats as one sentence in the body face, " · " between them (P.1). -->
-                    <FactLine
-                      class="tabular text-[12px]"
-                      facts={chips.map((chip, i) => ({
-                        text: chip,
-                        title: chipTitle(chip, row),
-                        class: i === 0 ? '' : 'text-muted',
-                        testid: 'guild-roster-chip',
-                      }))}
-                    />
-                  {/if}
-                  {#if row.logged_recently && !everyoneOnlineToday}
-                    <span class="text-muted text-[12px]" data-testid="guild-roster-online">
-                      {guildHomeCopy.loggedRecently}
-                    </span>
-                  {/if}
+                  <!-- At lg the stats wrap inside their own box beside the rank slot, never under it,
+                   so a long stat line starts at the same left edge as a short one. Below lg the box
+                   is `contents` and the stats wrap with the rank as before. -->
+                  <div
+                    class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1"
+                  >
+                    {#if chips.length > 0}
+                      <!-- The stats as one sentence in the body face, " · " between them (P.1). -->
+                      <FactLine
+                        class="tabular text-[12px]"
+                        facts={chips.map((chip, i) => ({
+                          text: chip,
+                          title: chipTitle(chip, row),
+                          class: i === 0 ? '' : 'text-muted',
+                          testid: 'guild-roster-chip',
+                        }))}
+                      />
+                    {/if}
+                    {#if row.logged_recently && !everyoneOnlineToday}
+                      <span class="text-muted text-[12px]" data-testid="guild-roster-online">
+                        {guildHomeCopy.loggedRecently}
+                      </span>
+                    {/if}
+                  </div>
                 </div>
                 {#if row.professions !== undefined && row.professions.length > 0}
                   <span
@@ -701,7 +709,7 @@
                 {/if}
               </div>
               <div
-                class="flex min-w-0 basis-full flex-col gap-2 pl-12 max-lg:order-1 lg:flex-1 lg:basis-auto lg:flex-row lg:items-center lg:gap-3 lg:pl-0"
+                class="flex min-w-0 basis-full flex-col gap-2 pl-12 max-lg:order-1 lg:flex-1 lg:basis-0 lg:flex-row lg:items-center lg:gap-3 lg:pl-0"
               >
                 <!-- A name only the addon saw carries the state word alone: the snapshot has no rank for
                  it, and saying "Member" would be a rank nobody gave it. -->

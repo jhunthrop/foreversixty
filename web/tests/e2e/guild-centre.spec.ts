@@ -370,13 +370,12 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     const none = rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame-none');
     await expect(none).toHaveText('—');
     await expect(none).toHaveAttribute('title', 'Not seen by the addon in the last snapshot');
-    // The spec line says which record it reads: the addon's in game, the site's where it differs.
+    // The spec line leads with the addon's spec, and names the site's only where it differs
+    // (no "in game" word since d42bf7e65).
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-spec')).toContainText(
-      'Survival Hunter in game · Marksmanship on the site',
+      'Survival Hunter · Marksmanship on the site',
     );
-    await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-spec')).toHaveText(
-      'Protection Warrior in game',
-    );
+    await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-spec')).toHaveText('Protection Warrior');
   });
 
   test('the roster has a SORT row of chips and no header row at any width; the chips sort', async ({
@@ -726,10 +725,12 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
       expect(ingame.y).toBeGreaterThanOrEqual(prof.y + prof.height - 1);
       expect(prof.height).toBeLessThan(20);
     }
-    // Spec words carry the class; units are named; "in game" and "Gear set:" replace the old words.
+    // Spec words carry the class; units are named; "Gear set:" replaces the old word, and the
+    // spec line no longer says "in game" (d42bf7e65).
     await expect(zulmara.getByTestId('guild-roster-spec')).toContainText('Marksmanship on the site');
     await expect(zulmara).toContainText('Rating');
-    await expect(zulmara).toContainText('Survival Hunter in game');
+    await expect(zulmara.getByTestId('guild-roster-spec')).toContainText('Survival Hunter');
+    await expect(zulmara.getByTestId('guild-roster-spec')).not.toContainText('in game');
     await expect(zulmara).toContainText('Gear set: Survival (raid)');
     await expect(zulmara).not.toContainText('per addon');
     await expect(zulmara).not.toContainText('build:');
@@ -771,12 +772,24 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
     expect(yes).not.toBe('rgba(0, 0, 0, 0)');
   });
 
-  test('the ranks line sits above the roster while a row has no rank', async ({ page }) => {
+  // The line shows only while no rank is known at all (d05e718ba): a roster row's rank is the addon's.
+  test('the ranks line sits above the roster only while no rank is known', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(envelope({ ...buildMockHome(VIEWER_OFFICER), roster: [], pending: [] })),
+    );
     await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-roster-entries')).toBeVisible();
     await expect(page.getByTestId('guild-roster-ranks-pending')).toHaveText(
       'Ranks show once the addon sends them.',
     );
+  });
+
+  test('the ranks line is gone once the addon has sent ranks', async ({ page }) => {
+    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-roster-rows')).toBeVisible();
+    await expect(page.getByTestId('guild-roster-ranks-pending')).toHaveCount(0);
   });
 });
 
@@ -832,7 +845,8 @@ test.describe('settings: billing and release belong to the guild master', () => 
     );
     await page.goto(`/guild/${FIXTURE_GUILD_PATH}/settings`);
     await expect(page.getByTestId('guild-settings')).toBeVisible();
-    await expect(page.getByTestId('guild-invite-rotate')).toBeVisible();
+    // No link made yet (invite.rotated_at null): the row offers to make one, not rotate it.
+    await expect(page.getByTestId('guild-invite-make')).toBeVisible();
   }
 
   test('the guild master sees the billing section', async ({ page }) => {
@@ -856,7 +870,7 @@ test.describe('settings: billing and release belong to the guild master', () => 
       'The subscriber or the guild leader manages billing and seats.',
     );
     // Everything else on the page is still hers.
-    await expect(page.getByTestId('guild-invite-rotate')).toBeVisible();
+    await expect(page.getByTestId('guild-invite-make')).toBeVisible();
   });
 });
 

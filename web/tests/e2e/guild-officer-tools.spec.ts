@@ -14,6 +14,7 @@ import {
   guildBillingRead,
   planView,
 } from '../../src/test-support/billing-fixtures';
+import { VIEWER_OFFICER, buildMockHome } from '../../src/fixtures/guild/mock-guild';
 import { openWith } from './support/guild-billing';
 import { gotoHydrated } from './support/hydrated';
 import {
@@ -35,7 +36,6 @@ import {
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
-const SENTENCE = 'Award and Nudge are part of the guild plan. Subscribe your guild.';
 const MASTER_ONLY = 'The subscriber or the guild leader manages billing and seats.';
 const SCOPED_PLAN_LINE = 'Officer tools · until 12 Dec 2026';
 const CLIPBOARD_SENTINEL = 'clipboard untouched';
@@ -50,6 +50,12 @@ const SCOPED_GRANT_PLAN = planView({
 });
 
 type Tab = 'loot' | 'readiness';
+
+/** The mock guild's claim holder: an officer who does not hold the claim is told to ask them. */
+const CLAIM_HOLDER = buildMockHome(VIEWER_OFFICER).claim.claimed_by?.name ?? '';
+/** The gate sentence a non-holder officer reads (lib/guild/plan-gate.ts: `ask`, no link). */
+const askSentence = (tab: Tab): string =>
+  `${guildGateCopy.lead[tab]} ${guildGateCopy.ask}${CLAIM_HOLDER}${guildGateCopy.askTail}`;
 
 async function openTab(page: Page, tab: Tab, stub: GuildCentreStub): Promise<void> {
   await stubGuildCentre(page, stub);
@@ -132,7 +138,7 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
 
     const page = await browser.newPage();
     await openTab(page, 'loot', { viewer: 'officer', officerTools: false });
-    await expect(gate(page, 'loot')).toHaveText(SENTENCE);
+    await expect(gate(page, 'loot')).toHaveText(askSentence('loot'));
     // Loot spec §3.1: the Read-only label is for members; the gate sentence covers the officer.
     await expect(page.getByTestId('guild-loot-tab').getByText(guildGateCopy.readOnly)).toHaveCount(0);
     await expectLootDisabled(page, 'undo', expected.undo);
@@ -144,8 +150,9 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
     );
 
     await page.getByTestId('guild-tab-readiness').click();
-    await expect(gate(page, 'readiness')).toHaveText(SENTENCE);
-    await expect(page.getByTestId('guild-readiness-tab').getByText(guildGateCopy.readOnly)).toBeVisible();
+    await expect(gate(page, 'readiness')).toHaveText(askSentence('readiness'));
+    // As on Loot, Read-only is for members; the gated officer reads the sentence (203884268).
+    await expect(page.getByTestId('guild-readiness-tab').getByText(guildGateCopy.readOnly)).toHaveCount(0);
     await expectAllDisabled(nudgeButtons(page), expected.nudge);
     await expect(nudgeButtons(page).first()).toHaveAttribute(
       'aria-describedby',
@@ -197,6 +204,16 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
     });
   }
 
+  for (const tab of ['loot', 'readiness'] as const) {
+    test(`the ${tab} sentence asks the claim holder, with no link, for an officer without the claim`, async ({
+      page,
+    }) => {
+      await openTab(page, tab, { viewer: 'officer', officerTools: false });
+      await expect(gate(page, tab)).toHaveText(askSentence(tab));
+      await expect(gate(page, tab).getByRole('link')).toHaveCount(0);
+    });
+  }
+
   for (const width of [360, 1440]) {
     for (const tab of ['loot', 'readiness'] as const) {
       test(`the ${tab} sentence is inside the viewport on load at ${width}`, async ({ page }) => {
@@ -221,7 +238,7 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
   ] as const) {
     test(`the link's phone hit area at ${width}: ${hitArea ?? 'none'}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      await openTab(page, 'loot', { viewer: 'officer', officerTools: false });
+      await openTab(page, 'loot', { viewer: 'officer', officerTools: false, claimHolder: true });
       const link = gate(page, 'loot').getByRole('link');
       const after = await link.evaluate((node) => {
         const style = getComputedStyle(node, '::after');
@@ -235,7 +252,7 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
   test('keyboard: the link follows the tab strip and every disabled control is out of the order', async ({
     page,
   }) => {
-    await openTab(page, 'readiness', { viewer: 'officer', officerTools: false });
+    await openTab(page, 'readiness', { viewer: 'officer', officerTools: false, claimHolder: true });
     const link = gate(page, 'readiness').getByRole('link');
     await link.focus();
     await page.keyboard.press('Tab');
@@ -277,24 +294,24 @@ test.describe('the 403 guild_plan_required path (§4)', () => {
     await page.evaluate(() => {
       (window as unknown as { __noReload: boolean }).__noReload = true;
     });
+    // The council shows Award only on the picked drop's candidates.
     const { itemId, characterKey } = unawardedItem();
-    await page.getByTestId(`guild-loot-award-${itemId}-${characterKey}`).click();
-    await page.getByTestId(`guild-loot-award-yes-${itemId}`).click();
+    await pickDrop(page, itemId);
+    const row = page.getByTestId(`guild-loot-candidate-${characterKey}`);
+    await row.getByTestId('guild-loot-award').click();
+    await row.getByTestId('guild-loot-award-confirm').getByTestId('guild-loot-award-yes').click();
 
-    const refused = page.getByTestId(`guild-loot-plan-refused-${itemId}`);
+    const refused = page.getByTestId('guild-loot-candidates').getByTestId('guild-loot-notice');
     await expect(refused).toHaveText(guildGateCopy.awardRefused);
-    await expect(refused).toBeFocused();
     await expect(refused).toHaveAttribute('role', 'alert');
+    await expect(page.getByTestId('guild-loot-notice')).toHaveCount(1);
     expect(seen).toEqual(['POST']);
-    await expect(
-      page.getByTestId(`guild-loot-item-${itemId}`).getByTestId(`guild-loot-plan-refused-${itemId}`),
-    ).toHaveCount(1);
-    await expect(gate(page, 'loot')).toHaveText(SENTENCE);
+    await expect(gate(page, 'loot')).toHaveText(askSentence('loot'));
     await expect(page.getByTestId('guild-loot-error')).toHaveCount(0);
     expect((await counts(awardButtons(page)))[1]).toBe(0);
 
     await page.getByTestId('guild-tab-readiness').click();
-    await expect(gate(page, 'readiness')).toHaveText(SENTENCE);
+    await expect(gate(page, 'readiness')).toHaveText(askSentence('readiness'));
     expect((await counts(nudgeButtons(page)))[1]).toBe(0);
     expect(await page.evaluate(() => (window as unknown as { __noReload?: boolean }).__noReload)).toBe(true);
   });
@@ -308,10 +325,11 @@ test.describe('members see nothing new (states 5 and 8)', () => {
     await expect(undoButtons(page)).toHaveCount(0);
   });
 
-  test('state 8: Readiness for a member has no sentence, label or Nudge', async ({ page }) => {
+  test('state 8: Readiness for a member has no sentence or Nudge, and reads Read-only', async ({ page }) => {
     await openTab(page, 'readiness', { viewer: 'member', officerTools: false });
     await expect(gate(page, 'readiness')).toHaveCount(0);
-    await expect(page.getByTestId('guild-readiness-tab').getByText(guildGateCopy.readOnly)).toHaveCount(0);
+    // Read-only on Readiness is the member's label, as on Loot (203884268).
+    await expect(page.getByTestId('guild-readiness-read-only')).toHaveText(guildGateCopy.readOnly);
     await expect(nudgeButtons(page)).toHaveCount(0);
   });
 });
