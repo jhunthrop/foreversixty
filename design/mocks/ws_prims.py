@@ -1,0 +1,338 @@
+"""The shared primitives of the web layout system (design/specs/2026-11-05-web-layout.md section 4), as the mock library.
+
+Every page mock after BiS is composed ONLY from these functions. Each emits classes defined once in PRIM_CSS; a page
+generator never writes a border, background, radius or shadow itself (`assert_no_surface_styles` fails the build of the mock
+if it does). The names, props and token reads here are the contract the Svelte/Astro components implement.
+"""
+import re
+
+from mocklib import emblem
+from ws_lib import CSS as BASE_CSS, page as _page, header as _header, control_bar, seg, sel, crest_img, icon, QCOL, write
+
+PRIM_CSS = '''
+/* ---- Page: one column, four layouts ---- */
+.layout-split{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}
+@media(min-width:1024px){.layout-split{grid-template-columns:minmax(0,1fr) 340px}}
+@media(min-width:1760px){.layout-split{grid-template-columns:minmax(0,1fr) var(--rail-w)}}
+.layout-split>.main,.layout-split>.rail{display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}
+.layout-split>.rail{gap:32px}
+@media(min-width:1024px){.layout-split>.rail.sticky{position:sticky;top:76px}}
+/* ---- PageHeader ---- */
+.ph-wrap{padding-bottom:0}
+.ph-title{display:flex;gap:16px;align-items:center;min-width:0}
+.ph-title .t-title{overflow-wrap:anywhere}
+.ph-meta{display:flex;gap:6px 16px;flex-wrap:wrap;margin-top:6px}
+.ph-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ph-tabs{margin-top:8px}
+/* ---- Section: a text heading over a hairline, no box ---- */
+.sec-h{display:flex;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line-soft);margin-bottom:0}
+.sec-h .act{margin-left:auto;font-weight:600;font-size:14px}
+.sec-h+.plate{margin-top:12px}.sec-h+.rows{margin-top:0}
+/* ---- Row: lead | body | trail ---- */
+.rows{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:12px;align-items:center;padding:10px 16px;min-height:56px;border-bottom:1px solid var(--line-soft);position:relative}
+.row:last-child{border-bottom:0}
+.row.nolead{grid-template-columns:minmax(0,1fr) auto}
+.row .b{min-width:0}.row .ttl{font:700 15px/20px var(--font-body);color:var(--strong)}
+.row .sub{font-size:13px;line-height:18px;color:var(--muted)}
+.row .trail{display:flex;gap:12px;align-items:center;justify-self:end}
+a.row:hover,.row.hov{background:var(--hover)}
+.row.cur{background:#e5b9551a;box-shadow:inset 3px 0 0 var(--gold)}
+.row .rank{width:24px;text-align:right;font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
+.plate>.rows>.row{padding-inline:16px}
+.rows.open .row{padding-inline:0}
+/* ---- Figure and Meter ---- */
+.fig{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fig .v{font:700 28px/32px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}
+.fig .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.fig.big .v{font-size:36px;line-height:40px}.fig.sm .v{font-size:18px;line-height:24px}
+.fig.gold .v{color:var(--gold)}.fig.kill .v{color:var(--kill)}.fig.wipe .v{color:var(--wipe)}
+.figs{display:grid;gap:20px 24px;grid-template-columns:repeat(var(--c,3),minmax(0,1fr))}
+.meter{height:8px;border-radius:3px;background:var(--line-soft);overflow:hidden;min-width:60px}.meter>i{display:block;height:100%;border-radius:3px;background:var(--gold)}
+.meter.kill>i{background:var(--kill)}.meter.muted>i{background:#5a5a52}
+.meter.seg{display:flex;gap:2px;background:none}.meter.seg>i{border-radius:0}
+/* ---- Tag, Field ---- */
+.tag.kill{color:var(--kill);border-color:#7fd48a66}.tag.muted{color:var(--muted);border-color:var(--line)}.tag.wipe{color:var(--wipe);border-color:#f0736b66}
+.field{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:4px;background:#0a0d14;color:var(--muted);font-size:14px;min-width:0}
+.field.grow{flex:1;min-width:200px}
+.empty{padding:16px;color:var(--muted);font-size:14px}
+.strip-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.strip-tabs a{padding:14px 14px;font:600 14px/16px var(--font-body);color:var(--nav);border-bottom:2px solid transparent;white-space:nowrap}
+.strip-tabs a.cur{color:var(--strong);border-bottom-color:var(--gold)}
+.strip-tabs a .n{font-size:12px;color:var(--muted);margin-left:6px}
+'''
+
+_BANNED = re.compile(r'style="[^"]*(border|background|box-shadow|border-radius)', re.I)
+
+
+def assert_no_surface_styles(html: str) -> None:
+    bad = _BANNED.findall(html)
+    if bad:
+        raise AssertionError(f'a page drew its own surface ({len(bad)} inline border/background styles); use a primitive')
+
+
+# ----------------------------------------------------------------- primitives
+def Button(label: str, primary: bool = False, small: bool = False) -> str:
+    return f'<a class="btn{" primary" if primary else ""}{" sm" if small else ""}" href="#">{label}</a>'
+
+
+def Link(label: str) -> str:
+    return f'<a class="link" href="#">{label}</a>'
+
+
+def Tag(label: str, tone: str = 'gold') -> str:
+    return f'<span class="pill tag {tone}">{label}</span>'
+
+
+def Figure(value: str, label: str = '', unit: str = '', tone: str = '', size: str = '') -> str:
+    u = f'<small>{unit}</small>' if unit else ''
+    lab = f'<span class="t-label">{label}</span>' if label else ''
+    return f'<div class="fig {size} {tone}">{lab}<span class="v">{value}{u}</span></div>'
+
+
+def Figures(items: list[tuple]) -> str:
+    return f'<div class="figs" style="--c:{len(items) if len(items) != 3 else 3}">' + ''.join(Figure(*i) for i in items) + '</div>'
+
+
+def Meter(frac: float, tone: str = '') -> str:
+    return f'<div class="meter {tone}"><i style="width:{max(0, min(1, frac)) * 100:.0f}%"></i></div>'
+
+
+def Field(label: str, grow: bool = False) -> str:
+    return f'<span class="field{" grow" if grow else ""}">{label}</span>'
+
+
+def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False) -> str:
+    cls = 'row' + ('' if lead or rank else ' nolead') + (' cur' if selected else '')
+    tag = 'a' if link else 'div'
+    href = ' href="#"' if link else ''
+    color = f' style="color:{title_color}"' if title_color else ''
+    lead_html = (f'<span class="rank">{rank}</span>' if rank else '') + lead
+    lead_cell = f'<span style="display:flex;gap:12px;align-items:center">{lead_html}</span>' if (lead or rank) else ''
+    return (f'<{tag} class="{cls}"{href}>{lead_cell}<div class="b"><div class="ttl"{color}>{title}</div>' + (f'<div class="sub">{sub}</div>' if sub else '') + f'</div>'
+            + (f'<div class="trail">{trail}</div>' if trail else '<span></span>') + f'</{tag}>')
+
+
+def Rows(rows: list[str], open_: bool = False) -> str:
+    return f'<div class="rows{" open" if open_ else ""}">' + ''.join(rows) + '</div>'
+
+
+def Plate(inner: str) -> str:
+    return f'<div class="plate">{inner}</div>'
+
+
+def Section(title: str, body: str, action: str = '', meta: str = '') -> str:
+    a = f'<span class="act">{action}</span>' if action else ''
+    m = f'<span class="t-small">{meta}</span>' if meta else ''
+    return f'<section><div class="sec-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>{body}</section>'
+
+
+def TabStrip(tabs: list[str], active: str, counts: dict | None = None) -> str:
+    return '<nav class="strip-tabs ph-tabs">' + ''.join(f'<a href="#" class="{"cur" if t == active else ""}">{t}{f"<span class=\"n\">{counts[t]}</span>" if counts and t in counts else ""}</a>' for t in tabs) + '</nav>'
+
+
+def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '') -> str:
+    m = f'<div class="ph-meta">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
+    color = f' style="color:{title_color}"' if title_color else ''
+    right = f'<div class="ans">{answer}</div>' if answer else (f'<div class="ph-actions">{actions}</div>' if actions else '')
+    return (f'<div class="pc ph-wrap"><div class="head"><div class="ph-title">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div>')
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
+    if layout == 'ledger':
+        return f'<div class="pc" style="padding-top:20px">{main}</div>'
+    if layout == 'split':
+        return f'<div class="pc" style="padding-top:28px"><div class="layout-split"><div class="main">{main}</div><aside class="rail{" sticky" if sticky_rail else ""}">{rail}</aside></div></div>'
+    raise ValueError(layout)
+
+
+def build_page(title: str, body: str, nav: str = '', who: tuple | None = None, note: str = '') -> str:
+    assert_no_surface_styles(body)
+    return _page(title, body + f'<style>{PRIM_CSS}</style>', nav, who, note)
+
+
+PRIM_CSS += '''
+.notice{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;padding:14px 0 4px;font-size:15px;line-height:24px}.notice.gold{color:var(--gold)}.notice .link{font-weight:600}
+.row .trail{flex-wrap:wrap;justify-content:flex-end}@media(max-width:600px){.row,.row.nolead{grid-template-columns:auto minmax(0,1fr)}.row.nolead{grid-template-columns:minmax(0,1fr)}.row .trail{grid-column:1/-1;justify-self:stretch;justify-content:flex-start;margin-top:8px}.figs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:767px){.strip-tabs{flex-wrap:wrap;overflow:visible;gap:0 2px}.strip-tabs a{padding:12px 12px}}
+.formrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.formrow .f{display:flex;flex-direction:column;gap:6px;min-width:0}.formrow .f.grow{flex:1;min-width:220px}
+.formrow .sel{height:40px}.formrow .field.grow{flex:none;width:100%}
+@media(max-width:767px){.formrow .f,.formrow .btn{width:100%}}
+'''
+
+
+def FormRow(fields: list[tuple[str, str, bool]], submit: str) -> str:
+    """Labelled Fields and Selects in one wrapping row with one submit Button (a form is not a filter: it is not a ControlBar)."""
+    f = ''.join(f'<label class="f{" grow" if grow else ""}"><span class="t-label">{lab}</span>{html}</label>' for lab, html, grow in fields)
+    return f'<div class="formrow">{f}{submit}</div>'
+
+
+def Select(label: str) -> str:
+    return sel(label)
+
+
+def Emblem(faction: str, size: int = 56) -> str:
+    """A guild's or character's faction mark in the one circular crest frame (FactionCrest)."""
+    return f'<img class="crest" src="{emblem(faction)}" alt="" style="width:{size}px;height:{size}px;--c:{"#6fb1ff" if faction == "alliance" else "#ff6b5c"}">'
+
+
+def Notice(text: str, action: str = '', tone: str = 'gold') -> str:
+    """One sentence under the header (a standing line, a state): text, optional ActionLink, no box."""
+    return f'<div class="pc"><p class="notice {tone}">{text}{action}</p></div>'
+
+
+# ------------------------------------------------ primitives added by the guild persona round (reusable, not guild-only)
+PRIM_CSS += '''
+.gridm{display:grid;grid-template-columns:minmax(120px,1.5fr) repeat(var(--n),minmax(48px,1fr));align-items:center}
+.gridm .h{font:700 12px/16px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 6px;border-bottom:1px solid var(--line-soft)}
+.gridm .l{padding:10px 6px;border-bottom:1px solid var(--line-soft);min-width:0}.gridm .l .ttl{font:700 14px/18px var(--font-body);color:var(--strong)}.gridm .l .sub{font-size:12px;line-height:16px;color:var(--muted)}
+.gridm .c{padding:10px 6px;border-bottom:1px solid var(--line-soft);text-align:center;font:700 14px/18px var(--font-body);font-variant-numeric:tabular-nums}
+.gridm .c.ok{color:var(--kill)}.gridm .c.warn{color:var(--gold)}.gridm .c.miss{color:var(--wipe)}.gridm .c.none{color:var(--muted);font-weight:400}
+.tally{display:grid;gap:12px 16px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.tally .t{display:flex;flex-direction:column;gap:6px;min-width:0}.tally .t .top{display:flex;align-items:center;gap:8px}.tally .t .top b{font:700 15px/20px var(--font-body);color:var(--strong)}.tally .t .top .n{margin-left:auto;font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums}
+.tally .t .n.ok{color:var(--kill)}.tally .t .n.miss{color:var(--wipe)}.tally .t .n.warn{color:var(--gold)}
+.ck{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 13px/22px var(--font-body);color:#07090d;flex:none}
+.ck.ok{background:var(--kill)}.ck.warn{background:var(--gold)}.ck.miss{background:var(--wipe)}.ck.gap{background:var(--muted)}
+.gap-tag{font-size:12px;color:var(--muted)}
+.seg.sm a{height:32px;padding:0 10px;font-size:13px}
+'''
+
+
+def Segmented(items: list[tuple[str, bool]], small: bool = False) -> str:
+    """An inline choice of one among few (sign-up In / Late / Bench). Same look as the ControlBar's segmented control."""
+    return seg([(a, on, None, '') for a, on in items], 'sm' if small else '')
+
+
+def Grid(cols: list[str], rows: list[tuple]) -> str:
+    """A coverage matrix. rows: (label, sub, [(state, text)]) with state ok|warn|miss|none. Reused for buffs, attendance, readiness."""
+    h = '<div class="h"></div>' + ''.join(f'<div class="h" style="text-align:center">{c}</div>' for c in cols)
+    body = ''.join(f'<div class="l"><div class="ttl">{lab}</div>' + (f'<div class="sub">{sub}</div>' if sub else '') + '</div>' + ''.join(f'<div class="c {st}">{tx}</div>' for st, tx in cells) for lab, sub, cells in rows)
+    return f'<div class="gridm" style="--n:{len(cols)}">{h}{body}</div>'
+
+
+def Tally(items: list[tuple]) -> str:
+    """Counts against a target, one Meter each. items: (lead_html, label, have, want)."""
+    out = ''
+    for lead, label, have, want in items:
+        st = 'ok' if have >= want else ('warn' if have >= want * 0.75 else 'miss')
+        out += f'<div class="t"><div class="top">{lead}<b>{label}</b><span class="n {st}">{have}/{want}</span></div>{Meter(have / want if want else 1, "kill" if st == "ok" else "")}</div>'
+    return f'<div class="tally">{out}</div>'
+
+
+def Checklist(items: list[tuple]) -> str:
+    """Private pre-raid checks. items: (state ok|warn|miss|gap, title, sub, fix_label|None). A Row per check, the fix a link."""
+    rows = []
+    for st, title, sub, fix in items:
+        mark = {'ok': '&#10003;', 'warn': '!', 'miss': '&times;', 'gap': '?'}[st]
+        rows.append(Row(title, sub, lead=f'<span class="ck {st}">{mark}</span>', trail=(f'<span class="link">{fix}</span>' if fix else ''), link=bool(fix)))
+    return Rows(rows, open_=True)
+
+
+def Votes(yes: int, no: int, total: int) -> str:
+    return f'<div style="display:flex;gap:6px;align-items:center">{Tag(f"{yes} yes", "kill")}{Tag(f"{no} no", "wipe" if no else "muted")}<span class="t-small">of {total} officers</span></div>'
+
+
+def Gap(label: str) -> str:
+    """A module whose data source is not confirmed: marked in the mock, named in the spec."""
+    return f'<span class="gap-tag">&#9888; {label}</span>'
+
+
+# ------------------------------------------------ primitives added by the tiers round (2026-11-06; design/specs/2026-11-06-tiers.md section 4)
+# RankList / RankGroup / RankRow / ColumnHeads: a ranked list on the page's one Plate. RankRow is a Row preset (as ItemRow is),
+# reused next by the log rankings and the guild Top guilds list; RankGroup is the letter column (and later BiS "Where to go"
+# groups and the raid planner's role groups). Meter gains a class tone; Skeleton is the shipped `Skeleton`.
+PRIM_CSS += '''
+.rl{--grp-w:0px;--rr-name:minmax(180px,220px);--rr-bar:minmax(120px,1fr);--rr-fig:112px;--rr-gap:88px;--rr-links:206px;--n:1}
+.rl.links3{--rr-links:156px}.rl.tank{--rr-fig:124px}
+@media(min-width:1100px){.rl.grouped{--grp-w:184px}}
+@media(min-width:1760px){.rl{--rr-name:minmax(240px,1fr);--rr-bar:560px}}
+.rl .cols{display:grid;column-gap:16px;grid-template-columns:28px 36px var(--rr-name) var(--rr-bar) repeat(var(--n),var(--rr-fig)) var(--rr-gap) var(--rr-links)}
+.rr-heads{align-items:end;padding:12px 16px 10px calc(16px + var(--grp-w));border-bottom:1px solid var(--line-soft)}
+.rr-heads .r{text-align:right}
+.rg{display:grid;grid-template-columns:var(--grp-w) minmax(0,1fr);border-top:1px solid var(--line)}
+.rg:first-child{border-top:0}
+.rg-l{display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-areas:"lt bd" "lt ct";align-content:start;align-items:center;column-gap:10px;padding:10px 12px 10px 14px;border-left:3px solid var(--t);border-right:1px solid var(--line-soft)}
+.rg-l .lt{grid-area:lt;font:700 32px/36px var(--font-body);color:var(--t)}
+.rg-l .ct{grid-area:ct;font-size:13px;line-height:18px;color:var(--muted);font-variant-numeric:tabular-nums}
+.rg-l .bd{grid-area:bd;font-size:13px;line-height:18px;color:var(--text)}
+.rg-rows{min-width:0}
+.rr{position:relative;align-items:center;min-height:var(--row-h);padding:8px 16px;border-bottom:1px solid var(--line-soft)}
+.rg-rows>.rr:last-child,.rl>.rr:last-child{border-bottom:0}
+.rr::before{content:"";position:absolute;top:0;bottom:0;left:calc(-1 * var(--grp-w));width:3px;background:transparent;z-index:1}
+.rr:hover,.rr.hov{background:var(--hover)}.rr:hover::before,.rr.hov::before{background:var(--c)}.rr:hover .meter>i,.rr.hov .meter>i{filter:brightness(1.18)}
+.rr.cur{background:#e5b9551a}.rr.cur::before{background:var(--gold)}
+.rr .rk{text-align:right;font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
+.rr .ld{display:flex}
+.rr .nm{min-width:0;display:flex;flex-direction:column}
+.rr .nm .ttl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rr .nm .ttl a{font:700 16px/20px var(--font-body);color:var(--c)}.rr .nm .ttl a:hover{text-decoration:underline;text-underline-offset:4px}
+.rr .nm .sub{font-size:13px;line-height:18px;color:var(--muted)}
+.rr .nm .low{font-size:13px;line-height:18px;color:var(--muted);text-decoration:underline dotted;text-underline-offset:3px;align-self:flex-start}
+.rr .br{}
+.rr .x{display:contents}
+.rr .fg{text-align:right;font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong);white-space:nowrap}
+.rr .fg small{font-size:12px;font-weight:600;color:var(--muted);margin-left:4px}.rr .fg.best{color:var(--kill)}.rr .fg .lbl{display:none}
+.rr .gp{text-align:right;font:600 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--text);white-space:nowrap}
+.rr .gp.top{color:var(--strong);font-weight:700}.rr .gp .tie{display:block;font:700 12px/16px var(--font-body);color:var(--strong)}
+.rr .lk{display:flex;justify-content:flex-end;gap:16px}
+.rr .lk a{display:inline-flex;align-items:center;min-height:40px;font:600 14px/20px var(--font-body);color:var(--nav)}.rr .lk a.p{color:var(--gold)}
+.rr .lk a:hover,.rr .lk a.hov{color:var(--gold-hover)}.rr .lk a.fv{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+.tag.you{margin-left:2px}
+.meter.cls>i{background:var(--c)}
+.skel{display:block;border-radius:4px;background:linear-gradient(90deg,#131824,#1a2030,#131824)}
+@media(max-width:1099px){.rg{grid-template-columns:minmax(0,1fr)}.rg-l{display:flex;align-items:baseline;gap:12px;padding:8px 14px 8px 12px;border-right:0;border-bottom:1px solid var(--line-soft)}.rg-l .lt{font-size:22px;line-height:24px}.rg-l .bd{order:1}.rg-l .ct{order:2;margin-left:auto}}
+@media(max-width:1023px){.rl .rr-heads{display:none}
+ .rl .rr.cols{grid-template-columns:22px 32px minmax(0,1fr) auto;grid-template-areas:"rk ld nm f1" "rk ld nm gp" ". . xx xx" ". . br br" ". . lk lk";column-gap:12px;row-gap:0;padding:10px 14px 2px}
+ .rr .rk{grid-area:rk}.rr .ld{grid-area:ld}.rr .nm{grid-area:nm}.rr .br{grid-area:br}.rr .gp{grid-area:gp}.rr .lk{grid-area:lk}.rr .fg.f1{grid-area:f1}.rr .x{grid-area:xx;display:flex;gap:0 16px;flex-wrap:wrap}.rr .x .fg{text-align:left;font-size:14px}.rr .x .fg .lbl{display:inline;font-weight:400;color:var(--muted);margin-right:6px}
+ .rr .br{padding-top:8px}.rr .gp{align-self:start}.rr .fg.f1{align-self:end}.rr .x:not(:empty){padding-top:6px}.rr .gp .tie{display:inline;margin-left:6px}.rr .lk{justify-content:flex-start;gap:20px}.rr .lk a{min-height:44px}}
+'''
+
+
+def MeterClass(frac: float, color: str) -> str:
+    """Meter with tone 'class': the fill in the class colour, set by the primitive from a prop (Details! bars)."""
+    return f'<div class="meter cls" style="--c:{color}"><i style="width:{max(0, min(1, frac)) * 100:.1f}%"></i></div>'
+
+
+def Skeleton(w: int, h: int, round_: bool = False) -> str:
+    """The shipped `Skeleton`: a block at the final geometry, so nothing shifts when the content lands."""
+    return f'<span class="skel{" round" if round_ else ""}" style="width:{w}px;height:{h}px"></span>'
+
+
+PRIM_CSS += '.skel.round{border-radius:999px}\n'
+
+
+def ColumnHeads(cells: list[tuple[str, bool]]) -> str:
+    """The Plate's one column-head row (12 px caps labels), on the RankList's own grid. cells: (label, right_aligned)."""
+    return '<div class="rr-heads cols" aria-hidden="true">' + ''.join(f'<span class="t-label{" r" if r else ""}">{t}</span>' for t, r in cells) + '</div>'
+
+
+def RankRow(rank: str, crest: str, color: str, name: str, sub: str, frac: float, figures: list[tuple], gap: str,
+            links: list[tuple[str, bool]], gap_top: bool = False, tie: str = '', low: str = '', you: str = '',
+            selected: bool = False, state: str = '') -> str:
+    """One ranked row. figures: (value, unit, phone_label, best); the first is the sorted figure. links: (label, primary)."""
+    def fig(i, f):
+        v, u, lbl, best = f
+        return f'<span class="fg{" f1" if i == 0 else ""}{" best" if best else ""}"><span class="lbl">{lbl}</span>{v}<small>{u}</small></span>'
+    first = fig(0, figures[0])
+    extra = ''.join(fig(i, f) for i, f in enumerate(figures[1:], 1))
+    tie_html = f'<span class="tie">{tie}</span>' if tie else ''
+    low_html = f'<span class="low">{low}</span>' if low else ''
+    you_html = f'<span class="pill tag you">{you}</span>' if you else ''
+    lk = ''.join(f'<a href="#" class="{"p" if p else ""}{" " + state.split(":")[1] if state.startswith("link:") and i == 0 else ""}">{t}</a>' for i, (t, p) in enumerate(links))
+    cls = 'rr cols' + (' cur' if selected else '') + (' hov' if state == 'hover' else '')
+    return (f'<div class="{cls}" style="--c:{color}"><span class="rk">{rank}</span><span class="ld">{crest}</span>'
+            f'<div class="nm"><span class="ttl"><a href="#">{name}</a>{you_html}</span><span class="sub">{sub}</span>{low_html}</div>'
+            f'<span class="br">{MeterClass(frac, color)}</span>{first}<span class="x">{extra}</span>'
+            f'<span class="gp{" top" if gap_top else ""}">{gap}{tie_html}</span><span class="lk">{lk}</span></div>')
+
+
+def RankGroup(letter: str, color: str, band: str, count: str, rows: list[str]) -> str:
+    """A letter group: the 148 px label column (letter, count, band) with the tier rail at x=0; a header strip below 1100."""
+    return (f'<div class="rg" style="--t:{color}"><div class="rg-l"><span class="lt">{letter}</span><span class="ct">{count}</span>'
+            f'<span class="bd">{band}</span></div><div class="rg-rows">{"".join(rows)}</div></div>')
+
+
+def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, links3: bool = False, tank: bool = False) -> str:
+    cls = 'rl' + (' grouped' if grouped else '') + (' links3' if links3 else '') + (' tank' if tank else '')
+    return f'<div class="{cls}" style="--n:{n_figs}">{heads}{body}</div>'
