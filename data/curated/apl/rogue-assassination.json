@@ -1,7 +1,7 @@
 {
   "spec": "rogue-assassination",
   "state": "written",
-  "notes": "Assassination at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md) and re-searched at the raid build (design/reviews/2026-10-07-raid-builds.md). Mutilate builds, and combo points are spent from three: Cold Blood and Eviscerate, with Slice and Dice ahead of it whenever it has lapsed. Rupture is not cast: with the raid build's Coup de Grace, Aggression and Flawless Execution, Eviscerate is worth more than a Rupture (round 23). Venom was a finisher the rotation did not cast; since client 1.60.1.70755 it is a passive on Shank (poisons 30% harder and 20% more likely for 6 seconds), so the Shank line carries it. Without the Mutilate talent the Mutilate line falls through to Sinister Strike. Every rank named here is checked against this build's own spellconst. 2026-11-02 guide rewrite: Stealth and Garrote on the pull, +0.55% raid 60 (Ambush -0.1%). Client 1.60.1.70755: Shank (1329283 at 24, 1329549 at 44; off-hand 50% weapon damage, 5 energy for +15/+25, 10 sec cooldown, cannot miss) is new for every rogue and is cast on cooldown right after the cooldowns line.",
+  "notes": "Assassination at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md) and re-searched at the raid build (design/reviews/2026-10-07-raid-builds.md). Mutilate builds, and combo points are spent from three (below 17: Slice and Dice at four once it drops, Eviscerate at five; sim-accuracy round 26, +0.2 to 0.5% at 10 to 16 at seeds 1 and 50001, both factions, level at 17 to 19): Cold Blood and Eviscerate, with Slice and Dice ahead of it whenever it has lapsed. Rupture is not cast: with the raid build's Coup de Grace, Aggression and Flawless Execution, Eviscerate is worth more than a Rupture (round 23). Venom was a finisher the rotation did not cast; since client 1.60.1.70755 it is a passive on Shank (poisons 30% harder and 20% more likely for 6 seconds), so the Shank line carries it. Without the Mutilate talent the Mutilate line falls through to Sinister Strike. Every rank named here is checked against this build's own spellconst. 2026-11-02 guide rewrite: Stealth and Garrote on the pull, +0.55% raid 60 (Ambush -0.1%). Client 1.60.1.70755: Shank (1329283 at 24, 1329549 at 44; off-hand 50% weapon damage, 5 energy for +15/+25, 10 sec cooldown, cannot miss) is new for every rogue and is cast on cooldown right after the cooldowns line.",
   "expected_idle": [
     {
       "id": 11294,
@@ -101,11 +101,11 @@
                         "cmp": {
                           "op": "OpGe",
                           "lhs": {
-                            "currentComboPoints": {}
+                            "currentLevel": {}
                           },
                           "rhs": {
                             "const": {
-                              "val": "4"
+                              "val": "17"
                             }
                           }
                         }
@@ -114,33 +114,89 @@
                         "or": {
                           "vals": [
                             {
-                              "not": {
-                                "val": {
-                                  "auraIsActive": {
-                                    "auraId": {
-                                      "spellId": 6774,
-                                      "rank": 2
+                              "and": {
+                                "vals": [
+                                  {
+                                    "cmp": {
+                                      "op": "OpGe",
+                                      "lhs": {
+                                        "currentComboPoints": {}
+                                      },
+                                      "rhs": {
+                                        "const": {
+                                          "val": "4"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "or": {
+                                      "vals": [
+                                        {
+                                          "not": {
+                                            "val": {
+                                              "auraIsActive": {
+                                                "auraId": {
+                                                  "spellId": 6774,
+                                                  "rank": 2
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "cmp": {
+                                            "op": "OpLt",
+                                            "lhs": {
+                                              "auraRemainingTime": {
+                                                "auraId": {
+                                                  "spellId": 6774,
+                                                  "rank": 2
+                                                }
+                                              }
+                                            },
+                                            "rhs": {
+                                              "const": {
+                                                "val": "3"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      ]
                                     }
                                   }
-                                }
+                                ]
                               }
                             },
                             {
-                              "cmp": {
-                                "op": "OpLt",
-                                "lhs": {
-                                  "auraRemainingTime": {
-                                    "auraId": {
-                                      "spellId": 6774,
-                                      "rank": 2
+                              "and": {
+                                "vals": [
+                                  {
+                                    "cmp": {
+                                      "op": "OpGe",
+                                      "lhs": {
+                                        "currentComboPoints": {}
+                                      },
+                                      "rhs": {
+                                        "const": {
+                                          "val": "3"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "not": {
+                                      "val": {
+                                        "auraIsActive": {
+                                          "auraId": {
+                                            "spellId": 6774,
+                                            "rank": 2
+                                          }
+                                        }
+                                      }
                                     }
                                   }
-                                },
-                                "rhs": {
-                                  "const": {
-                                    "val": "3"
-                                  }
-                                }
+                                ]
                               }
                             }
                           ]
@@ -154,13 +210,13 @@
                     "vals": [
                       {
                         "cmp": {
-                          "op": "OpGe",
+                          "op": "OpLt",
                           "lhs": {
-                            "currentComboPoints": {}
+                            "currentLevel": {}
                           },
                           "rhs": {
                             "const": {
-                              "val": "3"
+                              "val": "17"
                             }
                           }
                         }
@@ -176,6 +232,19 @@
                             }
                           }
                         }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpEq",
+                          "lhs": {
+                            "currentComboPoints": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "4"
+                            }
+                          }
+                        }
                       }
                     ]
                   }
@@ -184,7 +253,7 @@
             }
           }
         },
-        "notes": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off. Even three points keep it up for 15 seconds, over 20 with all three points of Improved Slice and Dice in the raid build, and getting the attack speed back beats waiting a builder for the fourth point."
+        "notes": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off. Even three points keep it up for 15 seconds, over 20 with all three points of Improved Slice and Dice in the raid build, and getting the attack speed back beats waiting a builder for the fourth point. Below 17, with only Backstab's one point a strike, put four points into it once it has dropped and save five for Eviscerate."
       },
       {
         "action": {
@@ -218,20 +287,58 @@
             }
           },
           "condition": {
-            "cmp": {
-              "op": "OpGe",
-              "lhs": {
-                "currentComboPoints": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "4"
+            "or": {
+              "vals": [
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentLevel": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "17"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentComboPoints": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "4"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentComboPoints": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "5"
+                      }
+                    }
+                  }
                 }
-              }
+              ]
             }
           }
         },
-        "notes": "Eviscerate at four or more combo points. From 40 Mutilate gives two points a cast, and from 45 a Seal Fate crit makes it three, so waiting for exactly five wastes a Mutilate."
+        "notes": "Eviscerate at four or more combo points. From 40 Mutilate gives two points a cast, and from 45 a Seal Fate crit makes it three, so waiting for exactly five wastes a Mutilate. Below 17 wait for five: Backstab gives one point a strike, and a five-point Eviscerate does far more for its energy."
       },
       {
         "action": {

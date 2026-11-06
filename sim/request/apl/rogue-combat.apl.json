@@ -120,12 +120,25 @@
                     }
                   }
                 }
+              },
+              {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "currentLevel": {}
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "60"
+                    }
+                  }
+                }
               }
             ]
           }
         }
       },
-      "notes": "Slice and Dice whenever it drops, at one or two combo points. Five points always go to Eviscerate; a short Slice and Dice keeps the attack speed up for far fewer points."
+      "notes": "At 60, Slice and Dice whenever it drops, at one or two combo points. Five points always go to Eviscerate; a short Slice and Dice keeps the attack speed up for far fewer points. While you level, leave it off a single target and put every five points into Eviscerate: your white swings miss too often for the attack speed to pay back the energy and the points."
     },
     {
       "action": {

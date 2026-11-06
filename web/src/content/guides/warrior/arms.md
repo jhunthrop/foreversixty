@@ -122,10 +122,10 @@ Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 1
 
 At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander, a good pick if your two-hander is still the starter.
 
-Your first point at 10 makes Heroic Strike cost 1 less Rage. Three points of Deflection follow for parry, then Improved Rend from 14 to 16 for a much bigger bleed, and Improved Charge at 17 and 18 for 6 more Rage on every opener.
+Your first point at 10 makes Heroic Strike cost 1 less Rage. Three points of Deflection follow for parry and a first point of Improved Rend at 14. Both points of Improved Overpower come at 15 and 16, so the Overpowers your target's dodges open crit far more often. Improved Rend finishes at 17 and 18 for a much bigger bleed, and Improved Charge at 19 and 20 gives 6 more Rage on every opener.
 
 Weapon damage is nearly all your damage, so swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 
-Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, and Victory Rush whenever it is up: it heals 10%, works for 20 seconds after a kill and comes back every 30 seconds, so when the next mob is close, press it right after the Charge. Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Improved Overpower comes in at 22 and Bloodthrill at 33, after Deep Wounds and Impale; once both are in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.
+Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, and Victory Rush whenever it is up: it heals 10%, works for 20 seconds after a kill and comes back every 30 seconds, so when the next mob is close, press it right after the Charge. Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Bloodthrill comes in at 33, after Deep Wounds and Impale; once it is in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.

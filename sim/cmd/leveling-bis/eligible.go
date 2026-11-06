@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // Armor subclass ids, from the client's ItemSubclassArmor enum as
@@ -48,25 +48,13 @@ func isRelicCandidate(c candidate) bool {
 }
 
 // armorAvailableLevel is the level a class's armor proficiency for a
-// subclass opens, keyed by "<class>:<subclass id>". Only entries a
-// class does NOT have from level 1 need to be listed; an absent entry
-// means "no gate", which is correct for cloth and leather on every
-// class this file has an entry for.
-//
-// Owner-stated rule (Justin, 2026-09-30, bis-ranker-integrity-13's
-// brief, the single source of truth for this table): shamans and
-// hunters wear mail from level 40 (leather before); warriors and
-// paladins wear plate from level 40 (mail before). Every other
-// class/armor pair is available from level 1 - nothing else in
-// Forever is level-gated. Plate never appears in shaman's or hunter's
-// per-class item file at all, and mail never appears in every other
-// class's file besides warrior/paladin/shaman/hunter (see the constant
-// block above), so those pairs need no entry here at all.
-var armorAvailableLevel = map[string]int{
-	"hunter:3":  40, // mail
-	"shaman:3":  40, // mail
-	"warrior:4": 40, // plate
-	"paladin:4": 40, // plate
+// subclass opens. The owner's rule (mail at 40 for shamans and hunters,
+// plate at 40 for warriors and paladins) lives in one place,
+// leveling.ArmorProficiencyLevel, which spec-breakdown's below-band gear
+// reads too.
+func armorAvailableLevel(classSlug string, subclass int) (int, bool) {
+	opens := leveling.ArmorProficiencyLevel(classSlug, subclass)
+	return opens, opens > 0
 }
 
 // eligible reports whether a leveling character of class/level/faction
@@ -99,8 +87,7 @@ func eligible(c candidate, classSlug string, level int, faction string) bool {
 		return false
 	}
 	if c.ClassID == armorClassID {
-		key := fmt.Sprintf("%s:%d", classSlug, c.SubclassID)
-		if opens, gated := armorAvailableLevel[key]; gated && level < opens {
+		if opens, gated := armorAvailableLevel(classSlug, c.SubclassID); gated && level < opens {
 			return false
 		}
 	}

@@ -111,7 +111,7 @@ Tailoring makes healing cloth you will wear into the first raids. Enchanting sav
 
 ### Levels 1 to 19
 
-Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12. Healing a group before you learn Heal at 16, keep Renew on the tank and use Lesser Heal rank 3 as your filler.
+Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12. Healing a group before you learn Heal at 16, keep Renew on the tank and use Lesser Heal rank 3 as your filler. Keep Renew on rank 1 through your twenties, except at 16, the level Heal arrives, when rank 2 is worth its mana.
 
 Three points of Twilight Focus from 10 to 12 mean most hits no longer push back your casts. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
 
