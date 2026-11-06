@@ -1,28 +1,8 @@
 {
   "specs": [
-    "druid-balance",
-    "druid-feral-bear",
-    "druid-feral",
-    "hunter-beast-mastery",
-    "hunter-marksmanship",
-    "hunter-survival",
-    "mage-arcane",
-    "mage-fire",
-    "mage-frost",
-    "paladin-protection",
-    "paladin-retribution",
-    "priest-shadow",
-    "rogue-assassination",
-    "rogue-combat",
-    "rogue-subtlety",
-    "shaman-elemental",
-    "shaman-enhancement",
-    "warlock-affliction",
-    "warlock-demonology",
-    "warlock-destruction",
-    "warrior-arms",
-    "warrior-fury",
-    "warrior-protection"
+    "druid-restoration",
+    "priest-discipline",
+    "priest-holy"
   ],
-  "reason": "Final pass, run A of 3: the damage and tank specs. Healers take up to 80 minutes each, so the 28 specs split across three runs that each fit the 250-minute ranking step."
+  "reason": "Final pass, run B of 3: Restoration druid and the two priests. Healers take up to 80 minutes each, so the 28 specs split across three runs that each fit the 250-minute ranking step."
 }
