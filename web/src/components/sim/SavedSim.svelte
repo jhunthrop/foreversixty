@@ -125,12 +125,8 @@
         <SimAnswer {model}>
           {#snippet extra()}<SimFidelityCaption {fidelity} />{/snippet}
           {#snippet actions()}
-            <Button
-              tone="primary"
-              size="sm"
-              href={openHref}
-              onclick={onrerun}
-              testid="sim-run-yourself">{copy.answer.openInSim}</Button
+            <Button tone="primary" size="sm" href={openHref} onclick={onrerun} testid="sim-run-yourself"
+              >{copy.answer.openInSim}</Button
             >
             <Button size="sm" onclick={() => void copier.copy(window.location.href)} testid="sim-saved-copy"
               ><span aria-live="polite">{copyLabel}</span></Button
