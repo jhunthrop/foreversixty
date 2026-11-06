@@ -83,17 +83,11 @@
   --color-rarity-rare-text: #3d94f0;
   --color-rarity-epic-text: #b866f5;
 
-  /* Cinzel is the wordmark's face and nothing else's (the seal and the wordmark are the logo,
-     design/logo): Header.astro, Footer.astro and their Seal lockups. Every heading, title and
-     headline figure is --font-heading (polish spec 2026-10-28 section 4.4, direction B Forge);
-     src/styles/heading-face.test.ts fails on any other use of --font-display. */
-  --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
-  /* The heading face: Barlow Condensed 700/800, uppercase, .01em (the heading-* utilities in
-     global.css). Its two size-adjusted fallbacks (fonts.css) are Arial Narrow Bold, then Arial
-     Bold where Narrow is not installed, so the swap moves no line. */
-  --font-heading:
-    'Barlow Condensed', 'Barlow Condensed Fallback', 'Barlow Condensed Fallback Arial', 'Arial Narrow', Arial,
-    sans-serif;
+  /* The heading face is the body face (fonts lane 2026-11-06: no condensed face anywhere, and
+     the logo's Cinzel is an SVG path, Wordmark.astro): the heading-* utilities in global.css
+     set Barlow 700 uppercase at .01em. It aliases --font-body so the two never drift;
+     src/styles/font-families.test.ts holds fonts.css to the families the site loads. */
+  --font-heading: var(--font-body);
   /* 'Barlow Fallback' (defined in Base.astro) is a size-adjusted Helvetica Neue/Arial that
      matches Barlow's em-box, so the `font-display: swap` in Base.astro doesn't reflow text
      when the real face loads -- see Base.astro for the full explanation and how the

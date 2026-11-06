@@ -35,18 +35,15 @@
     min-height: 44px;
     flex-shrink: 0;
   }
-  .site-wordmark svg {
+  .site-wordmark > svg {
     width: 30px;
     height: 30px;
   }
-  .site-wordmark span {
-    font-family: var(--font-display);
-    font-weight: 700;
+  /* The wordmark is Wordmark.astro's SVG path, sized in em, so font-size alone sizes it. */
+  .site-wordmark-type {
+    display: inline-flex;
     font-size: 20px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
     color: var(--color-strong);
-    white-space: nowrap;
   }
   .site-menu {
     display: contents;
@@ -272,13 +269,12 @@
     .site-wordmark {
       gap: 7px;
     }
-    .site-wordmark svg {
+    .site-wordmark > svg {
       width: 28px;
       height: 28px;
     }
-    .site-wordmark span {
+    .site-wordmark-type {
       font-size: 17px;
-      letter-spacing: 0.08em;
     }
     .site-doors {
       gap: 14px;
@@ -312,9 +308,8 @@
     .site-wordmark {
       gap: 8px;
     }
-    .site-wordmark span {
+    .site-wordmark-type {
       font-size: 16px;
-      letter-spacing: 0.1em;
     }
     .site-right {
       display: contents;
@@ -1442,7 +1437,7 @@
   .csel-head.is-signout .csel-head-title {
     font-family: var(--font-heading);
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: var(--tracking-button);
     text-transform: uppercase;
     color: var(--color-strong);

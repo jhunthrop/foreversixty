@@ -1,0 +1,38 @@
+---
+// web/src/components/Wordmark.astro
+// The FOREVER SIXTY wordmark as an inline SVG path (Cinzel 700, 0.1em tracking, drawn by
+// scripts/wordmark-svg.py), so no page loads a web font for the logo's thirteen capitals.
+// It is sized in em: the caller's font-size sets it exactly as it set the old text, and the
+// box is the text's own content box (advance width plus trailing tracking, hhea ascent plus
+// descent), so the lockups lay out as they did. It paints in currentColor and carries the
+// name as its accessible label, so the header link is still named "Forever Sixty".
+import {
+  WORDMARK_ASCENT,
+  WORDMARK_HEIGHT,
+  WORDMARK_PATH,
+  WORDMARK_TEXT,
+  WORDMARK_UNITS_PER_EM,
+  WORDMARK_WIDTH,
+} from './wordmark-path.generated';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const viewBox = `0 ${-WORDMARK_ASCENT} ${WORDMARK_WIDTH} ${WORDMARK_HEIGHT}`;
+const width = `${WORDMARK_WIDTH / WORDMARK_UNITS_PER_EM}em`;
+const height = `${WORDMARK_HEIGHT / WORDMARK_UNITS_PER_EM}em`;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  class:list={['wordmark', className]}
+  viewBox={viewBox}
+  style={`width:${width};height:${height}`}
+  role="img"
+  aria-label={WORDMARK_TEXT}
+  focusable="false"
+>
+  <path d={WORDMARK_PATH} fill="currentColor"></path>
+</svg>

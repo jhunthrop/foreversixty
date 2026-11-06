@@ -17,6 +17,7 @@ import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
 import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint';
 import HeaderPanel from './HeaderPanel.astro';
 import HeaderSearch from './HeaderSearch.astro';
+import Wordmark from './Wordmark.astro';
 import Seal from './Seal.astro';
 
 interface Props {
@@ -67,7 +68,9 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
   </script>
   <a href="/" class="site-wordmark">
     <Seal size={30} gradientId="header-seal" />
-    <span>Forever Sixty</span>
+    <span class="site-wordmark-type">
+      <Wordmark />
+    </span>
   </a>
   <div class="site-right">
     <HeaderSearch place="bar" />

@@ -97,7 +97,7 @@ afterAll(async () => {
 describe('planner-island.css', () => {
   it('carries the design tokens and the base layer from global.css', () => {
     expect(css).toContain('--color-gold');
-    expect(css).toContain('--font-display');
+    expect(css).toContain('--font-heading');
   });
 
   // The tokens above only name the families. Without the faces themselves the API page falls
@@ -107,12 +107,11 @@ describe('planner-island.css', () => {
   it('declares a face for every family tokens.css names', () => {
     expect(declaredFontFamilies(css)).toEqual([
       'Barlow',
-      'Barlow Condensed',
-      'Barlow Condensed Fallback',
-      'Barlow Condensed Fallback Arial',
       'Barlow Fallback',
-      'Cinzel',
       'JetBrains Mono',
+      'Marcellus',
+      'Marcellus Fallback',
+      'Marcellus Fallback Times',
     ]);
   });
 
@@ -121,13 +120,6 @@ describe('planner-island.css', () => {
   it('keeps the size-adjusted metrics on the Barlow fallback face', () => {
     expect(css).toMatch(/size-adjust:\s*95\.78%/);
     expect(css).toMatch(/ascent-override:\s*104\.41%/);
-  });
-
-  // The heading face's fallback (polish spec 2026-10-28 section 4.4): Arial Narrow Bold sized to
-  // Barlow Condensed 800's em-box, the weight every heading paints in.
-  it('keeps the size-adjusted metrics on the Barlow Condensed fallback face', () => {
-    expect(css).toMatch(/size-adjust:\s*94\.78%/);
-    expect(css).toMatch(/ascent-override:\s*105\.51%/);
   });
 
   // Two regressions in one assertion. A relative `url()` would resolve against

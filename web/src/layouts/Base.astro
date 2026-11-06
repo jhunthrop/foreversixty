@@ -6,7 +6,7 @@
 // planner-island.css is the only stylesheet the API's server-rendered /b/{id} page links,
 // so a copy that lived only in this layout would leave that page in Georgia and Arial.
 import '../styles/fonts.css';
-// The three faces every page paints first are preloaded so the swap from the fallback face
+// The faces every page paints first are preloaded so the swap from the fallback face
 // happens before first paint on most connections; Vite gives them the same hashed URL
 // fonts.css's own @font-face rules reference (../assets/fonts/*-subset.woff2, since the
 // web-font-subsets lane), so no extra bytes are fetched. Barlow 600 joins 400 here for the
@@ -14,21 +14,15 @@ import '../styles/fonts.css';
 // unpreloaded 600 arrives late enough to shift them (final whole-branch review, Lighthouse
 // rounds 1-3 — layout-shifts kept naming barlow-latin-600-normal.woff2's load as the
 // footer's own shift, on whichever page's font timing happened to expose it that run).
-// Barlow Condensed 800 is the heading face's heaviest weight, the one every h1 and section
-// title paints in (polish spec 2026-10-28 section 4.4: the single heaviest weight
-// preloaded); 700 is declared but nothing sets it today, so it never loads. Cinzel is no
-// longer preloaded: after the polish lane it sets the wordmark alone, a fixed-width,
-// flex-shrink-0 lockup at the bar's left whose swap moves nothing after it (measured in the
-// lane's task-1 report), and its bytes no longer compete with the heading face's.
+// Barlow 700 is the heading face (every h1 and section title, tokens.css --font-heading), so
+// it is preloaded too. The wordmark is an SVG path (Wordmark.astro), so it loads no face.
 //
 // The data-og attributes are the selectors src/worker.ts rewrites through HTMLRewriter when
 // it serves a shell page for an id that did not exist at build time. Renaming one silently
 // stops that page's unfurl from updating, so src/pages/_shells.test.ts asserts they exist.
-import barlowCondensed800Url from '../assets/fonts/barlow-condensed-800-subset.woff2?url';
 import barlow400Url from '../assets/fonts/barlow-400-subset.woff2?url';
 import barlow600Url from '../assets/fonts/barlow-600-subset.woff2?url';
 import barlow700Url from '../assets/fonts/barlow-700-subset.woff2?url';
-import barlowCondensed700Url from '../assets/fonts/barlow-condensed-700-subset.woff2?url';
 import marcellus400Url from '../assets/fonts/marcellus-400-subset.woff2?url';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
@@ -84,15 +78,12 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <title data-og="title">{fullTitle}</title>
     <meta name="description" content={description} data-og="description" />
     <link rel="canonical" href={`${site}${path}`} data-og="canonical" />
-    <link rel="preload" href={barlowCondensed800Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow400Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow600Url} as="font" type="font/woff2" crossorigin />
-    {/* A page built from the ui/ primitives (`wide`) paints the title in Marcellus and its
-        labels and figures in the 700 weights above the fold: preloading them keeps them off the
-        LCP's critical chain (BiS page, slice 2: 2.48 s simulated LCP without, against 2.2 s). */}
+    <link rel="preload" href={barlow700Url} as="font" type="font/woff2" crossorigin />
+    {/* A page built from the ui/ primitives (`wide`) paints its title in Marcellus (ui/PageHeader),
+        no other page does: preloading it there keeps the title off the LCP's critical chain. */}
     {wide && <link rel="preload" href={marcellus400Url} as="font" type="font/woff2" crossorigin />}
-    {wide && <link rel="preload" href={barlow700Url} as="font" type="font/woff2" crossorigin />}
-    {wide && <link rel="preload" href={barlowCondensed700Url} as="font" type="font/woff2" crossorigin />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:title" content={fullTitle} data-og="og-title" />
     <meta property="og:description" content={description} data-og="og-description" />

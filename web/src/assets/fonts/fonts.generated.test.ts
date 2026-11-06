@@ -1,6 +1,6 @@
 // web/src/assets/fonts/fonts.generated.test.ts
-// Guards the eight committed font subsets (Cinzel 700, Barlow 400/600/700, Barlow Condensed
-// 700/800, JetBrains Mono 500, Marcellus 400) against web/fonts/glyphs.txt, the explicit inventory they are generated from (see
+// Guards the five committed font subsets (Barlow 400/600/700, JetBrains Mono 500, Marcellus
+// 400) against web/fonts/glyphs.txt, the explicit inventory they are generated from (see
 // web/fonts/README.md for the exact `pyftsubset` command and web/src/styles/fonts.css for
 // why self-authored @font-face rules replaced the @fontsource imports).
 //
@@ -30,12 +30,9 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const GLYPHS_PATH = path.join(here, '..', '..', '..', 'fonts', 'glyphs.txt');
 
 const SUBSETS = [
-  { label: 'Cinzel 700', file: 'cinzel-700-subset.woff2' },
   { label: 'Barlow 400', file: 'barlow-400-subset.woff2' },
   { label: 'Barlow 600', file: 'barlow-600-subset.woff2' },
   { label: 'Barlow 700', file: 'barlow-700-subset.woff2' },
-  { label: 'Barlow Condensed 700', file: 'barlow-condensed-700-subset.woff2' },
-  { label: 'Barlow Condensed 800', file: 'barlow-condensed-800-subset.woff2' },
   { label: 'JetBrains Mono 500', file: 'jetbrains-mono-500-subset.woff2' },
   { label: 'Marcellus 400', file: 'marcellus-400-subset.woff2' },
 ];
