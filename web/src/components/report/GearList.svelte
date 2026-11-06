@@ -1,14 +1,15 @@
 <!-- web/src/components/report/GearList.svelte -->
-<!-- What a player wore at pull, as the shared Paperdoll (design/specs/2026-10-31-paperdoll.md,
-     call site 3). The combatant row carries item ids in the log's slot order; the class's items
-     file (the planner's) names them, fetched once when the row is opened. Each slot's detail line
-     is the log's own item level and whether it was enchanted; an id the build does not know is
-     drawn as an unknown item with its slot word, never dropped. The centre's source reads
-     "At pull". -->
+<!-- What a player wore at pull, as the shared paperdoll in `report` mode in one Plate (web layout
+     spec 2026-11-05 §4.2). The combatant row carries item ids in the log's slot order; the class's
+     items file (the planner's) names them, fetched once when the row is opened. Each slot's line 2
+     is the log's own item level and whether it was enchanted ("Item level 66 · Enchanted"); an id
+     the build does not know is drawn as an unknown item with its slot word, never dropped. No
+     gain. The doll's own tooltip host opens each item's real tooltip. -->
 <script lang="ts">
-  import Paperdoll from '../character/Paperdoll.svelte';
+  import BisTooltipHost from '../BisTooltipHost.svelte';
+  import GearDoll from '../character/GearDoll.svelte';
+  import Plate from '../ui/Plate.svelte';
   import { gearCopy } from '../../lib/gear/copy';
-  import type { PaperdollIdentity } from '../../lib/gear/paperdoll';
   import { slotsFromWorn } from '../../lib/gear/paperdoll-slots';
   import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
@@ -20,15 +21,12 @@
     className,
     dataBuild,
     name = '',
-    spec = '',
   }: {
     gear: GearItem[];
     className: string | undefined;
     dataBuild: string;
-    /** The combatant, for the frame's centre. */
+    /** The combatant, for the doll's accessible name. */
     name?: string;
-    /** "Protection", when the report names it. */
-    spec?: string;
   } = $props();
 
   let items = $state<Map<number, Item> | null>(null);
@@ -64,23 +62,24 @@
       },
     }),
   );
-  const identity = $derived<PaperdollIdentity>({
-    name,
-    classSlug,
-    race: '',
-    spec,
-    level: null,
-    faction: null,
-    source: gearCopy.paperdoll.atPull,
-  });
+  const resolveItem = async (id: number) => {
+    const { fetchItemTooltipModel } = await import('../../lib/items/lookup');
+    return fetchItemTooltipModel(dataBuild, classSlug, id);
+  };
 </script>
 
-<Paperdoll
-  {identity}
-  {slots}
-  build={dataBuild}
-  {classSlug}
-  loading={items === null && !failed}
-  {failed}
-  testid="gear-list"
-/>
+<Plate label={gearCopy.paperdoll.atPullLabel} testid="gear-list">
+  <GearDoll
+    {slots}
+    mode="report"
+    build={dataBuild}
+    {classSlug}
+    loading={items === null && !failed}
+    {failed}
+    label={name === ''
+      ? gearCopy.paperdoll.atPullLabel
+      : `${name}: ${gearCopy.paperdoll.atPullLabel.toLowerCase()}`}
+    testid="paperdoll"
+  />
+</Plate>
+<BisTooltipHost build={dataBuild} modelsElementId="report-gear-tooltip-models" resolve={resolveItem} />

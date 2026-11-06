@@ -31,7 +31,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import { handoffCopy } from '../../lib/sim/handoff-copy';
   import { sourcePill } from '../../lib/sim/sources';
-  import { specDisplayName, specLabel } from '../../lib/sim/spec-label';
+  import { specLabel } from '../../lib/sim/spec-label';
   import Select from '../ui/Select.svelte';
 
   /** "high-order-skyborne" -> "High Order Skyborne". */

@@ -1,8 +1,8 @@
 // web/tests/e2e/paperdoll.spec.ts
-// The shared paperdoll on the sim card and the report's "At pull" (design/specs/2026-10-31-
-// paperdoll.md, call sites 1 and 3): every item opens the shared tooltip on hover, focus and
-// tap, and the tooltip carries the binding and armour lines the item row states. The character
-// page's own coverage is character-gear.spec.ts.
+// The shared paperdoll on the sim's character strip (`worn`) and the report's "At pull"
+// (`report`), web layout spec 2026-11-05 §4.2: every item opens the shared tooltip on hover,
+// focus and tap, and the tooltip carries the binding and armour lines the item row states. The
+// character page's own coverage is character-gear.spec.ts.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
@@ -24,17 +24,22 @@ async function loadSim(page: Page): Promise<void> {
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 }
 
+/** The strip's doll (the result's gear card further down draws the same items). */
+const strip = (page: Page) => page.getByTestId('paperdoll');
+
 test.describe('the sim card at 1280', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('draws the frame and opens the real item on hover and focus', async ({ page }) => {
+  test('draws the doll and opens the real item on hover and focus', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     await loadSim(page);
     await expect(page.getByTestId('paperdoll-name')).toHaveText('Simfury');
     await expect(page.getByTestId('paperdoll-slot-neck')).toHaveAttribute('data-state', 'empty');
-    const head = page.getByTestId('paperdoll-item-head');
-    await expect(head).toHaveAttribute('aria-label', 'Head: Lionheart Helm');
+    await expect(page.getByTestId('paperdoll-slot-neck')).toContainText('Empty');
+    await expect(page.getByTestId('paperdoll-slot-off_hand')).toContainText('Two-hand in main hand');
+    const head = strip(page).getByTestId('item-hover-12640');
+    await expect(head).toHaveText('Lionheart Helm');
     await head.hover();
     const tip = page.getByTestId('item-tooltip');
     await expect(tip).toBeVisible();
@@ -42,8 +47,9 @@ test.describe('the sim card at 1280', () => {
     await expect(tip.getByTestId('item-tooltip-bind')).toHaveText('Binds when equipped');
     await expect(tip).toContainText('Plate');
     await page.mouse.move(0, 0);
-    await page.getByTestId('paperdoll-item-main_hand').focus();
+    await page.getByTestId('paperdoll-slot-main_hand').focus();
     await expect(tip).toContainText('Arcanite Reaper');
+    await expect(tip).toHaveCount(1);
     expect(errors).toEqual([]);
   });
 });
@@ -56,7 +62,7 @@ test.describe('the sim card on a 390 phone', () => {
     // loadSim's Run is a mouse click, and the card can land under where that mouse rests: its
     // hover would open the panel before the first tap. Park the mouse off the card first.
     await page.mouse.move(0, 0);
-    const head = page.getByTestId('paperdoll-item-head');
+    const head = strip(page).getByTestId('item-hover-12640');
     await head.tap();
     await expect(page.getByTestId('item-tooltip')).toBeVisible();
     await head.tap();
@@ -89,11 +95,9 @@ test.describe('the report "At pull" at 1280', () => {
     await page.getByTestId('combatant-gear').first().click();
     const frame = page.getByTestId('gear-list');
     await expect(frame.getByTestId('paperdoll-slot-head')).toHaveAttribute('data-state', 'item');
-    await expect(frame.getByTestId('paperdoll-source')).toHaveText('At pull');
-    await expect(frame.getByTestId('paperdoll-slot-head').getByTestId('paperdoll-detail')).toHaveText(
-      'Item level 66 · Enchanted',
-    );
-    await frame.getByTestId('paperdoll-item-head').hover();
+    await expect(frame.getByTestId('paperdoll-line2-head')).toHaveText('Item level 66 · Enchanted');
+    await expect(frame.getByTestId('paperdoll-slot-head').locator('.ui-doll-figure')).toHaveCount(0);
+    await frame.getByTestId('item-hover-12640').hover();
     await expect(page.getByTestId('item-tooltip')).toContainText('Lionheart Helm');
   });
 });
