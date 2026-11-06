@@ -6,6 +6,7 @@
   "ChrClasses": 0,
   "ChrRaces": 190,
   "CurvePoint": 12060,
+  "DungeonEncounter": 50,
   "Faction": 10,
   "ItemArmorQuality": 0,
   "ItemArmorShield": 0,
@@ -17,13 +18,14 @@
   "ItemDamageWand": 0,
   "ItemEffect": 418,
   "ItemSet": 370,
+  "JournalEncounter": 0,
   "JournalInstance": 0,
   "ManifestInterfaceData": 0,
   "Map": 50,
   "RandPropPoints": 0,
   "SkillLine": 630,
   "SkillRaceClassInfo": 0,
-  "Spell": 79741,
+  "Spell": 79811,
   "Talent": 0,
   "TraitCond": 10,
   "TraitCurrency": 10,
@@ -66,6 +68,13 @@
    "removed": 0,
    "sha256": "45cacf1a7544d1640df8aeb265868fb1bdcebf14c00acf327e464f7573170c3d",
    "withheld": 26
+  },
+  "DungeonEncounter": {
+   "added": 1,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "9d0efd9421b30046aeea8f3680e724835674be529c9941c5f00fcae4f101f3f7",
+   "withheld": 0
   },
   "Faction": {
    "added": 0,
@@ -158,6 +167,20 @@
    "sha256": "a4a3ca2962977126a8bf27a706f2cec0436ad7f41491c64d85d7028cae76dcf4",
    "withheld": 0
   },
+  "JournalEncounter": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "dbf321122be9b72863d9c11c27fd5273c8106a1a4dabaceec7d83b2249ac5784",
+   "withheld": 0
+  },
+  "JournalEncounterItem": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "dbf321122be9b72863d9c11c27fd5273c8106a1a4dabaceec7d83b2249ac5784",
+   "withheld": 0
+  },
   "JournalInstance": {
    "added": 0,
    "changed": 0,
@@ -177,6 +200,13 @@
    "changed": 0,
    "removed": 0,
    "sha256": "392e2f6e2cb338570c9e5e6368d59e65525c18d99c3b4e89c27fdcd123923099",
+   "withheld": 0
+  },
+  "MapDifficulty": {
+   "added": 0,
+   "changed": 0,
+   "removed": 0,
+   "sha256": "18efa9c5823859f0bc91a6650f987f97635f64b864d1c88b95364cbb3471a2cb",
    "withheld": 0
   },
   "RandPropPoints": {
