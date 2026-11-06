@@ -187,21 +187,16 @@ test('a lapsed plan answers Run again with the Premium line and See plans', asyn
   await expect(page.getByTestId('server-run-again-failed-run')).toBeEnabled();
 });
 
-test('another Run again failure shows the failure line, and the stored reserve grows with it', async ({
-  page,
-}) => {
+// The list is rows of the rail's Your sims (spec 2026-11-06-sim): it reserves no box any more.
+test('another Run again failure shows the failure line on its row', async ({ page }) => {
   await stubSignedIn(page, true);
   await stubServerRuns(page, [FAILED], 500);
   await page.goto('/sim');
-  const reserve = (): Promise<number> =>
-    page.evaluate(() => Number(localStorage.getItem('fs.serverRuns.reserve')));
   await expect(page.getByTestId('server-run-failed-run')).toBeVisible();
-  await expect.poll(reserve).toBeGreaterThan(0);
-  const before = await reserve();
 
   await page.getByTestId('server-run-again-failed-run').click();
   await expect(page.getByTestId('server-run-failed-run')).toContainText(serverRunsCopy.runAgainFailed);
-  await expect.poll(reserve).toBeGreaterThan(before);
+  await expect(page.getByTestId('server-run-again-failed-run')).toBeEnabled();
 });
 
 for (const route of ['/sim/simfixtureab', '/sim/specs']) {
