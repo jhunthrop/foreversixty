@@ -180,7 +180,7 @@ jobs:
       # tests/e2e/support/sim-parity.ts serves these to the build (the mocks are drawn from them).
       - name: the mocks' data files
         working-directory: ${{ github.workspace }}
-        run: git sparse-checkout add $(node web/tests/e2e/support/parity-data-paths.mjs)
+        run: node web/tests/e2e/support/parity-data-paths.mjs | xargs git sparse-checkout add
       - uses: actions/setup-node@v4
         with:
           {
