@@ -120,7 +120,7 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ### Levels 1 to 19
 
-You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it hits far harder than Sinister Strike.
+You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it hits far harder than Sinister Strike. Each Backstab is one combo point, so until 17 spend them at five, not four: put four into Slice and Dice once it has dropped, and the next five into Eviscerate. From 17 the two habits do the same, so switch to spending at four, the habit Mutilate will want.
 
 Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
 

@@ -359,10 +359,11 @@ func TestBalanceRankRowsFortyToFiftyNine(t *testing.T) {
 
 // Sim-accuracy round 24: the rank sweep below 20, judged level by level with
 // Wrath and Moonfire together (band-20 gear, 10,000 iterations, seeds 1 and
-// 50001, night elf and tauren). The fight runs dry, so Wrath rank 1 wins at
-// 10 to 12 and rank 2 at 13 to 18 (rank 3 from 19); Moonfire rank 2 wins at
-// 16 and rank 1 at 17 to 19. Moonfire rank 4 also wins at 35, a level
-// earlier than round 16's row (round24/druid.md).
+// 50001, night elf and tauren). Re-judged in round 26 on the corrected
+// below-band gear: Wrath rank 1 at 10 to 13 and 15 to 16, rank 2 at 14 and
+// 17 to 18 (rank 3 from 19); Moonfire rank 1 at 12 to 13 and 15 to 17, rank 2
+// at 14 and 18 to 19. Moonfire rank 4 also wins at 35, a level earlier than
+// round 16's row (round24/druid.md).
 func TestBalanceRankRowsBelowTwentyAndMoonfireAtThirtyFive(t *testing.T) {
 	const (
 		wrath1, wrath2, wrath3          = 5176, 5177, 5178
@@ -376,14 +377,14 @@ func TestBalanceRankRowsBelowTwentyAndMoonfireAtThirtyFive(t *testing.T) {
 	}{
 		{"Wrath at 10 is rank 1", 10, wrath1, wrath2},
 		{"Wrath at 12 is rank 1", 12, wrath1, wrath2},
-		{"Wrath at 13 is rank 2", 13, wrath2, wrath1},
+		{"Wrath at 13 is rank 1", 13, wrath1, wrath2},
 		{"Wrath at 14 is rank 2", 14, wrath2, wrath3},
 		{"Wrath at 18 is rank 2", 18, wrath2, wrath3},
 		{"Wrath at 19 is rank 3", 19, wrath3, wrath2},
-		{"Moonfire at 15 is rank 2", 15, moonfire2, moonfire1},
-		{"Moonfire at 16 is rank 2", 16, moonfire2, moonfire3},
+		{"Moonfire at 15 is rank 1", 15, moonfire1, moonfire2},
+		{"Moonfire at 16 is rank 1", 16, moonfire1, moonfire3},
 		{"Moonfire at 17 is rank 1", 17, moonfire1, moonfire3},
-		{"Moonfire at 19 is rank 1", 19, moonfire1, moonfire3},
+		{"Moonfire at 19 is rank 2", 19, moonfire2, moonfire3},
 		{"Moonfire at 20 is rank 2", 20, moonfire2, moonfire1},
 		{"Moonfire at 34 is rank 3", 34, moonfire3, moonfire4},
 		{"Moonfire at 35 is rank 4", 35, moonfire4, moonfire3},
@@ -540,7 +541,8 @@ func TestDruidRankRowsSecondPassRound24(t *testing.T) {
 		level     int
 		want, not int
 	}{
-		{"night-elf", 14, 1, 2}, {"night-elf", 16, 1, 2}, {"high-order-skyborne", 15, 1, 2},
+		// Round 26: rank 2 at 14 for every race (corrected below-band gear).
+		{"night-elf", 14, 2, 1}, {"night-elf", 16, 1, 2}, {"high-order-skyborne", 15, 1, 2},
 		{"tauren", 14, 2, 1}, {"tauren", 16, 2, 1}, {"windshaper-skyborne", 15, 2, 1},
 		// The Nature's Swiftness line casts the top rank (8) at 48 too.
 		{"night-elf", 48, 6, 0}, {"night-elf", 49, 8, 6}, {"tauren", 49, 8, 6},

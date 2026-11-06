@@ -128,7 +128,7 @@ Mining and Blacksmithing make plate, shields and the tanking weapons. Engineerin
 
 Devotion Aura comes at 1, Judgement at 4, Holy Strike at 6 and Hammer of Justice at 8. At 10 you get Righteous Fury and Seal of Fury: with a shield on, every swing under Seal of Fury gives you an absorb, and judging it hits for Holy damage and taunts for 3 seconds.
 
-At 12, the class quest from your trainer teaches Redemption. Holy Strike rank 2 also arrives at 12, but keep rank 1 on your bar to 14, and an Undead paladin to 15: it costs a fraction of the mana, and that mana goes into more Seals and Judgements.
+At 12, the class quest from your trainer teaches Redemption. Holy Strike rank 2 also arrives at 12: put it on your bar straight away, the extra threat is worth its mana.
 
 Most tanks level as Retribution and pick these up when they respec; the Retribution guide has those points. If you level as Protection, your first point at 10 is Divine Intellect for 2% Intellect. Redoubt takes 11 to 15: hits on you can give 30% more block chance for 10 seconds or 5 blocks. Precision takes 16 to 18 for 3% hit, and the first point of Sacred Duty at 19 takes 30 seconds off Divine Protection.
 

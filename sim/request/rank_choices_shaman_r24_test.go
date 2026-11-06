@@ -5,8 +5,8 @@ import "testing"
 // Round 24 (shaman lane): the newest rank was cast the level it arrived, and
 // the second pass re-judged every row on the talents a player has at that
 // level. Elemental's Lightning Bolt filler keeps rank 3 from 20 to 33 and,
-// at 39, rank 4 for every race but an orc; a troll's Flame Shock keeps rank
-// 1 at 18 and an orc's at 19; Earth Shock keeps rank 3 at 25 (an orc casts
+// at 39, rank 4 for every race but an orc; Flame Shock rank 1 at 18 and 19
+// (round 26: a dwarf only); Earth Shock keeps rank 3 at 25 (an orc casts
 // rank 4) and at 26; Restoration's tank Healing Wave keeps rank 3 at 18 and
 // 19, rank 1 at 20 and 21, rank 1 at 22 for a tauren and rank 2 for a dwarf
 // (design/reviews/2026-11-05-sim-audit-round24/shaman.md).
@@ -27,11 +27,15 @@ func TestRound24ShamanRankRows(t *testing.T) {
 		{"troll bolt filler at 39", "shaman-elemental", "troll", 39, lb4, lb5},
 		{"dwarf bolt filler at 39", "shaman-elemental", "dwarf", 39, lb4, lb5},
 		{"orc bolt filler at 39", "shaman-elemental", "orc", 39, lb5, lb4},
-		{"troll Flame Shock at 18", "shaman-elemental", "troll", 18, fs1, fs2},
+		// Round 26 re-judged Flame Shock at 18 and 19 on the corrected below-band
+		// gear: a dwarf keeps rank 1 at both; a troll, an orc, a tauren and a
+		// Windshaper Skyborne take the new rank 2.
+		{"troll Flame Shock at 18 is the top rank", "shaman-elemental", "troll", 18, fs2, fs1},
 		{"orc Flame Shock at 18 is the top rank", "shaman-elemental", "orc", 18, fs2, fs1},
-		{"orc Flame Shock at 19", "shaman-elemental", "orc", 19, fs1, fs2},
+		{"dwarf Flame Shock at 18", "shaman-elemental", "dwarf", 18, fs1, fs2},
+		{"orc Flame Shock at 19 is the top rank", "shaman-elemental", "orc", 19, fs2, fs1},
 		{"troll Flame Shock at 19 is the top rank", "shaman-elemental", "troll", 19, fs2, fs1},
-		{"dwarf Flame Shock at 19 is the top rank", "shaman-elemental", "dwarf", 19, fs2, fs1},
+		{"dwarf Flame Shock at 19", "shaman-elemental", "dwarf", 19, fs1, fs2},
 		{"orc Earth Shock at 25 is the top rank", "shaman-enhancement", "orc", 25, es4, es3},
 		{"troll Earth Shock at 25", "shaman-enhancement", "troll", 25, es3, es4},
 		{"tauren Earth Shock at 25", "shaman-enhancement", "tauren", 25, es3, es4},
