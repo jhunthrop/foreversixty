@@ -88,7 +88,7 @@ func TestNoSpecBelowTheLowestBandIsUnarmedOrBowless(t *testing.T) {
 	}
 	kinds := readItemKinds(t)
 	for _, spec := range specs.All {
-		gear, err := request.LoadLevelGear(realRoot, build, spec.Spec)
+		gear, err := request.LoadLevelGear(realRoot, build, spec.Spec, "horde")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -156,5 +156,24 @@ func TestACasterBelowTheBandKeepsAWand(t *testing.T) {
 	ranged := slotItems(req.Character.Gear)["ranged"]
 	if k := kinds[ranged]; k.ClassID != kindWeapon || k.SubclassID != subclassWand {
 		t.Errorf("level-12 Fire mage ranged = %d (%+v), want a wand", ranged, k)
+	}
+}
+
+// A refill is one the character's faction can earn: Deepblaze (279896) is the
+// reward of an Alliance quest (Old Ironforge Incursion), so a level-13 Horde
+// priest is never handed it.
+func TestARefillIsOneTheFactionCanEarn(t *testing.T) {
+	o := realOptions("priest-shadow")
+	o.band, o.preset, o.faction, o.level = 20, "bare", "horde", 13
+	req, err := buildRequest(o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	worn := slotItems(req.Character.Gear)
+	if worn["ranged"] == 279896 {
+		t.Error("a level-13 Horde priest holds Deepblaze, an Alliance quest's reward")
+	}
+	if worn["ranged"] == 0 {
+		t.Error("a level-13 Horde priest holds no wand")
 	}
 }

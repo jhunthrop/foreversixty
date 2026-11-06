@@ -32,7 +32,7 @@ func TestLevelBelowTheLowestBandWearsOnlyWhatTheLevelAllows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fit, err := request.LoadLevelGear(o.repoRoot, build, o.spec)
+	fit, err := request.LoadLevelGear(o.repoRoot, build, o.spec, o.faction)
 	if err != nil {
 		t.Fatal(err)
 	}

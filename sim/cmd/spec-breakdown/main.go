@@ -385,7 +385,7 @@ func levelGear(o options, entry bisEntry, gear []api.GearSlot, level int) ([]api
 	if err != nil {
 		return nil, err
 	}
-	fit, err := request.LoadLevelGear(o.repoRoot, build, o.spec)
+	fit, err := request.LoadLevelGear(o.repoRoot, build, o.spec, o.faction)
 	if err != nil {
 		return nil, err
 	}

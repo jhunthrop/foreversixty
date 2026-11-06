@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
@@ -29,10 +30,14 @@ type LevelGear struct {
 	// clientLevels is every item's client required_level (items.json), for an
 	// id the class table does not carry.
 	clientLevels map[int]int
+	// otherFaction is every item only the other faction can earn: a reward of
+	// that faction's quests alone, or an item the client restricts to it.
+	otherFaction map[int]bool
 }
 
-// LoadLevelGear reads spec's class item table for build.
-func LoadLevelGear(repoRoot, build, spec string) (LevelGear, error) {
+// LoadLevelGear reads spec's class item table for build, for a character of
+// faction ("horde" or "alliance").
+func LoadLevelGear(repoRoot, build, spec, faction string) (LevelGear, error) {
 	info, ok := specs.ByKey[spec]
 	if !ok {
 		return LevelGear{}, fmt.Errorf("level gear: unknown spec %q", spec)
@@ -53,11 +58,92 @@ func LoadLevelGear(repoRoot, build, spec string) (LevelGear, error) {
 	if err != nil {
 		return LevelGear{}, err
 	}
+	otherFaction, err := loadOtherFactionItems(repoRoot, build, faction)
+	if err != nil {
+		return LevelGear{}, err
+	}
 	byID := make(map[int]buildItem, len(items))
 	for _, it := range items {
 		byID[it.ID] = it
 	}
-	return LevelGear{spec: spec, items: items, byID: byID, known: known, floors: floors, clientLevels: clientLevels}, nil
+	return LevelGear{spec: spec, items: items, byID: byID, known: known, floors: floors,
+		clientLevels: clientLevels, otherFaction: otherFaction}, nil
+}
+
+// loadOtherFactionItems is every item a faction character cannot earn: one the
+// client restricts to the other faction (items.json faction_restriction,
+// "horde_only" or "alliance_only"), or
+// one whose only sources are quests of the other faction (loot.json).
+func loadOtherFactionItems(repoRoot, build, faction string) (map[int]bool, error) {
+	if faction != "horde" && faction != "alliance" {
+		return nil, fmt.Errorf("level gear: faction %q is neither horde nor alliance", faction)
+	}
+	dir := filepath.Join(repoRoot, "data", "builds", build)
+	b, err := os.ReadFile(filepath.Join(dir, "loot.json"))
+	if err != nil {
+		return nil, fmt.Errorf("level gear: reading loot.json: %w", err)
+	}
+	var loot struct {
+		Sources []struct {
+			Kind   string `json:"kind"`
+			Items  []int  `json:"items"`
+			Trash  []int  `json:"trash"`
+			Bosses []struct {
+				Items []int `json:"items"`
+			} `json:"bosses"`
+		} `json:"sources"`
+		Quests map[string][]struct {
+			Faction string `json:"faction"`
+		} `json:"quests"`
+	}
+	if err := json.Unmarshal(b, &loot); err != nil {
+		return nil, fmt.Errorf("level gear: parsing loot.json: %w", err)
+	}
+	sourced := map[int]bool{}
+	for _, src := range loot.Sources {
+		if src.Kind == "quest" {
+			continue // the quests map below says whose quests they are
+		}
+		for _, id := range append(append([]int{}, src.Items...), src.Trash...) {
+			sourced[id] = true
+		}
+		for _, boss := range src.Bosses {
+			for _, id := range boss.Items {
+				sourced[id] = true
+			}
+		}
+	}
+	out := map[int]bool{}
+	for key, quests := range loot.Quests {
+		id, err := strconv.Atoi(key)
+		if err != nil || sourced[id] || len(quests) == 0 {
+			continue
+		}
+		other := true
+		for _, q := range quests {
+			if q.Faction == faction || q.Faction == "both" || q.Faction == "" {
+				other = false
+			}
+		}
+		out[id] = other
+	}
+	rows, err := os.ReadFile(filepath.Join(dir, "items.json"))
+	if err != nil {
+		return nil, fmt.Errorf("level gear: reading items.json: %w", err)
+	}
+	var items []struct {
+		ID                 int    `json:"id"`
+		FactionRestriction string `json:"faction_restriction"`
+	}
+	if err := json.Unmarshal(rows, &items); err != nil {
+		return nil, fmt.Errorf("level gear: parsing items.json: %w", err)
+	}
+	for _, it := range items {
+		if r := it.FactionRestriction; r != "" && r != faction+"_only" {
+			out[it.ID] = true
+		}
+	}
+	return out, nil
 }
 
 func loadClientRequiredLevels(repoRoot, build string) (map[int]int, error) {
@@ -113,7 +199,7 @@ func (g LevelGear) Fit(gear []api.GearSlot, alternatives map[string][]int, level
 func (g LevelGear) replacement(dropped api.GearSlot, alternatives []int, worn []api.GearSlot, level int) (int, bool) {
 	taken := slotItemIDs(worn)
 	for _, id := range alternatives {
-		if !taken[id] && id != 0 && g.RequiredLevel(id) <= level && g.sameHandedness(id, dropped.ItemID) {
+		if !taken[id] && id != 0 && !g.otherFaction[id] && g.RequiredLevel(id) <= level && g.sameHandedness(id, dropped.ItemID) {
 			return id, true
 		}
 	}
@@ -121,7 +207,7 @@ func (g LevelGear) replacement(dropped api.GearSlot, alternatives []int, worn []
 	if !ok {
 		return 0, false
 	}
-	pool := withoutItem(g.items, worn)
+	pool := g.earnable(withoutItem(g.items, worn))
 	switch {
 	case it.WeaponClass == itemClassArmor && it.WeaponSubclass == armorSubclassShield:
 		pick, found := pickShieldItem(pool, g.known, g.floors, level)
@@ -180,6 +266,17 @@ func weaponFamily(subclass int) []int {
 		return []int{weaponThrown}
 	}
 	return nil
+}
+
+// earnable is items without the ones only the other faction can earn.
+func (g LevelGear) earnable(items []buildItem) []buildItem {
+	out := make([]buildItem, 0, len(items))
+	for _, it := range items {
+		if !g.otherFaction[it.ID] {
+			out = append(out, it)
+		}
+	}
+	return out
 }
 
 func slotItemIDs(gear []api.GearSlot) map[int]bool {
