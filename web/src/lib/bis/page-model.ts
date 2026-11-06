@@ -13,6 +13,7 @@ import type { ExpertiseCapLine } from './expertise-cap';
 import type { BandInfo, RowView } from './panel-view';
 import { raidCaptionFor, effectGroupsFor, type PresetEffectGroup } from './preset-caption';
 import { presetOf } from './presets';
+import { bandModelKey } from './model-key';
 import { bandTopLevel } from './rotation-view';
 import type { ScaleRow } from './scale-view';
 import { filterKindOfSource, pickKinds } from './source-filter';
@@ -146,9 +147,7 @@ export interface BisPageData {
   items: Record<number, BisItem>;
 }
 
-export function bandModelKey(faction: Faction, band: number, preset: BisPresetId): string {
-  return `${faction}-${band}-${preset}`;
-}
+export { bandModelKey };
 
 /** Enchant names by (id, slot): the same id names one enchant per slot in enchants.json. */
 export type EnchantNames = (id: number, slot: string) => string | undefined;

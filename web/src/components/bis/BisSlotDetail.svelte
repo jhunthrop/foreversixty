@@ -36,7 +36,7 @@
   const pickRows = $derived<BisCandidate[]>(row?.id === undefined ? [] : [{ id: row.id, delta: 0 }, ...row.alts]);
 
   function gapText(delta: number): string {
-    return isTie(delta) ? 'same' : `${signedFigure(delta)} ${unit}`;
+    return isTie(delta) ? `same ${unit}` : `${signedFigure(delta)} ${unit}`;
   }
 
   const sections = $derived.by(() => {

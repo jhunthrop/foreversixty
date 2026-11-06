@@ -113,6 +113,7 @@
     aria-disabled={canSelect ? undefined : 'true'}
     tabindex={canSelect ? (cell.slot === focusSlot ? 0 : -1) : undefined}
     data-doll-slot={cell.slot}
+    data-bis-item={cell.item && !cell.unknown ? cell.item.id : undefined}
     data-state={cell.item === null ? 'empty' : cell.unknown ? 'unknown' : 'item'}
     data-testid={`${testid}-slot-${cell.slot}`}
     onclick={() => choose(cell)}

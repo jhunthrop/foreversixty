@@ -5,6 +5,7 @@
      cells and the profile disclosure. -->
 <script lang="ts">
   import Figure from '../ui/Figure.svelte';
+  import { bisCopy } from '../../lib/bis/copy';
   import type { BisAnswerModel, GainUnit } from '../../lib/bis/page-model';
   import type { SetFigure } from '../../lib/bis/source-choice';
 
@@ -85,7 +86,7 @@
   {/if}
   {#if answer.presetGroups && answer.presetGroups.length > 0}
     <details class="bis-answer-profile" data-testid="bis-preset-effects">
-      <summary>What this profile assumes</summary>
+      <summary>{bisCopy.presetDetailsSummary}</summary>
       <dl>
         {#each answer.presetGroups as group (group.heading)}
           <dt>{group.heading}</dt>

@@ -18,7 +18,7 @@
   import BisSources from './BisSources.svelte';
   import BisWeights from './BisWeights.svelte';
   import { readBisPageData } from '../../lib/bis/page-registry';
-  import { bandModelKey } from '../../lib/bis/page-model';
+  import { bandModelKey } from '../../lib/bis/model-key';
   import { isDefaultState, parseState, stateSearch, withChange, type BisPageState } from '../../lib/bis/page-state';
   import { choiceWords, defaultRuleLine, setFigureFor, sourceChoiceFor } from '../../lib/bis/source-choice';
   import {
@@ -157,8 +157,8 @@
       const stored = readStoredSources(initial.band);
       if (stored !== undefined) initial = { ...initial, sources: stored };
     }
-    const hadHash = /^#band-/.test(window.location.hash);
-    if (!isDefaultState(initial, context) || hadHash) apply(initial, hadHash);
+    // A legacy #band-<faction>-<band> link keeps its URL: the hash is read, not rewritten.
+    if (!isDefaultState(initial, context)) apply(initial, false);
     document.documentElement.removeAttribute('data-bis-pending');
     const show = (detail: BisShowDetail) => {
       if (root !== undefined) delete root.dataset.bisShow;

@@ -3,7 +3,8 @@
 // the bands, the presets each faction and band publishes, the races per faction and the race
 // each band was simmed as.
 import { bisCopy } from './copy';
-import { bandModelKey, type BisPageData } from './page-model';
+import { bandModelKey } from './model-key';
+import type { BisPageData } from './page-model';
 import type { BisStateContext } from './page-state';
 import type { BisPresetId, Faction } from './types';
 
