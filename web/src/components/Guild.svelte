@@ -67,6 +67,7 @@
   import { GUILD_BANDLESS_TOP, PLANNED_RESERVE } from '../lib/guild/raid-layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
+  import { nextRaidFact } from '../lib/guild/overview-role-view';
   import { showBandCounts, showsWeekOne, updatedLine } from '../lib/guild/overview-view';
   import { claimEntryFor, rosterGateState } from '../lib/guild/roster-gate';
   import { claimRowKind } from '../lib/guild/claim-row';
@@ -106,7 +107,7 @@
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
   import { LOOT_LOAD_ERROR } from '../lib/guild/loot-view';
-  import PageHead from './ui/PageHead.svelte';
+  import PageHeader from './ui/PageHeader.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -848,6 +849,45 @@
   }
 </script>
 
+{#snippet bandLine()}
+  {#if home !== null}
+    {#if bandLineLazy.current !== null}
+      <bandLineLazy.current
+        guildId={home.guild.id}
+        nextRaid={home.next_raid ?? null}
+        officer={officerView}
+        {officerTools}
+        {gateFacts}
+        {guildPath}
+        currentKey={myCharacterKey}
+        ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
+        defaultRole={myRosterRow?.role ?? 'dps'}
+        onChange={(next) => {
+          if (home !== null) home = { ...home, next_raid: next };
+          raidsChanged();
+        }}
+        onStatusLine={(shown) => (bandLineStatus = shown)}
+      />
+    {:else if bandLineLazy.error !== '' && home.next_raid != null}
+      <a
+        href={guildRaidHref(guildPath, home.next_raid.id)}
+        class="text-gold text-[13px] font-bold"
+        data-testid="guild-raid-line-link">{home.next_raid.zone_name} →</a
+      >
+    {:else if bandLineLazy.error !== '' && officerView && officerTools}
+      <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
+        >{raidCopy.bandNone.planLink}</a
+      >
+    {:else if bandLineLazy.error === ''}
+      <div
+        class={home.next_raid == null ? 'min-h-5' : 'min-h-[112px] md:min-h-11'}
+        aria-hidden="true"
+        data-testid="guild-raid-line-reserve"
+      ></div>
+    {/if}
+  {/if}
+{/snippet}
+
 {#if status === 'missing' || (status === 'notfound' && resolved !== null)}
   <h1 class="sr-only">Guild</h1>
   <!-- Keeps the loading state's box and its lede: this branch replaces the loading state on
@@ -896,23 +936,30 @@
         bind:offsetHeight={bandHeaderHeight}
         data-testid="guild-band-header"
       >
-        <PageHead eyebrow={guildHomeCopy.eyebrow} title={data.guild.name}>
-          {#snippet lead()}
+        <PageHeader
+          title={data.guild.name}
+          tone={faction === 'alliance' || faction === 'horde' ? { faction } : 'strong'}
+          testid="guild-page-header"
+        >
+          {#snippet crest()}
             <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
           {/snippet}
           {#snippet meta()}
             <span data-testid="guild-header-facts">
               <FactLine
-                facts={bandFacts(
-                  rulesetLabel(resolved.ruleset),
-                  resolved.region,
-                  showCounts ? { killed, pulls } : null,
-                  home?.summary?.updated_at === undefined ? '' : updatedLine(home.summary.updated_at),
-                )}
+                facts={[
+                  ...bandFacts(
+                    rulesetLabel(resolved.ruleset),
+                    resolved.region,
+                    showCounts ? { killed, pulls } : null,
+                    home?.summary?.updated_at === undefined ? '' : updatedLine(home.summary.updated_at),
+                  ),
+                  ...(home?.next_raid == null ? [] : [nextRaidFact(home.next_raid)]),
+                ]}
               />
             </span>
           {/snippet}
-        </PageHead>
+        </PageHeader>
 
         <!-- Spec §4.A.1 fourth branch (public visitor): one sign-in prompt in the hero,
                the Battle.net button style, returning to this page. Live defect 2026-10-05:
@@ -962,48 +1009,15 @@
                      the standing line and the needs line. Its chunk loads alongside /home; the box
                      it fills (the resting caps, 44 desktop, 112 phone) is held until it lands, and
                      a chunk that fails leaves the plain link in its place. -->
-              {#if showsBandLine(myGuildMembership?.verified === true, role)}
-                {#if bandLineLazy.current !== null}
-                  <bandLineLazy.current
-                    guildId={home.guild.id}
-                    nextRaid={home.next_raid ?? null}
-                    officer={officerView}
-                    {officerTools}
-                    {gateFacts}
-                    {guildPath}
-                    currentKey={myCharacterKey}
-                    ownCharacters={home.roster.filter((r) => myCharacterKeys.has(r.character_key))}
-                    defaultRole={myRosterRow?.role ?? 'dps'}
-                    onChange={(next) => {
-                      if (home !== null) home = { ...home, next_raid: next };
-                      raidsChanged();
-                    }}
-                    onStatusLine={(shown) => (bandLineStatus = shown)}
-                  />
-                {:else if bandLineLazy.error !== '' && home.next_raid != null}
-                  <a
-                    href={guildRaidHref(guildPath, home.next_raid.id)}
-                    class="text-gold text-[13px] font-bold"
-                    data-testid="guild-raid-line-link">{home.next_raid.zone_name} →</a
-                  >
-                {:else if bandLineLazy.error !== '' && officerView && officerTools}
-                  <a href="#raids" class="text-[13px] font-bold" data-testid="guild-raid-line-plan"
-                    >{raidCopy.bandNone.planLink}</a
-                  >
-                {:else if bandLineLazy.error === ''}
-                  <div
-                    class={home.next_raid == null ? 'min-h-5' : 'min-h-[112px] md:min-h-11'}
-                    aria-hidden="true"
-                    data-testid="guild-raid-line-reserve"
-                  ></div>
-                {/if}
+              {#if activeTab !== 'overview' && showsBandLine(myGuildMembership?.verified === true, role)}
+                {@render bandLine()}
               {/if}
               {#if myLevelingLine !== null}
                 <!-- Week-one spec 3.2: under 60 this is the band's only viewer line, never green. -->
                 <p class="text-text text-[14px]" data-testid="guild-standing-leveling">
                   {myLevelingLine}
                 </p>
-              {:else if role === 'member' && needs !== null}
+              {:else if activeTab !== 'overview' && role === 'member' && needs !== null}
                 <!-- Week-one spec 3.2: the viewer's own line. The fails read --text (a to-do list, not a
                        failure); every check passing reads green; a leveling character is never green. -->
                 <p
@@ -1048,6 +1062,11 @@
       <GuildOverview
         {guildId}
         {role}
+        officer={officerView}
+        nextRaid={home?.next_raid ?? null}
+        {guildPath}
+        myRow={myRosterRow}
+        you={showsBandLine(myGuildMembership?.verified === true, role) ? bandLine : undefined}
         reports={home?.reports ?? data.reports}
         summary={home?.summary}
         {showCounts}

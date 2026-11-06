@@ -9,6 +9,7 @@
 
   let {
     caption,
+    labelHeader,
     columns,
     rows,
     lead,
@@ -16,6 +17,8 @@
   }: {
     /** The table's name for assistive tech ("Buff and debuff cover"); not drawn. */
     caption: string;
+    /** The label column's visible header ("Buffs"); without one it is read, not drawn. */
+    labelHeader?: string;
     columns: readonly string[];
     rows: readonly R[];
     lead?: Snippet<[R]>;
@@ -29,8 +32,10 @@
   <caption class="sr-only">{caption}</caption>
   <thead>
     <tr>
-      <th scope="col" class="border-line-soft border-b px-[6px] py-2"
-        ><span class="sr-only">{caption}</span></th
+      <th
+        scope="col"
+        class="text-label tracking-label text-muted border-line-soft border-b px-[6px] py-2 text-left font-bold uppercase"
+        >{#if labelHeader}{labelHeader}{:else}<span class="sr-only">{caption}</span>{/if}</th
       >
       {#each columns as column (column)}
         <th

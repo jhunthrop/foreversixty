@@ -23,6 +23,11 @@ export const TAB_STRIP = {
   strip:
     'flex flex-nowrap overflow-x-auto overscroll-x-contain [scroll-padding-inline:48px] [scrollbar-width:none] ' +
     'shadow-[inset_0_-1px_0_var(--color-line-soft)] [&::-webkit-scrollbar]:hidden',
+  /** Wrap mode (web layout spec 2026-11-05 §7.1): below 768 the tabs wrap to a second line, so none is
+   *  cut off; from md the strip scrolls as above. */
+  stripWrap:
+    'flex flex-wrap md:flex-nowrap md:overflow-x-auto md:overscroll-x-contain [scroll-padding-inline:48px] ' +
+    '[scrollbar-width:none] shadow-[inset_0_-1px_0_var(--color-line-soft)] [&::-webkit-scrollbar]:hidden',
   tab:
     'inline-flex min-h-11 shrink-0 items-center border-b-2 px-3 text-[12px] font-bold tracking-[0.06em] ' +
     'whitespace-nowrap uppercase transition-colors duration-[120ms] motion-reduce:transition-none ' +

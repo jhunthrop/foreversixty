@@ -1,0 +1,29 @@
+<!-- web/src/components/guild/overview/LastRaid.svelte -->
+<!-- Last raid (web layout spec 2026-11-05 §7.1, demoted): past nights collapse to one Row linking
+     the report, with progression as the section's one line. -->
+<script lang="ts">
+  import FactLine from '../FactLine.svelte';
+  import Row from '../../ui/Row.svelte';
+  import Section from '../../ui/Section.svelte';
+
+  let {
+    report,
+    facts,
+    progression,
+  }: {
+    report: { id: string; title: string; zone: string; day: string } | null;
+    facts: readonly string[];
+    progression: string;
+  } = $props();
+</script>
+
+<Section title="Last raid" meta={progression} testid="guild-overview-last-raid">
+  {#if report === null}
+    <p class="text-muted text-small">No raid logged yet.</p>
+  {:else}
+    <Row title={report.title === '' ? report.zone : report.title} href={`/reports/${report.id}`} open>
+      {#snippet subContent()}<FactLine facts={[report.day, ...facts]} />{/snippet}
+      {#snippet trail()}<span class="text-gold font-semibold">Report ›</span>{/snippet}
+    </Row>
+  {/if}
+</Section>

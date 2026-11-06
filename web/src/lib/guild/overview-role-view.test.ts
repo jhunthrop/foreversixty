@@ -7,6 +7,10 @@ import {
   checklistRows,
   compTallyRows,
   compTargetLine,
+  coverGridRows,
+  nextRaidFact,
+  raidTimeLine,
+  raidWeekday,
   verdictLine,
 } from './overview-role-view';
 import { tallyTone } from '../ui/cells';
@@ -37,6 +41,20 @@ describe('checklistRows', () => {
       ]),
     );
     expect(rows.map((row) => row.key)).toEqual(['level']);
+  });
+
+  it('asks the member to share gear the checklist cannot see, so the verdict never reads ready for it', () => {
+    const rows = checklistRows(
+      checklist([{ key: 'gear_gap', state: 'not_tracked', reason: 'gear_not_shared' }]),
+    );
+    expect(rows).toEqual([
+      expect.objectContaining({
+        tone: 'warn',
+        title: 'Share your gear',
+        fix: { label: 'How', href: '/setup' },
+      }),
+    ]);
+    expect(verdictLine('almost', rows, 'Thursday')).toBe('Almost there: one thing before Thursday.');
   });
 
   it('names the gear gap in the client’s slot words and links the BiS list', () => {
@@ -185,5 +203,52 @@ describe('attendanceGridRows', () => {
       ['Pinefeather', 'slipping', '✓×'],
       ['Cinderglass', 'bench', 'B✓'],
     ]);
+  });
+});
+
+describe('raid time and cover rows', () => {
+  it('writes the guild time, and the viewer’s when it differs', () => {
+    const at = '2026-12-11T02:00:00Z';
+    expect(raidTimeLine(at, 'America/Chicago', 'America/Chicago', 'en-US')).toBe('Thu 10 Dec · 8 pm CST');
+    expect(raidTimeLine(at, 'America/Chicago', 'America/New_York', 'en-US')).toBe(
+      'Thu 10 Dec · 8 pm CST · 9 pm EST your time',
+    );
+    expect(raidWeekday(at, 'America/Chicago', 'en-US')).toBe('Thursday');
+  });
+
+  it('shows the need beside the signed providers, toned, with the bench and talents named', () => {
+    const [row] = coverGridRows([
+      {
+        key: 'trueshot',
+        name: 'Trueshot Aura',
+        kind: 'buff',
+        spell_id: 20906,
+        icon: 'ability_trueshot',
+        need: 1,
+        per: 'raid',
+        providers_in: 1,
+        providers_late: 0,
+        providers_bench: 1,
+        likely: 1,
+        state: 'ok',
+      },
+    ]);
+    expect(row?.sub).toBe('1 on a talent we cannot see · 1 on the bench');
+    expect(row?.cells.map((c) => [c.tone, c.text])).toEqual([
+      ['none', '1'],
+      ['warn', '1'],
+    ]);
+  });
+});
+
+describe('nextRaidFact', () => {
+  it('names the zone and the day on the guild’s calendar', () => {
+    expect(
+      nextRaidFact({
+        zone_name: "Onyxia's Lair",
+        starts_at: '2026-12-11T02:00:00Z',
+        guild_timezone: 'America/Chicago',
+      }),
+    ).toBe("Next raid: Onyxia's Lair, Thu 10 Dec");
   });
 });

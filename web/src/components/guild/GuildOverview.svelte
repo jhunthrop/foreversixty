@@ -1,63 +1,53 @@
 <!-- web/src/components/guild/GuildOverview.svelte -->
-<!-- Guild control-centre spec §4.A: round 1's page, trimmed to a summary of every other
-     tab, each a "See all" link to the full tab. The Roster/Raids/Progression summaries
-     read from the same GuildHome/GuildPage fetch the header already makes (spec §8: no new
-     round trip). The Readiness/Loot summary cards need figures the home contract does not
-     carry (the three worst-readiness raiders; the current boss and next pick) -- this
-     component fetches those two endpoints itself, once, for member/officer viewers only;
-     both responses are cached through query.ts, so opening the real Readiness/Loot tab
-     afterward costs nothing further. Documented as a deliberate, reported deviation from
-     the letter of "no new round trip" where the contract's own `home.summary` has no field
-     for either figure (build report, "what was left out and why"). The standing line and
-     "before Thursday" sentence are NOT rendered here -- Guild.svelte renders them once,
-     directly under the header facts line and above the tab strip itself (spec §4.0/§4.A.1:
-     "the tab strip ... sits directly under the role-based line"), so they stay visible
-     regardless of which tab is open rather than being Overview-only content. Fix round 1
-     (2026-10-04): the officer strip (claim badge, approvals, invite) moved out of this
-     card for the same reason -- it is now part of Guild.svelte's own full-bleed band, so
-     it, too, stays visible on every tab rather than Overview-only. -->
+<!-- The role-aware Overview (web layout spec 2026-11-05 §7.1), built only from the ui/ primitives:
+     one Plate (the next raid, with the viewer's own sign-up row), open Sections around it.
+     Member: the verdict Notice, the private checklist (D12), their numbers, the raid's comp.
+     Officer: Action needed, the next raid with its counts, comp against the target, and in the rail
+     buff and debuff cover (D15) and the last four raids' attendance. Everyone: the last raid, with
+     progression as its one line. A module whose data has no source yet is not drawn (7.4). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import type { GuildHomeSummary, GuildRaidsPage, GuildReadinessRow } from '../../lib/guild/api';
-  import {
-    fetchGuildLoot,
-    fetchGuildProgression,
-    fetchGuildRaids,
-    fetchGuildReadiness,
+  import type {
+    GuildHomeSummary,
+    GuildRaidView,
+    GuildRaidsPage,
+    GuildRosterRow,
+    NextRaidView,
   } from '../../lib/guild/api';
+  import { fetchGuildProgression, fetchGuildRaids } from '../../lib/guild/api';
+  import { guildRaidHref } from '../../lib/characters';
+  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import {
-    NO_PUBLIC_LOGS,
-    NO_PUBLIC_REPORTS,
+    fetchMyChecklist,
+    fetchOfficerActions,
+    fetchRecentAttendance,
+    type GuildChecklist,
+    type GuildOfficerActions,
+    type GuildRecentAttendance,
+  } from '../../lib/guild/overview-api';
+  import { checklistRows, raidWeekday, verdictLine, verdictWord } from '../../lib/guild/overview-role-view';
+  import {
     bossesDownCountLine,
     bossesDownLine,
     downEncounterNames,
     raidNightDay,
-    rosterCardFacts,
   } from '../../lib/guild/overview-view';
+  import { fetchGuildRaid } from '../../lib/guild/raids-api';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
-  import {
-    READINESS_READY,
-    READINESS_STARTS_AT_60,
-    isLeveling,
-    sortReadinessWorstFirst,
-    worstCheck,
-  } from '../../lib/guild/readiness-view';
   import { counted } from '../../lib/plural';
-  import { classColorVar } from '../../lib/report/format';
-  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Card from '../ui/Card.svelte';
-  import Glyph from '../ui/Glyph.svelte';
-  import SettingsRow from '../ui/SettingsRow.svelte';
-  import FactLine from './FactLine.svelte';
-  import { overviewLootLine, type OverviewLootLine } from '../../lib/guild/loot-view';
-  import RaidLootItem from './RaidLootItem.svelte';
+  import Notice from '../ui/Notice.svelte';
+  import Page from '../ui/Page.svelte';
+  import BuffCover from './overview/BuffCover.svelte';
+  import CompTally from './overview/CompTally.svelte';
+  import LastRaid from './overview/LastRaid.svelte';
+  import MemberChecklist from './overview/MemberChecklist.svelte';
+  import NextRaidPlate from './overview/NextRaidPlate.svelte';
+  import OfficerActions from './overview/OfficerActions.svelte';
+  import RecentAttendance from './overview/RecentAttendance.svelte';
+  import YourNumbers from './overview/YourNumbers.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
 
-  /** A report row this card can summarize: the full `GuildHomeReport` shape (member/
-   *  officer, via `home.reports`) or the public `GuildPage.reports` shape, which carries
-   *  no kill/wipe counts -- the card simply omits that clause when they are absent, never
-   *  showing a fabricated "0 kills". */
+  /** A report row the Last raid line can summarize (home.reports or the public page's). */
   interface OverviewReport {
     id: string;
     title: string;
@@ -70,236 +60,182 @@
   let {
     guildId,
     role,
+    officer = false,
     reports,
     summary,
     showCounts = true,
+    nextRaid = null,
+    guildPath,
+    myRow = null,
     onSelectTab,
     lead,
+    you,
+    now,
   }: {
     guildId: number | null;
     role: 'public' | 'member' | 'officer' | 'moderator';
+    /** The viewer may run the guild (officer tools), whatever their rank word. */
+    officer?: boolean;
     reports: readonly OverviewReport[];
     summary: GuildHomeSummary | undefined;
-    /** False for a visitor when the only report is guild-only: the progression card then says
-     *  what the public tabs say instead of counting what the visitor cannot open. */
+    /** False for a visitor when the only report is guild-only. */
     showCounts?: boolean;
+    nextRaid?: NextRaidView | null;
+    guildPath: string;
+    /** The viewer's own roster row (their raid character), for Your numbers. */
+    myRow?: GuildRosterRow | null;
     onSelectTab: (tab: GuildTabId) => void;
-    /** The first card on the tab, when the page has one to lead with (Before raids open). */
+    /** The first block on the tab, when the page has one to lead with (Before raids open). */
     lead?: Snippet;
+    /** The viewer's own sign-up row for the next raid (the band line). */
+    you?: Snippet;
+    /** A fixed clock (tests, captures); live otherwise. */
+    now?: Date;
   } = $props();
 
-  /** The Readiness card's rows: the worst of the graded raiders. Null until the board answers. */
-  let readinessSummary = $state<GuildReadinessRow[] | null>(null);
-  let lootLine = $state<OverviewLootLine | null>(null);
-  /** Live defect 2026-10-05: a public visitor has no `home` (401), so `summary` is undefined
-   *  and this card read "0 named encounters down" under a band saying 1 boss down. The
-   *  progression endpoint is public and already carries the tier figures, so the card reads
-   *  it for every role and falls back to `summary` only while it loads. */
-  let progressionSummary = $state<{ named: number; names: string[] } | null>(null);
-  /** The progression read names the bosses; until it answers the home's own count stands in. */
-  const bossesLine = $derived(
-    progressionSummary !== null
-      ? bossesDownLine(progressionSummary.names, progressionSummary.named)
-      : bossesDownCountLine(summary?.tier?.down ?? 0, summary?.tier?.named_encounters ?? 0),
-  );
-  /** The raid nights' fights, so a night reads as bosses, kills and trash packs. */
+  const viewerTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const clock = minuteClock(() => now);
+  const member = $derived(role !== 'public');
+
+  let progression = $state<{ named: number; names: string[] } | null>(null);
   let raidsPage = $state<GuildRaidsPage | null>(null);
   let bossIds = $state<ReadonlySet<number> | null>(null);
+  let raid = $state<GuildRaidView | null>(null);
+  let checklist = $state<GuildChecklist | null>(null);
+  let actions = $state<GuildOfficerActions | null>(null);
+  let attendance = $state<GuildRecentAttendance | null>(null);
 
   $effect(() => {
     if (guildId === null) return;
     void fetchGuildProgression(guildId)
       .then((page) => {
-        progressionSummary = {
-          named: page.tier.named_encounters,
-          names: downEncounterNames(page.encounters),
-        };
+        progression = { named: page.tier.named_encounters, names: downEncounterNames(page.encounters) };
         bossIds = bossIdsOf(page);
       })
-      .catch(() => {
-        progressionSummary = null;
-      });
-  });
-
-  $effect(() => {
-    if (guildId === null) return;
+      .catch(() => (progression = null));
     void fetchGuildRaids(guildId)
-      .then((page) => {
-        raidsPage = page;
-      })
-      .catch(() => {
-        raidsPage = null;
-      });
+      .then((page) => (raidsPage = page))
+      .catch(() => (raidsPage = null));
   });
 
   $effect(() => {
-    if (guildId === null || role === 'public') return;
-    void fetchGuildReadiness(guildId)
-      .then((page) => {
-        readinessSummary = sortReadinessWorstFirst(page.rows)
-          .filter((row) => !isLeveling(row) && !row.no_export)
-          .slice(0, 3);
-      })
-      .catch(() => {
-        readinessSummary = null;
-      });
-    void fetchGuildLoot(guildId)
-      .then((page) => {
-        lootLine = overviewLootLine(page);
-      })
-      .catch(() => {
-        lootLine = null;
-      });
+    if (guildId === null || !member || nextRaid === null) return;
+    void fetchGuildRaid(guildId, nextRaid.id)
+      .then((view) => (raid = view))
+      .catch(() => (raid = null));
   });
 
-  function wipeCount(report: OverviewReport): number | undefined {
-    return report.fight_count === undefined || report.kill_count === undefined
-      ? undefined
-      : Math.max(0, report.fight_count - report.kill_count);
-  }
+  $effect(() => {
+    if (guildId === null || !member || officer) return;
+    void fetchMyChecklist(guildId, nextRaid?.id ?? null)
+      .then((list) => (checklist = list))
+      .catch(() => (checklist = null));
+  });
 
-  /** The night's facts, one piece each ("1 boss (Onyxia)", "1 kill", "2 trash packs", "1 wipe") when its
-   *  fights are known, else the two counts the report row carries; none when it carries neither (the
-   *  public list). */
-  function tallyOf(report: OverviewReport): string[] {
-    const night = raidsPage?.rows.find((row) => row.id === report.id);
+  $effect(() => {
+    if (guildId === null || !officer) return;
+    void fetchOfficerActions(guildId)
+      .then((page) => (actions = page))
+      .catch(() => (actions = null));
+    void fetchRecentAttendance(guildId)
+      .then((page) => (attendance = page))
+      .catch(() => (attendance = null));
+  });
+
+  const guildTz = $derived(nextRaid?.guild_timezone ?? viewerTz);
+  const day = $derived(nextRaid === null ? null : raidWeekday(nextRaid.starts_at, guildTz));
+  const rows = $derived(checklist === null ? [] : checklistRows(checklist));
+  const progressionLine = $derived(
+    progression !== null
+      ? bossesDownLine(progression.names, progression.named)
+      : bossesDownCountLine(summary?.tier?.down ?? 0, summary?.tier?.named_encounters ?? 0),
+  );
+  const last = $derived(reports[0] ?? null);
+  const lastFacts = $derived.by((): string[] => {
+    if (last === null) return [];
+    const night = raidsPage?.rows.find((row) => row.id === last.id);
     if (night !== undefined) return raidTallyParts(night, bossIds);
-    const wipes = wipeCount(report);
-    return report.kill_count !== undefined && wipes !== undefined
-      ? [counted(report.kill_count, 'kill'), counted(wipes, 'wipe')]
-      : [];
-  }
-
-  const rosterFacts = $derived(
-    rosterCardFacts({
-      raiders: summary?.raiders ?? 0,
-      waiting_for_approval: summary?.waiting_for_approval ?? 0,
-      below_rating_floor: summary?.below_rating_floor ?? 0,
-    }),
+    if (last.kill_count === undefined || last.fight_count === undefined) return [];
+    return [
+      counted(last.kill_count, 'kill'),
+      counted(Math.max(0, last.fight_count - last.kill_count), 'wipe'),
+    ];
+  });
+  const planHref = $derived(nextRaid === null ? '#raids' : guildRaidHref(guildPath, nextRaid.id));
+  const canPing = $derived(
+    raid !== null &&
+      raid.discord_post !== null &&
+      (raid.ping?.next_allowed_at == null || new Date(raid.ping.next_allowed_at) <= clock.now),
   );
 </script>
 
-{#snippet seeAll(tab: GuildTabId)}
-  <button type="button" class={ACTION_LINK} onclick={() => onSelectTab(tab)}>
-    See all<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
-  </button>
+{#snippet lastRaid()}
+  <LastRaid
+    report={last === null ? null : { ...last, day: raidNightDay(last.created_at) }}
+    facts={lastFacts}
+    progression={showCounts ? progressionLine : ''}
+  />
 {/snippet}
 
-<section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-overview-tab">
-  {@render lead?.()}
-  {#if role !== 'public'}
-    <Card glyph="user" title="Roster" testid="guild-overview-card-roster">
-      {#snippet aside()}{@render seeAll('roster')}{/snippet}
-      <p data-testid="guild-overview-roster-facts">
-        <FactLine facts={rosterFacts} />
-      </p>
-    </Card>
+{#snippet plate()}
+  {#if nextRaid !== null}
+    <NextRaidPlate next={nextRaid} {raid} {officer} {planHref} {viewerTz} now={clock.now} {you} />
+  {:else if member}
+    <Notice
+      text="No raid planned yet."
+      action={officer ? { label: 'Plan one', href: '#raids' } : undefined}
+      tone="neutral"
+      testid="guild-overview-no-raid"
+    />
   {/if}
+{/snippet}
 
-  <Card
-    glyph="chart"
-    title="This week's raid nights"
-    body={reports.length === 0 ? 'text' : 'rows'}
-    testid="guild-overview-card-raids"
-  >
-    {#snippet aside()}{@render seeAll('raids')}{/snippet}
-    {#if reports.length === 0}
-      <p class="text-muted">{role === 'public' ? NO_PUBLIC_REPORTS : 'No reports this week yet.'}</p>
-    {:else}
-      {#each reports.slice(0, 3) as report (report.id)}
-        {@const facts = tallyOf(report)}
-        <SettingsRow
-          label={report.title === '' ? report.zone : report.title}
-          value={raidNightDay(report.created_at)}
-          testid="guild-overview-raid-row"
-        >
-          {#snippet below()}
-            {#if facts.length > 0}
-              <FactLine {facts} class="text-muted tabular text-[13px]" testid="guild-overview-raid-facts" />
-            {/if}
-          {/snippet}
-        </SettingsRow>
-      {/each}
-    {/if}
-  </Card>
-
-  <Card glyph="trophy" title="Progression" testid="guild-overview-card-progression">
-    {#snippet aside()}{@render seeAll('progression')}{/snippet}
-    {#if showCounts}
-      <p data-testid="guild-overview-progression-line">{bossesLine}</p>
-    {:else}
-      <p class="text-muted" data-testid="guild-overview-progression-empty">{NO_PUBLIC_LOGS}</p>
-    {/if}
-  </Card>
-
-  {#if role !== 'public'}
-    <Card
-      glyph="guild"
-      title="Readiness"
-      body={readinessSummary === null || readinessSummary.length === 0 ? 'text' : 'rows'}
-      testid="guild-overview-card-readiness"
-    >
-      {#snippet aside()}{@render seeAll('readiness')}{/snippet}
-      {#if readinessSummary === null}
-        <p class="text-muted">No readiness data yet.</p>
-      {:else if readinessSummary.length === 0}
-        <p class="text-muted" data-testid="guild-overview-readiness-none">{READINESS_STARTS_AT_60}</p>
-      {:else}
-        {#each readinessSummary as row (row.character_key)}
-          {@const worst = worstCheck(row)}
-          <SettingsRow
-            label={row.name}
-            labelColor={classColorVar(row.class)}
-            controlBelow
-            testid="guild-overview-readiness-row"
-          >
-            {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
-            {#snippet control()}
-              <span class="text-text text-[13px]">
-                {worst?.text ?? READINESS_READY}{#if (worst?.more ?? 0) > 0}<span class="text-muted"
-                    >{` · +${worst?.more} more`}</span
-                  >{/if}
-              </span>
-            {/snippet}
-          </SettingsRow>
-        {/each}
+<div data-testid="guild-overview-tab">
+  {#if role === 'public'}
+    <Page layout="split" testid="guild-overview-page">
+      {@render lastRaid()}
+    </Page>
+  {:else if officer}
+    <Page layout="split" testid="guild-overview-page">
+      {@render lead?.()}
+      {#if actions !== null}
+        <OfficerActions {guildId} {actions} {day} {canPing} {onSelectTab} />
       {/if}
-    </Card>
-
-    <Card glyph="star" title="Loot" testid="guild-overview-card-loot">
-      {#snippet aside()}{@render seeAll('loot')}{/snippet}
-      {#if lootLine === null}
-        <p>No bosses killed yet this tier.</p>
-      {:else if lootLine.kind === 'text'}
-        <p data-testid="guild-overview-loot-line">{lootLine.text}</p>
-      {:else}
-        {@const { item, candidate } = lootLine.pick}
-        <p class="flex flex-wrap items-center gap-x-1 gap-y-1" data-testid="guild-overview-loot-line">
-          <span>{lootLine.lead}</span>
-          <RaidLootItem
-            award={{
-              item_id: item.item_id,
-              item_name: item.name,
-              quality: item.quality,
-              icon: item.icon,
-              character_key: '',
-              name: '',
-              class: candidate.class,
-              by_name: '',
-              at: '',
-            }}
-            iconSize={16}
-            nameSize="text-[14px]"
-          />
-          <span>for</span>
-          <span class="inline-flex items-center gap-1">
-            <ClassCrestRing characterClass={candidate.class} size={16} />
-            <span class="font-semibold" style={`color:${classColorVar(candidate.class)}`}
-              >{candidate.name}</span
-            >
-          </span>
-        </p>
+      {@render plate()}
+      {#if raid?.comp_target}
+        <CompTally {raid} target={raid.comp_target} editHref={planHref} />
       {/if}
-    </Card>
+      {#snippet rail()}
+        {#if raid?.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
+        {#if attendance !== null && attendance.raids.length > 0}
+          <RecentAttendance page={attendance} rosterHref="#roster" timezone={guildTz} />
+        {/if}
+        {@render lastRaid()}
+      {/snippet}
+    </Page>
+  {:else}
+    <Page layout="split" testid="guild-overview-page">
+      {@render lead?.()}
+      {#if checklist !== null && nextRaid !== null}
+        <Notice
+          text={verdictLine(checklist.verdict, rows, day)}
+          action={rows.some((row) => row.tone !== 'ok')
+            ? { label: 'See your checklist', href: '#guild-overview-checklist' }
+            : undefined}
+          testid="guild-overview-verdict"
+        />
+      {/if}
+      {@render plate()}
+      {#if checklist !== null && rows.length > 0}
+        <div id="guild-overview-checklist">
+          <MemberChecklist {rows} verdict={verdictWord(checklist.verdict)} />
+        </div>
+      {/if}
+      {#if myRow !== null}<YourNumbers row={myRow} />{/if}
+      {#snippet rail()}
+        {#if raid?.comp_target}<CompTally {raid} target={raid.comp_target} title="The raid's comp" />{/if}
+        {@render lastRaid()}
+      {/snippet}
+    </Page>
   {/if}
-</section>
+</div>

@@ -6,7 +6,10 @@
 import { bisHref } from '../character-profile';
 import { counted } from '../plural';
 import { tallyTone, type CellTone, type MarkTone } from '../ui/cells';
-import type { GuildRaidCounts } from './api';
+import type { GridRowModel } from '../ui/cells';
+import type { GuildRaidCounts, GuildRaidCoverRow } from './api';
+import { coverSigned, coverTone } from './cover-view';
+import { DEFAULT_LOCALE, clockText, dateLabel, offsetsDiffer, zoneAbbreviation } from './raid-time';
 import { enchantSlotLabel as slotWord } from './readiness-view';
 import type {
   AttendanceCell,
@@ -16,6 +19,7 @@ import type {
   GuildCompRole,
   GuildCompTarget,
   GuildOfficerActions,
+  GuildPingResult,
   GuildRecentAttendance,
 } from './overview-api';
 
@@ -111,7 +115,7 @@ export function checklistRows(list: GuildChecklist, race: string | null = null):
   const zone = list.raid?.zone_name ?? 'the raid';
   const bis = bisHref(list.character.class, list.character.spec || null, list.character.level, race);
   return list.items.flatMap((item): ChecklistRow[] => {
-    if (item.state === 'not_tracked') return [];
+    if (item.state === 'not_tracked') return actionableRow(item);
     switch (item.key) {
       case 'level':
         return [levelRow(item, zone)];
@@ -125,6 +129,29 @@ export function checklistRows(list: GuildChecklist, race: string | null = null):
         return [];
     }
   });
+}
+
+const SETUP_HREF = '/setup';
+
+/** A check we cannot read that the member can fix themselves (share the export); the rest of the
+ *  untracked checks (keys, named consumables, resistance, no BiS list) are not drawn. */
+function actionableRow(item: ChecklistItem): ChecklistRow[] {
+  const fix = { label: 'How', href: SETUP_HREF };
+  if (item.reason === 'gear_not_shared')
+    return [
+      {
+        key: item.key,
+        tone: 'warn',
+        title: 'Share your gear',
+        sub: 'Your addon export has no gear on file yet.',
+        fix,
+      },
+    ];
+  if (item.key === 'level' && item.reason === 'no_level')
+    return [
+      { key: item.key, tone: 'warn', title: 'Share your level', sub: 'Your level is not on file yet.', fix },
+    ];
+  return [];
 }
 
 const VERDICT_WORD: Readonly<Record<ChecklistVerdict, string>> = {
@@ -247,4 +274,65 @@ export function attendanceGridRows(page: GuildRecentAttendance): GridRow[] {
       sub: row.slipping ? 'slipping' : 'bench',
       cells: row.cells.map((cell) => CELL[cell]),
     }));
+}
+
+/** The weekday a raid falls on in the guild's zone, for "before Thursday". */
+export function raidWeekday(startsAt: string, tz: string, locale: string = DEFAULT_LOCALE): string {
+  return new Intl.DateTimeFormat(locale, { weekday: 'long', timeZone: tz }).format(new Date(startsAt));
+}
+
+/** `Thu 10 Dec · 8 pm CST`, then `· 9 pm EST your time` when the viewer's zone differs. */
+export function raidTimeLine(
+  startsAt: string,
+  guildTz: string,
+  viewerTz: string,
+  locale: string = DEFAULT_LOCALE,
+): string {
+  const at = new Date(startsAt);
+  const guild = `${dateLabel(at, guildTz, locale)} · ${clockText(at, guildTz, locale)} ${zoneAbbreviation(guildTz, at)}`;
+  if (!offsetsDiffer(at, guildTz, viewerTz)) return guild;
+  return `${guild} · ${clockText(at, viewerTz, locale)} ${zoneAbbreviation(viewerTz, at)} your time`;
+}
+
+const PER_WORDS: Readonly<Record<GuildRaidCoverRow['per'], string>> = {
+  raid: '',
+  melee_group: 'per melee group',
+  caster_group: 'per caster group',
+};
+
+/** The cover rows as Grid rows: what the raid needs, then who is signed In or Late to give it. */
+export function coverGridRows(
+  rows: readonly GuildRaidCoverRow[],
+): (GridRowModel & { row: GuildRaidCoverRow })[] {
+  return rows.map((row) => {
+    const per = PER_WORDS[row.per];
+    const likely = row.likely > 0 ? `${row.likely} on a talent we cannot see` : '';
+    const bench = row.providers_bench > 0 ? `${row.providers_bench} on the bench` : '';
+    return {
+      key: row.key,
+      label: row.name,
+      sub: [per, likely, bench].filter(Boolean).join(' · ') || undefined,
+      row,
+      cells: [
+        { tone: 'none', text: String(row.need), label: `Needs ${row.need}` },
+        { tone: coverTone(row), text: String(coverSigned(row)), label: `${coverSigned(row)} signed` },
+      ],
+    };
+  });
+}
+
+/** The ping's answer in words: who was named, and who could not be. */
+export function pingLine(result: GuildPingResult): string {
+  if (!result.posted) return 'Nobody to ping: none of them has linked Discord.';
+  const named = `Pinged ${counted(result.mentioned, 'raider')} on Discord.`;
+  if (result.no_discord === 0) return named;
+  return `${named} No Discord linked: ${names(result.no_discord_names)}.`;
+}
+
+/** The header's next-raid fact on every tab: `Next raid: Onyxia's Lair, Thu 10 Dec` (guild calendar). */
+export function nextRaidFact(
+  next: { zone_name: string; starts_at: string; guild_timezone: string | null },
+  viewerTz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
+): string {
+  return `Next raid: ${next.zone_name}, ${dateLabel(new Date(next.starts_at), next.guild_timezone ?? viewerTz)}`;
 }
