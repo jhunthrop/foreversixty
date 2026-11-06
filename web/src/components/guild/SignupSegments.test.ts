@@ -54,44 +54,25 @@ describe('SignupSegments', () => {
     expect(segment(markup, 'in')).toContain('tabindex="-1"');
   });
 
-  it('marks In and Late with the kill ground and line, Bench and Out with the warm ground and muted line', () => {
-    for (const state of ['in', 'late'] as const) {
-      const tag = segment(html({ value: state }), state);
-      expect(tag).toContain('text-strong');
-      expect(tag).toContain('bg-kill/15');
-      expect(tag).toContain('shadow-[inset_0_-2px_0_var(--color-kill)]');
+  it('draws the one segmented look: the checked state carries aria-checked, the rest do not', () => {
+    for (const state of STATES) {
+      const markup = html({ value: state });
+      expect(segment(markup, state)).toContain('aria-checked="true"');
+      expect(segment(markup, state)).toContain('ui-seg-item');
     }
-    for (const state of ['bench', 'out'] as const) {
-      const tag = segment(html({ value: state }), state);
-      expect(tag).toContain('bg-line-warm');
-      expect(tag).toContain('shadow-[inset_0_-2px_0_var(--color-muted)]');
-    }
-    const rest = segment(html({ value: 'in' }), 'out');
-    expect(rest).toContain('text-muted');
-    expect(rest).toContain('bg-raised');
-    expect(rest).not.toContain('shadow-[inset');
+    expect(segment(html({ value: 'in' }), 'out')).toContain('aria-checked="false"');
   });
 
-  it('is 44 px in the strip, and 36 px from md in the band', () => {
-    const strip = segment(html({ value: null, size: 'strip' }), 'in');
-    expect(strip).toContain('h-11');
-    expect(strip).not.toContain('md:h-9');
-    const band = segment(html({ value: null, size: 'band' }), 'in');
-    expect(band).toContain('h-11');
-    expect(band).toContain('md:h-9');
+  it('is 44 px in the strip, and the in-row size in the band', () => {
+    const group = (markup: string): string => /<div[^>]*role="radiogroup"[^>]*>/.exec(markup)?.[0] ?? '';
+    expect(group(html({ value: null, size: 'strip' }))).not.toContain('ui-seg--sm');
+    expect(group(html({ value: null, size: 'band' }))).toContain('ui-seg--sm');
   });
 
   it('disables all four and points the group at the state line', () => {
     const markup = html({ value: 'in', disabled: true, describedBy: 'raid-state-7' });
     for (const state of STATES) expect(segment(markup, state)).toMatch(/\sdisabled(=""|\s|>)/);
     expect(markup).toContain('aria-describedby="raid-state-7"');
-  });
-
-  it('draws a disabled group in the shared disabled look, and an enabled one at full strength', () => {
-    const group = (markup: string): string => /<div[^>]*role="radiogroup"[^>]*>/.exec(markup)?.[0] ?? '';
-    expect(group(html({ value: 'in', disabled: true }))).toMatch(/\bopacity-50\b/);
-    expect(group(html({ value: 'in' }))).not.toMatch(/\bopacity-50\b/);
-    expect(segment(html({ value: 'in', disabled: true }), 'in')).toContain('disabled:cursor-not-allowed');
   });
 
   it('carries no description while enabled', () => {

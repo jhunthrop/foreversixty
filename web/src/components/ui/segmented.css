@@ -1,0 +1,72 @@
+/* web/src/components/ui/segmented.css
+   The one segmented control's look (web layout spec 2026-11-05 §3.4, §7.3), shared by ControlBar's
+   groups and ui/Segmented, so the bar's choice and an in-row choice (sign-up In / Late / Bench) are
+   drawn by one set of rules. Lives inside ui/ because only the primitives draw a surface (§3A.3).
+   `.ui-seg--sm` is the in-row size. */
+.ui-seg {
+  display: flex;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-field);
+  overflow: hidden;
+}
+.ui-seg-item {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 600;
+  color: var(--color-nav);
+  white-space: nowrap;
+  border-left: 1px solid var(--color-line-soft);
+}
+.ui-seg-item:first-child {
+  border-left: 0;
+}
+.ui-seg-item:active {
+  background: var(--color-pressed);
+}
+.ui-seg-item:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: -2px;
+}
+.ui-seg-item[aria-checked='true'] {
+  background: var(--color-selected);
+  color: var(--color-gold);
+  box-shadow: inset 0 -2px 0 var(--color-gold);
+}
+.ui-seg-item[aria-disabled='true'] {
+  opacity: 0.5;
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+.ui-seg-count {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.ui-seg-item[aria-checked='true'] .ui-seg-count {
+  color: var(--color-gold);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ui-seg-item:not([aria-checked='true']):not([aria-disabled='true']):hover {
+    background: var(--color-hover);
+    color: var(--color-strong);
+  }
+}
+.ui-seg--sm .ui-seg-item {
+  height: 32px;
+  padding: 0 10px;
+  font-size: 13px;
+}
+.ui-seg-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ui-seg-item[aria-busy='true'] {
+  outline: 2px dashed var(--color-gold);
+  outline-offset: -2px;
+}

@@ -5,10 +5,11 @@
 // SpellIcon draws everywhere. The counts are the API's, never recomputed here.
 import { isRealIcon } from '../icons/placeholder';
 import { dataUrl } from '../planner/load';
+import type { MarkTone } from '../ui/cells';
 import type { GuildRaidCoverRow } from './api';
 
 /** A Grid cell's tone: covered, covered on a talent we cannot see or too few, nobody. */
-export type CoverTone = 'ok' | 'warn' | 'miss';
+export type CoverTone = MarkTone;
 
 export interface CoverSection {
   kind: GuildRaidCoverRow['kind'];

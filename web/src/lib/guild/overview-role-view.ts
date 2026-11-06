@@ -5,6 +5,7 @@
 // Rows whose source is not tracked yet are dropped here, never drawn with a stand-in (7.4).
 import { bisHref } from '../character-profile';
 import { counted } from '../plural';
+import { tallyTone, type CellTone, type MarkTone } from '../ui/cells';
 import type { GuildRaidCounts } from './api';
 import { enchantSlotLabel as slotWord } from './readiness-view';
 import type {
@@ -18,12 +19,9 @@ import type {
   GuildRecentAttendance,
 } from './overview-api';
 
-/** A Grid, Checklist or Tally cell's tone (ui primitives): met, close, missing, or nothing to count. */
-export type CoverTone = 'ok' | 'warn' | 'miss' | 'none';
-
 export interface ChecklistRow {
   key: ChecklistItem['key'];
-  tone: Exclude<CoverTone, 'none'>;
+  tone: MarkTone;
   title: string;
   sub: string;
   fix: { label: string; href: string } | null;
@@ -189,7 +187,7 @@ export interface TallyRow {
   have: number;
   late: number;
   want: number;
-  tone: Exclude<CoverTone, 'none'>;
+  tone: MarkTone;
 }
 
 const ROLE_LABEL: Readonly<Record<GuildCompRole, string>> = {
@@ -199,12 +197,6 @@ const ROLE_LABEL: Readonly<Record<GuildCompRole, string>> = {
   ranged: 'Ranged',
 };
 const ROLES: readonly GuildCompRole[] = ['tanks', 'healers', 'melee', 'ranged'];
-
-/** At the target, within a quarter of it, or short (the mock's Tally rule). */
-export function tallyTone(have: number, want: number): Exclude<CoverTone, 'none'> {
-  if (have >= want) return 'ok';
-  return have >= want * 0.75 ? 'warn' : 'miss';
-}
 
 /** Comp against the target: In per role against the seats; Late is shown beside it, not counted. */
 export function compTallyRows(counts: GuildRaidCounts, target: GuildCompTarget): TallyRow[] {
@@ -231,7 +223,7 @@ export function compTargetLine(zone: string, target: GuildCompTarget): string {
     : `Set for this raid: ${seats} players`;
 }
 
-const CELL: Readonly<Record<AttendanceCell, { tone: CoverTone; text: string; label: string }>> = {
+const CELL: Readonly<Record<AttendanceCell, { tone: CellTone; text: string; label: string }>> = {
   present: { tone: 'ok', text: '✓', label: 'There' },
   absent: { tone: 'miss', text: '×', label: 'Missed' },
   bench: { tone: 'warn', text: 'B', label: 'Bench' },
@@ -242,7 +234,7 @@ export interface GridRow {
   key: string;
   label: string;
   sub: string;
-  cells: { tone: CoverTone; text: string; label: string }[];
+  cells: { tone: CellTone; text: string; label: string }[];
 }
 
 /** The officer's attendance grid: slipping first, then the bench, each by name. */

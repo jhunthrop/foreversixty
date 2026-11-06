@@ -7,9 +7,9 @@ import {
   checklistRows,
   compTallyRows,
   compTargetLine,
-  tallyTone,
   verdictLine,
 } from './overview-role-view';
+import { tallyTone } from '../ui/cells';
 
 const checklist = (
   items: GuildChecklist['items'],
