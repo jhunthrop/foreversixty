@@ -107,7 +107,7 @@ func lowerLetters(s string) bool {
 
 func guidChars(s string) bool {
 	for _, r := range s {
-		if !(r == '-' || (r >= '0' && r <= '9') || (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z')) {
+		if r != '-' && (r < '0' || r > '9') && (r < 'a' || r > 'z') && (r < 'A' || r > 'Z') {
 			return false
 		}
 	}
