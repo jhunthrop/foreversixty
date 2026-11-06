@@ -140,6 +140,18 @@ describe('actionRows', () => {
       },
     ]);
   });
+
+  it("counts the loot council's open drops of its newest night, and none once all are awarded", () => {
+    const drops = { tracked: true, count: 3, raid_id: 3, label: "Onyxia's Lair, Tue 8 Dec", awarded: 2 };
+    expect(actionRows({ ...base, drops_to_award: drops }, null)).toEqual([
+      { key: 'drops', title: '3 drops to award', sub: "Onyxia's Lair, Tue 8 Dec" },
+    ]);
+    expect(actionRows({ ...base, drops_to_award: { ...drops, count: 1 } }, null)[0].title).toBe(
+      '1 drop to award',
+    );
+    expect(actionRows({ ...base, drops_to_award: { ...drops, count: 0 } }, null)).toEqual([]);
+    expect(actionRows({ ...base, drops_to_award: null }, null)).toEqual([]);
+  });
 });
 
 describe('comp against the target', () => {
