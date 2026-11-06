@@ -4,7 +4,8 @@
      the viewer's, the count, the state Tag, the officer buttons, the guild tabs), the control bar
      (group by Status, Role or Class), then the viewer's own sign-up, the one Plate of sign-up Rows
      and, for officers, who has not signed up with Ping on Discord. Rail: comp against the target
-     (officers edit it), Bench and swaps, buff and debuff cover, the notes. Phone keeps that order
+     (officers edit it), Bench and swaps, the assignments per encounter, buff and debuff cover, the
+     notes. Phone keeps that order
      in one column. A done raid is GuildRaid's report path, never this page. -->
 <script lang="ts">
   import type { GuildRaidView } from '../../../lib/guild/api';
@@ -50,6 +51,7 @@
   import Section from '../../ui/Section.svelte';
   import Tag from '../../ui/Tag.svelte';
   import CompTargetForm from './CompTargetForm.svelte';
+  import PlannerAssignments from './PlannerAssignments.svelte';
   import PlannerBench from './PlannerBench.svelte';
   import PlannerNotSigned from './PlannerNotSigned.svelte';
   import PlannerRoster from './PlannerRoster.svelte';
@@ -299,6 +301,15 @@
         closed={flags.cancelled}
         busyKey={c.rosterBusy}
         onSetState={(row, state) => c.setRosterState(row, state)}
+      />
+    {/if}
+    {#if raid.assignments}
+      <PlannerAssignments
+        {raid}
+        {officer}
+        officerTools={c.officerTools}
+        closed={flags.cancelled || flags.ended}
+        actions={c.assignments}
       />
     {/if}
     {#if raid.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}

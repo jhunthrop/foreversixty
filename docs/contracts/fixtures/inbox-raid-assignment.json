@@ -1,0 +1,14 @@
+{
+  "type": "raid_assignment",
+  "character": "us/normal/obnoxious",
+  "raid_id": 42,
+  "raid": "Onyxia's Lair",
+  "title": "Onyxia",
+  "starts_at": "2026-12-10T02:00:00Z",
+  "encounter": "Onyxia",
+  "slot": "off_tank",
+  "label": "Off tank (phase 3, fear)",
+  "warning": "OT",
+  "purpose": "Builds threat from the landing and takes her when Bellowing Roar or Knock Away drops the main tank.",
+  "with": "Thornhide"
+}

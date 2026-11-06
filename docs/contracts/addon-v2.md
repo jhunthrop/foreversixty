@@ -333,6 +333,17 @@ Notes for the reader:
   use, `requested_at` equals `weights.generated_at`; a later `requested_at` means a newer
   request has arrived since, and `sim_request_state` says what became of it.
 
+- **`raid_assignment`** (added 2026-11-06, guild raid assignments): one message per slot the
+  character holds in its next raid (the earliest planned or locked raid not yet over in which
+  an officer put it in a slot and it is still signed In, Late or Bench). It is flat, strings
+  and numbers only, so the companion carries it through as a type it does not know and needs
+  no release: `raid_id`, `raid` (the zone's name), `title`, `starts_at` (RFC 3339 UTC),
+  `encounter` (the boss), `slot` (the template key, `"main_tank"`), `label` ("Main tank"),
+  `warning` (the raid warning tag, "MT"), `purpose` (one line: what the slot does) and `with`
+  (the slot's other names, comma joined; absent when the character holds it alone).
+  `docs/contracts/fixtures/inbox-raid-assignment.json` is one such message; the API, the
+  companion and the addon each pin it. None is sent when the character holds no slot.
+
 ---
 
 ## 4. Companion outbox (`ForeverSixtyDB.outbox`)

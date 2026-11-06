@@ -2555,9 +2555,10 @@ components:
           type: [object, "null"]
           title: OfficerActionDrops
           description: >-
-            The newest loot council night with drops (GET .../loot/nights: what the council
-            awarded, voted on or flagged); null when no night has any. count is its drops still
-            open; awarded is the awards filed under that night. tracked is always true.
+            The newest loot council night with drops (GET .../loot/nights: what the addon recorded
+            dropping and what the council awarded, voted on or flagged); null when no night has
+            any. count is its drops still open, recorded ones included; awarded is the awards filed
+            under that night. tracked is always true.
           required: [tracked, count, raid_id, label, awarded]
           properties:
             tracked: { type: boolean }
@@ -2915,6 +2916,96 @@ components:
             data/curated/raid-cover.json in its order (party buffs, raid buffs, debuffs); null
             for a dungeon or an event.
           items: { $ref: '#/components/schemas/RaidCoverRow' }
+        assignments:
+          description: >-
+            The raid leader's assignments per encounter (Go guilds.RaidAssignments); null for a
+            dungeon or an event. Manual only: officers pick every name.
+          oneOf:
+            - { $ref: '#/components/schemas/RaidAssignments' }
+            - { type: "null" }
+    RaidAssignments:
+      type: object
+      description: >-
+        Each boss of the raid's zone with its template's slots (api/internal/guilds/
+        raid_assign_templates.go). A picked character whose sign-up is no longer In, Late or
+        Bench drops out of every reading.
+      required: [encounters, not_in_client, candidates, posted_at]
+      properties:
+        encounters:
+          type: array
+          items: { $ref: '#/components/schemas/RaidEncounterAssignments' }
+        not_in_client:
+          type: array
+          description: The raid's name when the game client carries none of its bosses yet; else empty.
+          items: { type: string }
+        candidates:
+          type: array
+          description: Every character signed In, Late or Bench, tanks, healers, melee, ranged, then by name.
+          items: { $ref: '#/components/schemas/RaidAssignmentRaider' }
+        posted_at: { type: [string, "null"], format: date-time, description: When the assignments last went to Discord. }
+    RaidEncounterAssignments:
+      type: object
+      required: [encounter_id, name, raid_zone, slots, raid_warning]
+      properties:
+        encounter_id: { type: integer, format: int64, description: The client's DungeonEncounter id. }
+        name: { type: string }
+        raid_zone: { type: string, description: "The raid's name, \"Onyxia's Lair\"." }
+        slots:
+          type: array
+          items: { $ref: '#/components/schemas/RaidAssignmentSlot' }
+        raid_warning:
+          type: array
+          description: 'One line per filled slot for /rw ("MT: Thornhide"), each at most 255 bytes.'
+          items: { type: string }
+    RaidAssignmentSlot:
+      type: object
+      required: [key, label, purpose, count, role, names]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        purpose: { type: string, description: What the slot does in the fight, one line. }
+        count: { type: integer, description: The most names the slot takes. }
+        role: { type: string, enum: [tank, healer, melee, ranged, any], description: Orders the picker and flags an off-role pick; never refuses one. }
+        names:
+          type: array
+          items: { $ref: '#/components/schemas/RaidAssignedName' }
+    RaidAssignmentRaider:
+      type: object
+      required: [character_key, name, class, group, state, own]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string, x-name: className }
+        group: { type: string, enum: [tank, healer, melee, ranged] }
+        state: { type: string, enum: [in, late, bench] }
+        own: { type: boolean, description: The viewer's own character. }
+    RaidAssignedName:
+      type: object
+      description: A slot's pick, RaidAssignmentRaider plus off_role.
+      required: [character_key, name, class, group, state, own, off_role]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string, x-name: className }
+        group: { type: string, enum: [tank, healer, melee, ranged] }
+        state: { type: string, enum: [in, late, bench] }
+        own: { type: boolean, description: The viewer's own character. }
+        off_role: { type: boolean, description: The slot is for a role this character does not fill tonight. }
+    RaidAssignmentInput:
+      type: object
+      required: [character_keys]
+      properties:
+        character_keys:
+          type: array
+          description: The slot's names in order; at most the slot's count, each once, each signed In, Late or Bench. Empty clears it.
+          items: { type: string }
+    RaidAssignmentPostResult:
+      type: object
+      required: [posted, posted_at, next_allowed_at]
+      properties:
+        posted: { type: boolean }
+        posted_at: { type: [string, "null"], format: date-time }
+        next_allowed_at: { type: [string, "null"], format: date-time, description: posted_at plus one minute. }
     RaidCoverRow:
       type: object
       description: >-
@@ -3480,9 +3571,11 @@ components:
       type: object
       description: >-
         GET /v1/guilds/{id}/loot/nights: the guild's loot nights, newest first. A night's drops are
-        the items the council awarded, voted on or flagged on it (no record of what dropped exists
-        beyond that); the current night (where an award made now is filed) is always listed, first
-        when nothing else holds it, and the page offers the whole loot table on it (GET .../loot).
+        what a raider's addon recorded dropping on it (the export's drops= section, recorded true),
+        plus the items the council awarded, voted on or flagged; the current night (where an award
+        made now is filed) is always listed, first when nothing else holds it, and the page offers
+        the whole loot table on it (GET .../loot) for a night no addon recorded. Members read the
+        same drops with no vote counts.
       required: [officers, nights]
       properties:
         officers: { type: integer }
@@ -3505,7 +3598,7 @@ components:
                 items:
                   type: object
                   title: LootNightDrop
-                  required: [item_id, name, icon, quality, kind, encounter_id, boss, state, award]
+                  required: [item_id, name, icon, quality, kind, encounter_id, boss, state, award, recorded, count, looted_by]
                   properties:
                     item_id: { type: integer }
                     name: { type: string }
@@ -3516,6 +3609,12 @@ components:
                     boss: { type: string }
                     state: { type: string, enum: [open, awarded] }
                     award: { oneOf: [{ $ref: '#/components/schemas/LootDecision' }, { type: "null" }] }
+                    recorded: { type: boolean, description: True when a raider's addon recorded the drop from the loot window. }
+                    count: { type: integer, minimum: 0, description: The copies the addon recorded; 0 when no addon recorded the drop. }
+                    looted_by:
+                      type: array
+                      description: Who the loot chat says received a copy, as the client named them; empty when unknown.
+                      items: { type: string }
               decisions:
                 type: array
                 description: The night's decision record, oldest first.
@@ -7750,6 +7849,105 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '429':
           description: "ping_throttled: fields.next_allowed_at (RFC 3339) and Retry-After say when the next may go"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '502':
+          description: "discord_refused: Discord did not take the message; the throttle is given back"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/assignments/{encounter}/{slot}:
+    put:
+      summary: An officer sets one assignment slot's names
+      description: >-
+        Verified officer or leader of a guild with the plan, claim not frozen, the raid planned or
+        locked. The names replace the slot's, in order. Shares the officer raid write budget.
+      operationId: setGuildRaidAssignment
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: encounter, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: slot, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/RaidAssignmentInput' } } }
+      responses:
+        '200':
+          description: "The raid view"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403':
+          description: "forbidden or guild_plan_required"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such raid, or no such encounter or slot in the raid's zone"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict (the raid is over) or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid, with field character_keys"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+    delete:
+      summary: An officer clears one assignment slot
+      operationId: clearGuildRaidAssignment
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: encounter, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: slot, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: "The raid view"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403':
+          description: "forbidden or guild_plan_required"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such raid, encounter or slot"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/assignments/post:
+    post:
+      summary: An officer posts the raid's assignments on Discord
+      description: >-
+        The bot posts one message, a reply under the raid's live post (else in its channel): the
+        raid's title and start as <t:unix:F>, then per encounter one line per slot ("open" when
+        no one holds it). Names are plain text; it pings no one and sends no DMs. A re-post after
+        an edit is allowed once a minute. Verified officer, the plan, claim not frozen, the raid
+        planned or locked.
+      operationId: postGuildRaidAssignments
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "Posted"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidAssignmentPostResult' } } }
+        '403':
+          description: "forbidden or guild_plan_required"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such raid"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '409':
+          description: "conflict (the raid is over), discord_not_connected, nothing_assigned or claim_contested"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "assignments_throttled: fields.next_allowed_at (RFC 3339) and Retry-After say when the next may go"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '502':
           description: "discord_refused: Discord did not take the message; the throttle is given back"

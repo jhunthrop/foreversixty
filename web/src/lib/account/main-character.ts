@@ -8,6 +8,7 @@ import type { CurrentCharacter } from '../current-character';
 import { characterSpecName } from '../character-spec';
 import { specName } from '../guild/spec-name';
 import type { MeCharacter } from './api';
+import { factionOfRace } from '../race-faction';
 
 function levelOf(character: MeCharacter): number {
   return character.level ?? 0;
@@ -49,11 +50,13 @@ export function pointerForCharacter(character: MeCharacter): CurrentCharacter {
   const spec = characterSpecName(character);
   const specClass = [spec, className].filter((part) => part !== undefined).join(' ');
   const label = specClass === '' ? character.name : `${character.name} · ${specClass}`;
+  const faction = character.faction ?? factionOfRace(character.race) ?? undefined;
   return {
     source: 'armory',
     ref: character.key,
     label,
     classSlug,
+    ...(faction === undefined ? {} : { faction }),
     savedAt: new Date().toISOString(),
   };
 }

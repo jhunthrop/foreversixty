@@ -126,6 +126,17 @@ type MessageEntry struct {
 	PendingApprovals int    `json:"pending_approvals,omitempty"`
 	Rank             string `json:"rank,omitempty"`
 
+	// messageRaidAssignment (raid_assignments.go): one slot the character holds in its next
+	// raid. Raid names the zone, as on loot_values; Slot is the slot's key.
+	RaidID    int64  `json:"raid_id,omitempty"`
+	Title     string `json:"title,omitempty"`
+	StartsAt  string `json:"starts_at,omitempty"`
+	Encounter string `json:"encounter,omitempty"`
+	Label     string `json:"label,omitempty"`
+	Warning   string `json:"warning,omitempty"`
+	Purpose   string `json:"purpose,omitempty"`
+	With      string `json:"with,omitempty"`
+
 	// messageAck: when the site last received the character's export. On a weights message from an
 	// in-game run it is the export that request was made on (the ack's value back then);
 	// absent on a website run and a request recorded before migration 0038.
@@ -451,6 +462,7 @@ func (s *Service) messages(ctx context.Context, userID int64, now time.Time) []M
 	lastRaids, raids := s.lastRaidMessages(ctx, sortedExportKeys(byKey), now)
 	out = append(out, lastRaids...)
 	out = append(out, s.lootValuesMessages(ctx, raids, byKey, weights)...)
+	out = append(out, s.raidAssignmentMessages(ctx, sortedExportKeys(byKey), now)...)
 	out = append(out, s.ackMessages(ctx, userID)...)
 	return out
 }

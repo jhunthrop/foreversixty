@@ -100,6 +100,7 @@
               role="radiogroup"
               aria-labelledby={`${id}-${group.param}-label`}
               data-param={group.param}
+              data-default={group.defaultValue}
               data-testid={`control-${group.param}`}
             >
               {#each group.options as option (option.value)}

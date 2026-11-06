@@ -1,10 +1,10 @@
 // api/internal/guilds/loot_council_nights.go
 //
 // The council's nights (design/specs/2026-11-05-web-layout.md §7.2): the guild's loot grouped per
-// raid night, newest first, each drop open or awarded, with the decision record. There is no
-// record of what dropped beyond what the council acted on, so a night's drops are the items it
-// awarded, voted on or flagged; the current night is listed even before anything happens on it,
-// and the page offers the whole loot table there (GET .../loot).
+// raid night, newest first, each drop open or awarded, with the decision record. A night's drops
+// are what the addon recorded dropping (raid_drops_read.go), plus the items the council awarded,
+// voted on or flagged; the current night is listed even before anything happens on it, and the
+// page offers the whole loot table there (GET .../loot) for a night no addon recorded.
 package guilds
 
 import (
@@ -60,6 +60,11 @@ type LootNightDrop struct {
 	Boss        string        `json:"boss"`
 	State       string        `json:"state"`
 	Award       *LootDecision `json:"award"`
+	// Recorded is true when a raider's addon recorded the drop from the loot window; Count is the
+	// copies it saw (0 when none recorded it) and LootedBy who the loot chat says received them.
+	Recorded bool     `json:"recorded"`
+	Count    int      `json:"count"`
+	LootedBy []string `json:"looted_by"`
 }
 
 // LootNight is one raid night of the council.
@@ -164,6 +169,7 @@ func (s *Store) councilNightRows(ctx context.Context, guildID int64, limit int, 
 		  select raid_id, report_id, awarded_at as at from loot_awards where guild_id = $1
 		  union all select raid_id, report_id, voted_at from loot_votes where guild_id = $1
 		  union all select raid_id, report_id, set_at from loot_interest where guild_id = $1
+		  union all select raid_id, report_id, dropped_at from raid_drops where guild_id = $1 and encounter_id = any($3)
 		)
 		select * from (
 		  select g.id as raid_id, null::text as report_id, g.starts_at as at, g.zone from guild_raids g
@@ -210,8 +216,9 @@ type councilActivityRow struct {
 
 // councilActivitySet is everything the council did, for placing on nights.
 type councilActivitySet struct {
-	awards []lootAward
-	acted  []councilActivityRow
+	awards   []lootAward
+	acted    []councilActivityRow
+	recorded []recordedDrop
 }
 
 // councilActivity reads the guild's awards, votes and flags.
@@ -225,6 +232,10 @@ func (s *Store) councilActivity(ctx context.Context, guildID int64) (councilActi
 		return councilActivitySet{}, err
 	}
 	lr.nameInvited(awards)
+	recorded, err := s.recordedDrops(ctx, guildID)
+	if err != nil {
+		return councilActivitySet{}, err
+	}
 	rows, err := s.Pool.Query(ctx, `
 		select raid_id, report_id, item_id, voted_at from loot_votes where guild_id = $1 and encounter_id = any($2)
 		union all
@@ -234,7 +245,7 @@ func (s *Store) councilActivity(ctx context.Context, guildID int64) (councilActi
 		return councilActivitySet{}, fmt.Errorf("guilds: council activity: %w", err)
 	}
 	defer rows.Close()
-	set := councilActivitySet{awards: awards}
+	set := councilActivitySet{awards: awards, recorded: recorded}
 	for rows.Next() {
 		var r councilActivityRow
 		if err := rows.Scan(&r.raidID, &r.reportID, &r.itemID, &r.at); err != nil {
@@ -262,8 +273,10 @@ func (set councilActivitySet) night(n councilNightRow, current awardNight, loc *
 			touched[r.itemID] = true
 		}
 	}
+	recorded := recordedOn(set.recorded, n.night, now)
 	for _, it := range lootTable {
-		if !touched[it.ItemID] {
+		tally, wasRecorded := recorded[it.ItemID]
+		if !touched[it.ItemID] && !wasRecorded {
 			continue
 		}
 		drop := LootNightDrop{ItemID: it.ItemID, Name: it.Name, Icon: it.Icon, Quality: it.Quality, Kind: lootKind(it),
@@ -272,7 +285,7 @@ func (set councilActivitySet) night(n councilNightRow, current awardNight, loc *
 		if drop.Award != nil {
 			drop.State = dropAwarded
 		}
-		out.Drops = append(out.Drops, drop)
+		out.Drops = append(out.Drops, withRecorded(drop, tally, wasRecorded))
 	}
 	sort.SliceStable(out.Decisions, func(i, j int) bool { return out.Decisions[i].At < out.Decisions[j].At })
 	out.Zone = nightZone(n.zone, out.Drops)

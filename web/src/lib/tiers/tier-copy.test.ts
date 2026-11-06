@@ -1,17 +1,30 @@
 // web/src/lib/tiers/tier-copy.test.ts
 import { describe, expect, it } from 'vitest';
 import {
+  caption,
   formatMetric,
   gapText,
-  howToReadBullets,
   ordinal,
-  tierNotes,
+  raceBasis,
+  readColumns,
+  rowName,
+  rowSub,
+  tieText,
+  tieTitle,
   tiersCopy,
-  type NoteSegment,
+  type ReadColumn,
 } from './tier-copy';
+import type { TierRow, TierTieMate } from './tier-list';
 
-const flat = (note: NoteSegment[]): string => note.map((segment) => segment.text).join('');
+const flat = (column: ReadColumn): string => column.body.map((segment) => segment.text).join('');
 const CTX = { faction: 'horde', presetLabel: 'Raid-ready, Phase 1' } as const;
+const mate = (name: string, classSlug: string, tier: TierTieMate['tier'] = 'B'): TierTieMate => ({
+  classSlug,
+  specSlug: name.toLowerCase(),
+  name,
+  tier,
+});
+const dpsRow = (tier: TierRow['tier'], tiedWith: TierTieMate[]) => ({ role: 'dps' as const, tier, tiedWith });
 
 describe('ordinal', () => {
   it.each([
@@ -28,88 +41,139 @@ describe('ordinal', () => {
   });
 });
 
-describe('tierNotes', () => {
-  it('gives each role three notes, naming the faction race and linking the leveling bands', () => {
+describe("the race label (the race is the guide's, not simmed)", () => {
+  it("names the guide's recommended race of the faction, never the best one", () => {
+    expect(raceBasis('horde')).toBe("the guide's recommended Horde race");
     for (const role of ['dps', 'tank', 'healer'] as const) {
-      const notes = tierNotes({ ...CTX, role, healSeconds: 300, bossSwingSeconds: 2 });
-      expect(notes).toHaveLength(3);
-      const text = notes.map(flat).join(' ');
-      expect(text).toContain('best Horde race');
-      expect(text).toContain('Raid-ready, Phase 1');
-      expect(notes.flat().some((s) => s.href === '/bis')).toBe(true);
-    }
-  });
-
-  it('renders the healer duration and the tank swing from the data it is given', () => {
-    expect(flat(tierNotes({ ...CTX, role: 'healer', healSeconds: 240 })[0]!)).toContain('over 240 seconds');
-    expect(flat(tierNotes({ ...CTX, role: 'tank', bossSwingSeconds: 2.5 })[1]!)).toContain(
-      'every 2.5 seconds',
-    );
-  });
-
-  it('says the healer order has no level-60 log behind it yet (owner ruling, round 8)', () => {
-    const first = flat(tierNotes({ ...CTX, role: 'healer', healSeconds: 300 })[0]!);
-    expect(first).toContain(
-      'No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist.',
-    );
-    for (const role of ['dps', 'tank'] as const) {
-      const text = tierNotes({ ...CTX, role, bossSwingSeconds: 2 })
+      const text = readColumns({ ...CTX, role, healSeconds: 300, bossSwingSeconds: 2 })
         .map(flat)
         .join(' ');
-      expect(text).not.toContain('level-60 log');
+      expect(text).toContain("as the guide's recommended Horde race, named under it.");
+      expect(text).not.toMatch(/best (Horde|Alliance) race/);
     }
-  });
-
-  it('fails fast when a profile figure is missing', () => {
-    expect(() => tierNotes({ ...CTX, role: 'healer' })).toThrow(/heal profile duration/);
-    expect(() => tierNotes({ ...CTX, role: 'tank' })).toThrow(/boss swing speed/);
-  });
-
-  it('states the tie rule once, on the DPS list', () => {
-    const dps = tierNotes({ ...CTX, role: 'dps' })
-      .map(flat)
-      .join(' ');
-    expect(dps).toContain('≈ tie marks a spec within 1% of the one above.');
-    expect(dps).toContain(
-      'S is within 5% of the top, A within 10%, B within 20%, C within 30%, D beyond; a ≈ tie across a line is a tie.',
-    );
   });
 });
 
-describe('the healer tie rule (owner ruling, round 5)', () => {
-  it('says in one plain sentence why a pair ties, and how a shared rank counts', () => {
-    const healer = tierNotes({ ...CTX, role: 'healer', healSeconds: 300, healerOrderMeasured: true })
+describe('readColumns', () => {
+  it('gives each role three labelled columns, linking the leveling bands', () => {
+    for (const role of ['dps', 'tank', 'healer'] as const) {
+      const columns = readColumns({ ...CTX, role, healSeconds: 300, bossSwingSeconds: 2 });
+      expect(columns).toHaveLength(3);
+      expect(columns.flatMap((c) => c.body).some((s) => s.href === '/bis')).toBe(true);
+    }
+    expect(readColumns({ ...CTX, role: 'dps' }).map((c) => c.label)).toEqual([
+      'What the number is',
+      'What it leaves out',
+      'Letters and ties',
+    ]);
+    expect(readColumns({ ...CTX, role: 'tank', bossSwingSeconds: 2 }).map((c) => c.label)).toEqual([
+      'What the number is',
+      'The boss',
+      'The gear',
+    ]);
+  });
+
+  it('links the log rankings from what the DPS number leaves out', () => {
+    const leavesOut = readColumns({ ...CTX, role: 'dps' })[1]!;
+    expect(leavesOut.body.find((s) => s.href === '/rankings')?.text).toBe('the log rankings');
+  });
+
+  it('states the letters and the tie rule from the rules, with no "box below"', () => {
+    const text = readColumns({ ...CTX, role: 'dps' })
       .map(flat)
       .join(' ');
-    expect(healer).toContain(
-      '≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error.',
-    );
+    expect(text).toContain('S is within 5% of the top, A within 10%, B within 20%, C within 30%, D beyond.');
+    expect(text).toContain('≈ tie names the specs within 1% of a spec');
+    expect(text).not.toContain('box below');
+  });
+
+  it('renders the healer duration and the tank swing from the data it is given', () => {
+    expect(flat(readColumns({ ...CTX, role: 'healer', healSeconds: 300 })[0]!)).toContain('over 300 seconds');
+    expect(flat(readColumns({ ...CTX, role: 'tank', bossSwingSeconds: 2 })[1]!)).toContain('every 2 seconds');
+  });
+
+  it('says the healer order has no level-60 log behind it yet, and how a shared rank counts', () => {
+    const healer = readColumns({ ...CTX, role: 'healer', healSeconds: 300 })
+      .map(flat)
+      .join(' ');
+    expect(healer).toContain('No level-60 log is behind this order yet');
     expect(healer).toContain('Tied healers share a rank: =2, =2, then 4.');
-    expect(healer).not.toContain('Ranks appear');
-  });
-
-  it('claims no order and no ties when the measured error is not published yet', () => {
-    const healer = tierNotes({ ...CTX, role: 'healer', healSeconds: 300, healerOrderMeasured: false })
+    const unmeasured = readColumns({ ...CTX, role: 'healer', healSeconds: 300, healerOrderMeasured: false })
       .map(flat)
       .join(' ');
-    expect(healer).toContain('Ranks appear once the next ranking publishes the measured error.');
-    expect(healer).not.toContain('≈ tie');
-    expect(healer).not.toContain('share a rank');
+    expect(unmeasured).toContain('Ranks appear once the next ranking publishes the measured error.');
+    expect(unmeasured).not.toContain('≈ tie');
   });
 
+  it('fails fast when a profile figure is missing', () => {
+    expect(() => readColumns({ ...CTX, role: 'healer' })).toThrow(/heal profile duration/);
+    expect(() => readColumns({ ...CTX, role: 'tank' })).toThrow(/boss swing speed/);
+  });
+});
+
+describe('caption', () => {
+  it('says what each role is measured on, from the constants and the data', () => {
+    expect(caption({ ...CTX, role: 'dps' })).toBe(
+      "Damage per second, one target for 180 seconds. The bar is the share of the top spec's damage; ≈ tie is within 1%.",
+    );
+    expect(caption({ ...CTX, role: 'tank' })).toContain('stand-in level 63 boss, lower is better');
+  });
+
+  it('explains ≈ tie on the healer list only when a tie exists', () => {
+    expect(caption({ ...CTX, role: 'healer', healSeconds: 300, hasTie: true })).toBe(
+      'Effective healing per second over 300 seconds of a stand-in Phase 1 fight. ≈ tie: the sim cannot order the pair.',
+    );
+    expect(caption({ ...CTX, role: 'healer', healSeconds: 300, hasTie: false })).not.toContain('≈ tie');
+  });
+});
+
+describe('row names', () => {
+  it('names a DPS spec alone and a healer or tank in full, with the class moved off the sub line', () => {
+    expect(rowName({ name: 'Fury', classSlug: 'warrior', role: 'dps' })).toBe('Fury');
+    expect(rowName({ name: 'Holy', classSlug: 'priest', role: 'healer' })).toBe('Holy Priest');
+    expect(rowName({ name: 'Restoration', classSlug: 'shaman', role: 'healer' })).toBe('Restoration Shaman');
+    expect(rowSub({ classSlug: 'warrior', role: 'dps', race: 'Night Elf' })).toBe('Warrior · Night Elf');
+    expect(rowSub({ classSlug: 'priest', role: 'healer', race: 'Dwarf' })).toBe('Dwarf');
+  });
+});
+
+describe('tie text (owner MUST 1)', () => {
+  it('names the one partner: "≈ tie with Arms"', () => {
+    expect(tieText(dpsRow('B', [mate('Arms', 'warrior')]))).toBe('≈ tie with Arms');
+  });
+
+  it('names every partner, and nothing on an untied row', () => {
+    expect(
+      tieText(
+        dpsRow('B', [mate('Survival', 'hunter'), mate('Beast Mastery', 'hunter'), mate('Feral', 'druid')]),
+      ),
+    ).toBe('≈ tie with Survival, Beast Mastery and Feral');
+    expect(tieText(dpsRow('B', []))).toBeNull();
+    expect(tieTitle(dpsRow('B', []))).toBeUndefined();
+  });
+
+  it('reads correctly across a letter line: the partner carries its letter', () => {
+    const survival = dpsRow('A', [mate('Beast Mastery', 'hunter', 'B')]);
+    expect(tieText(survival)).toBe('≈ tie with Beast Mastery (B)');
+    expect(tieTitle(survival)).toBe(
+      'Within 1% of Beast Mastery Hunter: a tie; the letters differ by less than the sim can tell',
+    );
+    expect(tieTitle(dpsRow('B', [mate('Arms', 'warrior')]))).toBe('Within 1% of Arms Warrior: a tie');
+  });
+
+  it('names a healer partner in full, with the healer reason', () => {
+    const row = { role: 'healer' as const, tier: null, tiedWith: [mate('Holy', 'priest', null)] };
+    expect(tieText(row)).toBe('≈ tie with Holy Priest');
+    expect(tieTitle(row)).toContain('The sim cannot order this healer and Holy Priest');
+  });
+});
+
+describe('ranks', () => {
   it('writes a tied healer’s rank with an equals sign, an untied one plainly, and an unranked one not at all', () => {
     expect(tiersCopy.rankLabel({ rank: 2, role: 'healer', tie: 'above', ranked: true })).toBe('=2');
     expect(tiersCopy.rankLabel({ rank: 4, role: 'healer', tie: null, ranked: true })).toBe('4');
     expect(tiersCopy.rankLabel({ rank: 3, role: 'dps', tie: 'below', ranked: true })).toBe('3');
     expect(tiersCopy.rankLabel({ rank: 1, role: 'healer', tie: null, ranked: false })).toBe('');
-  });
-
-  it('titles a healer tie by the same reason', () => {
-    expect(tiersCopy.tieTitle('above', 'healer')).toBe(
-      'Tied with the healer above: the order changes with the heal profile’s tuning, or the gap is within the measured error',
-    );
-    expect(tiersCopy.tieTitle('both', 'healer')).toContain('healers above and below');
-    expect(tiersCopy.tieTitle('above', 'dps')).toBe('Within 1% of the spec above: a tie');
   });
 
   it('shows a gap figure on a healer tied for the top or unranked, and Top only on a ranked leader', () => {
@@ -119,24 +183,16 @@ describe('the healer tie rule (owner ruling, round 5)', () => {
   });
 });
 
-describe('how to read this', () => {
-  it('carries the spec bullets, with the preset and the fight length from the data and constants', () => {
-    const dps = howToReadBullets('dps', 'Raid-ready, Phase 1');
-    expect(dps).toEqual([
-      'Every spec is simmed in its best Raid-ready, Phase 1 gear, with enchants a fresh level 60 can buy, raid buffs and consumables.',
-      'One target for 180 seconds. Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid.',
+describe('column heads (owner MUST 2)', () => {
+  it('keeps the tank heads short enough for one line', () => {
+    expect(tiersCopy.heads.tank.slice(3, 7)).toEqual([
+      'Survival vs the best',
+      'Taken / s',
+      'Health',
+      'Threat / s',
     ]);
-    for (const role of ['tank', 'healer'] as const) {
-      expect(howToReadBullets(role, 'x')[1]).toContain('Same boss profile as the BiS pages');
-    }
-  });
-
-  it('is not repeated word for word in the notes above the list', () => {
     for (const role of ['dps', 'tank', 'healer'] as const) {
-      const above = tierNotes({ ...CTX, role, healSeconds: 300, bossSwingSeconds: 2 })
-        .map(flat)
-        .join(' ');
-      for (const bullet of howToReadBullets(role, CTX.presetLabel)) expect(above).not.toContain(bullet);
+      for (const head of tiersCopy.heads[role].slice(4)) expect(head.length).toBeLessThanOrEqual(10);
     }
   });
 });
@@ -147,14 +203,6 @@ describe('gapText', () => {
     expect(gapText({ rank: 1, role: 'tank', gapPercent: 0, ranked: true })).toBe(tiersCopy.leastGap);
     expect(gapText({ rank: 2, role: 'dps', gapPercent: 4.84, ranked: true })).toBe('−4.8%');
     expect(gapText({ rank: 2, role: 'tank', gapPercent: 15.23, ranked: true })).toBe('+15.2%');
-  });
-});
-
-describe('tie titles', () => {
-  it('names the neighbour a row ties with', () => {
-    expect(tiersCopy.tieTitle('above')).toBe('Within 1% of the spec above: a tie');
-    expect(tiersCopy.tieTitle('below')).toContain('below');
-    expect(tiersCopy.tieTitle('both')).toContain('above and below');
   });
 });
 

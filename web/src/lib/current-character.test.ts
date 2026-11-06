@@ -97,6 +97,14 @@ describe('readCurrent / writeCurrent / clearCurrent', () => {
     expect(readCurrent(storage)).toBeNull();
   });
 
+  it('keeps a faction, and refuses one that is neither faction', () => {
+    const storage = fakeStorage();
+    writeCurrent({ ...sample, faction: 'horde' }, storage);
+    expect(readCurrent(storage)?.faction).toBe('horde');
+    storage.setItem('fs.currentCharacter', JSON.stringify({ ...sample, faction: 'scourge' }));
+    expect(readCurrent(storage)).toBeNull();
+  });
+
   it('is null when a required field is missing', () => {
     const storage = fakeStorage();
     const { label, ...withoutLabel } = sample;

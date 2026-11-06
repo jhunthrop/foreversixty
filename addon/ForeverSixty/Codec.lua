@@ -217,6 +217,38 @@ local function encodePrep(build, sections)
 	end
 end
 
+--- The drops= section (RaidDrops.lua): each boss corpse the character's loot window read in a
+--- raid, `;`-joined, oldest first:
+---   <time>:<instance_id>:<encounter_id>:<method>:<source>:<item>,<item>,...
+--- <time> is the wall clock in seconds, <encounter_id> 0 when no kill was seen, <method> the loot
+--- method's name ("" unknown), <source> the corpse GUID ("" where the client has none), and each
+--- <item> `<item_id>x<count>`, then `@` and the url-encoded winners `+`-joined when the loot chat
+--- named any. "drops" starts with no escape letter (see "who" below).
+function Codec.encodeDropCorpse(corpse)
+	local items = {}
+	for index, item in ipairs(corpse.items or {}) do
+		local winners = {}
+		for position, name in ipairs(item.winners or {}) do
+			winners[position] = urlEncode(name)
+		end
+		items[index] = string.format("%dx%d", item.itemId, item.count)
+			.. (#winners > 0 and ("@" .. table.concat(winners, "+")) or "")
+	end
+	return table.concat({ tostring(math.floor(corpse.at or 0)), tostring(corpse.instanceId or 0),
+		tostring(corpse.encounterId or 0), corpse.method or "", corpse.source or "", table.concat(items, ",") }, ":")
+end
+
+local function encodeDrops(build, sections)
+	if build.drops == nil or #build.drops == 0 then
+		return
+	end
+	local corpses = {}
+	for index, corpse in ipairs(build.drops) do
+		corpses[index] = Codec.encodeDropCorpse(corpse)
+	end
+	sections[#sections + 1] = "drops=" .. table.concat(corpses, ";")
+end
+
 --- FS1 version 2: the version-1 head, then the sections in the contract's
 --- fixed order, each omitted when empty.
 function Codec.encodeFS1(build)
@@ -262,6 +294,7 @@ function Codec.encodeFS1(build)
 		sections[#sections + 1] = "professions=" .. table.concat(build.professions, ",")
 	end
 	encodePrep(build, sections)
+	encodeDrops(build, sections)
 	if build.guild and build.guild.name then
 		sections[#sections + 1] = "guild=" .. urlEncode(build.guild.name) .. ":" .. tostring(build.guild.rankIndex)
 	end
@@ -419,6 +452,36 @@ local function flagList(field, idKey, flagKey)
 	return out
 end
 
+--- One drops= item, `<item_id>x<count>[@<winner>+<winner>]`, else nil.
+local function dropItem(entry)
+	local id, count, rest = entry:match("^(%d+)x(%d+)(.*)$")
+	if id == nil or (rest ~= "" and rest:sub(1, 1) ~= "@") then
+		return nil
+	end
+	local winners = {}
+	for _, name in ipairs(rest == "" and {} or split(rest:sub(2), "+")) do
+		if name ~= "" then
+			winners[#winners + 1] = urlDecode(name)
+		end
+	end
+	return { itemId = tonumber(id), count = tonumber(count), winners = winners }
+end
+
+--- One drops= corpse, else nil (a malformed one is dropped).
+local function dropCorpse(entry)
+	local at, instanceId, encounterId, method, source, list =
+		entry:match("^(%d+):(%d+):(%d+):(%l*):([%w%-]*):(.*)$")
+	if at == nil then
+		return nil
+	end
+	local items = {}
+	for _, text in ipairs(list == "" and {} or split(list, ",")) do
+		items[#items + 1] = dropItem(text)
+	end
+	return { at = tonumber(at), instanceId = tonumber(instanceId), encounterId = tonumber(encounterId),
+		method = method, source = source, items = items }
+end
+
 local PREP_DECODERS = {
 	school = function(field, build)
 		local totals = {}
@@ -454,6 +517,12 @@ local PREP_DECODERS = {
 	end,
 	owned = function(field, build)
 		build.owned = flagList(field, "itemId", "held")
+	end,
+	drops = function(field, build)
+		build.drops = {}
+		for _, entry in ipairs(field == "" and {} or split(field, ";")) do
+			build.drops[#build.drops + 1] = dropCorpse(entry)
+		end
 	end,
 }
 

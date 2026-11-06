@@ -38,7 +38,9 @@ test.describe('officer', () => {
     });
     await openLoot(page, 'officer');
     const night = buildMockLootNights().nights[0];
-    await expect(page.getByTestId('guild-loot-night-summary')).toHaveText('Tue 15 Dec · 3 drops, 2 open');
+    await expect(page.getByTestId('guild-loot-night-summary')).toHaveText(
+      'Tue 15 Dec · 3 drops, 2 open · 2 recorded by the addon',
+    );
     await expect(page.getByTestId('guild-loot-drops').getByText('Open', { exact: true })).toHaveCount(2);
 
     const { itemId, characterKey } = unawardedItem();
@@ -73,6 +75,8 @@ test.describe('officer', () => {
 
   test('an awarded drop leads with its record, and the past night keeps its own', async ({ page }) => {
     await openLoot(page, 'officer');
+    // The addon recorded this drop: its row names who took it from the loot window, beside the award.
+    await expect(page.getByTestId(`guild-loot-drop-${awardedItemId()}`)).toContainText('Looted by');
     await page.getByTestId(`guild-loot-drop-${awardedItemId()}`).click();
     await expect(page.getByTestId('guild-loot-closed')).toBeVisible();
     await expect(page.getByTestId('guild-loot-candidates')).toContainText('3 yes, 0 no of 4');

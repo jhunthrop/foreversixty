@@ -1,0 +1,340 @@
+/* web/src/components/ui/rank-list.css
+   The ranked list's one grid (tiers spec 2026-11-06 §4.4): RankList sets the columns, ColumnHeads
+   and every RankRow lay out on them, RankGroup adds the letter column. Global, because the four
+   primitives are separate components that must share one template.
+   The desktop row and the letter column start at 1280: a three-figure list (the tanks) needs about
+   1,140 px of row and the grouped DPS list about 1,100, more than a 1024 or 1100 column holds. */
+
+.ui-rank-list {
+  --rl-group-w: 0px;
+  --rl-name: minmax(180px, 220px);
+  --rl-bar: minmax(120px, 1fr);
+  --rl-gap: 88px;
+  min-width: 0;
+}
+@media (min-width: 1280px) {
+  .ui-rank-list[data-grouped='true'] {
+    --rl-group-w: 184px;
+  }
+}
+@media (min-width: 1760px) {
+  .ui-rank-list {
+    --rl-name: minmax(240px, 1fr);
+    --rl-bar: 560px;
+  }
+}
+
+.ui-rank-body,
+.ui-rank-group-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.ui-rank-cols {
+  display: grid;
+  column-gap: 16px;
+  grid-template-columns:
+    28px 36px var(--rl-name) var(--rl-bar) repeat(var(--rl-n), var(--rl-fig))
+    var(--rl-gap) var(--rl-links);
+}
+
+/* ColumnHeads */
+.ui-rank-heads {
+  align-items: end;
+  min-height: 40px;
+  padding: 12px 16px 10px calc(16px + var(--rl-group-w));
+  border-bottom: 1px solid var(--color-line-soft);
+}
+.ui-rank-heads > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ui-rank-heads > [data-align='end'] {
+  text-align: right;
+}
+
+/* RankGroup: the letter column, the tier rail at the list's x 0 */
+.ui-rank-group {
+  display: grid;
+  grid-template-columns: var(--rl-group-w) minmax(0, 1fr);
+  border-top: 1px solid var(--color-line);
+}
+.ui-rank-group:first-child {
+  border-top: 0;
+}
+.ui-rank-group-head {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  grid-template-areas:
+    'letter band'
+    'letter count';
+  align-content: start;
+  align-items: center;
+  column-gap: 10px;
+  padding: 10px 12px 10px 14px;
+  border-left: 3px solid var(--rg-tone);
+  border-right: 1px solid var(--color-line-soft);
+}
+.ui-rg-letter {
+  grid-area: letter;
+  font: 700 32px/36px var(--font-body);
+  color: var(--rg-tone);
+}
+.ui-rg-band {
+  grid-area: band;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-text);
+}
+.ui-rg-count {
+  grid-area: count;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* RankRow */
+.ui-rank-row {
+  position: relative;
+  align-items: center;
+  min-height: var(--row-h);
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--color-line-soft);
+  transition: background-color 120ms ease-out;
+}
+.ui-rank-row:last-child {
+  border-bottom: 0;
+}
+/* The row's slice of the rail: at the list's x 0, over the letter rail when grouped. */
+.ui-rank-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(-1 * var(--rl-group-w));
+  width: 3px;
+  background: transparent;
+  z-index: 1;
+}
+.ui-rank-row:hover {
+  background: var(--color-hover);
+}
+.ui-rank-row:hover::before {
+  background: var(--rr-tone);
+}
+.ui-rank-row:hover .ui-meter > i {
+  filter: brightness(1.18);
+}
+.ui-rank-row[aria-current='true'] {
+  background: var(--color-selected);
+}
+.ui-rank-row[aria-current='true']::before {
+  background: var(--color-gold);
+}
+.ui-rr-rank {
+  text-align: right;
+  font: 700 15px/20px var(--font-body);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-muted);
+}
+.ui-rr-lead {
+  display: flex;
+}
+.ui-rr-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ui-rr-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.ui-rr-link {
+  font: 700 16px/20px var(--font-body);
+  color: var(--rr-tone);
+  border-radius: 3px;
+}
+.ui-rr-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ui-rr-sub,
+.ui-rr-note {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-muted);
+}
+.ui-rr-note {
+  align-self: flex-start;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.ui-rr-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.ui-rr-tie {
+  font: 700 12px/16px var(--font-body);
+  color: var(--color-strong);
+}
+.ui-rr-extra {
+  display: contents;
+}
+.ui-rr-fig {
+  text-align: right;
+  font: 700 16px/20px var(--font-body);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-strong);
+  white-space: nowrap;
+}
+.ui-rr-fig small {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+.ui-rr-fig[data-best='true'] .ui-rr-fig-value {
+  color: var(--color-kill);
+}
+.ui-rr-fig-label {
+  display: none;
+}
+.ui-rr-gap {
+  text-align: right;
+  font: 600 15px/20px var(--font-body);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+.ui-rr-gap[data-leader='true'] {
+  font-weight: 700;
+  color: var(--color-strong);
+}
+.ui-rr-links {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+.ui-rr-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font: 600 14px/20px var(--font-body);
+  color: var(--color-nav);
+  border-radius: 3px;
+  transition: color 120ms ease-out;
+}
+.ui-rr-links a[data-primary='true'] {
+  color: var(--color-gold);
+}
+.ui-rr-links a:hover {
+  color: var(--color-gold-hover);
+}
+.ui-rr-links a:active {
+  background: var(--color-pressed);
+}
+.ui-rr-link:focus-visible,
+.ui-rr-links a:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Below 1280 the letter column is a header strip above its rows. */
+@media (max-width: 1279px) {
+  .ui-rank-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ui-rank-group-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 14px 8px 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .ui-rg-letter {
+    font-size: 22px;
+    line-height: 24px;
+  }
+  .ui-rg-count {
+    margin-left: auto;
+  }
+}
+
+/* Below 1280 the heads go and each row is the four-area stacked grid. */
+@media (max-width: 1279px) {
+  .ui-rank-heads {
+    display: none;
+  }
+  .ui-rank-row.ui-rank-cols {
+    grid-template-columns: 22px 36px minmax(0, 1fr) auto;
+    grid-template-areas:
+      'rank lead name fig'
+      'rank lead name gap'
+      '. . extra extra'
+      '. . bar bar'
+      '. . links links';
+    column-gap: 12px;
+    padding: 10px 14px 2px;
+  }
+  .ui-rr-rank {
+    grid-area: rank;
+  }
+  .ui-rr-lead {
+    grid-area: lead;
+  }
+  .ui-rr-name {
+    grid-area: name;
+  }
+  .ui-rr-fig[data-first='true'] {
+    grid-area: fig;
+    align-self: end;
+  }
+  .ui-rr-gap {
+    grid-area: gap;
+    align-self: start;
+  }
+  .ui-rr-extra {
+    grid-area: extra;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+  }
+  .ui-rr-extra:not(:empty) {
+    padding-top: 6px;
+  }
+  .ui-rr-extra .ui-rr-fig {
+    text-align: left;
+    font-size: 14px;
+  }
+  .ui-rr-extra .ui-rr-fig-label {
+    display: inline;
+    margin-right: 6px;
+    font-weight: 400;
+    color: var(--color-muted);
+  }
+  .ui-rr-bar {
+    grid-area: bar;
+    padding-top: 8px;
+  }
+  .ui-rr-links {
+    grid-area: links;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-rank-row,
+  .ui-rr-links a {
+    transition: none;
+  }
+}

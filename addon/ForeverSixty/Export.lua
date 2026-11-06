@@ -16,6 +16,7 @@ local Talents = ns.Talents or require("Talents")
 local Compat = ns.Compat or require("Compat")
 local Theme = ns.Theme or require("Theme")
 local RaidPrep = ns.RaidPrep or require("RaidPrep")
+local RaidDrops = ns.RaidDrops or require("RaidDrops")
 
 local Export = {}
 
@@ -352,6 +353,8 @@ function Export.string(data, fallbackGuild)
 		keyring = prep.keyring,
 		quests = prep.quests,
 		owned = prep.owned,
+		-- What dropped in this character's raids (RaidDrops.lua), newest corpses within budget.
+		drops = RaidDrops.forExport(),
 		dataBuild = data.build,
 		classSlug = classSlug,
 		raceSlug = Compat.playerRaceSlug(),

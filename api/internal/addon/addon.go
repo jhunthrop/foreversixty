@@ -261,7 +261,30 @@ func (s *Store) putOneExport(ctx context.Context, tx pgx.Tx, userID int64, key, 
 	if err := synclog.Record(ctx, tx, key, synclog.SourceAddon, synclog.OutcomeOK); err != nil {
 		return err
 	}
-	return s.syncGuild(ctx, tx, userID, key, region, ruleset, e.Export)
+	if err := s.syncGuild(ctx, tx, userID, key, region, ruleset, e.Export); err != nil {
+		return err
+	}
+	s.recordDrops(ctx, tx, userID, key, e.Export)
+	return nil
+}
+
+// recordDrops stores the export's drops= section for the character's guild (guilds.RecordExportDrops)
+// inside a savepoint: a drop the store refuses is logged and leaves the export and its guild sync
+// standing, since a bad loot record must never cost a player their upload.
+func (s *Store) recordDrops(ctx context.Context, tx pgx.Tx, userID int64, key, export string) {
+	sp, err := tx.Begin(ctx)
+	if err != nil {
+		s.logger().Warn("addon", "op", "record_drops", "character_key", key, "err", err.Error())
+		return
+	}
+	if err := guilds.RecordExportDrops(ctx, sp, userID, key, export, time.Now()); err != nil {
+		_ = sp.Rollback(ctx)
+		s.logger().Warn("addon", "op", "record_drops", "character_key", key, "err", err.Error())
+		return
+	}
+	if err := sp.Commit(ctx); err != nil {
+		s.logger().Warn("addon", "op", "record_drops", "character_key", key, "err", err.Error())
+	}
 }
 
 // putOneCharacter upserts characters (spec §4.5): the same ownership
@@ -486,6 +509,9 @@ type Service struct {
 	// follow for a build's code.
 	Guilds GuildSource
 	Sims   SimSource
+	// Assignments produces the raid_assignment messages (raid_assignments.go): each
+	// character's own slots in its next raid. Nil sends none.
+	Assignments AssignmentSource
 	// SimRequests turns an outbox's sim_request into a server run.
 	// sims.Service satisfies it. Nil answers every request
 	// "unavailable"; the export it rode in with is still stored.

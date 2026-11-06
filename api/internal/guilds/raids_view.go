@@ -166,6 +166,9 @@ type RaidView struct {
 	// Cover is the buff and debuff cover of the sign-ups (raids_cover.go); null for a dungeon
 	// or an event.
 	Cover []CoverRow `json:"cover"`
+	// Assignments is the raid leader's per-encounter picks (raid_assign_view.go); null for a
+	// dungeon or an event.
+	Assignments *RaidAssignments `json:"assignments"`
 }
 
 // ZoneView is one schedulable zone as the form lists it (guild events spec §3.1).
@@ -261,6 +264,9 @@ func (s *Store) RaidViews(ctx context.Context, guildID, viewerID int64, raids []
 		}
 	}
 	if err := s.fillMatchViews(ctx, vc, out); err != nil {
+		return nil, err
+	}
+	if err := s.fillAssignments(ctx, vc, out, byRaid); err != nil {
 		return nil, err
 	}
 	return out, nil

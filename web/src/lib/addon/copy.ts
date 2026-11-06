@@ -391,6 +391,7 @@ export const addonCopy = {
     { command: '/fs link', description: "copy a player's site page" },
     { command: '/fs group', description: "your group's specs, gear and buffs" },
     { command: '/fs ready', description: 'check flasks, food and buffs now' },
+    { command: '/fs job', description: 'your jobs for the next raid' },
     { command: '/fs loot', description: 'what an item is worth to you' },
     { command: '/fs floor N', description: 'tag members scored under N' },
     { command: '/fs options', description: 'open the settings page' },

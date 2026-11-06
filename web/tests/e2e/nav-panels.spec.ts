@@ -59,12 +59,17 @@ for (const width of [1280, 1440]) {
       }
     });
 
-    test('the Tools panel lists its three rows in order, each 44px or taller', async ({ page }) => {
+    test('the Tools panel lists its four rows in order, each 44px or taller', async ({ page }) => {
       await signedInOnGuides(page, width);
       await door(page, 'tools').hover();
       await expect(panel(page, 'tools')).toBeVisible();
       const rows = panel(page, 'tools').locator('a.site-panel-row');
-      await expect(rows.locator('.site-panel-title')).toHaveText(['Planner', 'BiS', 'Simulator']);
+      await expect(rows.locator('.site-panel-title')).toHaveText([
+        'Planner',
+        'BiS',
+        'Simulator',
+        'Tier list',
+      ]);
       for (const row of await rows.all())
         expect((await row.boundingBox())!.height).toBeGreaterThanOrEqual(44);
     });
@@ -160,12 +165,12 @@ test.describe('the current page', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('a signed-out visitor on /tiers sees Logs current and /guild linked everywhere', async ({ page }) => {
+  test('a signed-out visitor on /tiers sees Tools current and /guild linked everywhere', async ({ page }) => {
     await page.route('**/v1/me', (route) =>
       route.fulfill({ status: 401, contentType: 'application/json', body: '{"ok":false,"data":null}' }),
     );
     await page.goto('/tiers');
-    await expect(door(page, 'logs')).toHaveAttribute('aria-current', 'page');
+    await expect(door(page, 'tools')).toHaveAttribute('aria-current', 'page');
     await expect(page.getByTestId('site-panel-row-tier-list')).toHaveAttribute('href', '/tiers');
     await expect(page.locator('#site-panel-guild a[href^="/guild"]')).toHaveCount(5);
     for (const link of await page.locator('#site-panel-guild a:not([href^="https:"])').all()) {

@@ -1,6 +1,6 @@
 // web/src/lib/tiers/tier-controls.ts
-// The tier list's two page controls as pure functions: which faction a URL asks for and where
-// the arrow keys move on the role tabs. The page's inline pre-paint script and its module
+// The tier list's faction control as pure functions: which faction a URL (or the current
+// character) asks for, and the role paths that keep it. The page's inline pre-paint script and its module
 // script share these names, so the URL parameter and the attribute the CSS reads are spelled
 // once.
 import type { Faction } from '../bis/types';
@@ -22,7 +22,18 @@ export function hrefWithFaction(path: string, faction: Faction): string {
   return faction === DEFAULT_FACTION ? path : `${path}?${FACTION_PARAM}=${faction}`;
 }
 
-/** The index the tab strip's focus moves to for a key, or `null` for a key it ignores. */
+/** The faction the page opens on: the URL's when it names one, else the stored current
+ *  character's (owner decision T3), else the default. Mirrored by the page's pre-paint script,
+ *  which cannot import; the e2e suite holds the two to the same answers. */
+export function initialFaction(search: string, pointer: { faction?: unknown } | null): Faction {
+  const asked = new URLSearchParams(search).get(FACTION_PARAM);
+  const fromUrl = TIER_FACTION_ORDER.find((faction) => faction === asked);
+  if (fromUrl !== undefined) return fromUrl;
+  return TIER_FACTION_ORDER.find((faction) => faction === pointer?.faction) ?? DEFAULT_FACTION;
+}
+
+/** The index a tab strip's focus moves to for a key, or `null` for a key it ignores (the BiS
+ *  landing's band strip). */
 export function nextTabIndex(key: string, index: number, count: number): number | null {
   switch (key) {
     case 'ArrowRight':

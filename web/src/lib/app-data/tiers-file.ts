@@ -1,12 +1,12 @@
 // web/src/lib/app-data/tiers-file.ts
 // /data/{build}/tiers.json (Wave 3 contract W3-C1): the web's tier lists, already ranked. The
 // order, gaps, letters, ties and every sentence come from the same functions /tiers renders
-// with (`loadTierData`, `rankRole`, `tierSpecViews`, `tierNotes`, `gapText`), so neither app
+// with (`loadTierData`, `rankRole`, `tierSpecViews`, `readColumns`, `gapText`), so neither app
 // sorts, gaps or letters anything (spec F9.4).
 import type { BisRole, Faction } from '../bis/types';
 import { readSpecCatalog } from '../bis/load';
 import { tierSpecViews, specViewKey } from '../tiers/tier-callout';
-import { formatMetric, gapText, tierNotes, tiersCopy } from '../tiers/tier-copy';
+import { formatMetric, gapText, readColumns, tiersCopy } from '../tiers/tier-copy';
 import { TIER_ROLES, type TierRow } from '../tiers/tier-list';
 import type { RoleLists, TierData } from '../tiers/tier-load';
 
@@ -39,7 +39,7 @@ export interface AppTierRow {
 }
 
 export interface AppTierList {
-  /** The lines above the list, plain text, in the order the web prints them. */
+  /** The web's "How to read this" columns, plain text, in the order the web prints them. */
   notes: string[];
   rows: AppTierRow[];
 }
@@ -71,7 +71,7 @@ function rowOf(row: TierRow, views: ReturnType<typeof tierSpecViews>): AppTierRo
     icon: iconOf(row.spec),
     metric: row.metric,
     metric_text: formatMetric(row.role, row.metric),
-    unit: tiersCopy.rowUnit[row.role],
+    unit: tiersCopy.units[row.role],
     gap_percent: row.gapPercent,
     gap_text: gapText(row),
     fraction: row.fraction,
@@ -95,13 +95,14 @@ function listsOf(
       const notes =
         lists[role].length === 0 || data.presetLabel === null
           ? []
-          : tierNotes({
+          : readColumns({
               role,
               faction,
               presetLabel: data.presetLabel,
               healSeconds: data.healSeconds,
+              healerOrderMeasured: data.healerOrderMeasured[faction],
               bossSwingSeconds: data.bossSwingSeconds,
-            }).map((segments) => segments.map((segment) => segment.text).join(''));
+            }).map((column) => column.body.map((segment) => segment.text).join(''));
       return [role, { notes, rows: lists[role].map((row) => rowOf(row, views)) }];
     }),
   ) as Record<BisRole, AppTierList>;

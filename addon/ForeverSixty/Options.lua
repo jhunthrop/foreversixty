@@ -23,6 +23,7 @@ local ChatBadges = ns.ChatBadges or require("ChatBadges")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
+local RaidAssign = ns.RaidAssign or require("RaidAssign")
 local Recorder = ns.Recorder or require("Recorder")
 local Theme = ns.Theme or require("Theme")
 local Comms = ns.Comms or require("Comms")
@@ -38,6 +39,7 @@ local PanelTab = ns.PanelTab or require("PanelTab")
 local GuildTab = ns.GuildTab or require("GuildTab")
 local GroupPanel = ns.GroupPanel or require("GroupPanel")
 local LootCouncil = ns.LootCouncil or require("LootCouncil")
+local RaidDrops = ns.RaidDrops or require("RaidDrops")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
 
 local Options = {}
@@ -182,6 +184,9 @@ function Options.handle(input)
 			return { message or L.inboxEmpty }
 		end
 		return { string.format(L.inboxCount, count) }
+	elseif command == "job" or command == "jobs" then
+		-- The raid jobs the raid leader set on the site for this character's next raid.
+		return RaidAssign.command(ForeverSixtyInbox, Export.characterKey(), RaidAssign.now())
 	elseif command == "build" then
 		-- Switch the active build slot (L3.7 item 32): a paste leaves the raid build in its slot.
 		return Options.buildCommand(rest)
@@ -231,6 +236,9 @@ function Options.handle(input)
 		-- What an item is worth to the player; the master looter's group is asked too (L5.3).
 		LootCouncil.data = Options.data
 		return LootCouncil.command(rest)
+	elseif command == "drops" then
+		-- What the loot window recorded in this character's raids (guild slice 7, spike rows 103 to 105).
+		return RaidDrops.lines()
 	elseif command == "floor" then
 		-- The group panel's score floor (L5.2 ruling 4): it tags, it never declines.
 		return GroupPanel.handleFloor(rest)

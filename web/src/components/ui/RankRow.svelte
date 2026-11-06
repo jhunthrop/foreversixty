@@ -1,0 +1,123 @@
+<!-- web/src/components/ui/RankRow.svelte -->
+<!-- One ranked row, a Row preset (tiers spec 2026-11-06 §4.4): rank, a crest, the name as a link in
+     the class colour with a sub line, a bar scaled to the leader in the class colour (a tie note
+     under it), the figures, the gap and a strip of next-step links. The row itself is no link: its
+     next steps are links inside it (the Row rule, a link or an action, never both). Hover is the S2
+     ground and the row's slice of the rail in the class colour; `selected` the gold ground and a
+     gold slice. Below 1024 it is the four-area phone grid. -->
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+  import { titleColor } from '../../lib/ui/primitives';
+  import type { RankFigure, RankGap, RankLink, RankNote } from '../../lib/ui/rank-list';
+  import Meter from './Meter.svelte';
+  import './rank-list.css';
+
+  let {
+    rank = '',
+    name,
+    href,
+    classSlug,
+    sub,
+    note,
+    tie,
+    fraction,
+    figures,
+    gap,
+    links = [],
+    selected = false,
+    key,
+    lead,
+    tag,
+    nameTestid,
+    testid,
+  }: {
+    /** "3", "=2", or empty on a list that claims no order. */
+    rank?: string;
+    name: string;
+    href: string;
+    /** The name's and the bar's colour; without one both are the strong text and gold. */
+    classSlug?: string;
+    sub?: string;
+    /** A third line under the name ("Stat weights less certain"). */
+    note?: RankNote;
+    /** A line under the bar ("≈ tie with Arms"). */
+    tie?: RankNote;
+    /** The bar, 0 to 1. */
+    fraction: number;
+    /** The sorted figure first. */
+    figures: readonly RankFigure[];
+    gap: RankGap;
+    links?: readonly RankLink[];
+    selected?: boolean;
+    /** `data-rank-key`: what a script finds the row by to mark it. */
+    key?: string;
+    /** The crest. */
+    lead?: Snippet;
+    /** After the name (a "Your spec" Tag). */
+    tag?: Snippet;
+    nameTestid?: string;
+    testid?: string;
+    /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
+    children?: Snippet;
+  } = $props();
+
+  const tone = $derived(classSlug === undefined ? 'var(--color-gold)' : titleColor({ classSlug }));
+</script>
+
+{#snippet figure(item: RankFigure, first: boolean)}
+  <span
+    class="ui-rr-fig"
+    data-first={first ? 'true' : undefined}
+    data-best={item.best ? 'true' : undefined}
+    title={item.best ? item.bestTitle : undefined}
+    ><span class="ui-rr-fig-label" aria-hidden="true">{item.label}</span><span class="sr-only"
+      >{`${item.label}: `}</span
+    ><span class="ui-rr-fig-value" data-testid={item.testid}>{item.value}</span><small>{item.unit}</small
+    ></span
+  >
+{/snippet}
+
+<li
+  class="ui-rank-row ui-rank-cols"
+  style:--rr-tone={tone}
+  aria-current={selected ? 'true' : undefined}
+  data-rank-key={key}
+  data-testid={testid}
+>
+  <span class="ui-rr-rank" data-testid="rank-rank">{rank}</span>
+  <span class="ui-rr-lead"
+    >{#if lead}{@render lead()}{/if}</span
+  >
+  <span class="ui-rr-name">
+    <span class="ui-rr-title"
+      ><a class="ui-rr-link" {href} data-testid={nameTestid ?? 'rank-name'}>{name}</a
+      >{#if tag}{@render tag()}{/if}</span
+    >
+    {#if sub}<span class="ui-rr-sub">{sub}</span>{/if}
+    {#if note}<span class="ui-rr-note" title={note.title} data-testid="rank-note">{note.text}</span>{/if}
+  </span>
+  <span class="ui-rr-bar">
+    <Meter value={fraction} tone="class" color={tone} />
+    {#if tie}<span class="ui-rr-tie" title={tie.title} data-testid="rank-tie">{tie.text}</span>{/if}
+  </span>
+  {#if figures[0]}{@render figure(figures[0], true)}{/if}
+  <span class="ui-rr-extra"
+    >{#each figures.slice(1) as item (item.label)}{@render figure(item, false)}{/each}</span
+  >
+  <span class="ui-rr-gap" data-leader={gap.leader ? 'true' : undefined}
+    ><span class="sr-only">{`${gap.label}: `}</span><span data-testid="rank-gap">{gap.text}</span></span
+  >
+  {#if links.length > 0}
+    <span class="ui-rr-links">
+      {#each links as link (link.href)}
+        <a
+          href={link.href}
+          data-primary={link.primary ? 'true' : undefined}
+          aria-label={link.ariaLabel}
+          title={link.title}
+          data-testid={link.testid}>{link.label}</a
+        >
+      {/each}
+    </span>
+  {/if}
+</li>
