@@ -17,6 +17,7 @@ import { test } from './support/test';
 import { openBis } from './support/bis-page';
 import { openHome, type HomeState } from './support/home-page';
 import { openSimState, type SimParityState } from './support/sim-parity';
+import { openLogsState, type LogsParityState } from './support/logs-parity';
 import { REPO_ROOT, readParityConfig } from './support/parity';
 
 const OUT = path.join(REPO_ROOT, 'design/mocks/data/chrome');
@@ -252,5 +253,13 @@ test.describe('site chrome capture', () => {
       s.id as SimParityState,
     ]);
     await each(browser, states, openSimState);
+  });
+
+  test('logs, reports, rankings and ratings', async ({ browser }) => {
+    const states = readParityConfig('logs-parity.json').states.map((s): [string, LogsParityState] => [
+      s.mock,
+      s.id as LogsParityState,
+    ]);
+    await each(browser, states, openLogsState);
   });
 });

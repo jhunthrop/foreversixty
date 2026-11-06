@@ -405,7 +405,7 @@
   }
 </script>
 
-<div data-testid="rankings" id="rankings" class="flex flex-col pb-10">
+<div data-testid="rankings" id="rankings" class="flex flex-col">
   <Page layout="ledger" testid="rankings-page">
     {#snippet header()}
       <PageHeader
