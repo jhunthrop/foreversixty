@@ -7,7 +7,7 @@ if it does). The names, props and token reads here are the contract the Svelte/A
 import re
 
 from mocklib import emblem
-from ws_lib import CSS as BASE_CSS, page as _page, header as _header, control_bar, seg, sel, crest_img, icon, QCOL, write
+from ws_lib import CSS as BASE_CSS, page as _page, header as _header, control_bar, seg, sel, crest_img, icon, QCOL, write, REGION, region_slug
 
 PRIM_CSS = '''
 /* ---- Page: one column, four layouts ---- */
@@ -118,13 +118,13 @@ def Rows(rows: list[str], open_: bool = False) -> str:
 
 
 def Plate(inner: str) -> str:
-    return f'<div class="plate">{inner}</div>'
+    return f'<div class="plate" data-region="{REGION["plate"]}">{inner}</div>'
 
 
 def Section(title: str, body: str, action: str = '', meta: str = '') -> str:
     a = f'<span class="act">{action}</span>' if action else ''
     m = f'<span class="t-small">{meta}</span>' if meta else ''
-    return f'<section><div class="sec-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>{body}</section>'
+    return f'<section data-region="{region_slug(title)}"><div class="sec-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>{body}</section>'
 
 
 def TabStrip(tabs: list[str], active: str, counts: dict | None = None) -> str:
@@ -132,10 +132,10 @@ def TabStrip(tabs: list[str], active: str, counts: dict | None = None) -> str:
 
 
 def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '') -> str:
-    m = f'<div class="ph-meta">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
+    m = f'<div class="ph-meta" data-region="{REGION["head_meta"]}">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
     color = f' style="color:{title_color}"' if title_color else ''
-    right = f'<div class="ans">{answer}</div>' if answer else (f'<div class="ph-actions">{actions}</div>' if actions else '')
-    return (f'<div class="pc ph-wrap"><div class="head"><div class="ph-title">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div>')
+    right = f'<div class="ans" data-region="{REGION["head_answer"]}">{answer}</div>' if answer else (f'<div class="ph-actions">{actions}</div>' if actions else '')
+    return (f'<div class="pc ph-wrap" data-region="{REGION["head"]}"><div class="head"><div class="ph-title" data-region="{REGION["head_title"]}">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div>')
 
 
 def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:

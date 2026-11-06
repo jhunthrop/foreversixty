@@ -6,6 +6,7 @@
      A TabStrip may sit under it. No eyebrow, no job paragraph, no band art. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { REGION } from '../../lib/ui/regions';
   import { titleColor, type TitleTone } from '../../lib/ui/primitives';
 
   let {
@@ -34,18 +35,21 @@
   } = $props();
 </script>
 
-<header class="ui-page-header" data-testid={testid}>
+<header class="ui-page-header" data-region={REGION.head} data-testid={testid}>
   <div class="ui-page-header-row">
-    <div class="flex min-w-0 items-center gap-4">
+    <div class="flex min-w-0 items-center gap-4" data-region={REGION.headTitle}>
       {#if crest}{@render crest()}{/if}
       <div class="min-w-0">
         <h1 class="ui-title" style:color={titleColor(tone)} data-testid="page-title">{title}</h1>
-        {#if meta}<div class="text-small text-muted mt-[6px] flex flex-wrap items-center gap-x-4 gap-y-[6px]">
+        {#if meta}<div
+            data-region={REGION.headMeta}
+            class="text-small text-muted mt-[6px] flex flex-wrap items-center gap-x-4 gap-y-[6px]"
+          >
             {@render meta()}
           </div>{/if}
       </div>
     </div>
-    {#if answer}<div class="ui-page-header-answer">{@render answer()}</div>
+    {#if answer}<div class="ui-page-header-answer" data-region={REGION.headAnswer}>{@render answer()}</div>
     {:else if actions}<div class="flex flex-wrap items-center gap-[10px]">{@render actions()}</div>{/if}
   </div>
   {#if tabs}<div class="mt-2">{@render tabs()}</div>{/if}

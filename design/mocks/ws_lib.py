@@ -11,6 +11,18 @@ from mocklib import ROOT, SEAL, CLASS_COLOR, crest
 from wide_lib import icon, crest_img, QCOL  # same real-icon helpers
 
 OUT = Path(__file__).resolve().parent / 'web'
+
+# The parity gate's region names (design/parity.md; web/src/lib/ui/regions.ts is the same list). The mock
+# emits them as data-region, the built primitives emit the same, and web/tests/e2e/support/parity.ts pairs them.
+REGION = {'head': 'head', 'head_title': 'head-title', 'head_meta': 'head-meta', 'head_answer': 'head-answer',
+          'controls': 'controls', 'summary': 'summary', 'notes': 'notes', 'plate': 'plate', 'slots': 'slots',
+          'inspector': 'inspector', 'inspector_inline': 'inspector-inline', 'footer_note': 'footer-note'}
+
+
+def region_slug(title: str) -> str:
+    """A Section's region, `section-<slug>`: sectionRegion in web/src/lib/ui/regions.ts."""
+    import re
+    return 'section-' + re.sub(r'^-+|-+$', '', re.sub(r'[^a-z0-9]+', '-', title.lower()))
 RENDERS = Path(__file__).resolve().parent / 'renders' / 'web'
 
 CSS = '''
@@ -87,7 +99,8 @@ h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 .cbar .pc{display:flex;align-items:center;gap:20px;min-height:var(--bar-h);padding-block:6px;flex-wrap:wrap}
 .cbar .grp{display:flex;align-items:center;gap:8px}
 .cbar .grp>.t-label{display:none}
-@media(min-width:1280px){.cbar .grp>.t-label{display:block}}
+@media(min-width:1280px){.cbar:not([data-labels-from="1920"]) .grp>.t-label{display:block}}
+@media(min-width:1920px){.cbar .grp>.t-label{display:block}}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
 .seg a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;font:600 14px/16px var(--font-body);color:var(--nav);border-left:1px solid var(--line-soft);white-space:nowrap}
 .seg a:first-child{border-left:0}
@@ -132,21 +145,24 @@ def footer() -> str:
     return f'<footer class="ftr full-bleed"><div class="pc"><div class="col" style="min-width:280px"><a class="logo" href="#"><img src="{SEAL}" alt="">FOREVER SIXTY</a><span class="t-small">Play your class better.</span></div>{out}</div></footer>'
 
 
-def seg(items: list[tuple], extra: str = '') -> str:
-    """items: (label, on, count|None, icon_html)"""
-    a = ''.join(f'<a href="#" class="{"on" if on else ""}">{ic}{lab}{f" <span class=\"n\">{n}</span>" if n is not None else ""}</a>' for lab, on, n, ic in items)
-    return f'<span class="seg {extra}">{a}</span>'
+def seg(items: list[tuple], extra: str = '', label: str = '') -> str:
+    """items: (label, on, count|None, icon_html). A radiogroup of radios, as the built ControlBar and Segmented are."""
+    a = ''.join(f'<a href="#" role="radio" aria-checked="{"true" if on else "false"}" class="{"on" if on else ""}">{ic}{lab}{f" <span class=\"n\">{n}</span>" if n is not None else ""}</a>' for lab, on, n, ic in items)
+    name = f' aria-label="{label}"' if label else ''
+    return f'<span class="seg {extra}" role="radiogroup"{name}>{a}</span>'
 
 
 def sel(label: str) -> str:
-    return f'<span class="sel">{label}</span>'
+    return f'<span class="sel" role="combobox" aria-label="{label}">{label}</span>'
 
 
-def control_bar(groups: list[tuple[str, str]], summary: str, end: str = '', open_m: bool = False, sticky: bool = True) -> str:
-    """groups: (label, html). Desktop: one row. Phone: one summary line that expands in place."""
+def control_bar(groups: list[tuple[str, str]], summary: str, end: str = '', open_m: bool = False, sticky: bool = True,
+                label: str = 'Controls', labels_from: int = 1280) -> str:
+    """groups: (label, html). Desktop: one row. Phone: one summary line that expands in place. Group labels show
+    from `labels_from` (1280; the BiS bar 1920, spec 5.13)."""
     d = ''.join(f'<span class="grp"><span class="t-label">{g[0]}</span>{g[1]}</span>' for g in groups)
     m = ''.join(f'<span><span class="t-label" style="display:block;margin-bottom:4px">{g[0]}</span>{g[2] if len(g) > 2 else g[1]}</span>' for g in groups)
-    return (f'<div class="cbar full-bleed{"" if sticky else " static"}"><div class="pc"><div class="bar-d">{d}<span class="end">{end}</span></div>'
+    return (f'<div class="cbar full-bleed{"" if sticky else " static"}" role="group" aria-label="{label}" data-region="{REGION["controls"]}" data-labels-from="{labels_from}"><div class="pc"><div class="bar-d">{d}<span class="end">{end}</span></div>'
             f'<details class="bar-m"{" open" if open_m else ""}><summary><span>{summary}</span><span class="chg">Change &#9662;</span></summary><div class="stack">{m}</div></details></div></div>')
 
 

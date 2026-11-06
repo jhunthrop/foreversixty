@@ -41,6 +41,7 @@
   import { readStoredSources, storeSources } from '../../lib/bis/source-store';
   import type { BisPresetId, Faction, SourceFilterKind } from '../../lib/bis/types';
   import type { ControlGroup, ControlOption } from '../../lib/ui/primitives';
+  import { REGION } from '../../lib/ui/regions';
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
 
   let {
@@ -279,7 +280,7 @@
     {/snippet}
 
     <div class="bis-pending-hide" data-testid={`bis-band-${state.faction}-${state.band}`}>
-      <div class="bis-summary">
+      <div class="bis-summary" data-region={REGION.summary}>
         <p class="bis-summary-line" data-testid="bis-summary">
           {dollSummary(cells, character, model.unit)}
           {#if character === undefined}<a href="/login" class="bis-gold">Sign in</a> to see them against your gear.{/if}
@@ -300,13 +301,17 @@
           testid="control-view"
         />
       </div>
-      {#if ruleLine}<p class="bis-note" data-testid="bis-default-rule">{ruleLine}</p>{/if}
-      {#if model.weights.hitCap}
-        <p class="bis-note" title={model.weights.hitCap.title} data-testid="bis-hit-cap">
-          {model.weights.hitCap.text}
-        </p>
+      {#if ruleLine || model.weights.hitCap || model.weaponNote}
+        <div data-region={REGION.notes}>
+          {#if ruleLine}<p class="bis-note" data-testid="bis-default-rule">{ruleLine}</p>{/if}
+          {#if model.weights.hitCap}
+            <p class="bis-note" title={model.weights.hitCap.title} data-testid="bis-hit-cap">
+              {model.weights.hitCap.text}
+            </p>
+          {/if}
+          {#if model.weaponNote}<p class="bis-note" data-testid="bis-weapon-note">{model.weaponNote}</p>{/if}
+        </div>
       {/if}
-      {#if model.weaponNote}<p class="bis-note" data-testid="bis-weapon-note">{model.weaponNote}</p>{/if}
 
       <Plate label="Gear" testid="bis-plate">
         <Paperdoll
@@ -337,7 +342,7 @@
       </div>
     </div>
 
-    <p class="bis-guide-line" data-testid="bis-guide-line">
+    <p class="bis-guide-line" data-region={REGION.footerNote} data-testid="bis-guide-line">
       Talents, rotation and stat priority for this spec: <a href={guideHref}>{specName} {className} guide ›</a
       >
     </p>

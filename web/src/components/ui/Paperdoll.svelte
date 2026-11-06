@@ -11,6 +11,7 @@
      `data-bis-item`, so the page's one tooltip host opens the real item. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { REGION } from '../../lib/ui/regions';
   import { onMount } from 'svelte';
   import { rarityClassFor } from '../../lib/planner/items';
   import { basisText } from '../../lib/ui/primitives';
@@ -234,6 +235,7 @@
   data-view={groups ? 'where' : 'slot'}
   data-wide={wide && detail !== undefined ? 'true' : undefined}
   data-testid={testid}
+  data-region={REGION.slots}
   aria-busy={loading ? 'true' : undefined}
 >
   {#if failed}
