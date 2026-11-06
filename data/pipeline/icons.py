@@ -114,6 +114,20 @@ def resolve_icon_name(
     return (PLACEHOLDER_ICON if base_icon in ("0", "") else base_icon), "client"
 
 
+def name_numeric_icons(by_item: dict[int, str], names: dict[int, str]) -> dict[int, str]:
+    """Wowhead's payload sometimes gives an item's icon as the art's file data id ("8422168")
+    rather than its name (Gilded Blademaster's Greatsword on 1.60.1.70790): look such an id up in
+    the client's own icon names, and drop it when the client has no file for it, so no item is
+    ever given an icon name that names no file."""
+    named: dict[int, str] = {}
+    for item_id, icon in by_item.items():
+        if not icon.isdigit():
+            named[item_id] = icon
+        elif (name := names.get(int(icon))) is not None:
+            named[item_id] = name
+    return named
+
+
 def icon_names(manifest_rows: list[dict[str, str]]) -> dict[int, str]:
     """File data id -> lowercase icon name with no extension."""
     names: dict[int, str] = {}

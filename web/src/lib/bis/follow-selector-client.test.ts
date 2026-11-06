@@ -57,10 +57,13 @@ describe('applyBisDefaultBand', () => {
     window.history.replaceState(null, '', '/');
   });
 
-  it('turns ?band=60 into the band hash the tabs use', () => {
+  it('leaves ?band=60 to the page and never looks up the character', () => {
     window.history.replaceState(null, '', '/bis/hunter/beast-mastery?band=60');
+    const getItem = vi.spyOn(Storage.prototype, 'getItem');
     applyBisDefaultBand(document.createElement('div'));
-    expect(window.location.hash).toBe('#band-alliance-60');
+    expect(window.location.hash).toBe('');
+    expect(getItem).not.toHaveBeenCalled();
+    getItem.mockRestore();
   });
 
   it('leaves a band already in the URL alone', () => {

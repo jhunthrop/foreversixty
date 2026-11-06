@@ -82,6 +82,9 @@ export interface ControlGroup {
   kind: 'segmented' | 'select';
   options: readonly ControlOption[];
   value: string;
+  /** A select's width from 768 px, in px, instead of its longest label: one long, rare option
+   *  (a race name) truncates in the field, never in its list, so the bar keeps to one row. */
+  fieldWidth?: number;
 }
 
 /** The phone bar's one line: each group's chosen label, joined with a middle dot. */
@@ -124,6 +127,21 @@ export interface ItemRef {
 /** A gain or lead shown at a row's right: the figure, its unit line and its tone. */
 export interface GainFigure {
   value: string;
+  /** The unit after the figure (`DPS`). */
+  unit?: string;
   caption?: string;
+  /** What the figure is measured against, under it: `vs <item>`, `next: −1.7 vs <item>`. One line
+   *  that may ellipsize (its full words in the title); the item carries its tooltip hook. */
+  basis?: GainBasis;
   tone?: FigureTone;
+}
+
+export interface GainBasis {
+  prefix: string;
+  item?: ItemRef;
+}
+
+/** A basis line's full words, for its title when the column ellipsizes it. */
+export function basisText(basis: GainBasis): string {
+  return basis.item ? `${basis.prefix} ${basis.item.name}` : basis.prefix;
 }

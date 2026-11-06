@@ -143,7 +143,7 @@ def normalize_build(
     from pipeline.curated import merge_curated
     from pipeline.curves import load_rank_points
     from pipeline.hotfix_merge import merge_hotfix_table
-    from pipeline.icons import icon_names
+    from pipeline.icons import icon_names, name_numeric_icons
     from pipeline.icons_fix import load_fork_icons, load_wowhead_icons
     from pipeline.manifest import write_manifest
     from pipeline.normalize.classes import normalize_classes, normalize_races
@@ -399,7 +399,7 @@ def normalize_build(
         area_conditional_spells(t("Spell")),
     )
     fork_icons = load_fork_icons(engine) if engine is not None else {}
-    wowhead_icons = load_wowhead_icons(build_dir)
+    wowhead_icons = name_numeric_icons(load_wowhead_icons(build_dir), icons)
     wowhead_required_levels = load_required_levels(build_dir)
     # bis-ranker-integrity-17 lane, 2026-09-30: Item.csv's own
     # IconFileDataID, keyed by id -- populated independently of

@@ -412,13 +412,14 @@ test.describe('choosing a character', () => {
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.goto('/bis/warrior/fury#band-alliance-20');
     await ready(page);
-    await expect(page.getByTestId('character-header')).toContainText('Obnoxious Yell');
+    await expect(page.getByTestId('selector-name')).toHaveText(OBNOXIOUS.name);
     await choose(page, FROSTBYTE);
     await expect(page).toHaveURL(/\/bis\/mage\/frost\?faction=horde#band-horde-40$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Frost');
-    await expect(page.getByTestId('character-header')).toContainText('Frostbyte');
-    await expect(page.getByTestId('character-header')).not.toContainText('Obnoxious Yell');
-    await expect(page.getByTestId('character-header')).not.toContainText('Switch');
+    await expect(page.getByTestId('bis-band-horde-40')).toBeVisible();
+    // The header selector is the one way to switch: the BiS page carries no character card of its own.
+    await expect(page.getByTestId('selector-name')).toHaveText(FROSTBYTE.name);
+    await expect(page.getByTestId('bis-page')).not.toContainText(OBNOXIOUS.name);
   });
 
   test('on /bis, a same-spec character updates band and faction in place, with no reload', async ({
@@ -429,10 +430,10 @@ test.describe('choosing a character', () => {
     await page.goto('/bis/warrior/fury#band-alliance-60');
     await ready(page);
     await choose(page, HORDE_FURY);
-    await expect(page).toHaveURL(/\/bis\/warrior\/fury\?faction=horde#band-horde-30$/);
-    await expect(page.getByTestId('bis-faction-panel-horde')).toBeVisible();
+    await expect(page).toHaveURL(/\/bis\/warrior\/fury\?(?=.*faction=horde)(?=.*band=30)[^#]*$/);
+    await expect(page.getByTestId('bis-page')).toHaveAttribute('data-bis-faction', 'horde');
     await expect(page.getByTestId('bis-band-horde-30')).toBeVisible();
-    await expect(page.getByTestId('character-header')).toContainText('Rageclaw');
+    await expect(page.getByTestId('selector-name')).toHaveText(HORDE_FURY.name);
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 
@@ -619,7 +620,7 @@ test.describe('signed out and expired', () => {
     });
     await page.goto('/guides');
     await ready(page);
-    await expect(page.getByTestId('selector-name')).toHaveText('Obnoxious Yell');
+    await expect(page.getByTestId('selector-name')).toHaveText(OBNOXIOUS.name);
     await selector(page).click();
     await expect(panel(page)).toContainText('Pasted export');
     await expect(panel(page)).toContainText('Not saved to an account. Sign in to keep it.');

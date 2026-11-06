@@ -52,7 +52,7 @@ export function readsAsLevelingSpec(raw: Pick<MeCharacter, 'class' | 'spec' | 'b
  *  rejection breaking every card that awaits this. */
 const itemsCache = new Map<string, Promise<Map<number, Item>>>();
 
-function itemsFor(classSlug: string): Promise<Map<number, Item>> {
+export function itemsFor(classSlug: string): Promise<Map<number, Item>> {
   const cached = itemsCache.get(classSlug);
   if (cached !== undefined) return cached;
   const promise = loadItems(activeBuild.build, classSlug)

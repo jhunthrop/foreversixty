@@ -13,6 +13,7 @@ from pipeline.icons import (
     download_icons,
     icon_names,
     icons_for_build,
+    name_numeric_icons,
     not_in_client,
     raid_buff_icon_names,
     resolve_icon_name,
@@ -617,3 +618,12 @@ def test_a_zero_wowhead_icon_counts_as_no_icon():
     icon, origin = resolve_icon_name(PLACEHOLDER_ICON, 286979, {}, {286979: "0"})
     assert icon == PLACEHOLDER_ICON
     assert origin != "wowhead"
+
+
+def test_name_numeric_icons_looks_a_file_id_up_and_drops_one_the_client_lacks():
+    # 1.60.1.70790: wowhead gives Gilded Blademaster's Greatsword the icon "8422168", a file id.
+    by_item = {1: "inv_sword_04", 2: "8422168", 3: "999"}
+    assert name_numeric_icons(by_item, {8422168: "inv_sword_draenei_03"}) == {
+        1: "inv_sword_04",
+        2: "inv_sword_draenei_03",
+    }

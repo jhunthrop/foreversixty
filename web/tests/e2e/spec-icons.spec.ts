@@ -63,8 +63,13 @@ test.describe('spec icons come from the spec-icon map', () => {
     }
   });
 
-  test('a BiS header: its spec tabs', async ({ page }) => {
+  test('a BiS control bar: its spec options', async ({ page }) => {
     await page.goto('/bis/warrior/fury');
-    await expectTabs(page, 'warrior');
+    const specs = SPECS.filter((s) => s.class_slug === 'warrior');
+    await expect(page.locator('[data-testid^="control-spec-"]')).toHaveCount(specs.length);
+    for (const spec of specs) {
+      const icon = page.getByTestId(`control-spec-${spec.spec}`).locator('img');
+      expect(iconOfSrc(await icon.getAttribute('src')), spec.spec).toBe(spec.icon);
+    }
   });
 });
