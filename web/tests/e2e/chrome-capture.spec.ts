@@ -5,7 +5,8 @@
 //   CHROME_CAPTURE=1 npx playwright test tests/e2e/chrome-capture.spec.ts --project=desktop
 //
 // For every parity state (and four templates: signed out, signed in, signed in with no
-// character, the session loading) it opens the built page as the parity spec does and writes
+// character, the session loading) it opens the built page as the parity spec does, waits for
+// the header's island to hydrate, and writes
 // design/mocks/data/chrome/<mock>.json: the <html> attributes and the header and footer
 // markup, scripts removed and images inlined. design/mocks/data/chrome/chrome.css holds the
 // site CSS that styles them, scoped under .fs-chrome so it never reaches a mock's own blocks.
@@ -18,7 +19,7 @@ import { openBis } from './support/bis-page';
 import { openCharacter, type CharacterState } from './support/character-page';
 import { openHome, type HomeState } from './support/home-page';
 import { openSimState, type SimParityState } from './support/sim-parity';
-import { REPO_ROOT, readParityConfig } from './support/parity';
+import { REPO_ROOT, readParityConfig, waitForChromeHydrated } from './support/parity';
 
 const OUT = path.join(REPO_ROOT, 'design/mocks/data/chrome');
 const BASE = `http://localhost:${process.env.E2E_PORT ?? '4321'}`;
@@ -228,6 +229,9 @@ test.describe('site chrome capture', () => {
       const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, baseURL: BASE });
       const page = await context.newPage();
       await open(page, state);
+      // The header as a reader sees it after load: the selector island hydrated, as the parity
+      // specs wait for it on the build side (support/parity.ts waitForChromeHydrated).
+      await waitForChromeHydrated(page);
       write(name, await capture(page));
       await context.close();
     }
