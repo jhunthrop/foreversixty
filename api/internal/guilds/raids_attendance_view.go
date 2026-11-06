@@ -54,6 +54,18 @@ type AttendanceView struct {
 	PullsTotal       int     `json:"pulls_total"`
 	Excused          bool    `json:"excused"`
 	Own              bool    `json:"own"`
+	// AutoOutcome and AutoExcused are what the log said before any officer's fix; Outcome and
+	// Excused above are the effective values every count reads. Override is the fix, null for none.
+	AutoOutcome string                  `json:"auto_outcome"`
+	AutoExcused bool                    `json:"auto_excused"`
+	Override    *AttendanceOverrideView `json:"override"`
+}
+
+// AttendanceOverrideView is an officer's fix on one row: what they set, who, and when.
+type AttendanceOverrideView struct {
+	Status string    `json:"status"`
+	ByName string    `json:"by_name"`
+	At     time.Time `json:"at"`
 }
 
 // raidMatchMeta is one raid's match columns and its log's figures.
@@ -130,7 +142,12 @@ func (s *Store) fillMatchViews(ctx context.Context, vc raidViewContext, views []
 	if err != nil {
 		return err
 	}
-	attendance, err := s.attendanceRowsFor(ctx, matchedRaidIDs(views, metas))
+	matched := matchedRaidIDs(views, metas)
+	attendance, err := s.attendanceRowsFor(ctx, matched)
+	if err != nil {
+		return err
+	}
+	fixes, err := s.overrideViewsFor(ctx, vc.guildID, matched)
 	if err != nil {
 		return err
 	}
@@ -149,7 +166,7 @@ func (s *Store) fillMatchViews(ctx context.Context, vc raidViewContext, views []
 		rows := attendance[views[i].ID]
 		night := nightOf(rows, meta)
 		views[i].Night = &night
-		views[i].Attendance = attendanceViews(rows, vc)
+		views[i].Attendance = attendanceViews(rows, fixes[views[i].ID], vc)
 		if views[i].Report, err = s.buildReport(ctx, vc, views[i], meta); err != nil {
 			return err
 		}
@@ -183,7 +200,7 @@ func derefString(s *string) string {
 	return *s
 }
 
-func attendanceViews(rows []AttendanceRow, vc raidViewContext) []AttendanceView {
+func attendanceViews(rows []AttendanceRow, fixes map[string]overrideView, vc raidViewContext) []AttendanceView {
 	if len(rows) == 0 {
 		return nil
 	}
@@ -193,7 +210,12 @@ func attendanceViews(rows []AttendanceRow, vc raidViewContext) []AttendanceView 
 		out[i] = AttendanceView{CharacterKey: r.CharacterKey, Name: r.Name, Class: r.Class, Spec: r.Spec,
 			Signed: r.Signed, Role: r.Role, Outcome: r.Outcome, CameAs: r.CameAs,
 			FirstSeenOffsetS: r.FirstSeenOffsetS, PullsPresent: r.PullsPresent, PullsTotal: r.PullsTotal,
-			Excused: r.Excused, Own: known && owner == vc.viewerID}
+			Excused: r.Excused, Own: known && owner == vc.viewerID, AutoOutcome: r.Outcome, AutoExcused: r.Excused}
+		if fix, ok := fixes[r.CharacterKey]; ok {
+			out[i].AutoOutcome, out[i].AutoExcused = fix.autoOutcome, fix.autoExcused
+			view := fix.view
+			out[i].Override = &view
+		}
 	}
 	return out
 }

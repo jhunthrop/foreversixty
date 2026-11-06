@@ -1819,6 +1819,15 @@ data class RaidAlsoSignup(
     @SerialName("state") val state: String,
 )
 
+/** An officer's manual fix of this night (PUT …/attendance/{region}/{ruleset}/{name}/override), null for none. present and bench earn the night; absent is a no-show for a raider signed In or Late, else absent; excused keeps the log's outcome and counts the night for nobody. */
+@Serializable
+data class RaidAttendanceOverride(
+    @SerialName("status") val status: String,
+    /** The officer's main character name, or "an officer". */
+    @SerialName("by_name") val byName: String,
+    @SerialName("at") val at: String,
+)
+
 @Serializable
 data class RaidAttendanceRow(
     @SerialName("character_key") val characterKey: String,
@@ -1833,8 +1842,15 @@ data class RaidAttendanceRow(
     @SerialName("first_seen_offset_s") val firstSeenOffsetS: Int,
     @SerialName("pulls_present") val pullsPresent: Int,
     @SerialName("pulls_total") val pullsTotal: Int,
+    /** The effective excused flag (an officer's fix included). */
     @SerialName("excused") val excused: Boolean,
     @SerialName("own") val own: Boolean,
+    /** What the log and the sign-ups said, before any officer's fix; outcome is the effective value every count reads (the roster's nights, the CSV export, the night's figures). Equal to outcome when there is no fix. */
+    @SerialName("auto_outcome") val autoOutcome: String? = null,
+    /** The excused flag under the fix; equal to excused when there is no fix. */
+    @SerialName("auto_excused") val autoExcused: Boolean? = null,
+    /** An officer's manual fix of this night (PUT …/attendance/{region}/{ruleset}/{name}/override), null for none. present and bench earn the night; absent is a no-show for a raider signed In or Late, else absent; excused keeps the log's outcome and counts the night for nobody. */
+    @SerialName("override") val override: RaidAttendanceOverride? = null,
 )
 
 @Serializable
@@ -2229,7 +2245,7 @@ data class RaidView(
     @SerialName("night") val night: RaidNight? = null,
     /** Every row for an officer, your own characters for a member. */
     @SerialName("attendance") val attendance: List<RaidAttendanceRow>? = null,
-    /** Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web. */
+    /** The night's report, shaped as RaidReport (Go guilds.ReportView); the apps carry it and open the full report on the web. */
     @SerialName("report") val report: JsonElement? = null,
     /** The buff and debuff cover of the sign-ups (owner decision D15), one row per entry of data/curated/raid-cover.json in its order (party buffs, raid buffs, debuffs); null for a dungeon or an event. */
     @SerialName("cover") val cover: List<RaidCoverRow>? = null,
