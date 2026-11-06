@@ -81,9 +81,12 @@ type TankFigures struct {
 	EffectiveHealth float64
 	DTPS            float64
 	TPS             float64
-	TMI             float64
-	DPS             float64
-	ChanceOfDeath   float64
+	// TPSError is TPS's standard error: the race sweep judges tanks on
+	// threat alone (owner rule) and needs its noise.
+	TPSError      float64
+	TMI           float64
+	DPS           float64
+	ChanceOfDeath float64
 	// Score is the tank score and ScoreError its standard error, summed
 	// linearly over the three measured terms (the upper bound: the three
 	// are positively correlated within a run).
@@ -114,6 +117,7 @@ func NewTankFigures(run TankRunResult, bossRawDPS float64) (TankFigures, error) 
 		EffectiveHealth: effectiveHealth,
 		DTPS:            run.DTPS.Mean,
 		TPS:             run.TPS.Mean,
+		TPSError:        run.TPS.Error,
 		TMI:             run.TMI.Mean,
 		DPS:             run.DPS.Mean,
 		ChanceOfDeath:   run.ChanceOfDeath,

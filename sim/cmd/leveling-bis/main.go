@@ -73,6 +73,10 @@ func run(execPath string, args []string) error {
 	build := fs.String("build", "", "data build to read from data/builds/<build>; defaults to web/src/data/active-build.json's build")
 	weightsIterations := fs.Int("weights-iterations", 100, "iterations PER DIRECTION the weights sweep runs (multiplied by the engine's own WeightsIterationsFactor); the brief allows reducing this to stay under the time budget")
 	out := fs.String("out", "", "output directory; defaults to data/builds/<build>/bis under -repo-root (lane bis-web's read contract)")
+	raceSweepMode := fs.Bool("race-sweep", false, "sweep every legal race on the published sets under -bis-dir without ranking gear (race_sweep.go); writes <spec>.races.json under -out")
+	bisDir := fs.String("bis-dir", "", "-race-sweep: the directory of published reports to sweep (a frozen copy of data/builds/<build>/bis)")
+	raceIterations := fs.Int("race-iterations", 10000, "-race-sweep: iterations per race (healers: the effective count)")
+	raceSeed := fs.Int64("race-seed", 1, "-race-sweep: the random seed every race runs on")
 	memProfile := fs.String("memprofile", "", "write a heap profile to this path (a per-spec suffix is added under -all: <path>.<spec>) - diagnostic only, go tool pprof -top <file>")
 	if err := fs.Parse(args); err != nil {
 		return err
@@ -125,6 +129,15 @@ func run(execPath string, args []string) error {
 	// reachable across specs. It also gives each spec a hard wall-
 	// clock ceiling (specTimeout) so one hung spec cannot silently
 	// re-create the same incident.
+	if *raceSweepMode {
+		if *bisDir == "" || *out == "" {
+			return fmt.Errorf("-race-sweep needs -bis-dir and -out (it never writes under data/builds)")
+		}
+		return runRaceSweep(realEngine{}, raceSweepConfig{
+			RepoRoot: *repoRoot, BuildDir: buildDir, BISDir: *bisDir, OutDir: outDir,
+			Spec: *spec, Iterations: *raceIterations, Seed: *raceSeed,
+		}, resolveTalentLayout)
+	}
 	if *all {
 		return runAllSpecsIsolated(execPath, specTimeout, *repoRoot, activeBuild, outDir, *bandsFlag, *weightsIterations, *memProfile)
 	}
@@ -458,6 +471,12 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		{"alliance", guide.AllianceRace},
 		{"horde", guide.HordeRace},
 	}
+	racesByFaction := make(map[string][]string, len(factions))
+	for _, f := range factions {
+		if racesByFaction[f.name], err = legalRaces(buildDir, specInfo.ClassSlug, f.name); err != nil {
+			return err
+		}
+	}
 	previous := map[string]map[string]slotPick{"alliance": nil, "horde": nil}
 	// notInSimWarned: this lane's brief, item 1's last sentence - "log
 	// every stripped id once per spec run at warning level so the
@@ -661,6 +680,14 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				if err != nil {
 					return fmt.Errorf("band %d %s: measuring the final set at %d iterations: %w", band, f.name, finalSetIterations, err)
 				}
+				// The race sweep: the final set on every race the class can be
+				// in this faction, at the published figure's count and seed
+				// (the guide race's own run is the one just measured).
+				sweep, err := sweepRaces(runner, specInfo, f.race, racesByFaction[f.name], band, engineTalents, buildGear(picks), finalSetIterations, verifySeed)
+				if err != nil {
+					return fmt.Errorf("band %d %s: %w", band, f.name, err)
+				}
+				log.Printf("leveling-bis: %s band %d %s %s: race sweep: %s", spec, band, f.name, pass.name, formatRaceSweep(sweep))
 				for _, e := range verifyErrors {
 					log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
 				}
@@ -677,6 +704,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				report.UnconfirmedWithinErrorHeld = heldUnconfirmed
 				report.KeptAlternative = kept
 				report.SetDPSError = setDPSError
+				report.RaceSweep = &sweep
 				report.Slots = withEnchantIDs(specInfo, report.Slots)
 				report.Slots = withSourceKindPicks(report.Slots, sourceFilterInputs{Spec: specInfo.Spec, Picks: picks, PickBySlot: pickBySlot, ReferenceDPSPerPoint: bandReferenceDPSPerPoint})
 				filtered, filterNotes := measureFilteredSets(runner, filteredSetInputs{Spec: specInfo, Race: f.race, Band: band, Talents: engineTalents, Picks: picks, PickBySlot: pickBySlot, SetDPS: setDPS, SetDPSError: setDPSError})

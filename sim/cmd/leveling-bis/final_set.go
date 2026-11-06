@@ -16,19 +16,15 @@ const finalSetIterations = 3000
 // by healIterationScale (score_heal.go), so a healer asks for the
 // quotient, rounded up (3,003 effective at scale 7).
 func finalSetRequestIterations(spec specInfo) int {
-	if isHealer(spec) {
-		return (finalSetIterations + healIterationScale - 1) / healIterationScale
-	}
-	return finalSetIterations
+	asked, _ := requestIterationsFor(spec, finalSetIterations)
+	return asked
 }
 
 // finalSetEffectiveIterations is the count the published figure really
 // ran at, for the run block.
 func finalSetEffectiveIterations(spec specInfo) int {
-	if isHealer(spec) {
-		return finalSetRequestIterations(spec) * healIterationScale
-	}
-	return finalSetIterations
+	_, effective := requestIterationsFor(spec, finalSetIterations)
+	return effective
 }
 
 // measureFinalSet is the published set figure: DPS and its standard error.
