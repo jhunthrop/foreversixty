@@ -21,7 +21,6 @@
     caretAt,
     caretLanes,
     closeUpWindow,
-    COLLAPSED_CAST_ROWS,
     ROW_HEIGHT,
     layoutRows,
     moveCaret,
@@ -41,8 +40,8 @@
   import type { SimResult } from '../../lib/sim/types';
   import { yieldToMain } from '../../lib/yield';
   import ActionLink from '../ui/ActionLink.svelte';
-  import Card from '../ui/Card.svelte';
-  import Switch from '../ui/Switch.svelte';
+  import Section from '../ui/Section.svelte';
+  import Segmented from '../ui/Segmented.svelte';
   import ActionIcon from './ActionIcon.svelte';
   import SimCastList from './SimCastList.svelte';
   import TimelineBrush from './TimelineBrush.svelte';
@@ -63,6 +62,15 @@
     live?: boolean;
   } = $props();
 
+  const ZOOM_OPTIONS = [
+    { value: 'whole', label: timelineCopy.wholeFight },
+    { value: 'close', label: timelineCopy.closeUp },
+  ];
+  const SWINGS_OPTIONS = [
+    { value: 'off', label: timelineCopy.off },
+    { value: 'on', label: timelineCopy.on },
+  ];
+
   /** The widths the spec fixes (3.7, Plot and Phone). */
   const LABEL_WIDTH = 200;
   const LABEL_WIDTH_LONG = 240;
@@ -81,7 +89,7 @@
   const READOUT_TOP = 36;
   const PANEL_GAP = 12;
   const HIT_TOLERANCE_PX = 5;
-  const CAST_LIST_RESERVE = ROW_HEIGHT.castFoot + ROW_HEIGHT.castRow * COLLAPSED_CAST_ROWS;
+  const CAST_LIST_RESERVE = ROW_HEIGHT.castFoot;
   const BROWSER = typeof window !== 'undefined';
 
   // An item proc or a racial no class table names is read from the build's shards, once.
@@ -409,48 +417,36 @@
   </div>
 {/snippet}
 
-<Card
-  glyph="clock"
-  label={timelineCopy.label}
-  title={timelineCopy.title}
-  {meta}
-  body="none"
-  class="mx-[18px] md:mx-0"
-  testid="sim-timeline"
->
+<Section title={timelineCopy.title} {meta} testid="sim-timeline">
   {#if model === null}
-    <p class="text-text border-line-soft border-t px-5 py-4 text-[15px]" data-testid="timeline-no-sample">
+    <p class="text-text text-[15px]" data-testid="timeline-no-sample">
       {timelineCopy.noSample}
     </p>
   {:else}
+    <!-- The toolbar (sim spec 2026-11-06 §5 Timeline): two Segmented groups, the zoom and Swings and
+         ticks (Off by default: casts only), then the legend. -->
     <div
-      class="border-line-soft flex min-h-14 flex-wrap items-center gap-x-4 gap-y-[10px] border-t px-4 py-[10px] md:px-5"
+      class="flex min-h-14 flex-wrap items-center gap-x-4 gap-y-[10px] py-[10px]"
       data-testid="timeline-toolbar"
     >
-      <div class="seg" role="group" aria-label={timelineCopy.zoomLabel} data-testid="timeline-zoom">
-        <button
-          type="button"
-          aria-pressed={!closeUp}
-          onclick={() => setZoom(false)}
-          data-testid="timeline-whole">{timelineCopy.wholeFight}</button
-        >
-        <button
-          type="button"
-          aria-pressed={closeUp}
-          onclick={() => setZoom(true)}
-          data-testid="timeline-close">{timelineCopy.closeUp}</button
-        >
-      </div>
-      <span class="inline-flex items-center gap-[18px]">
-        <Switch
-          checked={swings}
-          onchange={setSwings}
-          labelledby="timeline-swings-label"
+      <Segmented
+        options={ZOOM_OPTIONS}
+        value={closeUp ? 'close' : 'whole'}
+        label={timelineCopy.zoomLabel}
+        size="sm"
+        onChange={(next) => setZoom(next === 'close')}
+        testid="timeline-zoom"
+      />
+      <span class="inline-flex items-center gap-3">
+        <span id="timeline-swings-label" class="text-muted text-[13px]">{timelineCopy.swingsAndTicks}</span>
+        <Segmented
+          options={SWINGS_OPTIONS}
+          value={swings ? 'on' : 'off'}
+          label={timelineCopy.swingsAndTicks}
+          size="sm"
+          onChange={(next) => setSwings(next === 'on')}
           testid="timeline-swings"
         />
-        <span id="timeline-swings-label" class="text-text text-[14px] font-semibold"
-          >{timelineCopy.swingsAndTicks}</span
-        >
       </span>
       <ul
         class="text-muted flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] md:ml-auto"
@@ -678,7 +674,7 @@
       {#if phone}<span class="fade" aria-hidden="true"></span>{/if}
     </div>
 
-    <div class="border-line-soft flex min-h-11 border-t" data-testid="timeline-brush-row">
+    <div class="flex min-h-11" data-testid="timeline-brush-row">
       <div class="brush-gutter" style:width="{labelWidth}px"></div>
       {#if drawnStage >= 2}
         <TimelineBrush
@@ -708,51 +704,24 @@
     {/if}
 
     {#if drawnStage >= 2}
-      <SimCastList {model} window={viewWindow} {closeUp} names={liveNames} {visuals} {visualsLoaded} />
+      <SimCastList
+        {model}
+        window={viewWindow}
+        {closeUp}
+        {swings}
+        names={liveNames}
+        {visuals}
+        {visualsLoaded}
+      />
     {:else}
       <div style:height="{CAST_LIST_RESERVE}px"></div>
     {/if}
 
     <p class="sr-only" aria-live="polite" data-testid="timeline-live">{announcement}</p>
   {/if}
-</Card>
+</Section>
 
 <style>
-  .seg {
-    display: inline-flex;
-    overflow: hidden;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-control);
-  }
-  .seg button {
-    display: inline-flex;
-    align-items: center;
-    height: 36px;
-    padding: 0 14px;
-    color: var(--color-nav);
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .seg button[aria-pressed='true'] {
-    background: var(--tile);
-    color: var(--tile-ink);
-    box-shadow: inset 0 0 0 1px rgba(229, 185, 85, 0.35);
-  }
-  .seg button:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: -2px;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .seg button[aria-pressed='false']:hover {
-      color: var(--color-strong);
-    }
-  }
-  @media (pointer: coarse), (max-width: 767px) {
-    .seg button {
-      height: 44px;
-    }
-  }
   li:has(> .swatch) {
     display: inline-flex;
     align-items: center;
@@ -763,9 +732,6 @@
     border-radius: 1px;
   }
 
-  .scroller {
-    border-top: 1px solid var(--color-line-soft);
-  }
   .scroller.phone {
     overflow-x: auto;
     overscroll-behavior-x: contain;
@@ -776,7 +742,6 @@
   }
   .labels {
     flex: none;
-    border-right: 1px solid var(--color-line-soft);
   }
   .phone .labels {
     position: sticky;
@@ -951,6 +916,5 @@
   }
   .brush-gutter {
     flex: none;
-    border-right: 1px solid var(--color-line-soft);
   }
 </style>

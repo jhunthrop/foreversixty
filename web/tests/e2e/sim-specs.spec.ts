@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { gotoSim, simCharacter } from './support/sim-page';
 import { simCopy } from '../../src/lib/sim/copy';
 // Not `dpsSpecs` from spec-label.ts: that module also imports classRows from
 // planner/reference.ts, which does a raw `import combosJson from
@@ -191,19 +192,20 @@ test.describe('the in-page fidelity note', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ROGUE_TALENTS) }),
     );
 
-    await page.goto('/sim');
-    // sim-one-paste lane: ColdPasteHero.svelte is /sim's own one paste surface and pastes
-    // and runs in one click -- unlike SourceSwitcher's old addon card, there is no longer
-    // a "loaded but never run" moment to assert on here (rogue is a DPS spec, so
-    // `isSimulatedSpec` lets the run through); the fidelity note below is keyed off the
-    // loaded character's own spec, not run state, so it still proves the point this test
-    // is actually for.
+    await gotoSim(page);
+    // The paste Plate loads and runs in one click (rogue is a DPS spec, so `isSimulatedSpec`
+    // lets the run through); the fidelity caption in the answer (spec 2026-11-06-sim §4.6) is
+    // keyed off the loaded character's own spec, not run state, so it holds before the run
+    // lands and after.
     await page.getByTestId('sim-cold-paste-input').fill(ROGUE_FS1);
     await page.getByTestId('sim-cold-paste-run').click();
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(simCharacter(page)).toBeVisible();
 
-    const note = page.getByTestId('spec-fidelity-note');
+    const note = page.getByTestId('sim-answer').getByTestId('spec-fidelity-note');
     await expect(note).toContainText(simCopy.specNotYet);
+    await expect(note).toContainText(simCopy.specNotYetNote);
+    await expect(note.getByRole('link')).toHaveAttribute('href', '/sim/specs');
+    await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 15_000 });
     await expect(note).toContainText(simCopy.specNotYetNote);
   });
 
@@ -212,12 +214,12 @@ test.describe('the in-page fidelity note', () => {
   test('a validated spec runs with no fidelity note at all', async ({ page }) => {
     await stubSpecs(page);
 
-    await page.goto('/sim');
-    // sim-one-paste lane: same note as the unmeasured-spec test above -- the hero pastes
-    // and runs in one click, with no pre-run moment left to assert on.
+    await gotoSim(page);
+    // Same as the unmeasured-spec test above: the Plate pastes and runs in one click.
     await page.getByTestId('sim-cold-paste-input').fill(FURY_FS1);
     await page.getByTestId('sim-cold-paste-run').click();
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(simCharacter(page)).toBeVisible();
+    await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 15_000 });
 
     await expect(page.getByTestId('spec-fidelity-note')).toHaveCount(0);
   });

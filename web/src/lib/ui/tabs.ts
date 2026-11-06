@@ -28,9 +28,10 @@ export const TAB_STRIP = {
   stripWrap:
     'flex flex-wrap md:flex-nowrap md:overflow-x-auto md:overscroll-x-contain [scroll-padding-inline:48px] ' +
     '[scrollbar-width:none] shadow-[inset_0_-1px_0_var(--color-line-soft)] [&::-webkit-scrollbar]:hidden',
+  /** Sentence case, 14 px 600, as the mock system's strip (design/mocks/ws_prims.py `.strip-tabs`). */
   tab:
-    'inline-flex min-h-11 shrink-0 items-center border-b-2 px-3 text-[12px] font-bold tracking-[0.06em] ' +
-    'whitespace-nowrap uppercase transition-colors duration-[120ms] motion-reduce:transition-none ' +
+    'inline-flex min-h-11 shrink-0 items-center border-b-2 px-[14px] text-[14px] font-semibold ' +
+    'whitespace-nowrap transition-colors duration-[120ms] motion-reduce:transition-none ' +
     'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold',
   active: 'border-gold text-strong',
   idle: 'border-transparent text-nav hover:text-strong',

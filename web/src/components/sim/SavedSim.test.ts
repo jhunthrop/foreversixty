@@ -19,6 +19,7 @@ import { indexTalents } from '../../lib/planner/rules';
 import type { Item, TalentFile } from '../../lib/planner/types';
 import { gameCodeForSimResult } from '../../lib/sim/game-code';
 import type { SimResult } from '../../lib/sim/types';
+import SavedKind from './SavedKind.svelte';
 import SavedSim from './SavedSim.svelte';
 
 const runResult = runFixture as unknown as SimResult;
@@ -37,15 +38,27 @@ function decodedGear(code: string): { slot: string; itemId: number }[] {
 }
 
 describe('SavedSim: which view a kind gets', () => {
-  it('a run gets the one-page result, its sections and its nav', () => {
+  it('a run gets the one-page body: the table on the Plate, the spread and every open section', () => {
     const { body } = render(SavedSim, { props: { result: fullResult, onrerun: () => {} } });
-    expect(body).toContain('sim-result-band');
-    expect(body).toContain('sim-section-nav');
+    expect(body).toContain('sim-saved-run');
+    expect(body).toContain('data-region="plate"');
     expect(body).toContain('sim-damage-card');
-    expect(body).not.toContain('sim-tab-damage');
+    expect(body).toContain('data-region="section-dps-spread"');
     for (const id of ['timeline', 'gear', 'talents', 'resource', 'buffs', 'rotation', 'settings']) {
-      expect(body).toContain(`id="${id}"`);
+      expect(body).toContain(`data-testid="sim-section-${id}"`);
     }
+    for (const region of [
+      'timeline',
+      'gear',
+      'talents',
+      'rage',
+      'buffs-and-debuffs',
+      'this-run',
+      'rotation',
+    ]) {
+      expect(body).toContain(`data-region="section-${region}"`);
+    }
+    expect(body).not.toContain('sim-section-nav');
   });
 
   it('an older run falls back without a broken section: no bins, no Saved', () => {
@@ -56,7 +69,7 @@ describe('SavedSim: which view a kind gets', () => {
     expect(body).not.toContain('sim-fact-saved');
   });
 
-  it('a run with no sample and no gear drops those nav links', () => {
+  it('a run with no sample and no gear keeps its sections standing', () => {
     const request = {
       ...fullResult.request,
       character: { ...fullResult.request.character, gear: [] },
@@ -64,22 +77,25 @@ describe('SavedSim: which view a kind gets', () => {
     const { body } = render(SavedSim, {
       props: { result: { ...fullResult, sample: undefined, request }, onrerun: () => {} },
     });
-    expect(body).not.toContain('data-section="timeline"');
-    expect(body).not.toContain('data-section="gear"');
-    expect(body).toContain('data-section="talents"');
+    expect(body).toContain('data-region="section-timeline"');
+    expect(body).toContain('data-region="section-gear"');
+    expect(body).not.toContain('The median run');
   });
 
-  it('a bulk result keeps its own view', () => {
+  it('a bulk result keeps its own view: not the run head, its own chunk (SavedKind)', () => {
     const { body } = render(SavedSim, { props: { result: bulkResult, onrerun: () => {} } });
-    expect(body).toContain('sim-saved-header');
-    expect(body).not.toContain('sim-result-band');
+    expect(body).not.toContain('sim-saved-run');
+    expect(body).not.toContain('data-region="head"');
+    expect(render(SavedKind, { props: { result: bulkResult, onrerun: () => {} } }).body).toContain(
+      'sim-saved-header',
+    );
   });
 });
 
 describe('SavedSim: Copy for the game', () => {
   it('renders the button disabled while the talent layout has not loaded', () => {
-    // A bulk result's page (SavedKind): a run's Settings card is its own chunk, not in this render.
-    const { body } = render(SavedSim, { props: { result: bulkResult, onrerun: () => {} } });
+    // A bulk result's page (SavedKind, SavedSim's own chunk for a bulk result).
+    const { body } = render(SavedKind, { props: { result: bulkResult, onrerun: () => {} } });
     const match = /<button[^>]*data-testid="sim-saved-copy-for-game"[^>]*>[\s\S]*?<\/button>/.exec(body);
     if (match === null) throw new Error('copy-for-game button not found');
     expect(match[0]).toContain(addonCopy.copyForGame);

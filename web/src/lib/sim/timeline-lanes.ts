@@ -45,12 +45,9 @@ export const ROW_HEIGHT = {
   notice: 64,
   /** The same line and its link, wrapped in a phone's column. */
   noticePhone: 112,
-  castFoot: 52,
-  castRow: 40,
+  /** The cast count line under the plot (the list itself opens on "List every cast"). */
+  castFoot: 30,
 } as const;
-
-/** How many rows the collapsed cast list shows. */
-export const COLLAPSED_CAST_ROWS = 5;
 
 /** `spell:11567/1+r3` to `spell:11567`. A key outside the grammar is its own base. */
 export function baseActionKey(key: string): string {

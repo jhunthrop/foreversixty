@@ -6,9 +6,8 @@
      the design system's refresh glyph, so it reads as deliberate, never as a missing icon. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { parseActionKey } from '../../lib/sim/action-names';
   import type { CardTables } from '../../lib/sim/card-tables.svelte';
-  import { resolveIconUrl, REFUND_KEY } from '../../lib/sim/action-mark';
+  import { actionTip, resolveIconUrl, REFUND_KEY } from '../../lib/sim/action-mark';
   import Glyph from '../ui/Glyph.svelte';
   import IconTile from '../ui/IconTile.svelte';
 
@@ -31,14 +30,10 @@
     children: Snippet;
   } = $props();
 
-  const parsed = $derived(action === null ? null : parseActionKey(action));
   const icon = $derived(resolveIconUrl(action, tables.visuals, fallbackIcon));
-  const tipKey = $derived(
-    parsed?.kind === 'spell' && tables.spells.fact(parsed.id) !== undefined
-      ? `spell:${parsed.id}`
-      : undefined,
-  );
-  const itemId = $derived(parsed?.kind === 'item' ? parsed.id : undefined);
+  const opens = $derived(actionTip(action, (id) => tables.spells.fact(id) !== undefined));
+  const tipKey = $derived(opens.tip);
+  const itemId = $derived(opens.item);
   const openable = $derived(tipKey !== undefined || itemId !== undefined);
 </script>
 

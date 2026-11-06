@@ -27,11 +27,8 @@ const ALLOWED = new Map<string, number>([
   ['components/planner/ImportBox.svelte', 1], // the talent code paste box
   ['components/report/QueriesView.svelte', 2], // the SQL box and its result cells
   ['components/report/MechanicsMode.svelte', 2], // <code> the forever-logs command
-  ['components/sim/ColdPasteHero.svelte', 1], // the export paste box
   ['components/sim/SavedKind.svelte', 1], // the engine build string
   ['components/sim/DetailsCard.svelte', 1], // the engine build string
-  ['components/sim/SimSettingsCard.svelte', 1], // the engine build string
-  ['components/sim/RunControl.svelte', 1], // the engine's own error sentence
   ['components/sim/tools/BulkRunBar.svelte', 1], // the engine's own error sentence
   ['components/sim/RequestDrawer.svelte', 3], // the request JSON, a field id, the buff ids
   ['components/guild/report/ReportDiscord.svelte', 1], // the copy fallback box

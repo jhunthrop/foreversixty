@@ -11,6 +11,7 @@ import { expect, test } from './support/test';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { enhanced, fieldBox, listOf } from './support/select';
+import { pasteAndRun } from './support/sim-page';
 
 const SHEET = '/design-sheet';
 const THREAT = '/reports/fixture2abcd?fight=3&tab=threat';
@@ -304,16 +305,14 @@ test.describe('fine pointer: call sites', () => {
   });
 
   test('the sim Fight style list carries each style’s description', async ({ page }) => {
-    await page.goto('/sim');
-    await page.getByTestId('sim-cold-paste-input').fill(FURY);
-    await page.getByTestId('sim-cold-paste-run').click();
-    await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-    const trigger = await enhanced(page, 'sim-style');
+    // The run line's Fight select (spec 2026-11-06-sim §4.1), ControlBar's `control-style`.
+    await pasteAndRun(page, FURY);
+    const trigger = await enhanced(page, 'control-style');
     await trigger.click();
-    const list = listOf(page, 'sim-style');
+    const list = listOf(page, 'control-style');
     await expect(row(list, 'Execute').locator('.sel-row-desc')).toContainText('wider execute phase');
     await row(list, 'Execute').click();
-    await expect(page.getByTestId('sim-style')).toHaveValue('execute');
+    await expect(page.getByTestId('control-style')).toHaveValue('execute');
   });
 });
 
@@ -324,11 +323,8 @@ test('on a short screen the Fight style list stays inside the viewport', async (
   test.skip(isPhone(page), 'the listbox is the fine-pointer control');
   await page.setViewportSize({ width: 1440, height: 620 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-  const trigger = await enhanced(page, 'sim-style');
+  await pasteAndRun(page, FURY);
+  const trigger = await enhanced(page, 'control-style');
   for (const offset of [80, 260, 420]) {
     // The field `offset` px above the viewport's bottom edge.
     await trigger.evaluate(
@@ -336,7 +332,7 @@ test('on a short screen the Fight style list stays inside the viewport', async (
       offset,
     );
     await trigger.click();
-    const list = listOf(page, 'sim-style');
+    const list = listOf(page, 'control-style');
     await expect(list).toBeVisible();
     const box = (await list.boundingBox())!;
     expect(box.y, `top at ${offset}`).toBeGreaterThanOrEqual(0);

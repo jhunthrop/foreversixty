@@ -1,14 +1,9 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
+// Buffs: Custom on the run line opens the whole vocabulary in More settings (spec 2026-11-06-sim
+// §5.2), BuffPanel unchanged inside the sheet.
 import { expect, test } from './support/test';
 import { buffLabel } from '../../src/lib/sim/buff-names';
 import { choose, fieldBox } from './support/select';
-
-const activeBuild = JSON.parse(
-  readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
-) as { build: string };
-
-const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
+import { chooseBuffs, closeMoreSettings, openMoreSettings, pasteAndRun } from './support/sim-page';
 
 test('Custom opens the whole vocabulary, grouped, and every tick reaches the request', async ({ page }) => {
   // The panel's checkbox changes settings.buffs, and settings.buffs only reaches the engine
@@ -27,18 +22,16 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
     };
   });
 
-  await page.goto('/sim');
-  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and
-  // `sim-preset` below is disabled while a run is in flight (SettingsBar.svelte's
-  // `disabled` prop), so this waits the hero's own run out before touching it.
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
+  // The paste runs at once, and the run line is inert while a run is in flight, so this waits
+  // that run out before touching it.
+  await pasteAndRun(page);
 
   // The panel does not exist until Custom is chosen: a preset is a preset.
-  await expect(page.getByTestId('sim-buff-panel')).toBeHidden();
-  await choose(page.getByTestId('sim-preset'), 'custom');
+  await openMoreSettings(page);
+  await expect(page.getByTestId('sim-buff-panel')).toHaveCount(0);
+  await closeMoreSettings(page);
+  await chooseBuffs(page, 'custom');
+  await openMoreSettings(page);
   await expect(page.getByTestId('sim-buff-panel')).toBeVisible();
 
   // Every group the design names has a section, and each one is closed on arrival.
@@ -86,7 +79,8 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
 
   // The choice reaches the engine: run at the fastest precision and read back every request
   // string the run actually posted to a worker.
-  await choose(page.getByTestId('sim-precision'), 'fast');
+  await closeMoreSettings(page);
+  await choose(page.getByTestId('control-precision'), 'fast');
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 30_000 });
 

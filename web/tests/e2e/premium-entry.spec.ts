@@ -417,8 +417,11 @@ test.describe('the contextual links land on their anchors', () => {
     await page.route('**/v1/sims?mine=1*', (route) =>
       route.fulfill({ json: envelope({ rows: [], total: 0, page: 1, per_page: 100 }) }),
     );
+    // The header's character loads on arrival (spec 2026-11-06-sim 4.3); the link sits in More
+    // settings, beside where a payer's own "Run on our servers" is.
     await page.goto('/sim');
-    await page.locator('[data-testid="sim-run-block-action"]:visible').first().click();
+    await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 15_000 });
+    await page.getByTestId('sim-settings-more').click();
     const link = page.getByTestId('sim-server-run-free');
     await expect(link).toBeVisible({ timeout: 15_000 });
     await expect(link).toHaveText('Run on our servers · Premium plan');

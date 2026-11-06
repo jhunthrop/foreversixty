@@ -1,107 +1,30 @@
 ---
 // web/src/pages/sim.astro
-// Static. The island reads ?source= and ?ref= in the browser, because the page is
-// prerendered and has no request to read.
+// Static. The island reads ?source=, ?ref= and ?code= in the browser, because the page is
+// prerendered and has no request to read. The shell is the signed-out landing itself
+// (SimLandingPage, spec 2026-11-06-sim §4.2): the head, the paste Plate and the best-in-slot rail
+// render here as the first paint and the LCP, and the island mounts the same component over them,
+// so hydration moves nothing for a cold visitor. The rail's links are build-time data
+// (lib/sim/bis-set-rail.ts) handed to the island on the mount.
+import activeBuild from '../data/active-build.json';
 import Base from '../layouts/Base.astro';
-import { VIEW_GAP } from '../lib/current-character-layout';
-import { simCopy } from '../lib/sim/copy';
-import { landingCopy } from '../lib/sim/landing-copy';
-import SimPageHead from '../components/sim/SimPageHead.astro';
 import IslandScript from '../components/IslandScript.astro';
+import SimLandingPage from '../components/sim/SimLandingPage.svelte';
+import { loadBisSetRail } from '../lib/sim/bis-set-rail';
 
-const COLD_PASTE_SECTION =
-  'border-line bg-card-top rounded-panel mx-[18px] flex flex-col gap-3 border p-4 md:mx-0';
+const bisSets = loadBisSetRail(activeBuild.build);
 ---
 
 <Base
   title="Simulator"
   description="Simulate a World of Warcraft: Forever character: what your DPS is and why, free and in your own browser."
   path="/sim"
+  wide
 >
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
-  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
-    <!-- Site alignment §5.6: PageHead with the eyebrow "Tools", the h1, its one intro line and the
-         tool tabs under them. Static here, outside the island, so the intro is the page's one copy. -->
-    <SimPageHead title="Simulator" job={landingCopy.introLine} currentPath="/sim" />
-    <!-- Round 2 (Lighthouse), 2026-09-26 layout pass update: the signed-out default view's
-         own largest early text used to be SourceSwitcher's addon-card body; the layout
-         review promotes the Battle.net sign-in to a full-width hero ahead of that card
-         (Finding 2), with an intro line above it, so those are what now paints first for a
-         signed-out visitor and what this shell reproduces ahead of hydration. The hero card's own heading and two lines mirror
-         `SourceSwitcher.svelte`'s hero branch exactly (same classes, same copy) for the
-         same reason the original trick nested its paragraph in the real card's own markup:
-         an identical wrap width keeps the box pixel-stable across hydration. The buttons
-         are not reproduced here -- they add height but not width, so they
-         do not change which text box is largest/earliest; the min-h reservation below still
-         covers their full height as part of the real measurement.
-
-         Persona review 2026-10-06 (retail-raider), §5/§8 item 1: `ColdPasteHero.svelte` now
-         renders ahead of all of the above, so its own title and two caption lines (the same
-         reasoning as the hero card's duplicate, just above) are reproduced here too, in the
-         same order and with the same classes `ColdPasteHero.svelte` itself uses --
-         `COLD_PASTE_SECTION`'s one constant, shared rather than hand-copied twice, so the
-         two cannot quietly drift the way two separately typed class strings could. The
-         textarea, the Run button and the in-game hint's link are not reproduced, same
-         reasoning as the hero card's own button omission above.
-
-         sim-island.ts's replaceChildren() swaps this whole div's content for the real,
-         interactive switcher, so the min-h reservation below (measured against the real
-         hydrated height, mobile/desktop) keeps that swap from moving the footer -- the same
-         reserved-height technique SpecGrid.svelte's skeleton already uses for the same
-         reason.
-
-         The blocks are wrapped in `flex flex-col ${VIEW_GAP}` (fix round 1, Important #2), so
-         the gaps between them match the hydrated root's own.
-
-         2026-10-06 re-measure (sim-one-paste lane): the source row's own addon card is
-         gone from this view now (SourceSwitcher.svelte's `showAddonCard`, false whenever
-         ColdPasteHero already owns the one paste surface) and its sign-in button lost its
-         gold fill -- neither changes this shell's own reproduced text, but both shrink the
-         real hydrated height below it. Same method as the cold-paste lane's own pass
-         (`[data-sim-mount]`'s `getBoundingClientRect().height` after zeroing its own
-         `min-height`, waited until `[data-testid="sim-cold-paste-run"]` was visible)
-         measured 1384.5px at 390x844 (phone) and 947px at 1440 wide (desktop) for the
-         signed-out default view -- both down from the cold-paste pass's 1688/1038.5
-         figures. Reserved 24px over each (lane-common's own CI-Linux-fonts-wrap-wider
-         buffer): 1409/971.
-
-         2026-10-28 re-measure (polish lane, the example card removed from the hero branch):
-         1256px at 390x844 and 838px at 1440x900 by the same method; the same 24px over each:
-         1280/862.
-
-         2026-10-28 re-measure (polish lane, task 7: the intro line moved out above the tabs, the
-         damage-specs line moved into the paste box, Run carries a reason line): 1269px at 390x844
-         and 837px at 1440x900 by the same method; the same 24px over each: 1293/861.
-
-         2026-10-29 re-measure (polish lane, task 8: the bare sign-in line above the paste card
-         removed, Run's reason beside it): 1177.5px at 390x844 and 809.5px at 1440x900; the same
-         24px over each: 1202/834.
-
-         2026-10-31 re-measure (the "Jump to" spine bar removed, and this shell's reserved band
-         for it): 1220px at 390x844 and 834.5px at 1440x900 by the same method; the same 24px
-         over each: 1244/859.
-
-         2026-11-03: the hero card's email-link line is gone (Battle.net is the only sign-in), so
-         the real height is a line shorter than measured above; the reservation is left as it was,
-         which only over-reserves and never moves the footer, until the next re-measure. -->
-    <div id="sim" data-sim-mount class="min-h-[1244px] md:min-h-[859px]">
-      <div class={`flex flex-col ${VIEW_GAP}`}>
-        <!-- Hidden unless html[data-session='1'][data-server-sims='1'] (global.css): a payer's
-             "Your server runs" box, reserved before the island paints (spec 2026-10-24 3.7). -->
-        <div class="server-runs-reserve server-runs-shell-reserve" aria-hidden="true"></div>
-        <div class={COLD_PASTE_SECTION}>
-          <h2 class="section-title">{landingCopy.pasteHeroTitle}</h2>
-          <p class="text-muted text-[13px]">{landingCopy.scopeCaveat}</p>
-          <p class="text-muted text-[12px]">{landingCopy.pasteHeroHintLead}</p>
-          <p class="text-muted text-[12px]">{landingCopy.pasteHeroRunsLocally}</p>
-        </div>
-        <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
-          <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
-            <h2 class="section-title">{simCopy.sourceAccountTitle}</h2>
-            <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
-          </div>
-        </section>
-      </div>
+  <main id="main" tabindex="-1" class="sim-page">
+    <div id="sim" data-sim-mount data-bis-sets={JSON.stringify(bisSets)}>
+      <SimLandingPage bisSets={bisSets} />
       <noscript>
         <p class="text-muted px-[18px] text-[14px] md:px-0">
           The simulator needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}
@@ -112,3 +35,9 @@ const COLD_PASTE_SECTION =
     <IslandScript src="/sim-island.js" />
   </main>
 </Base>
+
+<style>
+  .sim-page {
+    padding-bottom: 40px;
+  }
+</style>

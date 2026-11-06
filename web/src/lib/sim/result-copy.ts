@@ -1,7 +1,7 @@
 // web/src/lib/sim/result-copy.ts
 // Every player-facing word of the saved run result page that lane A draws (spec
-// design/specs/2026-11-04-sim-results.md section 6, verbatim): the band, the section nav,
-// Worth knowing, Damage by ability, the DPS spread, Settings and the page's errors. Its own
+// design/specs/2026-11-04-sim-results.md section 6, verbatim; sim spec 2026-11-06 section 6 where
+// it changed them): the band, Worth knowing, Damage by ability, the DPS spread and the page's errors. Its own
 // module rather than more keys on copy.ts, which is already past the 800-line ceiling. Settings
 // has its own (settings-copy.ts), because that card is its own chunk.
 
@@ -53,37 +53,10 @@ export const bandCopy = {
   fight: (length: string, variation: number) => `${length} ± ${variation}%`,
 } as const;
 
-export const navCopy = {
-  label: 'Sections of this result',
-  damage: 'Damage',
-  timeline: 'Timeline',
-  gear: 'Gear',
-  talents: 'Talents',
-  buffs: 'Buffs',
-  rotation: 'Rotation',
-  settings: 'Settings',
-  /** The resource section's link reads the player's power. */
-  resource: { rage: 'Rage', energy: 'Energy', mana: 'Mana' },
-} as const;
-
-/** The lazy cards' heads while their chunks load (spec section 6). */
-export const sectionHeadCopy = {
-  timeline: { label: 'ONE FIGHT', title: 'Timeline' },
-  gear: { label: "THIS RUN'S INPUT", title: 'Gear' },
-  talents: { label: "THIS RUN'S INPUT", title: 'Talents' },
-  resource: { label: 'AVERAGE FIGHT' },
-  buffs: { label: 'AVERAGE FIGHT', title: 'Buffs and debuffs' },
-  rotation: {
-    title: 'Rotation',
-    label: (spec: string, level: number) => `${spec.toUpperCase()}, AT ${level}`,
-  },
-  settings: { label: "THIS RUN'S INPUT", title: 'Settings' },
-} as const;
+/** The word for the player's power, the resource section's title. */
+export const powerCopy = { rage: 'Rage', energy: 'Energy', mana: 'Mana' } as const;
 
 export const warningsCopy = {
-  label: 'THIS RUN',
-  title: 'Worth knowing',
-  notes: (count: number) => (count === 1 ? '1 note' : `${count} notes`),
   stale: 'This run used an older engine. A run today may give a different number.',
   capstone: (spell: string) =>
     `${spell} was never pressed in this run. Check the talents in Open in the sim.`,
@@ -103,11 +76,11 @@ export const warningsCopy = {
 } as const;
 
 export const damageCopy = {
-  label: 'THIS RUN',
   title: 'Damage by ability',
   meta: (dps: string, length: string) => `${dps} DPS over ${length} on average`,
   headers: {
     ability: 'Ability',
+    shareOfDamage: 'Share of damage',
     dps: 'DPS',
     share: 'Share',
     casts: 'Casts',
@@ -121,6 +94,11 @@ export const damageCopy = {
   rank: (rank: number) => `Rank ${rank}`,
   outcome: { MISS: 'Miss', DODGE: 'Dodge', PARRY: 'Parry', GLANCING: 'Glance', BLOCK: 'Block' },
   ticks: (count: string, crit: string) => [`${count} ticks`, `tick crit ${crit}%`] as const,
+  /** A DoT's uptime on its sub line (the Uptime column retired, sim spec 2026-11-06 §4.7). */
+  upFor: (percent: string) => `up ${percent}% of the fight`,
+  /** A spell that hits several enemies: its landed attempts a cast, and the fight's targets. */
+  hitsACast: (hits: string, targets: number) =>
+    `${hits} hits a cast, ${targets} ${targets === 1 ? 'target' : 'targets'}`,
   becameHeroicStrike: (count: string) => `${count} swings became Heroic Strike`,
   fromSources: 'From',
   phoneCasts: (count: string, swings: boolean) => `${count} ${swings ? 'swings' : 'casts'}`,
@@ -136,7 +114,7 @@ export const damageCopy = {
 } as const;
 
 export const spreadCopy = {
-  label: (runs: string) => `${runs} RUNS`,
+  meta: (runs: string) => `${runs} runs`,
   title: 'DPS spread',
   axis: 'DPS per run',
   caption: (low: string, high: string) => `Two runs in three land between ${low} and ${high} DPS.`,
@@ -149,7 +127,7 @@ export const spreadCopy = {
   tiles: {
     mean: 'Mean',
     error: 'Error',
-    spread: 'Spread',
+    stddev: 'Std dev',
     lowest: 'Lowest',
     highest: 'Highest',
     runs: 'Runs',

@@ -18,6 +18,7 @@
     tree,
     readOnly = false,
     bandDiff = null,
+    plain = false,
   }: {
     store: PlannerStore;
     tree: TalentTree;
@@ -26,6 +27,9 @@
      *  grid can mark every cell whose rank differs from it. `null` before any band has
      *  loaded -- no cell ever claims a difference without real data (tenet 8). */
     bandDiff?: BandDiffView | null;
+    /** The sim's flat trees (sim spec 2026-11-06 §4.5, the mock's `Trees`): no art, no connector
+     *  lines, the grid at its column's start rather than centred in it. */
+    plain?: boolean;
   } = $props();
 
   const cells = $derived(gridCells(tree));
@@ -82,8 +86,8 @@
      panel's. preserveAspectRatio="none" lets one viewBox in base-breakpoint units cover the
      slightly larger md and lg cells, and non-scaling-stroke keeps the line weight identical
      at every size. -->
-<div class="relative mx-auto w-fit">
-  {#if tree.background && !artBroken}
+<div class={plain ? 'relative w-fit' : 'relative mx-auto w-fit'}>
+  {#if tree.background && !artBroken && !plain}
     <!-- The client's own panel, cropped and processed in the pipeline. `object-cover`
          fills the whole box whatever its aspect and crops the excess evenly around the
          centre, so the art reads as the grid's own backdrop rather than a strip beside it.
@@ -107,37 +111,39 @@
       onerror={() => (artBroken = true)}
     />
   {/if}
-  <svg
-    class="pointer-events-none absolute inset-0 h-full w-full"
-    {viewBox}
-    preserveAspectRatio="none"
-    aria-hidden="true"
-  >
-    {#each connectors as connector (connector.id)}
-      <!-- Rebuild spec §4.E.2: a dark halo under the coloured line, sharing the same `d` --
+  {#if !plain}
+    <svg
+      class="pointer-events-none absolute inset-0 h-full w-full"
+      {viewBox}
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      {#each connectors as connector (connector.id)}
+        <!-- Rebuild spec §4.E.2: a dark halo under the coloured line, sharing the same `d` --
          two stacked paths, not a new shape, so the halo moves and sizes with the line it
          sits under for free. -->
-      <path
-        d={connector.d}
-        aria-hidden="true"
-        fill="none"
-        stroke-width="5"
-        stroke-linecap="round"
-        style="vector-effect: non-scaling-stroke"
-        class={CONNECTOR_STROKE.halo}
-      />
-      <path
-        d={connector.d}
-        data-testid={`connector-${connector.id}`}
-        data-met={connector.met}
-        fill="none"
-        stroke-width="2"
-        stroke-linecap="round"
-        style="vector-effect: non-scaling-stroke"
-        class={connector.met ? CONNECTOR_STROKE.met : CONNECTOR_STROKE.unmet}
-      />
-    {/each}
-  </svg>
+        <path
+          d={connector.d}
+          aria-hidden="true"
+          fill="none"
+          stroke-width="5"
+          stroke-linecap="round"
+          style="vector-effect: non-scaling-stroke"
+          class={CONNECTOR_STROKE.halo}
+        />
+        <path
+          d={connector.d}
+          data-testid={`connector-${connector.id}`}
+          data-met={connector.met}
+          fill="none"
+          stroke-width="2"
+          stroke-linecap="round"
+          style="vector-effect: non-scaling-stroke"
+          class={connector.met ? CONNECTOR_STROKE.met : CONNECTOR_STROKE.unmet}
+        />
+      {/each}
+    </svg>
+  {/if}
   <!-- The roving tabindex lives on the cells; the container's own -1 keeps it out of the tab
      order while still giving the composite widget a focus target of its own. -->
   <div

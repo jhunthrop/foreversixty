@@ -23,7 +23,8 @@ import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { artifactPublished, E2E_ARTIFACT, realEngineSkipReason } from './support/real-engine';
-import { ENGINE_VERSION, engineLabel } from '../../src/lib/sim/version';
+import { ENGINE_VERSION } from '../../src/lib/sim/version';
+import { gotoSim, simCharacter } from './support/sim-page';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -45,16 +46,15 @@ const activeBuild = JSON.parse(readFileSync(path.join(WEB_ROOT, 'src/data/active
 // checks against.
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=21521`;
 
-// sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface and pastes and
-// runs in one click (SimView.svelte's `runPastedInput`), against the real wasm engine here
+// The landing's paste Plate is the view's one paste surface and pastes and runs in one click (SimView.svelte's `runPastedInput`), against the real wasm engine here
 // same as the fake one everywhere else -- this waits that first run out (a real, slow
 // instantiation, not the fake engine's short timers) so the test below starts its own
 // deliberate run from a settled "Run again" rather than racing it.
 async function loadFury(page: Page): Promise<void> {
-  await page.goto('/sim');
+  await gotoSim(page);
   await page.getByTestId('sim-cold-paste-input').fill(FURY);
   await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(simCharacter(page)).toBeVisible();
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 30_000 });
 }
 
@@ -76,10 +76,11 @@ test('a real wasm run against the fixture character returns a positive DPS', asy
 
   await loadFury(page);
 
-  // The page names the engine it actually loaded, straight from the wasm module's own
-  // simEngineVersion global (engine.ts) -- confirming this run is against the published
-  // artifact and not a build that silently fell back to the fake engine.
-  await expect(page.getByTestId('sim-engine-version')).toHaveText(engineLabel(ENGINE_VERSION));
+  // The result names the engine it actually ran on (This run's Engine fact, the result's own
+  // engine_version) -- confirming this run is against the published artifact and not a build
+  // that silently fell back to the fake engine.
+  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('sim-settings-engine')).toContainText(ENGINE_VERSION.slice(0, 7));
 
   // "Run again", not "Run sim": loadFury's own hero run already finished once against the
   // real engine above -- this is the second, deliberate run the rest of this test proves
@@ -95,14 +96,12 @@ test('a real wasm run against the fixture character returns a positive DPS', asy
   // test cannot reach: the browser fetching, instantiating and running THIS published
   // artifact through the real RunControl wiring, for the "normal" run every visitor gets.
   await expect(button).toHaveText('Run again', { timeout: 30_000 });
-  // toContainText, not toHaveText: the progress line now carries a percentage too
-  // ("3,000 iterations · 0.13%"), and this test only needs to prove the iteration count
-  // landed, not pin the line's exact full text.
-  await expect(page.getByTestId('sim-progress')).toContainText('3,000 iterations');
+  // The run count landed: the spread's meta reads the request's own 3,000 runs.
+  await expect(page.getByTestId('sim-spread-card')).toContainText('3,000 runs');
+  await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result');
 
   const dpsText = await page.getByTestId('sim-dps').textContent();
   expect(dpsText).not.toBeNull();
-  expect(dpsText).not.toBe('—');
   const dps = Number(dpsText!.replace(/[^0-9.]/g, ''));
   expect(dps).toBeGreaterThan(0);
 

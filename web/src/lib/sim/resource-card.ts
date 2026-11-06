@@ -3,7 +3,7 @@
 // summary, the two lists from `resource_sources`. Every figure is the engine's average per fight;
 // none is recomputed beyond a share and a rounding.
 import { attackHand, parseActionKey, resolveActionName, type ActionNames } from './action-names';
-import { damageCopy, grouped, navCopy, oneDecimal } from './result-copy';
+import { damageCopy, grouped, powerCopy, oneDecimal } from './result-copy';
 import { resourceCardCopy as copy } from './input-cards-copy';
 import { REFUND_KEY } from './action-mark';
 import { primaryPowerTrack, type PrimaryPower } from './primary-power';
@@ -94,7 +94,7 @@ export function resourceCard(result: SimResult, names: ActionNames | null): Reso
   const found = primaryPowerTrack(result);
   if (found === null) return null;
   const { power, track: resource } = found;
-  const title = navCopy.resource[power];
+  const title = powerCopy[power];
   const sources = result.resource_sources?.find((row) => row.resource === power);
   return {
     title,

@@ -24,7 +24,7 @@ import {
 } from './timeline-lanes';
 import type { SampleCast, SampleOutcome, SimResult } from './types';
 
-export { baseActionKey, COLLAPSED_CAST_ROWS, MAX_EVENTS, ROW_HEIGHT } from './timeline-lanes';
+export { baseActionKey, MAX_EVENTS, ROW_HEIGHT } from './timeline-lanes';
 
 /** Close up's first window. */
 export const CLOSE_UP_MS = 30_000;
