@@ -32,7 +32,14 @@ describe('decodeFS1 drops section', () => {
     expect(decoded.ok).toBe(true);
     if (!decoded.ok) return;
     expect(decoded.build.drops).toEqual([
-      { at: 5, instanceId: 1, encounterId: 1, method: '', source: '', items: [{ itemId: 7, count: 1, winners: [] }] },
+      {
+        at: 5,
+        instanceId: 1,
+        encounterId: 1,
+        method: '',
+        source: '',
+        items: [{ itemId: 7, count: 1, winners: [] }],
+      },
     ]);
   });
 });

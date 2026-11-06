@@ -344,6 +344,7 @@ export function decodeFS1(code: string): FS1Result {
     ignored: [] as string[],
     character: undefined as { name: string; realm: string } | undefined,
     level: undefined as number | undefined,
+    drops: undefined as FS1DropCorpse[] | undefined,
   };
 
   for (const section of sections) {
