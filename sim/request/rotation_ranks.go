@@ -140,12 +140,15 @@ func filterRankedLines(v any, resolveLine func(line int) func(int32) (int32, boo
 // action casts. An unlearned spell under one of these drops the whole
 // top-level entry; anywhere else - a condition's spellTimeToReady, a
 // dotRemainingTime, a spellIsReady - the id is left as written, and the
-// engine's own rule takes over: rot.GetAPLSpell finds no such spell,
-// the value builds to nil, and newValueAnd/newValueCompare drop a nil
-// operand (sim/core/apl_values_operators.go, wowsims-forever fork). A
-// level-18 hunter's Serpent Sting, conditioned on Aimed Shot's cooldown
-// (learned at 20), used to lose the whole action to that condition and
-// sim on auto shots and Multi-Shot alone (found 2026-09-28).
+// engine's own rule takes over: rot.GetAPLSpell finds no such spell and
+// the value reads as a spell the character cannot cast (not ready, not
+// castable, ready only after the fight, 0 for its counts and times;
+// sim/core/apl_values_spell.go unknownSpellValue, wowsims-forever fork,
+// round 25 - it used to build to nil and drop out of its and/or/compare,
+// which silenced a "Multi-Shot is not about to come back OR low mana"
+// gate below 18). A level-18 hunter's Serpent Sting, conditioned on Aimed
+// Shot's cooldown (learned at 20), used to lose the whole action to that
+// condition and sim on auto shots and Multi-Shot alone (found 2026-09-28).
 var castKeys = map[string]bool{
 	"castSpell":         true,
 	"channelSpell":      true,
