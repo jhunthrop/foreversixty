@@ -1,7 +1,9 @@
 // web/tests/e2e/sim-landing.spec.ts
-// Task 18: the signed-in landing state (design 4.6). A member who opens /sim sees their
-// characters and one action each, and no form until they ask for one -- the source switcher
-// (tests/e2e/sim-sources.spec.ts) is what every signed-out visitor still gets.
+// The signed-in landing (spec 2026-11-06-sim §4.3): a member who opens /sim lands on the
+// header's character, loaded -- its name as the title, the meta line, where the gear came
+// from, and the run line -- with no character list (the header selector lists them; one way to
+// switch). The paste Plate and Other ways in (tests/e2e/sim-sources.spec.ts) are what a
+// signed-out visitor, or a member whose character cannot load, still gets.
 //
 // 2026-09-24 landing pass (owner-approved UX review) adds Wendel: a character the site
 // holds no build for at all (`build` omitted, unlike Thrallgar and Roland below), whose
@@ -10,6 +12,8 @@
 import { expect, test } from './support/test';
 import { landingCopy } from '../../src/lib/sim/landing-copy';
 import { simCopy } from '../../src/lib/sim/copy';
+import { simPageCopy } from '../../src/lib/sim/page-copy';
+import { gotoSim, simCharacter } from './support/sim-page';
 
 function envelope(data: unknown, status = 200) {
   return {
@@ -53,6 +57,8 @@ const ME = {
 };
 
 const ME_NO_CHARACTERS = { ...ME, characters: [] };
+/** The same account with another character as its main: the header (and so /sim) picks it. */
+const meWithMain = (key: string) => ({ ...ME, main_character_key: key });
 
 // Computed at test run time so the strip's relative-time pill reads "just now" regardless of
 // when the suite runs, the same way sim-sources.spec.ts's own addon-paste test gets there.
@@ -105,195 +111,121 @@ test.describe('a signed-in member with characters', () => {
     await stubSignedIn(page);
   });
 
-  test('opens on the landing state, not the switcher', async ({ page }) => {
-    await page.goto('/sim');
+  // The header's character (here the site's own main-character guess, since this fixture stores
+  // no pointer) loads on arrival: no list, no switcher, no engine hash.
+  test('opens on the header character, loaded, not a list or the switcher', async ({ page }) => {
+    await gotoSim(page);
 
-    await expect(page.getByTestId('sim-landing')).toBeVisible();
-    await expect(page.getByTestId('sim-character-us/normal/thrallgar')).toBeVisible();
-    await expect(page.getByTestId('sim-character-us/normal/roland')).toBeVisible();
-    await expect(page.getByTestId('sim-sources')).toHaveCount(0);
-    // Finding 5 (2026-09-24 landing pass): the landing state no longer carries its own copy
-    // of the scope sentence -- SimView's own merged caveat (Task 8, spec 2026-09-25 §6),
-    // under the character list, is the only copy of it now on /sim, and no engine-version
-    // hash precedes any of this (Finding 6).
-    await expect(page.getByTestId('sim-landing-scope-note')).toHaveCount(0);
-    await expect(page.getByTestId('sim-scope-note')).toHaveText(landingCopy.scopeCaveat);
-    await expect(page.getByTestId('sim-engine-version')).toHaveCount(0);
-
-    // Fix round 1, MEDIUM-1: the row is a real link (`url.ts`'s own `simSearch`), not only
-    // the button beside it -- copyable, middle-clickable, opens in a new tab.
-    await expect(page.getByTestId('sim-character-link-us/normal/thrallgar')).toHaveAttribute(
-      'href',
-      '/sim?source=armory&ref=us%2Fnormal%2Fthrallgar',
-    );
-  });
-
-  // 2026-09-26 layout pass, Finding 1: the Run block opens the landing, for
-  // whichever character is current (here, the site's own main-character guess, since this
-  // fixture stores no pointer) -- pressing its button does the exact same pick the list's
-  // own Sim link does for that same character.
-  test('the Run block runs the current character, the same pick the list offers it', async ({ page }) => {
-    await page.goto('/sim');
-
-    const block = page.getByTestId('sim-run-block');
-    await expect(block).toBeVisible();
-    await expect(block.getByTestId('sim-run-block-action')).toHaveText(landingCopy.runSim);
-    await expect(block).toContainText('Thrallgar');
-
-    await block.getByTestId('sim-run-block-action').click();
-
-    await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('paperdoll-source')).toHaveText('Addon export, just now');
+    await expect(page.getByTestId('page-title')).toHaveText('Thrallgar');
+    await expect(simCharacter(page)).toContainText('Fury Warrior');
+    // The source line the API actually answered: an addon export, captured just now.
+    await expect(page.getByTestId('sim-head-source')).toHaveText(/^Gear from the addon, \d{1,2} [A-Z][a-z]{2}$/);
+    await expect(page.getByTestId('sim-settings')).toBeVisible();
     await expect(page.getByTestId('sim-landing')).toHaveCount(0);
+    await expect(page.getByTestId('sim-sources')).toHaveCount(0);
+    await expect(page.getByTestId('sim-answer-label')).toHaveText(simPageCopy.answer.noSim);
   });
 
-  // Finding 1: a character with no build gets no Sim button -- a "Paste export" link and no
-  // pill instead, since the action already says it.
-  test('a character with no build gets a Paste export link, no Sim button, and no pill', async ({ page }) => {
-    await page.goto('/sim');
+  // The run line's Run sim runs the character the page arrived on.
+  test('Run sim runs the header character', async ({ page }) => {
+    await gotoSim(page);
+    const run = page.getByTestId('sim-run-button');
+    await expect(run).toHaveText(simPageCopy.bar.runSim);
 
-    await expect(page.getByTestId('sim-pick-us/normal/wendel')).toHaveCount(0);
-    const pasteLink = page.getByTestId('sim-paste-us/normal/wendel');
-    await expect(pasteLink).toHaveText(landingCopy.pasteExport);
-    await expect(pasteLink).toHaveAttribute('href', landingCopy.pasteExportHref);
-    await expect(page.getByTestId('sim-character-build-us/normal/wendel')).toHaveCount(0);
+    await run.click();
+
+    await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result', { timeout: 15_000 });
+    await expect(page.getByTestId('page-title')).toHaveText('Thrallgar');
+    await expect(run).toHaveText(simPageCopy.bar.runAgain);
   });
 
-  // Finding 2: the sim-input 404 gets its own alert, with the character's name and both
-  // links, in place of (not alongside) the old plain-text race hint -- which never follows
-  // this failure (Ruling: `simCopy.landingNoRace` follows only the race refusal).
-  test('picking a character with no build shows the build-missing alert, and the list stays up', async ({
+  // Finding 2: the sim-input 404 gets its own notice, with the character's name and the way to
+  // fix it, and the landing body (the paste Plate) stays up under it.
+  test('a header character with no build shows the build-missing notice over the landing', async ({
     page,
   }) => {
-    await page.goto('/sim');
-
-    // Wendel has no Sim button (Finding 1), but the row's own name link still picks him in
-    // place on a plain left click (`follow()`, LandingState.svelte) -- the same
-    // fromStoredCharacter/fetchSimInput path a Sim press would take for a character that had
-    // one, and the only way this specific failure (a 404, not the race refusal) is reached.
-    await page.getByTestId('sim-character-link-us/normal/wendel').click();
+    await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithMain('us/normal/wendel'))));
+    await gotoSim(page);
 
     const alert = page.getByTestId('sim-landing-build-missing');
     await expect(alert).toBeVisible();
     await expect(alert).toContainText('No build yet for Wendel.');
-    await expect(alert.getByRole('link', { name: landingCopy.buildMissingPasteLink })).toHaveAttribute(
-      'href',
-      landingCopy.pasteExportHref,
-    );
+    await expect(alert).toContainText(landingCopy.buildMissingPasteLink);
     await expect(alert.getByRole('link', { name: landingCopy.buildMissingAccountLink })).toHaveAttribute(
       'href',
       landingCopy.buildMissingAccountHref,
     );
-    // The old plain-text race hint never follows a 404 (Ruling, Finding 2).
+    // The race hint never follows a 404 (Ruling, Finding 2).
     await expect(page.getByTestId('sim-landing-message')).toHaveCount(0);
     await expect(page.getByTestId('sim-landing')).toBeVisible();
-    await expect(page.getByTestId('sim-character')).toHaveCount(0);
+    await expect(page.getByTestId('sim-cold-paste')).toBeVisible();
+    await expect(simCharacter(page)).toHaveCount(0);
   });
 
-  test('pressing Sim loads the strip, with the source pill the API actually answered', async ({ page }) => {
-    await page.goto('/sim');
-
-    await page.getByTestId('sim-pick-us/normal/thrallgar').click();
-
-    await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('paperdoll-source')).toHaveText('Addon export, just now');
-    await expect(page.getByTestId('sim-landing')).toHaveCount(0);
-  });
-
-  test('a character with no recorded race fails with the addon hint, and the list stays up', async ({
+  // The race refusal names itself; the landing's notice says the character could not be read
+  // (spec §5, "Character from the header"). LandingState's appended "paste your export" hint
+  // retired with the list.
+  test('a header character with no recorded race says why, and the landing stays up', async ({
     page,
   }) => {
-    await page.goto('/sim');
-
-    await page.getByTestId('sim-pick-us/normal/roland').click();
+    await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithMain('us/normal/roland'))));
+    await gotoSim(page);
 
     await expect(page.getByTestId('sim-landing-message')).toContainText(
       'That export names a race this build does not have: none recorded.',
     );
-    await expect(page.getByTestId('sim-landing-message')).toContainText(simCopy.landingNoRace);
-    // A failed pick does not empty the page: the list is still the whole point of being here.
+    await expect(page.getByTestId('sim-landing-build-missing')).toContainText(simCopy.characterFailed);
+    // A failed load does not empty the page: the paste Plate is still the way in.
     await expect(page.getByTestId('sim-landing')).toBeVisible();
-    await expect(page.getByTestId('sim-character')).toHaveCount(0);
-  });
-
-  test('Sim something else opens the switcher', async ({ page }) => {
-    await page.goto('/sim');
-    await expect(page.getByTestId('sim-landing')).toBeVisible();
-
-    await page.getByTestId('sim-other-character').click();
-
-    await expect(page.getByTestId('sim-sources')).toBeVisible();
-    await expect(page.getByTestId('sim-landing')).toHaveCount(0);
-  });
-
-  // Fix round 1, LOW-2: the `onback` round trip had no automated coverage, only a
-  // by-hand trace in the review. Both directions the review traced: landing -> switcher ->
-  // landing (nothing loaded yet), and strip -> switcher -> strip (a character already up).
-  test('Back to your characters returns to the landing state from the switcher', async ({ page }) => {
-    await page.goto('/sim');
-    await page.getByTestId('sim-other-character').click();
-    await expect(page.getByTestId('sim-sources')).toBeVisible();
-
-    await page.getByTestId('sim-back-to-characters').click();
-
-    await expect(page.getByTestId('sim-landing')).toBeVisible();
-    await expect(page.getByTestId('sim-sources')).toHaveCount(0);
-  });
-
-  test('Back to your characters returns to a loaded strip, not the landing state', async ({ page }) => {
-    await page.goto('/sim');
-    await page.getByTestId('sim-pick-us/normal/thrallgar').click();
-    await expect(page.getByTestId('sim-character')).toBeVisible();
-
-    await page.getByTestId('sim-change-source').click();
-    await expect(page.getByTestId('sim-sources')).toBeVisible();
-
-    await page.getByTestId('sim-back-to-characters').click();
-
-    await expect(page.getByTestId('sim-character')).toBeVisible();
-    await expect(page.getByTestId('sim-sources')).toHaveCount(0);
+    await expect(simCharacter(page)).toHaveCount(0);
   });
 });
 
-test('a signed-out visitor gets the switcher, never the landing state', async ({ page }) => {
+test('a signed-out visitor gets the paste Plate and Other ways in, never a character', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(failure('not signed in', 401)));
 
-  await page.goto('/sim');
+  await gotoSim(page);
 
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
   await expect(page.getByTestId('sim-sources')).toBeVisible();
-  await expect(page.getByTestId('sim-landing')).toHaveCount(0);
+  await expect(page.getByTestId('sim-sign-in')).toHaveText(simPageCopy.ways.signIn);
+  await expect(simCharacter(page)).toHaveCount(0);
 });
 
-test('a signed-in member with no characters gets the switcher and the noCharactersYet line', async ({
+test('a signed-in member with no characters gets the landing and the no-characters notice', async ({
   page,
 }) => {
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_NO_CHARACTERS)));
 
-  await page.goto('/sim');
+  await gotoSim(page);
 
   await expect(page.getByTestId('sim-sources')).toBeVisible();
-  await expect(page.getByTestId('sim-landing')).toHaveCount(0);
-  await expect(page.getByTestId('sim-no-characters')).toContainText(simCopy.noCharactersYet);
-  // Nothing to go back to: the account card carries no "Back to your characters" button
-  // here (it used to, and clicking it re-rendered this same state).
-  await expect(page.getByTestId('sim-back-to-characters')).toHaveCount(0);
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
+  await expect(page.getByTestId('sim-no-characters')).toContainText(simPageCopy.noCharacters);
+  await expect(page.getByTestId('sim-no-characters').getByRole('link')).toHaveAttribute(
+    'href',
+    simPageCopy.noCharactersHref,
+  );
+  await expect(simCharacter(page)).toHaveCount(0);
 });
 
 // Spec 2026-09-23 §3: the simulator reads the session through the client cache, so a
-// returning signed-in visitor sees their characters from the snapshot before /v1/me answers
+// returning signed-in visitor sees their character from the snapshot before /v1/me answers
 // (the same shape as home-panel.spec.ts's returning-visitor test).
-test('a returning signed-in visitor sees their characters from the session snapshot before /v1/me answers', async ({
+test('a returning signed-in visitor sees their character from the session snapshot before /v1/me answers', async ({
   page,
   context,
 }) => {
   await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
-  await page.route('**/v1/characters/**', (route) => route.fulfill(failure('none', 404)));
+  await page.route('**/v1/characters/us/normal/thrallgar/sim-input', (route) =>
+    route.fulfill(envelope(THRALLGAR_INPUT)),
+  );
   await page.route('**/v1/sims?mine=1*', (route) =>
     route.fulfill(envelope({ rows: [], total: 0, page: 1, per_page: 100 })),
   );
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
-  await page.goto('/sim');
-  await expect(page.getByTestId('sim-landing')).toBeVisible();
+  await gotoSim(page);
+  await expect(page.getByTestId('page-title')).toHaveText('Thrallgar');
   const stored = await page.evaluate(() =>
     Object.keys(window.localStorage)
       .filter((k) => k.startsWith('fs.q.'))
@@ -302,32 +234,31 @@ test('a returning signed-in visitor sees their characters from the session snaps
   );
   expect(stored).toContain('Thrallgar');
 
-  // Second load: /v1/me is held for five seconds, yet the landing state renders at once from
-  // the snapshot and the skeleton never shows.
+  // Second load: /v1/me is held for five seconds, yet the character renders at once from the
+  // snapshot and the landing skeleton never shows.
   await page.unroute('**/v1/me');
   await page.route('**/v1/me', async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 5000));
     await route.fulfill(envelope(ME));
   });
   await page.goto('/sim');
-  await expect(page.getByTestId('sim-landing')).toBeVisible({ timeout: 3000 });
+  await expect(page.getByTestId('page-title')).toHaveText('Thrallgar', { timeout: 3000 });
   await expect(page.getByTestId('sim-landing-skeleton')).toHaveCount(0);
 });
 
 // 2026-10-31: the "Jump to" spine bar is gone from /sim; the header selector is the one
 // current-character control, and nothing on the page repeats it.
-test('/sim carries no current-character band: the Your characters card opens on its caption', async ({
-  page,
-}) => {
+test('/sim carries no current-character band: the head opens on the character itself', async ({ page }) => {
+  await stubSignedIn(page);
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
-  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
-  await page.goto('/sim');
-  await expect(page.getByTestId('sim-landing')).toBeVisible();
+  await gotoSim(page);
+  await expect(page.getByTestId('page-title')).toHaveText('Thrallgar');
   await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
-  const caption = await page.getByTestId('sim-scope-note').boundingBox();
-  const firstRow = await page.getByTestId('sim-character-us/normal/thrallgar').boundingBox();
-  expect(caption).not.toBeNull();
-  expect(firstRow).not.toBeNull();
-  expect((caption as { y: number }).y).toBeLessThan((firstRow as { y: number }).y);
+  await expect(page.getByTestId('sim-change-source')).toHaveCount(0);
+  const title = await page.getByTestId('page-title').boundingBox();
+  const bar = await page.getByTestId('sim-settings').boundingBox();
+  expect(title).not.toBeNull();
+  expect(bar).not.toBeNull();
+  expect((title as { y: number }).y).toBeLessThan((bar as { y: number }).y);
 });
