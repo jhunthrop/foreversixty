@@ -20,6 +20,7 @@
     selected = false,
     density = 'default',
     open = false,
+    wrapTrail = false,
     testid,
     titleContent,
     subContent,
@@ -34,6 +35,8 @@
     selected?: boolean;
     density?: 'default' | 'slim';
     open?: boolean;
+    /** Below 768 the trail takes its own line under the body (an in-row Segmented). */
+    wrapTrail?: boolean;
     testid?: string;
     /** Replaces the title's text (a name with its tooltip trigger). */
     titleContent?: Snippet;
@@ -77,7 +80,11 @@
     {#if subContent}<span class="text-muted block text-[13px] leading-[18px]">{@render subContent()}</span>
     {:else if sub}<span class="text-muted block text-[13px] leading-[18px]">{sub}</span>{/if}
   </span>
-  <span class="flex items-center gap-3 justify-self-end"
+  <span
+    class={[
+      'flex items-center gap-3',
+      wrapTrail ? 'max-md:col-span-full max-md:mt-2 md:justify-self-end' : 'justify-self-end',
+    ]}
     >{#if trail}{@render trail()}{/if}</span
   >
 </svelte:element>

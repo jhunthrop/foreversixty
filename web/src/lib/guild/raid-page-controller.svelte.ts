@@ -16,7 +16,8 @@ import {
 import type { MatchCandidates } from './attendance-contract';
 import { attendanceCopy } from './attendance-copy';
 import { guildMarkSrc } from './mark';
-import { NightActions } from './night-actions.svelte';
+import { NightActions, type NightActionHost } from './night-actions.svelte';
+import { PlannerActions } from './planner-actions.svelte';
 import { PLAN_REQUIRED, REPORT_MATCHED, type MatchOutcome } from './match-picker.svelte';
 import { kindOf, raidCopy } from './raid-copy';
 import type { RaidSubmitResult } from './raid-form';
@@ -82,6 +83,8 @@ export class RaidPageController {
 
   /** The done raid's two officer writes: Excused and Post to Discord. */
   readonly night: NightActions;
+  /** The planner's comp target and Discord ping. */
+  readonly planner: PlannerActions;
 
   private readonly deps: RaidPageDeps;
   private readonly route: RaidRoute;
@@ -96,16 +99,14 @@ export class RaidPageController {
   constructor(deps: RaidPageDeps, route: RaidRoute, seed: Partial<RaidPageSeed> = {}) {
     this.deps = deps;
     this.route = route;
-    this.night = new NightActions(
-      {
-        raid: () => this.raid,
-        write: (run) => this.write(run),
-        applyRaid: (raid) => this.applyRaid(raid),
-        refusalLine: (thrown, ended, failed) => this.refusalLine(thrown, ended, failed),
-      },
-      deps,
-      route,
-    );
+    const host: NightActionHost = {
+      raid: () => this.raid,
+      write: (run) => this.write(run),
+      applyRaid: (raid) => this.applyRaid(raid),
+      refusalLine: (thrown, ended, failed) => this.refusalLine(thrown, ended, failed),
+    };
+    this.night = new NightActions(host, deps, route);
+    this.planner = new PlannerActions(host, deps, route);
     Object.assign(this, seed);
   }
 

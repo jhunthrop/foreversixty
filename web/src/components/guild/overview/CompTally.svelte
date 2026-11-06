@@ -3,6 +3,7 @@
      against the raid's seats, Late named under the count; the target is the zone's default until an
      officer sets one on the raid planner. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import type { GuildRaidView } from '../../../lib/guild/api';
   import type { GuildCompTarget } from '../../../lib/guild/overview-api';
   import { compTallyRows, compTargetLine } from '../../../lib/guild/overview-role-view';
@@ -14,7 +15,15 @@
     target,
     title = 'Comp against the target',
     editHref,
-  }: { raid: GuildRaidView; target: GuildCompTarget; title?: string; editHref?: string } = $props();
+    edit,
+  }: {
+    raid: GuildRaidView;
+    target: GuildCompTarget;
+    title?: string;
+    editHref?: string;
+    /** The planner's officer edit, under the tally. */
+    edit?: Snippet;
+  } = $props();
 
   const items = $derived(
     compTallyRows(raid.counts, target).map((row) => ({
@@ -34,4 +43,5 @@
   testid="guild-overview-comp"
 >
   <Tally {items} testid="guild-comp-tally" />
+  {#if edit}<div class="mt-4">{@render edit()}</div>{/if}
 </Section>
