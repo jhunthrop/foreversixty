@@ -94,7 +94,9 @@ describe('pointerForCharacter', () => {
   it('carries the faction, from the API or else from the race, and none when neither is known', () => {
     expect(pointerForCharacter(character({ key: 'k', name: 'A', faction: 'horde' })).faction).toBe('horde');
     expect(pointerForCharacter(character({ key: 'k', name: 'A', race: 'Undead' })).faction).toBe('horde');
-    expect(pointerForCharacter(character({ key: 'k', name: 'A', race: 'Night Elf' })).faction).toBe('alliance');
+    expect(pointerForCharacter(character({ key: 'k', name: 'A', race: 'Night Elf' })).faction).toBe(
+      'alliance',
+    );
     expect('faction' in pointerForCharacter(character({ key: 'k', name: 'A' }))).toBe(false);
   });
 

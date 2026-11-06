@@ -266,7 +266,12 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
   );
   const mateOf = (j: number): TierTieMate => {
     const { entry } = sorted[j]!.input;
-    return { classSlug: entry.class_slug, specSlug: entry.spec_slug, name: entry.name, tier: tiers[j] ?? null };
+    return {
+      classSlug: entry.class_slug,
+      specSlug: entry.spec_slug,
+      name: entry.name,
+      tier: tiers[j] ?? null,
+    };
   };
   const matesOf = (index: number): TierTieMate[] => {
     const tie = ties[index] ?? null;

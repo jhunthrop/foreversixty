@@ -409,7 +409,7 @@ describe('tie partners on the live 70790 numbers', () => {
     expect(beastMastery.tiedWith[0]!.tier).toBe('A');
   });
 
-  it('names a healer\'s neighbours the error cannot order it against, and no tank partner', () => {
+  it("names a healer's neighbours the error cannot order it against, and no tank partner", () => {
     const healers = rankRole(
       [
         healerInput('d', 'r', 'Restoration', 1000, 10, [{ scale: 0.8, hps: 1000, hps_error: 10 }]),
