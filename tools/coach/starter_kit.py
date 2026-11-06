@@ -7,10 +7,12 @@ a spec whose guide plays a drill differently gives its own text in starter_overr
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
 
-from starter_food import preset_food, preset_labels
+from starter_food import band_labels, first_level, preset_food, preset_labels
 from starter_overrides import DRILL_LINES
+from starter_text import number_words
 
 ROLE_LABEL = {"dps": "damage dealer", "healer": "healer", "tank": "tank"}
 HEALER_CODES = ("core_casts", "uptime", "resource", "ranks", "preparation", "death")
@@ -47,6 +49,21 @@ RESOURCE: dict[str, str] = {
 }
 # The preset's consumables a starter names, in pull-checklist order, with the word for each.
 KIT_KINDS = (("flask", "a flask"), ("weapon_enchant", "a weapon enchant"), ("combat_potion", "a combat potion"))
+# The coach reads dungeon bosses from the low teens (Ragefire Chasm); a consumable that first arrives
+# in a later band is named with its level (round 26), as the Fury persona does by hand.
+EARLIEST_DUNGEON_LEVEL = 13
+
+
+@dataclass(frozen=True)
+class KitItem:
+    """One thing on the pull checklist: the top band's item(s), the level those items arrive at,
+    and the level the first item of the kind arrives at (a Dense stone before the Elemental)."""
+
+    thing: str
+    name: str
+    name_level: int
+    thing_level: int
+
 
 # The names a player knows each finding by (design spec section 6), not the raw ids.
 FINDING_TITLES = {
@@ -71,7 +88,7 @@ MISTAKES = {
     "adherence": "buttons outside the priority list taking globals the list would have used.",
 }
 HEALER_MISTAKES = {
-    "core_casts": "a mana or efficiency cooldown sitting ready long after the bar had room for it.",
+    "core_casts": "a mana or efficiency cooldown left unused through a long fight when its line says to press it.",
     "resource": "the mana bar empty well before the end of the fight.",
     "ranks": "a big rank landing mostly as overheal where the rank your level calls for would have covered the hole.",
     "death": "dying, because a dead healer heals nothing for the rest of the pull.",
@@ -82,12 +99,15 @@ RESOURCE_DRILL = {
     "energy": "Watch the energy bar on a dummy. Spend it on the list's buttons before it can cap, and never let a button wait for want of it.",
     "mana": "Watch the mana bar against the fight. Know where your mana comes back from, and use each source before the bar is empty, not after.",
 }
-# Ranks: the guides keep a cheaper rank on purpose at some levels (round 25), so the drill never
-# asks for the top rank on every button.
+# Ranks: the guides keep a cheaper mana rank on purpose at some levels (round 25), so the drill never
+# asks for the top rank on every button. Energy and rage ranks all cost the same (round 26), so
+# those specs get no cheaper-rank sentence.
 RANKS_DRILL = (
     "Visit your trainer every time you level, then check each button on the priority list against the rank "
-    "your level calls for. Sometimes the right one is a lower, cheaper rank."
+    "your level calls for."
 )
+CHEAPER_RANK = " Sometimes the right one is a lower, cheaper rank."
+FLAT_COST_RESOURCES = frozenset({"energy", "rage"})
 HEALER_RESOURCE_DRILL = (
     "Before the pull, note the mana you should have at the halfway mark. If you are behind it, "
     "heal only the real holes and let the small ones wait."
@@ -102,7 +122,6 @@ DRILLS = {
         "core_casts": "On a dummy, press the first button of the priority list the moment it is ready, before any filler. Read the list top to bottom and check it again after every cooldown.",
         "uptime": "Put the timers of your buffs and debuffs where you can see them. Recast each when its line says, never earlier, and again the moment you are back up after a death or a phase change.",
         "idle": "On every move, keep the boss in range and press a button the moment you arrive. Practise on trash: the first press after a reposition comes before any walk to the side.",
-        "ranks": RANKS_DRILL,
         "death": "Before the pull, find the spot where the boss does not cleave or breathe. Keep a healing potion on a key you can reach without looking.",
         "adherence": "On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.",
     },
@@ -110,7 +129,6 @@ DRILLS = {
         "core_casts": "On a dummy with a friend hitting you, press the first button of the priority list the moment it is ready. Fillers wait their turn.",
         "uptime": "Watch the debuffs on the boss and the buff on you. Refresh each where its line says, before it drops: a stacking debuff that falls off takes its stacks with it.",
         "idle": "When you move the boss, keep it in front of you and keep pressing buttons. Your first press after the move is a priority button, not a walk to the next spot.",
-        "ranks": RANKS_DRILL,
         "death": "Put your emergency cooldown on a key you can hit without looking, and press it on a dummy pull the moment your health falls past half.",
         "adherence": "On a dummy, play only the buttons on the priority list for three minutes. Anything else on your bars waits.",
     },
@@ -150,17 +168,25 @@ def checked(catalogue: dict[str, Any], kind: str, name: str) -> str:
     return name
 
 
-def kit(slug: str, role: str, catalogue: dict[str, Any]) -> list[tuple[str, str]]:
-    """(thing, catalogue name) for what the spec brings in its raid preset, in pull-checklist order.
+def kit(slug: str, role: str, catalogue: dict[str, Any]) -> list[KitItem]:
+    """What the spec brings in its raid preset, in pull-checklist order, each with its level.
     Only what the catalogue lists for the role is named: those are the things the coach can see."""
-    found = [("food", checked(catalogue, "food", preset_food(slug)))]
+    food = checked(catalogue, "food", preset_food(slug))
+    food_known = band_labels(slug, "food") & catalogue_names(catalogue, "food")
+    found = [KitItem("food", food, first_level(slug, {food}), first_level(slug, food_known))]
     for kind, thing in KIT_KINDS:
         known = catalogue_names_for(catalogue, role, kind)
         names = [name for name in preset_labels(slug, kind) if name in known]
         if names:
-            found.append((thing, join_names(names)))
-    flask = [entry for entry in found if entry[0] == "a flask"]
-    return flask + [entry for entry in found if entry[0] != "a flask"]
+            levels = (first_level(slug, set(names)), first_level(slug, band_labels(slug, kind) & known))
+            found.append(KitItem(thing, join_names(names), *levels))
+    flask = [item for item in found if item.thing == "a flask"]
+    return flask + [item for item in found if item.thing != "a flask"]
+
+
+def from_level(level: int) -> str:
+    """' from <level>' when the item arrives after the first dungeons, else nothing."""
+    return f" from {number_words(level)}" if level > EARLIEST_DUNGEON_LEVEL else ""
 
 
 def catalogue_names_for(catalogue: dict[str, Any], role: str, kind: str) -> set[str]:
@@ -170,7 +196,7 @@ def catalogue_names_for(catalogue: dict[str, Any], role: str, kind: str) -> set[
 
 
 def consumable_paragraph(slug: str, role: str, catalogue: dict[str, Any]) -> str:
-    listed = "; ".join(f"{thing} ({name})" for thing, name in kit(slug, role, catalogue))
+    listed = "; ".join(f"{i.thing} ({i.name}){from_level(i.name_level)}" for i in kit(slug, role, catalogue))
     potion_limit = ", and the potion as often as its timer allows" if "potion" in listed else ""
     return (
         f"Before a boss you want {listed}{potion_limit}. "
@@ -179,7 +205,7 @@ def consumable_paragraph(slug: str, role: str, catalogue: dict[str, Any]) -> str
 
 
 def preparation_drill(slug: str, role: str, catalogue: dict[str, Any]) -> str:
-    things = [thing for thing, _ in kit(slug, role, catalogue)]
+    things = [item.thing + from_level(item.thing_level) for item in kit(slug, role, catalogue)]
     if role == "tank":
         things.append("a healing potion")
     return (
@@ -189,7 +215,7 @@ def preparation_drill(slug: str, role: str, catalogue: dict[str, Any]) -> str:
 
 
 def preparation_mistake(slug: str, role: str, catalogue: dict[str, Any]) -> str:
-    things = [thing.removeprefix("a ") for thing, _ in kit(slug, role, catalogue)]
+    things = [item.thing.removeprefix("a ") for item in kit(slug, role, catalogue)]
     return f"a missing {join_names(things)}."
 
 
@@ -202,8 +228,16 @@ def resource_drill(slug: str, role: str) -> str:
         raise SystemExit(f"no resource for {slug!r}: add it to starter_kit.RESOURCE") from None
 
 
+def ranks_drill(slug: str) -> str:
+    if RESOURCE.get(slug) in FLAT_COST_RESOURCES:
+        return RANKS_DRILL
+    return RANKS_DRILL + CHEAPER_RANK
+
+
 def drills(slug: str, role: str, catalogue: dict[str, Any]) -> list[tuple[str, str]]:
     table = dict(DRILLS[role])
+    if role != "healer":
+        table["ranks"] = ranks_drill(slug)
     table["resource"] = resource_drill(slug, role)
     table["preparation"] = preparation_drill(slug, role, catalogue)
     if role == "healer":

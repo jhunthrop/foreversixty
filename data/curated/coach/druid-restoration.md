@@ -31,14 +31,14 @@ This is the best Restoration Druid on Forever. Restoration heals with time: Regr
 - Innervate from forty when your mana drops below thirty percent.
 
 **The mistakes to look for, by finding.**
-- Core abilities under-used: a mana or efficiency cooldown sitting ready long after the bar had room for it.
+- Core abilities under-used: a mana or efficiency cooldown left unused through a long fight when its line says to press it.
 - Key buff and debuff uptime: a buff, debuff or damage over time left to fall off when its line says to keep it up.
 - Mana: the mana bar empty well before the end of the fight.
 - Ranks: a big rank landing mostly as overheal where the rank your level calls for would have covered the hole.
 - Pull preparation: a missing flask, food and combat potion.
 - Death review: dying, because a dead healer heals nothing for the rest of the pull.
 
-**Consumables and world buffs.** Before a boss you want a flask (Flask of Distilled Wisdom); food (Sage's Tea); a combat potion (Major Mana Potion), and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
+**Consumables and world buffs.** Before a boss you want a flask (Flask of Distilled Wisdom) from fifty; food (Sage's Tea) from forty-five; a combat potion (Major Mana Potion) from forty-nine, and the potion as often as its timer allows. World buffs are never expected: Forever raids have none, so a missing one is never held against anyone.
 
 ## Drills
 
@@ -46,7 +46,7 @@ This is the best Restoration Druid on Forever. Restoration heals with time: Regr
 - drill.uptime: Recast your self buff as part of the ready check, and again the moment you are back up after a death.
 - drill.resource: Before the pull, note the mana you should have at the halfway mark. If you are behind it, let the HoTs and Swiftmend carry the tank and keep Nature's Swiftness for the save.
 - drill.ranks: In a raid, keep the top rank on the tank and bind Rejuvenation rank seven for a hurt party member. While leveling, use the ranks your level calls for.
-- drill.preparation: Before every boss, check a flask, food and a combat potion on your bars and in your buffs. Do it on the walk to the pull, not after it.
+- drill.preparation: Before every boss, check a flask from fifty, food from forty-five and a combat potion from forty-nine on your bars and in your buffs. Do it on the walk to the pull, not after it.
 - drill.death: Before the pull, pick a spot in range of the tank and out of anything the boss breathes or cleaves. When damage lands on you, move first and finish the cast after.
 
 ## Voice

@@ -1,0 +1,2053 @@
+{
+  "source": "sim/request/raid-consumes.json",
+  "specs": {
+    "druid-balance": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_spellblasting_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "druid-feral": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 5,
+        "expects": {}
+      },
+      {
+        "from_level": 25,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ]
+        }
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_frenzy_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "druid-feral-bear": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 6,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 43,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "combat_potion": [
+            "mighty_rage_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "mighty_rage_potion"
+          ],
+          "flask": [
+            "flask_of_the_titans"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "druid-restoration": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      }
+    ],
+    "hunter-beast-mastery": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ]
+        }
+      }
+    ],
+    "hunter-marksmanship": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ]
+        }
+      }
+    ],
+    "hunter-survival": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 6,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "mage-arcane": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "mage-fire": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 18,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "mage-frost": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 28,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_spellblasting_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "paladin-holy": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 4,
+        "expects": {}
+      },
+      {
+        "from_level": 14,
+        "expects": {}
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      }
+    ],
+    "paladin-protection": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 4,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 40,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 43,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_the_titans"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_spellblasting_potion"
+          ],
+          "flask": [
+            "flask_of_the_titans"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "paladin-retribution": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 4,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 40,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "priest-discipline": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      }
+    ],
+    "priest-holy": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      }
+    ],
+    "priest-shadow": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 40,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_spellblasting_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "rogue-assassination": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 5,
+        "expects": {}
+      },
+      {
+        "from_level": 20,
+        "expects": {}
+      },
+      {
+        "from_level": 25,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ]
+        }
+      },
+      {
+        "from_level": 30,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ]
+        }
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:dense_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:dense_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:elemental_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:elemental_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 60,
+        "expects": {
+          "combat_potion": [
+            "major_frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:elemental_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "rogue-combat": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 5,
+        "expects": {}
+      },
+      {
+        "from_level": 20,
+        "expects": {}
+      },
+      {
+        "from_level": 25,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ]
+        }
+      },
+      {
+        "from_level": 30,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ]
+        }
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:dense_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:dense_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:elemental_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:elemental_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "rogue-subtlety": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 5,
+        "expects": {}
+      },
+      {
+        "from_level": 20,
+        "expects": {}
+      },
+      {
+        "from_level": 25,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ]
+        }
+      },
+      {
+        "from_level": 30,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ]
+        }
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:dense_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:dense_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:elemental_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_frenzy_potion"
+          ],
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_stone:elemental_sharpening_stone",
+            "off_hand_stone:dense_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "shaman-elemental": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "shaman-enhancement": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 30,
+        "expects": {}
+      },
+      {
+        "from_level": 32,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_smoked_desert_dumpling"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "food": [
+            "food_smoked_desert_dumpling"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_frenzy_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ]
+        }
+      }
+    ],
+    "shaman-restoration": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 55,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_distilled_wisdom"
+          ],
+          "food": [
+            "food_sages_tea"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_mana_oil"
+          ]
+        }
+      }
+    ],
+    "warlock-affliction": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 40,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "warlock-demonology": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 18,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 40,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "warlock-destruction": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 18,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 40,
+        "expects": {
+          "food": [
+            "food_nightfin_soup"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 47,
+        "expects": {
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 49,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "major_mana_potion"
+          ],
+          "flask": [
+            "flask_of_supreme_power"
+          ],
+          "food": [
+            "food_baked_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:brilliant_wizard_oil"
+          ]
+        }
+      }
+    ],
+    "warrior-arms": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "combat_potion": [
+            "mighty_rage_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "mighty_rage_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "warrior-fury": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "combat_potion": [
+            "mighty_rage_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "mighty_rage_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone",
+            "off_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      }
+    ],
+    "warrior-protection": [
+      {
+        "from_level": 1,
+        "expects": {}
+      },
+      {
+        "from_level": 35,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 43,
+        "expects": {
+          "food": [
+            "food_poached_sunscale_salmon"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 45,
+        "expects": {
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 46,
+        "expects": {
+          "combat_potion": [
+            "mighty_rage_potion"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:dense_sharpening_stone"
+          ]
+        }
+      },
+      {
+        "from_level": 50,
+        "expects": {
+          "combat_potion": [
+            "mighty_rage_potion"
+          ],
+          "flask": [
+            "flask_of_the_titans"
+          ],
+          "food": [
+            "food_smoked_desert_dumpling"
+          ],
+          "weapon_enchant": [
+            "main_hand_imbue:elemental_sharpening_stone"
+          ]
+        }
+      }
+    ]
+  }
+}

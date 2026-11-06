@@ -112,7 +112,7 @@ func assessAbility(in Input, c Counted, e RuleEntry) (coreAbility, bool) {
 	if !ok || sc.CooldownMS < CoreCooldownMinMS || sc.CooldownMS > CoreCooldownMaxMS {
 		return coreAbility{}, false
 	}
-	res := newResourceCheck(in.Fight, guid, sc)
+	res := newResourceCheck(in.Fight, guid, sc, in.Tables.BaseMana)
 	a := coreAbility{family: e.Family, spellID: id, spell: sc, actual: int64(len(seq)), unverified: res.unverified}
 	a.gaps = coreGaps(seq, sc.CooldownMS, c, res)
 	for _, g := range a.gaps {
@@ -167,15 +167,17 @@ func pickSpell(ids []int64, spells map[int64]SpellConst, counts map[int64]int) (
 	return bestID, best, resolved
 }
 
-func newResourceCheck(fight summary.Summary, guid string, sc SpellConst) resourceCheck {
-	needed := !sc.CostKnown || sc.Cost > 0
-	if !needed {
+// newResourceCheck checks the bar against the spell's cost at the player's base mana
+// (CostAt); a cost it cannot state, or a bar the log does not carry, is unverified.
+func newResourceCheck(fight summary.Summary, guid string, sc SpellConst, baseMana int64) resourceCheck {
+	cost, known := sc.CostAt(baseMana)
+	if known && cost == 0 {
 		return resourceCheck{}
 	}
-	if sc.CostKnown {
+	if known {
 		for _, t := range fight.Resources {
 			if t.GUID == guid && t.PowerType == sc.CostType {
-				return resourceCheck{series: t.Series, cost: sc.Cost, on: true}
+				return resourceCheck{series: t.Series, cost: cost, on: true}
 			}
 		}
 	}

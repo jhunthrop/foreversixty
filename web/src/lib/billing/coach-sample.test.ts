@@ -36,9 +36,9 @@ describe('the sample file against the coach fixture', () => {
       [
         '.review.fixFirst.why',
         '.review.fixFirst.links.0.sentence',
-        '.review.thenFix.1.links.0.sentence',
+        '.review.thenFix.0.links.0.sentence',
         '.anchors.a3.to_ms',
-        '.anchors.a5.to_ms',
+        '.anchors.a4.to_ms',
       ].sort(),
     );
   });
@@ -46,9 +46,9 @@ describe('the sample file against the coach fixture', () => {
   it('has the gap and the full-bar window agree: 2:44 to 2:58 is 14 seconds', () => {
     expect(answer.review.fixFirst?.why).toContain('At 2:44–2:58 you sat on a full bar');
     expect(answer.review.fixFirst?.why).toContain('so that one gap cost you two Bloodthirsts.');
-    expect(answer.review.thenFix[1]?.title).toBe('Rage full for 14 seconds');
-    expect(answer.anchors.a5?.to_ms).toBe(179000);
-    expect((answer.anchors.a5?.to_ms ?? 0) - (answer.anchors.a5?.at_ms ?? 0)).toBe(14_000);
+    expect(answer.review.thenFix[0]?.title).toBe('Rage full for 14 seconds');
+    expect(answer.anchors.a4?.to_ms).toBe(179000);
+    expect((answer.anchors.a4?.to_ms ?? 0) - (answer.anchors.a4?.at_ms ?? 0)).toBe(14_000);
   });
 });
 
@@ -74,7 +74,6 @@ describe('coachSampleView', () => {
   it('takes each icon from the first anchor that carries a spell', () => {
     expect(view.fixFirst?.icon).toBe('/data/b/icons/23894.webp');
     expect(view.then[0]?.icon).toBeNull();
-    expect(view.then[1]?.icon).toBeNull();
     expect(view.doingWell[0]?.icon).toBeNull();
     expect(view.doingWell[1]?.icon).toBe('/data/b/icons/6673.webp');
   });

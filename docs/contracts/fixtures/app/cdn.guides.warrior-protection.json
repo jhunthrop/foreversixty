@@ -1,5 +1,5 @@
 {
-  "build": "1.60.1.70753",
+  "build": "1.60.1.70790",
   "spec": "warrior-protection",
   "class": "warrior",
   "spec_slug": "protection",
@@ -162,7 +162,7 @@
       }
     ],
     "leveling_build": {
-      "code": "FS1:1.60.1.70755:warrior:night-elf:35300003/0/250533120330001351:",
+      "code": "FS1:1.60.1.70790:warrior:night-elf:35300003/0/250533120330001351:",
       "totals": [
         14,
         0,

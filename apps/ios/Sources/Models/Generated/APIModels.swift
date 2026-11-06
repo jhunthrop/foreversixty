@@ -4238,6 +4238,10 @@ public struct LootQuest: Codable, Sendable, Equatable {
     public let requiredRepStanding: String?
     public let profession: String?
     public let skill: Int?
+    /// The zone the quest log files the quest under (AreaTable id); absent when unknown or filed under a category.
+    public let zoneId: Int?
+    /// That zone's name.
+    public let zone: String?
 
     public init(
         questId: Int,
@@ -4252,7 +4256,9 @@ public struct LootQuest: Codable, Sendable, Equatable {
         requiredRepFaction: Int? = nil,
         requiredRepStanding: String? = nil,
         profession: String? = nil,
-        skill: Int? = nil
+        skill: Int? = nil,
+        zoneId: Int? = nil,
+        zone: String? = nil
     ) {
         self.questId = questId
         self.name = name
@@ -4267,6 +4273,8 @@ public struct LootQuest: Codable, Sendable, Equatable {
         self.requiredRepStanding = requiredRepStanding
         self.profession = profession
         self.skill = skill
+        self.zoneId = zoneId
+        self.zone = zone
     }
 }
 
@@ -4293,8 +4301,11 @@ public struct LootSource: Codable, Sendable, Equatable {
     public let title: String?
     /// Era honor rank the item's title implies, on a pvp source with no rank lock (rank absent); eligibility only, not a lock.
     public let titleRank: Int?
+    /// world_drop: the pool's level range. dungeon and raid: the instance's level range, the client's Group Finder row.
     public let levelMin: Int?
     public let levelMax: Int?
+    /// crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent.
+    public let requiredSkill: [String: Int]?
     public let rareSpawn: Bool?
     public let sourceOrigin: String?
     public let sourceNote: String?
@@ -4321,6 +4332,7 @@ public struct LootSource: Codable, Sendable, Equatable {
         titleRank: Int? = nil,
         levelMin: Int? = nil,
         levelMax: Int? = nil,
+        requiredSkill: [String: Int]? = nil,
         rareSpawn: Bool? = nil,
         sourceOrigin: String? = nil,
         sourceNote: String? = nil,
@@ -4346,6 +4358,7 @@ public struct LootSource: Codable, Sendable, Equatable {
         self.titleRank = titleRank
         self.levelMin = levelMin
         self.levelMax = levelMax
+        self.requiredSkill = requiredSkill
         self.rareSpawn = rareSpawn
         self.sourceOrigin = sourceOrigin
         self.sourceNote = sourceNote

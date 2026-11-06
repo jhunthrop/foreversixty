@@ -40,23 +40,6 @@
       ],
       "talent": true,
       "verified": "1.60.1.70790/spellconst/hunter.json#1317257"
-    },
-    {
-      "family": "Immolation Trap",
-      "spell_ids": [
-        13795,
-        13797,
-        14298,
-        14302,
-        14299,
-        14303,
-        14300,
-        14304,
-        14301,
-        14305
-      ],
-      "talent": false,
-      "verified": "1.60.1.70790/spellconst/hunter.json#14305"
     }
   ],
   "auras": [

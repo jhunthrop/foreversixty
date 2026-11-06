@@ -31,7 +31,11 @@ type AuraRule struct {
 	Name     string  `json:"name"`
 	Kind     string  `json:"kind"` // AuraDot, AuraDebuff, AuraSelfBuff or AuraDefensive
 	Talent   bool    `json:"talent,omitempty"`
-	Verified string  `json:"verified"`
+	// CoveredBy is every id of another aura that holds the same slot and does not stack
+	// with this one (a druid's Demoralizing Roar for Demoralizing Shout): while it is up on
+	// the target, the slot is filled and the time is not a gap.
+	CoveredBy []int64 `json:"covered_by,omitempty"`
+	Verified  string  `json:"verified"`
 }
 
 // IDs is every spell id that counts as this aura: SpellIDs, or SpellID alone when the

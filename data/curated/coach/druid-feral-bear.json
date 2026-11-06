@@ -26,6 +26,14 @@
       ],
       "name": "Demoralizing Roar",
       "kind": "defensive",
+      "covered_by": [
+        1160,
+        6190,
+        11554,
+        11555,
+        11556,
+        27579
+      ],
       "verified": "1.60.1.70790/spellconst/druid.json#9898"
     }
   ],

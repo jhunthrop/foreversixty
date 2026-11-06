@@ -579,3 +579,30 @@ Routed: the Assassination raid order in addon-builds.json, which equals the leve
 
 Verdict: the guide pages are near zero (5); the coach had 118 on its first audit. Round 26 is needed for both.
 Rendered review: wow-player read every changed page line in screenshots (5 captures) and every changed coach file in full. It returned SHIP for druid and paladin and ten musts across hunter, mage, priest, warlock, rogue, shaman and warrior, all applied in the reviewers' words. Build mode was on, so the musts were not re-reviewed.
+
+## Round 26 (client 1.60.1.70790, 2026-11-05, launch state, build mode)
+
+Built on main ca06416cd (guide round 25 with sim round 22 merged), engine pin bff826207 (merged with sim round 23 before the push, pin 3b4d6b054), at most two subagents at a time, in build mode (no wow-player round; fixes straight from the audits). Scope: the guide pages and cards, a second full audit of the coach files, and the coach and Forever Score code that judges players against them.
+
+Audit CONFIRMED, guide pages and cards (the trend column): rogue 6, warlock 5, paladin 4, hunter 4, mage 3, druid 1 (plus 1 likely, taken), priest 1, shaman 1, warrior 1. Total 26. Trend: 72, 39, 33, 25, 12, 21, 14, 7, 5, 65, 7, 5, 1, 18, 8, 4, 14, 28, 40, 29, 20, 17, 22, 27, 5, 26. Most of the rise is sim round 22's card and page text, which no guide round had audited (the Affliction raid build, the Fire raid build's talent levels, Holy Light ranks, hunter rank rows). Six rogue lines and the round 25 shaman racial line were guide fixes the round 25 merge or edit undid.
+
+Audit CONFIRMED, coach (second audit): priest 8, paladin 8, warrior 8 (plus 2 likely), mage 6 (plus 1 likely), warlock 5 (plus 1 likely), rogue 5, shaman 5, druid 4, hunter 4. Total 53, down from 118. Every coach finding is fixed except the code items routed below.
+
+Fixes:
+
+- **Guide pages and cards:** each line now matches the card, the talent order of the build it names, the per-race rank rows and the trainer levels. That covers Affliction's Nightfall, Wrack and Immolate lines on the new raid build; Fire's talents by name instead of level; Holy Light's low ranks winning on mana, not on full healing power; hunter low ranks and Serpent Sting against Multi-Shot only; Survival Raptor Strike ranks by race; bear Swipe on top only in a raid at 60 on three or more; the Fury Heroic Strike stop at 25%; and the reverted rogue lines and the shaman racial line restored. addon-data.json and Data.lua are regenerated for 1.60.1.70790 (note text only).
+- **Coach text:** the remaining spells named before their level, stale per-spec orders, shared healer and rank drills that contradicted the guides, and hand-written persona lines, all fixed through the generator's overrides and kit or by hand.
+- **Coach and rating code, each with a test that failed first:**
+  - F2 lets a rule aura name covering auras (covered_by). A druid's Demoralizing Roar fills a warrior's Shout slot and the reverse, so the warrior Shout aura is judged again.
+  - F6 and both Forever Score Preparation callers read the spec's raid preset at the player's level through one shared lookup (consumables.Catalogue.ForPlayer). A feral, rogue, hunter or sub-50 player is no longer told, or scored as, missing a flask the preset never carries.
+  - F1 reads costs given as a percent of base mana against the build's base mana at the player's level.
+  - F7 treats Divine Shield, Divine Protection and Blessing of Protection as not ready while Forbearance is up.
+  - The coach rule lists drop abilities held for reasons the coach cannot see (Aimed Shot's cooldown shared with Multi-Shot, Protection paladin's mana-reserve spells, Shifting Power, Immolation Trap at its base cooldown) and the Dwarf-only Desperate Prayer as every priest's defensive.
+  - The Fury showcase and the billing sample no longer tell a level 60 Fury to bring a flask its preset leaves out.
+  - The coach web fixtures, the app guide contract fixtures and the planner vectors are regenerated from their generators. The app fixtures had been left on the old Fire raid build by sim round 22.
+- **Process:** a prose revert check (prosecheck.py) now runs beside the card-note check after every merge. It found the six rogue sentences the round 25 merge had reverted. On the sim round 23 merge both checks ran: no card note reverted, and the one prose sentence flagged (Assassination's Blood Splatter line) was sim round 23's own restore on its fixed raid order. The merge kept sim round 23's Fire card and re-applied this round's Fire note edits on it, and the Fury level 60 Heroic Strike note reads "never once the boss is under a quarter of its health", the one Execute wording sim round 22's test keeps.
+- **Shadow priest leveling order (BiS lane lead):** Wand Specialization 2/2 at 10 and 11 stays. It is sim round 15's measured owner call (+8 to +10% at band 20, +5 to +6% at 30, -36% at 40), and the page already puts Shadowform at 42. Moving Shadowform back to 40 would be an owner call.
+
+Routed (coach code): talent-shortened cooldowns in F1 (Rapid Fire on the leveling builds, Improved Whirlwind); Evasion offered at spell deaths (F7); a Shadowburn shard floor (F1). Routed (sim): the Holy paladin emergency Holy Light rank (PALADIN-R26-4), Troll Berserking with Lightning Mastery (the engine casts them together, which the card says not to do), and the optional measurements each report lists. Main was also red before this round in internal/rating/presence (TestEveryReportVisibilityConditionIsTheEvidenceRule, reports/handler.go), untouched here.
+
+Verdict: NOT zero (26 on the pages and cards, 53 in the coach), so round 27 is needed.

@@ -76,12 +76,14 @@ from pipeline.loot.classification import (
 from pipeline.loot.client_enchants import build_enchant_table
 from pipeline.loot.client_rep import apply_client_reputations, load_item_reputations
 from pipeline.loot.content_phases import apply_content_phases, load_content_phases
+from pipeline.loot.crafted_skill import apply_crafted_skill
 from pipeline.loot.gear import (
     apply_fork_columns,
     build_suffixes,
     faction_restrictions,
     suffix_options,
 )
+from pipeline.loot.instance_levels import apply_instance_levels, load_instance_levels
 from pipeline.loot.npc_rank import apply_npc_ranks, rare_spawn_names
 from pipeline.loot.overlay import apply_overlays, load_overlays
 from pipeline.loot.pvp_faction import (
@@ -236,6 +238,7 @@ def _build_and_write_loot(
     # the quest gate's; the vendor-cost gate reads whatever both left open.
     document = apply_quest_opens_gate(document, classic_sources)
     document = apply_crafted_opens_gate(document, classic_crafted)
+    document = apply_crafted_skill(document, classic_crafted)
     item_levels = {int(row["id"]): int(row.get("item_level") or 0) for row in item_rows}
     item_qualities = {int(row["id"]): int(row.get("quality") or 0) for row in item_rows}
     document, vendor_cost_gated = apply_vendor_cost_gate(
@@ -249,6 +252,9 @@ def _build_and_write_loot(
         rare_spawns,
         rare_spawn_names(classic_sources, rare_spawns),
     )
+    # The dungeon and raid level ranges last, once every source (overlay
+    # additions included) is final; a source with none fails the run.
+    document = apply_instance_levels(document, load_instance_levels(curated_dir))
     write_document(document, build_dir / LOOT)
     return _LootRun(
         document=document,

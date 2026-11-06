@@ -290,7 +290,7 @@
       }
     },
     {
-      "notes": "Only above 60 rage, and, once you have Execute, never in the Execute phase: hold that rage for it. It is queued on your next swing and costs no global cooldown.",
+      "notes": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it. It is queued on your next swing and costs no global cooldown.",
       "action": {
         "condition": {
           "and": {
