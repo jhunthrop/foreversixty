@@ -70,8 +70,8 @@ var (
 
 // raidZones are first-tier.json's raids, each opening with its phase.
 var raidZones = []Zone{
-	{Key: "raid:barrow-deeps", Name: "Barrow Deeps", Kind: ZoneRaid, Opens: firstTierOpens},
-	{Key: "raid:hyjal-summit", Name: "Hyjal Summit", Kind: ZoneRaid, Opens: firstTierOpens},
+	{Key: "raid:barrow-deeps", Name: "Barrow Deeps", Kind: ZoneRaid, Size: intPtr(10), Opens: firstTierOpens},
+	{Key: "raid:hyjal-summit", Name: "Hyjal Summit", Kind: ZoneRaid, Size: intPtr(20), Opens: firstTierOpens},
 	{
 		Key: "raid:onyxias-lair", Name: "Onyxia's Lair", Kind: ZoneRaid, Size: intPtr(40),
 		LogZone: &onyxiasLairLogZone, Opens: firstTierOpens,

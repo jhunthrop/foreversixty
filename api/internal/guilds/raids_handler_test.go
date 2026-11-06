@@ -256,7 +256,7 @@ func TestPatchRaidRewritesAndSetsTimezone(t *testing.T) {
 		`"notes":"","timezone":"America/New_York","post_to_discord":true}`, raid.StartsAt.UTC().Format(time.RFC3339))
 	var v RaidView
 	w.h.data(w.h.do(http.MethodPatch, w.path("/raids/%d", raid.ID), body), &v)
-	if v.Zone != "raid:hyjal-summit" || v.Title != "Hyjal push" || v.DurationMinutes != 240 || v.Size != nil ||
+	if v.Zone != "raid:hyjal-summit" || v.Title != "Hyjal push" || v.DurationMinutes != 240 || v.Size == nil || *v.Size != 20 ||
 		v.Discord != (RaidDiscord{}) || v.GuildTimezone == nil || *v.GuildTimezone != "America/New_York" {
 		t.Fatalf("patched = %+v", v)
 	}
