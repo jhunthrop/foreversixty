@@ -1,5 +1,15 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import worker, { type Env } from './worker';
+import {
+  guildClaimHref,
+  guildHref,
+  guildInviteHref,
+  guildRaidHref,
+  guildSettingsHref,
+} from './lib/characters';
 import { DUCKDB_WASM_VERSION, duckdbRuntimeUrl } from './lib/report/duckdb-runtime';
 import { fixtureResult } from './test-support/sim-api';
 
@@ -1054,4 +1064,56 @@ describe('/_sim/<artifact>/sim.wasm.gz', () => {
     expect(await response.text()).toBe('glue');
     expect(response.headers.get('content-encoding')).toBeNull();
   });
+});
+
+describe('every guild route the site and the API link to is served', () => {
+  /** Every foreversixty.gg/guild/ link in the API's app fixtures: the Discord raid post, the push
+   *  notifications and the calendar all build theirs with the same Go helpers (raids_discord.go). */
+  function apiGuildLinks(): string[] {
+    const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../docs/contracts/fixtures/app');
+    const found = new Set<string>();
+    for (const file of readdirSync(dir)) {
+      for (const match of readFileSync(path.join(dir, file), 'utf8').matchAll(
+        /https:\/\/foreversixty\.gg(\/guild\/[a-z0-9/._~%-]+)/g,
+      )) {
+        found.add(match[1].replace(/[.,]+$/, ''));
+      }
+    }
+    return [...found];
+  }
+
+  const guild = guildHref('us', 'pvp', 'Olympus XXVII');
+  const siteLinks = [
+    guild,
+    guildRaidHref(guild, 7),
+    guildSettingsHref('us', 'pvp', 'Olympus XXVII'),
+    guildClaimHref('us', 'pvp', 'Olympus XXVII'),
+    guildInviteHref('fsg_abc123'),
+  ];
+
+  it('finds the raid links the API sends (the Discord post and pushes)', () => {
+    expect(apiGuildLinks().some((link) => /\/raids\/\d+$/.test(link))).toBe(true);
+  });
+
+  for (const link of [...siteLinks, ...apiGuildLinks()]) {
+    it(`serves the guild shell at ${link}`, async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn<GlobalFetch>(
+          async () =>
+            new Response(
+              JSON.stringify({
+                ok: true,
+                data: { guild: { name: 'Olympus XXVII', region: 'us', ruleset: 'pvp' }, reports: [] },
+                error: null,
+                request_id: 'r',
+              }),
+              { status: 200, headers: { 'content-type': 'application/json' } },
+            ),
+        ),
+      );
+      const response = await worker.fetch(new Request(`https://foreversixty.gg${link}`), shellEnv());
+      expect(response.status).toBe(200);
+    });
+  }
 });

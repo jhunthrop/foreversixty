@@ -15,6 +15,7 @@ import {
   parseGuildClaimPath,
   parseGuildInviteToken,
   parseGuildPath,
+  parseGuildRaidPath,
   parseGuildSettingsPath,
 } from './lib/characters';
 import { GO_PREFIX } from './lib/golinks/config';
@@ -459,6 +460,18 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
     return { meta: guildSettingsShellMeta(guildSettings, data.guild.name), indexable: false };
   }
 
+  // A raid page (the links the Discord raid post, the app pushes and the calendar carry): the
+  // guild page's head, never indexed (the guild page is the canonical one).
+  const guildRaid = parseGuildRaidPath(url.pathname);
+  if (guildRaid !== null) {
+    const { guild: raidGuild } = guildRaid;
+    const data = await apiData<GuildHead>(
+      `${env.API_BASE_URL}/v1/guilds/${raidGuild.region}/${raidGuild.ruleset}/${raidGuild.slug}`,
+    );
+    if (data === null) return null;
+    return { meta: guildShellMeta(raidGuild, data), indexable: false };
+  }
+
   // No API call at all (plan ruling 6): there is no unauthenticated endpoint to resolve an
   // invite token to a guild name.
   const inviteToken = parseGuildInviteToken(url.pathname);
@@ -492,6 +505,7 @@ function shellPathIsAddressable(url: URL): boolean {
     parseGuildPath(url.pathname) !== null ||
     parseGuildClaimPath(url.pathname) !== null ||
     parseGuildSettingsPath(url.pathname) !== null ||
+    parseGuildRaidPath(url.pathname) !== null ||
     parseGuildInviteToken(url.pathname) !== null
   );
 }
