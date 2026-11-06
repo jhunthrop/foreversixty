@@ -303,17 +303,59 @@ def _exact_ids(
     missing: int,
 ) -> list[dict[str, Any]]:
     """The `missing` entries whose record id is exactly `suffix`, found by the
-    push id's last digit."""
-    searches = [f"{d} {suffix} {number} {term}" for d in _DIGITS]
+    push id's last digits: "<push suffix> <suffix> <build> <term>". A push-id
+    suffix whose search still holds more than a page (one record pushed many
+    times: record 451 at 70790, 40 entries on push ids ending in 0) splits again
+    by one more push-id digit, so every search that is read fits one page."""
     found: list[dict[str, Any]] = []
-    for search, answer in zip(searches, pool.map(lambda q: _ask(client, q), searches), strict=True):
-        found.extend(e for e in _complete(answer, search) if str(e["record_id"]) == suffix)
+    frontier = list(_DIGITS)
+    while frontier:
+        searches = [f"{push} {suffix} {number} {term}" for push in frontier]
+        answers = pool.map(lambda q: _ask(client, q), searches)
+        next_frontier: list[str] = []
+        for push, search, answer in zip(frontier, searches, answers, strict=True):
+            if answer.total <= _PAGE_SIZE:
+                found.extend(e for e in _complete(answer, search) if str(e["record_id"]) == suffix)
+            elif all(str(e["push_id"]) == push for e in answer.entries):
+                found.extend(_by_locale(client, pool, number, term, suffix, push, answer.total))
+            else:
+                next_frontier.extend(f"{d}{push}" for d in _DIGITS)
+        frontier = next_frontier
     if len(found) != missing:
         raise SystemExit(
             f"wago.tools search for record {suffix} ({number} {term}): "
             f"{len(found)} of {missing} entries"
         )
     return found
+
+
+#: The client locales wago lists a push under, as its search text spells them.
+_LOCALES = ("enus", "dede", "eses", "esmx", "frfr", "itit", "kokr", "ptbr", "ruru", "zhcn", "zhtw")
+
+
+def _by_locale(
+    client: httpx.Client,
+    pool: ThreadPoolExecutor,
+    number: int,
+    term: str,
+    suffix: str,
+    push: str,
+    total: int,
+) -> list[dict[str, Any]]:
+    """Every entry of one whole push of record `suffix`, when that push alone
+    is wider than a page (one row pushed in every locale: record 451 at 70790):
+    the search splits by the locale the search text opens with, and the
+    locales must add up to the push's total."""
+    searches = [f"{locale} {push} {suffix} {number} {term}" for locale in _LOCALES]
+    found: list[dict[str, Any]] = []
+    for search, answer in zip(searches, pool.map(lambda q: _ask(client, q), searches), strict=True):
+        found.extend(_complete(answer, search))
+    if len(found) != total:
+        raise SystemExit(
+            f"wago.tools search for push {push} of record {suffix} ({number} {term}): "
+            f"{len(found)} of {total} entries across the locales"
+        )
+    return [e for e in found if str(e["record_id"]) == suffix]
 
 
 def fetch_push(
