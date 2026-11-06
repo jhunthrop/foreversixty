@@ -166,7 +166,11 @@
             {#snippet subContent()}
               <span class="flex flex-wrap gap-x-4 gap-y-1 pt-[2px]">
                 {#each klass.specs as spec (spec.href)}
-                  <a class="text-gold text-[14px] font-semibold" href={spec.href}>{spec.name} ›</a>
+                  <!-- A 44 px hit area on a touch screen (spec §5, Touch); the line stays 20 px on desktop. -->
+                  <a
+                    class="text-gold inline-flex min-h-11 items-center text-[14px] font-semibold md:min-h-0"
+                    href={spec.href}>{spec.name} ›</a
+                  >
                 {/each}
               </span>
             {/snippet}
