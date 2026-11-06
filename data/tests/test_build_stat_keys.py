@@ -42,6 +42,7 @@ SITE_RENDERABLE_STAT_KEYS = frozenset(
         "armor",
         "crit",
         "hit",
+        "expertise",
         "spell_power",
         "healing",
         "attack_power",
@@ -79,9 +80,7 @@ def _emitted_stat_keys(items_dir: Path) -> set[str]:
 
 
 def _builds_with_items() -> list[Path]:
-    return sorted(
-        build_dir for build_dir in BUILDS_DIR.iterdir() if (build_dir / "items").is_dir()
-    )
+    return sorted(build_dir for build_dir in BUILDS_DIR.iterdir() if (build_dir / "items").is_dir())
 
 
 def test_every_emitted_gear_stat_key_has_a_web_label():
