@@ -19,11 +19,6 @@
   ],
   "sources": [
     {
-      "label": "wowsims-forever warlock default priority list (shared across all three specs)",
-      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/warlock/apls/rotation.apl.json",
-      "kind": "community"
-    },
-    {
       "label": "Warcraft Tavern: Classic Destruction Warlock DPS rotation",
       "url": "https://www.warcrafttavern.com/wow-classic/guides/warlock-dps-rotation/",
       "kind": "community"

@@ -5,15 +5,14 @@
 // Phone: the columns stay a 2 x 2 grid of 44px rows, never one long column (tenet 4).
 import {
   FOOTER_COLUMNS,
-  FOOTER_CONTRIBUTE_BUTTON,
   FOOTER_DISCORD_BUTTON,
   FOOTER_LEGAL_LINKS,
   FOOTER_PROMISE,
+  FOOTER_REPORT_BUG_BUTTON,
   FOOTER_TRADEMARK,
   footerOperatorLine,
 } from '../lib/footer-copy';
 import DiscordMark from './DiscordMark.astro';
-import GithubMark from './GithubMark.astro';
 import Wordmark from './Wordmark.astro';
 import Seal from './Seal.astro';
 
@@ -41,9 +40,8 @@ const BUTTON_CLASS =
             </span>
             {FOOTER_DISCORD_BUTTON.label}
           </a>
-          <a href={FOOTER_CONTRIBUTE_BUTTON.href} class={BUTTON_CLASS}>
-            <GithubMark size={16} />
-            {FOOTER_CONTRIBUTE_BUTTON.label}
+          <a href={FOOTER_REPORT_BUG_BUTTON.href} class={BUTTON_CLASS}>
+            {FOOTER_REPORT_BUG_BUTTON.label}
           </a>
         </div>
       </div>

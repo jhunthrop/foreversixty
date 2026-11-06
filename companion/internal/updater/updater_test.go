@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"crypto/ed25519"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -48,54 +50,54 @@ func sign(t *testing.T, sk minisign.PrivateKey, body []byte) []byte {
 	return sig.Encode()
 }
 
-// listed is one row of a GitHub-shaped release list.
-type listed struct {
-	tag        string
-	draft      bool
-	prerelease bool
-	noAsset    bool
+// manifest builds the companion manifest a test feed serves, given the
+// feed's base URL so the asset URLs can sit on it.
+type manifest func(base string) Release
+
+// signed is the manifest the workflow writes: one release with the
+// linux/amd64 binary and its signature, each with the digest of the bytes
+// the feed serves for it.
+func signed(tag string, binary, signature []byte) manifest {
+	return func(base string) Release {
+		name := AssetName("linux", "amd64")
+		return Release{Schema: ManifestSchema, Family: FeedFamily, TagName: tag, Assets: []Asset{
+			{Name: name, URL: base + "/companion/a", SHA256: digest(binary)},
+			{Name: name + ".minisig", URL: base + "/companion/a.minisig", SHA256: digest(signature)},
+		}}
+	}
 }
 
-// releaseList serves the release list one page at a time, plus the
-// download paths, and records the pages asked for. It answers 404 for
-// the old "latest" endpoint so a check that still used it would fail.
-func releaseList(t *testing.T, pages [][]listed, binary, signature []byte) (*httptest.Server, *[]string) {
+func digest(b []byte) string {
+	sum := sha256.Sum256(b)
+	return hex.EncodeToString(sum[:])
+}
+
+// feed serves m at /dl/companion/latest.json (a nil m answers 404, as the
+// feed does before the first release) and the two downloads behind it, and
+// returns the feed base.
+func feed(t *testing.T, m manifest, binary, signature []byte) string {
 	t.Helper()
-	var asked []string
 	mux := http.NewServeMux()
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
-	name := AssetName("linux", "amd64")
-	mux.HandleFunc("/repos/"+Repo+"/releases", func(w http.ResponseWriter, r *http.Request) {
-		asked = append(asked, r.URL.RawQuery)
-		page := 1
-		fmt.Sscan(r.URL.Query().Get("page"), &page)
-		rows := []string{}
-		if page <= len(pages) {
-			for _, l := range pages[page-1] {
-				assets := fmt.Sprintf(`[{"name":%q,"browser_download_url":"%s/a"},`+
-					`{"name":"%s.minisig","browser_download_url":"%s/a.minisig"}]`,
-					name, srv.URL, name, srv.URL)
-				if l.noAsset {
-					assets = "[]"
-				}
-				rows = append(rows, fmt.Sprintf(`{"tag_name":%q,"draft":%v,"prerelease":%v,"assets":%s}`,
-					l.tag, l.draft, l.prerelease, assets))
-			}
+	base := srv.URL + "/dl"
+	mux.HandleFunc("/dl/companion/latest.json", func(w http.ResponseWriter, r *http.Request) {
+		if m == nil {
+			http.NotFound(w, r)
+			return
 		}
-		fmt.Fprintf(w, "[%s]", strings.Join(rows, ","))
+		json.NewEncoder(w).Encode(m(base))
 	})
-	mux.HandleFunc("/a", func(w http.ResponseWriter, r *http.Request) { w.Write(binary) })
-	mux.HandleFunc("/a.minisig", func(w http.ResponseWriter, r *http.Request) { w.Write(signature) })
-	return srv, &asked
+	mux.HandleFunc("/dl/companion/a", func(w http.ResponseWriter, r *http.Request) { w.Write(binary) })
+	mux.HandleFunc("/dl/companion/a.minisig", func(w http.ResponseWriter, r *http.Request) { w.Write(signature) })
+	return base
 }
 
-// release serves a repository whose newest release is the companion
-// release at tag, with one asset for linux/amd64.
-func release(t *testing.T, tag string, binary, signature []byte) *httptest.Server {
+// release serves a feed whose companion manifest names tag, with one
+// signed asset for linux/amd64.
+func release(t *testing.T, tag string, binary, signature []byte) string {
 	t.Helper()
-	srv, _ := releaseList(t, [][]listed{{{tag: tag}}}, binary, signature)
-	return srv
+	return feed(t, signed(tag, binary, signature), binary, signature)
 }
 
 func TestNewerComparesDottedVersions(t *testing.T) {
@@ -124,12 +126,19 @@ func TestAssetNamesCarryThePlatform(t *testing.T) {
 	}
 }
 
+func TestTheFeedDefaultsToOurOwnDomain(t *testing.T) {
+	u := New(Options{})
+	if u.o.FeedBase != "https://foreversixty.gg/dl" || u.feed.Base != u.o.FeedBase {
+		t.Errorf("feed base = %q / %q", u.o.FeedBase, u.feed.Base)
+	}
+}
+
 func TestAVerifiedReleaseIsStaged(t *testing.T) {
 	sk, pub := keypair(t)
 	binary := []byte("#!/bin/sh\necho the new companion\n")
-	srv := release(t, "companion-v9.9.9", binary, sign(t, sk, binary))
+	base := release(t, "companion-v9.9.9", binary, sign(t, sk, binary))
 	dir := t.TempDir()
-	u := New(Options{Dir: dir, APIBase: srv.URL, PublicKey: pub, Version: "1.0.0",
+	u := New(Options{Dir: dir, FeedBase: base, PublicKey: pub, Version: "1.0.0",
 		GOOS: "linux", GOARCH: "amd64"})
 
 	staged, err := u.Poll(t.Context(), t0)
@@ -152,23 +161,83 @@ func TestAVerifiedReleaseIsStaged(t *testing.T) {
 func TestATamperedDownloadIsRefused(t *testing.T) {
 	sk, pub := keypair(t)
 	good := []byte("the real companion")
-	srv := release(t, "companion-v9.9.9", []byte("a trojan"), sign(t, sk, good))
+	// The manifest's digest matches the trojan, as it would if the feed
+	// itself were rewritten: the signature is what refuses it.
+	base := release(t, "companion-v9.9.9", []byte("a trojan"), sign(t, sk, good))
 	dir := t.TempDir()
-	u := New(Options{Dir: dir, APIBase: srv.URL, PublicKey: pub, Version: "1.0.0",
+	u := New(Options{Dir: dir, FeedBase: base, PublicKey: pub, Version: "1.0.0",
 		GOOS: "linux", GOARCH: "amd64"})
-	if _, err := u.Poll(t.Context(), t0); err == nil {
-		t.Fatal("a tampered download was accepted")
+	if _, err := u.Poll(t.Context(), t0); err == nil || !strings.Contains(err.Error(), "does not verify") {
+		t.Fatalf("a tampered download: %v", err)
 	}
 	if _, err := os.Stat(PendingPath(dir)); err == nil {
 		t.Fatal("the tampered binary was staged anyway")
 	}
 }
 
+func TestADownloadThatDoesNotMatchItsDigestIsRefused(t *testing.T) {
+	sk, pub := keypair(t)
+	binary := []byte("the real companion")
+	sig := sign(t, sk, binary)
+	m := func(base string) Release {
+		rel := signed("companion-v9.9.9", binary, sig)(base)
+		rel.Assets[0].SHA256 = digest([]byte("something else"))
+		return rel
+	}
+	dir := t.TempDir()
+	u := New(Options{Dir: dir, FeedBase: feed(t, m, binary, sig), PublicKey: pub, Version: "1.0.0",
+		GOOS: "linux", GOARCH: "amd64"})
+	if _, err := u.Poll(t.Context(), t0); err == nil || !strings.Contains(err.Error(), "sha256") {
+		t.Fatalf("a digest mismatch: %v", err)
+	}
+	if _, err := os.Stat(PendingPath(dir)); err == nil {
+		t.Fatal("a binary that missed its digest was staged")
+	}
+}
+
+func TestADownloadOffTheFeedsOriginIsRefused(t *testing.T) {
+	sk, pub := keypair(t)
+	binary := []byte("from somewhere else")
+	sig := sign(t, sk, binary)
+	hits := 0
+	elsewhere := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		hits++
+		w.Write(binary)
+	}))
+	t.Cleanup(elsewhere.Close)
+	m := func(base string) Release {
+		rel := signed("companion-v9.9.9", binary, sig)(base)
+		rel.Assets[0].URL = elsewhere.URL + "/a"
+		return rel
+	}
+	dir := t.TempDir()
+	u := New(Options{Dir: dir, FeedBase: feed(t, m, binary, sig), PublicKey: pub, Version: "1.0.0",
+		GOOS: "linux", GOARCH: "amd64"})
+	if _, err := u.Poll(t.Context(), t0); err == nil || !strings.Contains(err.Error(), "off the feed's origin") {
+		t.Fatalf("a cross-origin download: %v", err)
+	}
+	if hits != 0 {
+		t.Errorf("the other host was asked %d times", hits)
+	}
+	if _, err := os.Stat(PendingPath(dir)); err == nil {
+		t.Fatal("a cross-origin binary was staged")
+	}
+}
+
+func TestAFeedBaseThatIsNotHTTPSIsRefused(t *testing.T) {
+	for _, base := range []string{"http://foreversixty.gg/dl", "ftp://127.0.0.1/dl", "not a url"} {
+		f := Feed{Base: base, HTTP: http.DefaultClient}
+		if _, err := f.Latest(t.Context(), FeedFamily); err == nil {
+			t.Errorf("%q was read", base)
+		}
+	}
+}
+
 func TestAReleaseThatIsNotNewerIsIgnored(t *testing.T) {
 	sk, pub := keypair(t)
 	binary := []byte("same version")
-	srv := release(t, "companion-v1.0.0", binary, sign(t, sk, binary))
-	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "1.0.0",
+	base := release(t, "companion-v1.0.0", binary, sign(t, sk, binary))
+	u := New(Options{Dir: t.TempDir(), FeedBase: base, PublicKey: pub, Version: "1.0.0",
 		GOOS: "linux", GOARCH: "amd64"})
 	var buf bytes.Buffer
 	u.o.Log = slog.New(slog.NewTextHandler(&buf, nil))
@@ -181,7 +250,7 @@ func TestAReleaseThatIsNotNewerIsIgnored(t *testing.T) {
 }
 
 func TestABuildWithNoKeyNeverUpdates(t *testing.T) {
-	u := New(Options{Dir: t.TempDir(), APIBase: "http://127.0.0.1:1", Version: "1.0.0"})
+	u := New(Options{Dir: t.TempDir(), FeedBase: "http://127.0.0.1:1", Version: "1.0.0"})
 	staged, err := u.Poll(t.Context(), t0)
 	if err != nil || staged {
 		t.Fatalf("Poll = %v, %v", staged, err)
@@ -194,43 +263,34 @@ func TestABuildWithNoKeyNeverUpdates(t *testing.T) {
 func TestAReleaseMissingThisPlatformIsNotAnUpdate(t *testing.T) {
 	sk, pub := keypair(t)
 	binary := []byte("linux only")
-	srv := release(t, "companion-v9.9.9", binary, sign(t, sk, binary))
-	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "1.0.0",
+	base := release(t, "companion-v9.9.9", binary, sign(t, sk, binary))
+	u := New(Options{Dir: t.TempDir(), FeedBase: base, PublicKey: pub, Version: "1.0.0",
 		GOOS: "windows", GOARCH: "amd64"})
 	if staged, err := u.Poll(t.Context(), t0); err != nil || staged {
 		t.Fatalf("Poll = %v, %v; a release with no Windows asset is skipped, not an error", staged, err)
 	}
 }
 
-func TestADataReleaseAheadOfTheCompanionReleaseIsSteppedOver(t *testing.T) {
+func TestAReleaseWithoutASignatureIsNotAnUpdate(t *testing.T) {
 	sk, pub := keypair(t)
-	binary := []byte("the new companion")
-	srv, _ := releaseList(t, [][]listed{{
-		{tag: "data-v2026.10.20"}, {tag: "addon-v2.0.11"}, {tag: "data-v2026.10.19"},
-		{tag: "companion-v0.2.6"}, {tag: "companion-v0.2.5"},
-	}}, binary, sign(t, sk, binary))
-	dir := t.TempDir()
-	u := New(Options{Dir: dir, APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+	binary := []byte("unsigned")
+	sig := sign(t, sk, binary)
+	m := func(base string) Release {
+		rel := signed("companion-v9.9.9", binary, sig)(base)
+		rel.Assets = rel.Assets[:1]
+		return rel
+	}
+	u := New(Options{Dir: t.TempDir(), FeedBase: feed(t, m, binary, sig), PublicKey: pub, Version: "1.0.0",
 		GOOS: "linux", GOARCH: "amd64"})
-	rel, err := u.Latest(t.Context())
-	if err != nil || rel.TagName != "companion-v0.2.6" {
-		t.Fatalf("Latest = %q, %v", rel.TagName, err)
-	}
-	if staged, err := u.Poll(t.Context(), t0); err != nil || !staged {
-		t.Fatalf("Poll = %v, %v", staged, err)
-	}
-	if got, _ := os.ReadFile(PendingPath(dir)); string(got) != string(binary) {
-		t.Fatalf("staged %q", got)
+	if staged, err := u.Poll(t.Context(), t0); err != nil || staged {
+		t.Fatalf("Poll = %v, %v; a binary with no signature is no update, not an error", staged, err)
 	}
 }
 
-func TestOnlyDataReleasesIsNoUpdateAndNoError(t *testing.T) {
-	sk, pub := keypair(t)
-	srv, _ := releaseList(t, [][]listed{{
-		{tag: "data-v2026.10.20"}, {tag: "addon-v2.0.11"}, {tag: "data-v2026.10.19"},
-	}}, []byte("x"), sign(t, sk, []byte("x")))
+func TestNoManifestYetIsNoUpdateAndNoError(t *testing.T) {
+	_, pub := keypair(t)
 	var buf bytes.Buffer
-	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+	u := New(Options{Dir: t.TempDir(), FeedBase: feed(t, nil, nil, nil), PublicKey: pub, Version: "0.2.5",
 		GOOS: "linux", GOARCH: "amd64", Log: slog.New(slog.NewTextHandler(&buf, nil))})
 	if staged, err := u.Poll(t.Context(), t0); err != nil || staged {
 		t.Fatalf("Poll = %v, %v", staged, err)
@@ -240,68 +300,48 @@ func TestOnlyDataReleasesIsNoUpdateAndNoError(t *testing.T) {
 	}
 }
 
-func TestDraftsPrereleasesAndAssetlessReleasesAreSkipped(t *testing.T) {
+func TestAManifestTagOfAnotherFamilyIsNoUpdate(t *testing.T) {
 	sk, pub := keypair(t)
-	binary := []byte("the stable one")
-	srv, _ := releaseList(t, [][]listed{{
-		{tag: "companion-v0.4.0", draft: true},
-		{tag: "companion-v0.3.0", prerelease: true},
-		{tag: "companion-v0.2.9", noAsset: true},
-		{tag: "companion-v0.2.8"},
-	}}, binary, sign(t, sk, binary))
-	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+	binary := []byte("x")
+	base := release(t, "addon-v9.9.9", binary, sign(t, sk, binary))
+	u := New(Options{Dir: t.TempDir(), FeedBase: base, PublicKey: pub, Version: "0.2.5",
 		GOOS: "linux", GOARCH: "amd64"})
-	rel, err := u.Latest(t.Context())
-	if err != nil || rel.TagName != "companion-v0.2.8" {
+	if rel, err := u.Latest(t.Context()); err != nil || rel.TagName != "" {
 		t.Fatalf("Latest = %q, %v", rel.TagName, err)
 	}
 }
 
-func TestTheSecondPageIsReadOnlyWhenTheFirstWasFullWithNoMatch(t *testing.T) {
+func TestAManifestOfAnotherSchemaOrFamilyIsAnError(t *testing.T) {
 	sk, pub := keypair(t)
-	binary := []byte("found on page two")
-	var full []listed
-	for i := range PerPage {
-		full = append(full, listed{tag: fmt.Sprintf("data-v2026.09.%02d", i+1)})
-	}
-	srv, asked := releaseList(t, [][]listed{full, {{tag: "companion-v0.2.6"}}}, binary, sign(t, sk, binary))
-	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
-		GOOS: "linux", GOARCH: "amd64"})
-	rel, err := u.Latest(t.Context())
-	if err != nil || rel.TagName != "companion-v0.2.6" {
-		t.Fatalf("Latest = %q, %v", rel.TagName, err)
-	}
-	if len(*asked) != 2 {
-		t.Errorf("pages asked for: %v", *asked)
-	}
-
-	// A short first page with no match ends the search; a full first
-	// page that does match never asks for a second.
-	short, askedShort := releaseList(t, [][]listed{{{tag: "data-v1"}}, {{tag: "companion-v9.9.9"}}}, binary, sign(t, sk, binary))
-	u = New(Options{Dir: t.TempDir(), APIBase: short.URL, PublicKey: pub, Version: "0.2.5",
-		GOOS: "linux", GOARCH: "amd64"})
-	if rel, err := u.Latest(t.Context()); err != nil || rel.TagName != "" || len(*askedShort) != 1 {
-		t.Errorf("short page: %q, %v, asked %v", rel.TagName, err, *askedShort)
-	}
-	hit := append(append([]listed{}, full[:PerPage-1]...), listed{tag: "companion-v0.2.6"})
-	hitSrv, askedHit := releaseList(t, [][]listed{hit}, binary, sign(t, sk, binary))
-	u = New(Options{Dir: t.TempDir(), APIBase: hitSrv.URL, PublicKey: pub, Version: "0.2.5",
-		GOOS: "linux", GOARCH: "amd64"})
-	if rel, err := u.Latest(t.Context()); err != nil || rel.TagName != "companion-v0.2.6" || len(*askedHit) != 1 {
-		t.Errorf("full matching page: %q, %v, asked %v", rel.TagName, err, *askedHit)
+	binary := []byte("x")
+	sig := sign(t, sk, binary)
+	for name, change := range map[string]func(*Release){
+		"schema": func(r *Release) { r.Schema = 2 },
+		"family": func(r *Release) { r.Family = "addon" },
+	} {
+		m := func(base string) Release {
+			rel := signed("companion-v9.9.9", binary, sig)(base)
+			change(&rel)
+			return rel
+		}
+		u := New(Options{Dir: t.TempDir(), FeedBase: feed(t, m, binary, sig), PublicKey: pub, Version: "0.2.5",
+			GOOS: "linux", GOARCH: "amd64"})
+		if _, err := u.Poll(t.Context(), t0); err == nil {
+			t.Errorf("a manifest with another %s was read", name)
+		}
 	}
 }
 
-func TestAHTTPErrorFromTheListIsAnError(t *testing.T) {
+func TestAnHTTPErrorFromTheFeedIsAnError(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "rate limited", http.StatusForbidden)
 	}))
 	t.Cleanup(srv.Close)
 	_, pub := keypair(t)
-	u := New(Options{Dir: t.TempDir(), APIBase: srv.URL, PublicKey: pub, Version: "0.2.5",
+	u := New(Options{Dir: t.TempDir(), FeedBase: srv.URL, PublicKey: pub, Version: "0.2.5",
 		GOOS: "linux", GOARCH: "amd64"})
-	if _, err := u.Poll(t.Context(), t0); err == nil {
-		t.Fatal("a 403 from GitHub was not an error")
+	if _, err := u.Poll(t.Context(), t0); err == nil || !strings.Contains(err.Error(), "release feed answered 403") {
+		t.Fatalf("a 403 from the feed: %v", err)
 	}
 }
 
@@ -378,9 +418,9 @@ func TestApplyPendingRefusesAndClearsAnUnsignedStage(t *testing.T) {
 func TestApplyPendingRejectsAStageTamperedWithAfterStaging(t *testing.T) {
 	sk, pub := keypair(t)
 	binary := []byte("the real companion")
-	srv := release(t, "companion-v9.9.9", binary, sign(t, sk, binary))
+	base := release(t, "companion-v9.9.9", binary, sign(t, sk, binary))
 	dir := t.TempDir()
-	u := New(Options{Dir: dir, APIBase: srv.URL, PublicKey: pub, Version: "1.0.0",
+	u := New(Options{Dir: dir, FeedBase: base, PublicKey: pub, Version: "1.0.0",
 		GOOS: "linux", GOARCH: "amd64"})
 	if staged, err := u.Poll(t.Context(), t0); err != nil || !staged {
 		t.Fatalf("Poll = %v, %v", staged, err)

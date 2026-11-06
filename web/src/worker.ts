@@ -1,5 +1,5 @@
 // The only server code in web/. wrangler.jsonc's run_worker_first lists exactly the
-// prefixes this handler owns -- the tracked /go/ links, the shared build proxy, report files and the DuckDB
+// prefixes this handler owns -- the tracked /go/ links, the /dl/ downloads, the shared build proxy, report files and the DuckDB
 // runtime out of R2, the engine module's brotli negotiation, and the four shells -- and every other path is served straight from
 // the static assets with no Worker execution at all.
 //
@@ -15,10 +15,13 @@ import {
   parseGuildClaimPath,
   parseGuildInviteToken,
   parseGuildPath,
+  parseGuildRaidPath,
   parseGuildSettingsPath,
 } from './lib/characters';
 import { GO_PREFIX } from './lib/golinks/config';
 import { serveGoLink, type ExecutionContext } from './lib/golinks/redirect';
+import { DOWNLOAD_PREFIX } from './lib/downloads/paths';
+import { serveDownload } from './lib/downloads/serve';
 import { DUCKDB_RUNTIME_PREFIX, duckdbRuntimeKey } from './lib/report/duckdb-runtime';
 import {
   characterShellMeta,
@@ -42,13 +45,16 @@ import { serveSimWasm, SIM_WASM_PATH } from './lib/sim/wasm-serve';
 export interface Env {
   /** Origin of the Go API, from `vars` in wrangler.jsonc. */
   API_BASE_URL: string;
+  /** The pre-feed release host /dl/ falls back to, from `vars` in wrangler.jsonc (lib/downloads/serve.ts). */
+  RELEASES_URL?: string;
   /** The static assets binding. */
   ASSETS: { fetch(request: Request): Promise<Response> };
   /**
-   * The foreversixty-logs bucket. It holds both a report's files and the two DuckDB
-   * engine modules. Optional because `astro preview` and the Playwright suite serve the
-   * static assets with no Worker and no bindings, and the checked-in report fixture under
-   * public/logs-data/ has to keep working there.
+   * The foreversixty-logs bucket. It holds a report's files, the two DuckDB engine
+   * modules and, under downloads/, the release feed (lib/downloads/serve.ts). Optional
+   * because `astro preview` and the Playwright suite serve the static assets with no Worker
+   * and no bindings, and the checked-in report fixture under public/logs-data/ has to keep
+   * working there.
    */
   LOGS?: R2Bucket;
 }
@@ -71,6 +77,8 @@ export interface R2ObjectBody {
   httpMetadata?: R2HttpMetadata;
   httpEtag: string;
   size: number;
+  /** The body as text; the download feed reads a family's latest.json with it. */
+  text?(): Promise<string>;
 }
 
 export interface R2Bucket {
@@ -459,6 +467,18 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
     return { meta: guildSettingsShellMeta(guildSettings, data.guild.name), indexable: false };
   }
 
+  // A raid page (the links the Discord raid post, the app pushes and the calendar carry): the
+  // guild page's head, never indexed (the guild page is the canonical one).
+  const guildRaid = parseGuildRaidPath(url.pathname);
+  if (guildRaid !== null) {
+    const { guild: raidGuild } = guildRaid;
+    const data = await apiData<GuildHead>(
+      `${env.API_BASE_URL}/v1/guilds/${raidGuild.region}/${raidGuild.ruleset}/${raidGuild.slug}`,
+    );
+    if (data === null) return null;
+    return { meta: guildShellMeta(raidGuild, data), indexable: false };
+  }
+
   // No API call at all (plan ruling 6): there is no unauthenticated endpoint to resolve an
   // invite token to a guild name.
   const inviteToken = parseGuildInviteToken(url.pathname);
@@ -492,6 +512,7 @@ function shellPathIsAddressable(url: URL): boolean {
     parseGuildPath(url.pathname) !== null ||
     parseGuildClaimPath(url.pathname) !== null ||
     parseGuildSettingsPath(url.pathname) !== null ||
+    parseGuildRaidPath(url.pathname) !== null ||
     parseGuildInviteToken(url.pathname) !== null
   );
 }
@@ -560,6 +581,8 @@ export default {
     const url = new URL(request.url);
     // The tracked short links (lib/golinks/redirect.ts): a 302 now, the count after.
     if (url.pathname.startsWith(GO_PREFIX)) return serveGoLink(request, env, ctx);
+    // The site's downloads and release feed (lib/downloads/serve.ts), out of the bucket.
+    if (url.pathname.startsWith(DOWNLOAD_PREFIX)) return serveDownload(request, env);
     // The sample's old database id: the link lives in cached pages and old shares.
     const legacy = SAMPLE_LEGACY_IDS.find((id) => url.pathname === `/reports/${id}`);
     if (legacy !== undefined) return Response.redirect(new URL(SAMPLE_REPORT_PATH, url).toString(), 301);

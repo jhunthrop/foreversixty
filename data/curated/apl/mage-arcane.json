@@ -22,11 +22,6 @@
   ],
   "sources": [
     {
-      "label": "wowsims-forever mage default priority list (Fire-leaning, no Arcane preset exists)",
-      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/mage/apls/p1.apl.json",
-      "kind": "community"
-    },
-    {
       "label": "Wowhead Classic: Arcane Mage DPS Rotation, Cooldowns, and Abilities",
       "url": "https://www.wowhead.com/classic/guide/mage-arcane-dps-rotation-cooldowns-abilities",
       "kind": "community"

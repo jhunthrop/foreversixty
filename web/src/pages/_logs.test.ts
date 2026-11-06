@@ -28,7 +28,6 @@ describe('/logs', () => {
       'foreversixty-companion_windows_amd64.exe',
     ]);
     for (const entry of companion.downloads) {
-      expect(companion.releasesUrl).toBe('https://github.com/jhunthrop/foreversixty/releases');
       expect(entry.platform.length).toBeGreaterThan(0);
     }
   });
