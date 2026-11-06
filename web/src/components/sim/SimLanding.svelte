@@ -70,12 +70,7 @@
   <Section title={copy.sections.simYourCharacter} testid="sim-cold-paste">
     <Plate label={copy.sections.simYourCharacter}>
       <div class="flex flex-col gap-3 p-4">
-        <FormRow
-          label={copy.paste.label}
-          action="/sim"
-          method="get"
-          onsubmit={submitPaste}
-        >
+        <FormRow label={copy.paste.label} action="/sim" method="get" onsubmit={submitPaste}>
           <Field
             id="sim-cold-paste-input"
             name="code"

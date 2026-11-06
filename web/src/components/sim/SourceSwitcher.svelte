@@ -104,7 +104,6 @@
     if (input.kind === 'code') onaddon(input.code);
     else onbuild(input.id);
   }
-
 </script>
 
 {#snippet addonCard()}
