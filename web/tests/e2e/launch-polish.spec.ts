@@ -79,7 +79,7 @@ for (const size of SIZES) {
 
       await page.getByTestId('home-around-the-site').scrollIntoViewIfNeeded();
       const guilds = page.getByTestId('home-top-guilds-empty');
-      await expect(guilds).toContainText('No guilds ranked yet. Claim yours from the Guild menu.');
+      await expect(guilds).toContainText('No guild has a boss kill logged yet.');
       const open = guilds.getByRole('link', { name: 'Open the guild page' });
       await expect(open).toHaveAttribute('href', '/guild');
       // A ghost button: outlined, no gold fill.

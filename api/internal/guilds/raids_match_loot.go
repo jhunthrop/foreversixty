@@ -39,7 +39,8 @@ func scanMatchedAward(row pgx.Row) (matchedAward, error) {
 // attachMatchLoot runs inside a match's transaction, once raidID holds its log: every award of
 // the guild with no raid whose awarded_at falls between an hour before the raid's start and six
 // hours after the earlier of the log's anchor and the raid's end (a log uploaded days later never
-// sweeps a later night's awards) joins the raid, marked attached_by_match. An Onyxia raid only:
+// sweeps a later night's awards) joins the raid, marked attached_by_match, and so does every
+// raid-less award filed under the raid's own log as a logged night (resolveAwardNight). An Onyxia raid only:
 // awards are Onyxia's. When the raid already holds an award of the same drop, the newer of the
 // two stays on the raid and the older is left with no raid.
 func attachMatchLoot(ctx context.Context, tx pgx.Tx, raidID int64) error {
@@ -48,9 +49,10 @@ func attachMatchLoot(ctx context.Context, tx pgx.Tx, raidID int64) error {
 		from guild_raids g
 		join reports r on r.id = g.report_id
 		join loot_awards la on la.guild_id = g.guild_id and la.raid_id is null
-		 and la.awarded_at >= g.starts_at - make_interval(hours => $2)
-		 and la.awarded_at <= least(coalesce(r.completed_at, r.created_at),
-		                            g.starts_at + make_interval(mins => g.duration_minutes)) + make_interval(hours => $3)
+		 and (la.report_id = r.id
+		      or (la.awarded_at >= g.starts_at - make_interval(hours => $2)
+		          and la.awarded_at <= least(coalesce(r.completed_at, r.created_at),
+		                                     g.starts_at + make_interval(mins => g.duration_minutes)) + make_interval(hours => $3)))
 		where g.id = $1 and g.zone = $4
 		order by la.awarded_at, la.id
 		for update of la`, raidID, matchLeadHours, matchTailHours, onyxiaZoneKey)
@@ -95,8 +97,9 @@ func newerAward(a, b matchedAward) bool {
 }
 
 // swapAwardOntoRaid moves the newer raid-less award loose onto raidID and leaves the raid's
-// older award held with no raid. Neither unique index lets one row move while the other still
-// stands, so loose is taken out, held moves off, and loose returns under its own id.
+// older award held with no raid. loot_awards_drop_idx will not take loose while held stands, and
+// held moving off could meet loose under loot_awards_drop_night_idx when both carry the same log,
+// so loose is taken out, held moves off, and loose returns under its own id.
 func swapAwardOntoRaid(ctx context.Context, tx pgx.Tx, raidID int64, loose, held matchedAward) error {
 	if _, err := tx.Exec(ctx, `delete from loot_awards where id = $1`, loose.id); err != nil {
 		return fmt.Errorf("guilds: attach loot: %w", err)
@@ -117,16 +120,18 @@ func swapAwardOntoRaid(ctx context.Context, tx pgx.Tx, raidID int64, loose, held
 }
 
 // detachMatchLoot runs inside a clear's transaction: the awards raidID's match attached go
-// back to no raid. An explicit award (filed under the raid itself) stays. An attached award
-// whose drop already has another raid-less award stays on the raid rather than lose either:
-// the one-raid-less-award-per-drop index has room for one.
+// back to no raid. An explicit award (filed under the raid itself) stays. An award with no log
+// always goes back, beside any other raid-less award of its drop (migration 0071). An attached
+// award filed under a log whose night already holds another raid-less award of the same drop
+// stays on the raid rather than lose either: loot_awards_drop_night_idx has room for one.
 func detachMatchLoot(ctx context.Context, tx pgx.Tx, raidID int64) error {
 	if _, err := tx.Exec(ctx, `
 		update loot_awards la set raid_id = null, attached_by_match = false
 		where la.raid_id = $1 and la.attached_by_match
-		  and not exists (select 1 from loot_awards o
-		                  where o.guild_id = la.guild_id and o.raid_id is null
-		                    and o.encounter_id = la.encounter_id and o.item_id = la.item_id)`, raidID); err != nil {
+		  and (la.report_id is null
+		       or not exists (select 1 from loot_awards o
+		                      where o.guild_id = la.guild_id and o.raid_id is null and o.report_id = la.report_id
+		                        and o.encounter_id = la.encounter_id and o.item_id = la.item_id))`, raidID); err != nil {
 		return fmt.Errorf("guilds: detach loot: %w", err)
 	}
 	return nil

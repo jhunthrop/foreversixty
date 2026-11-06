@@ -1,7 +1,7 @@
 <!-- web/src/components/guild/RaidKillOrder.svelte -->
 <!-- Kill order (attendance spec 3.4): one 44 px row per named boss in kill order, each linking to its
      fight on the report page; a boss never killed reads `Not killed · n wipes` with its name muted;
-     pulls with no named encounter take one line. Only `first pull` is `--kill`. -->
+     pulls with no named encounter read as the header does, one line `2 trash packs`. Only `first pull` is `--kill`. -->
 <script lang="ts">
   import type { RaidReport } from '../../lib/guild/attendance-contract';
   import { attendanceCopy, killRowText, unnamedLine } from '../../lib/guild/attendance-copy';
@@ -12,6 +12,8 @@
   let { report, reportId }: { report: RaidReport; reportId: string } = $props();
 
   const fightHref = (fightIndex: number): string => `/reports/${reportId}?fight=${fightIndex}`;
+  /** `2 trash packs`, the night header's own words; null with no pack down. */
+  const trash = $derived(report.unnamed === null ? null : unnamedLine(report.unnamed));
 </script>
 
 <RaidBlock heading={attendanceCopy.report.kills} count={report.kill_order.length} testid="raid-kill-order">
@@ -37,7 +39,7 @@
       </li>
     {/each}
   </ul>
-  {#if report.unnamed !== null}
-    <p class="text-muted text-[13px]" data-testid="raid-unnamed-line">{unnamedLine(report.unnamed)}</p>
+  {#if trash !== null}
+    <p class="text-muted text-[13px]" data-testid="raid-unnamed-line">{trash}</p>
   {/if}
 </RaidBlock>

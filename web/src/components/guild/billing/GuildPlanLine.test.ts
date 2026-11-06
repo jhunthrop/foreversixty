@@ -44,13 +44,14 @@ function html(
 describe('GuildPlanLine', () => {
   it('reads the trial line and its cancel-before date', () => {
     const body = text(html(atNoon(TRIAL_READ, { trial_end: '2026-11-04T12:00:00Z' }), true));
-    expect(body).toContain('Guild · trial · first charge 4 Nov 2026: $15');
+    expect(body).toContain('Trial · first charge 4 Nov 2026: $15');
     expect(body).toContain('Cancel before 4 Nov and nothing is charged. Billed to you.');
   });
 
   it('reads the active line with the Founder tag', () => {
     const body = html(atNoon(FOUNDER_RAID_GUILD_READ), true);
-    expect(text(body)).toContain('Raid guild · renews 1 Dec 2026 · $200 a year');
+    expect(text(body)).toContain('Renews 1 Dec 2026 · $200 a year');
+    expect(text(body)).not.toContain('Raid guild · renews');
     expect(body).toContain('guild-billing-founder');
     // The Founder state is a Tag in the plan row's trailing slot (site alignment, settings Plan card).
     expect(body).toMatch(/data-testid="guild-billing-founder" data-tone="gold"[^>]*>[\s\S]*Founder/);

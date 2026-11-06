@@ -16,7 +16,7 @@ function text(guild: MeCharacterGuild): string {
 
 describe('CharacterGuildLine attendance', () => {
   it('appends the raid count in raid mode', () => {
-    expect(text({ ...GUILD, attendance: { present: 7, nights: 8 } })).toContain('· came 7 of 8 raids');
+    expect(text({ ...GUILD, attendance: { present: 7, nights: 8 } })).toContain('· came 7 of 8 raid nights');
   });
 
   it('appends nothing without raid attendance', () => {

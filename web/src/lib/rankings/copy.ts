@@ -17,7 +17,7 @@ export const homeTopGuildsCopy = {
   /** The placeholder's screen-reader name, so the panel never says "Loading" in page text. */
   placeholderLabel: 'Top guilds',
   failed: 'Rankings did not load.',
-  empty: 'No guilds ranked yet. Claim yours from the Guild menu.',
+  empty: 'No guild has a boss kill logged yet.',
   /** The ghost button under the empty sentence (P.1). */
   emptyAction: 'Open the guild page',
   emptyHref: '/guild',

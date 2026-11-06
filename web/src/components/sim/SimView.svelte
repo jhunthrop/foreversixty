@@ -63,12 +63,11 @@
   import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import ColdPasteHero from './ColdPasteHero.svelte';
-  import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
   import ReportOptions from './ReportOptions.svelte';
   import RequestDrawer from './RequestDrawer.svelte';
-  import LiveRotationCard from './LiveRotationCard.svelte';
   import RunControl from './RunControl.svelte';
+  import RunReport from './RunReport.svelte';
   import SavedSim from './SavedSim.svelte';
   import SavedSimLoadFailed from './SavedSimLoadFailed.svelte';
   import SettingsBar from './SettingsBar.svelte';
@@ -91,7 +90,7 @@
   // bootstrap values, not bindings this island keeps synced against a changing URL.
   const bootstrap = untrack(() => {
     const search = window.location.search;
-    const { source, ref, code, req, mode } = parseSimState(search);
+    const { source, ref, code, req, mode, run } = parseSimState(search);
     // The mount element the shell can stamp a build id onto, the way planner-island.ts
     // reads `data-tree-version` off its own mount -- no /sim page stamps one yet, so this
     // falls back to the site's active build rather than an empty string no fetch would
@@ -101,7 +100,7 @@
     // specs.astro stamps `data-sim-view="specs"`; sim.astro and [id].astro stamp neither,
     // so an absent or unrecognised value reads as the ordinary simulator.
     const view: 'sim' | 'specs' = mount?.dataset.simView === 'specs' ? 'specs' : 'sim';
-    return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view };
+    return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view, run };
   });
 
   // Compare mode loads its character through `enterCompare` below, never through the
@@ -208,7 +207,7 @@
   );
 
   // CompareView is never needed for /sim's first paint -- it only exists once a compare
-  // link is followed -- so it ships as its own chunk, the same way SimResults does below.
+  // link is followed -- so it ships as its own chunk.
   const compareViewLazy = createLazyComponent(() => import('./CompareView.svelte'));
   $effect(() => {
     if (comparison !== null) compareViewLazy.load();
@@ -536,13 +535,14 @@
       : null,
   );
 
-  // SimResults pulls in five report components and is never needed for /sim's first
-  // paint -- the page opens on an empty state with no result at all -- so it ships as its
-  // own chunk, loaded the moment a result actually lands, the same way ReportView.svelte
-  // lazy-loads Compare, Mechanics, Rankings, Timelines, Events and Queries.
-  const simResultsLazy = createLazyComponent(() => import('./SimResults.svelte'));
+  // `run=1` ("View ranking sim" on the tier list and the BiS band): the link opens a published
+  // number to see it reproduced, so the run starts once the code's character has loaded, under
+  // the same damage-spec guard the Run button has. Once only: a later character never auto-runs.
+  let pendingAutoRun = untrack(() => bootstrap.run && !hasSavedSimId && bootstrap.mode !== 'compare');
   $effect(() => {
-    if (store.result !== null) simResultsLazy.load();
+    if (!pendingAutoRun || store.character === null) return;
+    pendingAutoRun = false;
+    runLoadedIfSimulated();
   });
 </script>
 
@@ -770,23 +770,11 @@
               {/if}
             {/if}
           {:else if store.result !== null}
-            {#if simResultsLazy.current}
-              <simResultsLazy.current
-                summary={store.result.summary}
-                estimate={store.result.dps}
-                iterationsRun={store.result.iterations_run}
-                actionNames={store.actionNames}
-                sample={store.result.sample}
-                {topUpgrade}
-              />
-            {:else}
-              {@render lazyFallback(simResultsLazy, SIM_LAZY_MIN_H.results)}
-            {/if}
-          {/if}
-
-          {#if store.result !== null && !comparing}
-            <DetailsCard result={store.result} />
-            <LiveRotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
+            <!-- The saved page's report (RunReport.svelte), fed from this run: the band and the
+                 damage table draw first, every deeper card is its own chunk loaded as it nears
+                 the viewport, so the island's boot bundle carries only what /sim/<id> already
+                 needs. -->
+            <RunReport result={store.result} live {topUpgrade} />
           {/if}
 
           {#if store.result !== null}

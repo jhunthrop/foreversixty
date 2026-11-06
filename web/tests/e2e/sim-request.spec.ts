@@ -40,8 +40,8 @@ test('the drawer shows the exact request, validates an edit and runs it', async 
   await editor.fill(JSON.stringify({ ...JSON.parse(json), iterations: 500 }, null, 2));
   await page.getByTestId('sim-request-run').click();
   await expect(page.getByTestId('sim-request-valid')).toBeVisible();
-  await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId('sim-details-iterations')).toHaveText('500');
+  await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId('sim-fact-runs')).toContainText('500');
 });
 
 test('a pasted request loads the page state', async ({ page }) => {

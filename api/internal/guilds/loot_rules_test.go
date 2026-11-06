@@ -23,15 +23,20 @@ func onyxiaRow(t *testing.T, itemID int) lootItem {
 	return item
 }
 
-// candidate is a verified roster row at level, of a class and spec, wearing nothing; no faction, so
-// no BiS band applies and the row is ranked on the item-level tier.
+// candidate is a verified roster row at level, of a class and spec, wearing only a shirt (gear on
+// file, every drop's slot empty); no faction, so no BiS band applies and the row is ranked on the
+// item-level tier.
 func candidate(name, class, spec string, level int) RosterRow {
 	return RosterRow{
 		CharacterKey: "us/hardcore/" + name, Name: name, Verified: true,
 		Class: &class, className: class, Spec: &spec, specStr: spec,
-		Level: i(level), gear: map[string]int{},
+		Level: i(level), gear: shirtOnly(),
 	}
 }
+
+// shirtOnly is gear on file with every slot a drop can go in empty: an export whose gear list
+// carries only a shirt. A row with no gear list at all is gear unknown and never a candidate.
+func shirtOnly() map[string]int { return map[string]int{"shirt": 45} }
 
 // everySpec is one level-60 character of every class and spec.
 func everySpec() []RosterRow {
@@ -179,6 +184,17 @@ func TestALevel58IsOnNoOnyxiaItem(t *testing.T) {
 		if cands := s.lootCandidates(roster, item); len(cands) != 0 {
 			t.Errorf("%s lists a level 58: %+v", item.Name, cands)
 		}
+	}
+}
+
+// A character whose export carries no gear list is gear unknown, not bare: never listed as filling
+// an empty slot, never listed at all (guild round 3).
+func TestGearUnknownIsNoCandidate(t *testing.T) {
+	s := realTreesStore(t)
+	row := candidate("Warrior", "warrior", "Fury", 60)
+	row.gear = nil
+	if cands := s.lootCandidates([]RosterRow{row}, onyxiaRow(t, 16963)); len(cands) != 0 {
+		t.Fatalf("a gearless export is listed: %+v", cands)
 	}
 }
 
@@ -343,6 +359,15 @@ func TestSuitsFamily(t *testing.T) {
 		{"defense ring for a healer too", map[string]int{"defense": 4, "fire_res": 10}, false, healer, false, true},
 		{"defense and strength not a caster's", map[string]int{"defense": 4, "strength": 5}, false, caster, false, false},
 		{"defense-only weapon not a caster's", map[string]int{"defense": 4}, true, caster, false, false},
+		// Round 3: a physical stat keeps an item from casters and healers whatever crit or hit rides
+		// along; hit or crit is for everyone only with no family stat. Eskhandar's Collar (build
+		// 1.60.1.70790, classic-db: 17 Stamina, 1% dodge, 1% crit) is a physical and tank neck.
+		{"collar not a healer's", map[string]int{"stamina": 17, "dodge": 1, "crit": 1}, false, healer, false, false},
+		{"collar not a caster's", map[string]int{"stamina": 17, "dodge": 1, "crit": 1}, false, caster, false, false},
+		{"collar for physical", map[string]int{"stamina": 17, "dodge": 1, "crit": 1}, false, phys, false, true},
+		{"collar for a tank", map[string]int{"stamina": 17, "dodge": 1, "crit": 1}, false, tank, false, true},
+		{"agility and crit not a healer's", map[string]int{"agility": 10, "crit": 1}, false, healer, false, false},
+		{"intellect and hit not physical", map[string]int{"intellect": 10, "hit": 1}, false, phys, false, false},
 	}
 	for _, c := range cases {
 		if got := suitsFamily(c.stats, c.weapon, c.families, c.melee); got != c.want {
@@ -716,3 +741,42 @@ func TestEquipRulesHoldTheClassicFacts(t *testing.T) {
 
 func weapons(c equipClass) map[int]int { return c.weapons }
 func armor(c equipClass) map[int]int   { return c.armor }
+
+// Within a tier a tank leads on a drop with Defense, and a real upgrade over a worn item ranks
+// above filling an empty slot, whatever the empty slot's item level reads (spec §3.2, round 3).
+func TestLootOrderTankFirstThenWornBeforeEmpty(t *testing.T) {
+	delta := func(n int) *int { return &n }
+	cands := []LootCandidate{
+		{Name: "Empty", Tier: 1, IlvlDelta: delta(76), FillsEmptySlot: true},
+		{Name: "Upgrade", Tier: 1, IlvlDelta: delta(5)},
+		{Name: "Tank", Tier: 1, IlvlDelta: delta(1), tankFirst: true},
+		{Name: "Bis", Tier: 0},
+	}
+	sortLootCandidates(cands)
+	var got []string
+	for _, c := range cands {
+		got = append(got, c.Name)
+	}
+	if strings.Join(got, ",") != "Bis,Tank,Upgrade,Empty" {
+		t.Fatalf("order = %v", got)
+	}
+}
+
+// Guild round 3: Eskhandar's Collar listed Holy Paladin, Holy Priest and Resto Druid first; its
+// dodge keeps it from casters and healers. Ring of Binding stays open to all, a tank first.
+func TestCollarSkipsCastersAndRingRanksTanksFirst(t *testing.T) {
+	s := realTreesStore(t)
+	for _, c := range s.lootCandidates(everySpec(), onyxiaRow(t, 18205)) {
+		class, spec := c.Class, strings.ToLower(c.Spec)
+		if f := specFamilies[class+"/"+spec]; f == familyCaster || f == familyHealer {
+			t.Errorf("Eskhandar's Collar lists %s %s", spec, class)
+		}
+	}
+	tank, holy := candidate("Ironhide", "warrior", "Protection", 60), candidate("Pipsqueak", "priest", "Holy", 60)
+	role := RoleTank
+	tank.Role = &role
+	cands := s.lootCandidates([]RosterRow{holy, tank}, onyxiaRow(t, 18813))
+	if len(cands) != 2 || cands[0].Name != "Ironhide" || !cands[1].FillsEmptySlot {
+		t.Fatalf("Ring of Binding = %+v, want the tank first, both filling an empty slot", cands)
+	}
+}

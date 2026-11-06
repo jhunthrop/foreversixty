@@ -79,27 +79,6 @@ export const MARGIN_BELOW_THRESHOLD = '< 0.1';
  */
 export const WEIGHT_ERROR_BELOW_THRESHOLD = '< 0.01';
 /**
- * The BUFFS/DEBUFFS tabs' empty state, one message per kind (Task 4, SimResults.svelte's
- * two AuraTable calls). A sim reports the player's own buff uptime correctly, so an empty
- * BUFFS tab is true: nothing was up. A sim result carries no debuff data at all -- sim/core
- * reports aura metrics for the player only (sim/adapter/adapter.go's own auraTypeBuff
- * comment: "'DEBUFF', has no source in an engine result") -- so the old, shared "No
- * debuffs in this window" stated a fact about the fight the engine cannot know: a target
- * dummy taking Rend 56 times, with this tab insisting there were none, is the exact defect
- * this replaces. The Casts tab already carries the true application count for every
- * debuff a spec casts (CastRow's own `succeeded`), so this points there instead of
- * inventing uptime data the web does not have. A plain module-level constant, not a
- * simCopy property, for the same reason as attackHandName above: AuraTable.svelte (a
- * report component, outside the sim lane) takes the chosen message as a prop rather than
- * importing simCopy itself, so ReportView.svelte's own AuraTable calls -- a real fight,
- * where an empty DEBUFFS tab really can mean none were cast -- are untouched.
- */
-export const AURA_EMPTY_MESSAGE: Record<'BUFF' | 'DEBUFF', string> = {
-  BUFF: 'No buffs in this window.',
-  DEBUFF:
-    "The simulator doesn't report debuff uptime yet; see Casts for how many times each one was applied.",
-};
-/**
  * Sub-item 4's "and says so": shown under the weights picker only when the spec's own
  * `weight_stats` came back non-empty, since that is the only time the claim is true. An
  * absent list falls back to the full pinned vocabulary (`weights.ts`'s `WEIGHT_STATS`) with
@@ -382,26 +361,9 @@ export const simCopy = {
     'The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". The other 8 specs, healers and tanks, are not simulated yet.',
   tryAgain: 'Try again',
 
-  tabDamage: 'Damage',
   /** The Damage tab's row for a build that names no character (a pasted export, a planner build). */
   namelessActor: 'You',
-  tabBuffs: 'Buffs',
-  tabDebuffs: 'Debuffs',
-  tabCasts: 'Casts',
-  tabResources: 'Resources',
-  tabTimeline: 'Timeline',
-  tabDistribution: 'Distribution',
-  resultsTablist: 'Results',
 
-  // --- Design 5.1: the sample iteration log. ---
-  tabSample: 'One iteration',
-  sampleNote:
-    'One iteration’s casts, in order. It is a sample of what the rotation did once, not a rotation guide, and the next iteration is a different fight.',
-  sampleEmpty: 'This result carries no sample iteration.',
-  samplePrePull: 'Before the pull',
-  sampleTimeHeading: 'At',
-  sampleCastHeading: 'Cast',
-  sampleTargetHeading: 'On',
   resourceLabel: {
     mana: 'Mana',
     energy: 'Energy',

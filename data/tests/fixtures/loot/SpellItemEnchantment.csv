@@ -1,0 +1,6 @@
+ID,Name_lang,Effect_0,Effect_1,Effect_2,EffectPointsMin_0,EffectPointsMin_1,EffectPointsMin_2,EffectArg_0,EffectArg_1,EffectArg_2
+15,Reinforced (+8 Armor),4,0,0,8,0,0,0,0,0
+41,+5 Health,0,0,0,0,0,0,0,0,0
+241,Weapon Damage +2,2,0,0,2,0,0,0,0,0
+805,Strength +4,5,0,0,4,0,0,4,0,0
+7662,+$k1 Spell Power,5,0,0,65,0,0,45,0,0

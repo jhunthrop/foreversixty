@@ -16,12 +16,8 @@ import (
 
 // enchantableSlots are the four slots design spec §4.E's own readiness board checks
 // ("Weapon/Chest/Cloak/Boots") - back is Codec.lua's and Export.lua's own slot name for
-// Cloak.
+// Cloak. Their printed words are enchantableSlotLabels (slot_words.go), the client's.
 var enchantableSlots = []string{"main_hand", "chest", "back", "feet"}
-
-var enchantableSlotLabels = map[string]string{
-	"main_hand": "Weapon", "chest": "Chest", "back": "Cloak", "feet": "Boots",
-}
 
 // raidLevel is the level every readiness check is measured for: the gear, enchant,
 // consumable and talent needs of a level-60 raid. A character below it is leveling and is not
@@ -130,6 +126,15 @@ type CharacterReadiness struct {
 // (readiness's own floor for Gear gap and Enchants, design spec §4.E).
 func hasGearConsent(consent string) bool { return consent == "gear" || consent == "gear_bags" }
 
+// gearOnFile reports whether a character's gear is known: its owner shares gear and its export
+// carried a gear list. An export with no gear list is gear unknown, never a bare character:
+// readiness leaves its gear and enchant cells unchecked, the Loot tab lists it for no drop and
+// the Overview does not count it "with gear on the site" (guild round 3: a gearless export read
+// ALL ENCHANTED and "Fills an empty slot" on every drop).
+func gearOnFile(consent string, gear map[string]int) bool {
+	return hasGearConsent(consent) && len(gear) > 0
+}
+
 // computeReadiness is pure. A leveling character (a known level under raidLevel) gets its
 // level and item level and nothing graded: level-60 raid needs are not a level 52's to chase.
 //
@@ -149,14 +154,15 @@ func computeReadiness(in readinessInput) CharacterReadiness {
 		return cr
 	}
 
-	if hasGearConsent(in.Consent) && in.HasBand {
+	gearKnown := gearOnFile(in.Consent, in.Gear)
+	if gearKnown && in.HasBand {
 		cr.GearChecked = true
 		cr.GearGap = bis.GapFor(in.Band, in.Gear)
 		if in.Band.Role == "" {
 			cr.GearUnit = gearUnitDPS
 		}
 	}
-	if hasGearConsent(in.Consent) {
+	if gearKnown {
 		cr.EnchantsChecked = true
 		cr.MissingEnchantSlots = missingEnchants(in.Gear, in.Enchants)
 	}

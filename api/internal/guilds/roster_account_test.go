@@ -25,7 +25,7 @@ func TestParseAccountKeyIsAccountKeyForsInverse(t *testing.T) {
 func inviteJoin(t *testing.T, h *httpHarness, gid int64, email string) int64 {
 	t.Helper()
 	ctx := context.Background()
-	token, _, err := h.store.RotateInvite(ctx, gid)
+	token, _, err := h.store.RotateInvite(ctx, gid, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

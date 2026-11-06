@@ -104,17 +104,17 @@ describe('one row per account (raids spec 3.7)', () => {
   });
 
   it('names the account’s other answered characters under its row', () => {
-    expect(alsoLine([ROOTBOUND])).toBe('Also: Rootbound · Restoration Druid · Bench');
+    expect(alsoLine([ROOTBOUND])).toBe('Also: Rootbound (Restoration Druid, Bench)');
     expect(
       alsoLine([
         ROOTBOUND,
         { ...ROOTBOUND, name: 'Brew', class: 'mage', spec_key: 'mage-fire', state: 'out' },
       ]),
-    ).toBe('Also: Rootbound · Restoration Druid · Bench, Brew · Fire Mage · Out');
+    ).toBe('Also: Rootbound (Restoration Druid, Bench); Brew (Fire Mage, Out)');
     expect(alsoLine([])).toBeNull();
     const groups = rosterGroups(plannedRaid({ signups: [QUILL, signup('Bolt')], not_signed: [] }));
     expect(groups.late.map((row) => [row.name, row.also])).toEqual([
-      ['Quillfeather', 'Also: Rootbound · Restoration Druid · Bench'],
+      ['Quillfeather', 'Also: Rootbound (Restoration Druid, Bench)'],
     ]);
     expect(groups.bench).toEqual([]);
     expect(groups.groups.ranged.map((row) => row.also)).toEqual([null]);

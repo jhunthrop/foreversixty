@@ -6,11 +6,48 @@
 // page. Loaded eagerly it started fetching just before the page's first paint, and the
 // Lighthouse trace then counted all of it toward the BiS LCP, which swung between ~1.95 s and
 // ~2.7 s run to run against a 1.9 s budget.
-import { onCurrentCharacterChange } from '../current-character-events';
+import { CURRENT_CHARACTER_STORAGE_KEY, onCurrentCharacterChange } from '../current-character-events';
+import { bandFromParam } from './follow-selector';
 
 export function mountBisFollow(root: HTMLElement): () => void {
   return onCurrentCharacterChange((change) => {
     if (change.fromPageLoad) return;
     void import('./follow-selector-run').then(({ follow }) => follow(root));
   });
+}
+
+const BAND_HASH = /^#band-(?:alliance|horde)-\d+$/;
+
+/**
+ * The band a BiS page opens on when its URL names none: `?band=` first (a shared link), else the
+ * selected character's own band and faction. The character lookup waits for the page to finish
+ * loading and go idle, for the same LCP reason as mountBisFollow above.
+ */
+export function applyBisDefaultBand(root: HTMLElement, win: Window = window): void {
+  if (BAND_HASH.test(win.location.hash)) return;
+  const fromParam = bandFromParam(new URLSearchParams(win.location.search).get('band'));
+  if (fromParam !== null) {
+    const horde = win.document.getElementById('faction-horde');
+    const faction = horde instanceof HTMLInputElement && horde.checked ? 'horde' : 'alliance';
+    win.location.hash = `band-${faction}-${fromParam}`;
+    return;
+  }
+  // Only the key's presence, here: the full read (current-character.ts) pulls in the sim's URL
+  // helpers, which this page's eager bundle does not need. The run module reads it properly.
+  let stored: string | null = null;
+  try {
+    stored = win.localStorage.getItem(CURRENT_CHARACTER_STORAGE_KEY);
+  } catch {
+    return;
+  }
+  if (stored === null) return;
+  const run = (): void => {
+    void import('./follow-selector-run').then(({ followDefault }) => followDefault(root));
+  };
+  const idle = (): void => {
+    if (typeof win.requestIdleCallback === 'function') win.requestIdleCallback(run, { timeout: 2000 });
+    else setTimeout(run, 200);
+  };
+  if (win.document.readyState === 'complete') idle();
+  else win.addEventListener('load', idle, { once: true });
 }

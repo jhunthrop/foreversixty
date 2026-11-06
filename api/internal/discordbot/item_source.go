@@ -97,7 +97,7 @@ func (s *Service) sourceLine(itemID int, kind, faction, raw string) string {
 		s.log.Warn("discordbot", "op", "item_source", "err", err)
 		loot = &lootFile{}
 	}
-	return describeSource(loot, itemID, kind, faction)
+	return describeSource(loot, itemID, kind, faction, raw)
 }
 
 func itemsOf(src lootSource) []int {
@@ -124,6 +124,19 @@ func findLoot(sources []lootSource, kind string, itemID int) (lootSource, bool) 
 		}
 	}
 	return lootSource{}, false
+}
+
+// repSourceFor is the rep source the BiS row names (named: the ranker's faction-correct pick,
+// "Stormpike Guard" in an Alliance band), else the first that sells the item: source-cell.ts's
+// repSourceFor. An item both Alterac Valley factions sell has a rep source per faction and
+// loot.json marks neither with a side, so only the row's own name tells them apart.
+func repSourceFor(sources []lootSource, itemID int, named string) (lootSource, bool) {
+	for _, src := range sources {
+		if src.Kind == "rep" && src.Name == named && names(src, itemID) {
+			return src, true
+		}
+	}
+	return findLoot(sources, "rep", itemID)
 }
 
 func bossOf(src lootSource, itemID int) (lootBoss, bool) {
@@ -166,14 +179,14 @@ func bestChance(sources []lootSource, kind string, itemID int) (lootSource, bool
 	return best, found
 }
 
-func describeSource(loot *lootFile, itemID int, kind, faction string) string {
-	if line, ok := resolvedSource(loot, itemID, kind, faction); ok {
+func describeSource(loot *lootFile, itemID int, kind, faction, named string) string {
+	if line, ok := resolvedSource(loot, itemID, kind, faction, named); ok {
 		return line
 	}
 	return sourceBadge(kind, faction)
 }
 
-func resolvedSource(loot *lootFile, itemID int, kind, faction string) (string, bool) {
+func resolvedSource(loot *lootFile, itemID int, kind, faction, named string) (string, bool) {
 	switch kind {
 	case "quest":
 		return questLine(loot.Quests[strconv.Itoa(itemID)], faction)
@@ -189,7 +202,7 @@ func resolvedSource(loot *lootFile, itemID int, kind, faction string) (string, b
 	case "vendor":
 		return vendorLine(loot.Sources, itemID)
 	case "rep":
-		src, ok := findLoot(loot.Sources, "rep", itemID)
+		src, ok := repSourceFor(loot.Sources, itemID, named)
 		return repLine(src), ok
 	case "zone", "world":
 		src, ok := findLoot(loot.Sources, kind, itemID)

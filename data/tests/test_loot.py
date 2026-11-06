@@ -48,6 +48,11 @@ RAW_FILES = (
     "Item.csv",
     "ManifestInterfaceData.csv",
     "SpellEquippedItems.csv",
+    "SpellEffect.csv",
+    "SpellItemEnchantment.csv",
+    "SpellName.csv",
+    "ItemEffect.csv",
+    "ItemXItemEffect.csv",
 )
 JSON_FILES = ("zones.json", "items.json", "spells.json")
 
@@ -82,6 +87,8 @@ def prepare_build(tmp_path: Path, *, sparse_rows: str | None = None) -> Path:
             shutil.copy(FIXTURES / name, raw / name)
     for name in JSON_FILES:
         shutil.copy(FIXTURES / name, build_dir / name)
+    (build_dir / "gametables").mkdir()
+    shutil.copy(HERE / "fixtures/sim/combatratings.txt", build_dir / "gametables")
     write_manifest(
         build_dir, build=BUILD, product="wow_classic_beta", fetched_at="2026-01-01T00:00:00Z"
     )
@@ -96,6 +103,7 @@ def prepare_curated(tmp_path: Path) -> Path:
     curated = tmp_path / "curated"
     curated.mkdir()
     shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
+    shutil.copy(FIXTURES / "curated-client-enchants.json", curated / "client-enchants.json")
     # The real content-phase gates, and the phase calendar they are read against.
     for name in ("content-phases.json", "phases.json"):
         shutil.copy(Path("curated") / name, curated / name)
@@ -164,6 +172,26 @@ def test_write_loot_files_returns_the_paths_it_writes(tmp_path: Path):
     ]
     for path in paths:
         assert path.exists(), path
+
+
+def test_enchants_take_the_clients_ids_and_the_curated_additions(tmp_path: Path):
+    """The fixture client teaches Minor Impact (7745) as 805, not the fork's
+    241, and the curated list adds Spellblasting, which the fork lacks."""
+    _, build_dir = run(tmp_path)
+    rows = json.loads((build_dir / ENCHANTS).read_text(encoding="utf-8"))
+    by_spell = {row["spell_id"]: row for row in rows}
+    assert by_spell[7745]["id"] == 805
+    assert by_spell[7745]["stats"] == {"strength": 4.0}
+    assert by_spell[7420]["id"] == 41  # untaught by the fixture client: the fork's id stands
+    spellblasting = by_spell[1219580]
+    assert spellblasting["id"] == 7662
+    assert spellblasting["slots"] == ["main_hand", "off_hand"]
+    assert spellblasting["item_types"] == ["two_hand"]
+    assert spellblasting["stats"] == {"spell_power": 65.0}
+    assert spellblasting["equipped_item_class"] == 2
+    assert [(r["id"], r["spell_id"], r["item_id"]) for r in rows] == sorted(
+        (r["id"], r["spell_id"], r["item_id"]) for r in rows
+    )
 
 
 def test_the_generated_sources_survive_next_to_the_overlays_effects(tmp_path: Path):

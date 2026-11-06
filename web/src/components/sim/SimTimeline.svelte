@@ -53,11 +53,14 @@
     result,
     names,
     onOpenInSim,
+    live = false,
   }: {
     result: SimResult;
     names: ActionNames | null;
     /** The band's "Open in the sim" handoff, for the older-result line's link. */
     onOpenInSim?: () => void;
+    /** A finished run on /sim: already in the sim, so the older-result line carries no link. */
+    live?: boolean;
   } = $props();
 
   /** The widths the spec fixes (3.7, Plot and Phone). */
@@ -380,7 +383,7 @@
   // --- The legend ---
   const damageToken = $derived(model?.casts.find((lane) => lane.schoolToken !== null)?.schoolToken ?? null);
   const hasCooldown = $derived(model?.casts.some((lane) => lane.schoolToken === null) ?? false);
-  /** The same meta the loading head printed (SavedRun), so nothing pops in on load. */
+  /** The same meta the loading head printed (RunReport), so nothing pops in on load. */
   const meta = $derived(timelineHeadMeta(result));
 </script>
 
@@ -601,14 +604,16 @@
                 >
                   <div class="notice" data-testid="timeline-auras-fallback">
                     <span class="text-muted text-[13px]">{timelineCopy.aurasFallback}</span>
-                    <ActionLink
-                      href="/sim"
-                      onclick={(event: MouseEvent) => {
-                        if (onOpenInSim === undefined) return;
-                        event.preventDefault();
-                        onOpenInSim();
-                      }}>{timelineCopy.openInSim}</ActionLink
-                    >
+                    {#if !live}
+                      <ActionLink
+                        href="/sim"
+                        onclick={(event: MouseEvent) => {
+                          if (onOpenInSim === undefined) return;
+                          event.preventDefault();
+                          onOpenInSim();
+                        }}>{timelineCopy.openInSim}</ActionLink
+                      >
+                    {/if}
                   </div>
                 </div>
               {/if}

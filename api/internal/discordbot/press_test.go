@@ -41,7 +41,7 @@ func (f *fakeGuilds) GetRaid(context.Context, int64, int64) (guilds.Raid, bool, 
 	return guilds.Raid{}, false, nil
 }
 
-func (f *fakeGuilds) NextRaidFor(context.Context, int64, int64, *string, time.Time) (*guilds.NextRaidView, error) {
+func (f *fakeGuilds) NextRaidFirstFor(context.Context, int64, int64, time.Time) (*guilds.NextRaidView, error) {
 	return nil, nil
 }
 
@@ -387,7 +387,7 @@ func TestPressFlowSentences(t *testing.T) {
 		{name: "late", setup: zulmara,
 			act: func(t *testing.T, w *pressWorld) Reply { return w.press(t, "late") },
 			want: func(w *pressWorld) string {
-				return spec(t, "Press: outcomes", 1, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title, "Date": w.day()})
+				return spec(t, "Press: outcomes", 1, map[string]string{"Name": "Zulmara", "Role": "DPS", "Title": title, "Date": w.day(), "kind": "raid"})
 			},
 			buttons: func(w *pressWorld) []wantButton {
 				return []wantButton{changeSpecButton(w, keyZulmara), {label: pressCopy.NoteButton, url: w.raidURL() + "#signup"}}

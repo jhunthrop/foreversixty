@@ -88,7 +88,13 @@ const PAGE_ISLAND_BUDGETS = [
   // shared row band (lib/ui/row.ts), now a chunk of its own; the entry gains only the preload
   // entries naming it (+38 bytes gzipped measured, 18,424 -> 18,462), with the slack restored.
   { component: 'Character', limitBytes: 18 * 1024 + 256 },
-  { component: 'GuildShell', limitBytes: 16 * 1024 },
+  // +512 bytes (guild round 3, 2026-11-05): the guild page's first view now carries the week-one
+  // card's raider step, the plan gate on the band, the unknown-guild panel and the landing's
+  // Your guilds card. Measured 16,564 gzipped against 16,022 at round 2 (main moved too). Lazy
+  // loading the Your guilds card and the not-found panel was tried: each saved under 100 bytes
+  // and the card flashed in above the lookup, so the bytes stay; 16.5 KB still trips an
+  // accidental heavy import.
+  { component: 'GuildShell', limitBytes: 16 * 1024 + 512 },
   // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
   // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners
   // plus the same lazy-loaded ItemTooltip.svelte panel ItemHover already used -- no data,

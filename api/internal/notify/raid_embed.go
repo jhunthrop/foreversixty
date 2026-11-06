@@ -118,6 +118,9 @@ type RaidPosted struct {
 	SizeKnown         bool
 	// Roster is every sign-up as the post lists it (spec 2026-10-28 §P.9).
 	Roster []RosterLine
+	// NoRoles is a guild event (events spec §3.5): no role groups and no specs, one list of
+	// names and classes grouped In, Late, Bench, Out.
+	NoRoles bool
 }
 
 // RaidChanged is a raid moved (Was set) or cancelled; StartsAt is the current start.
@@ -164,7 +167,7 @@ func RaidPostEmbed(p RaidPost, now time.Time) Embed {
 	e.Description = raidCopy.Descriptions[p.State]
 	e.Fields = postFields(p)
 	if hasRoster(p.State) {
-		e.Fields = append(e.Fields, rosterFields(p.Roster, p.Marks, embedChars(e))...)
+		e.Fields = append(e.Fields, rosterFields(p.Roster, p.Marks, embedChars(e), p.NoRoles)...)
 	}
 	return e
 }

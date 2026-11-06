@@ -70,11 +70,14 @@ func TestRankerScoresRealItemsInEnginePercent(t *testing.T) {
 	if c.Stats["hit"] != 2 || c.Stats["crit"] != 2 {
 		t.Errorf("item %d scores hit %v / crit %v, want 2 / 2", lionheartHelmID, c.Stats["hit"], c.Stats["crit"])
 	}
-	// Every aura-percent item in this build is client_unconfirmed, so none
-	// is a candidate any more (task L1.6, loadCandidates); the conversion
-	// is still checked on the real row.
-	if _, ok := byID[furyVisorID]; ok {
-		t.Errorf("item %d (client_unconfirmed) is a warrior candidate", furyVisorID)
+	// Fury Visor is a real client item since the client's own tables confirm
+	// classic-db's shape: its literal percents reach the ranker as percents.
+	visor, ok := byID[furyVisorID]
+	if !ok {
+		t.Fatalf("item %d missing from the warrior candidates", furyVisorID)
+	}
+	if visor.Stats["hit"] != 1 || visor.Stats["crit"] != 1 {
+		t.Errorf("candidate %d scores hit %v / crit %v, want 1 / 1", furyVisorID, visor.Stats["hit"], visor.Stats["crit"])
 	}
 	classFile, err := loadClassItems(buildDir, "warrior")
 	if err != nil {

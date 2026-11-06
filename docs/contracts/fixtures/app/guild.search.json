@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "name": "Lifecycle Test",
+        "region": "us",
+        "ruleset": "pvp",
+        "path": "/guild/us/pvp/lifecycle-test"
+      },
+      {
+        "name": "The Lifecycle Club",
+        "region": "us",
+        "ruleset": "hardcore",
+        "path": "/guild/us/hardcore/the-lifecycle-club"
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

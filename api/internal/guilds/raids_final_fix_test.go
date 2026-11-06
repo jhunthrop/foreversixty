@@ -59,7 +59,7 @@ func TestAStaleOnlyRowsNudgeNamesTheStaleSync(t *testing.T) {
 	w.h.data(w.h.do(http.MethodGet, w.path("/readiness?raid=%d", raid.ID), ""), &v)
 	row := readinessRowsByKey(v)[memberKeyA]
 	if row.NudgeText == nil || strings.Contains(*row.NudgeText, "every readiness check passes") ||
-		!strings.Contains(*row.NudgeText, "Kraggor:") || !strings.Contains(*row.NudgeText, "last sync was 10 days before the raid") {
+		!strings.Contains(*row.NudgeText, "Kraggor:") || !strings.Contains(*row.NudgeText, "last sync was 10 days ago") {
 		t.Fatalf("nudge = %v", row.NudgeText)
 	}
 }

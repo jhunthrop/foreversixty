@@ -46,6 +46,9 @@ type Guild struct {
 	ClaimReopenedAt      *time.Time
 	OfficerMaxRankIndex  int
 	InviteTokenRotatedAt *time.Time
+	// InviteRotatedBy is the account that made the current invite link (migration 0070); nil
+	// for a link made before 0070, by a tool, or by an account since deleted.
+	InviteRotatedBy *int64
 	// Faction is the majority faction RecomputeFaction last computed - "alliance",
 	// "horde", or nil when it has never resolved to either (no exports yet, a tie, or
 	// every known character neutral/unknown-race).
@@ -105,6 +108,12 @@ type Store struct {
 	// leaves GuildStanding's Subscribe out, the older shape.
 	Billing StepBillingFacts
 	Plans   GuildPlans
+	// Exports re-attaches an invited account's synced characters when it (re)joins by invite
+	// (addon.Store in production, the addon sync's own path). nil leaves only the invite row.
+	Exports InviteExports
+	// InviteSealer keeps the invite token sealed so officers can show the link again
+	// (invite_shown.go); nil keeps only the hash, and the link is shown once.
+	InviteSealer TokenSealer
 
 	bisBuild bisBuildCache
 }
@@ -114,11 +123,11 @@ func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	err := s.Pool.QueryRow(ctx,
 		`select id, region, ruleset, name, default_visibility, claimed_by, claimed_at, claim_pending_by,
 		        claim_requested_at, claim_contested_at, claim_contested_by, claim_reopened_at,
-		        officer_max_rank_index, invite_token_rotated_at, faction, crest_key
+		        officer_max_rank_index, invite_token_rotated_at, invite_rotated_by, faction, crest_key
 		 from guilds where id = $1`, id).
 		Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.DefaultVisibility, &g.ClaimedBy, &g.ClaimedAt,
 			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt, &g.ClaimContestedBy, &g.ClaimReopenedAt,
-			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt, &g.Faction, &g.CrestKey)
+			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt, &g.InviteRotatedBy, &g.Faction, &g.CrestKey)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Guild{}, ErrNotFound
 	}

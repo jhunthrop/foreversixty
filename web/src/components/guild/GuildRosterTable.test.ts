@@ -186,7 +186,8 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
       const actions = /<div[^>]*data-testid="guild-roster-actions"[^>]*>/.exec(part)?.[0] ?? '';
       expect(actions).toContain('flex-nowrap');
       expect(actions).toContain('shrink-0');
-      expect(actions).toContain('lg:w-[190px]');
+      // Wide enough for `Open in simulator` on one line beside Remove (guild round 3).
+      expect(actions).toContain('lg:w-[216px]');
       expect(actions).not.toMatch(/\bxl:/);
       expect(slot).not.toMatch(/\bxl:/);
       // Nothing of the row sits between the slot and the actions but the slot's own content.
@@ -341,6 +342,29 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(section).not.toContain('guild-roster-remove');
   });
 
+  it('draws a removed character the addon still sees with its class crest and "Holy Paladin" when the class is sent (guild loop round 3)', () => {
+    const members = [
+      {
+        name: 'Ashenveil',
+        state: 'no_account' as const,
+        rank: 'member' as const,
+        class: 'paladin',
+        spec: 'holy',
+      },
+      { name: 'Strayhound', state: 'no_account' as const, rank: 'member' as const, spec: 'protection' },
+    ];
+    const body = officerAsk({ members });
+    const [ashenveil = '', strayhound = ''] = body.split('data-testid="guild-roster-entry" ').slice(1);
+    expect(/data-testid="guild-roster-entry-spec">([^<]*)</.exec(ashenveil)?.[1]).toBe('Holy Paladin');
+    expect(ashenveil).toContain('/crests/paladin.webp');
+    expect(ashenveil).toContain(
+      'style="color:var(--color-class-paladin)" data-testid="guild-roster-entry-name"',
+    );
+    // No class: the neutral ringed crest and the spec word alone, never a guessed class.
+    expect(/data-testid="guild-roster-entry-spec">([^<]*)</.exec(strayhound)?.[1]).toBe('Protection');
+    expect(strayhound.slice(0, strayhound.indexOf('guild-roster-entry-name'))).not.toContain('/crests/');
+  });
+
   it('gives every account row a rank word, Member included', () => {
     const byName = rows(asOfficer);
     const rank = (name: string) =>
@@ -363,9 +387,12 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(text(invited)).toContain('Member');
   });
 
-  it('says once above the list that ranks show once the addon sends them, only when a row has none', () => {
-    expect(text(asOfficer)).toContain('Ranks show once the addon sends them.');
-    expect(asOfficer.split('Ranks show once the addon sends them.').length - 1).toBe(1);
+  it('says once above the list that ranks show once the addon sends them, only when no rank is known', () => {
+    // The roster's rows carry the ranks the addon sent: the line would read over them.
+    expect(asOfficer).not.toContain('guild-roster-ranks-pending');
+    const onlyNames = officerAsk({ roster: [], pending: [] });
+    expect(text(onlyNames)).toContain('Ranks show once the addon sends them.');
+    expect(onlyNames.split('Ranks show once the addon sends them.').length - 1).toBe(1);
     const none = render(GuildRosterTable, {
       props: { ...props(home), members: undefined, counts: undefined, can: [] },
     }).body;
@@ -504,13 +531,13 @@ describe('GuildRosterTable attendance source', () => {
     const body = text(
       render(GuildRosterTable, { props: { ...props(raidHome), attendanceSource: 'raids' } }).body,
     );
-    expect(body).toContain('Came 7 of 8 \u00b7 26 of 30 raids');
-    expect(body.split('Came: raids attended of raids signed up for or attended').length - 1).toBe(1);
+    expect(body).toContain('7 of 8 raid nights \u00b7 26 of the last 30');
+    expect(body.split('Raid nights each raider came to').length - 1).toBe(1);
   });
 
   it('keeps report mode on nights with no footnote', () => {
     const body = text(render(GuildRosterTable, { props: props(raidHome) }).body);
-    expect(body).toContain('7 of 8 nights');
+    expect(body).toContain('7 of 8 raid nights');
     expect(body).not.toContain('Came: raids attended');
   });
 });

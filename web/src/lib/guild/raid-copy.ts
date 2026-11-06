@@ -11,12 +11,14 @@ import type {
   GuildSignupState,
   GuildViewerRole,
   GuildZoneKind,
+  NeedsRaid,
   NextRaidView,
 } from './api';
 import {
   DEFAULT_LOCALE,
   clockText,
   dateLabel,
+  instantToWallClock,
   offsetsDiffer,
   wallClockToInstant,
   zoneAbbreviation,
@@ -27,6 +29,9 @@ const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 /** A day further out than this is written as a date, not a weekday (spec 6.1 `{when}`). */
 const WEEKDAY_WINDOW_DAYS = 6;
+/** A start on the guild's own day reads `Today` before this hour of the guild's clock and
+ *  `Tonight` from it (guild loop round 3: a 6:49 am start read `Tonight`). */
+export const TONIGHT_FROM_HOUR = 17;
 /** The middle dot between a line's parts. Svelte trims a literal's edge spaces, so pages write it
  *  as an expression (`{SEP}`). */
 export const SEP = ' · ';
@@ -74,8 +79,10 @@ export const raidCopy = {
     officersSee: (name: string, state: string): string => `Officers see ${name} (${state}).`,
   },
   /** The roster row's line naming its account's other answered characters (raids spec 3.7):
-   *  `Also: Rootbound · Restoration Druid · Bench`, several joined by `, `. */
-  also: (parts: readonly string[]): string => `Also: ${parts.join(', ')}`,
+   *  `Also: Rootbound (Restoration Druid, Bench)`, several joined by `; ` (guild round 3). */
+  also: (parts: readonly string[]): string => `Also: ${parts.join('; ')}`,
+  /** One character of the Also line: `Rootbound (Restoration Druid, Bench)`. */
+  alsoPart: (name: string, specClass: string, state: string): string => `${name} (${specClass}, ${state})`,
   /** The strip's one spec picker (raid comp spec 3.2, 7). */
   spec: {
     /** The select's visually hidden label. */
@@ -204,15 +211,23 @@ export function kindOf(view: { zone_kind?: GuildZoneKind }): GuildZoneKind {
   return view.zone_kind ?? 'raid';
 }
 
+/** Whether a night counts roles. A guild event is a meeting: no role grid, no class row, no role
+ *  words, no spec picker; raids and dungeon runs (which need a tank and a healer) keep them
+ *  (guild events spec 3.5, guild round 3). */
+export function kindCountsRoles(kind: GuildZoneKind): boolean {
+  return kind !== 'event';
+}
+
 /** The zone beside a title that is not the zone's name, with the size an officer picked for a guild
- *  event: `Guild event · 20`. The planned row's second line and the event page's h1 read it. */
+ *  event: `Guild event · 20 players` (a bare `20` read as nothing, guild round 3). The planned row's
+ *  second line and the event page's h1 read it. */
 export function zoneLineOf(view: {
   zone_kind?: GuildZoneKind;
   zone_name: string;
   size: number | null;
 }): string {
   return kindOf(view) === 'event' && view.size !== null
-    ? `${view.zone_name}${SEP}${view.size}`
+    ? `${view.zone_name}${SEP}${view.size} players`
     : view.zone_name;
 }
 
@@ -236,7 +251,7 @@ export const notesEmptyOf = (kind: GuildZoneKind, officer: boolean): string =>
     : `No notes for this ${KIND_WORDS[kind]}.`;
 
 /** The needs line reads raids only (guild events spec 3.4): a dungeon run or an event at the head of
- *  the band leaves it at `before the next raid`. */
+ *  the band leaves it at `before the next raid`, unless the API names the raid (`needsDeadline`). */
 export function raidDeadlineStart(next: NextRaidView | null | undefined): string | undefined {
   return next != null && kindOf(next) === 'raid' ? next.starts_at : undefined;
 }
@@ -302,9 +317,10 @@ export const compCopy = {
   yourTime: (clock: string): string => `${clock} your time`,
 } as const;
 
-/** `23 of 40 are in`; `23 are in` while the size is unknown: the unsigned band line's count. */
+/** `23 of 40 in`; `23 in` while the size is unknown: the unsigned band line's count. No verb, so
+ *  `1 of 5 in` never reads `1 of 5 are in` (guild loop round 3). */
 function inLine(n: number, size: number | null): string {
-  return size === null ? `${n} are in` : `${n} of ${size} are in`;
+  return size === null ? `${n} in` : `${n} of ${size} in`;
 }
 
 export function showAll(n: number): string {
@@ -327,6 +343,20 @@ export function nextRaidDeadline(
   return needsBefore(
     new Intl.DateTimeFormat(locale, { timeZone: viewerTz, weekday: 'long' }).format(new Date(startsAt)),
   );
+}
+
+/** The needs line's deadline (guild loop round 3): with the raid named by the API, `before
+ *  Onyxia's Lair, Thu 10 Dec` on the guild's calendar, so a dungeon run at the head of the band no
+ *  longer leaves it at `before the next raid`; without one, `nextRaidDeadline` as before. */
+export function needsDeadline(
+  needsRaid: NeedsRaid | null | undefined,
+  next: NextRaidView | null | undefined,
+  locale: string = DEFAULT_LOCALE,
+  viewerTz: string = browserZone(),
+): string {
+  if (needsRaid == null) return nextRaidDeadline(raidDeadlineStart(next), locale, viewerTz);
+  const tz = next?.guild_timezone ?? viewerTz;
+  return `before ${needsRaid.title}, ${dateLabel(new Date(needsRaid.starts_at), tz, locale)}`;
 }
 
 /** `8:00 pm CST`: a clock with its zone abbreviation (`8 pm CST` when minutes are optional). */
@@ -386,7 +416,14 @@ function browserZone(): string {
   return new Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
-/** The band's `{when}` in the guild's clock first (raid comp spec 3.4): `Tonight 8 pm CST`,
+/** `Today` before 5 pm on the guild's clock, `Tonight` from it. */
+function sameDayWord(startsAt: Date, guildTz: string): string {
+  const hour = Number(instantToWallClock(startsAt, guildTz).time.slice(0, 2));
+  return hour < TONIGHT_FROM_HOUR ? 'Today' : 'Tonight';
+}
+
+/** The band's `{when}` in the guild's clock first (raid comp spec 3.4): `Tonight 8 pm CST`
+ *  (`Today 10 am CST` before 5 pm),
  *  `Thursday 8 pm CST`, `Thu 17 Dec, 8 pm CST`, then ` (9 pm EST your time)` when the viewer's
  *  offset differs. */
 export function whenPhrase(
@@ -399,7 +436,7 @@ export function whenPhrase(
   const time = zonedClock(startsAt, guildTz, locale, false);
   const days = calendarDayDiff(now, startsAt, guildTz);
   let phrase: string;
-  if (days === 0) phrase = `Tonight ${time}`;
+  if (days === 0) phrase = `${sameDayWord(startsAt, guildTz)} ${time}`;
   else if (days === 1) phrase = `Tomorrow ${time}`;
   else if (days > 1 && days <= WEEKDAY_WINDOW_DAYS) {
     const weekday = new Intl.DateTimeFormat(locale, { timeZone: guildTz, weekday: 'long' }).format(startsAt);
@@ -491,6 +528,8 @@ export interface CopyListComp {
   specClass: (row: GuildRaidSignup) => string;
   /** The roster's order within a group. */
   order: (a: GuildRaidSignup, b: GuildRaidSignup) => number;
+  /** False for a guild event: the In rows are one list, not four role groups. */
+  roles: boolean;
 }
 
 function namesLine(label: string, rows: readonly GuildRaidSignup[], comp: CopyListComp): string | null {
@@ -530,11 +569,16 @@ export function copyList(
     view.signups.filter((s) => s.state === state);
   const inGroup = (group: GuildRaidGroup): GuildRaidSignup[] =>
     inState('in').filter((s) => comp.groupOf(s) === group);
+  const inLines = comp.roles
+    ? [
+        namesLine(heads.tanks, inGroup('tank'), comp),
+        namesLine(heads.healers, inGroup('healer'), comp),
+        namesLine(heads.melee, inGroup('melee'), comp),
+        namesLine(heads.ranged, inGroup('ranged'), comp),
+      ]
+    : [namesLine(raidCopy.segments.in, inState('in'), comp)];
   const groups = [
-    namesLine(heads.tanks, inGroup('tank'), comp),
-    namesLine(heads.healers, inGroup('healer'), comp),
-    namesLine(heads.melee, inGroup('melee'), comp),
-    namesLine(heads.ranged, inGroup('ranged'), comp),
+    ...inLines,
     namesLine(heads.late, inState('late'), comp),
     namesLine(heads.bench, inState('bench'), comp),
     namesLine(heads.out, inState('out'), comp),
@@ -542,7 +586,7 @@ export function copyList(
   const classes = comp.classes.filter((c) => c.count > 0).map((c) => `${c.name} ${c.count}`);
   const lines = [
     header,
-    `${size}: ${comp.breakdown.join(', ')}`,
+    comp.breakdown.length === 0 ? size : `${size}: ${comp.breakdown.join(', ')}`,
     ...(classes.length === 0 ? [] : [`${raidCopy.copyClasses}: ${classes.join(', ')}`]),
   ];
   return [...lines, ...groups.filter((line): line is string => line !== null)].join('\n');

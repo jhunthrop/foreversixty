@@ -70,7 +70,7 @@
 
 <div class="flex flex-col text-[13px]" data-testid="raid-match-line">
   <p class="text-text">
-    {#if kind === 'raid'}{copy.loggedAsNight}&#32;{/if}<a
+    {#if kind === 'raid'}{`${copy.loggedAsNight} `}{/if}<a
       id="raid-open-night"
       href={nightHref(guildPath, match.report_id)}
       class="text-gold font-bold {PHONE_HIT_AREA}"

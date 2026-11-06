@@ -165,7 +165,7 @@ func pickedID(pk slotPick) int {
 // purpose, so the guard never restores one.
 func wearsUnconfirmedIn(picks map[string]slotPick, slots []string) bool {
 	for _, slot := range slots {
-		if pk := picks[slot]; pk.Item != nil && pk.Item.ClientUnconfirmed {
+		if pk := picks[slot]; pk.Item != nil && pk.Item.statsInDoubt() {
 			return true
 		}
 	}

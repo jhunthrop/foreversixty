@@ -10,11 +10,9 @@
 // this suite originally tested, does not render until a run finishes (SimView.svelte:
 // `store.result !== null`), so a test that ran a sim before clicking never actually
 // exercised the reviewers' repro -- it exercised the settings bar's still-broken plain
-// `<a>`'s already-safe successor instead, once main had one. The first two tests below now
-// run the reviewers' own pre-run repro, on the settings bar's own trigger
-// (`sim-rotation-link`); the Escape test keeps the post-run path covered, on
-// RotationCard's own trigger (`sim-rotation-card-link`), so both render paths this branch
-// now shares one component between (RotationDisclosure.svelte) stay proven.
+// `<a>`'s already-safe successor instead, once main had one. The tests below run the
+// reviewers' own repro on the settings bar's own trigger (`sim-rotation-link`), the one
+// drawer on /sim now that a finished run shows the report's always-open Rotation card.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
@@ -155,27 +153,20 @@ test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, wit
 });
 
 // Escape closes the drawer and returns focus to the trigger -- Disclosure.svelte's own
-// contract (Ruling 3), proven here rather than assumed for this caller. This is also the
-// suite's one remaining post-run case (final whole-branch review, C1): RotationCard's own
-// copy of RotationDisclosure, the render path that only exists once a result is on screen.
+// contract (Ruling 3), proven here rather than assumed for this caller. After a run, /sim
+// shows the report's always-open Rotation card (RunReport.svelte), so the settings bar's
+// trigger is the drawer's one path on this page, with a finished run on screen.
 test('Escape closes the rotation drawer and returns focus to the trigger', async ({ page }) => {
   await loadFrostMage(page);
-  // RotationCard only renders once a run has finished (SimView.svelte: `store.result !==
-  // null`). sim-one-paste lane: `loadFrostMage` already starts one, through the hero's own
-  // Run -- this waits that run out (the button would otherwise still read "Stop", and
-  // clicking it would cancel the hero's own first run instead of starting the one this
-  // test wants) before starting the fresh run RotationCard needs.
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-  await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 5000 });
 
-  const card = page.getByTestId('sim-rotation-card');
-  const trigger = card.getByTestId('sim-rotation-card-link');
+  const settings = page.getByTestId('sim-settings');
+  const trigger = settings.getByTestId('sim-rotation-link');
   await trigger.click();
-  await expect(card.getByTestId('sim-rotation-card-drawer-panel')).toBeVisible();
+  await expect(settings.getByTestId('sim-rotation-drawer-panel')).toBeVisible();
 
   await page.keyboard.press('Escape');
-  await expect(card.getByTestId('sim-rotation-card-drawer-panel')).toHaveCount(0);
+  await expect(settings.getByTestId('sim-rotation-drawer-panel')).toHaveCount(0);
   await expect(trigger).toBeFocused();
 });
 

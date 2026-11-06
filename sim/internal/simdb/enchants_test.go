@@ -253,3 +253,12 @@ func TestEnchantErrorsSayWhy(t *testing.T) {
 		}
 	}
 }
+
+func TestEnchantStatsReadTheBuildsTable(t *testing.T) {
+	if got := EnchantStats(7662)["spell_power"]; got != 65 {
+		t.Errorf("Spellblasting states %v spell power, want 65", got)
+	}
+	if EnchantStats(-1) != nil {
+		t.Error("an unknown enchant states stats")
+	}
+}

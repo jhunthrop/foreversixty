@@ -15,6 +15,7 @@ import {
   endedLineOf,
   eyebrowOf,
   needsBefore,
+  needsDeadline,
   nextRaidDeadline,
   notesEmptyOf,
   raidCopy,
@@ -108,6 +109,8 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
     expect(r.locked).toBe(locked);
     expect(KINDS.map(cancelledLineOf)).toEqual(cell3('Cancelled'));
     expect(KINDS.map(endedLineOf)).toEqual(cell3('Ended'));
+    // The raids spec's own copy table carries every kind's ended line too (guild loop round 3).
+    expect(cell('Raid states')).toEqual(expect.arrayContaining(KINDS.map(endedLineOf)));
     const c = raidCopy.races;
     expect([c.locked, c.cancelled, c.officerToolsEnded]).toEqual(cell('Races'));
     expect(raidCopy.poll).toBe(str('Poll'));
@@ -253,6 +256,17 @@ describe('whenPhrase', () => {
     );
   });
 
+  it('says Today for a start before 5 pm on the guild clock, Tonight from 5 pm', () => {
+    // NOW is 10 am in Chicago on Wed 9 Dec.
+    expect(when('2026-12-09T18:49:00Z')).toBe('Today 12:49 pm CST');
+    expect(when('2026-12-09T22:59:00Z')).toBe('Today 4:59 pm CST');
+    expect(when('2026-12-09T23:00:00Z')).toBe('Tonight 5 pm CST');
+    expect(when('2026-12-09T12:49:00Z', CHICAGO, CHICAGO, at('2026-12-09T08:00:00Z'))).toBe(
+      'Today 6:49 am CST',
+    );
+    expect(str('`{when}`', 0)).toBe('Today 10 am');
+  });
+
   it('writes minutes off the hour', () => {
     expect(when('2026-12-10T02:30:00Z')).toBe('Tonight 8:30 pm CST');
   });
@@ -353,6 +367,15 @@ describe('counts', () => {
     expect(nextRaidDeadline('2026-12-11T02:00:00Z', 'en-US', 'Europe/Berlin')).toBe('before Friday');
     expect(nextRaidDeadline(undefined, 'en-US', CHICAGO)).toBe('before the next raid');
   });
+
+  it('names the raid the API sends, on the guild calendar, whatever leads the band', () => {
+    const onyxia = { title: "Onyxia's Lair", starts_at: '2026-12-11T02:00:00Z' };
+    const run = { guild_timezone: CHICAGO } as Parameters<typeof needsDeadline>[1];
+    expect(needsDeadline(onyxia, run, 'en-US', 'Europe/Berlin')).toBe("before Onyxia's Lair, Thu 10 Dec");
+    expect(needsDeadline(onyxia, null, 'en-US', CHICAGO)).toBe("before Onyxia's Lair, Thu 10 Dec");
+    expect(needsDeadline(null, null, 'en-US', CHICAGO)).toBe('before the next raid');
+    expect(needsDeadline(undefined, undefined, 'en-US', CHICAGO)).toBe('before the next raid');
+  });
 });
 
 describe('bandLine', () => {
@@ -380,8 +403,9 @@ describe('bandLine', () => {
     expect(bandLine({ ...base, state: null })).toBe(
       str('Band line', 4, { when: 'Tonight 8 pm', n: '23', size: '40' }),
     );
-    expect(bandLine({ ...base, state: null })).toBe(
-      'Tonight 8 pm, you have not signed up yet. 23 of 40 are in.',
+    expect(bandLine({ ...base, state: null })).toBe('Tonight 8 pm, you have not signed up yet. 23 of 40 in.');
+    expect(bandLine({ ...base, n: 1, size: 5, state: null })).toBe(
+      'Tonight 8 pm, you have not signed up yet. 1 of 5 in.',
     );
   });
 

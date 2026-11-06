@@ -41,3 +41,25 @@ export function decideBisFollow(page: BisPageState, target: SelectedTarget): Bis
   if (faction === page.faction && band === page.band) return { kind: 'stay' };
   return { kind: 'update', faction, band };
 }
+
+/**
+ * What a BiS spec page does at load when the URL names no band (owner 2026-11-05: "default to
+ * the current level range of their selected character"). Unlike a selector change it never
+ * leaves the page: a player who opened another spec's list on purpose keeps it, and only the
+ * band and faction move to the selected character's when it is this spec's.
+ */
+export function decideBisDefault(page: BisPageState, target: SelectedTarget): BisFollowAction {
+  if (target.classSlug === '') return { kind: 'stay' };
+  const specKey = target.specKey ?? defaultSpecKeyFor(target.classSlug);
+  if (specKey !== page.specKey) return { kind: 'stay' };
+  const faction = target.faction ?? page.faction;
+  const band = target.level === undefined ? page.band : bandForLevel(target.level);
+  if (faction === page.faction && band === page.band) return { kind: 'stay' };
+  return { kind: 'update', faction, band };
+}
+
+/** `?band=60` (or any level, `?band=34`) as the band it opens, or null when absent or not a number. */
+export function bandFromParam(value: string | null): number | null {
+  if (value === null || !/^\d{1,2}$/.test(value)) return null;
+  return bandForLevel(Number(value));
+}

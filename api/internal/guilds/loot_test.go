@@ -229,7 +229,7 @@ func candidateKeys(cands []LootCandidate) []string {
 }
 
 // TestLootAwardCreateAndDeleteIsOfficerOnly checks a plain member is refused, an officer
-// can award and a second award for the same drop replaces the first, and delete removes it.
+// can award, and delete removes it.
 func TestLootAwardCreateAndDeleteIsOfficerOnly(t *testing.T) {
 	h := newHTTPHarness(t)
 	gid := seedGuild(t, h.pool, "Forever")
@@ -447,7 +447,7 @@ func TestLootCandidatesFallsBackToTier1ForARealOnyxiaDrop(t *testing.T) {
 	roster := []RosterRow{
 		{
 			CharacterKey: "us/hardcore/fallbackwarrior", Name: "Fallbackwarrior", Verified: true,
-			className: "warrior", specStr: "Fury", faction: "alliance", gear: map[string]int{},
+			className: "warrior", specStr: "Fury", faction: "alliance", gear: shirtOnly(),
 			Level: i(60),
 		},
 	}
@@ -539,14 +539,14 @@ func TestTonightsAwardsMarkOnlyTheNightBeingPlayed(t *testing.T) {
 		row(16947, &tonight, 30*time.Minute, "second"),
 		row(17078, nil, 2*time.Hour, "raidless"),
 	}
-	got := tonightsAwards(awards, &tonight, now)
+	got := tonightsAwards(awards, awardNight{raidID: &tonight}, now)
 	if got[16963] != nil || got[16939] != nil {
 		t.Fatalf("last week's awards still mark their items: %+v %+v", got[16963], got[16939])
 	}
 	if got[16947] == nil || got[16947].CharacterKey != "second" || got[17078] == nil {
 		t.Fatalf("tonight's awards = %+v", got)
 	}
-	if got := tonightsAwards(awards, nil, now); got[16947] != nil || got[17078] == nil {
+	if got := tonightsAwards(awards, awardNight{}, now); got[16947] != nil || got[17078] == nil {
 		t.Fatalf("with no raid tonight = %+v", got)
 	}
 }
@@ -611,7 +611,7 @@ func TestAwardLineNamesTheOfficersCharacter(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	byItem := tonightsAwards(got, nil, time.Now())
+	byItem := tonightsAwards(got, awardNight{}, time.Now())
 	for item, want := range map[int]string{16963: "Bowmain", 16939: "an officer", 16947: "an officer"} {
 		if byItem[item] == nil || byItem[item].ByName != want {
 			t.Fatalf("award of %d: by_name = %+v, want %q", item, byItem[item], want)

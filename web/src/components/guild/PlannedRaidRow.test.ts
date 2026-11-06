@@ -134,6 +134,16 @@ describe('PlannedRaidRow', () => {
   });
 
   it('holds the desktop row to 56 px of content: 7 px padding, within the 72 px cap', () => {
-    expect(html()).toMatch(/py-\[7px\] md:grid"[^>]*data-testid="planned-raid-7-desktop"/);
+    expect(html()).toMatch(/py-\[7px\] md:grid[^"]*"[^>]*data-testid="planned-raid-7-desktop"/);
+  });
+
+  it('holds the breakdown on one line from 1024: its cell is as wide as the text (guild round 3)', () => {
+    const markup = html();
+    expect(markup).toContain(
+      'lg:grid-cols-[56px_minmax(0,1.5fr)_minmax(136px,0.8fr)_minmax(max-content,1.2fr)_176px_16px]',
+    );
+    expect(markup).toMatch(
+      /class="text-muted text-\[12px\] lg:whitespace-nowrap" data-testid="planned-raid-7-desktop-breakdown"/,
+    );
   });
 });

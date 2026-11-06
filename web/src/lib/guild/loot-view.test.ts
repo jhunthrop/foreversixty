@@ -79,8 +79,10 @@ function item(overrides: Partial<GuildLootItem> = {}): GuildLootItem {
 }
 
 describe('bossPickerLabel', () => {
-  it('reads "on farm" for a boss that is down, never filter jargon', () => {
-    expect(bossPickerLabel(encounter({ killed: true }))).toBe('Onyxia · on farm');
+  it('reads "on farm" only once the API says so, "down" before, never filter jargon', () => {
+    expect(bossPickerLabel(encounter({ killed: true, on_farm: true }))).toBe('Onyxia · on farm');
+    expect(bossPickerLabel(encounter({ killed: true, on_farm: false }))).toBe('Onyxia · down');
+    expect(bossPickerLabel(encounter({ killed: true }))).toBe('Onyxia · down');
   });
 
   it('reads "not killed yet" for an unkilled boss', () => {
@@ -107,6 +109,15 @@ describe('nextUnkilledEncounter', () => {
 });
 
 describe('candidateGainLabel', () => {
+  it('reads Fills an empty slot when the candidate wears nothing there, never the raw item level', () => {
+    expect(candidateGainLabel(candidateRow({ tier: 1, ilvl_delta: 76, fills_empty_slot: true }))).toBe(
+      'Fills an empty slot',
+    );
+    expect(candidateGainLabel(candidateRow({ tier: 1, ilvl_delta: 14, fills_empty_slot: false }))).toBe(
+      '+14 item levels',
+    );
+  });
+
   it("reads a tier-0 gain to one decimal, in the BiS file's unit", () => {
     expect(candidateGainLabel(candidateRow({ tier: 0, gain_dps: 40.44, gain_unit: 'dps' }))).toBe(
       '+40.4\u00a0DPS',
@@ -220,7 +231,9 @@ describe('the overview line', () => {
 
   it('never offers the skinned scale, and reads the boss word when nothing is open', () => {
     const scale = item({ item_id: 15410, kind: 'skinned', candidates: [] });
-    expect(overviewLootLine(page({ encounters: [encounter()], at_level_cap: 3, items: [scale] }))).toEqual({
+    expect(
+      overviewLootLine(page({ encounters: [encounter({ on_farm: true })], at_level_cap: 3, items: [scale] })),
+    ).toEqual({
       kind: 'text',
       text: 'Onyxia · on farm',
     });
@@ -366,13 +379,9 @@ describe('candidateSubline', () => {
   });
 });
 
-describe('raid mode loot line', () => {
-  it('reads 7 of 8 raids', () => {
-    expect(attendanceLabel(7, 8, 'raids')).toBe('7 of 8 raids');
-    expect(attendanceLabel(1, 1, 'raids')).toBe('1 of 1 raid');
-  });
-
-  it('keeps report mode on raid nights', () => {
-    expect(attendanceLabel(7, 8, 'reports')).toBe('7 of 8 raid nights');
+describe('loot line in either attendance mode', () => {
+  it("reads raid nights, the roster and the bot's one form", () => {
+    expect(attendanceLabel(7, 8)).toBe('7 of 8 raid nights');
+    expect(attendanceLabel(1, 1)).toBe('1 of 1 raid night');
   });
 });

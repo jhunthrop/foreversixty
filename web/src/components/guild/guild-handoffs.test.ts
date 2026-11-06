@@ -13,7 +13,7 @@ import {
   showsBillingHandoff,
 } from '../../lib/guild/billing-handoff';
 import { guildHomeCopy, guildJoinCopy, guildSettingsCopy } from '../../lib/guild/copy';
-import { joinedPlanLine } from '../../lib/guild/join-plan';
+import { joinedPlanLine, joinedPlanLineFor } from '../../lib/guild/join-plan';
 import { claimEntryFor } from '../../lib/guild/roster-gate';
 import GuildJoinedBlock from './GuildJoinedBlock.svelte';
 import BillingHandoff from './BillingHandoff.svelte';
@@ -112,8 +112,17 @@ describe('joinedPlanLine', () => {
 
   it('names the tier, or says no plan yet', () => {
     expect(joinedPlanLine(G, covered({}))).toBe(`${G} is on the Raid guild plan.`);
-    expect(joinedPlanLine(G, null)).toBe(`${G} has no plan yet.`);
-    expect(joinedPlanLine(G, covered({ state: 'lapsed' }))).toBe(`${G} has no plan yet.`);
+    expect(joinedPlanLine(G, null)).toBe(`${G} is on the free plan.`);
+    expect(joinedPlanLine(G, covered({ state: 'lapsed' }))).toBe(`${G} is on the free plan.`);
+  });
+
+  it('is said to an officer or the guild master, never to a member who joined (guild loop round 3)', () => {
+    expect(joinedPlanLineFor(G, { rank: 'leader', covered: null })).toBe(`${G} is on the free plan.`);
+    expect(joinedPlanLineFor(G, { rank: 'officer', covered: covered({}) })).toBe(
+      `${G} is on the Raid guild plan.`,
+    );
+    expect(joinedPlanLineFor(G, { rank: 'member', covered: null })).toBeNull();
+    expect(joinedPlanLineFor(G, { covered: covered({}) })).toBeNull();
   });
 });
 
@@ -183,11 +192,11 @@ describe('chooser preselect', () => {
 describe('GuildJoinedBlock', () => {
   it('shows the joined sentence, the plan line and Open the guild, with no join button', () => {
     const body = render(GuildJoinedBlock, {
-      props: { planLine: `${G} has no plan yet.`, openHref: '/guild/us/pvp/olympus-xxvii' },
+      props: { planLine: `${G} is on the free plan.`, openHref: '/guild/us/pvp/olympus-xxvii' },
     }).body;
     expect(body).toContain('role="status"');
     expect(body).toContain(guildJoinCopy.joined);
-    expect(body).toContain(`${G} has no plan yet.`);
+    expect(body).toContain(`${G} is on the free plan.`);
     expect(body).toContain('href="/guild/us/pvp/olympus-xxvii"');
     expect(body).toContain(guildJoinCopy.openGuild);
     expect(body).not.toContain('guild-join-button');

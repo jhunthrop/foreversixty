@@ -4,7 +4,7 @@ import { decodeFS1 } from '../planner/fs1';
 import { indexTalents } from '../planner/rules';
 import type { TalentFile } from '../planner/types';
 import { parseSimState } from '../sim/url';
-import { bisSimHref } from './sim-link';
+import { bisSimHref, rankingSimHrefFor } from './sim-link';
 import type { BisBand, BisSlot } from './types';
 
 const index = indexTalents(fixtureTalents as TalentFile);
@@ -49,6 +49,13 @@ function decodedFrom(href: string) {
 }
 
 describe('bisSimHref', () => {
+  it('carries the enchants the band published, so the simulator measures the same set', () => {
+    const slots = [{ ...slot('head', 12640), enchant_id: 1506 }, slot('main_hand', 1728)];
+    const gear = decodedFrom(bisSimHref(band({ slots }), index, '1.60.1.70790')).gearSlots;
+    expect(gear).toContainEqual({ slot: 'head', itemId: 12640, enchant: 1506 });
+    expect(gear).toContainEqual({ slot: 'main_hand', itemId: 1728 });
+  });
+
   it('carries the band set as a code the simulator reads: class, race, level, talents and every pick', () => {
     const build = decodedFrom(bisSimHref(band({}), index, '1.60.1.70755'));
     expect(build.dataBuild).toBe('1.60.1.70755');
@@ -73,5 +80,23 @@ describe('bisSimHref', () => {
     // Flurry (Fury's last, tier-3 talent) with nothing above it: unreachable on these trees.
     const build = decodedFrom(bisSimHref(band({ talents: '0000000-5500001' }), index, 'b'));
     expect(build.treeRanks[1]).toEqual([5, 5]);
+  });
+});
+
+describe('rankingSimHrefFor', () => {
+  it('opens and runs the level 60 raid band of a damage spec', () => {
+    const href = rankingSimHrefFor(band({ preset: 'raid' }), index, 'b');
+    expect(href).toBeDefined();
+    expect(parseSimState(href!.slice('/sim'.length)).run).toBe(true);
+    expect(decodedFrom(href!).level).toBe(60);
+  });
+
+  it('gives no link where /sim cannot rerun the figure: a bare band, a leveling band, a tank', () => {
+    expect(rankingSimHrefFor(band({ preset: 'bare' }), index, 'b')).toBeUndefined();
+    expect(rankingSimHrefFor(band({}), index, 'b')).toBeUndefined();
+    expect(rankingSimHrefFor(band({ preset: 'raid', band: 50 }), index, 'b')).toBeUndefined();
+    expect(
+      rankingSimHrefFor(band({ preset: 'raid', spec: 'warrior-protection' }), index, 'b'),
+    ).toBeUndefined();
   });
 });

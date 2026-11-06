@@ -21,8 +21,9 @@ applies to a client row, plus one classic-db-specific one (a GM-only
 `AllowableClass` bitmask -- see `is_gm_class_mask`).
 
 Every row this module ever emits sets `stats_source`/`required_level_source`
-to `"classic-db"` and `client_unconfirmed` to `True`: it is real 1.12
-itemization, not yet confirmed by this Forever client build (`data/README.md`,
+to `"classic-db"`: it is real 1.12 itemization. `client_unconfirmed` is
+`True` unless the client's own `Item` and item-effect tables name the item in
+classic-db's shape (`pipeline.client_evidence`; `data/README.md`,
 "classic-db-only items and client_unconfirmed").
 
 Two-stage pipeline, same split `pipeline.classic_sources`/`pipeline.
@@ -1046,13 +1047,18 @@ def to_gear_item(
     client_spell_names: dict[int, str] | None = None,
     client_icon_file_ids: dict[int, int] | None = None,
     icon_names: dict[int, str] | None = None,
+    client_confirmed: bool = False,
 ) -> GearItem:
     """classic-db's own `item_template` states no icon at all (no such
     column); `icon` first tries the client's OWN `Item.csv` table for this
     exact id (`_classicdb_client_icon`'s own doc -- `Item.csv` is populated
     independently of the `ItemSparse` gap that put this item here at all),
     then falls back through the same fork-db/wowhead chain a client row's
-    placeholder icon does (`pipeline.icons.resolve_icon_name`)."""
+    placeholder icon does (`pipeline.icons.resolve_icon_name`).
+
+    `client_confirmed` clears `client_unconfirmed`: the client's own `Item`
+    and item-effect tables name this item in classic-db's shape
+    (`pipeline.client_evidence`)."""
     is_weapon = is_weapon_row(item.class_id, item.inventory_type)
     speed = round(item.delay / 1000, 2)
     dps = (
@@ -1085,7 +1091,7 @@ def to_gear_item(
         two_hand=is_weapon and item.inventory_type in TWO_HAND_INVENTORY_TYPES,
         effect_text=effect_text(item, spell_text, spells, client_spell_names),
         stats_source="classic-db",
-        client_unconfirmed=True,
+        client_unconfirmed=not client_confirmed,
         set_id=item.set_id,
         unique=item.unique,
         icon_source=icon_source,
@@ -1098,7 +1104,7 @@ def to_gear_item(
     )
 
 
-def to_item(item: ClassicDbItem) -> Item:
+def to_item(item: ClassicDbItem, client_confirmed: bool = False) -> Item:
     return Item(
         id=item.id,
         name=item.name,
@@ -1114,5 +1120,5 @@ def to_item(item: ClassicDbItem) -> Item:
         # tell this is real 1.12 itemization with no client counterpart.
         required_level_source="classic-db",
         stats_source="classic-db",
-        client_unconfirmed=True,
+        client_unconfirmed=not client_confirmed,
     )

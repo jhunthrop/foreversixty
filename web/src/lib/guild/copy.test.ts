@@ -13,19 +13,20 @@ describe('guildClaimCopy', () => {
     );
   });
 
-  it('asks before claiming, with the rules in one line', () => {
-    const line = guildClaimCopy.claimConfirmLine('Lifecycle Test');
-    expect(line).toContain('Claim Lifecycle Test?');
-    expect(line).toContain('one claim every 30 days');
-    expect(line).toContain('one claimed guild at a time');
-    expect(line).toContain('can be contested');
-    expect(line.split('\n')).toHaveLength(1);
+  it('asks before claiming, without repeating the rules card below it', () => {
+    expect(guildClaimCopy.claimConfirmLine('Lifecycle Test')).toBe('Claim Lifecycle Test?');
+    expect(guildClaimCopy.claimConfirmLine('')).toBe('Claim this guild?');
   });
 
   it('says what the claimant holds and where to go next', () => {
     expect(guildClaimCopy.youHold('Lifecycle Test')).toBe('You hold Lifecycle Test.');
     expect(guildClaimCopy.nextRoster).toBe('Approve your officers and members');
     expect(guildClaimCopy.nextInvite).toBe('Make an invite link');
+    expect(guildClaimCopy.nextPlan).toBe('Plan an event');
+    expect(guildClaimCopy.nextDiscord).toBe('Add the Discord bot');
+    expect(guildClaimCopy.nextGated).toBe(
+      'Events and the Discord bot are part of the Guild and Raid guild plans.',
+    );
   });
 
   it('asks before releasing', () => {

@@ -360,7 +360,7 @@ test.describe('guild settings billing on a scoped grant (§5, states 10–12)', 
 
   test('state 12: a granted full plan is unchanged', async ({ page }) => {
     await openWith(page, guildBillingRead({ billing: FULL_GRANT_PLAN }));
-    await expect(page.getByTestId('guild-billing-plan')).toHaveText('Guild plan · until 31 Dec 2026');
+    await expect(page.getByTestId('guild-billing-plan')).toHaveText('Until 31 Dec 2026');
     await expect(page.getByTestId('guild-billing-contact')).toHaveText('Granted by Forever Sixty.');
     await expect(page.getByTestId('guild-billing-chooser')).toHaveCount(0);
     await expect(page.getByTestId('guild-billing-subscribe')).toHaveCount(0);
