@@ -8,7 +8,7 @@
 // next-raid filter; axe; the 44 px floor at 360. The API is stubbed by support/guild-attendance.ts.
 import type { Page } from '@playwright/test';
 import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
-import { attendanceCopy } from '../../src/lib/guild/attendance-copy';
+import { attendanceCopy, rosterChip } from '../../src/lib/guild/attendance-copy';
 import { reportNightCopy as copyOf } from '../../src/lib/guild/report-night-copy';
 import {
   AFTER_END,
@@ -465,11 +465,12 @@ test.describe('the roster chip (§3.6)', () => {
     await page.clock.install({ time: NOW });
     await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
     const rows = page.getByTestId('guild-roster-rows');
-    await expect(rows).toContainText(/Came \d of 8 · \d+ of 30 raids/);
+    // The chip reads the bot's words (attendanceChip): `6 of 8 raid nights · 25 of the last 30`.
+    await expect(rows).toContainText(/\d of 8 raid nights · \d+ of the last 30/);
     await expect(rows).toContainText(attendanceCopy.roster.noNights);
     // One read for the roster and the guild line (WP 4): Kraggor, who led the raid, has raids.
     const { last8, last30 } = rosterAttendance('Kraggor');
-    await expect(rows).toContainText(`Came ${last8.present} of 8 · ${last30.present} of 30 raids`);
+    await expect(rows).toContainText(rosterChip(last8, last30));
     await expect(page.getByTestId('guild-roster-attendance-footnote')).toHaveText(
       attendanceCopy.roster.footnote,
     );
@@ -479,7 +480,8 @@ test.describe('the roster chip (§3.6)', () => {
     await stubGuildAttendance(page, { viewer: 'member', attendanceSource: 'reports' });
     await page.clock.install({ time: NOW });
     await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
-    await expect(page.getByTestId('guild-roster-rows')).not.toContainText('Came ');
+    await expect(page.getByTestId('guild-roster-rows')).toContainText(/\d of 8 raid nights/);
+    await expect(page.getByTestId('guild-roster-rows')).not.toContainText('of the last 30');
     await expect(page.getByTestId('guild-roster-attendance-footnote')).toHaveCount(0);
   });
 });
