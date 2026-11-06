@@ -171,7 +171,10 @@ func TestRestorationShamanSwiftnessHealingWaveIsTheTopRank(t *testing.T) {
 // filler's line, so the Nature's Swiftness save on the same id keeps its top
 // rank (TestRestorationShamanSwiftnessHealingWaveIsTheTopRank).
 // Round 19: with Chain Heal rank 1 through 59, rank 7 starts at 56 (+0.4% to
-// +0.7% over rank 6).
+// +0.7% over rank 6). Round 24, on the talents a player has at each level:
+// rank 1 at 20 and 21 (+0.6% to +4.1% over rank 2) and at 22 for a tauren,
+// orc or troll, rank 3 at 23 and 24, rank 2 at 25 for the horde races (a
+// dwarf casts rank 3), and rank 6 from 46 (+0.2% to +0.4% over rank 5).
 func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
 	filler, _ := restorationHealingWaveLines(t)
 	for _, c := range []struct {
@@ -179,9 +182,10 @@ func TestRestorationShamanFillerHealingWaveByBand(t *testing.T) {
 		preset string
 		rank   int
 	}{
-		{20, BarePreset, 2}, {25, BarePreset, 2}, {26, BarePreset, 3}, {30, BarePreset, 3}, {36, BarePreset, 3},
+		{20, BarePreset, 1}, {21, BarePreset, 1}, {22, BarePreset, 1}, {23, BarePreset, 3}, {24, BarePreset, 3},
+		{25, BarePreset, 2}, {26, BarePreset, 3}, {30, BarePreset, 3}, {36, BarePreset, 3},
 		{37, BarePreset, 4}, {38, BarePreset, 4}, {41, BarePreset, 4}, {42, BarePreset, 5}, {44, BarePreset, 5},
-		{46, BarePreset, 5}, {47, BarePreset, 6}, {50, BarePreset, 6}, {55, BarePreset, 6}, {56, BarePreset, 7}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
+		{45, BarePreset, 5}, {46, BarePreset, 6}, {47, BarePreset, 6}, {50, BarePreset, 6}, {55, BarePreset, 6}, {56, BarePreset, 7}, {57, BarePreset, 7}, {58, BarePreset, 7}, {59, BarePreset, 8},
 		{60, BarePreset, 9}, {60, RaidPreset, 9},
 	} {
 		assertOnlyRank(t, filler, "shaman-restoration", "shaman", c.preset, "tauren", c.level, healingWaveRanks, c.rank)

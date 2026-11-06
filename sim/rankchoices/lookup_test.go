@@ -243,7 +243,10 @@ func TestRestorationShamanChainHealRankOneWhileLeveling(t *testing.T) {
 // tank Healing Wave steps up to rank 7 at 56 (+0.4% to +0.7% over rank 6,
 // both factions, seeds 1 and 50001), and Elemental's filler Lightning Bolt
 // casts rank 3 at 26 and 27, where rank 5, just learned, costs more than
-// the fight can pay (+3.7% to +4.9%); from 28 the top rank wins again.
+// the fight can pay (+3.7% to +4.9%). Round 24 re-judged the bolt on the
+// talents a player has at each level: rank 3 wins from 20 to 33 (at 25 by
+// 0.3% to 4.6% over rank 4, at 28 and 29 by 2.1% to 2.9% over rank 4 and
+// 5.4% to 6.7% over the top rank 5), and rank 4 from 34.
 func TestRoundNineteenShamanRowsByLevel(t *testing.T) {
 	for _, tc := range []struct {
 		spec, spell string
@@ -253,10 +256,12 @@ func TestRoundNineteenShamanRowsByLevel(t *testing.T) {
 		{"shaman-restoration", "Healing Wave", 55, []int{6}},
 		{"shaman-restoration", "Healing Wave", 56, []int{7}},
 		{"shaman-restoration", "Healing Wave", 58, []int{7}},
-		{"shaman-elemental", "Lightning Bolt", 25, nil},
+		{"shaman-elemental", "Lightning Bolt", 25, []int{3}},
 		{"shaman-elemental", "Lightning Bolt", 26, []int{3}},
 		{"shaman-elemental", "Lightning Bolt", 27, []int{3}},
-		{"shaman-elemental", "Lightning Bolt", 28, nil},
+		{"shaman-elemental", "Lightning Bolt", 28, []int{3}},
+		{"shaman-elemental", "Lightning Bolt", 29, []int{3}},
+		{"shaman-elemental", "Lightning Bolt", 34, []int{4}},
 	} {
 		got, err := ChosenRanks(tc.spec, tc.spell, tc.level)
 		if err != nil {
