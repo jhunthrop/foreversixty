@@ -69,12 +69,14 @@ export function rankRowView(
         label: 'Item level',
       },
       {
-        value: executionLabel(row.execution_score),
+        value: executionLabel(row.execution_score ?? null),
         unit: '',
         label: 'Executed',
-        title: executionTitle(row.execution_score),
+        title: executionTitle(row.execution_score ?? null),
         // A scored kill opens compare mode on that fight; an unscored one says why on hover.
-        ...(row.execution_score === null ? {} : { href: executionHref(row.report_id, row.fight_index) }),
+        ...(row.execution_score === null || row.execution_score === undefined
+          ? {}
+          : { href: executionHref(row.report_id, row.fight_index) }),
         testid: 'ranking-execution',
       },
       { value: killLength(row.duration_ms), unit: '', label: 'Length' },

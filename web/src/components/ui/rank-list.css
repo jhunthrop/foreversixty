@@ -269,9 +269,10 @@
   text-underline-offset: 4px;
 }
 
-/* Phone: the name's link is a 44 px target that takes no more room than its 20 px line. */
+/* Phone: the name's and a figure's links are 44 px targets that take no more room than their line. */
 @media (max-width: 767px) {
-  .ui-rr-link {
+  .ui-rr-link,
+  .ui-rr-fig-link {
     display: inline-flex;
     align-items: center;
     min-height: 44px;

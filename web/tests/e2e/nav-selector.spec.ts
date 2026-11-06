@@ -354,7 +354,8 @@ test.describe('choosing a character', () => {
     expect(stored.pointer.label).toBe('Frostbyte · Frost Mage');
     expect(stored.order).toEqual([keyOf(FROSTBYTE)]);
     expect(stored.cls).toBe('mage');
-    await expect(page.getByTestId('character-header-name')).toHaveText('Frostbyte');
+    // The board's answer re-aims at the new character in place.
+    await expect(page.getByTestId('rankings-answer')).toContainText('Frostbyte');
     await page.goto('/tiers');
     await ready(page);
     await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');
