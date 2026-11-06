@@ -149,7 +149,8 @@
             data-bis-item={cell.unknown ? undefined : cell.item.id}
             data-testid={`item-hover-${cell.item.id}`}>{cell.item.name}</span
           >
-          {#if cell.stats}<span class="ui-doll-stats text-muted text-[13px] leading-5">{cell.stats}</span
+          {#if cell.stats}<span class="ui-doll-stats text-muted text-[13px] leading-5" title={cell.stats}
+              >{cell.stats}</span
             >{/if}
         {:else}
           <span class="text-muted text-[15px] leading-5">Nothing better yet</span>
@@ -283,7 +284,7 @@
   }
   .ui-doll-cell {
     display: grid;
-    grid-template-columns: 76px 40px minmax(0, 1fr) auto;
+    grid-template-columns: 64px 40px minmax(0, 1fr) auto;
     column-gap: 12px;
     align-items: start;
     min-height: var(--row-h);
@@ -335,14 +336,31 @@
     gap: 1px;
     min-width: 0;
   }
+  /* Line 1 holds one line from 768: the name never gives way; the short stats after it do (an
+     ellipsis, every stat in the tooltip and the detail). A phone lets them wrap. */
   .ui-doll-line1 {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
     column-gap: 10px;
+    min-width: 0;
   }
   .ui-doll-stats {
     white-space: nowrap;
+  }
+  @media (min-width: 768px) {
+    .ui-doll-line1 {
+      flex-wrap: nowrap;
+    }
+    .ui-doll-line1 > :first-child {
+      flex: none;
+      max-width: 100%;
+    }
+    .ui-doll-stats {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   .ui-doll-line2 {
     overflow-wrap: anywhere;
@@ -360,7 +378,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    width: var(--doll-gain-w, 168px);
+    width: var(--doll-gain-w, 144px);
     min-width: 0;
   }
   .ui-doll-basis {

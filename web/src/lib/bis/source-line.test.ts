@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { instanceLevels } from './load';
-import { fullSourceLine } from './source-line';
+import { fullSourceLine, levelsSuffix } from './source-line';
 
 const NO_LEVELS = new Map<string, { min: number; max: number }>();
 
@@ -12,7 +12,7 @@ describe('fullSourceLine', () => {
         { kind: 'dungeon', instance: 'The Deadmines', boss: 'Cookie', dropChance: 40.2 },
         { instanceLevels: levels },
       ),
-    ).toBe('Cookie · The Deadmines (levels 17-24) · 40% drop');
+    ).toBe('Cookie · The Deadmines (17-24) · 40%');
   });
 
   it("prefers the source's own level range over the curated table", () => {
@@ -22,7 +22,7 @@ describe('fullSourceLine', () => {
         { kind: 'dungeon', instance: 'The Deadmines', levelMin: 16, levelMax: 22 },
         { instanceLevels: levels },
       ),
-    ).toBe('The Deadmines (levels 16-22)');
+    ).toBe('The Deadmines (16-22)');
   });
 
   it('adds the recipe skill only when the data names it', () => {
@@ -35,7 +35,12 @@ describe('fullSourceLine', () => {
   });
 
   it('adds the quest zone only when the data names it', () => {
-    const base = { kind: 'quest', questName: 'The Defias Brotherhood', faction: 'alliance', minLevel: 14 } as const;
+    const base = {
+      kind: 'quest',
+      questName: 'The Defias Brotherhood',
+      faction: 'alliance',
+      minLevel: 14,
+    } as const;
     expect(fullSourceLine(base, { instanceLevels: NO_LEVELS })).toBe(
       'Quest: The Defias Brotherhood · requires level 14',
     );
@@ -46,7 +51,7 @@ describe('fullSourceLine', () => {
 
   it('notes the auction house on a bind-on-equip world drop', () => {
     expect(fullSourceLine({ kind: 'world_drop' }, { instanceLevels: NO_LEVELS, bonding: 'equip' })).toBe(
-      'World drop · bind on equip · also on the auction house',
+      'World drop · BoE · on the AH',
     );
   });
 });
@@ -59,5 +64,13 @@ describe('instanceLevels', () => {
 
   it('is empty when the file is missing', () => {
     expect(instanceLevels('/nonexistent/events.json').size).toBe(0);
+  });
+});
+
+describe('levelsSuffix', () => {
+  it('prints a range, a single level once, and nothing when unknown', () => {
+    expect(levelsSuffix({ min: 15, max: 24 })).toBe(' (15-24)');
+    expect(levelsSuffix({ min: 60, max: 60 })).toBe(' (60)');
+    expect(levelsSuffix(undefined)).toBe('');
   });
 });

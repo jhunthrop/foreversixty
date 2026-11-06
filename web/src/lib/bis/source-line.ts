@@ -17,20 +17,24 @@ export interface SourceLineContext {
   bonding?: string;
 }
 
-/** A drop chance as the spec prints it: a whole percent from 1, one decimal below. */
+/** A drop chance as the row prints it: a whole percent from 1, one decimal below. The row's
+ *  own words are kept short so a source fits the paperdoll's second line (owner option C). */
 export function dropChanceText(percent: number): string {
-  return `${percent >= 1 ? Math.round(percent) : Number(percent.toFixed(1))}% drop`;
+  return `${percent >= 1 ? Math.round(percent) : Number(percent.toFixed(1))}%`;
 }
 
 function titleCase(word: string): string {
   return word.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function levelsSuffix(levels: { min: number; max: number } | undefined): string {
-  return levels === undefined ? '' : ` (levels ${levels.min}-${levels.max})`;
+/** ` (15-24)`, or ` (60)` for a one-level range; empty when unknown. */
+export function levelsSuffix(levels: { min: number; max: number } | undefined): string {
+  if (levels === undefined) return '';
+  return levels.min === levels.max ? ` (${levels.min})` : ` (${levels.min}-${levels.max})`;
 }
 
-const BOE_NOTE = 'bind on equip · also on the auction house';
+/** Bind on equip: tradeable, so also on the auction house (the game's own short words). */
+const BOE_NOTE = 'BoE · on the AH';
 
 /** The one line, joined with middle dots. */
 export function fullSourceLine(cell: SourceCell, context: SourceLineContext): string {
@@ -38,9 +42,10 @@ export function fullSourceLine(cell: SourceCell, context: SourceLineContext): st
   switch (cell.kind) {
     case 'dungeon':
     case 'raid': {
-      const own = cell.levelMin !== undefined && cell.levelMax !== undefined
-        ? { min: cell.levelMin, max: cell.levelMax }
-        : undefined;
+      const own =
+        cell.levelMin !== undefined && cell.levelMax !== undefined
+          ? { min: cell.levelMin, max: cell.levelMax }
+          : undefined;
       const place = `${cell.instance}${levelsSuffix(own ?? context.instanceLevels.get(cell.instance))}`;
       return [cell.boss, place, cell.dropChance === undefined ? undefined : dropChanceText(cell.dropChance)]
         .filter(Boolean)
@@ -67,7 +72,7 @@ export function fullSourceLine(cell: SourceCell, context: SourceLineContext): st
     case 'world_drop': {
       const range =
         cell.levelMin !== undefined && cell.levelMax !== undefined
-          ? ` (levels ${cell.levelMin}-${cell.levelMax})`
+          ? levelsSuffix({ min: cell.levelMin, max: cell.levelMax })
           : '';
       return boe ? `World drop${range} · ${BOE_NOTE}` : `World drop${range}`;
     }
