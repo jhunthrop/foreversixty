@@ -1,0 +1,61 @@
+{
+  "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+  },
+  "characters": [
+    {
+      "key": "us/hardcore/elyra-duskvale",
+      "region": "us",
+      "ruleset": "hardcore",
+      "name": "Elyra Duskvale",
+      "class": "Priest",
+      "spec": "Holy",
+      "race": "Night Elf",
+      "realm": "Doomhowl",
+      "level": 60,
+      "faction": "alliance",
+      "item_level": 62,
+      "source": "bnet",
+      "build": {
+        "source": "addon",
+        "captured_at": "2026-11-04T19:30:00Z",
+        "level": 60,
+        "data_build": "1.60.1.70790",
+        "gear": {
+          "head": 14140,
+          "neck": 14558,
+          "shoulder": 254119,
+          "back": 19530,
+          "chest": 231624,
+          "wrist": 16697,
+          "hands": 12554,
+          "waist": 272394,
+          "legs": 254125,
+          "feet": 22247,
+          "finger1": 13178,
+          "finger2": 13178,
+          "trinket1": 272438,
+          "trinket2": 249473,
+          "main_hand": 17743,
+          "ranged": 249385
+        },
+        "talents": {
+          "trees": ["0000000000000000", "0000000000000000", "0000000000000000"],
+          "points": [15, 31, 5]
+        }
+      }
+    }
+  ],
+  "guilds": [],
+  "bnet_imported_at": "2026-11-06T09:00:00Z",
+  "main_character_key": "us/hardcore/elyra-duskvale",
+  "entitlements": {
+    "history": true,
+    "log_coach": true
+  },
+  "plan": "premium"
+}

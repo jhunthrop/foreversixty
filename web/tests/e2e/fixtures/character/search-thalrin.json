@@ -1,0 +1,22 @@
+{
+  "rows": [
+    {
+      "key": "us/normal/thalrin",
+      "region": "us",
+      "ruleset": "normal",
+      "name": "Thalrin",
+      "class": "Warrior",
+      "spec": "Fury",
+      "level": 60
+    },
+    {
+      "key": "eu/hardcore/thalrin",
+      "region": "eu",
+      "ruleset": "hardcore",
+      "name": "Thalrin",
+      "class": "Mage",
+      "spec": "Frost",
+      "level": 42
+    }
+  ]
+}

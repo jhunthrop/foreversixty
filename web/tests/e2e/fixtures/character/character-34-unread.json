@@ -1,0 +1,199 @@
+{
+  "supporter": false,
+  "character": {
+    "name": "Felsnap",
+    "region": "us",
+    "ruleset": "normal",
+    "class": "Hunter",
+    "guild": null,
+    "level": 34,
+    "race": "Dwarf",
+    "realm": "Skyborne"
+  },
+  "score": null,
+  "tier": null,
+  "as_of": null,
+  "components": null,
+  "experience": null,
+  "best": [],
+  "history": [],
+  "builds_seen": [],
+  "score_history": [],
+  "gear": [
+    {
+      "slot": "head",
+      "worn": null,
+      "pick": {
+        "id": 252512,
+        "name": "Brawler's Leather Helm",
+        "source": "Leatherworking",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "neck",
+      "worn": null,
+      "pick": {
+        "id": 19541,
+        "name": "Sentinel's Medallion",
+        "source": "Silverwing Sentinels",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "shoulder",
+      "worn": null,
+      "pick": {
+        "id": 2278,
+        "name": "Forest Tracker Epaulets",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "back",
+      "worn": null,
+      "pick": {
+        "id": 13108,
+        "name": "Tigerstrike Mantle",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "chest",
+      "worn": null,
+      "pick": {
+        "id": 273026,
+        "name": "Garb of Florid Feathers",
+        "source": "Excavation Site: Wetlands: Shadetooth",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "wrist",
+      "worn": null,
+      "pick": {
+        "id": 14590,
+        "name": "Hawkeye's Bracers",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "hands",
+      "worn": null,
+      "pick": {
+        "id": 273054,
+        "name": "Cartilage Shapers",
+        "source": "Lyn the Ignored",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "waist",
+      "worn": null,
+      "pick": {
+        "id": 252521,
+        "name": "Stalker's Leather Belt",
+        "source": "Leatherworking",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "legs",
+      "worn": null,
+      "pick": {
+        "id": 13114,
+        "name": "Troll's Bane Leggings",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "feet",
+      "worn": null,
+      "pick": {
+        "id": 4055,
+        "name": "Insignia Boots",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "finger1",
+      "worn": null,
+      "pick": {
+        "id": 1491,
+        "name": "Ring of Precision",
+        "source": "Blackfathom Deeps",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "finger2",
+      "worn": null,
+      "pick": {
+        "id": 19517,
+        "name": "Protector's Band",
+        "source": "Silverwing Sentinels",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "trinket1",
+      "worn": null,
+      "pick": null,
+      "gap": null
+    },
+    {
+      "slot": "trinket2",
+      "worn": null,
+      "pick": null,
+      "gap": null
+    },
+    {
+      "slot": "main_hand",
+      "worn": null,
+      "pick": {
+        "id": 273037,
+        "name": "Felbough Arm",
+        "source": "Fel Ancient",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "off_hand",
+      "worn": null,
+      "pick": null,
+      "gap": null
+    },
+    {
+      "slot": "ranged",
+      "worn": null,
+      "pick": {
+        "id": 273029,
+        "name": "Golemsight Long Gun",
+        "source": "Excavation Site: Wetlands: Relic Guardian",
+        "chance": null
+      },
+      "gap": 12.5
+    }
+  ],
+  "gear_gap_total": 40.0,
+  "gear_spec": "hunter-beast-mastery",
+  "gear_spec_source": "talents"
+}

@@ -1,0 +1,44 @@
+{
+  "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+  },
+  "characters": [
+    {
+      "key": "us/normal/felsnap",
+      "region": "us",
+      "ruleset": "normal",
+      "name": "Felsnap",
+      "class": "Hunter",
+      "spec": "Beast Mastery",
+      "race": "Dwarf",
+      "realm": "Skyborne",
+      "level": 34,
+      "faction": "alliance",
+      "item_level": 31,
+      "source": "bnet",
+      "build": {
+        "source": "addon",
+        "captured_at": "2026-11-04T19:30:00Z",
+        "level": 34,
+        "data_build": "1.60.1.70790",
+        "gear": {},
+        "talents": {
+          "trees": ["0000000000000000", "00000000000000000", "000000000000000000"],
+          "points": [0, 0, 0]
+        }
+      }
+    }
+  ],
+  "guilds": [],
+  "bnet_imported_at": "2026-11-06T09:00:00Z",
+  "main_character_key": "us/normal/felsnap",
+  "entitlements": {
+    "history": false,
+    "log_coach": false
+  },
+  "plan": "free"
+}

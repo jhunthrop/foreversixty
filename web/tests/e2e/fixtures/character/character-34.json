@@ -1,0 +1,255 @@
+{
+  "supporter": false,
+  "character": {
+    "name": "Felsnap",
+    "region": "us",
+    "ruleset": "normal",
+    "class": "Hunter",
+    "guild": null,
+    "level": 34,
+    "race": "Dwarf",
+    "realm": "Skyborne"
+  },
+  "score": null,
+  "tier": null,
+  "as_of": null,
+  "components": null,
+  "experience": null,
+  "best": [],
+  "history": [],
+  "builds_seen": [],
+  "score_history": [],
+  "gear": [
+    {
+      "slot": "head",
+      "worn": {
+        "id": 252504,
+        "name": "Brawler's Leather Hood",
+        "item_level": 25
+      },
+      "pick": {
+        "id": 252512,
+        "name": "Brawler's Leather Helm",
+        "source": "Leatherworking",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "neck",
+      "worn": {
+        "id": 273049,
+        "name": "Archmagister's Faceted Pendant",
+        "item_level": 35
+      },
+      "pick": {
+        "id": 19541,
+        "name": "Sentinel's Medallion",
+        "source": "Silverwing Sentinels",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "shoulder",
+      "worn": {
+        "id": 2264,
+        "name": "Mantle of Thieves",
+        "item_level": 30
+      },
+      "pick": {
+        "id": 2278,
+        "name": "Forest Tracker Epaulets",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "back",
+      "worn": {
+        "id": 14593,
+        "name": "Hawkeye's Cloak",
+        "item_level": 35
+      },
+      "pick": {
+        "id": 13108,
+        "name": "Tigerstrike Mantle",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "chest",
+      "worn": {
+        "id": 2041,
+        "name": "Tunic of Westfall",
+        "item_level": 24
+      },
+      "pick": {
+        "id": 273026,
+        "name": "Garb of Florid Feathers",
+        "source": "Excavation Site: Wetlands: Shadetooth",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "wrist",
+      "worn": {
+        "id": 897,
+        "name": "Madwolf Bracers",
+        "item_level": 29
+      },
+      "pick": {
+        "id": 14590,
+        "name": "Hawkeye's Bracers",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "hands",
+      "worn": {
+        "id": 7358,
+        "name": "Pilferer's Gloves",
+        "item_level": 28
+      },
+      "pick": {
+        "id": 273054,
+        "name": "Cartilage Shapers",
+        "source": "Lyn the Ignored",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "waist",
+      "worn": {
+        "id": 20090,
+        "name": "Highlander's Chain Girdle",
+        "item_level": 33
+      },
+      "pick": {
+        "id": 252521,
+        "name": "Stalker's Leather Belt",
+        "source": "Leatherworking",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "legs",
+      "worn": {
+        "id": 9509,
+        "name": "Petrolspill Leggings",
+        "item_level": 30
+      },
+      "pick": {
+        "id": 13114,
+        "name": "Troll's Bane Leggings",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "feet",
+      "worn": {
+        "id": 10402,
+        "name": "Blackened Defias Boots",
+        "item_level": 20
+      },
+      "pick": {
+        "id": 4055,
+        "name": "Insignia Boots",
+        "source": "World drop",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "finger1",
+      "worn": {
+        "id": 6748,
+        "name": "Monkey Ring",
+        "item_level": 32
+      },
+      "pick": {
+        "id": 1491,
+        "name": "Ring of Precision",
+        "source": "Blackfathom Deeps",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "finger2",
+      "worn": {
+        "id": 6748,
+        "name": "Monkey Ring",
+        "item_level": 32
+      },
+      "pick": {
+        "id": 19517,
+        "name": "Protector's Band",
+        "source": "Silverwing Sentinels",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "trinket1",
+      "worn": null,
+      "pick": null,
+      "gap": null
+    },
+    {
+      "slot": "trinket2",
+      "worn": null,
+      "pick": null,
+      "gap": null
+    },
+    {
+      "slot": "main_hand",
+      "worn": {
+        "id": 6679,
+        "name": "Armor Piercer",
+        "item_level": 29
+      },
+      "pick": {
+        "id": 273037,
+        "name": "Felbough Arm",
+        "source": "Fel Ancient",
+        "chance": null
+      },
+      "gap": 12.5
+    },
+    {
+      "slot": "off_hand",
+      "worn": null,
+      "pick": null,
+      "gap": null
+    },
+    {
+      "slot": "ranged",
+      "worn": {
+        "id": 13137,
+        "name": "Ironweaver",
+        "item_level": 34
+      },
+      "pick": {
+        "id": 273029,
+        "name": "Golemsight Long Gun",
+        "source": "Excavation Site: Wetlands: Relic Guardian",
+        "chance": null
+      },
+      "gap": 12.5
+    }
+  ],
+  "gear_gap_total": 40.0,
+  "gear_spec": "hunter-beast-mastery",
+  "gear_spec_source": "talents"
+}
