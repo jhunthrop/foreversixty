@@ -49,6 +49,16 @@ describe('tracked links', () => {
   });
 });
 
+describe('downloads', () => {
+  it('answers /dl/ itself with a redirect to the configured release host', async () => {
+    const env = { ...envWith(), RELEASES_URL: 'https://releases.example/r' };
+    const response = await worker.fetch(new Request('https://foreversixty.gg/dl/addon'), env);
+    expect(response.status).toBe(302);
+    expect(response.headers.get('location')).toBe('https://releases.example/r?q=addon-v');
+    expect(env.ASSETS.fetch).not.toHaveBeenCalled();
+  });
+});
+
 describe('the sample report', () => {
   it('sends the old database id to the bundled page', async () => {
     const response = await worker.fetch(

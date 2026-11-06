@@ -91,6 +91,14 @@ jobs:
               /tmp/manifest.txt "$pkgroot/ForeverSixtyData.toc" > /tmp/toc.new
             mv /tmp/toc.new "$pkgroot/ForeverSixtyData.toc"
           fi
+          # A changelog of our own: without one the packager writes CHANGELOG.md from the
+          # git remote, and every public zip would carry this repository's URL
+          # (docs/runbooks/repo-private.md). package-as is what the zip was named without
+          # a .pkgmeta.
+          printf 'package-as: ForeverSixtyData\n\nmanual-changelog:\n  filename: CHANGELOG.md\n  markup-type: markdown\n' \
+            > "$pkgroot/.pkgmeta"
+          printf '# Forever Sixty Data\n\n## %s\n\nThe nightly ratings and rotation data for the Forever Sixty addon.\n' \
+            "${{ steps.tag.outputs.tag }}" > "$pkgroot/CHANGELOG.md"
           git -C "$pkgroot" init -q
           origin=$(git remote get-url origin)
           git -C "$pkgroot" remote add origin "$origin"
@@ -138,6 +146,8 @@ jobs:
           top=$(unzip -Z1 "$zip" | cut -d/ -f1 | sort -u)
           if [ "$top" != "ForeverSixtyData" ]; then echo "top-level folder is '$top'"; exit 1; fi
           unzip -Z1 "$zip" | grep -q 'ForeverSixtyData/Data.lua' || { echo "Data.lua is missing"; exit 1; }
+          # Nothing published may lead back to the repository or its owner (docs/runbooks/repo-private.md).
+          if unzip -p "$zip" | grep -aqiE 'github\.com/jhunthrop|hunthrop'; then echo "the zip names the repository or its owner"; exit 1; fi
           echo "zip=$zip" >> "$GITHUB_ENV"
 
       - name: sign the zip with minisign
@@ -178,6 +188,21 @@ jobs:
           # Never the repo's "latest": that is the companion release, which the
           # site's download links and the companion updater resolve through.
           make_latest: false
+
+      - uses: actions/setup-node@v4
+        if: (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.dry_run != true)) && env.sig != ''
+        with: { node-version-file: web/.node-version }
+      - name: publish to the site's release feed
+        # Same guard as "attach it to the release" above, plus a signature.
+        # The same signed files go to foreversixty.gg/dl/data/ (tools/publish-feed.sh,
+        # web/src/lib/downloads), which /setup links to and the companion updates from, so
+        # nothing depends on this repository's releases once it is private
+        # (docs/runbooks/repo-private.md). Only a signed release reaches the feed.
+        if: (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.dry_run != true)) && env.sig != ''
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_R2_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: tools/publish-feed.sh data '${{ steps.tag.outputs.tag }}' "$zip" "$sig"
 
       - name: publish to CurseForge and Wago Addons
         if: steps.targets.outputs.publish == 'yes' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.dry_run != true))

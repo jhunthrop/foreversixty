@@ -19,11 +19,6 @@
       "label": "Blizzard, Battle for the Darkspear Islands in World of Warcraft: Forever",
       "url": "https://worldofwarcraft.blizzard.com/news/24307308",
       "kind": "blizzard"
-    },
-    {
-      "label": "BiS phase audit, 2026-10-30",
-      "url": "https://github.com/jhunthrop/foreversixty/blob/main/design/reviews/2026-10-30-bis-phase-audit.md",
-      "kind": "site"
     }
   ],
   "notes": "Which content is open when, keyed by stable game ids. House rule, pending owner confirmation: Forever launches 'before Molten Core', the original Classic Phase 1 content set, so any source that opened after Phase 1 in original Classic is gated until a date is announced, and a source whose original phase is unsure is gated and flagged 'uncertain'. Each gate has a phase key from phases.json, or 'later' with date 'unannounced'. A phase at or before 'launch' is open, so a confirmed date flips a gate by editing its phase and date here, with no code change. Keys: npcs (a vendor's or a dungeon boss's npc id; a world source by the npc's name, because loot.json's world sources carry no npc id), quests (quest id), factions (reputation faction id, gating its rep sources and every quest that needs it, from from_standing up when set), zones (an instance or zone source's zone id), kinds (a loot source kind) and, as a last resort, items. An id missing from a night's fetch is warned about and kept, never deleted. data/pipeline/loot/content_phases.py writes the gates into loot.json; sim/cmd/leveling-bis reads this same file and applies the same gates to whatever loot.json it is given.",

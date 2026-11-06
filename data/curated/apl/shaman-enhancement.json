@@ -7,11 +7,6 @@
   },
   "sources": [
     {
-      "label": "wowsims-forever enhancement_shaman default priority list",
-      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/enhancement_shaman/apls/default.apl.json",
-      "kind": "community"
-    },
-    {
       "label": "Warcraft Tavern: WoW Classic PvE Enhancement Shaman guide",
       "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-enhancement-shaman/",
       "kind": "community"

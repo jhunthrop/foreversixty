@@ -159,37 +159,48 @@ func TestAnExportWithAnOutboxIsAnsweredPerPartAndAcked(t *testing.T) {
 	}
 }
 
-func TestTheReleaseListAndItsDownloadsNeedNoToken(t *testing.T) {
+func TestTheReleaseFeedAndItsDownloadsNeedNoToken(t *testing.T) {
 	s := New()
 	defer s.Close()
 	s.SetReleases(
-		GitHubRelease{Tag: "addon-v2.0.16", Assets: []GitHubAsset{{Name: "a.zip", Body: []byte("zip")}, {Name: "a.zip.minisig", Body: []byte("sig")}}},
-		GitHubRelease{Tag: "data-v2026.10.21", Prerelease: true},
+		FeedRelease{Tag: "addon-v2.0.17", Assets: []FeedAsset{{Name: "b.zip", Body: []byte("newer")}}},
+		FeedRelease{Tag: "addon-v2.0.16", Assets: []FeedAsset{{Name: "a.zip", Body: []byte("zip")}, {Name: "a.zip.minisig", Body: []byte("sig")}}},
 	)
-	code, body := get(t, s.URL+"/repos/jhunthrop/foreversixty/releases?per_page=1&page=1", "")
+	code, body := get(t, s.URL+"/dl/addon/latest.json", "")
 	if code != http.StatusOK {
-		t.Fatalf("release list = %d %s", code, body)
+		t.Fatalf("manifest = %d %s", code, body)
 	}
-	var rows []struct {
+	var m struct {
+		Schema int    `json:"schema"`
+		Family string `json:"family"`
 		Tag    string `json:"tag_name"`
-		Assets []struct{ Name, URL string }
+		Assets []struct {
+			Name   string `json:"name"`
+			URL    string `json:"browser_download_url"`
+			SHA256 string `json:"sha256"`
+		} `json:"assets"`
 	}
-	rows2 := json.NewDecoder(strings.NewReader(body))
-	if err := rows2.Decode(&rows); err != nil || len(rows) != 1 || rows[0].Tag != "addon-v2.0.16" || len(rows[0].Assets) != 2 {
-		t.Fatalf("page 1 = %s (%v)", body, err)
+	if err := json.Unmarshal([]byte(body), &m); err != nil || m.Schema != 1 || m.Family != "addon" ||
+		m.Tag != "addon-v2.0.17" || len(m.Assets) != 1 {
+		t.Fatalf("manifest = %s (%v); it names the newest release only", body, err)
 	}
-	_, page2 := get(t, s.URL+"/repos/jhunthrop/foreversixty/releases?per_page=1&page=2", "")
-	if !strings.Contains(page2, "data-v2026.10.21") || strings.Contains(page2, "addon-v") {
-		t.Errorf("page 2 = %s", page2)
+	if !strings.HasPrefix(m.Assets[0].URL, s.URL+"/dl/addon/") {
+		t.Errorf("asset URL %q is off the feed", m.Assets[0].URL)
 	}
-	if code, got := get(t, s.URL+"/releasedl/0/1", ""); code != http.StatusOK || got != "sig" {
+	if code, got := get(t, m.Assets[0].URL, ""); code != http.StatusOK || got != "newer" {
 		t.Errorf("download = %d %q", code, got)
 	}
-	if code, _ := get(t, s.URL+"/releasedl/9/0", ""); code != http.StatusNotFound {
+	if code, got := get(t, s.URL+"/dl/addon/addon-v2.0.16/a.zip.minisig", ""); code != http.StatusOK || got != "sig" {
+		t.Errorf("an older release's download = %d %q", code, got)
+	}
+	if code, _ := get(t, s.URL+"/dl/data/latest.json", ""); code != http.StatusNotFound {
+		t.Errorf("a family with no release = %d, want 404", code)
+	}
+	if code, _ := get(t, s.URL+"/dl/addon/addon-v9/a.zip", ""); code != http.StatusNotFound {
 		t.Errorf("a missing asset = %d", code)
 	}
-	if s.ReleaseListReads() != 2 {
-		t.Errorf("reads = %d", s.ReleaseListReads())
+	if s.ManifestReads() != 2 {
+		t.Errorf("reads = %d", s.ManifestReads())
 	}
 	// The ingest routes still want the token.
 	if code, _ := get(t, s.URL+"/v1/addon/inbox", ""); code != http.StatusUnauthorized {

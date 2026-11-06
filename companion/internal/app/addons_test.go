@@ -45,7 +45,7 @@ func newSigner(t *testing.T) signer {
 	return signer{sk: sk, pub: base64.StdEncoding.EncodeToString(raw)}
 }
 
-func (s signer) release(t *testing.T, tag, zipName string, files map[string]string) fakeapi.GitHubRelease {
+func (s signer) release(t *testing.T, tag, zipName string, files map[string]string) fakeapi.FeedRelease {
 	t.Helper()
 	var buf bytes.Buffer
 	zw := zip.NewWriter(&buf)
@@ -63,12 +63,12 @@ func (s signer) release(t *testing.T, tag, zipName string, files map[string]stri
 	if err != nil {
 		t.Fatal(err)
 	}
-	return fakeapi.GitHubRelease{Tag: tag, Assets: []fakeapi.GitHubAsset{
+	return fakeapi.FeedRelease{Tag: tag, Assets: []fakeapi.FeedAsset{
 		{Name: zipName, Body: buf.Bytes()}, {Name: zipName + ".minisig", Body: sig.Encode()},
 	}}
 }
 
-func (s signer) addon(t *testing.T, version string) fakeapi.GitHubRelease {
+func (s signer) addon(t *testing.T, version string) fakeapi.FeedRelease {
 	return s.release(t, "addon-v"+version, "ForeverSixty-addon-v"+version+"-forever.zip", map[string]string{
 		"ForeverSixty/ForeverSixty.toc":           "## Version: " + version + "\n",
 		"ForeverSixty/Core.lua":                   "-- " + version + "\n",
@@ -76,7 +76,7 @@ func (s signer) addon(t *testing.T, version string) fakeapi.GitHubRelease {
 	})
 }
 
-func (s signer) data(t *testing.T, date string) fakeapi.GitHubRelease {
+func (s signer) data(t *testing.T, date string) fakeapi.FeedRelease {
 	return s.release(t, "data-v"+date, "ForeverSixtyData-data-v"+date+"-forever.zip", map[string]string{
 		"ForeverSixtyData/ForeverSixtyData.toc": "## Version: data-v" + date + "\n",
 		"ForeverSixtyData/Data.lua":             "-- " + date + "\n",
@@ -99,7 +99,7 @@ func newAddonWorld(t *testing.T) *addonWorld {
 	w := &addonWorld{signer: newSigner(t)}
 	w.harness = newHarnessWith(t, nil, func(o *app.Options) {
 		o.Log = slog.New(slog.NewTextHandler(&w.logs, &slog.HandlerOptions{Level: slog.LevelDebug}))
-		o.Updater = updater.Options{PublicKey: w.signer.pub, APIBase: o.Config.APIBaseURL}
+		o.Updater = updater.Options{PublicKey: w.signer.pub, FeedBase: o.Config.APIBaseURL + "/dl"}
 		o.Addons = addonupdater.Options{
 			Now: time.Now,
 			Processes: func() ([]addonupdater.Proc, error) {
@@ -281,8 +281,8 @@ func TestTheSwitchTurnsTheChecksAndInstallsOff(t *testing.T) {
 		w.app.Step(context.Background(), t0.Add(time.Duration(w.tick)*8*time.Hour))
 		time.Sleep(20 * time.Millisecond)
 	}
-	if reads := w.srv.ReleaseListReads(); reads != 0 {
-		t.Errorf("the release list was read %d times with the switch off", reads)
+	if reads := w.srv.ManifestReads(); reads != 0 {
+		t.Errorf("the feed was read %d times with the switch off", reads)
 	}
 	if v, _ := addonupdater.ReadVersion(w.addons(), "ForeverSixty"); v != "2.0.15" {
 		t.Errorf("installed with the switch off: %s", v)
@@ -325,7 +325,7 @@ func TestNoOfferIsMadeForAnotherGamesInstall(t *testing.T) {
 	anni := newInstall(t, "_anniversary_")
 	w := &addonWorld{signer: newSigner(t)}
 	w.harness = newHarnessWith(t, nil, func(o *app.Options) {
-		o.Updater = updater.Options{PublicKey: w.signer.pub, APIBase: o.Config.APIBaseURL}
+		o.Updater = updater.Options{PublicKey: w.signer.pub, FeedBase: o.Config.APIBaseURL + "/dl"}
 		o.Config.WoWPaths = append(append([]string{}, o.Config.WoWPaths...), retail, anni)
 	})
 	w.srv.SetReleases()

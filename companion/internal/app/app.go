@@ -225,8 +225,8 @@ func New(o Options) (*App, error) {
 			ao.PublicKey = updater.PublicKey
 		}
 	}
-	if ao.APIBase == "" {
-		ao.APIBase = uo.APIBase
+	if ao.FeedBase == "" {
+		ao.FeedBase = uo.FeedBase
 	}
 	if ao.HTTP == nil {
 		ao.HTTP = uo.HTTP
