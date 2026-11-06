@@ -1,12 +1,14 @@
 <!-- web/src/components/ui/ItemIcon.svelte -->
 <!-- An item's icon (web layout spec 2026-11-05 §4.3): the HD icon in a 1 px frame of its quality
      hue, 5 px radius, width and height always set (no layout shift). With no icon it draws the
-     dark socket, never a broken image; `unknown` tints it red (an id missing from our data). A
+     dark socket, never a broken image (an image that fails to load becomes the socket too);
+     `unknown` tints it red (an id missing from our data). A
      badge disc sits on the lower right: gold ▲ for an upgrade, green ✓ for the worn pick. -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { rarityBorderColorFor } from '../../lib/planner/items';
   import { dataUrl } from '../../lib/planner/load';
+  import { itemIconFace } from '../../lib/ui/item-icon';
   import Glyph from './Glyph.svelte';
 
   let {
@@ -37,8 +39,15 @@
   } = $props();
 
   let mounted = $state(false);
+  /** The icon whose image failed; a new icon gets its own try. */
+  let failedIcon = $state<string | undefined>(undefined);
+  let image = $state<HTMLImageElement | undefined>(undefined);
+  const face = $derived(itemIconFace({ icon, deferred, mounted, failed: failedIcon === icon }));
+
   onMount(() => {
     mounted = true;
+    // A server-rendered image that failed before hydration: complete with nothing decoded.
+    if (image?.complete && image.naturalWidth === 0) failedIcon = icon;
   });
 
   const BADGE = {
@@ -53,10 +62,11 @@
   style:height="{size}px"
   data-testid={testid}
 >
-  {#if icon && deferred && !mounted}
+  {#if face === 'frame'}
     <span class="h-full w-full rounded-[5px] border" style:border-color={rarityBorderColorFor(quality)}></span>
-  {:else if icon}
+  {:else if face === 'image'}
     <img
+      bind:this={image}
       src={dataUrl(build, `icons/${icon}.webp`)}
       alt=""
       width={size}
@@ -65,6 +75,8 @@
       decoding="async"
       class="h-full w-full rounded-[5px] border object-cover"
       style:border-color={rarityBorderColorFor(quality)}
+      data-icon={icon}
+      onerror={() => (failedIcon = icon)}
     />
   {:else}
     <span
@@ -73,6 +85,7 @@
         unknown ? 'border-wipe/50 bg-wipe/10' : 'border-line-soft border-dashed',
       ]}
       aria-hidden="true"
+      data-icon-socket
     ></span>
   {/if}
   {#if badge}

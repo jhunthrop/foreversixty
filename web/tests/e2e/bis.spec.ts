@@ -199,3 +199,11 @@ test.describe('the controls at 390', () => {
     }
   });
 });
+
+test('BiS: an item icon that fails to load draws the dark socket, never a broken image', async ({ page }) => {
+  await page.route('**/icons/*.webp', (route) => route.fulfill({ status: 404, body: '' }));
+  await openBis(page, '/bis/hunter/marksmanship?band=60');
+  const doll = page.getByTestId('bis-doll');
+  await expect(doll.locator('[data-icon-socket]').first()).toBeVisible();
+  await expect(doll.locator('img[data-icon]')).toHaveCount(0);
+});
