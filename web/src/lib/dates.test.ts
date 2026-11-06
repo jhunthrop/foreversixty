@@ -27,9 +27,9 @@ describe('utcDayMonth', () => {
 
 describe('formatDate', () => {
   it('uses the site month style', () => {
-    expect(formatDate(new Date('2026-09-17T00:00:00Z'))).toBe('Sept 17');
-    expect(formatDate(new Date('2026-11-04T00:00:00Z'))).toBe('Nov 4');
-    expect(formatDate(new Date('2027-06-01T00:00:00Z'))).toBe('June 1');
+    expect(formatDate(new Date('2026-09-17T00:00:00Z'))).toBe('17 Sept');
+    expect(formatDate(new Date('2026-11-04T00:00:00Z'))).toBe('4 Nov');
+    expect(formatDate(new Date('2027-06-01T00:00:00Z'))).toBe('1 June');
   });
 });
 
@@ -92,9 +92,9 @@ describe('relativeDay', () => {
   });
 
   it('prints a short date from two weeks on', () => {
-    expect(relativeDay(new Date('2026-09-26T12:00:00Z'), now)).toBe('Sep 26');
-    expect(relativeDay(new Date('2026-09-15T12:55:13Z'), now)).toBe('Sep 15');
-    expect(relativeDay(new Date('2026-06-01T00:00:00Z'), now)).toBe('Jun 1');
+    expect(relativeDay(new Date('2026-09-26T12:00:00Z'), now)).toBe('26 Sept');
+    expect(relativeDay(new Date('2026-09-15T12:55:13Z'), now)).toBe('15 Sept');
+    expect(relativeDay(new Date('2026-06-01T00:00:00Z'), now)).toBe('1 June');
   });
 
   it('never reads a future timestamp as negative, and prints nothing for an invalid one', () => {

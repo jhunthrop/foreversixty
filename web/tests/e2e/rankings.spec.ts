@@ -104,7 +104,7 @@ test.describe('signed in, desktop', () => {
     await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
     // The retired shared band: the board's answer is the PageHeader's own.
     await expect(page.locator('#rankings [data-testid^="character-header"]')).toHaveCount(0);
-    await expect(page.locator('#rankings header')).toContainText('Updated Dec 13');
+    await expect(page.locator('#rankings header')).toContainText('Updated 13 Dec');
     await expect(page.getByText(/^Updated /)).toHaveCount(1);
     await expect(page.locator('#rankings a[href="/tiers"]')).toHaveText('Tier list ›');
     await expect(page.locator('#rankings')).toContainText('Comparing specs, not characters?');

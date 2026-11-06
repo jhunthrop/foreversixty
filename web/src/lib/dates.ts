@@ -1,9 +1,10 @@
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
-/** "Sept 25" in UTC; an invalid date renders as nothing rather than "undefined NaN". */
+/** "25 Sept" in UTC, day first (the house date, as every page head's "Updated 6 Nov"); an invalid
+ *  date renders as nothing rather than "undefined NaN". */
 export function formatDate(d: Date): string {
   if (Number.isNaN(d.getTime())) return '';
-  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
 }
 
 export function isPast(d: Date, now: Date = new Date()): boolean {
@@ -48,7 +49,7 @@ const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'S
 
 /**
  * The one age rule for dated rows (Logs, the character header): whole days relative inside two
- * weeks ("today", "1 day ago", "3 days ago"), else the date ("Sep 15", UTC). Like `relativeTime`,
+ * weeks ("today", "1 day ago", "3 days ago"), else the date ("15 Sept", UTC). Like `relativeTime`,
  * a timestamp ahead of the caller's clock reads as "today", never a negative duration.
  */
 export function relativeDay(d: Date, now: Date = new Date()): string {
@@ -56,7 +57,7 @@ export function relativeDay(d: Date, now: Date = new Date()): string {
   const days = Math.floor(Math.max(0, now.getTime() - d.getTime()) / DAY_MS);
   if (days === 0) return 'today';
   if (days < RELATIVE_DAY_CEILING_DAYS) return `${days} day${days === 1 ? '' : 's'} ago`;
-  return `${SHORT_MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+  return formatDate(d);
 }
 
 /**

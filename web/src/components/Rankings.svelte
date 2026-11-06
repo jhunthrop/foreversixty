@@ -295,6 +295,8 @@
     );
   });
 
+  /** The stamp's width before the board answers: a date as long as most. */
+  const UPDATED_PLACEHOLDER = '13 Dec';
   const updatedStamp = $derived(updatedAt === null ? null : formatDate(new Date(updatedAt)));
 
   // ---- the page's frame (spec 2026-11-07 section 7)
@@ -416,7 +418,12 @@
           {#if isIndex}<span>{rankingsCopy.jobSignedOut}</span>
           {:else}<span>{rankingsCopy.h1} · {state.board === 'guild' ? 'Guilds' : cohort} · {rulesetMeta}</span
             >{/if}
-          {#if updatedStamp !== null}<span>Updated {updatedStamp}</span>{/if}
+          {#if !isIndex}
+            <!-- The stamp's box is there from the first paint, so the board's answer moves nothing. -->
+            <span class:invisible={updatedStamp === null} data-testid="rankings-updated"
+              >Updated {updatedStamp ?? UPDATED_PLACEHOLDER}</span
+            >
+          {/if}
         {/snippet}
       </PageHeader>
     {/snippet}
@@ -519,7 +526,12 @@
               />
             </div>
           {:else if status === 'failed'}
-            <div class="text-muted p-4 text-[14px] leading-5" role="alert" data-testid="rankings-error">
+            <!-- The failed and empty states hold the loading reserve, so nothing under the Plate moves. -->
+            <div
+              class="text-muted {RANKINGS_LOADING_MIN_H} box-content p-4 text-[14px] leading-5"
+              role="alert"
+              data-testid="rankings-error"
+            >
               <p>{error || 'Rankings did not load.'}</p>
               <div class="mt-3">
                 <button type="button" class={LINK} onclick={() => (attempt += 1)}>Try again</button>
@@ -615,7 +627,10 @@
 {/snippet}
 
 {#snippet empty()}
-  <div class="text-muted p-4 text-[14px] leading-5" data-testid="rankings-empty">
+  <div
+    class="text-muted {RANKINGS_LOADING_MIN_H} box-content p-4 text-[14px] leading-5"
+    data-testid="rankings-empty"
+  >
     <p>{rankingsEmptyCopy.message}</p>
     <div class="mt-3"><a class={LINK} href={rankingsEmptyCopy.href}>{rankingsEmptyCopy.action} ›</a></div>
   </div>

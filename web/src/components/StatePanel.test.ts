@@ -15,7 +15,7 @@ describe('StatePanel', () => {
     expect(html).toContain('Right now');
     expect(html).toContain('Beta opens');
     expect(html).toContain('level cap 30');
-    expect(html).toContain('Updated Sept 12');
+    expect(html).toContain('Updated 12 Sept');
   });
   it('shows a Sample pill when sample is true', async () => {
     const c = await AstroContainer.create();

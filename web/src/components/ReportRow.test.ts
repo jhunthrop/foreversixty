@@ -26,7 +26,7 @@ describe('ReportRow', () => {
   });
 
   it('shows a date from two weeks on', () => {
-    expect(html({ createdAt: '2026-09-15T12:55:13Z' })).toContain('Sep 15');
+    expect(html({ createdAt: '2026-09-15T12:55:13Z' })).toContain('15 Sept');
   });
 
   it('shows the line the caller built under the title', () => {

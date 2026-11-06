@@ -93,7 +93,7 @@ describe('the row date', () => {
   });
 
   it('prints the date from two weeks on', () => {
-    expect(rankingDate('2026-11-25T12:00:00Z', now)).toBe('Nov 25');
+    expect(rankingDate('2026-11-25T12:00:00Z', now)).toBe('25 Nov');
   });
 });
 
