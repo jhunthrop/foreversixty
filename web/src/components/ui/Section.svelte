@@ -50,7 +50,12 @@
     {#if head || action}
       <span class="ml-auto flex items-center gap-4">
         {#if head}{@render head()}{/if}
-        {#if action}<a class="{LINK} text-[14px]" href={action.href}>{action.label} ›</a>{/if}
+        <!-- On a touch screen the link's hit area is 44 px tall: 12 px of padding above and below,
+             taken back by the same negative margin, so the head row does not grow. -->
+        {#if action}<a
+            class="{LINK} text-[14px] [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+            href={action.href}>{action.label} ›</a
+          >{/if}
       </span>
     {/if}
   </div>

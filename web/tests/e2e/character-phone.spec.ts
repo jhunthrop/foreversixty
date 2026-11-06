@@ -61,13 +61,12 @@ test('every row link on a character page clears 44px', async ({ page }) => {
       // Height as well as the larger dimension: a 200x20 row link clears the max() line
       // above and is still unusable with a thumb, the same reasoning report-phone.spec.ts
       // pins for `#report` and rankings-phone.spec.ts pins for `#rankings`. The page's Section
-      // bodies (its Rows, Disclosures and links) are held to it; the head's inline fact links,
-      // a Section heading's action link (ui/Section.svelte, 21px tall: an open question for the
-      // primitive, not this page) and the shared header and footer (layout.spec.ts) are not.
+      // Sections (their Rows, Disclosures, links and the heading's action link, whose hit area
+      // ui/Section.svelte pads to 44px on touch) are held to it; the head's inline fact links and
+      // the shared header and footer (layout.spec.ts) are not.
       const inPage = await control.evaluate(
         (element) =>
-          element.closest('[data-testid="character"]') !== null &&
-          element.closest('.ui-section-body') !== null,
+          element.closest('[data-testid="character"]') !== null && element.closest('.ui-section') !== null,
       );
       if (inPage) expect(box.height, where).toBeGreaterThanOrEqual(44);
       measured += 1;

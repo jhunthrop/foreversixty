@@ -52,6 +52,8 @@ Lane calls:
 - **C5:** the parts open in place under `Score parts` (rows of points against each ceiling); the trend chart stays in the owner's History.
 - **C8:** History and Coach history are Disclosures; their charts and list are read only when opened. A free owner gets one row to the plans.
 - **C10:** the lookup is the name field and `Look up` (to `/characters?q=<name>`); region and ruleset are answered by the `Same name elsewhere` rows, which come first. `Sign in to see your characters` shows only to a signed-out viewer; the addon row is `ctaCopy.getAddonAndCompanion`.
+- **Supporter (coordinator, 2026-11-06):** a Premium character's head meta carries the `Supporter` Tag (`premiumBlockCopy.supporterChip`); the level 60 fixture is a supporter, so visitor-60 and owner-60-premium check it.
+- **Section action on touch:** `ui/Section`'s action link keeps its 14 px look and gets a 44 px hit area under `pointer: coarse` (12 px of padding, the same negative margin), so no head row grows.
 - **`All ranked fights (N) ›`** goes to `/logs` until logs can filter by character (the redesign lane).
 
 Data gaps (named, not built):

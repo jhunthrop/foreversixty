@@ -83,7 +83,7 @@ def fights() -> tuple[list[dict], list[dict]]:
 def elyra(gear: list[dict]) -> dict:
     best, history = fights()
     return {
-        'supporter': False,
+        'supporter': True,
         'character': {'name': 'Elyra Duskvale', 'region': 'us', 'ruleset': 'hardcore', 'class': 'Priest',
                       'guild': {'name': 'Cx66 Olympus', 'rank': 'officer'}, 'level': 60, 'race': 'Night Elf', 'realm': 'Doomhowl'},
         'score': 1830, 'tier': 'epic', 'as_of': '2026-11-03',

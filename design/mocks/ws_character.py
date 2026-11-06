@@ -17,7 +17,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_lib import REGION
-from ws_prims import (Disclosure, Figure, Link, PageHeader, Paperdoll, Plate, Row, Rows, Section,
+from ws_prims import (Disclosure, Figure, Link, Tag, PageHeader, Paperdoll, Plate, Row, Rows, Section,
                       Skeleton, build_page, crest_img, write)
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -169,6 +169,8 @@ def head(ch: Char, owner: dict | None, answer: bool = True) -> str:
     if c.get('guild'):
         meta.append(f"<a class=\"link\" href=\"#\">&lt;{c['guild']['name']}&gt;</a>")
     meta += [c['realm'], f"{'Hardcore' if c['ruleset'] == 'hardcore' else 'Normal'} {c['region'].upper()}"]
+    if ch.page.get('supporter'):
+        meta.append(Tag('Supporter'))
     if owner:
         meta.append('Addon &middot; 1 day ago')
     figs = ''

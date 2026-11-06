@@ -30,6 +30,7 @@
   import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
   import { onCurrentCharacterChange, onCurrentCharacterSwitch, readCurrent } from '../lib/current-character';
   import { viewerFromMe } from '../lib/coach/viewer';
+  import { premiumBlockCopy } from '../lib/billing/copy';
   import { bandPricer, UNPRICED } from '../lib/gear/gain-pricer';
   import { notReadCopy } from '../lib/gear/copy';
   import { paperdollNote, unknownCount } from '../lib/gear/paperdoll';
@@ -56,6 +57,7 @@
   import Plate from './ui/Plate.svelte';
   import Row from './ui/Row.svelte';
   import Section from './ui/Section.svelte';
+  import Tag from './ui/Tag.svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -272,6 +274,8 @@
                 >{fact.text}</a
               >{:else}<span data-testid={`character-fact-${fact.key}`}>{fact.text}</span>{/if}
           {/each}
+          {#if data.supporter === true}<Tag testid="supporter-chip">{premiumBlockCopy.supporterChip}</Tag
+            >{/if}
           {#if sync !== null}<span data-testid="character-sync"
               >{syncText(sync)}{#if sync.staleTail !== null}{STALE_SEPARATOR}<span class="text-wipe"
                   >{sync.staleTail}</span
