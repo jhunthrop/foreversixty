@@ -3,8 +3,8 @@ title: Discipline Priest in Forever
 classSlug: priest
 spec: discipline
 role: healer
-build: 'FS1:1.60.1.70790:priest:gnome:00500503133001143/3350500303/0:'
-recommendedRaces: [gnome, undead]
+build: 'FS1:1.60.1.70790:priest:human:00500503133001143/3350500303/0:'
+recommendedRaces: [human, undead]
 statPriority: [MP5, Spirit, Healing power, Intellect, Critical strike]
 description: 'How to heal as a Discipline Priest in Forever: Penance, the shield and Weakened Soul, Renewed Hope, downranking, mana, Power Infusion and races.'
 updated: 2026-11-04
@@ -97,13 +97,13 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Races
 
-**Gnome** is the Alliance pick, for Eureka!: your direct heals are 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and so are Penance's heals (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
+**Human** is the Alliance pick. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit, and while you level, when a long pull drains your bar, that regeneration keeps you casting where a Gnome is already out of mana.
 
-**Human** is level with Gnome, a hair ahead on a long tank fight, so take whichever you would rather play. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit.
+**Gnome** heals as well as a Human at 60, so take whichever you would rather play there. Eureka! makes your direct heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Penance's heals too (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
 
 **Undead** is the Horde pick for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
 
-**Night Elf** has Elune's Light for 10% crit (more Divine Aegis), **Troll** Berserking, and **Dwarf** Stoneform and Desperate Prayer. All three heal clearly less than a Gnome or a Human.
+**Night Elf** has Elune's Light for 10% crit (more Divine Aegis), **Troll** Berserking, and **Dwarf** Stoneform and Desperate Prayer. All three heal clearly less than a Human or a Gnome.
 
 ## Professions
 
@@ -121,4 +121,4 @@ Wear cloth, take quest rewards over vendor gear, and swap the starting mace for 
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. When shield rank 6 arrives at 36, an Undead, Troll or Night Elf keeps rank 5 through 39 (a Dwarf from 37), and a Human, Undead or Troll still at 40; the new rank takes over from 41. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 45: they cost far less than the top rank and keep nearly all of your healing bonus. From 50, keep rank 7: rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56, take Renew rank 9 for your last dungeons; at 60 rank 7 is the tank's Renew again. Heal is the tank's filler until you learn Greater Heal at 40. Keep it at rank 1 through 35: rank 1 keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so the bigger ranks only cost you mana. From 36 cast rank 3, since rank 4 costs more mana than its extra healing is worth. From 40, Greater Heal on the tank stays at rank 1 until you learn rank 4 at 58: it keeps your whole healing bonus until then, and the bigger ranks spend mana on healing a dungeon tank rarely needs. From 40 on, leave Lesser Heal off your bars for good: Greater Heal rank 1 takes its place, by your late forties Lesser Heal has lost your healing bonus anyway, and every cast costs mana regeneration you need for the next Greater Heal.
+From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. When shield rank 6 arrives at 36, an Undead, Troll or Night Elf keeps rank 5 through 39 (a Dwarf from 37), and a Human, Undead or Troll still at 40; the new rank takes over from 41. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 44: they cost far less than the top rank and keep nearly all of your healing bonus. A Human or Troll heals more with rank 7 from 44, and a Gnome from 45. From 50, keep rank 7: rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56, a Human or Gnome takes Renew rank 9 for the last dungeons and a Dwarf or Night Elf mostly rank 8, all four on rank 9 at 59, while an Undead or Troll stays on rank 7; at 60 rank 7 is the tank's Renew again. Heal is the tank's filler until you learn Greater Heal at 40. Keep it at rank 1 through 35: rank 1 keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so the bigger ranks only cost you mana. From 36 cast rank 3 (an Undead keeps rank 1 for one more level), since rank 4 costs more mana than its extra healing is worth. From 40, Greater Heal on the tank stays at rank 1 all the way to 60, even after rank 4 arrives at 58: the bigger ranks spend mana on healing a dungeon tank rarely needs. From 40 on, leave Lesser Heal off your bars for good: Greater Heal rank 1 takes its place, by your late forties Lesser Heal has lost your healing bonus anyway, and every cast costs mana regeneration you need for the next Greater Heal.
