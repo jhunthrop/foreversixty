@@ -27,6 +27,8 @@ import { buildItemCatalog, readBuildJson } from './build-files';
 import { specGuideData } from './guide-tips';
 
 const BUILD = activeBuild.build;
+/** The client's InventoryType for a two-handed weapon (build-files.ts `CatalogItem`). */
+const TWO_HAND_INVENTORY_TYPE = 17;
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
 function enchant(overrides: Partial<EnchantRecord>): EnchantRecord {
@@ -457,11 +459,20 @@ describe('every guide’s enchant table, from the real data', () => {
     }
   });
 
-  it('offers Arcane no weapon enchant for its held-in-off-hand item', () => {
-    const { extras } = specGuideData(BUILD, 'mage', 'mage-arcane', ['gnome', 'undead']);
+  // Arcane's level 60 main hand moves between a one-hander with a held-in-off-hand item and a
+  // two-handed staff as the ranker re-runs (1.60.1.70790 raid: Ironbark Staff). Either way the off
+  // hand gets no weapon enchant, and the main hand gets the best spell power enchant its own kind
+  // takes: the two-hander's Spellblasting (+65 spell power) or the one-hander's Spell Power (+30).
+  it('offers Arcane the spell power weapon enchant its main hand takes, and none for the off hand', () => {
+    const { bis, extras } = specGuideData(BUILD, 'mage', 'mage-arcane', ['gnome', 'undead']);
+    const panel = bis?.panels.find((p) => p.faction === bis.defaultFaction && p.band === bis.defaultBand);
+    const mainHand = panel?.rows.find((row) => row.slot === 'main_hand')?.itemId;
+    const twoHanded =
+      mainHand !== undefined &&
+      buildItemCatalog(BUILD).get(mainHand)?.inventory_type === TWO_HAND_INVENTORY_TYPE;
     expect(extras?.enchants.find((row) => row.slot === 'off_hand')).toBeUndefined();
     expect(extras?.enchants.find((row) => row.slot === 'main_hand')?.name).toBe(
-      'Enchant Weapon - Spell Power',
+      twoHanded ? 'Enchant 2H Weapon - Spellblasting' : 'Enchant Weapon - Spell Power',
     );
   });
 });
