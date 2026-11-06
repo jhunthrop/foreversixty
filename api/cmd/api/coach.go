@@ -111,6 +111,7 @@ func newCoachService(ctx context.Context, w coachWiring) (*coach.Service, error)
 	return &coach.Service{
 		Store: store, Reports: w.reports, Accounts: w.auth, Owners: w.auth, Entitlements: w.entitle,
 		Summaries: w.summaries, Tables: tables, Refs: coachRefs(ctx, w, tables),
+		Talents:  &coach.ExportTalents{DB: w.pool, BuildsDir: w.cfg.TreeDataDir},
 		Personas: &coach.Personas{Dir: w.cfg.Coach.DataDir},
 		Generator: &coach.Generator{LLM: model, Caps: caps, Store: store, Model: w.cfg.Coach.LLMModel,
 			Temperature: w.cfg.Coach.Temperature, Log: w.log, Now: time.Now},

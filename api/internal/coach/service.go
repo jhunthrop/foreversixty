@@ -36,8 +36,11 @@ type Service struct {
 	Entitlements Entitlementer
 	Summaries    Getter
 	Tables       TableSource
-	Refs         *Resolver
-	Personas     *Personas
+	// Talents reads the character's talents for the cooldowns they shorten (F1, F7); nil,
+	// or a failed read, leaves them unknown.
+	Talents  TalentSource
+	Refs     *Resolver
+	Personas *Personas
 	// Generator is the template the job copies: one Generator per job, whose Validator
 	// carries Names and that fight's roster.
 	Generator *Generator
@@ -140,6 +143,7 @@ func (s *Service) buildPack(ctx context.Context, rep reports.Report, entry repor
 	if err != nil {
 		return loaded{}, err
 	}
+	tables.Talents = s.talentsOf(ctx, playerKey, row.Class)
 	in := Input{Fight: sum, Row: row, Size: int(entry.Size), BossName: entry.Name, Tables: tables}
 	if notReviewable(in) == "" {
 		if in.Refs, err = s.refs(ctx, in, playerKey, entry.Start); err != nil {
@@ -264,6 +268,20 @@ func (s *Service) summary(ctx context.Context, reportID string, index int) (summ
 		return summary.Summary{}, fmt.Errorf("coach: decode summary %s/%d: %w", reportID, index, err)
 	}
 	return sum, nil
+}
+
+// talentsOf is the player's talents on file, nil when unknown. A failed read is logged and
+// reads as unknown: the review never depends on it.
+func (s *Service) talentsOf(ctx context.Context, playerKey, class string) PlayerTalents {
+	if s.Talents == nil || class == "" {
+		return nil
+	}
+	talents, err := s.Talents.TalentsOf(ctx, playerKey, class)
+	if err != nil {
+		s.logger().Warn("coach: talents unread; cooldowns are judged at base", slog.String("error", err.Error()))
+		return nil
+	}
+	return talents
 }
 
 // rosterRow is the row whose character key, under the report's realm, is playerKey.

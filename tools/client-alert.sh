@@ -34,7 +34,8 @@ readonly LABEL_COLOR=B60205
 readonly LABEL_DESCRIPTION="The client watcher (client.yml) could not move the site to a new client build"
 readonly PUSH_LABEL=hotfix-push-unlayered
 readonly PUSH_LABEL_COLOR=D93F0B
-readonly PUSH_LABEL_DESCRIPTION="wago.tools lists a server hotfix push for the active build that data/builds/<build>/hotfix-push.json was not layered from"
+# GitHub caps a label description at 100 characters (a longer one is HTTP 422 and no issue).
+readonly PUSH_LABEL_DESCRIPTION="wago.tools lists a server hotfix push for the active build that is not layered"
 readonly ACTIVE_BUILD_FILE=web/src/data/active-build.json
 GH=${GH_BIN:-gh}
 

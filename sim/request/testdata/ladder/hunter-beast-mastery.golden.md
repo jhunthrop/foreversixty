@@ -100,7 +100,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 27.5 | 2 | other:shoot=82.2, spell:1130=2.4, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 2643} |
+| 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 37.2 | 4 | other:shoot=82.2, spell:3044=22.4, spell:13549=11.0, spell:1130=2.4, other:move=1.0 | {SpellID: 19574}, {SpellID: 2643} |
 | 20 | 5420000000000000-0000000000000000-000000000000000000 | main_hand:2236 off_hand:1292 ranged:3021 | 61.6 | 5 | other:shoot=82.3, spell:3044=21.4, spell:1978=12.4, spell:19434=7.7, spell:1130=2.4 | {SpellID: 19574} |
 | 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 98.8 | 6 | other:shoot=83.6, spell:3044=22.4, spell:1978=12.8, spell:19434=11.5, spell:14323=2.5 | {SpellID: 19574} |
 | 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 140.2 | 6 | other:shoot=87.4, spell:14282=23.0, spell:19434=18.4, spell:13549=13.4, spell:14323=2.4 | {SpellID: 19574} |
@@ -113,14 +113,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 10
 
-- Arcane Shot (spell 3044)
 - Bite (spell 17255)
 - Claw (spell 16828)
 - Lightning Breath (spell 24844)
 - Mine! (spell 1265054)
 - Raptor Strike (spell 14260)
 - Scorpid Poison (spell 24640)
-- Serpent Sting (spell 13549)
 - Widow Bite (spell 26226)
 - Wyvern Strike (spell 458482)
 
@@ -287,8 +285,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-beast-mastery level=10 kind=zero_casts spell="Arcane Shot" id=3044 authored=14287
-- hunter-beast-mastery level=10 kind=zero_casts spell="Serpent Sting" id=13549 authored=13555
 - hunter-beast-mastery level=20 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
 - hunter-beast-mastery level=30 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
 - hunter-beast-mastery level=38 kind=zero_casts id=2643 authored=2643 (untracked ability; not in spellranks.json's rank chains)
