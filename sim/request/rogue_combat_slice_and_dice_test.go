@@ -1,8 +1,10 @@
 package request
 
 import (
+	"bytes"
 	"encoding/json"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -84,4 +86,55 @@ func hasLevelFloor(cond any, floor int) bool {
 	s, _ := c["val"].(string)
 	n, err := strconv.Atoi(s)
 	return err == nil && n == floor
+}
+
+// Sim-accuracy round 26: below 17 Assassination still cast Slice and Dice at
+// three points every time it dropped and so never reached its four-point
+// Eviscerate. With Backstab's one point a strike, Slice and Dice at four once
+// it drops and Eviscerate at five does 0.2 to 0.5% more at 10 to 16 (seeds 1
+// and 50001, both factions); 17 to 19 are level, so the 60 rule takes over
+// at 17.
+func TestAssassinationLowLevelFinishersWaitForFive(t *testing.T) {
+	raw, err := aplFS.ReadFile("apl/rogue-assassination.apl.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var apl struct {
+		PriorityList []struct {
+			Action struct {
+				CastSpell *struct {
+					SpellID struct {
+						SpellID int32 `json:"spellId"`
+					} `json:"spellId"`
+				} `json:"castSpell"`
+				Condition json.RawMessage `json:"condition"`
+			} `json:"action"`
+		} `json:"priorityList"`
+	}
+	if err := json.Unmarshal(raw, &apl); err != nil {
+		t.Fatal(err)
+	}
+	want := map[int32]string{11300: `"val":"5"`, combatSliceAndDiceID: `"op":"OpEq"`}
+	for _, e := range apl.PriorityList {
+		cast := e.Action.CastSpell
+		if cast == nil {
+			continue
+		}
+		clause, ok := want[cast.SpellID.SpellID]
+		if !ok {
+			continue
+		}
+		var compact bytes.Buffer
+		if err := json.Compact(&compact, e.Action.Condition); err != nil {
+			t.Fatal(err)
+		}
+		cond := compact.String()
+		if !strings.Contains(cond, `"currentLevel":{}`) || !strings.Contains(cond, `"val":"17"`) || !strings.Contains(cond, clause) {
+			t.Errorf("spell %d has no below-17 finisher rule: %s", cast.SpellID.SpellID, cond)
+		}
+		delete(want, cast.SpellID.SpellID)
+	}
+	if len(want) != 0 {
+		t.Errorf("lines not found: %v", want)
+	}
 }
