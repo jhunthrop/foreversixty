@@ -1871,6 +1871,16 @@ data class RaidComposition(
     @SerialName("buffs") val buffs: List<RaidBuff> = emptyList(),
 )
 
+/** A raid's comp target (Go guilds.CompTarget). Defaults: Onyxia's Lair 2 tanks, 8 healers, 10 melee, 20 ranged; any other 40-player raid 4, 10, 12, 14. */
+@Serializable
+data class RaidCompTarget(
+    @SerialName("tanks") val tanks: Int,
+    @SerialName("healers") val healers: Int,
+    @SerialName("melee") val melee: Int,
+    @SerialName("ranged") val ranged: Int,
+    @SerialName("source") val source: String,
+)
+
 /** Sign-up counts; the role counts count in only. melee plus ranged is dps, split by the same group as each row's group (Go raidspec.Group), so the page and the Discord post agree. */
 @Serializable
 data class RaidCounts(
@@ -1884,6 +1894,8 @@ data class RaidCounts(
     @SerialName("dps") val dps: Int,
     @SerialName("melee") val melee: Int,
     @SerialName("ranged") val ranged: Int,
+    /** Late rows by roster group, beside the In-only tanks, healers, melee and ranged, so the comp against the target can add the late arrivals. On a raid view only. */
+    @SerialName("late_groups") val lateGroups: RaidGroupCounts? = null,
     /** In plus Late by class slug, one key per class among signups and not_signed (zeros included), so the figures sum to in plus late. On a raid view only, not on the band's next_raid. */
     @SerialName("classes") val classes: Map<String, Int>? = null,
 )
@@ -1903,6 +1915,15 @@ data class RaidDiscordPost(
     @SerialName("post_at") val postAt: String? = null,
     @SerialName("reminded_at") val remindedAt: String? = null,
     @SerialName("remind") val remind: Boolean,
+)
+
+/** A count per roster group (Go raidspec.Group). */
+@Serializable
+data class RaidGroupCounts(
+    @SerialName("tanks") val tanks: Int,
+    @SerialName("healers") val healers: Int,
+    @SerialName("melee") val melee: Int,
+    @SerialName("ranged") val ranged: Int,
 )
 
 /** A guild's next raid, the band's raid line; omitted when none. */
@@ -2058,6 +2079,17 @@ data class RaidNotSigned(
 )
 
 @Serializable
+data class RaidNotSignedRaider(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    /** The account handle, "u:42". */
+    @SerialName("account_key") val accountKey: String,
+    /** True when the account linked Discord */
+    @SerialName("discord_linked") val discordLinked: Boolean,
+)
+
+@Serializable
 data class RaidOwnSignup(
     @SerialName("character_key") val characterKey: String,
     @SerialName("state") val state: String,
@@ -2077,6 +2109,13 @@ data class RaidPatch(
     @SerialName("timezone") val timezone: String,
     @SerialName("post_to_discord") val postToDiscord: Boolean? = null,
     @SerialName("remind_day_before") val remindDayBefore: Boolean? = null,
+)
+
+@Serializable
+data class RaidPingState(
+    @SerialName("last_pinged_at") val lastPingedAt: String? = null,
+    /** last_pinged_at plus 6 hours; null before the first ping. */
+    @SerialName("next_allowed_at") val nextAllowedAt: String? = null,
 )
 
 @Serializable
@@ -2149,6 +2188,12 @@ data class RaidView(
     @SerialName("not_signed") val notSigned: List<RaidNotSigned> = emptyList(),
     @SerialName("viewer") val viewer: RaidViewer,
     @SerialName("discord") val discord: RaidDiscord,
+    /** The raid's comp target: the zone's default (source default) or the officer's own (source raid). Null for a run with none: dungeon runs, guild events and raids with no sourced size. Every member reads it. */
+    @SerialName("comp_target") val compTarget: RaidCompTarget? = null,
+    /** Officers only (absent for everyone else): one row per verified account that has not answered, the account's main among its characters (else its highest level, else the first by name), left out when every character's known level is under the zone's (zone min level, 60 for a raid). not_signed keeps every unanswered character for the raid page. */
+    @SerialName("not_signed_raiders") val notSignedRaiders: List<RaidNotSignedRaider>? = null,
+    /** Officers only (absent for everyone else). When the non-signers were last pinged. */
+    @SerialName("ping") val ping: RaidPingState? = null,
     @SerialName("discord_post") val discordPost: RaidDiscordPost? = null,
     @SerialName("pre_done_status") val preDoneStatus: String? = null,
     @SerialName("match") val match: RaidMatch? = null,

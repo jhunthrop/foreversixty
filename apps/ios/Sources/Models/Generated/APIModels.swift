@@ -5019,6 +5019,29 @@ public struct RaidComposition: Codable, Sendable, Equatable {
     }
 }
 
+/// A raid's comp target (Go guilds.CompTarget). Defaults: Onyxia's Lair 2 tanks, 8 healers, 10 melee, 20 ranged; any other 40-player raid 4, 10, 12, 14.
+public struct RaidCompTarget: Codable, Sendable, Equatable {
+    public let tanks: Int
+    public let healers: Int
+    public let melee: Int
+    public let ranged: Int
+    public let source: String
+
+    public init(
+        tanks: Int,
+        healers: Int,
+        melee: Int,
+        ranged: Int,
+        source: String
+    ) {
+        self.tanks = tanks
+        self.healers = healers
+        self.melee = melee
+        self.ranged = ranged
+        self.source = source
+    }
+}
+
 /// Sign-up counts; the role counts count in only. melee plus ranged is dps, split by the same group as each row's group (Go raidspec.Group), so the page and the Discord post agree.
 public struct RaidCounts: Codable, Sendable, Equatable {
     public let signedIn: Int
@@ -5031,6 +5054,8 @@ public struct RaidCounts: Codable, Sendable, Equatable {
     public let dps: Int
     public let melee: Int
     public let ranged: Int
+    /// Late rows by roster group, beside the In-only tanks, healers, melee and ranged, so the comp against the target can add the late arrivals. On a raid view only.
+    public let lateGroups: RaidGroupCounts?
     /// In plus Late by class slug, one key per class among signups and not_signed (zeros included), so the figures sum to in plus late. On a raid view only, not on the band's next_raid.
     public let classes: [String: Int]?
 
@@ -5044,6 +5069,7 @@ public struct RaidCounts: Codable, Sendable, Equatable {
         dps: Int,
         melee: Int,
         ranged: Int,
+        lateGroups: RaidGroupCounts? = nil,
         classes: [String: Int]? = nil
     ) {
         self.signedIn = signedIn
@@ -5055,6 +5081,7 @@ public struct RaidCounts: Codable, Sendable, Equatable {
         self.dps = dps
         self.melee = melee
         self.ranged = ranged
+        self.lateGroups = lateGroups
         self.classes = classes
     }
 
@@ -5068,6 +5095,7 @@ public struct RaidCounts: Codable, Sendable, Equatable {
         case dps
         case melee
         case ranged
+        case lateGroups
         case classes
     }
 }
@@ -5110,6 +5138,26 @@ public struct RaidDiscordPost: Codable, Sendable, Equatable {
         self.postAt = postAt
         self.remindedAt = remindedAt
         self.remind = remind
+    }
+}
+
+/// A count per roster group (Go raidspec.Group).
+public struct RaidGroupCounts: Codable, Sendable, Equatable {
+    public let tanks: Int
+    public let healers: Int
+    public let melee: Int
+    public let ranged: Int
+
+    public init(
+        tanks: Int,
+        healers: Int,
+        melee: Int,
+        ranged: Int
+    ) {
+        self.tanks = tanks
+        self.healers = healers
+        self.melee = melee
+        self.ranged = ranged
     }
 }
 
@@ -5543,6 +5591,38 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
     }
 }
 
+public struct RaidNotSignedRaider: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    /// The account handle, "u:42".
+    public let accountKey: String
+    /// True when the account linked Discord
+    public let discordLinked: Bool
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        accountKey: String,
+        discordLinked: Bool
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.accountKey = accountKey
+        self.discordLinked = discordLinked
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case accountKey
+        case discordLinked
+    }
+}
+
 public struct RaidOwnSignup: Codable, Sendable, Equatable {
     public let characterKey: String
     public let state: String
@@ -5592,6 +5672,20 @@ public struct RaidPatch: Codable, Sendable, Equatable {
         self.timezone = timezone
         self.postToDiscord = postToDiscord
         self.remindDayBefore = remindDayBefore
+    }
+}
+
+public struct RaidPingState: Codable, Sendable, Equatable {
+    public let lastPingedAt: Date?
+    /// last_pinged_at plus 6 hours; null before the first ping.
+    public let nextAllowedAt: Date?
+
+    public init(
+        lastPingedAt: Date? = nil,
+        nextAllowedAt: Date? = nil
+    ) {
+        self.lastPingedAt = lastPingedAt
+        self.nextAllowedAt = nextAllowedAt
     }
 }
 
@@ -5764,6 +5858,12 @@ public struct RaidView: Codable, Sendable, Equatable {
     public let notSigned: [RaidNotSigned]
     public let viewer: RaidViewer
     public let discord: RaidDiscord
+    /// The raid's comp target: the zone's default (source default) or the officer's own (source raid). Null for a run with none: dungeon runs, guild events and raids with no sourced size. Every member reads it.
+    public let compTarget: RaidCompTarget?
+    /// Officers only (absent for everyone else): one row per verified account that has not answered, the account's main among its characters (else its highest level, else the first by name), left out when every character's known level is under the zone's (zone min level, 60 for a raid). not_signed keeps every unanswered character for the raid page.
+    public let notSignedRaiders: [RaidNotSignedRaider]?
+    /// Officers only (absent for everyone else). When the non-signers were last pinged.
+    public let ping: RaidPingState?
     public let discordPost: RaidDiscordPost?
     public let preDoneStatus: String?
     public let match: RaidMatch?
@@ -5792,6 +5892,9 @@ public struct RaidView: Codable, Sendable, Equatable {
         notSigned: [RaidNotSigned] = [],
         viewer: RaidViewer,
         discord: RaidDiscord,
+        compTarget: RaidCompTarget? = nil,
+        notSignedRaiders: [RaidNotSignedRaider]? = nil,
+        ping: RaidPingState? = nil,
         discordPost: RaidDiscordPost? = nil,
         preDoneStatus: String? = nil,
         match: RaidMatch? = nil,
@@ -5817,6 +5920,9 @@ public struct RaidView: Codable, Sendable, Equatable {
         self.notSigned = notSigned
         self.viewer = viewer
         self.discord = discord
+        self.compTarget = compTarget
+        self.notSignedRaiders = notSignedRaiders
+        self.ping = ping
         self.discordPost = discordPost
         self.preDoneStatus = preDoneStatus
         self.match = match
@@ -5845,6 +5951,9 @@ public struct RaidView: Codable, Sendable, Equatable {
         notSigned = try c.decodeIfPresent([RaidNotSigned].self, forKey: .notSigned) ?? []
         viewer = try c.decode(RaidViewer.self, forKey: .viewer)
         discord = try c.decode(RaidDiscord.self, forKey: .discord)
+        compTarget = try c.decodeIfPresent(RaidCompTarget.self, forKey: .compTarget)
+        notSignedRaiders = try c.decodeIfPresent([RaidNotSignedRaider].self, forKey: .notSignedRaiders)
+        ping = try c.decodeIfPresent(RaidPingState.self, forKey: .ping)
         discordPost = try c.decodeIfPresent(RaidDiscordPost.self, forKey: .discordPost)
         preDoneStatus = try c.decodeIfPresent(String.self, forKey: .preDoneStatus)
         match = try c.decodeIfPresent(RaidMatch.self, forKey: .match)
