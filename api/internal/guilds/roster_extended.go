@@ -79,13 +79,18 @@ func (s *Store) enrichRoster(ctx context.Context, guildID int64, source string, 
 // private, flagged or trash-only report, or one not ranked yet) is never everyone's
 // absence. Fewer when the guild has not logged that many yet.
 func (s *Store) attendanceReports(ctx context.Context, guildID int64) ([]string, error) {
+	return s.attendanceReportsN(ctx, guildID, attendanceWindow)
+}
+
+// attendanceReportsN is attendanceReports over the guild's last window reports.
+func (s *Store) attendanceReportsN(ctx context.Context, guildID int64, window int) ([]string, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select r.id from reports r
 		where r.guild_id = $1 and `+presence.EvidenceReport("r")+`
 		  and (exists (select 1 from fight_metrics m where m.report_id = r.id and m.state <> 'removed')
 		       or exists (select 1 from rating_scores rs where rs.report_id = r.id))
 		order by r.created_at desc, r.id desc
-		limit $2`, guildID, attendanceWindow)
+		limit $2`, guildID, window)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: attendance window: %w", err)
 	}
@@ -101,7 +106,12 @@ func (s *Store) attendanceReports(ctx context.Context, guildID int64) ([]string,
 // fights.players, which holds the log's GUIDs). A character in more than one fight of a
 // report is still counted once.
 func (s *Store) attendance(ctx context.Context, guildID int64, keys []string) (int, map[string]int, error) {
-	ids, err := s.attendanceReports(ctx, guildID)
+	return s.attendanceN(ctx, guildID, keys, attendanceWindow)
+}
+
+// attendanceN is attendance over the guild's last window reports.
+func (s *Store) attendanceN(ctx context.Context, guildID int64, keys []string, window int) (int, map[string]int, error) {
+	ids, err := s.attendanceReportsN(ctx, guildID, window)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -134,16 +144,22 @@ func (s *Store) attendance(ctx context.Context, guildID int64, keys []string) (i
 // encounter, ordered by the role's own metric), so a raider's roster figure is the largest of
 // the Progression rows against their name - one number, not two (round 8, P8-7).
 func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestParse, error) {
+	return s.bestParsesWhere(ctx, "r.guild_id = $1", guildID)
+}
+
+// bestParsesWhere is bestParses over the reports and rows scope selects ($1 its one argument):
+// the guild's own reports for the roster, every report for an applicant not in the guild yet.
+func (s *Store) bestParsesWhere(ctx context.Context, scope string, arg any) (map[string]BestParse, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select distinct on (m.player_key) m.player_key, coalesce(m.role, ''),
 		       m.metric_dps, m.metric_hps, coalesce(f.name, ''), m.report_id, m.fight_index
 		from fight_metrics m
 		join reports r on r.id = m.report_id
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
-		where r.guild_id = $1 and `+bossKillMetrics+`
+		where `+scope+` and `+bossKillMetrics+`
 		  and `+presence.EvidenceReport("r")+`
 		order by m.player_key, `+roleMetricOrder+` desc`,
-		guildID)
+		arg)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: best parses: %w", err)
 	}

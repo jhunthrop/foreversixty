@@ -58,6 +58,9 @@ type Service struct {
 	Discord DiscordChannels
 	// Bot is the Forever Sixty bot; nil leaves bot_available false.
 	Bot DiscordBot
+	// ApplicationBot grants the recruit role and DMs an opted-in applicant on a decision; nil
+	// does neither and says so in the decision's answer.
+	ApplicationBot ApplicationBot
 	// RaidEvents posts the raid embeds to the guild's channel; nil posts nothing.
 	RaidEvents RaidEvents
 	// CoachHolders tells whether any raider in a log holds log_coach; nil: never.
@@ -158,6 +161,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// never advertised by a 401/403 that a wrap would otherwise leak.
 	mux.HandleFunc("GET /v1/moderation/claims", s.moderationClaims)
 	mountCalendar(mux, s, trustedProxyHops)
+	mountRecruitRoutes(mux, s, trustedProxyHops)
 }
 
 // signupLimiter is the shared sign-up budget, built once when none was injected.
