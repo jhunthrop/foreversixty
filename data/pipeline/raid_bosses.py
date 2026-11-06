@@ -254,16 +254,46 @@ def render(doc: dict) -> str:
     return json.dumps(doc, indent=2) + "\n"
 
 
+def fetch_missing_tables(build: str, raw: Path, client: object | None = None) -> list[str]:
+    """Download the client tables this step reads that `raw` lacks, from wago.tools for the
+    build; the Journal tables are optional there (a client without a Dungeon Journal answers
+    "Table not found" and gets an empty table). Lets tools/activate-build.sh make
+    raid-bosses.json itself when data.yml's fetch did not (the refresh hold keeps data.yml
+    off). Answers the tables it fetched."""
+    import httpx
+
+    from pipeline import wago
+
+    missing = [t for t in TABLES if not (raw / f"{t}.csv").exists()]
+    if not missing:
+        return []
+    own = client is None
+    http = client or httpx.Client(base_url=wago.BASE_URL, headers={"User-Agent": wago.USER_AGENT})
+    try:
+        for table in missing:
+            wago.download_table(table, build, raw, http)  # type: ignore[arg-type]
+    finally:
+        if own:
+            http.close()  # type: ignore[union-attr]
+    return missing
+
+
 def write_raid_bosses(
     build: str,
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
     raw: Path | None = None,
     check: bool = False,
+    fetch: bool = False,
 ) -> Path:
-    """Write (or, with `check`, verify) `builds/<build>/raid-bosses.json`."""
+    """Write (or, with `check`, verify) `builds/<build>/raid-bosses.json`. With `fetch`, the
+    client tables `raw` lacks are downloaded first."""
     build_dir = root / build
-    doc = build_raid_bosses(build, build_dir, raw or build_dir / "raw", curated_dir)
+    raw = raw or build_dir / "raw"
+    if fetch:
+        for table in fetch_missing_tables(build, raw):
+            logger.info("fetched %s for %s", table, build)
+    doc = build_raid_bosses(build, build_dir, raw, curated_dir)
     out = build_dir / RAID_BOSSES
     text = render(doc)
     if check:

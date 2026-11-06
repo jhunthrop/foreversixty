@@ -263,6 +263,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="write nothing; exit non-zero if the committed file has drifted",
     )
+    rb.add_argument(
+        "--fetch",
+        action="store_true",
+        help="download the client tables raw/ lacks first (activate-build.sh without data.yml)",
+    )
 
     st = sub.add_parser(
         "spelltips",
@@ -679,7 +684,7 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "raid-bosses":
         from pipeline.raid_bosses import write_raid_bosses
 
-        print(write_raid_bosses(args.build, raw=args.raw, check=args.check))
+        print(write_raid_bosses(args.build, raw=args.raw, check=args.check, fetch=args.fetch))
     elif args.command == "spelltips":
         from pipeline.spelltips import write_spell_tips
 

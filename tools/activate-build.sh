@@ -241,6 +241,11 @@ step "the fetched tables for $NEW" \
 # on 2026-11-03 and no spell on a guide opened a tooltip).
 # raid-bosses.json: the first raid tier's bosses and loot (pipeline raid-bosses), which step 4c
 # copies into the API's boss table.
+# raid-bosses.json is made here when data.yml's fetch did not write it (the refresh hold keeps
+# data.yml off): the step downloads the six client tables it reads into raw/ itself.
+if [ ! -e "$NEW_DIR/raid-bosses.json" ] && [ -e "$NEW_DIR/loot.json" ] && [ -e "$NEW_DIR/items.json" ]; then
+  run in_dir data uv run python -m pipeline raid-bosses --build "$NEW" --fetch
+fi
 for f in items.json simdb.bin talents.json levels.json spellranks.json loot.json manifest.json spelltips/shared.json raid-bosses.json; do
   [ -e "$NEW_DIR/$f" ] || die "$NEW_DIR/$f is missing: data.yml's fetch has not landed $NEW"
 done
