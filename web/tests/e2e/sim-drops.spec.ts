@@ -6,6 +6,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { apiUnreachable, expect, test } from './support/test';
+import { gotoSim, simCharacter } from './support/sim-page';
+import { simPageCopy } from '../../src/lib/sim/page-copy';
 import { bulkCopy } from '../../src/lib/sim/copy';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
@@ -279,14 +281,14 @@ test('the flat list only lists genuine upgrades, and the boss card names the tru
 });
 
 /**
- * Task 7 (spec 2026-09-25 §6): the after-sim sentence reads back a small localStorage
- * record Droptimizer.svelte writes on a genuine top-row upgrade, with no fetch of its own.
- * This is the one end-to-end proof that the whole chain -- the write here, the read on a
- * later, wholly separate /sim page load -- actually reaches the results card, not just the
- * two halves in isolation (last-upgrade.test.ts's round-trip, SimResults.test.ts's SSR
- * render).
+ * Task 7 (spec 2026-09-25 §6): Droptimizer.svelte writes a small localStorage record on a
+ * genuine top-row upgrade. The redesigned /sim answer's next action is the fixed "Find
+ * upgrades in Top Gear ›" (spec 2026-11-06-sim §4.5), so a later plain sim names Top Gear
+ * for the same character rather than reading the record back.
  */
-test('a real Droptimizer upgrade names the next action on a later plain sim', async ({ page }) => {
+test('a real Droptimizer upgrade is recorded, and a later plain sim names Top Gear next', async ({
+  page,
+}) => {
   await stubPremiumRun(page);
   await loadDrops(page);
   await page.getByTestId('sim-upcoming').check();
@@ -305,13 +307,11 @@ test('a real Droptimizer upgrade names the next action on a later plain sim', as
   // current-character pointer `loadDrops` above already wrote restores the same FURY
   // character here on its own, the same restore-over-paste-box behaviour `loadDrops`
   // itself accounts for.
-  await page.goto('/sim');
-  // sim-one-paste lane: the fallback paste surface is ColdPasteHero.svelte now --
-  // SourceSwitcher's own addon card is gone whenever it renders -- and its Run pastes and
-  // runs in one click, so this waits that run out before the explicit run click below (the
-  // one this test is actually proving, against the restored character's own settings).
+  await gotoSim(page);
+  // The fallback paste surface is the landing's paste Plate, whose Run pastes and runs in one
+  // click, so this waits that run out before the explicit run click below.
   const addonInput = page.getByTestId('sim-cold-paste-input');
-  const characterStrip = page.getByTestId('sim-character');
+  const characterStrip = simCharacter(page);
   await expect(addonInput.or(characterStrip)).toBeVisible();
   if (await addonInput.isVisible()) {
     await addonInput.fill(FURY);
@@ -322,7 +322,9 @@ test('a real Droptimizer upgrade names the next action on a later plain sim', as
   await page.getByTestId('sim-run-button').click();
   await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 10_000 });
 
-  await expect(page.getByTestId('sim-next-action')).toContainText('Upgrade: ');
+  const next = page.getByTestId('sim-next-action');
+  await expect(next).toHaveText(simPageCopy.answer.topGear);
+  await expect(next).toHaveAttribute('href', /^\/sim\/gear/);
 });
 
 test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page }) => {

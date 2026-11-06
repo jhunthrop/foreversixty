@@ -6,29 +6,25 @@
 // clears the 44px floor at 390x844, and no `title=` remains on the page -- plus a sample of
 // what the notes actually say, including the fight-style, execute-phase and target-armor
 // content the brief calls out by name.
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
+//
+// /sim itself moved to the run line and More settings (spec 2026-11-06-sim §4.1, §5.2), which
+// carry no HelpNotes; the settings bar and its notes stay on the tool pages (BulkRunBar mounts
+// SettingsBar), so these load the character on Top gear. The fight styles' descriptions ride on
+// the run line's Fight options on /sim, checked there.
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { apiUnreachable, expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
+import { pasteAndRun, SIM_FURY as FURY } from './support/sim-page';
 
-// Same fixture sim-settings.spec.ts and sim-run.spec.ts load: an addon export needs no API
-// stub.
-const activeBuild = JSON.parse(
-  readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
-) as { build: string };
-const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
+// The tools island reads the member's saved builds; this spec answers none (support/test.ts).
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
 
-// sim-one-paste lane: ColdPasteHero.svelte is the view's one paste surface and pastes and
-// runs in one click, so this waits the hero's own run out before returning -- HelpNote's
-// own trigger below is disabled the same way SettingsBar's other controls are while a run
-// is in flight.
+/** The fixture Fury Warrior on /sim/gear, through the tools island's own addon box. */
 async function loadFury(page: Page): Promise<void> {
-  await page.goto('/sim');
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
+  await page.goto('/sim/gear');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
 }
 
 async function openMoreSettings(page: Page): Promise<void> {
@@ -65,19 +61,19 @@ test('a HelpNote opens on a click, names the control it explains, and closes on 
 // Each style's description rides on its own option now (controls-charts spec §A10 row 15): the
 // list shows it under the name on a fine pointer, and the help note no longer repeats it.
 test('every fight style carries what its name alone does not say', async ({ page }) => {
-  await loadFury(page);
-  const options = page.getByTestId('sim-style').locator('option');
+  await pasteAndRun(page);
+  const options = page.getByTestId('control-style').locator('option');
   for (const label of Object.values(simCopy.styleLabel)) {
     await expect(options.filter({ hasText: label })).toHaveCount(1);
   }
   // Cleave's targets share Patchwerk's own execute threshold, and the dungeon schedule is
   // fixed at 160 seconds regardless of Fight length -- neither is obvious from the option's
   // name alone (task-7-brief.md's own warning against writing flattering copy over it).
-  await expect(page.getByTestId('sim-style').locator('option[value="cleave-2"]')).toHaveAttribute(
+  await expect(page.getByTestId('control-style').locator('option[value="cleave-2"]')).toHaveAttribute(
     'data-description',
     /sharing the same 25% execute threshold as Patchwerk/,
   );
-  await expect(page.getByTestId('sim-style').locator('option[value="dungeon"]')).toHaveAttribute(
+  await expect(page.getByTestId('control-style').locator('option[value="dungeon"]')).toHaveAttribute(
     'data-description',
     /fixed schedule, not a repeating pull/,
   );
@@ -126,19 +122,6 @@ test('Buffs keeps its own help note distinct from "what’s in it"', async ({ pa
   );
 });
 
-test('the finish-notification checkbox explains itself too, once a result is on screen', async ({ page }) => {
-  await loadFury(page);
-  await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 8000 });
-
-  const trigger = page.getByTestId('sim-notify-help-trigger');
-  await expect(trigger).toBeVisible();
-  await trigger.click();
-  await expect(page.getByTestId('sim-notify-help-panel')).toContainText(
-    'Asks the browser for permission to show a notification',
-  );
-});
-
 test.describe('phone (390x844)', () => {
   // 390x844, the exact width and height task-2-brief.md's own acceptance criterion names
   // and sim-scope.spec.ts and sim-tabs.spec.ts already use the same way: an explicit
@@ -154,10 +137,7 @@ test.describe('phone (390x844)', () => {
     // separately audited hover titles ("Hover a segment for the ability") that Task 7
     // never scoped this test to. Checked right after the character lands, ahead of that
     // mount, the same moment the old addon card's Load alone used to leave the page in.
-    await page.goto('/sim');
-    await page.getByTestId('sim-cold-paste-input').fill(FURY);
-    await page.getByTestId('sim-cold-paste-run').click();
-    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await loadFury(page);
     await openMoreSettings(page);
 
     // The newcomer repro this task fixes, verbatim: querying [title] rather than the wider
@@ -169,8 +149,9 @@ test.describe('phone (390x844)', () => {
     const triggers = page.locator('[data-testid$="-help-trigger"]');
     const count = await triggers.count();
     // Fight style, Fight length, Targets, Buffs, Length varies by, Target level, Target
-    // armor, Target type, Execute phase, Target dummy, Precision -- eleven before a run.
-    expect(count).toBeGreaterThanOrEqual(11);
+    // armor, Target type, Execute phase, Target dummy -- ten in the settings bar (the tool
+    // page's precision is its own control, outside the bar).
+    expect(count).toBeGreaterThanOrEqual(10);
     for (let i = 0; i < count; i++) {
       const box = await triggers.nth(i).boundingBox();
       expect(box, `trigger ${i} has a box`).not.toBeNull();

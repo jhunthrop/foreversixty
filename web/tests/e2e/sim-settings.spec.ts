@@ -1,168 +1,121 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import { expect, test } from './support/test';
-import { choose, fieldBox } from './support/select';
+import { choose } from './support/select';
+import {
+  chooseBuffs,
+  closeMoreSettings,
+  gotoSim,
+  openMoreSettings,
+  openRequest,
+  pasteAndRun,
+  SIM_FURY as FURY,
+} from './support/sim-page';
 
-const activeBuild = JSON.parse(
-  readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
-) as { build: string };
-
-const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 // The same character recorded at level 60: the Raid-buffed consumables follow the level
 // (sim/request/raid-consumes.json), and a fresh 33's set holds no weapon stone.
 const FURY_60 = `${FURY}|level=60`;
 
-test('the settings bar reads the defaults and every control changes the settings', async ({ page }) => {
-  await page.goto('/sim');
-  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
-  // settings controls below are disabled while that run is in flight (SettingsBar.svelte's
-  // `disabled` prop), so this waits it out before touching any of them.
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
+// The run line (spec 2026-11-06-sim §4.1) holds Fight, Length, Targets, Buffs and Precision;
+// the rest of the request is in More settings (§5.2, ruling S7): the execute phase, the target
+// level, the rotation, the consumables, Custom's buffs and the request JSON. The old settings
+// card's variation, target armor, target type and dummy fields retired: a fight style ("Target
+// dummy" among them) or the request JSON sets those now.
+test('the run line reads the defaults and every control changes the settings', async ({ page }) => {
+  // The paste runs at once, and the run line is inert while that run is in flight, so this
+  // waits it out before touching any of them.
+  await pasteAndRun(page);
 
   const settings = page.getByTestId('sim-settings');
   await expect(settings).toBeVisible();
 
   // Defaults: defaultSettings() (settings.ts) is Patchwerk, 3:00, single target, and the
-  // preset the character's band publishes -- Bare for this level-33 Fury (owner ruling,
-  // round 6) -- and the rotation names the spec the loaded character carries, Fury.
-  await expect(page.getByTestId('sim-style')).toHaveValue('patchwerk');
-  await expect(page.getByTestId('sim-duration')).toHaveValue('180');
-  await expect(page.getByTestId('sim-targets')).toHaveValue('1');
-  await expect(page.getByTestId('sim-preset')).toHaveValue('bare');
-  await expect(page.getByTestId('sim-rotation')).toHaveText('Default for Fury');
-  // Final whole-branch review, C1: this trigger no longer navigates at all (it opens an
-  // in-page drawer, tests/e2e/sim-rotation-drawer.spec.ts's own coverage) -- an `href`
-  // assertion here used to pin the very navigation that fix removed.
+  // preset the character's band publishes -- Bare ("None") for this level-33 Fury (owner
+  // ruling, round 6).
+  const style = page.getByTestId('control-style');
+  await expect(style).toHaveValue('patchwerk');
+  await expect(page.getByTestId('control-length')).toHaveValue('180');
+  await expect(page.getByTestId('control-targets')).toHaveValue('1');
+  await expect(page.getByTestId('control-buffs-bare')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByTestId('control-buffs-bare')).toHaveText('None');
 
   // Fight style: the contract's nine, plus nothing. Choosing one writes its fields.
-  const style = page.getByTestId('sim-style');
   await expect(style.locator('option')).toHaveCount(9);
   await choose(style, 'cleave-3');
-  await expect(page.getByTestId('sim-targets')).toHaveValue('3');
-  await expect(page.getByTestId('sim-style-note')).toBeHidden();
-
-  // The two movement styles carry the honesty note; nothing else does.
+  await expect(page.getByTestId('control-targets')).toHaveValue('3');
   await choose(style, 'light-movement');
-  await expect(page.getByTestId('sim-targets')).toHaveValue('1');
-  await expect(page.getByTestId('sim-style-note')).toBeVisible();
+  await expect(page.getByTestId('control-targets')).toHaveValue('1');
 
   // Setting targets by hand detaches from the style: the select falls to "Custom".
-  await choose(page.getByTestId('sim-targets'), '4');
+  await choose(page.getByTestId('control-targets'), '4');
   await expect(style).toHaveValue('');
 
   // Fight length is labelled as a clock and reaches ten minutes.
-  const duration = page.getByTestId('sim-duration');
+  const duration = page.getByTestId('control-length');
   await expect(duration.locator('option', { hasText: '0:20' })).toHaveCount(1);
   await expect(duration.locator('option', { hasText: '10:00' })).toHaveCount(1);
   await choose(duration, '600');
   await expect(duration).toHaveValue('600');
 
-  // The secondary controls live in the disclosure and are closed on arrival.
-  const more = page.getByTestId('sim-settings-more');
-  await expect(more).toBeVisible();
-  await expect(fieldBox(page, 'sim-variation')).toBeHidden();
-  await more.getByRole('group').or(more).locator('summary').click();
-
-  await expect(fieldBox(page, 'sim-variation')).toBeVisible();
-  await choose(page.getByTestId('sim-variation'), '0');
-  await expect(page.getByTestId('sim-variation')).toHaveValue('0');
+  // The secondary controls live in More settings, closed on arrival.
+  await expect(page.getByTestId('sim-more-settings')).toHaveCount(0);
+  await openMoreSettings(page);
+  const sheet = page.getByTestId('sim-more-settings');
+  // The rotation names the spec the loaded character carries, Fury.
+  await expect(sheet).toContainText('The Fury rotation');
 
   await choose(page.getByTestId('sim-target-level'), '60');
   await expect(page.getByTestId('sim-target-level')).toHaveValue('60');
 
-  await page.getByTestId('sim-target-armor').fill('3731');
-  await expect(page.getByTestId('sim-target-armor')).toHaveValue('3731');
-
-  await choose(page.getByTestId('sim-target-type'), 'undead');
-  await expect(page.getByTestId('sim-target-type')).toHaveValue('undead');
-
-  // Re-attaching a style, then toggling execute phase or the dummy, detaches it again:
-  // withExecutePhase and withDummy both call settings.ts's `detached`, the same rule
-  // targets used above -- SettingsSheet.svelte's own header comment claims this for both.
+  // Re-attaching a style, then toggling the execute phase, detaches it again: withExecutePhase
+  // calls settings.ts's `detached`, the same rule targets used above.
+  await closeMoreSettings(page);
   await choose(style, 'patchwerk');
   await expect(style).toHaveValue('patchwerk');
-
-  const execute = page.getByTestId('sim-execute');
-  await execute.uncheck();
-  await expect(execute).not.toBeChecked();
-  await expect(style).toHaveValue('');
-  await execute.check();
-
-  await choose(style, 'patchwerk');
-  await expect(style).toHaveValue('patchwerk');
-
-  const dummy = page.getByTestId('sim-dummy');
-  await dummy.check();
-  await expect(dummy).toBeChecked();
+  await openMoreSettings(page);
+  await expect(page.getByTestId('sim-execute-on')).toHaveAttribute('aria-checked', 'true');
+  await page.getByTestId('sim-execute-off').click();
+  await expect(page.getByTestId('sim-execute-off')).toHaveAttribute('aria-checked', 'true');
+  await closeMoreSettings(page);
   await expect(style).toHaveValue('');
 
-  // Re-attaching Patchwerk above reset targets to its own count (1) each time; restore the
-  // 4 set by hand earlier so the persistence check below still sees it.
-  await choose(page.getByTestId('sim-targets'), '4');
-
-  // The changes hold after the source switcher is reopened and the strip is brought back.
-  await page.getByTestId('sim-change-source').click();
-  await expect(page.getByTestId('sim-sources')).toBeVisible();
+  // Done keeps the changes on the run line: the length set by hand holds through it all.
   await expect(duration).toHaveValue('600');
-  await expect(page.getByTestId('sim-targets')).toHaveValue('4');
+  await choose(page.getByTestId('control-targets'), '4');
+  await expect(page.getByTestId('control-targets')).toHaveValue('4');
 });
 
-test('the settings bar is hidden until a character is loaded', async ({ page }) => {
-  await page.goto('/sim');
-  await expect(page.getByTestId('sim-settings')).toBeHidden();
-  await expect(page.getByTestId('sim-empty')).toBeVisible();
+test('the run line is absent until a character is loaded', async ({ page }) => {
+  await gotoSim(page);
+  await expect(page.getByTestId('sim-settings')).toHaveCount(0);
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
 });
 
 /**
  * Task 4 (dps-minmaxer D16 BLOCKER): the old Raid-buffed preset was five buffs and two
  * consumables, +6% over Solo where vanilla's real answer for a melee is +60% to +120%.
  * This reads the fix from the same three places a reviewer's repro read the bug --
- * "what's in it", the Custom panel's own counters, and the request the browser actually
- * sends -- rather than only a unit test on settings.ts's own PRESET_BUFFS constant and
- * presetConsumables function.
+ * what is in it (More settings' consumables), the Custom panel's own counters, and the
+ * request the browser actually sends -- rather than only a unit test on settings.ts.
  */
-test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’s counters show it, and the request carries it', async ({
+test('Raid-buffed is the full standard set: More settings lists it, Custom’s counters show it, and the request carries it', async ({
   page,
 }) => {
-  await page.goto('/sim');
-  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
-  // settings controls below are disabled while that run is in flight (SettingsBar.svelte's
-  // `disabled` prop), so this waits it out before touching any of them.
-  await page.getByTestId('sim-cold-paste-input').fill(FURY_60);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-  await expect(page.getByTestId('sim-preset')).toHaveValue('raid-buffed');
+  await pasteAndRun(page, FURY_60);
+  await expect(page.getByTestId('control-buffs-raid-buffed')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByTestId('control-buffs-raid-buffed')).toHaveText('Raid');
 
-  // "What's in it" is one click away (Disclosure.svelte, Ruling 3) and names the preset's
-  // own ids -- humanised, never bare, even over this repo's sparse fixture name table
-  // (src/fixtures/planner/simbuffs.json has no row for either id below).
-  const trigger = page.getByTestId('sim-preset-summary-trigger');
-  await expect(trigger).toBeVisible();
-  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
-  await trigger.click();
-  const panel = page.getByTestId('sim-preset-summary-panel');
-  await expect(panel).toBeVisible();
-  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
-  await expect(panel).toContainText(/sunder armor/i);
-  // Forever has no world buffs (2026-09-28): the preset carries none, so a raid buff stands in.
-  await expect(panel).toContainText(/trueshot aura/i);
-  await expect(panel).not.toContainText(/songflower/i);
-
-  // Escape closes it and returns focus to the trigger, wherever the panel's own content
-  // put it (Ruling 3's keyboard requirement).
-  await page.keyboard.press('Escape');
-  await expect(panel).toBeHidden();
-  await expect(trigger).toBeFocused();
-  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  // More settings names the preset's consumables, humanised, never bare ids.
+  await openMoreSettings(page);
+  const consumables = page.getByTestId('sim-consumables');
+  await expect(consumables).toBeVisible();
+  await expect(consumables).not.toContainText('_');
+  await closeMoreSettings(page);
 
   // Switching to Custom carries every tick across (withPreset(..., 'custom')), so the
   // panel's own counters read the real totals now -- the findings' own quote was "RAID
   // BUFFS 4/30, ... ON THE TARGET 0/24, ... WEAPON OILS AND STONES 0/48".
-  await choose(page.getByTestId('sim-preset'), 'custom');
+  await chooseBuffs(page, 'custom');
+  await openMoreSettings(page);
+  await expect(page.getByTestId('sim-buff-panel')).toBeVisible();
   const groupCount = async (group: string): Promise<number> => {
     const text = await page.getByTestId(`sim-buff-group-${group}`).locator('span.numeric').textContent();
     return Number((text ?? '0/0').split('/')[0]);
@@ -170,62 +123,15 @@ test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’
   expect(await groupCount('raid-buffs')).toBeGreaterThan(4);
   expect(await groupCount('debuffs')).toBeGreaterThan(0);
   expect(await groupCount('weapon-imbue')).toBeGreaterThan(0);
+  await closeMoreSettings(page);
 
-  // The request the browser would actually send carries the expanded preset -- the REQUEST
+  // The request the browser would actually send carries the expanded preset -- the request
   // drawer's own rendering of it, not only the settings object a unit test can see.
-  await choose(page.getByTestId('sim-preset'), 'raid-buffed');
-  await page.getByTestId('sim-request-drawer').locator('summary').click();
+  await chooseBuffs(page, 'raid-buffed');
+  await openRequest(page);
   await expect(page.getByTestId('sim-request-buffs')).toContainText('sunder_armor');
   await expect(page.getByTestId('sim-request-buffs')).toContainText('heart_of_the_lion');
   await expect(page.getByTestId('sim-request-json')).toHaveValue(
     /main_hand_imbue:elemental_sharpening_stone/,
   );
-});
-
-// 2026-09-21 result-page review, Defect 3: leaving Target armor blank and typing 0 used to
-// send the identical request ("target_armor": 0 either way) because a bare 0 was the only
-// way the field had to spell "unset". Blank must mean "use the preset" -- the request omits
-// target_armor entirely -- and a typed 0 must mean an explicit, unarmoured target.
-test('target armor: blank omits the override, a typed 0 sends an explicit zero', async ({ page }) => {
-  await page.goto('/sim');
-  // sim-one-paste lane: ColdPasteHero.svelte's Run pastes and runs in one click, and the
-  // settings controls below are disabled while that run is in flight (SettingsBar.svelte's
-  // `disabled` prop), so this waits it out before touching any of them.
-  await page.getByTestId('sim-cold-paste-input').fill(FURY);
-  await page.getByTestId('sim-cold-paste-run').click();
-  await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
-
-  await page.getByTestId('sim-settings-more').locator('summary').click();
-  const armor = page.getByTestId('sim-target-armor');
-  const requestJson = page.getByTestId('sim-request-json');
-  await page.getByTestId('sim-request-drawer').locator('summary').click();
-
-  // The default fight has never had an override: the field reads blank (its placeholder,
-  // not its value, carries the preset), and the request carries no target_armor key.
-  await expect(armor).toHaveValue('');
-  // The fixture warrior is level 33, so its default target is level 36 and the preset is
-  // the engine's level-36 armor, not the level-63 boss's 3731.
-  await expect(armor).toHaveAttribute('placeholder', '1980');
-  await expect(requestJson).not.toHaveValue(/"target_armor"/);
-
-  // Typing 0 is a real, explicit request for no armor -- not a second way to clear it.
-  // The control only writes on `change` (SettingsSheet.svelte), which needs a blur to
-  // fire -- `fill` alone sets the DOM value but not, reliably, that event.
-  await armor.fill('0');
-  await armor.blur();
-  await expect(armor).toHaveValue('0');
-  await expect(requestJson).toHaveValue(/"target_armor":\s*0\b/);
-
-  // A positive override behaves the same as before.
-  await armor.fill('2500');
-  await armor.blur();
-  await expect(armor).toHaveValue('2500');
-  await expect(requestJson).toHaveValue(/"target_armor":\s*2500\b/);
-
-  // Clearing the field back to blank removes the override again, not to another 0.
-  await armor.fill('');
-  await armor.blur();
-  await expect(armor).toHaveValue('');
-  await expect(requestJson).not.toHaveValue(/"target_armor"/);
 });

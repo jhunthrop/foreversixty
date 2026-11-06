@@ -31,6 +31,7 @@
   import { landingCopy } from '../../lib/sim/landing-copy';
   import { rowLink } from '../../lib/report/format';
   import { parseBuildInput } from '../../lib/sim/build-input';
+  import { fightRefOf } from '../../lib/sim/sources';
   import { simCopy } from '../../lib/sim/copy';
   import { button } from '../../lib/ui/button';
   import { BUSY_CLASS } from '../../lib/ui/busy';
@@ -102,16 +103,6 @@
     if (input === null) return;
     if (input.kind === 'code') onaddon(input.code);
     else onbuild(input.id);
-  }
-
-  /** A report link carries the fight in ?fight=; a pasted ref already has it after a colon. */
-  export function fightRefOf(value: string): string {
-    const trimmed = value.trim();
-    if (trimmed.includes(':')) return trimmed;
-    const [path, query = ''] = trimmed.split('?');
-    const id = path.replace(/\/+$/, '').split('/').at(-1) ?? '';
-    const fight = new URLSearchParams(query).get('fight') ?? '1';
-    return `${id}:${fight}`;
   }
 </script>
 

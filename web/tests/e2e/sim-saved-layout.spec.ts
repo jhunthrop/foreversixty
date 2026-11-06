@@ -1,7 +1,7 @@
 // web/tests/e2e/sim-saved-layout.spec.ts
-// The saved result's layout after its lazy cards load (spec 2026-11-04-sim-results 3.7, 4.2, 8;
-// build reviews 2026-11-05): every section is its card's own height once the card renders or
-// fails, the timeline's loading head is its ready head at its ready height, and on a phone no
+// The saved result's layout after its lazy sections load (spec 2026-11-04-sim-results 3.7, 4.2,
+// 8; build reviews 2026-11-05; the open Sections of spec 2026-11-06-sim §4.5): every lazy holder
+// is its section's own height once the section renders or fails, the timeline's loading head is its ready head at its ready height, and on a phone no
 // lane name sits over the plot, so every event at the pull can be seen.
 import type { Page, Route } from '@playwright/test';
 import { expect, test } from './support/test';
@@ -22,20 +22,26 @@ async function loadEveryCard(page: Page): Promise<void> {
   await expect(page.locator('[data-testid$="-skeleton"]')).toHaveCount(0);
 }
 
-/** Each lazy section's box against its card's, and what is left of its reserve. */
+/** The lazy holders (LazySection's `sim-section-<id>`), not their skeleton or error inside. */
+const HOLDERS =
+  'div[data-testid^="sim-section-"]:not([data-testid$="-skeleton"]):not([data-testid$="-error"])';
+
+/** Each lazy holder's box against its section's, and what is left of its reserve. */
 function sectionBoxes(page: Page): Promise<{ id: string; box: number; card: number; minHeight: string }[]> {
-  return page.evaluate(() =>
-    [...document.querySelectorAll<HTMLElement>('section[data-testid^="sim-section-"]')].map((section) => {
-      const card = section.firstElementChild?.matches('.reveal')
-        ? section.firstElementChild.firstElementChild
-        : section.firstElementChild;
-      return {
-        id: section.id,
-        box: section.getBoundingClientRect().height,
-        card: card?.getBoundingClientRect().height ?? 0,
-        minHeight: getComputedStyle(section).minHeight,
-      };
-    }),
+  return page.evaluate(
+    (selector) =>
+      [...document.querySelectorAll<HTMLElement>(selector)].map((holder) => {
+        const card = holder.firstElementChild?.matches('.reveal')
+          ? holder.firstElementChild.firstElementChild
+          : holder.firstElementChild;
+        return {
+          id: (holder.dataset.testid ?? '').replace('sim-section-', ''),
+          box: holder.getBoundingClientRect().height,
+          card: card?.getBoundingClientRect().height ?? 0,
+          minHeight: getComputedStyle(holder).minHeight,
+        };
+      }),
+    HOLDERS,
   );
 }
 
@@ -57,7 +63,7 @@ for (const id of FIXTURES) {
     test(`${id} at ${width}: every lazy section is its card's height after load`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`/sim/${id}`);
-      await expect(page.getByTestId('sim-result-band')).toBeVisible();
+      await expect(page.getByTestId('sim-saved')).toBeVisible();
       await loadEveryCard(page);
 
       const boxes = await sectionBoxes(page);
@@ -77,7 +83,7 @@ for (const width of [360, 390]) {
   test(`at ${width} every event at the pull shows, and no lane name covers the plot`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/sim/simfullfixt1');
-    await page.locator('#timeline').scrollIntoViewIfNeeded();
+    await page.getByTestId('sim-section-timeline').scrollIntoViewIfNeeded();
     const plot = page.getByTestId('timeline-plot');
     await expect(plot.locator('g[data-row] rect').first()).toBeAttached();
     // The plot at its start, as a player first sees it: 0:00 just right of the icon column.
@@ -151,7 +157,7 @@ test('the timeline loads under its ready head at its ready height', async ({ pag
 
   const head = (): Promise<{ text: string; glyph: string; height: number }> =>
     section.evaluate((element) => {
-      const card = element.querySelector('.card-surface')!;
+      const card = element.querySelector('section')!;
       const top = card.firstElementChild as HTMLElement;
       return {
         text: top.innerText.replace(/\s+/g, ' ').trim(),

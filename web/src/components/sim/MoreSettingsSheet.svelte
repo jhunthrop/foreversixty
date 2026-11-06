@@ -5,7 +5,8 @@
      and for a payer the server-run notification. Changes apply as they are made; the result is not
      re-run until the player presses Run again. -->
 <script lang="ts">
-  import type { BuffNames } from '../../lib/sim/buff-names';
+  import { buffLabel, type BuffNames } from '../../lib/sim/buff-names';
+  import { MAX_LEVEL } from '../../lib/sim/character';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
   import { LANE_ITERATION_CEILING } from '../../lib/sim/precision';
   import type { RequestValidation } from '../../lib/sim/engine';
@@ -20,7 +21,8 @@
     withTargetLevel,
     type SimSettings,
   } from '../../lib/sim/settings';
-  import { specDisplayName } from '../../lib/sim/spec-label';
+  import { simCopy } from '../../lib/sim/copy';
+  import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
   import { fightStyle } from '../../lib/sim/styles';
   import type { SimRequest } from '../../lib/sim/types';
   import Button from '../ui/Button.svelte';
@@ -79,11 +81,22 @@
   } = $props();
 
   let showRequest = $state(false);
+  // A spec the sim does not run has no rotation to name and nothing to send to our servers
+  // (healer review, MAJOR: "Default for Restoration" was a false statement).
+  const simulated = $derived(isSimulatedSpec(spec));
+  const rotationValue = $derived(
+    simulated
+      ? copy.more.rotationValue(specDisplayName(spec))
+      : simCopy.rotationNotSimulated(specDisplayName(spec)),
+  );
   const executeOn = $derived(executePhaseOn(settings));
   const executePct = $derived(Math.round(settings.encounter.execute_ratio * 100));
+  // The target resolved for this character (a level-33 export fights a level-36 target), and the
+  // stored offset form the select carries (60 = same level, 63 = three above; settings.ts).
   const targetLevel = $derived(targetLevelFor(settings.encounter, level));
+  const targetOffsetLevel = $derived(MAX_LEVEL + (targetLevel - level));
   const consumables = $derived(
-    settings.consumables.map((id) => names?.entries[id]?.name ?? id).filter((name) => name !== ''),
+    settings.consumables.map((id) => buffLabel(id, names)).filter((name) => name !== ''),
   );
 
   /** Back to the preset: the fight style's own settings, the buffs and consumables untouched. */
@@ -118,10 +131,10 @@
         size="dense"
         fit
         {disabled}
-        value={String(targetLevel)}
+        value={String(targetOffsetLevel)}
         options={TARGET_LEVELS.map((value) => ({
           value: String(value),
-          label: copy.more.targetLevel(value),
+          label: copy.more.targetLevel(level + (value - MAX_LEVEL)),
         }))}
         testid="sim-target-level"
         onchange={(event) =>
@@ -146,7 +159,7 @@
             ? undefined
             : copy.more.armorSub(TARGET_ARMOR_BY_LEVEL[targetLevel].toLocaleString('en-US')),
       },
-      { id: 'rotation', label: copy.more.rotation, value: copy.more.rotationValue(specDisplayName(spec)) },
+      { id: 'rotation', label: copy.more.rotation, value: rotationValue, testid: 'sim-rotation' },
     ]}
   />
 
@@ -184,7 +197,7 @@
     </div>
   {/if}
 
-  {#if premium && onserver}
+  {#if premium && onserver && simulated}
     <div class="flex items-center justify-between gap-4 pt-5">
       <span class="text-text text-[14px]"
         >{copy.more.serverLine(LANE_ITERATION_CEILING.server.toLocaleString('en-US'))}</span

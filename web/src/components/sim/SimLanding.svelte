@@ -6,6 +6,7 @@
      handlers (the static render) every form still submits to /sim the plain way. -->
 <script lang="ts">
   import { classTone } from '../../lib/ui/primitives';
+  import { validateColdPaste } from '../../lib/sim/cold-paste';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
   import type { BisSetClass } from '../../lib/sim/bis-set-rail';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
@@ -44,6 +45,20 @@
   let buildRef = $state('');
   let fightRef = $state('');
 
+  // The paste decodes locally (§5 "Paste plate"): Run waits for a paste that decodes, and one that
+  // does not says why under the field. The static render (no handler) leaves the plain form be.
+  const pasteCheck = $derived(validateColdPaste(paste));
+  const pasteMessage = $derived(
+    pasteError !== '' ? pasteError : onpaste !== undefined && !pasteCheck.ok ? pasteCheck.message : null,
+  );
+  const pasteBlocked = $derived(onpaste !== undefined && !pasteCheck.ok);
+
+  function submitPaste(event: SubmitEvent): void {
+    if (onpaste === undefined) return;
+    event.preventDefault();
+    if (pasteCheck.ok) onpaste(pasteCheck.code);
+  }
+
   function handle(event: SubmitEvent, value: string, handler: ((value: string) => void) | undefined): void {
     if (handler === undefined) return;
     event.preventDefault();
@@ -55,12 +70,7 @@
   <Section title={copy.sections.simYourCharacter} testid="sim-cold-paste">
     <Plate label={copy.sections.simYourCharacter}>
       <div class="flex flex-col gap-3 p-4">
-        <FormRow
-          label={copy.paste.label}
-          action="/sim"
-          method="get"
-          onsubmit={(event) => handle(event, paste, onpaste)}
-        >
+        <FormRow label={copy.paste.label} action="/sim" method="get" onsubmit={submitPaste}>
           <Field
             id="sim-cold-paste-input"
             name="code"
@@ -68,11 +78,14 @@
             placeholder={copy.paste.placeholder}
             grow
             bind:value={paste}
-            error={pasteError === '' ? undefined : pasteError}
+            error={pasteMessage ?? undefined}
             testid="sim-cold-paste-input"
           />
+          <!-- A Run pressed before the island mounts submits the plain way; run=1 makes that
+               arrival run the pasted character too, as the island's Run does. -->
+          <input type="hidden" name="run" value="1" />
           {#snippet submit()}
-            <Button tone="primary" type="submit" disabled={busy} testid="sim-cold-paste-run"
+            <Button tone="primary" type="submit" disabled={busy || pasteBlocked} testid="sim-cold-paste-run"
               >{copy.paste.run}</Button
             >
           {/snippet}
@@ -153,7 +166,11 @@
             {#snippet subContent()}
               <span class="flex flex-wrap gap-x-4 gap-y-1 pt-[2px]">
                 {#each klass.specs as spec (spec.href)}
-                  <a class="text-gold text-[14px] font-semibold" href={spec.href}>{spec.name} ›</a>
+                  <!-- A 44 px hit area on a touch screen (spec §5, Touch); the line stays 20 px on desktop. -->
+                  <a
+                    class="text-gold inline-flex min-h-11 items-center text-[14px] font-semibold md:min-h-0"
+                    href={spec.href}>{spec.name} ›</a
+                  >
                 {/each}
               </span>
             {/snippet}

@@ -23,14 +23,26 @@
   } from '../../lib/sim/result-band';
   import { durationLabel } from '../../lib/sim/settings';
   import { specLabel } from '../../lib/sim/spec-label';
-  import type { SimResult } from '../../lib/sim/types';
+  import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import Button from '../ui/Button.svelte';
   import RunReport from './RunReport.svelte';
   import SimAnswer from './SimAnswer.svelte';
   import SimCharacterHead from './SimCharacterHead.svelte';
+  import SimFidelityCaption from './SimFidelityCaption.svelte';
 
-  let { result, onrerun, simId = '' }: { result: SimResult; onrerun: () => void; simId?: string } = $props();
+  let {
+    result,
+    onrerun,
+    simId = '',
+    fidelity = null,
+  }: {
+    result: SimResult;
+    onrerun: () => void;
+    simId?: string;
+    /** The spec list's row for the run's spec: the answer's fidelity caption (§4.6). */
+    fidelity?: SpecFidelity | null;
+  } = $props();
 
   onMount(() => {
     void markSimSeenOnOpen(simId !== '' ? simId : (result.sim_id ?? ''));
@@ -98,6 +110,7 @@
     <SimCharacterHead name={bandHeading(result)} classSlug={result.request.character.class} {lines}>
       {#snippet answer()}
         <SimAnswer {model}>
+          {#snippet extra()}<SimFidelityCaption {fidelity} />{/snippet}
           {#snippet actions()}
             <Button tone="primary" size="sm" onclick={onrerun} testid="sim-run-yourself"
               >{copy.answer.openInSim}</Button

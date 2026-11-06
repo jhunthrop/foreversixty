@@ -118,28 +118,28 @@ test.describe('/sim and the header selector', () => {
     await stubAccount(page, [OBNOXIOUS, IRONHIDE]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.goto('/sim');
-    await expect(page.getByTestId('paperdoll-name')).toHaveText('Obnoxious Yell');
+    await expect(page.getByTestId('page-title')).toHaveText('Obnoxious Yell');
 
     await page.getByTestId('character-selector').click();
     await selectorRow(page, IRONHIDE).click();
     await expect(page.getByTestId('selector-name')).toHaveText('Ironhide');
 
-    await expect(page.getByTestId('paperdoll-name')).toHaveText('Ironhide');
-    await expect(page.getByTestId('sim-character')).toContainText('Fury Warrior · 24');
+    await expect(page.getByTestId('page-title')).toHaveText('Ironhide');
+    await expect(page.getByTestId('sim-head-meta')).toContainText('Fury Warrior · Level 24');
   });
 
-  test("the Run block's Run sim loads the current character and runs it", async ({ page }) => {
-    // The Run block stands while no character is loaded: no pointer, and this session's
-    // default already settled (as after Forget), so the block offers the account's main.
+  // No pointer, and this session's default already settled (as after Forget): the page loads
+  // the account's main on arrival (spec 2026-11-06-sim §4.3, the Run block retired), and the
+  // run line's Run sim runs it.
+  test('with no pointer the page loads the account main, and Run sim runs it', async ({ page }) => {
     await stubAccount(page, [IRONHIDE, OBNOXIOUS]);
     await page.addInitScript(() => window.sessionStorage.setItem('fs.pointerHealed', '1'));
     await page.goto('/sim');
-    const block = page.getByTestId('sim-run-block');
-    await expect(block).toContainText('Ironhide');
+    await expect(page.getByTestId('page-title')).toHaveText('Ironhide');
 
-    await block.getByTestId('sim-run-block-action').click();
+    await page.getByTestId('sim-run-button').click();
 
-    await expect(page.getByTestId('paperdoll-name')).toHaveText('Ironhide');
     await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
+    await expect(page.getByTestId('page-title')).toHaveText('Ironhide');
   });
 });

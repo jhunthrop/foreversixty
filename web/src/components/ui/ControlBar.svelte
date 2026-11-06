@@ -166,6 +166,7 @@
                 options={group.options.map((option) => ({
                   value: option.value,
                   label: option.label,
+                  description: option.description,
                   disabled: option.disabled,
                 }))}
                 testid={`control-${group.param}`}

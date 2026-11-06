@@ -3,30 +3,19 @@
 // gear/talents in one step... no sign-in detour -- the one surface where Raidbots still
 // wins". The engine runs as wasm in this browser (lib/sim/engine.ts, /_sim/<version>/), so
 // a visitor signed out should be able to paste an export and get a number with no queue --
-// this is the end-to-end proof of ColdPasteHero.svelte, through the real /sim UI rather
-// than through the component's own unit tests (ColdPasteHero.test.ts, cold-paste.test.ts),
-// which cannot exercise `$state` or a real run against the fake engine.
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
+// this is the end-to-end proof of the landing's paste Plate (SimLanding.svelte, spec
+// 2026-11-06-sim §4.2), through the real /sim UI rather than through cold-paste.test.ts, which
+// cannot exercise `$state` or a real run against the fake engine.
 import { expect, test } from './support/test';
-import { landingCopy } from '../../src/lib/sim/landing-copy';
-import { simCopy } from '../../src/lib/sim/copy';
-
-// Same fixture as sim-run.spec.ts, sim-settings.spec.ts and sim-sources.spec.ts: an addon
-// export needs no API stub, so this reads the site's own active build id rather than
-// hardcoding one that may not match the fixture data this suite runs against.
-const activeBuild = JSON.parse(
-  readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
-) as { build: string };
-
-const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
+import { simPageCopy } from '../../src/lib/sim/page-copy';
+import { gotoSim, SIM_FURY as FURY, simCharacter } from './support/sim-page';
 // Only an export that names its character becomes the current one.
 const NAMED_FURY = `${FURY}|who=Simfury:Realm`;
 
 test('a cold paste decodes, runs with no further click, and writes the current-character pointer', async ({
   page,
 }) => {
-  await page.goto('/sim');
+  await gotoSim(page);
 
   // No session stub anywhere in this test: the preview server behind it has no API, so
   // fetchMeOnce fails and the page is signed out by default -- the same ground truth every
@@ -36,15 +25,16 @@ test('a cold paste decodes, runs with no further click, and writes the current-c
 
   await page.getByTestId('sim-cold-paste-input').fill(NAMED_FURY);
   await expect(run).toBeEnabled();
-  await expect(page.getByTestId('sim-cold-paste-error')).toHaveCount(0);
+  await expect(page.getByText(simPageCopy.paste.invalid)).toHaveCount(0);
 
   await run.click();
 
-  // The character strip and the run control both land from the one click -- no separate
+  // The character's head and the run line both land from the one click -- no separate
   // "Run sim" press afterward (runPastedInput in SimView.svelte).
-  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(simCharacter(page)).toBeVisible();
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 5000 });
-  await expect(page.getByTestId('sim-dps')).not.toHaveText('—');
+  await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result');
+  await expect(page.getByTestId('sim-dps')).toHaveText(/\d/);
 
   // The pointer current-character.spec.ts's own restore tests prove a bare /planner or
   // /sim load reads back -- this proves this box writes the same one, not a parallel copy.
@@ -56,37 +46,43 @@ test('a cold paste decodes, runs with no further click, and writes the current-c
 });
 
 test('a bad paste shows the validation message and Run stays disabled', async ({ page }) => {
-  await page.goto('/sim');
+  await gotoSim(page);
 
   const run = page.getByTestId('sim-cold-paste-run');
   await page.getByTestId('sim-cold-paste-input').fill('not a real export');
 
   await expect(run).toBeDisabled();
-  await expect(page.getByTestId('sim-cold-paste-error')).toHaveText(
-    'That does not look like an addon export or a build code.',
-  );
+  // The Field's own error line under the box (spec §5, "Paste plate").
+  const error = page.locator('#sim-cold-paste-input-error');
+  await expect(error).toHaveText('That does not look like an addon export or a build code.');
+  await expect(page.getByTestId('sim-cold-paste-input')).toHaveAttribute('aria-invalid', 'true');
 
   // Clearing it back to empty returns to the silent, not-yet-an-error state (cold-paste.ts).
   await page.getByTestId('sim-cold-paste-input').fill('');
-  await expect(page.getByTestId('sim-cold-paste-error')).toHaveCount(0);
+  await expect(error).toHaveCount(0);
   await expect(run).toBeDisabled();
 });
 
+// Signed out, the answer's save Button reads "Sign in to save" (spec §4.5, §5.1): saving still
+// needs an account, and the Button is the way to one rather than a dead control.
 test('Save keeps the sign-in requirement after a cold-paste run', async ({ page }) => {
-  await page.goto('/sim');
+  await gotoSim(page);
 
   await page.getByTestId('sim-cold-paste-input').fill(FURY);
   await page.getByTestId('sim-cold-paste-run').click();
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 5000 });
 
   const save = page.getByTestId('sim-save-open');
-  await expect(save).toHaveText(simCopy.signInToSave);
-  await expect(save).toBeDisabled();
+  await expect(save).toHaveText(simPageCopy.answer.signInToSave);
+  await expect(page.getByTestId('sim-save-title')).toHaveCount(0);
 });
 
+// The reassurance moved into the landing head's one meta line (spec §4.2: "its 'nothing leaves
+// your device' clause moves into the meta line").
 test('the reassurance line says the run stays local', async ({ page }) => {
   await page.goto('/sim');
-  await expect(page.getByText(landingCopy.pasteHeroRunsLocally)).toBeVisible();
+  await expect(page.getByTestId('sim-head')).toContainText(simPageCopy.landingMeta);
+  await expect(page.getByTestId('sim-head')).toContainText('nothing is uploaded until you save');
 });
 
 // Build item 3: phone -- the paste box is the first thing after the title, every control
@@ -98,25 +94,23 @@ test.describe('phone, 390', () => {
   test.use({ viewport: { width: 390, height: 844 } });
   test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
 
-  test('the paste box renders ahead of the Battle.net hero, with no horizontal overflow', async ({
+  test('the paste box renders ahead of the Battle.net sign-in, with no horizontal overflow', async ({
     page,
   }) => {
-    await page.goto('/sim');
+    await gotoSim(page);
 
     const pasteTop = await page
       .getByTestId('sim-cold-paste')
       .evaluate((el) => el.getBoundingClientRect().top);
-    const accountTop = await page
-      .getByTestId('sim-account-card')
-      .evaluate((el) => el.getBoundingClientRect().top);
+    const accountTop = await page.getByTestId('sim-sign-in').evaluate((el) => el.getBoundingClientRect().top);
     expect(pasteTop).toBeLessThan(accountTop);
 
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(scrollWidth, 'page scrolls horizontally at 390').toBeLessThanOrEqual(390);
   });
 
-  test('the textarea and Run are real 44px hit targets', async ({ page }) => {
-    await page.goto('/sim');
+  test('the paste field and Run are real 44px hit targets', async ({ page }) => {
+    await gotoSim(page);
     const input = await page.getByTestId('sim-cold-paste-input').boundingBox();
     const run = await page.getByTestId('sim-cold-paste-run').boundingBox();
     expect(input?.height ?? 0).toBeGreaterThanOrEqual(44);
