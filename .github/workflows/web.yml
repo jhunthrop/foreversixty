@@ -216,8 +216,8 @@ jobs:
       # without a hand regen.
       - name: the reference mocks against the build (a report, not a gate)
         if: success() || failure()
-        continue-on-error: true
-        run: node scripts/check-parity-mocks.mjs
+        # Report only: the warning and the regen commands go to the job summary; `|| true` keeps the job free of a red mark.
+        run: node scripts/check-parity-mocks.mjs || true
       # The mock | build side-by-sides, red or green: the review starts from them.
       - if: always()
         uses: actions/upload-artifact@v4
