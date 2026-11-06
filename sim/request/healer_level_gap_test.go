@@ -109,7 +109,8 @@ func TestPriestsRenewKeepsItsHealingBonus(t *testing.T) {
 // Holy's filler is Greater Heal at its top trainer rank (10965), ahead of
 // each Heal line; Heal stays behind it at its top rank (6064) for the levels
 // before Greater Heal (learned at 40), where it casts the highest rank known.
-// Round 18: Greater Heal is rank 1 from 46 to 57, then the highest rank known.
+// Round 18: Greater Heal is rank 1 from 46 to 57; round 24: to 59 as well, the
+// highest rank known only at 60.
 func TestHolyFillsWithGreaterHealAheadOfHeal(t *testing.T) {
 	heal := linesCasting(t, "priest-holy", 2054, 6064)
 	greater := linesCasting(t, "priest-holy", 10965)
@@ -118,7 +119,7 @@ func TestHolyFillsWithGreaterHealAheadOfHeal(t *testing.T) {
 		{60, BarePreset, 4}, {60, RaidPreset, 4},
 	})
 	assertRanks(t, greater, "priest-holy", "priest", "troll", greaterHealRanks, []rankCase{
-		{40, BarePreset, 1}, {50, BarePreset, 1}, {58, BarePreset, 4}, {60, BarePreset, 4}, {60, RaidPreset, 4},
+		{40, BarePreset, 1}, {50, BarePreset, 1}, {58, BarePreset, 1}, {59, BarePreset, 1}, {60, BarePreset, 4}, {60, RaidPreset, 4},
 	})
 	var h, g []any
 	_ = json.Unmarshal(heal, &struct{ PriorityList *[]any }{&h})
@@ -220,20 +221,16 @@ func TestHolyPaladinGroupFlashOfLightAndHolyShockBelowFifty(t *testing.T) {
 
 // Shadow's Mind Blast at 50 to 59 casts the highest rank learned: ranks 2 and
 // 3 keep 15% and 45% of spell power at 50, and the rows lost 3.3% there.
-// Round 19: rank 6 (whole bonus to 57) wins for an Undead at 50 and 51 and
-// a Dwarf at 51; from 52 every race casts the highest rank learned.
+// Round 24 (on the talents at each level): an Undead casts rank 6 at 50 only;
+// a Dwarf casts rank 5 at 50 to 52 (whole bonus, cheaper); a Gnome and Human
+// keep the highest rank learned.
 func TestShadowMindBlastAtFiftyIsTheHighestRankLearned(t *testing.T) {
 	blast := linesCasting(t, "priest-shadow", 10947)
-	for _, race := range []string{"gnome", "undead", "human", "dwarf"} {
-		atFifty, atFiftyOne := 7, 7
-		switch race {
-		case "undead":
-			atFifty, atFiftyOne = 6, 6
-		case "dwarf":
-			atFiftyOne = 6
-		}
+	for race, at := range map[string][3]int{
+		"gnome": {7, 7, 8}, "human": {7, 7, 8}, "undead": {6, 7, 8}, "dwarf": {5, 5, 5},
+	} {
 		assertRanks(t, blast, "priest-shadow", "priest", race, mindBlastRanks, []rankCase{
-			{50, BarePreset, atFifty}, {51, BarePreset, atFiftyOne}, {52, BarePreset, 8}, {58, BarePreset, 9},
+			{50, BarePreset, at[0]}, {51, BarePreset, at[1]}, {52, BarePreset, at[2]}, {58, BarePreset, 9},
 		})
 	}
 }

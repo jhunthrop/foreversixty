@@ -24,7 +24,8 @@ func TestChosenRanksReadsTheCuratedRowsAtALevel(t *testing.T) {
 		{"shaman-elemental", "Lightning Bolt", 60, []int{8}},
 		// A race's row counts for any race (round 13): a log's rank is no mistake
 		// where the site casts it for one race.
-		{"priest-shadow", "Mind Blast", 42, []int{4}},
+		// Round 24: rank 4 for most races at 42, rank 5 for a Gnome or Undead.
+		{"priest-shadow", "Mind Blast", 42, []int{4, 5}},
 		{"warrior-fury", "Bloodthirst", 60, nil},
 		{"paladin-retribution", "Seal of Righteousness", 40, nil},
 	} {
@@ -82,12 +83,13 @@ func TestPriestRenewRowsSwitchInsideBandThirty(t *testing.T) {
 		level int
 		want  []int
 	}{
-		{"priest-holy", 31, []int{1}},
-		{"priest-holy", 33, []int{3}},
+		// Round 24 (on the talents at each level): rank 2 and 3 take over race by race.
+		{"priest-holy", 31, []int{1, 2, 3}},
+		{"priest-holy", 33, []int{2, 3}},
 		{"priest-holy", 39, []int{3}},
 		{"priest-discipline", 29, []int{1}},
 		{"priest-discipline", 30, []int{2}},
-		{"priest-discipline", 34, []int{3}},
+		{"priest-discipline", 34, []int{2}}, // round 24: rank 2 holds through 34
 	} {
 		got, err := ChosenRanks(c.spec, "Renew", c.level)
 		if err != nil {
@@ -117,9 +119,11 @@ func TestPriestRenewRowsBelowSixty(t *testing.T) {
 		{"priest-holy", 51, []int{5, 6}}, // round 19: rank 6 for an Undead
 		{"priest-holy", 52, []int{5, 6}}, // round 19: rank 5 for a Gnome, Dwarf or Night Elf
 		{"priest-holy", 53, []int{6}},
-		{"priest-holy", 59, []int{6}},
+		{"priest-holy", 58, []int{6}}, // round 24: a Human casts the default rank 7 at 58
+		{"priest-holy", 59, nil},      // round 24: rank 7 (the default) for every race
 		{"priest-discipline", 40, []int{4}},
-		{"priest-discipline", 44, []int{4}},
+		{"priest-discipline", 43, []int{4}},
+		{"priest-discipline", 44, []int{5}}, // round 24: rank 5 for a Dwarf, Gnome, Night Elf or Undead
 		{"priest-discipline", 45, []int{5}},
 		{"priest-discipline", 49, []int{5}},
 		{"priest-discipline", 50, nil},
@@ -160,14 +164,15 @@ func TestShadowRowsSwitchAtFortyFour(t *testing.T) {
 		level int
 		want  []int
 	}{
-		{"Mind Blast", 40, []int{4}},
+		{"Mind Blast", 40, []int{4, 5}}, // round 24: rank 5 for a Human, Gnome or Undead
 		{"Mind Blast", 43, []int{4}},
 		{"Mind Blast", 44, nil},
 		{"Mind Blast", 49, nil},
 		{"Devouring Plague", 40, []int{1}},
 		{"Devouring Plague", 43, []int{1}},
 		{"Devouring Plague", 44, []int{2}},
-		{"Devouring Plague", 49, []int{2}},
+		{"Devouring Plague", 48, []int{2}},
+		{"Devouring Plague", 49, []int{2, 3}}, // round 24: a Human casts rank 3 at 49
 	} {
 		got, err := ChosenRanks("priest-shadow", c.spell, c.level)
 		if err != nil {
@@ -207,9 +212,10 @@ func TestABandCarriesItsOwnLines(t *testing.T) {
 // Sim-accuracy round 18: the top-rank Greater Heal lines (10965) cast rank 1
 // at 46-57, where a mana-bound healer heals more with it than with rank 2 or
 // 3 (+0.2% to +1.2%, 10,000 iterations, seeds 1 and 50001, both factions).
-func TestPriestGreaterHealRankOneBelowFiftyEight(t *testing.T) {
+// Round 24: rank 1 holds at 58 and 59 too, when rank 4 arrives (+0.2% to +1.6%).
+func TestPriestGreaterHealRankOneBelowSixty(t *testing.T) {
 	for _, spec := range []string{"priest-holy", "priest-discipline"} {
-		for level, want := range map[int][]int{45: nil, 46: {1}, 57: {1}, 58: nil} {
+		for level, want := range map[int][]int{45: nil, 46: {1}, 57: {1}, 58: {1}, 59: {1}, 60: nil} {
 			got, err := ChosenRanks(spec, "Greater Heal", level)
 			if err != nil {
 				t.Fatal(err)
