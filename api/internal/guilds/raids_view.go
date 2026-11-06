@@ -29,6 +29,9 @@ type RaidCounts struct {
 	Melee   int            `json:"melee"`
 	Ranged  int            `json:"ranged"`
 	Classes map[string]int `json:"classes"`
+	// LateGroups counts Late rows by roster group, beside the In-only Tanks..Ranged, so the comp
+	// against the target can read "Healers 6/8 (+1 late)" (spec 2026-11-05-web-layout §7.1).
+	LateGroups RoleCounts `json:"late_groups"`
 }
 
 // SignupView is one sign-up as the raid page lists it. Own is true when the character
@@ -145,6 +148,12 @@ type RaidView struct {
 	Discord   RaidDiscord     `json:"discord"`
 	// DiscordPost is the raid's posting schedule; null when it has none.
 	DiscordPost *RaidDiscordPost `json:"discord_post"`
+	// CompTarget is the raid's comp target (raids_comp_target.go), null for a zone with none.
+	CompTarget *CompTarget `json:"comp_target"`
+	// NotSignedRaiders (one per account that has not answered) and Ping are an officer's only
+	// (raids_overview_view.go); both are left out for everyone else.
+	NotSignedRaiders *[]NotSignedRaider `json:"not_signed_raiders,omitempty"`
+	Ping             *RaidPingState     `json:"ping,omitempty"`
 	// PreDoneStatus is what a done raid returns to when its match is cleared; Match, Night and
 	// Attendance are null until a log is matched (Attendance: officers every row, a member
 	// their own characters').
@@ -442,6 +451,7 @@ func countSignups(signups []Signup) RaidCounts {
 			}
 		case SignupLate:
 			c.Late++
+			c.LateGroups.add(raidspec.Group(sg.Class, sg.Spec, sg.Role))
 		case SignupBench:
 			c.Bench++
 		case SignupOut:
