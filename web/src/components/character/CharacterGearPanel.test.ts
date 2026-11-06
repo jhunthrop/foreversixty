@@ -5,7 +5,7 @@
 // checks the same in a browser.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { GEAR_FIXTURE, GEAR_FIXTURE_ITEMS } from '../../fixtures/character-gear';
+import { GEAR_FIXTURE, GEAR_FIXTURE_BAND as BAND, GEAR_FIXTURE_ITEMS } from '../../fixtures/character-gear';
 import { gearCopy, notReadCopy } from '../../lib/gear/copy';
 import type { GearItemTable } from '../../lib/gear/qualities';
 import CharacterGearPanel from './CharacterGearPanel.svelte';
@@ -18,15 +18,6 @@ const FACTS: GearItemTable = new Map(
 );
 
 const PROPS = {
-  identity: {
-    name: 'Sunwick',
-    classSlug: 'priest',
-    race: 'Human',
-    spec: 'Discipline',
-    level: 60,
-    faction: 'alliance' as const,
-    source: 'Addon export',
-  },
   gear: GEAR_FIXTURE,
   total: 70,
   classSlug: 'priest',
@@ -34,6 +25,7 @@ const PROPS = {
   spec: 'Discipline',
   band: 60,
   preloaded: FACTS,
+  preloadedBand: BAND,
 };
 
 function text(html: string): string {
@@ -55,53 +47,67 @@ function classesOf(html: string, testid: string): string[] {
   return new RegExp(`<[a-z]+ class="([^"]*)"[^>]*data-testid="${testid}"`).exec(html)?.[1].split(' ') ?? [];
 }
 
-describe('CharacterGearPanel as the paperdoll (paperdoll spec call site 2)', () => {
-  it('is the card the Gear link opens, landing 96px under the top', () => {
+describe('CharacterGearPanel as the worn paperdoll (web layout spec §4.2)', () => {
+  const slotOf = (body: string, slot: string): string => {
+    const from = body.indexOf(`data-testid="character-gear-doll-slot-${slot}"`);
+    const next = body.indexOf('data-testid="character-gear-doll-slot-', from + 10);
+    return body.slice(from, next === -1 ? undefined : next);
+  };
+
+  it('is the section the Gear link opens, landing 96px under the top, its doll in one Plate', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
     const anchor = /<div class="([^"]*)" id="gear"/.exec(body);
     expect(anchor?.[1].split(' ')).toEqual(expect.arrayContaining(['scroll-mt-24', '-order-2']));
-    expect(body).toContain('data-testid="character-gear"');
+    expect(body).toMatch(/class="ui-plate[^"]*"[^>]*data-testid="character-gear"/);
+    expect(body).not.toContain('card-surface');
   });
 
-  it('heads the card "Gear" with the gain total in gold, the compact head (§3.2)', () => {
+  it('heads the section "Gear" with the priced gains in gold, in DPS (§4.6)', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
     expect(text(/<h2[^>]*data-testid="character-gear-title"[\s\S]*?<\/h2>/.exec(body)?.[0] ?? '')).toBe(
       'Gear',
     );
-    expect(classesOf(body, 'character-gear-summary')).toEqual(
-      expect.arrayContaining(['text-gold', 'font-semibold']),
-    );
+    expect(classesOf(body, 'character-gear-summary')).toEqual(expect.arrayContaining(['text-gold']));
     expect(text(/data-testid="character-gear-summary">[^<]*/.exec(body)?.[0] ?? '')).toContain(
-      'data-testid="character-gear-summary">+70 points across 7 slots',
+      'data-testid="character-gear-summary">+3.8 DPS across 2 slots',
     );
+    expect(text(body)).not.toContain('points');
   });
 
-  it('draws every slot in the frame, the worn names, the picks with their gains and "Best in slot"', () => {
+  it('draws every worn item, its gain to the pick in DPS against the pick, and "Best in slot"', () => {
     const body = bare(render(CharacterGearPanel, { props: PROPS }).body);
-    expect(body).toContain('data-testid="character-gear-paperdoll"');
     for (const slot of ['head', 'neck', 'wrist', 'trinket2', 'main_hand', 'off_hand', 'ranged'])
-      expect(body).toContain(`data-testid="paperdoll-slot-${slot}"`);
-    expect(body).toContain('aria-label="Head: Green Lens"');
-    expect(body).toContain('aria-label="Head upgrade: Halo of Transcendence, 18.4 points to gain"');
-    expect(text(body)).toContain('+18.4');
-    expect(body).toContain('data-testid="paperdoll-best"');
+      expect(body).toContain(`data-testid="character-gear-doll-slot-${slot}"`);
+    const head = text(slotOf(body, 'head'));
+    expect(head).toContain('Green Lens');
+    expect(head).toContain('+1.8');
+    expect(head).toContain('DPS');
+    expect(head).toContain('vs Halo of Transcendence');
+    expect(text(slotOf(body, 'neck'))).toContain('+2.0');
+    expect(text(slotOf(body, 'shoulder'))).toContain('Best in slot');
+  });
+
+  it('says "Not sim-checked" for a gain the band cannot price, never 0', () => {
+    const body = bare(render(CharacterGearPanel, { props: PROPS }).body);
+    const wrist = text(slotOf(body, 'wrist'));
+    expect(wrist).toContain('Not sim-checked');
+    expect(wrist).not.toMatch(/\+0\.0/);
   });
 
   it('never offers the worn item as a gain: the rings worn the other way round read "Best in slot"', () => {
     const body = bare(render(CharacterGearPanel, { props: PROPS }).body);
-    const ring =
-      /data-testid="paperdoll-slot-finger1"[\s\S]*?(?=data-testid="paperdoll-(?:slot|up)-)/.exec(body)?.[0] ??
-      '';
-    expect(ring).toContain('paperdoll-best');
-    expect(ring).not.toContain('paperdoll-gain');
+    expect(text(slotOf(body, 'finger1'))).toContain('Best in slot');
+    expect(text(slotOf(body, 'finger1'))).not.toContain('vs');
   });
 
   it('draws an item our data lacks with its slot word and "Not scored", and hides the item level', () => {
     const body = bare(render(CharacterGearPanel, { props: PROPS }).body);
-    expect(text(body)).toContain('Legs · Item');
-    expect(body).toContain('data-testid="paperdoll-unscored"');
-    expect(body).not.toContain('data-testid="paperdoll-ilvl"');
-    expect(body).toContain('data-testid="paperdoll-note"');
+    const legs = text(slotOf(body, 'legs'));
+    expect(legs).toContain('Legs · Item');
+    expect(legs).toContain('Not in our item data yet');
+    expect(legs).toContain('Not scored');
+    expect(body).not.toContain('data-testid="character-gear-ilvl"');
+    expect(body).toContain('data-testid="character-gear-doll-note"');
   });
 
   it('shows the item level once every worn item is known', () => {
@@ -109,41 +115,40 @@ describe('CharacterGearPanel as the paperdoll (paperdoll spec call site 2)', () 
       slot.worn !== null && slot.worn.name === null ? { ...slot, worn: null } : slot,
     );
     const body = bare(render(CharacterGearPanel, { props: { ...PROPS, gear: known } }).body);
-    expect(body).toContain('data-testid="paperdoll-ilvl"');
-    expect(body).not.toContain('data-testid="paperdoll-note"');
+    expect(body).toContain('data-testid="character-gear-ilvl"');
+    expect(body).not.toContain('data-testid="character-gear-doll-note"');
   });
 
-  it('marks the empty off hand under the worn two-hander "Two-hand in main hand"', () => {
-    const body = bare(render(CharacterGearPanel, { props: PROPS }).body);
-    expect(body).toMatch(/data-testid="paperdoll-slot-off_hand"[^>]*data-state="two-hand"/);
-    expect(text(body)).toContain(gearCopy.paperdoll.twoHand);
-  });
-
-  it('draws the two-hander greyed in the off-hand slot, as the character pane does, not an empty socket', () => {
+  it('draws the two-hander greyed in the off hand: "Two-hand in main hand"', () => {
     const body = bare(render(CharacterGearPanel, { props: PROPS }).body);
     const mainHandId = GEAR_FIXTURE.find((slot) => slot.slot === 'main_hand')!.worn!.id;
-    const icon = FACTS.get(mainHandId)!.icon;
-    const off = body.slice(body.indexOf('data-testid="paperdoll-slot-off_hand"'));
-    const cell = off.slice(0, off.indexOf('data-testid="paperdoll-slot-', 10));
-    // paperdoll.css greys the socket of a data-state="two-hand" cell.
-    expect(cell).toContain('data-state="two-hand"');
-    expect(cell).toContain(`/icons/${icon}.webp`);
-    expect(cell).not.toContain('/icons/hd/slots/');
+    const off = slotOf(body, 'off_hand');
+    expect(body).toContain('data-state="empty" data-testid="character-gear-doll-slot-off_hand"');
+    expect(off).toContain('data-covered="true"');
+    expect(text(off)).toContain(gearCopy.paperdoll.twoHand);
+    // The icon itself loads once the island mounts (ItemIcon `deferred`); its frame is the staff's.
+    expect(FACTS.get(mainHandId)!.quality).toBe(3);
+    expect(off).toContain('border-color: var(--color-rarity-rare)');
   });
 
-  it('mid-load: the frame shimmers and the BiS link holds its place', () => {
-    const body = bare(render(CharacterGearPanel, { props: { ...PROPS, preloaded: undefined } }).body);
-    expect(body).toMatch(/data-testid="paperdoll-slot-head"[^>]*data-state="loading"/);
-    expect(classesOf(body, 'character-gear-bis')).toContain('invisible');
+  it('mid-load (the items file or the band): the skeleton rows, and the BiS link holds its place', () => {
+    for (const props of [
+      { ...PROPS, preloaded: undefined },
+      { ...PROPS, preloadedBand: undefined },
+    ]) {
+      const body = bare(render(CharacterGearPanel, { props }).body);
+      expect(body).toMatch(/data-testid="character-gear-doll"[^>]*aria-busy="true"/);
+      expect(classesOf(body, 'character-gear-bis')).toContain('invisible');
+    }
   });
 
-  it('a failed items file: names in the body colour and the note says so once', () => {
+  it('a failed items file: the names stay, the note says so once', () => {
     const body = bare(render(CharacterGearPanel, { props: { ...PROPS, preloaded: null } }).body);
     expect(text(body)).toContain(gearCopy.paperdoll.noteFailed);
-    expect(body).toContain('pd-plain');
+    expect(text(body)).toContain('Green Lens');
   });
 
-  it('keeps the BiS link in the card foot', () => {
+  it('keeps the BiS link under the plate', () => {
     const body = bare(render(CharacterGearPanel, { props: PROPS }).body);
     expect(body).toMatch(/data-testid="character-gear-footer"[\s\S]*Full Discipline BiS list at 60/);
   });

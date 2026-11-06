@@ -1,12 +1,13 @@
 // web/tests/e2e/character-gear.spec.ts
-// The profile's Gear section as the shared paperdoll (design/specs/2026-10-31-paperdoll.md, call
-// site 2), from the character answer's `gear` and `gear_gap_total` (api/openapi.yaml
-// `CharacterGear`), stubbed with every slot state (src/fixtures/character-gear.ts), the build's
-// items/priest.json reduced to the fixture's real rows, and the real build's icons.
-//   The frame: every slot, quality colours, gains, "Best in slot", "Not scored", the unknown
-//   item's slot word, the two-hander's empty off hand, no item level with an unknown item.
-//   The tooltip on hover, focus and tap, toward the centre from the right column (§4.2).
-//   The worst case: no name clamped at 360, 390 and 1024; a long word breaks with a hyphen.
+// The profile's Gear section as the shared paperdoll in `worn` mode (web layout spec 2026-11-05
+// §4.2), from the character answer's `gear` (api/openapi.yaml `CharacterGear`), stubbed with every
+// slot state (src/fixtures/character-gear.ts), the build's items/priest.json reduced to the
+// fixture's real rows, the spec's BiS file stubbed with the band the gains are priced from, and
+// the real build's icons.
+//   The doll: every slot, quality colours, gains in DPS against the pick, "Best in slot", "Not
+//   scored", "Not sim-checked", the unknown item's slot word, the two-hander over the off hand,
+//   no item level with an unknown item. The tooltip on hover, focus and tap, for the worn item
+//   and the pick. The keyboard. The worst case: nothing clamped or sideways at 360, 390, 1024.
 //   The landing focuses the heading, with gear and without.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
@@ -15,6 +16,7 @@ import {
   CHARACTER_PATH,
   CHARACTER_URL,
   GEAR,
+  GEAR_BIS,
   GEAR_ITEMS,
   GEAR_LONGEST,
   routeGearIcons,
@@ -40,6 +42,8 @@ const SCORE = {
   components: { gear: 412, experience: 620, parses: 540, attendance: 180, discipline: 78 },
   experience: { dungeons: 14, raid_kills: 0, alts: 2 },
 };
+
+const slot = (page: Page, key: string) => page.getByTestId(`character-gear-doll-slot-${key}`);
 
 const RGB = {
   white: 'rgb(255, 255, 255)',
@@ -75,15 +79,19 @@ async function open(page: Page, options: OpenOptions = {}): Promise<string[]> {
     }
     return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GEAR_ITEMS) });
   });
+  await page.route('**/data/*/bis/priest-holy.json', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GEAR_BIS) }),
+  );
   await routeGearIcons(page, options.missingIcons);
   await page.goto(CHARACTER_PATH);
   await expect(page.getByTestId('forever-score-card')).toBeVisible();
   return errors;
 }
 
-/** Waits for the frame to be drawn (the items file in, or failed). */
+/** Waits for the doll to be drawn (the items file and the band in, or failed). */
 async function drawn(page: Page): Promise<void> {
-  await expect(page.getByTestId('paperdoll-slot-head')).not.toHaveAttribute('data-state', 'loading');
+  await expect(page.getByTestId('character-gear-doll')).not.toHaveAttribute('aria-busy', 'true');
+  await expect(slot(page, 'head')).toHaveAttribute('data-state', 'item');
 }
 
 /** Waits for the page to settle, so nothing above the section moves a cell from under the pointer. */
@@ -91,8 +99,6 @@ async function settled(page: Page): Promise<void> {
   await drawn(page);
   await page.waitForLoadState('networkidle');
 }
-
-const slot = (page: Page, key: string) => page.getByTestId(`paperdoll-slot-${key}`);
 
 async function noSidewaysScroll(page: Page): Promise<void> {
   const scroll = await page.evaluate(() => ({
@@ -106,40 +112,48 @@ for (const width of [1440, 390]) {
   test.describe(`the Gear paperdoll at ${width}`, () => {
     test.use({ viewport: { width, height: width === 1440 ? 900 : 844 } });
 
-    test('draws every slot state in the frame, with no page error', async ({ page }) => {
+    test('draws every slot state in the doll, gains in DPS, with no page error', async ({ page }) => {
       const errors = await open(page);
       await drawn(page);
       await expect(page.getByTestId('character-gear-title')).toHaveText('Gear');
-      await expect(page.getByTestId('character-gear-summary')).toHaveText('+70 points across 7 slots');
+      await expect(page.getByTestId('character-gear-summary')).toHaveText('+3.8 DPS across 2 slots');
       await expect(page.getByTestId('character-gear-summary')).toHaveCSS('color', 'rgb(229, 185, 85)');
       const head = slot(page, 'head');
-      await expect(head.getByTestId('paperdoll-item-head')).toHaveAttribute('aria-label', 'Head: Green Lens');
-      await expect(head.locator('.pd-name')).toHaveCSS('color', RGB.rare);
+      await expect(head.getByTestId('item-hover-10504')).toHaveText('Green Lens');
+      await expect(head.getByTestId('item-hover-10504')).toHaveCSS('color', RGB.rare);
+      await expect(head).toContainText('+1.8');
+      await expect(head).toContainText('DPS');
+      await expect(page.getByTestId('character-gear-doll-basis-head')).toHaveText('vs Halo of Transcendence');
+      await expect(slot(page, 'neck')).toContainText('+2.0');
+      await expect(slot(page, 'wrist')).toContainText('Not sim-checked');
       await expect(slot(page, 'shoulder')).toContainText('Best in slot');
       await expect(slot(page, 'legs')).toContainText(/Legs · Item \d+/);
-      await expect(slot(page, 'legs').getByTestId('paperdoll-unknown')).toHaveCSS('color', RGB.muted);
-      await expect(slot(page, 'off_hand')).toHaveAttribute('data-state', 'two-hand');
+      await expect(slot(page, 'legs')).toHaveAttribute('data-state', 'unknown');
+      await expect(slot(page, 'legs')).toContainText('Not in our item data yet');
       await expect(slot(page, 'off_hand')).toContainText('Two-hand in main hand');
+      await expect(slot(page, 'off_hand').locator('[data-covered="true"]')).toHaveCount(1);
       await expect(slot(page, 'trinket2')).toHaveAttribute('data-state', 'empty');
-      await expect(page.getByTestId('paperdoll-ilvl')).toHaveCount(0);
-      await expect(page.getByTestId('paperdoll-note')).toHaveText(
+      await expect(page.getByTestId('character-gear-ilvl')).toHaveCount(0);
+      await expect(page.getByTestId('character-gear-doll-note')).toHaveText(
         '1 item is not in our item data yet. It is new in the beta, and it gets a name and icon when the client lists it. Item level shows once every item is known.',
       );
       await expect(page.getByTestId('character-gear-bis')).toHaveAttribute(
         'href',
         '/bis/priest/discipline?faction=alliance#band-alliance-60',
       );
+      await expect(page.locator('#gear').getByText(/points/)).toHaveCount(0);
       await noSidewaysScroll(page);
       expect(errors).toEqual([]);
     });
 
-    test('names the list "Gear by slot"; every target is at least 44px', async ({ page }) => {
+    test('names the list "Gear by slot"; every cell is at least 44px', async ({ page }) => {
       await open(page);
       await drawn(page);
-      await expect(page.getByRole('list', { name: 'Gear by slot' })).toBeVisible();
-      const targets = page.locator('.pd-known:visible, .pd-up:visible');
-      const heights = await targets.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
-      expect(heights.length).toBeGreaterThan(0);
+      await expect(page.getByRole('listbox', { name: 'Gear by slot' })).toBeVisible();
+      const heights = await page
+        .locator('[data-testid^="character-gear-doll-slot-"]')
+        .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+      expect(heights.length).toBe(17);
       for (const height of heights) expect(height).toBeGreaterThanOrEqual(44);
     });
 
@@ -151,9 +165,7 @@ for (const width of [1440, 390]) {
       await link.click();
       await expect(page).toHaveURL(/#gear$/);
       await expect(page.getByTestId('character-gear-title')).toBeFocused();
-      const top = await page
-        .getByTestId('character-gear')
-        .evaluate((element) => element.getBoundingClientRect().top);
+      const top = await page.locator('#gear').evaluate((element) => element.getBoundingClientRect().top);
       expect(top).toBeGreaterThanOrEqual(95);
       expect(top).toBeLessThan(110);
     });
@@ -170,21 +182,21 @@ for (const width of [1440, 390]) {
       await expect(heading).toBeFocused();
     });
 
-    test('never paints a name white while the items file is slow, and shimmers meanwhile', async ({
+    test('never paints a name white while the items file is slow: skeleton rows meanwhile', async ({
       page,
     }) => {
       await open(page, { itemsDelayMs: 1500 });
-      await expect(slot(page, 'head')).toHaveAttribute('data-state', 'loading');
-      await expect(page.getByTestId('paperdoll-name')).toHaveText('Elyra Duskvale');
+      await expect(page.getByTestId('character-gear-doll')).toHaveAttribute('aria-busy', 'true');
+      await expect(page.getByTestId('item-hover-10504')).toHaveCount(0);
       await drawn(page);
-      await expect(slot(page, 'head').locator('.pd-name')).toHaveCSS('color', RGB.rare);
+      await expect(slot(page, 'head').getByTestId('item-hover-10504')).toHaveCSS('color', RGB.rare);
     });
 
-    test('a failed items file draws plain names and says so once', async ({ page }) => {
+    test('a failed items file keeps the names and says so once', async ({ page }) => {
       await open(page, { itemsFailures: 1 });
       await drawn(page);
-      await expect(slot(page, 'head').locator('.pd-name')).toHaveCSS('color', RGB.body);
-      await expect(page.getByTestId('paperdoll-note')).toHaveText(
+      await expect(slot(page, 'head')).toContainText('Green Lens');
+      await expect(page.getByTestId('character-gear-doll-note')).toHaveText(
         'Item icons and colours did not load. Reload the page to try again.',
       );
     });
@@ -194,81 +206,63 @@ for (const width of [1440, 390]) {
 test.describe('the item tooltip at 1440', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('opens on hover and keyboard focus for an item and a pick; Escape closes it', async ({ page }) => {
+  test('opens on hover for the worn item and the pick, on keyboard focus; Escape closes it', async ({
+    page,
+  }) => {
     const errors = await open(page);
     await settled(page);
-    await page.getByTestId('paperdoll-item-head').hover();
-    await expect(page.getByTestId('item-tooltip')).toBeVisible();
-    await expect(page.getByTestId('item-tooltip')).toContainText('Green Lens');
-    await page.getByTestId('paperdoll-pick-head').hover();
-    await expect(page.getByTestId('item-tooltip')).toContainText('Halo of Transcendence');
+    const tip = page.getByTestId('item-tooltip');
+    await page.getByTestId('item-hover-10504').hover();
+    await expect(tip).toBeVisible();
+    await expect(tip).toContainText('Green Lens');
+    await page.getByTestId('character-gear-doll-basis-head').locator('[data-bis-item="16921"]').hover();
+    await expect(tip).toContainText('Halo of Transcendence');
     await page.mouse.move(0, 0);
-    await page.getByTestId('paperdoll-item-hands').focus();
-    await expect(page.getByTestId('item-tooltip')).toBeVisible();
+    await slot(page, 'hands').focus();
+    await expect(tip).toBeVisible();
     await page.keyboard.press('Escape');
-    await expect(page.getByTestId('item-tooltip')).toHaveCount(0);
+    await expect(tip).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 
-  test('the right column opens toward the centre and never covers the crest (§4.2)', async ({ page }) => {
+  test('the keyboard walks the doll in reading order: one tab stop, arrows, Home and End', async ({
+    page,
+  }) => {
     await open(page);
     await settled(page);
-    const cell = page.getByTestId('paperdoll-item-hands');
-    await cell.hover();
-    const tip = page.getByTestId('item-tooltip');
-    await expect(tip).toBeVisible();
-    const [cellBox, tipBox, crest] = await Promise.all([
-      cell.boundingBox(),
-      tip.boundingBox(),
-      page.locator('.pd-crest').boundingBox(),
-    ]);
-    expect(Math.abs(cellBox!.x + cellBox!.width - (tipBox!.x + tipBox!.width))).toBeLessThan(2);
-    expect(tipBox!.x).toBeGreaterThanOrEqual(crest!.x + crest!.width);
-  });
-
-  test('Tab walks the frame in reading order, picks after their cells', async ({ page }) => {
-    await open(page);
-    await settled(page);
-    await page.getByTestId('paperdoll-item-head').focus();
-    const order: string[] = [];
-    for (let step = 0; step < 5; step++) {
-      order.push((await page.evaluate(() => document.activeElement?.getAttribute('data-testid'))) ?? '');
-      await page.keyboard.press('Tab');
-    }
-    // Head and its pick, Hands (worn as the pick: no pick to visit), then the empty Neck's pick
-    // and Waist: the frame's pairs in reading order.
-    expect(order).toEqual([
-      'paperdoll-item-head',
-      'paperdoll-pick-head',
-      'paperdoll-item-hands',
-      'paperdoll-pick-neck',
-      'paperdoll-item-waist',
-    ]);
+    await slot(page, 'head').focus();
+    const focused = () => page.evaluate(() => document.activeElement?.getAttribute('data-testid'));
+    await page.keyboard.press('ArrowDown');
+    // Neck is empty, so not focusable: down from head is shoulder.
+    expect(await focused()).toBe('character-gear-doll-slot-shoulder');
+    // Across to the same row of the right column: shoulder is the third row, so legs.
+    await page.keyboard.press('ArrowRight');
+    expect(await focused()).toBe('character-gear-doll-slot-legs');
+    await page.keyboard.press('End');
+    expect(await focused()).toBe('character-gear-doll-slot-trinket1');
+    await page.keyboard.press('Home');
+    expect(await focused()).toBe('character-gear-doll-slot-head');
   });
 });
 
 test.describe('the item tooltip on a 390px phone', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
-  test('a tap on an upgrade row opens the pick; a tap elsewhere and Escape close it', async ({ page }) => {
+  test('a tap on the pick opens it inside the screen; a second tap and Escape close', async ({ page }) => {
     const errors = await open(page);
     await settled(page);
-    const row = page.getByTestId('paperdoll-uprow-head');
-    await expect(row).toHaveAttribute(
-      'aria-label',
-      'Head upgrade: Halo of Transcendence, 18.4 points to gain',
-    );
-    await row.tap();
+    const pick = page.getByTestId('character-gear-doll-basis-head').locator('[data-bis-item="16921"]');
+    await pick.tap();
     const tip = page.getByTestId('item-tooltip');
     await expect(tip).toBeVisible();
     await expect(tip).toContainText('Halo of Transcendence');
     const box = await tip.boundingBox();
     expect(box!.x).toBeGreaterThanOrEqual(15);
     expect(box!.x + box!.width).toBeLessThanOrEqual(390 - 15);
-    await row.tap();
+    await pick.tap();
     await expect(tip).toHaveCount(0);
-    await page.getByTestId('paperdoll-item-head').tap();
-    await expect(tip).toBeVisible();
+    await page.getByTestId('item-hover-10504').tap();
+    await expect(tip).toContainText('Green Lens');
     await page.keyboard.press('Escape');
     await expect(tip).toHaveCount(0);
     expect(errors).toEqual([]);
@@ -283,30 +277,12 @@ for (const width of [360, 390, 1024]) {
       await open(page, { gear: GEAR_LONGEST });
       await drawn(page);
       const clipped = await page
-        .locator('.pd-name')
+        .locator('[data-testid^="item-hover-"]')
         .evaluateAll((els) =>
-          els.filter((el) => el.scrollHeight > el.clientHeight + 1).map((el) => el.textContent),
+          els.filter((el) => el.scrollWidth > el.clientWidth + 1).map((el) => el.textContent),
         );
       expect(clipped).toEqual([]);
       await noSidewaysScroll(page);
     });
   });
 }
-
-test.describe('hyphenation at 360', () => {
-  test.use({ viewport: { width: 360, height: 900 } });
-
-  test('a word longer than its line breaks at a soft hyphen, drawn as "-"', async ({ page }) => {
-    await open(page, { gear: GEAR_LONGEST });
-    await drawn(page);
-    const name = slot(page, 'head').locator('.pd-name');
-    await expect(name).toContainText('Elec\u00adtro\u00admag\u00adne\u00adtic');
-    // The word wraps inside itself: more lines than words would need without a break.
-    const lines = await name.evaluate((el) => {
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      return new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size;
-    });
-    expect(lines).toBeGreaterThanOrEqual(3);
-  });
-});

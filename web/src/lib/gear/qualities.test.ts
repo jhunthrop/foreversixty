@@ -24,7 +24,8 @@ describe('itemFacts (L8.6 fix round 1 ruling 2)', () => {
     expect(loadItems).toHaveBeenCalledTimes(1);
     expect(loadItems).toHaveBeenCalledWith('b', 'priest');
     expect(second).toBe(first);
-    expect(first?.get(16921)).toEqual({ quality: 4, icon: 'inv_helmet_24', twoHand: false });
+    expect(first?.get(16921)).toMatchObject({ quality: 4, icon: 'inv_helmet_24', twoHand: false });
+    expect(first?.get(16921)?.item?.id).toBe(16921);
     expect(first?.get(13000)?.twoHand).toBe(true);
     expect(nameClass(first ?? null, 16921)).toBe('text-rarity-epic-text');
     expect(nameClass(first ?? null, 10504)).toBe('text-rarity-rare-text');

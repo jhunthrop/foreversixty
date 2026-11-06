@@ -7,6 +7,7 @@
 // open of the page retries it (ruling 2). Until the read settles the section draws no names, so
 // nothing is ever painted white and recoloured.
 import { loadItems } from '../planner/load';
+import type { Item } from '../planner/types';
 import { rarityClassFor } from '../planner/items';
 import { isRealIcon } from '../icons/placeholder';
 
@@ -17,6 +18,8 @@ export interface GearItemFacts {
    *  never a red "?"). */
   icon: string | null;
   twoHand: boolean;
+  /** The whole row, for the gain rule's stat score (lib/gear/gain-pricer.ts). */
+  item?: Item;
 }
 
 export type GearItemTable = ReadonlyMap<number, GearItemFacts>;
@@ -38,6 +41,7 @@ export async function itemFacts(build: string, classSlug: string): Promise<GearI
               quality: item.quality,
               icon: isRealIcon(item.icon) ? item.icon : null,
               twoHand: item.two_hand === true,
+              item,
             },
           ]),
         ),

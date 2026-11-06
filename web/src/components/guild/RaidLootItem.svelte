@@ -7,11 +7,7 @@
      award's own facts. -->
 <script lang="ts">
   import type { RaidLootAward } from '../../lib/guild/attendance-contract';
-  import {
-    awardTooltipModel,
-    lootIconOf,
-    lootInitials,
-  } from '../../lib/guild/loot-icon';
+  import { awardTooltipModel, lootIconOf, lootInitials } from '../../lib/guild/loot-icon';
   import { fetchItemTooltipModel } from '../../lib/items/lookup';
   import type { ItemTooltipModel } from '../../lib/items/tooltip';
   import { dataUrl } from '../../lib/planner/load';

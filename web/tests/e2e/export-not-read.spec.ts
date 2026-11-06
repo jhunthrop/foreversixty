@@ -59,7 +59,7 @@ test.describe('character page with a gearless export', () => {
 
   test('a character with gear still draws the paperdoll', async ({ page }) => {
     await openCharacter(page, GEAR);
-    await expect(page.getByTestId('character-gear-paperdoll')).toBeVisible();
+    await expect(page.getByTestId('character-gear-doll')).toBeVisible();
     await expect(page.getByTestId('export-not-read')).toHaveCount(0);
   });
 

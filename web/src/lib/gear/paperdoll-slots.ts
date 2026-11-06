@@ -5,7 +5,7 @@
 // call site decides a slot's state itself.
 import { itemIdLabel } from '../items/unknown-item-copy';
 import { SLOTS, type Item } from '../planner/types';
-import type { PaperdollItemRef, PaperdollSlot, PaperdollSlotKey } from './paperdoll';
+import type { GainPricer, PaperdollItemRef, PaperdollSlot, PaperdollSlotKey } from './paperdoll';
 import { upgradeFor } from './paperdoll';
 import type { GearItemTable } from './qualities';
 import type { CharacterGearSlot } from './types';
@@ -87,10 +87,12 @@ export function slotsFromWorn(
 }
 
 /** The character page's slots: the API's names and levels, the file's colours and icons, and
- *  each slot's upgrade by §3.4. `table` null or absent: colours and icons left out. */
+ *  each slot's upgrade by §3.4, priced by `pricer`. `table` null or absent: colours and icons
+ *  left out. */
 export function slotsFromCharacterGear(
   gear: readonly CharacterGearSlot[],
   table: GearItemTable | null | undefined,
+  pricer: GainPricer,
 ): PaperdollSlot[] {
   const facts = (id: number) => table?.get(id);
   const ref = (id: number, name: string): PaperdollItemRef => ({
@@ -102,7 +104,7 @@ export function slotsFromCharacterGear(
   const wornBySlot: Record<string, number | undefined> = {};
   for (const slot of gear) wornBySlot[slot.slot] = slot.worn?.id;
   return gear.map((entry): PaperdollSlot => {
-    const upgrade = upgradeFor(entry, wornBySlot, ref);
+    const upgrade = upgradeFor(entry, wornBySlot, ref, pricer);
     const withUpgrade = (slot: PaperdollSlot): PaperdollSlot =>
       upgrade === undefined ? slot : { ...slot, upgrade };
     const { worn } = entry;
