@@ -5,7 +5,7 @@
 // signed-up row saves at once; Out never needs a spec; the row holds the 44 px floor at 360. The
 // API is the RaidStub with `askSpec` (no raid spec and no default spec on file).
 import type { Locator, Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { VIEWER_MEMBER } from '../../src/fixtures/guild/mock-guild';
 import { raidCopy } from '../../src/lib/guild/raid-copy';
 import {
@@ -21,6 +21,8 @@ import {
 import { gotoHydrated } from './support/hydrated';
 import { shortControls } from './support/short-controls';
 import { choose, fieldControl } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 test.use({ timezoneId: CHICAGO });
 

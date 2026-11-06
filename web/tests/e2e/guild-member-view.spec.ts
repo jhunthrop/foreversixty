@@ -4,7 +4,7 @@
 // shows the roster to a verified member and one honest sentence to everyone else, and the
 // band names who holds the claim to a member, and offers the claim only to an officer rank.
 import type { Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -14,6 +14,8 @@ import {
 } from '../../src/fixtures/guild/mock-guild';
 import { guildHomeCopy } from '../../src/lib/guild/copy';
 import { expectNoAxeViolations } from './support/officer-tools';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) =>

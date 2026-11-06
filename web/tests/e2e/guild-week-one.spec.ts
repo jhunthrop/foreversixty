@@ -3,7 +3,7 @@
 // Overview and Progression print one set of numbers, the page never prints NaN, a level 58 row has
 // no Nudge and no gear figure, and a healer row never says DPS.
 import type { Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -20,6 +20,8 @@ import type {
   GuildReadinessPage,
   GuildReadinessRow,
 } from '../../src/lib/guild/api';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
 /** Set to capture the spec's acceptance screenshots into a directory. */

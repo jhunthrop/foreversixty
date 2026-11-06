@@ -5,12 +5,14 @@
 // suite runs against (`npm run build && npm run preview`), so the token below must match
 // that fixture path exactly rather than an arbitrary placeholder.
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { PLANS } from '../../src/lib/billing/plans';
 import { guildJoinCopy } from '../../src/lib/guild/copy';
 import { buildMe, coveredView, stepGuild } from '../../src/test-support/subscribe-fixtures';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { expectTapHeight, routeMeCell } from './support/subscribe-stubs';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 function envelope(data: unknown, status = 200) {
   return {

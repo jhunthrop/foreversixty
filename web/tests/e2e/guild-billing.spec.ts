@@ -5,7 +5,7 @@
 // Manage billing and its Stripe-unavailable retry, which the old #billing section carried. API stubbed.
 import { createRequire } from 'node:module';
 import type { Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import type { GuildBillingSettings } from '../../src/lib/billing/contract';
 import {
   GUILD_TIER_28_READ,
@@ -22,6 +22,8 @@ import { guildSettingsCopy } from '../../src/lib/guild/copy';
 import { uiCopy } from '../../src/lib/ui/copy';
 import { GUILD_ID, envelope, openWith, stubCandidates } from './support/guild-billing';
 import { fieldBox } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/billing/upgrade-preview*'));

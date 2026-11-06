@@ -4,7 +4,7 @@
 // the event page's words by kind. The API is stubbed by support/guild-raids.ts; FS_EVENT_SHOTS, a
 // directory, also saves the §10 acceptance captures there.
 import type { Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { gotoHydrated } from './support/hydrated';
 import { choose } from './support/select';
 import {
@@ -17,6 +17,8 @@ import {
   stubGuildRaids,
   writesTo,
 } from './support/guild-raids';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 test.use({ timezoneId: CHICAGO });
 

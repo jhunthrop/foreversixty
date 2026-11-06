@@ -1,5 +1,7 @@
 // web/tests/e2e/guild-settings.spec.ts
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/guilds/*/billing'));

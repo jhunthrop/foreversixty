@@ -11,7 +11,7 @@
 // the flat single-page body (the duplicated unverified note, the old flat roster list) this
 // rebuild replaces -- see the build report for the full reasoning.
 import type { Locator, Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import {
   GUILD_ID,
   VIEWER_MEMBER,
@@ -24,6 +24,8 @@ import {
   buildMockRaids,
 } from '../../src/fixtures/guild/mock-guild';
 import { guildBillingRead } from '../../src/test-support/billing-fixtures';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) =>

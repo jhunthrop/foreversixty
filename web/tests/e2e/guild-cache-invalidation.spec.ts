@@ -4,7 +4,7 @@
 // so these specs plant that cookie and walk across real page loads: the stale answer is
 // persisted by the first page, and the page a mutation lands on must still show the new state.
 import type { Page } from '@playwright/test';
-import { apiUnreachable, expect, test } from './support/test';
+import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { guildJoinCopy } from '../../src/lib/guild/copy';
 import {
   GUILD_ID,
@@ -13,6 +13,8 @@ import {
   buildMockGuildPage,
   buildMockHome,
 } from '../../src/fixtures/guild/mock-guild';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) =>

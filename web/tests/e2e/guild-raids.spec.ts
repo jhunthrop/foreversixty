@@ -5,7 +5,7 @@
 // raid; the 10 s poll; the race lines; officer-read-only; R1 for visitors; the guild clock (R4);
 // axe; and the 44 px floor at 360. The API is stubbed by support/guild-raids.ts.
 import type { Locator, Page } from '@playwright/test';
-import { expect, test } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { cancelledLineOf, raidCopy } from '../../src/lib/guild/raid-copy';
 import { signupListText } from '../../src/lib/guild/raid-comp';
 import { gotoHydrated } from './support/hydrated';
@@ -32,6 +32,8 @@ import {
 } from './support/guild-raids';
 import { VIEWER_MEMBER } from '../../src/fixtures/guild/mock-guild';
 import { choose } from './support/select';
+
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const NEW_YORK = 'America/New_York';
 const POLL_MS = 10_000;

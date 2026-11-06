@@ -96,7 +96,6 @@
   import GuildRosterGate from './guild/GuildRosterGate.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
-  import GuildOverview from './guild/GuildOverview.svelte';
   import GuildTabs, {
     tabAfterHashChange,
     tabFromHash,
@@ -119,6 +118,8 @@
   // island's non-landing modes already use). Found necessary during this round's own
   // build: with all seven tabs statically imported, the GuildShell island's entry chunk
   // exceeded `scripts/check-island-size.mjs`'s 16KB gzip budget.
+  // The Overview is the first tab but its own chunk: the role-aware modules keep the entry in budget.
+  const overviewLazy = createLazyComponent(() => import('./guild/GuildOverview.svelte'));
   const rosterLazy = createLazyComponent(() => import('./guild/GuildRosterTable.svelte'));
   const raidsLazy = createLazyComponent(() => import('./guild/GuildRaids.svelte'));
   const progressionLazy = createLazyComponent(() => import('./guild/GuildProgression.svelte'));
@@ -640,7 +641,8 @@
    *  once a chunk has resolved or is already in flight, so this is safe to re-run on every
    *  `activeTab` change. */
   $effect(() => {
-    if (activeTab === 'roster') rosterLazy.load();
+    if (activeTab === 'overview') overviewLazy.load();
+    else if (activeTab === 'roster') rosterLazy.load();
     else if (activeTab === 'raids') raidsLazy.load();
     else if (activeTab === 'progression') progressionLazy.load();
     else if (activeTab === 'readiness') readinessLazy.load();
@@ -1059,40 +1061,45 @@
     </div>
 
     {#if activeTab === 'overview'}
-      <GuildOverview
-        {guildId}
-        {role}
-        officer={officerView}
-        nextRaid={home?.next_raid ?? null}
-        {guildPath}
-        myRow={myRosterRow}
-        you={showsBandLine(myGuildMembership?.verified === true, role) ? bandLine : undefined}
-        reports={home?.reports ?? data.reports}
-        summary={home?.summary}
-        {showCounts}
-        onSelectTab={selectTab}
-      >
-        {#snippet lead()}
-          {#if showWeekOne && weekOneLazy.current}
-            <weekOneLazy.current
-              status={weekOneStatus}
-              officer={officerView}
-              waiting={home?.summary?.waiting_for_approval ?? 0}
-              entries={home?.members ?? []}
-              rows={home?.roster ?? []}
-              character={weekOneCharacter}
-              nextRaid={home?.next_raid ?? null}
-              raidHref={home?.next_raid == null ? null : guildRaidHref(guildPath, home.next_raid.id)}
-              inviteHref={settingsHref === '' ? '' : `${settingsHref}#invite`}
-              onRetry={() => (homeAttempt += 1)}
-              onApprove={approveFromCard}
-              onPlan={planFromCard}
-              {bandSignsUp}
-              planGated={!officerTools}
-            />
-          {/if}
-        {/snippet}
-      </GuildOverview>
+      {#if overviewLazy.current}
+        <overviewLazy.current
+          {guildId}
+          {role}
+          officer={officerView}
+          nextRaid={home?.next_raid ?? null}
+          {guildPath}
+          myRow={myRosterRow}
+          you={showsBandLine(myGuildMembership?.verified === true, role) ? bandLine : undefined}
+          reports={home?.reports ?? data.reports}
+          summary={home?.summary}
+          {showCounts}
+          onSelectTab={selectTab}
+        >
+          {#snippet lead()}
+            {#if showWeekOne && weekOneLazy.current}
+              <weekOneLazy.current
+                status={weekOneStatus}
+                officer={officerView}
+                waiting={home?.summary?.waiting_for_approval ?? 0}
+                entries={home?.members ?? []}
+                rows={home?.roster ?? []}
+                character={weekOneCharacter}
+                nextRaid={home?.next_raid ?? null}
+                raidHref={home?.next_raid == null ? null : guildRaidHref(guildPath, home.next_raid.id)}
+                inviteHref={settingsHref === '' ? '' : `${settingsHref}#invite`}
+                onRetry={() => (homeAttempt += 1)}
+                onApprove={approveFromCard}
+                onPlan={planFromCard}
+                {bandSignsUp}
+                planGated={!officerTools}
+              />
+            {/if}
+          {/snippet}
+        </overviewLazy.current>
+      {:else}
+        <div class="min-h-[720px]" aria-hidden="true" data-testid="guild-overview-reserve"></div>
+        {@render lazyFallback(overviewLazy)}
+      {/if}
     {:else if activeTab === 'roster' && home !== null}
       {#if rosterLazy.current}
         <rosterLazy.current
