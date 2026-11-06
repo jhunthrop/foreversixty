@@ -1,14 +1,16 @@
 // web/tests/e2e/character-history-panel.spec.ts
 // The History section's own behaviour in a real browser (experience spec
 // 2026-10-24-character-history 3.7, 3.8, 3.11): selection against the fights list, the keyboard,
-// the boss picker's roving focus and the reserve the next visit holds. The lane's acceptance
-// e2e is character-history.spec.ts; this file keeps the panel's interaction rules.
+// the boss picker's roving focus and the reserve the next visit holds, each after the owner opens
+// the History Disclosure (character spec 2026-11-06 C8). The lane's acceptance e2e is
+// character-history.spec.ts; this file keeps the panel's interaction rules.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import {
   CHARACTER,
   CHARACTER_PATH,
   CHARACTER_URL,
+  openHistoryDisclosure,
   ownerMeAnswer,
   routeCharacterHistory,
 } from './support/character-fixture';
@@ -52,6 +54,7 @@ async function openHistory(page: Page, history: number | undefined = undefined):
   );
   await (history === undefined ? routeCharacterHistory(page) : routeCharacterHistory(page, history));
   await page.goto(CHARACTER_PATH);
+  await openHistoryDisclosure(page);
 }
 
 const reserve = (page: Page): Promise<string | null> =>
@@ -145,7 +148,10 @@ test('the reserve keeps the collapsed box, not an opened list', async ({ page })
   await expect(toggle).toHaveText('Show fewer');
   await page.waitForTimeout(300);
   // Under the bound the write would be accepted, so an unchanged value proves the skip.
-  const expanded = await page.getByTestId('character-history-section').boundingBox();
+  const expanded = await page
+    .getByTestId('character-history-toggle')
+    .getByTestId('character-history-section')
+    .boundingBox();
   expect(expanded?.height ?? Number.POSITIVE_INFINITY).toBeLessThan(HISTORY_MAX_RESERVE_PX);
   expect(await reserve(page)).toBe(collapsed);
 });

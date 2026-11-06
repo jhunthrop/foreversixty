@@ -1,8 +1,8 @@
 // web/tests/e2e/character-history.spec.ts
-// The History section of the character page (experience spec 2026-10-24-character-history):
-// the premium owner's two charts and their lists, the free owner's sentence, the visitor's bare
-// card, and the layout-shift check for the hinted owner. /v1/me, the character and the history
-// route are stubbed with page.route; the strings asserted are the spec's section 6.
+// The History section of the character page (experience spec 2026-10-24-character-history,
+// character spec 2026-11-06 C8): a closed Disclosure for the premium owner whose two charts and
+// their lists are read only once it opens, the free owner's one row to the plans, and nothing
+// for a visitor. /v1/me, the character and the history route are stubbed with page.route.
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { characterHistoryFixture } from '../../src/fixtures/character-history';
@@ -11,14 +11,12 @@ import {
   CHARACTER,
   CHARACTER_PATH,
   CHARACTER_URL,
+  openHistoryDisclosure,
   ownerMeAnswer,
   routeCharacterHistory,
   routeCharacterSearch,
 } from './support/character-fixture';
-import { readLayoutShift, trackLayoutShift } from './support/cls';
 
-const MAX_CLS = 0.02;
-const PHONE = { width: 390, height: 844 };
 const DESKTOP = { width: 1440, height: 1000 };
 const HISTORY_URL = `${CHARACTER_URL}/history`;
 
@@ -85,9 +83,13 @@ async function openPremiumOwner(page: Page, history = characterHistoryFixture())
   await stubCharacter(page);
   await routeCharacterHistory(page, history);
   await page.goto(CHARACTER_PATH);
+  await openHistoryDisclosure(page);
   await expect(page.getByTestId('history-score')).toBeVisible();
 }
 
+/** The charts' own section, inside the Disclosure (the outer Section shares its testid). */
+const chartsSection = (page: Page): Locator =>
+  page.getByTestId('character-history-toggle').getByTestId('character-history-section');
 const scoreColumn = (page: Page): Locator => page.getByTestId('history-score');
 const parseColumn = (page: Page): Locator => page.getByTestId('history-parse');
 const readoutValue = (column: Locator): Locator => column.getByTestId('history-readout-value');
@@ -96,7 +98,7 @@ const readoutDetail = (column: Locator): Locator => column.getByTestId('history-
 test('the premium owner sees both charts, the score readout and the parse boss pills', async ({ page }) => {
   await openPremiumOwner(page);
 
-  await expect(page.getByTestId('character-history-section')).toBeVisible();
+  await expect(chartsSection(page)).toBeVisible();
   await expect(page.getByTestId('history-caption')).toHaveText(
     'Includes your private and guild reports. Only you see this section.',
   );
@@ -115,6 +117,26 @@ test('the premium owner sees both charts, the score readout and the parse boss p
   await expect(pills.nth(1)).toHaveAccessibleName(/Gehennas.*1 kill$/);
   await expect(readoutValue(parseColumn(page))).toHaveText('88');
   await expect(readoutDetail(parseColumn(page))).toHaveText('11 Dec 2026 · kill 5 of 5');
+});
+
+test('the premium owner’s History is closed, and nothing is read until it opens', async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  const requests = watchHistoryRequests(page);
+  await stubOwner(page, true);
+  await stubCharacter(page);
+  await routeCharacterHistory(page);
+  await page.goto(CHARACTER_PATH);
+
+  const toggle = page.getByTestId('character-history-toggle');
+  await expect(toggle.locator('summary')).toHaveText(/Score over time, then parse per boss/);
+  await expect(toggle).not.toHaveAttribute('open', '');
+  await expect(page.getByTestId('history-score')).toHaveCount(0);
+  await page.waitForLoadState('networkidle');
+  expect(requests).toEqual([]);
+
+  await openHistoryDisclosure(page);
+  await expect(page.getByTestId('history-score')).toBeVisible();
+  expect(requests).toHaveLength(1);
 });
 
 test('the step buttons and the arrow keys move the selection and the marked rows', async ({ page }) => {
@@ -219,9 +241,7 @@ test('Show all expands the list in place, Show fewer collapses it, and a private
   expect(notes).toContain('Guild');
 });
 
-test('the free owner gets the card and one sentence, and the history is never requested', async ({
-  page,
-}) => {
+test('the free owner gets one row to the plans, and the history is never requested', async ({ page }) => {
   await page.setViewportSize(DESKTOP);
   const requests = watchHistoryRequests(page);
   await stubOwner(page, false);
@@ -229,24 +249,25 @@ test('the free owner gets the card and one sentence, and the history is never re
   await routeCharacterHistory(page);
   await page.goto(CHARACTER_PATH);
 
-  await expect(page.getByTestId('forever-score')).toBeVisible();
-  await expect(page.getByTestId('history-free-sentence')).toHaveText(
-    'History charts draw your score and parses over time. See plans.',
-  );
+  await expect(page.getByTestId('character-score')).toBeVisible();
+  const row = page.getByTestId('history-free-sentence');
+  await expect(row).toContainText('Score over time and parse per boss');
+  await expect(row).toContainText('Premium keeps every rated fight.');
+  await expect(page.getByTestId('history-see-plans')).toHaveText('See plans ›');
   await expect(page.getByTestId('history-see-plans')).toHaveAttribute('href', '/premium#history');
-  await expect(page.getByTestId('character-history-section')).toHaveCount(0);
+  await expect(page.getByTestId('character-history-toggle')).toHaveCount(0);
   await page.waitForTimeout(500);
   expect(requests).toEqual([]);
 });
 
-test('a visitor gets the card alone: no section, no sentence, no history request', async ({ page }) => {
+test('a visitor gets the score alone: no section, no sentence, no history request', async ({ page }) => {
   await page.setViewportSize(DESKTOP);
   const requests = watchHistoryRequests(page);
   await stubCharacter(page);
   await routeCharacterHistory(page);
   await page.goto(CHARACTER_PATH);
 
-  await expect(page.getByTestId('forever-score')).toBeVisible();
+  await expect(page.getByTestId('character-score')).toBeVisible();
   await expect(page.getByTestId('character-history-section')).toHaveCount(0);
   await expect(page.getByTestId('history-free-sentence')).toHaveCount(0);
   await page.waitForTimeout(500);
@@ -275,23 +296,24 @@ test('an anonymised character is the 404 page for its entitled owner too', async
   await routeCharacterHistory(page);
   await page.goto(CHARACTER_PATH);
 
-  // The owner's /v1/me lists the character, so the 404 is their own unlogged card.
-  await expect(page.getByTestId('character-unlogged')).toBeVisible();
+  // The 404 is the not-found page for its owner too: there is nothing to draw the history beside.
+  await expect(page.getByTestId('character-not-found-line')).toBeVisible();
   await expect(page.getByTestId('character-history-section')).toHaveCount(0);
   await expect(page.getByTestId('history-free-sentence')).toHaveCount(0);
   await page.waitForTimeout(500);
   expect(requests).toEqual([]);
 });
 
-test('#history lands on the section for the entitled owner', async ({ page }) => {
+test('with #history, opening the Disclosure lands on the charts', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 600 });
   await stubOwner(page, true);
   await stubCharacter(page);
   await routeCharacterHistory(page);
   await page.goto(`${CHARACTER_PATH}#history`);
+  await openHistoryDisclosure(page);
 
   await expect(page.getByTestId('history-score')).toBeVisible();
-  await expect(page.getByTestId('character-history-section')).toBeInViewport();
+  await expect(chartsSection(page)).toBeInViewport();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 });
 
@@ -315,34 +337,13 @@ test('a failed read shows the error with Try again, which reads again', async ({
         });
   });
   await page.goto(CHARACTER_PATH);
+  await openHistoryDisclosure(page);
 
   const error = page.getByTestId('history-error');
   await expect(error).toContainText('Your history did not load.');
-  await expect(page.getByTestId('forever-score')).toBeVisible();
+  await expect(page.getByTestId('character-score')).toBeVisible();
   await error.getByRole('button', { name: 'Try again' }).click();
   await expect(scoreColumn(page)).toBeVisible();
   await expect(page.getByTestId('history-error')).toHaveCount(0);
   expect(calls).toBe(2);
 });
-
-for (const viewport of [PHONE, DESKTOP]) {
-  test(`the hinted owner's section loads without layout shift at ${viewport.width}px`, async ({ page }) => {
-    await page.setViewportSize(viewport);
-    await stubOwner(page, true);
-    await stubCharacter(page);
-    await routeCharacterHistory(page);
-    // The first visit stores the /v1/me snapshot and the section's height; the second is hinted.
-    await page.goto(CHARACTER_PATH);
-    await expect(scoreColumn(page)).toBeVisible();
-    await expect(parseColumn(page).getByTestId('history-svg')).toBeVisible();
-    await page.waitForTimeout(500);
-
-    await trackLayoutShift(page);
-    await page.reload();
-    await expect(scoreColumn(page)).toBeVisible();
-    await expect(parseColumn(page).getByTestId('history-svg')).toBeVisible();
-    const cls = await readLayoutShift(page);
-    test.info().annotations.push({ type: 'cls', description: `${viewport.width}px: ${cls}` });
-    expect(cls).toBeLessThanOrEqual(MAX_CLS);
-  });
-}

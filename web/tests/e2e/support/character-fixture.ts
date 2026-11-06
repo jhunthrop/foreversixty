@@ -213,3 +213,24 @@ export async function routeCharacterHistory(
         }),
   );
 }
+
+/** A Forever Score for the fixture: the owner's History and Coach history Sections draw only
+ *  beside one (CharacterOwnerSections, character spec 2026-11-06 C8). */
+export const OWNER_SCORE = {
+  score: 1830,
+  tier: 'epic',
+  as_of: '2026-11-04',
+  components: { gear: 412, experience: 620, parses: 540, attendance: 180, discipline: 78 },
+  experience: { dungeons: 14, raid_kills: 0, alts: 2 },
+};
+
+/** Opens the owner's History Disclosure (`Score over time, then parse per boss`); the charts
+ *  are read only once it is open. */
+export async function openHistoryDisclosure(page: Page): Promise<void> {
+  await page.getByTestId('character-history-toggle').locator('summary').click();
+}
+
+/** Opens the Premium owner's Coach history Disclosure; the list is read only once it is open. */
+export async function openCoachDisclosure(page: Page): Promise<void> {
+  await page.getByTestId('character-coach-toggle').locator('summary').click();
+}

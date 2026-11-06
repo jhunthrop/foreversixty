@@ -24,7 +24,18 @@
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
-  let { path, forever, owned }: { path: CharacterPath; forever: ForeverScore; owned: boolean } = $props();
+  let {
+    path,
+    forever,
+    owned,
+    fought = false,
+  }: {
+    path: CharacterPath;
+    forever: ForeverScore;
+    owned: boolean;
+    /** Ranked fights are on the page: the line says the score is not in yet, never "no logs". */
+    fought?: boolean;
+  } = $props();
 
   const scored = $derived(hasScore(forever));
   let rating = $state<CharacterRating | null>(null);
@@ -57,7 +68,7 @@
 >
   {#if !scored}
     <p class="text-text py-[6px] text-[15px] leading-6" data-testid="character-no-logs">
-      {owned ? copy.noLogsOwner : copy.noLogs}
+      {fought ? copy.noScoreYet : owned ? copy.noLogsOwner : copy.noLogs}
     </p>
   {:else}
     <div class="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">

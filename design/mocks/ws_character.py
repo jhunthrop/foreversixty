@@ -170,7 +170,7 @@ def head(ch: Char, owner: dict | None, answer: bool = True) -> str:
         meta.append(f"<a class=\"link\" href=\"#\">&lt;{c['guild']['name']}&gt;</a>")
     meta += [c['realm'], f"{'Hardcore' if c['ruleset'] == 'hardcore' else 'Normal'} {c['region'].upper()}"]
     if owner:
-        meta.append('Addon &middot; 2 days ago')
+        meta.append('Addon &middot; 1 day ago')
     figs = ''
     total = ch.total()
     if answer and total > 0:
@@ -203,7 +203,7 @@ def score_section(ch: Char, owner: bool) -> str:
     label = {x['key']: x['label'] for x in LABELS['components']}
     most = f'<p class="line">Most to gain: {label[gaps[0][1]]}, {gaps[0][0]} points to the top. {Link("How it is scored &rsaquo;")}</p>'
     parts = Rows([Row(label[k], f'{comps[k]} of {maxes[k]}') for k in maxes], open_=True)
-    return sec('Forever Score', figs + most + Disclosure('Parts and trend', parts), meta=f"{rating['sample_size']} rated fights")
+    return sec('Forever Score', figs + most + Disclosure('Score parts', parts), meta=f"{rating['sample_size']} rated fights")
 
 
 def parse_color(pct: float) -> str:

@@ -49,7 +49,7 @@ Lane calls:
 - **The Plate sits in a `Gear` Section** (meta `Level 60 raid` or `Levels 30 to 39`, action `Best in slot`), as home's upgrades do; the unread state titles it `Best in slot for level 30 to 39` and draws the band's picks with their sources.
 - **Head answer:** `Upgrades available`, `+128.9 HPS` (the band's unit: HPS for a healer), with the Forever Score as a small Figure beside it and `Open in simulator ›`, `Talents in planner ›`. No answer when nothing is priced or the export was not read.
 - **Spec fallback:** with no talents, builds or fights, the spec is the one the gear is priced for (`gear_spec`), so a leveler still reads `Beast Mastery Hunter` and gets a BiS link.
-- **C5:** the parts open in place under `Parts and trend` (rows of points against each ceiling); the trend chart stays in the owner's History.
+- **C5:** the parts open in place under `Score parts` (rows of points against each ceiling); the trend chart stays in the owner's History.
 - **C8:** History and Coach history are Disclosures; their charts and list are read only when opened. A free owner gets one row to the plans.
 - **C10:** the lookup is the name field and `Look up` (to `/characters?q=<name>`); region and ruleset are answered by the `Same name elsewhere` rows, which come first. `Sign in to see your characters` shows only to a signed-out viewer; the addon row is `ctaCopy.getAddonAndCompanion`.
 - **`All ranked fights (N) ›`** goes to `/logs` until logs can filter by character (the redesign lane).

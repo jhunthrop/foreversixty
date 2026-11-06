@@ -14,9 +14,10 @@ import {
   CHARACTER_URL,
   GEAR,
   GEAR_ITEMS,
+  routeCharacterSearch,
   routeGearIcons,
 } from './support/character-fixture';
-import { ctaCopy } from '../../src/lib/addon/cta-copy';
+import { expectFixtureNotFound } from './support/character-not-found';
 
 const SHOTS = process.env.W10_SHOTS ?? 'test-results/w10';
 const SIZES = [
@@ -77,7 +78,8 @@ async function shot(page: Page, name: string, fullPage = true): Promise<void> {
   await page.screenshot({ path: join(SHOTS, `w10-${name}.png`), fullPage });
 }
 
-/** An API answer for a character with a record and nothing on it: no gear, no fights, no score. */
+/** An API answer for a character with a record and nothing on it: no gear, no fights, no score,
+ *  and no other character by that name. */
 async function routeEmptyCharacter(page: Page): Promise<void> {
   const data = {
     ...CHARACTER.data,
@@ -88,6 +90,8 @@ async function routeEmptyCharacter(page: Page): Promise<void> {
     builds_seen: [],
     score_history: [],
   };
+  // The not-found page asks for the same name elsewhere; none here.
+  await routeCharacterSearch(page);
   await page.route(CHARACTER_URL, (route) =>
     route.fulfill({
       status: 200,
@@ -207,46 +211,27 @@ for (const size of SIZES) {
       expect(await goldSteps(page)).toEqual(['3']);
     });
 
-    test('a character the visitor does not hold, with no data: one sentence, the lookup, one quiet link', async ({
-      page,
-    }) => {
+    test('a character the visitor does not hold, with no data: the not-found page', async ({ page }) => {
       await signedOut(page);
       await routeEmptyCharacter(page);
       await page.goto(CHARACTER_PATH);
       await settle(page);
-      await expect(page.getByTestId('character-not-found-line')).toHaveText(
-        'Elyra Duskvale is here, with no gear, talents or logs yet.',
-      );
-      await expect(page.getByTestId('character-not-found-form')).toBeVisible();
-      await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveText(
-        ctaCopy.getAddonAndCompanion,
-      );
-      await expect(page.getByTestId('character-not-found-next').getByRole('link')).toHaveCount(1);
-      // The empty score bars and the tooltip lookalike are the holder's, not a visitor's.
-      await expect(page.getByTestId('forever-score-empty')).toHaveCount(0);
-      await expect(page.getByTestId('forever-score-empty-action')).toHaveCount(0);
-      await expect(page.getByTestId('character-gear-none')).toHaveCount(0);
-      await expect(page.getByTestId('character-in-game')).toHaveCount(0);
+      await expectFixtureNotFound(page, { signedIn: false });
       await expect(page.getByText('Forever Score: no logs yet')).toHaveCount(0);
       await shot(page, `character-no-data-visitor-${size.name}`);
     });
 
-    test('a character another account holds gets the same sentence, not the holder’s set', async ({
+    test('a character another account holds gets the same not-found page, without the sign-in row', async ({
       page,
     }) => {
       await signedIn(page, ME_DONE, []);
       await routeEmptyCharacter(page);
       await page.goto(CHARACTER_PATH);
       await settle(page);
-      await expect(page.getByTestId('character-not-found-line')).toHaveText(
-        'Elyra Duskvale is here, with no gear, talents or logs yet.',
-      );
-      await expect(page.getByTestId('forever-score-empty')).toHaveCount(0);
+      await expectFixtureNotFound(page, { signedIn: true });
     });
 
-    test('the signed-in holder keeps the full set: one primary button, one quiet line, no sign-in bar', async ({
-      page,
-    }) => {
+    test('the signed-in holder keeps their page: the head and the owner’s no-logs line', async ({ page }) => {
       const holder = {
         ...ME_DONE,
         characters: [
@@ -265,15 +250,16 @@ for (const size of SIZES) {
       await page.goto(CHARACTER_PATH);
       await settle(page);
       await expect(page.getByTestId('character-not-found')).toHaveCount(0);
-      await expect(page.getByTestId('forever-score-empty-action')).toHaveText('Upload logs');
-      await expect(page.getByTestId('forever-score-empty-next')).toHaveCount(0);
-      await expect(page.getByTestId('character-gear-none')).toContainText('No gear on file yet.');
-      await expect(page.getByTestId('character-gear-planner')).toHaveCount(0);
-      await expect(page.getByTestId('character-ruleset-chip')).toHaveText(/hardcore/i);
+      await expect(page.getByTestId('character-head').getByTestId('page-title')).toHaveText('Elyra Duskvale');
+      await expect(page.getByTestId('character-no-logs')).toHaveText(
+        'No logs yet. Upload a log to get a rating.',
+      );
+      await expect(page.getByTestId('character-gear-section')).toHaveCount(0);
+      await expect(page.getByTestId('character-fact-chip')).toHaveText(/hardcore/i);
       await shot(page, `character-no-data-holder-${size.name}`);
     });
 
-    test('a character with gear and no logs: "No logs yet" in place of the score card, one button', async ({
+    test('a character with gear and no logs: the gear, then "No logs yet." under Forever Score', async ({
       page,
     }) => {
       await signedOut(page);
@@ -291,10 +277,8 @@ for (const size of SIZES) {
       );
       await page.goto(CHARACTER_PATH);
       await settle(page);
-      await expect(page.getByTestId('forever-score-empty')).toContainText('No logs yet');
-      await expect(page.getByTestId('forever-score-empty-max')).toHaveText('Score runs to 2100.');
-      await expect(page.getByTestId('forever-score-empty-gear')).toHaveCount(0);
-      await expect(page.getByTestId('forever-score-empty-action')).toHaveText('Get the companion');
+      await expect(page.getByTestId('character-gear-section')).toBeVisible();
+      await expect(page.getByTestId('character-no-logs')).toHaveText('No logs yet.');
       await expect(page.getByTestId('current-character-bar-signed-out')).toHaveCount(0);
       await shot(page, `character-gear-first-${size.name}`);
     });

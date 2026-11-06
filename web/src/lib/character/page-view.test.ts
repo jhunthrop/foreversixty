@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import type { MeCharacter } from '../account/api';
 import type { PaperdollSlot } from '../gear/paperdoll';
+import type { CharacterPath } from '../characters';
 import type { CharacterPage } from '../rankings/api';
 import {
   bestRows,
@@ -30,7 +31,7 @@ const page = {
   builds_seen: [{ talent_split: '15/31/5', spec: 'Holy', first_seen: '2026-11-03T20:40:00Z' }],
   gear_spec: 'priest-holy',
 } as unknown as CharacterPage;
-const path = { region: 'us', ruleset: 'hardcore', slug: 'elyra-duskvale' };
+const path: CharacterPath = { region: 'us', ruleset: 'hardcore', slug: 'elyra-duskvale' };
 
 function gain(slot: string, value: number | null): PaperdollSlot {
   return {

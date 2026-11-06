@@ -41,10 +41,11 @@ export const characterPageCopy = {
   ratedFights: (count: number): string => `${count} rated ${count === 1 ? 'fight' : 'fights'}`,
   mostToGain: (part: string, gap: number): string => `Most to gain: ${part}, ${gap} points to the top.`,
   howScored: 'How it is scored',
-  parts: 'Parts and trend',
+  parts: 'Score parts',
   partSub: (points: number, max: number): string => `${points} of ${max}`,
   noLogsOwner: 'No logs yet. Upload a log to get a rating.',
   noLogs: 'No logs yet.',
+  noScoreYet: 'No Forever Score yet. It is worked out from the rated fights below.',
   best: 'Best per encounter',
   allFights: (count: number): string => `All ranked fights (${count})`,
   builds: 'Builds seen',
@@ -198,6 +199,8 @@ export interface FightRowView {
   percentile: string | null;
   color: string | null;
   value: string;
+  /** The fight's own rate word: HPS for a heal, DPS otherwise. */
+  unit: string;
   encounter: string;
 }
 
@@ -210,6 +213,7 @@ export function bestRows(best: readonly CharacterFight[]): FightRowView[] {
     percentile: row.percentile === undefined ? null : String(Math.round(row.percentile)),
     color: row.percentile === undefined ? null : percentileToken(row.percentile),
     value: Math.round(row.value).toLocaleString('en-US'),
+    unit: row.metric === 'hps' ? 'HPS' : 'DPS',
     encounter: row.encounter,
   }));
 }

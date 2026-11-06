@@ -25,7 +25,7 @@
     topUpgrade,
     upgradeTotal,
   } from '../lib/character/page-view';
-  import { syncText, syncView } from '../lib/character-header/sync';
+  import { STALE_SEPARATOR, syncText, syncView } from '../lib/character-header/sync';
   import { bisHref } from '../lib/character-profile';
   import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
   import { onCurrentCharacterChange, onCurrentCharacterSwitch, readCurrent } from '../lib/current-character';
@@ -166,7 +166,11 @@
   $effect(() => {
     const page = data;
     context = undefined;
-    if (page === null || (page.gear ?? []).length === 0) return;
+    if (page === null) return;
+    if ((page.gear ?? []).length === 0) {
+      context = { table: null, band: null };
+      return;
+    }
     const input = { build, classSlug, gearSpec: page.gear_spec ?? null, level, faction };
     void loadGearContext(input).then((loaded) => {
       if (data === page) context = loaded;
@@ -268,7 +272,11 @@
                 >{fact.text}</a
               >{:else}<span data-testid={`character-fact-${fact.key}`}>{fact.text}</span>{/if}
           {/each}
-          {#if sync !== null}<span data-testid="character-sync">{syncText(sync)}</span>{/if}
+          {#if sync !== null}<span data-testid="character-sync"
+              >{syncText(sync)}{#if sync.staleTail !== null}{STALE_SEPARATOR}<span class="text-wipe"
+                  >{sync.staleTail}</span
+                >{/if}</span
+            >{/if}
         {/snippet}
         {#snippet answer()}
           {#if total > 0}
@@ -318,7 +326,7 @@
         {note}
       />
     {/if}
-    <CharacterScore path={resolved} {forever} {owned} />
+    <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
     {#if data.best.length > 0}
       <Section
         title={copy.best}
@@ -338,7 +346,7 @@
                   style:color={row.color}
                   aria-label={`${row.percentile} percentile`}>{row.percentile}</span
                 >{/if}
-              <Figure value={row.value} {unit} size="sm" align="end" />
+              <Figure value={row.value} unit={row.unit} size="sm" align="end" />
             {/snippet}
           </Row>
         {/each}

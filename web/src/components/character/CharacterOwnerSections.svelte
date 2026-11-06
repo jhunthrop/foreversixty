@@ -23,6 +23,21 @@
     () =>
       import('../coach/CoachHistoryList.svelte') as Promise<{ default: Component<{ path: CharacterPath }> }>,
   );
+  /** The account page's and the coach tab's links land here (`#history`, `#coach`): the address opens
+   *  its Disclosure, whether the page opened on it or the hash changed after; the opened section
+   *  (CharacterHistory, CoachHistoryList) carries the id and scrolls itself into view. */
+  const HISTORY_ANCHOR = 'history';
+  const COACH_ANCHOR = 'coach';
+  $effect(() => {
+    const openFromHash = (): void => {
+      const hash = window.location.hash.slice(1);
+      if (hash === HISTORY_ANCHOR && history) historyOpen = true;
+      if (hash === COACH_ANCHOR && coach) coachOpen = true;
+    };
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
+    return () => window.removeEventListener('hashchange', openFromHash);
+  });
   $effect(() => {
     if (historyOpen) charts.load();
   });
@@ -31,7 +46,7 @@
   });
 </script>
 
-<Section title={copy.history} testid="character-history-section">
+<Section title={copy.history} testid="character-owner-history">
   {#if history}
     <Disclosure summary={copy.historyLead} bind:open={historyOpen} testid="character-history-toggle">
       {#if charts.current}<charts.current {path} />{/if}

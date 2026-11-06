@@ -1,6 +1,8 @@
 // web/tests/e2e/export-not-read.spec.ts
 // W.3: an export that carried no gear and no talents is "not read yet" on the character page,
-// not seventeen "Empty" rows; the band's best in slot stays below it. And the upload form's two
+// not seventeen "Empty" rows: the doll draws the band's picks under "Best in slot for level N",
+// and the owner reads one neutral line in the summary (character spec 2026-11-06). And the upload
+// form's two
 // advisory warnings, which never block. Captures at 1280 go to docs/superpowers/reviews/
 // lifecycle/r1 when E2E_CAPTURE is set.
 import type { Page } from '@playwright/test';
@@ -13,6 +15,7 @@ import {
   GEAR_ITEMS,
   routeGearIcons,
 } from './support/character-fixture';
+import { notReadCopy } from '../../src/lib/gear/copy';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const CAPTURE_DIR = process.env.E2E_CAPTURE;
@@ -44,28 +47,29 @@ async function openCharacter(page: Page, gear: unknown): Promise<void> {
 test.describe('character page with a gearless export', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('says the gear has not been read, with the band’s best in slot below', async ({ page }) => {
+  test('the doll draws the band’s best in slot with their sources, and no verdict', async ({ page }) => {
     await openCharacter(page, UNREAD_GEAR);
-    const panel = page.getByTestId('export-not-read');
-    await expect(panel).toBeVisible();
-    await expect(panel).toContainText('This character’s gear has not been read yet.');
-    await expect(page.getByTestId('character-gear-title')).toContainText('Best in slot for level');
-    await expect(page.getByTestId('character-gear-row-head')).toContainText('Halo of Transcendence');
+    const section = page.getByTestId('character-gear-section');
+    await expect(section).toContainText('Best in slot for level 60');
+    const head = page.getByTestId('character-doll-slot-head');
+    await expect(head).toContainText('Halo of Transcendence');
+    await expect(page.getByTestId('character-doll-line2-head')).toHaveText("Onyxia's Lair: Onyxia");
     // Nothing reads as a verdict on the character.
-    await expect(page.getByText('Empty', { exact: true })).toHaveCount(0);
+    await expect(section.getByText('Empty', { exact: true })).toHaveCount(0);
     await expect(page.getByText('No pick for your level range yet')).toHaveCount(0);
-    await expect(page.getByTestId('character-gear-totals')).toHaveCount(0);
+    await expect(page.getByTestId('character-answer')).toHaveCount(0);
+    await expect(page.getByTestId('character-doll-basis-head')).toHaveCount(0);
   });
 
-  test('a character with gear still draws the paperdoll', async ({ page }) => {
+  test('a character with gear still draws the worn paperdoll', async ({ page }) => {
     await openCharacter(page, GEAR);
-    await expect(page.getByTestId('character-gear-doll')).toBeVisible();
-    await expect(page.getByTestId('export-not-read')).toHaveCount(0);
+    await expect(page.getByTestId('character-doll')).toBeVisible();
+    await expect(page.getByTestId('character-gear-section')).toContainText('Gear');
+    await expect(page.getByTestId('character-gear-section')).not.toContainText('Best in slot for level');
+    await expect(page.getByTestId('character-doll-slot-head')).toContainText('Green Lens');
   });
 
-  test('the owner sees the full wording, and the closing line says the page updates by itself', async ({
-    page,
-  }) => {
+  test('the owner reads one neutral line: not read yet, and how to fix it in game', async ({ page }) => {
     await page.route('**/v1/me', (route) =>
       route.fulfill(
         envelope({
@@ -86,16 +90,13 @@ test.describe('character page with a gearless export', () => {
       ),
     );
     await openCharacter(page, UNREAD_GEAR);
-    const line = page.getByTestId('character-in-game-planner');
-    await expect(line).toContainText('This page updates by itself each time you log out');
-    await expect(line.getByRole('link', { name: 'paste it on the setup page' })).toHaveAttribute(
-      'href',
-      '/setup',
-    );
-    await expect(page.getByTestId('export-not-read')).toContainText('Your gear has not been read yet.');
-    await expect(page.getByTestId('export-not-read')).toContainText('The last sync from the game (');
+    const line = page.getByTestId('character-next-step');
+    await expect(line).toHaveText(`${notReadCopy.lead} ${notReadCopy.steps}`);
+    await expect(line.getByRole('link')).toHaveCount(0);
+    await expect(page.getByTestId('character-gear-section')).toContainText('Best in slot for level 60');
+    await expect(page.getByTestId('character-answer')).toHaveCount(0);
     if (CAPTURE_DIR !== undefined) {
-      await page.getByTestId('character-gear-title').scrollIntoViewIfNeeded();
+      await page.getByTestId('character-gear-section').scrollIntoViewIfNeeded();
       await page.screenshot({ path: `${CAPTURE_DIR}/w3-character-not-read-1280.png`, fullPage: false });
     }
   });

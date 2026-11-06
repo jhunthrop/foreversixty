@@ -41,7 +41,7 @@ describe('the character page without JavaScript', () => {
       const html = await renderShell(await createPageContainer());
       const noscript = /<noscript>([\s\S]*?)<\/noscript>/.exec(html)?.[1] ?? '';
       expect(noscript).toMatch(
-        /<style>\s*\[data-testid=["']character-skeleton["']\]\s*\{\s*display:\s*none;?\s*\}\s*<\/style>/,
+        /<style>\s*\[data-testid=["']character-skeleton["']\]\s*\{\s*display:\s*none\s*!important;?\s*\}\s*<\/style>/,
       );
       expect(noscript).toContain('data-testid="character-noscript"');
       const words = noscript
