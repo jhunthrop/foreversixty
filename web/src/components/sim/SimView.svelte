@@ -42,7 +42,7 @@
   import { parseBuildInput } from '../../lib/sim/build-input';
   import { fightRefOf, parseFightRef } from '../../lib/sim/sources';
   import { isSimulatedSpec, specLabel } from '../../lib/sim/spec-label';
-  import { mergeSpecRows, needsFidelityNote, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
+  import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { SIM_TABS, tabHref, tabStateFor } from '../../lib/sim/tabs';
   import {
@@ -57,12 +57,12 @@
   import LoadError from '../ui/LoadError.svelte';
   import Notice from '../ui/Notice.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
-  import Tag from '../ui/Tag.svelte';
   import RunReport from './RunReport.svelte';
   import SavedSim from './SavedSim.svelte';
   import SavedSimLoadFailed from './SavedSimLoadFailed.svelte';
   import SimAnswer from './SimAnswer.svelte';
   import SimCharacterHead from './SimCharacterHead.svelte';
+  import SimFidelityCaption from './SimFidelityCaption.svelte';
   import SimLandingPage from './SimLandingPage.svelte';
   import SimRacePick from './SimRacePick.svelte';
   import SimRunBar from './SimRunBar.svelte';
@@ -299,10 +299,13 @@
   $effect(() => {
     void loadSpecs();
   });
-  const characterSpecRow = $derived.by((): SpecFidelity | null => {
-    if (store.character === null || specRows === null) return null;
-    return mergeSpecRows(specRows).find((row) => row.spec === store.character?.spec) ?? null;
-  });
+  /** The spec list's row for a spec, or null before the list loads. */
+  function specRowFor(spec: string | undefined): SpecFidelity | null {
+    if (spec === undefined || specRows === null) return null;
+    return mergeSpecRows(specRows).find((row) => row.spec === spec) ?? null;
+  }
+  const characterSpecRow = $derived(store.character === null ? null : specRowFor(store.character.spec));
+  const savedSpecRow = $derived(savedSim.result === null ? null : specRowFor(savedSim.result.request.spec));
 
   /** An FS1 code for a character with no ref (a paste), so the tool tabs carry it. */
   const fallbackCode = $derived.by(() => {
@@ -481,7 +484,6 @@
       itemLevel,
     );
   });
-  const showFidelity = $derived(characterSpecRow !== null && needsFidelityNote(characterSpecRow));
 </script>
 
 <!-- The rail's tail with a character: Your sims, then a payer's server runs (their list sits
@@ -517,7 +519,7 @@
   {#if hasSavedSimId}
     {#if savedSim.result !== null}
       <div class="reveal">
-        <SavedSim result={savedSim.result} onrerun={onRerunSaved} {simId} />
+        <SavedSim result={savedSim.result} onrerun={onRerunSaved} {simId} fidelity={savedSpecRow} />
       </div>
     {:else if savedSim.error === simCopy.notFound}
       <div class="sim-pad">
@@ -591,12 +593,7 @@
       {#snippet answer()}
         <SimAnswer model={answerModel}>
           {#snippet extra()}
-            {#if showFidelity && characterSpecRow !== null && answerModel.state !== 'result'}
-              <span class="text-muted text-[13px] leading-5" data-testid="spec-fidelity-note">
-                <a href="/sim/specs"><Tag tone="muted">{specStateLabel(characterSpecRow.state)}</Tag></a>
-                {specStateNote(characterSpecRow.state)}
-              </span>
-            {/if}
+            {#if answerModel.state !== 'not-simulated'}<SimFidelityCaption fidelity={characterSpecRow} />{/if}
             {#if savedUrl !== null}<span class="text-kill text-[13px] font-semibold"
                 >{pageCopy.answer.saved}</span
               >{/if}
