@@ -229,7 +229,7 @@ func candidateKeys(cands []LootCandidate) []string {
 }
 
 // TestLootAwardCreateAndDeleteIsOfficerOnly checks a plain member is refused, an officer
-// can award and a second award for the same drop replaces the first, and delete removes it.
+// can award, and delete removes it.
 func TestLootAwardCreateAndDeleteIsOfficerOnly(t *testing.T) {
 	h := newHTTPHarness(t)
 	gid := seedGuild(t, h.pool, "Forever")

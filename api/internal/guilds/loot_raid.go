@@ -123,20 +123,32 @@ func (s *Store) latestKillNight(ctx context.Context, guildID, encounterID int64,
 	return night, nil
 }
 
-// upsertAward writes the award, replacing the earlier one for the same drop in the same raid
-// (or, with no raid, the same drop with no raid).
-func (s *Store) upsertAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, night awardNight) (int64, error) {
-	target := `(guild_id, encounter_id, item_id) where raid_id is null`
-	if night.raidID != nil {
-		target = `(guild_id, raid_id, encounter_id, item_id)`
+// awardConflict is the ON CONFLICT clause for an award filed under night: on a raid, the one
+// award per drop per raid (loot_awards_drop_idx); on a logged night with no planned raid, the one
+// per drop per log (loot_awards_drop_night_idx, migration 0071). An award with no night has no
+// conflict target: it is its own row, so the same item awarded on two unmatched nights keeps both.
+func awardConflict(night awardNight) string {
+	const update = ` do update set
+		  character_key = excluded.character_key, awarded_by = excluded.awarded_by,
+		  awarded_at = now(), report_id = excluded.report_id`
+	switch {
+	case night.raidID != nil:
+		return `on conflict (guild_id, raid_id, encounter_id, item_id)` + update
+	case night.reportID != nil:
+		return `on conflict (guild_id, report_id, encounter_id, item_id) where raid_id is null and report_id is not null` + update
+	default:
+		return ``
 	}
+}
+
+// upsertAward writes the award, replacing the earlier one for the same drop on the same night
+// (awardConflict); an award with no night is always a new row.
+func (s *Store) upsertAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, night awardNight) (int64, error) {
 	var id int64
 	err := s.Pool.QueryRow(ctx, `
 		insert into loot_awards (guild_id, encounter_id, item_id, character_key, awarded_by, raid_id, report_id)
 		values ($1, $2, $3, $4, $5, $6, $7)
-		on conflict `+target+` do update set
-		  character_key = excluded.character_key, awarded_by = excluded.awarded_by,
-		  awarded_at = now(), report_id = excluded.report_id
+		`+awardConflict(night)+`
 		returning id`, guildID, encounterID, itemID, characterKey, awardedBy, night.raidID, night.reportID).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("guilds: create loot award: %w", err)

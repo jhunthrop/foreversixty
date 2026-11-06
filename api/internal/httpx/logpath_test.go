@@ -9,16 +9,19 @@ import (
 	"testing"
 )
 
-func TestLogPathRedactsTheCalendarToken(t *testing.T) {
+func TestLogPathRedactsTheSecretRouteTokens(t *testing.T) {
 	cases := map[string]string{
-		"/v1/calendar/abcDEF_-123.ics": "/v1/calendar/:redacted",
-		"/v1/calendar/":                "/v1/calendar/",
-		"/v1/me/calendar-feed":         "/v1/me/calendar-feed",
-		"/v1/guilds/2/home":            "/v1/guilds/2/home",
-		"//v1/calendar/tok.ics":        "/v1/calendar/:redacted",
-		"/v1/./calendar/tok.ics":       "/v1/calendar/:redacted",
-		"/a/../v1/calendar/tok.ics":    "/v1/calendar/:redacted",
-		"/v1/calendar//tok.ics":        "/v1/calendar/:redacted",
+		"/v1/calendar/abcDEF_-123.ics":     "/v1/calendar/:redacted",
+		"/v1/calendar/":                    "/v1/calendar/",
+		"/v1/me/calendar-feed":             "/v1/me/calendar-feed",
+		"/v1/guilds/2/home":                "/v1/guilds/2/home",
+		"//v1/calendar/tok.ics":            "/v1/calendar/:redacted",
+		"/v1/./calendar/tok.ics":           "/v1/calendar/:redacted",
+		"/a/../v1/calendar/tok.ics":        "/v1/calendar/:redacted",
+		"/v1/calendar//tok.ics":            "/v1/calendar/:redacted",
+		"/v1/guild-invites/fsg_tok":        "/v1/guild-invites/:redacted",
+		"/v1/guilds/invite/fsg_tok/accept": "/v1/guilds/invite/:redacted",
+		"/v1/guilds/7/invite/rotate":       "/v1/guilds/7/invite/rotate",
 	}
 	for in, want := range cases {
 		if got := LogPath(in); got != want {

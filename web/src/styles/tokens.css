@@ -100,12 +100,28 @@
      size-adjust/ascent-override/descent-override numbers were computed. */
   --font-body: 'Barlow', 'Barlow Fallback', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  /* The page title's face (web layout spec 2026-11-05 section 3.3): Marcellus 400, once per page,
+     in the spec, class or faction colour, set only by ui/PageHeader. Its two size-adjusted
+     fallbacks (fonts.css) are Georgia, then Times New Roman, so the swap moves no line. */
+  --font-title: 'Marcellus', 'Marcellus Fallback', 'Marcellus Fallback Times', Georgia, serif;
 
   /* The one site column (Base.astro wraps every page in it): its max width, border-box, so
      the content is 1248px at the 48px desktop gutter. The header bar (nav.css) reads the
      same two tokens, so the bar and the page can never drift apart. */
   --page-max: 1344px;
   --page-gutter: 48px;
+  /* The wide breakpoint (web layout spec 3.2): at 1760 px and up a page built from the ui/
+     primitives widens its column and adds a rail. Named `wide`, not `xl`, because Tailwind's own
+     xl (1280) is in use across the site. */
+  --breakpoint-wide: 1760px;
+  /* The redesign's layout tokens (spec 3.2). The 1760 px values are set below, outside @theme. */
+  --section-gap: 48px;
+  --gap: 24px;
+  --rail-w: 360px;
+  --inspector-w: 320px;
+  --toc-w: 200px;
+  --bar-h: 56px;
+  --row-h: 58px;
   /* Reading and form measures inside the column (.measure-* in global.css), content width. */
   --measure-form: 480px;
   --measure-reading: 720px;
@@ -116,6 +132,9 @@
   --radius-panel: 12px;
   --radius-control: 8px;
   --radius-pill: 6px;
+  /* The flat system's radii (spec P1, 3.4): the one Plate and overlays; segments, selects, fields. */
+  --radius-plate: 6px;
+  --radius-field: 4px;
 
   /* The type scale, direction B (polish spec 4.4). A `-phone` value applies below md (768px);
      the heading-* and figure-* utilities in global.css pair the two. Body 15/22 is the
@@ -135,6 +154,26 @@
   --text-body--line-height: 22px;
   --text-meta: 13px;
   --text-micro: 11px;
+  /* The flat system's type roles (spec 3.3, decided 2026-11-05). Nothing under 12. */
+  --text-title: 40px;
+  --text-title--line-height: 46px;
+  --text-title-phone: 32px;
+  --text-title-phone--line-height: 38px;
+  --text-section: 18px;
+  --text-section--line-height: 24px;
+  --text-section-reading: 22px;
+  --text-section-reading--line-height: 28px;
+  --text-item: 15px;
+  --text-item--line-height: 20px;
+  --text-item-lg: 18px;
+  --text-item-lg--line-height: 22px;
+  --text-lead: 17px;
+  --text-lead--line-height: 26px;
+  --text-small: 13px;
+  --text-small--line-height: 20px;
+  --text-label: 12px;
+  --text-label--line-height: 16px;
+  --tracking-label: 0.12em;
   /* The heading face's one tracking, and the button label's (uppercase 13px 700 .07em). */
   --tracking-heading: 0.01em;
   --tracking-button: 0.07em;
@@ -166,4 +205,26 @@
   --color-tile-ink: var(--tile-ink);
   --shadow-card: 0 16px 38px rgba(0, 0, 0, 0.55);
   --shadow-glow-gold: var(--glow-gold);
+
+  /* The flat system's three surfaces (spec P1): S0 is --color-bg, S1 the Plate (--color-raised),
+     S2 hover. Pressed and selected are the one step past hover, and the gold selection ground. */
+  --color-hover: #131824;
+  --color-pressed: #1a2030;
+  --color-selected: rgba(229, 185, 85, 0.1);
+  --shadow-overlay: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* The wide column (spec 3.2, owner decision 2026-11-05): a page built from the ui/ primitives sets
+   `data-column="wide"` on <body> (Base.astro's `wide` prop) and from 1760 px its column grows to
+   clamp(1600px, 100vw - 160px, 1792px) with the wider gutter, gaps and rails. Pages not yet migrated
+   keep the 1344 column until their own lane adopts the primitives; the last lane makes it the default. */
+@media (min-width: 1760px) {
+  [data-column='wide'] {
+    --page-max: clamp(1600px, 100vw - 160px, 1792px);
+    --page-gutter: 64px;
+    --section-gap: 64px;
+    --gap: 32px;
+    --rail-w: 400px;
+    --inspector-w: 440px;
+  }
 }

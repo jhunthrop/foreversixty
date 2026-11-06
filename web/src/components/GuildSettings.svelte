@@ -224,9 +224,11 @@
         {guildId}
         {guildName}
         rotatedAt={current.invite.rotated_at}
+        keptUrl={current.invite.url}
+        madeBy={current.invite.made_by}
         disabled={busy || frozen}
-        onRotated={(rotatedAt) => {
-          if (settings !== null) settings = { ...settings, invite: { rotated_at: rotatedAt } };
+        onRotated={(invite) => {
+          if (settings !== null) settings = { ...settings, invite };
         }}
       />
     {/if}

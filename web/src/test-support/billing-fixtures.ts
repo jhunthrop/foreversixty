@@ -134,7 +134,7 @@ const GUILD_SETTINGS = {
   claimed_by: { name: 'Thornhide', class: 'druid', character_key: 'us/hardcore/thornhide' },
   claim_pending: null,
   claim: { state: 'claimed', since: '2026-09-01T00:00:00Z', frozen: false },
-  invite: { rotated_at: null },
+  invite: { rotated_at: null, url: null, made_by: null },
 };
 
 /** Routes the public guild page and the settings read that SETTINGS_GUILD_PATH makes. */

@@ -29,16 +29,21 @@ func syntheticKey(userID int64) string {
 	return fmt.Sprintf("account:%d", userID)
 }
 
-// RotateInvite issues a fresh invite token for guildID, storing only its
-// SHA-256 hash. The token is returned once; nothing here or later can
-// recover it.
-func (s *Store) RotateInvite(ctx context.Context, guildID int64) (string, time.Time, error) {
+// RotateInvite issues a fresh invite token for guildID, made by rotatedBy (nil for a tool). The
+// SHA-256 hash is the lookup key; with an InviteSealer the token is also kept sealed so a verified
+// officer can show it again (InviteURL), and without one it is returned once and never again. The
+// old token, its sealed copy and its maker are all replaced, so the old link stops working at once.
+func (s *Store) RotateInvite(ctx context.Context, guildID int64, rotatedBy *int64) (string, time.Time, error) {
 	token := InviteTokenPrefix + auth.Base32ID(inviteTokenChars)
-	hash := auth.TokenHash(token)
+	box, err := s.sealInvite(token)
+	if err != nil {
+		return "", time.Time{}, err
+	}
 	var rotatedAt time.Time
-	err := s.Pool.QueryRow(ctx,
-		`update guilds set invite_token_hash = $2, invite_token_rotated_at = now()
-		 where id = $1 returning invite_token_rotated_at`, guildID, hash).Scan(&rotatedAt)
+	err = s.Pool.QueryRow(ctx,
+		`update guilds set invite_token_hash = $2, invite_token_enc = $3, invite_rotated_by = $4,
+		        invite_token_rotated_at = now()
+		 where id = $1 returning invite_token_rotated_at`, guildID, auth.TokenHash(token), box, rotatedBy).Scan(&rotatedAt)
 	if err != nil {
 		return "", time.Time{}, fmt.Errorf("guilds: rotate invite for %d: %w", guildID, err)
 	}
@@ -174,28 +179,41 @@ func AdoptInviteVerification(ctx context.Context, tx pgx.Tx, guildID, userID int
 	return nil
 }
 
-// InvitePeek is what PeekInvite answers with: the guild a token opens and how many verified
-// accounts it has, and nothing about who holds the token or who is in the guild.
+// InvitePeek is what PeekInvite answers with: the guild a token opens, how many verified
+// accounts it has, and the officer who made the link by their character on the guild's roster
+// (Inviter, nil when the maker is unknown or has no character there), and nothing about who else
+// holds the token or who is in the guild.
 type InvitePeek struct {
 	GuildID               int64
 	Region, Ruleset, Name string
 	Faction, CrestKey     *string
 	Members               int
+	Inviter               *ClaimHolderRef
 }
 
-// PeekInvite looks a token up without redeeming it, so the invite page can name the guild before
-// anyone joins. Members is the billing count, verified accounts. Unknown and rotated-away tokens
-// both answer ErrNotFound.
+// PeekInvite looks a token up without redeeming it, so the invite page can name the guild and
+// the inviter before anyone joins. Members is the billing count, verified accounts. Unknown and
+// rotated-away tokens both answer ErrNotFound.
 func (s *Store) PeekInvite(ctx context.Context, token string) (InvitePeek, error) {
 	var p InvitePeek
+	var rotatedBy *int64
 	err := s.Pool.QueryRow(ctx,
-		`select g.id, g.region, g.ruleset, g.name, g.faction, g.crest_key,
+		`select g.id, g.region, g.ruleset, g.name, g.faction, g.crest_key, g.invite_rotated_by,
 		        (select count(distinct m.user_id) from guild_members m
 		         where m.guild_id = g.id and m.verified_at is not null)
 		 from guilds g where g.invite_token_hash = $1`,
-		auth.TokenHash(token)).Scan(&p.GuildID, &p.Region, &p.Ruleset, &p.Name, &p.Faction, &p.CrestKey, &p.Members)
-	if err != nil {
+		auth.TokenHash(token)).Scan(&p.GuildID, &p.Region, &p.Ruleset, &p.Name, &p.Faction, &p.CrestKey,
+		&rotatedBy, &p.Members)
+	if errors.Is(err, pgx.ErrNoRows) {
 		return InvitePeek{}, ErrNotFound
+	}
+	if err != nil {
+		return InvitePeek{}, fmt.Errorf("guilds: peek invite: %w", err)
+	}
+	if rotatedBy != nil {
+		if p.Inviter, err = s.claimHolderRef(ctx, p.GuildID, *rotatedBy); err != nil {
+			return InvitePeek{}, err
+		}
 	}
 	return p, nil
 }
@@ -273,14 +291,19 @@ func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
 	if !s.officerNotFrozen(w, r, guildID, "rotate_invite", "could not rotate that invite just now") {
 		return
 	}
-	token, rotatedAt, err := s.Store.RotateInvite(r.Context(), guildID)
+	token, rotatedAt, err := s.Store.RotateInvite(r.Context(), guildID, &actor.UserID)
+	if err != nil {
+		s.fail(w, r, "rotate_invite", err, "could not rotate that invite just now")
+		return
+	}
+	invite, err := s.rotatedInviteView(r.Context(), guildID, actor.UserID, token, rotatedAt)
 	if err != nil {
 		s.fail(w, r, "rotate_invite", err, "could not rotate that invite just now")
 		return
 	}
 	s.logger().Info("guilds", "op", "invite_rotate", "guild_id", guildID, "user_id", actor.UserID)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{
-		"token": token, "url": "/guild/invite/" + token, "rotated_at": rotatedAt,
+		"token": token, "url": invitePath(token), "rotated_at": rotatedAt, "invite": invite,
 	})
 }
 
@@ -293,6 +316,10 @@ func (s *Service) peekInvite(w http.ResponseWriter, r *http.Request) {
 	p, err := s.Store.PeekInvite(r.Context(), r.PathValue("token"))
 	if errors.Is(err, ErrNotFound) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "that invite link is not valid", nil)
+		return
+	}
+	if err != nil {
+		s.fail(w, r, "peek_invite", err, "could not read that invite just now")
 		return
 	}
 	var joinsAs *JoinsAs
@@ -310,6 +337,7 @@ func (s *Service) peekInvite(w http.ResponseWriter, r *http.Request) {
 		},
 		"members":  p.Members,
 		"joins_as": joinsAs,
+		"inviter":  p.Inviter,
 	})
 }
 

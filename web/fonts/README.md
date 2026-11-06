@@ -1,7 +1,8 @@
 # Font subsets
 
-`glyphs.txt` in this directory is the explicit glyph inventory for the seven self-hosted font
-subsets committed under `web/src/assets/fonts/`: Cinzel 700 (the wordmark), Barlow
+`glyphs.txt` in this directory is the explicit glyph inventory for the eight self-hosted font
+subsets committed under `web/src/assets/fonts/`: Cinzel 700 (the wordmark), Marcellus 400 (the page
+title, web layout spec 2026-11-05), Barlow
 400/600/700 (body), Barlow Condensed 700/800 (headings, added by the 2026-10-28 polish lane)
 and JetBrains Mono 500. `web/src/styles/fonts.css` declares `@font-face` rules against those subset files
 directly (no more `@import '@fontsource/...'`); see that file's header comment for why.
@@ -56,7 +57,7 @@ python3 -m venv /tmp/fonts-venv
 /tmp/fonts-venv/bin/pip install fonttools==4.61.1 brotli
 ```
 
-Then, from `web/`, for each of the seven faces:
+Then, from `web/`, for each of the eight faces:
 
 ```sh
 VENV=/tmp/fonts-venv/bin
@@ -83,6 +84,10 @@ $VENV/pyftsubset node_modules/@fontsource/barlow-condensed/files/barlow-condense
 $VENV/pyftsubset node_modules/@fontsource/barlow-condensed/files/barlow-condensed-latin-800-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
   --output-file=src/assets/fonts/barlow-condensed-800-subset.woff2
+
+$VENV/pyftsubset node_modules/@fontsource/marcellus/files/marcellus-latin-400-normal.woff2 \
+  --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
+  --output-file=src/assets/fonts/marcellus-400-subset.woff2
 
 $VENV/pyftsubset node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \

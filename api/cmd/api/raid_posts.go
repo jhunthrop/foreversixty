@@ -21,6 +21,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -31,9 +32,21 @@ const raidPostsDrainPasses = 5
 // raidPostsBudget ends the run cleanly, with its log line, before the job's 5 minute task timeout kills it.
 const raidPostsBudget = 4 * time.Minute
 
-// newGuildStore is the guilds store serve and the job share, so their reads cannot drift.
-func newGuildStore(cfg config.Config, pool *pgxpool.Pool, treeData *trees.Data) *guilds.Store {
-	return &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir, Trees: treeData, APIBaseURL: cfg.APIBaseURL}
+// newGuildStore is the guilds store serve and the job share, so their reads cannot drift. The
+// invite token is sealed under NOTIFY_ENCRYPTION_KEY (config.Load has already checked its length);
+// without the key the store keeps only the hash and an invite link is shown once.
+func newGuildStore(cfg config.Config, pool *pgxpool.Pool, treeData *trees.Data, log *slog.Logger) (*guilds.Store, error) {
+	store := &guilds.Store{Pool: pool, DataDir: cfg.TreeDataDir, Trees: treeData, APIBaseURL: cfg.APIBaseURL}
+	if len(cfg.NotifyEncryptionKey) == 0 {
+		log.Warn("guilds", "state", "invite links shown once", "effect", "no NOTIFY_ENCRYPTION_KEY to seal them")
+		return store, nil
+	}
+	sealer, err := notify.NewSealer(cfg.NotifyEncryptionKey)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: invite sealer: %w", err)
+	}
+	store.InviteSealer = sealer
+	return store, nil
 }
 
 func runRaidPosts(ctx context.Context, log *slog.Logger) error {
@@ -89,8 +102,12 @@ func newRaidPostsServices(cfg config.Config, pool *pgxpool.Pool, log *slog.Logge
 		return raidPostsServices{}, fmt.Errorf("trees: %w", err)
 	}
 	entStore := &entitlements.Store{Pool: pool}
+	guildStore, err := newGuildStore(cfg, pool, treeData, log)
+	if err != nil {
+		return raidPostsServices{}, err
+	}
 	guildService := &guilds.Service{
-		Store:    newGuildStore(cfg, pool, treeData),
+		Store:    guildStore,
 		Accounts: &auth.Store{Pool: pool, Log: log}, Supporters: entStore, Entitlements: entStore,
 		PublicBaseURL: cfg.PublicBaseURL, Log: log,
 	}
