@@ -95,7 +95,7 @@ func death(in Input, _ Counted) outcome {
 	if !ok {
 		return outcome{CouldNotCheck: []string{Fill(CannotDeathKiller, map[string]string{"t": Clock(d.AtMS)})}}
 	}
-	defs := defensivesAt(in, d.AtMS)
+	defs := defensivesAt(in, d.AtMS, physicalHit(in, hit))
 	ready, hasReady := defs.pick()
 	anchors := []Anchor{deathAnchor(d.AtMS)}
 	if hasReady && !ready.NotUsed { // a defensive never cast has no Casts row to open
@@ -239,18 +239,42 @@ func isHealingConsumable(name string) bool {
 	return strings.HasSuffix(name, deathStoneSuffix) && !strings.HasPrefix(name, deathStoneNotUsePrefix) && name != deathStoneTalent
 }
 
+// schoolPhysical is the physical school mask (SpellSchools 1).
+const schoolPhysical = 1
+
+// physicalHit reports whether the killing hit was an attack dodge or parry can stop: a
+// melee swing, or an ability whose school the player's damage-taken row records as
+// physical. A spell whose school the log did not keep is not proven physical.
+func physicalHit(in Input, hit deathHit) bool {
+	if hit.SpellID == 0 {
+		return true
+	}
+	for _, a := range in.Fight.DamageTaken {
+		if a.GUID != in.Row.GUID {
+			continue
+		}
+		for _, ab := range a.Abilities {
+			if ab.SpellID == hit.SpellID {
+				return ab.School == schoolPhysical
+			}
+		}
+	}
+	return false
+}
+
 // defensivesAt reads the rule file's defensives at atMS. A talent counts only if cast that
 // fight. A cast whose cooldown the data does not state is never claimed ready; one back
 // off cooldown is ready from then. A baseline ability never cast counts from its
 // trainable level, and only when the level is known: it is proven ready from its
 // cooldown's length into the pull (a cast at the end of an earlier pull is back by then),
 // and otherwise is only not used this pull (§20.4: fires only when the data proves it).
-// A defensive Forbearance blocks is neither while the player carries it at the death.
-func defensivesAt(in Input, atMS int64) deathDefensives {
+// A defensive Forbearance blocks is neither while the player carries it at the death, and a
+// melee-only one (Evasion, Deterrence) is neither unless the killing hit was physical.
+func defensivesAt(in Input, atMS int64, physical bool) deathDefensives {
 	var out deathDefensives
 	forbearance := auraUpAt(in.Fight, in.Row.GUID, forbearanceSpellID, atMS)
 	for _, e := range in.Tables.Rules.Defensives {
-		if forbearance && forbearanceBlocks[e.Family] {
+		if (forbearance && forbearanceBlocks[e.Family]) || (!physical && meleeOnlyEntry(in, e)) {
 			continue
 		}
 		lastID, lastMS, cast := lastCastBefore(in.Fight, in.Row.GUID, e.SpellIDs, atMS)
@@ -281,6 +305,16 @@ func defensivesAt(in Input, atMS int64) deathDefensives {
 		}
 	}
 	return out
+}
+
+// meleeOnlyEntry is true when the spell data marks any rank of e melee-only.
+func meleeOnlyEntry(in Input, e RuleEntry) bool {
+	for _, id := range e.SpellIDs {
+		if in.Tables.Spells[id].MeleeOnly {
+			return true
+		}
+	}
+	return false
 }
 
 // auraUpAt reports whether guid carried spellID at atMS: a segment of its aura track that

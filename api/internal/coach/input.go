@@ -56,6 +56,9 @@ type SpellConst struct {
 	CostType   int64
 	CostKnown  bool
 	CostPct    float64
+	// MeleeOnly is true when every effect of the spell raises dodge or parry (Evasion,
+	// Deterrence): it can stop a melee swing or a physical attack, never a spell.
+	MeleeOnly bool
 }
 
 // CostAt is the spell's cost for a player with baseMana: the flat cost when the data
